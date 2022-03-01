@@ -1,0 +1,27 @@
+.demo:
+  extends:
+    - .docker-base
+  tags: [liveoffice-demo]
+  only:
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /^(demo)$/
+
+Update Demo Traefik:
+  stage: update_demo_traefik
+  extends:
+    - .demo
+  script:
+    - cd deploy/demo
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml up -d --build
+  interruptible: true
+
+Update Demo:
+  stage: update_demo
+  extends:
+    - .demo
+  script:
+    - cd deploy/demo
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
+  interruptible: true

@@ -1,0 +1,26 @@
+.test:
+  extends:
+    - .code-maintainance-base
+  stage: test
+  script:
+    - cd $SERVICE_DIR
+    - npm i
+    - npm run test
+
+Test Frontend:
+  extends:
+    - .test
+  variables:
+    SERVICE_DIR: frontend-service
+
+Test Gateway:
+  extends:
+    - .test
+  variables:
+    SERVICE_DIR: gateway-service
+
+Test Users:
+  extends:
+    - .test
+  variables:
+    SERVICE_DIR: core-service

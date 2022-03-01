@@ -1,0 +1,25 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+@import "../../../styles/rem";
+
+.templateContent {
+  position: relative;
+  border-radius: rem(8px);
+  overflow: hidden;
+  max-width: rem(334px);
+
+  .templateButtons {
+    position: absolute;
+    inset: 0;
+    background: rgba($primary-black, 0.6);
+
+    .button:first-child {
+      margin: 0 rem(12px) 0 0;
+    }
+
+    .button {
+      width: auto;
+      padding: rem(8px 13px);
+    }
+  }
+}

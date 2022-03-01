@@ -1,0 +1,35 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.paperWrapper {
+  padding: rem(40px);
+}
+
+.icon {
+  color: $primary-black;
+}
+
+.contentWrapper {
+  max-width: rem(392px);
+}
+
+.socialBtn {
+  height: rem(56px);
+  width: rem(56px);
+  background: rgba($normal-gray-scale, 0.4);
+
+  border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  border-radius: rem(10px);
+
+  transition: background-color 200ms linear;
+
+  &.active {
+    background: $primary-white;
+  }
+}
+
+.trashIcon {
+  cursor: pointer;
+  color: #28282D;
+}

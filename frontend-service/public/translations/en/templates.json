@@ -1,0 +1,21 @@
+{
+  "selectTemplates": "Select template",
+  "myTemplates": "My templates",
+  "buttons": {
+    "startMeeting": "Meeting",
+    "preview": "Preview",
+    "getStarted": "Get started",
+    "previewSpace": "Preview Space",
+    "chooseTemplate": "Get started with this room",
+    "continue": "Continue",
+    "done": "Done"
+  },
+  "noTemplates": "You dont have any templates yet :(",
+  "setUpSpace": {
+    "title": "Personalize your\nspace"
+  },
+  "onboarding": {
+    "quit": "Quit onboarding?",
+    "explanation": "Some features may not be available \n if you skip onboarding. To use platform in full, finish onboarding or fill in the information in the profile manually"
+  }
+}

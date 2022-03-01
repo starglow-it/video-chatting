@@ -1,0 +1,42 @@
+version: "3.7"
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '5'
+
+networks:
+  traefikpublic:
+
+services:
+  traefik:
+    image: traefik:v2.4
+    logging: *default-logging
+    container_name: "traefik"
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.network=liveoffice_traefikpublic"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.http.address=:80"
+      - "--providers.file=true"
+      - "--providers.file.directory=/etc/traefik.d"
+      - "--providers.file.watch=true"
+      - "--accesslog=true"
+    labels:
+      - "traefik.enable=true"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/data/traefik/config:/etc/traefik.d"
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
+    networks:
+      - traefikpublic

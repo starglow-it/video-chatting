@@ -1,0 +1,25 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+@import "../../styles/mixins";
+
+.categoryWrapper {
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  padding: rem(5px 12px 5px 12px);
+  background: #FFFFFF;
+  border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  box-shadow: rem(0 4px 10px -2px) rgba($primary-black, 0.1);
+  border-radius: rem(6px);
+  text-transform: capitalize;
+
+  .icon {
+    margin: rem(0 0 0 8px);
+  }
+
+  .tagText {
+    @extend %text-ellips;
+    white-space: nowrap;
+  }
+}

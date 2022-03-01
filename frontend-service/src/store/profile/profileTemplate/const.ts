@@ -1,0 +1,18 @@
+export const initialProfileTemplateState = {
+    id: '',
+    usedAt: '',
+    url: '',
+    name: '',
+    description: '',
+    previewUrl: '',
+    type: '',
+    companyName: '',
+    contactEmail: '',
+    fullName: '',
+    position: '',
+    maxParticipants: 0,
+    templateId: 0,
+    businessCategories: [],
+    languages: [],
+    socials: [],
+};

@@ -1,0 +1,40 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+@import "../../../styles/rem";
+
+.templateContent {
+  position: relative;
+  border-radius: rem(8px);
+  overflow: hidden;
+  max-width: rem(334px);
+}
+
+.templateButtons {
+  position: absolute;
+  inset: 0;
+  background: rgba($primary-black, 0.6);
+
+  .startMeetingBtn {
+    width: auto;
+    padding: rem(8px 16px);
+  }
+
+  .editBtn {
+    width: rem(38px);
+    height: rem(38px);
+    background: transparent;
+    color: $primary-white;
+    border-radius: rem(10px);
+    border: rem(1px) solid $primary-white;
+    transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+    &:hover {
+      border: rem(1px) solid $primary-white;
+      background: $primary-white;
+      color: $primary-black;
+    }
+  }
+}
+
+
+

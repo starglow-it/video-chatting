@@ -1,0 +1,9 @@
+@import "../../../styles/rem";
+
+.checkbox {
+  padding: 0;
+  width: rem(22px);
+  height: rem(22px);
+  color: transparent;
+  border-radius: rem(5px);
+}

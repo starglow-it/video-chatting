@@ -1,0 +1,10 @@
+.videoWrapper {
+  position: absolute;
+  width: auto;
+
+  transition: top 200ms linear, left 200ms linear;
+
+  &.sharing {
+    transform: translate(-100%, -50%);
+  }
+}

@@ -1,0 +1,14 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.hangUpButton {
+  position: absolute;
+  bottom: rem(30px);
+  left: rem(30px);
+  width: rem(56px);
+  height: rem(56px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}

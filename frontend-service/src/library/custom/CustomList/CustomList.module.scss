@@ -1,0 +1,12 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.listItem {
+  cursor: pointer;
+  border-radius: rem(4px);
+  transition: background-color 200ms linear;
+
+  &:hover {
+    background: rgba($normal-gray-scale, 0.25);
+  }
+}

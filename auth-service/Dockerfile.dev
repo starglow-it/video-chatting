@@ -1,0 +1,15 @@
+FROM node:16.9.0-alpine
+
+WORKDIR /app/
+
+COPY ./shared ./shared
+
+RUN mkdir ./auth-service
+
+COPY ./auth-service/package*.json ./auth-service/
+
+RUN cd ./auth-service && npm ci --silent
+
+COPY ./auth-service ./auth-service/
+
+CMD ["npm", "run", "--prefix", "/app/auth-service", "start:dev"]

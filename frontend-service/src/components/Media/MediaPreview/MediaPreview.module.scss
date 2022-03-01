@@ -1,0 +1,35 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.previewWrapper {
+  position: relative;
+  margin: rem(0 40px 0 0);
+  width: auto;
+}
+
+.previewVideo {
+  margin: rem(0 0 20px 0);
+}
+
+.controlsWrapper {
+  margin: rem(24px 0 0 0);
+
+  .controlBtn {
+    border-radius: rem(10px);
+    border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+    color: $primary-black;
+    padding: rem(8px);
+    width: rem(50px);
+    height: rem(50px);
+    background: #FFFFFF;
+    box-sizing: border-box;
+    box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+
+    &:first-child {
+      margin: rem(0 12px 0 0);
+    }
+    &.withError {
+      color: $primary-red;
+    }
+  }
+}

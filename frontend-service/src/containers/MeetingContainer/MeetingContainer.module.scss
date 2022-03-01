@@ -1,0 +1,10 @@
+@import "../../styles/rem";
+
+.waitingRoomWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: rem(594px);
+  max-width: 80%;
+}

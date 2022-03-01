@@ -1,0 +1,65 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+@import "../../../styles/rem";
+
+.dialogContent {
+  padding: 0;
+}
+
+.templatePreview {
+  position: relative;
+  width: rem(740px);
+  height: rem(480px);
+}
+
+.templateInfoContent {
+  display: grid;
+  grid-template: "templateInfo templateInfo templateInfo templateInfo" min-content
+          "title title title title" min-content
+          "description description description description" min-content
+          "buttons buttons buttons buttons";
+  gap: rem(8px);
+  padding: rem(40px);
+  max-width: rem(472px);
+
+  .templateInfo {
+    grid-area: templateInfo;
+
+    .templateType {
+        width: auto;
+    }
+  }
+
+  .name {
+    margin: rem(24px 0 0 0);
+    grid-area: title;
+  }
+
+  .description {
+    margin: rem(12px 0 0 0);
+    grid-area: description;
+  }
+
+  .buttons {
+    grid-area: buttons;
+
+    .backBtn {
+      width: rem(56px);
+      height: rem(56px);
+      flex: rem(0 0 56px);
+      background: $primary-white;
+      border: rem(1px) solid rgba(189, 200, 211, 0.4);
+      box-sizing: border-box;
+      box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+      border-radius: rem(10px);
+      margin: rem(0 16px 0 0);
+    }
+
+    .chooseBtn {
+      height: rem(56px);
+    }
+  }
+}
+
+
+

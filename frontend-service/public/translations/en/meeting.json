@@ -1,0 +1,68 @@
+{
+  "readyToJoin": "Ready to join?",
+  "checkDevices": "Check your device settings before you join the meeting",
+  "requestSent": "Request sent",
+  "settings": "Settings",
+  "enterPermission": "You need a permission from the participant to join",
+  "mic": "Microphone",
+  "cam": "Camera",
+  "over": "Meeting is over",
+  "kicked": "You have been removed from the meeting",
+  "buttons": {
+    "join": "Join now",
+    "cancel": "Cancel",
+    "saveSettings": "Save settings",
+    "leave": "Leave meeting",
+    "end": "End meeting",
+    "send": "Send",
+    "continue": "Continue",
+    "kick": "Kick",
+    "stay": "Stay"
+  },
+  "devices": {
+    "turnOn":"Turn on",
+    "turnOff":"Turn off"
+  },
+  "endMeeting": {
+    "forHost": "Do you want to <b>Leave Meeting</b> or <b>End it for all</b>?",
+    "forAttendee": "Do you want to <b>Leave Meeting</b>?"
+  },
+  "invite": {
+    "title": "Invite attendees",
+    "emailTitle": "Email invitation",
+    "copyLink": "Copy link",
+    "sendInvite": "Send invite email",
+    "copyMeetingInfo": "Copy meeting info"
+  },
+  "enterName": {
+    "title": "Welcome",
+    "text": {
+      "part1": "Enter your name",
+      "part2": "or",
+      "part3": "Sign in",
+      "part4": "if you have an account"
+    }
+  },
+  "templates": {
+    "editTemplate": "Edit template",
+    "personal": "Personal",
+    "company": "Business",
+    "links": "Links",
+    "languages": "Languages",
+    "businessCategories": "Business Categories",
+    "buttons": {
+      "saveChanges": "Save Changes",
+      "cancelChanges": "Cancel Changes"
+    },
+    "cancelChanges": {
+      "title": "Cancel changes?",
+      "text": "If you leave now all the changes be lost"
+    }
+  },
+  "modes": {
+    "screensharing": {
+      "on": "Turn on sharing",
+      "off": "Turn off sharing"
+    }
+  }
+}

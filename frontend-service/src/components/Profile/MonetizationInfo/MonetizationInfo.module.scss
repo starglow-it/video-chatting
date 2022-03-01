@@ -1,0 +1,23 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.monetizationIcon {
+  color: $primary-black;
+}
+
+.monetizationWrapper {
+  max-width: 100%;
+  padding: 0 0 0 rem(44px);
+}
+
+.monetizationSwitch {
+  margin: 0 0 0 auto;
+}
+
+.descriptionWrapper {
+  margin: rem(65px 0 89px 0);
+}
+
+.text {
+  margin: rem(4px 0 0 0);
+}

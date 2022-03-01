@@ -1,0 +1,29 @@
+stages:
+  - test
+  - build
+  - update_traefik
+  - update
+  - update_jira_issues
+  - update_demo_traefik
+  - update_demo
+
+variables:
+  GIT_DEPTH: 10
+
+.docker-base:
+  image: registry.s2.git.fora-soft.com/forasoft/dind
+  environment:
+    name: ${CI_COMMIT_REF_NAME}
+  interruptible: true
+
+.code-maintainance-base:
+  tags: [ liveoffice-deploy ]
+  image: node:lts
+  interruptible: true
+  only:
+    - merge_requests
+
+include:
+  - 'pipelines/demo.yml'
+  - 'pipelines/staging.yml'
+  - 'pipelines/test.yml'

@@ -1,0 +1,147 @@
+version: "3.7"
+
+networks:
+  traefikpublic:
+    external:
+      name: liveoffice_traefikpublic
+  liveoffice_dev:
+
+services:
+  mongo:
+    ports:
+      - '127.0.0.1:56100:27017'
+    volumes:
+      - /data/liveoffice/develop/mongo:/data/db
+    networks:
+      - liveoffice_dev
+
+  rabbit:
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - /data/liveoffice/develop/rabbit:/var/lib/rabbitmq
+    networks:
+      - liveoffice_dev
+
+  frontend-service:
+    build: ../../frontend-service
+    depends_on:
+      - gateway-service
+    ports:
+      - '8000:8000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.front_dev.rule=Host(`dev-liveoffice.staging.forasoft.com`)"
+      - "traefik.http.routers.front_dev.entrypoints=http"
+      - "traefik.http.services.front_dev.loadbalancer.server.port=8000"
+    environment:
+      - FRONTEND_URL=https://dev-liveoffice.staging.forasoft.com
+      - GATEWAY_PORT=3000
+      - GATEWAY_HOST=gateway-service
+      - GATE_WAY_URL=http://gateway-service:3000
+      - TURN_URL
+      - TURN_PASSWORD
+      - TURN_USERNAME
+      - TURN_PORT
+      - STORAGE_HOSTNAME
+    networks:
+      - traefikpublic
+      - liveoffice_dev
+
+  gateway-service:
+    build:
+      context: ../../
+      dockerfile: ./gateway-service/Dockerfile
+    depends_on:
+      - core-service
+      - auth-service
+      - notifications-service
+    ports:
+      - '3000:3000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gateway_dev.rule=Host(`dev-liveoffice.staging.forasoft.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway_dev.entrypoints=http"
+      - "traefik.http.services.gateway_dev.loadbalancer.server.port=3000"
+    networks:
+      - traefikpublic
+      - liveoffice_dev
+
+  socket-service:
+    build:
+      context: ../../
+      dockerfile: ./socket-service/Dockerfile
+    ports:
+      - '8080:8080'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.socket_dev.rule=Host(`dev-liveoffice.staging.forasoft.com`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.socket_dev.entrypoints=http"
+      - "traefik.http.services.socket_dev.loadbalancer.server.port=8080"
+    networks:
+      - traefikpublic
+      - liveoffice_dev
+
+  core-service:
+    build:
+      context: ../../
+      dockerfile: ./core-service/Dockerfile
+    depends_on:
+      - config-service
+    networks:
+      - liveoffice_dev
+
+  auth-service:
+    build:
+      context: ../../
+      dockerfile: ./auth-service/Dockerfile
+    depends_on:
+      - config-service
+    networks:
+      - liveoffice_dev
+
+  notifications-service:
+    build:
+      context: ../../
+      dockerfile: ./notifications-service/Dockerfile
+    depends_on:
+      - config-service
+    networks:
+      - liveoffice_dev
+
+  config-service:
+    build:
+      context: ../../
+      dockerfile: ./config-service/Dockerfile
+    ports:
+      - "4100:4000"
+    environment:
+      - GATEWAY_PORT=3000
+      - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
+      - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
+      - RABBIT_MQ_NOTIFICATIONS_QUEUE=rabbitMqNotificationsQueue
+      - FRONTEND_URL=https://dev-liveoffice.staging.forasoft.com
+      - RABBIT_MQ_USER
+      - RABBIT_MQ_PASS
+      - RABBIT_MQ_HOST
+      - JWT_SECRET
+      - MONGO_URI
+      - SMTP_HOST
+      - SMTP_PORT
+      - SMTP_USER
+      - SMTP_PASS
+      - DEFAULT_SERVER_IP
+      - APP_ID
+      - APP_CERTIFICATE
+      - UPLOAD_BUCKET
+      - STORAGE_HOSTNAME
+      - SECRET_ACCESS_KEY
+      - ACCESS_KEY
+    depends_on:
+      - mongo
+      - rabbit
+    networks:
+      - liveoffice_dev
+
+

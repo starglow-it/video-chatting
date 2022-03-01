@@ -1,0 +1,60 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+@import "../../../styles/rem";
+
+.templateContent {
+  position: relative;
+  border-radius: rem(8px);
+  overflow: hidden;
+  width: rem(334px);
+  height: rem(190px);
+}
+
+.title {
+  grid-area: title;
+  @extend %text-ellips;
+}
+
+.description {
+  grid-area: description;
+}
+
+.templateButtons {
+  position: absolute;
+  inset: 0;
+  background: rgba($primary-black, 0.6);
+}
+
+.emptySpace {
+  grid-area: emptySpace;
+}
+
+.templateInfo {
+  position: absolute;
+  inset: 0;
+  padding: rem(18px 15px);
+  grid: "participants title" min-content
+        "participants description" min-content
+        "emptySpace emptySpace" 1fr
+        "businessInfo  businessInfo" min-content
+        / min-content auto;
+}
+
+.button {
+  width: rem(169px);
+}
+
+.businessInfo {
+  grid-area: businessInfo;
+}
+
+.participants {
+  position: relative;
+  grid-area: participants;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(38px);
+  height: rem(38px);
+  margin: 0 rem(12px) 0 0;
+}

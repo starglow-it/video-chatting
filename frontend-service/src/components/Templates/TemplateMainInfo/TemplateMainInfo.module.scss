@@ -1,0 +1,41 @@
+@import "../../../styles/mixins";
+@import "../../../styles/rem";
+
+.templateInfo {
+  position: absolute;
+  inset: 0;
+  padding: rem(18px 15px);
+  grid: "participants title" min-content
+        "participants description" min-content
+        "emptySpace emptySpace" 1fr
+        "businessInfo  businessInfo" min-content
+        / min-content auto;
+
+  .participants {
+    position: relative;
+    grid-area: participants;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: rem(38px);
+    height: rem(38px);
+    margin: 0 rem(12px) 0 0;
+  }
+
+  .title {
+    grid-area: title;
+    @extend %text-ellips;
+  }
+
+  .description {
+    grid-area: description;
+  }
+
+  .emptySpace {
+    grid-area: emptySpace;
+  }
+
+  .businessInfo {
+    grid-area: businessInfo;
+  }
+}

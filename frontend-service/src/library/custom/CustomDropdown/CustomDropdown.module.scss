@@ -1,0 +1,10 @@
+@import "../../../styles/rem";
+
+.selectInput {
+  padding: rem(12px) rem(15px);
+  max-height: rem(300px);
+}
+
+.popover {
+  max-height: rem(400px);
+}

@@ -1,0 +1,63 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.templatesWrapper {
+  margin: rem(56px) 0 0 0;
+}
+
+.templatesContent {
+  max-width: rem(1054px);
+  width: 100%;
+  justify-items: center;
+}
+
+.dots {
+  margin: rem(85px) 0 0 0;
+}
+
+.slider {
+  position: absolute;
+  bottom: -62px;
+  display: flex;
+  gap: rem(12px);
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  .dotSlider {
+    width: rem(8px);
+    height: rem(8px);
+    border-radius: 50%;
+    background: rgba($normal-gray-scale, 0.4);
+    cursor: pointer;
+    transition: background 200ms linear;
+
+    &.activeDot {
+      background: #0F0F10;
+    }
+  }
+}
+
+%arrow {
+  position: absolute;
+  top: 50%;
+  display: block;
+  transform: translate(0, -50%);
+  cursor: pointer;
+  opacity: 0.4;
+
+  &:hover {
+    opacity: 1
+  }
+}
+.prevArrow {
+  @extend %arrow;
+  left: rem(-74px);
+}
+
+.nextArrow {
+  @extend %arrow;
+  right: rem(-74px);
+}

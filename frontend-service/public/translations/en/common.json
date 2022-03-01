@@ -1,0 +1,51 @@
+{
+  "signIn": {
+    "label": "Sign In",
+    "haveAccount": "Already have an account?"
+  },
+  "signUp": {
+    "label": "Get started",
+    "dontHaveAccount": "Don’t have an account?"
+  },
+  "terms": "Terms&Conditions",
+  "privacy": "Privacy Policy",
+  "and": "and",
+  "iAgree": "I agree to",
+  "buttons": {
+    "logout": "Logout",
+    "login": "Sign in",
+    "save": "Save",
+    "cancel": "Cancel",
+    "quit": "Quit",
+    "stay": "Stay",
+    "saveAndQuit": "Save and Quit",
+    "continue": "Continue"
+  },
+  "login": {
+    "welcome": "Welcome back",
+    "separatorText": "or Sign in with Email",
+    "socialLogin": {
+      "google": "Sign in with Google",
+      "googleMobile": "Google",
+      "linkedIn": "Sign in with LinkedIn",
+      "linkedInMobile": "LinkedIn"
+    }
+  },
+  "forgotPassword": "Forgot password?",
+  "more": "More...",
+  "hide": "Hide",
+  "tooltips": {
+    "editProfile": "Edit profile",
+    "instagram": "Instagram",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "youtube": "Youtube",
+    "facebook": "Facebook",
+    "custom": "Custom link"
+  },
+  "pages": {
+    "profile": "My profile",
+    "templates": "My templates",
+    "logout": "Log out"
+  }
+}

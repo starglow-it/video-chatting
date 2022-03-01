@@ -1,0 +1,18 @@
+@import "../../styles/rem";
+
+.wrapper {
+  padding: rem(40px);
+}
+
+.title {
+  margin: rem(0 0 4px 0);
+}
+
+.formContent {
+  width: 100%;
+  margin: rem(32px 0 0 0);
+
+  .button {
+    margin: rem(32px 0 0 0);
+  }
+}

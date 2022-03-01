@@ -1,0 +1,23 @@
+{
+  "meeting": {
+    "mic": {
+      "on": "Mic ON",
+      "off": "Mic OFF"
+    },
+    "cam": {
+      "on": "Camera ON",
+      "off": "Camera OFF"
+    },
+    "devices": {
+      "saved": "New settings saved"
+    },
+    "copy": {
+      "info": "Meeting info copied",
+      "link": "Meeting link copied"
+    }
+  },
+  "profile": {
+    "passwordChanged": "Your password has been changed successfully",
+    "emailChanged": "Your email has been changed successfully"
+  }
+}

@@ -1,0 +1,44 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+@mixin withHoverAction($activeColor, $hoverColor) {
+  cursor: pointer;
+
+  @if $hoverColor != '' {
+    &:hover {
+      background: $hoverColor;
+    }
+  }
+
+  @if $activeColor != '' {
+    &:active {
+      background: $activeColor;
+    }
+  }
+
+  @content
+}
+
+.iconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  cursor: default;
+
+  &.withAction {
+    @include withHoverAction('', '');
+  }
+}
+
+.danger {
+  background: $primary-red;
+  backdrop-filter: blur(rem(28px));
+  border-radius: rem(12px);
+  cursor: default;
+
+  &.withAction {
+    @include withHoverAction($primary-red-dark, $primary-red-light);
+  }
+}

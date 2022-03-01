@@ -1,0 +1,4 @@
+export const AUTH_SERVICE = 'AUTH_SERVICE';
+export const CORE_SERVICE = 'CORE_SERVICE';
+export const TEMPLATES_SERVICE = 'TEMPLATES_SERVICE';
+export const USERS_SERVICE = 'USERS_SERVICE';

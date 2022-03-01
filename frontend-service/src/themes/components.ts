@@ -1,0 +1,222 @@
+import { alpha, Theme } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
+
+export const componentsTheme = (theme: Theme) =>
+    createTheme({
+        ...theme,
+        components: {
+            MuiSnackbarContent: {
+                styleOverrides: {
+                    root: {
+                        background: alpha(theme.palette.common.black, 0.6),
+                        borderRadius: '6px',
+                        minWidth: 'auto',
+                        padding: '5px 12px',
+                        '@media (min-width: 600px)': {
+                            minWidth: 'auto',
+                        },
+                    },
+                    message: {
+                        margin: '0 auto',
+                        padding: 0,
+                        fontSize: theme.typography.pxToRem(14),
+                        lineHeight: theme.typography.pxToRem(22),
+                    },
+                },
+            },
+            MuiSelect: {
+                styleOverrides: {
+                    icon: {
+                        right: '10px',
+                    },
+                    select: {
+                        minHeight: '32px',
+                    },
+                },
+            },
+            MuiDialogActions: {
+                styleOverrides: {
+                    root: {
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        cursor: 'pointer',
+                    },
+                },
+            },
+            MuiButton: {
+                variants: [
+                    {
+                        props: { variant: 'custom-cancel' },
+                        style: {
+                            background: theme.palette.buttons.cancel.main,
+                            color: theme.palette.common.black,
+                            '&:hover': {
+                                background: alpha(theme.palette.buttons.cancel.hover, 0.4),
+                            },
+                            '&.Mui-disabled': {
+                                background: theme.palette.buttons.cancel.disabled,
+                            },
+                        },
+                    },
+                    {
+                        props: { variant: 'custom-primary' },
+                        style: {
+                            background: theme.palette.buttons.primary.main,
+                            color: theme.palette.common.white,
+                            '&:hover': {
+                                background: theme.palette.buttons.primary.hover,
+                            },
+                            '&.Mui-disabled': {
+                                background: theme.palette.buttons.primary.disabled,
+                            },
+                        },
+                    },
+                    {
+                        props: { variant: 'custom-transparent' },
+                        style: {
+                            background: 'transparent',
+                            color: theme.palette.common.white,
+                            border: `1px solid ${theme.palette.common.white}`,
+                            '&:hover': {
+                                background: theme.palette.common.white,
+                                color: theme.palette.common.black,
+                            },
+                            '&.Mui-disabled': {
+                                // background: theme.palette.buttons.primary.disabled,
+                            },
+                        },
+                    },
+                ],
+                styleOverrides: {
+                    root: {
+                        borderRadius: '10px',
+                        textTransform: 'initial',
+                        padding: '13px',
+                        width: '100%',
+                    },
+                },
+            },
+            MuiCssBaseline: {
+                styleOverrides: `
+                @font-face {
+                  font-family: 'Poppins', sans-serif;
+                }
+              `,
+            },
+            MuiTextField: {
+                styleOverrides: {
+                    root: {
+                        width: '100%',
+                    },
+                },
+            },
+            MuiPaper: {
+                variants: [
+                    {
+                        props: { variant: 'black-glass' },
+                        style: {
+                            position: 'relative',
+                            zIndex: 10,
+                            background: 'none',
+                            borderRadius: '12px',
+
+                            '&:after': {
+                                content: "''",
+                                position: 'absolute',
+                                inset: 0,
+                                borderRadius: '12px',
+                                backdropFilter: 'blur(28px)',
+                                zIndex: -1,
+                                background: alpha(theme.designSystemColors.black.primary, 0.6),
+                                overflow: 'hidden',
+                            },
+                        },
+                    },
+                ],
+                styleOverrides: {
+                    root: {
+                        borderRadius: '16px',
+                        boxShadow: `0px 12px 24px -4px ${alpha(theme.palette.shadow.primary, 0.1)}`,
+                    },
+                },
+            },
+            MuiInputLabel: {
+                styleOverrides: {
+                    root: {
+                        '&.Mui-focused': {
+                            color: theme.palette.text.primary,
+                        },
+                    },
+                },
+            },
+            MuiIconButton: {
+                styleOverrides: {
+                    root: {
+                        '&:hover': {
+                            background: alpha(theme.palette.background.default, 0.5),
+                        },
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: '10px',
+                        background: theme.background.default,
+                        '&.Mui-focused': {
+                            color: theme.palette.text.primary,
+                            '.MuiOutlinedInput-notchedOutline': {
+                                borderWidth: '1px',
+                                borderColor: theme.borderColor.focused,
+                            },
+                        },
+                    },
+                    notchedOutline: {
+                        borderWidth: '1px',
+                        borderColor: alpha(theme.borderColor.primary, 0.6),
+                    },
+                },
+            },
+            MuiTooltip: {
+                styleOverrides: {
+                    tooltip: {
+                        background: theme.palette.common.black,
+                        borderRadius: '4px',
+                        padding: '2px 7px',
+                        height: '22px',
+                        fontSize: theme.typography.pxToRem(12),
+                        lineHeight: theme.typography.pxToRem(18),
+                    },
+                },
+            },
+            MuiSwitch: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: '20px',
+                        width: '42px',
+                        height: '24px',
+                        padding: 0,
+                    },
+                    track: {
+                        background: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                        opacity: 1,
+                    },
+                    switchBase: {
+                        top: '2.4px',
+                        left: '2.4px',
+                        padding: 0,
+                        width: '19px',
+                        height: '19px',
+                        '&.Mui-checked': {
+                            color: theme.designSystemColors.white.primary,
+                        },
+                        '&.Mui-checked + .MuiSwitch-track': {
+                            backgroundColor: theme.designSystemColors.orange.primary,
+                            opacity: 1,
+                        },
+                    },
+                },
+            },
+        },
+    });

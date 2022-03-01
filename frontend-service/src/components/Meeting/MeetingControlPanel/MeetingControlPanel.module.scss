@@ -1,0 +1,46 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.controlPanelWrapper {
+  position: absolute;
+  top: rem(27px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: rem(6px);
+  z-index: 1000;
+
+  .actionButton {
+      background: transparent;
+      color: $primary-white;
+      border: none;
+      width: rem(44px);
+      height: rem(44px);
+      border-radius: rem(6px);
+
+      &.active {
+        background: rgba($primary-white, 0.25);
+      }
+      &.withAction {
+        &:hover {
+          background: rgba($primary-white, 0.25);
+        }
+      }
+  }
+}
+
+.commonOpenPanel {
+  width: rem(378px);
+  padding: rem(20px);
+  opacity: 0;
+
+  &.open {
+    opacity: 1;
+  }
+}
+
+.panelsWrapper {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, rem(8px));
+}

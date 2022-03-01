@@ -1,0 +1,32 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.wrapper {
+  padding: rem(40px);
+  max-width: rem(594px);
+}
+
+.settingsContent {
+  max-height: rem(235px);
+}
+
+.devicesWrapper {
+  margin: rem(0 0 0 40px);
+  width: auto;
+
+  .title {
+    margin: rem(0 0 4px 0);
+  }
+}
+
+.selectDevicesWrapper {
+  margin: rem(20px 0 0 0);
+}
+
+.saveSettings {
+  margin: rem(64px 0 0 0);
+}
+
+.loader {
+  margin: rem(28px auto 0 auto);
+}

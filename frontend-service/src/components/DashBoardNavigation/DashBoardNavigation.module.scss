@@ -1,0 +1,47 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.dashboardNavigation {
+  position: absolute;
+  left: rem(20px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: rem(20px);
+
+  .profileImage {
+    display: inline-block;
+
+    &.activeProfile {
+      border: rem(1px) solid $primary-orange;
+    }
+
+    margin: rem(0 0 8px 0);
+  }
+}
+
+.iconsWrapper {
+  .icon {
+    cursor: pointer;
+
+    &:nth-child(n):not(:last-child) {
+      margin: rem(8px 0);
+    }
+
+    &:last-child {
+      margin: rem(8px 0 0 0);
+    }
+  }
+
+  .divider {
+    align-self: stretch;
+    margin: rem(8px 0);
+  }
+}
+
+.activeIcon {
+  color: $primary-orange;
+}
+
+.linkIcon {
+  cursor: pointer;
+}

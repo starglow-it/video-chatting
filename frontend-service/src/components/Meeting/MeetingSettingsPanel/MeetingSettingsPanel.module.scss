@@ -1,0 +1,85 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.wrapper {
+  position: relative;
+  height: 100%;
+  z-index: 100;
+}
+
+.settingsWrapper {
+  width: rem(392px);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  transform: translateX(rem(392px));
+  transition: transform 200ms ease-in;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  .settingsControls {
+    position: absolute;
+    top: rem(27px);
+    left: rem(-28px);
+    transform: translateX(-100%);
+    width: auto;
+  }
+
+  .deviceButton {
+    width: rem(56px);
+    height: rem(56px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: rem(0 0 0 12px);
+  }
+
+  .iconButton {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    color: $primary-white;
+    border-radius: rem(12px);
+    border: none;
+
+    &:hover {
+      background: rgba($primary-black, 0.75);
+    }
+  }
+}
+
+.editTemplateWrapper {
+  padding: rem(20px);
+
+  .editIcon {
+    color: $primary-white;
+    margin: rem(0 8px 0 0);
+  }
+}
+
+.closeIcon {
+  cursor: pointer;
+  position: absolute;
+  top: rem(23px);
+  right: rem(20px);
+  color: $primary-white;
+}
+
+.form {
+  display: flex;
+  height: 100%;
+}
+
+.saveBtn {
+  margin: auto 0 0 0;
+}
+
+.scrollWrapper {
+  overflow: scroll;
+}
+
+

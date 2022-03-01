@@ -1,0 +1,56 @@
+@import "../../../styles/rem";
+@import "../../../styles/mixins";
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  max-height: rem(500px);
+  overflow: hidden;
+}
+
+.profileInfoWrapper {
+  max-height: rem(290px);
+
+  .profileAvatarWrapper {
+    padding: rem(0 16px 0 40px);
+
+    .profileImage {
+      border: rem(2px) solid #FFFFFF;
+      transform: translateY(rem(-12px));
+    }
+  }
+
+  .descriptionWrapper {
+    padding: rem(18px 0 24px 0);
+    max-width: rem(427px);
+    overflow: hidden;
+
+    .companyName {
+      @include multiline-clip(2);
+    }
+
+    .profileEmail {
+      margin: rem(4px 0 16px 0);
+      @extend %text-ellips
+    }
+
+    .profileDescription {
+      overflow: hidden;
+      max-width: rem(427px);
+
+      &.hide {
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .description {
+        word-break: break-all;
+      }
+    }
+
+    .expandBtn {
+      cursor: pointer;
+      margin: rem(8px 0 0 0);
+    }
+  }
+}

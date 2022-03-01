@@ -1,0 +1,47 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.profileImage {
+  border: rem(1px) solid $primary-white;
+}
+
+.media {
+  position: relative;
+
+  .activeSharing {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: rem(18px);
+    height: rem(18px);
+    border-radius: 50%;
+    background-color: $primary-orange;
+    color: $primary-white;
+    z-index: 1000;
+  }
+}
+
+.usernameWrapper {
+  max-width: rem(146px);
+  min-width: rem(50px);
+  height: rem(34px);
+  padding: rem(6px);
+  margin: rem(8px) 0 0 0;
+
+  .micIcon {
+    color: $primary-white;
+
+    &.noAudio {
+      color: $primary-red;
+    }
+  }
+
+  .username {
+    max-width: 100%;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0 0 0 rem(8px);
+  }
+}

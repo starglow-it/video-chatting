@@ -1,0 +1,22 @@
+{
+  "registerSuccess": {
+    "title": "You have registered successfully.",
+    "text": "We have send a confirmation link to your email. Please confirm registration and after that you can login to the platform"
+  },
+  "getStarted": {
+    "title": "Get started",
+    "socialLogin": {
+      "google": "Continue with Google",
+      "googleMobile": "Google",
+      "linkedIn": "Continue with LinkedIn",
+      "linkedInMobile": "LinkedIn"
+    },
+    "createNewAcc": "or create new account",
+    "button": "Get started"
+  },
+  "confirm": {
+    "title": "Confirm Registration Process",
+    "success": "Successful user confirmation",
+    "redirect": "You will be redirected to login page"
+  }
+}

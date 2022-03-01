@@ -1,0 +1,55 @@
+{
+  "user": {
+    "exits": "This email is already used",
+    "invalid": "Email is Invalid",
+    "notFound": "Email or Password is incorrect",
+    "notConfirmed": "Email or Password is incorrect",
+    "tokenNotFound": "Invalid confirmation link",
+    "code": {
+      "incorrect": "Code is incorrect"
+    },
+    "pass": {
+      "invalid": "Please enter valid password",
+      "incorrect": "Password is incorrect",
+      "length": "Min length 8 characters",
+      "empty": "Please enter the password",
+      "notVerified": "Email or Password is incorrect",
+      "characters": "should contain at least one letter and numerical digit",
+      "minLength": "should be at least 8 characters in length",
+      "newPassword": {
+        "new": "Please, enter your new password",
+        "newRepeat": "Please, repeat your new password",
+        "notMatch": "Passwords do not match",
+        "samePassword": "Please enter different password"
+      }
+    },
+    "credentials": {
+      "invalid": "Email or Password is incorrect"
+    }
+  },
+  "media": {
+    "notAllowed": "You should allow use of devices in the browser"
+  },
+  "meeting": {
+    "dialog": {
+      "title": "Meeting Error"
+    },
+    "notFound": "The meeting does not exist",
+    "maxParticipantsNumber": "The meeting is locked for new participants"
+  },
+  "noSpaces": "No spaces allowed",
+  "maxLength": {
+    "100": "Maximum allowed characters is 100",
+    "300": "Maximum allowed characters is 300"
+  },
+  "required": "This field is required",
+  "url": {
+    "common": "Entered link is invalid",
+    "youtube": "Enter valid Youtube link",
+    "facebook": "Enter valid Facebook link",
+    "instagram": "Enter valid Instagram link",
+    "twitter": "Enter valid Twitter link",
+    "linkedin": "Enter valid LinkedIn link",
+    "custom": "Entered link is invalid"
+  }
+}
