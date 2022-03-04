@@ -329,26 +329,30 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      const newBusinessCategories = await this.businessCategoriesService.find(
-        { key: { $in: data.businessCategories } },
-        session,
-      );
-
-      user.businessCategories =
-        newBusinessCategories.map((category) => category._id) || [];
-
-      user.languages =
-        (await this.languagesService.find(
-          { key: { $in: data.languages } },
-          session,
-        )) || [];
-
-      if (data?.socials) {
-        user.socials =
-          (await this.usersService.createSocialsLinks(
-            { userId, socials: data.socials },
+      if ('businessCategories' in data) {
+        const newBusinessCategories = await this.businessCategoriesService.find(
+            { key: { $in: data.businessCategories } },
             session,
-          )) || [];
+        );
+
+        user.businessCategories =
+            newBusinessCategories.map((category) => category._id) || [];
+      }
+
+      if ('languages' in data) {
+        user.languages =
+            (await this.languagesService.find(
+                { key: { $in: data.languages } },
+                session,
+            )) || [];
+      }
+
+      if ('socials' in data) {
+        user.socials =
+            (await this.usersService.createSocialsLinks(
+                { userId, socials: data.socials },
+                session,
+            )) || [];
       }
 
       await user.save();
