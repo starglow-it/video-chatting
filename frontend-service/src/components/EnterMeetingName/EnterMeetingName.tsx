@@ -12,7 +12,7 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // validation
 import { fullNameSchema } from '../../validation/users/fullName';
-import { useYupValidationResolver } from '../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
 import { updateLocalUserStateEvent } from '../../store/users';

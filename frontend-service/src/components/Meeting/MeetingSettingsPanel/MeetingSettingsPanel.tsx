@@ -33,7 +33,7 @@ import { EditIcon } from '@library/icons/EditIcon';
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations
-import { useYupValidationResolver } from '../../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../../validation/users/companyName';
 import { emailSchema } from '../../../validation/users/email';
 import { simpleStringSchema } from '../../../validation/common';

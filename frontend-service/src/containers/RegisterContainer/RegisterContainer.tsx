@@ -35,7 +35,7 @@ import { RegisterUserParams } from '../../store/register/types';
 import styles from './RegisterContainer.module.scss';
 
 // validations
-import { useYupValidationResolver } from '../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { emailSchema } from '../../validation/users/email';
 import { passwordSchema } from '../../validation/users/password';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';

@@ -1,0 +1,29 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.noteWrapper {
+  position: absolute;
+  background: linear-gradient(78.71deg, #FFF790 2.05%, #FFEC55 96.25%);
+  border-radius: rem(1px);
+  width: rem(224px);
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+
+  &.withSticker {
+    &:after {
+      content: "";
+      position: absolute;
+      width: rem(60px);
+      height: rem(24px);
+      top: rem(-20px);
+      left: 50%;
+      transform: translate(-50%, rem(12px));
+      background: rgba($primary-white, 0.44);
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(6px);
+    }
+  }
+
+  .content {
+    padding: rem(20px);
+  }
+}

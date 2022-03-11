@@ -2,15 +2,19 @@ import React, { memo, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
+// common
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
+// components
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { EnterMeetingName } from '@components/EnterMeetingName/EnterMeetingName';
 import { KickedUser } from '@components/KickedUser/KickedUser';
 import { Layout } from '@components/Layout/Layout';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 import { MeetingErrorDialog } from '@components/Dialogs/MeetingErrorDialog/MeetingErrorDialog';
+import {VideoEffectsProvider} from "../../contexts/VideoEffectContext";
 
+// stores
 import { $localUserStore, resetLocalUserStore, resetMeetingUsersStore } from '../../store/users';
 import { initiateSocketConnectionFx, resetSocketStore } from '../../store/socket';
 import { appDialogsApi } from '../../store/dialogs';
@@ -81,20 +85,22 @@ const MeetingContainer = memo(() => {
     }, [meeting.ownerProfileId, meetingInstance?.template]);
 
     return (
-        <Layout>
-            {meetingTemplate.id && meetingInstance.id && (
-                <>
-                    {![MeetingAccessStatuses.InMeeting].includes(meetingUser.accessStatus) ? (
-                        <CustomBox className={styles.waitingRoomWrapper}>
-                            <NotMeetingComponent />
-                        </CustomBox>
-                    ) : (
-                        <MeetingView />
-                    )}
-                </>
-            )}
-            <MeetingErrorDialog />
-        </Layout>
+        <VideoEffectsProvider>
+            <Layout>
+                {meetingTemplate.id && meetingInstance.id && (
+                    <>
+                        {![MeetingAccessStatuses.InMeeting].includes(meetingUser.accessStatus) ? (
+                            <CustomBox className={styles.waitingRoomWrapper}>
+                                <NotMeetingComponent />
+                            </CustomBox>
+                        ) : (
+                            <MeetingView />
+                        )}
+                    </>
+                )}
+                <MeetingErrorDialog />
+            </Layout>
+        </VideoEffectsProvider>
     );
 });
 

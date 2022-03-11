@@ -20,7 +20,7 @@ import { EnterPasswordForm } from '../EnterPasswordForm/EnterPasswordForm';
 import { passwordLoginSchema } from '../../../validation/users/password';
 import { emailSchema } from '../../../validation/users/email';
 import { simpleStringSchemaWithLength } from '../../../validation/common';
-import { useYupValidationResolver } from '../../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // styles
 import styles from './EditProfileEmailInfo.module.scss';

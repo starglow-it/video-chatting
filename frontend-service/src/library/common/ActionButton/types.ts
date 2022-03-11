@@ -3,5 +3,5 @@ import React from 'react';
 export type ActionButtonProps = {
     onAction?: () => void;
     Icon: React.ReactElement;
-    variant?: 'danger';
+    variant?: 'danger' | 'decline' | 'accept';
 };

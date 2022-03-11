@@ -1,11 +1,11 @@
 import { PropsWithClassName } from '../../../types';
 
 export type AudioDeviceSetUpButtonProps = PropsWithClassName<{
-    isMicActive?: boolean;
+    isMicActive: boolean;
     onClick?: () => void;
 }>;
 
 export type VideoDeviceSetUpButtonProps = PropsWithClassName<{
-    isCamActive?: boolean;
+    isCamActive: boolean;
     onClick?: () => void;
 }>;

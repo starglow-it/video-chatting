@@ -40,10 +40,7 @@ export const updateMeetingTemplateBaseEffect = meetingDomain.effect<
 export const getMeetingTemplateFx = attach({
     effect: getUserTemplateBaseEffect,
     source: $meetingStore,
-    mapParams: ({ templateId }, meeting: Meeting) => ({
-        templateId,
-        userId: meeting.ownerProfileId,
-    }),
+    mapParams: ({ templateId }, meeting: Meeting) => ({ templateId, userId: meeting.ownerProfileId }),
 });
 
 export const updateMeetingTemplateFx = attach({

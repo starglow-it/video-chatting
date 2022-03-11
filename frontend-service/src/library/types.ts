@@ -2,8 +2,8 @@ import React from 'react';
 import { CustomTypographyProps } from '@library/custom/CustomTypography/types';
 
 type CommonIconProps = {
-    width?: string;
-    height?: string;
+    width: string;
+    height: string;
     className?: string;
     isActive?: boolean;
     onClick?: ((() => void) & React.MouseEventHandler<any>) | undefined;
@@ -15,10 +15,10 @@ type CustomButtonProps = {
     typographyProps?: CustomTypographyProps;
 };
 
-export type { CustomButtonProps, CommonIconProps };
-
 export type SliderArrowProps = {
     customClassName?: string;
     style?: string;
     onClick?: () => void;
 };
+
+export type { CustomButtonProps, CommonIconProps };

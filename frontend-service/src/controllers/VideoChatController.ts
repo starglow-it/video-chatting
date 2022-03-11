@@ -138,12 +138,10 @@ export class VideoChatController {
     }
 
     async createLocalTracks(stream: MediaStream): Promise<void> {
-        const clonedStream = stream.clone();
+        const videoTrack = stream?.getVideoTracks()[0];
+        const audioTrack = stream?.getAudioTracks()[0];
 
-        const videoTrack = await addBlur(clonedStream?.getVideoTracks()[0]);
-        const audioTrack = clonedStream?.getAudioTracks()[0];
-
-        const vidoeConfig = {
+        const videoConfig = {
             mediaStreamTrack: videoTrack,
         } as CustomVideoTrackInitConfig;
 
@@ -151,7 +149,7 @@ export class VideoChatController {
             mediaStreamTrack: audioTrack,
         } as CustomAudioTrackInitConfig;
 
-        this.localCameraTrack = await AgoraRTC.createCustomVideoTrack(vidoeConfig);
+        this.localCameraTrack = await AgoraRTC.createCustomVideoTrack(videoConfig);
 
         this.localMicTrack = await AgoraRTC.createCustomAudioTrack(audioConfig);
 
@@ -295,9 +293,7 @@ export class VideoChatController {
             this.screenSharingTrack?.stop?.();
             this.screenSharingTrack?.close?.();
 
-            const clonedStream = stream.clone();
-
-            const videoTrack = await addBlur(clonedStream?.getVideoTracks()[0]);
+            const videoTrack = stream?.getVideoTracks()[0];
 
             const config = {
                 mediaStreamTrack: videoTrack,

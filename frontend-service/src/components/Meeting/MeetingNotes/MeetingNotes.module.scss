@@ -1,0 +1,12 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.notesWrapper {
+  position: absolute;
+  top: 0;
+  z-index: 100;
+}
+
+.scroll {
+  max-height: rem(124px);
+}

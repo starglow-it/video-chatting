@@ -1,5 +1,4 @@
-import { createTheme } from '@mui/material/styles';
-import { Theme } from '@mui/material';
+import { createTheme, Theme } from '@mui/material';
 
 export const typographyTheme = (theme: Theme) =>
     createTheme({

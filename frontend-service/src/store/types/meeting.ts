@@ -59,3 +59,9 @@ export type UpdateTemplateData = {
 export type MeetingStore = {
     currentMeeting?: any;
 };
+
+export type MeetingNote = {
+    content: string;
+    user: string;
+    id: string;
+}

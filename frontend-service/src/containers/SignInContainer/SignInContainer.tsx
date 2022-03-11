@@ -39,7 +39,7 @@ import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store/auth';
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
-import { useYupValidationResolver } from '../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 const validationSchema = yup.object({

@@ -16,7 +16,7 @@ import styles from './DevicesSetUpButton.module.scss';
 import { AudioDeviceSetUpButtonProps } from './types';
 
 const AudioDeviceSetUpButton = memo(
-    ({ className, onClick, isMicActive }: AudioDeviceSetUpButtonProps) => {
+    ({ className, onClick, isMicActive = false }: AudioDeviceSetUpButtonProps) => {
         const isThereAction = Boolean(onClick);
 
         return (

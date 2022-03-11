@@ -8,12 +8,19 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import {CustomSwitch} from "@library/custom/CustomSwitch/CustomSwitch";
 
+// components
+import {BackgroundBlurIcon} from "@library/icons/BackgroundBlurIcon";
+import {FaceTrackingIcon} from "@library/icons/FaceTrackingIcon";
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { AgoraController } from '../../../controllers/VideoChatController';
+
+// context
 import { MediaContext } from '../../../contexts/MediaContext';
+import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
 
 // store
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
@@ -39,6 +46,8 @@ const DevicesSettingsDialog = memo(() => {
         actions: { onToggleCamera, onToggleMic, onChangeActiveStream, onInitDevices },
     } = useContext(MediaContext);
 
+    const { actions: { onGetCanvasStream, onToggleBlur, onToggleFaceTracking }, data: { isBlurActive, isFaceTrackingActive } } = useContext(VideoEffectsContext);
+
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
@@ -61,9 +70,11 @@ const DevicesSettingsDialog = memo(() => {
         if (changeStream) {
             const newStream = onChangeActiveStream();
 
-            if (newStream) {
+            const transformedStream = await onGetCanvasStream(newStream);
+
+            if (transformedStream) {
                 if (!meeting.sharingUserId) {
-                    await AgoraController.setUpDevices(newStream);
+                    await AgoraController.setUpDevices(transformedStream);
                 }
 
                 AgoraController.setTracksState({
@@ -81,14 +92,14 @@ const DevicesSettingsDialog = memo(() => {
                 micStatus: isMicActive ? 'active' : 'inactive',
             });
         }
-    }, [isCameraActive, isMicActive, changeStream, meeting.sharingUserId, isSharingScreenActive]);
+    }, [isCameraActive, isMicActive, changeStream, meeting.sharingUserId, isSharingScreenActive, isBlurActive, isFaceTrackingActive]);
 
     const isDevicesChecking = !(videoDevices.length && audioDevices.length) && !error;
 
     return (
         <CustomDialog open={devicesSettingsDialog} contentClassName={styles.wrapper}>
             <CustomGrid container direction="column">
-                <CustomGrid container wrap="nowrap" className={styles.settingsContent}>
+                <CustomGrid container wrap="nowrap">
                     <MediaPreview />
                     <Divider orientation="vertical" flexItem />
                     <CustomGrid
@@ -96,6 +107,7 @@ const DevicesSettingsDialog = memo(() => {
                         container
                         direction="column"
                         wrap="nowrap"
+                        gap={2}
                     >
                         <CustomTypography
                             className={styles.title}
@@ -106,7 +118,27 @@ const DevicesSettingsDialog = memo(() => {
                         {isDevicesChecking ? (
                             <WiggleLoader className={styles.loader} />
                         ) : (
-                            <SelectDevices className={styles.selectDevicesWrapper} />
+                            <>
+                                <SelectDevices />
+                                <CustomGrid container gap={1} className={styles.backgroundBlurSetting}>
+                                    <BackgroundBlurIcon width="24px" height="24px" />
+                                    <CustomTypography nameSpace="meeting" translation="features.blurBackground" />
+                                    <CustomSwitch
+                                        className={styles.switch}
+                                        checked={isBlurActive}
+                                        onChange={onToggleBlur}
+                                    />
+                                </CustomGrid>
+                                <CustomGrid container gap={1} className={styles.backgroundBlurSetting}>
+                                    <FaceTrackingIcon width="24px" height="24px" />
+                                    <CustomTypography nameSpace="meeting" translation="features.faceTracking" />
+                                    <CustomSwitch
+                                        className={styles.switch}
+                                        checked={isFaceTrackingActive}
+                                        onChange={onToggleFaceTracking}
+                                    />
+                                </CustomGrid>
+                            </>
                         )}
                     </CustomGrid>
                 </CustomGrid>

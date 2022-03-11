@@ -19,15 +19,9 @@
 }
 
 .deleteUser {
-  border: none;
   height: rem(32px);
   width: rem(32px);
-  background: rgba($primary-white, 0.25);
   border-radius: rem(8px);
-  color: $primary-white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .btnGroup {
@@ -37,16 +31,10 @@
 }
 
 .acceptUser {
-  border: none;
   margin: rem(0 8px 0 0);
   height: rem(32px);
   width: rem(32px);
-  background: $primary-orange;
   border-radius: rem(8px);
-  color: $primary-white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .userName {

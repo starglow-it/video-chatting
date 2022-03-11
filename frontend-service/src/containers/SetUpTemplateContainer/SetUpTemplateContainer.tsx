@@ -25,7 +25,7 @@ import { $appDialogsStore, appDialogsApi } from '../../store/dialogs';
 import styles from './SetUpTemplateContainer.module.scss';
 
 // validations
-import { useYupValidationResolver } from '../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../validation/users/companyName';
 import { fullNameSchema } from '../../validation/users/fullName';
 

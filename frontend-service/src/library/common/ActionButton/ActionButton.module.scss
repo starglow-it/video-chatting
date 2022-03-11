@@ -20,6 +20,7 @@
 }
 
 .iconWrapper {
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,11 +35,31 @@
 
 .danger {
   background: $primary-red;
+  color: $primary-white;
   backdrop-filter: blur(rem(28px));
-  border-radius: rem(12px);
   cursor: default;
 
   &.withAction {
-    @include withHoverAction($primary-red-dark, $primary-red-light);
+    @include withHoverAction($dark-red, $light-red);
+  }
+}
+
+.decline {
+  background: rgba($primary-white, 0.25);
+  color: $primary-white;
+  backdrop-filter: blur(rem(28px));
+
+  &.withAction {
+    @include withHoverAction($dark-white, $light-white);
+  }
+}
+
+.accept {
+  background: $primary-orange;
+  color: $primary-white;
+  backdrop-filter: blur(rem(28px));
+
+  &.withAction {
+    @include withHoverAction($dark-orange, $light-orange);
   }
 }

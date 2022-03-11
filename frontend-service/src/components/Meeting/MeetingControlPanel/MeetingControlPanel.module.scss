@@ -26,12 +26,18 @@
         }
       }
   }
+
+  .notesContainer {
+    padding: rem(20px);
+  }
 }
 
 .commonOpenPanel {
+  position: absolute;
   width: rem(378px);
   padding: rem(20px);
   opacity: 0;
+  transform: translate(-50%, 0);
 
   &.open {
     opacity: 1;

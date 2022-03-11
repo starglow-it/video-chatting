@@ -3,6 +3,7 @@ import { useStore } from 'effector-react';
 import Image from 'next/image';
 
 // helpers
+import { usePrevious } from '../../../hooks/usePrevious';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -10,23 +11,27 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 // components
 import { MeetingControlPanel } from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
 import { MeetingUsersVideos } from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
-import { DevicesSettingsDialog } from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
 import { MeetingEndControls } from '@components/Meeting/MeetingEndControls/MeetingEndControls';
+import { MeetingNotes } from '@components/Meeting/MeetingNotes/MeetingNotes';
 import { MeetingSettingsPanel } from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
+import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
+import { DevicesSettingsDialog } from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
 import { EndMeetingDialog } from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
 import { InviteAttendeeDialog } from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
 import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKickDialog';
-import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
 import { AudioDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/AudioDeviceSetUpButton';
 import { VideoDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/VideoDeviceSetUpButton';
 import { ScreenSharingButton } from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
-import { usePrevious } from '../../../hooks/usePrevious';
+
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // misc
 import { AgoraController } from '../../../controllers/VideoChatController';
+
+// context
 import { MediaContext } from '../../../contexts/MediaContext';
+import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
 
 // styles
 import styles from './MeetingView.module.scss';
@@ -67,6 +72,15 @@ const MeetingView = memo(() => {
         actions: { onChangeActiveStream },
     } = useContext(MediaContext);
 
+    const {
+        actions: {
+            onGetCanvasStream,
+        },
+        data: {
+            isModelReady,
+        },
+    } = useContext(VideoEffectsContext);
+
     const prevSharingUserId = usePrevious<number | undefined>(meeting.sharingUserId);
 
     const handleToggleAudio = useCallback(() => {
@@ -98,9 +112,11 @@ const MeetingView = memo(() => {
         }
     }, [isSharingScreenActive, meeting.sharingUserId, isOwner]);
 
-    const handleStopScreenSharing = useCallback(() => {
+    const handleStopScreenSharing = useCallback(async () => {
         if (activeStream) {
-            AgoraController.stopScreensharing({ stream: activeStream });
+            const transformedStream = await onGetCanvasStream(activeStream);
+
+            AgoraController.stopScreensharing({ stream: transformedStream });
         }
     }, [activeStream]);
 
@@ -112,8 +128,10 @@ const MeetingView = memo(() => {
 
     useEffect(() => {
         (async () => {
-            if (localUser.accessStatus === MeetingAccessStatuses.InMeeting) {
+            if (localUser.accessStatus === MeetingAccessStatuses.InMeeting && isModelReady) {
                 const activeStream = onChangeActiveStream();
+
+                const transformedStream = await onGetCanvasStream(activeStream);
 
                 AgoraController.setUpController({
                     channel: meeting.id,
@@ -127,8 +145,8 @@ const MeetingView = memo(() => {
                     userLeft: emptyFunction,
                 });
 
-                if (activeStream) {
-                    await AgoraController.initiateConnection({ stream: activeStream });
+                if (transformedStream) {
+                    await AgoraController.initiateConnection({ stream: transformedStream });
                 }
 
                 AgoraController.setTracksState({
@@ -137,7 +155,7 @@ const MeetingView = memo(() => {
                 });
             }
         })();
-    }, [localUser.accessStatus]);
+    }, [localUser.accessStatus, isModelReady]);
 
     useEffect(
         () => () => {
@@ -190,6 +208,7 @@ const MeetingView = memo(() => {
                     </CustomGrid>
                     <MeetingEndControls />
                     <MeetingGeneralInfo />
+                    <MeetingNotes />
                 </MeetingSettingsPanel>
             )}
 

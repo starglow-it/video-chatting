@@ -2,10 +2,13 @@ import React, {forwardRef, memo} from 'react';
 import clsx from 'clsx';
 import Image from 'next/image';
 
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
+// styles
 import styles from './ProfileAvatar.module.scss';
 
+// types
 import { ProfileAvatarProps } from './types';
 
 const ProfileAvatar = memo(forwardRef(({ onClick, src, className, width, height, userName, withoutShadow, ...rest }: ProfileAvatarProps, ref) => {
@@ -32,7 +35,7 @@ const ProfileAvatar = memo(forwardRef(({ onClick, src, className, width, height,
                         objectFit="cover"
                         objectPosition="center"
                         className={styles.profileImage}
-                        src={src || '/images/defaultProfileImage.png'}
+                        src={src}
                         alt="profile-image"
                     />
                 ) : (

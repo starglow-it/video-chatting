@@ -1,18 +1,22 @@
 import React, { memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
+// components
 import { MicIcon } from '@library/icons/MicIcon';
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
 import { MeetingUserAudioItem } from '@components/Meeting/MeetingUserAudioItem/MeetingUserAudioItem';
-
 import { SharingArrowIcon } from '@library/icons/SharingArrowIcon';
+
+// types
 import { MeetingUserVideoItemProps } from './types';
 
+// styles
 import styles from './MeetingUserVideoItem.module.scss';
 
 const MeetingUserVideoItem = memo(

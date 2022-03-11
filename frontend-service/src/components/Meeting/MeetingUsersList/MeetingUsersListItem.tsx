@@ -42,6 +42,7 @@ const MeetingUsersListItem = memo(
                 <CustomGrid className={styles.btnGroup} container wrap="nowrap">
                     {isAcceptRequest && (
                         <ActionButton
+                            variant="accept"
                             onAction={handleAcceptRequest}
                             className={styles.acceptUser}
                             Icon={<AcceptIcon width="23px" height="23px" />}
@@ -49,6 +50,7 @@ const MeetingUsersListItem = memo(
                     )}
                     {!isLocalItem && onDeleteUser && (
                         <ActionButton
+                            variant="decline"
                             onAction={handleDeleteRequest}
                             className={styles.deleteUser}
                             Icon={<DeleteIcon width="23px" height="23px" />}

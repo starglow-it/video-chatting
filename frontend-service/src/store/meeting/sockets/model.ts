@@ -63,27 +63,34 @@ export const startMeetingResultFx = meetingDomain.effect<
     { meetingId: Meeting['id'] },
     JoinMeetingResult
 >('startMeetingResultFx');
+
 export const updateMeetingResultFx = meetingDomain.effect<Partial<Meeting>, { meeting: Meeting }>(
     'updateMeetingResultFx',
 );
+
 export const endMeetingResultFx = meetingDomain.effect<{ meetingId: Meeting['id'] }, void>(
     'endMeetingResultFx',
 );
+
 export const leaveMeetingResultFx = meetingDomain.effect<{ meetingId: Meeting['id'] }, void>(
     'leaveMeetingResultFx',
 );
+
 export const enterMeetingRequestResultFx = meetingDomain.effect<
     { meetingId: Meeting['id'] },
     JoinMeetingResult
 >('enterMeetingRequestResultFx');
+
 export const cancelMeetingRequestResultFx = meetingDomain.effect<
     { meetingId: Meeting['id'] },
     JoinMeetingResult
 >('cancelMeetingRequestResultFx');
+
 export const answerAccessMeetingResultFx = meetingDomain.effect<
     { meetingId: Meeting['id']; userId: MeetingUser['id']; isUserAccepted: boolean },
     JoinMeetingResult
 >('answerMeetingAccessResultFx');
+
 export const updateMeetingTemplateResultFx = meetingDomain.effect<
     { templateId: Template['id'] },
     Template

@@ -1,17 +1,22 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
+// custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { CameraIcon } from '@library/icons/CameraIcon';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
+// components
+import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { CameraIcon } from '@library/icons/CameraIcon';
+
+// styles
 import styles from './DevicesSetUpButton.module.scss';
 
+// types
 import { VideoDeviceSetUpButtonProps } from './types';
 
 const VideoDeviceSetUpButton = memo(
-    ({ className, isCamActive, onClick }: VideoDeviceSetUpButtonProps) => {
+    ({ className, isCamActive = false, onClick }: VideoDeviceSetUpButtonProps) => {
         const isThereAction = Boolean(onClick);
 
         return (

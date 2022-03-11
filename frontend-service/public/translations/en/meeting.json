@@ -64,5 +64,13 @@
       "on": "Turn on sharing",
       "off": "Turn off sharing"
     }
+  },
+  "features": {
+    "blurBackground": "Background blur",
+    "faceTracking": "Face detection",
+    "notes": {
+      "title": "Leave a note",
+      "input": "Type here"
+    }
   }
 }

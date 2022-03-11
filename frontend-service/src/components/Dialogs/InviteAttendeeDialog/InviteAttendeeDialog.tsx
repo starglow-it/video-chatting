@@ -14,7 +14,7 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
 import { sendInviteEmailFx } from '../../../store/users/init';
 
-import { useYupValidationResolver } from '../../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 import { AppDialogsEnum } from '../../../store/types';
 

@@ -8,7 +8,7 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 import { updateProfilePasswordFx } from 'src/store/profile';
-import { useYupValidationResolver } from '../../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 import { useToggle } from '../../../hooks/useToggle';
 
 // custom

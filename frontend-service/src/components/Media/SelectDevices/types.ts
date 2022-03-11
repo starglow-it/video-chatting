@@ -1,3 +1,3 @@
 export type SelectDevicesProps = {
-    className: string;
+    className?: string;
 };

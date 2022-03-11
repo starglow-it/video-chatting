@@ -6,10 +6,6 @@
   max-width: rem(594px);
 }
 
-.settingsContent {
-  max-height: rem(235px);
-}
-
 .devicesWrapper {
   margin: rem(0 0 0 40px);
   width: auto;
@@ -19,8 +15,15 @@
   }
 }
 
-.selectDevicesWrapper {
-  margin: rem(20px 0 0 0);
+.backgroundBlurSetting {
+  padding: rem(13px 10px);
+  background: $light-gray-scale;
+  border: 1px solid rgba($normal-gray-scale, 0.6);
+  border-radius: rem(10px);
+
+  .switch {
+    margin: 0 0 0 auto;
+  }
 }
 
 .saveSettings {

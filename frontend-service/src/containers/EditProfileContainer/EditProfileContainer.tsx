@@ -24,7 +24,7 @@ import { $routeToChangeStore } from '../../store/other';
 import { appDialogsApi } from '../../store/dialogs';
 
 // validations
-import { useYupValidationResolver } from '../../hooks/useYuoValidationResolver';
+import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../validation/users/companyName';
 import { emailSchema } from '../../validation/users/email';
 import { simpleStringSchema } from '../../validation/common';

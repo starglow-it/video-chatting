@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './tasks/tasks.module';
 import { TemplatesModule } from './templates/templates.module';
+import { MeetingNotesModule } from './meeting-notes/meeting-notes.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TemplatesModule } from './templates/templates.module';
     UsersModule,
     TasksModule,
     TemplatesModule,
+    MeetingNotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

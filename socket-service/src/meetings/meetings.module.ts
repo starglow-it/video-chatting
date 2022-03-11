@@ -1,7 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { MeetingsController } from './meetings.controller';
 import { MeetingsService } from './meetings.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { Meeting, MeetingSchema } from '../schemas/meeting.schema';
 import { MeetingsGateway } from './meetings.gateway';
 import { UsersModule } from '../users/users.module';

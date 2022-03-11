@@ -5,7 +5,7 @@ import {
     ON_MEETING_ENTER_REQUEST,
     ON_MEETING_FINISHED,
     ON_MEETING_TEMPLATE_UPDATE,
-    ON_MEETING_UPDATE,
+    ON_MEETING_UPDATE, ON_SEND_MEETING_NOTE,
 } from '../const/subscribeSocketEvents';
 
 import {
@@ -46,6 +46,8 @@ import {
     updateMeetingUserEvent,
     updateMeetingUsersEvent,
 } from '../../users';
+import {setMeetingNoteEvent} from "../meetingNotes";
+
 import { $meetingTemplateStore, getMeetingTemplateFx } from '../meetingTemplate';
 import { $meetingStore, setMeetingEvent, updateMeetingEvent } from '../meeting';
 import { initiateSocketConnectionFx } from '../../socket';
@@ -184,5 +186,9 @@ meetingSocketEventsController.watch(({ socketInstance }: SocketState) => {
 
     socketInstance?.on(ON_MEETING_TEMPLATE_UPDATE, ({ templateId }) => {
         getMeetingTemplateFx({ templateId });
+    });
+
+    socketInstance?.on(ON_SEND_MEETING_NOTE, ({ meetingNote }) => {
+        setMeetingNoteEvent(meetingNote);
     });
 });

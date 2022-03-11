@@ -13,7 +13,7 @@ let isBlurSupported = supportedBrowsersArray.includes(browserData?.browser?.name
 let effectBlur: EffectBlur | null = null;
 let videoEffects: VideoEffects | null = null;
 
-export const addBlur = async (rawTrack: MediaStreamTrack): Promise<MediaStreamTrack | undefined> => {
+export const addBlur = async (rawTrack: MediaStreamTrack): Promise<MediaStreamTrack> => {
     try {
         if (isBlurSupported) {
             if (!effectBlur) {
@@ -30,6 +30,6 @@ export const addBlur = async (rawTrack: MediaStreamTrack): Promise<MediaStreamTr
         return rawTrack;
     } catch (e) {
         console.log('log error', e.message);
-        return;
+        return rawTrack;
     }
 }
