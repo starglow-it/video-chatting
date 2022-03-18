@@ -1,4 +1,4 @@
-import { Profile, UpdateProfileAvatar, UpdateProfileInfo } from '../../types';
+import {ErrorState, Profile, UpdateProfileAvatar, UpdateProfileInfo} from '../../types';
 import { profileDomain } from '../domain';
 import { initialProfileState } from './const';
 
@@ -19,7 +19,7 @@ export const updateProfileEmailFx = profileDomain.effect<
 
 export const updateProfilePasswordFx = profileDomain.effect<
     { currentPassword: string, newPassword: string; newPasswordRepeat: string },
-    Profile | null | undefined,
+    Profile | ErrorState | null | undefined,
     void
 >('updateProfilePasswordFx');
 

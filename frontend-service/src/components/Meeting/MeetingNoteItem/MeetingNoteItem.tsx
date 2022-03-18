@@ -1,56 +1,101 @@
-import React, {memo, useCallback, useMemo} from 'react';
-import Draggable from "react-draggable";
-import clsx from "clsx";
+import React, { memo, useCallback, useMemo } from 'react';
+import Draggable from 'react-draggable';
+import clsx from 'clsx';
 
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
-import {CustomScroll} from "@library/custom/CustomScroll/CustomScroll";
+// hooks
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CloseIcon } from '@library/icons/CloseIcon';
+import { useToggle } from '../../../hooks/useToggle';
 
-import {useToggle} from "../../../hooks/useToggle";
-import {MeetingNote} from "../../../store/types";
+// custom
 
-import styles from "./MeetingNoteItem.module.scss";
+// types
+import { MeetingNote } from '../../../store/types';
 
-const MeetingNoteItem = memo(({ noteIndex, lineNumber, note, onSetLastDragged, dragIndex }: { noteIndex: number; lineNumber: number; note: MeetingNote; onSetLastDragged: (id: string) => void; dragIndex: number }) => {
-    const yPosition = 100 + noteIndex * (124) + 20 * noteIndex;
+// styles
+import styles from './MeetingNoteItem.module.scss';
 
-    const {
-        value: isDragging,
-        onSwitchOn: handleOnDragging,
-        onSwitchOff: handleOffDragging
-    } = useToggle(false);
+// stores
+import {
+    removeLocalMeetingNoteEvent,
+    removeMeetingNoteSocketEvent,
+} from '../../../store/meeting/meetingNotes';
 
-    const handleStart = useCallback(() => {
-        handleOnDragging();
-        onSetLastDragged(note.id);
-    }, []);
+const MeetingNoteItem = memo(
+    ({
+        noteIndex,
+        lineNumber,
+        note,
+        onSetLastDragged,
+        dragIndex,
+    }: {
+        noteIndex: number;
+        lineNumber: number;
+        note: MeetingNote;
+        onSetLastDragged: (id: string) => void;
+        dragIndex: number;
+    }) => {
+        const yPosition = 100 + noteIndex * 124 + 20 * noteIndex;
 
-    const handleStop = useCallback(() => {
-        handleOffDragging();
-    }, []);
+        const {
+            value: isDragging,
+            onSwitchOn: handleOnDragging,
+            onSwitchOff: handleOffDragging,
+        } = useToggle(false);
 
-    const defaultPosition = useMemo(() => {
-        return {
-            x: 20 + (lineNumber * 224) + 20 * lineNumber,
-            y: yPosition
-        };
-    }, []);
+        const handleStart = useCallback(() => {
+            handleOnDragging();
+            onSetLastDragged(note.id);
+        }, []);
 
-    return (
-        <Draggable
-            axis="both"
-            defaultPosition={defaultPosition}
-            onStart={handleStart}
-            onStop={handleStop}
-        >
-            <CustomGrid container className={clsx(styles.noteWrapper, {[styles.withSticker]: !isDragging })} style={{ zIndex: dragIndex * 10 }}>
-                <CustomScroll className={styles.scroll}>
-                    <CustomGrid className={styles.content}>
-                        {note.content}
-                    </CustomGrid>
-                </CustomScroll>
-            </CustomGrid>
-        </Draggable>
-    )
-});
+        const handleStop = useCallback(() => {
+            handleOffDragging();
+        }, []);
 
-export {MeetingNoteItem};
+        const defaultPosition = useMemo(
+            () => ({
+                x: 20 + lineNumber * 224 + 20 * lineNumber,
+                y: yPosition,
+            }),
+            [],
+        );
+
+        const handleUnpinNote = useCallback(() => {
+            removeLocalMeetingNoteEvent(note.id);
+            removeMeetingNoteSocketEvent({ noteId: note.id });
+        }, [note.id]);
+
+        return (
+            <Draggable
+                axis="both"
+                defaultPosition={defaultPosition}
+                onStart={handleStart}
+                onStop={handleStop}
+            >
+                <CustomGrid
+                    container
+                    className={clsx(styles.noteWrapper, { [styles.withSticker]: !isDragging })}
+                    style={{ zIndex: dragIndex * 10 }}
+                >
+                    <CustomScroll className={styles.scroll}>
+                        <CustomGrid container className={styles.content}>
+                            <CustomTypography className={styles.text}>
+                                {note.content}
+                            </CustomTypography>
+                        </CustomGrid>
+                    </CustomScroll>
+                    <CloseIcon
+                        width="20px"
+                        height="20px"
+                        className={styles.unpinButton}
+                        onClick={handleUnpinNote}
+                    />
+                </CustomGrid>
+            </Draggable>
+        );
+    },
+);
+
+export { MeetingNoteItem };

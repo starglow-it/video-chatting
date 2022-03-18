@@ -9,6 +9,8 @@ export const UPDATE_USER = 'users:updateUser';
 export const REMOVE_USER = 'users:removeUser';
 export const UPDATE_MEETING_TEMPLATE = 'template:update';
 export const SEND_MEETING_NOTE_EVENT = 'meeting:notes:create';
+export const REMOVE_MEETING_NOTE_EVENT = 'meeting:notes:delete';
+export const GET_MEETING_NOTES_EVENT = 'meeting:notes:get';
 
 export default {
   JOIN_WAITING_ROOM,
@@ -21,5 +23,6 @@ export default {
   LEAVE_MEETING,
   REMOVE_USER,
   UPDATE_MEETING_TEMPLATE,
-  SEND_MEETING_NOTE_EVENT
+  SEND_MEETING_NOTE_EVENT,
+  REMOVE_MEETING_NOTE_EVENT,
 };

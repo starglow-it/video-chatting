@@ -21,4 +21,4 @@ export const fetchMeetingInstanceFx = meetingDomain.effect<
     { meetingId: MeetingInstance['id'] },
     { meeting: MeetingInstance },
     any
->('fetchMeetingFx');
+>('fetchMeetingInstanceFx');

@@ -39,6 +39,7 @@ const MeetingInviteParticipants = memo(() => {
     const handleLinkCopied = useCallback(() => {
         addNotificationEvent({
             type: NotificationType.LinkInfoCopied,
+            message: 'meeting.copy.link',
         });
     }, []);
 

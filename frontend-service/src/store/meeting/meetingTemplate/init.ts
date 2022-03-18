@@ -1,41 +1,14 @@
 import {
     $meetingTemplateStore,
-    initialTemplateState,
-    getUserTemplateBaseEffect,
-    updateMeetingTemplateBaseEffect,
+    getMeetingTemplateFx,
+    updateMeetingTemplateFx,
 } from './model';
-import { sendRequest } from '../../../helpers/http/sendRequest';
-import { ErrorState, HttpMethods, Template } from '../../types';
-import { updateUserTemplateUrl, getUserTemplateUrl } from '../../../utils/urls/resolveUrl';
+import {handleUpdateMeetingTemplate} from "./handlers/handleUpdateMeetingTemplate";
+import {handleGetMeetingTemplate} from "./handlers/handleGetMeetingTemplate";
 
-getUserTemplateBaseEffect.use(async ({ templateId, userId }): Promise<Template> => {
-    const response = await sendRequest<Template, ErrorState>(
-        getUserTemplateUrl({ templateId, userId }),
-    );
-
-    if (response.success) {
-        return response.result;
-    }
-
-    return initialTemplateState;
-});
-
-updateMeetingTemplateBaseEffect.use(async ({ templateId, userId, data }): Promise<Template> => {
-    const response = await sendRequest<Template, ErrorState>(
-        updateUserTemplateUrl({ templateId, userId }),
-        {
-            method: HttpMethods.Post,
-            data,
-        },
-    );
-
-    if (response.success) {
-        return response.result;
-    }
-
-    return initialTemplateState;
-});
+getMeetingTemplateFx.use(handleGetMeetingTemplate);
+updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);
 
 $meetingTemplateStore
-    .on(getUserTemplateBaseEffect.doneData, (state, data) => data)
-    .on(updateMeetingTemplateBaseEffect.doneData, (state, data) => data);
+    .on(getMeetingTemplateFx.doneData, (state, data) => data)
+    .on(updateMeetingTemplateFx.doneData, (state, data) => data);

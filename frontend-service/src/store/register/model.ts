@@ -10,6 +10,8 @@ export const initialRegisterState: RegisteredUserState = {
 
 export const $registerStore = registerDomain.store<RegisteredUserState>(initialRegisterState);
 
+export const resetRegisterErrorEvent = registerDomain.event('resetRegisterErrorEvent');
+
 export const registerUserFx = registerDomain.effect<RegisterUserParams, RegisteredUserState>(
     'registerUserFx',
 );
@@ -17,5 +19,3 @@ export const registerUserFx = registerDomain.effect<RegisterUserParams, Register
 export const confirmRegistrationUserFx = registerDomain.effect<string, RegisteredUserState>(
     'confirmRegisterUserFx',
 );
-
-export const resetRegisterErrorEvent = registerDomain.event('resetRegisterErrorEvent');

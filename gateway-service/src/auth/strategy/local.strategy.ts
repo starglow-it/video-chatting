@@ -6,7 +6,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CoreService } from '../../core/core.service';
-import { INVALID_CREDENTIALS, USER_NOT_FOUND } from '@shared/const/errors/users';
+import {
+  INVALID_CREDENTIALS,
+  USER_NOT_FOUND,
+} from '@shared/const/errors/users';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -24,7 +27,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       });
     } catch (err) {
       if (
-        [USER_NOT_FOUND.message, INVALID_CREDENTIALS.message].includes(err.message)
+        [USER_NOT_FOUND.message, INVALID_CREDENTIALS.message].includes(
+          err.message,
+        )
       ) {
         throw new UnauthorizedException(err);
       }

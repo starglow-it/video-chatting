@@ -5,18 +5,23 @@ import clsx from 'clsx';
 
 import { Divider } from '@mui/material';
 
-import LogoutIcon from '@mui/icons-material/Logout';
-import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
+// icons
+import { DiscoveryIcon } from '@library/icons/DiscoveryIcon';
 import { TemplatesIcon } from '@library/icons/TemplatesIcon';
+import { ExitIcon } from '@library/icons/ExitIcon';
+import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
+
+// stores
 import { $profileStore } from '../../store/profile';
 import { logoutUserFx } from '../../store/auth';
 
+// styles
 import styles from './DashBoardNavigation.module.scss';
-import {CustomTooltip} from "@library/custom/CustomTooltip/CustomTooltip";
-import {ExitIcon} from "@library/icons/ExitIcon";
 
 const DashBoardNavigation = memo(() => {
     const profileState = useStore($profileStore);
@@ -34,6 +39,10 @@ const DashBoardNavigation = memo(() => {
     );
 
     const isProfilePageActive = useMemo(() => router.pathname === '/dashboard', [router.pathname]);
+    const isDiscoveryLinkActive = useMemo(
+        () => router.pathname === '/dashboard/discovery',
+        [router.pathname],
+    );
 
     const handleProfilePage = useCallback(() => {
         router.push('/dashboard');
@@ -41,6 +50,10 @@ const DashBoardNavigation = memo(() => {
 
     const handleTemplatesPage = useCallback(() => {
         router.push('/dashboard/templates');
+    }, []);
+
+    const handleDiscoveryPage = useCallback(() => {
+        router.push('/dashboard/discovery');
     }, []);
 
     return (
@@ -51,12 +64,9 @@ const DashBoardNavigation = memo(() => {
                 justifyContent="center"
                 direction="column"
                 className={styles.iconsWrapper}
+                gap={1}
             >
-                <CustomTooltip
-                    nameSpace="common"
-                    translation="pages.profile"
-                    placement="right"
-                >
+                <CustomTooltip nameSpace="profile" translation="pages.profile" placement="right">
                     <ProfileAvatar
                         onClick={handleProfilePage}
                         className={clsx(styles.profileImage, styles.linkIcon, {
@@ -71,11 +81,18 @@ const DashBoardNavigation = memo(() => {
 
                 <Divider className={styles.divider} light />
 
-                <CustomTooltip
-                    nameSpace="common"
-                    translation="pages.templates"
-                    placement="right"
-                >
+                <CustomTooltip nameSpace="profile" translation="pages.discovery" placement="right">
+                    <DiscoveryIcon
+                        onClick={handleDiscoveryPage}
+                        width="28px"
+                        height="28px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isDiscoveryLinkActive,
+                        })}
+                    />
+                </CustomTooltip>
+
+                <CustomTooltip nameSpace="profile" translation="pages.templates" placement="right">
                     <TemplatesIcon
                         onClick={handleTemplatesPage}
                         width="28px"
@@ -86,11 +103,7 @@ const DashBoardNavigation = memo(() => {
                     />
                 </CustomTooltip>
 
-                <CustomTooltip
-                    nameSpace="common"
-                    placement="right"
-                    translation="pages.logout"
-                >
+                <CustomTooltip nameSpace="profile" translation="pages.logout" placement="right">
                     <ExitIcon
                         onClick={handleLogout}
                         className={styles.icon}

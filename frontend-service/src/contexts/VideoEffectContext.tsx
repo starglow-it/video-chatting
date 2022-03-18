@@ -182,7 +182,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             }
 
             if (isBlurActive) {
-                videoTrack = await addBlur(videoTrack);
+                videoTrack = await addBlur()(videoTrack);
             }
 
             newStream.addTrack(videoTrack);
@@ -191,7 +191,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
         }
 
         if (isBlurActive) {
-            videoTrack = await addBlur(videoTrack);
+            videoTrack = await addBlur()(videoTrack);
             newStream.addTrack(videoTrack);
 
             return newStream;
@@ -248,10 +248,10 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             data: {
                 isModelReady,
                 isBlurActive,
-                isFaceTrackingActive,
+                isFaceTrackingActive
             },
         };
-    }, [isModelReady, handleGetActiveStream, isBlurActive, isFaceTrackingActive]);
+    }, [isModelReady, isBlurActive, handleGetActiveStream, isFaceTrackingActive]);
 
     return (
         <VideoEffectsContext.Provider value={contextValue}>

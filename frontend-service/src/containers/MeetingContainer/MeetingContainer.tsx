@@ -16,17 +16,13 @@ import {VideoEffectsProvider} from "../../contexts/VideoEffectContext";
 
 // stores
 import { $localUserStore, resetLocalUserStore, resetMeetingUsersStore } from '../../store/users';
-import { initiateSocketConnectionFx, resetSocketStore } from '../../store/socket';
+import { resetSocketStore } from '../../store/socket';
 import { appDialogsApi } from '../../store/dialogs';
 import {
     $meetingTemplateStore,
-    $meetingInstanceStore,
     resetMeetingInstanceStore,
     resetMeetingStore,
     getMeetingTemplateFx,
-    fetchMeetingInstanceFx,
-    emitJoinMeetingEvent,
-    $meetingStore,
 } from '../../store/meeting';
 
 // types
@@ -34,6 +30,8 @@ import { MeetingAccessStatuses } from '../../store/types';
 
 // styles
 import styles from './MeetingContainer.module.scss';
+
+import {initiateMainSocketConnectionFx, resetMainSocketStore} from "../../store/mainServerSocket";
 
 const NotMeetingComponent = memo(() => {
     const meetingUser = useStore($localUserStore);
@@ -52,18 +50,11 @@ const MeetingContainer = memo(() => {
 
     const meetingUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const meetingInstance = useStore($meetingInstanceStore);
-    const meeting = useStore($meetingStore);
 
     useEffect(() => {
         (async () => {
-            const { meeting } = await fetchMeetingInstanceFx({
-                meetingId: router.query.token as string,
-            });
-
-            await initiateSocketConnectionFx({ serverIp: meeting.serverIp });
-
-            emitJoinMeetingEvent();
+            await initiateMainSocketConnectionFx();
+            await getMeetingTemplateFx({ templateId: router.query.token as string });
         })();
 
         return () => {
@@ -72,35 +63,26 @@ const MeetingContainer = memo(() => {
             resetMeetingInstanceStore();
             resetMeetingStore();
             resetSocketStore();
+            resetMainSocketStore();
             appDialogsApi.resetDialogs();
         };
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            if (meeting.ownerProfileId && meetingInstance?.template) {
-                await getMeetingTemplateFx({ templateId: meetingInstance?.template });
-            }
-        })();
-    }, [meeting.ownerProfileId, meetingInstance?.template]);
-
     return (
-        <VideoEffectsProvider>
-            <Layout>
-                {meetingTemplate.id && meetingInstance.id && (
-                    <>
-                        {![MeetingAccessStatuses.InMeeting].includes(meetingUser.accessStatus) ? (
-                            <CustomBox className={styles.waitingRoomWrapper}>
-                                <NotMeetingComponent />
-                            </CustomBox>
-                        ) : (
-                            <MeetingView />
-                        )}
-                    </>
-                )}
-                <MeetingErrorDialog />
-            </Layout>
-        </VideoEffectsProvider>
+        <Layout>
+            {meetingTemplate.id && (
+                <VideoEffectsProvider>
+                    {![MeetingAccessStatuses.InMeeting].includes(meetingUser.accessStatus) ? (
+                        <CustomBox className={styles.waitingRoomWrapper}>
+                            <NotMeetingComponent />
+                        </CustomBox>
+                    ) : (
+                        <MeetingView />
+                    )}
+                </VideoEffectsProvider>
+            )}
+            <MeetingErrorDialog />
+        </Layout>
     );
 });
 

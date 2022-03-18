@@ -70,11 +70,17 @@ export class MeetingsService {
     return this.meeting.deleteOne({ id: meetingId }).session(session);
   }
 
-  async updateMeetingById(meetingId, data, { session }: ITransactionSession): Promise<MeetingDocument> {
-    return this.meeting.findByIdAndUpdate(meetingId, data, {
-      session,
-      new: true,
-    }).exec();
+  async updateMeetingById(
+    meetingId,
+    data,
+    { session }: ITransactionSession,
+  ): Promise<MeetingDocument> {
+    return this.meeting
+      .findByIdAndUpdate(meetingId, data, {
+        session,
+        new: true,
+      })
+      .exec();
   }
 
   async findByIdAndUpdate(meetingId, data, { session }: ITransactionSession) {

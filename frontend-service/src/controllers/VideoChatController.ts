@@ -8,11 +8,9 @@ import AgoraRTC, {
 } from 'agora-rtc-sdk-ng';
 import getConfig from 'next/config';
 import { sendRequest } from '../helpers/http/sendRequest';
-import { generateAgoraTokenUrl } from '../utils/urls/resolveUrl';
-import { HttpMethods } from '../store/types';
+import { generateAgoraTokenUrl } from '../utils/urls';
 import { AUDIO_UNMUTE, TRACKS_INFO, VIDEO_UNMUTE } from '../const/media/agora/UPDATE_INFO_TYPES';
 import { updateUserTracksEvent } from '../store/users';
-import {addBlur} from "../helpers/media/addBlur";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -94,10 +92,7 @@ export class VideoChatController {
         if (!this.channel) return;
 
         const response = await sendRequest<{ token: string }, any>(
-            generateAgoraTokenUrl(this.channel, this.uid as number, this.isPublisher),
-            {
-                method: HttpMethods.Get,
-            },
+            generateAgoraTokenUrl(this.channel, this.uid as number, this.isPublisher)
         );
 
         return response.result?.token!;

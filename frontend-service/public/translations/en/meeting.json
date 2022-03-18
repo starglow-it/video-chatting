@@ -62,7 +62,8 @@
   "modes": {
     "screensharing": {
       "on": "Turn on sharing",
-      "off": "Turn off sharing"
+      "off": "Turn off sharing",
+      "busy": "Someone is already sharing screen"
     }
   },
   "features": {
@@ -70,7 +71,8 @@
     "faceTracking": "Face detection",
     "notes": {
       "title": "Leave a note",
-      "input": "Type here"
+      "input": "Type here",
+      "unpin": "Unpin"
     }
   }
 }

@@ -1,18 +1,16 @@
 import { meetingDomain } from '../domain';
-import {MeetingNote, Template} from "../../types";
+import { MeetingNote } from "../../types";
 import {createSocketEvent} from "../../socket";
-import {SEND_MEETING_NOTE_EVENT} from "../const/emitSocketEvents";
+import {GET_MEETING_NOTES_EVENT, REMOVE_MEETING_NOTE_EVENT, SEND_MEETING_NOTE_EVENT} from "../const/emitSocketEvents";
 
 const initialMeetingsNotesState: MeetingNote[] = [];
 
 export const $meetingNotesStore = meetingDomain.store<MeetingNote[]>(initialMeetingsNotesState);
 
-export const emitSendMeetingNoteEvent = meetingDomain.event<void>('emitSendMeetingNoteEvent');
-export const setMeetingNoteEvent = meetingDomain.event<MeetingNote>('setMeetingNoteEvent');
+export const setMeetingNotesEvent = meetingDomain.event<MeetingNote[]>('setMeetingNotesEvent');
+export const removeLocalMeetingNoteEvent = meetingDomain.event<MeetingNote["id"]>('removeLocalMeetingNoteEvent');
+export const resetMeetingNotesEvent = meetingDomain.event('removeLocalMeetingNoteEvent');
 
-export const sendMeetingNoteEvent = createSocketEvent(SEND_MEETING_NOTE_EVENT);
-
-export const sendMeetingNoteResultFx = meetingDomain.effect<
-    { note: MeetingNote["content"] },
-    Template
-    >('sendMeetingNoteResultFx');
+export const sendMeetingNoteSocketEvent = createSocketEvent(SEND_MEETING_NOTE_EVENT);
+export const removeMeetingNoteSocketEvent = createSocketEvent(REMOVE_MEETING_NOTE_EVENT);
+export const getMeetingNotesSocketEvent = createSocketEvent(GET_MEETING_NOTES_EVENT);

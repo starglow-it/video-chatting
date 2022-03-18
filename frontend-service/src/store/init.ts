@@ -1,6 +1,7 @@
 export * from './root';
 
 export * from './socket/model';
+export * from './mainServerSocket/model';
 
 export * from './auth/model';
 export * from './dialogs/model';
@@ -27,8 +28,10 @@ export * from './meeting/meetingNotes/model';
 export * from './templates/templates/model';
 export * from './templates/templatePreview/model';
 export * from './templates/setUpTemplate/model';
+export * from './templates/discoveryTemplates/model';
 
 export * from './socket/init';
+export * from './mainServerSocket/init';
 
 export * from './auth/init';
 export * from './dialogs/init';
@@ -56,5 +59,6 @@ export * from './users/sockets/init';
 export * from './templates/templates/init';
 export * from './templates/templatePreview/init';
 export * from './templates/setUpTemplate/init';
+export * from './templates/discoveryTemplates/init';
 
 export * from './users/init';

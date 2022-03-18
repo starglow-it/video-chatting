@@ -10,7 +10,7 @@ import {
     codeVerificationUrl,
     emailVerificationUrl,
     passwordVerificationUrl,
-} from '../../../utils/urls/resolveUrl';
+} from '../../../utils/urls';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 
 // components
@@ -80,8 +80,8 @@ const EditProfileEmailInfo = memo(
 
         const handleCodeEntered = useCallback(
             async () =>
-                sendRequestWithCredentials(codeVerificationUrl, {
-                    method: HttpMethods.Post,
+                sendRequestWithCredentials({
+                    ...codeVerificationUrl,
                     data: { code, email },
                 }),
             [email, code],
@@ -109,8 +109,8 @@ const EditProfileEmailInfo = memo(
         );
 
         const handlePasswordEntered = useCallback(async () => {
-            const result = await sendRequestWithCredentials(passwordVerificationUrl, {
-                method: HttpMethods.Post,
+            const result = await sendRequestWithCredentials({
+                ...passwordVerificationUrl,
                 data: { password },
             });
 
@@ -123,8 +123,8 @@ const EditProfileEmailInfo = memo(
         }, [password]);
 
         const handleEmailEntered = useCallback(async () => {
-            const result = await sendRequestWithCredentials(emailVerificationUrl, {
-                method: HttpMethods.Post,
+            const result = await sendRequestWithCredentials({
+                ...emailVerificationUrl,
                 data: { email },
             });
 
@@ -137,8 +137,8 @@ const EditProfileEmailInfo = memo(
         }, [email]);
 
         const handleResendCode = useCallback(async () => {
-            await sendRequestWithCredentials(emailVerificationUrl, {
-                method: HttpMethods.Post,
+            await sendRequestWithCredentials({
+                ...emailVerificationUrl,
                 data: { email },
             });
         }, [email]);

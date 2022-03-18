@@ -2,9 +2,10 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { ApiParams, FailedResult, SuccessResult } from '../../store/types';
 
 export async function sendRequest<Result, Error>(
-    url: string,
     options: ApiParams & AxiosRequestConfig = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
+    const url = options.url;
+
     const { token, ...restOptions } = options;
 
     if (token) {

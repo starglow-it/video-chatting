@@ -4,10 +4,10 @@ import { meetingUsersDomain } from './domain';
 import { initiateSocketConnectionFx } from '../socket';
 
 // types
-import { ErrorState, HttpMethods, SocketState } from '../types';
+import { ErrorState, SocketState } from '../types';
 
 // const
-import { sendInviteEmailUrl } from '../../utils/urls/resolveUrl';
+import { sendInviteEmailUrl } from '../../utils/urls';
 import sendRequestWithCredentials from '../../helpers/http/sendRequestWithCredentials';
 
 export const usersSocketEventsController = meetingUsersDomain.event<SocketState>();
@@ -16,8 +16,8 @@ export const usersSocketEventsController = meetingUsersDomain.event<SocketState>
 export const sendInviteEmailFx = meetingUsersDomain.effect({
     name: 'sendInviteEmailFx',
     handler: async params => {
-        return await sendRequestWithCredentials<{ result: true }, ErrorState>(sendInviteEmailUrl, {
-            method: HttpMethods.Post,
+        return await sendRequestWithCredentials<{ result: true }, ErrorState>({
+            ...sendInviteEmailUrl,
             data: params,
         });
     },

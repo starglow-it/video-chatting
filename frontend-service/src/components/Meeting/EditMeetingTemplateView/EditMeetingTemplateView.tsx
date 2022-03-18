@@ -23,10 +23,10 @@ import {
     resetProfileTemplateEvent,
     updateProfileTemplateFx,
 } from '../../../store/profile';
+import { createMeetingFx } from '../../../store/meetings';
 
 // styles
 import styles from './EditMeetingTemplateView.module.scss';
-import { createMeetingFx } from '../../../store/meetings';
 
 const EditMeetingTemplateView = memo(() => {
     const router = useRouter();

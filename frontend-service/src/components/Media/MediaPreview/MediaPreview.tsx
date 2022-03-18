@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 
@@ -15,41 +15,46 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { MicIcon } from '@library/icons/MicIcon';
 import { CameraIcon } from '@library/icons/CameraIcon';
 
+// context
 import { MediaContext } from '../../../contexts/MediaContext';
 
 // stores
 import { $profileStore } from '../../../store/profile';
 import { $localUserStore } from '../../../store/users';
 
+// types
 import { MediaPreviewProps } from './types';
 
+// styles
 import styles from './MediaPreview.module.scss';
 
-const MediaPreview = memo(({ onToggleAudio, onToggleVideo }: MediaPreviewProps) => {
+const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement>();
     const profile = useStore($profileStore);
     const localUser = useStore($localUserStore);
 
     const {
-        data: { changeStream, error, videoDevices, audioDevices, isMicActive, isCameraActive },
+        data: { error, videoDevices, audioDevices, isMicActive, isCameraActive },
         actions: { onToggleMic, onToggleCamera },
     } = useContext(MediaContext);
 
     useEffect(() => {
-        if (changeStream && videoRef?.current) {
-            videoRef.current.srcObject = changeStream;
-        }
-    }, [changeStream]);
+        (async () => {
+            if (stream && videoRef?.current) {
+                videoRef.current.srcObject = stream;
+            }
+        })();
+    }, [stream]);
 
-    const handleToggleVideo = () => {
+    const handleToggleVideo = useCallback(() => {
         onToggleVideo?.();
         onToggleCamera();
-    };
+    }, [onToggleVideo]);
 
-    const handleToggleAudio = () => {
+    const handleToggleAudio = useCallback(() => {
         onToggleAudio?.();
         onToggleMic();
-    };
+    }, [onToggleAudio]);
 
     const isNeedToRenderDevices =
         (Boolean(videoDevices.length || audioDevices.length) && !error) ||
@@ -68,7 +73,7 @@ const MediaPreview = memo(({ onToggleAudio, onToggleVideo }: MediaPreviewProps) 
             />
             {isNeedToRenderDevices && (
                 <>
-                    <VolumeAnalyzer key={changeStream?.id} />
+                    <VolumeAnalyzer key={stream?.id} />
                     <CustomGrid container className={styles.controlsWrapper}>
                         <CustomTooltip nameSpace="errors" translation={error}>
                             <ActionButton

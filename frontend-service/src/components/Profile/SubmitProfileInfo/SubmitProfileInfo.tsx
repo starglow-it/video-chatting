@@ -115,12 +115,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
         <CustomPaper className={styles.submitProfile}>
             <CustomGrid container alignItems="center" wrap="nowrap">
                 <CustomBox className={styles.image}>
-                    <Image
-                        src="/images/edit-hand.png"
-                        width="24px"
-                        height="24px"
-                        alt="edit-hand"
-                    />
+                    <Image src="/images/edit-hand.png" width="24px" height="24px" alt="edit-hand" />
                 </CustomBox>
                 <CustomTypography
                     nameSpace="profile"

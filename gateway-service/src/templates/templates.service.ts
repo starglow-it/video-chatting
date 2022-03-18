@@ -4,6 +4,7 @@ import {
   GET_COMMON_TEMPLATES,
   GET_USER_TEMPLATE,
   GET_USER_TEMPLATES,
+  GET_USERS_TEMPLATES,
   UPDATE_USER_TEMPLATE,
 } from '@shared/patterns/templates';
 import { CoreService } from '../core/core.service';
@@ -41,6 +42,12 @@ export class TemplatesService {
 
   async updateUserTemplate(data): Promise<IUserTemplate> {
     const pattern = { cmd: UPDATE_USER_TEMPLATE };
+
+    return this.coreService.sendCustom(pattern, data);
+  }
+
+  async getUsersTemplates(data): Promise<IUserTemplate> {
+    const pattern = { cmd: GET_USERS_TEMPLATES };
 
     return this.coreService.sendCustom(pattern, data);
   }

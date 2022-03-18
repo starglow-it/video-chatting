@@ -3,10 +3,18 @@
 
 .noteWrapper {
   position: absolute;
-  background: linear-gradient(78.71deg, #FFF790 2.05%, #FFEC55 96.25%);
-  border-radius: rem(1px);
   width: rem(224px);
+  padding: rem(20px 0);
+  background: linear-gradient(78.71deg, #FFF790 2.05%, #FFEC55 96.25%);
   box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  border-radius: rem(1px);
+
+  &:hover {
+    .unpinButton {
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
 
   &.withSticker {
     &:after {
@@ -24,6 +32,24 @@
   }
 
   .content {
-    padding: rem(20px);
+    padding: rem(0 20px);
+
+    .text {
+      word-break: break-all;
+    }
   }
+}
+.scroll {
+  width: 100%;
+  max-height: rem(124px);
+}
+
+.unpinButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  pointer-events: none;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 200ms linear;
 }

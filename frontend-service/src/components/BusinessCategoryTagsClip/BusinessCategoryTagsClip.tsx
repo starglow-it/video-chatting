@@ -43,46 +43,47 @@ const BusinessCategoryTagsClip = memo(
 
             const searchArray = tags?.length < 3 ? restTags : tags;
 
-            const initialReduceArray = new Array(lines + 1).fill({ elements: [], overallWidth: 0 }).map((line, index) => {
-                return index === lines - 1 && firstTag && tags?.length < 3 ? ({ ...line, elements: [firstTag] }) : line;
-            });
+            const initialReduceArray = new Array(lines + 1)
+                .fill({ elements: [], overallWidth: 0 })
+                .map((line, index) =>
+                    index === lines - 1 && firstTag && tags?.length < 3
+                        ? { ...line, elements: [firstTag] }
+                        : line,
+                );
 
-            return initialArray?.reduce(
-                (acc, element, index) => {
-                    const targetCategory = searchArray?.find(
-                        (_, categoryIndex) => categoryIndex === index,
-                    );
+            return initialArray?.reduce((acc, element, index) => {
+                const targetCategory = searchArray?.find(
+                    (_, categoryIndex) => categoryIndex === index,
+                );
 
-                    if (!targetCategory) return acc;
+                if (!targetCategory) return acc;
 
-                    const rect = element.getBoundingClientRect();
+                const rect = element.getBoundingClientRect();
 
-                    const findLineIndex = acc.findIndex(
-                        line => line.overallWidth + rect.width < maxWidth,
-                    );
+                const findLineIndex = acc.findIndex(
+                    line => line.overallWidth + rect.width < maxWidth,
+                );
 
-                    return acc.map((line, indexLine) => {
-                        if (indexLine === findLineIndex) {
-                            return {
-                                id: line.id,
-                                overallWidth: line.overallWidth + rect.width,
-                                elements: [...line.elements, targetCategory],
-                            };
-                        }
-                        if (findLineIndex === -1 && indexLine === lines) {
-                            return {
-                                id: line.id,
-                                overallWidth: line.overallWidth + rect.width,
-                                elements: [...line.elements, targetCategory],
-                            };
-                        }
-                        if (indexLine !== findLineIndex) {
-                            return line;
-                        }
-                    });
-                },
-                initialReduceArray,
-            );
+                return acc.map((line, indexLine) => {
+                    if (indexLine === findLineIndex) {
+                        return {
+                            id: line.id,
+                            overallWidth: line.overallWidth + rect.width,
+                            elements: [...line.elements, targetCategory],
+                        };
+                    }
+                    if (findLineIndex === -1 && indexLine === lines) {
+                        return {
+                            id: line.id,
+                            overallWidth: line.overallWidth + rect.width,
+                            elements: [...line.elements, targetCategory],
+                        };
+                    }
+                    if (indexLine !== findLineIndex) {
+                        return line;
+                    }
+                });
+            }, initialReduceArray);
         }, [isNeedToRenderSeeAllTags, tags]);
 
         const renderInitialTags = useMemo(
@@ -100,13 +101,10 @@ const BusinessCategoryTagsClip = memo(
         const renderTagsWithOutHidden = useMemo(
             () =>
                 hideData.slice(0, lines).map((elementsData, index) => (
-                    <CustomGrid
-                        container
-                        gap={1.25}
-                    >
+                    <CustomGrid container gap={1.25}>
                         {elementsData.elements.map((category: BusinessCategory) => (
                             <BusinessCategoryItem
-                                className={clsx({[styles.businessTag]: index === 0 } )}
+                                className={clsx({ [styles.businessTag]: index === 0 })}
                                 key={category.key}
                                 category={category}
                                 typographyVariant="body2"
@@ -158,11 +156,7 @@ const BusinessCategoryTagsClip = memo(
                 >
                     {renderInitialTags}
                 </CustomGrid>
-                <CustomGrid
-                    container
-                    gap={1.25}
-                    className={styles.businessCategoryTags}
-                >
+                <CustomGrid container gap={1.25} className={styles.businessCategoryTags}>
                     {renderTagsWithOutHidden}
                 </CustomGrid>
                 <CustomPopper

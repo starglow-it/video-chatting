@@ -2,17 +2,17 @@ import Router from 'next/router';
 import { combine, forward, sample } from 'effector-next';
 
 import {
+    ON_GET_MEETING_NOTES,
     ON_MEETING_ENTER_REQUEST,
     ON_MEETING_FINISHED,
     ON_MEETING_TEMPLATE_UPDATE,
-    ON_MEETING_UPDATE, ON_SEND_MEETING_NOTE,
+    ON_MEETING_UPDATE,
+    ON_REMOVE_MEETING_NOTE,
+    ON_SEND_MEETING_NOTE,
 } from '../const/subscribeSocketEvents';
 
 import {
-    answerAccessMeetingRequestEvent,
-    answerAccessMeetingResultFx,
-    cancelAccessMeetingRequestEvent,
-    cancelMeetingRequestResultFx,
+    meetingSocketEventsController,
     emitAnswerAccessMeetingRequest,
     emitCancelEnterMeetingEvent,
     emitEndMeetingEvent,
@@ -20,23 +20,16 @@ import {
     emitJoinMeetingEvent,
     emitLeaveMeetingEvent,
     emitStartMeetingEvent,
-    emitUpdateMeetingEvent,
     emitUpdateMeetingTemplate,
     endMeetingEvent,
-    endMeetingResultFx,
-    enterMeetingRequestEvent,
-    enterMeetingRequestResultFx,
     joinMeetingEvent,
-    joinMeetingResultFx,
     leaveMeetingEvent,
-    leaveMeetingResultFx,
-    meetingSocketEventsController,
     startMeetingEvent,
-    startMeetingResultFx,
-    updateMeetingResultFx,
+    enterMeetingRequestEvent,
     updateMeetingSocketEvent,
     updateMeetingTemplateEvent,
-    updateMeetingTemplateResultFx,
+    cancelAccessMeetingRequestEvent,
+    answerAccessMeetingRequestEvent,
 } from './model';
 
 import {
@@ -46,7 +39,7 @@ import {
     updateMeetingUserEvent,
     updateMeetingUsersEvent,
 } from '../../users';
-import {setMeetingNoteEvent} from "../meetingNotes";
+import {removeLocalMeetingNoteEvent, setMeetingNotesEvent} from "../meetingNotes";
 
 import { $meetingTemplateStore, getMeetingTemplateFx } from '../meetingTemplate';
 import { $meetingStore, setMeetingEvent, updateMeetingEvent } from '../meeting';
@@ -57,16 +50,6 @@ import { $profileStore } from '../../profile';
 import { $meetingInstanceStore } from '../meetingInstance';
 
 import { AppDialogsEnum, SocketState } from '../../types';
-
-joinMeetingResultFx.use(async data => joinMeetingEvent(data));
-startMeetingResultFx.use(async data => startMeetingEvent(data));
-updateMeetingResultFx.use(async data => updateMeetingSocketEvent(data));
-endMeetingResultFx.use(async data => endMeetingEvent(data));
-leaveMeetingResultFx.use(async data => leaveMeetingEvent(data));
-enterMeetingRequestResultFx.use(async data => enterMeetingRequestEvent(data));
-cancelMeetingRequestResultFx.use(async data => cancelAccessMeetingRequestEvent(data));
-answerAccessMeetingResultFx.use(async data => answerAccessMeetingRequestEvent(data));
-updateMeetingTemplateResultFx.use(async data => updateMeetingTemplateEvent(data));
 
 const handleMeetingEventsError = (data: string) => {
     setMeetingErrorEvent(data);
@@ -97,75 +80,69 @@ sample({
         instanceId: data.mainMeeting.id,
         isOwner: data.mainMeeting.owner === data.profile?.id,
     }),
-    target: joinMeetingResultFx,
+    target: joinMeetingEvent,
 });
 
 sample({
     clock: emitStartMeetingEvent,
     source: combine({ meeting: $meetingStore, user: $localUserStore }),
     fn: ({ meeting, user }) => ({ meetingId: meeting?.id, user }),
-    target: startMeetingResultFx,
-});
-
-sample({
-    clock: emitUpdateMeetingEvent,
-    source: {},
-    target: updateMeetingResultFx,
+    target: startMeetingEvent,
 });
 
 sample({
     clock: emitEndMeetingEvent,
     source: combine({ meeting: $meetingStore }),
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
-    target: endMeetingResultFx,
+    target: endMeetingEvent,
 });
 
 sample({
     clock: emitLeaveMeetingEvent,
     source: combine({ meeting: $meetingStore }),
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
-    target: leaveMeetingResultFx,
+    target: leaveMeetingEvent,
 });
 
 sample({
     clock: emitEnterMeetingEvent,
     source: combine({ meeting: $meetingStore, user: $localUserStore }),
     fn: ({ meeting, user }) => ({ meetingId: meeting?.id, user }),
-    target: enterMeetingRequestResultFx,
+    target: enterMeetingRequestEvent,
 });
 
 sample({
     clock: emitAnswerAccessMeetingRequest,
     source: combine({ meeting: $meetingStore }),
     fn: ({ meeting }, data) => ({ meetingId: meeting?.id, ...data }),
-    target: answerAccessMeetingResultFx,
+    target: answerAccessMeetingRequestEvent,
 });
 
 sample({
     clock: emitCancelEnterMeetingEvent,
     source: combine({ meeting: $meetingStore }),
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
-    target: cancelMeetingRequestResultFx,
+    target: cancelAccessMeetingRequestEvent,
 });
 
 sample({
     clock: emitUpdateMeetingTemplate,
     source: combine({ template: $meetingTemplateStore }),
     fn: ({ template }) => ({ templateId: template.id }),
-    target: updateMeetingTemplateResultFx,
+    target: updateMeetingTemplateEvent,
 });
 
 forward({
-    from: joinMeetingResultFx.doneData,
+    from: joinMeetingEvent.doneData,
     to: [setMeetingEvent, setLocalUserEvent],
 });
 
 forward({
     from: [
-        startMeetingResultFx.doneData,
-        enterMeetingRequestResultFx.doneData,
-        cancelMeetingRequestResultFx.doneData,
-        updateMeetingResultFx.doneData,
+        startMeetingEvent.doneData,
+        enterMeetingRequestEvent.doneData,
+        cancelAccessMeetingRequestEvent.doneData,
+        updateMeetingSocketEvent.doneData,
     ],
     to: [updateMeetingEvent, updateMeetingUsersEvent, updateLocalUserEvent],
 });
@@ -188,7 +165,15 @@ meetingSocketEventsController.watch(({ socketInstance }: SocketState) => {
         getMeetingTemplateFx({ templateId });
     });
 
-    socketInstance?.on(ON_SEND_MEETING_NOTE, ({ meetingNote }) => {
-        setMeetingNoteEvent(meetingNote);
+    socketInstance?.on(ON_SEND_MEETING_NOTE, ({ meetingNotes }) => {
+        setMeetingNotesEvent(meetingNotes);
+    });
+
+    socketInstance?.on(ON_REMOVE_MEETING_NOTE, ({ meetingNote }) => {
+        removeLocalMeetingNoteEvent(meetingNote);
+    });
+
+    socketInstance?.on(ON_GET_MEETING_NOTES, ({ meetingNotes }) => {
+        setMeetingNotesEvent(meetingNotes);
     });
 });

@@ -1,8 +1,6 @@
-import { attach } from 'effector-next';
-
 import { meetingDomain } from '../domain';
-import { ErrorState, UpdateTemplateData, Template, Meeting } from '../../types';
-import { $meetingStore } from '../meeting';
+
+import { ErrorState, UpdateTemplateData, Template } from '../../types';
 
 export const initialTemplateState: Template = {
     id: '',
@@ -25,30 +23,14 @@ export const initialTemplateState: Template = {
 
 export const $meetingTemplateStore = meetingDomain.store<Template>(initialTemplateState);
 
-export const getUserTemplateBaseEffect = meetingDomain.effect<
-    { templateId: Template['id']; userId: string },
+export const getMeetingTemplateFx = meetingDomain.effect<
+    { templateId: Template['id'] },
     Template,
     ErrorState
->('getUserTemplateBaseEffect');
+>('getMeetingTemplateFx');
 
-export const updateMeetingTemplateBaseEffect = meetingDomain.effect<
+export const updateMeetingTemplateFx = meetingDomain.effect<
     UpdateTemplateData,
     Template,
     ErrorState
->('updateMeetingTemplateBaseEffect');
-
-export const getMeetingTemplateFx = attach({
-    effect: getUserTemplateBaseEffect,
-    source: $meetingStore,
-    mapParams: ({ templateId }, meeting: Meeting) => ({ templateId, userId: meeting.ownerProfileId }),
-});
-
-export const updateMeetingTemplateFx = attach({
-    effect: updateMeetingTemplateBaseEffect,
-    source: $meetingStore,
-    mapParams: ({ templateId, data }, meeting: Meeting) => ({
-        templateId,
-        userId: meeting.ownerProfileId,
-        data,
-    }),
-});
+>('updateMeetingTemplateFx');

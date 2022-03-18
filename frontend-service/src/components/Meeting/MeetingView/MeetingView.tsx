@@ -1,9 +1,7 @@
 import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
 
 // helpers
-import { usePrevious } from '../../../hooks/usePrevious';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -15,6 +13,7 @@ import { MeetingEndControls } from '@components/Meeting/MeetingEndControls/Meeti
 import { MeetingNotes } from '@components/Meeting/MeetingNotes/MeetingNotes';
 import { MeetingSettingsPanel } from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
 import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { DevicesSettingsDialog } from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
 import { EndMeetingDialog } from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
 import { InviteAttendeeDialog } from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
@@ -23,15 +22,16 @@ import { AudioDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/Aud
 import { VideoDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/VideoDeviceSetUpButton';
 import { ScreenSharingButton } from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
-
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { SettingsVideoEffectsProvider } from '../../../contexts/SettingsVideoEffectsContext';
 
 // misc
 import { AgoraController } from '../../../controllers/VideoChatController';
 
 // context
 import { MediaContext } from '../../../contexts/MediaContext';
-import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
+import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
 
 // styles
 import styles from './MeetingView.module.scss';
@@ -73,12 +73,8 @@ const MeetingView = memo(() => {
     } = useContext(MediaContext);
 
     const {
-        actions: {
-            onGetCanvasStream,
-        },
-        data: {
-            isModelReady,
-        },
+        actions: { onGetCanvasStream },
+        data: { isModelReady },
     } = useContext(VideoEffectsContext);
 
     const prevSharingUserId = usePrevious<number | undefined>(meeting.sharingUserId);
@@ -177,11 +173,7 @@ const MeetingView = memo(() => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            <Image
-                className={styles.image}
-                src="/images/defaultMeetingTemplate.png"
-                layout="fill"
-            />
+            <MeetingBackgroundVideo src="/videos/Lakeside-George.mp4" />
 
             {Boolean(meeting.sharingUserId) && <ScreenSharingLayout />}
 
@@ -211,8 +203,10 @@ const MeetingView = memo(() => {
                     <MeetingNotes />
                 </MeetingSettingsPanel>
             )}
+            <SettingsVideoEffectsProvider>
+                <DevicesSettingsDialog />
+            </SettingsVideoEffectsProvider>
 
-            <DevicesSettingsDialog />
             <EndMeetingDialog />
             <InviteAttendeeDialog />
             <UserToKickDialog />

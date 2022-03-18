@@ -3,7 +3,7 @@ import { NextPageContext } from 'next';
 import { AxiosRequestConfig } from 'axios';
 import setAuthCookies from './setAuthCookies';
 import { sendRequest } from './sendRequest';
-import { refreshUrl } from '../../utils/urls/resolveUrl';
+import { refreshUrl } from '../../utils/urls';
 import { TokenPair, ApiError, SuccessResult, FailedResult } from '../../store/types';
 
 export interface IsomorphicRequestOptions extends AxiosRequestConfig {
@@ -14,13 +14,12 @@ export interface IsomorphicRequestOptions extends AxiosRequestConfig {
 }
 
 export default async function sendRequestWithCredentials<Result, Error>(
-    path: string,
     options: IsomorphicRequestOptions = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
-    const { ctx, authRequest, ...requestOptions } = options;
+    const { ctx, authRequest, url: path, ...requestOptions } = options;
 
     if (!authRequest) {
-        return sendRequest<Result, Error>(path, requestOptions);
+        return sendRequest<Result, Error>(requestOptions);
     }
 
     const cookies = parseCookies(ctx);
@@ -35,14 +34,15 @@ export default async function sendRequestWithCredentials<Result, Error>(
         };
     }
     if (accessToken) {
-        return sendRequest<Result, Error>(path, {
+        return sendRequest<Result, Error>({
+            url: path,
             ...requestOptions,
             token: accessToken,
         });
     }
 
-    const { result } = await sendRequest<TokenPair, ApiError>(refreshUrl, {
-        method: 'PUT',
+    const { result } = await sendRequest<TokenPair, ApiError>({
+        ...refreshUrl,
         data: {
             token: refreshToken,
         },
@@ -52,7 +52,8 @@ export default async function sendRequestWithCredentials<Result, Error>(
         setAuthCookies(ctx, result?.accessToken, result?.refreshToken);
     }
 
-    return sendRequest(path, {
+    return sendRequest({
+        url: path,
         ...requestOptions,
         token: result?.accessToken?.token!,
     });

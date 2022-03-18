@@ -28,7 +28,11 @@ import {
   IUserCredentials,
   UserCredentialsWithTokenPair,
 } from '@shared/types/registerUser.type';
-import {INVALID_CREDENTIALS, INVALID_PASSWORD, USER_NOT_FOUND} from '@shared/const/errors/users';
+import {
+  INVALID_CREDENTIALS,
+  INVALID_PASSWORD,
+  USER_NOT_FOUND,
+} from '@shared/const/errors/users';
 
 // mongo
 import {
@@ -197,7 +201,10 @@ export class UsersController {
     );
 
     if (!isPasswordValid) {
-      throw new RpcException({ ...(verifyData.userId ? INVALID_PASSWORD : INVALID_CREDENTIALS), ctx: USERS_SERVICE });
+      throw new RpcException({
+        ...(verifyData.userId ? INVALID_PASSWORD : INVALID_CREDENTIALS),
+        ctx: USERS_SERVICE,
+      });
     }
 
     return plainToClass(CommonUserDTO, user, {
@@ -207,7 +214,9 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: COMPARE_PASSWORDS })
-  async comparePasswords(@Payload() compareData: { userId: string; password: string; }) {
+  async comparePasswords(
+    @Payload() compareData: { userId: string; password: string },
+  ) {
     const user = await this.usersService.findUser({ _id: compareData.userId });
 
     if (!user) {
@@ -215,8 +224,8 @@ export class UsersController {
     }
 
     return this.usersService.verifyPassword(
-        compareData.password,
-        user.password,
+      compareData.password,
+      user.password,
     );
   }
 
@@ -331,28 +340,28 @@ export class UsersController {
 
       if ('businessCategories' in data) {
         const newBusinessCategories = await this.businessCategoriesService.find(
-            { key: { $in: data.businessCategories } },
-            session,
+          { key: { $in: data.businessCategories } },
+          session,
         );
 
         user.businessCategories =
-            newBusinessCategories.map((category) => category._id) || [];
+          newBusinessCategories.map((category) => category._id) || [];
       }
 
       if ('languages' in data) {
         user.languages =
-            (await this.languagesService.find(
-                { key: { $in: data.languages } },
-                session,
-            )) || [];
+          (await this.languagesService.find(
+            { key: { $in: data.languages } },
+            session,
+          )) || [];
       }
 
       if ('socials' in data) {
         user.socials =
-            (await this.usersService.createSocialsLinks(
-                { userId, socials: data.socials },
-                session,
-            )) || [];
+          (await this.usersService.createSocialsLinks(
+            { userId, socials: data.socials },
+            session,
+          )) || [];
       }
 
       await user.save();

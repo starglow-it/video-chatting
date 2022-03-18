@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useContext } from 'react';
 import { useStore } from 'effector-react';
 import { Divider } from '@mui/material';
 
@@ -33,7 +33,6 @@ import { MeetingAccessStatuses, NotificationType } from '../../store/types';
 import styles from './DevicesSettings.module.scss';
 
 const DevicesSettings = memo(() => {
-    const videoRef = useRef<HTMLVideoElement>(null);
     const meeting = useStore($meetingStore);
     const user = useStore($localUserStore);
 
@@ -51,17 +50,11 @@ const DevicesSettings = memo(() => {
         },
     } = useContext(MediaContext);
 
-    useEffect(() => {
-        if (changeStream && videoRef?.current) {
-            videoRef.current.srcObject = changeStream;
-        }
-    }, [changeStream]);
-
     const handleToggleMic = useCallback(() => {
         if (changeStream) {
             addNotificationEvent({
                 type: NotificationType.MicAction,
-                data: { isMicActive: !isMicActive },
+                message: `meeting.mic.${!isMicActive ? 'on' : 'off'}`,
             });
             updateLocalUserStateEvent({
                 micStatus: !isMicActive ? 'active' : 'inactive',
@@ -73,7 +66,7 @@ const DevicesSettings = memo(() => {
         if (changeStream) {
             addNotificationEvent({
                 type: NotificationType.CamAction,
-                data: { isCameraActive: !isCameraActive },
+                message: `meeting.cam.${!isCameraActive ? 'on' : 'off'}`,
             });
             updateLocalUserStateEvent({
                 cameraStatus: !isCameraActive ? 'active' : 'inactive',
@@ -106,6 +99,7 @@ const DevicesSettings = memo(() => {
             <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap" className={styles.settingsContent}>
                     <MediaPreview
+                        stream={changeStream}
                         onToggleAudio={handleToggleMic}
                         onToggleVideo={handleToggleCamera}
                     />

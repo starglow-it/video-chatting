@@ -1,12 +1,12 @@
 import sendRequestWithCredentials from "../../../helpers/http/sendRequestWithCredentials";
-import { ErrorState, HttpMethods, Profile } from "../../types";
-import {profileEmailUrl} from "../../../utils/urls/resolveUrl";
+import { ErrorState, Profile } from "../../types";
+import { profileEmailUrl } from "../../../utils/urls";
 
 export const handleUpdateProfileEmail = async (
     params: { email: string },
 ): Promise<Profile | null | undefined> => {
-    const response = await sendRequestWithCredentials<Profile, ErrorState>(profileEmailUrl, {
-        method: HttpMethods.Post,
+    const response = await sendRequestWithCredentials<Profile, ErrorState>({
+        ...profileEmailUrl,
         data: params,
     });
 

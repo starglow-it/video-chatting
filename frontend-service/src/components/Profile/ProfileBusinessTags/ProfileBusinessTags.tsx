@@ -3,10 +3,8 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // hooks
-import { useToggle } from '../../../hooks/useToggle';
 
 // stores
-import { $profileStore } from '../../../store/profile';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -18,6 +16,8 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 // components
 import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
 import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
+import { $profileStore } from '../../../store/profile';
+import { useToggle } from '../../../hooks/useToggle';
 
 // types
 import { BusinessCategory } from '../../../store/types';
@@ -28,7 +28,7 @@ import styles from './ProfileBusinessTags.module.scss';
 type TagLineType = {
     elements: BusinessCategory[];
     overallWidth: number;
-    id: number
+    id: number;
 };
 
 const ProfileBusinessTags = memo(() => {
@@ -47,54 +47,55 @@ const ProfileBusinessTags = memo(() => {
         }, 100);
     }, []);
 
-    const hideData = useMemo(
-        () => {
-            const initialArray = [...(hiddenBusinessTagsRef?.current?.children || [])];
+    const hideData = useMemo(() => {
+        const initialArray = [...(hiddenBusinessTagsRef?.current?.children || [])];
 
-            const [firstTag, ...restTags] = profileState.businessCategories;
+        const [firstTag, ...restTags] = profileState.businessCategories;
 
-            const searchArray = profileState?.businessCategories.length < 3 ? restTags : profileState.businessCategories;
+        const searchArray =
+            profileState?.businessCategories.length < 3
+                ? restTags
+                : profileState.businessCategories;
 
-            const initialReduceArray: TagLineType[] = [
-                { elements: [], overallWidth: 0, id: 1 },
-                { elements: firstTag && profileState.businessCategories.length < 3 ? [firstTag] : [], overallWidth: 0, id: 2 },
-                { elements: [], overallWidth: 0, id: 3 },
-            ];
+        const initialReduceArray: TagLineType[] = [
+            { elements: [], overallWidth: 0, id: 1 },
+            {
+                elements: firstTag && profileState.businessCategories.length < 3 ? [firstTag] : [],
+                overallWidth: 0,
+                id: 2,
+            },
+            { elements: [], overallWidth: 0, id: 3 },
+        ];
 
-            return initialArray?.reduce(
-                (acc: TagLineType[], element, index) => {
-                    const targetCategory = searchArray.find(
-                        (_, categoryIndex) => categoryIndex === index,
-                    )!;
+        return initialArray?.reduce((acc: TagLineType[], element, index) => {
+            const targetCategory = searchArray.find((_, categoryIndex) => categoryIndex === index)!;
 
-                    if (!targetCategory) return acc;
+            if (!targetCategory) return acc;
 
-                    const rect = element.getBoundingClientRect();
+            const rect = element.getBoundingClientRect();
 
-                    const findLineIndex = acc.findIndex(
-                        line => line.overallWidth + rect.width < 300 - 32,
-                    );
+            const findLineIndex = acc.findIndex(line => line.overallWidth + rect.width < 300 - 32);
 
-                    return acc.map((line, indexLine) => {
-                        if (indexLine === findLineIndex) {
-                            return {
-                                id: line.id,
-                                overallWidth: line.overallWidth + rect.width,
-                                elements: [...line.elements, targetCategory],
-                            };
-                        }
-                        if (findLineIndex === -1 && indexLine === 2) {
-                            return {
-                                id: line.id,
-                                overallWidth: line.overallWidth + rect.width,
-                                elements: [...line.elements, targetCategory],
-                            };
-                        }
+            return acc.map((line, indexLine) => {
+                if (indexLine === findLineIndex) {
+                    return {
+                        id: line.id,
+                        overallWidth: line.overallWidth + rect.width,
+                        elements: [...line.elements, targetCategory],
+                    };
+                }
+                if (findLineIndex === -1 && indexLine === 2) {
+                    return {
+                        id: line.id,
+                        overallWidth: line.overallWidth + rect.width,
+                        elements: [...line.elements, targetCategory],
+                    };
+                }
 
-                        return line;
-                    });
-                }, initialReduceArray);
-        },[isNeedToRenderSeeAllTags, profileState?.businessCategories]);
+                return line;
+            });
+        }, initialReduceArray);
+    }, [isNeedToRenderSeeAllTags, profileState?.businessCategories]);
 
     const renderInitialProfileTags = useMemo(
         () =>
@@ -106,34 +107,39 @@ const ProfileBusinessTags = memo(() => {
 
     const renderTagsWithOutHidden = useMemo(
         () =>
-            hideData.slice(0, 2).map((elementsData, index) => {
-                return (
-                    <CustomGrid
-                        key={elementsData.id}
-                        container
-                        alignItems="flex-start"
-                        justifyContent="flex-end"
-                        alignContent="flex-start"
-                        gap={1.25}
-                    >
-                        {elementsData.elements.map((category: BusinessCategory) => (
-                            <BusinessCategoryItem className={clsx({[styles.businessTag]: index === 1 && profileState?.businessCategories.length < 3 } )} key={category.key} category={category} />
-                        ))}
-                        {index === 1 && Boolean(hideData[2]?.elements?.length) && (
-                            <TagWrapper
-                                ref={businessTagsRef}
-                                className={styles.showMoreTags}
-                                onMouseEnter={handleToggleMoreTags}
-                                onMouseLeave={handleToggleMoreTags}
-                            >
-                                <CustomTypography className={styles.numberOfHiddenTags}>
-                                    + {hideData[2]?.elements?.length}
-                                </CustomTypography>
-                            </TagWrapper>
-                        )}
-                    </CustomGrid>
-                )
-            }),
+            hideData.slice(0, 2).map((elementsData, index) => (
+                <CustomGrid
+                    key={elementsData.id}
+                    container
+                    alignItems="flex-start"
+                    justifyContent="flex-end"
+                    alignContent="flex-start"
+                    gap={1.25}
+                >
+                    {elementsData.elements.map((category: BusinessCategory) => (
+                        <BusinessCategoryItem
+                            className={clsx({
+                                [styles.businessTag]:
+                                    index === 1 && profileState?.businessCategories.length < 3,
+                            })}
+                            key={category.key}
+                            category={category}
+                        />
+                    ))}
+                    {index === 1 && Boolean(hideData[2]?.elements?.length) && (
+                        <TagWrapper
+                            ref={businessTagsRef}
+                            className={styles.showMoreTags}
+                            onMouseEnter={handleToggleMoreTags}
+                            onMouseLeave={handleToggleMoreTags}
+                        >
+                            <CustomTypography className={styles.numberOfHiddenTags}>
+                                + {hideData[2]?.elements?.length}
+                            </CustomTypography>
+                        </TagWrapper>
+                    )}
+                </CustomGrid>
+            )),
         [hideData],
     );
 
@@ -150,7 +156,11 @@ const ProfileBusinessTags = memo(() => {
                     className={styles.moreTags}
                 >
                     {elementsData?.elements?.map((category: BusinessCategory) => (
-                        <BusinessCategoryItem className={styles.hiddenBusinessTag} key={category.key} category={category} />
+                        <BusinessCategoryItem
+                            className={styles.hiddenBusinessTag}
+                            key={category.key}
+                            category={category}
+                        />
                     ))}
                 </CustomGrid>
             )),

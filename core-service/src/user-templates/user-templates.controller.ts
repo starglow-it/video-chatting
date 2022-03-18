@@ -19,6 +19,7 @@ import { EntityList } from '@shared/types/utils/http/list.type';
 import {
   GET_USER_TEMPLATE,
   GET_USER_TEMPLATES,
+  GET_USERS_TEMPLATES,
   UPDATE_USER_TEMPLATE,
 } from '@shared/patterns/templates';
 
@@ -183,5 +184,54 @@ export class UserTemplatesController {
         });
       }
     });
+  }
+
+  @MessagePattern({ cmd: GET_USERS_TEMPLATES })
+  async getUsersTemplates(
+    @Payload()
+    {
+      userId,
+      skip,
+      limit,
+    }: {
+      userId: ICommonUserDTO['id'];
+      skip: number;
+      limit: number;
+    },
+  ): Promise<EntityList<IUserTemplate>> {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const user = await this.usersService.findById(userId, session);
+
+        const userTemplates = await this.userTemplatesService.findUserTemplates(
+          {
+            query: { user: { $ne: user } },
+            options: { sort: '-usedAt', skip, limit },
+            populatePaths: 'businessCategories',
+            session,
+          },
+        );
+
+        const userTemplatesCount =
+          await this.userTemplatesService.countUserTemplates({
+            user: { $ne: user },
+          });
+
+        const parsedTemplates = plainToClass(UserTemplateDTO, userTemplates, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+
+        return {
+          list: parsedTemplates,
+          count: userTemplatesCount,
+        };
+      });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
   }
 }

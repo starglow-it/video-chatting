@@ -34,7 +34,7 @@ import { CoreModule } from '../core/core.module';
       ): Promise<S3ModuleOptions> => {
         const allConfig = await config.getAll();
 
-        console.log(allConfig.accessKey)
+        console.log(allConfig.accessKey);
         console.log(allConfig.secretAccessKey);
 
         return {

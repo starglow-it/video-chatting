@@ -1,11 +1,10 @@
-import React, {memo, useCallback, useRef} from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import {Fade} from "@mui/material";
+import { Fade } from '@mui/material';
 
 // helpers
-import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -13,14 +12,15 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
 import { PeoplesIcon } from '@library/icons/PeoplesIcon';
-import { NotesIcon } from "@library/icons/NotesIcon";
+import { NotesIcon } from '@library/icons/NotesIcon';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // components
 import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
 import { MeetingInviteParticipants } from '@components/Meeting/MeetingInviteParticipants/MeetingInviteParticipants';
 import { MeetingUsersList } from '@components/Meeting/MeetingUsersList/MeetingUsersList';
-import {LeaveNoteForm} from "@components/LeaveNoteForm/LeaveNoteForm";
+import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 
 // stores
 import { $meetingStore } from '../../../store/meeting';
@@ -39,7 +39,7 @@ const MeetingControlPanel = memo(() => {
     const {
         values: { isUsersOpen, isLeaveNoteOpen },
         onSwitchOff: handleSwitchOff,
-        onSwitchToggle: handleSwitchToggle
+        onSwitchToggle: handleSwitchToggle,
     } = useMultipleToggle(['isUsersOpen', 'isLeaveNoteOpen']);
 
     const handleToggleUsers = useCallback(() => {
@@ -81,10 +81,7 @@ const MeetingControlPanel = memo(() => {
             {!isEditTemplateView && (
                 <CustomGrid className={styles.panelsWrapper}>
                     <Fade in={isUsersOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={styles.commonOpenPanel}
-                        >
+                        <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
                             {isOwner && <MeetingAccessRequests />}
                             <MeetingUsersList />
                             <MeetingInviteParticipants />
@@ -92,10 +89,7 @@ const MeetingControlPanel = memo(() => {
                     </Fade>
 
                     <Fade in={isLeaveNoteOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={styles.commonOpenPanel}
-                        >
+                        <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
                             <LeaveNoteForm onCancel={handleCloseLeaveNote} />
                         </CustomPaper>
                     </Fade>

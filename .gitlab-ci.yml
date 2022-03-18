@@ -6,6 +6,7 @@ stages:
   - update_jira_issues
   - update_demo_traefik
   - update_demo
+  - auto_push
 
 variables:
   GIT_DEPTH: 10
@@ -27,3 +28,4 @@ include:
   - 'pipelines/demo.yml'
   - 'pipelines/staging.yml'
   - 'pipelines/test.yml'
+  - 'pipelines/autopush_code.yml'

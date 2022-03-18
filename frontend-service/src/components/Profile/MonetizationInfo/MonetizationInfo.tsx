@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import Image from 'next/image';
 
 // helpers
-import {useToggle} from "../../../hooks/useToggle";
 
 import { MonetizationIcon } from '@library/icons/MonetizationIcon';
 
@@ -10,15 +9,14 @@ import { MonetizationIcon } from '@library/icons/MonetizationIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { useToggle } from '../../../hooks/useToggle';
 
 // styles
 import styles from './MonetizationInfo.module.scss';
 
 const MonetizationInfo = memo(() => {
-    const {
-        value: isMonetizationEnabled,
-        onToggleSwitch: handleToggleMonetization
-    } = useToggle(false);
+    const { value: isMonetizationEnabled, onToggleSwitch: handleToggleMonetization } =
+        useToggle(false);
 
     return (
         <CustomGrid
@@ -56,7 +54,7 @@ const MonetizationInfo = memo(() => {
                 />
             </CustomGrid>
         </CustomGrid>
-    )
+    );
 });
 
 export { MonetizationInfo };

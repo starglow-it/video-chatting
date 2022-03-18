@@ -39,11 +39,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
     }, []);
 
     const handleCreateMeeting = useCallback(async () => {
-        const result = await createMeetingFx({ templateId: template.id });
-
-        if (result.meeting) {
-            await router.push(`/meeting/${result.meeting.id}`);
-        }
+        await router.push(`/meeting/${template.id}`);
     }, []);
 
     const handleEditTemplate = useCallback(() => {

@@ -10,6 +10,10 @@
   border-radius: rem(12px);
   border: none;
 
+  &.noRights {
+    color: rgba($primary-white, 0.25);
+  }
+
   &.active {
     color: $primary-red;
   }

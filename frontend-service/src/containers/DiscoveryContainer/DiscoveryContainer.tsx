@@ -1,0 +1,72 @@
+import React, { memo, useCallback, useEffect } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useStore } from 'effector-react';
+
+// custom
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+
+// components
+import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
+import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
+import {MainProfileWrapper} from "@library/common/MainProfileWrapper/MainProfileWrapper";
+import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
+
+// stores
+import {$discoveryTemplatesStore, getUsersTemplatesFx } from "../../store/templates";
+
+// styles
+import styles from './DiscoveryContainer.module.scss';
+
+const DiscoveryContainer = memo(() => {
+    const router = useRouter();
+    const templates = useStore($discoveryTemplatesStore);
+
+    useEffect(() => {
+        (async () => {
+            await getUsersTemplatesFx({ limit: 6, skip: 0 });
+        })();
+    }, []);
+
+    const handleEnterWaitingRoom = useCallback(({ templateId }) => {
+        router.push(`/meeting/${templateId}`);
+    }, []);
+
+    const handleUserTemplatesPageChange = useCallback(async newPage => {
+        await getUsersTemplatesFx({ limit: 6 * newPage, skip: 0 });
+    }, []);
+
+    return (
+        <MainProfileWrapper>
+            <CustomGrid container direction="column" alignItems="center">
+                <CustomGrid
+                    className={styles.usersTemplates}
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <CustomBox className={styles.image}>
+                        <Image
+                            src="/images/blush-face.png"
+                            width="40px"
+                            height="40px"
+                            alt="blush-face"
+                        />
+                    </CustomBox>
+                    <CustomTypography variant="h1" nameSpace="profile" translation="pages.discovery" />
+                </CustomGrid>
+                <TemplatesGrid
+                    list={templates.list}
+                    count={templates.count}
+                    onPageChange={handleUserTemplatesPageChange}
+                    TemplateComponent={DiscoverTemplateItem}
+                />
+            </CustomGrid>
+            <TemplatePreviewDialog onChooseTemplate={handleEnterWaitingRoom} />
+        </MainProfileWrapper>
+    );
+});
+
+export { DiscoveryContainer };

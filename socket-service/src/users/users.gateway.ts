@@ -24,7 +24,8 @@ import { UsersService } from './users.service';
 import SubscribeEvents from '../const/socketEvents.const';
 import EmitEvents, {
   KICK_USER,
-  REMOVE_USERS, UPDATE_MEETING,
+  REMOVE_USERS,
+  UPDATE_MEETING,
 } from '../const/emitSocketEvents.const';
 
 // dtos
@@ -34,7 +35,7 @@ import { RemoveUserRequestDTO } from '../dtos/requests/users/remove-user.dto';
 
 // helpers
 import { withTransaction } from '../helpers/mongo/withTransaction';
-import {CommonMeetingDTO} from "../dtos/response/common-meeting.dto";
+import { CommonMeetingDTO } from '../dtos/response/common-meeting.dto';
 
 @Global()
 @WebSocketGateway({ transports: ['websocket', 'polling'] })
@@ -89,7 +90,11 @@ export class UsersGateway extends BaseGateway {
 
         if (user.meeting) {
           if (user.meeting.sharingUserId === user.meetingUserId) {
-            const meeting = await this.meetingsService.updateMeetingById(user.meeting._id, { sharingUserId: null }, session);
+            const meeting = await this.meetingsService.updateMeetingById(
+              user.meeting._id,
+              { sharingUserId: null },
+              session,
+            );
 
             const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
               excludeExtraneousValues: true,

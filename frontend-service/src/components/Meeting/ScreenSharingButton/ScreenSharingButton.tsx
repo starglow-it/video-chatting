@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -13,13 +13,21 @@ import { ScreenSharingButtonProps } from './types';
 const ScreenSharingButton = memo(({ onAction, isSharingActive }: ScreenSharingButtonProps) => {
     const isThereAction = Boolean(onAction);
 
+    const tooltipTranslation = useMemo(() => {
+        if (isThereAction) {
+            return `modes.screensharing.${isSharingActive ? 'off' : 'on'}`;
+        }
+        if (!isThereAction && isSharingActive) {
+            return 'modes.screensharing.busy';
+        }
+        return '';
+    }, [isThereAction, isSharingActive]);
+
     return (
         <CustomTooltip
             classes={{ tooltip: styles.tooltip }}
             nameSpace="meeting"
-            translation={
-                isThereAction ? `modes.screensharing.${isSharingActive ? 'off' : 'on'}` : ''
-            }
+            translation={tooltipTranslation}
         >
             <CustomPaper variant="black-glass" className={styles.deviceButton}>
                 <ActionButton
@@ -27,6 +35,7 @@ const ScreenSharingButton = memo(({ onAction, isSharingActive }: ScreenSharingBu
                     className={clsx(styles.iconButton, {
                         [styles.withAction]: isThereAction,
                         [styles.active]: isSharingActive,
+                        [styles.noRights]: isSharingActive && !isThereAction,
                     })}
                     Icon={<SharingIcon width="32px" height="32px" />}
                 />

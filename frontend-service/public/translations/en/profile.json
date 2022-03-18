@@ -51,5 +51,11 @@
       "maxSize": "Up to 2MB",
       "invalidFileType": "It is not a supported image format.\n Please try a JPEG, JPG or PNG file."
     }
+  },
+  "pages": {
+    "profile": "My profile",
+    "templates": "My templates",
+    "logout": "Log out",
+    "discovery": "Discovery"
   }
 }

@@ -10,26 +10,28 @@ const supportedBrowsersArray: string[] = [
 
 let isBlurSupported = supportedBrowsersArray.includes(browserData?.browser?.name || '') && browserData.platform.type === 'desktop';
 
-let effectBlur: EffectBlur | null = null;
-let videoEffects: VideoEffects | null = null;
+export const addBlur = () => {
+    let effectBlur: EffectBlur | null = null;
+    let videoEffects: VideoEffects | null = null;
 
-export const addBlur = async (rawTrack: MediaStreamTrack): Promise<MediaStreamTrack> => {
-    try {
-        if (isBlurSupported) {
-            if (!effectBlur) {
-                effectBlur = new EffectBlur();
+    return async (rawTrack: MediaStreamTrack): Promise<MediaStreamTrack> => {
+        try {
+            if (isBlurSupported) {
+                if (!effectBlur) {
+                    effectBlur = new EffectBlur();
+                }
+
+                if (!videoEffects) {
+                    videoEffects = new VideoEffects();
+                }
+
+                return await videoEffects.setEffect(effectBlur, rawTrack);
             }
 
-            if (!videoEffects) {
-                videoEffects = new VideoEffects();
-            }
-
-            return await videoEffects.setEffect(effectBlur, rawTrack);
+            return rawTrack;
+        } catch (e) {
+            console.log('log error', e.message);
+            return rawTrack;
         }
-
-        return rawTrack;
-    } catch (e) {
-        console.log('log error', e.message);
-        return rawTrack;
     }
 }

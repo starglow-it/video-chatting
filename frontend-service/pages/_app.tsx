@@ -39,7 +39,7 @@ const clientSideEmotionCache = createEmotionCache();
 const enhance = withHydrate();
 
 const REGISTER_REDIRECT_ROUTES: string[] = ['/login', '/register', '/welcome'];
-const LOGIN_REDIRECT_ROUTES: string[] = ['/dashboard', '/dashboard/templates'];
+const LOGIN_REDIRECT_ROUTES: string[] = ['/dashboard'];
 
 const CustomApp = ({
     Component,
@@ -81,9 +81,13 @@ CustomApp.getInitialProps = async (context: AppContext) => {
 
     const data = await checkAuthFx(context.ctx);
 
-    const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.includes(context?.ctx?.pathname);
+    const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
+        new RegExp(route).test(context?.ctx?.pathname),
+    );
 
-    const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.includes(context?.ctx?.pathname);
+    const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
+        new RegExp(route).test(context?.ctx?.pathname),
+    );
 
     if (data.isAuthenticated && isRegisterRedirectRoute) {
         redirectTo(context?.ctx, '/dashboard');

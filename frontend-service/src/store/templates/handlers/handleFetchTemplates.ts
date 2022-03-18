@@ -1,5 +1,5 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { templatesUrl } from '../../../utils/urls/resolveUrl';
+import { getTemplatesUrl } from '../../../utils/urls';
 import { EntityList, Template, ErrorState } from '../../types';
 
 const handleFetchTemplates = async ({
@@ -9,9 +9,10 @@ const handleFetchTemplates = async ({
     limit: number;
     skip: number;
 }): Promise<EntityList<Template> | undefined | null> => {
-    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(
-        `${templatesUrl}?skip=${skip}&limit=${limit}`,
-    );
+    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(getTemplatesUrl({
+        limit,
+        skip,
+    }));
 
     if (response.success) {
         return response.result;

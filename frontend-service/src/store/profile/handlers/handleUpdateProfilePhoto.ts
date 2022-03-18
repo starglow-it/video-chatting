@@ -1,23 +1,21 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { profileAvatarUrl, uploadProfileAvatarUrl } from '../../../utils/urls/resolveUrl';
+import { postProfileAvatarUrl, uploadProfileAvatarUrl } from '../../../utils/urls';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 
-import { ErrorState, Profile, HttpMethods, UpdateProfileAvatar } from '../../types';
+import { ErrorState, Profile, UpdateProfileAvatar } from '../../types';
 
-export const handleUpdateProfilePhoto = async ({
-    file,
-}: UpdateProfileAvatar): Promise<Profile | undefined | null> => {
+export const handleUpdateProfilePhoto = async ({ file }: UpdateProfileAvatar): Promise<Profile | undefined | null> => {
     const formData = new FormData();
 
     formData.append('profileAvatar', file, file.name);
 
-    const { result } = await sendRequest(uploadProfileAvatarUrl, {
-        method: HttpMethods.Post,
+    const { result } = await sendRequest({
+        ...uploadProfileAvatarUrl,
         data: formData,
     });
 
-    const response = await sendRequestWithCredentials<Profile, ErrorState>(profileAvatarUrl, {
-        method: HttpMethods.Post,
+    const response = await sendRequestWithCredentials<Profile, ErrorState>({
+        ...postProfileAvatarUrl,
         data: {
             profileAvatar: result,
             size: file.size,

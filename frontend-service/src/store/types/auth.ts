@@ -1,4 +1,5 @@
-import { ErrorState } from './http';
+import {ErrorState, TokenPair} from './http';
+import {Profile} from "./profile";
 
 export type AuthUserState = {
     isAuthenticated: boolean;
@@ -21,3 +22,6 @@ export type RegisterUserParams = {
     email: string;
     password: string;
 };
+
+export type LoginUserResponse = { user: Profile } & TokenPair;
+export type LoginUserPayload = { email: string; password: string };

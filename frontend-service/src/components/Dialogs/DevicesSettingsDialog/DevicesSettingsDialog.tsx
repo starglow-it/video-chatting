@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 
 import { Divider } from '@mui/material';
@@ -8,19 +8,22 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import {CustomSwitch} from "@library/custom/CustomSwitch/CustomSwitch";
+import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
 
 // components
-import {BackgroundBlurIcon} from "@library/icons/BackgroundBlurIcon";
-import {FaceTrackingIcon} from "@library/icons/FaceTrackingIcon";
+import { BackgroundBlurIcon } from '@library/icons/BackgroundBlurIcon';
+import { FaceTrackingIcon } from '@library/icons/FaceTrackingIcon';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
+import { stopStream } from '../../../helpers/media/stopStream';
+
 import { AgoraController } from '../../../controllers/VideoChatController';
 
 // context
 import { MediaContext } from '../../../contexts/MediaContext';
-import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
+import { SettingsVideoEffectsContext } from '../../../contexts/SettingsVideoEffectsContext';
 
 // store
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
@@ -39,6 +42,8 @@ const DevicesSettingsDialog = memo(() => {
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
 
+    const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
+
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
     const {
@@ -46,13 +51,29 @@ const DevicesSettingsDialog = memo(() => {
         actions: { onToggleCamera, onToggleMic, onChangeActiveStream, onInitDevices },
     } = useContext(MediaContext);
 
-    const { actions: { onGetCanvasStream, onToggleBlur, onToggleFaceTracking }, data: { isBlurActive, isFaceTrackingActive } } = useContext(VideoEffectsContext);
+    const {
+        actions: { onGetCanvasStream, onToggleBlur, onToggleFaceTracking },
+        data: { isBlurActive, isFaceTrackingActive },
+    } = useContext(SettingsVideoEffectsContext);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
         });
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (changeStream && devicesSettingsDialog) {
+                const transformStream = await onGetCanvasStream(changeStream);
+                setPreviewStream(prev => {
+                    stopStream(prev);
+
+                    return transformStream;
+                });
+            }
+        })();
+    }, [isBlurActive, isFaceTrackingActive, changeStream, devicesSettingsDialog]);
 
     useEffect(() => {
         (async () => {
@@ -85,6 +106,7 @@ const DevicesSettingsDialog = memo(() => {
 
             addNotificationEvent({
                 type: NotificationType.DevicesAction,
+                message: 'meeting.devices.saved',
             });
 
             updateLocalUserStateEvent({
@@ -92,7 +114,15 @@ const DevicesSettingsDialog = memo(() => {
                 micStatus: isMicActive ? 'active' : 'inactive',
             });
         }
-    }, [isCameraActive, isMicActive, changeStream, meeting.sharingUserId, isSharingScreenActive, isBlurActive, isFaceTrackingActive]);
+    }, [
+        isCameraActive,
+        isMicActive,
+        changeStream,
+        meeting.sharingUserId,
+        isSharingScreenActive,
+        isBlurActive,
+        isFaceTrackingActive,
+    ]);
 
     const isDevicesChecking = !(videoDevices.length && audioDevices.length) && !error;
 
@@ -100,7 +130,7 @@ const DevicesSettingsDialog = memo(() => {
         <CustomDialog open={devicesSettingsDialog} contentClassName={styles.wrapper}>
             <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
-                    <MediaPreview />
+                    <MediaPreview stream={previewStream} />
                     <Divider orientation="vertical" flexItem />
                     <CustomGrid
                         className={styles.devicesWrapper}
@@ -120,18 +150,32 @@ const DevicesSettingsDialog = memo(() => {
                         ) : (
                             <>
                                 <SelectDevices />
-                                <CustomGrid container gap={1} className={styles.backgroundBlurSetting}>
+                                <CustomGrid
+                                    container
+                                    gap={1}
+                                    className={styles.backgroundBlurSetting}
+                                >
                                     <BackgroundBlurIcon width="24px" height="24px" />
-                                    <CustomTypography nameSpace="meeting" translation="features.blurBackground" />
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="features.blurBackground"
+                                    />
                                     <CustomSwitch
                                         className={styles.switch}
                                         checked={isBlurActive}
                                         onChange={onToggleBlur}
                                     />
                                 </CustomGrid>
-                                <CustomGrid container gap={1} className={styles.backgroundBlurSetting}>
+                                <CustomGrid
+                                    container
+                                    gap={1}
+                                    className={styles.backgroundBlurSetting}
+                                >
                                     <FaceTrackingIcon width="24px" height="24px" />
-                                    <CustomTypography nameSpace="meeting" translation="features.faceTracking" />
+                                    <CustomTypography
+                                        nameSpace="meeting"
+                                        translation="features.faceTracking"
+                                    />
                                     <CustomSwitch
                                         className={styles.switch}
                                         checked={isFaceTrackingActive}

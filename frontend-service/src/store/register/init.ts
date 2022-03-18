@@ -1,6 +1,6 @@
 import { sendRequest } from '../../helpers/http/sendRequest';
-import { AppDialogsEnum, ErrorState, HttpMethods, RegisteredUserState } from '../types';
-import { confirmRegisterUserUrl, registerUserUrl } from '../../utils/urls/resolveUrl';
+import { AppDialogsEnum, ErrorState, RegisteredUserState } from '../types';
+import { confirmRegisterUserUrl, registerUserUrl } from '../../utils/urls';
 import { appDialogsApi } from '../dialogs';
 import {
     $registerStore,
@@ -10,8 +10,8 @@ import {
 } from './model';
 
 registerUserFx.use(async params => {
-    const response = await sendRequest<void, ErrorState>(registerUserUrl, {
-        method: HttpMethods.Post,
+    const response = await sendRequest<void, ErrorState>({
+        ...registerUserUrl,
         data: params,
     });
 
@@ -28,8 +28,8 @@ registerUserFx.use(async params => {
 });
 
 confirmRegistrationUserFx.use(async (token: string) => {
-    const response = await sendRequest<void, ErrorState>(confirmRegisterUserUrl, {
-        method: HttpMethods.Post,
+    const response = await sendRequest<void, ErrorState>({
+        ...confirmRegisterUserUrl,
         data: { token },
     });
 

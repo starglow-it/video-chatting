@@ -9,6 +9,8 @@ export const REMOVE_USERS = 'users:remove';
 export const KICK_USER = 'users:kick';
 export const UPDATE_MEETING_TEMPLATE = 'template:update';
 export const SEND_MEETING_NOTE = 'meeting:notes:create';
+export const REMOVE_MEETING_NOTE = 'meeting:notes:delete';
+export const SEND_MEETING_NOTES = 'meeting:notes:get';
 
 export default {
   MEETING_FINISHED,
@@ -20,4 +22,6 @@ export default {
   KICK_USER,
   UPDATE_MEETING_TEMPLATE,
   SEND_MEETING_NOTE,
+  REMOVE_MEETING_NOTE,
+  SEND_MEETING_NOTES,
 };

@@ -5,6 +5,9 @@
   only:
     variables:
       - $CI_COMMIT_REF_NAME =~ /^(develop|testing)$/
+  except:
+    variables:
+      - $CLIENT_PUSH_ACTIVE == "true"
 
 Update Traefik:
   stage: update_traefik
@@ -25,6 +28,7 @@ Update Staging:
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
   interruptible: true
+
 
 Update Jira Issues:
   stage: update_jira_issues
