@@ -383,6 +383,41 @@ export class ProfileController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('templates/:templateId')
+  @ApiOperation({ summary: 'Get Template' })
+  @ApiOkResponse({
+    type: CommonTemplateRestDTO,
+    description: 'Get Profile Template Success',
+  })
+  async getUserTemplate(@Param('templateId') templateId: string) {
+    try {
+      if (templateId) {
+        const template = await this.templatesService.getUserTemplate({
+          id: templateId,
+        });
+
+        return {
+          success: true,
+          result: template,
+        };
+      }
+      return {
+        success: false,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+          {
+            message: `An error occurs, while get profile template`,
+          },
+          JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('/templates/:templateId')
   @ApiOperation({ summary: 'Update Profile Template' })
   @ApiOkResponse({

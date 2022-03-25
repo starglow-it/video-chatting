@@ -50,6 +50,8 @@ export class UserTemplatesController {
         'socials',
         'businessCategories',
         'languages',
+        'meetingInstance',
+        { path: 'user', populate: { path: 'profileAvatar'} }
       ]);
 
       return plainToClass(UserTemplateDTO, userTemplate, {
@@ -85,7 +87,7 @@ export class UserTemplatesController {
           {
             query: { user: user._id },
             options: { sort: '-usedAt', skip, limit },
-            populatePaths: 'businessCategories',
+            populatePaths: ['businessCategories', 'user'],
           },
         );
 

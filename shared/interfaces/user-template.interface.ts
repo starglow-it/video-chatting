@@ -1,6 +1,7 @@
 import { IBusinessCategory } from "./business-category.interface";
 import {ILanguage} from "./common-language.interface";
 import {ISocialLink} from "./common-social-link.interface";
+import {ITemplateUserDTO} from "./template-user.interface";
 
 export interface IUserTemplate {
     id: string;
@@ -19,4 +20,5 @@ export interface IUserTemplate {
     businessCategories: IBusinessCategory[];
     languages: ILanguage[];
     socials: ISocialLink[];
+    user: ITemplateUserDTO;
 }

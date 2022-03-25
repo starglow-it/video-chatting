@@ -7,6 +7,7 @@ import { withHydrate } from 'effector-next';
 import { hydrate } from 'effector';
 import { Provider } from 'effector-react/ssr';
 import { CacheProvider, EmotionCache } from '@emotion/react';
+import { Layout } from '@components/Layout/Layout';
 
 // stores
 import '../src/store/init';
@@ -65,7 +66,9 @@ const CustomApp = ({
                             <ThemeProvider theme={componentsTheme}>
                                 <CssBaseline />
                                 {globalStylesComponent}
-                                <Component {...pageProps} />
+                                <Layout>
+                                    <Component {...pageProps} />
+                                </Layout>
                                 <ToastsNotifications />
                             </ThemeProvider>
                         </ThemeProvider>

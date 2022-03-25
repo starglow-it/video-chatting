@@ -16,7 +16,9 @@ export interface IsomorphicRequestOptions extends AxiosRequestConfig {
 export default async function sendRequestWithCredentials<Result, Error>(
     options: IsomorphicRequestOptions = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
-    const { ctx, authRequest, url: path, ...requestOptions } = options;
+    const { ctx, authRequest, ...requestOptions } = options;
+
+    const path = options.url;
 
     if (!authRequest) {
         return sendRequest<Result, Error>(requestOptions);
@@ -33,6 +35,7 @@ export default async function sendRequestWithCredentials<Result, Error>(
             result: undefined,
         };
     }
+
     if (accessToken) {
         return sendRequest<Result, Error>({
             url: path,

@@ -1,8 +1,8 @@
 import { meetingDomain } from '../domain';
 
-import { ErrorState, UpdateTemplateData, Template } from '../../types';
+import {ErrorState, UpdateTemplateData, Template, UserTemplate} from '../../types';
 
-export const initialTemplateState: Template = {
+export const initialTemplateState: UserTemplate = {
     id: '',
     templateId: 0,
     url: '',
@@ -21,7 +21,7 @@ export const initialTemplateState: Template = {
     usedAt: '',
 };
 
-export const $meetingTemplateStore = meetingDomain.store<Template>(initialTemplateState);
+export const $meetingTemplateStore = meetingDomain.store<UserTemplate>(initialTemplateState);
 
 export const getMeetingTemplateFx = meetingDomain.effect<
     { templateId: Template['id'] },

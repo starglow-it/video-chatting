@@ -113,7 +113,11 @@ const TemplatesContainer = memo(() => {
                     TemplateComponent={CommonTemplateItem}
                 />
             </CustomGrid>
-            <TemplatePreviewDialog onChooseTemplate={handleChooseTemplate} />
+            <TemplatePreviewDialog
+                isNeedToRenderTemplateInfo
+                chooseButtonKey="chooseTemplate"
+                onChooseTemplate={handleChooseTemplate}
+            />
         </MainProfileWrapper>
     );
 });

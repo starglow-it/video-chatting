@@ -11,16 +11,18 @@ import styles from './EndMeetingDialog.module.scss';
 
 import { appDialogsApi, $appDialogsStore } from '../../../store/dialogs';
 
-import { $meetingStore, emitEndMeetingEvent, emitLeaveMeetingEvent } from '../../../store/meeting';
+import {$meetingStore, $meetingTemplateStore, emitEndMeetingEvent, emitLeaveMeetingEvent} from '../../../store/meeting';
 import { $localUserStore } from '../../../store/users';
 
 import { AppDialogsEnum } from '../../../store/types';
 import { useLocalization } from '../../../hooks/useTranslation';
+import { deleteMeetingFx } from 'src/store/meetings';
 
 const EndMeetingDialog = memo(() => {
     const router = useRouter();
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
+    const meetingTemplate = useStore($meetingTemplateStore);
 
     const { translation } = useLocalization('meeting');
 
@@ -34,15 +36,16 @@ const EndMeetingDialog = memo(() => {
         });
     }, []);
 
-    const handleLeave = useCallback(() => {
+    const handleLeave = useCallback( () => {
         handleClose();
         emitLeaveMeetingEvent();
-        router.push(localUser.isGenerated ? '/login' : '/dashboard');
+        router.push('/dashboard');
     }, []);
 
-    const handleEndMeeting = useCallback(() => {
+    const handleEndMeeting = useCallback(async () => {
         handleClose();
         emitEndMeetingEvent();
+        await deleteMeetingFx({ templateId: meetingTemplate.id });
         router.push('/dashboard');
     }, []);
 

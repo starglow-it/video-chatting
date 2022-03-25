@@ -1,14 +1,19 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
-
+// dtos
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { CommonLanguageDTO } from './common-language.dto';
 import { CommonSocialLinkDTO } from './common-social-link.dto';
+import {CommonMeetingDTO} from "./common-meeting.dto";
+import {TemplateUserDTO} from "./template-user.dto";
 
+// interfaces
+import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
 import { ILanguage } from '@shared/interfaces/common-language.interface';
 import { ISocialLink } from '@shared/interfaces/common-social-link.interface';
 import { IUserTemplate } from '@shared/interfaces/user-template.interface';
+import {ITemplateUserDTO} from "@shared/interfaces/template-user.interface";
+import {ICommonMeetingInstanceDTO} from "@shared/interfaces/common-instance-meeting.interface";
 
 export class UserTemplateDTO implements IUserTemplate {
   @Expose()
@@ -24,6 +29,10 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   @Type(() => CommonBusinessCategoryDTO)
   businessCategories: IBusinessCategory[];
+
+  @Expose()
+  @Type(() => CommonMeetingDTO)
+  meetingInstance: ICommonMeetingInstanceDTO;
 
   @Expose()
   templateId: number;
@@ -62,4 +71,8 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   @Type(() => CommonSocialLinkDTO)
   socials: ISocialLink[];
+
+  @Expose()
+  @Type(() => TemplateUserDTO)
+  user: ITemplateUserDTO;
 }

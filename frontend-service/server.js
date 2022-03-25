@@ -23,7 +23,7 @@ const proxy = {
         changeOrigin: true,
     },
     '/socket.io': {
-        target: `http://socket-service:8080`,
+        target: `http://gateway-service:3000`,
         changeOrigin: true,
         ws: true,
     },

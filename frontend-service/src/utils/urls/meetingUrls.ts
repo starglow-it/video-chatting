@@ -1,20 +1,30 @@
 import {meetingScope, serverUrl, usersScope} from "./baseData";
 import {HttpMethods} from "../../store/types";
 
-export const CREATE_MEETING_URL = `${meetingScope}/create`;
+export const CREATE_MEETING_URL = `${meetingScope}`;
 export const GET_MEETING_URL = `${meetingScope}`;
 
-export const getMeetingUrl = (meetingId: string) => ({
-    url: `${serverUrl}/${GET_MEETING_URL}/${meetingId}`,
+export const getMeetingUrl = (templateId: string) => ({
+    url: `${serverUrl}/${GET_MEETING_URL}/${templateId}`,
     method: HttpMethods.Get
 });
 
-export const userTemplatesUrl = ({ templateId }: { templateId: string; }) => ({
+export const getUserTemplatesUrl = ({ templateId }: { templateId: string; }) => ({
     url: `${serverUrl}/${usersScope}/templates/${templateId ? templateId : ''}`,
-    method: HttpMethods.Post,
+    method: HttpMethods.Get,
+});
+
+export const postUserTemplatesUrl = ({ templateId }: { templateId: string; }) => ({
+    url: `${serverUrl}/${usersScope}/templates/${templateId ? templateId : ''}`,
+    method: HttpMethods.Get,
 });
 
 export const createMeetingUrl = {
     url: `${serverUrl}/${CREATE_MEETING_URL}`,
     method: HttpMethods.Post,
+};
+
+export const deleteMeetingUrl = {
+    url: `${serverUrl}/${CREATE_MEETING_URL}`,
+    method: HttpMethods.Delete,
 };

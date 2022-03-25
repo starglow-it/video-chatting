@@ -6,7 +6,10 @@
   .video {
     position: relative;
     z-index: 100;
-    width: 100%;
+    display: block;
+    object-fit: fill;
+    min-height: 100%;
+    min-width: 100%;
   }
 
   .videoFullHeight {

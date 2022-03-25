@@ -5,6 +5,7 @@ import { BusinessCategoryDocument } from './business-category.schema';
 import { UserDocument } from './user.schema';
 import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
+import {MeetingInstanceDocument} from "./meeting-instance.schema";
 
 @Schema()
 export class UserTemplate {
@@ -107,6 +108,12 @@ export class UserTemplate {
     required: true,
   })
   user: UserDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MeetingInstance',
+  })
+  meetingInstance: MeetingInstanceDocument;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

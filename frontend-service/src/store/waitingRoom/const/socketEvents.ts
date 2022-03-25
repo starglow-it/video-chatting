@@ -1,0 +1,1 @@
+export const ON_MEETING_AVAILABLE = 'waitingRoom:meetingAvailable';

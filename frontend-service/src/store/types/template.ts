@@ -1,4 +1,5 @@
-import { BusinessCategory, Language, SocialLink } from './profile';
+import {BusinessCategory, Language, ProfileAvatar, SocialLink} from './profile';
+import {MeetingInstance} from "./meeting";
 
 export type Template = {
     id: string;
@@ -36,4 +37,8 @@ export type UserTemplate = {
     position: string;
     languages: Language[];
     socials: SocialLink[];
+    meetingInstance?: MeetingInstance;
+    user?: {
+        profileAvatar: ProfileAvatar
+    }
 }

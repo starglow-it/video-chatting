@@ -14,10 +14,6 @@ export class CommonInstanceMeetingRestDTO implements ICommonMeetingInstanceDTO {
 
   @Expose()
   @ApiProperty()
-  meetingToken: string;
-
-  @Expose()
-  @ApiProperty()
   template: string;
 
   @Expose()

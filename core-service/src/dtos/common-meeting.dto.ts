@@ -4,8 +4,6 @@ import { ICommonMeetingInstanceDTO } from '@shared/interfaces/common-instance-me
 
 import { CommonUserDTO } from './common-user.dto';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
-import { UserTemplateDTO } from './user-template.dto';
 
 export class CommonMeetingDTO implements ICommonMeetingInstanceDTO {
   @Expose()
@@ -16,16 +14,8 @@ export class CommonMeetingDTO implements ICommonMeetingInstanceDTO {
   serverIp: string;
 
   @Expose()
-  meetingToken: string;
-
-  @Expose()
-  @Type(() => UserTemplateDTO)
-  @Transform((data) => data.obj.template['_id']?.toString())
-  template: IUserTemplate['id'];
-
-  @Expose()
   @Type(() => CommonUserDTO)
-  @Transform((data) => data.obj.owner['_id']?.toString())
+  @Transform((data) => data?.obj?.owner?.['_id']?.toString())
   owner: ICommonUserDTO['id'];
 
   @Expose()

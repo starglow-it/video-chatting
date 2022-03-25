@@ -69,7 +69,11 @@ const WelcomePageContainer = memo(() => {
                     TemplateComponent={OnboardingTemplateItem}
                 />
             </CustomGrid>
-            <TemplatePreviewDialog onChooseTemplate={handleStartOnboarding} />
+            <TemplatePreviewDialog
+                isNeedToRenderTemplateInfo
+                chooseButtonKey="chooseTemplate"
+                onChooseTemplate={handleStartOnboarding}
+            />
         </>
     );
 });

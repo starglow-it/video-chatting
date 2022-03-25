@@ -7,7 +7,7 @@ import {
   Logger,
   Param,
   Get,
-  Body,
+  Body, Delete,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -32,7 +32,7 @@ export class MeetingsController {
   constructor(private coreService: CoreService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('/create')
+  @Post('/')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Meeting' })
   @ApiOkResponse({
@@ -56,6 +56,42 @@ export class MeetingsController {
       return {
         success: true,
         result: meeting,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while create meeting`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete Meeting' })
+  @ApiOkResponse({
+    type: CommonInstanceMeetingRestDTO,
+    description: 'Delete Meeting Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async deleteMeeting(
+    @Request() req,
+    @Body() deleteMeetingData: { templateId: string },
+  ): Promise<ResponseSumType<void>> {
+    try {
+      // TODO: logic with create instance and assign server ip and server status to the meeting model
+      await this.coreService.deleteMeeting({
+        templateId: deleteMeetingData.templateId,
+      });
+
+      return {
+        success: true,
+        result: undefined,
       };
     } catch (err) {
       this.logger.error(

@@ -1,6 +1,7 @@
-import React, { memo } from 'react';
+import React, {memo, useEffect} from 'react';
 import { Theme } from '@mui/material';
 import { useStore } from 'effector-react';
+import { useRouter } from "next/router";
 
 // library
 import { LiveOfficeLogo } from '@library/icons/LiveOfficeLogo';
@@ -19,9 +20,28 @@ import { LayoutProps } from './types';
 import { $authStore } from '../../store/auth';
 
 import styles from './Layout.module.scss';
+import {CustomLink} from "@library/custom/CustomLink/CustomLink";
+
+// stores
+import {initiateMainSocketConnectionFx} from "../../store/mainServerSocket";
+import { emitJoinDashboard } from "../../store/waitingRoom";
 
 const Layout = memo(({ children }: LayoutProps): JSX.Element => {
     const { isAuthenticated } = useStore($authStore);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        (async () => {
+            const isDashboardRoute = new RegExp('dashboard').test(router.pathname);
+
+            if (isDashboardRoute) {
+                await initiateMainSocketConnectionFx();
+
+                emitJoinDashboard();
+            }
+        })();
+    }, []);
 
     return (
         <>
@@ -41,7 +61,9 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
                 <CustomBox className={styles.contentWrapper}>
                     <CustomBox className={styles.header}>
                         <CustomGrid container justifyContent="space-between" alignItems="center">
-                            <LiveOfficeLogo width="210px" height="44px" />
+                            <CustomLink href={isAuthenticated ? "/dashboard" : ""}>
+                                <LiveOfficeLogo width="210px" height="44px" />
+                            </CustomLink>
                             <CustomGrid>{!isAuthenticated && <AuthenticationLink />}</CustomGrid>
                         </CustomGrid>
                     </CustomBox>

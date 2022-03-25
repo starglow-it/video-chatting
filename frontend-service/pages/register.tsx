@@ -4,7 +4,6 @@ import { withStart } from 'effector-next';
 import { RegisterContainer } from '@containers/RegisterContainer/RegisterContainer';
 
 import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
-import { Layout } from '@components/Layout/Layout';
 
 import { pageLoaded } from '../src/store/root';
 
@@ -12,10 +11,7 @@ import { pageLoaded } from '../src/store/root';
 const enhance = withStart(pageLoaded);
 
 const RegisterPage: NextPage = (): JSX.Element => (
-    <Layout>
-        <SuccessfulRegisterDialog />
-        <RegisterContainer />
-    </Layout>
+    <RegisterContainer />
 );
 
 RegisterPage.getInitialProps = () => ({

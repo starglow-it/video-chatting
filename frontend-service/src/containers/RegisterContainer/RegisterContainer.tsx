@@ -5,31 +5,35 @@ import Image from 'next/image';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import { useForm, useWatch, FormProvider } from 'react-hook-form';
-
 import { useMediaQuery } from '@mui/material';
 
 // library
-import { GoogleIcon } from '@library/icons/GoogleIcon';
-import { LinkedInIcon } from '@library/icons/LinkedInIcon';
 
-import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
+// icons
+// import { GoogleIcon } from '@library/icons/GoogleIcon';
+// import { LinkedInIcon } from '@library/icons/LinkedInIcon';
+// import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
+// import { BlockSeparator } from '@library/common/BlockSeparator/BlockSeparator';
+
+// custom
 import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
-import { BlockSeparator } from '@library/common/BlockSeparator/BlockSeparator';
+import {SuccessfulRegisterDialog} from "@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog";
 
 // stores
 import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store/register';
 
 // types
-import { RegisterUserParams } from '../../store/register/types';
+import { RegisterUserParams } from 'src/store/types';
 
 // styles
 import styles from './RegisterContainer.module.scss';
@@ -38,7 +42,6 @@ import styles from './RegisterContainer.module.scss';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { emailSchema } from '../../validation/users/email';
 import { passwordSchema } from '../../validation/users/password';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -113,19 +116,20 @@ const RegisterContainer = memo(() => {
     const isNotRequiredMessage = !currentEmailErrorMessage.includes('required');
 
     return (
-        <CenteredPaper className={styles.wrapper} onClose={handleCloseRegister}>
-            <CustomGrid container alignItems="center" justifyContent="center">
-                <CustomBox className={styles.image}>
-                    <Image width="28" height="28" src="/images/hi-hand.png" alt="hi-hand" />
-                </CustomBox>
-                <CustomTypography
-                    variant="h2bold"
-                    className={styles.text}
-                    nameSpace="register"
-                    translation="getStarted.title"
-                />
-            </CustomGrid>
-            {/*<CustomGrid container direction="column" className={styles.socialsWrapper}>
+        <>
+            <CenteredPaper className={styles.wrapper} onClose={handleCloseRegister}>
+                <CustomGrid container alignItems="center" justifyContent="center">
+                    <CustomBox className={styles.image}>
+                        <Image width="28" height="28" src="/images/hi-hand.png" alt="hi-hand" />
+                    </CustomBox>
+                    <CustomTypography
+                        variant="h2bold"
+                        className={styles.text}
+                        nameSpace="register"
+                        translation="getStarted.title"
+                    />
+                </CustomGrid>
+                {/*<CustomGrid container direction="column" className={styles.socialsWrapper}>
                 <CustomGrid item className={styles.googleLogin}>
                     <SocialLogin
                         Icon={GoogleIcon}
@@ -146,80 +150,82 @@ const RegisterContainer = memo(() => {
                 nameSpace="register"
                 translation="getStarted.createNewAcc"
             />*/}
-            <FormProvider {...methods}>
-                <form className={styles.socialsWrapper} onSubmit={onSubmit}>
-                    <CustomGrid container>
-                        <CustomGrid item className={styles.input}>
-                            <EmailInput
-                                error={isNotRequiredMessage ? currentEmailErrorMessage : ''}
-                                onClear={handleResetEmailField}
-                                {...register('email')}
-                            />
+                <FormProvider {...methods}>
+                    <form className={styles.socialsWrapper} onSubmit={onSubmit}>
+                        <CustomGrid container>
+                            <CustomGrid item className={styles.input}>
+                                <EmailInput
+                                    error={isNotRequiredMessage ? currentEmailErrorMessage : ''}
+                                    onClear={handleResetEmailField}
+                                    {...register('email')}
+                                />
+                            </CustomGrid>
+                            <CustomGrid item className={styles.input}>
+                                <PasswordInput
+                                    fieldKey="password"
+                                    onFocus={handleFocusInput}
+                                    {...register('password')}
+                                    onCustomBlur={handleBlurInput}
+                                />
+                                <PasswordHints show={showHints} fieldKey="password" />
+                            </CustomGrid>
                         </CustomGrid>
-                        <CustomGrid item className={styles.input}>
-                            <PasswordInput
-                                fieldKey="password"
-                                onFocus={handleFocusInput}
-                                {...register('password')}
-                                onCustomBlur={handleBlurInput}
-                            />
-                            <PasswordHints show={showHints} fieldKey="password" />
-                        </CustomGrid>
-                    </CustomGrid>
 
-                    <CustomGrid
-                        container
-                        flexWrap="nowrap"
-                        justifyContent="center"
-                        alignItems="center"
-                        className={styles.termsWrapper}
-                    >
-                        <CustomCheckbox className={styles.checkbox} {...register('terms')} />
-                        <CustomGrid>
-                            {!is480Media && (
-                                <CustomTypography
-                                    className={styles.termsText}
+                        <CustomGrid
+                            container
+                            flexWrap="nowrap"
+                            justifyContent="center"
+                            alignItems="center"
+                            className={styles.termsWrapper}
+                        >
+                            <CustomCheckbox className={styles.checkbox} {...register('terms')} />
+                            <CustomGrid>
+                                {!is480Media && (
+                                    <CustomTypography
+                                        className={styles.termsText}
+                                        variant="body2"
+                                        nameSpace="common"
+                                        translation="iAgree"
+                                    />
+                                )}
+                                <CustomLink
+                                    className={clsx(styles.termsText, styles.termsLink)}
+                                    href="/terms"
                                     variant="body2"
                                     nameSpace="common"
-                                    translation="iAgree"
+                                    translation="terms"
                                 />
-                            )}
-                            <CustomLink
-                                className={clsx(styles.termsText, styles.termsLink)}
-                                href="/terms"
-                                variant="body2"
-                                nameSpace="common"
-                                translation="terms"
-                            />
-                            {!is480Media && (
-                                <CustomTypography
-                                    className={styles.termsText}
+                                {!is480Media && (
+                                    <CustomTypography
+                                        className={styles.termsText}
+                                        variant="body2"
+                                        nameSpace="common"
+                                        translation="and"
+                                    />
+                                )}
+                                <CustomLink
+                                    className={clsx(styles.termsText, styles.termsLink)}
+                                    href="/privacy"
                                     variant="body2"
                                     nameSpace="common"
-                                    translation="and"
+                                    translation="privacy"
                                 />
-                            )}
-                            <CustomLink
-                                className={clsx(styles.termsText, styles.termsLink)}
-                                href="/privacy"
-                                variant="body2"
-                                nameSpace="common"
-                                translation="privacy"
-                            />
+                            </CustomGrid>
                         </CustomGrid>
-                    </CustomGrid>
 
-                    <CustomButton
-                        className={styles.registerButton}
-                        disabled={!Boolean(isTermsAccepted)}
-                        type="submit"
-                        nameSpace="register"
-                        translation="getStarted.button"
-                    />
-                </form>
-            </FormProvider>
-        </CenteredPaper>
-    );
+                        <CustomButton
+                            className={styles.registerButton}
+                            disabled={!Boolean(isTermsAccepted)}
+                            type="submit"
+                            nameSpace="register"
+                            translation="getStarted.button"
+                        />
+                    </form>
+                </FormProvider>
+            </CenteredPaper>
+            <SuccessfulRegisterDialog />
+        </>
+);
 });
 
 export { RegisterContainer };

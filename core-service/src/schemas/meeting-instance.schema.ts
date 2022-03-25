@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { UserDocument } from './user.schema';
-import { UserTemplateDocument } from './user-template.schema';
 
 @Schema()
 export class MeetingInstance {
@@ -12,18 +11,6 @@ export class MeetingInstance {
   serverIp: string;
 
   @Prop({
-    type: mongoose.Schema.Types.String,
-  })
-  meetingToken: string;
-
-  @Prop({
-    required: true,
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserTemplate',
-  })
-  template: UserTemplateDocument;
-
-  @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -31,7 +18,7 @@ export class MeetingInstance {
   owner: UserDocument;
 
   @Prop({
-    type: String,
+    type: mongoose.Schema.Types.String,
   })
   serverStatus: string;
 }

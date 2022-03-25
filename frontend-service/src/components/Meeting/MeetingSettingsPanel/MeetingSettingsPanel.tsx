@@ -192,7 +192,7 @@ const MeetingSettingsPanel = memo(
 
         const handleConfirmClose = useCallback(() => {
             if (isEditTemplateView) {
-                router.push('/dashboard/templates');
+                router.push('/dashboard');
             } else {
                 setOpen(false);
                 reset();
@@ -233,7 +233,7 @@ const MeetingSettingsPanel = memo(
                     dialogKey: AppDialogsEnum.editMeetingTemplateDialog,
                 });
             } else {
-                router.push('/dashboard/templates');
+                router.push('/dashboard');
             }
         }, [dirtyFieldsCount]);
 

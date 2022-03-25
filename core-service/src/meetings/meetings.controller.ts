@@ -5,7 +5,7 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToClass } from 'class-transformer';
 
 // const
-import { CREATE_MEETING, GET_MEETING } from '@shared/patterns/meetings';
+import {CREATE_MEETING, DELETE_MEETING, GET_MEETING} from '@shared/patterns/meetings';
 import { CORE_SERVICE } from '@shared/const/services.const';
 
 // types
@@ -23,6 +23,7 @@ import { UsersService } from '../users/users.service';
 import { MeetingsService } from './meetings.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { CommonTemplatesService } from '../common-templates/common-templates.service';
+import {UserTemplateDTO} from "../dtos/user-template.dto";
 
 @Controller('meetings')
 export class MeetingsController {
@@ -44,17 +45,26 @@ export class MeetingsController {
             session,
           });
 
+        const meeting = await this.meetingsService.create(
+            {
+              userId: data.userId,
+            },
+            session,
+        );
+
         const user = await this.usersService.findById(data.userId, session);
 
-        let userTemplate = await this.userTemplatesService.findUserTemplate(
-          targetTemplate?.templateId
-            ? { templateId: targetTemplate?.templateId, user: user._id }
-            : { _id: data.templateId },
-          session,
-        );
+        let userTemplate = await this.userTemplatesService.findUserTemplate({
+          query: targetTemplate?.templateId
+                  ? { templateId: targetTemplate?.templateId, user: user._id }
+                  : { _id: data.templateId },
+          session
+        });
 
         if (userTemplate) {
           userTemplate.usedAt = Date.now();
+          userTemplate.meetingInstance = meeting;
+
           await userTemplate.save();
         } else {
           await user.populate(['socials', 'languages', 'templates']);
@@ -77,6 +87,7 @@ export class MeetingsController {
             contactEmail: user.contactEmail,
             languages: user.languages.map((language) => language._id),
             socials: user.socials.map((social) => social._id),
+            meetingInstance: meeting,
           };
 
           [userTemplate] = await this.userTemplatesService.createUserTemplate(
@@ -106,22 +117,30 @@ export class MeetingsController {
           await user.save();
         }
 
-        const meeting = await this.meetingsService.create(
-          {
-            userId: data.userId,
-            templateId: userTemplate._id,
-          },
-          session,
-        );
-
-        await meeting.save();
-
-        await meeting.populate(['owner', 'template']);
-
-        return plainToClass(CommonMeetingDTO, meeting, {
+        return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
+      });
+    } catch (e) {
+      throw new RpcException({ message: e.message, ctx: CORE_SERVICE });
+    }
+  }
+
+  @MessagePattern({ cmd: DELETE_MEETING })
+  async deleteMeeting(@Payload() data: { templateId: string; }) {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const userTemplate = await this.userTemplatesService.findUserTemplate({
+          query: { _id: data?.templateId },
+          session,
+          populatePaths: 'meetingInstance'
+        });
+
+        await this.meetingsService.deleteMeeting(
+          userTemplate.meetingInstance._id,
+          session,
+        );
       });
     } catch (e) {
       throw new RpcException({ message: e.message, ctx: CORE_SERVICE });

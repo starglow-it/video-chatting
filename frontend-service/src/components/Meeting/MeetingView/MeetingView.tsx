@@ -173,9 +173,7 @@ const MeetingView = memo(() => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            <MeetingBackgroundVideo src="/videos/Lakeside-George.mp4" />
-
-            {Boolean(meeting.sharingUserId) && <ScreenSharingLayout />}
+            {Boolean(meeting.sharingUserId) ? <ScreenSharingLayout /> : <MeetingBackgroundVideo src="/videos/output.mp4" />}
 
             {Boolean(meetingTemplate?.id) && (
                 <MeetingSettingsPanel
@@ -203,9 +201,7 @@ const MeetingView = memo(() => {
                     <MeetingNotes />
                 </MeetingSettingsPanel>
             )}
-            <SettingsVideoEffectsProvider>
-                <DevicesSettingsDialog />
-            </SettingsVideoEffectsProvider>
+            <DevicesSettingsDialog />
 
             <EndMeetingDialog />
             <InviteAttendeeDialog />

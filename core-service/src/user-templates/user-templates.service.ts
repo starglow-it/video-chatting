@@ -64,10 +64,17 @@ export class UserTemplatesService {
   }
 
   async findUserTemplate(
-    query: FilterQuery<UserTemplateDocument>,
-    { session }: ITransactionSession,
+      {
+        query,
+        session,
+        populatePaths
+      }: {
+        query: FilterQuery<UserTemplateDocument>,
+        session: ITransactionSession,
+        populatePaths?: string | string[] | PopulateOptions | PopulateOptions[];
+      }
   ): Promise<UserTemplateDocument> {
-    return this.userTemplate.findOne(query, {}, { session });
+    return this.userTemplate.findOne(query, {}, { session: session.session, populate: populatePaths });
   }
 
   async deleteUserTemplate(

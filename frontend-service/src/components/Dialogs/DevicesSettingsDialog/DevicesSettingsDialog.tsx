@@ -37,6 +37,8 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 // styles
 import styles from './DevicesSettingsDialog.module.scss';
 
+import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
+
 const DevicesSettingsDialog = memo(() => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
     const localUser = useStore($localUserStore);
@@ -54,7 +56,7 @@ const DevicesSettingsDialog = memo(() => {
     const {
         actions: { onGetCanvasStream, onToggleBlur, onToggleFaceTracking },
         data: { isBlurActive, isFaceTrackingActive },
-    } = useContext(SettingsVideoEffectsContext);
+    } = useContext(VideoEffectsContext);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -62,18 +64,18 @@ const DevicesSettingsDialog = memo(() => {
         });
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            if (changeStream && devicesSettingsDialog) {
-                const transformStream = await onGetCanvasStream(changeStream);
-                setPreviewStream(prev => {
-                    stopStream(prev);
-
-                    return transformStream;
-                });
-            }
-        })();
-    }, [isBlurActive, isFaceTrackingActive, changeStream, devicesSettingsDialog]);
+    // useEffect(() => {
+    //     (async () => {
+    //         if (changeStream && devicesSettingsDialog) {
+    //             const transformStream = await onGetCanvasStream(changeStream);
+    //             setPreviewStream(prev => {
+    //                 stopStream(prev);
+    //
+    //                 return transformStream;
+    //             });
+    //         }
+    //     })();
+    // }, [isBlurActive, isFaceTrackingActive, changeStream, devicesSettingsDialog]);
 
     useEffect(() => {
         (async () => {
@@ -130,7 +132,7 @@ const DevicesSettingsDialog = memo(() => {
         <CustomDialog open={devicesSettingsDialog} contentClassName={styles.wrapper}>
             <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
-                    <MediaPreview stream={previewStream} />
+                    <MediaPreview stream={changeStream} />
                     <Divider orientation="vertical" flexItem />
                     <CustomGrid
                         className={styles.devicesWrapper}

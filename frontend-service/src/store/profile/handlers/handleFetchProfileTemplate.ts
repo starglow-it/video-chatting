@@ -1,5 +1,5 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { profileTemplatesUrl } from '../../../utils/urls';
+import { getProfileTemplateUrl } from '../../../utils/urls';
 
 import { ErrorState, Profile, Template } from '../../types';
 
@@ -12,7 +12,7 @@ export const handleFetchProfileTemplate = async ({
     userId: Profile['id'];
 }): Promise<Template> => {
     const response = await sendRequestWithCredentials<Template, ErrorState>(
-        profileTemplatesUrl({ templateId }),
+        getProfileTemplateUrl({ templateId }),
     );
 
     if (response.success) {

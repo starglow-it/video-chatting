@@ -40,6 +40,10 @@ export class MeetingsService {
     return meeting;
   }
 
+  async deleteMeeting(id, { session }: ITransactionSession) {
+    return this.meetingInstance.deleteOne({ _id: id }, { session });
+  }
+
   async findById(
     getMeetingData: { meetingId: ICommonMeetingInstanceDTO['id'] },
     { session }: ITransactionSession,

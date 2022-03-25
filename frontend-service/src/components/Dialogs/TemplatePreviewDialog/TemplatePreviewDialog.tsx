@@ -29,7 +29,7 @@ import { TemplatePreviewDialogProps } from './types';
 // styles
 import styles from './TemplatePreviewDialog.module.scss';
 
-const TemplatePreviewDialog = memo(({ onChooseTemplate }: TemplatePreviewDialogProps) => {
+const TemplatePreviewDialog = memo(({ onChooseTemplate, chooseButtonKey, isNeedToRenderTemplateInfo }: TemplatePreviewDialogProps) => {
     const { templatePreviewDialog } = useStore($appDialogsStore);
     const previewTemplate = useStore($templatePreviewStore);
     const profile = useStore($profileStore);
@@ -79,16 +79,18 @@ const TemplatePreviewDialog = memo(({ onChooseTemplate }: TemplatePreviewDialogP
                             maxWidth={210}
                             tags={previewTemplate?.businessCategories}
                         />
-                        <CustomGrid
-                            container
-                            className={styles.templateType}
-                            justifyContent="flex-end"
-                            gap={1}
-                            wrap="nowrap"
-                        >
-                            <TemplatePaymentType type={previewTemplate?.type || ''} />
-                            <TemplateParticipants number={previewTemplate?.maxParticipants || 0} />
-                        </CustomGrid>
+                        {isNeedToRenderTemplateInfo && (
+                            <CustomGrid
+                                container
+                                className={styles.templateType}
+                                justifyContent="flex-end"
+                                gap={1}
+                                wrap="nowrap"
+                            >
+                                <TemplatePaymentType type={previewTemplate?.type || ''} />
+                                <TemplateParticipants number={previewTemplate?.maxParticipants || 0} />
+                            </CustomGrid>
+                        )}
                     </CustomGrid>
                     <CustomTypography className={styles.name} variant="h2bold">
                         {previewTemplate?.name}
@@ -111,7 +113,7 @@ const TemplatePreviewDialog = memo(({ onChooseTemplate }: TemplatePreviewDialogP
                             onClick={handleChooseTemplate}
                             className={styles.chooseBtn}
                             nameSpace="templates"
-                            translation="buttons.chooseTemplate"
+                            translation={`buttons.${chooseButtonKey}`}
                         />
                     </CustomGrid>
                 </CustomBox>

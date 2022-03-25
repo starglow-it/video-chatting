@@ -47,7 +47,6 @@ import { initiateSocketConnectionFx } from '../../socket';
 import { setMeetingErrorEvent } from '../meetingError';
 import { appDialogsApi } from '../../dialogs';
 import { $profileStore } from '../../profile';
-import { $meetingInstanceStore } from '../meetingInstance';
 
 import { AppDialogsEnum, SocketState } from '../../types';
 
@@ -70,15 +69,15 @@ sample({
     clock: emitJoinMeetingEvent,
     source: combine({
         profile: $profileStore,
-        mainMeeting: $meetingInstanceStore,
+        template: $meetingTemplateStore,
         localUser: $localUserStore,
     }),
     fn: data => ({
         profileId: data.profile?.id,
         profileUserName: data?.profile?.fullName,
         profileAvatar: data?.profile?.profileAvatar.url,
-        instanceId: data.mainMeeting.id,
-        isOwner: data.mainMeeting.owner === data.profile?.id,
+        instanceId: data.template?.meetingInstance?.id,
+        isOwner: data.template?.meetingInstance?.owner === data.profile?.id,
     }),
     target: joinMeetingEvent,
 });
@@ -134,7 +133,7 @@ sample({
 
 forward({
     from: joinMeetingEvent.doneData,
-    to: [setMeetingEvent, setLocalUserEvent],
+    to: [setMeetingEvent, setLocalUserEvent, updateMeetingUsersEvent],
 });
 
 forward({

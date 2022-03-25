@@ -21,7 +21,6 @@ export type MeetingInstance = {
     id: string;
     serverIp: string;
     owner: string;
-    template: string;
 };
 
 export enum MeetingAccessStatuses {

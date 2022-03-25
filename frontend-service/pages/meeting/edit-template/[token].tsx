@@ -2,7 +2,6 @@ import React from 'react';
 import { withStart } from 'effector-next';
 
 import { EditTemplateContainer } from '@containers/EditTemplateContainer/EditTemplateContainer';
-import { Layout } from '@components/Layout/Layout';
 
 import { pageLoaded } from '../../../src/store/root';
 
@@ -10,9 +9,7 @@ import { pageLoaded } from '../../../src/store/root';
 const enhance = withStart(pageLoaded);
 
 const EditTemplatePage = (): JSX.Element => (
-    <Layout>
-        <EditTemplateContainer />
-    </Layout>
+    <EditTemplateContainer />
 );
 
 EditTemplatePage.getInitialProps = async (): Promise<any> => ({

@@ -2,7 +2,6 @@ import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
 import React from 'react';
 
-import { Layout } from '@components/Layout/Layout';
 import { WelcomePageContainer } from '@containers/WelcomePageContainer/WelcomePageContainer';
 
 import { pageLoaded } from '../src/store/root';
@@ -11,9 +10,7 @@ import { pageLoaded } from '../src/store/root';
 const enhance = withStart(pageLoaded);
 
 const WelcomePage: NextPage = (): JSX.Element => (
-    <Layout>
-        <WelcomePageContainer />
-    </Layout>
+    <WelcomePageContainer />
 );
 
 WelcomePage.getInitialProps = () => ({

@@ -1,0 +1,55 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.meetingPreviewWrapper {
+  position: relative;
+  padding: rem(20px);
+  margin: rem(0 0 20px 0);
+}
+
+.profileAvatar {
+  border: 1px solid white;
+  margin: rem(0 16px 0 0);
+  flex: 0 0 90px;
+}
+
+.backButton {
+  position: absolute;
+  top: 0;
+  left: rem(-68px);
+  width: rem(44px);
+  height: rem(44px);
+  background: $primary-white;
+  border: 1px solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.imageWrapper {
+  border-radius: rem(12px);
+  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba($primary-black, 0.6);
+  }
+}
+
+.inMeetingAvatars {
+  position: relative;
+
+  .userAvatar {
+    border: 1px solid #FFFFFF;
+    &:not(:first-child) {
+      margin: rem(0  0 0 -15px);
+    }
+  }
+}
+

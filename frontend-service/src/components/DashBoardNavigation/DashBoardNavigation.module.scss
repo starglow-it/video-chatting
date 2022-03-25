@@ -2,7 +2,9 @@
 @import "../../styles/rem";
 
 .dashboardNavigation {
-  position: absolute;
+  position: sticky;
+  width: rem(68px);
+  z-index: 100;
   left: rem(20px);
   top: 50%;
   transform: translateY(-50%);

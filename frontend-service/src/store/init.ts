@@ -2,6 +2,7 @@ export * from './root';
 
 export * from './socket/model';
 export * from './mainServerSocket/model';
+export * from './apiClient/model';
 
 export * from './auth/model';
 export * from './dialogs/model';
@@ -29,9 +30,11 @@ export * from './templates/templates/model';
 export * from './templates/templatePreview/model';
 export * from './templates/setUpTemplate/model';
 export * from './templates/discoveryTemplates/model';
+export * from './waitingRoom/model';
 
 export * from './socket/init';
 export * from './mainServerSocket/init';
+export * from './apiClient/init';
 
 export * from './auth/init';
 export * from './dialogs/init';
@@ -60,5 +63,6 @@ export * from './templates/templates/init';
 export * from './templates/templatePreview/init';
 export * from './templates/setUpTemplate/init';
 export * from './templates/discoveryTemplates/init';
+export * from './waitingRoom/init';
 
 export * from './users/init';

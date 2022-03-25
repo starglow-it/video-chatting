@@ -34,22 +34,22 @@ const DashBoardNavigation = memo(() => {
     }, []);
 
     const isTemplatesLinkActive = useMemo(
-        () => router.pathname === '/dashboard/templates',
+        () => router.pathname === '/dashboard',
         [router.pathname],
     );
 
-    const isProfilePageActive = useMemo(() => router.pathname === '/dashboard', [router.pathname]);
+    const isProfilePageActive = useMemo(() => router.pathname === '/dashboard/profile', [router.pathname]);
     const isDiscoveryLinkActive = useMemo(
         () => router.pathname === '/dashboard/discovery',
         [router.pathname],
     );
 
     const handleProfilePage = useCallback(() => {
-        router.push('/dashboard');
+        router.push('/dashboard/profile');
     }, []);
 
     const handleTemplatesPage = useCallback(() => {
-        router.push('/dashboard/templates');
+        router.push('/dashboard');
     }, []);
 
     const handleDiscoveryPage = useCallback(() => {

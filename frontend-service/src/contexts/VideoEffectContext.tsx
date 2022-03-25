@@ -108,43 +108,43 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
     }, []);
 
+    const animate = async () => {
+        await faceDetectionRef.current?.send({ image: videoRef.current });
+
+        requestAnimationFrame(animate);
+    }
+
     const handleStartDetection = useCallback(() => {
         if (timerContextRef.current) {
-            const sampleRate = timerContextRef?.current?.sampleRate!;
+            const oscillator = timerContextRef?.current.createOscillator();
+            const gain = timerContextRef?.current?.createGain();
 
-            const bufferSize = 2 * sampleRate;
-            const noiseBuffer = timerContextRef?.current?.createBuffer(1, bufferSize, sampleRate);
-            const output = noiseBuffer.getChannelData(0);
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(3000, timerContextRef?.current?.currentTime); // value in hertz
 
-            for (let i = 0; i < bufferSize; i++) {
-                output[i] = Math.random() * 2 - 1;
-            }
-
-            const whiteNoise = timerContextRef?.current?.createBufferSource();
             const timerNode = new AudioWorkletNode(timerContextRef.current!, 'timer');
 
-            whiteNoise.buffer = noiseBuffer;
-            whiteNoise.loop = true;
-            whiteNoise.start(0);
+            gain.gain.value = 0;
+
+            oscillator.connect(gain);
+
+            gain.connect(timerNode).connect(timerContextRef?.current?.destination);
+
+            oscillator.start();
 
             timerNode.port.onmessage = async (event) => {
                 try {
                     if (event.data.isNeedToRender) {
                         const videoElement = videoRef.current;
 
-                        await faceDetectionRef.current?.send({ image: videoElement });
+                        faceDetectionRef.current?.send({ image: videoElement });
                     }
                 } catch (e) {
                     console.log("couldn't render frame");
                 }
             };
 
-            whiteNoiseRef.current = whiteNoise;
             timerNodeRef.current = timerNode;
-
-            const connected = whiteNoise?.connect(timerNode);
-
-            connected.connect(timerContextRef?.current?.destination!);
         }
     }, []);
 
@@ -208,24 +208,28 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             timerContextRef.current = audioContext;
             await audioContext.audioWorklet.addModule('/workers/timer.js');
 
-            const faceDetection = new FaceDetection({
-                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/${file}`
-                }
-            );
+            try {
+                const faceDetection = new FaceDetection({
+                        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/${file}`
+                    }
+                );
 
-            await faceDetection.initialize();
+                await faceDetection.initialize();
 
-            faceDetection.setOptions({
-                minDetectionConfidence: 0.5,
-                model: "short",
-                selfieMode: false
-            });
+                faceDetection.setOptions({
+                    minDetectionConfidence: 0.5,
+                    model: "short",
+                    selfieMode: false
+                });
 
-            faceDetection.onResults(onDetectionResult);
+                faceDetection.onResults(onDetectionResult);
 
-            faceDetectionRef.current = faceDetection;
-
-            setIsModelReady(true);
+                faceDetectionRef.current = faceDetection;
+            } catch (err: unknown) {
+                console.log(err);
+            } finally {
+                setIsModelReady(true);
+            }
         })();
 
         return () => {

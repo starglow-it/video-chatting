@@ -8,7 +8,8 @@
     "previewSpace": "Preview Space",
     "chooseTemplate": "Get started with this room",
     "continue": "Continue",
-    "done": "Done"
+    "done": "Done",
+    "joinMeeting": "Join this room"
   },
   "noTemplates": "You dont have any templates yet :(",
   "setUpSpace": {

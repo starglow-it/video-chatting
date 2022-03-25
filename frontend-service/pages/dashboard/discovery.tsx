@@ -3,7 +3,6 @@ import { withStart } from 'effector-next';
 import { DiscoveryContainer } from '@containers/DiscoveryContainer/DiscoveryContainer';
 
 import { DashboardLayout } from '@components/DashboardLayout/DashboardLayout';
-import { Layout } from '@components/Layout/Layout';
 
 import { pageLoaded } from '../../src/store/root';
 
@@ -11,11 +10,9 @@ import { pageLoaded } from '../../src/store/root';
 const enhance = withStart(pageLoaded);
 
 const DiscoveryPage = (): JSX.Element => (
-    <Layout>
-        <DashboardLayout>
-            <DiscoveryContainer />
-        </DashboardLayout>
-    </Layout>
+    <DashboardLayout>
+        <DiscoveryContainer />
+    </DashboardLayout>
 );
 
 DiscoveryPage.getInitialProps = () => ({

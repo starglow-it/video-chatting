@@ -25,8 +25,13 @@ export const postProfileAvatarUrl = {
     method: HttpMethods.Post,
 };
 
-export const profileTemplatesUrl = ({ templateId, skip, limit }: { templateId?: string; skip?: number, limit?: number }) => ({
-    url: `${baseProfileUrl}/templates/${templateId || ''}?skip=${skip}&limit=${limit}`,
+export const profileTemplatesUrl = ({ skip, limit }: { skip?: number, limit?: number }) => ({
+    url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}`,
+    method: HttpMethods.Get,
+});
+
+export const getProfileTemplateUrl = ({ templateId }: { templateId?: string; }) => ({
+    url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Get,
 });
 

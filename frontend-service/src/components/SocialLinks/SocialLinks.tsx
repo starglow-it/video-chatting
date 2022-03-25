@@ -26,7 +26,7 @@ const SocialLinks = memo(() => {
     const profileState = useStore($profileStore);
 
     const handleEditProfile = useCallback(() => {
-        router?.push('/dashboard/edit');
+        router?.push('/dashboard/profile/edit');
     }, []);
 
     const socialsLink = useMemo(

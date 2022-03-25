@@ -18,7 +18,7 @@ export const resetMeetingInstanceStore = meetingDomain.event('resetMeetingInstan
 
 // effects
 export const fetchMeetingInstanceFx = meetingDomain.effect<
-    { meetingId: MeetingInstance['id'] },
+    { templateId: MeetingInstance['template'] },
     { meeting: MeetingInstance },
     any
 >('fetchMeetingInstanceFx');

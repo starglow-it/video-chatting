@@ -24,8 +24,8 @@ socketEventRequest.use(async ({ eventName, data, socketStore }) => {
     return await socketPromise;
 });
 
-initiateSocketConnectionFx.use(async () => {
-    const socketInstance = io({
+initiateSocketConnectionFx.use(async ({ serverIp }) => {
+    const socketInstance = io(`ws://${serverIp}:8080`, {
         transports: ['websocket'],
     });
 
@@ -46,16 +46,11 @@ initiateSocketConnectionFx.use(async () => {
     };
 });
 
-const socketEventFx = attach({
-    effect: socketEventRequest,
-    source: $socketStore,
-    mapParams: ({ data, eventName }, socketStore) => ({ eventName, data, socketStore }),
-});
-
 export const createSocketEvent = (eventName: string) =>
     attach({
-        effect: socketEventFx,
-        mapParams: data => ({ eventName, data }),
+        effect: socketEventRequest,
+        source: $socketStore,
+        mapParams: (data, socketStore) => ({ eventName, data, socketStore }),
     });
 
 $socketStore

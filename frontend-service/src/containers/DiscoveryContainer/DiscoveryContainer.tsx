@@ -64,7 +64,11 @@ const DiscoveryContainer = memo(() => {
                     TemplateComponent={DiscoverTemplateItem}
                 />
             </CustomGrid>
-            <TemplatePreviewDialog onChooseTemplate={handleEnterWaitingRoom} />
+            <TemplatePreviewDialog
+                isNeedToRenderTemplateInfo={false}
+                chooseButtonKey="joinMeeting"
+                onChooseTemplate={handleEnterWaitingRoom}
+            />
         </MainProfileWrapper>
     );
 });

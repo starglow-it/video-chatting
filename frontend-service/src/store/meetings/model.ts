@@ -9,3 +9,8 @@ export const createMeetingFx = meetingsDomain.effect<
     { templateId: Template['id'] },
     { meeting?: MeetingInstance }
     >('createMeetingFx');
+
+export const deleteMeetingFx = meetingsDomain.effect<
+    { templateId: Template['id'] },
+    void
+    >('deleteMeetingFx');
