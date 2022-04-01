@@ -1,6 +1,7 @@
 import {IBusinessCategory} from "./business-category.interface";
 import {ILanguage} from "./common-language.interface";
 import {ISocialLink} from "./common-social-link.interface";
+import {IProfileAvatar} from "./profile-avatar.interface";
 
 export interface ICommonUserDTO {
     id: string;
@@ -17,4 +18,5 @@ export interface ICommonUserDTO {
     businessCategories: IBusinessCategory[];
     languages: ILanguage[];
     socials: ISocialLink[];
+    profileAvatar: IProfileAvatar;
 }

@@ -17,6 +17,7 @@ const CustomTypography = memo(
                 translation,
                 children,
                 className,
+                options,
                 ...rest
             }: CustomTypographyProps,
             ref,
@@ -28,7 +29,7 @@ const CustomTypography = memo(
                 className={clsx(className, transform && styles[transform])}
             >
                 {nameSpace && translation ? (
-                    <Translation nameSpace={nameSpace} translation={translation} />
+                    <Translation nameSpace={nameSpace} translation={translation} options={options} />
                 ) : (
                     children
                 )}

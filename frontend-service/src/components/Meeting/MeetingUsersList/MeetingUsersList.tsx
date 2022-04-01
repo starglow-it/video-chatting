@@ -9,7 +9,7 @@ import { MeetingUsersListItem } from './MeetingUsersListItem';
 // stores
 import { appDialogsApi } from '../../../store/dialogs';
 import { $localUserStore, $meetingUsersStore, setUserToKickEvent } from '../../../store/users';
-import { $meetingStore } from '../../../store/meeting';
+import { $isOwner } from '../../../store/meeting';
 
 // types
 import { MeetingAccessStatuses, AppDialogsEnum } from '../../../store/types';
@@ -19,9 +19,7 @@ import styles from './MeetingUsersList.module.scss';
 
 const MeetingUsersList = memo(() => {
     const localUser = useStore($localUserStore);
-    const meeting = useStore($meetingStore);
-
-    const isOwner = meeting.ownerProfileId === localUser.profileId;
+    const isOwner = useStore($isOwner);
 
     const users = useStoreMap({
         store: $meetingUsersStore,

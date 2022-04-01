@@ -7,6 +7,7 @@ import {
     resetMainSocketStore,
     mainSocketEventRequest,
 } from './model';
+import {$socketStore, socketEventRequest} from "../socket";
 
 mainSocketEventRequest.use(async ({ eventName, data, socketStore }) => {
     const socketPromise = new Promise((resolve, reject) => {
@@ -46,16 +47,11 @@ initiateMainSocketConnectionFx.use(async () => {
     };
 });
 
-const mainSocketEventFx = attach({
-    effect: mainSocketEventRequest,
-    source: $mainSocketStore,
-    mapParams: ({ data, eventName }, socketStore) => ({ eventName, data, socketStore }),
-});
-
 export const createMainSocketEvent = (eventName: string) =>
     attach({
-        effect: mainSocketEventFx,
-        mapParams: data => ({ eventName, data }),
+        effect: mainSocketEventRequest,
+        source: $mainSocketStore,
+        mapParams: (data, socketStore) => ({ eventName, data, socketStore }),
     });
 
 $mainSocketStore

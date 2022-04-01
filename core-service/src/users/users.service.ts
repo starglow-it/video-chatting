@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery, Model, PopulateOptions } from 'mongoose';
+import { FilterQuery, Model  } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 
@@ -17,6 +17,7 @@ import {
   ProfileAvatar,
   ProfileAvatarDocument,
 } from '../schemas/profile-avatar.schema';
+import { CustomPopulateOptions } from '../types/custom';
 
 @Injectable()
 export class UsersService {
@@ -29,7 +30,7 @@ export class UsersService {
     private profileAvatar: Model<ProfileAvatarDocument>,
   ) {}
 
-  async exists(query): Promise<boolean> {
+  async exists(query) {
     return this.user.exists(query);
   }
 
@@ -42,7 +43,7 @@ export class UsersService {
     return user;
   }
 
-  async findUser(query: FilterQuery<UserDocument>): Promise<UserDocument> {
+  async findUser(query: FilterQuery<UserDocument>) {
     return this.user.findOne(query);
   }
 
@@ -53,8 +54,8 @@ export class UsersService {
   }: {
     query: FilterQuery<UserDocument>;
     session?: ITransactionSession;
-    populatePaths?: string | string[] | PopulateOptions | PopulateOptions[];
-  }): Promise<UserDocument[]> {
+    populatePaths?: CustomPopulateOptions;
+  }) {
     return this.user.find(
       query,
       {},
@@ -66,7 +67,7 @@ export class UsersService {
     query: FilterQuery<UserDocument>,
     data: Partial<ICommonUserDTO>,
     { session }: ITransactionSession,
-  ): Promise<UserDocument> {
+  ) {
     return this.user.findOneAndUpdate(
       query,
       { $set: data },
@@ -78,7 +79,7 @@ export class UsersService {
     id: ICommonUserDTO['id'],
     data: Partial<ICommonUserDTO>,
     { session }: ITransactionSession,
-  ): Promise<UserDocument> {
+  ) {
     return this.user.findByIdAndUpdate(
       id,
       { $set: data },
@@ -89,8 +90,8 @@ export class UsersService {
   async findById(
     id: ICommonUserDTO['id'],
     { session }: ITransactionSession,
-  ): Promise<UserDocument> {
-    return this.user.findById(id, {}, { session });
+  ) {
+    return this.user.findById(id, {}, { session }).exec();
   }
 
   async hashPassword(pass: string): Promise<string> {

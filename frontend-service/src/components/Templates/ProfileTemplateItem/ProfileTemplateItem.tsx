@@ -1,30 +1,34 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { Fade } from '@mui/material';
+import {useRouter} from 'next/router';
+import {Fade} from '@mui/material';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
+import {CustomButton} from '@library/custom/CustomButton/CustomButton';
 
 // icon
-import { EditIcon } from '@library/icons/EditIcon';
-import { AddPeopleIcon } from '@library/icons/AddPeopleIcon';
+import {EditIcon} from '@library/icons/EditIcon';
+import {AddPeopleIcon} from '@library/icons/AddPeopleIcon';
+import {DeleteIcon} from "@library/icons/DeleteIcon/DeleteIcon";
 
 // common
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import {ActionButton} from '@library/common/ActionButton/ActionButton';
 
 // components
-import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
+import {TemplateMainInfo} from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
 // stores
-import { createMeetingFx } from '../../../store/meetings';
+import {createMeetingFx} from '../../../store/meetings';
+import {appDialogsApi} from "../../../store/dialogs";
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';
 
 // types
 import { ProfileTemplateProps } from './types';
+import { AppDialogsEnum } from "../../../store/types";
+import { setDeleteTemplateIdEvent } from "../../../store/profile";
 
 const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
     const router = useRouter();
@@ -47,6 +51,13 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
     const handleEditTemplate = useCallback(() => {
         router.push(`/meeting/edit-template/${template.id}`);
     }, []);
+
+    const handleOpenDeleteDialog = useCallback(() => {
+        setDeleteTemplateIdEvent(template.id);
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.deleteTemplateDialog,
+        });
+    }, [template.id]);
 
     return (
         <CustomGrid
@@ -92,6 +103,11 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                     <ActionButton
                         className={styles.editBtn}
                         Icon={<AddPeopleIcon width="22px" height="22px" />}
+                    />
+                    <ActionButton
+                        onAction={handleOpenDeleteDialog}
+                        className={styles.deleteBtn}
+                        Icon={<DeleteIcon width="22px" height="22px" />}
                     />
                 </CustomGrid>
             </Fade>

@@ -4,6 +4,7 @@ import { profileDomain } from '../domain';
 import { $profileStore } from '../profile';
 
 import { Profile, Template, UpdateTemplateData } from '../../types';
+
 import { initialProfileTemplateState } from './const';
 
 export const $profileTemplateStore = profileDomain.store<Template>(initialProfileTemplateState);
@@ -15,6 +16,7 @@ export const getProfileTemplateBaseEffect = profileDomain.effect<
     Template,
     void
 >('getProfileTemplateFx');
+
 export const updateProfileTemplateBaseEffect = profileDomain.effect<
     UpdateTemplateData,
     Template,

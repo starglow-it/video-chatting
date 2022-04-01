@@ -1,4 +1,4 @@
 export type ScreenSharingButtonProps = {
-    onAction?: () => void;
+    onAction?: (() => void) | undefined;
     isSharingActive?: boolean;
 };

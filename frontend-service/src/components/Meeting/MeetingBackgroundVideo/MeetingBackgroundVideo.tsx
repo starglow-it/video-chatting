@@ -5,7 +5,12 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import styles from './MeetingBackgroundVideo.module.scss';
 
 const MeetingBackgroundVideo = memo(({ src }: { src: string }) => (
-    <CustomGrid className={styles.backgroundVideo} container justifyContent="center" alignItems="center">
+    <CustomGrid
+        className={styles.backgroundVideo}
+        container
+        justifyContent="center"
+        alignItems="center"
+    >
         <video className={styles.video} src={src} autoPlay playsInline controls={false} loop />
     </CustomGrid>
 ));

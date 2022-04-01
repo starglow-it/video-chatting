@@ -19,7 +19,8 @@
     "quit": "Quit",
     "stay": "Stay",
     "saveAndQuit": "Save and Quit",
-    "continue": "Continue"
+    "continue": "Continue",
+    "delete": "Delete"
   },
   "login": {
     "welcome": "Welcome back",

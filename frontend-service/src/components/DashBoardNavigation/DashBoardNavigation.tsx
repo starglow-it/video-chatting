@@ -38,7 +38,10 @@ const DashBoardNavigation = memo(() => {
         [router.pathname],
     );
 
-    const isProfilePageActive = useMemo(() => router.pathname === '/dashboard/profile', [router.pathname]);
+    const isProfilePageActive = useMemo(
+        () => router.pathname === '/dashboard/profile',
+        [router.pathname],
+    );
     const isDiscoveryLinkActive = useMemo(
         () => router.pathname === '/dashboard/discovery',
         [router.pathname],

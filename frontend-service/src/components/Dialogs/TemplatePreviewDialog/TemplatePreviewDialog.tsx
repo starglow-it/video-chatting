@@ -29,97 +29,105 @@ import { TemplatePreviewDialogProps } from './types';
 // styles
 import styles from './TemplatePreviewDialog.module.scss';
 
-const TemplatePreviewDialog = memo(({ onChooseTemplate, chooseButtonKey, isNeedToRenderTemplateInfo }: TemplatePreviewDialogProps) => {
-    const { templatePreviewDialog } = useStore($appDialogsStore);
-    const previewTemplate = useStore($templatePreviewStore);
-    const profile = useStore($profileStore);
+const TemplatePreviewDialog = memo(
+    ({
+        onChooseTemplate,
+        chooseButtonKey,
+        isNeedToRenderTemplateInfo,
+    }: TemplatePreviewDialogProps) => {
+        const { templatePreviewDialog } = useStore($appDialogsStore);
+        const previewTemplate = useStore($templatePreviewStore);
+        const profile = useStore($profileStore);
 
-    const handleClose = useCallback(() => {
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.templatePreviewDialog,
-        });
-    }, []);
-
-    const handleChooseTemplate = useCallback(async () => {
-        if (previewTemplate?.id) {
-            onChooseTemplate?.({
-                templateId: previewTemplate?.id,
+        const handleClose = useCallback(() => {
+            appDialogsApi.closeDialog({
+                dialogKey: AppDialogsEnum.templatePreviewDialog,
             });
-        }
-    }, [previewTemplate?.id]);
+        }, []);
 
-    return (
-        <CustomDialog
-            open={templatePreviewDialog}
-            onBackdropClick={handleClose}
-            contentClassName={styles.dialogContent}
-            maxWidth="lg"
-        >
-            <CustomGrid container wrap="nowrap">
-                <CustomGrid className={styles.templatePreview}>
-                    <TemplateGeneralInfo
-                        profileAvatar={profile?.profileAvatar?.url}
-                        companyName={previewTemplate?.companyName}
-                        userName={profile.fullName}
-                    />
-                    {previewTemplate?.previewUrl && (
-                        <Image src={previewTemplate?.previewUrl || ''} layout="fill" />
-                    )}
-                </CustomGrid>
-                <CustomBox className={styles.templateInfoContent}>
-                    <CustomGrid
-                        container
-                        wrap="nowrap"
-                        justifyContent="space-between"
-                        className={styles.templateInfo}
-                        gap={2}
-                    >
-                        <BusinessCategoryTagsClip
-                            lines={1}
-                            maxWidth={210}
-                            tags={previewTemplate?.businessCategories}
+        const handleChooseTemplate = useCallback(async () => {
+            if (previewTemplate?.id) {
+                onChooseTemplate?.({
+                    templateId: previewTemplate?.id!,
+                });
+            }
+        }, [previewTemplate?.id]);
+
+        return (
+            <CustomDialog
+                open={templatePreviewDialog}
+                onBackdropClick={handleClose}
+                contentClassName={styles.dialogContent}
+                maxWidth="lg"
+            >
+                <CustomGrid container wrap="nowrap">
+                    <CustomGrid className={styles.templatePreview}>
+                        <TemplateGeneralInfo
+                            profileAvatar={profile?.profileAvatar?.url || ''}
+                            companyName={previewTemplate?.companyName || ''}
+                            userName={profile.fullName}
                         />
-                        {isNeedToRenderTemplateInfo && (
-                            <CustomGrid
-                                container
-                                className={styles.templateType}
-                                justifyContent="flex-end"
-                                gap={1}
-                                wrap="nowrap"
-                            >
-                                <TemplatePaymentType type={previewTemplate?.type || ''} />
-                                <TemplateParticipants number={previewTemplate?.maxParticipants || 0} />
-                            </CustomGrid>
+                        {Boolean(previewTemplate?.previewUrl) && (
+                            <Image src={previewTemplate?.previewUrl || ''} layout="fill" />
                         )}
                     </CustomGrid>
-                    <CustomTypography className={styles.name} variant="h2bold">
-                        {previewTemplate?.name}
-                    </CustomTypography>
-                    <CustomTypography className={styles.description}>
-                        {previewTemplate?.description}
-                    </CustomTypography>
-                    <CustomGrid
-                        container
-                        wrap="nowrap"
-                        className={styles.buttons}
-                        alignItems="flex-end"
-                    >
-                        <ActionButton
-                            onAction={handleClose}
-                            className={styles.backBtn}
-                            Icon={<ArrowLeftIcon width="36px" height="36px" />}
-                        />
-                        <CustomButton
-                            onClick={handleChooseTemplate}
-                            className={styles.chooseBtn}
-                            nameSpace="templates"
-                            translation={`buttons.${chooseButtonKey}`}
-                        />
-                    </CustomGrid>
-                </CustomBox>
-            </CustomGrid>
-        </CustomDialog>
-    );
-});
+                    <CustomBox className={styles.templateInfoContent}>
+                        <CustomGrid
+                            container
+                            wrap="nowrap"
+                            justifyContent="space-between"
+                            className={styles.templateInfo}
+                            gap={2}
+                        >
+                            <BusinessCategoryTagsClip
+                                lines={1}
+                                maxWidth={210}
+                                tags={previewTemplate?.businessCategories || []}
+                            />
+                            {isNeedToRenderTemplateInfo && (
+                                <CustomGrid
+                                    container
+                                    className={styles.templateType}
+                                    justifyContent="flex-end"
+                                    gap={1}
+                                    wrap="nowrap"
+                                >
+                                    <TemplatePaymentType type={previewTemplate?.type || ''} />
+                                    <TemplateParticipants
+                                        number={previewTemplate?.maxParticipants || 0}
+                                    />
+                                </CustomGrid>
+                            )}
+                        </CustomGrid>
+                        <CustomTypography className={styles.name} variant="h2bold">
+                            {previewTemplate?.name || ''}
+                        </CustomTypography>
+                        <CustomTypography className={styles.description}>
+                            {previewTemplate?.description || ''}
+                        </CustomTypography>
+                        <CustomGrid
+                            container
+                            wrap="nowrap"
+                            className={styles.buttons}
+                            alignItems="flex-end"
+                        >
+                            <ActionButton
+                                onAction={handleClose}
+                                className={styles.backBtn}
+                                Icon={<ArrowLeftIcon width="36px" height="36px" />}
+                            />
+                            <CustomButton
+                                onClick={handleChooseTemplate}
+                                className={styles.chooseBtn}
+                                nameSpace="templates"
+                                translation={`buttons.${chooseButtonKey}`}
+                            />
+                        </CustomGrid>
+                    </CustomBox>
+                </CustomGrid>
+            </CustomDialog>
+        );
+    },
+);
 
 export { TemplatePreviewDialog };

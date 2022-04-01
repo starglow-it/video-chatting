@@ -1,6 +1,6 @@
-import React, { forwardRef, memo, useCallback } from 'react';
+import React, {forwardRef, memo, useCallback } from 'react';
 import clsx from 'clsx';
-import { ButtonUnstyled } from '@mui/core';
+import { ButtonUnstyled } from '@mui/base';
 
 // types
 import { ActionButtonProps } from './types';
@@ -9,14 +9,16 @@ import { ButtonProps } from '@mui/material';
 // styles
 import styles from './ActionButton.module.scss';
 
-const ActionButton = memo(forwardRef((
+type ComponentPropsType = ActionButtonProps & Omit<ButtonProps, "variant">;
+
+const InitialComponent = (
     {
         variant,
         Icon,
         onAction,
         className,
         ...rest
-    }: ActionButtonProps & Omit<ButtonProps, 'variant'>,
+    },
     ref,
 ) => {
     const buttonClassNames = clsx(
@@ -40,6 +42,8 @@ const ActionButton = memo(forwardRef((
             {Icon}
         </ButtonUnstyled>
     );
-}));
+};
+
+const ActionButton = memo<ComponentPropsType>(forwardRef<HTMLButtonElement, ComponentPropsType>(InitialComponent));
 
 export { ActionButton };

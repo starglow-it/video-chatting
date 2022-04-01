@@ -14,6 +14,7 @@ export const initialDialogsState: AppDialogsState = {
     editMeetingTemplateDialog: false,
     confirmChangeRouteDialog: false,
     confirmQuitOnboardingDialog: false,
+    deleteTemplateDialog: false,
 };
 
 export const $appDialogsStore = dialogsDomain.store<AppDialogsState>(initialDialogsState);

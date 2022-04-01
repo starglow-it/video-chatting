@@ -23,7 +23,6 @@ export * from './meeting/sockets/model';
 export * from './meeting/meeting/model';
 export * from './meeting/meetingError/model';
 export * from './meeting/meetingTemplate/model';
-export * from './meeting/meetingInstance/model';
 export * from './meeting/meetingNotes/model';
 
 export * from './templates/templates/model';
@@ -31,6 +30,7 @@ export * from './templates/templatePreview/model';
 export * from './templates/setUpTemplate/model';
 export * from './templates/discoveryTemplates/model';
 export * from './waitingRoom/model';
+export * from './dashboardNotifications/model';
 
 export * from './socket/init';
 export * from './mainServerSocket/init';
@@ -48,7 +48,6 @@ export * from './meeting/sockets/init';
 export * from './meeting/meeting/init';
 export * from './meeting/meetingError/init';
 export * from './meeting/meetingTemplate/init';
-export * from './meeting/meetingInstance/init';
 export * from './meeting/meetingNotes/init';
 
 export * from './other/routeToChange/init';
@@ -64,5 +63,6 @@ export * from './templates/templatePreview/init';
 export * from './templates/setUpTemplate/init';
 export * from './templates/discoveryTemplates/init';
 export * from './waitingRoom/init';
+export * from './dashboardNotifications/init';
 
 export * from './users/init';

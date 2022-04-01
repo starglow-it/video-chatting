@@ -6,11 +6,17 @@
   left: 0;
   width: 100%;
   padding: rem(20px);
+  z-index: 10;
 }
 
 .main {
   width: 100%;
   border: rem(1px) solid transparent;
+
+  &.meetingLayout {
+    height: 100vh;
+    position: relative;
+  }
 }
 
 .topLeft {
@@ -48,4 +54,13 @@
   z-index: 100;
   width: 100%;
   height: 100%;
+
+  &.meetingLayout {
+    max-height: 100%;
+    overflow: hidden;
+  }
+}
+
+.link {
+  cursor: pointer;
 }

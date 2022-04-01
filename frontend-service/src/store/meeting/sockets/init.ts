@@ -168,8 +168,8 @@ meetingSocketEventsController.watch(({ socketInstance }: SocketState) => {
         setMeetingNotesEvent(meetingNotes);
     });
 
-    socketInstance?.on(ON_REMOVE_MEETING_NOTE, ({ meetingNote }) => {
-        removeLocalMeetingNoteEvent(meetingNote);
+    socketInstance?.on(ON_REMOVE_MEETING_NOTE, ({ meetingNoteId }) => {
+        removeLocalMeetingNoteEvent(meetingNoteId);
     });
 
     socketInstance?.on(ON_GET_MEETING_NOTES, ({ meetingNotes }) => {

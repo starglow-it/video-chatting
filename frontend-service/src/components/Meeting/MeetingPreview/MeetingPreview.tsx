@@ -1,22 +1,22 @@
-import React, {memo, useCallback, useMemo} from 'react';
-import {useStore, useStoreMap} from "effector-react";
-import {useRouter} from "next/router";
+import React, { memo, useCallback, useMemo } from 'react';
+import { useStore, useStoreMap } from 'effector-react';
+import { useRouter } from 'next/router';
 
 // image
 import Image from 'next/image';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomTypography } from "@library/custom/CustomTypography/CustomTypography";
-import { CustomBox } from "@library/custom/CustomBox/CustomBox";
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // components
-import {ProfileAvatar} from "@components/Profile/ProfileAvatar/ProfileAvatar";
-import {ArrowLeftIcon} from "@library/icons/ArrowLeftIcon";
+import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
+import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
 // stores
-import { $meetingTemplateStore } from "../../../store/meeting";
-import {$localUserStore, $meetingUsersStore} from "../../../store/users";
+import { $isOwner, $meetingTemplateStore } from '../../../store/meeting';
+import { $localUserStore, $meetingUsersStore } from '../../../store/users';
 
 // styles
 import styles from './MeetingPreview.module.scss';
@@ -25,6 +25,7 @@ const MeetingPreview = memo(() => {
     const router = useRouter();
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
+    const isOwner = useStore($isOwner);
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -33,37 +34,56 @@ const MeetingPreview = memo(() => {
     });
 
     const handleLeaveMeeting = useCallback(() => {
-        const isOwner = meetingTemplate.meetingInstance?.owner === localUser.profileId;
-
         router.push(isOwner ? '/dashboard/templates' : '/dashboard/discovery');
-    }, [meetingTemplate.meetingInstance?.owner, localUser.profileId]);
+    }, []);
 
-    const renderCurrentUsers = useMemo(() => {
-        return users.map(user => (
-            <ProfileAvatar
-                key={user.id}
-                className={styles.userAvatar}
-                width="32px"
-                height="32px"
-                src={user?.profileAvatar}
-                userName={user.username}
-            />
-        ), []);
-    }, [users]);
+    const renderCurrentUsers = useMemo(
+        () =>
+            users.map(
+                user => (
+                    <ProfileAvatar
+                        key={user.id}
+                        className={styles.userAvatar}
+                        width="32px"
+                        height="32px"
+                        src={user?.profileAvatar}
+                        userName={user.username}
+                    />
+                ),
+                [],
+            ),
+        [users],
+    );
 
     return (
-        <CustomGrid container alignItems="center" className={styles.meetingPreviewWrapper} wrap="nowrap">
-            <CustomGrid container justifyContent="center" alignItems="center" onClick={handleLeaveMeeting} className={styles.backButton}>
+        <CustomGrid
+            container
+            alignItems="center"
+            className={styles.meetingPreviewWrapper}
+            wrap="nowrap"
+        >
+            <CustomGrid
+                container
+                justifyContent="center"
+                alignItems="center"
+                onClick={handleLeaveMeeting}
+                className={styles.backButton}
+            >
                 <ArrowLeftIcon width="32px" height="32px" />
             </CustomGrid>
             <CustomBox className={styles.imageWrapper}>
-                <Image src={meetingTemplate.previewUrl} layout="fill" objectFit="cover" objectPosition="center" />
+                <Image
+                    src={meetingTemplate.previewUrl}
+                    layout="fill"
+                    objectFit="cover"
+                    objectPosition="center"
+                />
             </CustomBox>
             <ProfileAvatar
                 className={styles.profileAvatar}
                 width="90px"
                 height="90px"
-                src={meetingTemplate?.user?.profileAvatar?.url}
+                src={meetingTemplate?.user?.profileAvatar?.url || ''}
                 userName={meetingTemplate.fullName}
             />
             <CustomGrid item container direction="column" flex="1 0">
@@ -74,7 +94,13 @@ const MeetingPreview = memo(() => {
                     {meetingTemplate.description}
                 </CustomTypography>
             </CustomGrid>
-            <CustomGrid container alignSelf="flex-start" justifyContent="flex-end" className={styles.inMeetingAvatars} flex="1 0">
+            <CustomGrid
+                container
+                alignSelf="flex-start"
+                justifyContent="flex-end"
+                className={styles.inMeetingAvatars}
+                flex="1 0"
+            >
                 {renderCurrentUsers}
             </CustomGrid>
         </CustomGrid>

@@ -23,20 +23,22 @@ export class BusinessCategoriesService {
   }
 
   async find(
-    query: FilterQuery<BusinessCategoryDocument>,
-    session?: ITransactionSession,
-  ): Promise<BusinessCategoryDocument[]> {
-    if (session) {
+      {
+        query,
+        session
+      }: {
+        query: FilterQuery<BusinessCategoryDocument>,
+        session?: ITransactionSession,
+      }
+  ) {
       return this.businessCategory.find(
         query,
         {},
         { session: session?.session },
-      );
-    }
-    return this.businessCategory.find(query);
+      ).exec();
   }
 
-  async exists(query: FilterQuery<BusinessCategoryDocument>): Promise<boolean> {
+  async exists(query: FilterQuery<BusinessCategoryDocument>) {
     return this.businessCategory.exists(query);
   }
 }

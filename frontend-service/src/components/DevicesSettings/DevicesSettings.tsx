@@ -18,25 +18,28 @@ import { MediaContext } from '../../contexts/MediaContext';
 
 // stores
 import {
-    $meetingStore,
+    $isMeetingInstanceExists,
+    $isOwner,
+    $isUserSendEnterRequest,
     emitCancelEnterMeetingEvent,
     emitEnterMeetingEvent,
     emitStartMeetingEvent,
+    setIsUserSendEnterRequest,
 } from '../../store/meeting';
 import { $localUserStore, updateLocalUserStateEvent } from '../../store/users';
 import { addNotificationEvent } from '../../store/notifications';
+import { emitSendEnterWaitingRoom } from '../../store/waitingRoom';
 
 // types
-import { MeetingAccessStatuses, NotificationType } from '../../store/types';
+import { NotificationType } from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
 
 const DevicesSettings = memo(() => {
-    const meeting = useStore($meetingStore);
-    const user = useStore($localUserStore);
-
-    const isOwner = meeting.ownerProfileId === user.profileId;
+    const isOwner = useStore($isOwner);
+    const isMeetingInstanceExists = useStore($isMeetingInstanceExists);
+    const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
 
     const {
         data: {
@@ -80,19 +83,23 @@ const DevicesSettings = memo(() => {
                 if (isOwner) {
                     emitStartMeetingEvent();
                 } else {
-                    emitEnterMeetingEvent();
+                    if (isMeetingInstanceExists) {
+                        emitEnterMeetingEvent();
+                    } else {
+                        emitSendEnterWaitingRoom();
+                    }
+                    setIsUserSendEnterRequest(true);
                 }
             } else {
                 handleToggleCamera();
             }
         }
-    }, [isOwner, changeStream, error, isStreamRequested]);
+    }, [isOwner, changeStream, error, isStreamRequested, isMeetingInstanceExists]);
 
     const handleCancelRequest = useCallback(async () => {
         emitCancelEnterMeetingEvent();
+        setIsUserSendEnterRequest(false);
     }, []);
-
-    const isUserSentRequest = user.accessStatus === MeetingAccessStatuses.RequestSent;
 
     return (
         <CustomPaper className={styles.wrapper}>
@@ -114,17 +121,31 @@ const DevicesSettings = memo(() => {
                             className={styles.title}
                             variant="h3bold"
                             nameSpace="meeting"
-                            translation={isUserSentRequest ? 'requestSent' : 'readyToJoin'}
+                            translation={isUserSentEnterRequest ? 'requestSent' : 'readyToJoin'}
                         />
                         <CustomTypography
                             variant="body1"
                             color="text.secondary"
                             nameSpace="meeting"
-                            translation={isUserSentRequest ? 'enterPermission' : 'checkDevices'}
+                            translation={
+                                isUserSentEnterRequest ? 'enterPermission' : 'checkDevices'
+                            }
                         />
-                        {isUserSentRequest ||
+                        {isUserSentEnterRequest ||
                         (!(videoDevices.length && audioDevices.length) && !error) ? (
-                            <WiggleLoader className={styles.loader} />
+                            <CustomGrid
+                                    container
+                                    alignItems="center"
+                                    className={styles.loader}
+                                    gap={1}
+                                >
+                                <WiggleLoader />
+                                <CustomTypography
+                                        color="colors.orange.primary"
+                                        nameSpace="meeting"
+                                        translation="waitForHost"
+                                    />
+                            </CustomGrid>
                         ) : (
                             <SelectDevices
                                 key={changeStream?.id}
@@ -135,11 +156,11 @@ const DevicesSettings = memo(() => {
                 </CustomGrid>
             </CustomGrid>
             <CustomButton
-                onClick={isUserSentRequest ? handleCancelRequest : handleJoinMeeting}
+                onClick={isUserSentEnterRequest ? handleCancelRequest : handleJoinMeeting}
                 className={styles.joinBtn}
                 nameSpace="meeting"
-                variant={isUserSentRequest ? 'custom-cancel' : 'custom-primary'}
-                translation={isUserSentRequest ? 'buttons.cancel' : 'buttons.join'}
+                variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
+                translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
             />
         </CustomPaper>
     );

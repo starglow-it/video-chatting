@@ -283,10 +283,10 @@ export class VideoChatController {
 
     async stopScreensharing({ stream }: { stream: MediaStream }) {
         try {
-            await this.client.unpublish(this.screenSharingTrack);
-
             this.screenSharingTrack?.stop?.();
             this.screenSharingTrack?.close?.();
+
+            await this.client.unpublish(this.screenSharingTrack);
 
             const videoTrack = stream?.getVideoTracks()[0];
 

@@ -28,6 +28,8 @@
   }
 
   .description {
+    @extend %text-ellips;
+    max-width: 90%;
     grid-area: description;
   }
 

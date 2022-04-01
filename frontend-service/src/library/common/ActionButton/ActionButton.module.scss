@@ -57,7 +57,6 @@
 .accept {
   background: $primary-orange;
   color: $primary-white;
-  backdrop-filter: blur(rem(28px));
 
   &.withAction {
     @include withHoverAction($dark-orange, $light-orange);

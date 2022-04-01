@@ -69,6 +69,11 @@
   color: $primary-white;
 }
 
+.formContent {
+  max-height: 100%;
+  max-width: 100%;
+}
+
 .form {
   display: flex;
   height: 100%;

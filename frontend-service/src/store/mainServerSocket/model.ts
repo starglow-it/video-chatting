@@ -17,3 +17,5 @@ export const initiateMainSocketConnectionFx = mainSocketDomain.effect<
     void,
     any
 >('initiateMainSocketConnectionFx');
+
+export const $isMainSocketConnected = $mainSocketStore.map((data) => Boolean(data.socketInstance?.id));

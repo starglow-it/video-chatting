@@ -16,7 +16,7 @@ const EditProfilePage = (): JSX.Element => (
 );
 
 EditProfilePage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'profile', 'templates', 'forms', 'errors'],
+    namespacesRequired: ['common', 'profile', 'templates', 'forms', 'errors', 'dashboard'],
 });
 
 export default enhance(EditProfilePage);

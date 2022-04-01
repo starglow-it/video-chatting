@@ -339,10 +339,10 @@ export class UsersController {
       }
 
       if ('businessCategories' in data) {
-        const newBusinessCategories = await this.businessCategoriesService.find(
-          { key: { $in: data.businessCategories } },
+        const newBusinessCategories = await this.businessCategoriesService.find({
+          query: { key: { $in: data.businessCategories } },
           session,
-        );
+        });
 
         user.businessCategories =
           newBusinessCategories.map((category) => category._id) || [];
@@ -351,8 +351,10 @@ export class UsersController {
       if ('languages' in data) {
         user.languages =
           (await this.languagesService.find(
-            { key: { $in: data.languages } },
-            session,
+              {
+                query: { key: { $in: data.languages } },
+                session
+              }
           )) || [];
       }
 

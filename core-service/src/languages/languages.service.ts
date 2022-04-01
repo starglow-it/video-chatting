@@ -19,14 +19,17 @@ export class LanguagesService {
     return this.language.create(data);
   }
 
-  async find(
-    query: FilterQuery<LanguageDocument>,
-    session: ITransactionSession,
-  ): Promise<LanguageDocument[]> {
+  async find({
+     query,
+     session
+  }: {
+    query: FilterQuery<LanguageDocument>;
+    session: ITransactionSession;
+  }) {
     return this.language.find(query, {}, { session: session?.session });
   }
 
-  async exists(query: FilterQuery<LanguageDocument>): Promise<boolean> {
+  async exists(query: FilterQuery<LanguageDocument>) {
     return this.language.exists(query);
   }
 }

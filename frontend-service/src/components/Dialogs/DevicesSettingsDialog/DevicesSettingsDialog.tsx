@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useStore } from 'effector-react';
 
 import { Divider } from '@mui/material';
@@ -17,13 +17,12 @@ import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
-import { stopStream } from '../../../helpers/media/stopStream';
 
 import { AgoraController } from '../../../controllers/VideoChatController';
 
 // context
 import { MediaContext } from '../../../contexts/MediaContext';
-import { SettingsVideoEffectsContext } from '../../../contexts/SettingsVideoEffectsContext';
+import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
 
 // store
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
@@ -37,14 +36,10 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 // styles
 import styles from './DevicesSettingsDialog.module.scss';
 
-import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
-
 const DevicesSettingsDialog = memo(() => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
-
-    const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
 
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
@@ -63,19 +58,6 @@ const DevicesSettingsDialog = memo(() => {
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
         });
     }, []);
-
-    // useEffect(() => {
-    //     (async () => {
-    //         if (changeStream && devicesSettingsDialog) {
-    //             const transformStream = await onGetCanvasStream(changeStream);
-    //             setPreviewStream(prev => {
-    //                 stopStream(prev);
-    //
-    //                 return transformStream;
-    //             });
-    //         }
-    //     })();
-    // }, [isBlurActive, isFaceTrackingActive, changeStream, devicesSettingsDialog]);
 
     useEffect(() => {
         (async () => {

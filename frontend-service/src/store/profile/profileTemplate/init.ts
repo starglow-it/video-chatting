@@ -1,7 +1,7 @@
 import {
     $profileTemplateStore,
-    getProfileTemplateBaseEffect,
     resetProfileTemplateEvent,
+    getProfileTemplateBaseEffect,
     updateProfileTemplateBaseEffect,
 } from './model';
 import { handleFetchProfileTemplate } from '../handlers/handleFetchProfileTemplate';

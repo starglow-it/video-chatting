@@ -4,6 +4,7 @@ import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
 import { ILanguage } from '@shared/interfaces/common-language.interface';
 import { ISocialLink } from '@shared/interfaces/common-social-link.interface';
+import { IProfileAvatar } from '@shared/interfaces/profile-avatar.interface';
 
 export class CommonUserRestDTO implements ICommonUserDTO {
   @Expose()
@@ -51,6 +52,10 @@ export class CommonUserRestDTO implements ICommonUserDTO {
   @Expose()
   @ApiProperty()
   socials: ISocialLink[];
+
+  @Expose()
+  @ApiProperty()
+  profileAvatar: IProfileAvatar;
 
   createdAt: Date;
   updatedAt: Date;

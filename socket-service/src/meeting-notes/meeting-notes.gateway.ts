@@ -26,7 +26,6 @@ import { MeetingNoteDTO } from '../dtos/response/meeting-note.dto';
 import {
   REMOVE_MEETING_NOTE,
   SEND_MEETING_NOTE,
-  SEND_MEETING_NOTES,
 } from '../const/emitSocketEvents.const';
 import { RemoveMeetingNoteRequestDTO } from '../dtos/requests/notes/remove-meeting-note.dto';
 
@@ -119,9 +118,12 @@ export class MeetingNotesGateway extends BaseGateway {
         enableImplicitConversion: true,
       });
 
-      this.emitToRoom(`meeting:${user.meeting._id}`, SEND_MEETING_NOTES, {
-        meetingNotes: plainMeetingNotes,
-      });
+      return {
+        success: true,
+        result: {
+          meetingNotes: plainMeetingNotes,
+        }
+      }
     });
   }
 }

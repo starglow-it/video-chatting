@@ -6,11 +6,18 @@ import clsx from "clsx";
 import styles from './CustomPopper.module.scss';
 
 import { CustomPopperProps } from './types';
+import { CustomBox } from '../CustomBox/CustomBox';
 
-const CustomPopper = memo(({ id, open, anchorEl, children, className }: CustomPopperProps) => {
+const CustomPopper = memo(({ id, open, anchorEl, children, className, ...rest }: CustomPopperProps) => {
     return (
-        <Popper id={id} open={open} anchorEl={anchorEl} className={clsx(className, styles.popper)} transition>
-            {({ TransitionProps }) => <Fade {...TransitionProps}>{children}</Fade>}
+        <Popper id={id} open={open} anchorEl={anchorEl} className={clsx(className, styles.popper)} transition {...rest}>
+            {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                    <CustomBox>
+                        {children}
+                    </CustomBox>
+                </Fade>
+            )}
         </Popper>
     );
 });

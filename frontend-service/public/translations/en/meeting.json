@@ -8,6 +8,7 @@
   "cam": "Camera",
   "over": "Meeting is over",
   "kicked": "You have been removed from the meeting",
+  "waitForHost": "Waiting for host",
   "buttons": {
     "join": "Join now",
     "cancel": "Cancel",

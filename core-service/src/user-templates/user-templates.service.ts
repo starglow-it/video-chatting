@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, PopulateOptions, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery } from 'mongoose';
 
 // schemas
 import {
@@ -13,6 +13,7 @@ import { SocialLink, SocialLinkDocument } from '../schemas/social-link.schema';
 import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
 import { IUserTemplate } from '@shared/interfaces/user-template.interface';
 import { ITransactionSession } from '../helpers/mongo/withTransaction';
+import { CustomPopulateOptions } from '../types/custom';
 
 @Injectable()
 export class UserTemplatesService {
@@ -24,7 +25,7 @@ export class UserTemplatesService {
   ) {}
 
   async countUserTemplates(query): Promise<number> {
-    return this.userTemplate.count(query);
+    return this.userTemplate.count(query).exec();
   }
 
   async createUserTemplates({
@@ -48,8 +49,20 @@ export class UserTemplatesService {
     return this.userTemplate.create([data], { session });
   }
 
-  async findUserTemplateById(id): Promise<UserTemplateDocument> {
-    return this.userTemplate.findById(id);
+  async findUserTemplateById({
+    id,
+    session,
+    populatePath,
+  }: {
+    id: string;
+    session: ITransactionSession;
+    populatePath?: CustomPopulateOptions;
+  }): Promise<UserTemplateDocument> {
+    return this.userTemplate.findById(
+      id,
+      {},
+      { session: session.session, populate: populatePath },
+    ).exec();
   }
 
   async findUserTemplateByIdAndUpdate(
@@ -60,21 +73,23 @@ export class UserTemplatesService {
     return this.userTemplate.findByIdAndUpdate(id, data, {
       new: true,
       session,
-    });
+    }).exec();
   }
 
-  async findUserTemplate(
-      {
-        query,
-        session,
-        populatePaths
-      }: {
-        query: FilterQuery<UserTemplateDocument>,
-        session: ITransactionSession,
-        populatePaths?: string | string[] | PopulateOptions | PopulateOptions[];
-      }
-  ): Promise<UserTemplateDocument> {
-    return this.userTemplate.findOne(query, {}, { session: session.session, populate: populatePaths });
+  async findUserTemplate({
+    query,
+    session,
+    populatePaths,
+  }: {
+    query: FilterQuery<UserTemplateDocument>;
+    session: ITransactionSession;
+    populatePaths?: CustomPopulateOptions;
+  }): Promise<UserTemplateDocument> {
+    return this.userTemplate.findOne(
+      query,
+      {},
+      { session: session.session, populate: populatePaths },
+    ).exec();
   }
 
   async deleteUserTemplate(
@@ -93,13 +108,13 @@ export class UserTemplatesService {
     query: FilterQuery<UserTemplateDocument>;
     options?: { sort?: string; skip?: number; limit?: number };
     session?: ITransactionSession;
-    populatePaths?: string | string[] | PopulateOptions | PopulateOptions[];
+    populatePaths?: CustomPopulateOptions;
   }): Promise<UserTemplateDocument[]> {
     return this.userTemplate.find(
       query,
       {},
       { sort, skip, limit, session: session?.session, populate: populatePaths },
-    );
+    ).exec();
   }
 
   async createUserTemplateSocialsLinks(

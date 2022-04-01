@@ -17,7 +17,7 @@ import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 // stores
 import { updateLocalUserStateEvent } from '../../store/users';
 import { $authStore } from '../../store/auth';
-import { $meetingInstanceStore, $meetingTemplateStore } from '../../store/meeting';
+import { $isOwner, $meetingTemplateStore } from '../../store/meeting';
 import { $profileStore } from '../../store/profile';
 
 // types
@@ -32,11 +32,10 @@ const validationSchema = yup.object({
 
 const EnterMeetingName = memo(() => {
     const { isAuthenticated } = useStore($authStore);
-    const meetingTemplate = useStore($meetingTemplateStore);
     const profile = useStore($profileStore);
-    const meetingInstance = useStore($meetingInstanceStore);
+    const meetingTemplate = useStore($meetingTemplateStore);
 
-    const isOwner = meetingInstance.owner === profile.id;
+    const isOwner = useStore($isOwner);
 
     const resolver = useYupValidationResolver<{
         fullName: string;

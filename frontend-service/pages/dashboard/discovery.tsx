@@ -16,7 +16,7 @@ const DiscoveryPage = (): JSX.Element => (
 );
 
 DiscoveryPage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'profile', 'templates'],
+    namespacesRequired: ['common', 'profile', 'templates', 'dashboard'],
 });
 
 export default enhance(DiscoveryPage);

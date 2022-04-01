@@ -25,7 +25,6 @@ import {
 import { appDialogsApi } from '../../store/dialogs';
 import {
     $meetingTemplateStore,
-    resetMeetingInstanceStore,
     resetMeetingStore,
     emitJoinMeetingEvent,
     getMeetingTemplateFx,
@@ -61,7 +60,7 @@ const MeetingContainer = memo(() => {
             const meetingTemplate = await getMeetingTemplateFx({ templateId: router.query.token as string });
 
             if (meetingTemplate?.meetingInstance?.serverIp) {
-                await initiateSocketConnectionFx({ serverIp: meetingTemplate?.meetingInstance?.serverIp });
+                await initiateSocketConnectionFx({ serverIp: meetingTemplate.meetingInstance.serverIp! });
 
                 emitJoinMeetingEvent();
 
@@ -77,7 +76,6 @@ const MeetingContainer = memo(() => {
             disconnectMainSocketEvent();
             resetMeetingUsersStore();
             resetLocalUserStore();
-            resetMeetingInstanceStore();
             resetMeetingStore();
             resetSocketStore();
             resetMainSocketStore();
@@ -89,7 +87,7 @@ const MeetingContainer = memo(() => {
         <>
             {meetingTemplate.id && (
                 <VideoEffectsProvider>
-                    {![MeetingAccessStatuses.InMeeting].includes(meetingUser.accessStatus) ? (
+                    {MeetingAccessStatuses.InMeeting !== meetingUser.accessStatus ? (
                         <CustomBox className={styles.waitingRoomWrapper}>
                             <MeetingPreview />
                             <NotMeetingComponent />

@@ -407,10 +407,10 @@ export class ProfileController {
       };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get profile template`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get profile template`,
+        },
+        JSON.stringify(err),
       );
 
       throw new BadRequestException(err);
@@ -447,6 +447,42 @@ export class ProfileController {
       this.logger.error(
         {
           message: `An error occurs, while update profile template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/templates/:templateId')
+  @ApiOperation({ summary: 'Delete Profile Template' })
+  @ApiOkResponse({
+    type: CommonTemplateRestDTO,
+    description: 'Delete Profile Template Success',
+  })
+  async deleteUserTemplate(
+    @Param('templateId') templateId: IUserTemplate['id'],
+  ): Promise<ResponseSumType<void>> {
+    try {
+      if (templateId) {
+        await this.templatesService.deleteUserTemplate({
+          templateId,
+        });
+
+        return {
+          success: true,
+          result: undefined,
+        };
+      }
+      return {
+        success: false,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while delete profile template`,
         },
         JSON.stringify(err),
       );

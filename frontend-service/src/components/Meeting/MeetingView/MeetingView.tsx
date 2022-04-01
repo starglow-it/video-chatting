@@ -2,6 +2,7 @@ import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useStore } from 'effector-react';
 
 // helpers
+import { usePrevious } from 'src/hooks/usePrevious';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -22,9 +23,7 @@ import { AudioDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/Aud
 import { VideoDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/VideoDeviceSetUpButton';
 import { ScreenSharingButton } from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
-import { emptyFunction } from '../../../utils/functions/emptyFunction';
-import { usePrevious } from '../../../hooks/usePrevious';
-import { SettingsVideoEffectsProvider } from '../../../contexts/SettingsVideoEffectsContext';
+
 
 // misc
 import { AgoraController } from '../../../controllers/VideoChatController';
@@ -38,6 +37,7 @@ import styles from './MeetingView.module.scss';
 
 // stores
 import {
+    $isOwner,
     $meetingStore,
     $meetingTemplateStore,
     emitUpdateMeetingTemplate,
@@ -54,22 +54,22 @@ import {
 
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
+import {emptyFunction} from "../../../utils/functions/emptyFunction";
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
+    const isOwner = useStore($isOwner);
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
 
-    const isOwner = meeting.ownerProfileId === localUser.profileId;
-
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
     const {
-        data: { isMicActive, isCameraActive, activeStream },
-        actions: { onChangeActiveStream },
+        data: { isMicActive, isCameraActive },
+        actions: { onChangeActiveStream, onGetNewStream },
     } = useContext(MediaContext);
 
     const {
@@ -109,46 +109,55 @@ const MeetingView = memo(() => {
     }, [isSharingScreenActive, meeting.sharingUserId, isOwner]);
 
     const handleStopScreenSharing = useCallback(async () => {
-        if (activeStream) {
-            const transformedStream = await onGetCanvasStream(activeStream);
+        const newStream = await onGetNewStream();
 
-            AgoraController.stopScreensharing({ stream: transformedStream });
+        if (newStream) {
+            const transformedStream = await onGetCanvasStream(newStream);
+
+            await AgoraController.stopScreensharing({ stream: transformedStream });
+
+            AgoraController.setTracksState({
+                isCameraEnabled: isLocalCamActive,
+                isMicEnabled: isLocalMicActive
+            });
         }
-    }, [activeStream]);
+    }, [onGetNewStream, isLocalCamActive, isLocalMicActive]);
 
     useEffect(() => {
         if (!meeting.sharingUserId && prevSharingUserId === localUser.meetingUserId) {
             handleStopScreenSharing();
         }
-    }, [prevSharingUserId, meeting.sharingUserId]);
+    }, [prevSharingUserId, meeting.sharingUserId, handleStopScreenSharing]);
 
     useEffect(() => {
         (async () => {
             if (localUser.accessStatus === MeetingAccessStatuses.InMeeting && isModelReady) {
                 const activeStream = onChangeActiveStream();
 
-                const transformedStream = await onGetCanvasStream(activeStream);
+                if (activeStream) {
+                    const transformedStream = await onGetCanvasStream(activeStream);
 
-                AgoraController.setUpController({
-                    channel: meeting.id,
-                    uid: localUser.meetingUserId!,
-                    onUserPublished: setMeetingUserMediaEvent,
-                    onUserJoined: setMeetingUserMediaEvent,
-                    onLocalTracks: setLocalUserMediaEvent,
-                    onSharingStarted: updateMeetingSocketEvent,
-                    onSharingStopped: updateMeetingSocketEvent,
-                    onUserUnPublished: emptyFunction,
-                    userLeft: emptyFunction,
-                });
+                    AgoraController.setUpController({
+                        channel: meeting.id,
+                        uid: localUser.meetingUserId!,
+                        onUserPublished: setMeetingUserMediaEvent,
+                        onUserJoined: setMeetingUserMediaEvent,
+                        onLocalTracks: setLocalUserMediaEvent,
+                        onSharingStarted: updateMeetingSocketEvent,
+                        onSharingStopped: updateMeetingSocketEvent,
+                        onUserUnPublished: emptyFunction,
+                        userLeft: emptyFunction,
+                    });
 
-                if (transformedStream) {
-                    await AgoraController.initiateConnection({ stream: transformedStream });
+                    if (transformedStream) {
+                        await AgoraController.initiateConnection({ stream: transformedStream });
+                    }
+
+                    AgoraController.setTracksState({
+                        isCameraEnabled: isCameraActive,
+                        isMicEnabled: isMicActive,
+                    });
                 }
-
-                AgoraController.setTracksState({
-                    isCameraEnabled: isCameraActive,
-                    isMicEnabled: isMicActive,
-                });
             }
         })();
     }, [localUser.accessStatus, isModelReady]);
@@ -173,7 +182,11 @@ const MeetingView = memo(() => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            {Boolean(meeting.sharingUserId) ? <ScreenSharingLayout /> : <MeetingBackgroundVideo src="/videos/output.mp4" />}
+            {meeting.sharingUserId ? (
+                <ScreenSharingLayout />
+            ) : (
+                <MeetingBackgroundVideo src="/videos/output.mp4" />
+            )}
 
             {Boolean(meetingTemplate?.id) && (
                 <MeetingSettingsPanel

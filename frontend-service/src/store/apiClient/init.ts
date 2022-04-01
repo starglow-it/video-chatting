@@ -16,8 +16,6 @@ const sampleRequest = createApiClientRequest({
 });
 
 sampleRequest.use(async (data) => {
-    console.log(data);
-    console.log('aadsasd');
     return data;
 });
 

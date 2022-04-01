@@ -8,7 +8,9 @@ import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class User {
   @Prop()
   id: string;
@@ -30,16 +32,6 @@ export class User {
     type: mongoose.Schema.Types.String,
   })
   fullName: string;
-
-  @Prop({
-    type: mongoose.Schema.Types.Date,
-  })
-  createdAt: number;
-
-  @Prop({
-    type: mongoose.Schema.Types.Date,
-  })
-  updatedAt: number;
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,

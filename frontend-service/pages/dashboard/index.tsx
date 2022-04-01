@@ -3,7 +3,6 @@ import { withStart } from 'effector-next';
 
 import { TemplatesContainer } from '@containers/TemplatesContainer/TemplatesContainer';
 
-import { Layout } from '@components/Layout/Layout';
 import { DashboardLayout } from '@components/DashboardLayout/DashboardLayout';
 
 import { pageLoaded } from '../../src/store/root';
@@ -12,15 +11,13 @@ import { pageLoaded } from '../../src/store/root';
 const enhance = withStart(pageLoaded);
 
 const TemplatesPage: NextPage = (): JSX.Element => (
-    <Layout>
-        <DashboardLayout>
-            <TemplatesContainer />
-        </DashboardLayout>
-    </Layout>
+    <DashboardLayout>
+        <TemplatesContainer />
+    </DashboardLayout>
 );
 
 TemplatesPage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'templates'],
+    namespacesRequired: ['common', 'templates', 'dashboard', 'notifications', 'profile'],
 });
 
 export default enhance(TemplatesPage);

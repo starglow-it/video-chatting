@@ -1,12 +1,13 @@
-import React, { memo } from 'react';
+import React, {ForwardedRef, forwardRef, memo} from 'react';
 
 import { CommonIconProps } from '../types';
 
 import { SvgIconWrapper } from './SvgIconWrapper';
 
-const LiveOfficeLogo = memo(({ width, height, className, onClick }: CommonIconProps) => {
+const LiveOfficeLogo = memo(forwardRef(({ width, height, className, onClick }: CommonIconProps, ref: ForwardedRef<SVGSVGElement>) => {
     return (
         <SvgIconWrapper
+            ref={ref}
             width={width}
             height={height}
             className={className}
@@ -28,6 +29,6 @@ const LiveOfficeLogo = memo(({ width, height, className, onClick }: CommonIconPr
             />
         </SvgIconWrapper>
     );
-});
+}));
 
 export { LiveOfficeLogo };

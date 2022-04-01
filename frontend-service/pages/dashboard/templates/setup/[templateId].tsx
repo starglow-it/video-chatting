@@ -11,7 +11,7 @@ const enhance = withStart(pageLoaded);
 const SetupTemplatePage: NextPage = (): JSX.Element => <SetUpTemplateContainer />;
 
 SetupTemplatePage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'templates', 'forms'],
+    namespacesRequired: ['common', 'templates', 'forms', 'dashboard'],
 });
 
 export default enhance(SetupTemplatePage);

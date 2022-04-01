@@ -87,7 +87,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
 
     const handleChangeRoute = useCallback(
         route => {
-            if (dirtyFieldsCount && !window.confirm('Are you sure to skip onboarding')) {
+            if (dirtyFieldsCount && !confirmChangeRouteDialog) {
                 router.events.emit('routeChangeError');
                 setRouteToChangeEvent(route);
 
@@ -107,7 +107,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
         return () => {
             router.events.off('routeChangeStart', handleChangeRoute);
         };
-    }, [dirtyFieldsCount, handleChangeRoute]);
+    }, [dirtyFieldsCount, handleChangeRoute, confirmChangeRouteDialog]);
 
     if (!dirtyFieldsCount) return <></>;
 

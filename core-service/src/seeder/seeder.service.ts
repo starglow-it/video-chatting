@@ -47,17 +47,19 @@ export class SeederService {
       if (!isExists) {
         const templateBusinessCategories =
           await this.businessCategoriesService.find({
-            key: {
-              $in: [
-                BUSINESS_CATEGORIES[i].key,
-                BUSINESS_CATEGORIES[i + 1].key,
-                BUSINESS_CATEGORIES[i + 2].key,
-                BUSINESS_CATEGORIES[i + 3].key,
-                BUSINESS_CATEGORIES[i + 4].key,
-                BUSINESS_CATEGORIES[i + 5].key,
-                BUSINESS_CATEGORIES[i + 6].key,
-              ],
-            },
+            query: {
+              key: {
+                $in: [
+                  BUSINESS_CATEGORIES[i].key,
+                  BUSINESS_CATEGORIES[i + 1].key,
+                  BUSINESS_CATEGORIES[i + 2].key,
+                  BUSINESS_CATEGORIES[i + 3].key,
+                  BUSINESS_CATEGORIES[i + 4].key,
+                  BUSINESS_CATEGORIES[i + 5].key,
+                  BUSINESS_CATEGORIES[i + 6].key,
+                ],
+              },
+            }
           });
 
         const businessCategoriesObjectId = templateBusinessCategories.map(
@@ -110,12 +112,10 @@ export class SeederService {
           };
         });
 
-        const templates = await this.userTemplatesService.createUserTemplates({
+        user.templates = (await this.userTemplatesService.createUserTemplates({
           userId: user._id,
           templates: templatesListData,
-        });
-
-        user.templates = templates;
+        }));
 
         return user.save();
       }

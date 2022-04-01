@@ -268,6 +268,22 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
         [changeStream, isMicActive],
     );
 
+    const handleGetNewStream = useCallback(async () => {
+        const { stream } = await getMediaStream({
+            audioDeviceId: currentAudioDevice,
+            videoDeviceId: currentVideoDevice,
+        });
+
+        setChangeStream(prev => {
+            stopStream(prev);
+
+            return stream;
+        });
+        setError('');
+
+        return stream;
+    }, [currentAudioDevice, currentVideoDevice]);
+
     const contextValue = useMemo(() => {
         return {
             actions: {
@@ -276,6 +292,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 onChangeStream: handleChangeStream,
                 onChangeActiveStream: handleChangeActiveStream,
                 onInitDevices: handleGetInitialStream,
+                onGetNewStream: handleGetNewStream,
             },
             data: {
                 changeStream,
@@ -296,6 +313,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
         handleChangeStream,
         handleChangeActiveStream,
         handleGetInitialStream,
+        handleGetNewStream,
         changeStream,
         activeStream,
         error,

@@ -7,9 +7,7 @@ import { pageLoaded } from '../src/store/root';
 // @ts-ignore
 const enhance = withStart(pageLoaded);
 
-const Home: NextPage = (): JSX.Element => (
-    <div />
-);
+const Home: NextPage = (): JSX.Element => <div />;
 
 Home.getInitialProps = async () => ({
     namespacesRequired: ['common', 'register', 'notifications'],

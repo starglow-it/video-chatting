@@ -40,6 +40,11 @@ export const postProfileTemplatesUrl = ({ templateId }: { templateId?: string; }
     method: HttpMethods.Post,
 });
 
+export const deleteProfileTemplatesUrl = ({ templateId }: { templateId?: string; }) => ({
+    url: `${baseProfileUrl}/templates/${templateId || ''}`,
+    method: HttpMethods.Delete,
+});
+
 export const profileEmailUrl = {
     url: `${baseProfileUrl}/email`,
     method: HttpMethods.Post

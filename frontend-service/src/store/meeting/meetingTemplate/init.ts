@@ -1,5 +1,7 @@
 import {
+    $isUserSendEnterRequest,
     $meetingTemplateStore,
+    setIsUserSendEnterRequest,
     getMeetingTemplateFx,
     updateMeetingTemplateFx,
 } from './model';
@@ -12,3 +14,5 @@ updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);
 $meetingTemplateStore
     .on(getMeetingTemplateFx.doneData, (state, data) => data)
     .on(updateMeetingTemplateFx.doneData, (state, data) => data);
+
+$isUserSendEnterRequest.on(setIsUserSendEnterRequest, (state, data) => data);

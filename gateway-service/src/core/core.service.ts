@@ -16,7 +16,11 @@ import {
   VALIDATE_VERIFICATION_CODE,
   VERIFY_PASSWORD,
 } from '@shared/patterns/users';
-import {CREATE_MEETING, DELETE_MEETING, GET_MEETING} from '@shared/patterns/meetings';
+import {
+  CREATE_MEETING,
+  DELETE_MEETING,
+  GET_MEETING,
+} from '@shared/patterns/meetings';
 import { IUserCredentials } from '@shared/types/registerUser.type';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { ICommonMeetingInstanceDTO } from '@shared/interfaces/common-instance-meeting.interface';
@@ -108,9 +112,9 @@ export class CoreService {
     return this.client.send(pattern, createMeetingData).toPromise();
   }
 
-  async deleteMeeting(
-    deleteMeetingData: { templateId: string },
-  ): Promise<ICommonMeetingInstanceDTO> {
+  async deleteMeeting(deleteMeetingData: {
+    templateId: string;
+  }): Promise<ICommonMeetingInstanceDTO> {
     const pattern = { cmd: DELETE_MEETING };
 
     return this.client.send(pattern, deleteMeetingData).toPromise();

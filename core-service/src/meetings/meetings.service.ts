@@ -48,8 +48,10 @@ export class MeetingsService {
     getMeetingData: { meetingId: ICommonMeetingInstanceDTO['id'] },
     { session }: ITransactionSession,
   ): Promise<MeetingInstanceDocument> {
-    return this.meetingInstance
-      .findById(getMeetingData.meetingId)
-      .session(session);
+    return this.meetingInstance.findById(
+      getMeetingData.meetingId,
+      {},
+      { session },
+    ).exec();
   }
 }

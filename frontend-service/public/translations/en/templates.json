@@ -18,5 +18,9 @@
   "onboarding": {
     "quit": "Quit onboarding?",
     "explanation": "Some features may not be available \n if you skip onboarding. To use platform in full, finish onboarding or fill in the information in the profile manually"
+  },
+  "deleteTemplate": {
+    "title": "Delete template?",
+    "text": "You will lose all related data and custom settings \n (default settings are available any time)"
   }
 }

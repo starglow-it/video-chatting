@@ -21,6 +21,7 @@ import styles from './WelcomePageContainer.module.scss';
 
 // stores
 import { $templatesStore, getTemplatesFx } from '../../store/templates';
+import {Template} from "../../store/types";
 
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
@@ -62,7 +63,7 @@ const WelcomePageContainer = memo(() => {
                     <CustomTypography variant="h1" nameSpace="welcome" translation="title" />
                 </CustomGrid>
                 <CustomTypography variant="h4" nameSpace="welcome" translation="text" />
-                <TemplatesGrid
+                <TemplatesGrid<Template>
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleCommonTemplatesPageChange}

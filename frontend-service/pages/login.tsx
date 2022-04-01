@@ -7,9 +7,7 @@ import { pageLoaded } from '../src/store/root';
 // @ts-ignore
 const enhance = withStart(pageLoaded);
 
-const LogInPage: NextPage = (): JSX.Element => (
-    <SignInContainer />
-);
+const LogInPage: NextPage = (): JSX.Element => <SignInContainer />;
 
 LogInPage.getInitialProps = () => ({
     namespacesRequired: ['common', 'register', 'forms'],

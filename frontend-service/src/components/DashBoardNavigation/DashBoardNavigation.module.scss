@@ -2,7 +2,7 @@
 @import "../../styles/rem";
 
 .dashboardNavigation {
-  position: sticky;
+  position: fixed;
   width: rem(68px);
   z-index: 100;
   left: rem(20px);

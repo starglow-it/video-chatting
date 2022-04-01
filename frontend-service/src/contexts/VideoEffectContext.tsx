@@ -47,12 +47,12 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
     const {
         value: isBlurActive,
         onToggleSwitch: handleToggleBlur
-    } = useToggle(true);
+    } = useToggle(false);
 
     const {
         value: isFaceTrackingActive,
         onToggleSwitch: handleToggleFaceTracking
-    } = useToggle(true);
+    } = useToggle(false);
 
     const [isModelReady, setIsModelReady] = useState(false);
 

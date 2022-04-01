@@ -15,10 +15,18 @@ import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog
 import { CommonTemplateItem } from '@components/Templates/CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { ProfileTemplateItem } from '@components/Templates/ProfileTemplateItem/ProfileTemplateItem';
+import {DeleteTemplateDialog} from "@components/Dialogs/DeleteTemplateDialog/DeleteTemplateDialog";
 
 // stores
 import { createMeetingFx } from '../../store/meetings';
-import { $profileStore, $profileTemplatesStore, getProfileTemplatesFx } from '../../store/profile';
+import {
+    $profileStore,
+    $profileTemplatesStore,
+    $skipProfileTemplates,
+    setSkipProfileTemplates,
+    deleteProfileTemplateFx,
+    getProfileTemplatesFx
+} from '../../store/profile';
 import { $templatesStore, getTemplatesFx } from '../../store/templates';
 
 // styles
@@ -30,13 +38,23 @@ const TemplatesContainer = memo(() => {
     const profile = useStore($profileStore);
     const profileTemplates = useStore($profileTemplatesStore);
     const templates = useStore($templatesStore);
+    const skipProfileTemplates = useStore($skipProfileTemplates);
+
+    const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
 
     useEffect(() => {
         (async () => {
-            await getProfileTemplatesFx({ limit: 6, skip: 0 });
             await getTemplatesFx({ limit: 6, skip: 0 });
         })();
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (!isTemplateDeleting) {
+                await getProfileTemplatesFx({ limit: skipProfileTemplates, skip: 0 });
+            }
+        })()
+    }, [isTemplateDeleting]);
 
     const handleChooseTemplate = useCallback(async ({ templateId }) => {
         const result = await createMeetingFx({ templateId });
@@ -50,6 +68,7 @@ const TemplatesContainer = memo(() => {
 
     const handleProfileTemplatesPageChange = useCallback(async newPage => {
         await getProfileTemplatesFx({ limit: 6 * newPage, skip: 0 });
+        setSkipProfileTemplates(6 * newPage);
     }, []);
 
     const handleCommonTemplatesPageChange = useCallback(async newPage => {
@@ -118,6 +137,7 @@ const TemplatesContainer = memo(() => {
                 chooseButtonKey="chooseTemplate"
                 onChooseTemplate={handleChooseTemplate}
             />
+            <DeleteTemplateDialog />
         </MainProfileWrapper>
     );
 });

@@ -17,6 +17,7 @@ import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { EntityList } from '@shared/types/utils/http/list.type';
 
 import {
+  DELETE_USERS_TEMPLATES,
   GET_USER_TEMPLATE,
   GET_USER_TEMPLATES,
   GET_USERS_TEMPLATES,
@@ -41,29 +42,32 @@ export class UserTemplatesController {
   async getUserTemplate(
     @Payload() { id }: { id: IUserTemplate['id'] },
   ): Promise<IUserTemplate> {
-    try {
-      const userTemplate = await this.userTemplatesService.findUserTemplateById(
-        id,
-      );
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const userTemplate =
+          await this.userTemplatesService.findUserTemplateById({
+            id,
+            session,
+            populatePath: [
+              { path: 'socials' },
+              { path: 'businessCategories' },
+              { path: 'languages' },
+              { path: 'meetingInstance' },
+              { path: 'user', populate: { path: 'profileAvatar' } },
+            ],
+          });
 
-      await userTemplate.populate([
-        'socials',
-        'businessCategories',
-        'languages',
-        'meetingInstance',
-        { path: 'user', populate: { path: 'profileAvatar'} }
-      ]);
-
-      return plainToClass(UserTemplateDTO, userTemplate, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-    } catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: TEMPLATES_SERVICE,
-      });
-    }
+        return plainToClass(UserTemplateDTO, userTemplate, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: TEMPLATES_SERVICE,
+        });
+      }
+    });
   }
 
   @MessagePattern({ cmd: GET_USER_TEMPLATES })
@@ -127,21 +131,21 @@ export class UserTemplatesController {
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
-        const template = await this.userTemplatesService.findUserTemplateById(
-          templateId,
-        );
-
-        await template.populate('user');
-
-        const newBusinessCategories = await this.businessCategoriesService.find(
-          { key: { $in: data.businessCategories } },
+        const template = await this.userTemplatesService.findUserTemplateById({
+          id: templateId,
           session,
-        );
+          populatePath: 'user',
+        });
 
-        const newLanguages = await this.languageService.find(
-          { key: { $in: data.languages } },
-          session,
-        );
+        const newBusinessCategories = await this.businessCategoriesService.find({
+          query: { key: { $in: data.businessCategories } },
+          session
+        });
+
+        const newLanguages = await this.languageService.find({
+          query: { key: { $in: data.languages } },
+          session
+        });
 
         const newSocials =
           await this.userTemplatesService.createUserTemplateSocialsLinks(
@@ -228,6 +232,24 @@ export class UserTemplatesController {
           list: parsedTemplates,
           count: userTemplatesCount,
         };
+      });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
+  }
+
+  @MessagePattern({ cmd: DELETE_USERS_TEMPLATES })
+  async deleteUserTemplate(
+      @Payload() { templateId }: { templateId: IUserTemplate["id"] }
+  ): Promise<undefined> {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        await this.userTemplatesService.deleteUserTemplate({ _id: templateId }, session);
+
+        return;
       });
     } catch (err) {
       throw new RpcException({

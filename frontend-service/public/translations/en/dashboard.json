@@ -1,0 +1,11 @@
+{
+  "notifications": {
+    "noNotifications": "No notifications yet",
+    "title": "Notifications",
+    "readAll": "Mark all as read",
+    "timeAgo": "{{time}} ago",
+    "types": {
+      "0": "Joined"
+    }
+  }
+}

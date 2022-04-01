@@ -23,16 +23,14 @@ import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 
 // stores
-import { $meetingStore } from '../../../store/meeting';
-import { $localUserStore } from '../../../store/users';
+import { $isOwner } from '../../../store/meeting';
 
 // styles
 import styles from './MeetingControlPanel.module.scss';
 
 const MeetingControlPanel = memo(() => {
     const router = useRouter();
-    const meeting = useStore($meetingStore);
-    const user = useStore($localUserStore);
+    const isOwner = useStore($isOwner);
 
     const isEditTemplateView = router.pathname.includes('edit-template');
 
@@ -56,8 +54,6 @@ const MeetingControlPanel = memo(() => {
 
     const paperRef = useRef(null);
 
-    const isOwner = meeting.ownerProfileId === user.profileId;
-
     return (
         <CustomPaper variant="black-glass" ref={paperRef} className={styles.controlPanelWrapper}>
             <CustomGrid container gap={0.75}>
@@ -69,14 +65,14 @@ const MeetingControlPanel = memo(() => {
                     })}
                     Icon={<PeoplesIcon width="30px" height="30px" />}
                 />
-                {/*<ActionButton*/}
-                {/*    onAction={isEditTemplateView ? undefined : handleToggleLeaveNote}*/}
-                {/*    className={clsx(styles.actionButton, {*/}
-                {/*        [styles.withAction]: !isEditTemplateView,*/}
-                {/*        [styles.active]: isLeaveNoteOpen,*/}
-                {/*    })}*/}
-                {/*    Icon={<NotesIcon width="30px" height="30px" />}*/}
-                {/*/>*/}
+                <ActionButton
+                    onAction={isEditTemplateView ? undefined : handleToggleLeaveNote}
+                    className={clsx(styles.actionButton, {
+                        [styles.withAction]: !isEditTemplateView,
+                        [styles.active]: isLeaveNoteOpen,
+                    })}
+                    Icon={<NotesIcon width="30px" height="30px" />}
+                />
             </CustomGrid>
             {!isEditTemplateView && (
                 <CustomGrid className={styles.panelsWrapper}>

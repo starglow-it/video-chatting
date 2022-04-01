@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery, Model, PopulateOptions } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 // schemas
@@ -13,6 +13,7 @@ import { ITransactionSession } from '../helpers/mongo/withTransaction';
 
 // types
 import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
+import { CustomPopulateOptions } from '../types/custom';
 
 @Injectable()
 export class CommonTemplatesService {
@@ -21,7 +22,7 @@ export class CommonTemplatesService {
     private commonTemplate: Model<CommonTemplateDocument>,
   ) {}
 
-  async exists(query: FilterQuery<CommonTemplateDocument>): Promise<boolean> {
+  async exists(query: FilterQuery<CommonTemplateDocument>) {
     return this.commonTemplate.exists(query);
   }
 
@@ -33,9 +34,9 @@ export class CommonTemplatesService {
   }: {
     query: FilterQuery<CommonTemplateDocument>;
     options?: { skip?: number; limit?: number };
-    populatePaths?: string | string[] | PopulateOptions | PopulateOptions[];
+    populatePaths?: CustomPopulateOptions;
     session?: ITransactionSession;
-  }): Promise<CommonTemplateDocument[]> {
+  }) {
     return this.commonTemplate.find(
       query,
       {},
@@ -55,8 +56,8 @@ export class CommonTemplatesService {
   }: {
     templateId: string;
     session: ITransactionSession;
-    populatePaths?: string | string[] | PopulateOptions | PopulateOptions[];
-  }): Promise<CommonTemplateDocument> {
+    populatePaths?: CustomPopulateOptions;
+  }) {
     return this.commonTemplate.findById(
       templateId,
       {},
@@ -65,23 +66,28 @@ export class CommonTemplatesService {
   }
 
   async findCommonTemplate(
-    query: FilterQuery<CommonTemplateDocument>,
-    session: ITransactionSession,
+      {
+        query,
+        session,
+        populatePaths,
+      } : {
+        query: FilterQuery<CommonTemplateDocument>,
+        session: ITransactionSession,
+        populatePaths?: CustomPopulateOptions;
+      }
   ) {
     return this.commonTemplate.findOne(
       query,
       {},
-      { session: session?.session },
+      { session: session?.session, populate: populatePaths },
     );
   }
 
-  async createCommonTemplate(
-    data: ICommonTemplate,
-  ): Promise<CommonTemplateDocument> {
+  async createCommonTemplate(data: ICommonTemplate) {
     return this.commonTemplate.create(data);
   }
 
-  async countCommonTemplates(): Promise<number> {
+  async countCommonTemplates() {
     return this.commonTemplate.count();
   }
 }

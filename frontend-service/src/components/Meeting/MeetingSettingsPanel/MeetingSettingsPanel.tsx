@@ -43,9 +43,8 @@ import { fullNameSchema } from '../../../validation/users/fullName';
 import { validateSocialLink } from '../../../validation/users/socials';
 
 // stores
-import { $meetingStore } from '../../../store/meeting';
+import { $isOwner } from '../../../store/meeting';
 import { appDialogsApi } from '../../../store/dialogs';
-import { $profileStore } from '../../../store/profile';
 
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
@@ -72,16 +71,14 @@ const validationSchema = yup.object({
 const MeetingSettingsPanel = memo(
     ({ template, onTemplateUpdate, children }: MeetingSettingsPanelProps) => {
         const router = useRouter();
+        const isOwner = useStore($isOwner);
 
         const isEditTemplateView = router.pathname.includes('edit-template');
 
         const [open, setOpen] = useState(isEditTemplateView);
         const [currentAccordionId, setCurrentAccordionId] = useState('');
 
-        const meeting = useStore($meetingStore);
-        const profile = useStore($profileStore);
-
-        const isOwner = meeting.ownerProfileId === profile.id || isEditTemplateView;
+        const isAbleToSave = isOwner || isEditTemplateView;
 
         const resolver = useYupValidationResolver<{
             companyName: string;
@@ -263,7 +260,7 @@ const MeetingSettingsPanel = memo(
                                     !isEditTemplateView ? handleOpenDeviceSettings : undefined
                                 }
                             />
-                            {!open && isOwner && (
+                            {!open && isAbleToSave && (
                                 <CustomPaper variant="black-glass" className={styles.deviceButton}>
                                     <ActionButton
                                         className={styles.iconButton}
@@ -294,7 +291,7 @@ const MeetingSettingsPanel = memo(
                                 </CustomGrid>
                                 <CustomGrid item flex="1 1 auto" className={styles.scrollWrapper}>
                                     <CustomScroll>
-                                        <CustomGrid container direction="column" gap={2}>
+                                        <CustomGrid container direction="column" gap={2} wrap="nowrap" className={styles.formContent}>
                                             <CustomAccordion
                                                 AccordionIcon={
                                                     <PersonIcon width="24px" height="24px" />

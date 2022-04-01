@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  DELETE_USERS_TEMPLATES,
   GET_COMMON_TEMPLATE,
   GET_COMMON_TEMPLATES,
   GET_USER_TEMPLATE,
@@ -48,6 +49,12 @@ export class TemplatesService {
 
   async getUsersTemplates(data): Promise<IUserTemplate> {
     const pattern = { cmd: GET_USERS_TEMPLATES };
+
+    return this.coreService.sendCustom(pattern, data);
+  }
+
+  async deleteUserTemplate(data): Promise<void> {
+    const pattern = { cmd: DELETE_USERS_TEMPLATES };
 
     return this.coreService.sendCustom(pattern, data);
   }

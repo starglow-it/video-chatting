@@ -7,28 +7,29 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
+import { deleteMeetingFx } from 'src/store/meetings';
 import styles from './EndMeetingDialog.module.scss';
 
 import { appDialogsApi, $appDialogsStore } from '../../../store/dialogs';
 
-import {$meetingStore, $meetingTemplateStore, emitEndMeetingEvent, emitLeaveMeetingEvent} from '../../../store/meeting';
-import { $localUserStore } from '../../../store/users';
+import {
+    $isOwner,
+    $meetingTemplateStore,
+    emitEndMeetingEvent,
+    emitLeaveMeetingEvent,
+} from '../../../store/meeting';
 
 import { AppDialogsEnum } from '../../../store/types';
 import { useLocalization } from '../../../hooks/useTranslation';
-import { deleteMeetingFx } from 'src/store/meetings';
 
 const EndMeetingDialog = memo(() => {
     const router = useRouter();
-    const localUser = useStore($localUserStore);
-    const meeting = useStore($meetingStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const isOwner = useStore($isOwner);
 
     const { translation } = useLocalization('meeting');
 
     const { endMeetingDialog } = useStore($appDialogsStore);
-
-    const isOwner = meeting.owner === localUser.id;
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -36,7 +37,7 @@ const EndMeetingDialog = memo(() => {
         });
     }, []);
 
-    const handleLeave = useCallback( () => {
+    const handleLeave = useCallback(() => {
         handleClose();
         emitLeaveMeetingEvent();
         router.push('/dashboard');

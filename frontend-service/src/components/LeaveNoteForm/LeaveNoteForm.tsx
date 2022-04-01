@@ -30,7 +30,7 @@ import { sendMeetingNoteSocketEvent } from '../../store/meeting/meetingNotes';
 import styles from './LeaveNoteForm.module.scss';
 
 const validationSchema = yup.object({
-    note: simpleStringSchemaWithLength(500).required('required'),
+    note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
 });
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -77,7 +77,7 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
 
     const noteText = useWatch({
         control,
-        name: 'note',
+        name: 'note'
     });
 
     const onSubmit = useCallback(
@@ -93,6 +93,16 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
         reset();
         onCancel();
     }, []);
+
+    const { onChange, ...restRegisterData } = register('note', { maxLength: MAX_NOTE_CONTENT });
+
+    const handleChange = useCallback(async (event) => {
+        if (event.target.value.length > MAX_NOTE_CONTENT) {
+            event.target.value = event.target.value.slice(0, MAX_NOTE_CONTENT);
+        }
+
+        await onChange(event);
+    },[]);
 
     return (
         <FormProvider {...methods}>
@@ -126,7 +136,8 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
                     multiline
                     rows={4}
                     className={materialStyles.textField}
-                    {...register('note')}
+                    {...restRegisterData}
+                    onChange={handleChange}
                 />
             </CustomGrid>
         </FormProvider>
