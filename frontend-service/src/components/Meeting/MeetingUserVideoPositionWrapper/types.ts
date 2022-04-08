@@ -1,6 +1,5 @@
 import React from 'react';
 
-export type MeetingUserVideoPositionWrapperProps = React.PropsWithChildren<{
-    elevationIndex: number;
+export type MeetingUserVideoPositionWrapperProps = Required<React.PropsWithChildren<any>> & {
     isScreensharing?: boolean;
-}>;
+};

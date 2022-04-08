@@ -12,11 +12,13 @@ const MeetingContainer = dynamic(() => import('@containers/MeetingContainer/Meet
 // @ts-ignore
 const enhance = withStart(pageLoaded);
 
-const MeetingPage = (): JSX.Element => (
-    <MediaContextProvider>
-        <MeetingContainer />
-    </MediaContextProvider>
-);
+function MeetingPage(): JSX.Element {
+    return (
+        <MediaContextProvider>
+            <MeetingContainer />
+        </MediaContextProvider>
+    );
+}
 
 MeetingPage.getInitialProps = async (): Promise<any> => ({
     namespacesRequired: ['common', 'meeting', 'errors', 'forms'],

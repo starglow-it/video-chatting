@@ -75,4 +75,8 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   @Type(() => TemplateUserDTO)
   user: ITemplateUserDTO;
+
+  @Expose()
+  @Transform((data) => data.obj?.usersPosition)
+  usersPosition: { top: number; left: number }[];
 }

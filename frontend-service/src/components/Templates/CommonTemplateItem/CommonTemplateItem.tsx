@@ -65,6 +65,7 @@ const CommonTemplateItem = memo(({ template }: CommonTemplateItemProps) => {
                     description={template.description}
                     maxParticipants={template.maxParticipants}
                     type={template.type}
+                    isNeedToShowBusinessInfo
                 />
             </Fade>
             <Fade in={showPreview}>

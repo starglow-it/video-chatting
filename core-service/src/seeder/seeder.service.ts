@@ -59,16 +59,14 @@ export class SeederService {
                   BUSINESS_CATEGORIES[i + 6].key,
                 ],
               },
-            }
+            },
           });
-
-        const businessCategoriesObjectId = templateBusinessCategories.map(
-          (category) => category._id,
-        );
 
         await this.commonTemplatesService.createCommonTemplate({
           ...templateData,
-          businessCategories: businessCategoriesObjectId,
+          businessCategories: templateBusinessCategories.map(
+            (category) => category._id,
+          ),
         });
       }
     });
@@ -109,13 +107,14 @@ export class SeederService {
             contactEmail: user.contactEmail,
             languages: user.languages.map((language) => language._id),
             socials: user.socials.map((social) => social._id),
+            usersPosition: template.usersPosition,
           };
         });
 
-        user.templates = (await this.userTemplatesService.createUserTemplates({
+        user.templates = await this.userTemplatesService.createUserTemplates({
           userId: user._id,
           templates: templatesListData,
-        }));
+        });
 
         return user.save();
       }

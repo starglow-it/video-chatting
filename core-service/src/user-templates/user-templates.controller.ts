@@ -137,14 +137,16 @@ export class UserTemplatesController {
           populatePath: 'user',
         });
 
-        const newBusinessCategories = await this.businessCategoriesService.find({
-          query: { key: { $in: data.businessCategories } },
-          session
-        });
+        const newBusinessCategories = await this.businessCategoriesService.find(
+          {
+            query: { key: { $in: data.businessCategories } },
+            session,
+          },
+        );
 
         const newLanguages = await this.languageService.find({
           query: { key: { $in: data.languages } },
-          session
+          session,
         });
 
         const newSocials =
@@ -213,7 +215,10 @@ export class UserTemplatesController {
           {
             query: { user: { $ne: user } },
             options: { sort: '-usedAt', skip, limit },
-            populatePaths: 'businessCategories',
+            populatePaths: [
+              { path: 'businessCategories' },
+              { path: 'user', populate: { path: 'profileAvatar' } },
+            ],
             session,
           },
         );
@@ -243,11 +248,14 @@ export class UserTemplatesController {
 
   @MessagePattern({ cmd: DELETE_USERS_TEMPLATES })
   async deleteUserTemplate(
-      @Payload() { templateId }: { templateId: IUserTemplate["id"] }
+    @Payload() { templateId }: { templateId: IUserTemplate['id'] },
   ): Promise<undefined> {
     try {
       return withTransaction(this.connection, async (session) => {
-        await this.userTemplatesService.deleteUserTemplate({ _id: templateId }, session);
+        await this.userTemplatesService.deleteUserTemplate(
+          { _id: templateId },
+          session,
+        );
 
         return;
       });

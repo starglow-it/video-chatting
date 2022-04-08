@@ -1,25 +1,29 @@
 import React, { memo, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
+// components
 import { MeetingUserVideoItem } from '@components/Meeting/MeetingUserVideoItem/MeetingUserVideoItem';
+import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores
-import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 import { $localUserStore, $meetingUsersStore } from '../../../store/users';
 import { $profileStore } from '../../../store/profile';
+import { $meetingStore, $meetingTemplateStore } from '../../../store/meeting';
 
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
 
+// styles
 import styles from './MeetingUsersVideos.module.scss';
-import { $meetingStore } from '../../../store/meeting';
 
 const MeetingUsersVideos = memo(() => {
     const localUser = useStore($localUserStore);
     const profile = useStore($profileStore);
     const meeting = useStore($meetingStore);
+    const meetingTemplate = useStore($meetingTemplateStore);
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -32,16 +36,19 @@ const MeetingUsersVideos = memo(() => {
             ),
     });
 
+    const isScreenSharing = Boolean(meeting.sharingUserId);
+
     const renderUsers = useMemo(
         () =>
             users.map((user, index) => (
                 <MeetingUserVideoPositionWrapper
                     key={user.id}
-                    isScreensharing={Boolean(meeting.sharingUserId)}
-                    elevationIndex={index}
+                    isScreensharing={isScreenSharing}
+                    top={meetingTemplate?.usersPosition?.[index + 1].top}
+                    left={meetingTemplate?.usersPosition?.[index + 1].left}
                 >
                     <MeetingUserVideoItem
-                        size={meeting?.sharingUserId ? 56 : 120}
+                        size={isScreenSharing ? 56 : 120}
                         userName={user.username}
                         videoTrack={
                             meeting.sharingUserId !== user.meetingUserId
@@ -52,23 +59,24 @@ const MeetingUsersVideos = memo(() => {
                         isCameraEnabled={user.cameraStatus === 'active'}
                         isMicEnabled={user.micStatus === 'active'}
                         userProfileAvatar={user.profileAvatar}
-                        withoutName={Boolean(meeting?.sharingUserId)}
+                        withoutName={isScreenSharing}
                         isScreensharingUser={meeting.sharingUserId === user.meetingUserId}
                     />
                 </MeetingUserVideoPositionWrapper>
             )),
-        [users, meeting.sharingUserId],
+        [users, meeting.sharingUserId, meetingTemplate.usersPosition],
     );
 
     return (
         <CustomGrid className={styles.meetingVideos}>
             <MeetingUserVideoPositionWrapper
                 isScreensharing={Boolean(meeting.sharingUserId)}
-                elevationIndex={renderUsers.length}
+                top={meetingTemplate?.usersPosition?.[0].top}
+                left={meetingTemplate?.usersPosition?.[0].left}
             >
                 <MeetingUserVideoItem
                     size={meeting?.sharingUserId ? 56 : 120}
-                    userProfileAvatar={profile?.profileAvatar?.url}
+                    userProfileAvatar={profile?.profileAvatar?.url || ''}
                     userName={localUser.username}
                     videoTrack={localUser.videoTrack}
                     audioTrack={localUser.audioTrack}

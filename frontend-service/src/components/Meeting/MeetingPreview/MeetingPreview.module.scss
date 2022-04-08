@@ -1,5 +1,6 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
+@import "../../../styles/mixins";
 
 .meetingPreviewWrapper {
   position: relative;
@@ -51,5 +52,14 @@
       margin: rem(0  0 0 -15px);
     }
   }
+}
+
+.companyName {
+  @extend %text-ellips;
+  max-width: 100%;
+}
+
+.description {
+  word-break: break-word;
 }
 

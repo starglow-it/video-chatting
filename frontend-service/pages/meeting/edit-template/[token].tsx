@@ -8,7 +8,9 @@ import { pageLoaded } from '../../../src/store/root';
 // @ts-ignore
 const enhance = withStart(pageLoaded);
 
-const EditTemplatePage = (): JSX.Element => <EditTemplateContainer />;
+function EditTemplatePage(): JSX.Element {
+    return <EditTemplateContainer />;
+}
 
 EditTemplatePage.getInitialProps = async (): Promise<any> => ({
     namespacesRequired: ['common', 'meeting', 'errors', 'forms'],

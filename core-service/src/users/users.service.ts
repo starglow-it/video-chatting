@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery, Model  } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 
@@ -56,11 +56,9 @@ export class UsersService {
     session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }) {
-    return this.user.find(
-      query,
-      {},
-      { populate: populatePaths, session: session?.session },
-    );
+    return this.user
+      .find(query, {}, { populate: populatePaths, session: session?.session })
+      .exec();
   }
 
   async findUserAndUpdate(
@@ -87,10 +85,7 @@ export class UsersService {
     );
   }
 
-  async findById(
-    id: ICommonUserDTO['id'],
-    { session }: ITransactionSession,
-  ) {
+  async findById(id: ICommonUserDTO['id'], { session }: ITransactionSession) {
     return this.user.findById(id, {}, { session }).exec();
   }
 

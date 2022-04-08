@@ -24,17 +24,16 @@ socketEventRequest.use(async ({ eventName, data, socketStore }) => {
     return await socketPromise;
 });
 
-initiateSocketConnectionFx.use(async ({ serverIp }) => {
-    const socketInstance = io(`ws://${serverIp}:8080`, {
-        transports: ['websocket'],
-    });
+initiateSocketConnectionFx.use(async () => {
+    const socketInstance = io({ transports: ['websocket'] });
 
     const connectPromise = new Promise((resolve, reject) => {
         socketInstance.on('connect', async () => {
             resolve(true);
         });
 
-        socketInstance.on('connect_error', async () => {
+        socketInstance.on('connect_error', async (error) => {
+            console.log(error);
             reject(false);
         });
     });

@@ -24,14 +24,14 @@ export class MeetingsService {
     query: any,
     { session }: ITransactionSession,
   ): Promise<MeetingDocument> {
-    return this.meeting.findOne(query).session(session);
+    return this.meeting.findOne(query, {}, { session }).exec();
   }
 
   async findById(
     id: string,
     { session }: ITransactionSession,
   ): Promise<MeetingDocument> {
-    return this.meeting.findById(id).session(session);
+    return this.meeting.findById(id, {}, { session }).exec();
   }
 
   async addUserToMeeting(
@@ -45,8 +45,12 @@ export class MeetingsService {
     { session }: ITransactionSession,
   ) {
     return this.meeting
-      .findByIdAndUpdate(meetingId, { $push: { users: userId } }, { new: true })
-      .session(session);
+      .findByIdAndUpdate(
+        meetingId,
+        { $push: { users: userId } },
+        { session, new: true },
+      )
+      .exec();
   }
 
   async removeUserFromMeeting(
@@ -83,10 +87,16 @@ export class MeetingsService {
       .exec();
   }
 
-  async findByIdAndUpdate(meetingId, data, { session }: ITransactionSession) {
-    return this.meeting.findByIdAndUpdate(meetingId, data, {
-      session,
-      new: true,
-    });
+  async findByIdAndUpdate(
+    meetingId,
+    data,
+    { session }: ITransactionSession,
+  ): Promise<MeetingDocument> {
+    return this.meeting
+      .findByIdAndUpdate(meetingId, data, {
+        session,
+        new: true,
+      })
+      .exec();
   }
 }

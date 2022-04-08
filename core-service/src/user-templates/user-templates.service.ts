@@ -58,11 +58,9 @@ export class UserTemplatesService {
     session: ITransactionSession;
     populatePath?: CustomPopulateOptions;
   }): Promise<UserTemplateDocument> {
-    return this.userTemplate.findById(
-      id,
-      {},
-      { session: session.session, populate: populatePath },
-    ).exec();
+    return this.userTemplate
+      .findById(id, {}, { session: session.session, populate: populatePath })
+      .exec();
   }
 
   async findUserTemplateByIdAndUpdate(
@@ -70,10 +68,12 @@ export class UserTemplatesService {
     data: UpdateQuery<UserTemplateDocument>,
     { session }: ITransactionSession,
   ): Promise<UserTemplateDocument> {
-    return this.userTemplate.findByIdAndUpdate(id, data, {
-      new: true,
-      session,
-    }).exec();
+    return this.userTemplate
+      .findByIdAndUpdate(id, data, {
+        new: true,
+        session,
+      })
+      .exec();
   }
 
   async findUserTemplate({
@@ -85,11 +85,9 @@ export class UserTemplatesService {
     session: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }): Promise<UserTemplateDocument> {
-    return this.userTemplate.findOne(
-      query,
-      {},
-      { session: session.session, populate: populatePaths },
-    ).exec();
+    return this.userTemplate
+      .findOne(query, {}, { session: session.session, populate: populatePaths })
+      .exec();
   }
 
   async deleteUserTemplate(
@@ -110,11 +108,19 @@ export class UserTemplatesService {
     session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }): Promise<UserTemplateDocument[]> {
-    return this.userTemplate.find(
-      query,
-      {},
-      { sort, skip, limit, session: session?.session, populate: populatePaths },
-    ).exec();
+    return this.userTemplate
+      .find(
+        query,
+        {},
+        {
+          sort,
+          skip,
+          limit,
+          session: session?.session,
+          populate: populatePaths,
+        },
+      )
+      .exec();
   }
 
   async createUserTemplateSocialsLinks(

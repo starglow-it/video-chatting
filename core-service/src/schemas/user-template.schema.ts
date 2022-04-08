@@ -114,6 +114,14 @@ export class UserTemplate {
     ref: 'MeetingInstance',
   })
   meetingInstance: MeetingInstanceDocument;
+
+  @Prop({
+    type: [
+      { top: mongoose.Schema.Types.Number, left: mongoose.Schema.Types.Number },
+    ],
+    required: true,
+  })
+  usersPosition: { top: number; left: number }[];
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

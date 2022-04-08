@@ -37,16 +37,18 @@ export class CommonTemplatesService {
     populatePaths?: CustomPopulateOptions;
     session?: ITransactionSession;
   }) {
-    return this.commonTemplate.find(
-      query,
-      {},
-      {
-        populate: populatePaths,
-        limit: options?.limit,
-        skip: options?.skip,
-        session: session?.session,
-      },
-    );
+    return this.commonTemplate
+      .find(
+        query,
+        {},
+        {
+          populate: populatePaths,
+          limit: options?.limit,
+          skip: options?.skip,
+          session: session?.session,
+        },
+      )
+      .exec();
   }
 
   async findCommonTemplateById({
@@ -58,24 +60,24 @@ export class CommonTemplatesService {
     session: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }) {
-    return this.commonTemplate.findById(
-      templateId,
-      {},
-      { populate: populatePaths, session: session?.session },
-    );
+    return this.commonTemplate
+      .findById(
+        templateId,
+        {},
+        { populate: populatePaths, session: session?.session },
+      )
+      .exec();
   }
 
-  async findCommonTemplate(
-      {
-        query,
-        session,
-        populatePaths,
-      } : {
-        query: FilterQuery<CommonTemplateDocument>,
-        session: ITransactionSession,
-        populatePaths?: CustomPopulateOptions;
-      }
-  ) {
+  async findCommonTemplate({
+    query,
+    session,
+    populatePaths,
+  }: {
+    query: FilterQuery<CommonTemplateDocument>;
+    session: ITransactionSession;
+    populatePaths?: CustomPopulateOptions;
+  }) {
     return this.commonTemplate.findOne(
       query,
       {},

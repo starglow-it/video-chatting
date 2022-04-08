@@ -194,6 +194,7 @@ export class MeetingsGateway
           profileAvatar: message?.profileAvatar,
           isGenerated: !Boolean(message.profileId),
           meetingUserId: getRandomNumber(10000),
+          accessStatus: message.accessStatus,
         },
         session,
       );

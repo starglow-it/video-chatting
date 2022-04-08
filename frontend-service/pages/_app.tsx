@@ -42,11 +42,11 @@ const enhance = withHydrate();
 const REGISTER_REDIRECT_ROUTES: string[] = ['/login', '/register', '/welcome'];
 const LOGIN_REDIRECT_ROUTES: string[] = ['/dashboard'];
 
-const CustomApp = ({
+function CustomApp({
     Component,
     pageProps,
     emotionCache = clientSideEmotionCache,
-}: AppProps & { emotionCache: EmotionCache }): JSX.Element => {
+}: AppProps & { emotionCache: EmotionCache }): JSX.Element {
     const scope = useScope(root, pageProps.initialState);
 
     if (pageProps.initialState) {
@@ -77,25 +77,27 @@ const CustomApp = ({
             </Provider>
         </CacheProvider>
     );
-};
+}
 
 CustomApp.getInitialProps = async (context: AppContext) => {
     const props = await App.getInitialProps(context);
 
     const data = await checkAuthFx(context.ctx);
 
+    const pathName = context?.ctx?.pathname || '';
+
     const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
-        new RegExp(route).test(context?.ctx?.pathname),
+        new RegExp(route).test(pathName),
     );
 
     const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
-        new RegExp(route).test(context?.ctx?.pathname),
+        new RegExp(route).test(pathName),
     );
 
     if (data.isAuthenticated && isRegisterRedirectRoute) {
-        redirectTo(context?.ctx, '/dashboard');
+        redirectTo(context?.ctx ?? null, '/dashboard');
     } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
-        redirectTo(context?.ctx, '/login');
+        redirectTo(context?.ctx ?? null, '/login');
     }
 
     props.pageProps.initialState = {

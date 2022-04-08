@@ -77,7 +77,7 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
 
     const noteText = useWatch({
         control,
-        name: 'note'
+        name: 'note',
     });
 
     const onSubmit = useCallback(
@@ -96,17 +96,17 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
 
     const { onChange, ...restRegisterData } = register('note', { maxLength: MAX_NOTE_CONTENT });
 
-    const handleChange = useCallback(async (event) => {
+    const handleChange = useCallback(async event => {
         if (event.target.value.length > MAX_NOTE_CONTENT) {
             event.target.value = event.target.value.slice(0, MAX_NOTE_CONTENT);
         }
 
         await onChange(event);
-    },[]);
+    }, []);
 
     return (
         <FormProvider {...methods}>
-            <CustomGrid container direction="column" gap={2.5} className={styles.notesContainer}>
+            <CustomGrid container direction="column" gap={2.5}>
                 <CustomGrid container alignItems="center">
                     <CustomTypography
                         color="colors.white.primary"

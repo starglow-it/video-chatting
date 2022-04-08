@@ -26,7 +26,7 @@ import {
     emitStartMeetingEvent,
     setIsUserSendEnterRequest,
 } from '../../store/meeting';
-import { $localUserStore, updateLocalUserStateEvent } from '../../store/users';
+import { updateLocalUserStateEvent } from '../../store/users';
 import { addNotificationEvent } from '../../store/notifications';
 import { emitSendEnterWaitingRoom } from '../../store/waitingRoom';
 

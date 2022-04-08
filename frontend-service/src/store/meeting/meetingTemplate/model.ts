@@ -2,7 +2,7 @@ import { combine } from "effector-next";
 
 import { meetingDomain } from '../domain';
 
-import { ErrorState, UpdateTemplateData, UserTemplate } from '../../types';
+import { ErrorState, Profile, UpdateTemplateData, UserTemplate } from '../../types';
 
 import { $profileStore } from "../../profile";
 
@@ -23,16 +23,15 @@ export const initialTemplateState: UserTemplate = {
     languages: [],
     socials: [],
     usedAt: '',
+    usersPosition: []
 };
 
 export const $meetingTemplateStore = meetingDomain.store<UserTemplate>(initialTemplateState);
-
+export const $isUserSendEnterRequest = meetingDomain.store<boolean>(false);
 export const $isMeetingInstanceExists = $meetingTemplateStore.map((state) => state?.meetingInstance?.id);
 
-export const $isOwner = combine({ meetingTemplate: $meetingTemplateStore, profile: $profileStore })
+export const $isOwner = combine<{ meetingTemplate: UserTemplate; profile: Profile; }>({ meetingTemplate: $meetingTemplateStore, profile: $profileStore })
     .map(({ meetingTemplate, profile }) => meetingTemplate.meetingInstance?.owner === profile.id);
-
-export const $isUserSendEnterRequest = meetingDomain.store<boolean>(false);
 
 export const setIsUserSendEnterRequest = meetingDomain.event<boolean>('setIsUserSendEnterRequest');
 

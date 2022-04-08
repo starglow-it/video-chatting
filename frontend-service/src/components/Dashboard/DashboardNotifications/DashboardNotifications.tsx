@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, memo, useCallback, useMemo } from 'react';
+import React, { forwardRef, memo, useCallback, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import Image from 'next/image';
 
@@ -28,7 +28,7 @@ import styles from './DashboardNotifications.module.scss';
 
 type ComponentPropsType = DashboardNotificationsProps;
 
-const InitialComponent = ({ onClickAway }, ref) => {
+function InitialComponent({ onClickAway }, ref) {
     const dashboardNotifications = useStore($dashboardNotificationsStore);
 
     const handleMarkAllNotificationAsRead = useCallback(() => {
@@ -69,16 +69,8 @@ const InitialComponent = ({ onClickAway }, ref) => {
                         direction="column"
                         className={styles.notificationsWrapper}
                     >
-                        <CustomGrid
-                            container
-                            justifyContent="center"
-                            className={styles.header}
-                        >
-                            <BellIcon
-                                width="24px"
-                                height="24px"
-                                className={styles.bellIcon}
-                            />
+                        <CustomGrid container justifyContent="center" className={styles.header}>
+                            <BellIcon width="24px" height="24px" className={styles.bellIcon} />
                             <CustomTypography
                                 variant="body1bold"
                                 nameSpace="dashboard"
@@ -103,6 +95,9 @@ const InitialComponent = ({ onClickAway }, ref) => {
         </CustomPaper>
     );
 }
-const DashboardNotifications = memo<ComponentPropsType>(forwardRef<HTMLButtonElement, ComponentPropsType>(InitialComponent));
+
+const DashboardNotifications = memo<ComponentPropsType>(
+    forwardRef<HTMLButtonElement, ComponentPropsType>(InitialComponent),
+);
 
 export { DashboardNotifications };

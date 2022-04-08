@@ -11,4 +11,5 @@ export interface ICommonTemplate {
     previewUrl: string;
     type: string;
     businessCategories?: IBusinessCategory[];
+    usersPosition: { top: number; left: number }[];
 }

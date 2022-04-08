@@ -89,7 +89,7 @@ services:
       context: ../../
       dockerfile: ./socket-service/Dockerfile
     ports:
-      - '8080:8080'
+      - '8082:8080'
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.socket.rule=Host(`demo.theliveoffice.com`) && PathPrefix(`/socket.io`)"

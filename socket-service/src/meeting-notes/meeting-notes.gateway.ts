@@ -122,8 +122,8 @@ export class MeetingNotesGateway extends BaseGateway {
         success: true,
         result: {
           meetingNotes: plainMeetingNotes,
-        }
-      }
+        },
+      };
     });
   }
 }

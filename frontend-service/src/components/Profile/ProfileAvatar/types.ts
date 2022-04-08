@@ -1,9 +1,11 @@
+import { MouseEventHandler } from "react";
+
 export type ProfileAvatarProps = {
-    src?: string;
+    src?: string | undefined;
     width: string;
     height: string;
     userName: string;
     className?: string;
-    onClick?: () => void;
+    onClick?: MouseEventHandler<HTMLDivElement>;
     withoutShadow?: boolean;
 };

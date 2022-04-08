@@ -5,6 +5,5 @@ import { DashboardNotificationTypes } from "../types/dashboard-notification.type
 export interface ICreateDashboardNotification {
     templateId: IUserTemplate["id"];
     senderId: ICommonUserDTO["id"];
-    receiverId: ICommonUserDTO["id"];
     notificationType: DashboardNotificationTypes;
 }

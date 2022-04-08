@@ -40,5 +40,6 @@ export type UserTemplate = {
     meetingInstance?: MeetingInstance;
     user?: {
         profileAvatar: ProfileAvatar
-    }
+    },
+    usersPosition: { top: number; left: number }[]
 }

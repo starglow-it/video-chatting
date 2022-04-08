@@ -35,22 +35,20 @@ export class DashboardNotificationsController {
   @MessagePattern({ cmd: CREATE_DASHBOARD_NOTIFICATION })
   async createDashboardNotification(
     @Payload()
-    {
-      templateId,
-      senderId,
-      receiverId,
-      notificationType,
-    }: ICreateDashboardNotification,
+    { templateId, senderId, notificationType }: ICreateDashboardNotification,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        const sender = await this.usersService.findById(senderId, session);
-        const receiver = await this.usersService.findById(receiverId, session);
-
         const template = await this.userTemplatesService.findUserTemplateById({
           id: templateId,
           session,
         });
+
+        const sender = await this.usersService.findById(senderId, session);
+        const receiver = await this.usersService.findById(
+          template.user._id,
+          session,
+        );
 
         const isNotificationExists =
           await this.dashboardNotificationService.exists({
@@ -70,6 +68,7 @@ export class DashboardNotificationsController {
               data: {
                 sentAt: Date.now(),
                 status: DashboardNotificationReadStatus.active,
+                template,
               },
               session,
               populatePath: [

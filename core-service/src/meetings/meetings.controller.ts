@@ -92,6 +92,7 @@ export class MeetingsController {
             languages: user.languages.map((language) => language._id),
             socials: user.socials.map((social) => social._id),
             meetingInstance: meeting,
+            usersPosition: targetTemplate.usersPosition,
           };
 
           [userTemplate] = await this.userTemplatesService.createUserTemplate(

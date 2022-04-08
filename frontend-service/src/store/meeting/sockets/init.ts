@@ -1,5 +1,5 @@
 import Router from 'next/router';
-import { combine, forward, sample } from 'effector-next';
+import {attach, combine, forward, sample} from 'effector-next';
 
 import {
     ON_GET_MEETING_NOTES,
@@ -17,12 +17,10 @@ import {
     emitCancelEnterMeetingEvent,
     emitEndMeetingEvent,
     emitEnterMeetingEvent,
-    emitJoinMeetingEvent,
     emitLeaveMeetingEvent,
     emitStartMeetingEvent,
     emitUpdateMeetingTemplate,
     endMeetingEvent,
-    joinMeetingEvent,
     leaveMeetingEvent,
     startMeetingEvent,
     enterMeetingRequestEvent,
@@ -30,6 +28,7 @@ import {
     updateMeetingTemplateEvent,
     cancelAccessMeetingRequestEvent,
     answerAccessMeetingRequestEvent,
+    joinMeetingEvent,
 } from './model';
 
 import {
@@ -48,7 +47,7 @@ import { setMeetingErrorEvent } from '../meetingError';
 import { appDialogsApi } from '../../dialogs';
 import { $profileStore } from '../../profile';
 
-import { AppDialogsEnum, SocketState } from '../../types';
+import {AppDialogsEnum, Meeting, MeetingUser, Profile, SocketState, UserTemplate} from '../../types';
 
 const handleMeetingEventsError = (data: string) => {
     setMeetingErrorEvent(data);
@@ -60,79 +59,79 @@ const handleMeetingEventsError = (data: string) => {
 joinMeetingEvent.failData.watch(handleMeetingEventsError);
 enterMeetingRequestEvent.failData.watch(handleMeetingEventsError);
 
+export const joinMeetingEventWithData = attach({
+    effect: joinMeetingEvent,
+    source: combine<{ profile: Profile; template: UserTemplate; localUser: MeetingUser; }>({
+        profile: $profileStore,
+        template: $meetingTemplateStore,
+        localUser: $localUserStore,
+    }),
+    mapParams: (data, source: { profile: Profile; template: UserTemplate; localUser: MeetingUser; } ) => ({
+        profileId: source.profile?.id,
+        profileUserName: source?.profile?.fullName,
+        profileAvatar: source?.profile?.profileAvatar.url,
+        instanceId: source.template?.meetingInstance?.id,
+        isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
+        accessStatus: source.localUser.accessStatus,
+    })
+});
+
 forward({
     from: initiateSocketConnectionFx.doneData,
     to: meetingSocketEventsController,
 });
 
 sample({
-    clock: emitJoinMeetingEvent,
-    source: combine({
-        profile: $profileStore,
-        template: $meetingTemplateStore,
-        localUser: $localUserStore,
-    }),
-    fn: data => ({
-        profileId: data.profile?.id,
-        profileUserName: data?.profile?.fullName,
-        profileAvatar: data?.profile?.profileAvatar.url,
-        instanceId: data.template?.meetingInstance?.id,
-        isOwner: data.template?.meetingInstance?.owner === data.profile?.id,
-    }),
-    target: joinMeetingEvent,
-});
-
-sample({
     clock: emitStartMeetingEvent,
-    source: combine({ meeting: $meetingStore, user: $localUserStore }),
+    source: combine<{ meeting: Meeting; user: MeetingUser }>({ meeting: $meetingStore, user: $localUserStore }),
     fn: ({ meeting, user }) => ({ meetingId: meeting?.id, user }),
     target: startMeetingEvent,
 });
 
 sample({
     clock: emitEndMeetingEvent,
-    source: combine({ meeting: $meetingStore }),
+    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
     target: endMeetingEvent,
 });
 
 sample({
     clock: emitLeaveMeetingEvent,
-    source: combine({ meeting: $meetingStore }),
+    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
     target: leaveMeetingEvent,
 });
 
 sample({
     clock: emitEnterMeetingEvent,
-    source: combine({ meeting: $meetingStore, user: $localUserStore }),
+    source: combine<{ meeting: Meeting; user: MeetingUser }>({ meeting: $meetingStore, user: $localUserStore }),
     fn: ({ meeting, user }) => ({ meetingId: meeting?.id, user }),
     target: enterMeetingRequestEvent,
 });
 
 sample({
     clock: emitAnswerAccessMeetingRequest,
-    source: combine({ meeting: $meetingStore }),
+    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
     fn: ({ meeting }, data) => ({ meetingId: meeting?.id, ...data }),
     target: answerAccessMeetingRequestEvent,
 });
 
 sample({
     clock: emitCancelEnterMeetingEvent,
-    source: combine({ meeting: $meetingStore }),
+    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
     target: cancelAccessMeetingRequestEvent,
 });
 
 sample({
     clock: emitUpdateMeetingTemplate,
-    source: combine({ template: $meetingTemplateStore }),
+    source: combine<{ template: UserTemplate }>({ template: $meetingTemplateStore }),
     fn: ({ template }) => ({ templateId: template.id }),
     target: updateMeetingTemplateEvent,
 });
 
 forward({
-    from: joinMeetingEvent.doneData,
+    from: joinMeetingEventWithData.doneData,
     to: [setMeetingEvent, setLocalUserEvent, updateMeetingUsersEvent],
 });
 

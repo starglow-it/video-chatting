@@ -35,4 +35,8 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   type: string;
+
+  @Expose()
+  @ApiProperty()
+  usersPosition: { top: number; left: number }[];
 }

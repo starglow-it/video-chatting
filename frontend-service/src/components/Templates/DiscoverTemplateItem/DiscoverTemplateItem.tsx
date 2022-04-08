@@ -59,6 +59,7 @@ const DiscoverTemplateItem = memo(({ template }: { template: Template }) => {
                     name={template.name}
                     description={template.description}
                     maxParticipants={template.maxParticipants}
+                    avatar={template?.user?.profileAvatar?.url}
                     type={template.type}
                 />
             </Fade>

@@ -1,7 +1,7 @@
 import { meetingDomain } from '../domain';
 import { MeetingNote } from "../../types";
 import {createSocketEvent} from "../../socket";
-import {GET_MEETING_NOTES_EVENT, REMOVE_MEETING_NOTE_EVENT, SEND_MEETING_NOTE_EVENT} from "../const/emitSocketEvents";
+import { GET_MEETING_NOTES_EVENT, REMOVE_MEETING_NOTE_EVENT, SEND_MEETING_NOTE_EVENT } from "../const/emitSocketEvents";
 
 const initialMeetingsNotesState: MeetingNote[] = [];
 

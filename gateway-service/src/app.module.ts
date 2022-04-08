@@ -11,7 +11,6 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { TemplatesModule } from './templates/templates.module';
 import { UploadModule } from './upload/upload.module';
 import { ProfileModule } from './profile/profile.module';
-import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { DashboardModule } from './dashboard/dashboard.module';
     TemplatesModule,
     UploadModule,
     ProfileModule,
-    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

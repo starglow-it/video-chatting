@@ -133,11 +133,11 @@ const MeetingSettingsPanel = memo(
             ) as number;
 
             const paddedNextSocials = padArray<SocialLink>(
-                nextSocials,
+                (nextSocials || []) as SocialLink[],
                 Object.keys(SOCIAL_LINKS).length,
             );
             const paddedCurrentSocials = padArray<SocialLink>(
-                template?.socials,
+                template?.socials || [],
                 Object.keys(SOCIAL_LINKS).length,
             );
 
@@ -281,7 +281,11 @@ const MeetingSettingsPanel = memo(
                                 className={styles.editTemplateWrapper}
                             >
                                 <CustomGrid container alignItems="center">
-                                    <EditIcon className={styles.editIcon} />
+                                    <EditIcon
+                                        width="24px"
+                                        height="24px"
+                                        className={styles.editIcon}
+                                    />
                                     <CustomTypography
                                         color="colors.white.primary"
                                         variant="h4bold"
@@ -291,7 +295,13 @@ const MeetingSettingsPanel = memo(
                                 </CustomGrid>
                                 <CustomGrid item flex="1 1 auto" className={styles.scrollWrapper}>
                                     <CustomScroll>
-                                        <CustomGrid container direction="column" gap={2} wrap="nowrap" className={styles.formContent}>
+                                        <CustomGrid
+                                            container
+                                            direction="column"
+                                            gap={2}
+                                            wrap="nowrap"
+                                            className={styles.formContent}
+                                        >
                                             <CustomAccordion
                                                 AccordionIcon={
                                                     <PersonIcon width="24px" height="24px" />

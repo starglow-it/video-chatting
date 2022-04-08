@@ -10,12 +10,16 @@ import {
 
 import {$profileStore} from "../profile";
 
-import {initiateMainSocketConnectionFx} from "../mainServerSocket";
 import {ON_MEETING_AVAILABLE, ON_SEND_DASHBOARD_NOTIFICATION} from "./const/socketEvents";
 import {initiateSocketConnectionFx} from "../socket";
-import {$meetingTemplateStore, emitJoinMeetingEvent, getMeetingTemplateFx} from "../meeting";
-import {DashboardNotification} from "../types/dashboard";
+import {
+    $meetingTemplateStore,
+    getMeetingTemplateFx,
+    joinMeetingEventWithData
+} from "../meeting";
 import {setDashboardNotifications} from "../dashboardNotifications";
+
+import {DashboardNotification} from "../types/dashboard";
 
 sample({
     clock: emitJoinDashboard,
@@ -32,7 +36,7 @@ sample({
 });
 
 forward({
-    from: initiateMainSocketConnectionFx.doneData,
+    from: initiateSocketConnectionFx.doneData,
     to: subscribeToSocketEvents,
 });
 
@@ -42,9 +46,9 @@ subscribeToSocketEvents.watch(({ socketInstance }) => {
             const meetingTemplate = await getMeetingTemplateFx({ templateId });
 
             if (meetingTemplate?.meetingInstance?.serverIp) {
-                await initiateSocketConnectionFx({ serverIp: meetingTemplate?.meetingInstance?.serverIp });
+                await initiateSocketConnectionFx();
 
-                emitJoinMeetingEvent();
+                await joinMeetingEventWithData();
             }
         });
 

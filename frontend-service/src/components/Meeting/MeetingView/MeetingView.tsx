@@ -23,7 +23,7 @@ import { AudioDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/Aud
 import { VideoDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/VideoDeviceSetUpButton';
 import { ScreenSharingButton } from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
-
+import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // misc
 import { AgoraController } from '../../../controllers/VideoChatController';
@@ -54,7 +54,6 @@ import {
 
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
-import {emptyFunction} from "../../../utils/functions/emptyFunction";
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
@@ -118,7 +117,7 @@ const MeetingView = memo(() => {
 
             AgoraController.setTracksState({
                 isCameraEnabled: isLocalCamActive,
-                isMicEnabled: isLocalMicActive
+                isMicEnabled: isLocalMicActive,
             });
         }
     }, [onGetNewStream, isLocalCamActive, isLocalMicActive]);
@@ -179,21 +178,20 @@ const MeetingView = memo(() => {
     }, []);
 
     const isAbleToToggleSharing = isOwner || isSharingScreenActive || !meeting.sharingUserId;
+    const isScreenSharing = Boolean(meeting.sharingUserId);
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            {meeting.sharingUserId ? (
-                <ScreenSharingLayout />
-            ) : (
-                <MeetingBackgroundVideo src="/videos/output.mp4" />
-            )}
+            <MeetingBackgroundVideo isScreenSharing={isScreenSharing} src={meetingTemplate.url}>
+                {isScreenSharing && <ScreenSharingLayout />}
+                <MeetingUsersVideos />
+            </MeetingBackgroundVideo>
 
             {Boolean(meetingTemplate?.id) && (
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
                 >
-                    <MeetingUsersVideos />
                     <MeetingControlPanel />
                     <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
                         <AudioDeviceSetUpButton

@@ -35,7 +35,7 @@ const ScreenSharingButton = memo(({ onAction, isSharingActive }: ScreenSharingBu
                     className={clsx(styles.iconButton, {
                         [styles.withAction]: isThereAction,
                         [styles.active]: isSharingActive && isThereAction,
-                        [styles.noRights]: isSharingActive && !isThereAction
+                        [styles.noRights]: isSharingActive && !isThereAction,
                     })}
                     Icon={<SharingIcon width="32px" height="32px" />}
                 />

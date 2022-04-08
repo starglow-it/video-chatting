@@ -23,6 +23,9 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
   @IsBoolean()
   readonly isOwner: boolean;
 
+  @IsBoolean()
+  readonly accessStatus: string;
+
   @IsOptional()
   @IsString()
   readonly profileAvatar: string;

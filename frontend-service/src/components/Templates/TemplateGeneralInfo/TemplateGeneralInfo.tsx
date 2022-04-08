@@ -15,7 +15,7 @@ import { TemplateGeneralInfoProps } from './types';
 import styles from './TemplateGeneralInfo.module.scss';
 
 const TemplateGeneralInfo = memo(
-    ({ profileAvatar = "", userName = "", companyName = "" }: TemplateGeneralInfoProps) => (
+    ({ profileAvatar = '', userName = '', companyName = '' }: TemplateGeneralInfoProps) => (
         <CustomGrid container className={styles.profileInfo}>
             <ProfileAvatar
                 className={styles.profileAvatar}

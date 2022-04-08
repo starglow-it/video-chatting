@@ -46,7 +46,12 @@ const MeetingAccessRequests = memo(() => {
         <>
             {Boolean(requestUsers.length) && (
                 <>
-                    <CustomGrid className={styles.usersWrapper} container direction="column">
+                    <CustomGrid
+                        className={styles.usersWrapper}
+                        container
+                        direction="column"
+                        gap={1}
+                    >
                         {renderRequestUsers}
                     </CustomGrid>
                     <Divider className={styles.divider} />

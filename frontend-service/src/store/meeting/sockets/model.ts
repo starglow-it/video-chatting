@@ -20,7 +20,6 @@ export const meetingSocketEventsController = meetingDomain.event<SocketState>(
     'meetingSocketEventsController',
 );
 
-export const emitJoinMeetingEvent = meetingDomain.event('emitJoinMeetingEvent');
 export const emitEndMeetingEvent = meetingDomain.event('emitEndMeetingEvent');
 export const emitLeaveMeetingEvent = meetingDomain.event('emitLeaveMeetingEvent');
 export const emitStartMeetingEvent = meetingDomain.event('emitStartMeetingEvent');

@@ -1,7 +1,7 @@
 import {
     $deleteProfileTemplateId,
     $profileTemplatesStore, $skipProfileTemplates,
-    deleteProfileTemplateFx, deleteUserTemplateEvent,
+    deleteProfileTemplateFx,
     getProfileTemplatesBase,
     getProfileTemplatesFx, setDeleteTemplateIdEvent, setSkipProfileTemplates
 } from './model';

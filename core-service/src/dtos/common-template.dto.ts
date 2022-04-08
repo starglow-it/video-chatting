@@ -34,4 +34,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   type: string;
+
+  @Expose()
+  usersPosition: { top: number; left: number }[];
 }

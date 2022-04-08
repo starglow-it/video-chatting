@@ -34,7 +34,7 @@ const MeetingPreview = memo(() => {
     });
 
     const handleLeaveMeeting = useCallback(() => {
-        router.push(isOwner ? '/dashboard/templates' : '/dashboard/discovery');
+        router.push(isOwner ? '/dashboard' : '/dashboard/discovery');
     }, []);
 
     const renderCurrentUsers = useMemo(
@@ -87,10 +87,18 @@ const MeetingPreview = memo(() => {
                 userName={meetingTemplate.fullName}
             />
             <CustomGrid item container direction="column" flex="1 0">
-                <CustomTypography variant="h3bold" color="colors.white.primary">
+                <CustomTypography
+                    variant="h3bold"
+                    color="colors.white.primary"
+                    className={styles.companyName}
+                >
                     {meetingTemplate.companyName}
                 </CustomTypography>
-                <CustomTypography variant="body1" color="colors.white.primary">
+                <CustomTypography
+                    variant="body1"
+                    color="colors.white.primary"
+                    className={styles.description}
+                >
                     {meetingTemplate.description}
                 </CustomTypography>
             </CustomGrid>

@@ -64,6 +64,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
                     description={template.description}
                     maxParticipants={template.maxParticipants}
                     type={template.type}
+                    isNeedToShowBusinessInfo
                 />
             </Fade>
             <Fade in={showPreview}>

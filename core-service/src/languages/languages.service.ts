@@ -20,8 +20,8 @@ export class LanguagesService {
   }
 
   async find({
-     query,
-     session
+    query,
+    session,
   }: {
     query: FilterQuery<LanguageDocument>;
     session: ITransactionSession;

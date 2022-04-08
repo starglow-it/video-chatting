@@ -32,11 +32,9 @@ export class DashboardNotificationsService {
     session: ITransactionSession;
     populatePath: CustomPopulateOptions;
   }): Promise<DashboardNotificationDocument[]> {
-    return this.dashboardNotification.find(
-      query,
-      {},
-      { session: session.session, populate: populatePath },
-    ).exec();
+    return this.dashboardNotification
+      .find(query, {}, { session: session.session, populate: populatePath })
+      .exec();
   }
 
   async updateNotifications({

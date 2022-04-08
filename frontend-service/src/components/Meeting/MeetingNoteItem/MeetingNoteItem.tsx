@@ -1,16 +1,16 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import clsx from 'clsx';
-import {useStore} from "effector-react";
+import { useStore } from 'effector-react';
 
 // hooks
-import { useToggle } from '../../../hooks/useToggle';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CloseIcon } from '@library/icons/CloseIcon';
+import { useToggle } from '../../../hooks/useToggle';
 
 // types
 import { MeetingNote } from '../../../store/types';
@@ -23,8 +23,8 @@ import {
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
 } from '../../../store/meeting/meetingNotes';
-import {$localUserStore} from "../../../store/users";
-import {$meetingStore} from "../../../store/meeting";
+import { $localUserStore } from '../../../store/users';
+import { $meetingStore } from '../../../store/meeting';
 
 const MeetingNoteItem = memo(
     ({

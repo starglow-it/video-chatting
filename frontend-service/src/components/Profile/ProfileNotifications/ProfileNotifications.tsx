@@ -22,13 +22,13 @@ import {
     $dashboardNotificationsStore,
     emitGetDashboardNotifications,
 } from '../../../store/dashboardNotifications';
-import { $isMainSocketConnected } from '../../../store/mainServerSocket';
+import { $isSocketConnected } from '../../../store/socket';
 
 // types
 import { DashboardNotificationReadStatus } from '../../../store/types/dashboard';
 
 const ProfileNotifications = memo(() => {
-    const isMainSocketConnected = useStore($isMainSocketConnected);
+    const isMainSocketConnected = useStore($isSocketConnected);
     const dashboardNotifications = useStore($dashboardNotificationsStore);
 
     const notificationsButtonRef = useRef<HTMLButtonElement | null>(null);

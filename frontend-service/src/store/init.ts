@@ -1,7 +1,6 @@
 export * from './root';
 
 export * from './socket/model';
-export * from './mainServerSocket/model';
 export * from './apiClient/model';
 
 export * from './auth/model';
@@ -33,7 +32,6 @@ export * from './waitingRoom/model';
 export * from './dashboardNotifications/model';
 
 export * from './socket/init';
-export * from './mainServerSocket/init';
 export * from './apiClient/init';
 
 export * from './auth/init';

@@ -23,7 +23,12 @@ import { TemplateGridProps } from './types';
 // styles
 import styles from './TemplatesGrid.module.scss';
 
-const InitialComponent = <TemplateType extends unknown>({ TemplateComponent, list, count, onPageChange }: TemplateGridProps<TemplateType>) => {
+function InitialComponent<TemplateType>({
+    TemplateComponent,
+    list,
+    count,
+    onPageChange,
+}: TemplateGridProps<TemplateType>) {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
 
@@ -121,9 +126,7 @@ const InitialComponent = <TemplateType extends unknown>({ TemplateComponent, lis
             <SearchTemplates />
             <CustomBox className={styles.templatesContent}>
                 {count > 6 ? (
-                    <CustomSlider sliderSettings={sliderSettings}>
-                        {renderTemplates}
-                    </CustomSlider>
+                    <CustomSlider sliderSettings={sliderSettings}>{renderTemplates}</CustomSlider>
                 ) : (
                     <CustomGrid container gap={2} justifyContent="center">
                         {renderTemplates}

@@ -21,4 +21,5 @@ export interface IUserTemplate {
     languages: ILanguage[];
     socials: ISocialLink[];
     user: ITemplateUserDTO;
+    usersPosition: { top: number; left: number }[];
 }

@@ -22,20 +22,16 @@ export class BusinessCategoriesService {
     return await this.businessCategory.create(data);
   }
 
-  async find(
-      {
-        query,
-        session
-      }: {
-        query: FilterQuery<BusinessCategoryDocument>,
-        session?: ITransactionSession,
-      }
-  ) {
-      return this.businessCategory.find(
-        query,
-        {},
-        { session: session?.session },
-      ).exec();
+  async find({
+    query,
+    session,
+  }: {
+    query: FilterQuery<BusinessCategoryDocument>;
+    session?: ITransactionSession;
+  }) {
+    return this.businessCategory
+      .find(query, {}, { session: session?.session })
+      .exec();
   }
 
   async exists(query: FilterQuery<BusinessCategoryDocument>) {
