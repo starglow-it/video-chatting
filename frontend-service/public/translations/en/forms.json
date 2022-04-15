@@ -8,6 +8,10 @@
   "businessCategories": "Business categories",
   "position": "Position",
   "fullName": "Full name",
+  "editTimezone": "Timezone",
+  "startAt": "Starts",
+  "endAt": "Ends",
+  "comment": "Comment",
   "labels": {
     "companyName": "What is your company name?",
     "fullName": "What is your name?",

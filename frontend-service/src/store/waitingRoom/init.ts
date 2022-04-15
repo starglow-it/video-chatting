@@ -9,8 +9,9 @@ import {
 } from "./model";
 
 import {$profileStore} from "../profile";
+import {$localUserStore} from "../users";
 
-import {ON_MEETING_AVAILABLE, ON_SEND_DASHBOARD_NOTIFICATION} from "./const/socketEvents";
+import {ON_MEETING_AVAILABLE, ON_SEND_DASHBOARD_NOTIFICATION} from "./const/subscribeSocketEvents";
 import {initiateSocketConnectionFx} from "../socket";
 import {
     $meetingTemplateStore,
@@ -30,8 +31,13 @@ sample({
 
 sample({
     clock: emitSendEnterWaitingRoom,
-    source: combine({ profile: $profileStore, meetingTemplate: $meetingTemplateStore }),
-    fn: ({ profile, meetingTemplate }) => ({ userId: profile.id, templateId: meetingTemplate.id }),
+    source: combine({ profile: $profileStore, meetingTemplate: $meetingTemplateStore, localUser: $localUserStore }),
+    fn: ({ profile, meetingTemplate, localUser }) => ({
+        profileId: profile.id,
+        meetingUserId: localUser.id,
+        templateId: meetingTemplate.id,
+        username: localUser.username
+    }),
     target: sendEnterWaitingRoom,
 });
 

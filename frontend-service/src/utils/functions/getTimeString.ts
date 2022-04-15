@@ -1,6 +1,4 @@
-const ONE_SECOND = 1000;
-const ONE_MINUTE = ONE_SECOND * 60;
-const ONE_HOUR = ONE_MINUTE * 60;
+import { ONE_HOUR, ONE_MINUTE, ONE_SECOND } from "../../const/time/common";
 
 const stages = [
     ONE_HOUR,

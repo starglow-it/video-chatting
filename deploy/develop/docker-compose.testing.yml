@@ -128,7 +128,7 @@ services:
       - SMTP_PORT
       - SMTP_USER
       - SMTP_PASS
-      - DEAFAULT_SERVER_IP
+      - DEFAULT_SERVER_IP
       - APP_ID
       - APP_CERTIFICATE
       - UPLOAD_BUCKET

@@ -38,6 +38,8 @@ export class UsersService {
     data: IUserCredentials,
     { session }: ITransactionSession,
   ): Promise<UserDocument> {
+    data.password = await this.hashPassword(data.password);
+
     const [user] = await this.user.create([data], { session });
 
     return user;
@@ -131,6 +133,7 @@ export class UsersService {
       companyName: data.companyName,
       contactEmail: data.contactEmail,
       description: data.description,
+      signBoard: data.signBoard,
     };
   }
 }

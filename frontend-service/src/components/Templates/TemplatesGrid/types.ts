@@ -1,11 +1,12 @@
 import React from 'react';
+
 import { Template, UserTemplate } from '../../../store/types';
 
-export type TemplateGridProps<TemplateType> = {
+export type TemplateGridProps = {
     TemplateComponent: React.MemoExoticComponent<
-        (props: { template: TemplateType }) => JSX.Element
+        (props: { template: UserTemplate | Template }) => JSX.Element
     >;
-    list: TemplateType[];
+    list: (UserTemplate | Template)[];
     count: number;
     onPageChange: (page: number) => void;
 };

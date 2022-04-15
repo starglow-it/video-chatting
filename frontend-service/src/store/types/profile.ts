@@ -40,6 +40,7 @@ export type Profile = {
     companyName: string;
     email: string;
     contactEmail: string;
+    signBoard: string;
     description: string;
     socials: SocialLink[];
     languages: Language[];
@@ -47,7 +48,11 @@ export type Profile = {
     templates: Template[];
 };
 
-export type UpdateProfileInfo = {};
+export type UpdateProfileInfo = {
+    companyName: Profile["companyName"];
+    fullName: Profile["fullName"];
+    signBoard: Profile["signBoard"];
+};
 
 export type UpdateProfileAvatar = {
     file: File;

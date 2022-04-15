@@ -7,5 +7,7 @@
     "types": {
       "0": "Joined"
     }
-  }
+  },
+  "meetingScheduled": "Meeting Scheduled",
+  "ics": "ICS"
 }

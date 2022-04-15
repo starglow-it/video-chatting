@@ -6,7 +6,7 @@ import React, {
     useRef,
     useState
 } from "react";
-import {FaceDetection} from "@mediapipe/face_detection";
+import {FaceDetection, InputImage } from "@mediapipe/face_detection";
 
 // hooks
 import {useToggle} from "../hooks/useToggle";
@@ -109,7 +109,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
     }, []);
 
     const animate = async () => {
-        await faceDetectionRef.current?.send({ image: videoRef.current });
+        await faceDetectionRef.current?.send({ image: videoRef.current as InputImage });
 
         requestAnimationFrame(animate);
     }
@@ -120,7 +120,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             const gain = timerContextRef?.current?.createGain();
 
             oscillator.type = 'square';
-            oscillator.frequency.setValueAtTime(3000, timerContextRef?.current?.currentTime); // value in hertz
+            oscillator.frequency.setValueAtTime(3000, timerContextRef?.current?.currentTime!); // value in hertz
 
             const timerNode = new AudioWorkletNode(timerContextRef.current!, 'timer');
 
@@ -137,7 +137,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
                     if (event.data.isNeedToRender) {
                         const videoElement = videoRef.current;
 
-                        faceDetectionRef.current?.send({ image: videoElement });
+                        faceDetectionRef.current?.send({ image: videoElement as InputImage });
                     }
                 } catch (e) {
                     console.log("couldn't render frame");

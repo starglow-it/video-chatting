@@ -47,5 +47,6 @@ import { CoreModule } from '../core/core.module';
   ],
   controllers: [UploadController],
   providers: [UploadService],
+  exports: [UploadService],
 })
 export class UploadModule {}

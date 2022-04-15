@@ -34,6 +34,7 @@ export type UserTemplate = {
     companyName: string;
     contactEmail: string;
     fullName: string;
+    signBoard: string;
     position: string;
     languages: Language[];
     socials: SocialLink[];

@@ -10,6 +10,7 @@ export type AppDialogsState = {
     confirmChangeRouteDialog: boolean;
     confirmQuitOnboardingDialog: boolean;
     deleteTemplateDialog: boolean;
+    scheduleMeetingDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -24,6 +25,7 @@ export enum AppDialogsEnum {
     confirmChangeRouteDialog = 'confirmChangeRouteDialog',
     confirmQuitOnboardingDialog = 'confirmQuitOnboardingDialog',
     deleteTemplateDialog = 'deleteTemplateDialog',
+    scheduleMeetingDialog = 'scheduleMeetingDialog',
 }
 
 export type DialogActionPayload = {

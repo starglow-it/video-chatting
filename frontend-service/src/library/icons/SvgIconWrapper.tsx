@@ -3,32 +3,30 @@ import { SvgIcon, SvgIconProps } from '@mui/material';
 
 import { CommonIconProps } from '../types';
 
-const SvgIconWrapper = memo(
-    forwardRef(
-        (
-            {
-                width,
-                height,
-                children,
-                className,
-                onClick,
-                ...rest
-            }: React.PropsWithChildren<CommonIconProps> & SvgIconProps,
-            ref: ForwardedRef<SVGSVGElement>,
-        ) => {
-            return (
-                <SvgIcon
-                    ref={ref}
-                    sx={{ width, height }}
-                    className={className}
-                    onClick={onClick}
-                    {...rest}
-                >
-                    {children}
-                </SvgIcon>
-            );
-        },
-    ),
-);
+type ComponentProps = React.PropsWithChildren<CommonIconProps> & SvgIconProps;
 
-export { SvgIconWrapper };
+const Component = (
+    {
+        width,
+        height,
+        children,
+        className,
+        onClick,
+        ...rest
+    }: ComponentProps,
+    ref: ForwardedRef<SVGSVGElement>,
+) => {
+    return (
+        <SvgIcon
+            ref={ref}
+            sx={{ width, height }}
+            className={className || ''}
+            onClick={onClick}
+            {...rest}
+        >
+            {children}
+        </SvgIcon>
+    );
+}
+
+export const SvgIconWrapper = memo<ComponentProps>(forwardRef<SVGSVGElement, ComponentProps>(Component));

@@ -65,6 +65,9 @@ export class CommonUserDTO implements ICommonUserDTO {
   @Type(() => ProfileAvatarDTO)
   profileAvatar: IProfileAvatar;
 
+  @Expose()
+  signBoard: ICommonUserDTO['signBoard'];
+
   tokens: string[];
   password: string;
 }

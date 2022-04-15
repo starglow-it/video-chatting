@@ -8,10 +8,22 @@
   overflow: hidden;
   max-width: rem(334px);
 
+  z-index: 10;
+
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba($primary-black, 0.15);
+  }
+
   .templateButtons {
     position: absolute;
     inset: 0;
     background: rgba($primary-black, 0.6);
+    backdrop-filter: blur(24px);
+
+    z-index: 11;
 
     .button:first-child {
       margin: 0 rem(12px) 0 0;

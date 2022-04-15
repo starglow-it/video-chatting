@@ -10,6 +10,7 @@ export class NotificationsService {
     await this.mailerService.sendMail({
       to: data.to,
       html: data.message,
+      icalEvent: data.icalEvent,
     });
   }
 }

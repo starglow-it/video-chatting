@@ -10,7 +10,7 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 // icon
 import { EditIcon } from '@library/icons/EditIcon';
 import { AddPeopleIcon } from '@library/icons/AddPeopleIcon';
-import { DeleteIcon } from '@library/icons/DeleteIcon/DeleteIcon';
+import { DeleteIcon } from '@library/icons/DeleteIcon';
 
 // common
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
@@ -69,15 +69,14 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
             onMouseLeave={handleHidePreview}
         >
             <Image src={template.previewUrl} width="334px" height="190px" />
-            <Fade in={!showPreview}>
-                <TemplateMainInfo
-                    name={template.name}
-                    description={template.description}
-                    maxParticipants={template.maxParticipants}
-                    type={template.type}
-                    isNeedToShowBusinessInfo
-                />
-            </Fade>
+            <TemplateMainInfo
+                show={!showPreview}
+                name={template.name}
+                description={template.description}
+                maxParticipants={template.maxParticipants}
+                type={template.type}
+                isNeedToShowBusinessInfo
+            />
             <Fade in={showPreview}>
                 <CustomGrid
                     className={styles.templateButtons}

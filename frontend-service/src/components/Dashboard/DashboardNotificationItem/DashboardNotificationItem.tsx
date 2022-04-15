@@ -29,14 +29,15 @@ const DashboardNotificationItem = memo(
                 flex="0 0 auto"
             >
                 <ProfileAvatar
+                    className={styles.profileAvatar}
                     src={notification.sender?.profileAvatar?.url || ''}
                     width="44px"
                     height="44px"
-                    userName={notification.sender.fullName}
+                    userName={notification?.sender?.fullName || notification.senderFullName}
                 />
                 <CustomGrid container direction="column">
                     <CustomTypography className={styles.fullName}>
-                        {notification.sender.fullName}
+                        {notification?.sender?.fullName || notification.senderFullName}
                     </CustomTypography>
                     <CustomGrid container alignItems="center">
                         <CustomTypography

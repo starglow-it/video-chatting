@@ -23,19 +23,14 @@ import { TemplateGridProps } from './types';
 // styles
 import styles from './TemplatesGrid.module.scss';
 
-function InitialComponent<TemplateType>({
-    TemplateComponent,
-    list,
-    count,
-    onPageChange,
-}: TemplateGridProps<TemplateType>) {
+function Component({ TemplateComponent, list, count, onPageChange }: TemplateGridProps) {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
 
     const renderTemplates = useMemo(() => {
         const initialTemplatesRender = list.map(template => ({
-            id: template.templateId,
-            component: <TemplateComponent key={template.templateId} template={template} />,
+            id: template.id,
+            component: <TemplateComponent key={template.id} template={template} />,
         }));
 
         if (count <= 6) {
@@ -45,13 +40,13 @@ function InitialComponent<TemplateType>({
         const skeletonCount = count - initialTemplatesRender.length;
 
         const allSkeletonTemplates = [...new Array(skeletonCount).fill(0).keys()].map(item => ({
-            id: item,
+            id: `${item}`,
             component: <SkeletonTemplate key={item} />,
         }));
 
         const commonComponentsArray = [...initialTemplatesRender, ...allSkeletonTemplates];
 
-        const unflattedArray = unflatArray<{ id: number; component: JSX.Element }>(
+        const unflattedArray = unflatArray<{ id: string; component: JSX.Element }>(
             commonComponentsArray,
             6,
         );
@@ -137,6 +132,4 @@ function InitialComponent<TemplateType>({
     );
 }
 
-const TemplatesGrid = memo(InitialComponent);
-
-export { TemplatesGrid };
+export const TemplatesGrid = memo(Component);

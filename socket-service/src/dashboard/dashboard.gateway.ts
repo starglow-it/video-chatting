@@ -73,12 +73,19 @@ export class DashboardGateway extends BaseGateway {
 
   @SubscribeMessage(SEND_ENTER_WAITING_ROOM_EVENT)
   async sendEnterWaitingRoom(
-    @MessageBody() message: { templateId: string; userId: string },
+    @MessageBody()
+    message: {
+      templateId: string;
+      profileId: string;
+      meetingUserId: string;
+      username: string;
+    },
     @ConnectedSocket() socket: Socket,
   ) {
     const notification = await this.dashboardService.createNotification({
       templateId: message.templateId,
-      senderId: message.userId,
+      senderId: message.profileId || message.meetingUserId,
+      senderFullName: message.username,
       notificationType: DashboardNotificationTypes.enterWaitingRoom,
     });
 

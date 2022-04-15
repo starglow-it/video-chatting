@@ -11,6 +11,8 @@
         "businessInfo  businessInfo" min-content
         / min-content auto;
 
+  z-index: 10;
+
   .participants {
     position: relative;
     grid-area: participants;

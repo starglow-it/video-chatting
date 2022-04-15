@@ -1,12 +1,12 @@
 import React, { memo, useCallback, useContext } from 'react';
 import { useStore } from 'effector-react';
-import { Divider } from '@mui/material';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
@@ -20,6 +20,7 @@ import { MediaContext } from '../../contexts/MediaContext';
 import {
     $isMeetingInstanceExists,
     $isOwner,
+    $isOwnerInMeeting,
     $isUserSendEnterRequest,
     emitCancelEnterMeetingEvent,
     emitEnterMeetingEvent,
@@ -38,6 +39,7 @@ import styles from './DevicesSettings.module.scss';
 
 const DevicesSettings = memo(() => {
     const isOwner = useStore($isOwner);
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingInstanceExists = useStore($isMeetingInstanceExists);
     const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
 
@@ -83,7 +85,7 @@ const DevicesSettings = memo(() => {
                 if (isOwner) {
                     emitStartMeetingEvent();
                 } else {
-                    if (isMeetingInstanceExists) {
+                    if (isMeetingInstanceExists && isOwnerInMeeting) {
                         emitEnterMeetingEvent();
                     } else {
                         emitSendEnterWaitingRoom();
@@ -94,7 +96,14 @@ const DevicesSettings = memo(() => {
                 handleToggleCamera();
             }
         }
-    }, [isOwner, changeStream, error, isStreamRequested, isMeetingInstanceExists]);
+    }, [
+        isOwner,
+        changeStream,
+        error,
+        isStreamRequested,
+        isMeetingInstanceExists,
+        isOwnerInMeeting,
+    ]);
 
     const handleCancelRequest = useCallback(async () => {
         emitCancelEnterMeetingEvent();
@@ -110,7 +119,7 @@ const DevicesSettings = memo(() => {
                         onToggleAudio={handleToggleMic}
                         onToggleVideo={handleToggleCamera}
                     />
-                    <Divider orientation="vertical" flexItem />
+                    <CustomDivider orientation="vertical" flexItem />
                     <CustomGrid
                         className={styles.devicesWrapper}
                         container

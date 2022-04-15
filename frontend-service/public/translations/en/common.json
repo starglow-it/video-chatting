@@ -20,7 +20,9 @@
     "stay": "Stay",
     "saveAndQuit": "Save and Quit",
     "continue": "Continue",
-    "delete": "Delete"
+    "delete": "Delete",
+    "schedule": "Schedule",
+    "done": "Done"
   },
   "login": {
     "welcome": "Welcome back",

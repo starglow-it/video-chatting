@@ -3,11 +3,11 @@ import {ICommonTemplate} from "../interfaces/common-template.interface";
 export const templatesData: ICommonTemplate[] = [
     {
         templateId: 0,
-        url: 'https://vimeo.com/689593453',
+        url: 'https://vimeo.com/691226035',
         previewUrl: '/templates/images/lakeside3/lakeside3_360p.jpg',
-        name: 'Lakeside 4 people',
+        name: 'Lake Taho Office',
         maxParticipants: 4,
-        description: 'Some simple demo template',
+        description: 'California style office',
         type: 'free',
         usersPosition: [
             {
@@ -30,11 +30,11 @@ export const templatesData: ICommonTemplate[] = [
     },
     {
         templateId: 1,
-        url: 'https://vimeo.com/683820654/424a4cb337',
+        url: 'https://vimeo.com/691226035',
         previewUrl: '/templates/images/ibiza2/ibiza2_540p.jpg',
-        name: 'Beach 2 people',
+        name: 'Ibiza Patio',
         maxParticipants: 2,
-        description: 'There should be cool description',
+        description: 'Firepit on a patio by the beach',
         type: 'free',
         usersPosition: [
             {
@@ -49,11 +49,11 @@ export const templatesData: ICommonTemplate[] = [
     },
     {
         templateId: 2,
-        url: 'https://vimeo.com/683821458',
+        url: 'https://vimeo.com/691226035',
         previewUrl: '/templates/images/ibiza3/ibiza3_540p.jpg',
-        name: 'Beach 3 people',
+        name: 'Ibiza Patio',
         maxParticipants: 3,
-        description: 'There should be cool description',
+        description: 'Firepit on a patio by the beach',
         type: 'free',
         usersPosition: [
             {
@@ -72,16 +72,16 @@ export const templatesData: ICommonTemplate[] = [
     },
     {
         templateId: 3,
-        url: 'https://vimeo.com/683822180/ec56604e5b',
+        url: 'https://vimeo.com/691226035',
         previewUrl: '/templates/images/ibiza4/ibiza4_540p.jpg',
-        name: 'Beach 4 people',
+        name: 'Ibiza Patio',
         maxParticipants: 4,
-        description: 'There should be cool description',
+        description: 'Firepit on a patio by the beach',
         type: 'free',
         usersPosition: [
             {
                 top: 0.5,
-                left: 0.10
+                left: 0.13
             },
             {
                 top: 0.45,
@@ -93,8 +93,31 @@ export const templatesData: ICommonTemplate[] = [
             },
             {
                 top: 0.5,
-                left: 0.80
+                left: 0.70
             }
         ]
     },
+    {
+        templateId: 3,
+        url: 'https://vimeo.com/692426911',
+        previewUrl: '/templates/images/rustic/rustic3_540p.jpg',
+        name: 'Countryside Office',
+        maxParticipants: 3,
+        description: 'Enter a rustic office surrounded by Nature',
+        type: 'free',
+        usersPosition: [
+            {
+                top: 0.44,
+                left: 0.15
+            },
+            {
+                top: 0.45,
+                left: 0.45
+            },
+            {
+                top: 0.42,
+                left: 0.72
+            }
+        ]
+    }
 ];

@@ -9,10 +9,7 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // store
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
-import {
-    $deleteProfileTemplateId,
-    deleteProfileTemplateFx,
-} from '../../../store/profile';
+import { $deleteProfileTemplateId, deleteProfileTemplateFx } from '../../../store/profile';
 
 // styles
 import styles from './DeleteTemplateDialog.module.scss';
@@ -20,7 +17,7 @@ import styles from './DeleteTemplateDialog.module.scss';
 // types
 import { AppDialogsEnum } from '../../../store/types';
 
-const InitialComponent = () => {
+function Component() {
     const { deleteTemplateDialog } = useStore($appDialogsStore);
     const deleteProfileTemplateId = useStore($deleteProfileTemplateId);
 
@@ -75,6 +72,6 @@ const InitialComponent = () => {
     );
 }
 
-const DeleteTemplateDialog = memo(InitialComponent);
+const DeleteTemplateDialog = memo(Component);
 
 export { DeleteTemplateDialog };

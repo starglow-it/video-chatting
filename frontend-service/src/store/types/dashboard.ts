@@ -20,6 +20,7 @@ export type DashboardNotification = {
     template: UserTemplate;
     notificationType: DashboardNotificationTypes;
     sender: DashboardNotificationUser;
+    senderFullName: string;
     sentAt: number;
     status: DashboardNotificationReadStatus;
 }

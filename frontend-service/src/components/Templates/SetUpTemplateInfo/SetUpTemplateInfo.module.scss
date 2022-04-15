@@ -78,3 +78,52 @@
   top: rem(10px);
   right: rem(10px);
 }
+
+.label {
+  flex: 0 0 50%;
+  margin: 0;
+}
+
+.radioOption {
+  width: rem(160px);
+}
+
+.icon {
+  fill: none;
+}
+
+.signBoardWrapper {
+  position: relative;
+  border-radius: rem(10px);
+  border: 1px solid $normal-gray-scale;
+  overflow: hidden;
+  cursor: pointer;
+
+  &:after {
+    content: "";
+    position: absolute;
+    border: 2px solid $primary-orange;
+    inset: 0;
+    opacity: 0;
+    border-radius: rem(10px);
+    transition: opacity 200ms ease-in;
+  }
+
+  &.checked {
+    &:after {
+      opacity: 1;
+    }
+  }
+}
+
+.radioGroup {
+  gap: rem(24px);
+}
+
+.defaultSignWrapper {
+  width: rem(160px);
+  height: rem(108px);
+
+  background: rgba($primary-black, 0.6);
+}
+

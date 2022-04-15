@@ -73,6 +73,7 @@ export const joinMeetingEventWithData = attach({
         instanceId: source.template?.meetingInstance?.id,
         isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
         accessStatus: source.localUser.accessStatus,
+        maxParticipants: source.template.maxParticipants,
     })
 });
 

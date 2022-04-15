@@ -6,6 +6,7 @@ import { UserDocument } from './user.schema';
 import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { MeetingInstanceDocument } from './meeting-instance.schema';
+import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 
 @Schema()
 export class UserTemplate {
@@ -114,6 +115,13 @@ export class UserTemplate {
     ref: 'MeetingInstance',
   })
   meetingInstance: MeetingInstanceDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true,
+    default: 'default',
+  })
+  signBoard: ICommonUserDTO['signBoard'];
 
   @Prop({
     type: [

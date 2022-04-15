@@ -43,4 +43,10 @@ export class DashboardNotificationDTO implements IDashboardNotification {
   @Expose()
   @Type(() => DashboardNotificationUserDTO)
   receiver: IDashboardNotificationUser;
+
+  @Expose()
+  isSenderGuest: boolean;
+
+  @Expose()
+  senderFullName: string;
 }

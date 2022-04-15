@@ -1,27 +1,34 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, {memo, useCallback, useEffect} from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useStore } from 'effector-react';
+import {useRouter} from 'next/router';
+import {useStore} from 'effector-react';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import {CustomBox} from '@library/custom/CustomBox/CustomBox';
+import {CustomTypography} from '@library/custom/CustomTypography/CustomTypography';
+import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
 
 // components
-import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
-import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
+import {TemplatePreviewDialog} from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
+import {TemplatesGrid} from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import {MainProfileWrapper} from "@library/common/MainProfileWrapper/MainProfileWrapper";
-import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
+import {DiscoverTemplateItem} from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
+import {ScheduleMeetingDialog} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog";
+import {DownloadIcsEvent} from "@components/DownloadIcsEvent/DownloadIcsEvent";
 
 // stores
-import {$discoveryTemplatesStore, getUsersTemplatesFx } from "../../store/templates";
+import {$discoveryTemplatesStore, getUsersTemplatesFx, setScheduleTemplateIdEvent} from "../../store/templates";
+import {appDialogsApi} from "../../store/dialogs";
 
 // styles
 import styles from './DiscoveryContainer.module.scss';
 
+// types
+import {AppDialogsEnum} from "../../store/types";
+
 const DiscoveryContainer = memo(() => {
     const router = useRouter();
+
     const templates = useStore($discoveryTemplatesStore);
 
     useEffect(() => {
@@ -36,6 +43,14 @@ const DiscoveryContainer = memo(() => {
 
     const handleUserTemplatesPageChange = useCallback(async newPage => {
         await getUsersTemplatesFx({ limit: 6 * newPage, skip: 0 });
+    }, []);
+
+    const handleScheduleMeeting = useCallback(({ templateId }) => {
+        setScheduleTemplateIdEvent(templateId);
+
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.scheduleMeetingDialog
+        });
     }, []);
 
     return (
@@ -66,9 +81,12 @@ const DiscoveryContainer = memo(() => {
             </CustomGrid>
             <TemplatePreviewDialog
                 isNeedToRenderTemplateInfo={false}
+                onSchedule={handleScheduleMeeting}
                 chooseButtonKey="joinMeeting"
                 onChooseTemplate={handleEnterWaitingRoom}
             />
+            <ScheduleMeetingDialog />
+            <DownloadIcsEvent />
         </MainProfileWrapper>
     );
 });

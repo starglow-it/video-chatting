@@ -20,7 +20,7 @@
           "buttons buttons buttons buttons";
   gap: rem(8px);
   padding: rem(40px);
-  max-width: rem(472px);
+  width: rem(472px);
 
   .templateInfo {
     grid-area: templateInfo;
@@ -47,12 +47,17 @@
       width: rem(56px);
       height: rem(56px);
       flex: rem(0 0 56px);
-      background: $primary-white;
       border: rem(1px) solid rgba(189, 200, 211, 0.4);
-      box-sizing: border-box;
-      box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+      box-shadow: none;
       border-radius: rem(10px);
-      margin: rem(0 16px 0 0);
+    }
+
+    .scheduleIcon {
+      margin-right: rem(4px);
+    }
+
+    .scheduleButton {
+      height: rem(56px);
     }
 
     .chooseBtn {

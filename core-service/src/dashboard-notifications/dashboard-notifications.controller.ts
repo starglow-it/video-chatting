@@ -35,7 +35,12 @@ export class DashboardNotificationsController {
   @MessagePattern({ cmd: CREATE_DASHBOARD_NOTIFICATION })
   async createDashboardNotification(
     @Payload()
-    { templateId, senderId, notificationType }: ICreateDashboardNotification,
+    {
+      templateId,
+      senderId,
+      notificationType,
+      senderFullName,
+    }: ICreateDashboardNotification,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
@@ -53,7 +58,9 @@ export class DashboardNotificationsController {
         const isNotificationExists =
           await this.dashboardNotificationService.exists({
             sender,
+            receiver,
             notificationType,
+            sentAt: Date.now(),
           });
 
         let notification;
@@ -84,6 +91,8 @@ export class DashboardNotificationsController {
                 receiver,
                 template,
                 notificationType,
+                isSenderGuest: Boolean(sender),
+                senderFullName,
                 status: DashboardNotificationReadStatus.active,
                 sentAt: Date.now(),
               },

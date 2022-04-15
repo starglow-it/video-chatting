@@ -17,8 +17,8 @@ import { ConfirmQuitOnboardingDialog } from '@components/Dialogs/ConfirmQuitOnbo
 // store
 import { $setUpTemplateStore, getTemplateFx } from '../../store/templates';
 import { updateProfileFx, updateProfilePhotoFx } from '../../store/profile';
-import { $profileAvatarImage, $routeToChangeStore, setRouteToChangeEvent } from '../../store/other';
 import { createMeetingFx } from '../../store/meetings';
+import { $profileAvatarImage, $routeToChangeStore, setRouteToChangeEvent } from '../../store/other';
 import { $appDialogsStore, appDialogsApi } from '../../store/dialogs';
 
 // styles
@@ -28,15 +28,18 @@ import styles from './SetUpTemplateContainer.module.scss';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../validation/users/companyName';
 import { fullNameSchema } from '../../validation/users/fullName';
+import { simpleStringSchema } from "../../validation/common";
 
 // utils
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
+// types
 import { AppDialogsEnum } from '../../store/types';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
     fullName: fullNameSchema().required('required'),
+    signBoard: simpleStringSchema().required('required'),
 });
 
 const SetUpTemplateContainer = memo(() => {
@@ -54,6 +57,7 @@ const SetUpTemplateContainer = memo(() => {
         (async () => {
             await getTemplateFx({ templateId: router.query.templateId as string });
         })();
+
         return () => {
             appDialogsApi.closeDialog({
                 dialogKey: AppDialogsEnum.confirmQuitOnboardingDialog,
@@ -64,6 +68,7 @@ const SetUpTemplateContainer = memo(() => {
     const resolver = useYupValidationResolver<{
         companyName: string;
         fullName: string;
+        signBoard: string;
     }>(validationSchema);
 
     const methods = useForm({
@@ -72,6 +77,7 @@ const SetUpTemplateContainer = memo(() => {
         defaultValues: {
             companyName: '',
             fullName: '',
+            signBoard: '',
         },
     });
 
@@ -85,6 +91,11 @@ const SetUpTemplateContainer = memo(() => {
     const fullName = useWatch({
         control,
         name: 'fullName',
+    });
+
+    const signBoard = useWatch({
+        control,
+        name: 'signBoard',
     });
 
     useEffect(() => {
@@ -160,6 +171,7 @@ const SetUpTemplateContainer = memo(() => {
             <FormProvider {...methods}>
                 <form className={styles.form} onSubmit={onSubmit}>
                     <TemplateGeneralInfo
+                        signBoard={signBoard}
                         profileAvatar={profileAvatar.dataUrl}
                         companyName={companyName}
                         userName={fullName}

@@ -4,9 +4,12 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 
 import { CustomAccordionProps } from './types';
 
+// custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { ArrowIcon } from '@library/icons/ArrowIcon';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+
+// icons
+import { ArrowIcon } from '@library/icons/ArrowIcon';
 
 import styles from './CustomAccordion.module.scss';
 

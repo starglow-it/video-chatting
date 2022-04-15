@@ -1,12 +1,12 @@
-import React, { forwardRef, memo } from 'react';
+import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 import Image from 'next/image';
 
 // helpers
-import {emptyFunction} from "../../../utils/functions/emptyFunction";
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // styles
 import styles from './ProfileAvatar.module.scss';
@@ -14,7 +14,7 @@ import styles from './ProfileAvatar.module.scss';
 // types
 import { ProfileAvatarProps } from './types';
 
-const InitialComponent = (
+function Component(
     {
         onClick = emptyFunction,
         src,
@@ -25,8 +25,8 @@ const InitialComponent = (
         withoutShadow,
         ...rest
     }: ProfileAvatarProps,
-    ref,
-) => {
+    ref: ForwardedRef<HTMLDivElement>,
+) {
     const splitName = userName
         ?.split(' ')
         .map(word => word[0]?.toUpperCase())
@@ -69,6 +69,8 @@ const InitialComponent = (
     );
 }
 
-const ProfileAvatar = memo<ProfileAvatarProps>(forwardRef<HTMLDivElement, ProfileAvatarProps>(InitialComponent));
+const ProfileAvatar = memo<ProfileAvatarProps>(
+    forwardRef<HTMLDivElement, ProfileAvatarProps>(Component),
+);
 
 export { ProfileAvatar };

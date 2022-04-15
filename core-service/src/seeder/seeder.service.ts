@@ -88,36 +88,42 @@ export class SeederService {
     });
 
     const createUsersTemplates = users.map(async (user) => {
-      if (!user.templates.length) {
-        const templatesListData = templateList.map((template) => {
-          return {
-            templateId: template.templateId,
-            url: template.url,
-            name: template.name,
-            maxParticipants: template.maxParticipants,
-            previewUrl: template.previewUrl,
-            type: template.type,
-            businessCategories: template.businessCategories.map(
-              (category) => category._id,
-            ),
-            fullName: user.fullName,
-            position: user.position,
-            description: user.description || template.description,
-            companyName: user.companyName,
-            contactEmail: user.contactEmail,
-            languages: user.languages.map((language) => language._id),
-            socials: user.socials.map((social) => social._id),
-            usersPosition: template.usersPosition,
-          };
-        });
+      const templatesListData = templateList
+        .map((template) => {
+          const isThereTemplateAssigned = user.templates.find(
+            (template) => template.templateId === template.templateId,
+          );
 
-        user.templates = await this.userTemplatesService.createUserTemplates({
-          userId: user._id,
-          templates: templatesListData,
-        });
+          if (!isThereTemplateAssigned) {
+            return {
+              templateId: template.templateId,
+              url: template.url,
+              name: template.name,
+              maxParticipants: template.maxParticipants,
+              previewUrl: template.previewUrl,
+              type: template.type,
+              businessCategories: template.businessCategories.map(
+                (category) => category._id,
+              ),
+              fullName: user.fullName,
+              position: user.position,
+              description: user.description || template.description,
+              companyName: user.companyName,
+              contactEmail: user.contactEmail,
+              languages: user.languages.map((language) => language._id),
+              socials: user.socials.map((social) => social._id),
+              usersPosition: template.usersPosition,
+            };
+          }
+        })
+        .filter(Boolean);
 
-        return user.save();
-      }
+      user.templates = await this.userTemplatesService.createUserTemplates({
+        userId: user._id,
+        templates: templatesListData,
+      });
+
+      return user.save();
     });
 
     await Promise.all(createUsersTemplates);

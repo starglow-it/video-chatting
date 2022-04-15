@@ -21,8 +21,12 @@ import { $localUserStore, $meetingUsersStore } from '../../../store/users';
 // styles
 import styles from './MeetingPreview.module.scss';
 
+// types
+import { MeetingAccessStatuses } from '../../../store/types';
+
 const MeetingPreview = memo(() => {
     const router = useRouter();
+
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
@@ -30,7 +34,12 @@ const MeetingPreview = memo(() => {
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [localUser.id],
-        fn: (state, [localUserId]) => state.filter(user => user.id !== localUserId),
+        fn: (state, [localUserId]) =>
+            state.filter(
+                user =>
+                    user.id !== localUserId &&
+                    user.accessStatus === MeetingAccessStatuses.InMeeting,
+            ),
     });
 
     const handleLeaveMeeting = useCallback(() => {

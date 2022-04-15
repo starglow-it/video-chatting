@@ -6,7 +6,8 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Global, Logger } from '@nestjs/common';
-
+import { InjectConnection } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
 import { Socket } from 'socket.io';
 import { plainToClass } from 'class-transformer';
 
@@ -43,17 +44,17 @@ import { EnterMeetingRequestDTO } from '../dtos/requests/enter-meeting.dto';
 import { MeetingAccessAnswerRequestDTO } from '../dtos/requests/answer-access-meeting.dto';
 import { LeaveMeetingRequestDTO } from '../dtos/requests/leave-meeting.dto';
 import { EndMeetingRequestDTO } from '../dtos/requests/end-meeting.dto';
+import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
 
 import { AccessStatusEnum } from '../types/accessStatus.enum';
 import { TimeoutTypesEnum } from '../types/timeoutTypes.enum';
 
 import { getRandomNumber } from '../utils/getRandomNumber';
 import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
-import { MAX_PARTICIPANTS_NUMBER } from '../const/common.const';
-import { withTransaction } from '../helpers/mongo/withTransaction';
-import { Connection } from 'mongoose';
-import { InjectConnection } from '@nestjs/mongoose';
-import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
+import {
+  ITransactionSession,
+  withTransaction,
+} from '../helpers/mongo/withTransaction';
 
 @Global()
 @WebSocketGateway({ transports: ['websocket', 'polling'] })
@@ -174,6 +175,7 @@ export class MeetingsGateway
             mode: 'together',
             ownerProfileId: message.profileId,
             instanceId: message.instanceId,
+            maxParticipants: message.maxParticipants,
           },
           session,
         );
@@ -328,68 +330,75 @@ export class MeetingsGateway
       users: CommonUserDTO[];
     }>
   > {
-    return withTransaction(this.connection, async (session) => {
-      const meeting = await this.meetingsService.findById(
-        message.meetingId,
-        session,
-      );
+    return withTransaction(
+      this.connection,
+      async (session: ITransactionSession) => {
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
 
-      await meeting.populate(['owner', 'users']);
+        await meeting.populate(['owner', 'users']);
 
-      const user = await this.usersService.findOneAndUpdate(
-        { socketId: socket.id },
-        {
-          accessStatus: AccessStatusEnum.RequestSent,
-          username: message.user.username,
-        },
-        session,
-      );
+        const user = await this.usersService.findOneAndUpdate(
+          { socketId: socket.id },
+          {
+            accessStatus: AccessStatusEnum.RequestSent,
+            username: message.user.username,
+          },
+          session,
+        );
 
-      const activeParticipants = await this.usersService.countMany({
-        meeting: meeting._id,
-        accessStatus: AccessStatusEnum.InMeeting,
-      });
-
-      if (activeParticipants === MAX_PARTICIPANTS_NUMBER) {
-        return {
-          success: false,
-          message: 'meeting.maxParticipantsNumber',
-        };
-      }
-
-      const plainUser = plainToClass(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      if (
-        meeting?.owner?.socketId &&
-        meeting?.owner?.accessStatus === AccessStatusEnum.InMeeting
-      ) {
-        this.emitToSocketId(meeting?.owner?.socketId, RECEIVE_ACCESS_REQUEST, {
-          user: plainUser,
+        const activeParticipants = await this.usersService.countMany({
+          meeting: meeting._id,
+          accessStatus: AccessStatusEnum.InMeeting,
         });
-      }
 
-      return {
-        success: true,
-        result: {
-          user: plainUser,
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
-      };
-    });
+        if (activeParticipants === meeting.maxParticipants) {
+          return {
+            success: false,
+            message: 'meeting.maxParticipantsNumber',
+          };
+        }
+
+        const plainUser = plainToClass(CommonUserDTO, user, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+
+        const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+
+        const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+
+        if (
+          meeting?.owner?.socketId &&
+          meeting?.owner?.accessStatus === AccessStatusEnum.InMeeting
+        ) {
+          this.emitToSocketId(
+            meeting?.owner?.socketId,
+            RECEIVE_ACCESS_REQUEST,
+            {
+              user: plainUser,
+            },
+          );
+        }
+
+        return {
+          success: true,
+          result: {
+            user: plainUser,
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        };
+      },
+    );
   }
 
   @SubscribeMessage(CANCEL_ACCESS_REQUEST)

@@ -23,7 +23,7 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // icons
-import { CloseIcon } from '@library/icons/CloseIcon';
+import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
 import { PersonIcon } from '@library/icons/PersonIcon';
 import { MoneyIcon } from '@library/icons/MoneyIcon';
 import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
@@ -248,7 +248,7 @@ const MeetingSettingsPanel = memo(
                         variant="black-glass"
                         className={clsx(styles.settingsWrapper, { [styles.open]: open })}
                     >
-                        <CloseIcon
+                        <RoundCloseIcon
                             className={styles.closeIcon}
                             onClick={handleCloseEditTemplate}
                             width="24px"

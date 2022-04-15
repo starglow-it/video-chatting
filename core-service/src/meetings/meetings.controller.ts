@@ -93,6 +93,7 @@ export class MeetingsController {
             socials: user.socials.map((social) => social._id),
             meetingInstance: meeting,
             usersPosition: targetTemplate.usersPosition,
+            signBoard: user.signBoard,
           };
 
           [userTemplate] = await this.userTemplatesService.createUserTemplate(

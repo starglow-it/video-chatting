@@ -13,12 +13,14 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { TemplateParticipants } from '@components/Templates/TemplateParticipants/TemplateParticipants';
 import { TemplatePaymentType } from '@components/Templates/TemplatePaymentType/TemplatePaymentType';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { TemplateGeneralInfo } from '@components/Templates/TemplateGeneralInfo/TemplateGeneralInfo';
 import { BusinessCategoryTagsClip } from '@components/BusinessCategoryTagsClip/BusinessCategoryTagsClip';
 
+import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { ScheduleIcon } from '@library/icons/ScheduleIcon';
+
 // stores
-import { appDialogsApi, $appDialogsStore } from '../../../store/dialogs';
+import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
 import { $templatePreviewStore } from '../../../store/templates';
 import { $profileStore } from '../../../store/profile';
 
@@ -34,6 +36,7 @@ const TemplatePreviewDialog = memo(
         onChooseTemplate,
         chooseButtonKey,
         isNeedToRenderTemplateInfo,
+        onSchedule,
     }: TemplatePreviewDialogProps) => {
         const { templatePreviewDialog } = useStore($appDialogsStore);
         const previewTemplate = useStore($templatePreviewStore);
@@ -52,6 +55,14 @@ const TemplatePreviewDialog = memo(
                 });
             }
         }, [previewTemplate?.id]);
+
+        const handleScheduleMeeting = useCallback(() => {
+            previewTemplate?.id && onSchedule?.({ templateId: previewTemplate?.id });
+
+            appDialogsApi.closeDialog({
+                dialogKey: AppDialogsEnum.templatePreviewDialog,
+            });
+        }, [onSchedule, previewTemplate?.id]);
 
         return (
             <CustomDialog
@@ -110,12 +121,32 @@ const TemplatePreviewDialog = memo(
                             wrap="nowrap"
                             className={styles.buttons}
                             alignItems="flex-end"
+                            gap={2}
                         >
                             <ActionButton
+                                variant="decline"
                                 onAction={handleClose}
                                 className={styles.backBtn}
                                 Icon={<ArrowLeftIcon width="36px" height="36px" />}
                             />
+
+                            {Boolean(onSchedule) && (
+                                <CustomButton
+                                    variant="custom-common"
+                                    className={styles.scheduleButton}
+                                    onClick={handleScheduleMeeting}
+                                    Icon={
+                                        <ScheduleIcon
+                                            className={styles.scheduleIcon}
+                                            width="36px"
+                                            height="36px"
+                                        />
+                                    }
+                                    nameSpace="common"
+                                    translation="buttons.schedule"
+                                />
+                            )}
+
                             <CustomButton
                                 onClick={handleChooseTemplate}
                                 className={styles.chooseBtn}

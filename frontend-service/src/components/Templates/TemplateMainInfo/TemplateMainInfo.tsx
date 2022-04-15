@@ -1,4 +1,6 @@
-import React, { forwardRef, memo } from 'react';
+import React, { memo } from 'react';
+
+import { Fade } from '@mui/material';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -16,54 +18,55 @@ import { TemplateMainInfoProps } from '@components/Templates/TemplateMainInfo/ty
 // styles
 import styles from './TemplateMainInfo.module.scss';
 
-const InitialComponent = (
-    {
-        name,
-        description,
-        maxParticipants,
-        type,
-        isNeedToShowBusinessInfo = true,
-        avatar,
-    }: TemplateMainInfoProps, ref,
-) => (
-    <CustomGrid ref={ref} className={styles.templateInfo} display="grid">
-        <ProfileAvatar
-            className={styles.participants}
-            src={avatar}
-            width="38px"
-            height="38px"
-            userName={name}
-        />
-        <CustomTypography
-            variant="body1"
-            fontWeight={600}
-            color="common.white"
-            className={styles.title}
-        >
-            {name}
-        </CustomTypography>
-        <CustomTypography
-            variant="body3"
-            color="common.white"
-            className={styles.description}
-        >
-            {description}
-        </CustomTypography>
-        <CustomBox className={styles.emptySpace} />
-        {isNeedToShowBusinessInfo && (
-            <CustomGrid
-                container
-                alignItems="flex-end"
-                gap={1}
-                className={styles.businessInfo}
-            >
-                <TemplateParticipants number={maxParticipants} />
-                <TemplatePaymentType type={type} />
+function Component({
+    show,
+    name,
+    description,
+    maxParticipants,
+    type,
+    isNeedToShowBusinessInfo = true,
+    avatar,
+}: TemplateMainInfoProps) {
+    return (
+        <Fade in={show}>
+            <CustomGrid className={styles.templateInfo} display="grid">
+                <ProfileAvatar
+                    className={styles.participants}
+                    src={avatar}
+                    width="38px"
+                    height="38px"
+                    userName={name}
+                />
+                <CustomTypography
+                    variant="body1"
+                    fontWeight={600}
+                    color="common.white"
+                    className={styles.title}
+                >
+                    {name}
+                </CustomTypography>
+                <CustomTypography
+                    variant="body3"
+                    color="common.white"
+                    className={styles.description}
+                >
+                    {description}
+                </CustomTypography>
+                <CustomBox className={styles.emptySpace} />
+                {isNeedToShowBusinessInfo && (
+                    <CustomGrid
+                        container
+                        alignItems="flex-end"
+                        gap={1}
+                        className={styles.businessInfo}
+                    >
+                        <TemplateParticipants number={maxParticipants} />
+                        <TemplatePaymentType type={type} />
+                    </CustomGrid>
+                )}
             </CustomGrid>
-        )}
-    </CustomGrid>
-)
+        </Fade>
+    );
+}
 
-const TemplateMainInfo = memo<TemplateMainInfoProps>(forwardRef<HTMLDivElement, TemplateMainInfoProps>(InitialComponent));
-
-export { TemplateMainInfo };
+export const TemplateMainInfo = memo<TemplateMainInfoProps>(Component);

@@ -59,15 +59,14 @@ const CommonTemplateItem = memo(({ template }: CommonTemplateItemProps) => {
             onMouseLeave={handleHidePreview}
         >
             <Image src={template.previewUrl} width="334px" height="190px" />
-            <Fade in={!showPreview}>
-                <TemplateMainInfo
-                    name={template.name}
-                    description={template.description}
-                    maxParticipants={template.maxParticipants}
-                    type={template.type}
-                    isNeedToShowBusinessInfo
-                />
-            </Fade>
+            <TemplateMainInfo
+                show={!showPreview}
+                name={template.name}
+                description={template.description}
+                maxParticipants={template.maxParticipants}
+                type={template.type}
+                isNeedToShowBusinessInfo
+            />
             <Fade in={showPreview}>
                 <CustomGrid
                     container

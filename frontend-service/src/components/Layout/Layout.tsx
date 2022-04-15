@@ -64,7 +64,9 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
             <CustomBox className={styles.topRight}>
                 <BackgroundLogoRight className={styles.icon} width="718px" height="auto" />
             </CustomBox>
-            <CustomBox className={clsx(styles.contentWrapper, { [styles.meetingLayout]: isMeetingRoute })}>
+            <CustomBox
+                className={clsx(styles.contentWrapper, { [styles.meetingLayout]: isMeetingRoute })}
+            >
                 <CustomBox className={styles.header}>
                     <CustomGrid container justifyContent="space-between" alignItems="center">
                         <CustomLink href={isAuthenticated ? '/dashboard' : ''}>

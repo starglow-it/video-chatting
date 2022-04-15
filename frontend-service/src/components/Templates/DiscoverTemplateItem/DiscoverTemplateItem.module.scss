@@ -8,12 +8,24 @@
   overflow: hidden;
   width: rem(334px);
   height: rem(190px);
+
+  z-index: 10;
+
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba($primary-black, 0.15);
+  }
 }
 
 .templateButtons {
   position: absolute;
   inset: 0;
   background: rgba($primary-black, 0.6);
+  backdrop-filter: blur(24px);
+
+  z-index: 11;
 }
 
 .button {

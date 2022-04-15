@@ -1,4 +1,4 @@
-import React, {forwardRef, memo, useCallback } from 'react';
+import React, { ForwardedRef, forwardRef, memo, useCallback } from 'react';
 import clsx from 'clsx';
 import { ButtonUnstyled } from '@mui/base';
 
@@ -11,15 +11,15 @@ import styles from './ActionButton.module.scss';
 
 type ComponentPropsType = ActionButtonProps & Omit<ButtonProps, "variant">;
 
-const InitialComponent = (
+const Component = (
     {
         variant,
         Icon,
         onAction,
         className,
         ...rest
-    },
-    ref,
+    }: ComponentPropsType,
+    ref: ForwardedRef<HTMLButtonElement>,
 ) => {
     const buttonClassNames = clsx(
         styles.iconWrapper,
@@ -44,6 +44,6 @@ const InitialComponent = (
     );
 };
 
-const ActionButton = memo<ComponentPropsType>(forwardRef<HTMLButtonElement, ComponentPropsType>(InitialComponent));
+const ActionButton = memo<ComponentPropsType>(forwardRef<HTMLButtonElement, ComponentPropsType>(Component));
 
 export { ActionButton };

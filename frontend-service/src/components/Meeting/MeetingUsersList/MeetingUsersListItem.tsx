@@ -1,14 +1,21 @@
 import React, { memo } from 'react';
 
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+
+// components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { DeleteIcon } from '@library/icons/DeleteIcon';
+
+// icons
+import { CloseIcon } from '@library/icons/CloseIcon';
 import { AcceptIcon } from '@library/icons/AcceptIcon';
 
+// types
 import { MeetingUsersListItemProps } from './types';
 
+// styles
 import styles from './MeetingUsersList.module.scss';
 
 const MeetingUsersListItem = memo(
@@ -53,7 +60,7 @@ const MeetingUsersListItem = memo(
                             variant="decline"
                             onAction={handleDeleteRequest}
                             className={styles.deleteUser}
-                            Icon={<DeleteIcon width="23px" height="23px" />}
+                            Icon={<CloseIcon width="23px" height="23px" />}
                         />
                     )}
                 </CustomGrid>

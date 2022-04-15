@@ -2,12 +2,11 @@ import React, { memo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import { Divider } from '@mui/material';
-
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
@@ -45,7 +44,7 @@ const MeetingInviteParticipants = memo(() => {
 
     return (
         <>
-            <Divider className={styles.divider} />
+            <CustomDivider className={styles.divider} />
             <CustomGrid container className={styles.meetingInvitesWrapper} alignItems="center">
                 <CustomTypography
                     color="common.white"

@@ -2,9 +2,10 @@ import React, { memo } from 'react';
 import { CommonIconProps } from '@library/types';
 import { SvgIconWrapper } from './SvgIconWrapper';
 
-const AcceptIcon = memo(({ width, height, className }: CommonIconProps) => {
+const AcceptIcon = memo(({ width, height, className, onClick }: CommonIconProps) => {
     return (
         <SvgIconWrapper
+            onClick={onClick}
             width={width}
             height={height}
             className={className}

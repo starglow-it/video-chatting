@@ -9,11 +9,12 @@
     "chooseTemplate": "Get started with this room",
     "continue": "Continue",
     "done": "Done",
-    "joinMeeting": "Join this room"
+    "joinMeeting": "Join room"
   },
   "noTemplates": "You dont have any templates yet :(",
   "setUpSpace": {
-    "title": "Personalize your\nspace"
+    "title": "Personalize your\nspace",
+    "customizeSign": "Customize Sign"
   },
   "onboarding": {
     "quit": "Quit onboarding?",
@@ -22,5 +23,6 @@
   "deleteTemplate": {
     "title": "Delete template?",
     "text": "You will lose all related data and custom settings \n (default settings are available any time)"
-  }
+  },
+  "noSignBoard": "No Sign"
 }

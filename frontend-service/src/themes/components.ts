@@ -29,9 +29,64 @@ export const componentsTheme = (theme: Theme) =>
                         right: '10px',
                     },
                     select: {
+                        maxWidth: '90%',
                         minHeight: '32px',
+                        lineHeight: '32px'
                     },
                 },
+            },
+            MuiList: {
+                styleOverrides: {
+                    root: {
+                        '&.MuiMenu-list': {
+                            padding: '5px !important',
+                        }
+                    }
+                }
+            },
+            MuiMenuItem: {
+                styleOverrides: {
+                    root: {
+                        position: 'relative',
+                        maxWidth: '100%',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: 'block',
+                        borderRadius: '4px',
+                        padding: '12px',
+
+                        '&:hover': {
+                            background: alpha(theme.designSystemColors.grayscale.normal, 0.25),
+                        },
+                        '&.Mui-selected': {
+                            color: theme.designSystemColors.orange.primary,
+                            background: 'transparent',
+                            '&:after': {
+                                content: "''",
+                                width: '24px',
+                                height: '24px',
+                                position: 'absolute',
+                                right: '20px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: "url('/images/check-icon.svg')"
+                            },
+                            '&:hover': {
+                                background: alpha(theme.designSystemColors.grayscale.normal, 0.25),
+                            },
+                        }
+                    }
+                },
+            },
+            MuiRadio: {
+                styleOverrides: {
+                    root: {
+                        color: alpha(theme.designSystemColors.grayscale.normal, 0.6),
+                        '&.Mui-checked': {
+                            color: theme.designSystemColors.orange.primary
+                        }
+                    }
+                }
             },
             MuiDialogActions: {
                 styleOverrides: {
@@ -52,6 +107,20 @@ export const componentsTheme = (theme: Theme) =>
                             color: theme.palette.common.black,
                             '&:hover': {
                                 background: alpha(theme.palette.buttons.cancel.hover, 0.4),
+                            },
+                            '&.Mui-disabled': {
+                                background: theme.palette.buttons.cancel.disabled,
+                            },
+                        },
+                    },
+                    {
+                        props: { variant: 'custom-common' },
+                        style: {
+                            background: theme.palette.common.white,
+                            color: theme.palette.common.black,
+                            border: `1px solid ${alpha(theme.designSystemColors.grayscale.normal, 0.4)}`,
+                            '&:hover': {
+                                background: alpha(theme.designSystemColors.grayscale.normal, 0.4),
                             },
                             '&.Mui-disabled': {
                                 background: theme.palette.buttons.cancel.disabled,

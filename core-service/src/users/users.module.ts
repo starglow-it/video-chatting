@@ -4,7 +4,6 @@ import { forwardRef, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserSchema } from '../schemas/user.schema';
 import { UsersController } from './users.controller';
-import { preSaveUser } from '../schemas/methods/preSave.method';
 import { UserTokenModule } from '../user-token/user-token.module';
 import { Language, LanguageSchema } from '../schemas/language.schema';
 import { SocialLink, SocialLinkSchema } from '../schemas/social-link.schema';
@@ -23,18 +22,9 @@ import { VerificationCodeModule } from '../verification-code/verification-code.m
     BusinessCategoriesModule,
     AwsConnectorModule,
     VerificationCodeModule,
-    MongooseModule.forFeatureAsync([
-      {
-        name: User.name,
-        useFactory: () => {
-          UserSchema.pre('save', preSaveUser);
-
-          return UserSchema;
-        },
-      },
-    ]),
     MongooseModule.forFeature([
       { name: Language.name, schema: LanguageSchema },
+      { name: User.name, schema: UserSchema },
       { name: SocialLink.name, schema: SocialLinkSchema },
       { name: ProfileAvatar.name, schema: ProfileAvatarSchema },
     ]),

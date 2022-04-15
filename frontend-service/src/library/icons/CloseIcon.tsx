@@ -1,29 +1,11 @@
-import React, { memo } from 'react';
+import { CommonIconProps } from "@library/types";
+import { memo } from "react";
+import { SvgIconWrapper } from "./SvgIconWrapper";
 
-import { CommonIconProps } from '../types';
+const Icon = ({ width, height, className, onClick }: CommonIconProps) => (
+    <SvgIconWrapper onClick={onClick} className={className} width={width} height={height} viewBox="0 0 48 48" fill="none">
+        <path fillRule="evenodd" clipRule="evenodd" d="M33.8995 14.1007C34.6805 14.8817 34.6805 16.148 33.8995 16.9291L26.8284 24.0002L33.8995 31.0712C34.6805 31.8523 34.6805 33.1186 33.8995 33.8997C33.1184 34.6807 31.8521 34.6807 31.0711 33.8997L24 26.8286L16.9289 33.8997C16.1479 34.6807 14.8816 34.6807 14.1005 33.8997C13.3195 33.1186 13.3195 31.8523 14.1005 31.0712L21.1716 24.0002L14.1005 16.9291C13.3195 16.148 13.3195 14.8817 14.1005 14.1007C14.8816 13.3196 16.1479 13.3196 16.9289 14.1007L24 21.1717L31.0711 14.1007C31.8521 13.3196 33.1184 13.3196 33.8995 14.1007Z" fill="currentColor"/>
+    </SvgIconWrapper>
+);
 
-import { SvgIconWrapper } from './SvgIconWrapper';
-
-const CloseIcon = memo(({ width, height, className, onClick, ...rest }: CommonIconProps) => {
-    return (
-        <SvgIconWrapper
-            width={width}
-            height={height}
-            className={className}
-            onClick={onClick}
-            viewBox="0 0 26 26"
-            fill="none"
-            {...rest}
-        >
-            <circle cx="13" cy="13" r="13" fill="#BDC8D3" fillOpacity="0.25" />
-            <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M17.8206 8.17945C18.2436 8.60252 18.2436 9.28844 17.8206 9.71151L14.5321 13L17.8206 16.2885C18.2436 16.7116 18.2436 17.3975 17.8206 17.8206C17.3975 18.2436 16.7116 18.2436 16.2885 17.8206L13 14.5321L9.71151 17.8206C9.28844 18.2436 8.60251 18.2436 8.17944 17.8206C7.75637 17.3975 7.75637 16.7116 8.17944 16.2885L11.4679 13L8.17944 9.71151C7.75637 9.28844 7.75637 8.60252 8.17944 8.17945C8.60251 7.75638 9.28844 7.75638 9.7115 8.17945L13 11.4679L16.2885 8.17945C16.7116 7.75638 17.3975 7.75638 17.8206 8.17945Z"
-                fill="currentColor"
-            />
-        </SvgIconWrapper>
-    );
-});
-
-export { CloseIcon };
+export const CloseIcon = memo<CommonIconProps>(Icon);

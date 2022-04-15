@@ -19,4 +19,5 @@ export interface ICommonUserDTO {
     languages: ILanguage[];
     socials: ISocialLink[];
     profileAvatar: IProfileAvatar;
+    signBoard: string;
 }

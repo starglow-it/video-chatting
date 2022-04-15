@@ -9,7 +9,7 @@ import { useStore } from 'effector-react';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CloseIcon } from '@library/icons/CloseIcon';
+import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
 import { useToggle } from '../../../hooks/useToggle';
 
 // types
@@ -95,7 +95,7 @@ const MeetingNoteItem = memo(
                         </CustomGrid>
                     </CustomScroll>
                     {isOwner && (
-                        <CloseIcon
+                        <RoundCloseIcon
                             width="20px"
                             height="20px"
                             className={styles.unpinButton}

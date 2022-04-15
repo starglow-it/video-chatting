@@ -13,7 +13,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 // icons
 import { ImagePlaceholderIcon } from '@library/icons/ImagePlaceholderIcon';
 import { UploadArrowIcon } from '@library/icons/UploadArrow';
-import { CloseIcon } from '@library/icons/CloseIcon';
+import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
 
 // helpers
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
@@ -91,7 +91,7 @@ const SetUpProfileAvatar = memo(() => {
                     <Fade in>
                         <CustomBox className={styles.image}>
                             <Image src={profileAvatar.dataUrl} layout="fill" />
-                            <CloseIcon
+                            <RoundCloseIcon
                                 onClick={handleResetProfileAvatar}
                                 className={styles.deleteImage}
                                 width="22px"

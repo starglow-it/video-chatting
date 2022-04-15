@@ -10,7 +10,7 @@ const enhance = withStart(pageLoaded);
 const LogInPage: NextPage = (): JSX.Element => <SignInContainer />;
 
 LogInPage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'register', 'forms'],
+    namespacesRequired: ['common', 'register', 'forms', 'notifications', 'errors'],
 });
 
 export default enhance(LogInPage);

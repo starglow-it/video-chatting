@@ -39,7 +39,6 @@ export class DashboardNotification {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   })
   sender: UserDocument;
 
@@ -49,6 +48,16 @@ export class DashboardNotification {
     required: true,
   })
   receiver: UserDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+  })
+  isSenderGuest: boolean;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  senderFullName: string;
 }
 
 export type DashboardNotificationDocument = DashboardNotification & Document;

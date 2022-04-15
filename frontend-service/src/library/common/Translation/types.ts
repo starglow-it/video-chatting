@@ -1,5 +1,5 @@
 export type TranslationProps = {
-    nameSpace: string;
-    translation: string;
+    nameSpace?: string | undefined;
+    translation?: string | undefined;
     options?: Record<string, unknown>;
 };

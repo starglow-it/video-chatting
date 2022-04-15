@@ -37,5 +37,5 @@ async function bootstrap() {
 }
 
 bootstrap().then(() => {
-  console.log('Users Microservice is listening');
+  console.log('Core Microservice is listening');
 });

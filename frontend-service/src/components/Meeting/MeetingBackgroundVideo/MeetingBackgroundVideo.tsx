@@ -5,7 +5,8 @@ import VimeoPlayer, { Player, Options } from '@vimeo/player';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // styles
-import { MeetingBackgroundVideoProps } from '@components/Meeting/MeetingBackgroundVideo/types';
+import { MeetingBackgroundVideoProps } from './types';
+
 import styles from './MeetingBackgroundVideo.module.scss';
 
 // types

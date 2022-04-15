@@ -13,6 +13,7 @@ type CustomButtonProps = {
     disabled?: boolean;
     type?: 'button' | 'submit' | 'reset' | undefined;
     typographyProps?: CustomTypographyProps;
+    Icon?: React.ReactElement;
 };
 
 export type SliderArrowProps = {

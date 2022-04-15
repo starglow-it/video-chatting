@@ -7,6 +7,7 @@ export interface IUpdateProfile {
     languages?: string[];
     fullName: string;
     position: string;
+    signBoard?: string;
     socials: {
         youtube?: string;
         facebook?: string;

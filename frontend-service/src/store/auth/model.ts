@@ -12,7 +12,7 @@ export const initialAuthState: AuthUserState = {
 
 export const $authStore = authDomain.createStore<AuthUserState>(initialAuthState);
 
-export const loginUserFx = authDomain.effect<LoginUserParams, AuthUserState>('registerUserFx');
+export const loginUserFx = authDomain.effect<LoginUserParams, AuthUserState>('loginUserFx');
 export const checkAuthFx = authDomain.effect<NextPageContext, AuthUserState>('checkAuthFx');
 export const logoutUserFx = authDomain.effect<void, AuthUserState>('logoutUserFx');
 

@@ -7,12 +7,24 @@
   border-radius: rem(8px);
   overflow: hidden;
   max-width: rem(334px);
+
+  z-index: 10;
+
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba($primary-black, 0.15);
+  }
 }
 
 .templateButtons {
   position: absolute;
   inset: 0;
   background: rgba($primary-black, 0.6);
+  backdrop-filter: blur(24px);
+
+  z-index: 11;
 
   .startMeetingBtn {
     width: auto;

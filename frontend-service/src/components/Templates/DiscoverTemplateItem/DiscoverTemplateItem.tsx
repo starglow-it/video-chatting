@@ -2,8 +2,7 @@ import React, { memo, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { Fade } from '@mui/material';
-
-// stores
+import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -11,6 +10,8 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
+
+// stores
 import { appDialogsApi } from '../../../store/dialogs';
 import { setPreviewTemplate } from '../../../store/templates';
 
@@ -18,9 +19,9 @@ import { setPreviewTemplate } from '../../../store/templates';
 import styles from './DiscoverTemplateItem.module.scss';
 
 // types
-import { AppDialogsEnum, Template } from '../../../store/types';
+import { AppDialogsEnum, UserTemplate } from '../../../store/types';
 
-const DiscoverTemplateItem = memo(({ template }: { template: Template }) => {
+const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => {
     const router = useRouter();
 
     const [showPreview, setShowPreview] = useState(false);
@@ -46,7 +47,7 @@ const DiscoverTemplateItem = memo(({ template }: { template: Template }) => {
 
     return (
         <CustomGrid
-            className={styles.templateContent}
+            className={clsx(styles.templateContent, { [styles.blurred]: showPreview })}
             container
             justifyContent="center"
             alignItems="center"
@@ -54,15 +55,14 @@ const DiscoverTemplateItem = memo(({ template }: { template: Template }) => {
             onMouseLeave={handleHidePreview}
         >
             <Image src={template.previewUrl} layout="fill" />
-            <Fade in={!showPreview}>
-                <TemplateMainInfo
-                    name={template.name}
-                    description={template.description}
-                    maxParticipants={template.maxParticipants}
-                    avatar={template?.user?.profileAvatar?.url}
-                    type={template.type}
-                />
-            </Fade>
+            <TemplateMainInfo
+                show={!showPreview}
+                name={template.name}
+                description={template.description}
+                maxParticipants={template.maxParticipants}
+                avatar={template?.user?.profileAvatar?.url}
+                type={template.type}
+            />
             <Fade in={showPreview}>
                 <CustomGrid
                     container

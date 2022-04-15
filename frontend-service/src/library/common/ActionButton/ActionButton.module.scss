@@ -46,11 +46,11 @@
 
 .decline {
   background: rgba($primary-white, 0.25);
-  color: $primary-white;
+  color: $primary-black;
   backdrop-filter: blur(rem(28px));
 
   &.withAction {
-    @include withHoverAction($dark-white, $light-white);
+    @include withHoverAction($dark-white, rgba($normal-gray-scale, 0.4));
   }
 }
 
@@ -61,4 +61,9 @@
   &.withAction {
     @include withHoverAction($dark-orange, $light-orange);
   }
+}
+
+.cancel {
+  background: rgba($normal-gray-scale, 0.25);
+  color: $primary-black;
 }

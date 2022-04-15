@@ -10,6 +10,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { CoreModule } from '../core/core.module';
 import { UserTemplateController } from './userTemplate.contoller';
 import { TemplatesModule } from '../templates/templates.module';
+import { UploadModule } from '../upload/upload.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TemplatesModule } from '../templates/templates.module';
     CoreModule,
     NotificationsModule,
     TemplatesModule,
+    UploadModule,
   ],
   controllers: [UsersController, UserTemplateController],
   providers: [UsersService],

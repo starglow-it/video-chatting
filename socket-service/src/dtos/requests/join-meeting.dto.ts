@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { IJoinMeeting } from '../../interfaces/join-meeting.interface';
 
 export class JoinMeetingRequestDTO implements IJoinMeeting {
@@ -29,4 +35,7 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
   @IsOptional()
   @IsString()
   readonly profileAvatar: string;
+
+  @IsNumber()
+  readonly maxParticipants: number;
 }

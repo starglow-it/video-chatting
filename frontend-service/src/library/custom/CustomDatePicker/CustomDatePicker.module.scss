@@ -1,0 +1,49 @@
+@import "../../../styles/variables";
+
+.leftIcon {
+  transform: rotate(90deg);
+  cursor: pointer;
+}
+
+.rightIcon {
+  transform: rotate(-90deg);
+  cursor: pointer;
+}
+
+.dayWrapper {
+  position: relative;
+  width: 36px;
+  height: 36px;
+
+  cursor: pointer;
+
+  &.blocked {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  &.activeDay {
+    z-index: 1;
+
+    .day {
+      color: $primary-white;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: $primary-orange;
+      border-radius: 50%;
+      z-index: -1;
+    }
+  }
+}
+
+.day {
+  &.hideWeekDay {
+    cursor: default;
+    pointer-events: none;
+    color: transparent;
+  }
+}

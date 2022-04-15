@@ -28,7 +28,7 @@ import styles from './DashboardNotifications.module.scss';
 
 type ComponentPropsType = DashboardNotificationsProps;
 
-function InitialComponent({ onClickAway }, ref) {
+function Component({ onClickAway }, ref) {
     const dashboardNotifications = useStore($dashboardNotificationsStore);
 
     const handleMarkAllNotificationAsRead = useCallback(() => {
@@ -97,7 +97,7 @@ function InitialComponent({ onClickAway }, ref) {
 }
 
 const DashboardNotifications = memo<ComponentPropsType>(
-    forwardRef<HTMLButtonElement, ComponentPropsType>(InitialComponent),
+    forwardRef<HTMLButtonElement, ComponentPropsType>(Component),
 );
 
 export { DashboardNotifications };

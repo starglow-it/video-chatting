@@ -32,8 +32,7 @@ initiateSocketConnectionFx.use(async () => {
             resolve(true);
         });
 
-        socketInstance.on('connect_error', async (error) => {
-            console.log(error);
+        socketInstance.on('connect_error', async () => {
             reject(false);
         });
     });

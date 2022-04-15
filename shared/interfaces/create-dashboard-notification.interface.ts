@@ -6,4 +6,5 @@ export interface ICreateDashboardNotification {
     templateId: IUserTemplate["id"];
     senderId: ICommonUserDTO["id"];
     notificationType: DashboardNotificationTypes;
+    senderFullName: string;
 }

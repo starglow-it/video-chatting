@@ -3,12 +3,11 @@ import { useStore } from 'effector-react';
 import Router, { useRouter } from 'next/router';
 import clsx from 'clsx';
 
-import { Divider } from '@mui/material';
-
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // icons
 import { DiscoveryIcon } from '@library/icons/DiscoveryIcon';
@@ -82,7 +81,7 @@ const DashBoardNavigation = memo(() => {
                     />
                 </CustomTooltip>
 
-                <Divider className={styles.divider} light />
+                <CustomDivider className={styles.divider} light />
 
                 <CustomTooltip nameSpace="profile" translation="pages.discovery" placement="right">
                     <DiscoveryIcon

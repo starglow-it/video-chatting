@@ -1,8 +1,11 @@
 import React, { memo, useMemo } from 'react';
 import { useStoreMap } from 'effector-react';
 
-import { Divider } from '@mui/material';
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+
+// components
 import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/MeetingUsersListItem';
 
 // stores
@@ -54,7 +57,7 @@ const MeetingAccessRequests = memo(() => {
                     >
                         {renderRequestUsers}
                     </CustomGrid>
-                    <Divider className={styles.divider} />
+                    <CustomDivider className={styles.divider} />
                 </>
             )}
         </>

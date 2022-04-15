@@ -1,10 +1,10 @@
 import { otherStoresDomain } from '../domain';
 
-type UploadProfileAvatar = { file: File | null; dataUrl: string | null };
+type UploadProfileAvatar = { file: File | null; dataUrl: string };
 
 const initialProfileAvatarState: UploadProfileAvatar = {
     file: null,
-    dataUrl: null,
+    dataUrl: '',
 };
 
 export const $profileAvatarImage =

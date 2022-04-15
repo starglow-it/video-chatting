@@ -6,7 +6,7 @@ import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
-import { CloseIcon } from '@library/icons/CloseIcon';
+import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 import { useLocalization } from '../../../hooks/useTranslation';
@@ -47,7 +47,7 @@ const EmailInput = memo(
                             endAdornment: Boolean(email) && onClear && (
                                 <InputAdornment position="end">
                                     <IconButton onClick={onClear} edge="end">
-                                        <CloseIcon width="24px" height="24px" />
+                                        <RoundCloseIcon width="24px" height="24px" />
                                     </IconButton>
                                 </InputAdornment>
                             ),

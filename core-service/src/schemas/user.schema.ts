@@ -7,6 +7,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
+import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 
 @Schema({
   timestamps: true,
@@ -93,6 +94,12 @@ export class User {
     ref: 'ProfileAvatar',
   })
   profileAvatar: ProfileAvatarDocument;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: 'default',
+  })
+  signBoard: ICommonUserDTO['signBoard'];
 }
 
 export type UserDocument = User & Document;

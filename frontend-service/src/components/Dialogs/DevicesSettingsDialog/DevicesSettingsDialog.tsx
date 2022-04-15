@@ -1,23 +1,22 @@
 import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useStore } from 'effector-react';
 
-import { Divider } from '@mui/material';
-
 // custom components
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
 import { BackgroundBlurIcon } from '@library/icons/BackgroundBlurIcon';
 import { FaceTrackingIcon } from '@library/icons/FaceTrackingIcon';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
-
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 
+// controllers
 import { AgoraController } from '../../../controllers/VideoChatController';
 
 // context
@@ -115,7 +114,7 @@ const DevicesSettingsDialog = memo(() => {
             <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
                     <MediaPreview stream={changeStream} />
-                    <Divider orientation="vertical" flexItem />
+                    <CustomDivider orientation="vertical" flexItem />
                     <CustomGrid
                         className={styles.devicesWrapper}
                         container
