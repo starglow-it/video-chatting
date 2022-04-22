@@ -17,15 +17,18 @@ import styles from './MeetingGeneralInfo.module.scss';
 
 // store
 import { $profileStore } from '../../../store/profile';
-import { $meetingTemplateStore } from '../../../store/meeting';
 
 const MeetingGeneralInfo = memo(() => {
     const { control } = useFormContext();
 
-    const profile = useStore($profileStore);
-    const meetingTemplate = useStore($meetingTemplateStore);
+    const signBoard = useWatch({
+        control,
+        name: 'signBoard'
+    });
 
-    const isThereSignBoard = meetingTemplate?.signBoard && meetingTemplate?.signBoard !== 'default';
+    const profile = useStore($profileStore);
+
+    const isThereSignBoard = signBoard && signBoard !== 'default';
 
     const companyName = useWatch({
         control,
@@ -44,7 +47,7 @@ const MeetingGeneralInfo = memo(() => {
         >
             {isThereSignBoard ? (
                 <Image
-                    src={`/images/boards/${meetingTemplate?.signBoard}.png`}
+                    src={`/images/boards/${signBoard}.png`}
                     width="360px"
                     height="244px"
                 />

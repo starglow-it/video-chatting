@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useFormContext } from 'react-hook-form';
+import {useFormContext, useWatch} from 'react-hook-form';
 import { useStore } from 'effector-react';
 
 // custom
@@ -37,12 +37,18 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
     const { confirmChangeRouteDialog } = useStore($appDialogsStore);
 
     const {
+        control,
         formState: { dirtyFields },
     } = useFormContext();
 
     const handleResetForm = useCallback(() => {
         onReset?.();
     }, [onReset]);
+
+    const nextSocials = useWatch({
+        control,
+        name: 'socials'
+    });
 
     const dirtyFieldsCount = useMemo(() => {
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
@@ -52,7 +58,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
             0,
         );
 
-        const paddedNextSocials = padArray<SocialLink>(socials, Object.keys(SOCIAL_LINKS).length);
+        const paddedNextSocials = padArray<SocialLink>(nextSocials, Object.keys(SOCIAL_LINKS).length);
         const paddedCurrentSocials = padArray<SocialLink>(
             profile?.socials,
             Object.keys(SOCIAL_LINKS).length,
@@ -83,7 +89,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
         const numberOfChangedFields = changedFields.filter(value => !value).length;
 
         return dirtyFieldsCount + numberOfChangedFields + changedNewFields.length;
-    }, [Object.keys(dirtyFields).length, profile.socials]);
+    }, [Object.keys(dirtyFields).length, nextSocials, profile.socials]);
 
     const handleChangeRoute = useCallback(
         route => {

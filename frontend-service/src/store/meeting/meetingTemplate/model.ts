@@ -24,6 +24,7 @@ export const initialTemplateState: UserTemplate = {
     languages: [],
     socials: [],
     usedAt: '',
+    signBoard: 'default',
     usersPosition: []
 };
 

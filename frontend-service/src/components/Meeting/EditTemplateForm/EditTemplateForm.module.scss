@@ -1,0 +1,29 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.editTemplateWrapper {
+  padding: rem(20px);
+
+  .editIcon {
+    color: $primary-white;
+    margin: rem(0 8px 0 0);
+  }
+}
+
+.scrollWrapper {
+  overflow: scroll;
+}
+
+.formContent {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.socialBtn {
+  height: rem(44px);
+  width: rem(44px);
+}
+
+.saveBtn {
+  margin: auto 0 0 0;
+}

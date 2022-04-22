@@ -16,7 +16,7 @@ export const getUserTemplatesUrl = ({ templateId }: { templateId: string; }) => 
 
 export const postUserTemplatesUrl = ({ templateId }: { templateId: string; }) => ({
     url: `${serverUrl}/${usersScope}/templates/${templateId ? templateId : ''}`,
-    method: HttpMethods.Get,
+    method: HttpMethods.Post,
 });
 
 export const createMeetingUrl = {

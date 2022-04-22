@@ -4,6 +4,7 @@ export interface IUpdateTemplate {
     description: string;
     fullName: string;
     position: string;
+    signBoard: string;
     businessCategories?: string[];
     languages?: string[];
     socials: {

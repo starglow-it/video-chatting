@@ -20,7 +20,6 @@ import {DeleteTemplateDialog} from "@components/Dialogs/DeleteTemplateDialog/Del
 // stores
 import { createMeetingFx } from '../../store/meetings';
 import {
-    $profileStore,
     $profileTemplatesStore,
     $skipProfileTemplates,
     setSkipProfileTemplates,
@@ -35,7 +34,6 @@ import styles from './TemplatesContainer.module.scss';
 const TemplatesContainer = memo(() => {
     const router = useRouter();
 
-    const profile = useStore($profileStore);
     const profileTemplates = useStore($profileTemplatesStore);
     const templates = useStore($templatesStore);
     const skipProfileTemplates = useStore($skipProfileTemplates);
@@ -64,7 +62,7 @@ const TemplatesContainer = memo(() => {
         }
     }, []);
 
-    const isThereProfileTemplates = Boolean(profile?.templates?.length);
+    const isThereProfileTemplates = Boolean(templates?.list?.length);
 
     const handleProfileTemplatesPageChange = useCallback(async newPage => {
         await getProfileTemplatesFx({ limit: 6 * newPage, skip: 0 });

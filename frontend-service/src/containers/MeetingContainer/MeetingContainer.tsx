@@ -62,7 +62,6 @@ const MeetingContainer = memo(() => {
             await initiateSocketConnectionFx();
 
             if (meetingTemplate?.meetingInstance?.serverIp) {
-
                 await joinMeetingEventWithData({});
 
                 await sendMeetingAvailable({ templateId: router.query.token });

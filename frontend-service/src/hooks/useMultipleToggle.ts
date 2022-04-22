@@ -1,9 +1,9 @@
 import {useCallback, useState} from "react";
 
-export const useMultipleToggle = <ReturnType>(keys: string[]): {
+export const useMultipleToggle = <Keys>(keys: Keys[]): {
     values: { [key: string]: boolean };
-    onSwitchOn: (key: string) => void;
-    onSwitchToggle: (key: string) => void;
+    onSwitchOn: (key: Keys) => void;
+    onSwitchToggle: (key: Keys) => void;
     onSwitchOff: () => void;
 } => {
     const [values, setValues] = useState(() => {
@@ -12,7 +12,7 @@ export const useMultipleToggle = <ReturnType>(keys: string[]): {
         return keys.reduce((acc, b) => ({ ...acc, [b]: false }), initialState);
     });
 
-    const handleSwitchOn = useCallback((key: string) => {
+    const handleSwitchOn = useCallback((key: Keys) => {
         setValues(prev => {
             const keys = Object.keys(prev);
 
@@ -32,7 +32,7 @@ export const useMultipleToggle = <ReturnType>(keys: string[]): {
         });
     }, []);
 
-    const handleSwitchToggle = useCallback((key: string) => {
+    const handleSwitchToggle = useCallback((key: Keys) => {
         setValues(prev => {
             const keys = Object.keys(prev);
 

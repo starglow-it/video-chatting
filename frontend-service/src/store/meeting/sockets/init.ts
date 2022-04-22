@@ -69,7 +69,7 @@ export const joinMeetingEventWithData = attach({
     mapParams: (data, source: { profile: Profile; template: UserTemplate; localUser: MeetingUser; } ) => ({
         profileId: source.profile?.id,
         profileUserName: source?.profile?.fullName,
-        profileAvatar: source?.profile?.profileAvatar.url,
+        profileAvatar: source?.profile?.profileAvatar?.url,
         instanceId: source.template?.meetingInstance?.id,
         isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
         accessStatus: source.localUser.accessStatus,

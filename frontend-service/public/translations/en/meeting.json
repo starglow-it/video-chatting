@@ -9,6 +9,11 @@
   "over": "Meeting is over",
   "kicked": "You have been removed from the meeting",
   "waitForHost": "Waiting for host",
+  "meetingInfo": {
+    "title": "Meeting info",
+    "company": "Company",
+    "contacts": "Contacts"
+  },
   "buttons": {
     "join": "Join now",
     "cancel": "Cancel",
@@ -49,6 +54,7 @@
     "personal": "Personal",
     "company": "Business",
     "links": "Links",
+    "signBoard": "Signboards",
     "languages": "Languages",
     "businessCategories": "Business Categories",
     "buttons": {

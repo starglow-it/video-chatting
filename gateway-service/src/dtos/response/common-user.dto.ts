@@ -59,7 +59,7 @@ export class CommonUserRestDTO implements ICommonUserDTO {
 
   @Expose()
   @ApiProperty()
-  signBoard: IProfileAvatar;
+  signBoard: string;
 
   createdAt: Date;
   updatedAt: Date;

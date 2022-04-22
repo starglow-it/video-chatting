@@ -1,0 +1,188 @@
+import React, {forwardRef, memo, useMemo} from "react";
+import { useStore } from "effector-react";
+import { useRouter } from "next/router";
+
+// custom
+import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
+import { CustomTypography } from "@library/custom/CustomTypography/CustomTypography";
+import {CustomTooltip} from "@library/custom/CustomTooltip/CustomTooltip";
+
+// icons
+import { InfoIcon } from "@library/icons/InfoIcon";
+import { PeoplesIcon } from "@library/icons/PeoplesIcon";
+import { EmailIcon } from "@library/icons/EmailIcon";
+import {LanguageIcon} from "@library/icons/LanguageIcon";
+import {CustomLinkIcon} from "@library/icons/CustomLinkIcon";
+
+// components
+import {ProfileAvatar} from "@components/Profile/ProfileAvatar/ProfileAvatar";
+import {ActionButton} from "@library/common/ActionButton/ActionButton";
+import {BusinessCategoryItem} from "@components/BusinessCategoryItem/BusinessCategoryItem";
+
+// stores
+import {$meetingTemplateStore} from "../../../store/meeting";
+
+// styles
+import styles from './MeetingInfo.module.scss';
+
+// config
+import frontendConfig from "../../../const/config";
+
+import {SOCIALS_ICONS} from "../../../const/profile/socials";
+
+const Component = (props, ref) => {
+    const router = useRouter();
+
+    const meetingTemplate = useStore($meetingTemplateStore);
+
+    const renderLanguages = useMemo(() => {
+        return meetingTemplate.languages.map(language => language.value).join(', ');
+    }, [meetingTemplate.languages]);
+
+    const renderBusinessCategories = useMemo(() => {
+        return meetingTemplate.businessCategories.map((category) => {
+            return <BusinessCategoryItem key={category.key} category={category} />
+        })
+    }, [meetingTemplate.businessCategories]);
+
+    const socialsLink = useMemo(
+        () =>
+            meetingTemplate?.socials?.map(social => {
+                const Icon = SOCIALS_ICONS[social.key];
+
+                const handleAction = () => {
+                    if (social.value) {
+                        window.open(social.value, '_blank');
+                    }
+                };
+
+                return (
+                    <CustomTooltip
+                        key={social.key}
+                        nameSpace="common"
+                        translation={`tooltips.${social.key}`}
+                    >
+                        <ActionButton
+                            className={styles.socialBtn}
+                            Icon={<Icon width="40px" height="40px" />}
+                            onAction={handleAction}
+                        />
+                    </CustomTooltip>
+                );
+            }),
+        [meetingTemplate.socials],
+    );
+
+    return (
+        <CustomGrid ref={ref} container direction="column" className={styles.wrapper}>
+            <CustomGrid container alignItems="center" className={styles.header} gap={1.5}>
+                <InfoIcon width="24px" height="24px" />
+                <CustomTypography
+                    color="colors.white.primary"
+                    variant="h4bold"
+                    nameSpace="meeting"
+                    translation="meetingInfo.title"
+                />
+            </CustomGrid>
+            <CustomGrid container gap={4.5} direction="column">
+                <CustomGrid container gap={2} direction="column">
+                    <CustomGrid container className={styles.mainInfo} gap={1.5} wrap="nowrap">
+                        <ProfileAvatar
+                            className={styles.avatar}
+                            width="50px"
+                            height="50px"
+                            src={meetingTemplate?.user?.profileAvatar?.url || ''}
+                            userName={meetingTemplate.fullName}
+                        />
+                        <CustomGrid container direction="column">
+                            <CustomTypography variant="body1bold" color="colors.white.primary">
+                                {meetingTemplate.fullName}
+                            </CustomTypography>
+                            <CustomTypography variant="body2" color="colors.white.primary">
+                                {meetingTemplate.position}
+                            </CustomTypography>
+                        </CustomGrid>
+                    </CustomGrid>
+                    {meetingTemplate.languages?.length
+                        ? (
+                            <CustomGrid container display="inline-flex" className={styles.language}>
+                                <CustomTypography color="colors.white.primary" className={styles.text}>
+                                    <LanguageIcon width="24px" height="24px" className={styles.icon}/>
+                                    Language: {renderLanguages}
+                                </CustomTypography>
+                            </CustomGrid>
+                        )
+                        : null
+                    }
+                    <CustomGrid container className={styles.link} gap={1} wrap="nowrap">
+                        <CustomLinkIcon width="24px" height="24px" />
+                        <CustomTypography color="colors.white.primary" className={styles.linkText}>
+                            {`${frontendConfig.frontendUrl}/meeting/${router.query.token}`}
+                        </CustomTypography>
+                    </CustomGrid>
+                </CustomGrid>
+                <CustomGrid container direction="column" gap={2}>
+                    <CustomTypography
+                        color="colors.white.primary"
+                        variant="h4bold"
+                        nameSpace="meeting"
+                        translation="meetingInfo.company"
+                    />
+                    {meetingTemplate.companyName
+                        ? (
+                            <CustomGrid container className={styles.company} gap={1}>
+                                <PeoplesIcon width="24px" height="24px"/>
+                                <CustomTypography color="colors.white.primary" className={styles.text}>
+                                    {meetingTemplate.companyName}
+                                </CustomTypography>
+                            </CustomGrid>
+                        )
+                        : null
+                    }
+                    {meetingTemplate.contactEmail
+                        ? (
+                            <CustomGrid container className={styles.email} gap={1}>
+                                <EmailIcon width="24px" height="24px"/>
+                                <CustomTypography color="colors.white.primary" className={styles.text}>
+                                    {meetingTemplate.contactEmail}
+                                </CustomTypography>
+                            </CustomGrid>
+                        )
+                        : null
+                    }
+                    {meetingTemplate.description
+                        ? (
+                            <CustomGrid container className={styles.description} gap={1}>
+                                <CustomTypography color="colors.white.primary" className={styles.text}>
+                                    {meetingTemplate.description}
+                                </CustomTypography>
+                            </CustomGrid>
+                        )
+                        : null
+                    }
+                    {meetingTemplate?.businessCategories?.length
+                        ? (
+                            <CustomGrid container gap={1}>
+                                {renderBusinessCategories}
+                            </CustomGrid>
+                        )
+                        : null
+                    }
+                </CustomGrid>
+                <CustomGrid container direction="column" gap={2}>
+                    <CustomTypography
+                        color="colors.white.primary"
+                        variant="h4bold"
+                        nameSpace="meeting"
+                        translation="meetingInfo.contacts"
+                    />
+                    <CustomGrid container gap={1.5}>
+                        {socialsLink}
+                    </CustomGrid>
+                </CustomGrid>
+            </CustomGrid>
+        </CustomGrid>
+    );
+};
+
+export const MeetingInfo = memo<any>(forwardRef<HTMLDivElement, any>(Component));

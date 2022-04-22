@@ -1,33 +1,27 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
+import {Fade} from "@mui/material";
 
 // components
 import { SetUpDevicesButton } from '@components/Media/DeviceSetUpButtons/SetUpDevicesButton';
-import { EditTemplatePersonalInfo } from '@components/Meeting/EditTemplatePersonalInfo/EditTemplatePersonalInfo';
-import { EditTemplateCompanyInfo } from '@components/Meeting/EditTemplateCompanyInfo/EditTemplateCompanyInfo';
-import { EditTemplateSocialLinks } from '@components/Meeting/EditTemplateSocialLinks/EditTemplateSocialLinks';
 import { ConfirmCancelChangesDialog } from '@components/Dialogs/ConfirmCancelChangesDialog/ConfirmCancelChangesDialog';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import {EditTemplateForm} from "@components/Meeting/EditTemplateForm/EditTemplateForm";
+import {MeetingInfo} from "@components/Meeting/MeetingInfo/MeetingInfo";
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // icons
 import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
-import { PersonIcon } from '@library/icons/PersonIcon';
-import { MoneyIcon } from '@library/icons/MoneyIcon';
-import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
 import { EditIcon } from '@library/icons/EditIcon';
+import { InfoIcon } from '@library/icons/InfoIcon';
 
 // styles
 import styles from './MeetingSettingsPanel.module.scss';
@@ -49,6 +43,7 @@ import { appDialogsApi } from '../../../store/dialogs';
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
+import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
 
 // types
 import { AppDialogsEnum, SocialLink } from '../../../store/types';
@@ -65,6 +60,7 @@ const validationSchema = yup.object({
     description: simpleStringSchema(),
     businessCategories: businessCategoriesSchema(),
     languages: languagesSchema(),
+    signBoard: simpleStringSchema(),
     socials: yup.array().of(validateSocialLink()),
 });
 
@@ -75,8 +71,18 @@ const MeetingSettingsPanel = memo(
 
         const isEditTemplateView = router.pathname.includes('edit-template');
 
-        const [open, setOpen] = useState(isEditTemplateView);
-        const [currentAccordionId, setCurrentAccordionId] = useState('');
+        const {
+            values: { isEditTemplateOpened, isMeetingInfoOpened },
+            onSwitchOff: handleSwitchOff,
+            onSwitchOn: handleSwitchOn,
+            onSwitchToggle: handleToggleSwitch,
+        } = useMultipleToggle<'isEditTemplateOpened' | 'isMeetingInfoOpened'>(['isEditTemplateOpened', 'isMeetingInfoOpened']);
+
+        useEffect(() => {
+            if (isEditTemplateView) {
+                handleSwitchOn('isEditTemplateOpened');
+            }
+        }, [isEditTemplateView]);
 
         const isAbleToSave = isOwner || isEditTemplateView;
 
@@ -88,6 +94,7 @@ const MeetingSettingsPanel = memo(
             languages: any[];
             fullName: string;
             position: string;
+            signBoard: string;
             socials: { key: string; value: string }[];
         }>(validationSchema);
 
@@ -105,6 +112,7 @@ const MeetingSettingsPanel = memo(
                 description: template.description,
                 fullName: template.fullName,
                 position: template.position,
+                signBoard: template.signBoard,
                 businessCategories: template.businessCategories.map(category => category.key),
                 languages: template.languages.map(category => category.key),
                 socials: templateSocialLinks,
@@ -127,10 +135,9 @@ const MeetingSettingsPanel = memo(
         const dirtyFieldsCount = useMemo(() => {
             const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-            const dirtyFieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(
-                reduceValuesNumber,
-                0,
-            ) as number;
+            const values: (boolean | { [key: string]: boolean })[] = Object.values(dirtyFieldsWithOutSocials);
+
+            const dirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
 
             const paddedNextSocials = padArray<SocialLink>(
                 (nextSocials || []) as SocialLink[],
@@ -170,12 +177,12 @@ const MeetingSettingsPanel = memo(
         }, [Object.keys(dirtyFields).length, nextSocials, template.socials]);
 
         const handleOpenEditTemplate = useCallback(() => {
-            setOpen(true);
+            handleSwitchOn('isEditTemplateOpened');
         }, []);
 
         const handleCloseEditTemplate = useCallback(() => {
             if (!dirtyFieldsCount) {
-                return setOpen(false);
+                return handleSwitchOff();
             }
 
             appDialogsApi.openDialog({
@@ -183,15 +190,11 @@ const MeetingSettingsPanel = memo(
             });
         }, [dirtyFieldsCount]);
 
-        const handleChangeAccordion = useCallback(accordionId => {
-            setCurrentAccordionId(prev => (prev === accordionId ? '' : accordionId));
-        }, []);
-
         const handleConfirmClose = useCallback(() => {
             if (isEditTemplateView) {
                 router.push('/dashboard');
             } else {
-                setOpen(false);
+                handleSwitchOff();
                 reset();
                 setValue('socials', templateSocialLinks, {
                     shouldDirty: true,
@@ -199,6 +202,12 @@ const MeetingSettingsPanel = memo(
                 });
             }
         }, [templateSocialLinks, isEditTemplateView]);
+
+        const handleOpenDeviceSettings = useCallback(() => {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.devicesSettingsDialog,
+            });
+        }, []);
 
         const onSubmit = useCallback(
             handleSubmit(async data => {
@@ -219,7 +228,7 @@ const MeetingSettingsPanel = memo(
                         templateId: template.id,
                     });
                 }
-                setOpen(false);
+                handleSwitchOff();
             }),
             [dirtyFieldsCount, template.id, isEditTemplateView],
         );
@@ -234,10 +243,8 @@ const MeetingSettingsPanel = memo(
             }
         }, [dirtyFieldsCount]);
 
-        const handleOpenDeviceSettings = useCallback(() => {
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.devicesSettingsDialog,
-            });
+        const handleOpenMeetingInfo = useCallback(() => {
+            handleToggleSwitch('isMeetingInfoOpened');
         }, []);
 
         return (
@@ -246,7 +253,7 @@ const MeetingSettingsPanel = memo(
                     {children}
                     <CustomPaper
                         variant="black-glass"
-                        className={clsx(styles.settingsWrapper, { [styles.open]: open })}
+                        className={clsx(styles.settingsWrapper, { [styles.open]: isEditTemplateOpened || isMeetingInfoOpened })}
                     >
                         <RoundCloseIcon
                             className={styles.closeIcon}
@@ -254,13 +261,20 @@ const MeetingSettingsPanel = memo(
                             width="24px"
                             height="24px"
                         />
-                        <CustomGrid container className={styles.settingsControls}>
+                        <CustomGrid container className={styles.settingsControls} gap={1.5}>
                             <SetUpDevicesButton
                                 onAction={
                                     !isEditTemplateView ? handleOpenDeviceSettings : undefined
                                 }
                             />
-                            {!open && isAbleToSave && (
+                            <CustomPaper variant="black-glass" className={styles.infoButton}>
+                                <ActionButton
+                                    className={styles.iconButton}
+                                    onAction={handleOpenMeetingInfo}
+                                    Icon={<InfoIcon width="32px" height="32px" />}
+                                />
+                            </CustomPaper>
+                            {!isEditTemplateOpened && isAbleToSave && (
                                 <CustomPaper variant="black-glass" className={styles.deviceButton}>
                                     <ActionButton
                                         className={styles.iconButton}
@@ -270,97 +284,20 @@ const MeetingSettingsPanel = memo(
                                 </CustomPaper>
                             )}
                         </CustomGrid>
-                        <form onSubmit={onSubmit} className={styles.form}>
-                            <CustomGrid
-                                container
-                                direction="column"
-                                flex="1"
-                                wrap="nowrap"
-                                alignItems="stretch"
-                                gap={2.5}
-                                className={styles.editTemplateWrapper}
-                            >
-                                <CustomGrid container alignItems="center">
-                                    <EditIcon
-                                        width="24px"
-                                        height="24px"
-                                        className={styles.editIcon}
-                                    />
-                                    <CustomTypography
-                                        color="colors.white.primary"
-                                        variant="h4bold"
-                                        nameSpace="meeting"
-                                        translation="templates.editTemplate"
-                                    />
-                                </CustomGrid>
-                                <CustomGrid item flex="1 1 auto" className={styles.scrollWrapper}>
-                                    <CustomScroll>
-                                        <CustomGrid
-                                            container
-                                            direction="column"
-                                            gap={2}
-                                            wrap="nowrap"
-                                            className={styles.formContent}
-                                        >
-                                            <CustomAccordion
-                                                AccordionIcon={
-                                                    <PersonIcon width="24px" height="24px" />
-                                                }
-                                                currentAccordionId={currentAccordionId}
-                                                accordionId="personal"
-                                                onChange={handleChangeAccordion}
-                                                nameSpace="meeting"
-                                                translation="templates.personal"
-                                            >
-                                                <EditTemplatePersonalInfo />
-                                            </CustomAccordion>
-                                            <CustomAccordion
-                                                AccordionIcon={
-                                                    <MoneyIcon width="24px" height="24px" />
-                                                }
-                                                currentAccordionId={currentAccordionId}
-                                                accordionId="company"
-                                                onChange={handleChangeAccordion}
-                                                nameSpace="meeting"
-                                                translation="templates.company"
-                                            >
-                                                <EditTemplateCompanyInfo />
-                                            </CustomAccordion>
-                                            <CustomAccordion
-                                                AccordionIcon={
-                                                    <CustomLinkIcon width="24px" height="24px" />
-                                                }
-                                                currentAccordionId={currentAccordionId}
-                                                accordionId="links"
-                                                onChange={handleChangeAccordion}
-                                                nameSpace="meeting"
-                                                translation="templates.links"
-                                            >
-                                                <EditTemplateSocialLinks />
-                                            </CustomAccordion>
-                                        </CustomGrid>
-                                    </CustomScroll>
-                                </CustomGrid>
-                                <CustomButton
-                                    className={styles.saveBtn}
-                                    type="submit"
-                                    nameSpace="meeting"
-                                    translation="templates.buttons.saveChanges"
-                                />
-                                {isEditTemplateView && (
-                                    <CustomButton
-                                        onClick={handleCancelEditTemplate}
-                                        className={styles.saveBtn}
-                                        variant="custom-cancel"
-                                        nameSpace="meeting"
-                                        translation="templates.buttons.cancelChanges"
-                                        typographyProps={{
-                                            color: 'colors.white.primary',
-                                        }}
-                                    />
-                                )}
-                            </CustomGrid>
-                        </form>
+
+                        <Fade in={isEditTemplateOpened}>
+                            <CustomBox className={styles.fadeContentWrapper}>
+                                <form onSubmit={onSubmit} className={styles.form}>
+                                    <EditTemplateForm onCancel={handleCancelEditTemplate} />
+                                </form>
+                            </CustomBox>
+                        </Fade>
+
+                        <Fade in={isMeetingInfoOpened}>
+                            <CustomBox className={styles.fadeContentWrapper}>
+                                <MeetingInfo />
+                            </CustomBox>
+                        </Fade>
                     </CustomPaper>
                     <ConfirmCancelChangesDialog onClose={handleConfirmClose} />
                 </FormProvider>

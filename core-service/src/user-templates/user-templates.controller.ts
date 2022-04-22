@@ -162,6 +162,7 @@ export class UserTemplatesController {
           companyName: data.companyName,
           contactEmail: data.contactEmail,
           description: data.description,
+          signBoard: data.signBoard,
           businessCategories: newBusinessCategories.map(
             (category) => category._id,
           ),

@@ -61,6 +61,9 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'Description must be string' })
   description: string;
 
+  @IsString({ message: 'Description must be string' })
+  signBoard: string;
+
   @IsString({ message: 'Business category must be string', each: true })
   businessCategories: string[];
 

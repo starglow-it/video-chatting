@@ -62,7 +62,6 @@ export class DashboardGateway extends BaseGateway {
   @SubscribeMessage(SEND_MEETING_AVAILABLE)
   async sendMeetingAvailable(
     @MessageBody() message: { templateId: string },
-    @ConnectedSocket() socket: Socket,
   ) {
     this.emitToRoom(
       `waitingRoom:${message.templateId}`,
@@ -80,7 +79,6 @@ export class DashboardGateway extends BaseGateway {
       meetingUserId: string;
       username: string;
     },
-    @ConnectedSocket() socket: Socket,
   ) {
     const notification = await this.dashboardService.createNotification({
       templateId: message.templateId,

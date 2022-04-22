@@ -1,7 +1,7 @@
 import React from 'react';
-import { Template } from '../../../store/types';
+import { UserTemplate } from '../../../store/types';
 
 export type MeetingSettingsPanelProps = React.PropsWithChildren<{
-    template: Template;
+    template: UserTemplate;
     onTemplateUpdate: (updateData?: any) => void;
 }>;
