@@ -68,7 +68,7 @@ const ProfileBusinessTags = memo(() => {
         ];
 
         return initialArray?.reduce((acc: TagLineType[], element, index) => {
-            const targetCategory = searchArray.find((_, categoryIndex) => categoryIndex === index)!;
+            const targetCategory = searchArray.find((_, categoryIndex) => categoryIndex === index);
 
             if (!targetCategory) return acc;
 

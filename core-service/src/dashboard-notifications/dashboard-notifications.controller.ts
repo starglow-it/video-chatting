@@ -49,7 +49,10 @@ export class DashboardNotificationsController {
           session,
         });
 
-        const sender = await this.usersService.findById(senderId, session);
+        const sender = senderId
+          ? await this.usersService.findById(senderId, session)
+          : '';
+
         const receiver = await this.usersService.findById(
           template.user._id,
           session,
@@ -57,7 +60,7 @@ export class DashboardNotificationsController {
 
         const isNotificationExists =
           await this.dashboardNotificationService.exists({
-            sender,
+            ...(sender ? { sender } : {}),
             receiver,
             notificationType,
             sentAt: Date.now(),
@@ -69,7 +72,7 @@ export class DashboardNotificationsController {
           notification =
             await this.dashboardNotificationService.findAndUpdateNotification({
               query: {
-                sender,
+                ...(sender ? { sender } : {}),
                 notificationType,
               },
               data: {
@@ -87,7 +90,7 @@ export class DashboardNotificationsController {
           [notification] =
             await this.dashboardNotificationService.createNotification(
               {
-                sender,
+                ...(sender ? { sender } : {}),
                 receiver,
                 template,
                 notificationType,

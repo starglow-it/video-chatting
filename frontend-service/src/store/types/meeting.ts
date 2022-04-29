@@ -63,4 +63,4 @@ export type MeetingNote = {
     content: string;
     user: string;
     id: string;
-}
+};

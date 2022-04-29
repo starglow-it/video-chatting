@@ -136,6 +136,7 @@ export class UserTemplateController {
         templateName: template.name,
         startAt: startAtDate,
         endAt: endAtDate,
+        comment: data.comment,
       });
 
       const receiverMessage = receiverScheduleMessage({
@@ -143,6 +144,7 @@ export class UserTemplateController {
         templateName: template.name,
         startAt: startAtDate,
         endAt: endAtDate,
+        comment: data.comment,
       });
 
       await this.notificationService.sendEmail({

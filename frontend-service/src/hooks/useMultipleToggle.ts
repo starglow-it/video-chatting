@@ -1,6 +1,8 @@
-import {useCallback, useState} from "react";
+import { useCallback, useState } from 'react';
 
-export const useMultipleToggle = <Keys>(keys: Keys[]): {
+export const useMultipleToggle = <Keys>(
+    keys: Keys[],
+): {
     values: { [key: string]: boolean };
     onSwitchOn: (key: Keys) => void;
     onSwitchToggle: (key: Keys) => void;
@@ -16,7 +18,9 @@ export const useMultipleToggle = <Keys>(keys: Keys[]): {
         setValues(prev => {
             const keys = Object.keys(prev);
 
-            keys.forEach(objectKey => objectKey === key ? prev[objectKey] = true : prev[objectKey] = false);
+            keys.forEach(objectKey =>
+                objectKey === key ? (prev[objectKey] = true) : (prev[objectKey] = false),
+            );
 
             return { ...prev };
         });
@@ -26,7 +30,7 @@ export const useMultipleToggle = <Keys>(keys: Keys[]): {
         setValues(prev => {
             const keys = Object.keys(prev);
 
-            keys.forEach((objectKey) => prev[objectKey] = false);
+            keys.forEach(objectKey => (prev[objectKey] = false));
 
             return { ...prev };
         });
@@ -36,7 +40,11 @@ export const useMultipleToggle = <Keys>(keys: Keys[]): {
         setValues(prev => {
             const keys = Object.keys(prev);
 
-            keys.forEach(objectKey => objectKey === key ? prev[objectKey] = !prev[objectKey] : prev[objectKey] = false);
+            keys.forEach(objectKey =>
+                objectKey === key
+                    ? (prev[objectKey] = !prev[objectKey])
+                    : (prev[objectKey] = false),
+            );
 
             return { ...prev };
         });
@@ -46,6 +54,6 @@ export const useMultipleToggle = <Keys>(keys: Keys[]): {
         values,
         onSwitchOn: handleSwitchOn,
         onSwitchOff: handleSwitchOff,
-        onSwitchToggle: handleSwitchToggle
-    }
-}
+        onSwitchToggle: handleSwitchToggle,
+    };
+};

@@ -14,8 +14,7 @@ import styles from './ProfileAvatar.module.scss';
 // types
 import { ProfileAvatarProps } from './types';
 
-function Component(
-    {
+const Component = ({
         onClick = emptyFunction,
         src,
         className,
@@ -23,13 +22,13 @@ function Component(
         height,
         userName,
         withoutShadow,
-        ...rest
     }: ProfileAvatarProps,
-    ref: ForwardedRef<HTMLDivElement>,
-) {
+    ref: ForwardedRef<HTMLDivElement>) => {
+
     const splitName = userName
         ?.split(' ')
         .map(word => word[0]?.toUpperCase())
+        .slice(0, 2)
         .join(' ');
 
     return (

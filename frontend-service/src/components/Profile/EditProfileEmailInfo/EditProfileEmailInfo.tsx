@@ -29,7 +29,7 @@ import styles from './EditProfileEmailInfo.module.scss';
 import { updateProfileEmailFx } from '../../../store/profile';
 
 // types
-import { HttpMethods, NotificationType } from '../../../store/types';
+import { NotificationType } from '../../../store/types';
 import { addNotificationEvent } from '../../../store/notifications';
 
 const validationSchema = yup.object({

@@ -7,22 +7,18 @@ import { CustomTypography } from '../CustomTypography/CustomTypography';
 type ComponentType = CustomButtonProps & TranslationProps & ButtonProps;
 
 const Component = ({
-  disabled,
-  nameSpace,
-  translation,
-  Icon,
-  type,
-  variant = 'custom-primary',
-  typographyProps,
-  ...rest
+    disabled,
+    nameSpace,
+    translation,
+    Icon,
+    type,
+    variant = 'custom-primary',
+    typographyProps,
+    ...rest
 }: ComponentType) => (
     <Button disabled={disabled} variant={variant} type={type} {...rest}>
         {Icon}
-        <CustomTypography
-            nameSpace={nameSpace}
-            translation={translation}
-            {...typographyProps}
-        />
+        <CustomTypography nameSpace={nameSpace} translation={translation} {...typographyProps} />
     </Button>
 );
 

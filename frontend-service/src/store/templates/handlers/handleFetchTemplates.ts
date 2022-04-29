@@ -9,10 +9,12 @@ const handleFetchTemplates = async ({
     limit: number;
     skip: number;
 }): Promise<EntityList<Template> | undefined | null> => {
-    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(getTemplatesUrl({
-        limit,
-        skip,
-    }));
+    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(
+        getTemplatesUrl({
+            limit,
+            skip,
+        }),
+    );
 
     if (response.success) {
         return response.result;

@@ -1,14 +1,16 @@
-import {forward} from "effector";
+import { forward } from 'effector';
 
 import {
     $discoveryTemplatesStore,
     $scheduleEventLinkStore,
     $scheduleTemplateIdStore,
-    getUsersTemplatesFx, sendScheduleInviteFx, setScheduleEventLinkEvent,
-    setScheduleTemplateIdEvent
+    getUsersTemplatesFx,
+    sendScheduleInviteFx,
+    setScheduleEventLinkEvent,
+    setScheduleTemplateIdEvent,
 } from './model';
 import { handleFetchUsersTemplates } from '../handlers';
-import { handleSendScheduleInvite } from "../handlers/handleSendScheduleInvite";
+import { handleSendScheduleInvite } from '../handlers/handleSendScheduleInvite';
 
 getUsersTemplatesFx.use(handleFetchUsersTemplates);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
@@ -20,7 +22,7 @@ $discoveryTemplatesStore.on(getUsersTemplatesFx.doneData, (state, data) => ({
 
 forward({
     from: sendScheduleInviteFx.doneData,
-    to: setScheduleEventLinkEvent
+    to: setScheduleEventLinkEvent,
 });
 
 $scheduleTemplateIdStore.on(setScheduleTemplateIdEvent, (state, data) => data);

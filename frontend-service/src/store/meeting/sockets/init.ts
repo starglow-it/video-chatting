@@ -1,9 +1,10 @@
 import Router from 'next/router';
-import {attach, combine, forward, sample} from 'effector-next';
+import { attach, combine, forward, sample } from 'effector-next';
 
 import {
     ON_GET_MEETING_NOTES,
     ON_MEETING_ENTER_REQUEST,
+    ON_MEETING_ERROR,
     ON_MEETING_FINISHED,
     ON_MEETING_TEMPLATE_UPDATE,
     ON_MEETING_UPDATE,
@@ -12,7 +13,8 @@ import {
 } from '../const/subscribeSocketEvents';
 
 import {
-    meetingSocketEventsController,
+    answerAccessMeetingRequestEvent,
+    cancelAccessMeetingRequestEvent,
     emitAnswerAccessMeetingRequest,
     emitCancelEnterMeetingEvent,
     emitEndMeetingEvent,
@@ -21,14 +23,13 @@ import {
     emitStartMeetingEvent,
     emitUpdateMeetingTemplate,
     endMeetingEvent,
-    leaveMeetingEvent,
-    startMeetingEvent,
     enterMeetingRequestEvent,
+    joinMeetingEvent,
+    leaveMeetingEvent,
+    meetingSocketEventsController,
+    startMeetingEvent,
     updateMeetingSocketEvent,
     updateMeetingTemplateEvent,
-    cancelAccessMeetingRequestEvent,
-    answerAccessMeetingRequestEvent,
-    joinMeetingEvent,
 } from './model';
 
 import {
@@ -38,19 +39,31 @@ import {
     updateMeetingUserEvent,
     updateMeetingUsersEvent,
 } from '../../users';
-import {removeLocalMeetingNoteEvent, setMeetingNotesEvent} from "../meetingNotes";
+import { removeLocalMeetingNoteEvent, setMeetingNotesEvent } from '../meetingNotes';
 
-import { $meetingTemplateStore, getMeetingTemplateFx } from '../meetingTemplate';
+import {
+    $meetingTemplateStore,
+    getMeetingTemplateFx,
+    setIsUserSendEnterRequest,
+} from '../meetingTemplate';
 import { $meetingStore, setMeetingEvent, updateMeetingEvent } from '../meeting';
 import { initiateSocketConnectionFx } from '../../socket';
 import { setMeetingErrorEvent } from '../meetingError';
 import { appDialogsApi } from '../../dialogs';
 import { $profileStore } from '../../profile';
 
-import {AppDialogsEnum, Meeting, MeetingUser, Profile, SocketState, UserTemplate} from '../../types';
+import {
+    AppDialogsEnum,
+    Meeting,
+    MeetingUser,
+    Profile,
+    SocketState,
+    UserTemplate,
+} from '../../types';
 
 const handleMeetingEventsError = (data: string) => {
     setMeetingErrorEvent(data);
+    setIsUserSendEnterRequest(false);
     appDialogsApi.openDialog({
         dialogKey: AppDialogsEnum.meetingErrorDialog,
     });
@@ -58,15 +71,19 @@ const handleMeetingEventsError = (data: string) => {
 
 joinMeetingEvent.failData.watch(handleMeetingEventsError);
 enterMeetingRequestEvent.failData.watch(handleMeetingEventsError);
+answerAccessMeetingRequestEvent.failData.watch(handleMeetingEventsError);
 
 export const joinMeetingEventWithData = attach({
     effect: joinMeetingEvent,
-    source: combine<{ profile: Profile; template: UserTemplate; localUser: MeetingUser; }>({
+    source: combine<{ profile: Profile; template: UserTemplate; localUser: MeetingUser }>({
         profile: $profileStore,
         template: $meetingTemplateStore,
         localUser: $localUserStore,
     }),
-    mapParams: (data, source: { profile: Profile; template: UserTemplate; localUser: MeetingUser; } ) => ({
+    mapParams: (
+        data,
+        source: { profile: Profile; template: UserTemplate; localUser: MeetingUser },
+    ) => ({
         profileId: source.profile?.id,
         profileUserName: source?.profile?.fullName,
         profileAvatar: source?.profile?.profileAvatar?.url,
@@ -74,7 +91,7 @@ export const joinMeetingEventWithData = attach({
         isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
         accessStatus: source.localUser.accessStatus,
         maxParticipants: source.template.maxParticipants,
-    })
+    }),
 });
 
 forward({
@@ -84,7 +101,10 @@ forward({
 
 sample({
     clock: emitStartMeetingEvent,
-    source: combine<{ meeting: Meeting; user: MeetingUser }>({ meeting: $meetingStore, user: $localUserStore }),
+    source: combine<{ meeting: Meeting; user: MeetingUser }>({
+        meeting: $meetingStore,
+        user: $localUserStore,
+    }),
     fn: ({ meeting, user }) => ({ meetingId: meeting?.id, user }),
     target: startMeetingEvent,
 });
@@ -105,7 +125,10 @@ sample({
 
 sample({
     clock: emitEnterMeetingEvent,
-    source: combine<{ meeting: Meeting; user: MeetingUser }>({ meeting: $meetingStore, user: $localUserStore }),
+    source: combine<{ meeting: Meeting; user: MeetingUser }>({
+        meeting: $meetingStore,
+        user: $localUserStore,
+    }),
     fn: ({ meeting, user }) => ({ meetingId: meeting?.id, user }),
     target: enterMeetingRequestEvent,
 });
@@ -174,5 +197,15 @@ meetingSocketEventsController.watch(({ socketInstance }: SocketState) => {
 
     socketInstance?.on(ON_GET_MEETING_NOTES, ({ meetingNotes }) => {
         setMeetingNotesEvent(meetingNotes);
+    });
+
+    socketInstance?.on(ON_MEETING_ERROR, ({ message }) => {
+        setMeetingErrorEvent(message);
+
+        setIsUserSendEnterRequest(false);
+
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.meetingErrorDialog,
+        });
     });
 });

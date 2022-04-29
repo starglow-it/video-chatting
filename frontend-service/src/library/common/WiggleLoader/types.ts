@@ -1,3 +1,3 @@
-import {PropsWithClassName} from "../../../types";
+import { PropsWithClassName } from '../../../types';
 
-export type WiggleLoaderProps = PropsWithClassName<{ }>;
+export type WiggleLoaderProps = PropsWithClassName<{}>;

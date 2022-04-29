@@ -37,7 +37,8 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
     const passwordValue = useWatch({ control, name: fieldKey });
 
     const isPasswordLengthPassed = passwordValue?.length >= 8;
-    const isPasswordContentPassed = passwordValue && /(?=.*[a-zA-Z])(?=.*\d).*/gm.test(passwordValue);
+    const isPasswordContentPassed =
+        passwordValue && /(?=.*[a-zA-Z])(?=.*\d).*/gm.test(passwordValue);
 
     const hints = useMemo(
         () =>

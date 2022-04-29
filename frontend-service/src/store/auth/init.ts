@@ -3,9 +3,9 @@ import { forward } from 'effector-next';
 import { $authStore, checkAuthFx, loginUserFx, logoutUserFx, resetAuthErrorEvent } from './model';
 import { clearProfileEvent, setProfileEvent } from '../profile';
 
-import {handleLoginUser} from "./handlers/handleLoginUser";
-import {handleCheckUserAuthentication} from "./handlers/handleCheckUserAuthentication";
-import {handleLogoutUser} from "./handlers/handleLogoutUser";
+import { handleLoginUser } from './handlers/handleLoginUser';
+import { handleCheckUserAuthentication } from './handlers/handleCheckUserAuthentication';
+import { handleLogoutUser } from './handlers/handleLogoutUser';
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);

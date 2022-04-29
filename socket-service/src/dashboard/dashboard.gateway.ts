@@ -60,9 +60,7 @@ export class DashboardGateway extends BaseGateway {
   }
 
   @SubscribeMessage(SEND_MEETING_AVAILABLE)
-  async sendMeetingAvailable(
-    @MessageBody() message: { templateId: string },
-  ) {
+  async sendMeetingAvailable(@MessageBody() message: { templateId: string }) {
     this.emitToRoom(
       `waitingRoom:${message.templateId}`,
       'waitingRoom:meetingAvailable',

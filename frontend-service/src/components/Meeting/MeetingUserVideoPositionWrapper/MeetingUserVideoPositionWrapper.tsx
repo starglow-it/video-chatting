@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, {memo, useLayoutEffect, useState} from 'react';
 import clsx from 'clsx';
 
 // custom
@@ -10,15 +10,28 @@ import { MeetingUserVideoPositionWrapperProps } from './types';
 // styles
 import styles from './MeetingUserVideoPositionWrapper.module.scss';
 
-const MeetingUserVideoPositionWrapper = memo(
-    ({ children, isScreensharing, top, left }: MeetingUserVideoPositionWrapperProps) => (
+const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> = ({ elevationIndex, children, isScreensharing, top, left }: MeetingUserVideoPositionWrapperProps) => {
+    const [finalTop, setTop] = useState('50%');
+    const [finalLeft, setLeft] = useState('50%');
+
+    useLayoutEffect(() => {
+        if (isScreensharing) {
+            setLeft('calc(100% - 28px)');
+            setTop(`calc(50% + ${70 * elevationIndex}px)`);
+        } else {
+            setLeft(`${left * 100}%`);
+            setTop(`${top * 100}%`);
+        }
+    }, [isScreensharing, elevationIndex]);
+
+    return (
         <CustomBox
-            sx={{ top: `${top * 100}%`, left: `${left * 100}%` }}
+            sx={{ top: finalTop, left: finalLeft }}
             className={clsx(styles.videoWrapper, { [styles.sharing]: isScreensharing })}
         >
-            {children!}
+            {children}
         </CustomBox>
-    ),
-);
+    )
+};
 
-export { MeetingUserVideoPositionWrapper };
+export const MeetingUserVideoPositionWrapper = memo(Component);

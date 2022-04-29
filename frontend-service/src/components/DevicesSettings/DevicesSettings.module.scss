@@ -6,7 +6,7 @@
 }
 
 .settingsContent {
-  max-height: rem(235px);
+  min-height: rem(235px);
 }
 
 .previewWrapper {
@@ -44,15 +44,11 @@
 
 .devicesWrapper {
   margin: rem(0 0 0 40px);
-  width: auto;
+  width: 100%;
 
   .title {
     margin: rem(0 0 4px 0);
   }
-}
-
-.selectDevicesWrapper {
-  margin: rem(30px 0 0 0);
 }
 
 .joinBtn {

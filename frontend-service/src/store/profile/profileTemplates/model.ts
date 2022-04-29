@@ -13,10 +13,12 @@ export const $profileTemplatesStore = profileDomain.store<EntityList<Template>>(
 );
 
 export const $skipProfileTemplates = profileDomain.store<number>(0);
-export const $deleteProfileTemplateId = profileDomain.store<UserTemplate["id"]>('');
+export const $deleteProfileTemplateId = profileDomain.store<UserTemplate['id']>('');
 
 export const setSkipProfileTemplates = profileDomain.event<number>('setSkipProfileTemplates');
-export const setDeleteTemplateIdEvent = profileDomain.event<UserTemplate["id"]>('setDeleteTemplateIdEvent');
+export const setDeleteTemplateIdEvent = profileDomain.event<UserTemplate['id']>(
+    'setDeleteTemplateIdEvent',
+);
 
 export const getProfileTemplatesBase = profileDomain.effect<
     { limit: number; skip: number; userId: string },
@@ -31,7 +33,7 @@ export const getProfileTemplatesFx = attach({
 });
 
 export const deleteProfileTemplateFx = profileDomain.effect<
-    { templateId: UserTemplate["id"] },
+    { templateId: UserTemplate['id'] },
     void,
     void
-    >('deleteProfileTemplateFx');
+>('deleteProfileTemplateFx');

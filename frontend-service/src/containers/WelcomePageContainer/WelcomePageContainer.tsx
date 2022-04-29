@@ -21,7 +21,7 @@ import styles from './WelcomePageContainer.module.scss';
 
 // stores
 import { $templatesStore, getTemplatesFx } from '../../store/templates';
-import {Template} from "../../store/types";
+import { Template } from '../../store/types';
 
 const WelcomePageContainer = memo(() => {
     const router = useRouter();

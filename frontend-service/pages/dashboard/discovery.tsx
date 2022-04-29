@@ -8,16 +8,22 @@ import { pageLoaded } from '../../src/store/root';
 // @ts-ignore
 const enhance = withStart(pageLoaded);
 
-function DiscoveryPage(): JSX.Element {
-    return (
+const DiscoveryPage = (): JSX.Element => (
         <DashboardLayout>
             <DiscoveryContainer />
         </DashboardLayout>
-    );
-}
+    )
 
 DiscoveryPage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'profile', 'templates', 'dashboard', 'notifications', 'forms'],
+    namespacesRequired: [
+        'common',
+        'profile',
+        'templates',
+        'dashboard',
+        'notifications',
+        'forms',
+        'errors',
+    ],
 });
 
 export default enhance(DiscoveryPage);

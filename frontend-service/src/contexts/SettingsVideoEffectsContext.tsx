@@ -4,18 +4,18 @@ import React, {
     useLayoutEffect,
     useMemo,
     useRef,
-    useState
-} from "react";
-import {FaceDetection} from "@mediapipe/face_detection";
+    useState,
+} from 'react';
+import { FaceDetection } from '@mediapipe/face_detection';
 
 // hooks
-import {useToggle} from "../hooks/useToggle";
+import { useToggle } from '../hooks/useToggle';
 
 // custom
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // helpers
-import {addBlur} from "../helpers/media/addBlur";
+import { addBlur } from '../helpers/media/addBlur';
 
 const resultWidth = 240;
 
@@ -29,10 +29,12 @@ export const SettingsVideoEffectsContext = React.createContext({
         onGetCanvasStream: async (stream: MediaStream): Promise<MediaStream> => stream,
         onToggleBlur: () => {},
         onToggleFaceTracking: () => {},
-    }
+    },
 });
 
-export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildren<any>): ReactElement => {
+export const SettingsVideoEffectsProvider = ({
+    children,
+}: React.PropsWithChildren<any>): ReactElement => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -44,19 +46,14 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
     const timerNodeRef = useRef<AudioWorkletNode | null>(null);
     const whiteNoiseRef = useRef<AudioBufferSourceNode | null>(null);
 
-    const {
-        value: isBlurActive,
-        onToggleSwitch: handleToggleBlur
-    } = useToggle(true);
+    const { value: isBlurActive, onToggleSwitch: handleToggleBlur } = useToggle(true);
 
-    const {
-        value: isFaceTrackingActive,
-        onToggleSwitch: handleToggleFaceTracking
-    } = useToggle(true);
+    const { value: isFaceTrackingActive, onToggleSwitch: handleToggleFaceTracking } =
+        useToggle(true);
 
     const [isModelReady, setIsModelReady] = useState(false);
 
-    const onDetectionResult = useCallback((results) => {
+    const onDetectionResult = useCallback(results => {
         const canvasElement = canvasRef.current;
         const canvasCtx = canvasElement?.getContext('2d');
 
@@ -68,8 +65,8 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
             if (results?.detections?.length > 0) {
                 const width = results.image.width;
                 const height = results.image.height;
-                const xCenter = results.detections[0].boundingBox.xCenter
-                const yCenter = results.detections[0].boundingBox.yCenter
+                const xCenter = results.detections[0].boundingBox.xCenter;
+                const yCenter = results.detections[0].boundingBox.yCenter;
 
                 const widthPoint = width * xCenter;
                 const heightPoint = height * yCenter;
@@ -77,8 +74,14 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
                 const xFallback = xCenter > 0.5 ? width - resultWidth : 0;
                 const yFallback = yCenter > 0.5 ? height - resultWidth : 0;
 
-                const xResult = width - widthPoint < resultWidth / 2 || widthPoint < resultWidth / 2 ? xFallback : widthPoint - (resultWidth / 2);
-                const yResult = height - heightPoint < resultWidth / 2 || heightPoint < resultWidth / 2 ? yFallback : heightPoint - (resultWidth / 2);
+                const xResult =
+                    width - widthPoint < resultWidth / 2 || widthPoint < resultWidth / 2
+                        ? xFallback
+                        : widthPoint - resultWidth / 2;
+                const yResult =
+                    height - heightPoint < resultWidth / 2 || heightPoint < resultWidth / 2
+                        ? yFallback
+                        : heightPoint - resultWidth / 2;
 
                 xFallbackRef.current = xResult;
                 yFallbackRef.current = yResult;
@@ -92,7 +95,7 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
                     0,
                     0,
                     resultWidth,
-                    resultWidth
+                    resultWidth,
                 );
             } else {
                 canvasCtx.drawImage(
@@ -104,7 +107,7 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
                     0,
                     0,
                     resultWidth,
-                    resultWidth
+                    resultWidth,
                 );
             }
 
@@ -131,7 +134,7 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
             whiteNoise.loop = true;
             whiteNoise.start(0);
 
-            timerNode.port.onmessage = async (event) => {
+            timerNode.port.onmessage = async event => {
                 try {
                     if (event.data.isNeedToRender) {
                         const videoElement = videoRef.current;
@@ -152,59 +155,62 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
         }
     }, []);
 
-    const handleGetActiveStream = useCallback(async (stream: MediaStream) => {
-        const newStream = new MediaStream();
+    const handleGetActiveStream = useCallback(
+        async (stream: MediaStream) => {
+            const newStream = new MediaStream();
 
-        let videoTrack = stream.getVideoTracks()[0];
+            let videoTrack = stream.getVideoTracks()[0];
 
-        const audioTrack = stream.getAudioTracks()[0];
+            const audioTrack = stream.getAudioTracks()[0];
 
-        newStream.addTrack(audioTrack);
+            newStream.addTrack(audioTrack);
 
-        whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
-        timerNodeRef.current?.port.close();
-        whiteNoiseRef?.current?.stop();
+            whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
+            timerNodeRef.current?.port.close();
+            whiteNoiseRef?.current?.stop();
 
-        whiteNoiseRef.current = null;
-        timerNodeRef.current = null;
+            whiteNoiseRef.current = null;
+            timerNodeRef.current = null;
 
-        const videoElement = videoRef.current;
+            const videoElement = videoRef.current;
 
-        if (faceDetectionRef.current && isFaceTrackingActive) {
-            if (videoElement) {
-                videoElement.srcObject = stream;
+            if (faceDetectionRef.current && isFaceTrackingActive) {
+                if (videoElement) {
+                    videoElement.srcObject = stream;
 
-                videoElement.onloadeddata = handleStartDetection;
-            }
+                    videoElement.onloadeddata = handleStartDetection;
+                }
 
-            const canvasElement = canvasRef.current;
+                const canvasElement = canvasRef.current;
 
-            if (canvasElement) {
-                const canvasStream = await canvasElement?.captureStream();
+                if (canvasElement) {
+                    const canvasStream = await canvasElement?.captureStream();
 
-                videoTrack = canvasStream.getVideoTracks()[0];
+                    videoTrack = canvasStream.getVideoTracks()[0];
+                }
+
+                if (isBlurActive) {
+                    videoTrack = await addBlur()(videoTrack);
+                }
+
+                newStream.addTrack(videoTrack);
+
+                return newStream;
             }
 
             if (isBlurActive) {
                 videoTrack = await addBlur()(videoTrack);
+                newStream.addTrack(videoTrack);
+
+                return newStream;
             }
 
             newStream.addTrack(videoTrack);
 
             return newStream;
-        }
-
-        if (isBlurActive) {
-            videoTrack = await addBlur()(videoTrack);
-            newStream.addTrack(videoTrack);
-
-            return newStream;
-        }
-
-        newStream.addTrack(videoTrack);
-
-        return newStream;
-    }, [isBlurActive, isFaceTrackingActive]);
+        },
+        [isBlurActive, isFaceTrackingActive],
+    );
 
     useLayoutEffect(() => {
         (async () => {
@@ -213,16 +219,16 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
             await audioContext.audioWorklet.addModule('/workers/timer.js');
 
             const faceDetection = new FaceDetection({
-                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/${file}`
-                }
-            );
+                locateFile: file =>
+                    `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/${file}`,
+            });
 
             await faceDetection.initialize();
 
             faceDetection.setOptions({
                 minDetectionConfidence: 0.5,
-                model: "short",
-                selfieMode: false
+                model: 'short',
+                selfieMode: false,
             });
 
             faceDetection.onResults(onDetectionResult);
@@ -239,7 +245,7 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
 
             whiteNoiseRef.current = null;
             timerNodeRef.current = null;
-        }
+        };
     }, []);
 
     const contextValue = useMemo(() => {
@@ -247,23 +253,32 @@ export const SettingsVideoEffectsProvider = ({ children }: React.PropsWithChildr
             actions: {
                 onGetCanvasStream: handleGetActiveStream,
                 onToggleBlur: handleToggleBlur,
-                onToggleFaceTracking: handleToggleFaceTracking
+                onToggleFaceTracking: handleToggleFaceTracking,
             },
             data: {
                 isModelReady,
                 isBlurActive,
-                isFaceTrackingActive
+                isFaceTrackingActive,
             },
         };
     }, [isModelReady, isBlurActive, handleGetActiveStream, isFaceTrackingActive]);
 
     return (
         <SettingsVideoEffectsContext.Provider value={contextValue}>
-            <CustomGrid sx={{ pointerEvents: "none", position: 'absolute', top: '0', left: '0', zIndex: -1, visibility: 'hidden' }}>
+            <CustomGrid
+                sx={{
+                    pointerEvents: 'none',
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    zIndex: -1,
+                    visibility: 'hidden',
+                }}
+            >
                 <video ref={videoRef} autoPlay playsInline muted />
                 <canvas ref={canvasRef} width={resultWidth} height={resultWidth} />
             </CustomGrid>
             {children}
         </SettingsVideoEffectsContext.Provider>
     );
-}
+};

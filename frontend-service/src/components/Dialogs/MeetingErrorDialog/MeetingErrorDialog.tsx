@@ -26,6 +26,7 @@ const MeetingErrorDialog = memo(() => {
             contentClassName={styles.content}
             open={meetingErrorDialog}
             onClose={handleClose}
+            onBackdropClick={handleClose}
         >
             <CustomGrid container alignItems="center" direction="column">
                 <CustomTypography

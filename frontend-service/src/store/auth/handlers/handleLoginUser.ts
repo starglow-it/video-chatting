@@ -1,7 +1,7 @@
-import {sendRequest} from "../../../helpers/http/sendRequest";
-import {ErrorState, LoginUserPayload, LoginUserResponse} from "../../types";
-import { loginUserUrl } from "../../../utils/urls";
-import setAuthCookies from "../../../helpers/http/setAuthCookies";
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { ErrorState, LoginUserPayload, LoginUserResponse } from '../../types';
+import { loginUserUrl } from '../../../utils/urls';
+import setAuthCookies from '../../../helpers/http/setAuthCookies';
 
 export const handleLoginUser = async (params: LoginUserPayload) => {
     const response = await sendRequest<LoginUserResponse, ErrorState>({
@@ -24,4 +24,4 @@ export const handleLoginUser = async (params: LoginUserPayload) => {
     return {
         isAuthenticated: false,
     };
-}
+};

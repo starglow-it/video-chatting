@@ -43,9 +43,10 @@ const MeetingUsersVideos = memo(() => {
             users.map((user, index) => (
                 <MeetingUserVideoPositionWrapper
                     key={user.id}
+                    elevationIndex={index + 1}
                     isScreensharing={isScreenSharing}
-                    top={meetingTemplate?.usersPosition?.[index + 1].top}
-                    left={meetingTemplate?.usersPosition?.[index + 1].left}
+                    top={meetingTemplate?.usersPosition?.[index + 1]?.top}
+                    left={meetingTemplate?.usersPosition?.[index + 1]?.left}
                 >
                     <MeetingUserVideoItem
                         size={isScreenSharing ? 56 : 120}
@@ -55,7 +56,7 @@ const MeetingUsersVideos = memo(() => {
                                 ? user.videoTrack
                                 : undefined
                         }
-                        audioTrack={user?.audioTrack!}
+                        audioTrack={user?.audioTrack}
                         isCameraEnabled={user.cameraStatus === 'active'}
                         isMicEnabled={user.micStatus === 'active'}
                         userProfileAvatar={user.profileAvatar}
@@ -70,6 +71,8 @@ const MeetingUsersVideos = memo(() => {
     return (
         <CustomGrid className={styles.meetingVideos}>
             <MeetingUserVideoPositionWrapper
+                elevationIndex={0}
+                key={localUser.id}
                 isScreensharing={Boolean(meeting.sharingUserId)}
                 top={meetingTemplate?.usersPosition?.[0].top}
                 left={meetingTemplate?.usersPosition?.[0].left}

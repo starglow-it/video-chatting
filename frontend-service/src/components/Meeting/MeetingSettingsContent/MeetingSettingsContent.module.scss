@@ -1,0 +1,80 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.selectDevicesWrapper {
+  margin: rem(30px 0 0 0);
+}
+
+.advancedButton {
+  width: rem(108px);
+  color: $primary-white;
+  padding: rem(4px 4px 4px 12px);
+  background: #0F0F10;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-wrap: nowrap;
+}
+
+.arrowIcon {
+  cursor: pointer;
+  transform: rotate(90deg);
+}
+
+.settingsWrapper {
+  position: relative;
+
+  height: 100%;
+
+  .settingPosition {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .advancedSettings {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .advancedSettings, .settingPosition {
+    &.relative {
+      position: relative;
+      z-index: 1;
+    }
+  }
+}
+
+.switchWrapper {
+    padding: rem(13px 10px);
+    background: $light-gray-scale;
+    border: 1px solid rgba($normal-gray-scale, 0.6);
+    border-radius: rem(10px);
+}
+
+.audioSettings {
+  background: $light-gray-scale;
+  border: 1px solid rgba($normal-gray-scale, 0.6);
+  border-radius: rem(10px);
+  height: rem(52px);
+
+  overflow: hidden;
+
+  transition: height 200ms linear;
+
+  &.withVolume {
+    height: rem(113px);
+  }
+
+  .audioWrapper {
+    padding: rem(13px 10px);
+  }
+
+  .audioRange {
+    padding: rem(13px 22px 13px 10px);
+
+    &.inactive {
+      color: $normal-gray-scale;
+    }
+  }
+}

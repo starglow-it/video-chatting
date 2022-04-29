@@ -26,5 +26,5 @@ export class MeetingAccessAnswerRequestDTO implements IEnterMeeting {
   @IsString({
     message: 'credentials.invalid',
   })
-  readonly userId: ICommonMeetingUserDTO;
+  readonly userId: ICommonMeetingUserDTO['id'];
 }

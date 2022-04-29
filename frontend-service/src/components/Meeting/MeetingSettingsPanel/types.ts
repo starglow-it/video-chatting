@@ -1,7 +1,19 @@
 import React from 'react';
-import { UserTemplate } from '../../../store/types';
+import {BusinessCategory, Language, SocialLink, UserTemplate} from '../../../store/types';
+
+export type SettingsData = {
+    companyName: string;
+    contactEmail: string;
+    description: boolean;
+    fullName: string;
+    position: string;
+    signBoard: string;
+    languages: Language["key"][];
+    businessCategories: BusinessCategory["key"][];
+    socials: SocialLink[];
+};
 
 export type MeetingSettingsPanelProps = React.PropsWithChildren<{
     template: UserTemplate;
-    onTemplateUpdate: (updateData?: any) => void;
+    onTemplateUpdate: (updateData?: { templateId: UserTemplate["id"]; data: SettingsData }) => void;
 }>;

@@ -1,5 +1,5 @@
-import {HttpMethods} from "../../store/types";
-import {authScope, profileScope, serverUrl, uploadScope} from "./baseData";
+import { HttpMethods } from '../../store/types';
+import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
 
 export const PROFILE_URL = `${profileScope}`;
 
@@ -13,7 +13,7 @@ export const postProfileUrl = {
 export const profilePasswordUrl = {
     url: `${baseProfileUrl}/password`,
     method: HttpMethods.Post,
-}
+};
 
 export const deleteProfileAvatarUrl = {
     url: `${baseProfileUrl}/avatar`,
@@ -25,29 +25,29 @@ export const postProfileAvatarUrl = {
     method: HttpMethods.Post,
 };
 
-export const profileTemplatesUrl = ({ skip, limit }: { skip?: number, limit?: number }) => ({
+export const profileTemplatesUrl = ({ skip, limit }: { skip?: number; limit?: number }) => ({
     url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}`,
     method: HttpMethods.Get,
 });
 
-export const getProfileTemplateUrl = ({ templateId }: { templateId?: string; }) => ({
+export const getProfileTemplateUrl = ({ templateId }: { templateId?: string }) => ({
     url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Get,
 });
 
-export const postProfileTemplatesUrl = ({ templateId }: { templateId?: string; }) => ({
+export const postProfileTemplatesUrl = ({ templateId }: { templateId?: string }) => ({
     url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Post,
 });
 
-export const deleteProfileTemplatesUrl = ({ templateId }: { templateId?: string; }) => ({
+export const deleteProfileTemplatesUrl = ({ templateId }: { templateId?: string }) => ({
     url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Delete,
 });
 
 export const profileEmailUrl = {
     url: `${baseProfileUrl}/email`,
-    method: HttpMethods.Post
+    method: HttpMethods.Post,
 };
 
 export const uploadProfileAvatarUrl = {
@@ -79,6 +79,3 @@ export const emailVerificationUrl = {
     url: `${baseProfileUrl}/verify/email`,
     method: HttpMethods.Post,
 };
-
-
-

@@ -10,11 +10,11 @@ import { CustomDialogProps } from './types';
 type ComponentType = Omit<DialogProps, 'onClose'> & CustomDialogProps;
 
 const Component = ({
-   open,
-   onClose,
-   children,
-   contentClassName,
-   ...rest
+    open,
+    onClose,
+    children,
+    contentClassName,
+    ...rest
 }: Omit<DialogProps, 'onClose'> & CustomDialogProps) => {
     return (
         <Dialog open={open} {...rest}>

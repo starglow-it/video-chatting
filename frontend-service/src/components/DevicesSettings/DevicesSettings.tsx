@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext } from 'react';
+import React, { memo, useCallback, useContext, useState } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
@@ -9,9 +9,9 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
-import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
+import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
 
 // context
 import { MediaContext } from '../../contexts/MediaContext';
@@ -36,12 +36,26 @@ import { NotificationType } from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
+import {
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
+    setBackgroundAudioActive,
+    setBackgroundAudioVolume,
+} from '../../store/other';
+import { useToggle } from '../../hooks/useToggle';
 
 const DevicesSettings = memo(() => {
     const isOwner = useStore($isOwner);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingInstanceExists = useStore($isMeetingInstanceExists);
     const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
+    const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
+    const backgroundAudioVolume = useStore($backgroundAudioVolume);
+
+    const [volume, setVolume] = useState(backgroundAudioVolume);
+
+    const { value: isBackgroundAudioActive, onToggleSwitch: handleToggleBackgroundAudio } =
+        useToggle(isAudioBackgroundActive);
 
     const {
         data: {
@@ -92,6 +106,8 @@ const DevicesSettings = memo(() => {
                     }
                     setIsUserSendEnterRequest(true);
                 }
+                setBackgroundAudioVolume(volume);
+                setBackgroundAudioActive(isBackgroundAudioActive);
             } else {
                 handleToggleCamera();
             }
@@ -103,11 +119,17 @@ const DevicesSettings = memo(() => {
         isStreamRequested,
         isMeetingInstanceExists,
         isOwnerInMeeting,
+        volume,
+        isBackgroundAudioActive,
     ]);
 
     const handleCancelRequest = useCallback(async () => {
         emitCancelEnterMeetingEvent();
         setIsUserSendEnterRequest(false);
+    }, []);
+
+    const handleChangeVolume = useCallback(newVolume => {
+        setVolume(() => newVolume);
     }, []);
 
     return (
@@ -126,39 +148,50 @@ const DevicesSettings = memo(() => {
                         direction="column"
                         wrap="nowrap"
                     >
-                        <CustomTypography
-                            className={styles.title}
-                            variant="h3bold"
-                            nameSpace="meeting"
-                            translation={isUserSentEnterRequest ? 'requestSent' : 'readyToJoin'}
-                        />
-                        <CustomTypography
-                            variant="body1"
-                            color="text.secondary"
-                            nameSpace="meeting"
-                            translation={
-                                isUserSentEnterRequest ? 'enterPermission' : 'checkDevices'
-                            }
-                        />
                         {isUserSentEnterRequest ||
                         (!(videoDevices.length && audioDevices.length) && !error) ? (
-                            <CustomGrid
+                            <>
+                                <CustomTypography
+                                    className={styles.title}
+                                    variant="h3bold"
+                                    nameSpace="meeting"
+                                    translation="requestSent"
+                                />
+                                <CustomTypography
+                                    variant="body1"
+                                    color="text.secondary"
+                                    nameSpace="meeting"
+                                    translation="enterPermission"
+                                />
+                                <CustomGrid
                                     container
                                     alignItems="center"
                                     className={styles.loader}
                                     gap={1}
                                 >
-                                <WiggleLoader />
-                                <CustomTypography
+                                    <WiggleLoader />
+                                    <CustomTypography
                                         color="colors.orange.primary"
                                         nameSpace="meeting"
                                         translation="waitForHost"
                                     />
-                            </CustomGrid>
+                                </CustomGrid>
+                            </>
                         ) : (
-                            <SelectDevices
-                                key={changeStream?.id}
-                                className={styles.selectDevicesWrapper}
+                            <MeetingSettingsContent
+                                stream={changeStream}
+                                volume={volume}
+                                onChangeVolume={handleChangeVolume}
+                                isBackgroundAudioActive={isBackgroundAudioActive}
+                                onToggleAudioBackground={handleToggleBackgroundAudio}
+                                title={
+                                    <CustomTypography
+                                        className={styles.title}
+                                        variant="h3bold"
+                                        nameSpace="meeting"
+                                        translation="readyToJoin"
+                                    />
+                                }
                             />
                         )}
                     </CustomGrid>

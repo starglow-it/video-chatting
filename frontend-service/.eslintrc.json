@@ -10,9 +10,9 @@
     "__ENV__": true
   },
   "extends": [
+    "next/core-web-vitals",
     "airbnb",
     "airbnb/hooks",
-    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
@@ -23,64 +23,19 @@
     "prettier"
   ],
   "rules": {
-    "prettier/prettier": "error",
-    "react/react-in-jsx-scope": "off",
-    "react-hooks/exhaustive-deps": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"],
     "@typescript-eslint/no-unused-vars": "error",
-    "linebreak-style": ["error", "unix"],
-    "@typescript-eslint/ban-ts-comment": "off",
-    "indent": [
-      "error",
-      4,
-      {
-        "SwitchCase": 1,
-        "ignoredNodes": ["TemplateLiteral"]
-      }
-    ],
-    "no-console": "warn",
-    "react/prop-types": "off",
+    "@typescript-eslint/no-explicit-any": "error",
+    "prefer-const": 1,
     "import/extensions": "off",
-    "react/jsx-props-no-spreading": "off",
-    "max-len": [
-      "error",
-      {
-        "code": 120,
-        "tabWidth": 4,
-        "ignoreStrings": true,
-        "ignoreComments": true
-      }
-    ],
-    "no-plusplus": 0,
-    "no-underscore-dangle": 0,
-    "quotes": ["error", "single"],
-    "operator-linebreak": [
-      "error",
-      "after",
-      {
-        "overrides": {
-          "?": "before",
-          ":": "before"
-        }
-      }
-    ],
-    "no-use-before-define": "off",
-    "template-curly-spacing": [
-      "off"
-    ],
-    "react/require-default-props": "off",
     "import/prefer-default-export": "off",
-    "jsx-a11y/control-has-associated-label": "off",
-    "jsx-a11y/anchor-is-valid": [
-      "error",
-      {
-        "components": ["Link"],
-        "specialLink": ["hrefLeft", "hrefRight"],
-        "aspects": ["invalidHref", "preferButton"]
-      }
-    ]
+    "react/jsx-filename-extension": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/function-component-definition": [1, {
+        "namedComponents": "arrow-function"
+    }],
+    "consistent-return": "off",
+    "jsx-a11y/media-has-caption": "off"
   },
   "settings": {
     "import/resolver": {

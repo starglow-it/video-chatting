@@ -16,13 +16,13 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { TemplateGeneralInfo } from '@components/Templates/TemplateGeneralInfo/TemplateGeneralInfo';
 import { BusinessCategoryTagsClip } from '@components/BusinessCategoryTagsClip/BusinessCategoryTagsClip';
 
+// icons
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { ScheduleIcon } from '@library/icons/ScheduleIcon';
 
 // stores
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
 import { $templatePreviewStore } from '../../../store/templates';
-import { $profileStore } from '../../../store/profile';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
@@ -40,7 +40,6 @@ const TemplatePreviewDialog = memo(
     }: TemplatePreviewDialogProps) => {
         const { templatePreviewDialog } = useStore($appDialogsStore);
         const previewTemplate = useStore($templatePreviewStore);
-        const profile = useStore($profileStore);
 
         const handleClose = useCallback(() => {
             appDialogsApi.closeDialog({
@@ -74,9 +73,9 @@ const TemplatePreviewDialog = memo(
                 <CustomGrid container wrap="nowrap">
                     <CustomGrid className={styles.templatePreview}>
                         <TemplateGeneralInfo
-                            profileAvatar={profile?.profileAvatar?.url || ''}
+                            profileAvatar={previewTemplate?.user?.profileAvatar?.url || ''}
                             companyName={previewTemplate?.companyName || ''}
-                            userName={profile.fullName}
+                            userName={previewTemplate?.name}
                         />
                         {Boolean(previewTemplate?.previewUrl) && (
                             <Image src={previewTemplate?.previewUrl || ''} layout="fill" />

@@ -4,5 +4,5 @@ import { ISendMeetingNote } from '../../../interfaces/send-meeting-note.interfac
 export class SendMeetingNoteRequestDTO implements ISendMeetingNote {
   @IsString()
   @MaxLength(500)
-  data: string;
+  note: string;
 }

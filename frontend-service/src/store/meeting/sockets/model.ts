@@ -1,8 +1,5 @@
 import { meetingDomain } from '../domain';
-import {
-    SocketState,
-    MeetingUser,
-} from '../../types';
+import { SocketState, MeetingUser } from '../../types';
 import { createSocketEvent } from '../../socket';
 import {
     ANSWER_ACCESS_REQUEST,

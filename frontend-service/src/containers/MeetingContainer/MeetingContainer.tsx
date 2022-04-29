@@ -6,17 +6,17 @@ import { useRouter } from 'next/router';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // components
-import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { EnterMeetingName } from '@components/EnterMeetingName/EnterMeetingName';
 import { KickedUser } from '@components/KickedUser/KickedUser';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 import { MeetingErrorDialog } from '@components/Dialogs/MeetingErrorDialog/MeetingErrorDialog';
-import {VideoEffectsProvider} from "../../contexts/VideoEffectContext";
-import {MeetingPreview} from "@components/Meeting/MeetingPreview/MeetingPreview";
+import { VideoEffectsProvider } from '../../contexts/VideoEffectContext';
+import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPreview';
+import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 
 // stores
 import { $localUserStore, resetLocalUserStore, resetMeetingUsersStore } from '../../store/users';
-import {initiateSocketConnectionFx, resetSocketStore } from '../../store/socket';
+import { initiateSocketConnectionFx, resetSocketStore } from '../../store/socket';
 import { appDialogsApi } from '../../store/dialogs';
 import {
     $meetingTemplateStore,
@@ -26,7 +26,7 @@ import {
     joinMeetingEventWithData,
     emitEnterMeetingEvent,
 } from '../../store/meeting';
-import {joinRoomBeforeMeeting, sendMeetingAvailable} from "../../store/waitingRoom";
+import { joinRoomBeforeMeeting, sendMeetingAvailable } from '../../store/waitingRoom';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
@@ -53,18 +53,18 @@ const MeetingContainer = memo(() => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
 
-    const isJoiningToRoom = useStore(joinMeetingEventWithData.pending);
-
     useEffect(() => {
         (async () => {
-            const meetingTemplate = await getMeetingTemplateFx({ templateId: router.query.token as string });
+            const meetingTemplate = await getMeetingTemplateFx({
+                templateId: router.query.token as string,
+            });
 
             await initiateSocketConnectionFx();
 
             if (meetingTemplate?.meetingInstance?.serverIp) {
                 await joinMeetingEventWithData({});
 
-                await sendMeetingAvailable({ templateId: router.query.token });
+                if (isOwner) await sendMeetingAvailable({ templateId: router.query.token });
             } else {
                 await joinRoomBeforeMeeting({ templateId: router.query.token });
             }
@@ -80,10 +80,15 @@ const MeetingContainer = memo(() => {
     }, []);
 
     useEffect(() => {
-        if (meetingUser.accessStatus === MeetingAccessStatuses.Waiting && meetingTemplate?.meetingInstance?.serverIp && meetingUser.id && !isOwner) {
+        if (
+            meetingUser.accessStatus === MeetingAccessStatuses.Waiting &&
+            meetingTemplate?.meetingInstance?.serverIp &&
+            meetingUser.id &&
+            !isOwner
+        ) {
             emitEnterMeetingEvent();
         }
-    }, [meetingUser.accessStatus, meetingTemplate?.meetingInstance?.serverIp, isJoiningToRoom, isOwner]);
+    }, [meetingUser.accessStatus, meetingTemplate?.meetingInstance?.serverIp, isOwner]);
 
     return (
         <>

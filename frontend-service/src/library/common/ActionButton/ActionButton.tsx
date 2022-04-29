@@ -9,16 +9,10 @@ import { ButtonProps } from '@mui/material';
 // styles
 import styles from './ActionButton.module.scss';
 
-type ComponentPropsType = ActionButtonProps & Omit<ButtonProps, "variant">;
+type ComponentPropsType = ActionButtonProps & Omit<ButtonProps, 'variant'>;
 
 const Component = (
-    {
-        variant,
-        Icon,
-        onAction,
-        className,
-        ...rest
-    }: ComponentPropsType,
+    { variant, Icon, onAction, className, ...rest }: ComponentPropsType,
     ref: ForwardedRef<HTMLButtonElement>,
 ) => {
     const buttonClassNames = clsx(
@@ -33,17 +27,14 @@ const Component = (
     }, [onAction]);
 
     return (
-        <ButtonUnstyled
-            ref={ref}
-            className={buttonClassNames}
-            onClick={handleAction}
-            {...rest}
-        >
+        <ButtonUnstyled ref={ref} className={buttonClassNames} onClick={handleAction} {...rest}>
             {Icon}
         </ButtonUnstyled>
     );
 };
 
-const ActionButton = memo<ComponentPropsType>(forwardRef<HTMLButtonElement, ComponentPropsType>(Component));
+const ActionButton = memo<ComponentPropsType>(
+    forwardRef<HTMLButtonElement, ComponentPropsType>(Component),
+);
 
 export { ActionButton };

@@ -5,9 +5,9 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import { ChooseSignBoard } from "@components/Templates/ChooseSignBoard/ChooseSignBoard";
+import { ChooseSignBoard } from '@components/Templates/ChooseSignBoard/ChooseSignBoard';
 
-const Component: React.FunctionComponent = () => (
+const Component = () => (
     <CustomGrid container direction="column" gap={1.75}>
         <CustomTypography
             nameSpace="templates"

@@ -2,7 +2,10 @@
   "readyToJoin": "Ready to join?",
   "checkDevices": "Check your device settings before you join the meeting",
   "requestSent": "Request sent",
-  "settings": "Settings",
+  "settings": {
+    "main": "Settings",
+    "advanced": "Advanced"
+  },
   "enterPermission": "You need a permission from the participant to join",
   "mic": "Microphone",
   "cam": "Camera",
@@ -70,12 +73,14 @@
     "screensharing": {
       "on": "Turn on sharing",
       "off": "Turn off sharing",
-      "busy": "Someone is already sharing screen"
+      "busy": "Someone is already sharing screen",
+      "selfSharing": "You are sharing screen now"
     }
   },
   "features": {
     "blurBackground": "Background blur",
     "faceTracking": "Face detection",
+    "audioBackground": "Background audio",
     "notes": {
       "title": "Leave a note",
       "input": "Type here",

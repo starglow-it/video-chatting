@@ -10,21 +10,45 @@
   z-index: 1000;
 
   .actionButton {
-      background: transparent;
-      color: $primary-white;
-      border: none;
-      width: rem(44px);
-      height: rem(44px);
-      border-radius: rem(6px);
+    position: relative;
+    background: transparent;
+    color: $primary-white;
+    border: none;
+    width: rem(44px);
+    height: rem(44px);
+    border-radius: rem(6px);
 
-      &.active {
+    &.active {
+      background: rgba($primary-white, 0.25);
+    }
+
+    &.withAction {
+      &:hover {
         background: rgba($primary-white, 0.25);
       }
-      &.withAction {
-        &:hover {
-          background: rgba($primary-white, 0.25);
-        }
+    }
+
+    &.newRequests {
+      background: rgba($primary-orange, 0.1);
+
+      &:hover {
+        background: rgba($primary-orange, 0.25);
       }
+
+      &:after {
+        content: "";
+        width: rem(13px);
+        height: rem(13px);
+
+        border-radius: 50%;
+
+        background: $primary-orange;
+
+        position: absolute;
+        top: -1px;
+        right: -1px;
+      }
+    }
   }
 
   .notesContainer {

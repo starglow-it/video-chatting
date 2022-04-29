@@ -58,7 +58,7 @@ export class MeetingNotesGateway extends BaseGateway {
         {
           user: user._id,
           meeting: user.meeting._id,
-          content: message.data,
+          content: message.note,
         },
         session,
       );

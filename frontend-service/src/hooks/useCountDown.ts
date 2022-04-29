@@ -1,35 +1,32 @@
-import {useCallback, useMemo, useRef, useState} from "react";
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 type UseCountDownReturn = {
     value: number;
     onStartCountDown: () => void;
     onStopCountDown: () => void;
-}
+};
 
 export const useCountDown = (initialValue: number): UseCountDownReturn => {
     const [countdown, setCountdown] = useState(0);
     const intervalRef = useRef<number>();
 
-    const handleStartCountDown = useCallback(
-        () => {
-            setCountdown(initialValue);
-            intervalRef.current = setInterval(() => {
-                setCountdown(prev => {
-                    if (!prev) {
-                        clearInterval(intervalRef.current);
-                        return prev;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        },
-        [],
-    );
+    const handleStartCountDown = useCallback(() => {
+        setCountdown(initialValue);
+        intervalRef.current = setInterval(() => {
+            setCountdown(prev => {
+                if (!prev) {
+                    clearInterval(intervalRef.current);
+                    return prev;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    }, []);
 
     const handleStopTimer = useCallback(() => {
         setCountdown(0);
         clearInterval(intervalRef.current);
-    },[]);
+    }, []);
 
     return useMemo(() => {
         return {
@@ -38,4 +35,4 @@ export const useCountDown = (initialValue: number): UseCountDownReturn => {
             onStopCountDown: handleStopTimer,
         };
     }, [countdown]);
-}
+};

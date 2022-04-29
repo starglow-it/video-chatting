@@ -36,7 +36,13 @@ const Component: React.FunctionComponent<SignOptionProps> = ({ data, width, heig
     }, []);
 
     return (
-        <CustomGrid container direction="column" className={styles.radioOption} sx={{ width }} gap={1.5}>
+        <CustomGrid
+            container
+            direction="column"
+            className={styles.radioOption}
+            sx={{ width }}
+            gap={1.5}
+        >
             <FormControlLabel
                 key={data.id}
                 value={data.value}
@@ -71,10 +77,14 @@ const Component: React.FunctionComponent<SignOptionProps> = ({ data, width, heig
                         />
                     </CustomGrid>
                 ) : (
-                    <Image src={`/images/boards/${data.value}.png`} width={`${width}px`} height={`${height}px`} />
+                    <Image
+                        src={`/images/boards/${data.value}.png`}
+                        width={`${width}px`}
+                        height={`${height}px`}
+                    />
                 )}
             </CustomGrid>
         </CustomGrid>
     );
-}
+};
 export const SignBoardOption = memo(Component);

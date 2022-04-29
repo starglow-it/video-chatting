@@ -17,7 +17,7 @@ import styles from './DeleteTemplateDialog.module.scss';
 // types
 import { AppDialogsEnum } from '../../../store/types';
 
-function Component() {
+const Component = () => {
     const { deleteTemplateDialog } = useStore($appDialogsStore);
     const deleteProfileTemplateId = useStore($deleteProfileTemplateId);
 

@@ -92,7 +92,7 @@ export class VideoChatController {
         if (!this.channel) return;
 
         const response = await sendRequest<{ token: string }, any>(
-            generateAgoraTokenUrl(this.channel, this.uid as number, this.isPublisher)
+            generateAgoraTokenUrl(this.channel, this.uid as number, this.isPublisher),
         );
 
         return response.result?.token!;
@@ -119,8 +119,13 @@ export class VideoChatController {
 
         if (this.client?.remoteUsers?.length) {
             const subscribePromise = this.client.remoteUsers.map(async remoteUser => {
-                await this.client?.subscribe(remoteUser, 'audio');
-                await this.client?.subscribe(remoteUser, 'video');
+                console.log('subscribe to media');
+                if (remoteUser.hasAudio) {
+                    await this.client?.subscribe(remoteUser, 'audio');
+                }
+                if (remoteUser.hasVideo) {
+                    await this.client?.subscribe(remoteUser, 'video');
+                }
 
                 updateUserTracksEvent({ userUid: remoteUser.uid, infoType: AUDIO_UNMUTE });
                 updateUserTracksEvent({ userUid: remoteUser.uid, infoType: VIDEO_UNMUTE });
@@ -171,10 +176,13 @@ export class VideoChatController {
                 'user-published',
                 async (user: IAgoraRTCRemoteUser, mediaType: 'audio' | 'video') => {
                     try {
-                        if (mediaType === 'audio') {
+                        console.log(mediaType);
+                        console.log(user);
+                        console.log('subscribe to media');
+                        if (mediaType === 'audio' && user.hasAudio) {
                             await this.client?.subscribe(user, 'audio');
                             updateUserTracksEvent({ userUid: user.uid, infoType: AUDIO_UNMUTE });
-                        } else if (mediaType === 'video') {
+                        } else if (mediaType === 'video' && user.hasVideo) {
                             await this.client?.subscribe(user, 'video');
                             updateUserTracksEvent({ userUid: user.uid, infoType: VIDEO_UNMUTE });
                         }

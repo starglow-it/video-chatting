@@ -1,6 +1,6 @@
 import { AUDIO_MUTE, VIDEO_MUTE } from '../../../const/media/agora/UPDATE_INFO_TYPES';
 import { usersSocketEventsController } from '../init';
-import { SocketState } from '../../socket/types';
+import { SocketState } from '../../types';
 import {
     $meetingUsersStore,
     removeMeetingUsersEvent,
@@ -24,7 +24,11 @@ $meetingUsersStore
             return newUser;
         });
 
-        const oldUsers = state.filter(_user => !newUsers.find(user => user.id === _user.id));
+        const oldUsers = state.filter(
+            _user =>
+                !newUsers.find(user => user.id === _user.id) &&
+                users?.find(_newUser => _newUser.id === _user.id),
+        );
 
         return [...oldUsers, ...newUsers];
     })

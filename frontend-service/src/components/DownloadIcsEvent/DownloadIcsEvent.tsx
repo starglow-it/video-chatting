@@ -2,7 +2,6 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import Image from 'next/image';
 import clsx from 'clsx';
-import download from 'downloadjs';
 
 import { Fade } from '@mui/material';
 
@@ -28,7 +27,7 @@ import {
 // styles
 import styles from './DownloadIcsEvent.module.scss';
 
-function Component() {
+const Component = () => {
     const scheduleEventLink = useStore($scheduleEventLinkStore);
     const isIcsEventLinkAvailable = useStore($isIcsEventLinkAvailableStore);
 
@@ -37,7 +36,7 @@ function Component() {
     }, []);
 
     const handleDownloadIcsLink = useCallback(async () => {
-        await download(scheduleEventLink, 'schedule-meeting.ics', 'text/plain');
+        window.open(scheduleEventLink);
 
         setScheduleEventLinkEvent('');
     }, [scheduleEventLink]);

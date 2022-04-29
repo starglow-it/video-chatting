@@ -4,14 +4,14 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
-import {Fade} from "@mui/material";
+import { Fade } from '@mui/material';
 
 // components
 import { SetUpDevicesButton } from '@components/Media/DeviceSetUpButtons/SetUpDevicesButton';
 import { ConfirmCancelChangesDialog } from '@components/Dialogs/ConfirmCancelChangesDialog/ConfirmCancelChangesDialog';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import {EditTemplateForm} from "@components/Meeting/EditTemplateForm/EditTemplateForm";
-import {MeetingInfo} from "@components/Meeting/MeetingInfo/MeetingInfo";
+import { EditTemplateForm } from '@components/Meeting/EditTemplateForm/EditTemplateForm';
+import { MeetingInfo } from '@components/Meeting/MeetingInfo/MeetingInfo';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -43,11 +43,11 @@ import { appDialogsApi } from '../../../store/dialogs';
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
-import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
+import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 
 // types
 import { AppDialogsEnum, SocialLink } from '../../../store/types';
-import { MeetingSettingsPanelProps } from './types';
+import {MeetingSettingsPanelProps, SettingsData} from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
@@ -76,7 +76,10 @@ const MeetingSettingsPanel = memo(
             onSwitchOff: handleSwitchOff,
             onSwitchOn: handleSwitchOn,
             onSwitchToggle: handleToggleSwitch,
-        } = useMultipleToggle<'isEditTemplateOpened' | 'isMeetingInfoOpened'>(['isEditTemplateOpened', 'isMeetingInfoOpened']);
+        } = useMultipleToggle<'isEditTemplateOpened' | 'isMeetingInfoOpened'>([
+            'isEditTemplateOpened',
+            'isMeetingInfoOpened',
+        ]);
 
         useEffect(() => {
             if (isEditTemplateView) {
@@ -86,19 +89,9 @@ const MeetingSettingsPanel = memo(
 
         const isAbleToSave = isOwner || isEditTemplateView;
 
-        const resolver = useYupValidationResolver<{
-            companyName: string;
-            contactEmail: string;
-            description: boolean;
-            businessCategories: any[];
-            languages: any[];
-            fullName: string;
-            position: string;
-            signBoard: string;
-            socials: { key: string; value: string }[];
-        }>(validationSchema);
+        const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
-        const templateSocialLinks = useMemo<{ key: string; value: string }[]>(
+        const templateSocialLinks = useMemo<SettingsData["socials"]>(
             () => template.socials.map(social => ({ key: social.key, value: social.value })),
             [template?.socials],
         );
@@ -135,7 +128,8 @@ const MeetingSettingsPanel = memo(
         const dirtyFieldsCount = useMemo(() => {
             const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-            const values: (boolean | { [key: string]: boolean })[] = Object.values(dirtyFieldsWithOutSocials);
+            const values: (boolean | { [key: string]: boolean })[] =
+                Object.values(dirtyFieldsWithOutSocials);
 
             const dirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
 
@@ -180,8 +174,8 @@ const MeetingSettingsPanel = memo(
             handleSwitchOn('isEditTemplateOpened');
         }, []);
 
-        const handleCloseEditTemplate = useCallback(() => {
-            if (!dirtyFieldsCount) {
+        const handleCloseSettingsPanel = useCallback(() => {
+            if (!dirtyFieldsCount || isMeetingInfoOpened) {
                 return handleSwitchOff();
             }
 
@@ -253,11 +247,13 @@ const MeetingSettingsPanel = memo(
                     {children}
                     <CustomPaper
                         variant="black-glass"
-                        className={clsx(styles.settingsWrapper, { [styles.open]: isEditTemplateOpened || isMeetingInfoOpened })}
+                        className={clsx(styles.settingsWrapper, {
+                            [styles.open]: isEditTemplateOpened || isMeetingInfoOpened,
+                        })}
                     >
                         <RoundCloseIcon
                             className={styles.closeIcon}
-                            onClick={handleCloseEditTemplate}
+                            onClick={handleCloseSettingsPanel}
                             width="24px"
                             height="24px"
                         />
@@ -267,22 +263,30 @@ const MeetingSettingsPanel = memo(
                                     !isEditTemplateView ? handleOpenDeviceSettings : undefined
                                 }
                             />
-                            <CustomPaper variant="black-glass" className={styles.infoButton}>
-                                <ActionButton
-                                    className={styles.iconButton}
-                                    onAction={handleOpenMeetingInfo}
-                                    Icon={<InfoIcon width="32px" height="32px" />}
-                                />
-                            </CustomPaper>
-                            {!isEditTemplateOpened && isAbleToSave && (
-                                <CustomPaper variant="black-glass" className={styles.deviceButton}>
-                                    <ActionButton
-                                        className={styles.iconButton}
-                                        onAction={handleOpenEditTemplate}
-                                        Icon={<EditIcon width="30px" height="30px" />}
-                                    />
-                                </CustomPaper>
-                            )}
+                            {!isOwner
+                                ? (
+                                    <CustomPaper variant="black-glass" className={styles.infoButton}>
+                                        <ActionButton
+                                            className={styles.iconButton}
+                                            onAction={handleOpenMeetingInfo}
+                                            Icon={<InfoIcon width="32px" height="32px"/>}
+                                        />
+                                    </CustomPaper>
+                                )
+                                : null
+                            }
+                            {!isEditTemplateOpened && isAbleToSave
+                                ? (
+                                    <CustomPaper variant="black-glass" className={styles.deviceButton}>
+                                        <ActionButton
+                                            className={styles.iconButton}
+                                            onAction={handleOpenEditTemplate}
+                                            Icon={<EditIcon width="30px" height="30px" />}
+                                        />
+                                    </CustomPaper>
+                                )
+                                : null
+                            }
                         </CustomGrid>
 
                         <Fade in={isEditTemplateOpened}>

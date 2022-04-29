@@ -28,7 +28,7 @@ import styles from './DashboardNotifications.module.scss';
 
 type ComponentPropsType = DashboardNotificationsProps;
 
-function Component({ onClickAway }, ref) {
+const Component: React.FunctionComponent<ComponentPropsType> = ({ onClickAway }, ref) => {
     const dashboardNotifications = useStore($dashboardNotificationsStore);
 
     const handleMarkAllNotificationAsRead = useCallback(() => {
@@ -94,7 +94,7 @@ function Component({ onClickAway }, ref) {
             </ClickAwayListener>
         </CustomPaper>
     );
-}
+};
 
 const DashboardNotifications = memo<ComponentPropsType>(
     forwardRef<HTMLButtonElement, ComponentPropsType>(Component),

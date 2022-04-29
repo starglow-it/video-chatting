@@ -8,21 +8,10 @@
 
 .devicesWrapper {
   margin: rem(0 0 0 40px);
-  width: auto;
+  width: 100%;
 
   .title {
     margin: rem(0 0 4px 0);
-  }
-}
-
-.backgroundBlurSetting {
-  padding: rem(13px 10px);
-  background: $light-gray-scale;
-  border: 1px solid rgba($normal-gray-scale, 0.6);
-  border-radius: rem(10px);
-
-  .switch {
-    margin: 0 0 0 auto;
   }
 }
 

@@ -6,6 +6,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
 import { ScreenSharingVideo } from '@components/Meeting/ScreenSharingVideo/ScreenSharingVideo';
+import { ScreenSharingPlaceholder } from '@components/Meeting/ScreenSharingPlaceholder/ScreenSharingPlaceholder';
 
 // stores
 import { $meetingStore } from '../../../store/meeting';
@@ -36,11 +37,16 @@ const ScreenSharingLayout = memo(() => {
 
     return (
         <CustomGrid container className={styles.screenSharingLayoutWrapper}>
-            <ScreenSharingVideo
-                videoTrack={
-                    isLocalUserScreenSharing ? localUser.videoTrack : screenSharingUser?.videoTrack
-                }
-            />
+            {isLocalUserScreenSharing ? (
+                <ScreenSharingPlaceholder />
+            ) : (
+                <ScreenSharingVideo
+                    videoTrack={
+                        isLocalUserScreenSharing ? localUser.videoTrack : screenSharingUser?.videoTrack
+                    }
+                />
+            )}
+
         </CustomGrid>
     );
 });

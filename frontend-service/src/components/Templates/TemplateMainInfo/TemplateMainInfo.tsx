@@ -18,7 +18,7 @@ import { TemplateMainInfoProps } from '@components/Templates/TemplateMainInfo/ty
 // styles
 import styles from './TemplateMainInfo.module.scss';
 
-function Component({
+const Component = ({
     show,
     name,
     description,
@@ -26,8 +26,7 @@ function Component({
     type,
     isNeedToShowBusinessInfo = true,
     avatar,
-}: TemplateMainInfoProps) {
-    return (
+}: TemplateMainInfoProps) => (
         <Fade in={show}>
             <CustomGrid className={styles.templateInfo} display="grid">
                 <ProfileAvatar
@@ -66,7 +65,6 @@ function Component({
                 )}
             </CustomGrid>
         </Fade>
-    );
-}
+    )
 
 export const TemplateMainInfo = memo<TemplateMainInfoProps>(Component);

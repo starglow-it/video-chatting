@@ -4,6 +4,6 @@ export type MeetingUsersListItemProps = {
     user: MeetingUser;
     isLocalItem?: boolean;
     isAcceptRequest?: boolean;
-    onAcceptUser?: ((data: any) => void) | undefined;
-    onDeleteUser?: ((data: any) => void) | undefined;
+    onAcceptUser?: ((data: { userId: MeetingUser["id"] }) => void) | undefined;
+    onDeleteUser?: ((data: { userId: MeetingUser["id"] }) => void) | undefined;
 };

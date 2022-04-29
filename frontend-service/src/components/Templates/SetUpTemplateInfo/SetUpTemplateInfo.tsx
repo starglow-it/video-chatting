@@ -1,6 +1,7 @@
 import React, { useMemo, memo, useCallback, useState } from 'react';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
+import { useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -10,7 +11,6 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // components
-import { useFormContext } from 'react-hook-form';
 import { SetUpCompanyName } from './SetUpCompanyName';
 import { SetUpFullName } from './SetUpFullName';
 import { SetUpProfileAvatar } from './SetUpProfileAvatar';

@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useMemo, useRef} from 'react';
+import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Image from 'next/image';
@@ -166,12 +166,7 @@ const EditProfileContainer = memo(() => {
                 className={styles.containerWrapper}
             >
                 <CustomGrid container alignItems="center" justifyContent="center">
-                    <Image
-                        src="/images/edit-hand.png"
-                        width="40px"
-                        height="40px"
-                        alt="edit-hand"
-                    />
+                    <Image src="/images/edit-hand.png" width="40px" height="40px" alt="edit-hand" />
                     <CustomTypography
                         variant="h1"
                         nameSpace="profile"
@@ -184,7 +179,12 @@ const EditProfileContainer = memo(() => {
                 </CustomGrid>
                 <FormProvider {...methods}>
                     <form onSubmit={onSubmit} className={styles.form}>
-                        <CustomGrid container direction="column" gap={2} className={styles.widthWrapper}>
+                        <CustomGrid
+                            container
+                            direction="column"
+                            gap={2}
+                            className={styles.widthWrapper}
+                        >
                             <EditCompanyInfo />
                             <EditPersonalInfo />
                             <EditSocialInfo />

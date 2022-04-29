@@ -12,7 +12,10 @@ import { CheckIcon } from '@library/icons/CheckIcon';
 // styles
 import styles from './CustomCheckbox.module.scss';
 
-const Component = ({ className, ...rest }: CustomCheckboxProps, ref: ForwardedRef<HTMLInputElement>) => (
+const Component = (
+    { className, ...rest }: CustomCheckboxProps,
+    ref: ForwardedRef<HTMLInputElement>,
+) => (
     <Checkbox
         inputRef={ref}
         disableRipple
@@ -26,4 +29,6 @@ const Component = ({ className, ...rest }: CustomCheckboxProps, ref: ForwardedRe
     />
 );
 
-export const CustomCheckbox = memo<CustomCheckboxProps>(forwardRef<HTMLInputElement, CustomCheckboxProps>(Component));
+export const CustomCheckbox = memo<CustomCheckboxProps>(
+    forwardRef<HTMLInputElement, CustomCheckboxProps>(Component),
+);

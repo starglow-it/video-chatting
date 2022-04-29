@@ -39,7 +39,7 @@ export class SeederService {
   }
 
   async seedCommonTemplates(): Promise<void> {
-    const promises = templatesData.map(async (templateData, i) => {
+    const promises = templatesData.map(async templateData => {
       const isExists = await this.commonTemplatesService.exists({
         templateId: templateData.templateId,
       });
@@ -48,16 +48,8 @@ export class SeederService {
         const templateBusinessCategories =
           await this.businessCategoriesService.find({
             query: {
-              key: {
-                $in: [
-                  BUSINESS_CATEGORIES[i].key,
-                  BUSINESS_CATEGORIES[i + 1].key,
-                  BUSINESS_CATEGORIES[i + 2].key,
-                  BUSINESS_CATEGORIES[i + 3].key,
-                  BUSINESS_CATEGORIES[i + 4].key,
-                  BUSINESS_CATEGORIES[i + 5].key,
-                  BUSINESS_CATEGORIES[i + 6].key,
-                ],
+              value: {
+                $in: templateData.businessCategories,
               },
             },
           });
@@ -87,11 +79,13 @@ export class SeederService {
       populatePaths: 'businessCategories',
     });
 
-    const createUsersTemplates = users.map(async (user) => {
+    const createUsersTemplates = users.map(async user => {
       const templatesListData = templateList
         .map((template) => {
           const isThereTemplateAssigned = user.templates.find(
-            (template) => template.templateId === template.templateId,
+            (existedTemplate) => {
+             return existedTemplate.templateId === template.templateId;
+            },
           );
 
           if (!isThereTemplateAssigned) {

@@ -5,8 +5,8 @@ import {
     getMeetingTemplateFx,
     updateMeetingTemplateFx,
 } from './model';
-import {handleUpdateMeetingTemplate} from "./handlers/handleUpdateMeetingTemplate";
-import {handleGetMeetingTemplate} from "./handlers/handleGetMeetingTemplate";
+import { handleUpdateMeetingTemplate } from './handlers/handleUpdateMeetingTemplate';
+import { handleGetMeetingTemplate } from './handlers/handleGetMeetingTemplate';
 
 getMeetingTemplateFx.use(handleGetMeetingTemplate);
 updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);

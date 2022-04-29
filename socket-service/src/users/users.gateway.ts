@@ -60,13 +60,26 @@ export class UsersGateway extends BaseGateway {
         session,
       );
 
+      const meeting = await this.meetingsService.updateMeetingById(
+          user.meeting._id,
+          { sharingUserId: null },
+          session,
+      );
+
+      await meeting.populate('users');
+
       const plainUser = plainToClass(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
 
+      const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+
       this.emitToRoom(`meeting:${user.meeting}`, EmitEvents.UPDATE_USERS, {
-        users: [plainUser],
+        users: plainUsers,
       });
 
       return {

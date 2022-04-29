@@ -1,26 +1,25 @@
-import {combine, forward, sample} from "effector-next";
+import { combine, forward, sample } from 'effector-next';
 
 import {
     emitJoinDashboard,
     emitSendEnterWaitingRoom,
     joinDashboard,
     sendEnterWaitingRoom,
-    subscribeToSocketEvents
-} from "./model";
+    subscribeToSocketEvents,
+} from './model';
 
-import {$profileStore} from "../profile";
-import {$localUserStore} from "../users";
+import { $profileStore } from '../profile';
+import { $localUserStore } from '../users';
 
-import {ON_MEETING_AVAILABLE, ON_SEND_DASHBOARD_NOTIFICATION} from "./const/subscribeSocketEvents";
-import {initiateSocketConnectionFx} from "../socket";
 import {
-    $meetingTemplateStore,
-    getMeetingTemplateFx,
-    joinMeetingEventWithData
-} from "../meeting";
-import {setDashboardNotifications} from "../dashboardNotifications";
+    ON_MEETING_AVAILABLE,
+    ON_SEND_DASHBOARD_NOTIFICATION,
+} from './const/subscribeSocketEvents';
+import { initiateSocketConnectionFx } from '../socket';
+import { $meetingTemplateStore, getMeetingTemplateFx, joinMeetingEventWithData } from '../meeting';
+import { setDashboardNotifications } from '../dashboardNotifications';
 
-import {DashboardNotification} from "../types/dashboard";
+import { DashboardNotification } from '../types/dashboard';
 
 sample({
     clock: emitJoinDashboard,
@@ -31,12 +30,16 @@ sample({
 
 sample({
     clock: emitSendEnterWaitingRoom,
-    source: combine({ profile: $profileStore, meetingTemplate: $meetingTemplateStore, localUser: $localUserStore }),
+    source: combine({
+        profile: $profileStore,
+        meetingTemplate: $meetingTemplateStore,
+        localUser: $localUserStore,
+    }),
     fn: ({ profile, meetingTemplate, localUser }) => ({
         profileId: profile.id,
         meetingUserId: localUser.id,
         templateId: meetingTemplate.id,
-        username: localUser.username
+        username: localUser.username,
     }),
     target: sendEnterWaitingRoom,
 });
@@ -58,8 +61,11 @@ subscribeToSocketEvents.watch(({ socketInstance }) => {
             }
         });
 
-        socketInstance.on(ON_SEND_DASHBOARD_NOTIFICATION, async ({ notification }: { notification: DashboardNotification }) => {
-            setDashboardNotifications([notification]);
-        });
+        socketInstance.on(
+            ON_SEND_DASHBOARD_NOTIFICATION,
+            async ({ notification }: { notification: DashboardNotification }) => {
+                setDashboardNotifications([notification]);
+            },
+        );
     }
-})
+});

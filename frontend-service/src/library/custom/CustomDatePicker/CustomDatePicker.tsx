@@ -1,5 +1,5 @@
-import React, {forwardRef, memo, useCallback, useEffect, useMemo, useState} from 'react';
-import clsx from "clsx";
+import React, { forwardRef, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import clsx from 'clsx';
 
 // styles
 import styles from './CustomDatePicker.module.scss';
@@ -9,19 +9,19 @@ import { CustomGrid } from '../CustomGrid/CustomGrid';
 import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 // icons
-import { ArrowIcon } from "@library/icons/ArrowIcon";
+import { ArrowIcon } from '@library/icons/ArrowIcon';
 
 // time utils
-import { formatDate } from "../../../utils/time/formatDate";
+import { formatDate } from '../../../utils/time/formatDate';
 import { getPreviousMonth } from 'src/utils/time/getPreviousMonth';
-import { getNextMonth } from "../../../utils/time/getNextMonth";
+import { getNextMonth } from '../../../utils/time/getNextMonth';
 import { getDaysOfWeek } from 'src/utils/time/getDaysOfWeek';
-import { getCalendarMonthData } from "../../../utils/time/getCalendarMonthData";
-import { isWeekendDay} from "../../../utils/time/isWeekendDay";
-import { isCurrentMonthDay } from "../../../utils/time/isCurrentMonthDay";
-import { isDatesEqual } from "../../../utils/time/isDatesEqual";
-import { isBefore } from "../../../utils/time/isBefore";
-import { isTodayDate } from "../../../utils/time/isToday";
+import { getCalendarMonthData } from '../../../utils/time/getCalendarMonthData';
+import { isWeekendDay } from '../../../utils/time/isWeekendDay';
+import { isCurrentMonthDay } from '../../../utils/time/isCurrentMonthDay';
+import { isDatesEqual } from '../../../utils/time/isDatesEqual';
+import { isBefore } from '../../../utils/time/isBefore';
+import { isTodayDate } from '../../../utils/time/isToday';
 
 // types
 import { CustomDatePickerProps } from './types';
@@ -42,7 +42,7 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
         setCurrentMonth(prev => getNextMonth(prev));
     }, []);
 
-    const handleChangeSelectDate = useCallback((date) => {
+    const handleChangeSelectDate = useCallback(date => {
         setSelectedDate(() => date);
         onDateSelected?.(date);
     }, []);
@@ -52,10 +52,16 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
             const key = formatDate(dayOfWeek, 'EEEEEE');
 
             return (
-                <CustomTypography key={key} variant="body1bold" color={isWeekendDay(dayOfWeek) ? "colors.grayscale.normal" : "colors.black.primary"}>
+                <CustomTypography
+                    key={key}
+                    variant="body1bold"
+                    color={
+                        isWeekendDay(dayOfWeek) ? 'colors.grayscale.normal' : 'colors.black.primary'
+                    }
+                >
                     {key}
                 </CustomTypography>
-            )
+            );
         });
     }, []);
 
@@ -78,12 +84,17 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
                         container
                         justifyContent="center"
                         alignItems="center"
-                        className={clsx(styles.dayWrapper, {[styles.blocked]: isDateBefore, [styles.activeDay]: isEqual })}
+                        className={clsx(styles.dayWrapper, {
+                            [styles.blocked]: isDateBefore,
+                            [styles.activeDay]: isEqual,
+                        })}
                     >
                         <CustomTypography
-                            variant={isEqual ? "body1bold" : "body1"}
-                            className={clsx(styles.day, {[styles.hideWeekDay]: !isActiveDate })}
-                            color={isDateBefore ? "colors.grayscale.normal" : "colors.black.primary"}
+                            variant={isEqual ? 'body1bold' : 'body1'}
+                            className={clsx(styles.day, { [styles.hideWeekDay]: !isActiveDate })}
+                            color={
+                                isDateBefore ? 'colors.grayscale.normal' : 'colors.black.primary'
+                            }
                         >
                             {day}
                         </CustomTypography>
@@ -106,13 +117,28 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
     }, [currentMonthDate, selectedDate]);
 
     return (
-        <CustomGrid container gap={4.75} alignContent="flex-start" className={clsx(styles.calendar, className)}>
+        <CustomGrid
+            container
+            gap={4.75}
+            alignContent="flex-start"
+            className={clsx(styles.calendar, className)}
+        >
             <CustomGrid container justifyContent="space-between">
-                <ArrowIcon width="36px" height="36px" className={styles.leftIcon} onClick={handleSetPrevMonth} />
+                <ArrowIcon
+                    width="36px"
+                    height="36px"
+                    className={styles.leftIcon}
+                    onClick={handleSetPrevMonth}
+                />
                 <CustomTypography variant="h2bold">
                     {formatDate(currentMonthDate, 'MMMM, yyyy')}
                 </CustomTypography>
-                <ArrowIcon width="36px" height="36px" className={styles.rightIcon} onClick={handleSetNextMonth} />
+                <ArrowIcon
+                    width="36px"
+                    height="36px"
+                    className={styles.rightIcon}
+                    onClick={handleSetNextMonth}
+                />
             </CustomGrid>
             <CustomGrid container gap={4.5}>
                 <CustomGrid container justifyContent="space-between">
@@ -126,6 +152,8 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
     );
 };
 
-const CustomDatePicker = memo<CustomDatePickerProps>(forwardRef<HTMLDivElement, CustomDatePickerProps>(Component));
+const CustomDatePicker = memo<CustomDatePickerProps>(
+    forwardRef<HTMLDivElement, CustomDatePickerProps>(Component),
+);
 
 export { CustomDatePicker };

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useRef } from 'react';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
@@ -14,8 +14,6 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { PeoplesIcon } from '@library/icons/PeoplesIcon';
 import { NotesIcon } from '@library/icons/NotesIcon';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-
-// components
 import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
 import { MeetingInviteParticipants } from '@components/Meeting/MeetingInviteParticipants/MeetingInviteParticipants';
 import { MeetingUsersList } from '@components/Meeting/MeetingUsersList/MeetingUsersList';
@@ -24,15 +22,25 @@ import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 
 // stores
 import { $isOwner } from '../../../store/meeting';
+import { $meetingUsersStore } from '../../../store/users';
 
 // styles
 import styles from './MeetingControlPanel.module.scss';
+
+// types
+import { MeetingAccessStatuses } from '../../../store/types';
 
 const MeetingControlPanel = memo(() => {
     const router = useRouter();
     const isOwner = useStore($isOwner);
 
     const isEditTemplateView = router.pathname.includes('edit-template');
+
+    const isThereNewRequests = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state => state.some(user => user.accessStatus === MeetingAccessStatuses.RequestSent),
+    });
 
     const {
         values: { isUsersOpen, isLeaveNoteOpen },
@@ -62,6 +70,7 @@ const MeetingControlPanel = memo(() => {
                     className={clsx(styles.actionButton, {
                         [styles.withAction]: !isEditTemplateView,
                         [styles.active]: isUsersOpen,
+                        [styles.newRequests]: isThereNewRequests,
                     })}
                     Icon={<PeoplesIcon width="30px" height="30px" />}
                 />

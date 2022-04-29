@@ -59,9 +59,12 @@ export class MeetingsController {
         const user = await this.usersService.findById(data.userId, session);
 
         let userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: targetTemplate?.templateId
-            ? { templateId: targetTemplate?.templateId, user: user._id }
-            : { _id: data.templateId },
+          query: {
+            $or: [
+              { templateId: targetTemplate?.templateId, user: user._id },
+              { _id: data.templateId },
+            ],
+          },
           session,
         });
 

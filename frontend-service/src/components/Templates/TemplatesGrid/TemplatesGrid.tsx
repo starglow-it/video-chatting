@@ -23,7 +23,7 @@ import { TemplateGridProps } from './types';
 // styles
 import styles from './TemplatesGrid.module.scss';
 
-function Component({ TemplateComponent, list, count, onPageChange }: TemplateGridProps) {
+const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGridProps) => {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
 

@@ -24,6 +24,7 @@ import {
   MEETING_FINISHED,
   RECEIVE_ACCESS_REQUEST,
   REMOVE_USERS,
+  SEND_MEETING_ERROR,
   UPDATE_MEETING,
   UPDATE_USER,
 } from '../const/emitSocketEvents.const';
@@ -98,8 +99,10 @@ export class MeetingsGateway
           session,
         );
 
+        await this.usersService.deleteUser({ socketId: client.id }, session);
+
         if (meeting) {
-          await meeting.populate('owner');
+          await meeting.populate(['owner', 'users']);
 
           const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
             excludeExtraneousValues: true,
@@ -137,9 +140,17 @@ export class MeetingsGateway
               }),
             });
           }
-        }
 
-        await this.usersService.deleteUser({ socketId: client.id }, session);
+          const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          this.emitToRoom(`waitingRoom:${meeting.instanceId}`, UPDATE_MEETING, {
+            meeting: plainMeeting,
+            users: plainUsers,
+          });
+        }
       }
     });
   }
@@ -446,10 +457,13 @@ export class MeetingsGateway
         users: plainUsers,
       });
 
+      this.emitToSocketId(user.socketId, UPDATE_USER, {
+        user: plainUser,
+      });
+
       return {
         success: true,
         result: {
-          user: plainUser,
           meeting: plainMeeting,
           users: plainUsers,
         },
@@ -462,8 +476,33 @@ export class MeetingsGateway
     @MessageBody() message: MeetingAccessAnswerRequestDTO,
   ): Promise<ResponseSumType<void>> {
     return withTransaction(this.connection, async (session) => {
+      const meeting = await this.meetingsService.findById(
+        message.meetingId,
+        session,
+      );
+
       if (message.isUserAccepted) {
-        const user = await this.usersService.findOneAndUpdate(
+        const user = await this.usersService.findById(message.userId, session);
+
+        if (!user) return;
+
+        const activeParticipants = await this.usersService.countMany({
+          meeting: meeting._id,
+          accessStatus: AccessStatusEnum.InMeeting,
+        });
+
+        if (activeParticipants === meeting.maxParticipants) {
+          this.emitToSocketId(user.socketId, SEND_MEETING_ERROR, {
+            message: 'meeting.maxParticipantsNumber',
+          });
+
+          return {
+            success: false,
+            message: 'meeting.maxParticipantsNumber',
+          };
+        }
+
+        const updatedUser = await this.usersService.findOneAndUpdate(
           {
             _id: message.userId,
             accessStatus: { $eq: AccessStatusEnum.RequestSent },
@@ -472,41 +511,17 @@ export class MeetingsGateway
           session,
         );
 
-        if (!user) return;
-
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
-          session,
-        );
-
         const userSocket = await this.getSocket(
           `waitingRoom:${meeting.instanceId}`,
           user.socketId,
         );
 
-        await meeting.populate(['owner', 'users']);
-
-        const plainUser = plainToClass(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+        const plainUser = plainToClass(CommonUserDTO, updatedUser, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
 
         userSocket.join(`meeting:${meeting._id}`);
-
-        this.emitToRoom(`meeting:${meeting._id}`, UPDATE_MEETING, {
-          meeting: plainMeeting,
-          users: plainUsers,
-        });
 
         this.emitToSocketId(user.socketId, UPDATE_USER, {
           user: plainUser,
@@ -528,7 +543,33 @@ export class MeetingsGateway
         this.emitToSocketId(user.socketId, RECEIVE_ACCESS_REQUEST, {
           user: plainUser,
         });
+
+        this.emitToSocketId(user.socketId, SEND_MEETING_ERROR, {
+          message: 'meeting.requestDenied',
+        });
       }
+
+      await meeting.populate(['owner', 'users']);
+
+      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+
+      const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+
+      this.emitToRoom(`meeting:${meeting._id}`, UPDATE_MEETING, {
+        meeting: plainMeeting,
+        users: plainUsers,
+      });
+
+      this.emitToRoom(`waitingRoom:${meeting.instanceId}`, UPDATE_MEETING, {
+        meeting: plainMeeting,
+        users: plainUsers,
+      });
     });
   }
 

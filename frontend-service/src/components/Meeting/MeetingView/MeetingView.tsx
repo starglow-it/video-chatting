@@ -138,7 +138,7 @@ const MeetingView = memo(() => {
 
                     AgoraController.setUpController({
                         channel: meeting.id,
-                        uid: localUser.meetingUserId!,
+                        uid: localUser.meetingUserId,
                         onUserPublished: setMeetingUserMediaEvent,
                         onUserJoined: setMeetingUserMediaEvent,
                         onLocalTracks: setLocalUserMediaEvent,

@@ -1,4 +1,4 @@
-import { combine, sample } from "effector-next";
+import { combine, sample } from 'effector-next';
 
 import {
     $meetingNotesStore,
@@ -8,12 +8,12 @@ import {
     sendMeetingNoteResultFx,
     setMeetingNotesEvent,
     removeLocalMeetingNoteEvent,
-    resetMeetingNotesEvent
-} from "./model";
+    resetMeetingNotesEvent,
+} from './model';
 
-import {$meetingStore} from "../meeting";
+import { $meetingStore } from '../meeting';
 
-import {$localUserStore} from "../../users";
+import { $localUserStore } from '../../users';
 
 sendMeetingNoteResultFx.use(async data => sendMeetingNoteSocketEvent(data));
 
@@ -25,10 +25,11 @@ sample({
 });
 
 $meetingNotesStore
-    .on(setMeetingNotesEvent, (state, data) => ([...state, ...(data || [])]))
-    .on(getMeetingNotesSocketEvent.doneData, (state, { meetingNotes }) => ([...state, ...(meetingNotes || [])]))
+    .on(setMeetingNotesEvent, (state, data) => [...state, ...(data || [])])
+    .on(getMeetingNotesSocketEvent.doneData, (state, { meetingNotes }) => [
+        ...state,
+        ...(meetingNotes || []),
+    ])
     .on(removeLocalMeetingNoteEvent, (state, data) => state.filter(note => note.id !== data));
 
 $meetingNotesStore.reset(resetMeetingNotesEvent);
-
-

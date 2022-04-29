@@ -31,7 +31,7 @@ export const componentsTheme = (theme: Theme) =>
                     select: {
                         maxWidth: '90%',
                         minHeight: '32px',
-                        lineHeight: '32px'
+                        lineHeight: '32px',
                     },
                 },
             },
@@ -40,9 +40,9 @@ export const componentsTheme = (theme: Theme) =>
                     root: {
                         '&.MuiMenu-list': {
                             padding: '5px !important',
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
             MuiMenuItem: {
                 styleOverrides: {
@@ -69,13 +69,30 @@ export const componentsTheme = (theme: Theme) =>
                                 right: '20px',
                                 top: '50%',
                                 transform: 'translateY(-50%)',
-                                background: "url('/images/check-icon.svg')"
+                                background: "url('/images/check-icon.svg')",
                             },
                             '&:hover': {
                                 background: alpha(theme.designSystemColors.grayscale.normal, 0.25),
                             },
-                        }
-                    }
+                        },
+                    },
+                },
+            },
+            MuiSlider: {
+                styleOverrides: {
+                    root: {
+                        height: '8px',
+                        '& .MuiSlider-rail': {
+                            backgroundColor: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                            opacity: 1,
+                        },
+                        '& .MuiSlider-thumb': {
+                            width: '24px',
+                            height: '24px',
+                            backgroundColor: theme.designSystemColors.white.primary,
+                            border: '3px solid currentColor',
+                        },
+                    },
                 },
             },
             MuiRadio: {
@@ -83,10 +100,10 @@ export const componentsTheme = (theme: Theme) =>
                     root: {
                         color: alpha(theme.designSystemColors.grayscale.normal, 0.6),
                         '&.Mui-checked': {
-                            color: theme.designSystemColors.orange.primary
-                        }
-                    }
-                }
+                            color: theme.designSystemColors.orange.primary,
+                        },
+                    },
+                },
             },
             MuiDialogActions: {
                 styleOverrides: {
@@ -118,7 +135,10 @@ export const componentsTheme = (theme: Theme) =>
                         style: {
                             background: theme.palette.common.white,
                             color: theme.palette.common.black,
-                            border: `1px solid ${alpha(theme.designSystemColors.grayscale.normal, 0.4)}`,
+                            border: `1px solid ${alpha(
+                                theme.designSystemColors.grayscale.normal,
+                                0.4,
+                            )}`,
                             '&:hover': {
                                 background: alpha(theme.designSystemColors.grayscale.normal, 0.4),
                             },

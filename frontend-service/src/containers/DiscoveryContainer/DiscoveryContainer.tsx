@@ -1,30 +1,34 @@
-import React, {memo, useCallback, useEffect} from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import {useRouter} from 'next/router';
-import {useStore} from 'effector-react';
+import { useRouter } from 'next/router';
+import { useStore } from 'effector-react';
 
 // custom
-import {CustomBox} from '@library/custom/CustomBox/CustomBox';
-import {CustomTypography} from '@library/custom/CustomTypography/CustomTypography';
-import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
-import {TemplatePreviewDialog} from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
-import {TemplatesGrid} from '@components/Templates/TemplatesGrid/TemplatesGrid';
-import {MainProfileWrapper} from "@library/common/MainProfileWrapper/MainProfileWrapper";
-import {DiscoverTemplateItem} from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
-import {ScheduleMeetingDialog} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog";
-import {DownloadIcsEvent} from "@components/DownloadIcsEvent/DownloadIcsEvent";
+import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
+import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
+import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
+import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import { DownloadIcsEvent } from '@components/DownloadIcsEvent/DownloadIcsEvent';
 
 // stores
-import {$discoveryTemplatesStore, getUsersTemplatesFx, setScheduleTemplateIdEvent} from "../../store/templates";
-import {appDialogsApi} from "../../store/dialogs";
+import {
+    $discoveryTemplatesStore,
+    getUsersTemplatesFx,
+    setScheduleTemplateIdEvent,
+} from '../../store/templates';
+import { appDialogsApi } from '../../store/dialogs';
 
 // styles
 import styles from './DiscoveryContainer.module.scss';
 
 // types
-import {AppDialogsEnum} from "../../store/types";
+import { AppDialogsEnum } from '../../store/types';
 
 const DiscoveryContainer = memo(() => {
     const router = useRouter();
@@ -49,7 +53,7 @@ const DiscoveryContainer = memo(() => {
         setScheduleTemplateIdEvent(templateId);
 
         appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.scheduleMeetingDialog
+            dialogKey: AppDialogsEnum.scheduleMeetingDialog,
         });
     }, []);
 
@@ -70,7 +74,11 @@ const DiscoveryContainer = memo(() => {
                             alt="blush-face"
                         />
                     </CustomBox>
-                    <CustomTypography variant="h1" nameSpace="profile" translation="pages.discovery" />
+                    <CustomTypography
+                        variant="h1"
+                        nameSpace="profile"
+                        translation="pages.discovery"
+                    />
                 </CustomGrid>
                 <TemplatesGrid
                     list={templates.list}

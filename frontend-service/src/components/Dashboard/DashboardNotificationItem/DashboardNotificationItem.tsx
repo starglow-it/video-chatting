@@ -43,7 +43,7 @@ const DashboardNotificationItem = memo(
                         <CustomTypography
                             color="colors.grayscale.normal"
                             nameSpace="dashboard"
-                            translation="notifications.timeAgo"
+                            translation={`notifications.${timeString ? 'timeAgo' : 'justNow'}`}
                             options={{ time: timeString }}
                         />
                         &nbsp;

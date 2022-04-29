@@ -39,7 +39,7 @@ export class UsersService {
   }
 
   async countMany(query) {
-    return this.meetingUser.find(query).count();
+    return this.meetingUser.find(query).count().exec();
   }
 
   async findById(

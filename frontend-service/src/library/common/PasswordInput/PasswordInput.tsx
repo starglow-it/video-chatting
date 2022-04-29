@@ -3,31 +3,41 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 
 // hooks
-import {useLocalization} from "../../../hooks/useTranslation";
-import {useToggle} from "../../../hooks/useToggle";
+import { useLocalization } from '../../../hooks/useTranslation';
+import { useToggle } from '../../../hooks/useToggle';
 
 // components
-import {ErrorMessage} from "@library/common/ErrorMessage/ErrorMessage";
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { EyeVisibilityIcon } from '@library/icons/EyeVisibilityIcon';
 
 // custom
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // styles
-import styles from "@library/custom/CustomInput/CustomInput.module.scss";
+import styles from '@library/custom/CustomInput/CustomInput.module.scss';
 
 // types
-import {TranslationProps} from "@library/common/Translation/types";
+import { TranslationProps } from '@library/common/Translation/types';
 import { PasswordInputProps } from './types';
 import { TextFieldProps } from '@mui/material/TextField/TextField';
 
 const PasswordInput = memo(
     forwardRef(
-        ({ onFocus, onCustomBlur, onBlur, nameSpace, translation, error, fieldKey = 'password', InputProps, ...rest }: PasswordInputProps & TextFieldProps & TranslationProps, ref) => {
-            const {
-                value: showPass,
-                onToggleSwitch: handleTogglePassword,
-            } = useToggle(false);
+        (
+            {
+                onFocus,
+                onCustomBlur,
+                onBlur,
+                nameSpace,
+                translation,
+                error,
+                fieldKey = 'password',
+                InputProps,
+                ...rest
+            }: PasswordInputProps & TextFieldProps & TranslationProps,
+            ref,
+        ) => {
+            const { value: showPass, onToggleSwitch: handleTogglePassword } = useToggle(false);
 
             const { control } = useFormContext();
 
@@ -54,7 +64,7 @@ const PasswordInput = memo(
                     <TextField
                         inputRef={ref}
                         type={showPass ? 'text' : 'password'}
-                        label={label || "Password"}
+                        label={label || 'Password'}
                         onBlur={handleBlur}
                         onFocus={onFocus}
                         error={Boolean(error)}

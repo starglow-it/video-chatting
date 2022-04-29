@@ -49,9 +49,9 @@ export type Profile = {
 };
 
 export type UpdateProfileInfo = {
-    companyName: Profile["companyName"];
-    fullName: Profile["fullName"];
-    signBoard: Profile["signBoard"];
+    companyName: Profile['companyName'];
+    fullName: Profile['fullName'];
+    signBoard: Profile['signBoard'];
 };
 
 export type UpdateProfileAvatar = {

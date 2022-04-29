@@ -15,6 +15,18 @@ export const uiTheme = (theme: Theme) =>
             medium: '10px',
         },
         palette: {
+            primary: {
+                main: theme.designSystemColors.orange.primary,
+                darker: theme.designSystemColors.orange.dark,
+            },
+            secondary: {
+                main: theme.designSystemColors.grayscale.normal,
+                darker: theme.designSystemColors.grayscale.dark,
+            },
+            disabled: {
+                main: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                darker: alpha(theme.designSystemColors.grayscale.dark, 0.4),
+            },
             colors: theme.designSystemColors,
             buttons: {
                 primary: {

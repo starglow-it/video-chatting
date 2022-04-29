@@ -1,5 +1,5 @@
-import {HttpMethods} from "../../store/types";
-import { authScope, serverUrl } from "./baseData";
+import { HttpMethods } from '../../store/types';
+import { authScope, serverUrl } from './baseData';
 
 export const REFRESH_URL = `${authScope}/refresh`;
 export const LOGIN_USER_URL = `${authScope}/login`;

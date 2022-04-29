@@ -12,6 +12,7 @@ export * from './profile/profileTemplate/model';
 
 export * from './other/routeToChange/model';
 export * from './other/profileAvatarSetUp/model';
+export * from './other/audio/model';
 
 export * from './users/localUser/model';
 export * from './users/meetingUsers/model';
@@ -48,6 +49,7 @@ export * from './meeting/meetingNotes/init';
 
 export * from './other/routeToChange/init';
 export * from './other/profileAvatarSetUp/init';
+export * from './other/audio/init';
 
 export * from './users/localUser/init';
 export * from './users/meetingUsers/init';

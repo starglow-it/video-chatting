@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import {useFormContext, useWatch} from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
 // custom
@@ -47,18 +47,22 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
 
     const nextSocials = useWatch({
         control,
-        name: 'socials'
+        name: 'socials',
     });
 
     const dirtyFieldsCount = useMemo(() => {
+        // eslint-disable-next-line
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-        const dirtyFieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(
+        const fieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(
             reduceValuesNumber,
             0,
         );
 
-        const paddedNextSocials = padArray<SocialLink>(nextSocials, Object.keys(SOCIAL_LINKS).length);
+        const paddedNextSocials = padArray<SocialLink>(
+            nextSocials,
+            Object.keys(SOCIAL_LINKS).length,
+        );
         const paddedCurrentSocials = padArray<SocialLink>(
             profile?.socials,
             Object.keys(SOCIAL_LINKS).length,
@@ -88,7 +92,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
 
         const numberOfChangedFields = changedFields.filter(value => !value).length;
 
-        return dirtyFieldsCount + numberOfChangedFields + changedNewFields.length;
+        return fieldsCount + numberOfChangedFields + changedNewFields.length;
     }, [Object.keys(dirtyFields).length, nextSocials, profile.socials]);
 
     const handleChangeRoute = useCallback(
@@ -101,7 +105,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
                     dialogKey: AppDialogsEnum.confirmChangeRouteDialog,
                 });
 
-                throw 'routeChange aborted';
+                throw new Error('routeChange aborted');
             }
         },
         [dirtyFieldsCount, confirmChangeRouteDialog],
@@ -115,7 +119,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
         };
     }, [dirtyFieldsCount, handleChangeRoute, confirmChangeRouteDialog]);
 
-    if (!dirtyFieldsCount) return <></>;
+    if (!dirtyFieldsCount) return null;
 
     return (
         <CustomPaper className={styles.submitProfile}>

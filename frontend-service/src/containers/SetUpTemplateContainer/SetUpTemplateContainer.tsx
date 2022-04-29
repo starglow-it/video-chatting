@@ -28,7 +28,7 @@ import styles from './SetUpTemplateContainer.module.scss';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../validation/users/companyName';
 import { fullNameSchema } from '../../validation/users/fullName';
-import { simpleStringSchema } from "../../validation/common";
+import { simpleStringSchema } from '../../validation/common';
 
 // utils
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';

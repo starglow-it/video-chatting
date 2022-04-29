@@ -1,8 +1,5 @@
 import { createApi } from 'effector';
-import {
-    $appDialogsStore,
-    initialDialogsState,
-} from './model';
+import { $appDialogsStore, initialDialogsState } from './model';
 import { AppDialogsState, DialogActionPayload } from '../types';
 
 const openDialog = (state: AppDialogsState, data: DialogActionPayload): AppDialogsState => {

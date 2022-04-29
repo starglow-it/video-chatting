@@ -36,7 +36,7 @@ $profileStore.on(
         updateProfilePhotoFx.doneData,
         updateProfileFx.doneData,
         deleteProfilePhotoFx.doneData,
-        updateProfileEmailFx.doneData
+        updateProfileEmailFx.doneData,
     ],
     (state, data) => ({
         ...state,

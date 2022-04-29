@@ -1,6 +1,6 @@
-import sendRequestWithCredentials from "../../../helpers/http/sendRequestWithCredentials";
-import {ErrorState, Template} from "../../types";
-import {deleteMeetingUrl} from "../../../utils/urls";
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
+import { ErrorState, Template } from '../../types';
+import { deleteMeetingUrl } from '../../../utils/urls';
 
 export const handleDeleteMeeting = async (data: { templateId: Template['id'] }) => {
     const response = await sendRequestWithCredentials<any, ErrorState>({
@@ -19,4 +19,4 @@ export const handleDeleteMeeting = async (data: { templateId: Template['id'] }) 
             error: response.error,
         };
     }
-}
+};

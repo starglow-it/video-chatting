@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, {memo, useCallback, useEffect, useMemo} from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // hooks
@@ -9,14 +9,14 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
-// styles
-
 // components
 import { IconButton, InputAdornment } from '@mui/material';
 import { SuccessIcon } from '@library/icons/SuccessIcon';
-import styles from './EnterCodeForm.module.scss';
-import { useCountDown } from '../../../hooks/useCountDown';
 import { useToggle } from '../../../hooks/useToggle';
+import { useCountDown } from '../../../hooks/useCountDown';
+
+// styles
+import styles from './EnterCodeForm.module.scss';
 
 const EnterCodeForm = memo(
     ({
@@ -25,7 +25,7 @@ const EnterCodeForm = memo(
         onResendCode,
     }: {
         onResendCode: () => void;
-        onCodeEntered: () => void;
+        onCodeEntered: () => Promise<{ success: boolean }>;
         onCancel: () => void;
     }) => {
         const {
@@ -70,6 +70,20 @@ const EnterCodeForm = memo(
             onResendCode();
         }, [onResendCode]);
 
+        const resendText = useMemo(() => !secondsToNextResendCode ? (
+                <CustomTypography
+                    color="colors.blue.primary"
+                    nameSpace="profile"
+                    translation="editProfile.resendCode"
+                    className={styles.resendCodeTest}
+                    onClick={handleResendCode}
+                />
+            ) : (
+                <CustomTypography color="colors.grayscale.normal">
+                    {secondsToNextResendCode} sec till next resend
+                </CustomTypography>
+            ), [handleResendCode, secondsToNextResendCode]);
+
         return (
             <CustomGrid container direction="column" gap={3}>
                 <CustomGrid container direction="column" alignItems="flex-start">
@@ -78,21 +92,7 @@ const EnterCodeForm = memo(
                         translation="editProfile.verificationCode"
                     />
                     {!isCodeEntered && (
-                        <>
-                            {!secondsToNextResendCode ? (
-                                <CustomTypography
-                                    color="colors.blue.primary"
-                                    nameSpace="profile"
-                                    translation="editProfile.resendCode"
-                                    className={styles.resendCodeTest}
-                                    onClick={handleResendCode}
-                                />
-                            ) : (
-                                <CustomTypography color="colors.grayscale.normal">
-                                    {secondsToNextResendCode} sec till next resend
-                                </CustomTypography>
-                            )}
-                        </>
+                        {resendText}
                     )}
                 </CustomGrid>
                 <CustomInput

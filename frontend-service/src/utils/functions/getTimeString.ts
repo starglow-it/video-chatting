@@ -1,12 +1,8 @@
-import { ONE_HOUR, ONE_MINUTE, ONE_SECOND } from "../../const/time/common";
+import { ONE_HOUR, ONE_MINUTE, ONE_SECOND } from '../../const/time/common';
 
-const stages = [
-    ONE_HOUR,
-    ONE_MINUTE,
-    ONE_SECOND
-];
+const stages = [ONE_HOUR, ONE_MINUTE, ONE_SECOND];
 
-const stagesName = [ 'h', 'm', 's' ];
+const stagesName = ['h', 'm', 's'];
 
 /**
  * Util function that transforms number timestamp to the readable time string in format:
@@ -24,5 +20,5 @@ export const getTimeString = (timestamp: number) => {
 
     const reminderAmount = Math.floor(diff / targetStageValue);
 
-    return diff < ONE_SECOND ? 'Just now' : `${reminderAmount}${reminderName}`;
-}
+    return diff < ONE_SECOND ? '' : `${reminderAmount}${reminderName}`;
+};

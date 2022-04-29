@@ -42,11 +42,11 @@ const enhance = withHydrate();
 const REGISTER_REDIRECT_ROUTES: string[] = ['/login', '/register', '/welcome'];
 const LOGIN_REDIRECT_ROUTES: string[] = ['/dashboard'];
 
-function CustomApp({
+const CustomApp = ({
     Component,
     pageProps,
     emotionCache = clientSideEmotionCache,
-}: AppProps & { emotionCache: EmotionCache }): JSX.Element {
+}: AppProps & { emotionCache: EmotionCache }): JSX.Element => {
     const scope = useScope(root, pageProps.initialState);
 
     if (pageProps.initialState) {

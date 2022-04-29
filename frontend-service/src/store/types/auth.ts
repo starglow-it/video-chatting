@@ -1,5 +1,5 @@
-import {ErrorState, TokenPair} from './http';
-import {Profile} from "./profile";
+import { ErrorState, TokenPair } from './http';
+import { Profile } from './profile';
 
 export type AuthUserState = {
     isAuthenticated: boolean;

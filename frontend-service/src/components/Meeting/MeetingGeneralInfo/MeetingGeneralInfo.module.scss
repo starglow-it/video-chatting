@@ -21,7 +21,6 @@
   }
 
   .companyName {
-    margin: rem(0 0 0 8px);
     padding: rem(7px 12px);
     background: rgba($primary-black, 0.6);
     backdrop-filter: blur(rem(28px));
@@ -32,6 +31,7 @@
 
       &.withoutBoard {
         @extend %text-ellips;
+        margin: rem(0 0 0 8px);
         max-width: rem(300px);
       }
 

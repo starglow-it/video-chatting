@@ -16,17 +16,18 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import styles from './MeetingGeneralInfo.module.scss';
 
 // store
-import { $profileStore } from '../../../store/profile';
+import {$isOwner, $meetingTemplateStore} from '../../../store/meeting';
 
 const MeetingGeneralInfo = memo(() => {
+    const isOwner = useStore($isOwner);
+    const meetingTemplate = useStore($meetingTemplateStore);
+
     const { control } = useFormContext();
 
     const signBoard = useWatch({
         control,
-        name: 'signBoard'
+        name: 'signBoard',
     });
-
-    const profile = useStore($profileStore);
 
     const isThereSignBoard = signBoard && signBoard !== 'default';
 
@@ -45,13 +46,12 @@ const MeetingGeneralInfo = memo(() => {
             container
             className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
         >
-            {isThereSignBoard ? (
-                <Image
-                    src={`/images/boards/${signBoard}.png`}
-                    width="360px"
-                    height="244px"
-                />
-            ) : null}
+            {isThereSignBoard
+                ? (
+                    <Image src={`/images/boards/${isOwner ? signBoard : meetingTemplate.signBoard}.png`} width="360px" height="244px" />
+                )
+                : null
+            }
             <CustomGrid
                 gap={1}
                 container
@@ -62,10 +62,10 @@ const MeetingGeneralInfo = memo(() => {
             >
                 <ProfileAvatar
                     className={styles.profileAvatar}
-                    src={profile?.profileAvatar?.url}
+                    src={meetingTemplate?.user?.profileAvatar?.url}
                     width={isThereSignBoard ? '60px' : '40px'}
                     height={isThereSignBoard ? '60px' : '40px'}
-                    userName={fullName}
+                    userName={isOwner ? fullName : meetingTemplate.fullName}
                 />
                 <CustomBox className={styles.companyName}>
                     <CustomTypography
@@ -75,7 +75,7 @@ const MeetingGeneralInfo = memo(() => {
                             [styles.withoutBoard]: !isThereSignBoard,
                         })}
                     >
-                        {companyName}
+                        {isOwner ? companyName : meetingTemplate.companyName}
                     </CustomTypography>
                 </CustomBox>
             </CustomGrid>

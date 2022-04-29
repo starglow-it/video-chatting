@@ -13,9 +13,8 @@ export const socketEventRequest = socketDomain.effect<
     string
 >('socketEventRequest');
 
-export const initiateSocketConnectionFx = socketDomain.effect<
-    void,
-    any
->('initiateSocketConnectionFx');
+export const initiateSocketConnectionFx = socketDomain.effect<void, any>(
+    'initiateSocketConnectionFx',
+);
 
-export const $isSocketConnected = $socketStore.map((data) => Boolean(data.socketInstance?.id));
+export const $isSocketConnected = $socketStore.map(data => Boolean(data.socketInstance?.id));

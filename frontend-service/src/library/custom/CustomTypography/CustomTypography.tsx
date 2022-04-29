@@ -32,8 +32,10 @@ const Component = (
             children
         )}
     </Typography>
-)
+);
 
-const CustomTypography = memo<CustomTypographyProps>(forwardRef<HTMLDivElement, CustomTypographyProps>(Component));
+const CustomTypography = memo<CustomTypographyProps>(
+    forwardRef<HTMLDivElement, CustomTypographyProps>(Component),
+);
 
 export { CustomTypography };

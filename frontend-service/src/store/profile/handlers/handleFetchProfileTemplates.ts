@@ -11,7 +11,9 @@ export const handleFetchProfileTemplates = async ({
     skip: number;
     userId: string;
 }): Promise<EntityList<Template>> => {
-    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(profileTemplatesUrl({ limit, skip }));
+    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(
+        profileTemplatesUrl({ limit, skip }),
+    );
 
     if (response.success) {
         return response.result;

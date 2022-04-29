@@ -1,3 +1,3 @@
 export interface ISendMeetingNote {
-  data: string;
+  note: string;
 }

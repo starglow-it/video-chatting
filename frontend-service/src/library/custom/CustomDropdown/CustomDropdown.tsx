@@ -1,4 +1,4 @@
-import React, {ForwardedRef, forwardRef, memo, useMemo} from 'react';
+import React, { ForwardedRef, forwardRef, memo, useMemo } from 'react';
 
 import { FormControl, InputLabel, Select } from '@mui/material';
 
@@ -7,6 +7,8 @@ import { CustomDropdownProps } from './types';
 import styles from './CustomDropdown.module.scss';
 
 import { useLocalization } from '../../../hooks/useTranslation';
+import { ArrowIcon } from '@library/icons/ArrowIcon';
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 const Component = (
     {
@@ -16,6 +18,9 @@ const Component = (
         nameSpace,
         translation,
         renderValue,
+        placeholder,
+        IconComponent,
+        error,
         ...rest
     }: CustomDropdownProps,
     ref: ForwardedRef<HTMLSelectElement>,
@@ -27,7 +32,7 @@ const Component = (
     }, [translation]);
 
     return (
-        <FormControl className={styles.select}>
+        <FormControl className={styles.select} error={Boolean(error)}>
             <InputLabel id={labelId}>{label}</InputLabel>
             <Select
                 ref={ref}
@@ -37,6 +42,7 @@ const Component = (
                 renderValue={renderValue}
                 inputProps={{
                     className: styles.selectInput,
+                    placeholder: placeholder,
                 }}
                 MenuProps={{
                     PopoverClasses: {
@@ -48,14 +54,18 @@ const Component = (
                         },
                     },
                 }}
+                IconComponent={IconComponent || ArrowIcon}
                 {...rest}
             >
                 {list}
             </Select>
+            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
         </FormControl>
     );
 };
 
-const CustomDropdown = memo<CustomDropdownProps>(forwardRef<HTMLSelectElement, CustomDropdownProps>(Component));
+const CustomDropdown = memo<CustomDropdownProps>(
+    forwardRef<HTMLSelectElement, CustomDropdownProps>(Component),
+);
 
 export { CustomDropdown };

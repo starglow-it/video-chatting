@@ -6,14 +6,7 @@ import { CommonIconProps } from '../types';
 type ComponentProps = React.PropsWithChildren<CommonIconProps> & SvgIconProps;
 
 const Component = (
-    {
-        width,
-        height,
-        children,
-        className,
-        onClick,
-        ...rest
-    }: ComponentProps,
+    { width, height, children, className, onClick, ...rest }: ComponentProps,
     ref: ForwardedRef<SVGSVGElement>,
 ) => {
     return (
@@ -27,6 +20,8 @@ const Component = (
             {children}
         </SvgIcon>
     );
-}
+};
 
-export const SvgIconWrapper = memo<ComponentProps>(forwardRef<SVGSVGElement, ComponentProps>(Component));
+export const SvgIconWrapper = memo<ComponentProps>(
+    forwardRef<SVGSVGElement, ComponentProps>(Component),
+);

@@ -15,7 +15,7 @@ import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog
 import { CommonTemplateItem } from '@components/Templates/CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { ProfileTemplateItem } from '@components/Templates/ProfileTemplateItem/ProfileTemplateItem';
-import {DeleteTemplateDialog} from "@components/Dialogs/DeleteTemplateDialog/DeleteTemplateDialog";
+import { DeleteTemplateDialog } from '@components/Dialogs/DeleteTemplateDialog/DeleteTemplateDialog';
 
 // stores
 import { createMeetingFx } from '../../store/meetings';
@@ -24,7 +24,7 @@ import {
     $skipProfileTemplates,
     setSkipProfileTemplates,
     deleteProfileTemplateFx,
-    getProfileTemplatesFx
+    getProfileTemplatesFx,
 } from '../../store/profile';
 import { $templatesStore, getTemplatesFx } from '../../store/templates';
 
@@ -51,7 +51,7 @@ const TemplatesContainer = memo(() => {
             if (!isTemplateDeleting) {
                 await getProfileTemplatesFx({ limit: skipProfileTemplates, skip: 0 });
             }
-        })()
+        })();
     }, [isTemplateDeleting]);
 
     const handleChooseTemplate = useCallback(async ({ templateId }) => {
@@ -62,7 +62,7 @@ const TemplatesContainer = memo(() => {
         }
     }, []);
 
-    const isThereProfileTemplates = Boolean(templates?.list?.length);
+    const isThereProfileTemplates = Boolean(profileTemplates?.list?.length);
 
     const handleProfileTemplatesPageChange = useCallback(async newPage => {
         await getProfileTemplatesFx({ limit: 6 * newPage, skip: 0 });

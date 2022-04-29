@@ -27,7 +27,7 @@ import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
-import {SuccessfulRegisterDialog} from "@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog";
+import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
 
 // stores
 import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store/register';
@@ -225,7 +225,7 @@ const RegisterContainer = memo(() => {
             </CenteredPaper>
             <SuccessfulRegisterDialog />
         </>
-);
+    );
 });
 
 export { RegisterContainer };

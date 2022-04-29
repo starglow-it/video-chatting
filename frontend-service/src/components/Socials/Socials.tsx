@@ -19,8 +19,7 @@ import styles from './Socials.module.scss';
 // const
 import { SOCIAL_LINKS, SOCIALS_ICONS } from '../../const/profile/socials';
 
-
-const Component: React.FunctionComponent<{ buttonClassName: string; title?: any }> = ({
+const Component: React.FunctionComponent<{ buttonClassName?: string; title?: React.ElementType }> = ({
     buttonClassName,
     title,
 }) => {
@@ -119,6 +118,11 @@ const Component: React.FunctionComponent<{ buttonClassName: string; title?: any 
             </CustomGrid>
         </CustomGrid>
     );
+};
+
+Component.defaultProps = {
+    buttonClassName: '',
+    title: 'Social'
 };
 
 export const Socials = memo(Component);

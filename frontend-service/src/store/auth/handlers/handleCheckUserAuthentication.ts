@@ -1,7 +1,7 @@
-import sendRequestWithCredentials from "../../../helpers/http/sendRequestWithCredentials";
-import {ErrorState, Profile} from "../../types";
-import {meUrl} from "../../../utils/urls";
-import {NextPageContext} from "next";
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
+import { ErrorState, Profile } from '../../types';
+import { meUrl } from '../../../utils/urls';
+import { NextPageContext } from 'next';
 
 export const handleCheckUserAuthentication = async (ctx: NextPageContext) => {
     const response = await sendRequestWithCredentials<Profile, ErrorState>({
@@ -25,4 +25,4 @@ export const handleCheckUserAuthentication = async (ctx: NextPageContext) => {
     return {
         isAuthenticated: false,
     };
-}
+};

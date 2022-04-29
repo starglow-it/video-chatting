@@ -72,13 +72,13 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
     }, [fileTypeError]);
 
     const handleUploadFiles = useCallback(async file => {
-        const _2_mb = getFileSizeValue({ amount: 2, sizeType: FileSizeTypesEnum.megabyte });
+        const twoMb = getFileSizeValue({ amount: 2, sizeType: FileSizeTypesEnum.megabyte });
 
         const isFileTypeCorrect = ACCEPT_MIMES.includes(file.type);
 
         if (!isFileTypeCorrect) {
             onShowFileTypeError();
-        } else if (file.size > _2_mb) {
+        } else if (file.size > twoMb) {
             onShowFileSizeError();
         } else {
             onHideFileTypeError();

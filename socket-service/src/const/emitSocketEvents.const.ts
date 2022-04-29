@@ -11,6 +11,7 @@ export const UPDATE_MEETING_TEMPLATE = 'template:update';
 export const SEND_MEETING_NOTE = 'meeting:notes:create';
 export const REMOVE_MEETING_NOTE = 'meeting:notes:delete';
 export const SEND_MEETING_NOTES = 'meeting:notes:get';
+export const SEND_MEETING_ERROR = 'meeting:error';
 
 export default {
   MEETING_FINISHED,
@@ -24,4 +25,5 @@ export default {
   SEND_MEETING_NOTE,
   REMOVE_MEETING_NOTE,
   SEND_MEETING_NOTES,
+  SEND_MEETING_ERROR,
 };

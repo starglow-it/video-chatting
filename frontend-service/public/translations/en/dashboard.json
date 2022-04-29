@@ -4,6 +4,7 @@
     "title": "Notifications",
     "readAll": "Mark all as read",
     "timeAgo": "{{time}} ago",
+    "justNow": "Just now",
     "types": {
       "0": "Joined"
     }

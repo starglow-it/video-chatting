@@ -3,13 +3,12 @@ export const receiverScheduleMessage = ({
   senderFullName,
   startAt,
   endAt,
+  comment,
 }: {
   senderFullName: string;
   templateName: string;
   startAt: string;
   endAt: string;
-}): string => `
-${senderFullName} scheduled meeting with you. \n Template ${templateName}
-Starts: ${startAt}
-Ends: ${endAt}
-`;
+  comment: string;
+}): string =>
+  `${senderFullName} scheduled meeting with you. <br> Template ${templateName} <br> Starts: ${startAt} <br> Ends: ${endAt} <br> Comment: ${comment}`;

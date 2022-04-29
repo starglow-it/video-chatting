@@ -35,7 +35,8 @@
       "title": "Meeting Error"
     },
     "notFound": "The meeting does not exist",
-    "maxParticipantsNumber": "The meeting is locked for new participants"
+    "maxParticipantsNumber": "Meeting template has reached the participant limit",
+    "requestDenied": "Your request was denied"
   },
   "noSpaces": "No spaces allowed",
   "maxLength": {

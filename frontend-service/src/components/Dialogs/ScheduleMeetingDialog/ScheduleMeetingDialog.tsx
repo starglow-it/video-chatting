@@ -16,8 +16,9 @@ import { CustomDatePicker } from '@library/custom/CustomDatePicker/CustomDatePic
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // helpers
+import { getTimeZone } from 'src/utils/time/getTimeZone';
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
-import { getTimeList, getTimestamp, TIMEZONES } from '../../../utils/timezones';
+import { getTimeList, getTimestamp, getTimeString } from '../../../utils/timezones';
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
 
 // stores
@@ -40,6 +41,7 @@ import styles from './ScheduleMeetingDialog.module.scss';
 
 // const
 import { ONE_MINUTE } from '../../../const/time/common';
+import { TIMEZONES } from '../../../const/time/timezones';
 
 const validationSchema = yup.object({
     timeZone: simpleStringSchema().required('required'),
@@ -49,9 +51,9 @@ const validationSchema = yup.object({
     date: simpleStringSchema().required('required'),
 });
 
-const timeList = getTimeList(15 * ONE_MINUTE);
+const timeList = getTimeList('00:00', 15 * ONE_MINUTE);
 
-function Component() {
+const Component = () => {
     const { scheduleMeetingDialog } = useStore($appDialogsStore);
     const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
 
@@ -69,15 +71,22 @@ function Component() {
         criteriaMode: 'all',
         resolver,
         defaultValues: {
-            timeZone: TIMEZONES[0].tzCode,
-            startAt: '00:00',
-            endAt: '00:00',
+            timeZone: getTimeZone(),
+            startAt: '',
+            endAt: '',
             comment: '',
             date: new Date(),
         },
     });
 
-    const { handleSubmit, control, setValue, register, reset } = methods;
+    const {
+        handleSubmit,
+        control,
+        setValue,
+        register,
+        reset,
+        formState: { errors },
+    } = methods;
 
     const timeZoneValue = useWatch({
         control,
@@ -100,8 +109,8 @@ function Component() {
     });
 
     useEffect(() => {
-        if (getTimestamp(startAtValue) > getTimestamp(endAtValue)) {
-            setValue('endAt', startAtValue, {
+        if (getTimestamp(startAtValue) >= getTimestamp(endAtValue || '00:00')) {
+            setValue('endAt', getTimeString(getTimestamp(startAtValue) + 15 * ONE_MINUTE), {
                 shouldValidate: true,
                 shouldDirty: true,
             });
@@ -149,7 +158,20 @@ function Component() {
         [],
     );
 
+    const renderEndTimeList = useMemo(
+        () =>
+            getTimeList(startAtValue, 15 * ONE_MINUTE).map(time => (
+                <MenuItem key={time} value={time}>
+                    {time}
+                </MenuItem>
+            )),
+        [startAtValue],
+    );
+
     const { onChange, ...restRegisterData } = register('comment', { maxLength: 500 });
+
+    const registerStartAt = register('startAt');
+
     const restDateRegisterData = register('date');
 
     const handleChangeComment = useCallback(async event => {
@@ -167,6 +189,10 @@ function Component() {
 
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.scheduleMeetingDialog,
+        });
+
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.templatePreviewDialog,
         });
     }, []);
 
@@ -189,6 +215,8 @@ function Component() {
             appDialogsApi.closeDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,
             });
+
+            reset();
         }),
         [scheduleTemplateId],
     );
@@ -246,11 +274,12 @@ function Component() {
                                         translation="startAt"
                                         selectId="startAtSelect"
                                         labelId="startAt"
-                                        {...register('startAt')}
+                                        {...registerStartAt}
                                         value={startAtValue}
                                         renderValue={renderTimeValue}
                                         list={renderTimeList}
                                         onChange={handleChangeStartAt}
+                                        error={errors?.startAt?.[0]?.message}
                                     />
                                     <CustomTypography variant="body1bold">&#45;</CustomTypography>
                                     <CustomDropdown
@@ -261,8 +290,9 @@ function Component() {
                                         {...register('endAt')}
                                         value={endAtValue}
                                         renderValue={renderTimeValue}
-                                        list={renderTimeList}
+                                        list={renderEndTimeList}
                                         onChange={handleChangeEndAt}
+                                        error={errors?.endAt?.[0]?.message}
                                     />
                                 </CustomGrid>
                                 <CustomInput

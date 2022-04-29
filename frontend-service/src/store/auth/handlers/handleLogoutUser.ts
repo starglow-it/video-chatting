@@ -1,8 +1,8 @@
-import {parseCookies} from "nookies";
-import sendRequestWithCredentials from "../../../helpers/http/sendRequestWithCredentials";
-import { ErrorState } from "../../types";
-import {logoutProfileUrl} from "../../../utils/urls";
-import {deleteAuthCookies} from "../../../helpers/http/destroyCookies";
+import { parseCookies } from 'nookies';
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
+import { ErrorState } from '../../types';
+import { logoutProfileUrl } from '../../../utils/urls';
+import { deleteAuthCookies } from '../../../helpers/http/destroyCookies';
 
 export const handleLogoutUser = async () => {
     const { refreshToken } = parseCookies();
@@ -17,4 +17,4 @@ export const handleLogoutUser = async () => {
     return {
         isAuthenticated: false,
     };
-}
+};

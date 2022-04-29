@@ -41,6 +41,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    height: 100%;
   }
 
   .iconButton {
@@ -90,10 +91,12 @@
   top: rem(23px);
   right: rem(20px);
   color: $primary-white;
+  z-index: 10;
 }
 
 .form {
   display: flex;
   height: 100%;
 }
+
 
