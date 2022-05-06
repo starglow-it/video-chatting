@@ -29,6 +29,7 @@ const MeetingUserVideoItem = memo(
         isCameraEnabled = true,
         isMicEnabled = true,
         isLocal,
+         isAuraActive = false,
         withoutName,
         isScreensharingUser = false,
     }: MeetingUserVideoItemProps) => {
@@ -57,17 +58,19 @@ const MeetingUserVideoItem = memo(
         return (
             <CustomGrid container direction="column" alignItems="center">
                 <CustomBox
-                    className={styles.media}
+                    className={clsx(styles.media, { [styles.aura]: isAuraActive && isCameraEnabled })}
                     sx={{
                         width: `${size}px`,
                         height: `${size}px`,
                     }}
                 >
-                    <MeetingUserAudioItem
-                        isLocal={isLocal}
-                        audioTrack={audioTrack}
-                        isMicEnabled={isMicEnabled}
-                    />
+                    {!isAuraActive && (
+                        <MeetingUserAudioItem
+                            isLocal={isLocal}
+                            audioTrack={audioTrack}
+                            isMicEnabled={isMicEnabled}
+                        />
+                    )}
                     <RoundedVideo
                         isLocal={isLocal}
                         isCameraActive={isCameraEnabled && !isScreensharingUser}

@@ -19,4 +19,5 @@ export type MeetingUserVideoItemProps = {
     isLocal?: boolean;
     withoutName: boolean;
     isScreensharingUser: boolean;
+    isAuraActive: boolean;
 };

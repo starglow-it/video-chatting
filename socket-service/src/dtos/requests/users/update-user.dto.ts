@@ -4,4 +4,5 @@ export class UpdateUserRequestDTO implements Partial<ICommonMeetingUserDTO> {
   id: ICommonMeetingUserDTO['id'];
   meetingUserId: ICommonMeetingUserDTO['meetingUserId'];
   username: ICommonMeetingUserDTO['username'];
+  isAuraActive: ICommonMeetingUserDTO['isAuraActive'];
 }

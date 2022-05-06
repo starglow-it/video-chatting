@@ -21,6 +21,34 @@
   }
 }
 
+.aura {
+  &:after {
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    position: absolute;
+    content: "";
+    box-shadow: 0 0 29px 40px #FF813B;
+    border: 1px solid #FF813B;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  &:before {
+    width: calc(100% + 1px);
+    height: calc(100% + 1px);
+    z-index: 1;
+    position: absolute;
+    content: "";
+    border: 1px solid #FF813B;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .usernameWrapper {
   max-width: rem(146px);
   min-width: rem(50px);

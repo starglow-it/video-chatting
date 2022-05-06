@@ -26,7 +26,6 @@ Update Staging:
   script:
     - cd deploy/develop
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker network create liveoffice_traefikpublic_test
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
   interruptible: true
 

@@ -43,6 +43,7 @@ import {
     setBackgroundAudioVolume,
 } from '../../store/other';
 import { useToggle } from '../../hooks/useToggle';
+import {VideoEffectsContext} from "../../contexts/VideoEffectContext";
 
 const DevicesSettings = memo(() => {
     const isOwner = useStore($isOwner);
@@ -68,6 +69,8 @@ const DevicesSettings = memo(() => {
             videoDevices,
         },
     } = useContext(MediaContext);
+
+    const { data: { isBlurActive } } = useContext(VideoEffectsContext);
 
     const handleToggleMic = useCallback(() => {
         if (changeStream) {
@@ -96,6 +99,10 @@ const DevicesSettings = memo(() => {
     const handleJoinMeeting = useCallback(async () => {
         if (!isStreamRequested) {
             if ((!changeStream && error === 'media.notAllowed') || (changeStream && !error)) {
+                updateLocalUserStateEvent({
+                    isAuraActive: isBlurActive
+                });
+
                 if (isOwner) {
                     emitStartMeetingEvent();
                 } else {
@@ -106,6 +113,7 @@ const DevicesSettings = memo(() => {
                     }
                     setIsUserSendEnterRequest(true);
                 }
+
                 setBackgroundAudioVolume(volume);
                 setBackgroundAudioActive(isBackgroundAudioActive);
             } else {
@@ -121,6 +129,7 @@ const DevicesSettings = memo(() => {
         isOwnerInMeeting,
         volume,
         isBackgroundAudioActive,
+        isBlurActive,
     ]);
 
     const handleCancelRequest = useCallback(async () => {

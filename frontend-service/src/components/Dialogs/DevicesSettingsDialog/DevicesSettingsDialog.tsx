@@ -25,7 +25,7 @@ import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
 
 // store
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
-import { $localUserStore, updateLocalUserStateEvent } from '../../../store/users';
+import {$localUserStore, emitUpdateUserEvent, updateLocalUserStateEvent} from '../../../store/users';
 import { $meetingStore } from '../../../store/meeting';
 import { addNotificationEvent } from '../../../store/notifications';
 import {
@@ -88,6 +88,12 @@ const DevicesSettingsDialog = memo(() => {
         if (changeStream) {
             const newStream = onChangeActiveStream();
 
+            updateLocalUserStateEvent({
+                cameraStatus: isCameraActive ? 'active' : 'inactive',
+                micStatus: isMicActive ? 'active' : 'inactive',
+                isAuraActive: isBlurActive
+            });
+
             const transformedStream = await onGetCanvasStream(newStream);
 
             if (transformedStream) {
@@ -106,10 +112,7 @@ const DevicesSettingsDialog = memo(() => {
                 message: 'meeting.devices.saved',
             });
 
-            updateLocalUserStateEvent({
-                cameraStatus: isCameraActive ? 'active' : 'inactive',
-                micStatus: isMicActive ? 'active' : 'inactive',
-            });
+            emitUpdateUserEvent({ isAuraActive: isBlurActive });
 
             setBackgroundAudioVolume(volume);
             setBackgroundAudioActive(isBackgroundAudioActive);

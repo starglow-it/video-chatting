@@ -32,6 +32,8 @@ export const VideoEffectsContext = React.createContext({
     },
 });
 
+const blurFn = addBlur();
+
 export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>): ReactElement => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -40,9 +42,10 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
     const yFallbackRef = useRef<number>();
 
     const faceDetectionRef = useRef<FaceDetection | null>();
-    const timerContextRef = useRef<BaseAudioContext | null>(null);
-    const timerNodeRef = useRef<AudioWorkletNode | null>(null);
-    const whiteNoiseRef = useRef<AudioBufferSourceNode | null>(null);
+
+    // const timerContextRef = useRef<BaseAudioContext | null>(null);
+    // const timerNodeRef = useRef<AudioWorkletNode | null>(null);
+    // const whiteNoiseRef = useRef<AudioBufferSourceNode | null>(null);
 
     const { value: isBlurActive, onToggleSwitch: handleToggleBlur } = useToggle(false);
 
@@ -128,8 +131,8 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
         requestAnimationFrame(animate);
     };
 
-    const handleStartDetection = useCallback(() => {
-        if (timerContextRef.current) {
+    // const handleStartDetection = useCallback(() => {
+        // if (timerContextRef.current) {
             // const oscillator = timerContextRef?.current.createOscillator();
             // const gain = timerContextRef?.current?.createGain();
             //
@@ -159,8 +162,8 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             // };
             //
             // timerNodeRef.current = timerNode;
-        }
-    }, []);
+        // }
+    // }, []);
 
     const handleGetActiveStream = useCallback(
         async (stream: MediaStream) => {
@@ -172,12 +175,12 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
             newStream.addTrack(audioTrack);
 
-            whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
-            timerNodeRef.current?.port.close();
-            whiteNoiseRef?.current?.stop();
-
-            whiteNoiseRef.current = null;
-            timerNodeRef.current = null;
+            // whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
+            // timerNodeRef.current?.port.close();
+            // whiteNoiseRef?.current?.stop();
+            //
+            // whiteNoiseRef.current = null;
+            // timerNodeRef.current = null;
 
             const videoElement = videoRef.current;
 
@@ -197,7 +200,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
                 }
 
                 if (isBlurActive) {
-                    videoTrack = await addBlur()(videoTrack);
+                    videoTrack = await blurFn(videoTrack);
                 }
 
                 newStream.addTrack(videoTrack);
@@ -206,7 +209,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             }
 
             if (isBlurActive) {
-                videoTrack = await addBlur()(videoTrack);
+                videoTrack = await blurFn(videoTrack);
                 newStream.addTrack(videoTrack);
 
                 return newStream;
@@ -221,9 +224,9 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
     useLayoutEffect(() => {
         (async () => {
-            const audioContext = new AudioContext();
-            timerContextRef.current = audioContext;
-            await audioContext.audioWorklet.addModule('/workers/timer.js');
+            // const audioContext = new AudioContext();
+            // timerContextRef.current = audioContext;
+            // await audioContext.audioWorklet.addModule('/workers/timer.js');
 
             try {
                 const faceDetection = new FaceDetection({
@@ -250,29 +253,27 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
         })();
 
         return () => {
-            whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
-            timerNodeRef.current?.port.close();
-            whiteNoiseRef?.current?.stop();
-
-            whiteNoiseRef.current = null;
-            timerNodeRef.current = null;
+            // whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
+            // timerNodeRef.current?.port.close();
+            // whiteNoiseRef?.current?.stop();
+            //
+            // whiteNoiseRef.current = null;
+            // timerNodeRef.current = null;
         };
     }, []);
 
-    const contextValue = useMemo(() => {
-        return {
-            actions: {
-                onGetCanvasStream: handleGetActiveStream,
-                onToggleBlur: handleToggleBlur,
-                onToggleFaceTracking: handleToggleFaceTracking,
-            },
-            data: {
-                isModelReady,
-                isBlurActive,
-                isFaceTrackingActive,
-            },
-        };
-    }, [isModelReady, isBlurActive, handleGetActiveStream, isFaceTrackingActive]);
+    const contextValue = useMemo(() => ({
+        actions: {
+            onGetCanvasStream: handleGetActiveStream,
+            onToggleBlur: handleToggleBlur,
+            onToggleFaceTracking: handleToggleFaceTracking,
+        },
+        data: {
+            isModelReady,
+            isBlurActive,
+            isFaceTrackingActive,
+        },
+    }), [isModelReady, isBlurActive, handleGetActiveStream, isFaceTrackingActive]);
 
     return (
         <VideoEffectsContext.Provider value={contextValue}>

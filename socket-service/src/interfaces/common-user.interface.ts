@@ -9,6 +9,7 @@ export interface ICommonMeetingUserDTO {
   cameraStatus: string;
   micStatus: string;
   isGenerated: boolean;
+  isAuraActive: boolean;
   meeting: ICommonMeetingDTO['id'];
   meetingUserId: number;
   profileAvatar: string;

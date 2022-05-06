@@ -82,7 +82,7 @@ export class SeederService {
     const createUsersTemplates = users.map(async user => {
       const templatesListData = templateList
         .map((template) => {
-          const isThereTemplateAssigned = user.templates.find(
+          const isThereTemplateAssigned = [...user?.templates].find(
             (existedTemplate) => {
              return existedTemplate.templateId === template.templateId;
             },

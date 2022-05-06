@@ -42,6 +42,7 @@ export type MeetingUser = {
     micStatus: string;
     profileAvatar: string;
     isGenerated: boolean;
+    isAuraActive: boolean;
     meeting: Meeting['id'];
     meetingUserId?: IAgoraRTCRemoteUser['uid'];
     media?: IAgoraRTCRemoteUser;

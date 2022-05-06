@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, {memo, useMemo} from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
@@ -61,6 +61,7 @@ const MeetingUsersVideos = memo(() => {
                         isMicEnabled={user.micStatus === 'active'}
                         userProfileAvatar={user.profileAvatar}
                         withoutName={isScreenSharing}
+                        isAuraActive={user.isAuraActive}
                         isScreensharingUser={meeting.sharingUserId === user.meetingUserId}
                     />
                 </MeetingUserVideoPositionWrapper>
@@ -88,6 +89,7 @@ const MeetingUsersVideos = memo(() => {
                     withoutName={Boolean(meeting?.sharingUserId)}
                     isScreensharingUser={localUser.meetingUserId === meeting?.sharingUserId}
                     isLocal
+                    isAuraActive={localUser.isAuraActive}
                 />
             </MeetingUserVideoPositionWrapper>
             {renderUsers}

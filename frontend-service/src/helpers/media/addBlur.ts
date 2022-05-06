@@ -1,4 +1,4 @@
-import { EffectBlur, VideoEffects } from '@vkontakte/calls-video-effects';
+import { VideoEffects, EffectBackground } from '@vkontakte/calls-video-effects';
 import { BROWSER_NAMES } from '../../types/browsers';
 import { browserData } from '../../utils/browser/detectBrowser';
 
@@ -13,21 +13,23 @@ let isBlurSupported =
     browserData.platform.type === 'desktop';
 
 export const addBlur = () => {
-    let effectBlur: EffectBlur | null = null;
+    let effectBackground: EffectBackground | null = null;
     let videoEffects: VideoEffects | null = null;
 
     return async (rawTrack: MediaStreamTrack): Promise<MediaStreamTrack> => {
         try {
             if (isBlurSupported) {
-                if (!effectBlur) {
-                    effectBlur = new EffectBlur();
+                if (!effectBackground) {
+                    effectBackground = new EffectBackground();
+
+                    effectBackground.setBackgroundImage('/images/orange.png');
                 }
 
                 if (!videoEffects) {
                     videoEffects = new VideoEffects();
                 }
 
-                return await videoEffects.setEffect(effectBlur, rawTrack);
+                return await videoEffects.setEffect(effectBackground, rawTrack);
             }
 
             return rawTrack;

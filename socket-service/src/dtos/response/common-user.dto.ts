@@ -26,6 +26,9 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
   @Expose()
   isGenerated: boolean;
 
+  @Expose()
+  isAuraActive: boolean;
+
   @Type(() => CommonMeetingDTO)
   @Transform((data) => data.obj?.meeting?.['_id']?.toString())
   meeting: ICommonMeetingDTO['id'];

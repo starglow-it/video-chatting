@@ -60,9 +60,8 @@ export class UsersGateway extends BaseGateway {
         session,
       );
 
-      const meeting = await this.meetingsService.updateMeetingById(
+      const meeting = await this.meetingsService.findById(
           user.meeting._id,
-          { sharingUserId: null },
           session,
       );
 
