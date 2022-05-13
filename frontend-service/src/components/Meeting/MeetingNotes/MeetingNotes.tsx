@@ -43,7 +43,7 @@ const MeetingNotes = memo(() => {
                 const currentLineData = acc[acc.length - 1];
                 const currentElementsNumber = currentLineData.length;
 
-                const currentHeight = 20 + currentElementsNumber * (124 + 20);
+                const currentHeight = 250 + currentElementsNumber * (124 + 20);
 
                 if (currentHeight + 124 < height) {
                     currentLineData.push(b);

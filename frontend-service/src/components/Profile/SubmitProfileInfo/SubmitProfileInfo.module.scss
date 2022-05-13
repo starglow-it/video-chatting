@@ -2,8 +2,9 @@
 @import "../../../styles/variables";
 
 .submitProfile {
-  position: sticky;
+  position: fixed;
   width: rem(397px);
+  right: 0;
   bottom: rem(20px);
   margin: rem(20px 20px 0 auto);
   padding: rem(21px 16px);

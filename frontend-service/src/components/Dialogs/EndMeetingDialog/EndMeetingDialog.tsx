@@ -21,11 +21,13 @@ import {
 
 import { AppDialogsEnum } from '../../../store/types';
 import { useLocalization } from '../../../hooks/useTranslation';
+import {$localUserStore} from "../../../store/users";
 
 const EndMeetingDialog = memo(() => {
     const router = useRouter();
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const localUser = useStore($localUserStore);
 
     const { translation } = useLocalization('meeting');
 
@@ -40,8 +42,8 @@ const EndMeetingDialog = memo(() => {
     const handleLeave = useCallback(() => {
         handleClose();
         emitLeaveMeetingEvent();
-        router.push('/dashboard');
-    }, []);
+        router.push(localUser.isGenerated ? '/welcome' : '/dashboard');
+    }, [localUser.isGenerated]);
 
     const handleEndMeeting = useCallback(async () => {
         handleClose();

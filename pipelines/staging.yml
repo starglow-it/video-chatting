@@ -28,28 +28,20 @@ Update Staging:
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
   interruptible: true
+  except: [testing]
 
-
-Update Jira Issues:
-  stage: update_jira_issues
-  image: docker:19.03.5-dind
-  before_script:
-    - apk update
-    - apk add --no-cache curl
+Update_Test:
+  stage: update
+  extends:
+    - .staging
   script:
-    - echo "${JIRA_ISSUE_UPDATER_TOKEN}"
-    - |
-      curl -X POST \
-        https://jira-issue-updater.staging.forasoft.com/update \
-        -H 'Content-Type: application/json' \
-        -H 'cache-control: no-cache' \
-        -d '{
-        "project": "LOF",
-        "from": "resolved",
-        "to": "Ready for testing",
-        "comment": "'"Build from ${CI_COMMIT_SHA}"'",
-        "token": "'"${JIRA_ISSUE_UPDATER_TOKEN}"'"
-        }'
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^testing$/'
-      when: manual
+    - cd deploy/develop
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
+  interruptible: true
+  only: [testing]
+  when: manual
+  allow_failure: false
+
+include:
+  - 'pipelines/jira.yml'

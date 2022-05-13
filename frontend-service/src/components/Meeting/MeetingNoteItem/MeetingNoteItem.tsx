@@ -45,7 +45,7 @@ const MeetingNoteItem = memo(
 
         const isOwner = meeting.ownerProfileId === localUser.profileId;
 
-        const yPosition = 100 + noteIndex * 124 + 20 * noteIndex;
+        const yPosition = 250 + noteIndex * 124 + 20 * noteIndex;
 
         const {
             value: isDragging,

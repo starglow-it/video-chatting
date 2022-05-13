@@ -1,0 +1,22 @@
+Update Jira Issues:
+  stage: update_jira_issues
+  image: docker:19.03.5-dind
+  before_script:
+    - apk update
+    - apk add --no-cache curl
+  script:
+    - echo "${JIRA_ISSUE_UPDATER_TOKEN}"
+    - |
+      curl -X POST \
+        https://jira-issue-updater.staging.forasoft.com/update \
+        -H 'Content-Type: application/json' \
+        -H 'cache-control: no-cache' \
+        -d '{
+        "project": "LOF",
+        "from": "resolved",
+        "to": "Ready for testing",
+        "comment": "'"Build from ${CI_COMMIT_SHA}"'",
+        "token": "'"${JIRA_ISSUE_UPDATER_TOKEN}"'"
+        }'
+  only: [testing]
+  needs: ["Update_Test"]

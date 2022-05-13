@@ -45,7 +45,7 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
                             remove(fieldIndex);
                         }
                     } else {
-                        append({ key: social.key, value: '' }, { shouldFocus: true });
+                        append({ key: social.key, value: 'https://' }, { shouldFocus: true });
                     }
                 };
 
@@ -72,12 +72,26 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
         () =>
             fields?.map((social, index) => {
                 const Icon = SOCIALS_ICONS[social.key];
+                const inputKey = `socials[${index}].value`
+                const fieldError = errors[inputKey]?.[0]?.message;
 
-                const fieldError = errors[`socials[${index}].value`]?.[0]?.message;
+                const {onChange, ...registerData} = register(inputKey);
 
                 const handleClearLink = () => {
                     remove(index);
                 };
+
+                const handleChange = async (event) => {
+                    const value = event.target.value;
+
+                    if (value) {
+                        await onChange(event);
+                    } else {
+                        event.target.value = 'https://';
+
+                        await onChange(event);
+                    }
+                }
 
                 return (
                     <CustomInput
@@ -100,7 +114,8 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
                                 </InputAdornment>
                             ),
                         }}
-                        {...register(`socials.${index}.value`)}
+                        onChange={handleChange}
+                        {...registerData}
                     />
                 );
             }),
@@ -122,7 +137,6 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
 
 Component.defaultProps = {
     buttonClassName: '',
-    title: 'Social'
 };
 
 export const Socials = memo(Component);
