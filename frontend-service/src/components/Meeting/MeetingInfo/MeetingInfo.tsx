@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // icons
 import { InfoIcon } from '@library/icons/InfoIcon';
@@ -29,7 +30,6 @@ import styles from './MeetingInfo.module.scss';
 import frontendConfig from '../../../const/config';
 
 import { SOCIALS_ICONS } from '../../../const/profile/socials';
-import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 const Component = (props, ref) => {
     const router = useRouter();

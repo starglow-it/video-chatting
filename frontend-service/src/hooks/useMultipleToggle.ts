@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 export const useMultipleToggle = <Keys>(
-    keys: Keys[],
+    keys: Keys[], defaultKey?: Keys
 ): {
     values: { [key: string]: boolean };
     onSwitchOn: (key: Keys) => void;
@@ -11,7 +11,7 @@ export const useMultipleToggle = <Keys>(
     const [values, setValues] = useState(() => {
         const initialState = {} as { [key: string]: boolean };
 
-        return keys.reduce((acc, b) => ({ ...acc, [b]: false }), initialState);
+        return keys.reduce((acc, b) => ({ ...acc, [b]: defaultKey === b }), initialState);
     });
 
     const handleSwitchOn = useCallback((key: Keys) => {

@@ -1,5 +1,5 @@
-import { Template } from '../../../store/types';
+import { UserTemplate } from '../../../store/types';
 
 export type ProfileTemplateProps = {
-    template: Template;
+    template: UserTemplate;
 };

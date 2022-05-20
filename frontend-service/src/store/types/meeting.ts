@@ -11,6 +11,7 @@ export type Meeting = {
     id: string;
     isMonetizationEnabled?: boolean;
     sharingUserId?: number;
+    endsAt?: number;
     mode: string;
     owner: MeetingUser['id'];
     ownerProfileId: MeetingUser['profileId'];
@@ -30,6 +31,11 @@ export enum MeetingAccessStatuses {
     Rejected = 'rejected',
     EnterName = 'enterName',
     Kicked = 'Kicked',
+}
+
+export enum MeetingSoundsEnum {
+    NoSound = 'no_sound',
+    NewAttendee = 'new_attendee',
 }
 
 export type MeetingUser = {

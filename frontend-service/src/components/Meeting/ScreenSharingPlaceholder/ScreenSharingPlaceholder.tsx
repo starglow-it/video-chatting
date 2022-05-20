@@ -18,13 +18,11 @@ const images = [
     '/images/time-clock.png',
 ];
 
-const Component = () => {
-    return (
+const Component = () => (
         <CustomGrid container direction="column" justifyContent="center" alignItems="center" className={styles.placeholder}>
             <Image src={images[getRandomNumber(3)]} width="40px" height="40px" />
             <CustomTypography variant="body2" color="colors.white.primary" nameSpace="meeting" translation="modes.screensharing.selfSharing" />
         </CustomGrid>
     );
-};
 
 export const ScreenSharingPlaceholder = memo(Component);

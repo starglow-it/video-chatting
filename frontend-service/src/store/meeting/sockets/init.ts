@@ -8,6 +8,7 @@ import {
     ON_MEETING_FINISHED,
     ON_MEETING_TEMPLATE_UPDATE,
     ON_MEETING_UPDATE,
+    ON_PLAY_SOUND,
     ON_REMOVE_MEETING_NOTE,
     ON_SEND_MEETING_NOTE,
 } from '../const/subscribeSocketEvents';
@@ -51,10 +52,12 @@ import { initiateSocketConnectionFx } from '../../socket';
 import { setMeetingErrorEvent } from '../meetingError';
 import { appDialogsApi } from '../../dialogs';
 import { $profileStore } from '../../profile';
+import {setMeetingSoundType} from "../meetingSounds";
 
 import {
     AppDialogsEnum,
     Meeting,
+    MeetingSounds,
     MeetingUser,
     Profile,
     SocketState,
@@ -166,7 +169,11 @@ forward({
         cancelAccessMeetingRequestEvent.doneData,
         updateMeetingSocketEvent.doneData,
     ],
-    to: [updateMeetingEvent, updateMeetingUsersEvent, updateLocalUserEvent],
+    to: [
+        updateMeetingEvent,
+        updateMeetingUsersEvent,
+        updateLocalUserEvent
+    ],
 });
 
 meetingSocketEventsController.watch(({ socketInstance }: SocketState) => {
@@ -207,5 +214,9 @@ meetingSocketEventsController.watch(({ socketInstance }: SocketState) => {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.meetingErrorDialog,
         });
+    });
+
+    socketInstance?.on(ON_PLAY_SOUND, (data: { soundType: MeetingSounds }) => {
+        setMeetingSoundType(data.soundType);
     });
 });

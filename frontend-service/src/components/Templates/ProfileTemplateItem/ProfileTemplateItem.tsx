@@ -8,8 +8,6 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // icon
-import { EditIcon } from '@library/icons/EditIcon';
-import { AddPeopleIcon } from '@library/icons/AddPeopleIcon';
 import { DeleteIcon } from '@library/icons/DeleteIcon';
 
 // common
@@ -17,6 +15,7 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
+import {TemplateAvatarWithInfo} from "@components/Templates/TemplateAvatarWithInfo/TemplateAvatarWithInfo";
 
 // stores
 import { createMeetingFx } from '../../../store/meetings';
@@ -25,10 +24,13 @@ import { appDialogsApi } from '../../../store/dialogs';
 // styles
 import styles from './ProfileTemplateItem.module.scss';
 
+// stores
+import { setScheduleTemplateIdEvent } from "../../../store/templates";
+import { setDeleteTemplateIdEvent } from '../../../store/profile';
+
 // types
 import { ProfileTemplateProps } from './types';
 import { AppDialogsEnum } from '../../../store/types';
-import { setDeleteTemplateIdEvent } from '../../../store/profile';
 
 const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
     const router = useRouter();
@@ -48,16 +50,20 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
         await router.push(`/meeting/${template.id}`);
     }, []);
 
-    const handleEditTemplate = useCallback(() => {
-        router.push(`/meeting/edit-template/${template.id}`);
-    }, []);
-
     const handleOpenDeleteDialog = useCallback(() => {
         setDeleteTemplateIdEvent(template.id);
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.deleteTemplateDialog,
         });
     }, [template.id]);
+
+    const handleScheduleMeeting = useCallback(() => {
+        setScheduleTemplateIdEvent(template.id);
+
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.scheduleMeetingDialog,
+        });
+    }, []);
 
     return (
         <CustomGrid
@@ -70,6 +76,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
         >
             <Image src={template.previewUrl} width="334px" height="190px" />
             <TemplateMainInfo
+                avatar={template?.user?.profileAvatar?.url}
                 show={!showPreview}
                 name={template.name}
                 description={template.description}
@@ -78,32 +85,38 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                 isNeedToShowBusinessInfo
             />
             <Fade in={showPreview}>
-                <CustomGrid
-                    className={styles.templateButtons}
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    wrap="nowrap"
-                    gap={1.5}
-                >
-                    <CustomButton
-                        onClick={handleCreateMeeting}
-                        className={styles.startMeetingBtn}
-                        nameSpace="templates"
-                        translation="buttons.startMeeting"
-                        typographyProps={{
-                            variant: 'body2',
-                        }}
+                <CustomGrid container direction="column" justifyContent="space-between" className={styles.templateMenu}>
+                    <TemplateAvatarWithInfo
+                        className={styles.avatar}
+                        name={template.name}
+                        description={template.description}
+                        avatar={template?.user?.profileAvatar?.url}
                     />
-                    <ActionButton
-                        onAction={handleEditTemplate}
-                        className={styles.editBtn}
-                        Icon={<EditIcon width="22px" height="22px" />}
-                    />
-                    <ActionButton
-                        className={styles.editBtn}
-                        Icon={<AddPeopleIcon width="22px" height="22px" />}
-                    />
+                    <CustomGrid
+                        container
+                        wrap="nowrap"
+                        gap={1.5}
+                    >
+                        <CustomButton
+                            onClick={handleCreateMeeting}
+                            className={styles.startMeetingBtn}
+                            nameSpace="templates"
+                            translation="buttons.startMeeting"
+                            typographyProps={{
+                                variant: 'body2',
+                            }}
+                        />
+                        <CustomButton
+                            variant="custom-transparent"
+                            onClick={handleScheduleMeeting}
+                            className={styles.startMeetingBtn}
+                            nameSpace="templates"
+                            translation="buttons.schedule"
+                            typographyProps={{
+                                variant: 'body2',
+                            }}
+                        />
+                    </CustomGrid>
                     <ActionButton
                         onAction={handleOpenDeleteDialog}
                         className={styles.deleteBtn}

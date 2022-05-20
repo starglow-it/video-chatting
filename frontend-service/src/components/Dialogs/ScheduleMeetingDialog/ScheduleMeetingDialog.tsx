@@ -1,25 +1,27 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
-
-import { MenuItem } from '@mui/material';
+import clsx from "clsx";
 
 // custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
-import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDatePicker } from '@library/custom/CustomDatePicker/CustomDatePicker';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import {CustomFade} from "@library/custom/CustomFade/CustomFade";
+
+// components
+import {ValueSwitcher} from "@library/common/ValuesSwitcher/ValuesSwitcher";
+import {ScheduleTime} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleTime";
+import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
 import { getTimeZone } from 'src/utils/time/getTimeZone';
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
-import { getTimeList, getTimestamp, getTimeString } from '../../../utils/timezones';
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
+import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
 
 // stores
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
@@ -31,33 +33,42 @@ import {
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
+import {ValuesSwitcherItem} from "@library/common/ValuesSwitcher/types";
 
 // validations
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 import { simpleStringSchema, simpleStringSchemaWithLength } from '../../../validation/common';
+import {emailSchema} from "../../../validation/users/email";
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
-
-// const
-import { ONE_MINUTE } from '../../../const/time/common';
-import { TIMEZONES } from '../../../const/time/timezones';
 
 const validationSchema = yup.object({
     timeZone: simpleStringSchema().required('required'),
     startAt: simpleStringSchema().required('required'),
     endAt: simpleStringSchema().required('required'),
     comment: simpleStringSchemaWithLength(500),
+    currentUserEmail: emailSchema(),
     date: simpleStringSchema().required('required'),
 });
 
-const timeList = getTimeList('00:00', 15 * ONE_MINUTE);
+const schedulePages: ValuesSwitcherItem[] = [
+    { id: 1, value: 'settings', label: 'Settings' },
+    { id: 2, value: 'invite', label: 'Invite others' }
+];
 
 const Component = () => {
     const { scheduleMeetingDialog } = useStore($appDialogsStore);
     const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
-
     const scheduleTemplateId = useStore($scheduleTemplateIdStore);
+
+    const [activeSchedulePage, setActiveSchedulePage] = useState(schedulePages[0]);
+    const [userEmails, setUserEmails] = useState<string[]>([]);
+
+    const {
+        values: { isSettingsOpen, isInviteOpen },
+        onSwitchOn: handleOpenOption,
+    } = useMultipleToggle(['isSettingsOpen', 'isInviteOpen'], 'isSettingsOpen');
 
     const resolver = useYupValidationResolver<{
         timeZone: string;
@@ -65,6 +76,7 @@ const Component = () => {
         startAt: string;
         endAt: string;
         comment: string;
+        currentUserEmail: string;
     }>(validationSchema);
 
     const methods = useForm({
@@ -75,6 +87,7 @@ const Component = () => {
             startAt: '',
             endAt: '',
             comment: '',
+            currentUserEmail: '',
             date: new Date(),
         },
     });
@@ -84,103 +97,16 @@ const Component = () => {
         control,
         setValue,
         register,
+        trigger,
         reset,
-        formState: { errors },
     } = methods;
-
-    const timeZoneValue = useWatch({
-        control,
-        name: 'timeZone',
-    });
 
     const selectedDate = useWatch({
         control,
         name: 'date',
     });
 
-    const startAtValue = useWatch({
-        control,
-        name: 'startAt',
-    });
-
-    const endAtValue = useWatch({
-        control,
-        name: 'endAt',
-    });
-
-    useEffect(() => {
-        if (getTimestamp(startAtValue) >= getTimestamp(endAtValue || '00:00')) {
-            setValue('endAt', getTimeString(getTimestamp(startAtValue) + 15 * ONE_MINUTE), {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
-        }
-    }, [startAtValue, endAtValue]);
-
-    const handleChange = useCallback(event => {
-        setValue('timeZone', event.target.value, {
-            shouldValidate: true,
-            shouldDirty: true,
-        });
-    }, []);
-
-    const handleChangeStartAt = useCallback(event => {
-        setValue('startAt', event.target.value, {
-            shouldValidate: true,
-            shouldDirty: true,
-        });
-    }, []);
-
-    const handleChangeEndAt = useCallback(event => {
-        setValue('endAt', event.target.value, {
-            shouldValidate: true,
-            shouldDirty: true,
-        });
-    }, []);
-
-    const renderTimezoneList = useMemo(
-        () =>
-            TIMEZONES.map(timezone => (
-                <MenuItem key={timezone.tzCode} value={timezone.tzCode}>
-                    {timezone.name}
-                </MenuItem>
-            )),
-        [],
-    );
-
-    const renderTimeList = useMemo(
-        () =>
-            timeList.map(time => (
-                <MenuItem key={time} value={time}>
-                    {time}
-                </MenuItem>
-            )),
-        [],
-    );
-
-    const renderEndTimeList = useMemo(
-        () =>
-            getTimeList(startAtValue, 15 * ONE_MINUTE).map(time => (
-                <MenuItem key={time} value={time}>
-                    {time}
-                </MenuItem>
-            )),
-        [startAtValue],
-    );
-
-    const { onChange, ...restRegisterData } = register('comment', { maxLength: 500 });
-
-    const registerStartAt = register('startAt');
-
     const restDateRegisterData = register('date');
-
-    const handleChangeComment = useCallback(async event => {
-        if (event.target.value.length > 500) {
-            event.target.value = event.target.value.slice(0, 500);
-        }
-
-        await onChange(event);
-    }, []);
 
     const handleClose = useCallback(() => {
         reset();
@@ -189,10 +115,6 @@ const Component = () => {
 
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.scheduleMeetingDialog,
-        });
-
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.templatePreviewDialog,
         });
     }, []);
 
@@ -210,16 +132,20 @@ const Component = () => {
                 endAt: parsedEndAt,
                 comment: data.comment,
                 timeZone: data.timeZone,
+                userEmails,
             });
 
             appDialogsApi.closeDialog({
                 dialogKey: AppDialogsEnum.scheduleMeetingDialog,
             });
 
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.downloadIcsEventDialog,
+            });
+
             reset();
-        }),
-        [scheduleTemplateId],
-    );
+            setUserEmails([]);
+    }),[scheduleTemplateId, userEmails]);
 
     const handleSelectDate = useCallback((date: Date) => {
         setValue('date', date, {
@@ -228,12 +154,37 @@ const Component = () => {
         });
     }, []);
 
-    const renderTimezonesValue = useCallback(
-        selected => TIMEZONES.find(timezone => timezone.tzCode === selected)?.name,
-        [],
-    );
+    const handleShowEnterEmails = useCallback(async () => {
+        const isThereNoErrors = await trigger();
 
-    const renderTimeValue = useCallback(selected => selected, []);
+        if (isThereNoErrors) {
+            handleOpenOption('isInviteOpen');
+            setActiveSchedulePage(schedulePages[1]);
+        }
+    }, []);
+
+    const handleChangeSchedulePage = useCallback(async (newValue: ValuesSwitcherItem) => {
+        const isThereNoErrors = await trigger();
+
+        if (isThereNoErrors) {
+            setActiveSchedulePage(newValue);
+            handleOpenOption(newValue.value === 'settings' ? 'isSettingsOpen' : 'isInviteOpen');
+        }
+    }, []);
+
+    const handleAddUserEmail = useCallback((newEmail) => {
+        setUserEmails(prev => {
+            if (!prev.some(email => email === newEmail)) {
+                return ([...prev, newEmail]);
+            }
+
+            return prev;
+        });
+    },[]);
+
+    const handleDeleteUserEmail = useCallback((oldEmail) => {
+        setUserEmails(prev => prev.filter(email => email !== oldEmail));
+    },[]);
 
     return (
         <CustomDialog
@@ -255,73 +206,50 @@ const Component = () => {
                             />
                         </CustomGrid>
                         <CustomDivider orientation="vertical" flexItem />
-                        <CustomGrid className={styles.rightSide}>
-                            <CustomGrid container gap={4}>
-                                <CustomDropdown
-                                    nameSpace="forms"
-                                    translation="editTimezone"
-                                    selectId="timezoneSelect"
-                                    labelId="timezone"
-                                    {...register('timeZone')}
-                                    value={timeZoneValue}
-                                    onChange={handleChange}
-                                    renderValue={renderTimezonesValue}
-                                    list={renderTimezoneList}
+                        <CustomGrid className={styles.rightSide} container direction="column" alignItems="center">
+                            <ValueSwitcher
+                                optionWidth={134}
+                                values={schedulePages}
+                                activeValue={activeSchedulePage}
+                                onValueChanged={handleChangeSchedulePage}
+                            />
+                            <CustomGrid className={styles.optionsWrapper}>
+                                <CustomFade open={isSettingsOpen} className={styles.optionItem}>
+                                    <ScheduleTime />
+                                </CustomFade>
+                                <CustomFade open={isInviteOpen} className={styles.optionItem}>
+                                    <ScheduleAttendees
+                                        onAddUserEmail={handleAddUserEmail}
+                                        onDeleteUserEmail={handleDeleteUserEmail}
+                                        userEmails={userEmails}
+                                    />
+                                </CustomFade>
+                            </CustomGrid>
+                            <CustomGrid
+                                container
+                                wrap="nowrap"
+                                gap={2}
+                                className={styles.buttons}
+                            >
+                                <CustomButton
+                                    nameSpace="common"
+                                    translation="buttons.cancel"
+                                    variant="custom-cancel"
+                                    onClick={handleClose}
                                 />
-                                <CustomGrid container wrap="nowrap" alignItems="center" gap={2}>
-                                    <CustomDropdown
-                                        nameSpace="forms"
-                                        translation="startAt"
-                                        selectId="startAtSelect"
-                                        labelId="startAt"
-                                        {...registerStartAt}
-                                        value={startAtValue}
-                                        renderValue={renderTimeValue}
-                                        list={renderTimeList}
-                                        onChange={handleChangeStartAt}
-                                        error={errors?.startAt?.[0]?.message}
-                                    />
-                                    <CustomTypography variant="body1bold">&#45;</CustomTypography>
-                                    <CustomDropdown
-                                        nameSpace="forms"
-                                        translation="endAt"
-                                        selectId="endAtSelect"
-                                        labelId="endAt"
-                                        {...register('endAt')}
-                                        value={endAtValue}
-                                        renderValue={renderTimeValue}
-                                        list={renderEndTimeList}
-                                        onChange={handleChangeEndAt}
-                                        error={errors?.endAt?.[0]?.message}
-                                    />
-                                </CustomGrid>
-                                <CustomInput
-                                    nameSpace="forms"
-                                    translation="comment"
-                                    multiline
-                                    rows={4}
-                                    onChange={handleChangeComment}
-                                    {...restRegisterData}
+                                <CustomButton
+                                    className={clsx({ [styles.hide]: isInviteOpen })}
+                                    nameSpace="common"
+                                    translation="buttons.continue"
+                                    onClick={handleShowEnterEmails}
                                 />
-                                <CustomGrid
-                                    container
-                                    wrap="nowrap"
-                                    gap={2}
-                                    className={styles.buttons}
-                                >
-                                    <CustomButton
-                                        nameSpace="common"
-                                        translation="buttons.cancel"
-                                        variant="custom-cancel"
-                                        onClick={handleClose}
-                                    />
-                                    <CustomButton
-                                        disabled={isScheduleMeetingInProgress}
-                                        nameSpace="common"
-                                        translation="buttons.schedule"
-                                        type="submit"
-                                    />
-                                </CustomGrid>
+                                <CustomButton
+                                    className={clsx({ [styles.hide]: !isInviteOpen })}
+                                    disabled={isScheduleMeetingInProgress || !userEmails?.length}
+                                    nameSpace="common"
+                                    translation="buttons.schedule"
+                                    onClick={onSubmit}
+                                />
                             </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>

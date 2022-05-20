@@ -5,23 +5,18 @@
   position: absolute;
   inset: 0;
   padding: rem(18px 15px);
-  grid: "participants title" min-content
-        "participants description" min-content
+  grid: "avatar avatar" min-content
+        "avatar avatar" min-content
         "emptySpace emptySpace" 1fr
         "businessInfo  businessInfo" min-content
         / min-content auto;
-
+  grid-template-columns: 1fr fit-content(20%);
   z-index: 10;
 
-  .participants {
+  .avatar {
+    width: 100%;
     position: relative;
-    grid-area: participants;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: rem(38px);
-    height: rem(38px);
-    margin: 0 rem(12px) 0 0;
+    grid-area: avatar;
   }
 
   .title {

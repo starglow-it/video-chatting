@@ -1,0 +1,33 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.wrapper {
+  width: min-content;
+  position: relative;
+  background: rgba($normal-gray-scale, 0.25);
+  border-radius: rem(6px);
+
+  .item {
+    width: var(--width);
+    padding: rem(5px 12px);
+    height: rem(30px);
+    cursor: pointer;
+  }
+
+  .activeItem {
+    position: absolute;
+    top: 0;
+    left: var(--left);
+
+    width: var(--width);
+    height: 32px;
+
+    background: #FFFFFF;
+    border: 1px solid rgba($normal-gray-scale, 0.4);
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px -2px rgba($primary-black, 0.1);
+    border-radius: rem(6px);
+
+    transition: left 200ms ease-in;
+  }
+}

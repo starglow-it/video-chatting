@@ -1,7 +1,7 @@
-import { Profile, ProfileAvatar, Template } from '../../../store/types';
+import {Profile, ProfileAvatarT, Template} from '../../../store/types';
 
 export type TemplateGeneralInfoProps = {
-    profileAvatar: ProfileAvatar['url'] | string;
+    profileAvatar: ProfileAvatarT['url'] | string;
     userName: Profile['fullName'];
     companyName: Template['companyName'];
     signBoard: Profile['signBoard'];

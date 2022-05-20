@@ -6,6 +6,7 @@ export interface ICommonMeetingDTO {
   isMonetizationEnabled: boolean;
   mode: string;
   ownerProfileId: string;
+  endsAt: number;
   owner: ICommonMeetingUserDTO['id'];
   instanceId: string;
   users: ICommonMeetingUserDTO[];

@@ -18,49 +18,42 @@
   }
 }
 
-.templateButtons {
+.templateMenu {
   position: absolute;
   inset: 0;
+
+  padding: rem(18px 15px);
+
   background: rgba($primary-black, 0.6);
   backdrop-filter: blur(24px);
 
   z-index: 11;
 
   .startMeetingBtn {
-    width: auto;
     padding: rem(8px 16px);
   }
+}
 
-  .editBtn {
-    width: rem(38px);
-    height: rem(38px);
-    background: transparent;
-    color: $primary-white;
-    border-radius: rem(10px);
+.avatar {
+  width: 250px;
+}
+
+.deleteBtn {
+  position: absolute;
+  top: rem(16px);
+  right: rem(16px);
+  width: rem(38px);
+  height: rem(38px);
+  background: transparent;
+  color: $primary-white;
+  border-radius: rem(10px);
+  border: rem(1px) solid $primary-white;
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &:hover {
     border: rem(1px) solid $primary-white;
-    transition: color 200ms ease-in-out, background 200ms ease-in-out;
-
-    &:hover {
-      border: rem(1px) solid $primary-white;
-      background: $primary-white;
-      color: $primary-black;
-    }
-  }
-
-  .deleteBtn {
-    width: rem(38px);
-    height: rem(38px);
-    background: transparent;
-    color: $primary-white;
-    border-radius: rem(10px);
-    border: rem(1px) solid $primary-white;
-    transition: color 200ms ease-in-out, background 200ms ease-in-out;
-
-    &:hover {
-      border: rem(1px) solid $primary-white;
-      background: $primary-white;
-      color: $primary-black;
-    }
+    background: $primary-white;
+    color: $primary-black;
   }
 }
 

@@ -1,4 +1,4 @@
-import { BusinessCategory, Language, ProfileAvatar, SocialLink } from './profile';
+import { BusinessCategory, Language, ProfileAvatarT, SocialLink } from './profile';
 import { MeetingInstance } from './meeting';
 
 export type Template = {
@@ -40,7 +40,7 @@ export type UserTemplate = {
     socials: SocialLink[];
     meetingInstance?: MeetingInstance;
     user?: {
-        profileAvatar: ProfileAvatar;
+        profileAvatar: ProfileAvatarT;
     };
     usersPosition: { top: number; left: number }[];
 };

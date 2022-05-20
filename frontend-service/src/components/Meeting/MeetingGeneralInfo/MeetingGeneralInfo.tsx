@@ -1,8 +1,11 @@
-import React, { memo } from 'react';
+import React, {memo, useEffect} from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
 import Image from 'next/image';
+
+// hooks
+import {useCountDown} from "../../../hooks/useCountDown";
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -16,10 +19,14 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import styles from './MeetingGeneralInfo.module.scss';
 
 // store
-import {$isOwner, $meetingTemplateStore} from '../../../store/meeting';
+import {$isOwner, $meetingStore, $meetingTemplateStore} from '../../../store/meeting';
+
+import {formatCountDown} from "../../../utils/time/formatCountdown";
+import {ONE_MINUTE} from "../../../const/time/common";
 
 const MeetingGeneralInfo = memo(() => {
     const isOwner = useStore($isOwner);
+    const meeting = useStore($meetingStore);
     const meetingTemplate = useStore($meetingTemplateStore);
 
     const { control } = useFormContext();
@@ -40,6 +47,14 @@ const MeetingGeneralInfo = memo(() => {
         control,
         name: 'fullName',
     });
+
+    const { value: meetingEndsAt, onStartCountDown } = useCountDown((meeting.endsAt - Date.now()) / 1000);
+
+    const isAbove10Minutes = meetingEndsAt * 1000 < 10 * ONE_MINUTE;
+
+    useEffect(() => {
+        onStartCountDown();
+    }, []);
 
     return (
         <CustomGrid
@@ -67,7 +82,7 @@ const MeetingGeneralInfo = memo(() => {
                     height={isThereSignBoard ? '60px' : '40px'}
                     userName={isOwner ? fullName : meetingTemplate.fullName}
                 />
-                <CustomBox className={styles.companyName}>
+                <CustomGrid container direction="column" alignItems={isThereSignBoard ? "center" : "flex-start"} className={styles.companyName}>
                     <CustomTypography
                         color="colors.white.primary"
                         className={clsx(styles.companyNameTitle, {
@@ -77,7 +92,22 @@ const MeetingGeneralInfo = memo(() => {
                     >
                         {isOwner ? companyName : meetingTemplate.companyName}
                     </CustomTypography>
-                </CustomBox>
+                    <CustomBox>
+                        <CustomTypography
+                            color={`colors.${isAbove10Minutes ? 'red': 'white'}.primary`}
+                            variant="body3"
+                        >
+                            Ends in
+                        </CustomTypography>
+                        &nbsp;
+                        <CustomTypography
+                            color={`colors.${isAbove10Minutes ? 'red': 'white'}.primary`}
+                            variant="body3bold"
+                        >
+                            {formatCountDown(meetingEndsAt * 1000)}
+                        </CustomTypography>
+                    </CustomBox>
+                </CustomGrid>
             </CustomGrid>
         </CustomGrid>
     );

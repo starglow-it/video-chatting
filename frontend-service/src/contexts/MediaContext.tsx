@@ -4,10 +4,12 @@ import { getMediaStream } from '../helpers/media/getMediaStream';
 import { DeviceInputKindEnum } from '../const/media/DEVICE_KINDS';
 import { stopStream } from '../helpers/media/stopStream';
 
+type CustomMediaStream = MediaStream | null | undefined;
+
 type MediaContextType = {
     data: {
-        changeStream: MediaStream | null;
-        activeStream: MediaStream | null;
+        changeStream: CustomMediaStream;
+        activeStream: CustomMediaStream;
         error: string;
         videoDevices: MediaDeviceInfo[];
         audioDevices: MediaDeviceInfo[];
@@ -23,7 +25,8 @@ type MediaContextType = {
         onChangeStream:
             | (({ kind, deviceId }: ChangeMediaStreamData) => Promise<void>)
             | (() => void);
-        onChangeActiveStream: () => MediaStream | null;
+        onChangeActiveStream: () => CustomMediaStream;
+        onGetNewStream: () => Promise<CustomMediaStream>;
         onInitDevices: () => Promise<void>;
     };
 };
@@ -53,6 +56,7 @@ export const MediaContext = React.createContext<MediaContextType>({
     },
     actions: {
         onChangeStream: () => {},
+        onGetNewStream: async () => null,
         onChangeActiveStream: () => null,
         onInitDevices: async () => {},
         onToggleCamera: () => {},
@@ -66,8 +70,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
     const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
     const [isMicActive, setIsMicActive] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-    const [activeStream, setActiveStream] = useState<MediaStream | null>(null);
-    const [changeStream, setChangeStream] = useState<MediaStream | null>(null);
+    const [activeStream, setActiveStream] = useState<CustomMediaStream>(null);
+    const [changeStream, setChangeStream] = useState<CustomMediaStream>(null);
     const [currentAudioDevice, setCurrentAudioDevice] = useState('');
     const [currentVideoDevice, setCurrentVideoDevice] = useState('');
     const [isStreamRequested, setIsStreamRequested] = useState(false);

@@ -21,6 +21,8 @@
   }
 
   .companyName {
+    max-width: rem(500px);
+    width: auto;
     padding: rem(7px 12px);
     background: rgba($primary-black, 0.6);
     backdrop-filter: blur(rem(28px));
@@ -31,14 +33,13 @@
 
       &.withoutBoard {
         @extend %text-ellips;
-        margin: rem(0 0 0 8px);
         max-width: rem(300px);
       }
 
       &.withBoard {
         max-width: rem(180px);
+        @extend %text-ellips;
         text-align: center;
-        @include multiline-clip(2);
       }
     }
   }

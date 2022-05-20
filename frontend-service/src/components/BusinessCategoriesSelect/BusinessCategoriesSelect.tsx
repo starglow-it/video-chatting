@@ -87,6 +87,9 @@ const BusinessCategoriesSelect = memo(
                 renderValue={renderValues}
                 IconComponent={PlusAddIcon}
                 list={renderBusinessCategoriesList}
+                classes={{
+                    icon: styles.dropDownIcon
+                }}
             />
         );
     },

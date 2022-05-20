@@ -17,5 +17,6 @@
     "fullName": "What is your name?",
     "profileAvatar": "Upload profile image (optional)",
     "dragAndDrop": "Tap or drag here"
-  }
+  },
+  "addUserEmail": "Add user email"
 }

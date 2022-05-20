@@ -10,7 +10,6 @@ export const $discoveryTemplatesStore =
     templatesDomain.store<EntityList<UserTemplate>>(initialTemplatesStore);
 export const $scheduleTemplateIdStore = templatesDomain.store<UserTemplate['id']>('');
 export const $scheduleEventLinkStore = templatesDomain.store<string>('');
-export const $isIcsEventLinkAvailableStore = $scheduleEventLinkStore.map(state => Boolean(state));
 
 export const setScheduleTemplateIdEvent = templatesDomain.event<string>(
     'setScheduleTemplateIdEvent',
@@ -26,7 +25,7 @@ export const getUsersTemplatesFx = templatesDomain.effect<
 >('getUsersTemplatesFx');
 
 export const sendScheduleInviteFx = templatesDomain.effect<
-    { templateId: string; timeZone: string; comment: string; startAt: any; endAt: any },
+    { templateId: string; timeZone: string; comment: string; startAt: any; endAt: any, userEmails: string[] },
     string | undefined,
     void
 >('sendScheduleInviteFx');

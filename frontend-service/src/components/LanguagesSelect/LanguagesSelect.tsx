@@ -77,6 +77,9 @@ const LanguagesSelect = memo(({ nameSpace, translation }: LanguagesSelectProps) 
             renderValue={renderValues}
             IconComponent={PlusAddIcon}
             list={renderLanguages}
+            classes={{
+                icon: styles.dropDownIcon
+            }}
         />
     );
 });

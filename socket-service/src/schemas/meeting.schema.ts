@@ -46,6 +46,11 @@ export class Meeting {
   maxParticipants: number;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+  })
+  endsAt: number;
+
+  @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MeetingUser' }],
   })
   users: MeetingUserDocument[];

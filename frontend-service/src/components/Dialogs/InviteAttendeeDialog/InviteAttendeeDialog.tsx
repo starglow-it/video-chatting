@@ -1,15 +1,11 @@
-import React, { memo, useCallback } from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
-import { useForm, FormProvider, useWatch } from 'react-hook-form';
-import Image from 'next/image';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from 'next/router';
 
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
 import { sendInviteEmailFx } from '../../../store/users/init';
@@ -21,16 +17,20 @@ import { AppDialogsEnum } from '../../../store/types';
 import styles from './InviteAttendeeDialog.module.scss';
 
 import { emailSchema } from '../../../validation/users/email';
+import {ScheduleAttendees} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees";
 
 const validationSchema = yup.object({
-    email: emailSchema().required('required'),
+    currentUserEmail: emailSchema(),
 });
 
 const InviteAttendeeDialog = memo(() => {
     const router = useRouter();
     const { inviteAttendeeByEmailDialog } = useStore($appDialogsStore);
+    const isInviteEmailsSent = useStore(sendInviteEmailFx.pending);
 
-    const resolver = useYupValidationResolver<{ email: string }>(validationSchema);
+    const [userEmails, setUserEmails] = useState<string[]>([]);
+
+    const resolver = useYupValidationResolver<{ currentUserEmail: string }>(validationSchema);
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -39,21 +39,14 @@ const InviteAttendeeDialog = memo(() => {
 
     const {
         handleSubmit,
-        register,
-        control,
-        reset,
-        formState: { errors },
+        reset
     } = methods;
 
-    const emailValue = useWatch({
-        control,
-        name: 'email',
-    });
-
-    const onSubmit = handleSubmit(async (data: { email: string }) => {
-        await sendInviteEmailFx({ ...data, meetingId: router?.query?.token });
+    const onSubmit = useCallback(handleSubmit(async () => {
+        await sendInviteEmailFx({ userEmails, meetingId: router?.query?.token });
+        reset();
         handleClose();
-    });
+    }),[]);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -61,48 +54,51 @@ const InviteAttendeeDialog = memo(() => {
         });
     }, []);
 
-    const handleResetField = useCallback(() => {
-        reset({ email: '' });
-    }, []);
+    const handleAddUserEmail = useCallback((newEmail) => {
+        setUserEmails(prev => {
+            if (!prev.some(email => email === newEmail)) {
+                return ([...prev, newEmail]);
+            }
 
-    const currentEmailErrorMessage: string = errors?.email?.[0]?.message;
+            return prev;
+        });
+    },[]);
+
+    const handleDeleteUserEmail = useCallback((oldEmail) => {
+        setUserEmails(prev => prev.filter(email => email !== oldEmail));
+    },[]);
 
     return (
         <CustomDialog
             contentClassName={styles.content}
             open={inviteAttendeeByEmailDialog}
-            onClose={handleClose}
         >
-            <CustomGrid container direction="column" alignItems="center">
-                <CustomGrid container justifyContent="center" className={styles.titleContent}>
-                    <CustomBox className={styles.image}>
-                        <Image width="30" height="30" src="/images/email.png" alt="email" />
-                    </CustomBox>
-                    <CustomTypography
-                        variant="h4bold"
-                        nameSpace="meeting"
-                        translation="invite.emailTitle"
-                    />
-                </CustomGrid>
-                <FormProvider {...methods}>
-                    <form onSubmit={onSubmit} className={styles.form}>
-                        <CustomGrid container>
-                            <EmailInput
-                                error={currentEmailErrorMessage}
-                                onClear={handleResetField}
-                                {...register('email')}
+            <FormProvider {...methods}>
+                <form onSubmit={onSubmit} className={styles.form}>
+                    <CustomGrid container direction="column" alignItems="center" gap={2}>
+                        <ScheduleAttendees
+                            className={styles.emails}
+                            onAddUserEmail={handleAddUserEmail}
+                            onDeleteUserEmail={handleDeleteUserEmail}
+                            userEmails={userEmails}
+                        />
+                        <CustomGrid container wrap="nowrap" gap={2}>
+                            <CustomButton
+                                nameSpace="common"
+                                translation="buttons.cancel"
+                                variant="custom-cancel"
+                                onClick={handleClose}
                             />
                             <CustomButton
-                                disabled={!emailValue}
-                                className={styles.button}
-                                type="submit"
+                                onClick={onSubmit}
                                 nameSpace="meeting"
-                                translation="buttons.send"
+                                translation="invite.sendInvitation"
+                                disabled={!userEmails?.length || isInviteEmailsSent}
                             />
                         </CustomGrid>
-                    </form>
-                </FormProvider>
-            </CustomGrid>
+                    </CustomGrid>
+                </form>
+            </FormProvider>
         </CustomDialog>
     );
 });

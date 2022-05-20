@@ -14,14 +14,15 @@ import { plainToClass } from 'class-transformer';
 import {
   ANSWER_ACCESS_REQUEST,
   CANCEL_ACCESS_REQUEST,
-  JOIN_WAITING_ROOM,
   END_MEETING,
+  JOIN_WAITING_ROOM,
   LEAVE_MEETING,
   SEND_ACCESS_REQUEST,
   START_MEETING,
 } from '../const/socketEvents.const';
 import {
   MEETING_FINISHED,
+  PLAY_SOUND,
   RECEIVE_ACCESS_REQUEST,
   REMOVE_USERS,
   SEND_MEETING_ERROR,
@@ -49,6 +50,7 @@ import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
 
 import { AccessStatusEnum } from '../types/accessStatus.enum';
 import { TimeoutTypesEnum } from '../types/timeoutTypes.enum';
+import { MeetingSounds } from '@shared/types/meeting-sounds.enum';
 
 import { getRandomNumber } from '../utils/getRandomNumber';
 import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
@@ -128,17 +130,23 @@ export class MeetingsGateway
           }
 
           if (isOwner && plainUser?.accessStatus !== AccessStatusEnum.Waiting) {
-            this.taskService.addTimeout({
-              name: `meeting:finish:${plainMeeting.id}`,
-              ts: getTimeoutTimestamp({
-                type: TimeoutTypesEnum.Minutes,
-                value: 15,
-              }),
-              callback: this.endMeeting.bind(this, {
-                meetingId: meeting._id,
-                client,
-              }),
+            const endTimestamp = getTimeoutTimestamp({
+              type: TimeoutTypesEnum.Minutes,
+              value: 15,
             });
+
+            if (meeting.endsAt - Date.now() > endTimestamp) {
+              this.taskService.deleteTimeout({ name: `meeting:finish:${plainMeeting.id}` });
+
+              this.taskService.addTimeout({
+                name: `meeting:finish:${plainMeeting.id}`,
+                ts: endTimestamp,
+                callback: this.endMeeting.bind(this, {
+                  meetingId: meeting._id,
+                  client,
+                }),
+              });
+            }
           }
 
           const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
@@ -297,6 +305,33 @@ export class MeetingsGateway
 
       await meeting.populate('users');
 
+      if (!meeting.endsAt) {
+        const endsAtTimeout = getTimeoutTimestamp({
+          type: TimeoutTypesEnum.Minutes,
+          value: 90,
+        });
+
+        meeting.endsAt = Date.now() + endsAtTimeout;
+
+        await meeting.save();
+
+        this.taskService.addTimeout({
+          name: `meeting:finish:${message.meetingId}`,
+          ts: endsAtTimeout,
+          callback: this.endMeeting.bind(this, {
+            meetingId: meeting._id,
+          }),
+        });
+      } else {
+        this.taskService.addTimeout({
+          name: `meeting:finish:${message.meetingId}`,
+          ts: meeting.endsAt - Date.now(),
+          callback: this.endMeeting.bind(this, {
+            meetingId: meeting._id,
+          }),
+        });
+      }
+
       const plainUser = plainToClass(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
@@ -398,6 +433,10 @@ export class MeetingsGateway
               user: plainUser,
             },
           );
+
+          this.emitToSocketId(meeting?.owner?.socketId, PLAY_SOUND, {
+            soundType: MeetingSounds.NewAttendee,
+          });
         }
 
         return {
@@ -586,6 +625,8 @@ export class MeetingsGateway
         session,
       );
 
+      this.taskService.deleteTimeout({ name: `meeting:finish:${message.meetingId}` });
+
       this.emitToRoom(`meeting:${message.meetingId}`, MEETING_FINISHED, {});
     });
   }
@@ -629,14 +670,20 @@ export class MeetingsGateway
           const isOwner = plainMeeting.owner === plainUser.id;
 
           if (isOwner) {
-            this.taskService.addTimeout({
-              name: `meeting:finish:${plainMeeting.id}`,
-              ts: getTimeoutTimestamp({
-                type: TimeoutTypesEnum.Minutes,
-                value: 15,
-              }),
-              callback: this.endMeeting.bind(this, message, socket),
+            const endTimestamp = getTimeoutTimestamp({
+              type: TimeoutTypesEnum.Minutes,
+              value: 15,
             });
+
+            if (meeting.endsAt - Date.now() > endTimestamp) {
+              this.taskService.deleteTimeout({ name: `meeting:finish:${plainMeeting.id}` });
+
+              this.taskService.addTimeout({
+                name: `meeting:finish:${plainMeeting.id}`,
+                ts: endTimestamp,
+                callback: this.endMeeting.bind(this, message, socket),
+              });
+            }
           }
         }
 

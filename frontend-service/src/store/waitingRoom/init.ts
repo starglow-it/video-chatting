@@ -16,7 +16,7 @@ import {
     ON_SEND_DASHBOARD_NOTIFICATION,
 } from './const/subscribeSocketEvents';
 import { initiateSocketConnectionFx } from '../socket';
-import { $meetingTemplateStore, getMeetingTemplateFx, joinMeetingEventWithData } from '../meeting';
+import {$meetingTemplateStore, getMeetingTemplateFx, joinMeetingEventWithData} from '../meeting';
 import { setDashboardNotifications } from '../dashboardNotifications';
 
 import { DashboardNotification } from '../types/dashboard';

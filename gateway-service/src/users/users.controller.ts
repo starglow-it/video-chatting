@@ -61,7 +61,7 @@ export class UsersController {
     `;
 
     await this.notificationService.sendEmail({
-      to: data.email,
+      to: data.userEmails,
       message,
     });
   }

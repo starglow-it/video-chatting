@@ -1,36 +1,38 @@
-import React, { memo, useCallback, useContext, useEffect } from 'react';
-import { useStore } from 'effector-react';
+import React, {memo, useCallback, useContext, useEffect} from 'react';
+import {useStore} from 'effector-react';
 
 // helpers
-import { usePrevious } from 'src/hooks/usePrevious';
+import {usePrevious} from 'src/hooks/usePrevious';
+import {emptyFunction} from '../../../utils/functions/emptyFunction';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
 
 // components
-import { MeetingControlPanel } from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
-import { MeetingUsersVideos } from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
-import { MeetingEndControls } from '@components/Meeting/MeetingEndControls/MeetingEndControls';
-import { MeetingNotes } from '@components/Meeting/MeetingNotes/MeetingNotes';
-import { MeetingSettingsPanel } from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
-import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
-import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { DevicesSettingsDialog } from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
-import { EndMeetingDialog } from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
-import { InviteAttendeeDialog } from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
-import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKickDialog';
-import { AudioDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/AudioDeviceSetUpButton';
-import { VideoDeviceSetUpButton } from '@components/Media/DeviceSetUpButtons/VideoDeviceSetUpButton';
-import { ScreenSharingButton } from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
-import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
-import { emptyFunction } from '../../../utils/functions/emptyFunction';
+import {MeetingControlPanel} from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
+import {MeetingUsersVideos} from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
+import {MeetingEndControls} from '@components/Meeting/MeetingEndControls/MeetingEndControls';
+import {MeetingNotes} from '@components/Meeting/MeetingNotes/MeetingNotes';
+import {MeetingSettingsPanel} from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
+import {MeetingGeneralInfo} from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
+import {MeetingBackgroundVideo} from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import {MeetingSounds} from "@components/Meeting/MeetingSounds/MeetingSounds";
+import {DevicesSettingsDialog} from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
+import {EndMeetingDialog} from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
+import {InviteAttendeeDialog} from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
+import {UserToKickDialog} from '@components/Dialogs/UserToKickDialog/UserToKickDialog';
+import {AudioDeviceSetUpButton} from '@components/Media/DeviceSetUpButtons/AudioDeviceSetUpButton';
+import {VideoDeviceSetUpButton} from '@components/Media/DeviceSetUpButtons/VideoDeviceSetUpButton';
+import {ScreenSharingButton} from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
+import {ScreenSharingLayout} from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
+import {CopyMeetingLinkDialog} from "@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog";
 
 // misc
-import { AgoraController } from '../../../controllers/VideoChatController';
+import {AgoraController} from '../../../controllers/VideoChatController';
 
 // context
-import { MediaContext } from '../../../contexts/MediaContext';
-import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
+import {MediaContext} from '../../../contexts/MediaContext';
+import {VideoEffectsContext} from '../../../contexts/VideoEffectContext';
 
 // styles
 import styles from './MeetingView.module.scss';
@@ -51,9 +53,10 @@ import {
     setMeetingUserMediaEvent,
     updateLocalUserStateEvent,
 } from '../../../store/users';
+import {appDialogsApi} from "../../../store/dialogs";
 
 // types
-import { MeetingAccessStatuses } from '../../../store/types';
+import {AppDialogsEnum, MeetingAccessStatuses} from '../../../store/types';
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
@@ -162,8 +165,14 @@ const MeetingView = memo(() => {
     }, [localUser.accessStatus, isModelReady]);
 
     useEffect(
-        () => () => {
-            AgoraController.leave();
+        () => {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
+            });
+
+            return () => {
+                AgoraController.leave();
+            }
         },
         [],
     );
@@ -217,6 +226,8 @@ const MeetingView = memo(() => {
             <EndMeetingDialog />
             <InviteAttendeeDialog />
             <UserToKickDialog />
+            <MeetingSounds />
+            <CopyMeetingLinkDialog />
         </CustomGrid>
     );
 });

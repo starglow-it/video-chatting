@@ -63,7 +63,7 @@ export class VideoChatController {
         onSharingStopped,
     }: {
         channel: string;
-        uid: IAgoraRTCRemoteUser['uid'];
+        uid: IAgoraRTCRemoteUser['uid'] | undefined;
         onUserPublished: (user: IAgoraRTCRemoteUser) => void;
         onUserUnPublished: (user: IAgoraRTCRemoteUser) => void;
         onUserJoined: (user: IAgoraRTCRemoteUser) => void;

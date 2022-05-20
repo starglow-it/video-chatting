@@ -11,7 +11,7 @@ export const useCountDown = (initialValue: number): UseCountDownReturn => {
     const intervalRef = useRef<number>();
 
     const handleStartCountDown = useCallback(() => {
-        setCountdown(initialValue);
+        setCountdown(Math.floor(initialValue));
         intervalRef.current = setInterval(() => {
             setCountdown(prev => {
                 if (!prev) {

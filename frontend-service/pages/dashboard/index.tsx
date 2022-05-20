@@ -17,7 +17,7 @@ const TemplatesPage: NextPage = (): JSX.Element => (
 );
 
 TemplatesPage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'templates', 'dashboard', 'notifications', 'profile'],
+    namespacesRequired: ['common', 'templates', 'dashboard', 'notifications', 'profile', 'forms'],
 });
 
 export default enhance(TemplatesPage);

@@ -1,0 +1,28 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.wrapper {
+  width: rem(500px);
+  padding: rem(40px);
+}
+
+.linkWrapper {
+  background: $light-gray-scale;
+  border: 1px solid rgba($normal-gray-scale, 0.6);
+  border-radius: rem(10px);
+  padding: rem(16px 10px);
+  max-width: rem(320px);
+}
+
+.copyLink {
+  margin: rem(28px 0 40px 0);
+}
+
+.copyButton {
+  width: rem(84px);
+}
+
+.linkText {
+  @extend %text-ellips;
+}

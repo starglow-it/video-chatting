@@ -25,7 +25,7 @@ export type Language = {
     key: string;
 };
 
-export type ProfileAvatar = {
+export type ProfileAvatarT = {
     id?: string;
     url: string;
     size: number;
@@ -36,7 +36,7 @@ export type Profile = {
     id: string;
     fullName: string;
     position: string;
-    profileAvatar: ProfileAvatar;
+    profileAvatar: ProfileAvatarT;
     companyName: string;
     email: string;
     contactEmail: string;

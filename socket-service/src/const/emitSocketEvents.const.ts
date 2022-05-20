@@ -12,6 +12,7 @@ export const SEND_MEETING_NOTE = 'meeting:notes:create';
 export const REMOVE_MEETING_NOTE = 'meeting:notes:delete';
 export const SEND_MEETING_NOTES = 'meeting:notes:get';
 export const SEND_MEETING_ERROR = 'meeting:error';
+export const PLAY_SOUND = 'meeting:sounds.play';
 
 export default {
   MEETING_FINISHED,
@@ -26,4 +27,5 @@ export default {
   REMOVE_MEETING_NOTE,
   SEND_MEETING_NOTES,
   SEND_MEETING_ERROR,
+  PLAY_SOUND,
 };

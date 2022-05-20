@@ -17,4 +17,5 @@ export const initialProfileState: Profile = {
     socials: [],
     businessCategories: [],
     templates: [],
+    signBoard: 'default'
 };

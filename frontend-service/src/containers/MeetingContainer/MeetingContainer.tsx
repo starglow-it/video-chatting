@@ -21,6 +21,7 @@ import { appDialogsApi } from '../../store/dialogs';
 import {
     $meetingTemplateStore,
     $isOwner,
+    $isUserSendEnterRequest,
     resetMeetingStore,
     getMeetingTemplateFx,
     joinMeetingEventWithData,
@@ -52,6 +53,7 @@ const MeetingContainer = memo(() => {
     const meetingUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
 
     useEffect(() => {
         (async () => {
@@ -84,11 +86,12 @@ const MeetingContainer = memo(() => {
             meetingUser.accessStatus === MeetingAccessStatuses.Waiting &&
             meetingTemplate?.meetingInstance?.serverIp &&
             meetingUser.id &&
-            !isOwner
+            !isOwner &&
+            isUserSentEnterRequest
         ) {
             emitEnterMeetingEvent();
         }
-    }, [meetingUser.accessStatus, meetingTemplate?.meetingInstance?.serverIp, isOwner]);
+    }, [meetingUser.accessStatus, meetingTemplate?.meetingInstance?.serverIp, isOwner, isUserSentEnterRequest]);
 
     return (
         <>

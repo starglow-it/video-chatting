@@ -61,8 +61,8 @@ export class UsersGateway extends BaseGateway {
       );
 
       const meeting = await this.meetingsService.findById(
-          user.meeting._id,
-          session,
+        user.meeting._id,
+        session,
       );
 
       await meeting.populate('users');

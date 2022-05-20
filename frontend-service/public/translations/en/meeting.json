@@ -12,6 +12,7 @@
   "over": "Meeting is over",
   "kicked": "You have been removed from the meeting",
   "waitForHost": "Waiting for host",
+  "meetingReady": "Your scene is ready",
   "meetingInfo": {
     "title": "Meeting info",
     "company": "Company",
@@ -41,7 +42,9 @@
     "emailTitle": "Email invitation",
     "copyLink": "Copy link",
     "sendInvite": "Send invite email",
-    "copyMeetingInfo": "Copy meeting info"
+    "copyMeetingInfo": "Copy meeting info",
+    "inviteButton": "Invite with email",
+    "sendInvitation": "Send invitations"
   },
   "enterName": {
     "title": "Welcome",

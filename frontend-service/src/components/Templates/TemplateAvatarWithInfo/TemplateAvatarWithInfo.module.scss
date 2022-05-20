@@ -1,0 +1,24 @@
+@import "../../../styles/rem";
+@import "../../../styles/mixins";
+
+.avatar {
+  width: rem(38px);
+  height: rem(38px);
+  margin: 0 rem(12px) 0 0;
+  flex: 1 0 auto;
+}
+
+.title {
+  width: 100%;
+  @extend %text-ellips;
+}
+
+.description {
+  width: 100%;
+  @extend %text-ellips;
+}
+
+.textWrapper {
+  flex: 1 1 100%;
+  overflow: hidden;
+}

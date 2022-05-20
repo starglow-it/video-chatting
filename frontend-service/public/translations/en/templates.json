@@ -2,14 +2,15 @@
   "selectTemplates": "Select template",
   "myTemplates": "My templates",
   "buttons": {
-    "startMeeting": "Meeting",
+    "startMeeting": "Start",
     "preview": "Preview",
     "getStarted": "Get started",
     "previewSpace": "More...",
     "chooseTemplate": "Get started with this room",
     "continue": "Continue",
     "done": "Done",
-    "joinMeeting": "Join room"
+    "joinMeeting": "Join room",
+    "schedule": "Schedule"
   },
   "noTemplates": "You dont have any templates yet :(",
   "setUpSpace": {
@@ -24,5 +25,10 @@
     "title": "Delete template?",
     "text": "You will lose all related data and custom settings \n (default settings are available any time)"
   },
-  "noSignBoard": "No Sign"
+  "noSignBoard": "No Sign",
+  "scheduleMeeting": {
+    "noEmails": "You have not added users",
+    "downloadIcsTitle": "An email reminder was sent to you and the other party",
+    "downloadIcs": "Download ICS"
+  }
 }

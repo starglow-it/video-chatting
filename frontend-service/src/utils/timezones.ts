@@ -1,6 +1,5 @@
 import { _24_HOURS, ONE_HOUR, ONE_MINUTE } from '../const/time/common';
-
-const addZero = (number: number): string => (number < 10 ? `0${number}` : `${number}`);
+import {addZero} from "./functions/addZero";
 
 export const getTimeList = (startAt: string, interval: number): string[] => {
     const intervals = _24_HOURS / interval;

@@ -22,7 +22,8 @@
     "continue": "Continue",
     "delete": "Delete",
     "schedule": "Schedule",
-    "done": "Done"
+    "done": "Done",
+    "copy": "Copy"
   },
   "login": {
     "welcome": "Welcome back",

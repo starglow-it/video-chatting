@@ -2,10 +2,10 @@ import React, { memo } from 'react';
 import { SvgIconWrapper } from './SvgIconWrapper';
 import { CommonIconProps } from '@library/types';
 
-const PlusAddIcon = memo(({ width, height, ...rest }: CommonIconProps) => {
+const PlusAddIcon = memo(({ width, height, className, ...rest }: CommonIconProps) => {
     return (
-        <SvgIconWrapper width={width} height={height} viewBox="0 0 28 29" fill="none" {...rest}>
-            <circle cx="14" cy="14.2864" r="14" fill="#FF884E" />
+        <SvgIconWrapper width={width} height={height} className={className} viewBox="0 0 28 29" fill="none" {...rest}>
+            <circle cx="14" cy="14.2864" r="14" fill="currentColor" />
             <path
                 fillRule="evenodd"
                 clipRule="evenodd"

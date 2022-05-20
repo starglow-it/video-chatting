@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { useRef, memo, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -23,9 +23,12 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
     buttonClassName,
     title,
 }) => {
+    const prevFieldsCount = useRef(0);
+
     const {
         register,
         control,
+        setFocus,
         formState: { errors },
     } = useFormContext();
 
@@ -45,7 +48,7 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
                             remove(fieldIndex);
                         }
                     } else {
-                        append({ key: social.key, value: 'https://' }, { shouldFocus: true });
+                        append({ key: social.key, value: 'https://' });
                     }
                 };
 
@@ -68,6 +71,13 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
         [fields],
     );
 
+    useEffect(() => {
+        if (prevFieldsCount.current < fields.length) {
+            prevFieldsCount.current = fields.length;
+            setFocus(`socials[${fields.length - 1}].value`);
+        }
+    }, [fields]);
+
     const profileLinks = useMemo(
         () =>
             fields?.map((social, index) => {
@@ -82,7 +92,7 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
                 };
 
                 const handleChange = async (event) => {
-                    const value = event.target.value;
+                    const {value} = event.target;
 
                     if (value) {
                         await onChange(event);

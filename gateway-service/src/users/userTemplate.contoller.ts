@@ -25,7 +25,6 @@ import { UploadService } from '../upload/upload.service';
 import { v4 as uuidv4 } from 'uuid';
 
 import { receiverScheduleMessage } from '../utils/emailMessages/receiverScheduleMessage';
-import { senderScheduleMessage } from '../utils/emailMessages/senderScheduleMessage';
 import { formatDate } from '../utils/dateHelpers/formatDate';
 import { parseDateObject } from '../utils/dateHelpers/parseDateObject';
 
@@ -91,6 +90,7 @@ export class UserTemplateController {
       endAt: any;
       timeZone: string;
       comment: string;
+      userEmails: string[];
     },
   ) {
     try {
@@ -102,10 +102,6 @@ export class UserTemplateController {
         id: data.templateId,
       });
 
-      const targetUser = await this.coreService.findUserById({
-        userId: template.user.id,
-      });
-
       const startAt = parseDateObject(data.startAt);
       const endAt = parseDateObject(data.endAt);
 
@@ -115,6 +111,7 @@ export class UserTemplateController {
         startAt: startAt,
         endAt: endAt,
         comment: data.comment,
+        attendees: data.userEmails.map(email => ({ name: email, email })),
       });
 
       const uploadId = uuidv4();
@@ -131,13 +128,13 @@ export class UserTemplateController {
       const startAtDate = formatDate(startAt, data.timeZone);
       const endAtDate = formatDate(endAt, data.timeZone);
 
-      const senderMessage = senderScheduleMessage({
-        fullName: targetUser.fullName || targetUser.email,
-        templateName: template.name,
-        startAt: startAtDate,
-        endAt: endAtDate,
-        comment: data.comment,
-      });
+      // const senderMessage = senderScheduleMessage({
+      //   fullName: targetUser.fullName || targetUser.email,
+      //   templateName: template.name,
+      //   startAt: startAtDate,
+      //   endAt: endAtDate,
+      //   comment: data.comment,
+      // });
 
       const receiverMessage = receiverScheduleMessage({
         senderFullName: senderUser.fullName,
@@ -148,16 +145,16 @@ export class UserTemplateController {
       });
 
       await this.notificationService.sendEmail({
-        to: targetUser.email,
+        to: data.userEmails,
         message: receiverMessage,
         icalEvent: icsEventData,
       });
 
-      await this.notificationService.sendEmail({
-        to: senderUser.email,
-        message: senderMessage,
-        icalEvent: icsEventData,
-      });
+      // await this.notificationService.sendEmail({
+      //   to: senderUser.email,
+      //   message: senderMessage,
+      //   icalEvent: icsEventData,
+      // });
 
       return {
         success: true,

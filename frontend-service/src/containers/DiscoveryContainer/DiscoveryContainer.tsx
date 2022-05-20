@@ -13,8 +13,6 @@ import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
 import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
-import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
-import { DownloadIcsEvent } from '@components/DownloadIcsEvent/DownloadIcsEvent';
 
 // stores
 import {
@@ -93,8 +91,6 @@ const DiscoveryContainer = memo(() => {
                 chooseButtonKey="joinMeeting"
                 onChooseTemplate={handleEnterWaitingRoom}
             />
-            <ScheduleMeetingDialog />
-            <DownloadIcsEvent />
         </MainProfileWrapper>
     );
 });

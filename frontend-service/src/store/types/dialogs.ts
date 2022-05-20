@@ -11,6 +11,8 @@ export type AppDialogsState = {
     confirmQuitOnboardingDialog: boolean;
     deleteTemplateDialog: boolean;
     scheduleMeetingDialog: boolean;
+    downloadIcsEventDialog: boolean;
+    copyMeetingLinkDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -26,6 +28,8 @@ export enum AppDialogsEnum {
     confirmQuitOnboardingDialog = 'confirmQuitOnboardingDialog',
     deleteTemplateDialog = 'deleteTemplateDialog',
     scheduleMeetingDialog = 'scheduleMeetingDialog',
+    downloadIcsEventDialog = 'downloadIcsEventDialog',
+    copyMeetingLinkDialog = 'copyMeetingLinkDialog',
 }
 
 export type DialogActionPayload = {
