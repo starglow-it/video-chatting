@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useContext, useState } from 'react';
 import { useStore } from 'effector-react';
 
+// helpers
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -12,6 +14,10 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
+import { useToggle } from '../../hooks/useToggle';
+
+// context
+import {VideoEffectsContext} from "../../contexts/VideoEffectContext";
 
 // context
 import { MediaContext } from '../../contexts/MediaContext';
@@ -42,8 +48,6 @@ import {
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
 } from '../../store/other';
-import { useToggle } from '../../hooks/useToggle';
-import {VideoEffectsContext} from "../../contexts/VideoEffectContext";
 
 const DevicesSettings = memo(() => {
     const isOwner = useStore($isOwner);

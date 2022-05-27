@@ -81,7 +81,6 @@ export const componentsTheme = (theme: Theme) =>
             MuiSlider: {
                 styleOverrides: {
                     root: {
-                        height: '8px',
                         '& .MuiSlider-rail': {
                             backgroundColor: alpha(theme.designSystemColors.grayscale.normal, 0.4),
                             opacity: 1,
@@ -251,7 +250,7 @@ export const componentsTheme = (theme: Theme) =>
                 styleOverrides: {
                     root: {
                         borderRadius: '10px',
-                        background: theme.background.default,
+                        background: theme.background.old,
                         '&.Mui-focused': {
                             color: theme.palette.text.primary,
                             '.MuiOutlinedInput-notchedOutline': {

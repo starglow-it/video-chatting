@@ -136,7 +136,9 @@ export class MeetingsGateway
             });
 
             if (meeting.endsAt - Date.now() > endTimestamp) {
-              this.taskService.deleteTimeout({ name: `meeting:finish:${plainMeeting.id}` });
+              this.taskService.deleteTimeout({
+                name: `meeting:finish:${plainMeeting.id}`,
+              });
 
               this.taskService.addTimeout({
                 name: `meeting:finish:${plainMeeting.id}`,
@@ -294,6 +296,7 @@ export class MeetingsGateway
         {
           accessStatus: AccessStatusEnum.InMeeting,
           username: message.user.username,
+          isAuraActive: message.user.isAuraActive,
         },
         session,
       );
@@ -391,6 +394,7 @@ export class MeetingsGateway
           {
             accessStatus: AccessStatusEnum.RequestSent,
             username: message.user.username,
+            isAuraActive: message.user.isAuraActive,
           },
           session,
         );
@@ -625,7 +629,9 @@ export class MeetingsGateway
         session,
       );
 
-      this.taskService.deleteTimeout({ name: `meeting:finish:${message.meetingId}` });
+      this.taskService.deleteTimeout({
+        name: `meeting:finish:${message.meetingId}`,
+      });
 
       this.emitToRoom(`meeting:${message.meetingId}`, MEETING_FINISHED, {});
     });
@@ -676,7 +682,9 @@ export class MeetingsGateway
             });
 
             if (meeting.endsAt - Date.now() > endTimestamp) {
-              this.taskService.deleteTimeout({ name: `meeting:finish:${plainMeeting.id}` });
+              this.taskService.deleteTimeout({
+                name: `meeting:finish:${plainMeeting.id}`,
+              });
 
               this.taskService.addTimeout({
                 name: `meeting:finish:${plainMeeting.id}`,

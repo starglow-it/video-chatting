@@ -30,3 +30,4 @@ export const updateLocalUserStateEvent = meetingUsersDomain.event<Partial<Meetin
 );
 export const updateLocalUserEvent =
     meetingUsersDomain.event<JoinMeetingResult>('updateLocalUserEvent');
+export const leaveMeetingEvent = meetingUsersDomain.event('leaveMeetingEvent');

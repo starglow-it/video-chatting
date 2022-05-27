@@ -1,5 +1,5 @@
-import * as dateFns from 'date-fns';
+import isEqual from 'date-fns/isEqual';
 
 export const isDatesEqual = (date1: number | Date, date2: number | Date): boolean => {
-    return dateFns.isEqual(date1, date2);
+    return isEqual(date1, date2);
 };

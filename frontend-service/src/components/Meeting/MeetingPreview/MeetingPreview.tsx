@@ -95,7 +95,7 @@ const MeetingPreview = memo(() => {
                 src={meetingTemplate?.user?.profileAvatar?.url || ''}
                 userName={meetingTemplate.fullName}
             />
-            <CustomGrid item container direction="column" flex="1 0">
+            <CustomGrid item container direction="column" flex="1 1 auto">
                 <CustomTypography
                     variant="h3bold"
                     color="colors.white.primary"

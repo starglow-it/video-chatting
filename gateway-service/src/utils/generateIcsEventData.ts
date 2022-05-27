@@ -2,7 +2,7 @@ import * as ics from 'ics';
 
 import { ONE_HOUR, ONE_MINUTE } from '../const/general';
 import { parseTimestamp } from './dateHelpers/parseTimestamp';
-import {EventAttributes} from "ics";
+import { EventAttributes } from 'ics';
 
 export const generateIcsEventData = async ({
   organizerName,
@@ -10,7 +10,7 @@ export const generateIcsEventData = async ({
   startAt,
   endAt,
   comment,
-    attendees
+  attendees,
 }): Promise<Buffer> => {
   const duration = endAt - startAt;
 

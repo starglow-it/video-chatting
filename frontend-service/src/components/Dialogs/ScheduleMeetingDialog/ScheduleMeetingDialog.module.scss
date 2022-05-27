@@ -1,5 +1,6 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
+@import "../../../styles/mixins";
 
 .form {
   width: 100%;
@@ -34,6 +35,7 @@
 
 .hide {
   display: none;
+  pointer-events: none;
 }
 
 .optionsWrapper {
@@ -61,11 +63,16 @@
 }
 
 .emailItem {
+  max-width: 100%;
   width: min-content;
   padding: rem(8px);
   background: rgba($normal-gray-scale, 0.25);
   border: 1px solid rgba($normal-gray-scale, 0.4);
   border-radius: rem(36px);
+
+  .email {
+    @extend %text-ellips;
+  }
 
   .deleteIcon {
     cursor: pointer;

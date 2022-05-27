@@ -2,20 +2,29 @@ import React, { memo, useCallback, useEffect, useMemo } from "react";
 import {useFormContext, useWatch} from "react-hook-form";
 import {MenuItem} from "@mui/material";
 
+// custom
 import {CustomDropdown} from "@library/custom/CustomDropdown/CustomDropdown";
 import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
 import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
 import {CustomInput} from "@library/custom/CustomInput/CustomInput";
 
+// const
 import {TIMEZONES} from "../../../const/time/timezones";
-import {getTimeList, getTimestamp, getTimeString} from "../../../utils/timezones";
 import {ONE_MINUTE} from "../../../const/time/common";
+
+// utils
+import {getHourMinutesString, getTimeList, getTimestamp, getTimeString} from "../../../utils/timezones";
+import {parseTimestamp} from "../../../utils/time/parseTimestamp";
+import {isDatesEqual} from "../../../utils/time/isDatesEqual";
+import {setDayTime} from "../../../utils/time/setTimeFunctions";
+
+// types
 import {PropsWithClassName} from "../../../types";
 
-const timeList = getTimeList('00:00', 30 * ONE_MINUTE);
+// styles
 import styles from './ScheduleMeetingDialog.module.scss';
 
-const Component = ({ className }: PropsWithClassName<any>) => {
+const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate: Date | number }>) => {
     const {
         register,
         control,
@@ -69,15 +78,17 @@ const Component = ({ className }: PropsWithClassName<any>) => {
         [],
     );
 
-    const renderTimeList = useMemo(
-        () =>
-            timeList.map(time => (
-                <MenuItem key={time} value={time}>
-                    {time}
-                </MenuItem>
-            )),
-        [],
-    );
+    const renderTimeList = useMemo(() => {
+        const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(new Date()));
+
+        const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
+
+        return getTimeList(startTime, 30 * ONE_MINUTE).map(time => (
+            <MenuItem key={time} value={time}>
+                {time}
+            </MenuItem>
+        ))
+    },[currentDate]);
 
     const renderEndTimeList = useMemo(
         () =>

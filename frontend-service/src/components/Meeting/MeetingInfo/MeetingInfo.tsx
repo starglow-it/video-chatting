@@ -79,7 +79,7 @@ const Component = (props, ref) => {
 
     return (
         <CustomGrid ref={ref} container direction="column" className={styles.wrapper}>
-            <CustomScroll>
+            <CustomScroll className={styles.scroll}>
                 <CustomGrid container alignItems="center" className={styles.header} gap={1.5}>
                     <InfoIcon width="24px" height="24px" />
                     <CustomTypography
@@ -99,11 +99,11 @@ const Component = (props, ref) => {
                                 src={meetingTemplate?.user?.profileAvatar?.url || ''}
                                 userName={meetingTemplate.fullName}
                             />
-                            <CustomGrid container direction="column">
-                                <CustomTypography variant="body1bold" color="colors.white.primary">
+                            <CustomGrid item container direction="column" flex="1 1 auto">
+                                <CustomTypography variant="body1bold" color="colors.white.primary" className={styles.ellips}>
                                     {meetingTemplate.fullName}
                                 </CustomTypography>
-                                <CustomTypography variant="body2" color="colors.white.primary">
+                                <CustomTypography variant="body2" color="colors.white.primary" className={styles.ellips}>
                                     {meetingTemplate.position}
                                 </CustomTypography>
                             </CustomGrid>

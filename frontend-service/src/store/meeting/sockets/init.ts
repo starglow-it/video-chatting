@@ -1,11 +1,9 @@
-import Router from 'next/router';
 import { attach, combine, forward, sample } from 'effector-next';
 
 import {
     ON_GET_MEETING_NOTES,
     ON_MEETING_ENTER_REQUEST,
     ON_MEETING_ERROR,
-    ON_MEETING_FINISHED,
     ON_MEETING_TEMPLATE_UPDATE,
     ON_MEETING_UPDATE,
     ON_PLAY_SOUND,
@@ -184,10 +182,6 @@ meetingSocketEventsController.watch(({ socketInstance }: SocketState) => {
     socketInstance?.on(ON_MEETING_UPDATE, (data: any) => {
         updateMeetingEvent({ meeting: data.meeting });
         updateMeetingUsersEvent({ users: data.users });
-    });
-
-    socketInstance?.on(ON_MEETING_FINISHED, () => {
-        Router.push('/dashboard');
     });
 
     socketInstance?.on(ON_MEETING_TEMPLATE_UPDATE, ({ templateId }) => {

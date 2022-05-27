@@ -51,6 +51,10 @@ const DevicesSettingsDialog = memo(() => {
 
     const [volume, setVolume] = useState(backgroundAudioVolume);
 
+    useEffect(() => {
+        setVolume(backgroundAudioVolume);
+    }, [devicesSettingsDialog]);
+
     const { value: isBackgroundAudioActive, onToggleSwitch: handleToggleBackgroundAudio } =
         useToggle(isAudioBackgroundActive);
 
@@ -88,12 +92,6 @@ const DevicesSettingsDialog = memo(() => {
         if (changeStream) {
             const newStream = onChangeActiveStream();
 
-            updateLocalUserStateEvent({
-                cameraStatus: isCameraActive ? 'active' : 'inactive',
-                micStatus: isMicActive ? 'active' : 'inactive',
-                isAuraActive: isBlurActive
-            });
-
             const transformedStream = await onGetCanvasStream(newStream);
 
             if (transformedStream) {
@@ -106,6 +104,12 @@ const DevicesSettingsDialog = memo(() => {
                     isMicEnabled: isMicActive,
                 });
             }
+
+            updateLocalUserStateEvent({
+                cameraStatus: isCameraActive ? 'active' : 'inactive',
+                micStatus: isMicActive ? 'active' : 'inactive',
+                isAuraActive: isBlurActive
+            });
 
             addNotificationEvent({
                 type: NotificationType.DevicesAction,

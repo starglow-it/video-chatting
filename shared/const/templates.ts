@@ -7,7 +7,7 @@ interface BaseTemplate extends Omit<ICommonTemplate, 'businessCategories'> {
 export const templatesData: BaseTemplate[] = [
     {
         templateId: 1,
-        url: 'https://vimeo.com/691226035',
+        url: 'https://vimeo.com/683820654/424a4cb337',
         previewUrl: '/templates/images/ibiza2/ibiza2_540p.jpg',
         name: 'Ibiza Patio',
         maxParticipants: 2,
@@ -35,7 +35,7 @@ export const templatesData: BaseTemplate[] = [
     },
     {
         templateId: 2,
-        url: 'https://vimeo.com/691226099',
+        url: 'https://vimeo.com/683821458',
         previewUrl: '/templates/images/ibiza3/ibiza3_540p.jpg',
         name: 'Ibiza Patio',
         maxParticipants: 3,
@@ -67,7 +67,7 @@ export const templatesData: BaseTemplate[] = [
     },
     {
         templateId: 3,
-        url: 'https://vimeo.com/691226161',
+        url: 'https://vimeo.com/683822180/ec56604e5b',
         previewUrl: '/templates/images/ibiza4/ibiza4_540p.jpg',
         name: 'Ibiza Patio',
         maxParticipants: 4,
@@ -104,7 +104,7 @@ export const templatesData: BaseTemplate[] = [
     },
     {
         templateId: 4,
-        url: 'https://vimeo.com/691227155',
+        url: 'https://vimeo.com/689593453',
         previewUrl: '/templates/images/lakeside3/lakeside3_360p.jpg',
         name: 'Lakeside Office',
         maxParticipants: 4,
@@ -400,11 +400,11 @@ export const templatesData: BaseTemplate[] = [
         usersPosition: [
             {
                 top: 0.40,
-                left: 0.51
+                left: 0.10
             },
             {
                 top: 0.45,
-                left: 0.45
+                left: 0.75
             }
         ]
     },
@@ -425,7 +425,7 @@ export const templatesData: BaseTemplate[] = [
         usersPosition: [
             {
                 top: 0.72,
-                left: 0.6
+                left: 0.06
             },
             {
                 top: 0.65,

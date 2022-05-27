@@ -3,7 +3,7 @@ version: "3.7"
 networks:
   traefikpublic:
     external:
-      name: liveoffice_traefikpubliс
+      name: liveoffice_traefikpublic
   liveoffice_dev:
 
 services:

@@ -67,40 +67,40 @@ const SetUpTemplateInfo = memo(() => {
 
     return (
         <CustomPaper className={styles.wrapper}>
-            <CustomBox
-                className={styles.grid}
-                display="grid"
-                gap={5}
-                gridTemplateColumns="1fr"
-                gridTemplateRows="min-content 1fr min-content"
-            >
-                <CustomTypography
-                    gridArea="1/1/1/1"
-                    className={styles.title}
-                    variant="h2bold"
-                    nameSpace="templates"
-                    translation="setUpSpace.title"
-                />
-                <CustomBox position="relative" gridArea="2/1/2/1" className={styles.steps}>
-                    <SetUpTemplateProgress
-                        currentStep={currentStep}
-                        steps={Object.keys(STEPS).length}
+                <CustomBox
+                    className={styles.grid}
+                    display="grid"
+                    gap={5}
+                    gridTemplateColumns="1fr"
+                    gridTemplateRows="min-content 1fr min-content"
+                >
+                    <CustomTypography
+                        gridArea="1/1/1/1"
+                        className={styles.title}
+                        variant="h2bold"
+                        nameSpace="templates"
+                        translation="setUpSpace.title"
                     />
-                    {renderStepsComponents}
+                    <CustomBox position="relative" gridArea="2/1/2/1">
+                        <SetUpTemplateProgress
+                            currentStep={currentStep}
+                            steps={Object.keys(STEPS).length}
+                        />
+                        {renderStepsComponents}
+                    </CustomBox>
+                    <CustomButton
+                        className={clsx(styles.button, { [styles.hide]: isTheLastStep })}
+                        onClick={handleNextStep}
+                        nameSpace="templates"
+                        translation="buttons.continue"
+                    />
+                    <CustomButton
+                        type="submit"
+                        className={clsx(styles.button, { [styles.hide]: !isTheLastStep })}
+                        nameSpace="templates"
+                        translation="buttons.done"
+                    />
                 </CustomBox>
-                <CustomButton
-                    className={clsx(styles.button, { [styles.hide]: isTheLastStep })}
-                    onClick={handleNextStep}
-                    nameSpace="templates"
-                    translation="buttons.continue"
-                />
-                <CustomButton
-                    type="submit"
-                    className={clsx(styles.button, { [styles.hide]: !isTheLastStep })}
-                    nameSpace="templates"
-                    translation="buttons.done"
-                />
-            </CustomBox>
         </CustomPaper>
     );
 });

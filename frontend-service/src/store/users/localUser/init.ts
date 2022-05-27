@@ -1,7 +1,8 @@
 import { usersSocketEventsController } from '../init';
+import Router from 'next/router';
 
 import {
-    $localUserStore,
+    $localUserStore, leaveMeetingEvent,
     resetLocalUserStore,
     setLocalUserEvent,
     setLocalUserMediaEvent,
@@ -9,6 +10,7 @@ import {
     updateLocalUserStateEvent,
 } from './model';
 import { MeetingAccessStatuses, SocketState } from '../../types';
+import {ON_MEETING_FINISHED} from "../../meeting/const/subscribeSocketEvents";
 
 $localUserStore
     .on(setLocalUserEvent, (state, { user }) => ({ ...state, ...user }))
@@ -19,6 +21,11 @@ $localUserStore
         videoTrack: data.videoTrack,
         audioTrack: data.audioTrack,
     }))
+    .on(leaveMeetingEvent, (state) => {
+        Router.push(state.isGenerated ? '/welcome' : '/dashboard');
+
+        return state;
+    })
     .reset(resetLocalUserStore);
 
 usersSocketEventsController.watch(({ socketInstance }: SocketState) => {
@@ -26,5 +33,9 @@ usersSocketEventsController.watch(({ socketInstance }: SocketState) => {
 
     socketInstance?.on('users:kick', () => {
         updateLocalUserStateEvent({ accessStatus: MeetingAccessStatuses.Kicked });
+    });
+
+    socketInstance?.on(ON_MEETING_FINISHED, () => {
+        leaveMeetingEvent();
     });
 });

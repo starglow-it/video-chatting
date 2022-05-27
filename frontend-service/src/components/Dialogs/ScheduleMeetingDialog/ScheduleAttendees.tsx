@@ -26,16 +26,20 @@ type Props = {
 }
 
 const Component = ({ userEmails = [], className, onAddUserEmail, onDeleteUserEmail }: PropsWithClassName<Props>) => {
-    const { register, control, setValue, formState: { errors } } = useFormContext();
+    const { register, control, setValue, trigger, formState: { errors } } = useFormContext();
 
     const currentUserEmail = useWatch({
         control,
         name: 'currentUserEmail'
     });
 
-    const handleAddUserEmail = useCallback(() => {
-        onAddUserEmail?.(currentUserEmail);
-        setValue('currentUserEmail', '');
+    const handleAddUserEmail = useCallback(async () => {
+        const isThereNoErrors = await trigger('currentUserEmail');
+
+        if (isThereNoErrors && currentUserEmail)  {
+            onAddUserEmail?.(currentUserEmail);
+            setValue('currentUserEmail', '');
+        }
     },[currentUserEmail]);
 
     const handleEnterPress = useCallback((event) => {
@@ -44,23 +48,20 @@ const Component = ({ userEmails = [], className, onAddUserEmail, onDeleteUserEma
         }
     },[currentUserEmail]);
 
-    const renderUserEmails = useMemo(() => {
-        return userEmails.map(email => {
-
+    const renderUserEmails = useMemo(() => userEmails.map(email => {
             const handleDeleteEmail = () => {
                 onDeleteUserEmail?.(email);
             }
 
             return (
                 <CustomGrid container alignItems="center" gap={1} wrap="nowrap" className={styles.emailItem}>
-                    <CustomTypography variant="body2">
+                    <CustomTypography variant="body2" className={styles.email}>
                         {email}
                     </CustomTypography>
                     <RoundCloseIcon width="28px" height="28px" className={styles.deleteIcon} onClick={handleDeleteEmail} />
                 </CustomGrid>
             )
-        });
-    }, [userEmails]);
+        }), [userEmails]);
 
     return (
         <CustomGrid container className={className} gap={1}>

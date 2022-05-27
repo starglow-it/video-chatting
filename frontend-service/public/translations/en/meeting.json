@@ -4,7 +4,7 @@
   "requestSent": "Request sent",
   "settings": {
     "main": "Settings",
-    "advanced": "Advanced"
+    "audioVideo": "Audio & video"
   },
   "enterPermission": "You need a permission from the participant to join",
   "mic": "Microphone",
@@ -84,6 +84,7 @@
     "blurBackground": "Background blur",
     "faceTracking": "Face detection",
     "audioBackground": "Background audio",
+    "audioBackgroundDisabled": "Background audio disabled",
     "notes": {
       "title": "Leave a note",
       "input": "Type here",

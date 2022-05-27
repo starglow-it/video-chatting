@@ -4,7 +4,6 @@ import Image from 'next/image';
 import {useRouter} from "next/router";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
-import frontendConfig from "../../../const/config";
 
 // custom
 import {CustomDialog} from "@library/custom/CustomDialog/CustomDialog";
@@ -14,6 +13,7 @@ import {CustomTypography} from "@library/custom/CustomTypography/CustomTypograph
 
 // components
 import {CustomLinkIcon} from "@library/icons/CustomLinkIcon";
+import frontendConfig from "../../../const/config";
 
 // stores
 import {$appDialogsStore, appDialogsApi} from "../../../store/dialogs";

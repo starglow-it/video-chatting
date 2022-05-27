@@ -40,14 +40,11 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
     const xFallbackRef = useRef<number>();
     const yFallbackRef = useRef<number>();
+    const animationFrameRef = useRef<number | undefined>();
 
     const faceDetectionRef = useRef<FaceDetection | null>();
 
-    // const timerContextRef = useRef<BaseAudioContext | null>(null);
-    // const timerNodeRef = useRef<AudioWorkletNode | null>(null);
-    // const whiteNoiseRef = useRef<AudioBufferSourceNode | null>(null);
-
-    const { value: isBlurActive, onToggleSwitch: handleToggleBlur } = useToggle(false);
+    const { value: isBlurActive, onToggleSwitch: handleToggleBlur } = useToggle(true);
 
     const { value: isFaceTrackingActive, onToggleSwitch: handleToggleFaceTracking } =
         useToggle(false);
@@ -128,42 +125,8 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
     const animate = async () => {
         await faceDetectionRef.current?.send({ image: videoRef.current as InputImage });
 
-        requestAnimationFrame(animate);
+        animationFrameRef.current = requestAnimationFrame(animate);
     };
-
-    // const handleStartDetection = useCallback(() => {
-        // if (timerContextRef.current) {
-            // const oscillator = timerContextRef?.current.createOscillator();
-            // const gain = timerContextRef?.current?.createGain();
-            //
-            // oscillator.type = 'square';
-            // oscillator.frequency.setValueAtTime(3000, timerContextRef?.current?.currentTime!); // value in hertz
-            //
-            // const timerNode = new AudioWorkletNode(timerContextRef.current!, 'timer');
-            //
-            // gain.gain.value = 0;
-            //
-            // oscillator.connect(gain);
-            //
-            // gain.connect(timerNode).connect(timerContextRef?.current?.destination);
-            //
-            // oscillator.start();
-            //
-            // timerNode.port.onmessage = async event => {
-            //     try {
-            //         if (event.data.isNeedToRender) {
-            //             const videoElement = videoRef.current;
-            //
-            //             faceDetectionRef.current?.send({ image: videoElement as InputImage });
-            //         }
-            //     } catch (e) {
-            //         console.log("couldn't render frame");
-            //     }
-            // };
-            //
-            // timerNodeRef.current = timerNode;
-        // }
-    // }, []);
 
     const handleGetActiveStream = useCallback(
         async (stream: MediaStream) => {
@@ -175,14 +138,11 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
             newStream.addTrack(audioTrack);
 
-            // whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
-            // timerNodeRef.current?.port.close();
-            // whiteNoiseRef?.current?.stop();
-            //
-            // whiteNoiseRef.current = null;
-            // timerNodeRef.current = null;
-
             const videoElement = videoRef.current;
+
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
 
             if (faceDetectionRef.current && isFaceTrackingActive) {
                 if (videoElement) {
@@ -194,7 +154,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
                 const canvasElement = canvasRef.current;
 
                 if (canvasElement) {
-                    const canvasStream = await canvasElement?.captureStream();
+                    const canvasStream = canvasElement?.captureStream();
 
                     videoTrack = canvasStream.getVideoTracks()[0];
                 }
@@ -224,10 +184,6 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
     useLayoutEffect(() => {
         (async () => {
-            // const audioContext = new AudioContext();
-            // timerContextRef.current = audioContext;
-            // await audioContext.audioWorklet.addModule('/workers/timer.js');
-
             try {
                 const faceDetection = new FaceDetection({
                     locateFile: file =>
@@ -253,13 +209,10 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
         })();
 
         return () => {
-            // whiteNoiseRef?.current?.disconnect(timerNodeRef.current);
-            // timerNodeRef.current?.port.close();
-            // whiteNoiseRef?.current?.stop();
-            //
-            // whiteNoiseRef.current = null;
-            // timerNodeRef.current = null;
-        };
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        }
     }, []);
 
     const contextValue = useMemo(() => ({

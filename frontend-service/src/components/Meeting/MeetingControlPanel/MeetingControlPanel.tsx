@@ -66,21 +66,21 @@ const MeetingControlPanel = memo(() => {
         <CustomPaper variant="black-glass" ref={paperRef} className={styles.controlPanelWrapper}>
             <CustomGrid container gap={0.75}>
                 <ActionButton
-                    onAction={isEditTemplateView ? undefined : handleToggleUsers}
-                    className={clsx(styles.actionButton, {
-                        [styles.withAction]: !isEditTemplateView,
-                        [styles.active]: isUsersOpen,
-                        [styles.newRequests]: isThereNewRequests,
-                    })}
-                    Icon={<PeoplesIcon width="30px" height="30px" />}
-                />
-                <ActionButton
                     onAction={isEditTemplateView ? undefined : handleToggleLeaveNote}
                     className={clsx(styles.actionButton, {
                         [styles.withAction]: !isEditTemplateView,
                         [styles.active]: isLeaveNoteOpen,
                     })}
                     Icon={<NotesIcon width="30px" height="30px" />}
+                />
+                <ActionButton
+                    onAction={isEditTemplateView ? undefined : handleToggleUsers}
+                    className={clsx(styles.actionButton, {
+                        [styles.withAction]: !isEditTemplateView,
+                        [styles.active]: isUsersOpen,
+                        [styles.newRequests]: isThereNewRequests && isOwner,
+                    })}
+                    Icon={<PeoplesIcon width="30px" height="30px" />}
                 />
             </CustomGrid>
             {!isEditTemplateView && (

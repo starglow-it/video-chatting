@@ -9,7 +9,7 @@ const Component = ({
     onClick,
     isActive,
     isHalfVolume,
-}: CommonIconProps & { isHalfVolume: boolean }) => {
+}: CommonIconProps & { isHalfVolume?: boolean }) => {
     if (isActive) {
         if (isHalfVolume) {
             return (

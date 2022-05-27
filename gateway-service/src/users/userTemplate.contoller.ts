@@ -111,7 +111,7 @@ export class UserTemplateController {
         startAt: startAt,
         endAt: endAt,
         comment: data.comment,
-        attendees: data.userEmails.map(email => ({ name: email, email })),
+        attendees: data.userEmails.map((email) => ({ name: email, email })),
       });
 
       const uploadId = uuidv4();

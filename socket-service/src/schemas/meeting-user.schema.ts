@@ -54,6 +54,12 @@ export class MeetingUser {
   isGenerated: boolean;
 
   @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isAuraActive: boolean;
+
+  @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Meeting',
   })

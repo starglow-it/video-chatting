@@ -83,7 +83,7 @@ const MeetingContainer = memo(() => {
 
     useEffect(() => {
         if (
-            meetingUser.accessStatus === MeetingAccessStatuses.Waiting &&
+            meetingUser.accessStatus === MeetingAccessStatuses.RequestSent &&
             meetingTemplate?.meetingInstance?.serverIp &&
             meetingUser.id &&
             !isOwner &&

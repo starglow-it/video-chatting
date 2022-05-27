@@ -88,6 +88,7 @@ declare module '@mui/material/styles' {
         };
         background: {
             default: string;
+            old: string;
         };
         borderColor: {
             primary: string;

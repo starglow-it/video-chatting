@@ -26,6 +26,7 @@ import {VideoDeviceSetUpButton} from '@components/Media/DeviceSetUpButtons/Video
 import {ScreenSharingButton} from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
 import {ScreenSharingLayout} from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import {CopyMeetingLinkDialog} from "@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog";
+import {BackgroundAudioControl} from "@components/Meeting/BackgroundAudioControl/BackgroundAudioControl";
 
 // misc
 import {AgoraController} from '../../../controllers/VideoChatController';
@@ -215,19 +216,20 @@ const MeetingView = memo(() => {
                             isSharingActive={Boolean(meeting.sharingUserId)}
                             onAction={isAbleToToggleSharing ? handleToggleSharing : undefined}
                         />
+                        <BackgroundAudioControl />
                     </CustomGrid>
                     <MeetingEndControls />
                     <MeetingGeneralInfo />
                     <MeetingNotes />
                 </MeetingSettingsPanel>
             )}
-            <DevicesSettingsDialog />
 
+            <DevicesSettingsDialog />
             <EndMeetingDialog />
             <InviteAttendeeDialog />
             <UserToKickDialog />
             <MeetingSounds />
-            <CopyMeetingLinkDialog />
+            {isOwner && <CopyMeetingLinkDialog />}
         </CustomGrid>
     );
 });

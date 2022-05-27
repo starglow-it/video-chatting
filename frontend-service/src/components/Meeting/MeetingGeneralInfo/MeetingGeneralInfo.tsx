@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import Image from 'next/image';
 
 // hooks
-import {useCountDown} from "../../../hooks/useCountDown";
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -14,6 +13,7 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import {useCountDown} from "../../../hooks/useCountDown";
 
 // styles
 import styles from './MeetingGeneralInfo.module.scss';
@@ -36,7 +36,9 @@ const MeetingGeneralInfo = memo(() => {
         name: 'signBoard',
     });
 
-    const isThereSignBoard = signBoard && signBoard !== 'default';
+    const targetSignBoard = isOwner ? signBoard : meetingTemplate.signBoard;
+
+    const isThereSignBoard = targetSignBoard && targetSignBoard !== 'default';
 
     const companyName = useWatch({
         control,
@@ -63,7 +65,7 @@ const MeetingGeneralInfo = memo(() => {
         >
             {isThereSignBoard
                 ? (
-                    <Image src={`/images/boards/${isOwner ? signBoard : meetingTemplate.signBoard}.png`} width="360px" height="244px" />
+                    <Image src={`/images/boards/${targetSignBoard}.png`} width="360px" height="244px" />
                 )
                 : null
             }

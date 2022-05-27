@@ -1,0 +1,39 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.tooltip {
+  margin: rem(2px) 0 0 0 !important;
+}
+
+.deviceButton {
+  width: rem(56px);
+  height: rem(56px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.iconButton {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: $primary-white;
+  cursor: default;
+  border-radius: rem(12px);
+  border: none;
+
+  &.disabled {
+    color: rgba($primary-white, 0.25);
+  }
+}
+
+.audioControl {
+  width: rem(46px);
+  height: rem(196px);
+  padding: rem(20px 10px);
+  margin: rem(0 0 8px 0);
+
+  .range {
+    height: 100%;
+  }
+}

@@ -57,6 +57,7 @@ services:
       - TURN_PASSWORD
       - TURN_USERNAME
       - TURN_PORT
+      - STORAGE_HOSTNAME
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.entrypoints=http"
@@ -145,9 +146,13 @@ services:
       - SMTP_PORT
       - SMTP_USER
       - SMTP_PASS
-      - DEAFAULT_SERVER_IP
+      - DEFAULT_SERVER_IP
       - APP_ID
       - APP_CERTIFICATE
+      - UPLOAD_BUCKET
+      - STORAGE_HOSTNAME
+      - SECRET_ACCESS_KEY
+      - ACCESS_KEY
     depends_on:
       - mongo
       - rabbit

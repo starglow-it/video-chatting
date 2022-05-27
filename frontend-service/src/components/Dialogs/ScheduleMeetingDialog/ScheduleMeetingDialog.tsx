@@ -15,10 +15,11 @@ import {CustomFade} from "@library/custom/CustomFade/CustomFade";
 // components
 import {ValueSwitcher} from "@library/common/ValuesSwitcher/ValuesSwitcher";
 import {ScheduleTime} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleTime";
+import { getTimeZone } from 'src/utils/time/getTimeZone';
+import {ValuesSwitcherItem} from "@library/common/ValuesSwitcher/types";
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
-import { getTimeZone } from 'src/utils/time/getTimeZone';
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
 import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
@@ -33,7 +34,6 @@ import {
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
-import {ValuesSwitcherItem} from "@library/common/ValuesSwitcher/types";
 
 // validations
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
@@ -155,7 +155,7 @@ const Component = () => {
     }, []);
 
     const handleShowEnterEmails = useCallback(async () => {
-        const isThereNoErrors = await trigger();
+        const isThereNoErrors = await trigger(['startAt', 'endAt']);
 
         if (isThereNoErrors) {
             handleOpenOption('isInviteOpen');
@@ -164,7 +164,7 @@ const Component = () => {
     }, []);
 
     const handleChangeSchedulePage = useCallback(async (newValue: ValuesSwitcherItem) => {
-        const isThereNoErrors = await trigger();
+        const isThereNoErrors = await trigger(['startAt', 'endAt']);
 
         if (isThereNoErrors) {
             setActiveSchedulePage(newValue);
@@ -215,7 +215,9 @@ const Component = () => {
                             />
                             <CustomGrid className={styles.optionsWrapper}>
                                 <CustomFade open={isSettingsOpen} className={styles.optionItem}>
-                                    <ScheduleTime />
+                                    <ScheduleTime
+                                        currentDate={selectedDate}
+                                    />
                                 </CustomFade>
                                 <CustomFade open={isInviteOpen} className={styles.optionItem}>
                                     <ScheduleAttendees

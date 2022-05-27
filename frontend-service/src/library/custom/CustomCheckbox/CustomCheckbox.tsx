@@ -22,7 +22,7 @@ const Component = (
         checkedIcon={<CheckIcon width="24px" height="24px" />}
         className={clsx(styles.checkbox, className)}
         sx={{
-            background: theme => theme.background.default,
+            background: theme => theme.background.old,
             border: theme => `1px solid ${alpha(theme.borderColor.primary, 0.6)}`,
         }}
         {...rest}

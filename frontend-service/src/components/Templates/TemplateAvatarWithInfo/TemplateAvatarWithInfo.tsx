@@ -14,8 +14,7 @@ const Component = ({ className, avatar, description, name }: PropsWithClassName<
     name: Template['name'];
     description: Template['description'];
     avatar?: ProfileAvatarT['url'];
-}>) => {
-    return (
+}>) => (
         <CustomGrid container wrap="nowrap" className={className}>
             <ProfileAvatar
                 className={styles.avatar}
@@ -42,7 +41,6 @@ const Component = ({ className, avatar, description, name }: PropsWithClassName<
                 </CustomTypography>
             </CustomGrid>
         </CustomGrid>
-    );
-}
+    )
 
 export const TemplateAvatarWithInfo = memo(Component);

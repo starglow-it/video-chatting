@@ -1,7 +1,7 @@
 {
   "registerSuccess": {
-    "title": "You have registered successfully.",
-    "text": "We have send a confirmation link to your email. Please confirm registration and after that you can login to the platform"
+    "title": "Check your email",
+    "text": "For security a confirmation link has been sent \n to your email"
   },
   "getStarted": {
     "title": "Get started",

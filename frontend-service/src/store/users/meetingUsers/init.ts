@@ -13,24 +13,28 @@ import {
 
 $meetingUsersStore
     .on(updateMeetingUsersEvent, (state, { users }) => {
-        const newUsers = (users || []).map(newUser => {
-            const oldUserData = state.find(oldUser => oldUser.id === newUser.id);
-            if (oldUserData) {
-                return {
-                    ...oldUserData,
-                    ...newUser,
-                };
-            }
-            return newUser;
-        });
+        if (users?.length) {
+            const newUsers = (users || []).map(newUser => {
+                const oldUserData = state.find(oldUser => oldUser.id === newUser.id);
+                if (oldUserData) {
+                    return {
+                        ...oldUserData,
+                        ...newUser,
+                    };
+                }
+                return newUser;
+            });
 
-        const oldUsers = state.filter(
-            _user =>
-                !newUsers.find(user => user.id === _user.id) &&
-                users?.find(_newUser => _newUser.id === _user.id),
-        );
+            const oldUsers = state.filter(
+                _user =>
+                    !newUsers.find(user => user.id === _user.id) &&
+                    users?.find(_newUser => _newUser.id === _user.id),
+            );
 
-        return [...oldUsers, ...newUsers];
+            return [...oldUsers, ...newUsers];
+        }
+
+        return state;
     })
     .on(updateMeetingUserEvent, (state, { user }) => {
         return state.map(_user => (_user.id === user?.id ? { ..._user, ...user } : _user));

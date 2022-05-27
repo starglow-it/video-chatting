@@ -221,6 +221,11 @@ const MeetingSettingsPanel = memo(
                         },
                         templateId: template.id,
                     });
+
+                    reset({
+                        ...dataWithoutSocials,
+                        socials,
+                    });
                 }
                 handleSwitchOff();
             }),

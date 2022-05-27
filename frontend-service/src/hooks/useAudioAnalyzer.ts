@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
+type ReturnT = {
+    volume: number;
+    onStartVolumeIndicator: () => void;
+    onStopVolumeIndicator: () => void;
+}
+
 export const useAudioVolumeMeter = (
     stream: MediaStream | null,
-): { volume: number; onStartVolumeIndicator: () => void } => {
+): ReturnT => {
     const [volume, setVolume] = useState(0);
 
     const audioContextRef = useRef<AudioContext | null>();
@@ -42,6 +48,10 @@ export const useAudioVolumeMeter = (
         }
     };
 
+    const handleStopAnalyzer = async () => {
+        sourceRef?.current?.disconnect();
+    }
+
     useEffect(() => {
         return () => {
             if (sourceRef.current) {
@@ -53,5 +63,6 @@ export const useAudioVolumeMeter = (
     return {
         volume,
         onStartVolumeIndicator: handleStartAnalyzer,
+        onStopVolumeIndicator: handleStopAnalyzer,
     };
 };

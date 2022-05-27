@@ -6,11 +6,11 @@
 }
 
 .advancedButton {
-  width: rem(108px);
+  width: rem(131px);
   color: $primary-white;
-  padding: rem(4px 4px 4px 12px);
+  padding: rem(6px 4px);
   background: #0F0F10;
-  border-radius: 8px;
+  border-radius: rem(8px);
   cursor: pointer;
   flex-wrap: nowrap;
 }
@@ -57,6 +57,8 @@
   border: 1px solid rgba($normal-gray-scale, 0.6);
   border-radius: rem(10px);
   height: rem(52px);
+
+  margin: rem(16px 0 0 0);
 
   overflow: hidden;
 

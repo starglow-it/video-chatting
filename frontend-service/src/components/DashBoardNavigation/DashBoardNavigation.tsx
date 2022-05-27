@@ -57,9 +57,9 @@ const DashBoardNavigation = memo(() => {
         router.push('/dashboard');
     }, []);
 
-    /*const handleDiscoveryPage = useCallback(() => {
+    /* const handleDiscoveryPage = useCallback(() => {
         router.push('/dashboard/discovery');
-    }, []);*/
+    }, []); */
 
     return (
         <CustomPaper className={styles.dashboardNavigation}>
@@ -86,7 +86,7 @@ const DashBoardNavigation = memo(() => {
 
                 <CustomDivider className={styles.divider} light />
 
-                {/*<CustomTooltip nameSpace="profile" translation="pages.discovery" placement="right">
+                {/* <CustomTooltip nameSpace="profile" translation="pages.discovery" placement="right">
                     <DiscoveryIcon
                         onClick={handleDiscoveryPage}
                         width="28px"
@@ -95,7 +95,7 @@ const DashBoardNavigation = memo(() => {
                             [styles.activeIcon]: isDiscoveryLinkActive,
                         })}
                     />
-                </CustomTooltip>*/}
+                </CustomTooltip> */}
 
                 <CustomTooltip nameSpace="profile" translation="pages.templates" placement="right">
                     <TemplatesIcon

@@ -3,7 +3,7 @@ version: '3.7'
 networks:
   traefikpublic:
     external:
-      name: liveoffice_traefikpublic_test
+      name: liveoffice_traefikpublic
   liveoffice_test:
 
 services:

@@ -119,7 +119,6 @@ export class VideoChatController {
 
         if (this.client?.remoteUsers?.length) {
             const subscribePromise = this.client.remoteUsers.map(async remoteUser => {
-                console.log('subscribe to media');
                 if (remoteUser.hasAudio) {
                     await this.client?.subscribe(remoteUser, 'audio');
                 }
@@ -176,9 +175,6 @@ export class VideoChatController {
                 'user-published',
                 async (user: IAgoraRTCRemoteUser, mediaType: 'audio' | 'video') => {
                     try {
-                        console.log(mediaType);
-                        console.log(user);
-                        console.log('subscribe to media');
                         if (mediaType === 'audio' && user.hasAudio) {
                             await this.client?.subscribe(user, 'audio');
                             updateUserTracksEvent({ userUid: user.uid, infoType: AUDIO_UNMUTE });

@@ -40,9 +40,9 @@ const Component = ({
     onToggleAudioBackground,
 }: MeetingSettingsContentProps) => {
     const {
-        value: isAdvancedSettingsOpened,
-        onSwitchOff: handleCloseAdvancedSettings,
-        onSwitchOn: handleOpenAdvancedSettings,
+        value: isAudioVideoSettingsOpened,
+        onSwitchOff: handleCloseAudioVideoSettings,
+        onSwitchOn: handleOpenAudioVideoSettings,
     } = useToggle(false);
 
     const {
@@ -58,23 +58,33 @@ const Component = ({
         <CustomGrid container direction="column" className={styles.settingsWrapper}>
             <CustomGrid
                 className={clsx(styles.settingPosition, {
-                    [styles.relative]: isAdvancedSettingsOpened,
+                    [styles.relative]: !isAudioVideoSettingsOpened,
                 })}
             >
-                <Fade in={isAdvancedSettingsOpened}>
+                <Fade in={!isAudioVideoSettingsOpened}>
                     <CustomGrid container gap={2.5}>
-                        <CustomGrid container gap={1.5} alignItems="center">
-                            <ArrowIcon
-                                className={styles.arrowIcon}
-                                width="32px"
-                                height="32px"
-                                onClick={handleCloseAdvancedSettings}
-                            />
-                            <CustomTypography
-                                variant="h3bold"
-                                nameSpace="meeting"
-                                translation="settings.advanced"
-                            />
+                        <CustomGrid
+                            container
+                            justifyContent="space-between"
+                            alignItems="center"
+                            wrap="nowrap"
+                        >
+                            {title}
+                            <CustomGrid
+                                container
+                                justifyContent="center"
+                                alignItems="center"
+                                onClick={handleOpenAudioVideoSettings}
+                                className={styles.advancedButton}
+                            >
+                                <CustomTypography
+                                    color="colors.white.primary"
+                                    nameSpace="meeting"
+                                    translation="settings.audioVideo"
+                                    variant="body2"
+                                />
+                                <NewArrowIcon width="18px" height="18px" />
+                            </CustomGrid>
                         </CustomGrid>
                         <CustomGrid container gap={2} direction="column">
                             <LabeledSwitch
@@ -93,78 +103,69 @@ const Component = ({
                                 onChange={onToggleFaceTracking}
                                 className={styles.switchWrapper}
                             />
-                            <CustomGrid
-                                container
-                                direction="column"
-                                wrap="nowrap"
-                                className={clsx(styles.audioSettings, {
-                                    [styles.withVolume]: isBackgroundAudioActive,
-                                })}
-                            >
-                                <LabeledSwitch
-                                    Icon={<MusicIcon width="24px" height="24px" />}
-                                    nameSpace="meeting"
-                                    translation="features.audioBackground"
-                                    checked={isBackgroundAudioActive}
-                                    onChange={onToggleAudioBackground}
-                                    className={styles.audioWrapper}
-                                />
-                                <Fade in={isBackgroundAudioActive}>
-                                    <CustomBox>
-                                        <CustomDivider />
-                                        <CustomRange
-                                            color={volume ? 'primary' : 'disabled'}
-                                            value={volume}
-                                            onChange={handleChangeVolume}
-                                            className={clsx(styles.audioRange, {
-                                                [styles.inactive]: !volume,
-                                            })}
-                                            Icon={
-                                                <SpeakerIcon
-                                                    isActive={Boolean(volume)}
-                                                    isHalfVolume={volume < 50}
-                                                    width="24px"
-                                                    height="24px"
-                                                />
-                                            }
-                                        />
-                                    </CustomBox>
-                                </Fade>
-                            </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>
             </CustomGrid>
             <CustomGrid
                 className={clsx(styles.advancedSettings, {
-                    [styles.relative]: !isAdvancedSettingsOpened,
+                    [styles.relative]: isAudioVideoSettingsOpened,
                 })}
             >
-                <Fade in={!isAdvancedSettingsOpened}>
+                <Fade in={isAudioVideoSettingsOpened}>
                     <CustomGrid container>
-                        <CustomGrid
-                            container
-                            justifyContent="space-between"
-                            alignItems="center"
-                            wrap="nowrap"
-                        >
-                            {title}
-                            <CustomGrid
-                                container
-                                justifyContent="center"
-                                alignItems="center"
-                                onClick={handleOpenAdvancedSettings}
-                                className={styles.advancedButton}
-                            >
-                                <CustomTypography
-                                    color="colors.white.primary"
-                                    nameSpace="meeting"
-                                    translation="settings.advanced"
-                                />
-                                <NewArrowIcon width="18px" height="18px" />
-                            </CustomGrid>
+                        <CustomGrid container gap={1.5} alignItems="center">
+                            <ArrowIcon
+                                className={styles.arrowIcon}
+                                width="32px"
+                                height="32px"
+                                onClick={handleCloseAudioVideoSettings}
+                            />
+                            <CustomTypography
+                                variant="h3bold"
+                                nameSpace="meeting"
+                                translation="settings.audioVideo"
+                            />
                         </CustomGrid>
                         <SelectDevices key={stream?.id} className={styles.selectDevicesWrapper} />
+                        <CustomGrid
+                            container
+                            direction="column"
+                            wrap="nowrap"
+                            className={clsx(styles.audioSettings, {
+                                [styles.withVolume]: isBackgroundAudioActive,
+                            })}
+                        >
+                            <LabeledSwitch
+                                Icon={<MusicIcon width="24px" height="24px" />}
+                                nameSpace="meeting"
+                                translation="features.audioBackground"
+                                checked={isBackgroundAudioActive}
+                                onChange={onToggleAudioBackground}
+                                className={styles.audioWrapper}
+                            />
+                            <Fade in={isBackgroundAudioActive}>
+                                <CustomBox>
+                                    <CustomDivider />
+                                    <CustomRange
+                                        color={volume ? 'primary' : 'disabled'}
+                                        value={volume}
+                                        onChange={handleChangeVolume}
+                                        className={clsx(styles.audioRange, {
+                                            [styles.inactive]: !volume,
+                                        })}
+                                        Icon={
+                                            <SpeakerIcon
+                                                isActive={Boolean(volume)}
+                                                isHalfVolume={volume < 50}
+                                                width="24px"
+                                                height="24px"
+                                            />
+                                        }
+                                    />
+                                </CustomBox>
+                            </Fade>
+                        </CustomGrid>
                     </CustomGrid>
                 </Fade>
             </CustomGrid>

@@ -20,12 +20,12 @@
 }
 
 .avatar {
-  flex: 0 0 auto;
+  flex: 0 0 50px;
 }
 
 .mainInfo {
+  position: relative;
   @extend %common-wrapper;
-
 }
 
 .language {
@@ -86,4 +86,13 @@
   background: $primary-white;
   border: none;
   border-radius: rem(12px);
+}
+
+.ellips {
+  @include multiline-clip(1);
+  word-break: break-word;
+}
+
+.scroll {
+  width: 100%;
 }

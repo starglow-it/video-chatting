@@ -31,7 +31,6 @@ async function bootstrap() {
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
   await seeder.seedCommonTemplates();
-  await seeder.seedUsersTemplates();
 
   return app.listen();
 }

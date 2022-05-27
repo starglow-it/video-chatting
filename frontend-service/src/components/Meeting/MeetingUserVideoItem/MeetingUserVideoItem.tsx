@@ -64,13 +64,12 @@ const MeetingUserVideoItem = memo(
                         height: `${size}px`,
                     }}
                 >
-                    {!isAuraActive && (
-                        <MeetingUserAudioItem
-                            isLocal={isLocal}
-                            audioTrack={audioTrack}
-                            isMicEnabled={isMicEnabled}
-                        />
-                    )}
+                    <MeetingUserAudioItem
+                        isLocal={isLocal}
+                        audioTrack={audioTrack}
+                        isMicEnabled={isMicEnabled}
+                        isAuraActive={isAuraActive}
+                    />
                     <RoundedVideo
                         isLocal={isLocal}
                         isCameraActive={isCameraEnabled && !isScreensharingUser}

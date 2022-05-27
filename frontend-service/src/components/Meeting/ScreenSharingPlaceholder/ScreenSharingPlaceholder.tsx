@@ -2,11 +2,11 @@ import { memo } from "react";
 import Image from 'next/image';
 
 // utils
-import {getRandomNumber} from "../../../utils/functions/getRandomNumber";
 
 // custom
 import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
 import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
+import {getRandomNumber} from "../../../utils/functions/getRandomNumber";
 
 // styles
 import styles from './ScreenSharingPlaceholder.module.scss';

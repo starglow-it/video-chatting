@@ -4,7 +4,8 @@ export const uiTheme = (theme: Theme) =>
     createTheme({
         ...theme,
         background: {
-            default: '#F4F6F9',
+            default: '#E6F2FA',
+            old: '#F4F6F9',
         },
         borderColor: {
             primary: theme.designSystemColors.grayscale.normal,
