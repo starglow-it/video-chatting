@@ -3,7 +3,6 @@ import {useStore} from 'effector-react';
 
 // helpers
 import {usePrevious} from 'src/hooks/usePrevious';
-import {emptyFunction} from '../../../utils/functions/emptyFunction';
 
 // custom
 import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
@@ -27,6 +26,7 @@ import {ScreenSharingButton} from '@components/Meeting/ScreenSharingButton/Scree
 import {ScreenSharingLayout} from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import {CopyMeetingLinkDialog} from "@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog";
 import {BackgroundAudioControl} from "@components/Meeting/BackgroundAudioControl/BackgroundAudioControl";
+import {emptyFunction} from '../../../utils/functions/emptyFunction';
 
 // misc
 import {AgoraController} from '../../../controllers/VideoChatController';

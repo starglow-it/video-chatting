@@ -15,6 +15,7 @@ export interface ICommonUserDTO {
     companyName: string;
     contactEmail: string;
     description: string;
+    isResetPasswordActive: boolean;
     businessCategories: IBusinessCategory[];
     languages: ILanguage[];
     socials: ISocialLink[];

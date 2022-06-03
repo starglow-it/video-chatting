@@ -33,4 +33,16 @@ export const deleteProfilePhotoFx = profileDomain.effect<void, Profile | null | 
     'deleteProfilePhotoFx',
 );
 
+export const sendResetPasswordLinkFx = profileDomain.effect<{ email: string }, void, void>(
+    'sendResetPasswordLinkFx',
+);
+
+export const checkResetPasswordLinkFx = profileDomain.effect<{ token: string }, { isUserConfirmed: boolean; error?: ErrorState }, void>(
+    'checkResetPasswordLinkFx',
+);
+
+export const resetPasswordFx = profileDomain.effect<{ newPassword: string; newPasswordRepeat: string }, ErrorState | null | undefined, void>(
+    'resetPasswordFx',
+);
+
 export const $profileStore = profileDomain.store<Profile>(initialProfileState);

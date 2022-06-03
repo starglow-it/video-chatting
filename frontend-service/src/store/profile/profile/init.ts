@@ -7,6 +7,9 @@ import {
     updateProfileEmailFx,
     updateProfilePhotoFx,
     updateProfilePasswordFx,
+    sendResetPasswordLinkFx,
+    checkResetPasswordLinkFx,
+    resetPasswordFx,
 } from './model';
 
 import { handleUpdateProfileInfo } from '../handlers/handleUpdateProfileInfo';
@@ -14,6 +17,9 @@ import { handleUpdateProfilePhoto } from '../handlers/handleUpdateProfilePhoto';
 import { handleDeleteProfilePhoto } from '../handlers/handleDeleteProfilePhoto';
 import { handleUpdateProfileEmail } from '../handlers/handleUpdateProfileEmail';
 import { handleUpdateProfilePassword } from '../handlers/handleUpdateProfilePassword';
+import { handleSendResetPasswordLink } from '../handlers/handleSendResetPasswordLink';
+import { handleCheckResetPasswordLink } from '../handlers/handleCheckResetPasswordLink';
+import { handleResetPassword } from '../handlers/handleResetPassword';
 
 import { initialProfileState } from './const';
 
@@ -22,6 +28,9 @@ updateProfilePhotoFx.use(handleUpdateProfilePhoto);
 deleteProfilePhotoFx.use(handleDeleteProfilePhoto);
 updateProfileEmailFx.use(handleUpdateProfileEmail);
 updateProfilePasswordFx.use(handleUpdateProfilePassword);
+sendResetPasswordLinkFx.use(handleSendResetPasswordLink);
+checkResetPasswordLinkFx.use(handleCheckResetPasswordLink);
+resetPasswordFx.use(handleResetPassword);
 
 $profileStore.reset(clearProfileEvent);
 

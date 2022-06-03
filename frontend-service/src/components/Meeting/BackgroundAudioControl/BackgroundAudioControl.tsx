@@ -3,7 +3,6 @@ import {useStore} from "effector-react";
 import clsx from "clsx";
 
 // helpers
-import {useToggle} from "../../../hooks/useToggle";
 
 // custom
 import {CustomPaper} from "@library/custom/CustomPaper/CustomPaper";
@@ -16,6 +15,7 @@ import {ActionButton} from "@library/common/ActionButton/ActionButton";
 
 // icons
 import {SpeakerIcon} from "@library/icons/SpeakerIcon/SpeakerIcon";
+import {useToggle} from "../../../hooks/useToggle";
 
 // styles
 import styles from './BackgroundAudioControl.module.scss';

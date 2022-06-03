@@ -1,17 +1,37 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
+import clsx from "clsx";
 
-import { CustomLink } from '@library/custom/CustomLink/CustomLink';
+// custom
+import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
 
+// stores
+import {appDialogsApi} from "../../store/dialogs";
+
+// types
+import { AppDialogsEnum } from "../../store/types";
 import { ForgotPasswordProps } from './types';
+import { PropsWithClassName} from "../../types";
 
-const ForgotPassword = memo(({ className }: ForgotPasswordProps) => (
-    <CustomLink
-        href="/"
-        className={className}
-        variant="body2"
-        nameSpace="common"
-        translation="forgotPassword"
-    />
-));
+// styles
+import styles from './ForgotPassword.module.scss';
 
-export { ForgotPassword };
+const Component: React.FunctionComponent<PropsWithClassName<ForgotPasswordProps>> = memo(({ className }) => {
+    const handleStartResetPassword = useCallback(() => {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.emailResetPasswordDialog,
+        });
+    }, []);
+
+    return (
+        <CustomTypography
+            className={clsx(styles.text, className)}
+            variant="body2"
+            nameSpace="common"
+            translation="forgotPassword"
+            color="colors.blue.primary"
+            onClick={handleStartResetPassword}
+        />
+    );
+});
+
+export const ForgotPassword = memo<PropsWithClassName<ForgotPasswordProps>>(Component);

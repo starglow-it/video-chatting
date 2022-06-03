@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useCallback, useMemo } from 'react';
+import React, {ForwardedRef, forwardRef, memo, useCallback, useMemo} from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 
@@ -21,78 +21,73 @@ import { TranslationProps } from '@library/common/Translation/types';
 import { PasswordInputProps } from './types';
 import { TextFieldProps } from '@mui/material/TextField/TextField';
 
-const PasswordInput = memo(
-    forwardRef(
-        (
-            {
-                onFocus,
-                onCustomBlur,
-                onBlur,
-                nameSpace,
-                translation,
-                error,
-                fieldKey = 'password',
-                InputProps,
-                ...rest
-            }: PasswordInputProps & TextFieldProps & TranslationProps,
-            ref,
-        ) => {
-            const { value: showPass, onToggleSwitch: handleTogglePassword } = useToggle(false);
+type ComponentProps = PasswordInputProps & Omit<TextFieldProps, 'error' | 'children'> & TranslationProps;
 
-            const { control } = useFormContext();
+const Component = (
+    {
+        onFocus,
+        onCustomBlur,
+        onBlur,
+        nameSpace,
+        translation,
+        error,
+        fieldKey = 'password',
+        InputProps,
+        ...rest
+    }: ComponentProps,
+    ref: ForwardedRef<HTMLInputElement>,
+) => {
+    const { value: showPass, onToggleSwitch: handleTogglePassword } = useToggle(false);
 
-            const passwordValue = useWatch({ control, name: fieldKey });
+    const { control } = useFormContext();
 
-            const t = useLocalization(nameSpace);
+    const passwordValue = useWatch({ control, name: fieldKey });
 
-            const label = useMemo(() => {
-                return translation ? t.translation(translation) : '';
-            }, [translation]);
+    const t = useLocalization(nameSpace);
 
-            const handleBlur = useCallback(
-                e => {
-                    if (!passwordValue) {
-                        onCustomBlur?.();
-                    }
-                    onBlur?.(e);
-                },
-                [passwordValue],
-            );
+    const label = useMemo(() => {
+        return translation ? t.translation(translation) : '';
+    }, [translation]);
 
-            return (
-                <CustomGrid container direction="column">
-                    <TextField
-                        inputRef={ref}
-                        type={showPass ? 'text' : 'password'}
-                        label={label || 'Password'}
-                        onBlur={handleBlur}
-                        onFocus={onFocus}
-                        error={Boolean(error)}
-                        InputProps={{
-                            ...InputProps,
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleTogglePassword}
-                                        edge="end"
-                                    >
-                                        <EyeVisibilityIcon
-                                            width="24px"
-                                            height="24px"
-                                            isVisible={showPass}
-                                        />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        {...rest}
-                    />
-                    {error && <ErrorMessage className={styles.errorContainer} error={error} />}
-                </CustomGrid>
-            );
-        },
-    ),
-);
+    const handleBlur = useCallback(e => {
+        if (!passwordValue) {
+            onCustomBlur?.();
+        }
+        onBlur?.(e);
+    },[passwordValue]);
 
-export { PasswordInput };
+    return (
+        <CustomGrid container direction="column">
+            <TextField
+                inputRef={ref}
+                type={showPass ? 'text' : 'password'}
+                label={label || 'Password'}
+                onBlur={handleBlur}
+                onFocus={onFocus}
+                error={Boolean(error)}
+                InputProps={{
+                    ...InputProps,
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleTogglePassword}
+                                edge="end"
+                            >
+                                <EyeVisibilityIcon
+                                    width="24px"
+                                    height="24px"
+                                    isVisible={showPass}
+                                />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
+                {...rest}
+            />
+            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
+        </CustomGrid>
+    );
+}
+
+export const PasswordInput = memo<ComponentProps>(forwardRef<HTMLInputElement, ComponentProps>(Component));

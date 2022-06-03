@@ -79,3 +79,18 @@ export const emailVerificationUrl = {
     url: `${baseProfileUrl}/verify/email`,
     method: HttpMethods.Post,
 };
+
+export const sendResetPasswordLinkUrl = {
+    url: `${serverUrl}/${authScope}/reset-link`,
+    method: HttpMethods.Post,
+};
+
+export const resetPasswordUrl = {
+    url: `${serverUrl}/${authScope}/reset-password`,
+    method: HttpMethods.Post,
+};
+
+export const checkResetPasswordLinkUrl = {
+    url: `${serverUrl}/${authScope}/verify-reset-link`,
+    method: HttpMethods.Post,
+};

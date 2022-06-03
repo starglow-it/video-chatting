@@ -14,3 +14,5 @@ export const UPDATE_PROFILE_AVATAR = 'update_profile_avatar';
 export const DELETE_PROFILE_AVATAR = 'delete_profile_avatar';
 export const SET_VERIFICATION_CODE = 'set_verification_code';
 export const VALIDATE_VERIFICATION_CODE = 'validate_verification_code';
+export const SET_RESET_PASSWORD_TOKEN = 'set_reset_password_token';
+export const RESET_PASSWORD = 'reset_password';

@@ -16,6 +16,8 @@ import {
   FIND_USER_BY_EMAIL_AND_UPDATE,
   FIND_USER_BY_ID,
   LOGIN_USER_BY_EMAIL,
+  RESET_PASSWORD,
+  SET_RESET_PASSWORD_TOKEN,
   SET_VERIFICATION_CODE,
   UPDATE_PASSWORD,
   UPDATE_PROFILE,
@@ -31,8 +33,11 @@ import {
 import {
   INVALID_CREDENTIALS,
   INVALID_PASSWORD,
+  NOT_MATCH_PASSWORD,
+  SAME_RESET_PASSWORD,
   USER_NOT_FOUND,
 } from '@shared/const/errors/users';
+import { USER_TOKEN_NOT_FOUND } from '@shared/const/errors/tokens';
 
 // mongo
 import {
@@ -56,6 +61,10 @@ import { UserTokenService } from '../user-token/user-token.service';
 
 // const
 import { USERS_SERVICE } from '@shared/const/services.const';
+
+// types
+import { TokenPayloadType } from '@shared/types/token-payload.type';
+import { TokenTypes } from '@shared/const/tokens.const';
 
 @Controller('users')
 export class UsersController {
@@ -120,15 +129,20 @@ export class UsersController {
 
   @MessagePattern({ cmd: FIND_USER_BY_EMAIL })
   async findUserByEmail(@Payload() data: { email: ICommonUserDTO['email'] }) {
-    const user = await this.usersService.findUser({ email: data.email });
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findUser({
+        query: { email: data.email },
+        session,
+      });
 
-    if (!user) {
-      throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
-    }
+      if (!user) {
+        throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+      }
 
-    return plainToClass(CommonUserDTO, user, {
-      excludeExtraneousValues: true,
-      enableImplicitConversion: true,
+      return plainToClass(CommonUserDTO, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     });
   }
 
@@ -186,30 +200,35 @@ export class UsersController {
 
   @MessagePattern({ cmd: VERIFY_PASSWORD })
   async verifyPassword(@Payload() verifyData: IUserCredentials) {
-    const user = await this.usersService.findUser({
-      ...(verifyData.userId && { _id: verifyData.userId }),
-      ...(verifyData.email && { email: verifyData.email }),
-    });
-
-    if (!user) {
-      throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
-    }
-
-    const isPasswordValid = await this.usersService.verifyPassword(
-      verifyData.password,
-      user.password,
-    );
-
-    if (!isPasswordValid) {
-      throw new RpcException({
-        ...(verifyData.userId ? INVALID_PASSWORD : INVALID_CREDENTIALS),
-        ctx: USERS_SERVICE,
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findUser({
+        query: {
+          ...(verifyData.userId && { _id: verifyData.userId }),
+          ...(verifyData.email && { email: verifyData.email }),
+        },
+        session,
       });
-    }
 
-    return plainToClass(CommonUserDTO, user, {
-      excludeExtraneousValues: true,
-      enableImplicitConversion: true,
+      if (!user) {
+        throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+      }
+
+      const isPasswordValid = await this.usersService.verifyPassword(
+        verifyData.password,
+        user.password,
+      );
+
+      if (!isPasswordValid) {
+        throw new RpcException({
+          ...(verifyData.userId ? INVALID_PASSWORD : INVALID_CREDENTIALS),
+          ctx: USERS_SERVICE,
+        });
+      }
+
+      return plainToClass(CommonUserDTO, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     });
   }
 
@@ -217,7 +236,9 @@ export class UsersController {
   async comparePasswords(
     @Payload() compareData: { userId: string; password: string },
   ) {
-    const user = await this.usersService.findUser({ _id: compareData.userId });
+    const user = await this.usersService.findUser({
+      query: { _id: compareData.userId },
+    });
 
     if (!user) {
       throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
@@ -309,7 +330,9 @@ export class UsersController {
 
   @MessagePattern({ cmd: LOGIN_USER_BY_EMAIL })
   async loginUserByEmail(@Payload() loginData: IUserCredentials) {
-    const user = await this.usersService.findUser({ email: loginData.email });
+    const user = await this.usersService.findUser({
+      query: { email: loginData.email },
+    });
 
     if (!user) {
       throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
@@ -463,6 +486,104 @@ export class UsersController {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
+    });
+  }
+
+  @MessagePattern({ cmd: SET_RESET_PASSWORD_TOKEN })
+  async setResetPasswordToken(
+    @Payload()
+    data: {
+      email: ICommonUserDTO['email'];
+      token: TokenPayloadType;
+    },
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findUser({
+        query: { email: data.email },
+        session,
+      });
+
+      await this.userTokenService.deleteManyTokens(
+        { user: user._id, type: TokenTypes.ResetPassword },
+        session,
+      );
+
+      const token = await this.userTokenService.createToken(
+        {
+          user: user._id,
+          token: data.token,
+        },
+        session,
+      );
+
+      await this.usersService.findUserAndUpdate(
+        { userId: user.id },
+        { isResetPasswordActive: true },
+        session,
+      );
+
+      user.tokens.push(token);
+
+      await user.save();
+
+      return;
+    });
+  }
+
+  @MessagePattern({ cmd: RESET_PASSWORD })
+  async resetPassword(
+    @Payload()
+    resetPasswordData: {
+      token: string;
+      newPassword: string;
+      newPasswordRepeat: string;
+    },
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const isUserTokenExists = await this.userTokenService.exists(
+        resetPasswordData.token,
+      );
+
+      if (!isUserTokenExists) {
+        throw new RpcException(USER_TOKEN_NOT_FOUND);
+      }
+
+      if (
+        resetPasswordData.newPassword !== resetPasswordData.newPasswordRepeat
+      ) {
+        throw new RpcException(NOT_MATCH_PASSWORD);
+      }
+
+      const token = await this.userTokenService.findOne({
+        query: {
+          token: resetPasswordData.token,
+        },
+        session,
+        populatePath: 'user',
+      });
+
+      const user = await this.usersService.findById(token.user._id, session);
+
+      const isSamePassword = await this.usersService.verifyPassword(
+        resetPasswordData.newPassword,
+        user.password,
+      );
+
+      if (isSamePassword) {
+        throw new RpcException(SAME_RESET_PASSWORD);
+      }
+
+      const hashPass = await this.usersService.hashPassword(
+        resetPasswordData.newPassword,
+      );
+
+      await this.usersService.findByIdAndUpdate(
+        user._id,
+        { password: hashPass, isResetPasswordActive: false },
+        session,
+      );
+
+      await this.userTokenService.deleteToken({ token: token.token }, session);
     });
   }
 }

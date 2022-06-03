@@ -70,4 +70,7 @@ export class CommonUserDTO implements ICommonUserDTO {
 
   tokens: string[];
   password: string;
+
+  @Expose()
+  isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];
 }

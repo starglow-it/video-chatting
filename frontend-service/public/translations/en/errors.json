@@ -21,6 +21,9 @@
         "newRepeat": "Please, repeat your new password",
         "notMatch": "Passwords do not match",
         "samePassword": "Please enter different password"
+      },
+      "newResetPassword": {
+        "samePassword": "Your old and new password are the same. Try another one"
       }
     },
     "credentials": {

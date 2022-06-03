@@ -129,6 +129,109 @@ export class AuthController {
     }
   }
 
+  @Post('/reset-link')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'User start reset password',
+  })
+  async resetPasswordLink(
+    @Body() resetLinkData: { email: string },
+  ): Promise<ResponseSumType<void>> {
+    try {
+      const user = await this.coreService.findUserByEmail({
+        email: resetLinkData.email,
+      });
+
+      if (user) {
+        await this.authService.sendResetPassword({
+          email: resetLinkData.email,
+        });
+      }
+
+      return {
+        success: true,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while reset link`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('/verify-reset-link')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'Verify reset password link',
+  })
+  async verifyResetPasswordLink(
+    @Body() verifyResetPasswordLinkData: { token: string },
+  ): Promise<ResponseSumType<void>> {
+    try {
+      const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
+        verifyResetPasswordLinkData.token,
+      );
+
+      if (!isUserTokenExists) {
+        throw new DataValidationException(USER_TOKEN_NOT_FOUND);
+      }
+
+      return {
+        success: true,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while reset link`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('/reset-password')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'Reset password success',
+  })
+  async resetPassword(
+    @Body()
+    resetPasswordData: {
+      token: string;
+      newPassword: string;
+      newPasswordRepeat: string;
+    },
+  ): Promise<ResponseSumType<void>> {
+    try {
+      await this.coreService.resetPassword(resetPasswordData);
+
+      return {
+        success: true,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while reset password`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
@@ -151,7 +254,9 @@ export class AuthController {
       email: loginUserData.email,
     });
 
-    if (!user.isConfirmed) {
+    console.log(user);
+
+    if (!user.isConfirmed || user.isResetPasswordActive) {
       throw new DataValidationException(USER_NOT_CONFIRMED);
     }
 

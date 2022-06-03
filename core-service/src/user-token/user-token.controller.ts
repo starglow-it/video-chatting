@@ -48,10 +48,13 @@ export class UserTokenController {
   async assignTokensToUser(
     @Payload() { accessToken, refreshToken, user }: TokenPairWithUserType,
   ) {
-    return withTransaction(this.connection, async ({ session }) => {
+    return withTransaction(this.connection, async (session) => {
       try {
         const userModel = await this.usersService.findUser({
-          email: user.email,
+          query: {
+            email: user.email,
+          },
+          session,
         });
 
         await this.userTokenService.deleteUserTokens(
@@ -59,12 +62,14 @@ export class UserTokenController {
           session,
         );
 
+        userModel.tokens = [];
+
         const accessTokenData = await this.userTokenService.createToken(
           {
             user: user.id,
             token: { ...accessToken, type: TokenTypes.Access },
           },
-          { session },
+          session,
         );
 
         const refreshTokenData = await this.userTokenService.createToken(
@@ -72,7 +77,7 @@ export class UserTokenController {
             user: user.id,
             token: { ...refreshToken, type: TokenTypes.Refresh },
           },
-          { session },
+          session,
         );
 
         userModel.tokens.push(accessTokenData);

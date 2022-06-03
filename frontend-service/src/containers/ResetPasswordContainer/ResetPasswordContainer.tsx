@@ -1,0 +1,88 @@
+import React, {memo, useCallback, useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {useStore} from "effector-react";
+
+// hooks
+import {useToggle} from "../../hooks/useToggle";
+
+// custom
+import {CustomPaper} from "@library/custom/CustomPaper/CustomPaper";
+
+// components
+import {ResetPassword} from "@components/ResetPassword/ResetPassword";
+import {NotValidLink} from "@components/NotValidLink/NotValidLink";
+import {ResetSuccessful} from "@components/ResetPassword/ResetSuccessful";
+
+// styles
+import styles from "./ResetPasswordContainer.module.scss";
+
+// stores
+import {checkResetPasswordLinkFx} from "../../store/profile";
+
+const Component = () => {
+    const router = useRouter();
+
+    const isConfirmPending = useStore(checkResetPasswordLinkFx.pending);
+
+    const [error, setError] = useState('');
+
+    const {
+        value: isUserConfirmed,
+        onSwitchOn: handleSetUserConfirmed
+    } = useToggle(false);
+
+    const {
+        value: isResetSuccessful,
+        onSwitchOn: handleShowResetSuccessful
+    } = useToggle(false);
+
+    useEffect(() => {
+        (async () => {
+            if (router?.query?.token) {
+                const response = await checkResetPasswordLinkFx({ token: router?.query?.token as string });
+
+                if (response?.error?.message) {
+                    return setError(response?.error?.message);
+                }
+
+                handleSetUserConfirmed();
+            }
+        })();
+    }, [router?.query?.token]);
+
+    const handleShowSuccess = useCallback(
+        () => {
+            handleShowResetSuccessful();
+        },
+        [],
+    );
+
+    return (
+        <CustomPaper className={styles.wrapper}>
+            {isUserConfirmed && !isConfirmPending && !isResetSuccessful
+                ? (
+                    <ResetPassword
+                        onSuccessfulReset={handleShowSuccess}
+                    />
+                )
+                : null
+            }
+
+            {error && !isConfirmPending
+                ? (
+                    <NotValidLink />
+                )
+                : null
+            }
+
+            {isResetSuccessful
+                ? (
+                    <ResetSuccessful />
+                )
+                : null
+            }
+        </CustomPaper>
+    );
+}
+
+export const ResetPasswordContainer = memo(Component);

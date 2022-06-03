@@ -13,6 +13,7 @@ import {
   FIND_USER_BY_EMAIL_AND_UPDATE,
   FIND_USER_BY_ID,
   LOGIN_USER_BY_EMAIL,
+  SET_RESET_PASSWORD_TOKEN,
 } from '@shared/patterns/users';
 import { USER_NOT_FOUND } from '@shared/const/errors/users';
 import { DELETE_TOKEN } from '@shared/patterns/auth';
@@ -20,6 +21,7 @@ import { TokenPairWithUserType } from '@shared/types/token-pair-with-user.type';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { IToken } from '@shared/interfaces/token.interface';
 import { AUTH_SERVICE } from '@shared/const/services.const';
+import { TokenPayloadType } from '@shared/types/token-payload.type';
 
 @Injectable()
 export class CoreService {
@@ -86,6 +88,15 @@ export class CoreService {
     userId: ICommonUserDTO['id'];
   }): Promise<ICommonUserDTO> {
     const pattern = { cmd: FIND_USER_BY_ID };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async setResetPasswordToken(data: {
+    email: ICommonUserDTO['email'];
+    token: TokenPayloadType;
+  }): Promise<void> {
+    const pattern = { cmd: SET_RESET_PASSWORD_TOKEN };
 
     return this.client.send(pattern, data).toPromise();
   }

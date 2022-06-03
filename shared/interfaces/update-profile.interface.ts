@@ -8,6 +8,7 @@ export interface IUpdateProfile {
     fullName: string;
     position: string;
     signBoard?: string;
+    isResetPasswordActive?: boolean;
     socials: {
         youtube?: string;
         facebook?: string;

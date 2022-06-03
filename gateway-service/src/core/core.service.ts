@@ -7,6 +7,7 @@ import {
   DELETE_PROFILE_AVATAR,
   FIND_USER_BY_EMAIL,
   FIND_USER_BY_ID,
+  RESET_PASSWORD,
   SET_VERIFICATION_CODE,
   UPDATE_PASSWORD,
   UPDATE_PROFILE,
@@ -153,6 +154,12 @@ export class CoreService {
   }
 
   async sendCustom(pattern, data) {
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async resetPassword(data) {
+    const pattern = { cmd: RESET_PASSWORD };
+
     return this.client.send(pattern, data).toPromise();
   }
 }

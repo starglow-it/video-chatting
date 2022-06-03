@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 // schemas
@@ -10,6 +10,7 @@ import { UserDocument } from '../schemas/user.schema';
 import { TokenPayloadType } from '@shared/types/token-payload.type';
 
 import { ITransactionSession } from '../helpers/mongo/withTransaction';
+import { CustomPopulateOptions } from '../types/custom';
 
 @Injectable()
 export class UserTokenService {
@@ -39,8 +40,33 @@ export class UserTokenService {
     return newToken;
   }
 
+  async find(query: FilterQuery<UserTokenDocument>) {
+    return this.userToken.find(query);
+  }
+
+  async findOne({
+    query,
+    session,
+    populatePath,
+  }: {
+    query: FilterQuery<UserTokenDocument>;
+    session: ITransactionSession;
+    populatePath?: CustomPopulateOptions;
+  }) {
+    return this.userToken
+      .findOne(query, {}, { populate: populatePath, session: session?.session })
+      .exec();
+  }
+
   async deleteToken(data: { token: string }, { session }: ITransactionSession) {
     return this.userToken.deleteOne({ token: data.token }, { session });
+  }
+
+  async deleteManyTokens(
+    query: FilterQuery<UserTokenDocument>,
+    { session }: ITransactionSession,
+  ) {
+    return this.userToken.deleteMany(query, { session });
   }
 
   async exists(token: string) {

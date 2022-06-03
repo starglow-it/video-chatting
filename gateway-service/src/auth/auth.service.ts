@@ -9,6 +9,7 @@ import {
   LOGOUT_USER,
   REFRESH_TOKEN,
   REGISTER_USER_PATTERN,
+  SEND_RESET_PASSWORD_LINK,
 } from '@shared/patterns/auth';
 import { ConfirmUser } from '@shared/types/confirmUser.type';
 import { IUserCredentials } from '@shared/types/registerUser.type';
@@ -50,6 +51,12 @@ export class AuthService {
 
   async logoutUser(data: IToken) {
     const pattern = { cmd: LOGOUT_USER };
+
+    await this.client.send(pattern, data).toPromise();
+  }
+
+  async sendResetPassword(data: Pick<IUserCredentials, 'email'>) {
+    const pattern = { cmd: SEND_RESET_PASSWORD_LINK };
 
     await this.client.send(pattern, data).toPromise();
   }

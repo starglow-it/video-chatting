@@ -18,6 +18,8 @@ export const initialDialogsState: AppDialogsState = {
     scheduleMeetingDialog: false,
     downloadIcsEventDialog: false,
     copyMeetingLinkDialog: false,
+    emailResetPasswordDialog: false,
+    checkResetPasswordEmailDialog: false,
 };
 
 export const $appDialogsStore = dialogsDomain.store<AppDialogsState>(initialDialogsState);

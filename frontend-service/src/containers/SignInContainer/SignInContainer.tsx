@@ -28,6 +28,7 @@ import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
 
 // components
 import { ForgotPassword } from '@components/ForgotPassword/ForgotPassword';
+import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPasswordDialog/EmailResetPasswordDialog';
 
 // styles
 import styles from './SignInContainer.module.scss';
@@ -124,24 +125,25 @@ const SignInContainer = memo(() => {
     }, [errors.email]);
 
     return (
-        <CenteredPaper className={styles.wrapper} onClose={handleClosePage}>
-            <CustomGrid container alignItems="center" justifyContent="center">
-                <CustomBox className={styles.image}>
-                    <Image
-                        width="28"
-                        height="28"
-                        src="/images/winking-face.png"
-                        alt="winking-face"
+        <>
+            <CenteredPaper className={styles.wrapper} onClose={handleClosePage}>
+                <CustomGrid container alignItems="center" justifyContent="center">
+                    <CustomBox className={styles.image}>
+                        <Image
+                            width="28"
+                            height="28"
+                            src="/images/winking-face.png"
+                            alt="winking-face"
+                        />
+                    </CustomBox>
+                    <CustomTypography
+                        variant={is480Media ? 'h4' : 'h2bold'}
+                        className={styles.text}
+                        nameSpace="common"
+                        translation="login.welcome"
                     />
-                </CustomBox>
-                <CustomTypography
-                    variant={is480Media ? 'h4' : 'h2bold'}
-                    className={styles.text}
-                    nameSpace="common"
-                    translation="login.welcome"
-                />
-            </CustomGrid>
-            {/*<CustomGrid container direction="column" className={styles.socialsWrapper}>
+                </CustomGrid>
+                {/*<CustomGrid container direction="column" className={styles.socialsWrapper}>
                 <CustomGrid item className={styles.googleLogin}>
                     <SocialLogin
                         Icon={GoogleIcon}
@@ -162,51 +164,53 @@ const SignInContainer = memo(() => {
                 nameSpace="common"
                 translation="login.separatorText"
             />*/}
-            <FormProvider {...methods}>
-                <form className={styles.socialsWrapper} onSubmit={onSubmit}>
-                    <CustomGrid container>
-                        <CustomGrid item className={styles.input}>
-                            <EmailInput onClear={handleResetEmailField} {...register('email')} />
-                            {errors?.email?.length && (
-                                <CustomGrid className={styles.errorContainer}>
-                                    {emailErrorMessages}
-                                </CustomGrid>
+                <FormProvider {...methods}>
+                    <form className={styles.socialsWrapper} onSubmit={onSubmit}>
+                        <CustomGrid container>
+                            <CustomGrid item className={styles.input}>
+                                <EmailInput onClear={handleResetEmailField} {...register('email')} />
+                                {errors?.email?.length && (
+                                    <CustomGrid className={styles.errorContainer}>
+                                        {emailErrorMessages}
+                                    </CustomGrid>
+                                )}
+                            </CustomGrid>
+                            <CustomGrid
+                                container
+                                direction="column"
+                                alignItems="flex-end"
+                                justifyContent="flex-end"
+                                className={styles.input}
+                            >
+                                <PasswordInput {...register('password')} />
+                                {errors?.password?.length && (
+                                    <CustomGrid className={styles.errorContainer}>
+                                        {passwordErrorMessages}
+                                    </CustomGrid>
+                                )}
+                                <ForgotPassword className={styles.forgotPass} />
+                            </CustomGrid>
+
+                            {authState?.error?.message && (
+                                <ErrorMessage
+                                    className={styles.errorContainer}
+                                    error={authState?.error?.message}
+                                />
                             )}
                         </CustomGrid>
-                        <CustomGrid
-                            container
-                            direction="column"
-                            alignItems="flex-end"
-                            justifyContent="flex-end"
-                            className={styles.input}
-                        >
-                            <PasswordInput {...register('password')} />
-                            {errors?.password?.length && (
-                                <CustomGrid className={styles.errorContainer}>
-                                    {passwordErrorMessages}
-                                </CustomGrid>
-                            )}
-                            <ForgotPassword className={styles.forgotPass} />
-                        </CustomGrid>
 
-                        {authState?.error?.message && (
-                            <ErrorMessage
-                                className={styles.errorContainer}
-                                error={authState?.error?.message}
-                            />
-                        )}
-                    </CustomGrid>
-
-                    <CustomButton
-                        className={styles.signInBtn}
-                        disabled={!isCredentialsEntered}
-                        type="submit"
-                        nameSpace="common"
-                        translation="buttons.login"
-                    />
-                </form>
-            </FormProvider>
-        </CenteredPaper>
+                        <CustomButton
+                            className={styles.signInBtn}
+                            disabled={!isCredentialsEntered}
+                            type="submit"
+                            nameSpace="common"
+                            translation="buttons.login"
+                        />
+                    </form>
+                </FormProvider>
+            </CenteredPaper>
+            <EmailResetPasswordDialog />
+        </>
     );
 });
 

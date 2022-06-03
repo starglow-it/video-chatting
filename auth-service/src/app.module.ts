@@ -16,6 +16,7 @@ import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessTokenModule } from './access-token/access-token.module';
 import { RefreshTokenModule } from './refresh-token/refresh-token.module';
+import { ResetPasswordTokenModule } from './reset-password-token/reset-password-token.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RefreshTokenModule } from './refresh-token/refresh-token.module';
     ConfirmTokenModule,
     AccessTokenModule,
     RefreshTokenModule,
+    ResetPasswordTokenModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,6 +7,7 @@ import {
   LOGOUT_USER,
   REFRESH_TOKEN,
   REGISTER_USER_PATTERN,
+  SEND_RESET_PASSWORD_LINK,
 } from '@shared/patterns/auth';
 import { IUserCredentials } from '@shared/types/registerUser.type';
 import { ConfirmUser } from '@shared/types/confirmUser.type';
@@ -22,8 +23,10 @@ import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 
 // helpers
 import { createConfirmRegistrationMessage } from '../helpers/createConfirmRegistrationMessage';
+import { createResetPasswordLinkMessage } from '../helpers/createResetPasswordLinkMessage';
 import { IToken } from '@shared/interfaces/token.interface';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ResetPasswordTokenService } from '../reset-password-token/reset-password-token.service';
 
 @Controller('auth')
 export class AuthController {
@@ -33,6 +36,7 @@ export class AuthController {
     private notificationService: NotificationsService,
     private confirmTokenService: ConfirmTokenService,
     private refreshTokenService: RefreshTokenService,
+    private resetPasswordToken: ResetPasswordTokenService,
     private configService: ConfigClientService,
   ) {}
 
@@ -148,6 +152,38 @@ export class AuthController {
   async logoutUser(@Payload() token: IToken): Promise<void> {
     try {
       await this.coreService.deleteToken(token);
+    } catch (err) {
+      throw new RpcException(err);
+    }
+  }
+
+  @MessagePattern({ cmd: SEND_RESET_PASSWORD_LINK })
+  async sendResetPasswordLink(
+    @Payload() data: { email: string },
+  ): Promise<void> {
+    try {
+      const frontendUrl = await this.configService.get('frontendUrl');
+
+      const user = await this.coreService.findUserByEmail({
+        email: data.email,
+      });
+
+      const token = await this.resetPasswordToken.generateToken({
+        user,
+      });
+
+      await this.coreService.setResetPasswordToken({
+        email: data.email,
+        token,
+      });
+
+      this.notificationService.sendConfirmRegistrationEmail({
+        message: createResetPasswordLinkMessage({
+          url: frontendUrl,
+          token: token.token,
+        }),
+        to: data.email,
+      });
     } catch (err) {
       throw new RpcException(err);
     }

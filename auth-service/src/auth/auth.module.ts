@@ -13,6 +13,7 @@ import { ConfigModule } from '../config/config.module';
 import { ConfirmTokenModule } from '../confirm-token/confirm-token.module';
 import { AccessTokenModule } from '../access-token/access-token.module';
 import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
+import { ResetPasswordTokenModule } from '../reset-password-token/reset-password-token.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
     ConfigModule,
     AccessTokenModule,
     RefreshTokenModule,
+    ResetPasswordTokenModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

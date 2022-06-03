@@ -61,6 +61,10 @@ export class CommonUserRestDTO implements ICommonUserDTO {
   @ApiProperty()
   signBoard: string;
 
+  @Expose()
+  @ApiProperty()
+  isResetPasswordActive: boolean;
+
   createdAt: Date;
   updatedAt: Date;
 }

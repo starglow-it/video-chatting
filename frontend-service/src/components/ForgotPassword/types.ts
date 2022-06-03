@@ -1,3 +1,1 @@
-export type ForgotPasswordProps = {
-    className: string;
-};
+export type ForgotPasswordProps = {};

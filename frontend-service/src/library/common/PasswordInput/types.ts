@@ -1,5 +1,6 @@
 export type PasswordInputProps = {
     onFocus?: () => void;
     onCustomBlur?: () => void;
-    fieldKey: string;
+    fieldKey?: string;
+    error?: string;
 };

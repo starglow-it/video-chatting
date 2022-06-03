@@ -97,7 +97,7 @@ const Component: React.FunctionComponent<ComponentPropsType> = ({ onClickAway },
 };
 
 const DashboardNotifications = memo<ComponentPropsType>(
-    forwardRef<HTMLButtonElement, ComponentPropsType>(Component),
+    forwardRef<HTMLDivElement, ComponentPropsType>(Component),
 );
 
 export { DashboardNotifications };

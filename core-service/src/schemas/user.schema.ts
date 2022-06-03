@@ -100,6 +100,12 @@ export class User {
     default: 'default',
   })
   signBoard: ICommonUserDTO['signBoard'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];
 }
 
 export type UserDocument = User & Document;

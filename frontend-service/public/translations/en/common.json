@@ -3,6 +3,29 @@
     "label": "Sign In",
     "haveAccount": "Already have an account?"
   },
+  "reset": {
+    "title": "Reset password",
+    "text": "Enter the email associated with your account\nand we'll send a link to reset your password",
+    "sendLink": "Send link",
+    "checkEmail": "Check your email",
+    "checkEmailText": "We have sent a password recover\ninstructions to your email.",
+    "didntGetLink": "Didn't get the link?",
+    "resend": "Resend",
+    "resendTimer": "Resend in: {{time}}",
+    "save": "Save new password",
+    "newPasswordTitle": "New password",
+    "newPasswordText": "Your new password must be different\nfrom previous used passwords.",
+    "newPassword": "Password",
+    "newPasswordRepeat": "Confirm password",
+    "resetSuccessful": {
+      "title": "Successful reset password",
+      "text": "You will be redirected to login page"
+    }
+  },
+  "linkNotValid": {
+    "title": "Link is not valid",
+    "text": "More than 48 hours are left. Try again"
+  },
   "signUp": {
     "label": "Get started",
     "dontHaveAccount": "Don’t have an account?"

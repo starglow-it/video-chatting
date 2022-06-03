@@ -4,3 +4,4 @@ export const LOGOUT_USER = 'logout_user';
 export const CONFIRM_REGISTRATION_PATTERN = 'confirm_registration';
 export const DELETE_TOKEN = 'delete_token';
 export const REFRESH_TOKEN = 'refresh_token';
+export const SEND_RESET_PASSWORD_LINK = 'send_reset_password_link';

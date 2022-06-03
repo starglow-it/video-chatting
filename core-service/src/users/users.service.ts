@@ -45,8 +45,14 @@ export class UsersService {
     return user;
   }
 
-  async findUser(query: FilterQuery<UserDocument>) {
-    return this.user.findOne(query);
+  async findUser({
+    query,
+    session,
+  }: {
+    query: FilterQuery<UserDocument>;
+    session?: ITransactionSession;
+  }) {
+    return this.user.findOne(query, {}, { session: session?.session }).exec();
   }
 
   async findUsers({

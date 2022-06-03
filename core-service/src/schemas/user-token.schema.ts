@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { User } from './user.schema';
+import { UserDocument } from './user.schema';
+import { TokenTypes, TokenTypesValues } from '@shared/const/tokens.const';
 
 @Schema()
 export class UserToken {
@@ -12,13 +13,14 @@ export class UserToken {
   expiresAt: number;
 
   @Prop({
-    type: String,
+    type: mongoose.Schema.Types.String,
     required: true,
-    enum: ['confirm', 'reset', 'access', 'refresh'],
+    enum: TokenTypesValues,
   })
-  type: string;
+  type: TokenTypes;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
     required: true,
   })
   token: string;
@@ -28,7 +30,7 @@ export class UserToken {
     ref: 'User',
     required: true,
   })
-  user: User;
+  user: UserDocument;
 }
 
 export type UserTokenDocument = UserToken & Document;
