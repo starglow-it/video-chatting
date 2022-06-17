@@ -7,6 +7,7 @@
   @if $hoverColor != '' {
     &:hover {
       background: $hoverColor;
+      @content
     }
   }
 
@@ -15,8 +16,6 @@
       background: $activeColor;
     }
   }
-
-  @content
 }
 
 .iconWrapper {
@@ -66,4 +65,28 @@
 .cancel {
   background: rgba($normal-gray-scale, 0.25);
   color: $primary-black;
+}
+
+.transparent {
+  background: transparent;
+  color: $primary-white;
+  border: rem(1px) solid $primary-white;
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &.withAction {
+    @include withHoverAction("", $primary-white) {
+      color: $primary-black;
+    };
+  }
+}
+
+.transparentBlack {
+  background: transparent;
+  color: $primary-white;
+  border: none;
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &.withAction {
+    @include withHoverAction("", rgba($primary-black, 0.75));
+  }
 }

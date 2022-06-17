@@ -31,9 +31,9 @@ const ScreenSharingButton = memo(({ onAction, isSharingActive }: ScreenSharingBu
         >
             <CustomPaper variant="black-glass" className={styles.deviceButton}>
                 <ActionButton
+                    variant="transparentBlack"
                     onAction={onAction}
                     className={clsx(styles.iconButton, {
-                        [styles.withAction]: isThereAction,
                         [styles.active]: isSharingActive && isThereAction,
                         [styles.noRights]: isSharingActive && !isThereAction,
                     })}

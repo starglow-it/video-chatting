@@ -130,9 +130,11 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
     const handleGetActiveStream = useCallback(
         async (stream: MediaStream) => {
+            const blurStream = new MediaStream();
             const newStream = new MediaStream();
 
             let videoTrack = stream.getVideoTracks()[0];
+            let blurTrack = stream.getVideoTracks()[0];
 
             const audioTrack = stream.getAudioTracks()[0];
 
@@ -144,9 +146,17 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
                 cancelAnimationFrame(animationFrameRef.current);
             }
 
+            if (isBlurActive) {
+                blurTrack = await blurFn(videoTrack);
+            } else {
+                blurStream.addTrack(videoTrack);
+            }
+
+            blurStream.addTrack(blurTrack);
+
             if (faceDetectionRef.current && isFaceTrackingActive) {
                 if (videoElement) {
-                    videoElement.srcObject = stream;
+                    videoElement.srcObject = blurStream;
 
                     videoElement.onloadeddata = animate;
                 }
@@ -158,24 +168,9 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
                     videoTrack = canvasStream.getVideoTracks()[0];
                 }
-
-                if (isBlurActive) {
-                    videoTrack = await blurFn(videoTrack);
-                }
-
-                newStream.addTrack(videoTrack);
-
-                return newStream;
             }
 
-            if (isBlurActive) {
-                videoTrack = await blurFn(videoTrack);
-                newStream.addTrack(videoTrack);
-
-                return newStream;
-            }
-
-            newStream.addTrack(videoTrack);
+            newStream.addTrack(isFaceTrackingActive ? videoTrack : blurTrack);
 
             return newStream;
         },

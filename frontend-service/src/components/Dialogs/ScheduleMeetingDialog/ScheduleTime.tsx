@@ -83,7 +83,7 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
 
         const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
 
-        return getTimeList(startTime, 30 * ONE_MINUTE).map(time => (
+        return getTimeList(startTime, 30 * ONE_MINUTE, 0, "23:30").map(time => (
             <MenuItem key={time} value={time}>
                 {time}
             </MenuItem>
@@ -91,13 +91,20 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
     },[currentDate]);
 
     const renderEndTimeList = useMemo(
-        () =>
-            getTimeList(startAtValue, 30 * ONE_MINUTE).map(time => (
+        () => {
+            const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(new Date()));
+
+            const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now() + 30 * ONE_MINUTE)) : '00:00';
+
+            const timeString = getTimeString(getTimestamp(startAtValue) + 30 * ONE_MINUTE);
+
+            return getTimeList( startAtValue && timeString || startTime, 30 * ONE_MINUTE, 3, "24:00").map(time => (
                 <MenuItem key={time} value={time}>
                     {time}
                 </MenuItem>
-            )),
-        [startAtValue],
+            ))
+        },
+        [startAtValue, currentDate],
     );
 
     const { onChange, ...restRegisterData } = register('comment', { maxLength: 500 });
@@ -119,13 +126,13 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
     const renderTimeValue = useCallback(selected => selected, []);
 
     useEffect(() => {
-        if (getTimestamp(startAtValue) >= getTimestamp(endAtValue || '00:00')) {
+        if (startAtValue) {
             setValue('endAt', getTimeString(getTimestamp(startAtValue) + 30 * ONE_MINUTE), {
                 shouldValidate: true,
                 shouldDirty: true,
             });
         }
-    }, [startAtValue, endAtValue]);
+    }, [startAtValue]);
 
     return (
         <CustomGrid className={className} container gap={4}>

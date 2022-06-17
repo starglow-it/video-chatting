@@ -4,11 +4,8 @@
 .iconButton {
   width: 100%;
   height: 100%;
-  background: transparent;
-  color: $primary-white;
   cursor: default;
   border-radius: rem(12px);
-  border: none;
 
   &.noRights {
     color: rgba($primary-white, 0.25);
@@ -17,29 +14,16 @@
   &.active {
     color: $primary-red;
   }
-
-  &.withAction {
-    cursor: pointer;
-
-    &:hover {
-      background: rgba($primary-black, 0.75);
-    }
-  }
 }
 
 .deviceButton {
-  width: rem(56px);
-  height: rem(56px);
   display: flex;
   justify-content: center;
   align-items: center;
+  width: rem(56px);
+  height: rem(56px);
 }
 
 .tooltip {
   margin: rem(2px) 0 0 0 !important;
-}
-
-
-.sharingIcon {
-
 }

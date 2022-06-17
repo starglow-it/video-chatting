@@ -22,12 +22,11 @@ import styles from './EmailResetPasswordDialog.module.scss';
 
 // hooks
 import {useYupValidationResolver} from "../../../hooks/useYupValidationResolver";
+import {useCountDown} from "../../../hooks/useCountDown";
 
 // validations
 import {emailSchema} from "../../../validation/users/email";
 import {sendResetPasswordLinkFx} from "../../../store/profile";
-import {useCountDown} from "../../../hooks/useCountDown";
-
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -39,6 +38,7 @@ const Component = () => {
     const {
         value: timerValue,
         onStartCountDown: handleStartCountDown,
+        onStopCountDown: handleStopCountDown,
     } = useCountDown(30);
 
     const resolver = useYupValidationResolver<{ email: string }>(validationSchema);
@@ -48,12 +48,14 @@ const Component = () => {
         resolver,
     });
 
-    const { handleSubmit, register, formState: { errors, isSubmitSuccessful, isSubmitted } } = methods;
+    const { reset, handleSubmit, register, formState: { errors, isSubmitSuccessful, isSubmitted } } = methods;
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.emailResetPasswordDialog,
         });
+        reset();
+        handleStopCountDown();
     }, []);
 
     const onSubmit = useCallback(handleSubmit(async (data) => {

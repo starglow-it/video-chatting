@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import clsx from 'clsx';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -17,8 +16,9 @@ import { ActionProps } from '../../../types';
 const SetUpDevicesButton = memo(({ onAction }: ActionProps) => (
     <CustomPaper variant="black-glass" className={styles.deviceButton}>
         <ActionButton
+            variant="transparentBlack"
             onAction={onAction}
-            className={clsx(styles.iconButton, { [styles.withAction]: Boolean(onAction) })}
+            className={styles.iconButton}
             Icon={<SettingsIcon width="32px" height="32px" />}
         />
     </CustomPaper>

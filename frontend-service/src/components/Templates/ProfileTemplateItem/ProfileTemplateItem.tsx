@@ -118,6 +118,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                         />
                     </CustomGrid>
                     <ActionButton
+                        variant="transparent"
                         onAction={handleOpenDeleteDialog}
                         className={styles.deleteBtn}
                         Icon={<DeleteIcon width="22px" height="22px" />}

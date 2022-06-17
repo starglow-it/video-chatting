@@ -10,6 +10,10 @@
     position: relative;
     flex: 0 0 auto;
 
+    .uploadAvatar {
+      cursor: pointer;
+    }
+
     .editProfileAvatar {
       border-radius: 50%;
       background: $primary-black;

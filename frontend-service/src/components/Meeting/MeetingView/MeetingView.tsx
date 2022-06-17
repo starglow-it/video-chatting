@@ -1,5 +1,6 @@
 import React, {memo, useCallback, useContext, useEffect} from 'react';
 import {useStore} from 'effector-react';
+import Image from 'next/image';
 
 // helpers
 import {usePrevious} from 'src/hooks/usePrevious';
@@ -193,6 +194,12 @@ const MeetingView = memo(() => {
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo isScreenSharing={isScreenSharing} src={meetingTemplate.url}>
+                <Image
+                    className={styles.image}
+                    src={meetingTemplate.previewUrl}
+                    layout="fill"
+                    objectFit="cover"
+                />
                 {isScreenSharing && <ScreenSharingLayout />}
                 <MeetingUsersVideos />
             </MeetingBackgroundVideo>

@@ -12,8 +12,15 @@
   transition: all 200ms linear;
 
   transform: translate(-50%, 0);
+
+  pointer-events: none;
+  user-select: none;
+
   &.open {
     transform: translate(-50%, 8px);
+    pointer-events: initial;
+    user-select: initial;
+
     opacity: 1;
   }
 }

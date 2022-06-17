@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
@@ -69,8 +69,6 @@ const MeetingSettingsPanel = memo(
         const router = useRouter();
         const isOwner = useStore($isOwner);
 
-        const isEditTemplateView = router.pathname.includes('edit-template');
-
         const {
             values: { isEditTemplateOpened, isMeetingInfoOpened },
             onSwitchOff: handleSwitchOff,
@@ -81,13 +79,7 @@ const MeetingSettingsPanel = memo(
             'isMeetingInfoOpened',
         ]);
 
-        useEffect(() => {
-            if (isEditTemplateView) {
-                handleSwitchOn('isEditTemplateOpened');
-            }
-        }, [isEditTemplateView]);
-
-        const isAbleToSave = isOwner || isEditTemplateView;
+        const isAbleToSave = isOwner;
 
         const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
@@ -185,17 +177,13 @@ const MeetingSettingsPanel = memo(
         }, [dirtyFieldsCount]);
 
         const handleConfirmClose = useCallback(() => {
-            if (isEditTemplateView) {
-                router.push('/dashboard');
-            } else {
-                handleSwitchOff();
-                reset();
-                setValue('socials', templateSocialLinks, {
-                    shouldDirty: true,
-                    shouldValidate: true,
-                });
-            }
-        }, [templateSocialLinks, isEditTemplateView]);
+            handleSwitchOff();
+            reset();
+            setValue('socials', templateSocialLinks, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+        }, [templateSocialLinks]);
 
         const handleOpenDeviceSettings = useCallback(() => {
             appDialogsApi.openDialog({
@@ -229,7 +217,7 @@ const MeetingSettingsPanel = memo(
                 }
                 handleSwitchOff();
             }),
-            [dirtyFieldsCount, template.id, isEditTemplateView],
+            [dirtyFieldsCount, template.id],
         );
 
         const handleCancelEditTemplate = useCallback(() => {
@@ -264,9 +252,7 @@ const MeetingSettingsPanel = memo(
                         />
                         <CustomGrid container className={styles.settingsControls} gap={1.5}>
                             <SetUpDevicesButton
-                                onAction={
-                                    !isEditTemplateView ? handleOpenDeviceSettings : undefined
-                                }
+                                onAction={handleOpenDeviceSettings}
                             />
                             {!isOwner
                                 ? (

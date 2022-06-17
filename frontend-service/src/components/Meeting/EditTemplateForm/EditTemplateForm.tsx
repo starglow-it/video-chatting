@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useState } from 'react';
-import { useRouter } from 'next/router';
 
 // custom
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
@@ -24,11 +23,7 @@ import { ChooseSignBoard } from '@components/Templates/ChooseSignBoard/ChooseSig
 // styles
 import styles from './EditTemplateForm.module.scss';
 
-const Component: React.FunctionComponent<{ onCancel: () => void }> = ({ onCancel }) => {
-    const router = useRouter();
-
-    const isEditTemplateView = router.pathname.includes('edit-template');
-
+const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
     const [currentAccordionId, setCurrentAccordionId] = useState('');
 
     const handleChangeAccordion = useCallback(accordionId => {
@@ -112,18 +107,6 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = ({ onCancel
                 nameSpace="meeting"
                 translation="templates.buttons.saveChanges"
             />
-            {isEditTemplateView && (
-                <CustomButton
-                    onClick={onCancel}
-                    className={styles.saveBtn}
-                    variant="custom-cancel"
-                    nameSpace="meeting"
-                    translation="templates.buttons.cancelChanges"
-                    typographyProps={{
-                        color: 'colors.white.primary',
-                    }}
-                />
-            )}
         </CustomGrid>
     );
 };

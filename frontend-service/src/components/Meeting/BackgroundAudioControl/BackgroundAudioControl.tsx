@@ -58,6 +58,7 @@ const Component = () => {
         >
             <CustomPaper variant="black-glass" className={styles.deviceButton} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                 <ActionButton
+                    variant="transparentBlack"
                     ref={buttonRef}
                     className={clsx(styles.iconButton, {[styles.disabled]: !isBackgroundAudioActive })}
                     Icon={<SpeakerIcon isActive width="32px" height="32px" />}

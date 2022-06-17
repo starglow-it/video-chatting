@@ -1,8 +1,10 @@
-import React, {memo, useCallback, useState} from 'react';
+import React, {memo, useCallback, useEffect, useState} from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from "clsx";
+
+// hooks
 
 // custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
@@ -15,14 +17,15 @@ import {CustomFade} from "@library/custom/CustomFade/CustomFade";
 // components
 import {ValueSwitcher} from "@library/common/ValuesSwitcher/ValuesSwitcher";
 import {ScheduleTime} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleTime";
-import { getTimeZone } from 'src/utils/time/getTimeZone';
 import {ValuesSwitcherItem} from "@library/common/ValuesSwitcher/types";
+import { getTimeZone } from 'src/utils/time/getTimeZone';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
 import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
+import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // stores
 import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
@@ -36,7 +39,6 @@ import {
 import { AppDialogsEnum } from '../../../store/types';
 
 // validations
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 import { simpleStringSchema, simpleStringSchemaWithLength } from '../../../validation/common';
 import {emailSchema} from "../../../validation/users/email";
 
@@ -108,44 +110,50 @@ const Component = () => {
 
     const restDateRegisterData = register('date');
 
+    useEffect(() => {
+        if (scheduleMeetingDialog) {
+            handleOpenOption('isSettingsOpen');
+            setActiveSchedulePage(schedulePages[0]);
+            setUserEmails([]);
+        }
+    }, [scheduleMeetingDialog]);
+
     const handleClose = useCallback(() => {
-        reset();
-
-        setScheduleTemplateIdEvent('');
-
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.scheduleMeetingDialog,
         });
+
+        reset();
+        setScheduleTemplateIdEvent('');
     }, []);
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            const startAtTime = getDateTimestamp(data.date, data.startAt);
-            const endAtTime = getDateTimestamp(data.date, data.endAt);
+            try {
+                const startAtTime = getDateTimestamp(data.date, data.startAt);
+                const endAtTime = getDateTimestamp(data.date, data.endAt);
 
-            const parsedStartAt = parseTimestamp(startAtTime);
-            const parsedEndAt = parseTimestamp(endAtTime);
+                const parsedStartAt = parseTimestamp(startAtTime);
+                const parsedEndAt = parseTimestamp(endAtTime);
 
-            await sendScheduleInviteFx({
-                templateId: scheduleTemplateId,
-                startAt: parsedStartAt,
-                endAt: parsedEndAt,
-                comment: data.comment,
-                timeZone: data.timeZone,
-                userEmails,
-            });
+                await sendScheduleInviteFx({
+                    templateId: scheduleTemplateId,
+                    startAt: parsedStartAt,
+                    endAt: parsedEndAt,
+                    comment: data.comment,
+                    timeZone: data.timeZone,
+                    userEmails,
+                });
 
-            appDialogsApi.closeDialog({
-                dialogKey: AppDialogsEnum.scheduleMeetingDialog,
-            });
+                handleClose();
 
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.downloadIcsEventDialog,
-            });
+                appDialogsApi.openDialog({
+                    dialogKey: AppDialogsEnum.downloadIcsEventDialog,
+                });
+            } catch (e) {
 
-            reset();
-            setUserEmails([]);
-    }),[scheduleTemplateId, userEmails]);
+            }
+        }),[scheduleTemplateId, userEmails]);
 
     const handleSelectDate = useCallback((date: Date) => {
         setValue('date', date, {

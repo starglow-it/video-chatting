@@ -168,7 +168,7 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
             <ClickAwayListener onClickAway={onCloseEditProfileAvatarMenu}>
                 <CustomBox className={styles.profileAvatar}>
                     {profile?.profileAvatar?.url ? (
-                        <CustomBox onClick={onToggleEditProfileAvatarMenu}>
+                        <CustomBox className={styles.uploadAvatar} onClick={onToggleEditProfileAvatarMenu}>
                             {commonAvatarLayout}
                         </CustomBox>
                     ) : (

@@ -94,6 +94,8 @@ export class UserTemplateController {
     },
   ) {
     try {
+      const frontendUrl = await this.configService.get('frontendUrl');
+
       const senderUser = await this.coreService.findUserById({
         userId: req.user.userId,
       });
@@ -128,20 +130,13 @@ export class UserTemplateController {
       const startAtDate = formatDate(startAt, data.timeZone);
       const endAtDate = formatDate(endAt, data.timeZone);
 
-      // const senderMessage = senderScheduleMessage({
-      //   fullName: targetUser.fullName || targetUser.email,
-      //   templateName: template.name,
-      //   startAt: startAtDate,
-      //   endAt: endAtDate,
-      //   comment: data.comment,
-      // });
-
       const receiverMessage = receiverScheduleMessage({
         senderFullName: senderUser.fullName,
         templateName: template.name,
         startAt: startAtDate,
         endAt: endAtDate,
         comment: data.comment,
+        meetingLink: `${frontendUrl}/meeting/${template.id}`,
       });
 
       await this.notificationService.sendEmail({
@@ -149,12 +144,6 @@ export class UserTemplateController {
         message: receiverMessage,
         icalEvent: icsEventData,
       });
-
-      // await this.notificationService.sendEmail({
-      //   to: senderUser.email,
-      //   message: senderMessage,
-      //   icalEvent: icsEventData,
-      // });
 
       return {
         success: true,

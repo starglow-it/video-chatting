@@ -95,7 +95,7 @@ const MeetingContainer = memo(() => {
 
     return (
         <>
-            {meetingTemplate?.id && (
+            {meetingTemplate?.id && meetingUser.id && (
                 <VideoEffectsProvider>
                     {MeetingAccessStatuses.InMeeting !== meetingUser.accessStatus ? (
                         <CustomBox className={styles.waitingRoomWrapper}>

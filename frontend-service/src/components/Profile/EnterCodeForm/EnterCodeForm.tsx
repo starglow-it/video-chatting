@@ -92,7 +92,7 @@ const EnterCodeForm = memo(
                         translation="editProfile.verificationCode"
                     />
                     {!isCodeEntered && (
-                        {resendText}
+                        resendText
                     )}
                 </CustomGrid>
                 <CustomInput

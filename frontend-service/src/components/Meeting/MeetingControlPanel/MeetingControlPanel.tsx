@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
-import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 
@@ -31,10 +30,7 @@ import styles from './MeetingControlPanel.module.scss';
 import { MeetingAccessStatuses } from '../../../store/types';
 
 const MeetingControlPanel = memo(() => {
-    const router = useRouter();
     const isOwner = useStore($isOwner);
-
-    const isEditTemplateView = router.pathname.includes('edit-template');
 
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
@@ -66,40 +62,36 @@ const MeetingControlPanel = memo(() => {
         <CustomPaper variant="black-glass" ref={paperRef} className={styles.controlPanelWrapper}>
             <CustomGrid container gap={0.75}>
                 <ActionButton
-                    onAction={isEditTemplateView ? undefined : handleToggleLeaveNote}
-                    className={clsx(styles.actionButton, {
-                        [styles.withAction]: !isEditTemplateView,
+                    onAction={handleToggleLeaveNote}
+                    className={clsx(styles.actionButton, styles.withAction, {
                         [styles.active]: isLeaveNoteOpen,
                     })}
                     Icon={<NotesIcon width="30px" height="30px" />}
                 />
                 <ActionButton
-                    onAction={isEditTemplateView ? undefined : handleToggleUsers}
-                    className={clsx(styles.actionButton, {
-                        [styles.withAction]: !isEditTemplateView,
+                    onAction={handleToggleUsers}
+                    className={clsx(styles.actionButton, styles.withAction, {
                         [styles.active]: isUsersOpen,
                         [styles.newRequests]: isThereNewRequests && isOwner,
                     })}
                     Icon={<PeoplesIcon width="30px" height="30px" />}
                 />
             </CustomGrid>
-            {!isEditTemplateView && (
-                <CustomGrid className={styles.panelsWrapper}>
-                    <Fade in={isUsersOpen}>
-                        <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
-                            {isOwner && <MeetingAccessRequests />}
-                            <MeetingUsersList />
-                            <MeetingInviteParticipants />
-                        </CustomPaper>
-                    </Fade>
+            <CustomGrid className={styles.panelsWrapper}>
+                <Fade in={isUsersOpen}>
+                    <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
+                        {isOwner && <MeetingAccessRequests />}
+                        <MeetingUsersList />
+                        <MeetingInviteParticipants />
+                    </CustomPaper>
+                </Fade>
 
-                    <Fade in={isLeaveNoteOpen}>
-                        <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
-                            <LeaveNoteForm onCancel={handleCloseLeaveNote} />
-                        </CustomPaper>
-                    </Fade>
-                </CustomGrid>
-            )}
+                <Fade in={isLeaveNoteOpen}>
+                    <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
+                        <LeaveNoteForm onCancel={handleCloseLeaveNote} />
+                    </CustomPaper>
+                </Fade>
+            </CustomGrid>
         </CustomPaper>
     );
 });

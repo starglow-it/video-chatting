@@ -25,9 +25,10 @@ const MeetingBackgroundVideo = memo(
         useLayoutEffect(() => {
             const options = {
                 url: src,
-                width: window.innerWidth,
+                responsive: true,
                 loop: true,
                 background: true,
+                keyboard: false,
                 quality: '1080p',
             } as Options;
 
@@ -59,9 +60,6 @@ const MeetingBackgroundVideo = memo(
             <CustomGrid
                 ref={containerRef}
                 className={styles.backgroundVideo}
-                container
-                justifyContent="center"
-                alignItems="center"
             >
                 {children!}
             </CustomGrid>
