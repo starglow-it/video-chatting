@@ -1,8 +1,9 @@
-import { usersSocketEventsController } from '../init';
 import Router from 'next/router';
+import { usersSocketEventsController } from '../init';
 
 import {
-    $localUserStore, leaveMeetingEvent,
+    $localUserStore,
+    leaveMeetingEvent,
     resetLocalUserStore,
     setLocalUserEvent,
     setLocalUserMediaEvent,
@@ -10,7 +11,7 @@ import {
     updateLocalUserStateEvent,
 } from './model';
 import { MeetingAccessStatuses, SocketState } from '../../types';
-import {ON_MEETING_FINISHED} from "../../meeting/const/subscribeSocketEvents";
+import {ON_MEETING_FINISHED} from "../../../const/socketEvents/subscribers";
 
 $localUserStore
     .on(setLocalUserEvent, (state, { user }) => ({ ...state, ...user }))

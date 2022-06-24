@@ -21,4 +21,6 @@ export interface ICommonUserDTO {
     socials: ISocialLink[];
     profileAvatar: IProfileAvatar;
     signBoard: string;
+    stripeAccountId: string;
+    stripeEmail: string;
 }

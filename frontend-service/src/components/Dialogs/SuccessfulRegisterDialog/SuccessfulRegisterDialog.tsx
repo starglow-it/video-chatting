@@ -8,7 +8,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 
 // store
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';

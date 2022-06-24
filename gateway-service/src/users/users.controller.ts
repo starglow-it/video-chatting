@@ -49,21 +49,31 @@ export class UsersController {
     @Body() data: InviteAttendeeEmailRequest,
     @Request() req,
   ): Promise<void> {
-    const user = await this.coreService.findUserById({
-      userId: req.user.userId,
-    });
+    try {
+      const user = await this.coreService.findUserById({
+        userId: req.user.userId,
+      });
 
-    const frontendUrl = await this.configService.get('frontendUrl');
+      const frontendUrl = await this.configService.get('frontendUrl');
 
-    const message = `
+      const message = `
         ${user.fullName} (${user.email}) has invited you to the meeting
         <a href="${frontendUrl}/meeting/${data.meetingId}">Click to join meeting</a>
     `;
 
-    await this.notificationService.sendEmail({
-      to: data.userEmails,
-      message,
-    });
+      await this.notificationService.sendEmail({
+        to: data.userEmails,
+        message,
+      });
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get common templates`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
   }
 
   @UseGuards(JwtAuthGuard)

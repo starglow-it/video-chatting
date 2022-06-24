@@ -35,7 +35,7 @@ import styles from './SignInContainer.module.scss';
 
 // stores
 import { LoginUserParams } from '../../store/types';
-import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store/auth';
+import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store';
 
 // validations
 import { emailSchema } from '../../validation/users/email';

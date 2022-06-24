@@ -15,7 +15,9 @@
   "noTemplates": "You dont have any templates yet :(",
   "setUpSpace": {
     "title": "Personalize your\nspace",
-    "customizeSign": "Customize Sign"
+    "customizeSign": "Customize Sign",
+    "monetization": "Add monetization",
+    "stripe": "Connect with <b>Stripe</b>"
   },
   "onboarding": {
     "quit": "Quit onboarding?",

@@ -13,7 +13,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { EditIcon } from '@library/icons/EditIcon';
 
 // stores
-import { $profileStore } from '../../store/profile';
+import { $profileStore } from '../../store';
 
 // styles
 import styles from './SocialLinks.module.scss';

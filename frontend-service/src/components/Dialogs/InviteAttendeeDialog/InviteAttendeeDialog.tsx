@@ -8,8 +8,8 @@ import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import {ScheduleAttendees} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees";
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
-import { sendInviteEmailFx } from '../../../store/users/init';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
+import { sendInviteEmailFx } from '../../../store';
 
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 

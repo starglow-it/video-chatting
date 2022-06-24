@@ -7,7 +7,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
-import { updateProfilePasswordFx } from 'src/store/profile';
+import { updateProfilePasswordFx } from 'src/store';
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 import { useToggle } from '../../../hooks/useToggle';
 
@@ -20,7 +20,7 @@ import { passwordLoginSchema, passwordSchema } from '../../../validation/users/p
 import { simpleStringSchema } from '../../../validation/common';
 
 // stores
-import { addNotificationEvent } from '../../../store/notifications';
+import { addNotificationEvent } from '../../../store';
 
 // types
 import { NotificationType } from '../../../store/types';

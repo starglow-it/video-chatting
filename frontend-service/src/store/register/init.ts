@@ -1,7 +1,7 @@
 import { sendRequest } from '../../helpers/http/sendRequest';
 import { AppDialogsEnum, ErrorState, RegisteredUserState } from '../types';
 import { confirmRegisterUserUrl, registerUserUrl } from '../../utils/urls';
-import { appDialogsApi } from '../dialogs';
+import { appDialogsApi } from '../dialogs/init';
 import {
     $registerStore,
     confirmRegistrationUserFx,

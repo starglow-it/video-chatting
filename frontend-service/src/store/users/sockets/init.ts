@@ -1,9 +1,9 @@
 import { sample } from 'effector-next';
 
-import { meetingUsersDomain } from '../domain';
-import { createSocketEvent } from '../../socket';
-import { REMOVE_USER, UPDATE_USER } from '../const/emitSocketEvents';
+import { meetingUsersDomain } from '../domain/model';
+import { createSocketEvent } from '../../socket/model';
 import { MeetingUser } from '../../types';
+import {REMOVE_USER, UPDATE_USER} from "../../../const/socketEvents/emitters";
 
 export const updateUserEvent = createSocketEvent(UPDATE_USER);
 export const removeUserEvent = createSocketEvent(REMOVE_USER);

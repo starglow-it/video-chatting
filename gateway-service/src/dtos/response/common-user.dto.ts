@@ -63,6 +63,14 @@ export class CommonUserRestDTO implements ICommonUserDTO {
 
   @Expose()
   @ApiProperty()
+  stripeAccountId: ICommonUserDTO['stripeAccountId'];
+
+  @Expose()
+  @ApiProperty()
+  stripeEmail: ICommonUserDTO['stripeEmail'];
+
+  @Expose()
+  @ApiProperty()
   isResetPasswordActive: boolean;
 
   createdAt: Date;

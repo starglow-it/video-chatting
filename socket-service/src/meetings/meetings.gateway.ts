@@ -35,6 +35,7 @@ import { BaseGateway } from '../gateway/base.gateway';
 import { MeetingsService } from './meetings.service';
 import { UsersService } from '../users/users.service';
 import { TasksService } from '../tasks/tasks.service';
+import { CoreService } from '../core/core.service';
 
 import { ResponseSumType } from '@shared/response/common.response';
 
@@ -69,6 +70,7 @@ export class MeetingsGateway
   constructor(
     private meetingsService: MeetingsService,
     private usersService: UsersService,
+    private coreService: CoreService,
     private taskService: TasksService,
     @InjectConnection() private connection: Connection,
   ) {
@@ -101,10 +103,40 @@ export class MeetingsGateway
           session,
         );
 
+        const template = await this.coreService.findMeetingTemplate({
+          id: meeting.templateId,
+        });
+
         await this.usersService.deleteUser({ socketId: client.id }, session);
 
         if (meeting) {
           await meeting.populate(['owner', 'users']);
+
+          const updateUsersPromises = meeting.users.map(async (user, index) => {
+            const userPosition = template.usersPosition?.[index];
+
+            return this.usersService.findOneAndUpdate(
+              {
+                _id: user._id,
+              },
+              {
+                userPosition,
+              },
+              session,
+            );
+          });
+
+          await Promise.all(updateUsersPromises);
+
+          const meetingUsers = await this.usersService.findUsers(
+            { meeting: meeting.id },
+            session,
+          );
+
+          const plainUsers = plainToClass(CommonUserDTO, meetingUsers, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
 
           const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
             excludeExtraneousValues: true,
@@ -151,12 +183,12 @@ export class MeetingsGateway
             }
           }
 
-          const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
+          this.emitToRoom(`waitingRoom:${meeting.instanceId}`, UPDATE_MEETING, {
+            meeting: plainMeeting,
+            users: plainUsers,
           });
 
-          this.emitToRoom(`waitingRoom:${meeting.instanceId}`, UPDATE_MEETING, {
+          this.emitToRoom(`meeting:${plainMeeting.id}`, UPDATE_MEETING, {
             meeting: plainMeeting,
             users: plainUsers,
           });
@@ -197,6 +229,7 @@ export class MeetingsGateway
             ownerProfileId: message.profileId,
             instanceId: message.instanceId,
             maxParticipants: message.maxParticipants,
+            templateId: message.templateId,
           },
           session,
         );
@@ -291,18 +324,28 @@ export class MeetingsGateway
         name: `meeting:finish:${message.meetingId}`,
       });
 
+      const meeting = await this.meetingsService.findById(
+        message.meetingId,
+        session,
+      );
+
+      const template = await this.coreService.findMeetingTemplate({
+        id: meeting.templateId,
+      });
+
+      const activeParticipants = await this.usersService.countMany({
+        meeting: meeting._id,
+        accessStatus: AccessStatusEnum.InMeeting,
+      });
+
       const user = await this.usersService.findOneAndUpdate(
         { socketId: socket.id },
         {
           accessStatus: AccessStatusEnum.InMeeting,
           username: message.user.username,
           isAuraActive: message.user.isAuraActive,
+          userPosition: template.usersPosition?.[activeParticipants],
         },
-        session,
-      );
-
-      const meeting = await this.meetingsService.findById(
-        message.meetingId,
         session,
       );
 
@@ -382,13 +425,6 @@ export class MeetingsGateway
     return withTransaction(
       this.connection,
       async (session: ITransactionSession) => {
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
-          session,
-        );
-
-        await meeting.populate(['owner', 'users']);
-
         const user = await this.usersService.findOneAndUpdate(
           { socketId: socket.id },
           {
@@ -398,6 +434,13 @@ export class MeetingsGateway
           },
           session,
         );
+
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
+
+        await meeting.populate(['owner', 'users']);
 
         const activeParticipants = await this.usersService.countMany({
           meeting: meeting._id,
@@ -524,6 +567,10 @@ export class MeetingsGateway
         session,
       );
 
+      const template = await this.coreService.findMeetingTemplate({
+        id: meeting.templateId,
+      });
+
       if (message.isUserAccepted) {
         const user = await this.usersService.findById(message.userId, session);
 
@@ -550,7 +597,10 @@ export class MeetingsGateway
             _id: message.userId,
             accessStatus: { $eq: AccessStatusEnum.RequestSent },
           },
-          { accessStatus: AccessStatusEnum.InMeeting },
+          {
+            accessStatus: AccessStatusEnum.InMeeting,
+            userPosition: template.usersPosition?.[activeParticipants],
+          },
           session,
         );
 
@@ -661,12 +711,54 @@ export class MeetingsGateway
           session,
         );
 
+        const template = await this.coreService.findMeetingTemplate({
+          id: meeting.templateId,
+        });
+
+        await this.usersService.deleteUser({ socketId: socket.id }, session);
+
         if (meeting) {
-          await meeting.populate('owner');
+          await meeting.populate(['owner', 'users']);
+
+          const updateUsersPromises = meeting.users.map(async (user, index) => {
+            const userPosition = template.usersPosition?.[index];
+
+            return this.usersService.findOneAndUpdate(
+              {
+                _id: user._id,
+              },
+              {
+                userPosition,
+              },
+              session,
+            );
+          });
+
+          await Promise.all(updateUsersPromises);
+
+          const meetingUsers = await this.usersService.findUsers(
+            { meeting: meeting.id },
+            session,
+          );
+
+          const plainUsers = plainToClass(CommonUserDTO, meetingUsers, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
 
           const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
+          });
+
+          this.emitToRoom(`waitingRoom:${meeting.instanceId}`, UPDATE_MEETING, {
+            meeting: plainMeeting,
+            users: plainUsers,
+          });
+
+          this.emitToRoom(`meeting:${plainMeeting.id}`, UPDATE_MEETING, {
+            meeting: plainMeeting,
+            users: plainUsers,
           });
 
           this.emitToRoom(`meeting:${plainMeeting.id}`, REMOVE_USERS, {
@@ -694,8 +786,6 @@ export class MeetingsGateway
             }
           }
         }
-
-        await this.usersService.deleteUser({ socketId: socket.id }, session);
       }
     });
   }

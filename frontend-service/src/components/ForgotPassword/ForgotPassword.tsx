@@ -5,7 +5,7 @@ import clsx from "clsx";
 import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
 
 // stores
-import {appDialogsApi} from "../../store/dialogs";
+import {appDialogsApi} from "../../store";
 
 // types
 import { AppDialogsEnum } from "../../store/types";

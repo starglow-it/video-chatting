@@ -36,6 +36,12 @@ export class Meeting {
   instanceId: string;
 
   @Prop({
+    required: true,
+    type: mongoose.Schema.Types.String,
+  })
+  templateId: string;
+
+  @Prop({
     type: mongoose.Schema.Types.Number,
   })
   sharingUserId: number;

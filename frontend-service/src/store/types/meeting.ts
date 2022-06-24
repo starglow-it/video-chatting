@@ -66,6 +66,10 @@ export type MeetingStore = {
     currentMeeting?: any;
 };
 
+export enum MeetingSounds {
+    NewAttendee = 'new_attendee'
+}
+
 export type MeetingNote = {
     content: string;
     user: string;

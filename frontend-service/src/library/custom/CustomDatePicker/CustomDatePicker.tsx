@@ -9,7 +9,7 @@ import { CustomGrid } from '../CustomGrid/CustomGrid';
 import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 // icons
-import { ArrowIcon } from '@library/icons/ArrowIcon';
+import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
 
 // time utils
 import { formatDate } from '../../../utils/time/formatDate';
@@ -124,7 +124,7 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
             className={clsx(styles.calendar, className)}
         >
             <CustomGrid container justifyContent="space-between">
-                <ArrowIcon
+                <RoundArrowIcon
                     width="36px"
                     height="36px"
                     className={styles.leftIcon}
@@ -133,7 +133,7 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
                 <CustomTypography variant="h2bold">
                     {formatDate(currentMonthDate, 'MMMM, yyyy')}
                 </CustomTypography>
-                <ArrowIcon
+                <RoundArrowIcon
                     width="36px"
                     height="36px"
                     className={styles.rightIcon}

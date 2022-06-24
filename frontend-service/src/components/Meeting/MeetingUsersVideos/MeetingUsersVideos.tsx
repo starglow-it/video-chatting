@@ -9,9 +9,9 @@ import { MeetingUserVideoItem } from '@components/Meeting/MeetingUserVideoItem/M
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores
-import { $localUserStore, $meetingUsersStore } from '../../../store/users';
-import { $profileStore } from '../../../store/profile';
-import { $meetingStore, $meetingTemplateStore } from '../../../store/meeting';
+import { $localUserStore, $meetingUsersStore } from '../../../store';
+import { $profileStore } from '../../../store';
+import { $meetingStore, $meetingTemplateStore } from '../../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
@@ -45,8 +45,8 @@ const MeetingUsersVideos = memo(() => {
                     key={user.id}
                     elevationIndex={index + 1}
                     isScreensharing={isScreenSharing}
-                    top={meetingTemplate?.usersPosition?.[index + 1]?.top}
-                    left={meetingTemplate?.usersPosition?.[index + 1]?.left}
+                    top={user?.userPosition?.top}
+                    left={user?.userPosition?.left}
                 >
                     <MeetingUserVideoItem
                         size={isScreenSharing ? 56 : 120}
@@ -75,8 +75,8 @@ const MeetingUsersVideos = memo(() => {
                 elevationIndex={0}
                 key={localUser.id}
                 isScreensharing={Boolean(meeting.sharingUserId)}
-                top={meetingTemplate?.usersPosition?.[0].top}
-                left={meetingTemplate?.usersPosition?.[0].left}
+                top={localUser?.userPosition?.top}
+                left={localUser?.userPosition?.left}
             >
                 <MeetingUserVideoItem
                     size={meeting?.sharingUserId ? 56 : 120}

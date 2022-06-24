@@ -8,6 +8,8 @@ export interface IUpdateProfile {
     fullName: string;
     position: string;
     signBoard?: string;
+    stripeAccountId?: string;
+    stripeEmail?: string;
     isResetPasswordActive?: boolean;
     socials: {
         youtube?: string;

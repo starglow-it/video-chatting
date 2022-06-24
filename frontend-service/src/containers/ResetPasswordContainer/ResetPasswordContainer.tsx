@@ -17,7 +17,7 @@ import {ResetSuccessful} from "@components/ResetPassword/ResetSuccessful";
 import styles from "./ResetPasswordContainer.module.scss";
 
 // stores
-import {checkResetPasswordLinkFx} from "../../store/profile";
+import {checkResetPasswordLinkFx} from "../../store";
 
 const Component = () => {
     const router = useRouter();

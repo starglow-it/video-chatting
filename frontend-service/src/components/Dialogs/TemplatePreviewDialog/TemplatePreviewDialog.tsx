@@ -21,8 +21,8 @@ import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { ScheduleIcon } from '@library/icons/ScheduleIcon';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
-import { $templatePreviewStore } from '../../../store/templates';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
+import { $templatePreviewStore } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';

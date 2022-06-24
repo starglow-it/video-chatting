@@ -1,28 +1,37 @@
-import React, { memo, useCallback, useContext } from 'react';
+import React, {memo, useCallback, useContext} from 'react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
+import { useStore } from 'effector-react';
 
 // helpers
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomRange } from '@library/custom/CustomRange/CustomRange';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import {CustomFade} from "@library/custom/CustomFade/CustomFade";
+import {CustomRange} from "@library/custom/CustomRange/CustomRange";
+import {CustomDivider} from "@library/custom/CustomDivider/CustomDivider";
 
 // components
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
+import { EditMonetization } from "@components/Meeting/EditMonetization/EditMonetization";
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 
+// stores
 // icons
 import { NewArrowIcon } from '@library/icons/NewArrowIcon';
-import { ArrowIcon } from '@library/icons/ArrowIcon';
-import { MusicIcon } from '@library/icons/MusicIcon';
+import {SpeakerIcon} from "@library/icons/SpeakerIcon/SpeakerIcon";
+import {MusicIcon} from "@library/icons/MusicIcon";
 import { FaceTrackingIcon } from '@library/icons/FaceTrackingIcon';
-import { BackgroundBlurIcon } from '@library/icons/BackgroundBlurIcon';
-import { SpeakerIcon } from '@library/icons/SpeakerIcon/SpeakerIcon';
-import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
+import { ArrowIcon } from '@library/icons/ArrowIcon';
+import {BackgroundBlurIcon} from "@library/icons/BackgroundBlurIcon";
+import {
+    $isSettingsBackgroundAudioActive,
+    $settingsBackgroundAudioVolume,
+    setSettingsBackgroundAudioVolume, toggleSettingsBackgroundAudioEvent
+} from "../../../store";
+import {$isOwner} from "../../../store";
+import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
 import { useToggle } from '../../../hooks/useToggle';
 
 // styles
@@ -34,11 +43,11 @@ import { MeetingSettingsContentProps } from './types';
 const Component = ({
     title,
     stream,
-    volume,
-    onChangeVolume,
-    isBackgroundAudioActive,
-    onToggleAudioBackground,
 }: MeetingSettingsContentProps) => {
+    const isOwner = useStore($isOwner);
+    const settingsBackgroundAudioVolume = useStore($settingsBackgroundAudioVolume);
+    const isSettingsBackgroundAudioActive = useStore($isSettingsBackgroundAudioActive);
+
     const {
         value: isAudioVideoSettingsOpened,
         onSwitchOff: handleCloseAudioVideoSettings,
@@ -51,7 +60,7 @@ const Component = ({
     } = useContext(VideoEffectsContext);
 
     const handleChangeVolume = useCallback(event => {
-        onChangeVolume(event.target.value);
+        setSettingsBackgroundAudioVolume(event.target.value);
     }, []);
 
     return (
@@ -103,6 +112,7 @@ const Component = ({
                                 onChange={onToggleFaceTracking}
                                 className={styles.switchWrapper}
                             />
+                            {isOwner && <EditMonetization />}
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>
@@ -127,44 +137,44 @@ const Component = ({
                                 translation="settings.audioVideo"
                             />
                         </CustomGrid>
-                        <SelectDevices key={stream?.id} className={styles.selectDevicesWrapper} />
-                        <CustomGrid
-                            container
-                            direction="column"
-                            wrap="nowrap"
-                            className={clsx(styles.audioSettings, {
-                                [styles.withVolume]: isBackgroundAudioActive,
-                            })}
-                        >
-                            <LabeledSwitch
-                                Icon={<MusicIcon width="24px" height="24px" />}
-                                nameSpace="meeting"
-                                translation="features.audioBackground"
-                                checked={isBackgroundAudioActive}
-                                onChange={onToggleAudioBackground}
-                                className={styles.audioWrapper}
-                            />
-                            <Fade in={isBackgroundAudioActive}>
-                                <CustomBox>
+                        <CustomGrid container direction="column" gap={2} className={styles.selectDevicesWrapper}>
+                            <SelectDevices key={stream?.id} />
+                            <CustomGrid
+                                container
+                                direction="column"
+                                wrap="nowrap"
+                                className={clsx(styles.audioSettings, {
+                                    [styles.withVolume]: isSettingsBackgroundAudioActive,
+                                })}
+                            >
+                                <LabeledSwitch
+                                    Icon={<MusicIcon width="24px" height="24px" />}
+                                    nameSpace="meeting"
+                                    translation="features.audioBackground"
+                                    checked={isSettingsBackgroundAudioActive}
+                                    onChange={toggleSettingsBackgroundAudioEvent}
+                                    className={styles.audioWrapper}
+                                />
+                                <CustomFade open={isSettingsBackgroundAudioActive}>
                                     <CustomDivider />
                                     <CustomRange
-                                        color={volume ? 'primary' : 'disabled'}
-                                        value={volume}
+                                        color={settingsBackgroundAudioVolume ? 'primary' : 'disabled'}
+                                        value={settingsBackgroundAudioVolume}
                                         onChange={handleChangeVolume}
                                         className={clsx(styles.audioRange, {
-                                            [styles.inactive]: !volume,
+                                            [styles.inactive]: !settingsBackgroundAudioVolume,
                                         })}
                                         Icon={
                                             <SpeakerIcon
-                                                isActive={Boolean(volume)}
-                                                isHalfVolume={volume < 50}
+                                                isActive={Boolean(settingsBackgroundAudioVolume)}
+                                                isHalfVolume={settingsBackgroundAudioVolume < 50}
                                                 width="24px"
                                                 height="24px"
                                             />
                                         }
                                     />
-                                </CustomBox>
-                            </Fade>
+                                </CustomFade>
+                            </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>

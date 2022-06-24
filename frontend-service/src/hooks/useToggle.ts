@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 export const useToggle = (
     initial: boolean,
@@ -9,6 +9,10 @@ export const useToggle = (
     onToggleSwitch: () => void;
 } => {
     const [switchValue, setSwitchValue] = useState<boolean>(initial);
+
+    useEffect(() => {
+        setSwitchValue(initial);
+    }, [initial]);
 
     const handleSwitchOn = useCallback(() => {
         setSwitchValue(true);

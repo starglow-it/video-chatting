@@ -9,8 +9,8 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/MeetingUsersListItem';
 
 // stores
-import { $meetingUsersStore } from '../../../store/users';
-import { emitAnswerAccessMeetingRequest } from '../../../store/meeting';
+import { $meetingUsersStore } from '../../../store';
+import { emitAnswerAccessMeetingRequest } from '../../../store';
 
 // types
 import { MeetingAccessStatuses, MeetingUser } from '../../../store/types';

@@ -46,7 +46,8 @@
     "delete": "Delete",
     "schedule": "Schedule",
     "done": "Done",
-    "copy": "Copy"
+    "copy": "Copy",
+    "back": "Go back"
   },
   "login": {
     "welcome": "Welcome back",

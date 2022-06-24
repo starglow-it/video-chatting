@@ -15,9 +15,9 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 
 // stores
-import { $localUserStore, resetLocalUserStore, resetMeetingUsersStore } from '../../store/users';
-import { initiateSocketConnectionFx, resetSocketStore } from '../../store/socket';
-import { appDialogsApi } from '../../store/dialogs';
+import { $localUserStore, resetLocalUserStore, resetMeetingUsersStore } from '../../store';
+import { initiateSocketConnectionFx, resetSocketStore } from '../../store';
+import { appDialogsApi } from '../../store';
 import {
     $meetingTemplateStore,
     $isOwner,
@@ -25,9 +25,8 @@ import {
     resetMeetingStore,
     getMeetingTemplateFx,
     joinMeetingEventWithData,
-    emitEnterMeetingEvent,
-} from '../../store/meeting';
-import { joinRoomBeforeMeeting, sendMeetingAvailable } from '../../store/waitingRoom';
+} from '../../store';
+import { joinRoomBeforeMeeting } from '../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
@@ -52,8 +51,6 @@ const MeetingContainer = memo(() => {
 
     const meetingUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isOwner = useStore($isOwner);
-    const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
 
     useEffect(() => {
         (async () => {
@@ -65,8 +62,6 @@ const MeetingContainer = memo(() => {
 
             if (meetingTemplate?.meetingInstance?.serverIp) {
                 await joinMeetingEventWithData({});
-
-                if (isOwner) await sendMeetingAvailable({ templateId: router.query.token });
             } else {
                 await joinRoomBeforeMeeting({ templateId: router.query.token });
             }
@@ -81,21 +76,9 @@ const MeetingContainer = memo(() => {
         };
     }, []);
 
-    useEffect(() => {
-        if (
-            meetingUser.accessStatus === MeetingAccessStatuses.RequestSent &&
-            meetingTemplate?.meetingInstance?.serverIp &&
-            meetingUser.id &&
-            !isOwner &&
-            isUserSentEnterRequest
-        ) {
-            emitEnterMeetingEvent();
-        }
-    }, [meetingUser.accessStatus, meetingTemplate?.meetingInstance?.serverIp, isOwner, isUserSentEnterRequest]);
-
     return (
         <>
-            {meetingTemplate?.id && meetingUser.id && (
+            {meetingTemplate?.id && (
                 <VideoEffectsProvider>
                     {MeetingAccessStatuses.InMeeting !== meetingUser.accessStatus ? (
                         <CustomBox className={styles.waitingRoomWrapper}>

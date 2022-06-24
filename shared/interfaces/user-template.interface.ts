@@ -17,6 +17,9 @@ export interface IUserTemplate {
     companyName: string;
     position: string;
     contactEmail: string;
+    isMonetizationEnabled: boolean;
+    templatePrice: string;
+    templateCurrency: string;
     businessCategories: IBusinessCategory[];
     languages: ILanguage[];
     socials: ISocialLink[];

@@ -21,7 +21,7 @@ import { DashboardNotificationsProps } from './types';
 import {
     $dashboardNotificationsStore,
     emitReadDashboardNotifications,
-} from '../../../store/dashboardNotifications';
+} from '../../../store';
 
 // styles
 import styles from './DashboardNotifications.module.scss';

@@ -7,7 +7,7 @@ import { CustomDropdownProps } from './types';
 import styles from './CustomDropdown.module.scss';
 
 import { useLocalization } from '../../../hooks/useTranslation';
-import { ArrowIcon } from '@library/icons/ArrowIcon';
+import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 const Component = (
@@ -54,7 +54,7 @@ const Component = (
                         },
                     },
                 }}
-                IconComponent={IconComponent || ArrowIcon}
+                IconComponent={IconComponent || RoundArrowIcon}
                 {...rest}
             >
                 {list}

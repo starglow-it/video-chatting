@@ -1,7 +1,7 @@
 import { forward } from 'effector-next';
 
 import { $authStore, checkAuthFx, loginUserFx, logoutUserFx, resetAuthErrorEvent } from './model';
-import { clearProfileEvent, setProfileEvent } from '../profile';
+import { clearProfileEvent, setProfileEvent } from '../profile/profile/model';
 
 import { handleLoginUser } from './handlers/handleLoginUser';
 import { handleCheckUserAuthentication } from './handlers/handleCheckUserAuthentication';

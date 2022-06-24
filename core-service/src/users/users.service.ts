@@ -140,6 +140,8 @@ export class UsersService {
       contactEmail: data.contactEmail,
       description: data.description,
       signBoard: data.signBoard,
+      stripeAccountId: data.stripeAccountId,
+      stripeEmail: data.stripeEmail,
     };
   }
 }

@@ -41,6 +41,8 @@ export type Profile = {
     email: string;
     contactEmail: string;
     signBoard: string;
+    stripeAccountId: string;
+    stripeEmail: string;
     description: string;
     socials: SocialLink[];
     languages: Language[];

@@ -9,7 +9,7 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import styles from './PersonalInfo.module.scss';
 
 // stores
-import { $profileStore } from '../../../store/profile';
+import { $profileStore } from '../../../store';
 
 const PersonalInfo = memo(() => {
     const profile = useStore($profileStore);

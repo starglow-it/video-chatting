@@ -15,11 +15,11 @@ import { LocalVideoPreview } from '@components/Meeting/LocalVideoPreview/LocalVi
 import { ConfirmQuitOnboardingDialog } from '@components/Dialogs/ConfirmQuitOnboardingDialog/ConfirmQuitOnboardingDialog';
 
 // store
-import { $setUpTemplateStore, getTemplateFx } from '../../store/templates';
-import { updateProfileFx, updateProfilePhotoFx } from '../../store/profile';
-import { createMeetingFx } from '../../store/meetings';
-import { $profileAvatarImage, $routeToChangeStore, setRouteToChangeEvent } from '../../store/other';
-import { $appDialogsStore, appDialogsApi } from '../../store/dialogs';
+import { $setUpTemplateStore, getTemplateFx } from '../../store';
+import { updateProfileFx, updateProfilePhotoFx } from '../../store';
+import { createMeetingFx } from '../../store';
+import { $profileAvatarImage, $routeToChangeStore, setRouteToChangeEvent } from '../../store';
+import { $appDialogsStore, appDialogsApi } from '../../store';
 
 // styles
 import styles from './SetUpTemplateContainer.module.scss';

@@ -1,6 +1,6 @@
 import { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 
-import { meetingUsersDomain } from '../domain';
+import { meetingUsersDomain } from '../domain/model';
 
 import { JoinMeetingResult, MeetingUser } from '../../types';
 

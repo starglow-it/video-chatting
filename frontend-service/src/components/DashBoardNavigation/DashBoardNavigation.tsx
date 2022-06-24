@@ -16,8 +16,8 @@ import { ExitIcon } from '@library/icons/ExitIcon';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
-import { $profileStore } from '../../store/profile';
-import { logoutUserFx } from '../../store/auth';
+import { $profileStore } from '../../store';
+import { logoutUserFx } from '../../store';
 
 // styles
 import styles from './DashBoardNavigation.module.scss';

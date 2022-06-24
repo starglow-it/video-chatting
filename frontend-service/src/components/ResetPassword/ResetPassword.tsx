@@ -26,7 +26,7 @@ import { passwordSchema } from "../../validation/users/password";
 import {simpleStringSchema} from "../../validation/common";
 
 // stores
-import {resetPasswordFx} from "../../store/profile";
+import {resetPasswordFx} from "../../store";
 
 const validationSchema = yup.object({
     newPassword: passwordSchema().required('user.pass.newPassword.new'),

@@ -1,12 +1,12 @@
 import { root } from '../root';
 import { SocketState } from '../types';
-import { createSocketEvent } from '../socket';
+import { createSocketEvent } from '../socket/model';
 import {
     EMIT_BEFORE_MEETING_EVENT,
     EMIT_ENTER_WAITING_ROOM_EVENT,
     EMIT_JOIN_DASHBOARD_EVENT,
-    EMIT_MEETING_AVAILABLE_EVENT,
-} from './const/emitSocketEvents';
+    EMIT_MEETING_AVAILABLE_EVENT
+} from "../../const/socketEvents/emitters";
 
 const waitingRoomDomain = root.createDomain('waitingRoomDomain');
 

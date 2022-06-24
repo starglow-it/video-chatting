@@ -46,6 +46,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - gateway-service
+    restart: always
     ports:
       - '8000:8000'
     environment:
@@ -73,6 +74,7 @@ services:
       dockerfile: ./gateway-service/Dockerfile
     ports:
       - '3000:3000'
+    restart: always
     depends_on:
       - mongo
       - rabbit
@@ -91,6 +93,7 @@ services:
       dockerfile: ./socket-service/Dockerfile
     ports:
       - '8082:8080'
+    restart: always
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.socket.rule=Host(`demo.theliveoffice.com`) && PathPrefix(`/socket.io`)"
@@ -104,6 +107,7 @@ services:
     build:
       context: ../../
       dockerfile: ./core-service/Dockerfile
+    restart: always
     depends_on:
       - config-service
     networks:
@@ -113,6 +117,7 @@ services:
     build:
       context: ../../
       dockerfile: ./auth-service/Dockerfile
+    restart: always
     depends_on:
       - config-service
     networks:
@@ -122,6 +127,17 @@ services:
     build:
       context: ../../
       dockerfile: ./notifications-service/Dockerfile
+    restart: always
+    depends_on:
+      - config-service
+    networks:
+      - liveoffice_demo
+
+  payment-service:
+    build:
+      context: ../../
+      dockerfile: ./payment-service/Dockerfile
+    restart: always
     depends_on:
       - config-service
     networks:
@@ -131,9 +147,11 @@ services:
     build:
       context: ../../
       dockerfile: ./config-service/Dockerfile
+    restart: always
     environment:
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
+      - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
       - RABBIT_MQ_NOTIFICATIONS_QUEUE=rabbitMqNotificationsQueue
       - RABBIT_MQ_USER
       - RABBIT_MQ_PASS
@@ -153,6 +171,8 @@ services:
       - STORAGE_HOSTNAME
       - SECRET_ACCESS_KEY
       - ACCESS_KEY
+      - STRIPE_API_KEY
+      - STRIPE_WEBHOOK_SECRET
     depends_on:
       - mongo
       - rabbit

@@ -6,7 +6,7 @@ import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
-import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
+import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 import { useLocalization } from '../../../hooks/useTranslation';

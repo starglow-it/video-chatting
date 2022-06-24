@@ -8,7 +8,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // store
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // styles
 import styles from './ConfirmChangeRouteDialog.module.scss';

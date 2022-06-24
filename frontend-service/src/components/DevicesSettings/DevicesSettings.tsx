@@ -1,5 +1,7 @@
-import React, { memo, useCallback, useContext, useState } from 'react';
+import React, { memo, useCallback, useContext } from 'react';
 import { useStore } from 'effector-react';
+import * as yup from "yup";
+import { useForm, FormProvider } from "react-hook-form";
 
 // helpers
 
@@ -14,7 +16,7 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
-import { useToggle } from '../../hooks/useToggle';
+import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
 
 // context
 import {VideoEffectsContext} from "../../contexts/VideoEffectContext";
@@ -27,40 +29,61 @@ import {
     $isMeetingInstanceExists,
     $isOwner,
     $isOwnerInMeeting,
-    $isUserSendEnterRequest,
+    $isUserSendEnterRequest, $meetingTemplateStore,
     emitCancelEnterMeetingEvent,
     emitEnterMeetingEvent,
     emitStartMeetingEvent,
     setIsUserSendEnterRequest,
-} from '../../store/meeting';
-import { updateLocalUserStateEvent } from '../../store/users';
-import { addNotificationEvent } from '../../store/notifications';
-import { emitSendEnterWaitingRoom } from '../../store/waitingRoom';
+    updateMeetingTemplateFxWithData,
+} from '../../store';
+import { updateLocalUserStateEvent } from '../../store';
+import { addNotificationEvent } from '../../store';
+import { emitSendEnterWaitingRoom } from '../../store';
+import {
+    $isSettingsBackgroundAudioActive,
+    $settingsBackgroundAudioVolume,
+    setBackgroundAudioActive,
+    setBackgroundAudioVolume,
+} from '../../store';
 
 // types
-import { NotificationType } from '../../store/types';
+import {MeetingAccessStatuses, NotificationType} from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
-import {
-    $backgroundAudioVolume,
-    $isBackgroundAudioActive,
-    setBackgroundAudioActive,
-    setBackgroundAudioVolume,
-} from '../../store/other';
+
+import {booleanSchema, simpleStringSchema} from "../../validation/common";
+
+const validationSchema = yup.object({
+    templatePrice: simpleStringSchema(),
+    isMonetizationEnabled: booleanSchema(),
+    templateCurrency: simpleStringSchema().required('required'),
+});
 
 const DevicesSettings = memo(() => {
     const isOwner = useStore($isOwner);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingInstanceExists = useStore($isMeetingInstanceExists);
     const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
-    const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
-    const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const meetingTemplate = useStore($meetingTemplateStore);
+    const settingsBackgroundAudioVolume = useStore($settingsBackgroundAudioVolume);
+    const isSettingsBackgroundAudioActive = useStore($isSettingsBackgroundAudioActive);
 
-    const [volume, setVolume] = useState(backgroundAudioVolume);
+    const resolver = useYupValidationResolver<{ templatePrice: number; isMonetizationEnabled: boolean; templateCurrency: string }>(validationSchema);
 
-    const { value: isBackgroundAudioActive, onToggleSwitch: handleToggleBackgroundAudio } =
-        useToggle(isAudioBackgroundActive);
+    const methods = useForm({
+        criteriaMode: 'all',
+        resolver,
+        defaultValues: {
+            isMonetizationEnabled: Boolean(meetingTemplate.isMonetizationEnabled),
+            templatePrice: meetingTemplate.templatePrice || 10,
+            templateCurrency: meetingTemplate.templateCurrency,
+        }
+    });
+
+    const {
+        handleSubmit,
+    } = methods;
 
     const {
         data: {
@@ -118,8 +141,8 @@ const DevicesSettings = memo(() => {
                     setIsUserSendEnterRequest(true);
                 }
 
-                setBackgroundAudioVolume(volume);
-                setBackgroundAudioActive(isBackgroundAudioActive);
+                setBackgroundAudioVolume(settingsBackgroundAudioVolume);
+                setBackgroundAudioActive(isSettingsBackgroundAudioActive);
             } else {
                 handleToggleCamera();
             }
@@ -131,8 +154,8 @@ const DevicesSettings = memo(() => {
         isStreamRequested,
         isMeetingInstanceExists,
         isOwnerInMeeting,
-        volume,
-        isBackgroundAudioActive,
+        settingsBackgroundAudioVolume,
+        isSettingsBackgroundAudioActive,
         isBlurActive,
     ]);
 
@@ -141,82 +164,114 @@ const DevicesSettings = memo(() => {
         setIsUserSendEnterRequest(false);
     }, []);
 
-    const handleChangeVolume = useCallback(newVolume => {
-        setVolume(() => newVolume);
-    }, []);
+    const onSubmit = useCallback(handleSubmit(async (data) => {
+        try {
+            await updateMeetingTemplateFxWithData(data);
+
+            handleJoinMeeting();
+        } catch (e) {
+            console.log(e);
+        }
+    }),[isOwner]);
+
+    const handleBack = useCallback(() => {
+        if (isUserSentEnterRequest) {
+            emitCancelEnterMeetingEvent();
+            setIsUserSendEnterRequest(false);
+        }
+
+        updateLocalUserStateEvent({
+            accessStatus: MeetingAccessStatuses.EnterName,
+        });
+    }, [isUserSentEnterRequest]);
 
     return (
         <CustomPaper className={styles.wrapper}>
-            <CustomGrid container direction="column">
-                <CustomGrid container wrap="nowrap" className={styles.settingsContent}>
-                    <MediaPreview
-                        stream={changeStream}
-                        onToggleAudio={handleToggleMic}
-                        onToggleVideo={handleToggleCamera}
-                    />
-                    <CustomDivider orientation="vertical" flexItem />
-                    <CustomGrid
-                        className={styles.devicesWrapper}
-                        container
-                        direction="column"
-                        wrap="nowrap"
-                    >
-                        {isUserSentEnterRequest ||
-                        (!(videoDevices.length && audioDevices.length) && !error) ? (
-                            <>
-                                <CustomTypography
-                                    className={styles.title}
-                                    variant="h3bold"
-                                    nameSpace="meeting"
-                                    translation="requestSent"
-                                />
-                                <CustomTypography
-                                    variant="body1"
-                                    color="text.secondary"
-                                    nameSpace="meeting"
-                                    translation="enterPermission"
-                                />
-                                <CustomGrid
-                                    container
-                                    alignItems="center"
-                                    className={styles.loader}
-                                    gap={1}
-                                >
-                                    <WiggleLoader />
-                                    <CustomTypography
-                                        color="colors.orange.primary"
-                                        nameSpace="meeting"
-                                        translation="waitForHost"
-                                    />
-                                </CustomGrid>
-                            </>
-                        ) : (
-                            <MeetingSettingsContent
-                                stream={changeStream}
-                                volume={volume}
-                                onChangeVolume={handleChangeVolume}
-                                isBackgroundAudioActive={isBackgroundAudioActive}
-                                onToggleAudioBackground={handleToggleBackgroundAudio}
-                                title={
+            <FormProvider {...methods}>
+                <CustomGrid container direction="column">
+                    <CustomGrid container wrap="nowrap" className={styles.settingsContent}>
+                        <MediaPreview
+                            stream={changeStream}
+                            onToggleAudio={handleToggleMic}
+                            onToggleVideo={handleToggleCamera}
+                        />
+                        <CustomDivider orientation="vertical" flexItem />
+                        <CustomGrid
+                            className={styles.devicesWrapper}
+                            container
+                            direction="column"
+                            wrap="nowrap"
+                        >
+                            {isUserSentEnterRequest ||
+                            (!(videoDevices.length && audioDevices.length) && !error) ? (
+                                <>
                                     <CustomTypography
                                         className={styles.title}
                                         variant="h3bold"
                                         nameSpace="meeting"
-                                        translation="readyToJoin"
+                                        translation="requestSent"
                                     />
-                                }
-                            />
-                        )}
+                                    <CustomTypography
+                                        variant="body1"
+                                        color="text.secondary"
+                                        nameSpace="meeting"
+                                        translation="enterPermission"
+                                    />
+                                    <CustomGrid
+                                        container
+                                        alignItems="center"
+                                        className={styles.loader}
+                                        gap={1}
+                                    >
+                                        <WiggleLoader />
+                                        <CustomTypography
+                                            color="colors.orange.primary"
+                                            nameSpace="meeting"
+                                            translation="waitForHost"
+                                        />
+                                    </CustomGrid>
+                                </>
+                            ) : (
+                                <MeetingSettingsContent
+                                    stream={changeStream}
+                                    title={
+                                        <CustomTypography
+                                            className={styles.title}
+                                            variant="h3bold"
+                                            nameSpace="meeting"
+                                            translation="readyToJoin"
+                                        />
+                                    }
+                                />
+                            )}
+                        </CustomGrid>
                     </CustomGrid>
                 </CustomGrid>
-            </CustomGrid>
-            <CustomButton
-                onClick={isUserSentEnterRequest ? handleCancelRequest : handleJoinMeeting}
-                className={styles.joinBtn}
-                nameSpace="meeting"
-                variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
-                translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
-            />
+                <CustomGrid
+                    container
+                    gap={1}
+                    wrap="nowrap"
+                    className={styles.joinBtn}
+                >
+                    {!isUserSentEnterRequest
+                        ? (
+                            <CustomButton
+                                onClick={handleBack}
+                                variant="custom-cancel"
+                                nameSpace="common"
+                                translation="buttons.back"
+                            />
+                        )
+                        : null
+                    }
+                    <CustomButton
+                        onClick={isUserSentEnterRequest ? handleCancelRequest : (isOwner ? onSubmit : handleJoinMeeting)}
+                        nameSpace="meeting"
+                        variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
+                        translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
+                    />
+                </CustomGrid>
+            </FormProvider>
         </CustomPaper>
     );
 });

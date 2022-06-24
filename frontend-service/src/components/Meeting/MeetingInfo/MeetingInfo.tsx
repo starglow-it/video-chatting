@@ -1,6 +1,5 @@
 import React, { forwardRef, memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
-import { useRouter } from 'next/router';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -13,7 +12,6 @@ import { InfoIcon } from '@library/icons/InfoIcon';
 import { PeoplesIcon } from '@library/icons/PeoplesIcon';
 import { EmailIcon } from '@library/icons/EmailIcon';
 import { LanguageIcon } from '@library/icons/LanguageIcon';
-import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -21,19 +19,14 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
 
 // stores
-import { $meetingTemplateStore } from '../../../store/meeting';
+import { $meetingTemplateStore } from '../../../store';
 
 // styles
 import styles from './MeetingInfo.module.scss';
 
-// config
-import frontendConfig from '../../../const/config';
-
 import { SOCIALS_ICONS } from '../../../const/profile/socials';
 
 const Component = (props, ref) => {
-    const router = useRouter();
-
     const meetingTemplate = useStore($meetingTemplateStore);
 
     const renderLanguages = useMemo(
@@ -116,12 +109,6 @@ const Component = (props, ref) => {
                                 </CustomTypography>
                             </CustomGrid>
                         ) : null}
-                        <CustomGrid container className={styles.link} gap={1} wrap="nowrap">
-                            <CustomLinkIcon width="24px" height="24px" />
-                            <CustomTypography color="colors.white.primary" className={styles.linkText}>
-                                {`${frontendConfig.frontendUrl}/meeting/${router.query.token}`}
-                            </CustomTypography>
-                        </CustomGrid>
                     </CustomGrid>
                     <CustomGrid container direction="column" gap={2}>
                         <CustomTypography

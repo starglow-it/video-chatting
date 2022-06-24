@@ -13,7 +13,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 // icons
 import { ImagePlaceholderIcon } from '@library/icons/ImagePlaceholderIcon';
 import { UploadArrowIcon } from '@library/icons/UploadArrow';
-import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
+import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
 // helpers
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
@@ -32,7 +32,7 @@ import {
     $profileAvatarImage,
     setProfileAvatar,
     resetProfileAvatarEvent,
-} from '../../../store/other';
+} from '../../../store';
 
 // hooks
 import { useFileReader } from '../../../hooks/useFileReader';

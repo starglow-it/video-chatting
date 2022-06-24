@@ -35,6 +35,9 @@ export type UserTemplate = {
     contactEmail: string;
     fullName: string;
     signBoard: string;
+    isMonetizationEnabled: boolean;
+    templatePrice: string;
+    templateCurrency: "USD" | "CAD";
     position: string;
     languages: Language[];
     socials: SocialLink[];

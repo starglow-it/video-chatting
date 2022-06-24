@@ -17,6 +17,7 @@ module.exports = enhance({
         turnUserName: process.env.TURN_USERNAME,
         turnPort: parseInt(process.env.TURN_PORT, 10),
         storageHostName: process.env.STORAGE_HOSTNAME,
+        stripePublicKey: process.env.STRIPE_PUBLIC_API_KEY
     },
     reactStrictMode: true,
     typescript: {

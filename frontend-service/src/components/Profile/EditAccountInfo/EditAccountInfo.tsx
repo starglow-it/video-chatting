@@ -19,7 +19,7 @@ import { EditProfilePasswordInfo } from '@components/Profile/EditProfilePassword
 
 // icons
 import { LockIcon } from '@library/icons/LockIcon';
-import { $profileStore } from '../../../store/profile';
+import { $profileStore } from '../../../store';
 import { useToggle } from '../../../hooks/useToggle';
 
 // styles

@@ -6,7 +6,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 import { AppDialogsEnum } from '../../../store/types';
 

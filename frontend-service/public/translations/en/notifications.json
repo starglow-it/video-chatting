@@ -19,5 +19,9 @@
   "profile": {
     "passwordChanged": "Your password has been changed successfully",
     "emailChanged": "Your email has been changed successfully"
+  },
+  "payments": {
+    "paymentSuccess": "Your payment was successful!",
+    "paymentFail": "An error occurred during the payment. Please try again"
   }
 }

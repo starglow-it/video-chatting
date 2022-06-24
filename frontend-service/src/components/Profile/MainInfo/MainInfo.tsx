@@ -14,7 +14,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // stores
-import { $profileStore } from '../../../store/profile';
+import { $profileStore } from '../../../store';
 
 // styles
 import styles from './MainInfo.module.scss';

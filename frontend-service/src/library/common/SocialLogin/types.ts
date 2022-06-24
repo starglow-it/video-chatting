@@ -1,7 +1,7 @@
 import React from 'react';
 
 type SocialLoginProps = {
-    Icon: React.ElementType;
+    Icon?: React.ElementType;
     onClick?: () => void;
 };
 

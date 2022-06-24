@@ -2,6 +2,7 @@ export interface IConfig {
     rabbitMqCoreQueue: string;
     rabbitMqAuthQueue: string;
     rabbitMqNotificationsQueue: string;
+    rabbitMqPaymentQueue: string;
     rabbitMqInstanceMangerQueue: string;
     rabbitMqUser: string;
     rabbitMqPass: string;
@@ -20,7 +21,9 @@ export interface IConfig {
     accessKey: string;
     secretAccessKey: string;
     uploadBucket: string;
-    storageHostname: string
+    storageHostname: string;
+    stripeApiKey: string;
+    stripeWebhookSecret: string;
 }
 
 export type ConfigKeysType = keyof IConfig;

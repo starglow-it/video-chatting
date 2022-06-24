@@ -1,11 +1,11 @@
 import { meetingDomain } from '../domain';
 import { MeetingNote } from '../../types';
-import { createSocketEvent } from '../../socket';
+import { createSocketEvent } from '../../socket/model';
 import {
     GET_MEETING_NOTES_EVENT,
     REMOVE_MEETING_NOTE_EVENT,
-    SEND_MEETING_NOTE_EVENT,
-} from '../const/emitSocketEvents';
+    SEND_MEETING_NOTE_EVENT
+} from "../../../const/socketEvents/emitters";
 
 const initialMeetingsNotesState: MeetingNote[] = [];
 

@@ -9,7 +9,7 @@ import { useStore } from 'effector-react';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
+import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 import { useToggle } from '../../../hooks/useToggle';
 
 // types
@@ -22,9 +22,9 @@ import styles from './MeetingNoteItem.module.scss';
 import {
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
-} from '../../../store/meeting/meetingNotes';
-import { $localUserStore } from '../../../store/users';
-import { $meetingStore } from '../../../store/meeting';
+} from '../../../store';
+import { $localUserStore } from '../../../store';
+import { $meetingStore } from '../../../store';
 
 const MeetingNoteItem = memo(
     ({

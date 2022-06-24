@@ -22,7 +22,7 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
             setLeft(`${left * 100}%`);
             setTop(`${top * 100}%`);
         }
-    }, [isScreensharing, elevationIndex]);
+    }, [isScreensharing, elevationIndex, top, left]);
 
     return (
         <CustomBox

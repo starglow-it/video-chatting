@@ -1,0 +1,18 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.cardField {
+  border-radius: rem(10px);
+  padding: rem(0 12px);
+  background: transparent;
+  font-family: Poppins, sans-serif;
+  border: 1px solid rgba($primary-white, 0.6);
+}
+
+.empty {
+  color: rgba($primary-white, 0.6);
+}
+
+.focus {
+  border: 1px solid $primary-white;
+}

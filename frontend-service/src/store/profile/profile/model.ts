@@ -1,9 +1,12 @@
 import { ErrorState, Profile, UpdateProfileAvatar, UpdateProfileInfo } from '../../types';
-import { profileDomain } from '../domain';
+import { profileDomain } from '../domain/model';
 import { initialProfileState } from './const';
+
+export const $profileStore = profileDomain.store<Profile>(initialProfileState);
 
 export const setProfileEvent = profileDomain.event<{ user?: Profile }>('setProfileEvent');
 export const clearProfileEvent = profileDomain.event('clearProfileEvent');
+export const deleteStripeDataEvent = profileDomain.event('deleteStripeDataEvent');
 
 export const updateProfileFx = profileDomain.effect<
     UpdateProfileInfo,
@@ -45,4 +48,3 @@ export const resetPasswordFx = profileDomain.effect<{ newPassword: string; newPa
     'resetPasswordFx',
 );
 
-export const $profileStore = profileDomain.store<Profile>(initialProfileState);

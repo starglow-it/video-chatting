@@ -16,7 +16,7 @@ import {CustomLinkIcon} from "@library/icons/CustomLinkIcon";
 import frontendConfig from "../../../const/config";
 
 // stores
-import {$appDialogsStore, appDialogsApi} from "../../../store/dialogs";
+import {$appDialogsStore, appDialogsApi} from "../../../store";
 
 // styles
 import styles from './CopyMeetingLinkDialog.module.scss';

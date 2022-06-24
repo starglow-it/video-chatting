@@ -2,7 +2,7 @@ import React from 'react';
 import { withStart } from 'effector-next';
 import dynamic from 'next/dynamic';
 
-import { pageLoaded } from '../../src/store/root';
+import { pageLoaded } from '../../src/store';
 import { MediaContextProvider } from '../../src/contexts/MediaContext';
 
 const MeetingContainer = dynamic(() => import('@containers/MeetingContainer/MeetingContainer'), {

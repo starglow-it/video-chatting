@@ -1,7 +1,7 @@
 import { _24_HOURS, ONE_HOUR, ONE_MINUTE } from '../const/time/common';
 import {addZero} from "./functions/addZero";
 
-export const getTimeList = (startAt: string, interval: number, maxIntervals?: number, maxValue: string): string[] => {
+export const getTimeList = (startAt: string, interval: number, maxIntervals?: number, maxValue?: string): string[] => {
     const intervals = _24_HOURS / interval;
 
     const timeList = new Array(intervals + 1)

@@ -5,9 +5,6 @@ import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
-// styles
-import styles from './LabeledSwitch.module.scss';
-
 // types
 import { LabeledSwitchProps } from './types';
 
@@ -18,12 +15,16 @@ const Component = ({
     checked,
     onChange,
     className,
+    SwitchComponent,
+    ...rest
 }: LabeledSwitchProps) => {
     return (
-        <CustomGrid container gap={1} className={className}>
-            {Icon}
-            <CustomTypography nameSpace={nameSpace} translation={translation} />
-            <CustomSwitch checked={checked} onChange={onChange} className={styles.switch} />
+        <CustomGrid container gap={1} className={className} justifyContent="space-between" wrap="nowrap">
+            <CustomGrid container wrap="nowrap">
+                {Icon}
+                <CustomTypography nameSpace={nameSpace} translation={translation} />
+            </CustomGrid>
+            {SwitchComponent || <CustomSwitch checked={checked} onChange={onChange} {...rest} />}
         </CustomGrid>
     );
 };

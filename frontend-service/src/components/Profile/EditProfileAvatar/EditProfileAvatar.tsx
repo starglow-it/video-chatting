@@ -23,7 +23,7 @@ import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
 import { useToggle } from '../../../hooks/useToggle';
 
 // stores
-import { $profileStore, deleteProfilePhotoFx, updateProfilePhotoFx } from '../../../store/profile';
+import { $profileStore, deleteProfilePhotoFx, updateProfilePhotoFx } from '../../../store';
 
 // styles
 import styles from './EditProfileAvatar.module.scss';

@@ -12,7 +12,7 @@ import styles from './MeetingBackgroundVideo.module.scss';
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
-import { $backgroundAudioVolume, $isBackgroundAudioActive } from '../../../store/other';
+import { $backgroundAudioVolume, $isBackgroundAudioActive } from '../../../store';
 
 const MeetingBackgroundVideo = memo(
     ({ children, src, isScreenSharing }: MeetingBackgroundVideoProps) => {

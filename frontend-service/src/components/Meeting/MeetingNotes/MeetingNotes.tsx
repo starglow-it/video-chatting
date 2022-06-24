@@ -13,7 +13,7 @@ import {
     $meetingNotesStore,
     getMeetingNotesSocketEvent,
     resetMeetingNotesEvent,
-} from '../../../store/meeting/meetingNotes';
+} from '../../../store';
 
 // styles
 import styles from './MeetingNotes.module.scss';

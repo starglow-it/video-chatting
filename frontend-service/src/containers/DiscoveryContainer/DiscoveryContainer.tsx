@@ -19,8 +19,8 @@ import {
     $discoveryTemplatesStore,
     getUsersTemplatesFx,
     setScheduleTemplateIdEvent,
-} from '../../store/templates';
-import { appDialogsApi } from '../../store/dialogs';
+} from '../../store';
+import { appDialogsApi } from '../../store';
 
 // styles
 import styles from './DiscoveryContainer.module.scss';

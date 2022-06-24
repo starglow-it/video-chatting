@@ -1,25 +1,20 @@
 import { combine, forward, sample } from 'effector-next';
-
 import {
     emitJoinDashboard,
     emitSendEnterWaitingRoom,
     joinDashboard,
     sendEnterWaitingRoom,
-    subscribeToSocketEvents,
-} from './model';
-
-import { $profileStore } from '../profile';
-import { $localUserStore } from '../users';
-
-import {
-    ON_MEETING_AVAILABLE,
-    ON_SEND_DASHBOARD_NOTIFICATION,
-} from './const/subscribeSocketEvents';
-import { initiateSocketConnectionFx } from '../socket';
-import {$meetingTemplateStore, getMeetingTemplateFx, joinMeetingEventWithData} from '../meeting';
-import { setDashboardNotifications } from '../dashboardNotifications';
-
-import { DashboardNotification } from '../types/dashboard';
+    subscribeToSocketEvents
+} from "./model";
+import {initiateSocketConnectionFx} from "../socket/model";
+import {$profileStore} from "../profile/profile/model";
+import {$meetingTemplateStore, getMeetingTemplateFx} from "../meeting/meetingTemplate/model";
+import {$localUserStore} from "../users/localUser/model";
+import {setDashboardNotifications} from "../dashboardNotifications/model";
+import {DashboardNotification} from "../types/dashboard";
+import {joinMeetingEventWithData} from "../meeting/sockets/init";
+import {ON_MEETING_AVAILABLE, ON_SEND_DASHBOARD_NOTIFICATION} from "../../const/socketEvents/subscribers";
+import {emitEnterMeetingEvent} from "../meeting/sockets/model";
 
 sample({
     clock: emitJoinDashboard,
@@ -58,6 +53,8 @@ subscribeToSocketEvents.watch(({ socketInstance }) => {
                 await initiateSocketConnectionFx();
 
                 await joinMeetingEventWithData();
+
+                emitEnterMeetingEvent();
             }
         });
 

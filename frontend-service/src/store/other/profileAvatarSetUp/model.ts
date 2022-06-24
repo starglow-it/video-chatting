@@ -1,4 +1,4 @@
-import { otherStoresDomain } from '../domain';
+import { otherStoresDomain } from '../domain/model';
 
 type UploadProfileAvatar = { file: File | null; dataUrl: string };
 

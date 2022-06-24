@@ -1,16 +1,12 @@
-import { attach, combine, forward, sample } from 'effector-next';
-
+import {attach, combine, forward, sample} from "effector-next";
+import {$meetingStore, setMeetingEvent, updateMeetingEvent} from "../meeting/model";
+import {setMeetingSoundType} from "../meetingSounds/model";
 import {
-    ON_GET_MEETING_NOTES,
-    ON_MEETING_ENTER_REQUEST,
-    ON_MEETING_ERROR,
-    ON_MEETING_TEMPLATE_UPDATE,
-    ON_MEETING_UPDATE,
-    ON_PLAY_SOUND,
-    ON_REMOVE_MEETING_NOTE,
-    ON_SEND_MEETING_NOTE,
-} from '../const/subscribeSocketEvents';
-
+    $isOwner,
+    $meetingTemplateStore,
+    getMeetingTemplateFx,
+    setIsUserSendEnterRequest
+} from "../meetingTemplate/model";
 import {
     answerAccessMeetingRequestEvent,
     cancelAccessMeetingRequestEvent,
@@ -18,49 +14,29 @@ import {
     emitCancelEnterMeetingEvent,
     emitEndMeetingEvent,
     emitEnterMeetingEvent,
-    emitLeaveMeetingEvent,
-    emitStartMeetingEvent,
-    emitUpdateMeetingTemplate,
+    emitLeaveMeetingEvent, emitStartMeetingEvent, emitUpdateMeetingTemplate,
     endMeetingEvent,
     enterMeetingRequestEvent,
     joinMeetingEvent,
-    leaveMeetingEvent,
-    meetingSocketEventsController,
-    startMeetingEvent,
-    updateMeetingSocketEvent,
-    updateMeetingTemplateEvent,
-} from './model';
-
+    leaveMeetingSocketEvent, meetingSocketEventsController,
+    startMeetingEvent, updateMeetingSocketEvent,
+    updateMeetingTemplateEvent
+} from "./model";
+import {AppDialogsEnum, Meeting, MeetingSounds, MeetingUser, SocketState, UserTemplate, Profile } from "../../types";
+import {$localUserStore, setLocalUserEvent, updateLocalUserEvent} from "../../users/localUser/model";
+import {appDialogsApi} from "../../dialogs/init";
+import {updateMeetingUserEvent, updateMeetingUsersEvent} from "../../users/meetingUsers/model";
+import {removeLocalMeetingNoteEvent, setMeetingNotesEvent} from "../meetingNotes/model";
+import {sendMeetingAvailable} from "../../waitingRoom/model";
+import {initiateSocketConnectionFx} from "../../socket/model";
+import {$profileStore} from "../../profile/profile/model";
+import {setMeetingErrorEvent} from "../meetingError/model";
 import {
-    $localUserStore,
-    setLocalUserEvent,
-    updateLocalUserEvent,
-    updateMeetingUserEvent,
-    updateMeetingUsersEvent,
-} from '../../users';
-import { removeLocalMeetingNoteEvent, setMeetingNotesEvent } from '../meetingNotes';
-
-import {
-    $meetingTemplateStore,
-    getMeetingTemplateFx,
-    setIsUserSendEnterRequest,
-} from '../meetingTemplate';
-import { $meetingStore, setMeetingEvent, updateMeetingEvent } from '../meeting';
-import { initiateSocketConnectionFx } from '../../socket';
-import { setMeetingErrorEvent } from '../meetingError';
-import { appDialogsApi } from '../../dialogs';
-import { $profileStore } from '../../profile';
-import {setMeetingSoundType} from "../meetingSounds";
-
-import {
-    AppDialogsEnum,
-    Meeting,
-    MeetingSounds,
-    MeetingUser,
-    Profile,
-    SocketState,
-    UserTemplate,
-} from '../../types';
+    ON_GET_MEETING_NOTES, ON_MEETING_ENTER_REQUEST, ON_MEETING_ERROR, ON_MEETING_TEMPLATE_UPDATE,
+    ON_MEETING_UPDATE, ON_PLAY_SOUND,
+    ON_REMOVE_MEETING_NOTE,
+    ON_SEND_MEETING_NOTE
+} from "../../../const/socketEvents/subscribers";
 
 const handleMeetingEventsError = (data: string) => {
     setMeetingErrorEvent(data);
@@ -89,6 +65,7 @@ export const joinMeetingEventWithData = attach({
         profileUserName: source?.profile?.fullName,
         profileAvatar: source?.profile?.profileAvatar?.url,
         instanceId: source.template?.meetingInstance?.id,
+        templateId: source.template?.id,
         isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
         accessStatus: source.localUser.accessStatus,
         maxParticipants: source.template.maxParticipants,
@@ -98,6 +75,16 @@ export const joinMeetingEventWithData = attach({
 forward({
     from: initiateSocketConnectionFx.doneData,
     to: meetingSocketEventsController,
+});
+
+sample({
+    clock: joinMeetingEventWithData.doneData,
+    source: combine({ meetingTemplate: $meetingTemplateStore, isOwner: $isOwner }),
+    filter: (source) => source.isOwner,
+    fn: (source) => ({
+        templateId: source.meetingTemplate.id,
+    }),
+    target: sendMeetingAvailable
 });
 
 sample({
@@ -121,7 +108,7 @@ sample({
     clock: emitLeaveMeetingEvent,
     source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
-    target: leaveMeetingEvent,
+    target: leaveMeetingSocketEvent,
 });
 
 sample({
@@ -137,7 +124,7 @@ sample({
 sample({
     clock: emitAnswerAccessMeetingRequest,
     source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
-    fn: ({ meeting }, data) => ({ meetingId: meeting?.id, ...data }),
+    fn: ({ meeting, template }, data) => ({ meetingId: meeting?.id, ...data }),
     target: answerAccessMeetingRequestEvent,
 });
 

@@ -75,4 +75,8 @@ export class UsersService {
   async deleteMany(query, { session }: ITransactionSession) {
     return this.meetingUser.deleteMany(query, { session });
   }
+
+  async findUsers(query, { session }: ITransactionSession) {
+    return this.meetingUser.find(query, {}, { session });
+  }
 }

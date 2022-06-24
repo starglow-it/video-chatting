@@ -9,7 +9,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // icons
-import { ArrowIcon } from '@library/icons/ArrowIcon';
+import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
 
 import styles from './CustomAccordion.module.scss';
 
@@ -37,7 +37,7 @@ const CustomAccordion = memo(
                 expanded={currentAccordionId === accordionId}
                 onChange={handleChangeAccordion}
             >
-                <AccordionSummary expandIcon={<ArrowIcon width="24px" height="24px" />}>
+                <AccordionSummary expandIcon={<RoundArrowIcon width="24px" height="24px" />}>
                     <CustomGrid container gap={1}>
                         {AccordionIcon}
                         <CustomTypography nameSpace={nameSpace} translation={translation} />

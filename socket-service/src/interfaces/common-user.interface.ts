@@ -13,4 +13,5 @@ export interface ICommonMeetingUserDTO {
   meeting: ICommonMeetingDTO['id'];
   meetingUserId: number;
   profileAvatar: string;
+  userPosition: { top: number; left: number };
 }

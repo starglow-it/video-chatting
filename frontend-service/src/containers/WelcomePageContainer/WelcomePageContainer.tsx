@@ -20,7 +20,7 @@ import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid
 import styles from './WelcomePageContainer.module.scss';
 
 // stores
-import { $templatesStore, getTemplatesFx } from '../../store/templates';
+import { $templatesStore, getTemplatesFx } from '../../store';
 import { Template } from '../../store/types';
 
 const WelcomePageContainer = memo(() => {

@@ -18,6 +18,10 @@
     "company": "Company",
     "contacts": "Contacts"
   },
+  "meetingActions": {
+    "editTemplate": "You can edit info by clicking on avatar",
+    "meetingInfo": "You can view info by clicking on avatar"
+  },
   "buttons": {
     "join": "Join now",
     "cancel": "Cancel",
@@ -84,11 +88,18 @@
     "blurBackground": "Background blur",
     "faceTracking": "Face detection",
     "audioBackground": "Background audio",
+    "monetization": "Monetization",
     "audioBackgroundDisabled": "Background audio disabled",
     "notes": {
       "title": "Leave a note",
       "input": "Type here",
       "unpin": "Unpin"
     }
+  },
+  "payments": {
+    "perSession": "per session",
+    "yourCard": "Your card",
+    "stripe": "Stripe",
+    "payWith": "Pay with"
   }
 }

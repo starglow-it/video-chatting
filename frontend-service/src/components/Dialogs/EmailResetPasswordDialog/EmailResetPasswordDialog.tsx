@@ -12,7 +12,7 @@ import {CustomInput} from "@library/custom/CustomInput/CustomInput";
 import {CustomButton} from "@library/custom/CustomButton/CustomButton";
 
 // stores
-import {$appDialogsStore, appDialogsApi} from "../../../store/dialogs";
+import {$appDialogsStore, appDialogsApi} from "../../../store";
 
 // types
 import {AppDialogsEnum} from "../../../store/types";
@@ -26,7 +26,7 @@ import {useCountDown} from "../../../hooks/useCountDown";
 
 // validations
 import {emailSchema} from "../../../validation/users/email";
-import {sendResetPasswordLinkFx} from "../../../store/profile";
+import {sendResetPasswordLinkFx} from "../../../store";
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -65,8 +65,38 @@ const Component = () => {
 
     return (
         <CustomDialog contentClassName={styles.dialog} open={emailResetPasswordDialog} onClose={handleClose}>
-            {!isSubmitSuccessful && !isSubmitted
+            {isSubmitSuccessful && isSubmitted
                 ? (
+                    <CustomGrid container direction="column" alignItems="center" justifyContent="center">
+                        <Image src="/images/email2.png" width="52px" height="52px" />
+                        <CustomTypography className={styles.title} variant="h2bold" nameSpace="common" translation="reset.checkEmail" />
+                        <CustomTypography textAlign="center" className={styles.text} nameSpace="common" translation="reset.checkEmailText" />
+                        <CustomGrid container justifyContent="center" gap={1} className={styles.resend}>
+                            <CustomTypography nameSpace="common" translation="reset.didntGetLink" />
+                            {timerValue
+                                ? (
+                                    <CustomTypography
+                                        nameSpace="common"
+                                        translation="reset.resendTimer"
+                                        color="colors.grayscale.normal"
+                                        options={{ time: timerValue }}
+                                    />
+                                )
+                                : (
+                                    <CustomTypography
+                                        variant="body1bold"
+                                        color="colors.blue.primary"
+                                        onClick={onSubmit}
+                                        nameSpace="common"
+                                        translation="reset.resend"
+                                        className={styles.resendButton}
+                                    />
+                                )
+                            }
+                        </CustomGrid>
+                    </CustomGrid>
+                )
+                : (
                     <>
                         <CustomGrid container direction="column" gap={1} alignItems="center" justifyContent="center">
                             <CustomGrid container alignItems="center" gap={1.25} justifyContent="center">
@@ -98,36 +128,6 @@ const Component = () => {
                             </form>
                         </FormProvider>
                     </>
-                )
-                : (
-                    <CustomGrid container direction="column" alignItems="center" justifyContent="center">
-                            <Image src="/images/email2.png" width="52px" height="52px" />
-                            <CustomTypography className={styles.title} variant="h2bold" nameSpace="common" translation="reset.checkEmail" />
-                            <CustomTypography textAlign="center" className={styles.text} nameSpace="common" translation="reset.checkEmailText" />
-                            <CustomGrid container justifyContent="center" gap={1} className={styles.resend}>
-                                <CustomTypography nameSpace="common" translation="reset.didntGetLink" />
-                                {timerValue
-                                    ? (
-                                        <CustomTypography
-                                            nameSpace="common"
-                                            translation="reset.resendTimer"
-                                            color="colors.grayscale.normal"
-                                            options={{ time: timerValue }}
-                                        />
-                                    )
-                                    : (
-                                        <CustomTypography
-                                            variant="body1bold"
-                                            color="colors.blue.primary"
-                                            onClick={onSubmit}
-                                            nameSpace="common"
-                                            translation="reset.resend"
-                                            className={styles.resendButton}
-                                        />
-                                    )
-                                }
-                            </CustomGrid>
-                        </CustomGrid>
                 )
             }
         </CustomDialog>

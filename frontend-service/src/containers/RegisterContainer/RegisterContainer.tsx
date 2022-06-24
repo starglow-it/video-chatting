@@ -30,7 +30,7 @@ import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
 import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
 
 // stores
-import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store/register';
+import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store';
 
 // types
 import { RegisterUserParams } from 'src/store/types';

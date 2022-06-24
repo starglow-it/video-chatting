@@ -12,7 +12,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 
 // styles
 import styles from '@components/Profile/MainInfo/MainInfo.module.scss';
-import { $profileStore } from '../../../store/profile';
+import { $profileStore } from '../../../store';
 
 // const
 const DEFAULT_HEIGHT = 44;

@@ -1,27 +1,21 @@
 @import "../../../styles/rem";
 @import "../../../styles/mixins";
 
-.devicesWrapper {
-  .selectDeviceInput {
-    background: #FBFBFC;
-    max-width: rem(316px);
-    max-height: rem(50px);
+.selectDeviceInput {
+  background: #FBFBFC;
+  max-width: rem(316px);
+  max-height: rem(50px);
+}
 
-    &:first-child {
-      margin: rem(0 0 16px 0);
-    }
-  }
+.activeItem {
+  width: rem(255px);
+}
 
-  .activeItem {
-    width: rem(255px);
-  }
+.activeValue {
+  max-width: 100%;
+  @extend %text-ellips;
+}
 
-  .activeValue {
-    max-width: 100%;
-    @extend %text-ellips;
-  }
-
-  .activeIcon {
-    margin: rem(0 12px 0 0);
-  }
+.activeIcon {
+  margin: rem(0 12px 0 0);
 }

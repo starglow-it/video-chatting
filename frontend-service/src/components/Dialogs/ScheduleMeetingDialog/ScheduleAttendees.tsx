@@ -11,7 +11,7 @@ import { CustomTypography } from "@library/custom/CustomTypography/CustomTypogra
 
 // icons
 import {PlusAddIcon} from "@library/icons/PlusAddIcon";
-import {RoundCloseIcon} from "@library/icons/RoundCloseIcon";
+import {RoundCloseIcon} from "@library/icons/RoundIcons/RoundCloseIcon";
 
 // types
 import {PropsWithClassName} from "../../../types";

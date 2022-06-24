@@ -28,6 +28,7 @@ services:
     build: ../../frontend-service
     depends_on:
       - gateway-service
+    restart: always
     ports:
       - '8000:8000'
     labels:
@@ -45,6 +46,7 @@ services:
       - TURN_USERNAME
       - TURN_PORT
       - STORAGE_HOSTNAME
+      - STRIPE_PUBLIC_API_KEY
     networks:
       - traefikpublic
       - liveoffice_dev
@@ -53,6 +55,7 @@ services:
     build:
       context: ../../
       dockerfile: ./gateway-service/Dockerfile
+    restart: always
     depends_on:
       - core-service
       - auth-service
@@ -72,6 +75,7 @@ services:
     build:
       context: ../../
       dockerfile: ./socket-service/Dockerfile
+    restart: always
     ports:
       - '8082:8080'
     labels:
@@ -87,6 +91,7 @@ services:
     build:
       context: ../../
       dockerfile: ./core-service/Dockerfile
+    restart: always
     depends_on:
       - config-service
     networks:
@@ -96,6 +101,7 @@ services:
     build:
       context: ../../
       dockerfile: ./auth-service/Dockerfile
+    restart: always
     depends_on:
       - config-service
     networks:
@@ -105,6 +111,17 @@ services:
     build:
       context: ../../
       dockerfile: ./notifications-service/Dockerfile
+    restart: always
+    depends_on:
+      - config-service
+    networks:
+      - liveoffice_dev
+
+  payment-service:
+    build:
+      context: ../../
+      dockerfile: ./payment-service/Dockerfile
+    restart: always
     depends_on:
       - config-service
     networks:
@@ -114,12 +131,14 @@ services:
     build:
       context: ../../
       dockerfile: ./config-service/Dockerfile
+    restart: always
     ports:
       - "4100:4000"
     environment:
       - GATEWAY_PORT=3000
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
+      - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
       - RABBIT_MQ_NOTIFICATIONS_QUEUE=rabbitMqNotificationsQueue
       - FRONTEND_URL=https://dev-liveoffice.staging.forasoft.com
       - RABBIT_MQ_USER
@@ -138,6 +157,8 @@ services:
       - STORAGE_HOSTNAME
       - SECRET_ACCESS_KEY
       - ACCESS_KEY
+      - STRIPE_API_KEY
+      - STRIPE_WEBHOOK_SECRET
     depends_on:
       - mongo
       - rabbit

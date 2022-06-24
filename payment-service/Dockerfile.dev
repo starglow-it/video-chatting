@@ -1,0 +1,15 @@
+FROM node:16.14.0-alpine
+
+WORKDIR /app/
+
+COPY ./shared ./shared
+
+RUN mkdir ./payment-service
+
+COPY ./payment-service/package*.json ./payment-service/
+
+RUN cd ./payment-service && npm i --legacy-peer-deps
+
+COPY ./payment-service ./payment-service/
+
+CMD ["npm", "run", "--prefix", "/app/payment-service", "start:dev"]

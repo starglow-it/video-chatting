@@ -25,7 +25,7 @@ import { simpleStringSchemaWithLength } from '../../validation/common';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
-import { sendMeetingNoteSocketEvent } from '../../store/meeting/meetingNotes';
+import { sendMeetingNoteSocketEvent } from '../../store';
 
 import styles from './LeaveNoteForm.module.scss';
 

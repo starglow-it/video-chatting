@@ -7,7 +7,11 @@
   },
   "monetization": {
     "title": "Monetization",
-    "description": "Set donation amount for payment by other participants"
+    "description": "Set donation amount for payment by other participants",
+    "connectWith": "Connect with",
+    "stripe": "Stripe",
+    "goToDashboard": "Go to stripe Dashboard",
+    "disconnect": "Disconnect"
   },
   "editProfile": {
     "password": "Enter password to continue",

@@ -9,7 +9,7 @@ import {
     setScheduleEventLinkEvent,
     setScheduleTemplateIdEvent,
 } from './model';
-import { handleFetchUsersTemplates } from '../handlers';
+import { handleFetchUsersTemplates } from '../handlers/handleFetchUsersTemplates';
 import { handleSendScheduleInvite } from '../handlers/handleSendScheduleInvite';
 
 getUsersTemplatesFx.use(handleFetchUsersTemplates);

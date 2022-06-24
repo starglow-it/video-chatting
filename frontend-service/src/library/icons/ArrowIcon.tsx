@@ -4,16 +4,10 @@ import { SvgIconWrapper } from './SvgIconWrapper';
 
 import { CommonIconProps } from '@library/types';
 
-const ArrowIcon = memo(({ className, ...rest }: CommonIconProps) => {
+const ArrowIcon = memo(({ className, height, width, ...rest }: CommonIconProps) => {
     return (
-        <SvgIconWrapper className={className} viewBox="0 0 24 24" fill="none" {...rest}>
-            <circle cx="12" cy="12" r="12" fill="#BDC8D3" fillOpacity="0.25" />
-            <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12.0053 13.5035L15.7522 9.75653C16.166 9.34272 16.8369 9.34272 17.2507 9.75653V9.75653C17.6645 10.1703 17.6645 10.8413 17.2507 11.2551L12.0058 16.5L6.74938 11.2445C6.33552 10.8308 6.33549 10.1598 6.74931 9.74599V9.74599C7.1631 9.33219 7.83399 9.33219 8.24779 9.74599L12.0053 13.5035Z"
-                fill="#0F0F10"
-            />
+        <SvgIconWrapper width={width} height={height} className={className} viewBox="0 0 28 28" fill="none" {...rest}>
+            <path fillRule="evenodd" clipRule="evenodd" d="M15.444 13.582L11.0726 9.21064C10.5898 8.72786 10.5898 7.94512 11.0726 7.46234C11.5553 6.97955 12.3381 6.97955 12.8209 7.46234L18.9399 13.5814L12.8086 19.7139C12.3258 20.1967 11.543 20.1968 11.0603 19.714C10.5775 19.2312 10.5775 18.4485 11.0603 17.9658L15.444 13.582Z" fill="currentColor"/>
         </SvgIconWrapper>
     );
 });

@@ -11,9 +11,9 @@ import {
     resetMeetingNotesEvent,
 } from './model';
 
-import { $meetingStore } from '../meeting';
+import { $meetingStore } from '../meeting/model';
 
-import { $localUserStore } from '../../users';
+import { $localUserStore } from '../../users/localUser/model';
 
 sendMeetingNoteResultFx.use(async data => sendMeetingNoteSocketEvent(data));
 

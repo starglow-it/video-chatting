@@ -20,9 +20,9 @@ import styles from './ProfileNotifications.module.scss';
 // stores
 import {
     $dashboardNotificationsStore,
+    $isSocketConnected,
     emitGetDashboardNotifications,
-} from '../../../store/dashboardNotifications';
-import { $isSocketConnected } from '../../../store/socket';
+} from '../../../store';
 
 // types
 import { DashboardNotificationReadStatus } from '../../../store/types/dashboard';

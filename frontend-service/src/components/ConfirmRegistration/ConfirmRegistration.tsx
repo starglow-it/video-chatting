@@ -10,7 +10,7 @@ import {
     $registerStore,
     confirmRegistrationUserFx,
     resetRegisterErrorEvent,
-} from '../../store/register';
+} from '../../store';
 
 import styles from './ConfirmRegistration.module.scss';
 

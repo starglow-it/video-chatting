@@ -1,33 +1,60 @@
-import React, {memo, useEffect} from 'react';
+import React, {memo, useCallback, useEffect, useRef} from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
 import Image from 'next/image';
+import {Fade} from "@mui/material";
 
 // hooks
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
+// icons
+import {EditIcon} from "@library/icons/EditIcon";
+import {InfoIcon} from "@library/icons/InfoIcon";
+
 // custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import {useCountDown} from "../../../hooks/useCountDown";
+import {CustomPopper} from "@library/custom/CustomPopper/CustomPopper";
 
 // styles
+import {RoundErrorIcon} from "@library/icons/RoundIcons/RoundErrorIcon";
 import styles from './MeetingGeneralInfo.module.scss';
 
 // store
-import {$isOwner, $meetingStore, $meetingTemplateStore} from '../../../store/meeting';
+import {$isOwner, $meetingStore, $meetingTemplateStore} from '../../../store';
+import {
+    toggleEditTemplateOpen, toggleMeetingInfoOpen
+} from "../../../store";
 
+// helpers
 import {formatCountDown} from "../../../utils/time/formatCountdown";
+
+// const
 import {ONE_MINUTE} from "../../../const/time/common";
+import {useCountDown} from "../../../hooks/useCountDown";
+import {useToggle} from "../../../hooks/useToggle";
 
 const MeetingGeneralInfo = memo(() => {
     const isOwner = useStore($isOwner);
     const meeting = useStore($meetingStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+
+    const wrapperRef = useRef(null);
+
+    const {
+        value: isMeetingActionNoteOpened,
+        onSwitchOn: handleOpenMeetingActionNote,
+        onSwitchOff: handleCloseMeetingActionNote,
+    } = useToggle(false);
+
+    const {
+        value: isMeetingActionOpened,
+        onToggleSwitch: handleToggleAvatarAction,
+    } = useToggle(false);
 
     const { control } = useFormContext();
 
@@ -58,9 +85,25 @@ const MeetingGeneralInfo = memo(() => {
         onStartCountDown();
     }, []);
 
+    useEffect(() => {
+        setTimeout(() => {
+            handleOpenMeetingActionNote();
+        }, 2000);
+    }, []);
+
+    const handleMeetingAction = useCallback(
+        () => {
+            if (isOwner) {
+                toggleEditTemplateOpen();
+            } else {
+                toggleMeetingInfoOpen();
+            }
+    }, []);
+
     return (
         <CustomGrid
             container
+            ref={wrapperRef}
             className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
         >
             {isThereSignBoard
@@ -77,13 +120,24 @@ const MeetingGeneralInfo = memo(() => {
                 justifyContent={isThereSignBoard ? 'center' : 'flex-start'}
                 alignItems="center"
             >
-                <ProfileAvatar
+                <CustomBox
+                    onMouseEnter={handleToggleAvatarAction}
+                    onMouseLeave={handleToggleAvatarAction}
                     className={styles.profileAvatar}
-                    src={meetingTemplate?.user?.profileAvatar?.url}
-                    width={isThereSignBoard ? '60px' : '40px'}
-                    height={isThereSignBoard ? '60px' : '40px'}
-                    userName={isOwner ? fullName : meetingTemplate.fullName}
-                />
+                >
+                    <ProfileAvatar
+                        src={meetingTemplate?.user?.profileAvatar?.url}
+                        width="60px"
+                        height="60px"
+                        userName={isOwner ? fullName : meetingTemplate.fullName}
+                    />
+                    <Fade in={isMeetingActionOpened}>
+                        <CustomGrid onClick={handleMeetingAction} className={styles.meetingActionWrapper} container justifyContent="center" alignItems="center">
+                            {isOwner ? <EditIcon width="36px" height="36px" /> : <InfoIcon width="36px" height="36px" /> }
+                        </CustomGrid>
+                    </Fade>
+                </CustomBox>
+
                 <CustomGrid container direction="column" alignItems={isThereSignBoard ? "center" : "flex-start"} className={styles.companyName}>
                     <CustomTypography
                         color="colors.white.primary"
@@ -111,6 +165,17 @@ const MeetingGeneralInfo = memo(() => {
                     </CustomBox>
                 </CustomGrid>
             </CustomGrid>
+            <CustomPopper
+                id="meetingActionNote"
+                open={isMeetingActionNoteOpened}
+                placement={isThereSignBoard ? "bottom" : "bottom-start"}
+                anchorEl={wrapperRef.current}
+            >
+                <CustomGrid container alignItems="center" gap={1} className={clsx(styles.meetingActionNote, {[styles.withBoard]: isThereSignBoard })}>
+                    <CustomTypography nameSpace="meeting" variant="body2" color="colors.white.primary" translation={`meetingActions.${isOwner ? "editTemplate" : "meetingInfo"}`} />
+                    <RoundErrorIcon className={styles.closeIcon} width="16px" height="16px" onClick={handleCloseMeetingActionNote} />
+                </CustomGrid>
+            </CustomPopper>
         </CustomGrid>
     );
 });

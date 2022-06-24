@@ -19,8 +19,8 @@ import { CameraIcon } from '@library/icons/CameraIcon';
 import { MediaContext } from '../../../contexts/MediaContext';
 
 // stores
-import { $profileStore } from '../../../store/profile';
-import { $localUserStore } from '../../../store/users';
+import { $profileStore } from '../../../store';
+import { $localUserStore } from '../../../store';
 
 // types
 import { MediaPreviewProps } from './types';

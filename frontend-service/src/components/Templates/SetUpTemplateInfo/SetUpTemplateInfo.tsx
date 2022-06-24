@@ -16,6 +16,7 @@ import { SetUpFullName } from './SetUpFullName';
 import { SetUpProfileAvatar } from './SetUpProfileAvatar';
 import { SetUpProfileSign } from './SetUpProfileSign';
 import { SetUpTemplateProgress } from './SetUpTemplateProgress';
+import { SetUpPayments } from './SetUpPayments';
 
 // styles
 import styles from './SetUpTemplateInfo.module.scss';
@@ -32,6 +33,7 @@ const STEPS = {
     [TemplateSetUpSteps.fullName]: SetUpFullName,
     [TemplateSetUpSteps.profileAvatar]: SetUpProfileAvatar,
     [TemplateSetUpSteps.profileSign]: SetUpProfileSign,
+    [TemplateSetUpSteps.profileSign]: SetUpPayments,
 };
 
 const SetUpTemplateInfo = memo(() => {

@@ -18,15 +18,12 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 import {TemplateAvatarWithInfo} from "@components/Templates/TemplateAvatarWithInfo/TemplateAvatarWithInfo";
 
 // stores
-import { createMeetingFx } from '../../../store/meetings';
-import { appDialogsApi } from '../../../store/dialogs';
+import {appDialogsApi, createMeetingFx, setDeleteTemplateIdEvent, setScheduleTemplateIdEvent} from "../../../store";
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';
 
 // stores
-import { setScheduleTemplateIdEvent } from "../../../store/templates";
-import { setDeleteTemplateIdEvent } from '../../../store/profile';
 
 // types
 import { ProfileTemplateProps } from './types';

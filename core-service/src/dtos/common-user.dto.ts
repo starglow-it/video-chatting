@@ -19,31 +19,31 @@ export class CommonUserDTO implements ICommonUserDTO {
   id: string;
 
   @Expose()
-  email: string;
-
-  @Expose()
   createdAt: Date;
 
   @Expose()
   updatedAt: Date;
 
   @Expose()
-  isConfirmed: boolean;
+  email: ICommonUserDTO['email'];
 
   @Expose()
-  fullName: string;
+  isConfirmed: ICommonUserDTO['isConfirmed'];
 
   @Expose()
-  position: string;
+  fullName: ICommonUserDTO['fullName'];
 
   @Expose()
-  companyName: string;
+  position: ICommonUserDTO['position'];
 
   @Expose()
-  contactEmail: string;
+  companyName: ICommonUserDTO['companyName'];
 
   @Expose()
-  description: string;
+  contactEmail: ICommonUserDTO['contactEmail'];
+
+  @Expose()
+  description: ICommonUserDTO['description'];
 
   @Expose()
   @Type(() => CommonBusinessCategoryDTO)
@@ -68,8 +68,14 @@ export class CommonUserDTO implements ICommonUserDTO {
   @Expose()
   signBoard: ICommonUserDTO['signBoard'];
 
+  @Expose()
+  stripeAccountId: ICommonUserDTO['stripeAccountId'];
+
+  @Expose()
+  stripeEmail: ICommonUserDTO['stripeEmail'];
+
   tokens: string[];
-  password: string;
+  password: ICommonUserDTO['password'];
 
   @Expose()
   isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];

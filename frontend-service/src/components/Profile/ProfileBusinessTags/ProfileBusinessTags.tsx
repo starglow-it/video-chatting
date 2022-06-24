@@ -16,7 +16,7 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 // components
 import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
 import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
-import { $profileStore } from '../../../store/profile';
+import { $profileStore } from '../../../store';
 import { useToggle } from '../../../hooks/useToggle';
 
 // types

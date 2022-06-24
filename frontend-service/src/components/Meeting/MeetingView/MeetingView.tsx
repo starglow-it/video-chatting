@@ -47,15 +47,15 @@ import {
     emitUpdateMeetingTemplate,
     updateMeetingSocketEvent,
     updateMeetingTemplateFx,
-} from '../../../store/meeting';
+} from '../../../store';
 import {
     $localUserStore,
     emitUpdateUserEvent,
     setLocalUserMediaEvent,
     setMeetingUserMediaEvent,
     updateLocalUserStateEvent,
-} from '../../../store/users';
-import {appDialogsApi} from "../../../store/dialogs";
+} from '../../../store';
+import {appDialogsApi} from "../../../store";
 
 // types
 import {AppDialogsEnum, MeetingAccessStatuses} from '../../../store/types';

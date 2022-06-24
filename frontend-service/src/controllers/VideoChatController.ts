@@ -10,7 +10,7 @@ import getConfig from 'next/config';
 import { sendRequest } from '../helpers/http/sendRequest';
 import { generateAgoraTokenUrl } from '../utils/urls';
 import { AUDIO_UNMUTE, TRACKS_INFO, VIDEO_UNMUTE } from '../const/media/agora/UPDATE_INFO_TYPES';
-import { updateUserTracksEvent } from '../store/users';
+import { updateUserTracksEvent } from '../store';
 
 const { publicRuntimeConfig } = getConfig();
 

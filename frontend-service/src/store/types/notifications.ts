@@ -5,9 +5,13 @@ export enum NotificationType {
     MeetingInfoCopied = 'meeting_info_copied',
     LinkInfoCopied = 'link_copied',
     PasswordChanged = 'password_changed',
+    PaymentSuccess = 'payment_success',
+    PaymentFail = 'password_fail',
 }
 
 export type Notification = {
-    type: NotificationType;
+    type: NotificationType,
     message: string;
-};
+    withSuccessIcon?: boolean;
+    withErrorIcon?: boolean
+}

@@ -1,11 +1,8 @@
-import { attach } from 'effector-next';
-
-import { profileDomain } from '../domain';
-import { $profileStore } from '../profile';
-
-import { Profile, Template, UpdateTemplateData } from '../../types';
-
-import { initialProfileTemplateState } from './const';
+import {attach} from "effector-next";
+import {initialProfileTemplateState} from "./const";
+import {profileDomain} from "../domain/model";
+import {Profile, Template, UpdateTemplateData} from "../../types";
+import {$profileStore} from "../profile/model";
 
 export const $profileTemplateStore = profileDomain.store<Template>(initialProfileTemplateState);
 
@@ -27,14 +24,4 @@ export const getProfileTemplateFx = attach({
     effect: getProfileTemplateBaseEffect,
     source: $profileStore,
     mapParams: ({ templateId }, profile: Profile) => ({ templateId, userId: profile.id }),
-});
-
-export const updateProfileTemplateFx = attach({
-    effect: updateProfileTemplateBaseEffect,
-    source: $profileStore,
-    mapParams: ({ templateId, data }, profile: Profile) => ({
-        templateId,
-        userId: profile.id,
-        data,
-    }),
 });

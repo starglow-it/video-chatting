@@ -54,7 +54,8 @@
 
 .commonOpenPanel {
   position: absolute;
-  width: rem(378px);
+  max-width: rem(392px);
+  min-width: rem(372px);
   padding: rem(20px);
   opacity: 0;
   transform: translate(-50%, 0);

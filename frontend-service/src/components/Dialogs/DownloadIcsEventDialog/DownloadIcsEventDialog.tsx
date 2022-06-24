@@ -14,8 +14,8 @@ import { DownloadIcon } from '@library/icons/DownloadIcon';
 import {
     $scheduleEventLinkStore,
     setScheduleEventLinkEvent,
-} from '../../../store/templates';
-import {$appDialogsStore, appDialogsApi} from "../../../store/dialogs";
+} from '../../../store';
+import {$appDialogsStore, appDialogsApi} from "../../../store";
 
 // styles
 import styles from './DownloadIcsEventDialog.module.scss';

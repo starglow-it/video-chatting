@@ -1,6 +1,6 @@
 import { root } from '../root';
 import { DashboardNotification } from '../types/dashboard';
-import { createSocketEvent } from '../socket';
+import { createSocketEvent } from '../socket/model';
 
 const dashboardNotificationsDomain = root.createDomain('dashboardNotificationsDomain');
 

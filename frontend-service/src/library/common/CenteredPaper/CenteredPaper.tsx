@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
+import { RoundCloseIcon } from '@library/icons//RoundIcons/RoundCloseIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 import styles from './CenteredPaper.module.scss';

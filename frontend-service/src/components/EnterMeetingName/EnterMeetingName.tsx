@@ -15,10 +15,10 @@ import { fullNameSchema } from '../../validation/users/fullName';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
-import { updateLocalUserStateEvent } from '../../store/users';
-import { $authStore } from '../../store/auth';
-import { $isOwner, $meetingTemplateStore } from '../../store/meeting';
-import { $profileStore } from '../../store/profile';
+import { updateLocalUserStateEvent } from '../../store';
+import { $authStore } from '../../store';
+import { $isOwner, $meetingTemplateStore } from '../../store';
+import { $profileStore } from '../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
@@ -48,6 +48,8 @@ const EnterMeetingName = memo(() => {
             fullName: isOwner ? meetingTemplate.fullName : profile.fullName,
         },
     });
+
+    const fullNameRegister = register('fullName');
 
     const onSubmit = useCallback(
         handleSubmit(data => {
@@ -97,7 +99,11 @@ const EnterMeetingName = memo(() => {
                         <CustomInput
                             nameSpace="forms"
                             translation="yourName"
-                            {...register('fullName')}
+                            value={fullNameRegister.value}
+                            onChange={fullNameRegister.onChange}
+                            onBlur={fullNameRegister.onChange}
+                            ref={fullNameRegister.ref}
+                            name={fullNameRegister.name}
                         />
                         <CustomButton
                             className={styles.button}

@@ -9,8 +9,8 @@ import { ScreenSharingVideo } from '@components/Meeting/ScreenSharingVideo/Scree
 import { ScreenSharingPlaceholder } from '@components/Meeting/ScreenSharingPlaceholder/ScreenSharingPlaceholder';
 
 // stores
-import { $meetingStore } from '../../../store/meeting';
-import { $localUserStore, $meetingUsersStore } from '../../../store/users';
+import { $meetingStore } from '../../../store';
+import { $localUserStore, $meetingUsersStore } from '../../../store';
 
 // types
 import { Meeting, MeetingUser } from '../../../store/types';

@@ -5,3 +5,4 @@ export const NOTIFICATIONS_SCOPE = 'notifications/';
 export const CONFIG_SCOPE = 'config/';
 export const MEETINGS_SCOPE = 'meetings/';
 export const CORE_SCOPE = 'core/';
+export const PAYMENTS_SCOPE = 'payments/';

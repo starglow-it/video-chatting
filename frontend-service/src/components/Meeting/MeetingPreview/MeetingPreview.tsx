@@ -15,8 +15,8 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
 // stores
-import { $isOwner, $meetingTemplateStore } from '../../../store/meeting';
-import { $localUserStore, $meetingUsersStore } from '../../../store/users';
+import { $isOwner, $meetingTemplateStore } from '../../../store';
+import { $localUserStore, $meetingUsersStore } from '../../../store';
 
 // styles
 import styles from './MeetingPreview.module.scss';
@@ -95,7 +95,7 @@ const MeetingPreview = memo(() => {
                 src={meetingTemplate?.user?.profileAvatar?.url || ''}
                 userName={meetingTemplate.fullName}
             />
-            <CustomGrid item container direction="column" flex="1 1 auto">
+            <CustomGrid item container direction="column" className={styles.textWrapper} flex="1 1 auto">
                 <CustomTypography
                     variant="h3bold"
                     color="colors.white.primary"
@@ -116,7 +116,7 @@ const MeetingPreview = memo(() => {
                 alignSelf="flex-start"
                 justifyContent="flex-end"
                 className={styles.inMeetingAvatars}
-                flex="1 0"
+                flex="1 0 auto"
             >
                 {renderCurrentUsers}
             </CustomGrid>

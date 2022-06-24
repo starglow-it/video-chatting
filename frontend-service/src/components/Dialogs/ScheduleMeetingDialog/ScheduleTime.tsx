@@ -47,6 +47,17 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
         name: 'endAt',
     });
 
+    useEffect(() => {
+        const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(new Date()));
+
+        const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
+
+        setValue('startAt', getTimeList(startTime, 30 * ONE_MINUTE, 0, "24:00")[0], {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
+    }, [])
+
     const handleChange = useCallback(event => {
         setValue('timeZone', event.target.value, {
             shouldValidate: true,

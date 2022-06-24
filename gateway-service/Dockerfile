@@ -8,7 +8,6 @@ RUN mkdir ./gateway-service
 
 COPY ./gateway-service/package*.json ./gateway-service/
 
-
 RUN cd ./gateway-service && npm ci --silent --legacy-peer-deps
 
 COPY ./gateway-service ./gateway-service/

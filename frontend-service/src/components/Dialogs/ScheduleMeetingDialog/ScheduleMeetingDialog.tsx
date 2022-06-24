@@ -15,7 +15,7 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import {CustomFade} from "@library/custom/CustomFade/CustomFade";
 
 // components
-import {ValueSwitcher} from "@library/common/ValuesSwitcher/ValuesSwitcher";
+import {ValuesSwitcher} from "@library/common/ValuesSwitcher/ValuesSwitcher";
 import {ScheduleTime} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleTime";
 import {ValuesSwitcherItem} from "@library/common/ValuesSwitcher/types";
 import { getTimeZone } from 'src/utils/time/getTimeZone';
@@ -28,12 +28,12 @@ import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
 import {
     $scheduleTemplateIdStore,
     sendScheduleInviteFx,
     setScheduleTemplateIdEvent,
-} from '../../../store/templates';
+} from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
@@ -215,7 +215,7 @@ const Component = () => {
                         </CustomGrid>
                         <CustomDivider orientation="vertical" flexItem />
                         <CustomGrid className={styles.rightSide} container direction="column" alignItems="center">
-                            <ValueSwitcher
+                            <ValuesSwitcher
                                 optionWidth={134}
                                 values={schedulePages}
                                 activeValue={activeSchedulePage}

@@ -1,0 +1,40 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.monetization {
+  background: $light-gray-scale;
+  border: 1px solid rgba($normal-gray-scale, 0.6);
+  border-radius: rem(10px);
+  height: rem(50px);
+
+  overflow: hidden;
+
+  transition: height 200ms linear;
+
+  .labelWrapper {
+    padding: rem(13px 10px);
+  }
+
+  &.active {
+    height: rem(100px);
+  }
+
+  .amountInput {
+    padding: rem(10px 9px);
+
+    .inputWrapper {
+      padding: rem(0 4px);
+
+      .input::-webkit-outer-spin-button,
+      .input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      .input[type=number] {
+        -moz-appearance: textfield;
+      }
+    }
+  }
+}

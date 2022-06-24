@@ -80,6 +80,15 @@ export class UserTemplateDTO implements IUserTemplate {
   signBoard: string;
 
   @Expose()
+  isMonetizationEnabled: boolean;
+
+  @Expose()
+  templatePrice: string;
+
+  @Expose()
+  templateCurrency: string;
+
+  @Expose()
   @Transform((data) => data.obj?.usersPosition)
   usersPosition: { top: number; left: number }[];
 }

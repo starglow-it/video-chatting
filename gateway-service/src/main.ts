@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import * as express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
@@ -28,6 +29,8 @@ async function bootstrap() {
   const config: IConfig = await configService.getAll();
 
   app.setGlobalPrefix(ROOT_SCOPE);
+
+  app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 
   // Swagger setup
   const options = new DocumentBuilder()

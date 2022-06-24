@@ -8,7 +8,7 @@ import {
     getDashboardNotifications,
     readDashboardNotifications,
 } from './model';
-import { $profileStore } from '../profile';
+import { $profileStore } from '../profile/profile/model';
 import { DashboardNotificationReadStatus } from '../types/dashboard';
 
 sample({

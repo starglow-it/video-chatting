@@ -254,8 +254,6 @@ export class AuthController {
       email: loginUserData.email,
     });
 
-    console.log(user);
-
     if (!user.isConfirmed || user.isResetPasswordActive) {
       throw new DataValidationException(USER_NOT_CONFIRMED);
     }

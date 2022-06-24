@@ -1,4 +1,4 @@
-import { templatesDomain } from '../domain';
+import { templatesDomain } from '../domain/model';
 import { EntityList, Template } from '../../types';
 
 const initialTemplatesStore: EntityList<Template> = {

@@ -9,7 +9,6 @@ import { Fade } from '@mui/material';
 // components
 import { SetUpDevicesButton } from '@components/Media/DeviceSetUpButtons/SetUpDevicesButton';
 import { ConfirmCancelChangesDialog } from '@components/Dialogs/ConfirmCancelChangesDialog/ConfirmCancelChangesDialog';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { EditTemplateForm } from '@components/Meeting/EditTemplateForm/EditTemplateForm';
 import { MeetingInfo } from '@components/Meeting/MeetingInfo/MeetingInfo';
 
@@ -19,11 +18,14 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // icons
-import { RoundCloseIcon } from '@library/icons/RoundCloseIcon';
-import { EditIcon } from '@library/icons/EditIcon';
-import { InfoIcon } from '@library/icons/InfoIcon';
+import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
 // styles
+import {
+    $isEditTemplateOpenStore,
+    $isMeetingInfoOpenStore,
+    setEditTemplateOpenEvent, setMeetingInfoOpenEvent,
+} from 'src/store';
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations
@@ -37,13 +39,12 @@ import { fullNameSchema } from '../../../validation/users/fullName';
 import { validateSocialLink } from '../../../validation/users/socials';
 
 // stores
-import { $isOwner } from '../../../store/meeting';
-import { appDialogsApi } from '../../../store/dialogs';
+import { $isOwner } from '../../../store';
+import { appDialogsApi } from '../../../store';
 
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
-import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 
 // types
 import { AppDialogsEnum, SocialLink } from '../../../store/types';
@@ -51,6 +52,7 @@ import {MeetingSettingsPanelProps, SettingsData} from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
+
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -66,20 +68,12 @@ const validationSchema = yup.object({
 
 const MeetingSettingsPanel = memo(
     ({ template, onTemplateUpdate, children }: MeetingSettingsPanelProps) => {
-        const router = useRouter();
+        const isEditTemplateOpened = useStore($isEditTemplateOpenStore);
+        const isMeetingInfoOpened = useStore($isMeetingInfoOpenStore);
+
         const isOwner = useStore($isOwner);
 
-        const {
-            values: { isEditTemplateOpened, isMeetingInfoOpened },
-            onSwitchOff: handleSwitchOff,
-            onSwitchOn: handleSwitchOn,
-            onSwitchToggle: handleToggleSwitch,
-        } = useMultipleToggle<'isEditTemplateOpened' | 'isMeetingInfoOpened'>([
-            'isEditTemplateOpened',
-            'isMeetingInfoOpened',
-        ]);
-
-        const isAbleToSave = isOwner;
+        const router = useRouter();
 
         const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
@@ -162,13 +156,11 @@ const MeetingSettingsPanel = memo(
             return dirtyFieldsCount + numberOfChangedFields + changedNewFields.length;
         }, [Object.keys(dirtyFields).length, nextSocials, template.socials]);
 
-        const handleOpenEditTemplate = useCallback(() => {
-            handleSwitchOn('isEditTemplateOpened');
-        }, []);
-
         const handleCloseSettingsPanel = useCallback(() => {
             if (!dirtyFieldsCount || isMeetingInfoOpened) {
-                return handleSwitchOff();
+                setEditTemplateOpenEvent(false);
+                setMeetingInfoOpenEvent(false);
+                return
             }
 
             appDialogsApi.openDialog({
@@ -177,7 +169,7 @@ const MeetingSettingsPanel = memo(
         }, [dirtyFieldsCount]);
 
         const handleConfirmClose = useCallback(() => {
-            handleSwitchOff();
+            setEditTemplateOpenEvent(false);
             reset();
             setValue('socials', templateSocialLinks, {
                 shouldDirty: true,
@@ -215,7 +207,7 @@ const MeetingSettingsPanel = memo(
                         socials,
                     });
                 }
-                handleSwitchOff();
+                setEditTemplateOpenEvent(false);
             }),
             [dirtyFieldsCount, template.id],
         );
@@ -229,10 +221,6 @@ const MeetingSettingsPanel = memo(
                 router.push('/dashboard');
             }
         }, [dirtyFieldsCount]);
-
-        const handleOpenMeetingInfo = useCallback(() => {
-            handleToggleSwitch('isMeetingInfoOpened');
-        }, []);
 
         return (
             <CustomBox className={styles.wrapper}>
@@ -254,39 +242,20 @@ const MeetingSettingsPanel = memo(
                             <SetUpDevicesButton
                                 onAction={handleOpenDeviceSettings}
                             />
-                            {!isOwner
-                                ? (
-                                    <CustomPaper variant="black-glass" className={styles.infoButton}>
-                                        <ActionButton
-                                            className={styles.iconButton}
-                                            onAction={handleOpenMeetingInfo}
-                                            Icon={<InfoIcon width="32px" height="32px"/>}
-                                        />
-                                    </CustomPaper>
-                                )
-                                : null
-                            }
-                            {!isEditTemplateOpened && isAbleToSave
-                                ? (
-                                    <CustomPaper variant="black-glass" className={styles.deviceButton}>
-                                        <ActionButton
-                                            className={styles.iconButton}
-                                            onAction={handleOpenEditTemplate}
-                                            Icon={<EditIcon width="30px" height="30px" />}
-                                        />
-                                    </CustomPaper>
-                                )
-                                : null
-                            }
                         </CustomGrid>
 
-                        <Fade in={isEditTemplateOpened}>
-                            <CustomBox className={styles.fadeContentWrapper}>
-                                <form onSubmit={onSubmit} className={styles.form}>
-                                    <EditTemplateForm onCancel={handleCancelEditTemplate} />
-                                </form>
-                            </CustomBox>
-                        </Fade>
+                        {isOwner
+                            ? (
+                                <Fade in={isEditTemplateOpened}>
+                                    <CustomBox className={styles.fadeContentWrapper}>
+                                        <form onSubmit={onSubmit} className={styles.form}>
+                                            <EditTemplateForm onCancel={handleCancelEditTemplate}/>
+                                        </form>
+                                    </CustomBox>
+                                </Fade>
+                            )
+                            : null
+                        }
 
                         <Fade in={isMeetingInfoOpened}>
                             <CustomBox className={styles.fadeContentWrapper}>

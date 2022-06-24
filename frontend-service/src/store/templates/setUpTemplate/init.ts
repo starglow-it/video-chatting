@@ -1,5 +1,5 @@
 import { $setUpTemplateStore, getTemplateFx } from './model';
-import { handleFetchCommonTemplate } from '../handlers';
+import { handleFetchCommonTemplate } from '../handlers/handleFetchCommonTemplate';
 
 getTemplateFx.use(handleFetchCommonTemplate);
 

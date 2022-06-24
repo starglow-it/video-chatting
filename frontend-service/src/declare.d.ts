@@ -48,6 +48,12 @@ declare module '@mui/material/Button' {
     }
 }
 
+declare module '@mui/material/Slider' {
+    interface SliderPropsColorOverrides {
+        'disabled': true;
+    }
+}
+
 declare module '@mui/material/styles' {
     interface TypographyVariants {
         body3: React.CSSProperties;

@@ -1,4 +1,3 @@
-import { attach } from 'effector-next';
 import { io } from 'socket.io-client';
 import {
     $socketStore,
@@ -43,13 +42,6 @@ initiateSocketConnectionFx.use(async () => {
         socketInstance,
     };
 });
-
-export const createSocketEvent = (eventName: string) =>
-    attach({
-        effect: socketEventRequest,
-        source: $socketStore,
-        mapParams: (data, socketStore) => ({ eventName, data, socketStore }),
-    });
 
 $socketStore
     .on(initiateSocketConnectionFx.doneData, (state, data) => ({

@@ -38,4 +38,13 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
 
   @Expose()
   profileAvatar: ICommonMeetingUserDTO['profileAvatar'];
+
+  @Expose()
+  @Transform((data) => {
+    return {
+      top: data.obj?.userPosition?.top,
+      left: data.obj?.userPosition?.left,
+    };
+  })
+  userPosition: ICommonMeetingUserDTO['userPosition'];
 }

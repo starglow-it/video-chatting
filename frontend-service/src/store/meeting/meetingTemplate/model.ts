@@ -1,11 +1,12 @@
-import { combine } from 'effector-next';
+import {attach, combine } from 'effector-next';
+
 
 import { meetingDomain } from '../domain';
 
 import { ErrorState, MeetingUser, Profile, UpdateTemplateData, UserTemplate } from '../../types';
 
-import { $profileStore } from '../../profile';
-import { $meetingUsersStore } from '../../users';
+import { $profileStore } from '../../profile/profile/model';
+import { $meetingUsersStore } from '../../users/meetingUsers/model';
 
 export const initialTemplateState: UserTemplate = {
     id: '',
@@ -24,7 +25,10 @@ export const initialTemplateState: UserTemplate = {
     languages: [],
     socials: [],
     usedAt: '',
+    templatePrice: '0',
+    templateCurrency: "USD",
     signBoard: 'default',
+    isMonetizationEnabled: false,
     usersPosition: [],
 };
 
@@ -37,7 +41,7 @@ export const $isMeetingInstanceExists = $meetingTemplateStore.map(
 export const $isOwner = combine<{ meetingTemplate: UserTemplate; profile: Profile }>({
     meetingTemplate: $meetingTemplateStore,
     profile: $profileStore,
-}).map(({ meetingTemplate, profile }) => meetingTemplate.meetingInstance?.owner === profile.id);
+}).map(({ meetingTemplate, profile }) => profile.id && meetingTemplate.meetingInstance?.owner === profile.id);
 
 export const $isOwnerInMeeting = combine<{ template: UserTemplate; users: MeetingUser[] }>({
     users: $meetingUsersStore,
@@ -59,3 +63,13 @@ export const updateMeetingTemplateFx = meetingDomain.effect<
     UserTemplate,
     ErrorState
 >('updateMeetingTemplateFx');
+
+export const updateMeetingTemplateFxWithData = attach({
+    mapParams: (params, states) => ({
+        templateId: states.meetingTemplate.id,
+        userId: states.profile.id,
+        data: params
+    }),
+    effect: updateMeetingTemplateFx,
+    source: combine({ meetingTemplate: $meetingTemplateStore, profile: $profileStore })
+});

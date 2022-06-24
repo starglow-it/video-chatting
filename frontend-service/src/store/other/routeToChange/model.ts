@@ -1,4 +1,4 @@
-import { otherStoresDomain } from '../domain';
+import { otherStoresDomain } from '../domain/model';
 
 export const $routeToChangeStore = otherStoresDomain.store<string>('');
 

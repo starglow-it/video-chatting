@@ -272,8 +272,8 @@ export const componentsTheme = (theme: Theme) =>
                         borderRadius: '4px',
                         padding: '2px 7px',
                         height: '22px',
-                        fontSize: theme.typography.pxToRem(12),
-                        lineHeight: theme.typography.pxToRem(18),
+                        fontSize: theme?.typography?.pxToRem?.(12),
+                        lineHeight: theme?.typography?.pxToRem?.(18),
                     },
                 },
             },
@@ -305,5 +305,15 @@ export const componentsTheme = (theme: Theme) =>
                     },
                 },
             },
+            MuiDivider: {
+                variants: [
+                    {
+                        props: { light: true },
+                        style: {
+                            backgroundColor: alpha(theme.designSystemColors.grayscale.normal, 0.4)
+                        }
+                    }
+                ]
+            }
         },
     });

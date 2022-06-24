@@ -9,7 +9,7 @@ import {
     updateProfilePasswordFx,
     sendResetPasswordLinkFx,
     checkResetPasswordLinkFx,
-    resetPasswordFx,
+    resetPasswordFx, deleteStripeDataEvent,
 } from './model';
 
 import { handleUpdateProfileInfo } from '../handlers/handleUpdateProfileInfo';
@@ -34,11 +34,13 @@ resetPasswordFx.use(handleResetPassword);
 
 $profileStore.reset(clearProfileEvent);
 
-$profileStore.on(setProfileEvent, (state, { user }) => {
-    if (user) return { ...initialProfileState, ...state, ...user };
+$profileStore
+    .on(setProfileEvent, (state, { user }) => {
+        if (user) return { ...initialProfileState, ...state, ...user };
 
-    return state;
-});
+        return state;
+    })
+    .on(deleteStripeDataEvent, (state) => ({ ...state, stripeEmail: "", stripeAccountId: "" }));
 
 $profileStore.on(
     [

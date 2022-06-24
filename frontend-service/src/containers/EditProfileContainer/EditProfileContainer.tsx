@@ -19,9 +19,9 @@ import { SubmitProfileInfo } from '@components/Profile/SubmitProfileInfo/SubmitP
 import { ConfirmChangeRouteDialog } from '@components/Dialogs/ConfirmChangeRouteDialog/ConfirmChangeRouteDialog';
 
 // stores
-import { $profileStore, updateProfileFx } from '../../store/profile';
-import { $routeToChangeStore } from '../../store/other';
-import { appDialogsApi } from '../../store/dialogs';
+import { $profileStore, updateProfileFx } from '../../store';
+import { $routeToChangeStore } from '../../store';
+import { appDialogsApi } from '../../store';
 
 // validations
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';

@@ -14,11 +14,22 @@ const Component = ({
     type,
     variant = 'custom-primary',
     typographyProps,
+    children,
     ...rest
 }: ComponentType) => (
     <Button disabled={disabled} variant={variant} type={type} {...rest}>
         {Icon}
-        <CustomTypography nameSpace={nameSpace} translation={translation} {...typographyProps} />
+        {nameSpace && translation
+            ? (
+                <CustomTypography
+                    nameSpace={nameSpace}
+                    translation={translation}
+                    {...typographyProps}
+                />
+            )
+            : (
+                children
+            )}
     </Button>
 );
 

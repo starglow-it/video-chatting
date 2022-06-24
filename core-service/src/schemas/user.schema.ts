@@ -102,6 +102,16 @@ export class User {
   signBoard: ICommonUserDTO['signBoard'];
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  stripeAccountId: ICommonUserDTO['stripeAccountId'];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  stripeEmail: ICommonUserDTO['stripeEmail'];
+
+  @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })

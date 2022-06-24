@@ -124,8 +124,29 @@ export class UserTemplate {
   signBoard: ICommonUserDTO['signBoard'];
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+    default: 'USD',
+  })
+  templateCurrency: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: '',
+  })
+  templatePrice: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isMonetizationEnabled: boolean;
+
+  @Prop({
     type: [
-      { top: mongoose.Schema.Types.Number, left: mongoose.Schema.Types.Number },
+      {
+        top: mongoose.Schema.Types.Number,
+        left: mongoose.Schema.Types.Number,
+      },
     ],
     required: true,
   })

@@ -7,6 +7,9 @@ export interface IUpdateTemplate {
     signBoard: string;
     businessCategories?: string[];
     languages?: string[];
+    isMonetizationEnabled?: boolean;
+    templatePrice?: string;
+    templateCurrency?: string;
     socials: {
         youtube?: string;
         facebook?: string;

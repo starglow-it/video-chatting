@@ -12,8 +12,8 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
 // stores
-import { appDialogsApi } from '../../../store/dialogs';
-import { setPreviewTemplate } from '../../../store/templates';
+import { appDialogsApi } from '../../../store';
+import { setPreviewTemplate } from '../../../store';
 
 // styles
 import styles from './DiscoverTemplateItem.module.scss';

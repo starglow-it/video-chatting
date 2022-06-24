@@ -21,7 +21,12 @@ import {useToggle} from "../../../hooks/useToggle";
 import styles from './BackgroundAudioControl.module.scss';
 
 // stores
-import {$backgroundAudioVolume, $isBackgroundAudioActive, setBackgroundAudioVolume} from "../../../store/other";
+import {
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
+    setBackgroundAudioVolume,
+    toggleBackgroundAudioActive
+} from "../../../store";
 
 const Component = () => {
     const volume = useStore($backgroundAudioVolume);
@@ -36,19 +41,24 @@ const Component = () => {
 
     const handleMouseEnter = useCallback(() => {
         if (isBackgroundAudioActive) {
-            handleToggleAudioControl()
+            handleToggleAudioControl();
         }
     }, [isBackgroundAudioActive]);
 
     const handleMouseLeave = useCallback(() => {
         if (isBackgroundAudioActive) {
-            handleToggleAudioControl()
+            handleToggleAudioControl();
         }
     }, [isBackgroundAudioActive]);
 
     const handleChangeVolume = useCallback((event) => {
         setBackgroundAudioVolume(event.target.value);
     },[]);
+
+    const handleToggleBackgroundAudio = useCallback(() => {
+        toggleBackgroundAudioActive();
+        handleToggleAudioControl();
+    }, []);
 
     return (
         <CustomTooltip
@@ -58,10 +68,11 @@ const Component = () => {
         >
             <CustomPaper variant="black-glass" className={styles.deviceButton} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                 <ActionButton
+                    onAction={handleToggleBackgroundAudio}
                     variant="transparentBlack"
                     ref={buttonRef}
                     className={clsx(styles.iconButton, {[styles.disabled]: !isBackgroundAudioActive })}
-                    Icon={<SpeakerIcon isActive width="32px" height="32px" />}
+                    Icon={<SpeakerIcon isActive={isBackgroundAudioActive} width="32px" height="32px" />}
                 />
                 <CustomPopper
                     id="audioControl"

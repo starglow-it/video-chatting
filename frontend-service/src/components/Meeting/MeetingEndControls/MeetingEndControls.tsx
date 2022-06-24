@@ -5,7 +5,7 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { HangUpIcon } from '@library/icons/HangUpIcon';
 
 // stores
-import { appDialogsApi } from '../../../store/dialogs';
+import { appDialogsApi } from '../../../store';
 import { AppDialogsEnum } from '../../../store/types';
 
 import styles from './MeetingEndControls.module.scss';

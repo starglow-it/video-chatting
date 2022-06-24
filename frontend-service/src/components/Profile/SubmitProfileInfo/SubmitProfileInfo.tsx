@@ -19,9 +19,9 @@ import { padArray } from '../../../utils/arrays/padArray';
 import styles from './SubmitProfileInfo.module.scss';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
-import { setRouteToChangeEvent } from '../../../store/other';
-import { $profileStore } from '../../../store/profile';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
+import { setRouteToChangeEvent } from '../../../store';
+import { $profileStore } from '../../../store';
 
 // types
 import { AppDialogsEnum, SocialLink } from '../../../store/types';

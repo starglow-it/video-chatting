@@ -4,6 +4,7 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
     'rabbitMqCoreQueue',
     'rabbitMqAuthQueue',
     'rabbitMqNotificationsQueue',
+    'rabbitMqPaymentQueue',
     'rabbitMqInstanceMangerQueue',
     'rabbitMqUser',
     'rabbitMqPass',
@@ -22,5 +23,7 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
     'uploadBucket',
     'storageHostname',
     'accessKey',
-    'secretAccessKey'
+    'secretAccessKey',
+    'stripeApiKey',
+    'stripeWebhookSecret',
 ];

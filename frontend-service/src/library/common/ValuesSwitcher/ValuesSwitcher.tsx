@@ -48,4 +48,4 @@ const Component = ({ optionWidth, values, activeValue, onValueChanged }: ValueSw
     );
 }
 
-export const ValueSwitcher = memo(Component);
+export const ValuesSwitcher = memo<ValueSwitcherProps>(Component);

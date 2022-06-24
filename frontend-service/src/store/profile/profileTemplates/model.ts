@@ -1,8 +1,8 @@
 import { attach } from 'effector-next';
 
-import { profileDomain } from '../domain';
+import { profileDomain } from '../domain/model';
 
-import { $profileStore } from '../profile';
+import { $profileStore } from '../profile/model';
 
 import { EntityList, Profile, Template, UserTemplate } from '../../types';
 

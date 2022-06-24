@@ -339,8 +339,8 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.50,
-                left: 0.60
+                top: 0.38,
+                left: 0.65
             },
             {
                 top: 0.56,

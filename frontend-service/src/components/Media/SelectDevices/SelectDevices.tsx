@@ -1,23 +1,26 @@
 import React, { memo, useCallback, useContext, useMemo } from 'react';
-import clsx from 'clsx';
 
 import { MenuItem, Select } from '@mui/material';
 
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { ArrowIcon } from '@library/icons/ArrowIcon';
-import { CameraIcon } from '@library/icons/CameraIcon';
-import { MicIcon } from '@library/icons/MicIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
+// icons
+import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
+import { CameraIcon } from '@library/icons/CameraIcon';
+import { MicIcon } from '@library/icons/MicIcon';
+
+// context
 import { MediaContext } from '../../../contexts/MediaContext';
 
-import { SelectDevicesProps } from './types';
-
+// styles
 import styles from './SelectDevices.module.scss';
 
+// types
 import { DeviceInputKindEnum } from '../../../const/media/DEVICE_KINDS';
 
-const SelectDevices = memo(({ className }: SelectDevicesProps) => {
+const SelectDevices = memo(() => {
     const {
         data: { changeStream, audioDevices, videoDevices, currentAudioDevice, currentVideoDevice },
         actions: { onChangeStream },
@@ -64,12 +67,12 @@ const SelectDevices = memo(({ className }: SelectDevicesProps) => {
     );
 
     return (
-        <CustomGrid container direction="column" className={clsx(styles.devicesWrapper, className)}>
+        <>
             <Select
                 className={styles.selectDeviceInput}
                 value={currentVideoDevice}
                 onChange={handleChangeCamera}
-                IconComponent={ArrowIcon}
+                IconComponent={RoundArrowIcon}
                 MenuProps={{
                     disableScrollLock: true,
                 }}
@@ -98,7 +101,7 @@ const SelectDevices = memo(({ className }: SelectDevicesProps) => {
                 className={styles.selectDeviceInput}
                 value={currentAudioDevice}
                 onChange={handleChangeMic}
-                IconComponent={ArrowIcon}
+                IconComponent={RoundArrowIcon}
                 MenuProps={{
                     disableScrollLock: true,
                 }}
@@ -123,7 +126,7 @@ const SelectDevices = memo(({ className }: SelectDevicesProps) => {
             >
                 {renderAudioDevicesMenuItems}
             </Select>
-        </CustomGrid>
+        </>
     );
 });
 

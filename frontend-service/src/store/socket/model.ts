@@ -1,5 +1,6 @@
 import { root } from '../root';
 import { SocketState } from '../types';
+import {attach} from "effector-next";
 
 export const socketDomain = root.createDomain('socketDomain');
 export const $socketStore = socketDomain.store<SocketState>({ socketInstance: null });
@@ -12,6 +13,13 @@ export const socketEventRequest = socketDomain.effect<
     any,
     string
 >('socketEventRequest');
+
+export const createSocketEvent = (eventName: string) =>
+    attach({
+        effect: socketEventRequest,
+        source: $socketStore,
+        mapParams: (data, socketStore) => ({ eventName, data, socketStore }),
+    });
 
 export const initiateSocketConnectionFx = socketDomain.effect<void, any>(
     'initiateSocketConnectionFx',

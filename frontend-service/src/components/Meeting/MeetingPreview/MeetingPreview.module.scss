@@ -43,8 +43,13 @@
   }
 }
 
+.textWrapper {
+  width: auto;
+}
+
 .inMeetingAvatars {
   position: relative;
+  width: auto;
 
   .userAvatar {
     border: 1px solid #FFFFFF;

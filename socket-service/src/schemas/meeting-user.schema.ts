@@ -75,6 +75,14 @@ export class MeetingUser {
     type: mongoose.Schema.Types.String,
   })
   profileAvatar: string;
+
+  @Prop({
+    type: {
+      top: mongoose.Schema.Types.Number,
+      left: mongoose.Schema.Types.Number,
+    },
+  })
+  userPosition: { top: number; left: number };
 }
 
 export type MeetingUserDocument = MeetingUser & Document;

@@ -1,17 +1,16 @@
 import { meetingDomain } from '../domain';
 import { SocketState, MeetingUser } from '../../types';
-import { createSocketEvent } from '../../socket';
+import { createSocketEvent } from '../../socket/model';
 import {
     ANSWER_ACCESS_REQUEST,
     CANCEL_ACCESS_REQUEST,
     END_MEETING,
     JOIN_WAITING_ROOM,
     LEAVE_MEETING,
-    SEND_ACCESS_REQUEST,
-    START_MEETING,
+    SEND_ACCESS_REQUEST, START_MEETING,
     UPDATE_MEETING,
-    UPDATE_MEETING_TEMPLATE,
-} from '../const/emitSocketEvents';
+    UPDATE_MEETING_TEMPLATE
+} from "../../../const/socketEvents/emitters";
 
 export const meetingSocketEventsController = meetingDomain.event<SocketState>(
     'meetingSocketEventsController',
@@ -31,7 +30,7 @@ export const emitUpdateMeetingTemplate = meetingDomain.event<void>('emitUpdateMe
 // socket events
 export const joinMeetingEvent = createSocketEvent(JOIN_WAITING_ROOM);
 export const endMeetingEvent = createSocketEvent(END_MEETING);
-export const leaveMeetingEvent = createSocketEvent(LEAVE_MEETING);
+export const leaveMeetingSocketEvent = createSocketEvent(LEAVE_MEETING);
 export const startMeetingEvent = createSocketEvent(START_MEETING);
 export const updateMeetingSocketEvent = createSocketEvent(UPDATE_MEETING);
 export const enterMeetingRequestEvent = createSocketEvent(SEND_ACCESS_REQUEST);

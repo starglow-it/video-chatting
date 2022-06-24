@@ -1,6 +1,6 @@
 import { ILocalAudioTrack, ILocalVideoTrack } from 'agora-rtc-sdk-ng';
 
-import { meetingUsersDomain } from '../domain';
+import { meetingUsersDomain } from '../domain/model';
 
 import { JoinMeetingResult, MeetingAccessStatuses, MeetingUser } from '../../types';
 

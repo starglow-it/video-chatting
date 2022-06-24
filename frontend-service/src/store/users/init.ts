@@ -1,14 +1,9 @@
 import { forward } from 'effector-next';
-
-import { meetingUsersDomain } from './domain';
-import { initiateSocketConnectionFx } from '../socket';
-
-// types
-import { ErrorState, SocketState } from '../types';
-
-// const
-import { sendInviteEmailUrl } from '../../utils/urls';
-import sendRequestWithCredentials from '../../helpers/http/sendRequestWithCredentials';
+import {meetingUsersDomain} from "./domain/model";
+import {initiateSocketConnectionFx} from "../socket/model";
+import {ErrorState, SocketState} from "../types";
+import sendRequestWithCredentials from "../../helpers/http/sendRequestWithCredentials";
+import {sendInviteEmailUrl} from "../../utils/urls";
 
 export const usersSocketEventsController = meetingUsersDomain.event<SocketState>();
 

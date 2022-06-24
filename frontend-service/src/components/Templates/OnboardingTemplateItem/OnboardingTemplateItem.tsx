@@ -14,8 +14,8 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 import { AppDialogsEnum, Template } from '../../../store/types';
 
 // stores
-import { appDialogsApi } from '../../../store/dialogs';
-import { setPreviewTemplate } from '../../../store/templates';
+import { appDialogsApi } from '../../../store';
+import { setPreviewTemplate } from '../../../store';
 
 // styles
 import styles from './OnboardingTemplateItem.module.scss';

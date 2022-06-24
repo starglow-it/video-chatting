@@ -20,15 +20,15 @@ import {ScheduleMeetingDialog} from "@components/Dialogs/ScheduleMeetingDialog/S
 import {DownloadIcsEventDialog} from "@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog";
 
 // stores
-import { createMeetingFx } from '../../store/meetings';
+import { createMeetingFx } from '../../store';
 import {
     $profileTemplatesStore,
     $skipProfileTemplates,
     setSkipProfileTemplates,
     deleteProfileTemplateFx,
     getProfileTemplatesFx,
-} from '../../store/profile';
-import { $templatesStore, getTemplatesFx } from '../../store/templates';
+} from '../../store';
+import { $templatesStore, getTemplatesFx } from '../../store';
 
 // styles
 import styles from './TemplatesContainer.module.scss';

@@ -8,8 +8,8 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // store
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
-import { $deleteProfileTemplateId, deleteProfileTemplateFx } from '../../../store/profile';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
+import { $deleteProfileTemplateId, deleteProfileTemplateFx } from '../../../store';
 
 // styles
 import styles from './DeleteTemplateDialog.module.scss';

@@ -1,6 +1,6 @@
 import { ErrorState, Template, UpdateTemplateData } from '../../types';
 import { postProfileTemplatesUrl } from '../../../utils/urls';
-import { initialTemplateState } from '../../meeting';
+import { initialTemplateState } from '../../meeting/meetingTemplate/model';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 

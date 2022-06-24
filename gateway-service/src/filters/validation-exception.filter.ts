@@ -23,7 +23,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
   }
 
   formatErrors = (errors: any) => {
-    return errors.map((error) => {
+    return errors?.map((error) => {
       return Object.values(error.constraints).join(', ');
     });
   };

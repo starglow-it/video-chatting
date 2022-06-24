@@ -139,19 +139,19 @@ export class UserTemplatesController {
 
         const newBusinessCategories = await this.businessCategoriesService.find(
           {
-            query: { key: { $in: data.businessCategories } },
+            query: { key: { $in: data.businessCategories || [] } },
             session,
           },
         );
 
         const newLanguages = await this.languageService.find({
-          query: { key: { $in: data.languages } },
+          query: { key: { $in: data.languages || [] } },
           session,
         });
 
         const newSocials =
           await this.userTemplatesService.createUserTemplateSocialsLinks(
-            { userId: template.user._id, socials: data.socials },
+            { userId: template.user._id, socials: data.socials || [] },
             session,
           );
 
@@ -167,6 +167,9 @@ export class UserTemplatesController {
             (category) => category._id,
           ),
           socials: newSocials.map((social) => social._id),
+          isMonetizationEnabled: data.isMonetizationEnabled,
+          templatePrice: parseInt(data.templatePrice),
+          templateCurrency: data.templateCurrency,
         };
 
         const userTemplate =
@@ -180,6 +183,7 @@ export class UserTemplatesController {
           'socials',
           'businessCategories',
           'languages',
+          'meetingInstance',
         ]);
 
         return plainToClass(UserTemplateDTO, userTemplate, {

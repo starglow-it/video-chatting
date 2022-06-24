@@ -1,5 +1,7 @@
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useStore } from 'effector-react';
+import * as yup from "yup";
+import {FormProvider, useForm} from "react-hook-form";
 
 // hooks
 
@@ -14,7 +16,7 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
-import { useToggle } from '../../../hooks/useToggle';
+import {useYupValidationResolver} from "../../../hooks/useYupValidationResolver";
 
 // controllers
 import { AgoraController } from '../../../controllers/VideoChatController';
@@ -24,16 +26,16 @@ import { MediaContext } from '../../../contexts/MediaContext';
 import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
 
 // store
-import { $appDialogsStore, appDialogsApi } from '../../../store/dialogs';
-import {$localUserStore, emitUpdateUserEvent, updateLocalUserStateEvent} from '../../../store/users';
-import { $meetingStore } from '../../../store/meeting';
-import { addNotificationEvent } from '../../../store/notifications';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
+import {$localUserStore, emitUpdateUserEvent, updateLocalUserStateEvent} from '../../../store';
+import {$meetingStore, $meetingTemplateStore, updateMeetingTemplateFxWithData} from '../../../store';
+import { addNotificationEvent } from '../../../store';
 import {
-    $backgroundAudioVolume,
-    $isBackgroundAudioActive,
+    $isSettingsBackgroundAudioActive,
+    $settingsBackgroundAudioVolume,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
-} from '../../../store/other';
+} from '../../../store';
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
@@ -41,22 +43,22 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 // styles
 import styles from './DevicesSettingsDialog.module.scss';
 
+import {booleanSchema, simpleStringSchema} from "../../../validation/common";
+
+const validationSchema = yup.object({
+    templatePrice: simpleStringSchema().required('required'),
+    isMonetizationEnabled: booleanSchema().required('required'),
+    templateCurrency: simpleStringSchema().required('required'),
+});
+
 const DevicesSettingsDialog = memo(() => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
+    const meetingTemplate = useStore($meetingTemplateStore);
 
-    const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
-    const backgroundAudioVolume = useStore($backgroundAudioVolume);
-
-    const [volume, setVolume] = useState(backgroundAudioVolume);
-
-    useEffect(() => {
-        setVolume(backgroundAudioVolume);
-    }, [devicesSettingsDialog]);
-
-    const { value: isBackgroundAudioActive, onToggleSwitch: handleToggleBackgroundAudio } =
-        useToggle(isAudioBackgroundActive);
+    const isSettingsAudioBackgroundActive = useStore($isSettingsBackgroundAudioActive);
+    const settingsBackgroundAudioVolume = useStore($settingsBackgroundAudioVolume);
 
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
@@ -69,6 +71,18 @@ const DevicesSettingsDialog = memo(() => {
         actions: { onGetCanvasStream },
         data: { isBlurActive, isFaceTrackingActive },
     } = useContext(VideoEffectsContext);
+
+    const resolver = useYupValidationResolver<{ amount: number; isMonetizationEnabled: boolean }>(validationSchema);
+
+    const methods = useForm({
+        criteriaMode: 'all',
+        resolver,
+        defaultValues: {
+            isMonetizationEnabled: Boolean(meetingTemplate.isMonetizationEnabled),
+            templatePrice: '',
+            templateCurrency: 'USD',
+        }
+    });
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -118,8 +132,8 @@ const DevicesSettingsDialog = memo(() => {
 
             emitUpdateUserEvent({ isAuraActive: isBlurActive });
 
-            setBackgroundAudioVolume(volume);
-            setBackgroundAudioActive(isBackgroundAudioActive);
+            setBackgroundAudioVolume(settingsBackgroundAudioVolume);
+            setBackgroundAudioActive(isSettingsAudioBackgroundActive);
         }
     }, [
         isCameraActive,
@@ -129,57 +143,57 @@ const DevicesSettingsDialog = memo(() => {
         isSharingScreenActive,
         isBlurActive,
         isFaceTrackingActive,
-        volume,
-        isBackgroundAudioActive,
+        settingsBackgroundAudioVolume,
+        isSettingsAudioBackgroundActive,
     ]);
 
     const isDevicesChecking = !(videoDevices.length && audioDevices.length) && !error;
 
-    const handleChangeVolume = useCallback(newVolume => {
-        setVolume(() => newVolume);
+    const onSubmit = useCallback(async (data) => {
+        await updateMeetingTemplateFxWithData(data);
+
+        handleSaveSettings();
     }, []);
 
     return (
-        <CustomDialog open={devicesSettingsDialog} contentClassName={styles.wrapper}>
-            <CustomGrid container direction="column">
-                <CustomGrid container wrap="nowrap">
-                    <MediaPreview stream={changeStream} />
-                    <CustomDivider orientation="vertical" flexItem />
-                    <CustomGrid
-                        className={styles.devicesWrapper}
-                        container
-                        direction="column"
-                        wrap="nowrap"
-                        gap={2}
-                    >
-                        {isDevicesChecking ? (
-                            <WiggleLoader className={styles.loader} />
-                        ) : (
-                            <MeetingSettingsContent
-                                stream={changeStream}
-                                volume={volume}
-                                onChangeVolume={handleChangeVolume}
-                                isBackgroundAudioActive={isBackgroundAudioActive}
-                                onToggleAudioBackground={handleToggleBackgroundAudio}
-                                title={
-                                    <CustomTypography
-                                        className={styles.title}
-                                        variant="h3bold"
-                                        nameSpace="meeting"
-                                        translation="settings.main"
-                                    />
-                                }
-                            />
-                        )}
+        <CustomDialog open={devicesSettingsDialog} contentClassName={styles.wrapper} onClose={handleClose}>
+            <FormProvider {...methods}>
+                <CustomGrid container direction="column">
+                    <CustomGrid container wrap="nowrap">
+                        <MediaPreview stream={changeStream} />
+                        <CustomDivider orientation="vertical" flexItem />
+                        <CustomGrid
+                            className={styles.devicesWrapper}
+                            container
+                            direction="column"
+                            wrap="nowrap"
+                            gap={2}
+                        >
+                            {isDevicesChecking ? (
+                                <WiggleLoader className={styles.loader} />
+                            ) : (
+                                <MeetingSettingsContent
+                                    stream={changeStream}
+                                    title={
+                                        <CustomTypography
+                                            className={styles.title}
+                                            variant="h3bold"
+                                            nameSpace="meeting"
+                                            translation="settings.main"
+                                        />
+                                    }
+                                />
+                            )}
+                        </CustomGrid>
                     </CustomGrid>
                 </CustomGrid>
-            </CustomGrid>
-            <CustomButton
-                onClick={handleSaveSettings}
-                className={styles.saveSettings}
-                nameSpace="meeting"
-                translation="buttons.saveSettings"
-            />
+                <CustomButton
+                    onClick={onSubmit}
+                    className={styles.saveSettings}
+                    nameSpace="meeting"
+                    translation="buttons.saveSettings"
+                />
+            </FormProvider>
         </CustomDialog>
     );
 });

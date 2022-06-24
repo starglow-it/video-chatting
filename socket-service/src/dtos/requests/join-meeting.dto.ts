@@ -26,6 +26,11 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
   })
   readonly profileUserName: string;
 
+  @IsString({
+    message: 'meeting.invalid',
+  })
+  readonly templateId: string;
+
   @IsBoolean()
   readonly isOwner: boolean;
 

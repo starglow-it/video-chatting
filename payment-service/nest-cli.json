@@ -1,0 +1,5 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": ".",
+  "entryFile": "./payment-service/src/main"
+}
