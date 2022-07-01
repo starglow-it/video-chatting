@@ -58,7 +58,7 @@ export class PaymentsController {
         const { accountId, accountLink, accountEmail } =
           await this.paymentsService.createStripeExpressAccount({
             accountId: user.stripeAccountId,
-            email: user.contactEmail,
+            email: user.contactEmail || user.email,
           });
 
         await this.coreService.findUserAndUpdate({
@@ -182,7 +182,6 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/createPayment')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Payment Intent' })
@@ -231,7 +230,6 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/cancelPayment')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Cancel payment intent' })

@@ -2,10 +2,11 @@ import {attach, combine } from "effector-next";
 
 import { root } from "../root";
 import {$meetingTemplateStore} from "../meeting/meetingTemplate/model";
+import {ErrorState, PaymentIntentStore, UserTemplate} from "../types";
 
 const paymentsDomain = root.createDomain();
 
-export const $paymentIntent = paymentsDomain.store({
+export const $paymentIntent = paymentsDomain.store<PaymentIntentStore>({
     id: "",
     clientSecret: ''
 });
@@ -14,8 +15,8 @@ export const connectStripeAccountFx = paymentsDomain.effect<any, { url: string }
 export const loginStripeAccountFx = paymentsDomain.effect<any, { url: string } | undefined, any>('loginStripeAccountFx');
 export const deleteStripeAccountFx = paymentsDomain.effect<any, any, any>('deleteStripeAccountFx');
 
-export const createPaymentIntentFx = paymentsDomain.effect('createPaymentIntentFx');
-export const cancelPaymentIntentFx = paymentsDomain.effect('cancelPaymentIntentFx');
+export const createPaymentIntentFx = paymentsDomain.effect<{ templateId: UserTemplate["id"] }, PaymentIntentStore, ErrorState>('createPaymentIntentFx');
+export const cancelPaymentIntentFx = paymentsDomain.effect<{ paymentIntentId: string }, any, ErrorState>('cancelPaymentIntentFx');
 
 export const createPaymentIntentWithData = attach({
     effect: createPaymentIntentFx,

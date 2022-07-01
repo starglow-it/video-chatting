@@ -16,6 +16,8 @@ import { handleLoginStripeAccount } from "./handlers/handleLoginStripeAccount";
 import { handleDeleteStripeAccount } from "./handlers/handleDeleteStripeAccount";
 import { handleCreatePaymentIntent } from "./handlers/handleCreatePaymentIntent";
 import { handleCancelPaymentIntent } from "./handlers/handleCancelPaymentIntent";
+import {addNotificationEvent} from "../notifications/model";
+import {NotificationType} from "../types";
 
 connectStripeAccountFx.use(handleConnectStripeAccount);
 loginStripeAccountFx.use(handleLoginStripeAccount);
@@ -25,9 +27,23 @@ cancelPaymentIntentFx.use(handleCancelPaymentIntent);
 
 connectStripeAccountFx.doneData.watch((result) => {
     if (result?.url) {
+        addNotificationEvent({
+            type: NotificationType.PaymentSuccess,
+            message: 'payments.connectAccountSuccess',
+            withSuccessIcon: true,
+        });
+
         Router.push(result.url);
     }
 });
+
+connectStripeAccountFx.fail.watch(() => {
+    addNotificationEvent({
+        type: NotificationType.PaymentFail,
+        message: 'payments.connectAccountFail',
+        withErrorIcon: true,
+    });
+})
 
 loginStripeAccountFx.doneData.watch((result) => {
     if (result?.url) {

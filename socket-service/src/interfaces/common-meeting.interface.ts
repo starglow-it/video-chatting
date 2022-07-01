@@ -7,6 +7,7 @@ export interface ICommonMeetingDTO {
   mode: string;
   ownerProfileId: string;
   endsAt: number;
+  startAt: number;
   owner: ICommonMeetingUserDTO['id'];
   instanceId: string;
   users: ICommonMeetingUserDTO[];

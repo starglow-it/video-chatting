@@ -7,6 +7,7 @@ export const useToggle = (
     onSwitchOn: () => void;
     onSwitchOff: () => void;
     onToggleSwitch: () => void;
+    onSetSwitch: (value: boolean) => void;
 } => {
     const [switchValue, setSwitchValue] = useState<boolean>(initial);
 
@@ -26,10 +27,19 @@ export const useToggle = (
         setSwitchValue(prev => !prev);
     }, []);
 
+    const handleSetSwitch = useCallback(
+        (value) => {
+            setSwitchValue(value)
+        },
+        [],
+    );
+
+
     return {
         value: switchValue,
         onSwitchOn: handleSwitchOn,
         onSwitchOff: handleSwitchOff,
         onToggleSwitch: handleToggleSwitch,
+        onSetSwitch: handleSetSwitch,
     };
 };

@@ -28,6 +28,7 @@ type MediaContextType = {
         onChangeActiveStream: () => CustomMediaStream;
         onGetNewStream: () => Promise<CustomMediaStream>;
         onInitDevices: () => Promise<void>;
+        onClearCurrentDevices: () => void;
     };
 };
 
@@ -61,6 +62,7 @@ export const MediaContext = React.createContext<MediaContextType>({
         onInitDevices: async () => {},
         onToggleCamera: () => {},
         onToggleMic: () => {},
+        onClearCurrentDevices: () => {},
     },
 });
 
@@ -109,9 +111,22 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
             if (stream) {
                 setChangeStream(prev => {
-                    stopStream(prev);
+                    const { videoDeviceId: oldDevice } = getDevicesFromStream(prev);
+                    const { videoDeviceId: newDevice } = getDevicesFromStream(stream);
 
-                    return stream;
+                    if (oldDevice !== newDevice) {
+                        stopStream(prev);
+
+                        return stream;
+                    }
+
+                    if (!prev || !prev.active) {
+                        return stream;
+                    }
+
+                    stopStream(stream);
+
+                    return prev;
                 });
                 setError('');
 
@@ -248,6 +263,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
             if (videoTrack) {
                 const newState = isEnabled ?? !isCameraActive;
+
                 setIsCameraActive(() => newState);
                 videoTrack.enabled = newState;
             } else {
@@ -288,6 +304,12 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
         return stream;
     }, [currentAudioDevice, currentVideoDevice]);
 
+    const handleClearCurrentDevices = () => {
+        setCurrentAudioDevice('');
+        setCurrentVideoDevice('');
+        setChangeStream(null);
+    }
+
     const contextValue = useMemo(() => {
         return {
             actions: {
@@ -297,6 +319,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 onChangeActiveStream: handleChangeActiveStream,
                 onInitDevices: handleGetInitialStream,
                 onGetNewStream: handleGetNewStream,
+                onClearCurrentDevices: handleClearCurrentDevices
             },
             data: {
                 changeStream,

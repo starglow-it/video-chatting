@@ -2,7 +2,7 @@ import { ILocalAudioTrack, ILocalVideoTrack } from 'agora-rtc-sdk-ng';
 
 import { meetingUsersDomain } from '../domain/model';
 
-import { JoinMeetingResult, MeetingAccessStatuses, MeetingUser } from '../../types';
+import { MeetingAccessStatuses, MeetingUser } from '../../types';
 
 const initialMeetingUserState: MeetingUser = {
     id: '',
@@ -15,19 +15,19 @@ const initialMeetingUserState: MeetingUser = {
     profileAvatar: '',
     meeting: '',
     isGenerated: false,
+    isAuraActive: false,
 };
 
 export const $localUserStore = meetingUsersDomain.store<MeetingUser>(initialMeetingUserState);
 
-export const setLocalUserEvent = meetingUsersDomain.event<JoinMeetingResult>('setLocalUserEvent');
 export const resetLocalUserStore = meetingUsersDomain.event('resetLocalUserStore');
+
 export const setLocalUserMediaEvent =
     meetingUsersDomain.event<{ audioTrack: ILocalAudioTrack; videoTrack: ILocalVideoTrack }>(
         'setLocalUserMediaEvent',
     );
-export const updateLocalUserStateEvent = meetingUsersDomain.event<Partial<MeetingUser>>(
-    'updateLocalUserStateEvent',
-);
+
 export const updateLocalUserEvent =
-    meetingUsersDomain.event<JoinMeetingResult>('updateLocalUserEvent');
+    meetingUsersDomain.event<Partial<MeetingUser>>('updateLocalUserEvent');
+
 export const leaveMeetingEvent = meetingUsersDomain.event('leaveMeetingEvent');

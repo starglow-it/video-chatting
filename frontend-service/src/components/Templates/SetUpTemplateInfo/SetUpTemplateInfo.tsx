@@ -16,7 +16,6 @@ import { SetUpFullName } from './SetUpFullName';
 import { SetUpProfileAvatar } from './SetUpProfileAvatar';
 import { SetUpProfileSign } from './SetUpProfileSign';
 import { SetUpTemplateProgress } from './SetUpTemplateProgress';
-import { SetUpPayments } from './SetUpPayments';
 
 // styles
 import styles from './SetUpTemplateInfo.module.scss';
@@ -33,7 +32,6 @@ const STEPS = {
     [TemplateSetUpSteps.fullName]: SetUpFullName,
     [TemplateSetUpSteps.profileAvatar]: SetUpProfileAvatar,
     [TemplateSetUpSteps.profileSign]: SetUpProfileSign,
-    [TemplateSetUpSteps.profileSign]: SetUpPayments,
 };
 
 const SetUpTemplateInfo = memo(() => {
@@ -69,40 +67,40 @@ const SetUpTemplateInfo = memo(() => {
 
     return (
         <CustomPaper className={styles.wrapper}>
-                <CustomBox
-                    className={styles.grid}
-                    display="grid"
-                    gap={5}
-                    gridTemplateColumns="1fr"
-                    gridTemplateRows="min-content 1fr min-content"
-                >
-                    <CustomTypography
-                        gridArea="1/1/1/1"
-                        className={styles.title}
-                        variant="h2bold"
-                        nameSpace="templates"
-                        translation="setUpSpace.title"
+            <CustomBox
+                className={styles.grid}
+                display="grid"
+                gap={5}
+                gridTemplateColumns="1fr"
+                gridTemplateRows="min-content 1fr min-content"
+            >
+                <CustomTypography
+                    gridArea="1/1/1/1"
+                    className={styles.title}
+                    variant="h2bold"
+                    nameSpace="templates"
+                    translation="setUpSpace.title"
+                />
+                <CustomBox position="relative" gridArea="2/1/2/1">
+                    <SetUpTemplateProgress
+                        currentStep={currentStep}
+                        steps={Object.keys(STEPS).length}
                     />
-                    <CustomBox position="relative" gridArea="2/1/2/1">
-                        <SetUpTemplateProgress
-                            currentStep={currentStep}
-                            steps={Object.keys(STEPS).length}
-                        />
-                        {renderStepsComponents}
-                    </CustomBox>
-                    <CustomButton
-                        className={clsx(styles.button, { [styles.hide]: isTheLastStep })}
-                        onClick={handleNextStep}
-                        nameSpace="templates"
-                        translation="buttons.continue"
-                    />
-                    <CustomButton
-                        type="submit"
-                        className={clsx(styles.button, { [styles.hide]: !isTheLastStep })}
-                        nameSpace="templates"
-                        translation="buttons.done"
-                    />
+                    {renderStepsComponents}
                 </CustomBox>
+                <CustomButton
+                    className={clsx(styles.button, { [styles.hide]: isTheLastStep })}
+                    onClick={handleNextStep}
+                    nameSpace="templates"
+                    translation="buttons.continue"
+                />
+                <CustomButton
+                    type="submit"
+                    className={clsx(styles.button, { [styles.hide]: !isTheLastStep })}
+                    nameSpace="templates"
+                    translation="buttons.done"
+                />
+            </CustomBox>
         </CustomPaper>
     );
 });

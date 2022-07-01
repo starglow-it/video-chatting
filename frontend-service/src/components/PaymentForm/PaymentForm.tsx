@@ -13,8 +13,7 @@ import {CardDataForm} from "@components/Payments/CardDataForm/CardDataForm";
 
 // stores
 import {PaymentFormProps} from "@components/PaymentForm/types";
-import {$meetingTemplateStore, $paymentIntent, createPaymentIntentWithData} from "../../store";
-import {addNotificationEvent} from "../../store";
+import {$meetingTemplateStore, $paymentIntent, createPaymentIntentWithData,addNotificationEvent} from "../../store";
 
 // styles
 import styles from './PaymentForm.module.scss';

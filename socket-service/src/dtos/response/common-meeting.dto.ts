@@ -24,6 +24,9 @@ export class CommonMeetingDTO implements ICommonMeetingDTO {
   endsAt: number;
 
   @Expose()
+  startAt: number;
+
+  @Expose()
   @Type(() => CommonUserDTO)
   @Transform((data) => data?.obj?.owner?.['_id']?.toString())
   owner: ICommonMeetingUserDTO['id'];

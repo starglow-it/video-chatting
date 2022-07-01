@@ -16,7 +16,7 @@ const Component = () => (
                 translation="setUpSpace.customizeSign"
                 variant="h2bold"
             />
-            <ChooseSignBoard optionWidth={160} optionHeight={108} />
+            <ChooseSignBoard formKey="signBoard" optionWidth={156} optionHeight={108} />
         </CustomGrid>
     </CustomScroll>
 );

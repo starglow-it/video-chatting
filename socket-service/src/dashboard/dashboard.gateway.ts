@@ -65,7 +65,7 @@ export class DashboardGateway extends BaseGateway {
 
     this.emitToRoom(
       `waitingRoom:${message.templateId}`,
-        SEND_MEETING_AVAILABLE,
+      SEND_MEETING_AVAILABLE,
       message,
     );
   }

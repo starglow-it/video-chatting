@@ -4,19 +4,27 @@ import * as yup from 'yup';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from 'next/router';
 
+// hooks
+
+// custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+
+// components
 import {ScheduleAttendees} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees";
-import { $appDialogsStore, appDialogsApi } from '../../../store';
-import { sendInviteEmailFx } from '../../../store';
-
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
+// stores
 
+import { $appDialogsStore, appDialogsApi , sendInviteEmailFx } from '../../../store';
+
+// types
 import { AppDialogsEnum } from '../../../store/types';
 
+// styles
 import styles from './InviteAttendeeDialog.module.scss';
 
+// validations
 import { emailSchema } from '../../../validation/users/email';
 
 const validationSchema = yup.object({
@@ -46,7 +54,8 @@ const InviteAttendeeDialog = memo(() => {
         await sendInviteEmailFx({ userEmails, meetingId: router?.query?.token });
         reset();
         handleClose();
-    }),[]);
+        setUserEmails([]);
+    }),[userEmails]);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({

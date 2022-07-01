@@ -15,7 +15,7 @@ import { fullNameSchema } from '../../validation/users/fullName';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
-import { updateLocalUserStateEvent } from '../../store';
+import { updateLocalUserEvent } from '../../store';
 import { $authStore } from '../../store';
 import { $isOwner, $meetingTemplateStore } from '../../store';
 import { $profileStore } from '../../store';
@@ -53,7 +53,7 @@ const EnterMeetingName = memo(() => {
 
     const onSubmit = useCallback(
         handleSubmit(data => {
-            updateLocalUserStateEvent({
+            updateLocalUserEvent({
                 username: data.fullName,
                 accessStatus: MeetingAccessStatuses.Waiting,
             });

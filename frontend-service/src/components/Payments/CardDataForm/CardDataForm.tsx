@@ -33,6 +33,7 @@ const Component = ({ onSubmit, onError, paymentIntentSecret }: CardDataFormProps
             });
 
             if (result.error) {
+                console.log(JSON.stringify(result.error));
                 onError();
             } else {
                 onSubmit();

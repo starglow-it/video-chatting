@@ -96,7 +96,7 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                             nameSpace="meeting"
                             translation="templates.signBoard"
                         >
-                            <ChooseSignBoard optionWidth={145} optionHeight={98} />
+                            <ChooseSignBoard formKey="signBoard" optionWidth={145} optionHeight={98} />
                         </CustomAccordion>
                     </CustomGrid>
                 </CustomScroll>

@@ -1,9 +1,9 @@
-import React, { memo, useCallback, useContext } from 'react';
+import React, {memo, useCallback, useContext, useEffect, useState} from 'react';
 import { useStore } from 'effector-react';
 import * as yup from "yup";
-import { useForm, FormProvider } from "react-hook-form";
+import {useForm, FormProvider } from "react-hook-form";
 
-// helpers
+// hooks
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -17,6 +17,7 @@ import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
 import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
+import {useToggle} from "../../hooks/useToggle";
 
 // context
 import {VideoEffectsContext} from "../../contexts/VideoEffectContext";
@@ -26,24 +27,24 @@ import { MediaContext } from '../../contexts/MediaContext';
 
 // stores
 import {
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
     $isMeetingInstanceExists,
     $isOwner,
     $isOwnerInMeeting,
-    $isUserSendEnterRequest, $meetingTemplateStore,
+    $isUserSendEnterRequest,
+    $meetingTemplateStore,
     emitCancelEnterMeetingEvent,
-    emitEnterMeetingEvent,
-    emitStartMeetingEvent,
     setIsUserSendEnterRequest,
+    startMeeting,
+    sendEnterWaitingRoom,
     updateMeetingTemplateFxWithData,
-} from '../../store';
-import { updateLocalUserStateEvent } from '../../store';
-import { addNotificationEvent } from '../../store';
-import { emitSendEnterWaitingRoom } from '../../store';
-import {
-    $isSettingsBackgroundAudioActive,
-    $settingsBackgroundAudioVolume,
+    enterMeetingRequest,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
+    updateLocalUserEvent,
+    addNotificationEvent,
+    $profileStore,
 } from '../../store';
 
 // types
@@ -53,21 +54,25 @@ import {MeetingAccessStatuses, NotificationType} from '../../store/types';
 import styles from './DevicesSettings.module.scss';
 
 import {booleanSchema, simpleStringSchema} from "../../validation/common";
+import {templatePriceSchema} from "../../validation/payments/templatePrice";
 
 const validationSchema = yup.object({
-    templatePrice: simpleStringSchema(),
+    templatePrice: templatePriceSchema(),
     isMonetizationEnabled: booleanSchema(),
     templateCurrency: simpleStringSchema().required('required'),
 });
 
 const DevicesSettings = memo(() => {
     const isOwner = useStore($isOwner);
+    const profile = useStore($profileStore);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
     const isMeetingInstanceExists = useStore($isMeetingInstanceExists);
     const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const settingsBackgroundAudioVolume = useStore($settingsBackgroundAudioVolume);
-    const isSettingsBackgroundAudioActive = useStore($isSettingsBackgroundAudioActive);
+    const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
+    const backgroundAudioVolume = useStore($backgroundAudioVolume);
+
+    const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] = useState<number>(backgroundAudioVolume);
 
     const resolver = useYupValidationResolver<{ templatePrice: number; isMonetizationEnabled: boolean; templateCurrency: string }>(validationSchema);
 
@@ -97,7 +102,21 @@ const DevicesSettings = memo(() => {
         },
     } = useContext(MediaContext);
 
-    const { data: { isBlurActive } } = useContext(VideoEffectsContext);
+    const {
+        data: { isBlurActive, isFaceTrackingActive },
+        actions: { onToggleFaceTracking, onToggleBlur }
+    } = useContext(VideoEffectsContext);
+
+    const {
+        value: isSettingsAudioBackgroundActive,
+        onToggleSwitch: handleToggleBackgroundAudio,
+    } = useToggle(isBackgroundAudioActive);
+
+    useEffect(() => {
+        updateLocalUserEvent({
+            isAuraActive: isBlurActive
+        });
+    }, [isBlurActive]);
 
     const handleToggleMic = useCallback(() => {
         if (changeStream) {
@@ -105,7 +124,7 @@ const DevicesSettings = memo(() => {
                 type: NotificationType.MicAction,
                 message: `meeting.mic.${!isMicActive ? 'on' : 'off'}`,
             });
-            updateLocalUserStateEvent({
+            updateLocalUserEvent({
                 micStatus: !isMicActive ? 'active' : 'inactive',
             });
         }
@@ -117,7 +136,7 @@ const DevicesSettings = memo(() => {
                 type: NotificationType.CamAction,
                 message: `meeting.cam.${!isCameraActive ? 'on' : 'off'}`,
             });
-            updateLocalUserStateEvent({
+            updateLocalUserEvent({
                 cameraStatus: !isCameraActive ? 'active' : 'inactive',
             });
         }
@@ -126,23 +145,19 @@ const DevicesSettings = memo(() => {
     const handleJoinMeeting = useCallback(async () => {
         if (!isStreamRequested) {
             if ((!changeStream && error === 'media.notAllowed') || (changeStream && !error)) {
-                updateLocalUserStateEvent({
-                    isAuraActive: isBlurActive
-                });
-
                 if (isOwner) {
-                    emitStartMeetingEvent();
+                    startMeeting();
                 } else {
                     if (isMeetingInstanceExists && isOwnerInMeeting) {
-                        emitEnterMeetingEvent();
+                        enterMeetingRequest();
                     } else {
-                        emitSendEnterWaitingRoom();
+                        sendEnterWaitingRoom({});
                     }
                     setIsUserSendEnterRequest(true);
                 }
 
                 setBackgroundAudioVolume(settingsBackgroundAudioVolume);
-                setBackgroundAudioActive(isSettingsBackgroundAudioActive);
+                setBackgroundAudioActive(isSettingsAudioBackgroundActive);
             } else {
                 handleToggleCamera();
             }
@@ -154,9 +169,9 @@ const DevicesSettings = memo(() => {
         isStreamRequested,
         isMeetingInstanceExists,
         isOwnerInMeeting,
-        settingsBackgroundAudioVolume,
-        isSettingsBackgroundAudioActive,
         isBlurActive,
+        isSettingsAudioBackgroundActive,
+        settingsBackgroundAudioVolume
     ]);
 
     const handleCancelRequest = useCallback(async () => {
@@ -180,7 +195,7 @@ const DevicesSettings = memo(() => {
             setIsUserSendEnterRequest(false);
         }
 
-        updateLocalUserStateEvent({
+        updateLocalUserEvent({
             accessStatus: MeetingAccessStatuses.EnterName,
         });
     }, [isUserSentEnterRequest]);
@@ -234,6 +249,15 @@ const DevicesSettings = memo(() => {
                             ) : (
                                 <MeetingSettingsContent
                                     stream={changeStream}
+                                    isBackgroundActive={isSettingsAudioBackgroundActive}
+                                    backgroundVolume={settingsBackgroundAudioVolume}
+                                    isBlurActive={isBlurActive}
+                                    isMonetizationEnabled={Boolean(profile?.stripeAccountId)}
+                                    isFaceTrackingActive={isFaceTrackingActive}
+                                    onBackgroundToggle={handleToggleBackgroundAudio}
+                                    onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
+                                    onToggleFaceTracking={onToggleFaceTracking}
+                                    onToggleBlur={onToggleBlur}
                                     title={
                                         <CustomTypography
                                             className={styles.title}

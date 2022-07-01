@@ -44,18 +44,15 @@ import {
     $isOwner,
     $meetingStore,
     $meetingTemplateStore,
-    emitUpdateMeetingTemplate,
-    updateMeetingSocketEvent,
-    updateMeetingTemplateFx,
-} from '../../../store';
-import {
     $localUserStore,
-    emitUpdateUserEvent,
     setLocalUserMediaEvent,
     setMeetingUserMediaEvent,
-    updateLocalUserStateEvent,
+    updateLocalUserEvent,
+    updateMeetingSocketEvent,
+    updateMeetingTemplateFxWithData,
+    updateUserSocketEvent,
+    appDialogsApi
 } from '../../../store';
-import {appDialogsApi} from "../../../store";
 
 // types
 import {AppDialogsEnum, MeetingAccessStatuses} from '../../../store/types';
@@ -84,7 +81,7 @@ const MeetingView = memo(() => {
     const prevSharingUserId = usePrevious<number | undefined>(meeting.sharingUserId);
 
     const handleToggleAudio = useCallback(() => {
-        updateLocalUserStateEvent({
+        updateLocalUserEvent({
             micStatus: isLocalMicActive ? 'inactive' : 'active',
         });
 
@@ -95,7 +92,7 @@ const MeetingView = memo(() => {
     }, [isLocalMicActive, isLocalCamActive]);
 
     const handleToggleVideo = useCallback(() => {
-        updateLocalUserStateEvent({
+        updateLocalUserEvent({
             cameraStatus: isLocalCamActive ? 'inactive' : 'active',
         });
         AgoraController.setTracksState({
@@ -181,10 +178,9 @@ const MeetingView = memo(() => {
 
     const handleUpdateMeetingTemplate = useCallback(async updateData => {
         if (updateData) {
-            await updateMeetingTemplateFx(updateData);
-            emitUpdateMeetingTemplate();
-            emitUpdateUserEvent({ username: updateData.data.fullName });
-            updateLocalUserStateEvent({ username: updateData.data.fullName });
+            await updateMeetingTemplateFxWithData(updateData);
+            updateUserSocketEvent({ username: updateData.data.fullName });
+            updateLocalUserEvent({ username: updateData.data.fullName });
         }
     }, []);
 

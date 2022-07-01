@@ -8,21 +8,20 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
-import { deleteMeetingFx } from 'src/store';
-import styles from './EndMeetingDialog.module.scss';
-
-import { appDialogsApi, $appDialogsStore } from '../../../store';
-
 import {
+    deleteMeetingFx,
+    appDialogsApi,
+    $appDialogsStore,
     $isOwner,
     $meetingTemplateStore,
     emitEndMeetingEvent,
     emitLeaveMeetingEvent,
-} from '../../../store';
+    $localUserStore
+} from 'src/store';
+import styles from './EndMeetingDialog.module.scss';
 
 import { AppDialogsEnum } from '../../../store/types';
 import { useLocalization } from '../../../hooks/useTranslation';
-import {$localUserStore} from "../../../store";
 
 const EndMeetingDialog = memo(() => {
     const router = useRouter();

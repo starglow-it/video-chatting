@@ -10,12 +10,12 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import { Layout } from '@components/Layout/Layout';
 
 // stores
-import { root, $profileStore, $authStore, checkAuthFx, initialProfileState } from '../src/store';
 
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
+import { root, $profileStore, $authStore, checkAuthFx, initialProfileState } from '../src/store';
 
 import { useScope } from '../src/hooks/useScope';
 import { redirectTo } from '../src/helpers/http/redirectTo';

@@ -9,7 +9,7 @@ import { ErrorMessageProps } from './types';
 const ErrorMessage = memo(({ className, error }: ErrorMessageProps) => {
     return (
         <CustomGrid container alignItems="center" className={className}>
-            <ErrorIcon width="15px" height="15px" />
+            {error ? <ErrorIcon width="15px" height="15px" /> : null}
             <CustomTypography
                 variant="body3"
                 color="error.main"

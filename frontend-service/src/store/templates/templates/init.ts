@@ -3,9 +3,7 @@ import { handleFetchTemplates } from '../handlers/handleFetchTemplates';
 
 getTemplatesFx.use(handleFetchTemplates);
 
-$templatesStore.on(getTemplatesFx.doneData, (state, data) => {
-    return {
-        ...state,
-        ...data,
-    };
-});
+$templatesStore.on(getTemplatesFx.doneData, (state, data) => ({
+    ...state,
+    ...data,
+}));

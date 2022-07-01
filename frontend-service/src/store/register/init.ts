@@ -1,6 +1,4 @@
-import { sendRequest } from '../../helpers/http/sendRequest';
-import { AppDialogsEnum, ErrorState, RegisteredUserState } from '../types';
-import { confirmRegisterUserUrl, registerUserUrl } from '../../utils/urls';
+import { AppDialogsEnum, RegisteredUserState } from '../types';
 import { appDialogsApi } from '../dialogs/init';
 import {
     $registerStore,
@@ -8,42 +6,11 @@ import {
     registerUserFx,
     resetRegisterErrorEvent,
 } from './model';
+import {handleRegisterUser} from "./handlers/handleRegisterUser";
+import {handleConfirmRegistration} from "./handlers/handleConfirmRegistration";
 
-registerUserFx.use(async params => {
-    const response = await sendRequest<void, ErrorState>({
-        ...registerUserUrl,
-        data: params,
-    });
-
-    if (response.success) {
-        return {
-            isUserRegistered: response.success,
-        };
-    } else {
-        return {
-            isUserRegistered: response.success,
-            error: response.error,
-        };
-    }
-});
-
-confirmRegistrationUserFx.use(async (token: string) => {
-    const response = await sendRequest<void, ErrorState>({
-        ...confirmRegisterUserUrl,
-        data: { token },
-    });
-
-    if (response.success) {
-        return {
-            isUserConfirmed: response?.success,
-        };
-    } else {
-        return {
-            isUserConfirmed: response?.success,
-            error: response.error,
-        };
-    }
-});
+registerUserFx.use(handleRegisterUser);
+confirmRegistrationUserFx.use(handleConfirmRegistration);
 
 $registerStore
     .on(resetRegisterErrorEvent, ({ error, ...rest }) => ({

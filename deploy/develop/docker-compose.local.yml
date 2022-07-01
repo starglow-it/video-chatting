@@ -170,8 +170,8 @@ services:
       - MONGO_URI=mongodb://mongo:27017/theliveoffice
       - SMTP_HOST=smtp.gmail.com
       - SMTP_PORT=465
-      - SMTP_USER=foratestqa@gmail.com
-      - SMTP_PASS=asdfghjkL2
+      - SMTP_USER
+      - SMTP_PASS
       - DEFAULT_SERVER_IP=localhost
       - APP_ID=9d88cb47f5e648c1b2b3c6ee8563e655
       - APP_CERTIFICATE=5eeb44cc55e94718ab3cdde84f278174

@@ -9,7 +9,8 @@ import {
     updateProfilePasswordFx,
     sendResetPasswordLinkFx,
     checkResetPasswordLinkFx,
-    resetPasswordFx, deleteStripeDataEvent,
+    resetPasswordFx,
+    deleteStripeDataEvent,
 } from './model';
 
 import { handleUpdateProfileInfo } from '../handlers/handleUpdateProfileInfo';
@@ -40,17 +41,16 @@ $profileStore
 
         return state;
     })
+    .on(
+        [
+            updateProfilePhotoFx.doneData,
+            updateProfileFx.doneData,
+            deleteProfilePhotoFx.doneData,
+            updateProfileEmailFx.doneData,
+        ],
+        (state, data) => ({
+            ...state,
+            ...data,
+        }),
+    )
     .on(deleteStripeDataEvent, (state) => ({ ...state, stripeEmail: "", stripeAccountId: "" }));
-
-$profileStore.on(
-    [
-        updateProfilePhotoFx.doneData,
-        updateProfileFx.doneData,
-        deleteProfilePhotoFx.doneData,
-        updateProfileEmailFx.doneData,
-    ],
-    (state, data) => ({
-        ...state,
-        ...data,
-    }),
-);

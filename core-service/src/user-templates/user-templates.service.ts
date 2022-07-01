@@ -67,11 +67,13 @@ export class UserTemplatesService {
     id: IUserTemplate['id'],
     data: UpdateQuery<UserTemplateDocument>,
     { session }: ITransactionSession,
+    populatePath: CustomPopulateOptions,
   ): Promise<UserTemplateDocument> {
     return this.userTemplate
       .findByIdAndUpdate(id, data, {
         new: true,
         session,
+        populate: populatePath,
       })
       .exec();
   }

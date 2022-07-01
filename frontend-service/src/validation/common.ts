@@ -4,5 +4,5 @@ export const simpleStringSchema = () => yup.string().trim('noSpaces').max(300, '
 export const simpleStringSchemaWithLength = (maxLength: number) =>
     yup.string().trim().max(maxLength, 'maxLength.dynamic');
 
-export const numberSchema = () => yup.number();
+export const simpleNumberSchema = () => yup.number();
 export const booleanSchema = () => yup.boolean();

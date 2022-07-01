@@ -13,9 +13,7 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 
 // stores
 import { CommonTemplateItemProps } from '@components/Templates/CommonTemplateItem/types';
-import { appDialogsApi } from '../../../store';
-import { setPreviewTemplate } from '../../../store';
-import {createMeetingFx} from "../../../store";
+import { appDialogsApi , setPreviewTemplate ,createMeetingFx} from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';

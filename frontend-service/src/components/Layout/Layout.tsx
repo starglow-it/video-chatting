@@ -19,9 +19,8 @@ import { AuthenticationLink } from '@components/AuthenticationLink/Authenticatio
 import { LayoutProps } from './types';
 
 // stores
-import { $authStore } from '../../store';
+import {$authStore, joinDashboard} from '../../store';
 import { disconnectSocketEvent, initiateSocketConnectionFx } from '../../store';
-import { emitJoinDashboard } from '../../store';
 
 // styles
 import styles from './Layout.module.scss';
@@ -39,7 +38,7 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
             if (isDashboardRoute) {
                 await initiateSocketConnectionFx();
 
-                emitJoinDashboard();
+                await joinDashboard();
             } else {
                 disconnectSocketEvent();
             }

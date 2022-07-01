@@ -1,4 +1,4 @@
-import { ErrorState, Template, UpdateTemplateData } from '../../../types';
+import {ErrorState, UpdateTemplateData, UserTemplate} from '../../../types';
 import { sendRequest } from '../../../../helpers/http/sendRequest';
 import { postProfileTemplatesUrl } from '../../../../utils/urls';
 import { initialTemplateState } from '../model';
@@ -6,8 +6,8 @@ import { initialTemplateState } from '../model';
 export const handleUpdateMeetingTemplate = async ({
     templateId,
     data,
-}: UpdateTemplateData): Promise<Template> => {
-    const response = await sendRequest<Template, ErrorState>({
+}: UpdateTemplateData): Promise<UserTemplate> => {
+    const response = await sendRequest<UserTemplate, ErrorState>({
         ...postProfileTemplatesUrl({ templateId }),
         data,
     });

@@ -2,7 +2,7 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { ErrorState, Template } from '../../types';
 import { deleteMeetingUrl } from '../../../utils/urls';
 
-export const handleDeleteMeeting = async (data: { templateId: Template['id'] }) => {
+export const handleDeleteMeeting = async (data: { templateId: Template['id'] }): Promise<any> => {
     const response = await sendRequestWithCredentials<any, ErrorState>({
         ...deleteMeetingUrl,
         data: {

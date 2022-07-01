@@ -22,6 +22,8 @@
   },
   "payments": {
     "paymentSuccess": "Your payment was successful!",
-    "paymentFail": "An error occurred during the payment. Please try again"
+    "connectAccountSuccess": "Stripe is connected successfully",
+    "paymentFail": "An error occurred during the payment. Please try again",
+    "connectAccountFail": "An error occurred during the connection. Please try again"
   }
 }

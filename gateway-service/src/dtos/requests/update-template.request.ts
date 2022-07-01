@@ -7,6 +7,7 @@ import {
   ValidateIf,
   ValidateNested,
   IsBoolean,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IUpdateTemplate } from '@shared/interfaces/update-template.interface';
@@ -75,8 +76,8 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   isMonetizationEnabled: boolean;
 
   @IsOptional()
-  @IsString({ message: 'templatePrice must be string' })
-  templatePrice: string;
+  @IsNumber({}, { message: 'templatePrice must be number' })
+  templatePrice: number;
 
   @IsOptional()
   @IsString({ message: 'Currency must be string' })

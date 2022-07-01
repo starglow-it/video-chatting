@@ -11,7 +11,7 @@ export const updateMeetingUsersEvent =
 export const removeMeetingUsersEvent =
     meetingUsersDomain.event<{ users: MeetingUser['id'][] }>('removeMeetingUsersEvent');
 export const updateMeetingUserEvent =
-    meetingUsersDomain.event<JoinMeetingResult>('updateMeetingUserEvent');
+    meetingUsersDomain.event<Pick<JoinMeetingResult, 'user'>>('updateMeetingUserEvent');
 export const resetMeetingUsersStore = meetingUsersDomain.event('resetMeetingUsersStore');
 export const setMeetingUserMediaEvent = meetingUsersDomain.event<IAgoraRTCRemoteUser>(
     'setMeetingUserMediaEvent',

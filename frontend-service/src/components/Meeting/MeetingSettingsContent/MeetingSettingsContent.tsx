@@ -1,7 +1,8 @@
-import React, {memo, useCallback, useContext} from 'react';
+import React, { memo, useCallback } from 'react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
+import {useFormContext} from "react-hook-form";
 
 // helpers
 
@@ -16,8 +17,8 @@ import {CustomDivider} from "@library/custom/CustomDivider/CustomDivider";
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
 import { EditMonetization } from "@components/Meeting/EditMonetization/EditMonetization";
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
-// stores
 // icons
 import { NewArrowIcon } from '@library/icons/NewArrowIcon';
 import {SpeakerIcon} from "@library/icons/SpeakerIcon/SpeakerIcon";
@@ -25,14 +26,12 @@ import {MusicIcon} from "@library/icons/MusicIcon";
 import { FaceTrackingIcon } from '@library/icons/FaceTrackingIcon';
 import { ArrowIcon } from '@library/icons/ArrowIcon';
 import {BackgroundBlurIcon} from "@library/icons/BackgroundBlurIcon";
-import {
-    $isSettingsBackgroundAudioActive,
-    $settingsBackgroundAudioVolume,
-    setSettingsBackgroundAudioVolume, toggleSettingsBackgroundAudioEvent
-} from "../../../store";
-import {$isOwner} from "../../../store";
-import {VideoEffectsContext} from "../../../contexts/VideoEffectContext";
 import { useToggle } from '../../../hooks/useToggle';
+
+// stores
+import {
+    $isOwner
+} from "../../../store";
 
 // styles
 import styles from './MeetingSettingsContent.module.scss';
@@ -43,10 +42,19 @@ import { MeetingSettingsContentProps } from './types';
 const Component = ({
     title,
     stream,
+    isBackgroundActive,
+    onBackgroundToggle,
+    backgroundVolume,
+    onChangeBackgroundVolume,
+    isBlurActive,
+    onToggleBlur,
+    isFaceTrackingActive,
+    onToggleFaceTracking,
+    isMonetizationEnabled
 }: MeetingSettingsContentProps) => {
     const isOwner = useStore($isOwner);
-    const settingsBackgroundAudioVolume = useStore($settingsBackgroundAudioVolume);
-    const isSettingsBackgroundAudioActive = useStore($isSettingsBackgroundAudioActive);
+
+    const { formState: { errors } } = useFormContext();
 
     const {
         value: isAudioVideoSettingsOpened,
@@ -54,14 +62,11 @@ const Component = ({
         onSwitchOn: handleOpenAudioVideoSettings,
     } = useToggle(false);
 
-    const {
-        actions: { onToggleBlur, onToggleFaceTracking },
-        data: { isBlurActive, isFaceTrackingActive },
-    } = useContext(VideoEffectsContext);
-
     const handleChangeVolume = useCallback(event => {
-        setSettingsBackgroundAudioVolume(event.target.value);
+        onChangeBackgroundVolume(event.target.value);
     }, []);
+
+    const templatePriceMessage = ['min', "max"].includes(errors?.templatePrice?.[0]?.type) ? errors?.templatePrice?.[0]?.message : "";
 
     return (
         <CustomGrid container direction="column" className={styles.settingsWrapper}>
@@ -112,7 +117,8 @@ const Component = ({
                                 onChange={onToggleFaceTracking}
                                 className={styles.switchWrapper}
                             />
-                            {isOwner && <EditMonetization />}
+                            {isOwner && isMonetizationEnabled ? <EditMonetization /> : null}
+                            <ErrorMessage error={templatePriceMessage} />
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>
@@ -144,30 +150,30 @@ const Component = ({
                                 direction="column"
                                 wrap="nowrap"
                                 className={clsx(styles.audioSettings, {
-                                    [styles.withVolume]: isSettingsBackgroundAudioActive,
+                                    [styles.withVolume]: isBackgroundActive,
                                 })}
                             >
                                 <LabeledSwitch
                                     Icon={<MusicIcon width="24px" height="24px" />}
                                     nameSpace="meeting"
                                     translation="features.audioBackground"
-                                    checked={isSettingsBackgroundAudioActive}
-                                    onChange={toggleSettingsBackgroundAudioEvent}
+                                    checked={isBackgroundActive}
+                                    onChange={onBackgroundToggle}
                                     className={styles.audioWrapper}
                                 />
-                                <CustomFade open={isSettingsBackgroundAudioActive}>
+                                <CustomFade open={isBackgroundActive}>
                                     <CustomDivider />
                                     <CustomRange
-                                        color={settingsBackgroundAudioVolume ? 'primary' : 'disabled'}
-                                        value={settingsBackgroundAudioVolume}
+                                        color={backgroundVolume ? 'primary' : 'disabled'}
+                                        value={backgroundVolume}
                                         onChange={handleChangeVolume}
                                         className={clsx(styles.audioRange, {
-                                            [styles.inactive]: !settingsBackgroundAudioVolume,
+                                            [styles.inactive]: !backgroundVolume,
                                         })}
                                         Icon={
                                             <SpeakerIcon
-                                                isActive={Boolean(settingsBackgroundAudioVolume)}
-                                                isHalfVolume={settingsBackgroundAudioVolume < 50}
+                                                isActive={Boolean(backgroundVolume)}
+                                                isHalfVolume={backgroundVolume < 50}
                                                 width="24px"
                                                 height="24px"
                                             />

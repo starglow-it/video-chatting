@@ -1,8 +1,6 @@
 import { sample } from 'effector-next';
 
 import { AUDIO_MUTE, VIDEO_MUTE } from '../../../const/media/agora/UPDATE_INFO_TYPES';
-import { usersSocketEventsController } from '../init';
-import { SocketState } from '../../types';
 import {
     $meetingUsersStore,
     removeMeetingUsersEvent,
@@ -12,8 +10,7 @@ import {
     updateMeetingUsersEvent,
     updateUserTracksEvent,
 } from './model';
-import {$localUserStore, updateLocalUserStateEvent} from "../localUser/model";
-import {ON_USER_REMOVE, ON_USER_UPDATE} from "../../../const/socketEvents/subscribers";
+import {$localUserStore, updateLocalUserEvent} from "../localUser/model";
 
 $meetingUsersStore
     .on(updateMeetingUsersEvent, (state, { users }) => {
@@ -84,15 +81,5 @@ sample({
 
         return targetUser || localUser;
     },
-    target: updateLocalUserStateEvent
-});
-
-usersSocketEventsController.watch(({ socketInstance }: SocketState) => {
-    socketInstance?.on(ON_USER_UPDATE, (data: any) => {
-        updateMeetingUsersEvent(data);
-    });
-
-    socketInstance?.on(ON_USER_REMOVE, (data: any) => {
-        removeMeetingUsersEvent(data);
-    });
+    target: updateLocalUserEvent
 });

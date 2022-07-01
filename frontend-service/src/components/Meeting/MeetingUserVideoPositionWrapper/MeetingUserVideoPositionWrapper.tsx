@@ -25,13 +25,20 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
     }, [isScreensharing, elevationIndex, top, left]);
 
     return (
-        <CustomBox
-            sx={{ top: finalTop, left: finalLeft }}
-            className={clsx(styles.videoWrapper, { [styles.sharing]: isScreensharing })}
-        >
-            {children}
-        </CustomBox>
-    )
+        <>
+            {finalTop && finalLeft
+                ? (
+                    <CustomBox
+                        sx={{ top: finalTop, left: finalLeft }}
+                        className={clsx(styles.videoWrapper, { [styles.sharing]: isScreensharing })}
+                    >
+                        {children}
+                    </CustomBox>
+                )
+                : null
+            }
+        </>
+    );
 };
 
 export const MeetingUserVideoPositionWrapper = memo(Component);

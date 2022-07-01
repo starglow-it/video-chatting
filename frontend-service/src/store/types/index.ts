@@ -7,3 +7,4 @@ export * from './dialogs';
 export * from './socket';
 export * from './template';
 export * from './notifications';
+export * from './payments';

@@ -96,7 +96,7 @@ export class PaymentsController {
 
     @MessagePattern({ cmd: CREATE_PAYMENT_INTENT })
     async createPaymentIntent(
-        @Payload() data: { templatePrice: string; templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] },
+        @Payload() data: { templatePrice: number; templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] },
     ) {
         try {
             const paymentIntent = await this.paymentService.createPaymentIntent({

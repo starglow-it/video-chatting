@@ -51,7 +51,7 @@ import { UpdateMeetingRequestDTO } from '../dtos/requests/update-meeting.dto';
 
 import { AccessStatusEnum } from '../types/accessStatus.enum';
 import { TimeoutTypesEnum } from '../types/timeoutTypes.enum';
-import { MeetingSounds } from '@shared/types/meeting-sounds.enum';
+import { MeetingSoundsEnum } from '@shared/types/meeting-sounds.enum';
 
 import { getRandomNumber } from '../utils/getRandomNumber';
 import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
@@ -113,7 +113,7 @@ export class MeetingsGateway
           await meeting.populate(['owner', 'users']);
 
           const updateUsersPromises = meeting.users.map(async (user, index) => {
-            const userPosition = template.usersPosition?.[index];
+            const userPosition = template?.usersPosition?.[index];
 
             return this.usersService.findOneAndUpdate(
               {
@@ -344,7 +344,7 @@ export class MeetingsGateway
           accessStatus: AccessStatusEnum.InMeeting,
           username: message.user.username,
           isAuraActive: message.user.isAuraActive,
-          userPosition: template.usersPosition?.[activeParticipants],
+          userPosition: template?.usersPosition?.[activeParticipants],
         },
         session,
       );
@@ -482,7 +482,7 @@ export class MeetingsGateway
           );
 
           this.emitToSocketId(meeting?.owner?.socketId, PLAY_SOUND, {
-            soundType: MeetingSounds.NewAttendee,
+            soundType: MeetingSoundsEnum.NewAttendee,
           });
         }
 
@@ -599,7 +599,7 @@ export class MeetingsGateway
           },
           {
             accessStatus: AccessStatusEnum.InMeeting,
-            userPosition: template.usersPosition?.[activeParticipants],
+            userPosition: template?.usersPosition?.[activeParticipants],
           },
           session,
         );

@@ -133,7 +133,7 @@ export class UserTemplate {
     type: mongoose.Schema.Types.String,
     default: '',
   })
-  templatePrice: string;
+  templatePrice: number;
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,

@@ -26,9 +26,11 @@ export const VideoEffectsContext = React.createContext({
         isFaceTrackingActive: true,
     },
     actions: {
-        onGetCanvasStream: async (stream: MediaStream): Promise<MediaStream> => stream,
+        onGetCanvasStream: async (stream: MediaStream, options: { isBlurActive: boolean; isFaceTrackingActive: boolean }): Promise<MediaStream> => stream,
         onToggleBlur: () => {},
         onToggleFaceTracking: () => {},
+        onSetBlur: (value: boolean) => {},
+        onSetFaceTracking: (value: boolean) => {},
     },
 });
 
@@ -44,9 +46,9 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
     const faceDetectionRef = useRef<FaceDetection | null>();
 
-    const { value: isBlurActive, onToggleSwitch: handleToggleBlur } = useToggle(true);
+    const { value: isBlurActive, onToggleSwitch: handleToggleBlur, onSetSwitch: handleSetBlur } = useToggle(true);
 
-    const { value: isFaceTrackingActive, onToggleSwitch: handleToggleFaceTracking } =
+    const { value: isFaceTrackingActive, onToggleSwitch: handleToggleFaceTracking, onSetSwitch: handleSetFaceTracking } =
         useToggle(false);
 
     const [isModelReady, setIsModelReady] = useState(false);
@@ -129,9 +131,12 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
     };
 
     const handleGetActiveStream = useCallback(
-        async (stream: MediaStream) => {
+        async (stream: MediaStream, options) => {
             const blurStream = new MediaStream();
             const newStream = new MediaStream();
+
+            const newBlurSetting = options?.isBlurActive ?? isBlurActive;
+            const newFaceTrackingSetting = options?.isFaceTrackingActive ?? isFaceTrackingActive;
 
             let videoTrack = stream.getVideoTracks()[0];
             let blurTrack = stream.getVideoTracks()[0];
@@ -146,7 +151,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
                 cancelAnimationFrame(animationFrameRef.current);
             }
 
-            if (isBlurActive) {
+            if (newBlurSetting) {
                 blurTrack = await blurFn(videoTrack);
             } else {
                 blurStream.addTrack(videoTrack);
@@ -154,7 +159,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
             blurStream.addTrack(blurTrack);
 
-            if (faceDetectionRef.current && isFaceTrackingActive) {
+            if (faceDetectionRef.current && newFaceTrackingSetting) {
                 if (videoElement) {
                     videoElement.srcObject = blurStream;
 
@@ -170,12 +175,10 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
                 }
             }
 
-            newStream.addTrack(isFaceTrackingActive ? videoTrack : blurTrack);
+            newStream.addTrack(newFaceTrackingSetting ? videoTrack : blurTrack);
 
             return newStream;
-        },
-        [isBlurActive, isFaceTrackingActive],
-    );
+        },[isBlurActive, isFaceTrackingActive]);
 
     useLayoutEffect(() => {
         (async () => {
@@ -215,6 +218,8 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             onGetCanvasStream: handleGetActiveStream,
             onToggleBlur: handleToggleBlur,
             onToggleFaceTracking: handleToggleFaceTracking,
+            onSetBlur: handleSetBlur,
+            onSetFaceTracking: handleSetFaceTracking
         },
         data: {
             isModelReady,

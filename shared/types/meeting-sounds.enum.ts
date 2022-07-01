@@ -1,3 +1,3 @@
-export enum MeetingSounds {
+export enum MeetingSoundsEnum {
     NewAttendee = 'new_attendee'
 }

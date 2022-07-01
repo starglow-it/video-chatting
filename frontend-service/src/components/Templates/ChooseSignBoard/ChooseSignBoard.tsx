@@ -19,6 +19,7 @@ import { SIGN_BOARDS } from '../../../const/signBoards';
 const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
     optionWidth,
     optionHeight,
+  formKey,
 }) => {
     const { control, register } = useFormContext();
 
@@ -27,6 +28,7 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
             SIGN_BOARDS.map(signOption => (
                 <SignBoardOption
                     key={signOption.id}
+                    formKey={formKey}
                     data={signOption}
                     width={optionWidth}
                     height={optionHeight}
@@ -34,6 +36,8 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
             )),
         [],
     );
+
+    const registerData = register(formKey);
 
     return (
         <Controller
@@ -49,9 +53,12 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
                     {renderSignOptions}
                 </CustomRadioGroup>
             )}
-            {...register('signBoard')}
+            {...registerData}
+            ref={registerData.ref}
+            onBlur={registerData.onBlur}
+            onChange={registerData.onChange}
+            name={registerData.name}
             control={control}
-            name="signBoard"
             defaultValue={SIGN_BOARDS[0].value}
         />
     );

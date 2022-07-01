@@ -15,18 +15,20 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 
 // stores
-import { $localUserStore, resetLocalUserStore, resetMeetingUsersStore } from '../../store';
+import {
+    $localUserStore,
+    joinRoomBeforeMeetingSocketEvent,
+    resetLocalUserStore,
+    resetMeetingUsersStore
+} from '../../store';
 import { initiateSocketConnectionFx, resetSocketStore } from '../../store';
 import { appDialogsApi } from '../../store';
 import {
     $meetingTemplateStore,
-    $isOwner,
-    $isUserSendEnterRequest,
     resetMeetingStore,
     getMeetingTemplateFx,
     joinMeetingEventWithData,
 } from '../../store';
-import { joinRoomBeforeMeeting } from '../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
@@ -63,7 +65,7 @@ const MeetingContainer = memo(() => {
             if (meetingTemplate?.meetingInstance?.serverIp) {
                 await joinMeetingEventWithData({});
             } else {
-                await joinRoomBeforeMeeting({ templateId: router.query.token });
+                await joinRoomBeforeMeetingSocketEvent({ templateId: router.query.token });
             }
         })();
 

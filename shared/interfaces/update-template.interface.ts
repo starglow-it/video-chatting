@@ -8,7 +8,7 @@ export interface IUpdateTemplate {
     businessCategories?: string[];
     languages?: string[];
     isMonetizationEnabled?: boolean;
-    templatePrice?: string;
+    templatePrice?: number;
     templateCurrency?: string;
     socials: {
         youtube?: string;

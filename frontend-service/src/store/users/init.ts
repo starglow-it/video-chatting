@@ -1,11 +1,9 @@
-import { forward } from 'effector-next';
 import {meetingUsersDomain} from "./domain/model";
-import {initiateSocketConnectionFx} from "../socket/model";
-import {ErrorState, SocketState} from "../types";
+import {ErrorState} from "../types";
 import sendRequestWithCredentials from "../../helpers/http/sendRequestWithCredentials";
 import {sendInviteEmailUrl} from "../../utils/urls";
-
-export const usersSocketEventsController = meetingUsersDomain.event<SocketState>();
+import {createSocketEvent} from "../socket/model";
+import {REMOVE_USER, UPDATE_USER} from "../../const/socketEvents/emitters";
 
 // backend api effects
 export const sendInviteEmailFx = meetingUsersDomain.effect({
@@ -18,7 +16,5 @@ export const sendInviteEmailFx = meetingUsersDomain.effect({
     },
 });
 
-forward({
-    from: initiateSocketConnectionFx.doneData,
-    to: usersSocketEventsController,
-});
+export const updateUserSocketEvent = createSocketEvent(UPDATE_USER);
+export const removeUserSocketEvent = createSocketEvent(REMOVE_USER);

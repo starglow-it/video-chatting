@@ -168,7 +168,7 @@ export class UserTemplatesController {
           ),
           socials: newSocials.map((social) => social._id),
           isMonetizationEnabled: data.isMonetizationEnabled,
-          templatePrice: parseInt(data.templatePrice),
+          templatePrice: data.templatePrice,
           templateCurrency: data.templateCurrency,
         };
 
@@ -177,14 +177,14 @@ export class UserTemplatesController {
             templateId,
             updateTemplateData,
             session,
+            [
+              { path: 'socials' },
+              { path: 'businessCategories' },
+              { path: 'languages' },
+              { path: 'meetingInstance' },
+              { path: 'user', populate: 'profileAvatar' },
+            ],
           );
-
-        await userTemplate.populate([
-          'socials',
-          'businessCategories',
-          'languages',
-          'meetingInstance',
-        ]);
 
         return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,

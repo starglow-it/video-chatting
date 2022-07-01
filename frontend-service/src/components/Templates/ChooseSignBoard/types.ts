@@ -6,9 +6,11 @@ export type SignOptionProps = {
     };
     width: number;
     height: number;
+    formKey: string;
 };
 
 export type ChooseSignBoardProps = {
     optionWidth: number;
     optionHeight: number;
+    formKey: string;
 };

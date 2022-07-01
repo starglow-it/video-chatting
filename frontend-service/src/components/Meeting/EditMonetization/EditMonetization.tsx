@@ -46,6 +46,8 @@ const Component = () => {
         currencyValues.find(currency => currency.value === activeCurrency) || currencyValues[0]
     ), [activeCurrency]);
 
+    const regsiterData = register('templatePrice');
+
     return (
         <CustomGrid
             container
@@ -89,7 +91,7 @@ const Component = () => {
                                 root: styles.inputWrapper,
                                 input: styles.input
                             }}
-                            {...register('templatePrice')}
+                            {...regsiterData}
                         />
                         <ValuesSwitcher
                             optionWidth={56}

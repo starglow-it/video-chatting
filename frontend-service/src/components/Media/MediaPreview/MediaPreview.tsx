@@ -48,13 +48,13 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
 
     const handleToggleVideo = useCallback(() => {
         onToggleVideo?.();
-        onToggleCamera();
-    }, [onToggleVideo]);
+        onToggleCamera(isCameraActive);
+    }, [isCameraActive]);
 
     const handleToggleAudio = useCallback(() => {
         onToggleAudio?.();
-        onToggleMic();
-    }, [onToggleAudio]);
+        onToggleMic(isMicActive);
+    }, [isMicActive]);
 
     const isNeedToRenderDevices =
         (Boolean(videoDevices.length || audioDevices.length) && !error) ||

@@ -12,6 +12,7 @@ export type Meeting = {
     isMonetizationEnabled?: boolean;
     sharingUserId?: number;
     endsAt?: number;
+    startAt?: number;
     mode: string;
     owner: MeetingUser['id'];
     ownerProfileId: MeetingUser['profileId'];
@@ -54,6 +55,10 @@ export type MeetingUser = {
     media?: IAgoraRTCRemoteUser;
     audioTrack?: ILocalAudioTrack | IRemoteAudioTrack;
     videoTrack?: ILocalVideoTrack | IRemoteVideoTrack;
+    userPosition?: {
+        top: number;
+        left: number;
+    }
 };
 
 export type UpdateTemplateData = {
@@ -65,10 +70,6 @@ export type UpdateTemplateData = {
 export type MeetingStore = {
     currentMeeting?: any;
 };
-
-export enum MeetingSounds {
-    NewAttendee = 'new_attendee'
-}
 
 export type MeetingNote = {
     content: string;

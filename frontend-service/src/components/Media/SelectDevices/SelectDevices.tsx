@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useMemo } from 'react';
+import React, {memo, useCallback, useContext, useMemo} from 'react';
 
 import { MenuItem, Select } from '@mui/material';
 
@@ -66,6 +66,25 @@ const SelectDevices = memo(() => {
         [videoDevices],
     );
 
+    const handleRenderValue = useCallback(value => (
+            <CustomGrid
+                className={styles.activeItem}
+                container
+                alignItems="center"
+                wrap="nowrap"
+            >
+                <CameraIcon
+                    className={styles.activeIcon}
+                    isActive
+                    width="24px"
+                    height="24px"
+                />
+                <CustomTypography className={styles.activeValue}>
+                    {videoDevices.find(device => device.deviceId === value)?.label}
+                </CustomTypography>
+            </CustomGrid>
+    ), [videoDevices]);
+
     return (
         <>
             <Select
@@ -76,24 +95,7 @@ const SelectDevices = memo(() => {
                 MenuProps={{
                     disableScrollLock: true,
                 }}
-                renderValue={value => (
-                    <CustomGrid
-                        className={styles.activeItem}
-                        container
-                        alignItems="center"
-                        wrap="nowrap"
-                    >
-                        <CameraIcon
-                            className={styles.activeIcon}
-                            isActive
-                            width="24px"
-                            height="24px"
-                        />
-                        <CustomTypography className={styles.activeValue}>
-                            {videoDevices.find(device => device.deviceId === value)?.label}
-                        </CustomTypography>
-                    </CustomGrid>
-                )}
+                renderValue={handleRenderValue}
             >
                 {renderVideoDevicesMenuItems}
             </Select>

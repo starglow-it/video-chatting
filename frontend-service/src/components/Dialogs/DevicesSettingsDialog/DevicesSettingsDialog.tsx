@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect } from 'react';
+import React, {memo, useCallback, useContext, useEffect, useState} from 'react';
 import { useStore } from 'effector-react';
 import * as yup from "yup";
 import {FormProvider, useForm} from "react-hook-form";
@@ -16,6 +16,7 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
+import {useToggle} from "../../../hooks/useToggle";
 import {useYupValidationResolver} from "../../../hooks/useYupValidationResolver";
 
 // controllers
@@ -26,15 +27,22 @@ import { MediaContext } from '../../../contexts/MediaContext';
 import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
 
 // store
-import { $appDialogsStore, appDialogsApi } from '../../../store';
-import {$localUserStore, emitUpdateUserEvent, updateLocalUserStateEvent} from '../../../store';
-import {$meetingStore, $meetingTemplateStore, updateMeetingTemplateFxWithData} from '../../../store';
-import { addNotificationEvent } from '../../../store';
 import {
-    $isSettingsBackgroundAudioActive,
-    $settingsBackgroundAudioVolume,
+    $appDialogsStore,
+    $isOwner,
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
+    $localUserStore,
+    $meetingStore,
+    $meetingTemplateStore,
+    $profileStore,
+    appDialogsApi,
+    updateUserSocketEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
+    addNotificationEvent,
+    updateLocalUserEvent,
+    updateMeetingTemplateFxWithData,
 } from '../../../store';
 
 // types
@@ -44,9 +52,10 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import styles from './DevicesSettingsDialog.module.scss';
 
 import {booleanSchema, simpleStringSchema} from "../../../validation/common";
+import {templatePriceSchema} from "../../../validation/payments/templatePrice";
 
 const validationSchema = yup.object({
-    templatePrice: simpleStringSchema().required('required'),
+    templatePrice: templatePriceSchema(),
     isMonetizationEnabled: booleanSchema().required('required'),
     templateCurrency: simpleStringSchema().required('required'),
 });
@@ -55,32 +64,58 @@ const DevicesSettingsDialog = memo(() => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
+    const profile = useStore($profileStore);
+    const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
 
-    const isSettingsAudioBackgroundActive = useStore($isSettingsBackgroundAudioActive);
-    const settingsBackgroundAudioVolume = useStore($settingsBackgroundAudioVolume);
+    const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
+    const backgroundAudioVolume = useStore($backgroundAudioVolume);
+
+    const [volume, setVolume] = useState<number>(backgroundAudioVolume);
 
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
     const {
         data: { changeStream, error, videoDevices, audioDevices, isCameraActive, isMicActive },
-        actions: { onToggleCamera, onToggleMic, onChangeActiveStream, onInitDevices },
+        actions: { onToggleCamera, onToggleMic, onChangeActiveStream, onInitDevices, onClearCurrentDevices },
     } = useContext(MediaContext);
 
     const {
-        actions: { onGetCanvasStream },
+        actions: { onGetCanvasStream, onSetBlur, onSetFaceTracking },
         data: { isBlurActive, isFaceTrackingActive },
     } = useContext(VideoEffectsContext);
 
-    const resolver = useYupValidationResolver<{ amount: number; isMonetizationEnabled: boolean }>(validationSchema);
+    const {
+        value: isSettingsAudioBackgroundActive,
+        onToggleSwitch: handleToggleBackgroundAudio,
+        onSetSwitch: handleSetBackgroundAudio
+    } = useToggle(isBackgroundAudioActive);
+
+    const {
+        value: isBlurEnabled,
+        onToggleSwitch: handleToggleBlur,
+        onSetSwitch: handleSetBlur
+    } = useToggle(isBlurActive);
+
+    const {
+        value: isFaceTrackingEnabled,
+        onToggleSwitch: handleToggleFaceTracking,
+        onSetSwitch: handleSetFaceTracking
+    } = useToggle(isFaceTrackingActive);
+
+    const resolver = useYupValidationResolver<{
+        templateCurrency: string;
+        templatePrice: number;
+        isMonetizationEnabled: boolean
+    }>(validationSchema);
 
     const methods = useForm({
         criteriaMode: 'all',
         resolver,
         defaultValues: {
             isMonetizationEnabled: Boolean(meetingTemplate.isMonetizationEnabled),
-            templatePrice: '',
-            templateCurrency: 'USD',
+            templatePrice: meetingTemplate.templatePrice || 10,
+            templateCurrency: meetingTemplate.templateCurrency || "USD",
         }
     });
 
@@ -88,7 +123,14 @@ const DevicesSettingsDialog = memo(() => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
         });
-    }, []);
+
+        handleSetBackgroundAudio(isBackgroundAudioActive);
+        handleSetBlur(isBlurActive);
+        handleSetFaceTracking(isFaceTrackingActive);
+        setVolume(backgroundAudioVolume);
+        methods.reset();
+        onClearCurrentDevices();
+    }, [isBackgroundAudioActive, backgroundAudioVolume, isBlurActive, isFaceTrackingActive]);
 
     useEffect(() => {
         (async () => {
@@ -101,12 +143,22 @@ const DevicesSettingsDialog = memo(() => {
     }, [devicesSettingsDialog, localUser.cameraStatus, localUser.micStatus]);
 
     const handleSaveSettings = useCallback(async () => {
-        handleClose();
+        appDialogsApi.closeDialog({
+            dialogKey: AppDialogsEnum.devicesSettingsDialog,
+        });
+
+        onSetBlur(isBlurEnabled);
+        onSetFaceTracking(isFaceTrackingEnabled);
+        setBackgroundAudioVolume(backgroundAudioVolume);
+        setBackgroundAudioActive(isSettingsAudioBackgroundActive);
 
         if (changeStream) {
             const newStream = onChangeActiveStream();
 
-            const transformedStream = await onGetCanvasStream(newStream);
+            const transformedStream = await onGetCanvasStream(newStream, {
+                isBlurActive: isBlurEnabled,
+                isFaceTrackingActive: isFaceTrackingEnabled
+            });
 
             if (transformedStream) {
                 if (!meeting.sharingUserId) {
@@ -119,10 +171,10 @@ const DevicesSettingsDialog = memo(() => {
                 });
             }
 
-            updateLocalUserStateEvent({
+            updateLocalUserEvent({
                 cameraStatus: isCameraActive ? 'active' : 'inactive',
                 micStatus: isMicActive ? 'active' : 'inactive',
-                isAuraActive: isBlurActive
+                isAuraActive: isBlurEnabled
             });
 
             addNotificationEvent({
@@ -130,10 +182,7 @@ const DevicesSettingsDialog = memo(() => {
                 message: 'meeting.devices.saved',
             });
 
-            emitUpdateUserEvent({ isAuraActive: isBlurActive });
-
-            setBackgroundAudioVolume(settingsBackgroundAudioVolume);
-            setBackgroundAudioActive(isSettingsAudioBackgroundActive);
+            updateUserSocketEvent({ isAuraActive: isBlurEnabled });
         }
     }, [
         isCameraActive,
@@ -141,58 +190,71 @@ const DevicesSettingsDialog = memo(() => {
         changeStream,
         meeting.sharingUserId,
         isSharingScreenActive,
-        isBlurActive,
-        isFaceTrackingActive,
-        settingsBackgroundAudioVolume,
+        backgroundAudioVolume,
         isSettingsAudioBackgroundActive,
+        isBlurEnabled,
+        isFaceTrackingEnabled
     ]);
 
     const isDevicesChecking = !(videoDevices.length && audioDevices.length) && !error;
 
-    const onSubmit = useCallback(async (data) => {
-        await updateMeetingTemplateFxWithData(data);
+    const onSubmit = useCallback(methods.handleSubmit(async (data) => {
+        if (isOwner) {
+            await updateMeetingTemplateFxWithData(data);
+        }
 
         handleSaveSettings();
-    }, []);
+    }), [handleSaveSettings, isOwner]);
 
     return (
         <CustomDialog open={devicesSettingsDialog} contentClassName={styles.wrapper} onClose={handleClose}>
             <FormProvider {...methods}>
-                <CustomGrid container direction="column">
-                    <CustomGrid container wrap="nowrap">
-                        <MediaPreview stream={changeStream} />
-                        <CustomDivider orientation="vertical" flexItem />
-                        <CustomGrid
-                            className={styles.devicesWrapper}
-                            container
-                            direction="column"
-                            wrap="nowrap"
-                            gap={2}
-                        >
-                            {isDevicesChecking ? (
-                                <WiggleLoader className={styles.loader} />
-                            ) : (
-                                <MeetingSettingsContent
-                                    stream={changeStream}
-                                    title={
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation="settings.main"
-                                        />
-                                    }
-                                />
-                            )}
+                <form onSubmit={onSubmit}>
+                    <CustomGrid container direction="column">
+                        <CustomGrid container wrap="nowrap">
+                            <MediaPreview stream={changeStream} />
+                            <CustomDivider orientation="vertical" flexItem />
+                            <CustomGrid
+                                className={styles.devicesWrapper}
+                                container
+                                direction="column"
+                                wrap="nowrap"
+                                gap={2}
+                            >
+                                {isDevicesChecking ? (
+                                    <WiggleLoader className={styles.loader} />
+                                ) : (
+                                    <MeetingSettingsContent
+                                        stream={changeStream}
+                                        isBackgroundActive={isSettingsAudioBackgroundActive}
+                                        onBackgroundToggle={handleToggleBackgroundAudio}
+                                        backgroundVolume={volume}
+                                        isMonetizationEnabled={Boolean(profile?.stripeAccountId)}
+                                        onChangeBackgroundVolume={setVolume}
+                                        isBlurActive={isBlurEnabled}
+                                        onToggleBlur={handleToggleBlur}
+                                        isFaceTrackingActive={isFaceTrackingEnabled}
+                                        onToggleFaceTracking={handleToggleFaceTracking}
+                                        title={
+                                            <CustomTypography
+                                                className={styles.title}
+                                                variant="h3bold"
+                                                nameSpace="meeting"
+                                                translation="settings.main"
+                                            />
+                                        }
+                                    />
+                                )}
+                            </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>
-                </CustomGrid>
-                <CustomButton
-                    onClick={onSubmit}
-                    className={styles.saveSettings}
-                    nameSpace="meeting"
-                    translation="buttons.saveSettings"
-                />
+                    <CustomButton
+                        onClick={onSubmit}
+                        className={styles.saveSettings}
+                        nameSpace="meeting"
+                        translation="buttons.saveSettings"
+                    />
+                </form>
             </FormProvider>
         </CustomDialog>
     );

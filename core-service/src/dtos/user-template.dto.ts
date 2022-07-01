@@ -83,7 +83,7 @@ export class UserTemplateDTO implements IUserTemplate {
   isMonetizationEnabled: boolean;
 
   @Expose()
-  templatePrice: string;
+  templatePrice: number;
 
   @Expose()
   templateCurrency: string;

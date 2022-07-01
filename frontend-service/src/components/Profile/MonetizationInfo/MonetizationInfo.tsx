@@ -12,12 +12,18 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
 import { SocialLogin } from "@library/common/SocialLogin/SocialLogin";
+import {WiggleLoader} from "@library/common/WiggleLoader/WiggleLoader";
 
 // styles
 import styles from './MonetizationInfo.module.scss';
 
 // stores
-import {$profileStore, connectStripeAccountFx, deleteStripeAccountFx, loginStripeAccountFx} from "../../../store";
+import {
+    $profileStore,
+    connectStripeAccountFx,
+    deleteStripeAccountFx,
+    loginStripeAccountFx
+} from "../../../store";
 
 const MonetizationInfo = memo(() => {
     const profile = useStore($profileStore);
@@ -25,7 +31,9 @@ const MonetizationInfo = memo(() => {
     const isLoginStripeAccountPending = useStore(loginStripeAccountFx.pending);
 
     const handleSetUpPayments = useCallback(async () => {
-        if (!isConnectStripeAccountPending) connectStripeAccountFx({});
+        if (!isConnectStripeAccountPending) {
+            await connectStripeAccountFx({});
+        }
     }, [isConnectStripeAccountPending]);
 
     const handleDeletePaymentSetUp = useCallback(async () => {
@@ -84,10 +92,17 @@ const MonetizationInfo = memo(() => {
                             Icon={StripeIcon}
                             onClick={handleSetUpPayments}
                         >
-                            &nbsp;
-                            <CustomTypography nameSpace="profile" translation="monetization.connectWith" />
-                            &nbsp;
-                            <CustomTypography variant="body1bold" nameSpace="profile" translation="monetization.stripe" />
+                            {!isConnectStripeAccountPending
+                                ? (
+                                    <>
+                                        &nbsp;
+                                        <CustomTypography nameSpace="profile" translation="monetization.connectWith" />
+                                        &nbsp;
+                                        <CustomTypography variant="body1bold" nameSpace="profile" translation="monetization.stripe" />
+                                    </>
+                                )
+                                : <WiggleLoader />
+                            }
                         </SocialLogin>
                     </CustomGrid>
                 )}

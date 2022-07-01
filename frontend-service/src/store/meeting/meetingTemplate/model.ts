@@ -25,7 +25,7 @@ export const initialTemplateState: UserTemplate = {
     languages: [],
     socials: [],
     usedAt: '',
-    templatePrice: '0',
+    templatePrice: 10,
     templateCurrency: "USD",
     signBoard: 'default',
     isMonetizationEnabled: false,
@@ -33,6 +33,7 @@ export const initialTemplateState: UserTemplate = {
 };
 
 export const $meetingTemplateStore = meetingDomain.store<UserTemplate>(initialTemplateState);
+
 export const $isUserSendEnterRequest = meetingDomain.store<boolean>(false);
 export const $isMeetingInstanceExists = $meetingTemplateStore.map(
     state => state?.meetingInstance?.id,
@@ -41,7 +42,7 @@ export const $isMeetingInstanceExists = $meetingTemplateStore.map(
 export const $isOwner = combine<{ meetingTemplate: UserTemplate; profile: Profile }>({
     meetingTemplate: $meetingTemplateStore,
     profile: $profileStore,
-}).map(({ meetingTemplate, profile }) => profile.id && meetingTemplate.meetingInstance?.owner === profile.id);
+}).map(({ meetingTemplate, profile }) => Boolean(profile.id) && meetingTemplate.meetingInstance?.owner === profile.id);
 
 export const $isOwnerInMeeting = combine<{ template: UserTemplate; users: MeetingUser[] }>({
     users: $meetingUsersStore,

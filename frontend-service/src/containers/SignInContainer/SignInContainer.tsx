@@ -126,7 +126,7 @@ const SignInContainer = memo(() => {
 
     return (
         <>
-            <CenteredPaper className={styles.wrapper} onClose={handleClosePage}>
+            <CenteredPaper className={styles.wrapper}>
                 <CustomGrid container alignItems="center" justifyContent="center">
                     <CustomBox className={styles.image}>
                         <Image

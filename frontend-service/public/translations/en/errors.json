@@ -46,6 +46,10 @@
     "100": "Maximum allowed characters is 100",
     "300": "Maximum allowed characters is 300"
   },
+  "templatePrice": {
+    "max": "Maximum template price is 999,999",
+    "min": "Minimum template price is 0.5"
+  },
   "required": "This field is required",
   "url": {
     "common": "Entered link is invalid",

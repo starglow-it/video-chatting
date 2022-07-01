@@ -44,6 +44,7 @@ const Component = ({ userEmails = [], className, onAddUserEmail, onDeleteUserEma
 
     const handleEnterPress = useCallback((event) => {
         if (event.key === 'Enter') {
+            event.preventDefault();
             handleAddUserEmail();
         }
     },[currentUserEmail]);

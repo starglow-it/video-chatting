@@ -20,16 +20,16 @@ import styles from './ChooseSignBoard.module.scss';
 // types
 import { SignOptionProps } from './types';
 
-const Component: React.FunctionComponent<SignOptionProps> = ({ data, width, height }) => {
+const Component: React.FunctionComponent<SignOptionProps> = ({ formKey, data, width, height }) => {
     const { control, setValue } = useFormContext();
 
     const activeSignBoard = useWatch({
         control,
-        name: 'signBoard',
+        name: formKey,
     });
 
     const handleChooseSign = useCallback(() => {
-        setValue('signBoard', data.value, {
+        setValue(formKey, data.value, {
             shouldValidate: true,
             shouldDirty: true,
         });
@@ -47,6 +47,9 @@ const Component: React.FunctionComponent<SignOptionProps> = ({ data, width, heig
                 key={data.id}
                 value={data.value}
                 label={data.label}
+                classes={{
+                    root: styles.label
+                }}
                 control={
                     <CustomRadio
                         icon={<RadioIcon className={styles.icon} width="22px" height="22px" />}

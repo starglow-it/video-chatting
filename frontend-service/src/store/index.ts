@@ -62,7 +62,6 @@ export * from './other/audio/init';
 export * from './users/localUser/init';
 export * from './users/meetingUsers/init';
 export * from './users/userToKick/init';
-export * from './users/sockets/init';
 
 export * from './templates/templates/init';
 export * from './templates/templatePreview/init';

@@ -13,15 +13,17 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 // icons
 import {EditIcon} from "@library/icons/EditIcon";
 import {InfoIcon} from "@library/icons/InfoIcon";
+import { RoundErrorIcon } from '@library/icons/RoundIcons/RoundErrorIcon';
 
 // custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import {CustomPopper} from "@library/custom/CustomPopper/CustomPopper";
+import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
+import {useTimer} from "../../../hooks/useTimer";
+import {useToggle} from "../../../hooks/useToggle";
 
 // styles
-import {RoundErrorIcon} from "@library/icons/RoundIcons/RoundErrorIcon";
 import styles from './MeetingGeneralInfo.module.scss';
 
 // store
@@ -35,8 +37,6 @@ import {formatCountDown} from "../../../utils/time/formatCountdown";
 
 // const
 import {ONE_MINUTE} from "../../../const/time/common";
-import {useCountDown} from "../../../hooks/useCountDown";
-import {useToggle} from "../../../hooks/useToggle";
 
 const MeetingGeneralInfo = memo(() => {
     const isOwner = useStore($isOwner);
@@ -77,12 +77,18 @@ const MeetingGeneralInfo = memo(() => {
         name: 'fullName',
     });
 
-    const { value: meetingEndsAt, onStartCountDown } = useCountDown((meeting.endsAt - Date.now()) / 1000);
+    const startAtValue = Date.now() - (meeting.startAt || Date.now());
+    const endAtValue = (meeting?.endsAt || Date.now()) - Date.now();
 
-    const isAbove10Minutes = meetingEndsAt * 1000 < 10 * ONE_MINUTE;
+    const {
+        value: currentTime,
+        onStartTimer: handleStartMeetingEnd
+    } = useTimer(startAtValue, endAtValue);
+
+    const is10MinutesLeft = (meeting?.endsAt || Date.now()) - currentTime < 10 * ONE_MINUTE;
 
     useEffect(() => {
-        onStartCountDown();
+        handleStartMeetingEnd();
     }, []);
 
     useEffect(() => {
@@ -116,7 +122,7 @@ const MeetingGeneralInfo = memo(() => {
                 gap={1}
                 container
                 className={styles.info}
-                direction={isThereSignBoard ? 'column' : 'row'}
+                direction={isThereSignBoard ? "column" : "row"}
                 justifyContent={isThereSignBoard ? 'center' : 'flex-start'}
                 alignItems="center"
             >
@@ -133,7 +139,10 @@ const MeetingGeneralInfo = memo(() => {
                     />
                     <Fade in={isMeetingActionOpened}>
                         <CustomGrid onClick={handleMeetingAction} className={styles.meetingActionWrapper} container justifyContent="center" alignItems="center">
-                            {isOwner ? <EditIcon width="36px" height="36px" /> : <InfoIcon width="36px" height="36px" /> }
+                            {isOwner
+                                ? <EditIcon width="36px" height="36px" />
+                                : <InfoIcon width="36px" height="36px" />
+                            }
                         </CustomGrid>
                     </Fade>
                 </CustomBox>
@@ -148,21 +157,12 @@ const MeetingGeneralInfo = memo(() => {
                     >
                         {isOwner ? companyName : meetingTemplate.companyName}
                     </CustomTypography>
-                    <CustomBox>
-                        <CustomTypography
-                            color={`colors.${isAbove10Minutes ? 'red': 'white'}.primary`}
-                            variant="body3"
-                        >
-                            Ends in
-                        </CustomTypography>
-                        &nbsp;
-                        <CustomTypography
-                            color={`colors.${isAbove10Minutes ? 'red': 'white'}.primary`}
-                            variant="body3bold"
-                        >
-                            {formatCountDown(meetingEndsAt * 1000)}
-                        </CustomTypography>
-                    </CustomBox>
+                    <CustomTypography
+                        color={`colors.${is10MinutesLeft ? 'red': 'white'}.primary`}
+                        variant="body3bold"
+                    >
+                        {formatCountDown(currentTime, { hours: true, minutes: true })}
+                    </CustomTypography>
                 </CustomGrid>
             </CustomGrid>
             <CustomPopper

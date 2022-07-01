@@ -36,7 +36,7 @@ export type UserTemplate = {
     fullName: string;
     signBoard: string;
     isMonetizationEnabled: boolean;
-    templatePrice: string;
+    templatePrice: number;
     templateCurrency: "USD" | "CAD";
     position: string;
     languages: Language[];

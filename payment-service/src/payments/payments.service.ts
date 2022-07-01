@@ -49,8 +49,8 @@ export class PaymentsService {
         return this.stripeClient.accounts.del(accountId);
     }
 
-    async createPaymentIntent({ templatePrice, templateCurrency, stripeAccountId }: { templatePrice: string, templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] }) {
-        const amount = parseInt(templatePrice) * 100;
+    async createPaymentIntent({ templatePrice, templateCurrency, stripeAccountId }: { templatePrice: number, templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] }) {
+        const amount = templatePrice * 100;
 
         return this.stripeClient.paymentIntents.create({
             amount,
