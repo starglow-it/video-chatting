@@ -24,12 +24,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.45,
-                left: 0.23
+                top: 0.54,
+                left: 0.27
             },
             {
-                top: 0.45,
-                left: 0.54
+                top: 0.54,
+                left: 0.58
             },
         ]
     },
@@ -52,16 +52,16 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.50,
-                left: 0.15
+                top: 0.59,
+                left: 0.19
             },
             {
-                top: 0.45,
-                left: 0.40
+                top: 0.54,
+                left: 0.44
             },
             {
-                top: 0.5,
-                left: 0.65
+                top: 0.59,
+                left: 0.69
             }
         ]
     },
@@ -85,20 +85,20 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.5,
-                left: 0.13
+                top: 0.59,
+                left: 0.17
             },
             {
-                top: 0.45,
-                left: 0.35
+                top: 0.54,
+                left: 0.39
             },
             {
-                top: 0.45,
-                left: 0.55
+                top: 0.54,
+                left: 0.59
             },
             {
-                top: 0.5,
-                left: 0.70
+                top: 0.59,
+                left: 0.74
             }
         ]
     },
@@ -120,20 +120,20 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.5,
-                left: 0.12
+                top: 0.59,
+                left: 0.16
             },
             {
-                top: 0.45,
-                left: 0.32
+                top: 0.54,
+                left: 0.39
             },
             {
-                top: 0.45,
-                left: 0.55
+                top: 0.54,
+                left: 0.59
             },
             {
-                top: 0.5,
-                left: 0.8
+                top: 0.59,
+                left: 0.84
             },
         ]
     },
@@ -157,16 +157,16 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.44,
-                left: 0.15
+                top: 0.53,
+                left: 0.19
             },
             {
-                top: 0.45,
-                left: 0.45
+                top: 0.54,
+                left: 0.49
             },
             {
-                top: 0.42,
-                left: 0.72
+                top: 0.51,
+                left: 0.76
             }
         ]
     },
@@ -188,16 +188,16 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.40,
-                left: 0.11
+                top: 0.49,
+                left: 0.15
             },
             {
-                top: 0.40,
-                left: 0.45
+                top: 0.49,
+                left: 0.49
             },
             {
-                top: 0.40,
-                left: 0.79
+                top: 0.49,
+                left: 0.83
             }
         ]
     },
@@ -218,12 +218,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.47,
-                left: 0.11
+                top: 0.56,
+                left: 0.15
             },
             {
-                top: 0.47,
-                left: 0.80
+                top: 0.56,
+                left: 0.84
             }
         ]
     },
@@ -247,28 +247,28 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.70,
-                left: 0.13
+                top: 0.79,
+                left: 0.17
             },
             {
-                top: 0.66,
-                left: 0.26
+                top: 0.75,
+                left: 0.3
             },
             {
-                top: 0.66,
-                left: 0.40
+                top: 0.75,
+                left: 0.44
             },
             {
-                top: 0.66,
-                left: 0.58
+                top: 0.75,
+                left: 0.62
             },
             {
-                top: 0.68,
-                left: 0.74
+                top: 0.77,
+                left: 0.78
             },
             {
-                top: 0.69,
-                left: 0.87
+                top: 0.78,
+                left: 0.91
             }
         ]
     },
@@ -288,12 +288,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.48,
-                left: 0.33
+                top: 0.57,
+                left: 0.37
             },
             {
-                top: 0.57,
-                left: 0.13
+                top: 0.66,
+                left: 0.17
             }
         ]
     },
@@ -313,12 +313,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.54,
-                left: 0.56
+                top: 0.63,
+                left: 0.6
             },
             {
-                top: 0.62,
-                left: 0.80
+                top: 0.67,
+                left: 0.83
             }
         ]
     },
@@ -339,16 +339,16 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.38,
-                left: 0.63
+                top: 0.47,
+                left: 0.67
             },
             {
-                top: 0.48,
-                left: 0.26
+                top: 0.57,
+                left: 0.3
             },
             {
-                top: 0.70,
-                left: 0.38
+                top: 0.79,
+                left: 0.42
             }
         ]
     },
@@ -370,16 +370,16 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.40,
-                left: 0.51
+                top: 0.49,
+                left: 0.55
             },
             {
-                top: 0.58,
-                left: 0.28
+                top: 0.67,
+                left: 0.32
             },
             {
-                top: 0.58,
-                left: 0.78
+                top: 0.67,
+                left: 0.82
             }
         ]
     },
@@ -399,12 +399,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.40,
-                left: 0.10
+                top: 0.49,
+                left: 0.14
             },
             {
-                top: 0.45,
-                left: 0.75
+                top: 0.54,
+                left: 0.79
             }
         ]
     },
@@ -424,24 +424,24 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.72,
-                left: 0.06
+                top: 0.81,
+                left: 0.1
             },
             {
-                top: 0.65,
-                left: 0.26
+                top: 0.74,
+                left: 0.3
             },
             {
-                top: 0.85,
-                left: 0.35
+                top: 0.94,
+                left: 0.39
             },
             {
-                top: 0.80,
-                left: 0.60
+                top: 0.89,
+                left: 0.64
             },
             {
-                top: 0.70,
-                left: 0.78
+                top: 0.79,
+                left: 0.82
             },
             {
                 top: 0.66,
@@ -466,12 +466,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.60,
-                left: 0.35
+                top: 0.69,
+                left: 0.39
             },
             {
-                top: 0.60,
-                left: 0.57
+                top: 0.69,
+                left: 0.61
             }
         ]
     },
@@ -492,12 +492,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.60,
-                left: 0.35
+                top: 0.69,
+                left: 0.39
             },
             {
-                top: 0.60,
-                left: 0.57
+                top: 0.69,
+                left: 0.61
             }
         ]
     },
@@ -518,12 +518,409 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.60,
-                left: 0.35
+                top: 0.69,
+                left: 0.39
+            },
+            {
+                top: 0.69,
+                left: 0.61
+            }
+        ]
+    },
+    {
+        templateId: 18,
+        url: 'https://vimeo.com/706268372',
+        previewUrl: '/templates/images/ralph_lauren4/ralph_lauren4_540p.jpg',
+        name: "Virtual Luxury",
+        maxParticipants: 4,
+        description: "Ralph Lauren's signature Shelter Point",
+        type: 'free',
+        businessCategories: [
+            'Store',
+            'Team meeting',
+            'Calming',
+            'Soothing',
+            'ASMR'
+        ],
+        usersPosition: [
+            {
+                top: 0.64,
+                left: 0.05
             },
             {
                 top: 0.60,
-                left: 0.57
+                left: 0.30
+            },
+            {
+                top: 0.60,
+                left: 0.78
+            },
+            {
+                top: 0.48,
+                left: 0.87
+            }
+        ]
+    },
+    {
+        templateId: 19,
+        url: 'https://vimeo.com/709641634',
+        previewUrl: '/templates/images/paris4/paris4_540p.jpg',
+        name: "Paris café",
+        maxParticipants: 4,
+        description: "Sit and relax at a typical Parisian café",
+        type: 'free',
+        businessCategories: [
+            'Counselling',
+            'Consulting',
+            'Legal',
+            'Team meeting',
+            'Sounds',
+            'Calming',
+            'Restorative',
+            'Energizing'
+        ],
+        usersPosition: [
+            {
+                top: 0.80,
+                left: 0.15
+            },
+            {
+                top: 0.76,
+                left: 0.48
+            },
+            {
+                top: 0.71,
+                left: 0.72
+            },
+            {
+                top: 0.67,
+                left: 0.93
+            }
+        ]
+    },
+    {
+        templateId: 20,
+        url: 'https://vimeo.com/714306605',
+        previewUrl: '/templates/images/clouds6/clouds6_540p.jpg',
+        name: "Cloud 9",
+        maxParticipants: 6,
+        description: "Enjoy our Together mode while floating in the clouds",
+        type: 'free',
+        businessCategories: [
+            'Team meeting',
+            'Calming',
+            'Private',
+            'ASMR'
+        ],
+        usersPosition: [
+            {
+                top: 0.2,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.35
+            },
+            {
+                top: 0.65,
+                left: 0.35
+            },
+            {
+                top: 0.8,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.65
+            },
+            {
+                top: 0.65,
+                left: 0.65
+            }
+        ]
+    },
+    {
+        templateId: 21,
+        url: 'https://vimeo.com/714306354',
+        previewUrl: '/templates/images/firepit6/firepit6_540p.jpg',
+        name: "The Firepit",
+        maxParticipants: 6,
+        description: "Enjoy our Together mode around a firepit",
+        type: 'free',
+        businessCategories: [
+            'Therapy',
+            'Counselling',
+            'Team meeting',
+            'Focused',
+            'Restorative',
+            'Private',
+            'ASMR'
+        ],
+        usersPosition: [
+            {
+                top: 0.2,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.35
+            },
+            {
+                top: 0.65,
+                left: 0.35
+            },
+            {
+                top: 0.8,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.65
+            },
+            {
+                top: 0.65,
+                left: 0.65
+            }
+        ]
+    },
+    {
+        templateId: 22,
+        url: 'https://vimeo.com/714306497',
+        previewUrl: '/templates/images/beach6/beach6_540p.jpg',
+        name: "Vista Rica",
+        maxParticipants: 6,
+        description: "Enjoy our Together mode overlooking a beautiful ocean vista",
+        type: 'free',
+        businessCategories: [
+            "Team meeting",
+            'Consulting',
+            'Coaching',
+            "Focused",
+            'Restorative',
+            'Calming',
+            'ASMR'
+        ],
+        usersPosition: [
+            {
+                top: 0.2,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.35
+            },
+            {
+                top: 0.65,
+                left: 0.35
+            },
+            {
+                top: 0.8,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.65
+            },
+            {
+                top: 0.65,
+                left: 0.65
+            }
+        ]
+    },
+    {
+        templateId: 23,
+        url: 'https://vimeo.com/719688289',
+        previewUrl: '/templates/images/zen_room4/zen_room4_540p.jpg',
+        name: "Zen Room",
+        maxParticipants: 4,
+        description: "Relax in a calm Zen room",
+        type: 'free',
+        businessCategories: [
+            "Counselling",
+            'Meditation',
+            'Team meeting',
+            'Calming',
+            'Soothing',
+            'ASMR',
+        ],
+        usersPosition: [
+            {
+                top: 0.72,
+                left: 0.20
+            },
+            {
+                top: 0.76,
+                left: 0.385
+            },
+            {
+                top: 0.76,
+                left: 0.595
+            },
+            {
+                top: 0.72,
+                left: 0.795
+            }
+        ]
+    },
+    {
+        templateId: 24,
+        url: 'https://vimeo.com/719688394',
+        previewUrl: '/templates/images/zen_pond4/zen_pond4_540p.jpg',
+        name: "Zen Pond",
+        maxParticipants: 4,
+        description: "Zen out at the edge of a still pond",
+        type: 'free',
+        businessCategories: [
+            "Counselling",
+            'Meditation',
+            'Team meeting',
+            'Calming',
+            'Soothing',
+            'ASMR',
+        ],
+        usersPosition: [
+            {
+                top: 0.72,
+                left: 0.20
+            },
+            {
+                top: 0.76,
+                left: 0.385
+            },
+            {
+                top: 0.76,
+                left: 0.595
+            },
+            {
+                top: 0.72,
+                left: 0.795
+            }
+        ]
+    },
+    {
+        templateId: 25,
+        url: 'https://vimeo.com/719922659',
+        previewUrl: '/templates/images/heart6/heart6_540p.jpg',
+        name: "Breathing Heart Exercise",
+        maxParticipants: 6,
+        description: "Box Breathing method for anxiety and calm",
+        type: 'free',
+        businessCategories: [
+            'Meditation',
+            'Team meeting',
+            'Calming',
+            'Focused Soothing',
+        ],
+        usersPosition: [
+            {
+                top: 0.2,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.35
+            },
+            {
+                top: 0.65,
+                left: 0.35
+            },
+            {
+                top: 0.8,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.65
+            },
+            {
+                top: 0.65,
+                left: 0.65
+            }
+        ]
+    },
+    {
+        templateId: 26,
+        url: 'https://vimeo.com/719937967',
+        previewUrl: '/templates/images/abstract6/abstract6_540p.jpg',
+        name: "Abstract Solar",
+        maxParticipants: 6,
+        description: "A soothing background for meetings",
+        type: 'free',
+        businessCategories: [
+            "Team meeting",
+            "Consulting",
+            "Coaching",
+            "Focused",
+            "Restorative",
+            "Calming"
+        ],
+        usersPosition: [
+            {
+                top: 0.2,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.35
+            },
+            {
+                top: 0.65,
+                left: 0.35
+            },
+            {
+                top: 0.8,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.65
+            },
+            {
+                top: 0.65,
+                left: 0.65
+            }
+        ]
+    },
+    {
+        templateId: 27,
+        url: '',
+        previewUrl: '/templates/images/calm6/calm6_540p.png',
+        name: "Simply Nice",
+        maxParticipants: 6,
+        description: "A static, professional & calming ambient",
+        type: 'free',
+        businessCategories: [
+            "Team meeting",
+            "Consulting",
+            "Coaching",
+            "Focused",
+            "Restorative",
+            "Calming"
+        ],
+        usersPosition: [
+            {
+                top: 0.2,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.35
+            },
+            {
+                top: 0.65,
+                left: 0.35
+            },
+            {
+                top: 0.8,
+                left: 0.5
+            },
+            {
+                top: 0.35,
+                left: 0.65
+            },
+            {
+                top: 0.65,
+                left: 0.65
             }
         ]
     }

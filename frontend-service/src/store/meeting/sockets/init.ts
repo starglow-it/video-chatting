@@ -95,7 +95,9 @@ export const enterMeetingRequest = attach({
         meeting: $meetingStore,
         user: $localUserStore,
     }),
-    mapParams: (params, { meeting, user }) => ({ meetingId: meeting?.id, user })
+    mapParams: (params, { meeting, user }) => {
+        return { meetingId: meeting?.id, user }
+    }
 });
 
 sample({

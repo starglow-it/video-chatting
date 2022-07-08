@@ -146,10 +146,6 @@ const Component = () => {
                 });
 
                 handleClose();
-
-                appDialogsApi.openDialog({
-                    dialogKey: AppDialogsEnum.downloadIcsEventDialog,
-                });
             } catch (e) {
 
             }

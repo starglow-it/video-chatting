@@ -43,6 +43,8 @@ export type Profile = {
     signBoard: string;
     stripeAccountId: string;
     stripeEmail: string;
+    isStripeEnabled: boolean;
+    wasSuccessNotificationShown: boolean;
     description: string;
     socials: SocialLink[];
     languages: Language[];
@@ -51,9 +53,10 @@ export type Profile = {
 };
 
 export type UpdateProfileInfo = {
-    companyName: Profile['companyName'];
-    fullName: Profile['fullName'];
-    signBoard: Profile['signBoard'];
+    companyName?: Profile['companyName'];
+    fullName?: Profile['fullName'];
+    signBoard?: Profile['signBoard'];
+    wasSuccessNotificationShown?: Profile['wasSuccessNotificationShown'];
 };
 
 export type UpdateProfileAvatar = {

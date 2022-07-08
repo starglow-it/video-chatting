@@ -71,6 +71,14 @@ export class CommonUserRestDTO implements ICommonUserDTO {
 
   @Expose()
   @ApiProperty()
+  isStripeEnabled: ICommonUserDTO['isStripeEnabled'];
+
+  @Expose()
+  @ApiProperty()
+  wasSuccessNotificationShown: ICommonUserDTO['wasSuccessNotificationShown'];
+
+  @Expose()
+  @ApiProperty()
   isResetPasswordActive: boolean;
 
   createdAt: Date;

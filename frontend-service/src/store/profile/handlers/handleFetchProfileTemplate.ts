@@ -3,7 +3,7 @@ import { getProfileTemplateUrl } from '../../../utils/urls';
 
 import { ErrorState, Profile, Template } from '../../types';
 
-import { initialProfileTemplateState } from '../profileTemplate/model';
+import {initialProfileTemplateState} from "../profileTemplate/const";
 
 export const handleFetchProfileTemplate = async ({
     templateId,

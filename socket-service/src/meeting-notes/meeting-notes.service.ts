@@ -23,7 +23,7 @@ export class MeetingNotesService {
     return this.meetingNote.deleteOne(query, { session });
   }
 
-  async findMany(query, { session }: ITransactionSession) {
-    return this.meetingNote.find(query, {}, { session });
+  async findMany(query, { session }: ITransactionSession, populate) {
+    return this.meetingNote.find(query, {}, { session, populate }).exec();
   }
 }

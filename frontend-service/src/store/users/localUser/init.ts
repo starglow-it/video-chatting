@@ -9,7 +9,11 @@ import {
 } from './model';
 
 $localUserStore
-    .on(updateLocalUserEvent, (state,  user) => ({ ...state, ...user }))
+    .on(updateLocalUserEvent, (state,  user) => ({
+        ...state,
+        ...user,
+        username: user.username || state.username
+    }))
     .on(setLocalUserMediaEvent, (state, data) => ({
         ...state,
         videoTrack: data.videoTrack,

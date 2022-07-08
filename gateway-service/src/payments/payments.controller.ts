@@ -72,14 +72,18 @@ export class PaymentsController {
             url: accountLink,
           },
         };
-      }
+      } else {
+        const { accountLink } = await this.paymentsService.createAccountLink({
+          accountId: user.stripeAccountId,
+        });
 
-      return {
-        success: true,
-        result: {
-          url: '',
-        },
-      };
+        return {
+          success: true,
+          result: {
+            url: accountLink,
+          },
+        };
+      }
     } catch (err) {
       this.logger.error(
         {
@@ -165,7 +169,12 @@ export class PaymentsController {
 
         await this.coreService.findUserAndUpdate({
           userId: req.user.userId,
-          data: { stripeAccountId: '' },
+          data: {
+            stripeAccountId: '',
+            isStripeEnabled: false,
+            stripeEmail: '',
+            wasSuccessNotificationShown: false,
+          },
         });
       }
 

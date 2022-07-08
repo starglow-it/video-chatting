@@ -21,7 +21,7 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
     optionHeight,
   formKey,
 }) => {
-    const { control, register } = useFormContext();
+    const { control } = useFormContext();
 
     const renderSignOptions = useMemo(
         () =>
@@ -37,8 +37,6 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
         [],
     );
 
-    const registerData = register(formKey);
-
     return (
         <Controller
             render={({ field }) => (
@@ -53,11 +51,7 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
                     {renderSignOptions}
                 </CustomRadioGroup>
             )}
-            {...registerData}
-            ref={registerData.ref}
-            onBlur={registerData.onBlur}
-            onChange={registerData.onChange}
-            name={registerData.name}
+            name={formKey}
             control={control}
             defaultValue={SIGN_BOARDS[0].value}
         />

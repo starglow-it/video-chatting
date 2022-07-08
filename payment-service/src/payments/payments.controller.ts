@@ -9,7 +9,7 @@ import {
     CREATE_STRIPE_EXPRESS_ACCOUNT,
     DELETE_STRIPE_EXPRESS_ACCOUNT,
     LOGIN_STRIPE_EXPRESS_ACCOUNT,
-    HANDLE_WEBHOOK,
+    HANDLE_WEBHOOK, CREATE_STRIPE_ACCOUNT_LINK,
 } from "@shared/patterns/payments";
 import { PAYMENTS_SERVICE } from "@shared/const/services.const";
 import { PAYMENTS_SCOPE } from "@shared/const/api-scopes.const";
@@ -56,6 +56,19 @@ export class PaymentsController {
                 ctx: PAYMENTS_SERVICE,
             });
         }
+    }
+
+    @MessagePattern({ cmd: CREATE_STRIPE_ACCOUNT_LINK })
+    async createStripeAccountLink(
+        @Payload() data: { accountId: string; },
+    ) {
+        const accountLink = await this.paymentService.createExpressAccountLink({
+            accountId: data.accountId
+        });
+
+        return {
+            accountLink: accountLink.url,
+        };
     }
 
     @MessagePattern({ cmd: LOGIN_STRIPE_EXPRESS_ACCOUNT })
@@ -148,6 +161,17 @@ export class PaymentsController {
                 });
 
             switch (event.type) {
+                case "account.updated":
+                    const accountData = event.data.object as Stripe.Account;
+
+                    if (!accountData.payouts_enabled || !accountData.details_submitted) {
+                        await this.coreService.updateUser({
+                            query: { stripeAccountId: accountData.id },
+                            data: { isStripeEnabled: true },
+                        });
+                    }
+
+                    break;
                 default:
                     console.log(`Unhandled event type ${event.type}.`);
             }

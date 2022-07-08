@@ -2,7 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 import { CORE_PROVIDER } from '@shared/providers';
-import { GET_MEETING_DONATION } from "@shared/patterns/payments";
+import {IUpdateProfile} from "@shared/interfaces/update-profile.interface";
+import {ICommonUserDTO} from "@shared/interfaces/common-user.interface";
+import { UPDATE_USER } from "@shared/patterns/users";
 
 @Injectable()
 export class CoreService {
@@ -12,8 +14,11 @@ export class CoreService {
     await this.client.connect();
   }
 
-  async getMeetingDonation(data: { paymentIntentId: string; }) {
-    const pattern = { cmd: GET_MEETING_DONATION };
+  async updateUser(data: {
+    query: any;
+    data: Partial<IUpdateProfile>;
+  }): Promise<ICommonUserDTO> {
+    const pattern = { cmd: UPDATE_USER };
 
     return this.client.send(pattern, data).toPromise();
   }

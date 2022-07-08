@@ -4,13 +4,17 @@
 .noteWrapper {
   position: absolute;
   width: rem(224px);
-  padding: rem(20px 0);
+  padding: rem(41px 0 20px 0);
   background: linear-gradient(78.71deg, #FFF790 2.05%, #FFEC55 96.25%);
   box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
   border-radius: rem(1px);
 
   &:hover {
     .unpinButton {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .copyIcon {
       opacity: 1;
       pointer-events: all;
     }
@@ -42,6 +46,36 @@
 .scroll {
   width: 100%;
   max-height: rem(124px);
+}
+
+.copyIcon {
+  position: absolute;
+  top: 12px;
+  left: 22px;
+  cursor: pointer;
+  color: $primary-white;
+  background: $primary-black;
+  padding: rem(2px 6px);
+  width: rem(30px);
+  height: rem(22px);
+  border-radius: rem(4px);
+  opacity: 0;
+  pointer-events: none;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+
+    border-top: 3px solid $primary-black;
+    transform: translate(-50%, 0);
+    border-radius: 1px;
+  }
 }
 
 .unpinButton {

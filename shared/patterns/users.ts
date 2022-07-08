@@ -1,5 +1,7 @@
 export const FIND_USER_BY_EMAIL = 'find_user_by_email';
 export const FIND_USER_BY_ID = 'find_user_by_id';
+export const FIND_USER = 'find_user';
+export const UPDATE_USER = 'update_user';
 export const FIND_USER_BY_EMAIL_AND_UPDATE = 'find_user_by_email_and_update';
 export const USER_EXISTS = 'user_exists';
 export const USER_TOKEN_EXISTS = 'user_token_exists';

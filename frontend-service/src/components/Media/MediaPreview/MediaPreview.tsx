@@ -48,13 +48,13 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
 
     const handleToggleVideo = useCallback(() => {
         onToggleVideo?.();
-        onToggleCamera(isCameraActive);
-    }, [isCameraActive]);
+        onToggleCamera(!isCameraActive);
+    }, [onToggleCamera, onToggleVideo, isCameraActive]);
 
     const handleToggleAudio = useCallback(() => {
         onToggleAudio?.();
-        onToggleMic(isMicActive);
-    }, [isMicActive]);
+        onToggleMic(!isMicActive);
+    }, [onToggleCamera, onToggleAudio, isMicActive]);
 
     const isNeedToRenderDevices =
         (Boolean(videoDevices.length || audioDevices.length) && !error) ||
@@ -79,7 +79,9 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(error),
+                                    [styles.disabled]: !stream?.id
                                 })}
+                                disabled={!stream?.id}
                                 onAction={handleToggleAudio}
                                 Icon={<MicIcon width="32px" height="32px" isActive={isMicActive} />}
                             />
@@ -88,8 +90,10 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(error),
+                                    [styles.disabled]: !stream?.id
                                 })}
                                 onAction={handleToggleVideo}
+                                disabled={!stream?.id}
                                 Icon={
                                     <CameraIcon
                                         width="32px"

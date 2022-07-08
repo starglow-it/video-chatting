@@ -23,4 +23,6 @@ export interface ICommonUserDTO {
     signBoard: string;
     stripeAccountId: string;
     stripeEmail: string;
+    isStripeEnabled: boolean;
+    wasSuccessNotificationShown: boolean;
 }

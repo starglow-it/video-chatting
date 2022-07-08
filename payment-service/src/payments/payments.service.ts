@@ -55,7 +55,6 @@ export class PaymentsService {
         return this.stripeClient.paymentIntents.create({
             amount,
             currency: templateCurrency,
-            // application_fee_amount: amount * 0.05,
             transfer_data: {
                 amount: (amount - amount * 0.05) - 30,
                 destination: stripeAccountId

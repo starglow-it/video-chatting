@@ -24,7 +24,6 @@ export class UserTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true,
   })
   url: string;
 

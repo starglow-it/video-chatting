@@ -19,7 +19,7 @@ import {
     $localUserStore,
     joinRoomBeforeMeetingSocketEvent,
     resetLocalUserStore,
-    resetMeetingUsersStore
+    resetMeetingUsersStore, setBackgroundAudioActive
 } from '../../store';
 import { initiateSocketConnectionFx, resetSocketStore } from '../../store';
 import { appDialogsApi } from '../../store';
@@ -74,6 +74,7 @@ const MeetingContainer = memo(() => {
             resetLocalUserStore();
             resetMeetingStore();
             resetSocketStore();
+            setBackgroundAudioActive(false);
             appDialogsApi.resetDialogs();
         };
     }, []);

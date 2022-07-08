@@ -43,7 +43,7 @@ const MeetingPreview = memo(() => {
     });
 
     const handleLeaveMeeting = useCallback(() => {
-        router.push(isOwner ? '/dashboard' : '/dashboard/discovery');
+        router.push(isOwner ? '/dashboard' : '/dashboard/welcome');
     }, []);
 
     const renderCurrentUsers = useMemo(

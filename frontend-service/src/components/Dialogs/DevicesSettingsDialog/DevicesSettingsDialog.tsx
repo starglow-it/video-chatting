@@ -136,11 +136,16 @@ const DevicesSettingsDialog = memo(() => {
         (async () => {
             if (devicesSettingsDialog) {
                 await onInitDevices();
-                onToggleCamera(localUser.cameraStatus !== 'inactive');
-                onToggleMic(localUser.micStatus !== 'inactive');
             }
         })();
-    }, [devicesSettingsDialog, localUser.cameraStatus, localUser.micStatus]);
+    }, [devicesSettingsDialog]);
+
+    useEffect(() => {
+        if (changeStream) {
+            onToggleCamera(localUser.cameraStatus !== 'inactive');
+            onToggleMic(localUser.micStatus !== 'inactive');
+        }
+    }, [changeStream])
 
     const handleSaveSettings = useCallback(async () => {
         appDialogsApi.closeDialog({
@@ -229,7 +234,7 @@ const DevicesSettingsDialog = memo(() => {
                                         isBackgroundActive={isSettingsAudioBackgroundActive}
                                         onBackgroundToggle={handleToggleBackgroundAudio}
                                         backgroundVolume={volume}
-                                        isMonetizationEnabled={Boolean(profile?.stripeAccountId)}
+                                        isMonetizationEnabled={profile?.isStripeEnabled}
                                         onChangeBackgroundVolume={setVolume}
                                         isBlurActive={isBlurEnabled}
                                         onToggleBlur={handleToggleBlur}

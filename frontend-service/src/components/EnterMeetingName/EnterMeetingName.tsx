@@ -3,6 +3,7 @@ import { useStore } from 'effector-react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
@@ -15,10 +16,7 @@ import { fullNameSchema } from '../../validation/users/fullName';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
-import { updateLocalUserEvent } from '../../store';
-import { $authStore } from '../../store';
-import { $isOwner, $meetingTemplateStore } from '../../store';
-import { $profileStore } from '../../store';
+import { $profileStore, $authStore, $isOwner, $meetingTemplateStore, updateLocalUserEvent } from '../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';

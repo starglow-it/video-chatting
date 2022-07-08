@@ -15,7 +15,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
-import { root, $profileStore, $authStore, checkAuthFx, initialProfileState } from '../src/store';
+import { root, $profileStore, $authStore, checkAuthFx } from '../src/store';
 
 import { useScope } from '../src/hooks/useScope';
 import { redirectTo } from '../src/helpers/http/redirectTo';
@@ -28,6 +28,7 @@ import { baseTheme } from '../src/themes/base';
 import { typographyTheme } from '../src/themes/typography';
 import { componentsTheme } from '../src/themes/components';
 import { uiTheme } from '../src/themes/ui';
+import {initialProfileState} from "../src/store/profile/profile/const";
 
 const { publicRuntimeConfig } = getConfig();
 

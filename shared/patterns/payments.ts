@@ -1,4 +1,5 @@
 export const CREATE_STRIPE_EXPRESS_ACCOUNT = 'create_stripe_express_account';
+export const CREATE_STRIPE_ACCOUNT_LINK = 'create_stripe_account_link';
 export const LOGIN_STRIPE_EXPRESS_ACCOUNT = 'login_stripe_express_account';
 export const DELETE_STRIPE_EXPRESS_ACCOUNT = 'delete_stripe_express_account';
 export const CREATE_PAYMENT_INTENT = 'create_payment_intent';

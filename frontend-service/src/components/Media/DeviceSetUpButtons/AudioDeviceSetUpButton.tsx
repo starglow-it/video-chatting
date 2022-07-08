@@ -29,7 +29,7 @@ const AudioDeviceSetUpButton = memo(
                     <ActionButton
                         variant="transparentBlack"
                         onAction={onClick}
-                        className={styles.iconButton}
+                        className={clsx(styles.iconButton, {[styles.disabled]: !isThereAction })}
                         Icon={<MicIcon width="32px" height="32px" isActive={isMicActive} />}
                     />
                 </CustomPaper>

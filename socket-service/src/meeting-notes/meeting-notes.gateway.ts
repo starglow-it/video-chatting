@@ -111,6 +111,7 @@ export class MeetingNotesGateway extends BaseGateway {
       const meetingNotes = await this.meetingNotesService.findMany(
         { meeting: user.meeting._id },
         session,
+        'user',
       );
 
       const plainMeetingNotes = plainToClass(MeetingNoteDTO, meetingNotes, {

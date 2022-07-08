@@ -27,6 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { receiverScheduleMessage } from '../utils/emailMessages/receiverScheduleMessage';
 import { formatDate } from '../utils/dateHelpers/formatDate';
 import { parseDateObject } from '../utils/dateHelpers/parseDateObject';
+import { getTzOffset } from '../utils/dateHelpers/getTzOffset';
 
 @Controller('users/templates')
 export class UserTemplateController {
@@ -107,11 +108,13 @@ export class UserTemplateController {
       const startAt = parseDateObject(data.startAt);
       const endAt = parseDateObject(data.endAt);
 
+      const tzOffset = getTzOffset(startAt, data.timeZone);
+
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
         organizerName: senderUser.fullName,
-        startAt: startAt,
-        endAt: endAt,
+        startAt: startAt - tzOffset,
+        endAt: endAt - tzOffset,
         comment: data.comment,
         attendees: data.userEmails.map((email) => ({ name: email, email })),
       });

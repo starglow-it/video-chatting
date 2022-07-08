@@ -7,6 +7,7 @@ export enum NotificationType {
     PasswordChanged = 'password_changed',
     PaymentSuccess = 'payment_success',
     PaymentFail = 'password_fail',
+    copyNotification = 'text_copied',
 }
 
 export type Notification = {

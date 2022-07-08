@@ -31,5 +31,8 @@
     &.withError {
       color: $primary-red;
     }
+    &.disabled {
+      color: $normal-gray-scale;
+    }
   }
 }

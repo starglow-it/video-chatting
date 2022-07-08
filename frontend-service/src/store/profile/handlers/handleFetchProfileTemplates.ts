@@ -1,7 +1,7 @@
 import { EntityList, ErrorState, Template } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { profileTemplatesUrl } from '../../../utils/urls';
-import { initialProfileTemplatesStore } from '../profileTemplates/model';
+import {initialProfileTemplatesStore} from "../profileTemplates/const";
 
 export const handleFetchProfileTemplates = async ({
     limit,

@@ -113,6 +113,17 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
+  })
+  isStripeEnabled: ICommonUserDTO['isStripeEnabled'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  wasSuccessNotificationShown: ICommonUserDTO['wasSuccessNotificationShown'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
     default: false,
   })
   isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];

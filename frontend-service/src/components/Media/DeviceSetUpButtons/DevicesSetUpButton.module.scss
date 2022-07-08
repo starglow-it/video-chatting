@@ -6,6 +6,10 @@
   height: 100%;
   cursor: default;
   border-radius: rem(12px);
+
+  &.disabled {
+    color: $normal-gray-scale;
+  }
 }
 
 .deviceButton {

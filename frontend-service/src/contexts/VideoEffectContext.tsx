@@ -133,31 +133,27 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
     const handleGetActiveStream = useCallback(
         async (stream: MediaStream, options) => {
             const blurStream = new MediaStream();
-            const newStream = new MediaStream();
 
             const newBlurSetting = options?.isBlurActive ?? isBlurActive;
             const newFaceTrackingSetting = options?.isFaceTrackingActive ?? isFaceTrackingActive;
 
             let videoTrack = stream.getVideoTracks()[0];
-            let blurTrack = stream.getVideoTracks()[0];
-
-            const audioTrack = stream.getAudioTracks()[0];
-
-            newStream.addTrack(audioTrack);
 
             const videoElement = videoRef.current;
+
+            const temEnabled = videoTrack.enabled;
+
+            videoTrack.enabled = true;
 
             if (animationFrameRef.current) {
                 cancelAnimationFrame(animationFrameRef.current);
             }
 
             if (newBlurSetting) {
-                blurTrack = await blurFn(videoTrack);
-            } else {
-                blurStream.addTrack(videoTrack);
+                videoTrack = await blurFn.start(videoTrack);
             }
 
-            blurStream.addTrack(blurTrack);
+            blurStream.addTrack(videoTrack);
 
             if (faceDetectionRef.current && newFaceTrackingSetting) {
                 if (videoElement) {
@@ -174,10 +170,15 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
                     videoTrack = canvasStream.getVideoTracks()[0];
                 }
             }
+            const track = stream.getVideoTracks()[0];
 
-            newStream.addTrack(newFaceTrackingSetting ? videoTrack : blurTrack);
+            stream.removeTrack(track);
 
-            return newStream;
+            stream.addTrack(videoTrack);
+
+            videoTrack.enabled = temEnabled;
+
+            return stream;
         },[isBlurActive, isFaceTrackingActive]);
 
     useLayoutEffect(() => {
@@ -210,6 +211,7 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             if (animationFrameRef.current) {
                 cancelAnimationFrame(animationFrameRef.current);
             }
+            blurFn.destroy();
         }
     }, []);
 

@@ -16,26 +16,31 @@ export const addBlur = () => {
     let effectBackground: EffectBackground | null = null;
     let videoEffects: VideoEffects | null = null;
 
-    return async (rawTrack: MediaStreamTrack): Promise<MediaStreamTrack> => {
-        try {
-            if (isBlurSupported) {
-                if (!effectBackground) {
-                    effectBackground = new EffectBackground();
+    return {
+        start: async (rawTrack: MediaStreamTrack): Promise<MediaStreamTrack> => {
+            try {
+                if (isBlurSupported) {
+                    if (!effectBackground) {
+                        effectBackground = new EffectBackground();
 
-                    effectBackground.setBackgroundImage('/images/orange.png');
+                        effectBackground.setBackgroundImage('/images/orange.png');
+                    }
+
+                    if (!videoEffects) {
+                        videoEffects = new VideoEffects();
+                    }
+
+                    return await videoEffects.setEffect(effectBackground, rawTrack);
                 }
 
-                if (!videoEffects) {
-                    videoEffects = new VideoEffects();
-                }
-
-                return await videoEffects.setEffect(effectBackground, rawTrack);
+                return rawTrack;
+            } catch (e) {
+                console.log('log error', e.message);
+                return rawTrack;
             }
-
-            return rawTrack;
-        } catch (e) {
-            console.log('log error', e.message);
-            return rawTrack;
+        },
+        destroy: () => {
+            videoEffects?.destroy();
         }
     };
 };

@@ -56,12 +56,18 @@ import {
 
 // types
 import {AppDialogsEnum, MeetingAccessStatuses} from '../../../store/types';
+import {useToggle} from "../../../hooks/useToggle";
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
+
+    const {
+        value: isMeetingConnected,
+        onSwitchOn: handleAllowActionInMeeting
+    } = useToggle(false)
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
@@ -152,6 +158,7 @@ const MeetingView = memo(() => {
 
                     if (transformedStream) {
                         await AgoraController.initiateConnection({ stream: transformedStream });
+                        handleAllowActionInMeeting();
                     }
 
                     AgoraController.setTracksState({
@@ -209,11 +216,11 @@ const MeetingView = memo(() => {
                     <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
                         <AudioDeviceSetUpButton
                             isMicActive={isLocalMicActive}
-                            onClick={handleToggleAudio}
+                            onClick={isMeetingConnected ? handleToggleAudio : undefined}
                         />
                         <VideoDeviceSetUpButton
                             isCamActive={isLocalCamActive}
-                            onClick={handleToggleVideo}
+                            onClick={isMeetingConnected ? handleToggleVideo : undefined}
                         />
                         <ScreenSharingButton
                             isSharingActive={Boolean(meeting.sharingUserId)}

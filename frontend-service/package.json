@@ -45,6 +45,7 @@
     "express": "4.17.3",
     "http-proxy-middleware": "2.0.4",
     "i18next-hmr": "1.7.5",
+    "linkify-react": "^3.0.4",
     "next": "12.1.0",
     "next-i18next": "4.5.0",
     "nookies": "2.5.2",

@@ -74,6 +74,12 @@ export class CommonUserDTO implements ICommonUserDTO {
   @Expose()
   stripeEmail: ICommonUserDTO['stripeEmail'];
 
+  @Expose()
+  isStripeEnabled: ICommonUserDTO['isStripeEnabled'];
+
+  @Expose()
+  wasSuccessNotificationShown: ICommonUserDTO['wasSuccessNotificationShown'];
+
   tokens: string[];
   password: ICommonUserDTO['password'];
 

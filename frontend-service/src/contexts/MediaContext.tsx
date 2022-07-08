@@ -69,8 +69,8 @@ export const MediaContext = React.createContext<MediaContextType>({
 export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>): ReactElement => {
     const [audioDevices, setAudioDevices] = useState<UseMediaDevices['audioDevices']>([]);
     const [videoDevices, setVideoDevices] = useState<UseMediaDevices['videoDevices']>([]);
-    const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
-    const [isMicActive, setIsMicActive] = useState<boolean>(false);
+    const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
+    const [isMicActive, setIsMicActive] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
     const [activeStream, setActiveStream] = useState<CustomMediaStream>(null);
     const [changeStream, setChangeStream] = useState<CustomMediaStream>(null);
@@ -80,6 +80,11 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
     const handleGetInitialStream = useCallback(async () => {
         setIsStreamRequested(true);
+        setChangeStream((prev) => {
+            stopStream(prev);
+
+            return null;
+        });
 
         const { stream: initialStream, error: initialError } = await getMediaStream({
             audioDeviceId: currentAudioDevice,
@@ -112,15 +117,17 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             if (stream) {
                 setChangeStream(prev => {
                     const { videoDeviceId: oldDevice } = getDevicesFromStream(prev);
-                    const { videoDeviceId: newDevice } = getDevicesFromStream(stream);
+                    const { videoDeviceId: newDevice, audioDeviceId } = getDevicesFromStream(stream);
 
-                    if (oldDevice !== newDevice) {
+                    if (oldDevice !== newDevice || !(prev || prev.active)) {
                         stopStream(prev);
 
-                        return stream;
-                    }
+                        setIsCameraActive(isCameraActive);
+                        setIsMicActive(isMicActive);
 
-                    if (!prev || !prev.active) {
+                        setCurrentAudioDevice(prev => audioDeviceId || prev);
+                        setCurrentVideoDevice(prev => newDevice || prev);
+
                         return stream;
                     }
 
@@ -150,7 +157,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
             setIsStreamRequested(false);
         }
-    }, [currentAudioDevice, currentVideoDevice]);
+    }, [currentAudioDevice, currentVideoDevice, isCameraActive, isMicActive]);
 
     useEffect(() => {
         return () => {
@@ -181,29 +188,6 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             });
         };
     }, []);
-
-    useEffect(() => {
-        if (!changeStream) {
-            setIsCameraActive(false);
-            setIsMicActive(false);
-        } else if (changeStream) {
-            const videoTrack = changeStream.getVideoTracks()[0];
-            const audioTrack = changeStream.getAudioTracks()[0];
-
-            setIsCameraActive(videoTrack.enabled);
-            setIsMicActive(audioTrack.enabled);
-
-            const { audioDeviceId, videoDeviceId } = getDevicesFromStream(changeStream);
-
-            if (audioDeviceId) {
-                setCurrentAudioDevice(audioDeviceId);
-            }
-
-            if (videoDeviceId) {
-                setCurrentVideoDevice(videoDeviceId);
-            }
-        }
-    }, [changeStream]);
 
     const handleChangeActiveStream = useCallback(() => {
         const newStream = changeStream?.clone();
@@ -244,7 +228,26 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 stopStream(changeStream);
 
                 if (newStream?.stream) {
-                    setChangeStream(newStream?.stream);
+                    setChangeStream(prev => {
+                        const { videoDeviceId: oldVideoDevice, audioDeviceId: oldAudioDevice } = getDevicesFromStream(prev);
+                        const { videoDeviceId: newVideoDevice, audioDeviceId: newAudioDevice } = getDevicesFromStream(newStream?.stream);
+
+                        if (oldVideoDevice !== newVideoDevice || oldAudioDevice !== newAudioDevice || !(prev || prev.active)) {
+                            stopStream(prev);
+
+                            setIsCameraActive(isCameraActive);
+                            setIsMicActive(isMicActive);
+
+                            setCurrentAudioDevice(prev => newAudioDevice || prev);
+                            setCurrentVideoDevice(prev => newVideoDevice || prev);
+
+                            return newStream?.stream;
+                        }
+
+                        stopStream(newStream?.stream);
+
+                        return prev;
+                    });
                     setError('');
                 }
 

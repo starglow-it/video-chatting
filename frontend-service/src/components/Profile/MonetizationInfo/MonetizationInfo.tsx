@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, {memo, useCallback, useEffect} from 'react';
 import {useStore} from "effector-react";
 
 // icons
@@ -20,15 +20,21 @@ import styles from './MonetizationInfo.module.scss';
 // stores
 import {
     $profileStore,
+    addNotificationEvent,
     connectStripeAccountFx,
     deleteStripeAccountFx,
-    loginStripeAccountFx
+    loginStripeAccountFx,
+    updateProfileFx
 } from "../../../store";
+
+import {NotificationType} from "../../../store/types";
+import {emptyFunction} from "../../../utils/functions/emptyFunction";
 
 const MonetizationInfo = memo(() => {
     const profile = useStore($profileStore);
     const isConnectStripeAccountPending = useStore(connectStripeAccountFx.pending);
     const isLoginStripeAccountPending = useStore(loginStripeAccountFx.pending);
+    const isDeleteStripeAccountPending = useStore(deleteStripeAccountFx.pending);
 
     const handleSetUpPayments = useCallback(async () => {
         if (!isConnectStripeAccountPending) {
@@ -36,13 +42,26 @@ const MonetizationInfo = memo(() => {
         }
     }, [isConnectStripeAccountPending]);
 
+    const handleLoginStripe = useCallback(async () => {
+        if (!isLoginStripeAccountPending) loginStripeAccountFx();
+    }, []);
+
     const handleDeletePaymentSetUp = useCallback(async () => {
         await deleteStripeAccountFx({});
     }, []);
 
-    const handleLoginStripe = useCallback(async () => {
-        if (!isLoginStripeAccountPending) loginStripeAccountFx();
-    }, []);
+    useEffect(() => {
+        if (profile.isStripeEnabled && !profile.wasSuccessNotificationShown) {
+            addNotificationEvent({
+                type: NotificationType.PaymentSuccess,
+                message: 'payments.connectAccountSuccess',
+                withSuccessIcon: true,
+            });
+            updateProfileFx({
+                wasSuccessNotificationShown: true
+            });
+        }
+    }, [profile.isStripeEnabled, profile.wasSuccessNotificationShown]);
 
     return (
         <CustomGrid
@@ -63,8 +82,8 @@ const MonetizationInfo = memo(() => {
                     ? (
                         <CustomTypography
                             className={styles.disconnect}
-                            onClick={handleDeletePaymentSetUp}
-                            color="colors.red.primary"
+                            onClick={!isDeleteStripeAccountPending ? handleDeletePaymentSetUp : emptyFunction}
+                            color={!isDeleteStripeAccountPending ? "colors.red.primary": "colors.grayscale.normal"}
                             nameSpace="profile"
                             translation="monetization.disconnect"
                         />
@@ -72,8 +91,18 @@ const MonetizationInfo = memo(() => {
                     : null
                 }
             </CustomGrid>
+            {(!profile.isStripeEnabled && profile.stripeAccountId)
+                ? (
+                    <CustomTypography
+                        color="colors.grayscale.normal"
+                        nameSpace="profile"
+                        translation="monetization.setUpStripeText"
+                    />
+                )
+                : null
+            }
             <CustomGrid container gap={6}>
-                {profile.stripeAccountId ? (
+                {profile.isStripeEnabled && profile.stripeAccountId ? (
                     <SocialLogin
                         className={styles.buttonWrapper}
                         onClick={handleLoginStripe}
@@ -96,7 +125,7 @@ const MonetizationInfo = memo(() => {
                                 ? (
                                     <>
                                         &nbsp;
-                                        <CustomTypography nameSpace="profile" translation="monetization.connectWith" />
+                                        <CustomTypography nameSpace="profile" translation={!profile.isStripeEnabled && profile.stripeAccountId ? "monetization.setUp" : "monetization.connectWith"} />
                                         &nbsp;
                                         <CustomTypography variant="body1bold" nameSpace="profile" translation="monetization.stripe" />
                                     </>

@@ -22,6 +22,7 @@ import {
   UPDATE_PASSWORD,
   UPDATE_PROFILE,
   UPDATE_PROFILE_AVATAR,
+  UPDATE_USER,
   USER_EXISTS,
   VALIDATE_VERIFICATION_CODE,
   VERIFY_PASSWORD,
@@ -114,6 +115,34 @@ export class UsersController {
           await newUser.save();
 
           return plainToClass(CommonUserDTO, newUser, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: USERS_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  @MessagePattern({ cmd: UPDATE_USER })
+  async updateUser(
+    @Payload() updateUserData: { query: any; data: ICommonUserDTO },
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session: ITransactionSession) => {
+        try {
+          const updatedUser = await this.usersService.findUserAndUpdate(
+            updateUserData.query,
+            updateUserData.data,
+            session,
+          );
+
+          return plainToClass(CommonUserDTO, updatedUser, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });

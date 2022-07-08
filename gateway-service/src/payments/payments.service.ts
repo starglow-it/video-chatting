@@ -5,6 +5,7 @@ import { PAYMENTS_PROVIDER } from '@shared/providers';
 import {
   CANCEL_PAYMENT_INTENT,
   CREATE_PAYMENT_INTENT,
+  CREATE_STRIPE_ACCOUNT_LINK,
   CREATE_STRIPE_EXPRESS_ACCOUNT,
   DELETE_STRIPE_EXPRESS_ACCOUNT,
   HANDLE_WEBHOOK,
@@ -17,6 +18,12 @@ export class PaymentsService {
 
   async createStripeExpressAccount(data: any) {
     const pattern = { cmd: CREATE_STRIPE_EXPRESS_ACCOUNT };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async createAccountLink(data: any) {
+    const pattern = { cmd: CREATE_STRIPE_ACCOUNT_LINK };
 
     return this.client.send(pattern, data).toPromise();
   }

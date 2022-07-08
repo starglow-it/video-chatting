@@ -161,6 +161,8 @@ const MeetingGeneralInfo = memo(() => {
                         color={`colors.${is10MinutesLeft ? 'red': 'white'}.primary`}
                         variant="body3bold"
                     >
+                        In progress:
+                        &nbsp;
                         {formatCountDown(currentTime, { hours: true, minutes: true })}
                     </CustomTypography>
                 </CustomGrid>

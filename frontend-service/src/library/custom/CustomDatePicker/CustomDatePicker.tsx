@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
 // styles
@@ -152,8 +152,6 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
     );
 };
 
-const CustomDatePicker = memo<CustomDatePickerProps>(
-    forwardRef<HTMLDivElement, CustomDatePickerProps>(Component),
-);
+const CustomDatePicker = memo<CustomDatePickerProps>(Component);
 
 export { CustomDatePicker };

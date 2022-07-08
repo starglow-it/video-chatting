@@ -27,12 +27,6 @@ cancelPaymentIntentFx.use(handleCancelPaymentIntent);
 
 connectStripeAccountFx.doneData.watch((result) => {
     if (result?.url) {
-        addNotificationEvent({
-            type: NotificationType.PaymentSuccess,
-            message: 'payments.connectAccountSuccess',
-            withSuccessIcon: true,
-        });
-
         Router.push(result.url);
     }
 });

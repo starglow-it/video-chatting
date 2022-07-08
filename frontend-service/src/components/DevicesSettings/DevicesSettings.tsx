@@ -187,7 +187,7 @@ const DevicesSettings = memo(() => {
         } catch (e) {
             console.log(e);
         }
-    }),[isOwner]);
+    }),[isOwner, handleJoinMeeting]);
 
     const handleBack = useCallback(() => {
         if (isUserSentEnterRequest) {
@@ -252,7 +252,7 @@ const DevicesSettings = memo(() => {
                                     isBackgroundActive={isSettingsAudioBackgroundActive}
                                     backgroundVolume={settingsBackgroundAudioVolume}
                                     isBlurActive={isBlurActive}
-                                    isMonetizationEnabled={Boolean(profile?.stripeAccountId)}
+                                    isMonetizationEnabled={profile?.isStripeEnabled}
                                     isFaceTrackingActive={isFaceTrackingActive}
                                     onBackgroundToggle={handleToggleBackgroundAudio}
                                     onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}

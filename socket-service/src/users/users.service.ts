@@ -77,6 +77,6 @@ export class UsersService {
   }
 
   async findUsers(query, { session }: ITransactionSession) {
-    return this.meetingUser.find(query, {}, { session });
+    return this.meetingUser.find(query, {}, { session }).exec();
   }
 }

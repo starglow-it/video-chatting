@@ -142,6 +142,8 @@ export class UsersService {
       signBoard: data.signBoard,
       stripeAccountId: data.stripeAccountId,
       stripeEmail: data.stripeEmail,
+      isStripeEnabled: data.isStripeEnabled,
+      wasSuccessNotificationShown: data.wasSuccessNotificationShown,
     };
   }
 }

@@ -53,4 +53,4 @@ $profileStore
             ...data,
         }),
     )
-    .on(deleteStripeDataEvent, (state) => ({ ...state, stripeEmail: "", stripeAccountId: "" }));
+    .on(deleteStripeDataEvent, (state) => ({ ...state, stripeEmail: "", stripeAccountId: "", isStripeEnabled: false }));

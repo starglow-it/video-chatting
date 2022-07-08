@@ -10,6 +10,8 @@ export interface IUpdateProfile {
     signBoard?: string;
     stripeAccountId?: string;
     stripeEmail?: string;
+    isStripeEnabled?: boolean;
+    wasSuccessNotificationShown?: boolean;
     isResetPasswordActive?: boolean;
     socials: {
         youtube?: string;

@@ -11,8 +11,9 @@ export class MeetingNoteDTO implements IMeetingNote {
   @Expose()
   content: string;
 
+  @Expose()
   @Type(() => CommonUserDTO)
-  @Transform((data) => data.obj.user['_id']?.toString())
+  @Transform((data) => data.obj.user?.['_id']?.toString())
   user: ICommonUserDTO['id'];
 
   @Expose()

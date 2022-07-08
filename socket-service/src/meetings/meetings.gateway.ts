@@ -242,6 +242,18 @@ export class MeetingsGateway
         };
       }
 
+      const activeParticipants = await this.usersService.countMany({
+        meeting: meeting._id,
+        accessStatus: AccessStatusEnum.InMeeting,
+      });
+
+      if (activeParticipants === meeting.maxParticipants) {
+        return {
+          success: false,
+          message: 'meeting.maxParticipantsNumber',
+        };
+      }
+
       const user = await this.usersService.createUser(
         {
           profileId: message.profileId,
@@ -603,6 +615,24 @@ export class MeetingsGateway
           },
           session,
         );
+
+        if (activeParticipants + 1 === meeting.maxParticipants) {
+          const requestUsers = await this.usersService.findUsers(
+            {
+              meeting: meeting._id,
+              accessStatus: AccessStatusEnum.RequestSent,
+            },
+            session,
+          );
+
+          const sendErrorPromises = requestUsers.map((user) => {
+            this.emitToSocketId(user.socketId, SEND_MEETING_ERROR, {
+              message: 'meeting.maxParticipantsNumber',
+            });
+          });
+
+          await Promise.all(sendErrorPromises);
+        }
 
         const userSocket = await this.getSocket(
           `waitingRoom:${meeting.instanceId}`,

@@ -56,7 +56,7 @@ const SUBSCRIBE_HANDLERS_REGISTRY = new Map([
         handler: handleGetMeetingNotes
     }],
     [ON_MEETING_ERROR, {
-        handle: handleMeetingError
+        handler: handleMeetingError
     }],
     [ON_PLAY_SOUND, {
         handler: handlePlaySound

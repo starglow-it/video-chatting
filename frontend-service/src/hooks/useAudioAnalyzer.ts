@@ -15,10 +15,8 @@ export const useAudioVolumeMeter = (
     const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
 
     const prepareAudioAnalyzer = async () => {
-        if (stream) {
-            const audioContext = new AudioContext();
-            audioContextRef.current = audioContext;
-            await audioContext.audioWorklet.addModule('/workers/volume-meter.js');
+        if (stream && !audioContextRef.current) {
+            audioContextRef.current = new AudioContext();
         }
     };
 
@@ -35,6 +33,8 @@ export const useAudioVolumeMeter = (
             }
 
             sourceRef.current = audioContextRef?.current?.createMediaStreamSource(stream);
+
+            await audioContextRef.current.audioWorklet.addModule('/workers/volume-meter.js');
 
             const volumeMeterNode = new AudioWorkletNode(audioContextRef.current, 'volume-meter');
 

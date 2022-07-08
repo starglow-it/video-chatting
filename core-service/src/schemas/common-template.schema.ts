@@ -13,7 +13,6 @@ export class CommonTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true,
   })
   url: string;
 
