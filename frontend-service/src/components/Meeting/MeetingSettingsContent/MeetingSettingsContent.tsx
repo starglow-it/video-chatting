@@ -23,7 +23,6 @@ import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { NewArrowIcon } from '@library/icons/NewArrowIcon';
 import {SpeakerIcon} from "@library/icons/SpeakerIcon/SpeakerIcon";
 import {MusicIcon} from "@library/icons/MusicIcon";
-import { FaceTrackingIcon } from '@library/icons/FaceTrackingIcon';
 import { ArrowIcon } from '@library/icons/ArrowIcon';
 import {BackgroundBlurIcon} from "@library/icons/BackgroundBlurIcon";
 import { useToggle } from '../../../hooks/useToggle';
@@ -48,8 +47,6 @@ const Component = ({
     onChangeBackgroundVolume,
     isBlurActive,
     onToggleBlur,
-    isFaceTrackingActive,
-    onToggleFaceTracking,
     isMonetizationEnabled
 }: MeetingSettingsContentProps) => {
     const isOwner = useStore($isOwner);
@@ -107,14 +104,6 @@ const Component = ({
                                 translation="features.blurBackground"
                                 checked={isBlurActive}
                                 onChange={onToggleBlur}
-                                className={styles.switchWrapper}
-                            />
-                            <LabeledSwitch
-                                Icon={<FaceTrackingIcon width="24px" height="24px" />}
-                                nameSpace="meeting"
-                                translation="features.faceTracking"
-                                checked={isFaceTrackingActive}
-                                onChange={onToggleFaceTracking}
                                 className={styles.switchWrapper}
                             />
                             {isOwner && isMonetizationEnabled ? <EditMonetization /> : null}

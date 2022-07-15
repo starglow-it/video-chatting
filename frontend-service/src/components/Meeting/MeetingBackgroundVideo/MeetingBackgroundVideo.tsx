@@ -23,26 +23,30 @@ const MeetingBackgroundVideo = memo(
         const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
         useLayoutEffect(() => {
-            const options = {
-                url: src,
-                responsive: true,
-                loop: true,
-                background: true,
-                keyboard: false,
-                quality: '1080p',
-            } as Options;
+            if (src) {
+                const options = {
+                    url: src,
+                    responsive: true,
+                    loop: true,
+                    background: true,
+                    keyboard: false,
+                    quality: '1080p',
+                } as Options;
 
-            if (containerRef.current) {
-                playerRef.current = new VimeoPlayer(containerRef.current!, options);
+                if (containerRef?.current) {
+                    playerRef.current = new VimeoPlayer(containerRef.current!, options);
+                }
             }
         }, []);
 
         useEffect(() => {
             (async () => {
-                await playerRef?.current?.setMuted?.(!isAudioBackgroundActive);
-                await playerRef?.current?.setVolume?.(
-                    isAudioBackgroundActive ? backgroundAudioVolume / 100 : 0,
-                );
+                if (playerRef?.current) {
+                    await playerRef?.current?.setMuted?.(!isAudioBackgroundActive);
+                    await playerRef?.current?.setVolume?.(
+                        isAudioBackgroundActive ? backgroundAudioVolume / 100 : 0,
+                    );
+                }
             })();
         }, [isAudioBackgroundActive, backgroundAudioVolume]);
 
@@ -51,7 +55,9 @@ const MeetingBackgroundVideo = memo(
                 if (isScreenSharing) {
                     playerRef.current?.pause();
                 } else {
-                    playerRef.current?.play();
+                    setTimeout(() => {
+                        playerRef.current?.play();
+                    }, 2000)
                 }
             }
         }, [isScreenSharing]);

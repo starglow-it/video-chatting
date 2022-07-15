@@ -43,7 +43,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
     }, []);
 
     const handleSetUpTemplate = useCallback(() => {
-        WebStorage.save({ key: StorageKeysEnum.templateId, data: template.id });
+        WebStorage.save({ key: StorageKeysEnum.templateId, data: { templateId: template.id } });
 
         router.push('/register');
     }, []);

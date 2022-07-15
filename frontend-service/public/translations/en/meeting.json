@@ -4,7 +4,8 @@
   "requestSent": "Request sent",
   "settings": {
     "main": "Settings",
-    "audioVideo": "Audio & video"
+    "audioVideo": "Audio & video",
+    "remember": "Remember my settings"
   },
   "enterPermission": "You need a permission from the participant to join",
   "mic": "Microphone",

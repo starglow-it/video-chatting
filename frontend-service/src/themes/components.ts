@@ -30,7 +30,6 @@ export const componentsTheme = (theme: Theme) =>
                     },
                     select: {
                         maxWidth: '90%',
-                        minHeight: '32px',
                         lineHeight: '32px',
                     },
                 },

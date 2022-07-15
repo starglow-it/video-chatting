@@ -43,4 +43,7 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
 
   @IsNumber()
   readonly maxParticipants: number;
+
+  @IsBoolean()
+  readonly isAuraActive: boolean;
 }

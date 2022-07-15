@@ -164,7 +164,7 @@ export class PaymentsController {
                 case "account.updated":
                     const accountData = event.data.object as Stripe.Account;
 
-                    if (!accountData.payouts_enabled || !accountData.details_submitted) {
+                    if (accountData.payouts_enabled || accountData.details_submitted) {
                         await this.coreService.updateUser({
                             query: { stripeAccountId: accountData.id },
                             data: { isStripeEnabled: true },

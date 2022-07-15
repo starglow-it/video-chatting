@@ -77,10 +77,10 @@ const SignInContainer = memo(() => {
 
     useEffect(() => {
         if (authState.isAuthenticated) {
-            const initialTemplateId = WebStorage.get({ key: StorageKeysEnum.templateId });
+            const initialTemplateId = WebStorage.get<{ templateId: string }>({ key: StorageKeysEnum.templateId });
 
-            const routeToChange = initialTemplateId
-                ? `/dashboard/templates/setup/${initialTemplateId}`
+            const routeToChange = initialTemplateId?.templateId
+                ? `/dashboard/templates/setup/${initialTemplateId.templateId}`
                 : '/dashboard';
 
             router.push(routeToChange);

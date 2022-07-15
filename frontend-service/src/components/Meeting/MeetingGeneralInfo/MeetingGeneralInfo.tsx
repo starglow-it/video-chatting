@@ -85,7 +85,7 @@ const MeetingGeneralInfo = memo(() => {
         onStartTimer: handleStartMeetingEnd
     } = useTimer(startAtValue, endAtValue);
 
-    const is10MinutesLeft = (meeting?.endsAt || Date.now()) - currentTime < 10 * ONE_MINUTE;
+    const is10MinutesLeft = ((meeting?.endsAt || 0) - (meeting.startAt || 0) || Date.now()) - currentTime < 10 * ONE_MINUTE;
 
     useEffect(() => {
         handleStartMeetingEnd();
@@ -94,6 +94,9 @@ const MeetingGeneralInfo = memo(() => {
     useEffect(() => {
         setTimeout(() => {
             handleOpenMeetingActionNote();
+            setTimeout(() => {
+                handleCloseMeetingActionNote()
+            }, 5000);
         }, 2000);
     }, []);
 
@@ -147,7 +150,12 @@ const MeetingGeneralInfo = memo(() => {
                     </Fade>
                 </CustomBox>
 
-                <CustomGrid container direction="column" alignItems={isThereSignBoard ? "center" : "flex-start"} className={styles.companyName}>
+                <CustomGrid
+                    container
+                    direction="column"
+                    alignItems={isThereSignBoard ? "center" : "flex-start"}
+                    className={styles.companyName}
+                >
                     <CustomTypography
                         color="colors.white.primary"
                         className={clsx(styles.companyNameTitle, {

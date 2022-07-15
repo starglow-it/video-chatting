@@ -548,16 +548,16 @@ export const templatesData: BaseTemplate[] = [
                 left: 0.05
             },
             {
-                top: 0.60,
-                left: 0.30
+                top: 0.69,
+                left: 0.34
             },
             {
-                top: 0.60,
-                left: 0.78
+                top: 0.69,
+                left: 0.82
             },
             {
-                top: 0.48,
-                left: 0.87
+                top: 0.57,
+                left: 0.91
             }
         ]
     },
@@ -614,28 +614,28 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.2,
-                left: 0.5
+                top: 0.25,
+                left: 0.575
             },
             {
-                top: 0.35,
-                left: 0.35
-            },
-            {
-                top: 0.65,
-                left: 0.35
-            },
-            {
-                top: 0.8,
-                left: 0.5
-            },
-            {
-                top: 0.35,
+                top: 0.50,
                 left: 0.65
             },
             {
-                top: 0.65,
-                left: 0.65
+                top: 0.75,
+                left: 0.575
+            },
+            {
+                top: 0.75,
+                left: 0.425
+            },
+            {
+                top: 0.50,
+                left: 0.35
+            },
+            {
+                top: 0.25,
+                left: 0.425
             }
         ]
     },
@@ -658,28 +658,28 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.2,
-                left: 0.5
+                top: 0.25,
+                left: 0.575
             },
             {
-                top: 0.35,
-                left: 0.35
-            },
-            {
-                top: 0.65,
-                left: 0.35
-            },
-            {
-                top: 0.8,
-                left: 0.5
-            },
-            {
-                top: 0.35,
+                top: 0.50,
                 left: 0.65
             },
             {
-                top: 0.65,
-                left: 0.65
+                top: 0.75,
+                left: 0.575
+            },
+            {
+                top: 0.75,
+                left: 0.425
+            },
+            {
+                top: 0.50,
+                left: 0.35
+            },
+            {
+                top: 0.25,
+                left: 0.425
             }
         ]
     },
@@ -702,28 +702,28 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.2,
-                left: 0.5
+                top: 0.25,
+                left: 0.575
             },
             {
-                top: 0.35,
-                left: 0.35
-            },
-            {
-                top: 0.65,
-                left: 0.35
-            },
-            {
-                top: 0.8,
-                left: 0.5
-            },
-            {
-                top: 0.35,
+                top: 0.50,
                 left: 0.65
             },
             {
-                top: 0.65,
-                left: 0.65
+                top: 0.75,
+                left: 0.575
+            },
+            {
+                top: 0.75,
+                left: 0.425
+            },
+            {
+                top: 0.50,
+                left: 0.35
+            },
+            {
+                top: 0.25,
+                left: 0.425
             }
         ]
     },
@@ -813,28 +813,28 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.2,
-                left: 0.5
+                top: 0.25,
+                left: 0.575
             },
             {
-                top: 0.35,
-                left: 0.35
-            },
-            {
-                top: 0.65,
-                left: 0.35
-            },
-            {
-                top: 0.8,
-                left: 0.5
-            },
-            {
-                top: 0.35,
+                top: 0.50,
                 left: 0.65
             },
             {
-                top: 0.65,
-                left: 0.65
+                top: 0.75,
+                left: 0.575
+            },
+            {
+                top: 0.75,
+                left: 0.425
+            },
+            {
+                top: 0.50,
+                left: 0.35
+            },
+            {
+                top: 0.25,
+                left: 0.425
             }
         ]
     },
@@ -856,28 +856,28 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.2,
-                left: 0.5
+                top: 0.25,
+                left: 0.575
             },
             {
-                top: 0.35,
-                left: 0.35
-            },
-            {
-                top: 0.65,
-                left: 0.35
-            },
-            {
-                top: 0.8,
-                left: 0.5
-            },
-            {
-                top: 0.35,
+                top: 0.50,
                 left: 0.65
             },
             {
-                top: 0.65,
-                left: 0.65
+                top: 0.75,
+                left: 0.575
+            },
+            {
+                top: 0.75,
+                left: 0.425
+            },
+            {
+                top: 0.50,
+                left: 0.35
+            },
+            {
+                top: 0.25,
+                left: 0.425
             }
         ]
     },
@@ -899,28 +899,28 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.2,
-                left: 0.5
+                top: 0.25,
+                left: 0.575
             },
             {
-                top: 0.35,
-                left: 0.35
-            },
-            {
-                top: 0.65,
-                left: 0.35
-            },
-            {
-                top: 0.8,
-                left: 0.5
-            },
-            {
-                top: 0.35,
+                top: 0.50,
                 left: 0.65
             },
             {
-                top: 0.65,
-                left: 0.65
+                top: 0.75,
+                left: 0.575
+            },
+            {
+                top: 0.75,
+                left: 0.425
+            },
+            {
+                top: 0.50,
+                left: 0.35
+            },
+            {
+                top: 0.25,
+                left: 0.425
             }
         ]
     }

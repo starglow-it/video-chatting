@@ -81,8 +81,8 @@ const DevicesSettingsDialog = memo(() => {
     } = useContext(MediaContext);
 
     const {
-        actions: { onGetCanvasStream, onSetBlur, onSetFaceTracking },
-        data: { isBlurActive, isFaceTrackingActive },
+        actions: { onGetCanvasStream, onSetBlur },
+        data: { isBlurActive },
     } = useContext(VideoEffectsContext);
 
     const {
@@ -96,12 +96,6 @@ const DevicesSettingsDialog = memo(() => {
         onToggleSwitch: handleToggleBlur,
         onSetSwitch: handleSetBlur
     } = useToggle(isBlurActive);
-
-    const {
-        value: isFaceTrackingEnabled,
-        onToggleSwitch: handleToggleFaceTracking,
-        onSetSwitch: handleSetFaceTracking
-    } = useToggle(isFaceTrackingActive);
 
     const resolver = useYupValidationResolver<{
         templateCurrency: string;
@@ -126,11 +120,10 @@ const DevicesSettingsDialog = memo(() => {
 
         handleSetBackgroundAudio(isBackgroundAudioActive);
         handleSetBlur(isBlurActive);
-        handleSetFaceTracking(isFaceTrackingActive);
         setVolume(backgroundAudioVolume);
         methods.reset();
         onClearCurrentDevices();
-    }, [isBackgroundAudioActive, backgroundAudioVolume, isBlurActive, isFaceTrackingActive]);
+    }, [isBackgroundAudioActive, backgroundAudioVolume, isBlurActive]);
 
     useEffect(() => {
         (async () => {
@@ -153,7 +146,6 @@ const DevicesSettingsDialog = memo(() => {
         });
 
         onSetBlur(isBlurEnabled);
-        onSetFaceTracking(isFaceTrackingEnabled);
         setBackgroundAudioVolume(backgroundAudioVolume);
         setBackgroundAudioActive(isSettingsAudioBackgroundActive);
 
@@ -162,7 +154,6 @@ const DevicesSettingsDialog = memo(() => {
 
             const transformedStream = await onGetCanvasStream(newStream, {
                 isBlurActive: isBlurEnabled,
-                isFaceTrackingActive: isFaceTrackingEnabled
             });
 
             if (transformedStream) {
@@ -198,7 +189,6 @@ const DevicesSettingsDialog = memo(() => {
         backgroundAudioVolume,
         isSettingsAudioBackgroundActive,
         isBlurEnabled,
-        isFaceTrackingEnabled
     ]);
 
     const isDevicesChecking = !(videoDevices.length && audioDevices.length) && !error;
@@ -234,12 +224,10 @@ const DevicesSettingsDialog = memo(() => {
                                         isBackgroundActive={isSettingsAudioBackgroundActive}
                                         onBackgroundToggle={handleToggleBackgroundAudio}
                                         backgroundVolume={volume}
-                                        isMonetizationEnabled={profile?.isStripeEnabled}
+                                        isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
                                         onChangeBackgroundVolume={setVolume}
                                         isBlurActive={isBlurEnabled}
                                         onToggleBlur={handleToggleBlur}
-                                        isFaceTrackingActive={isFaceTrackingEnabled}
-                                        onToggleFaceTracking={handleToggleFaceTracking}
                                         title={
                                             <CustomTypography
                                                 className={styles.title}

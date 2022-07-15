@@ -61,6 +61,7 @@ export const joinMeetingEventWithData = attach({
         templateId: source.template?.id,
         isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
         accessStatus: source.localUser.accessStatus,
+        isAuraActive: source.localUser.isAuraActive,
         maxParticipants: source.template.maxParticipants,
     }),
 });
@@ -86,7 +87,9 @@ export const startMeeting = attach({
         meeting: $meetingStore,
         user: $localUserStore,
     }),
-    mapParams: (params, { meeting, user }) => ({ meetingId: meeting?.id, user })
+    mapParams: (params, { meeting, user }) => {
+        return ({ meetingId: meeting?.id, user })
+    }
 });
 
 export const enterMeetingRequest = attach({

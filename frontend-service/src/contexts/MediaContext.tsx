@@ -3,6 +3,7 @@ import { getDevices, getDevicesFromStream } from '../helpers/media/getDevices';
 import { getMediaStream } from '../helpers/media/getMediaStream';
 import { DeviceInputKindEnum } from '../const/media/DEVICE_KINDS';
 import { stopStream } from '../helpers/media/stopStream';
+import {StorageKeysEnum, WebStorage} from "../controllers/WebStorageController";
 
 type CustomMediaStream = MediaStream | null | undefined;
 
@@ -74,8 +75,10 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
     const [error, setError] = useState<string>('');
     const [activeStream, setActiveStream] = useState<CustomMediaStream>(null);
     const [changeStream, setChangeStream] = useState<CustomMediaStream>(null);
-    const [currentAudioDevice, setCurrentAudioDevice] = useState('');
-    const [currentVideoDevice, setCurrentVideoDevice] = useState('');
+
+    const [currentAudioDevice, setCurrentAudioDevice] = useState("");
+    const [currentVideoDevice, setCurrentVideoDevice] = useState("");
+
     const [isStreamRequested, setIsStreamRequested] = useState(false);
 
     const handleGetInitialStream = useCallback(async () => {
@@ -85,10 +88,11 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
             return null;
         });
+        const savedSettings = WebStorage.get<{ savedAudioDeviceId: MediaDeviceInfo['deviceId']; savedVideoDeviceId: MediaDeviceInfo['deviceId'] }>({ key: StorageKeysEnum.meetingSettings });
 
         const { stream: initialStream, error: initialError } = await getMediaStream({
-            audioDeviceId: currentAudioDevice,
-            videoDeviceId: currentVideoDevice,
+            audioDeviceId: savedSettings.savedAudioDeviceId || currentAudioDevice,
+            videoDeviceId: savedSettings.savedVideoDeviceId || currentVideoDevice,
         });
 
         if (initialError) {
@@ -172,8 +176,6 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
     }, [changeStream]);
 
     useEffect(() => {
-        handleGetInitialStream();
-
         navigator.mediaDevices.ondevicechange = async () => {
             const { audio, video } = await getDevices();
 

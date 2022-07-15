@@ -263,6 +263,7 @@ export class MeetingsGateway
           isGenerated: !Boolean(message.profileId),
           meetingUserId: getRandomNumber(10000),
           accessStatus: message.accessStatus,
+          isAuraActive: message.isAuraActive,
         },
         session,
       );
@@ -356,7 +357,7 @@ export class MeetingsGateway
           accessStatus: AccessStatusEnum.InMeeting,
           username: message.user.username,
           isAuraActive: message.user.isAuraActive,
-          userPosition: template?.usersPosition?.[activeParticipants],
+          userPosition: template?.usersPosition?.[activeParticipants - (message?.user?.accessStatus === AccessStatusEnum.InMeeting ? 1 : 0)],
         },
         session,
       );

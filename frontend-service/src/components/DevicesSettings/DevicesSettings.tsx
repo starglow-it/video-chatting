@@ -1,29 +1,29 @@
 import React, {memo, useCallback, useContext, useEffect, useState} from 'react';
-import { useStore } from 'effector-react';
+import {useStore} from 'effector-react';
 import * as yup from "yup";
-import {useForm, FormProvider } from "react-hook-form";
+import {FormProvider, useForm} from "react-hook-form";
 
 // hooks
-
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
+import {CustomPaper} from '@library/custom/CustomPaper/CustomPaper';
+import {CustomTypography} from '@library/custom/CustomTypography/CustomTypography';
+import {CustomButton} from '@library/custom/CustomButton/CustomButton';
+import {CustomDivider} from '@library/custom/CustomDivider/CustomDivider';
 
 // components
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
-import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
-import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
-import { useYupValidationResolver } from "../../hooks/useYupValidationResolver";
+import {WiggleLoader} from '@library/common/WiggleLoader/WiggleLoader';
+import {MediaPreview} from '@components/Media/MediaPreview/MediaPreview';
+import {MeetingSettingsContent} from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
+import {CustomCheckbox} from "@library/custom/CustomCheckbox/CustomCheckbox";
+import {useYupValidationResolver} from "../../hooks/useYupValidationResolver";
 import {useToggle} from "../../hooks/useToggle";
 
 // context
 import {VideoEffectsContext} from "../../contexts/VideoEffectContext";
 
 // context
-import { MediaContext } from '../../contexts/MediaContext';
+import {MediaContext} from '../../contexts/MediaContext';
 
 // stores
 import {
@@ -34,17 +34,17 @@ import {
     $isOwnerInMeeting,
     $isUserSendEnterRequest,
     $meetingTemplateStore,
+    $profileStore,
+    addNotificationEvent,
     emitCancelEnterMeetingEvent,
-    setIsUserSendEnterRequest,
-    startMeeting,
-    sendEnterWaitingRoom,
-    updateMeetingTemplateFxWithData,
     enterMeetingRequest,
+    sendEnterWaitingRoom,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
+    setIsUserSendEnterRequest,
+    startMeeting,
     updateLocalUserEvent,
-    addNotificationEvent,
-    $profileStore,
+    updateMeetingTemplateFxWithData,
 } from '../../store';
 
 // types
@@ -55,6 +55,7 @@ import styles from './DevicesSettings.module.scss';
 
 import {booleanSchema, simpleStringSchema} from "../../validation/common";
 import {templatePriceSchema} from "../../validation/payments/templatePrice";
+import {StorageKeysEnum, WebStorage} from "../../controllers/WebStorageController";
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -73,6 +74,11 @@ const DevicesSettings = memo(() => {
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] = useState<number>(backgroundAudioVolume);
+
+    const {
+        value: needToRememberSettings,
+        onToggleSwitch: handleToggleRememberSettings
+    } = useToggle(false);
 
     const resolver = useYupValidationResolver<{ templatePrice: number; isMonetizationEnabled: boolean; templateCurrency: string }>(validationSchema);
 
@@ -99,12 +105,15 @@ const DevicesSettings = memo(() => {
             isCameraActive,
             audioDevices,
             videoDevices,
+            currentAudioDevice,
+            currentVideoDevice,
+
         },
     } = useContext(MediaContext);
 
     const {
-        data: { isBlurActive, isFaceTrackingActive },
-        actions: { onToggleFaceTracking, onToggleBlur }
+        data: { isBlurActive },
+        actions: { onToggleBlur }
     } = useContext(VideoEffectsContext);
 
     const {
@@ -124,6 +133,7 @@ const DevicesSettings = memo(() => {
                 type: NotificationType.MicAction,
                 message: `meeting.mic.${!isMicActive ? 'on' : 'off'}`,
             });
+
             updateLocalUserEvent({
                 micStatus: !isMicActive ? 'active' : 'inactive',
             });
@@ -158,6 +168,21 @@ const DevicesSettings = memo(() => {
 
                 setBackgroundAudioVolume(settingsBackgroundAudioVolume);
                 setBackgroundAudioActive(isSettingsAudioBackgroundActive);
+
+                if (needToRememberSettings) {
+                    WebStorage.save({
+                        key: StorageKeysEnum.meetingSettings,
+                        data: {
+                            backgroundAudioSetting: isSettingsAudioBackgroundActive,
+                            backgroundAudioVolumeSetting: settingsBackgroundAudioVolume,
+                            blurSetting: isBlurActive,
+                            savedVideoDeviceId: currentVideoDevice,
+                            savedAudioDeviceId: currentAudioDevice,
+                            cameraActiveSetting: isCameraActive,
+                            micActiveSetting: isMicActive,
+                        }
+                    });
+                }
             } else {
                 handleToggleCamera();
             }
@@ -171,7 +196,12 @@ const DevicesSettings = memo(() => {
         isOwnerInMeeting,
         isBlurActive,
         isSettingsAudioBackgroundActive,
-        settingsBackgroundAudioVolume
+        settingsBackgroundAudioVolume,
+        needToRememberSettings,
+        currentVideoDevice,
+        currentAudioDevice,
+        isCameraActive,
+        isMicActive,
     ]);
 
     const handleCancelRequest = useCallback(async () => {
@@ -252,11 +282,9 @@ const DevicesSettings = memo(() => {
                                     isBackgroundActive={isSettingsAudioBackgroundActive}
                                     backgroundVolume={settingsBackgroundAudioVolume}
                                     isBlurActive={isBlurActive}
-                                    isMonetizationEnabled={profile?.isStripeEnabled}
-                                    isFaceTrackingActive={isFaceTrackingActive}
+                                    isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
                                     onBackgroundToggle={handleToggleBackgroundAudio}
                                     onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
-                                    onToggleFaceTracking={onToggleFaceTracking}
                                     onToggleBlur={onToggleBlur}
                                     title={
                                         <CustomTypography
@@ -268,6 +296,20 @@ const DevicesSettings = memo(() => {
                                     }
                                 />
                             )}
+                            {isOwner
+                                ? (
+                                    <CustomCheckbox
+                                        labelClassName={styles.label}
+                                        checked={needToRememberSettings}
+                                        onChange={handleToggleRememberSettings}
+                                        translationProps={{
+                                            nameSpace: "meeting",
+                                            translation: "settings.remember"
+                                        }}
+                                    />
+                                )
+                                : null
+                            }
                         </CustomGrid>
                     </CustomGrid>
                 </CustomGrid>
@@ -288,6 +330,7 @@ const DevicesSettings = memo(() => {
                         )
                         : null
                     }
+
                     <CustomButton
                         onClick={isUserSentEnterRequest ? handleCancelRequest : (isOwner ? onSubmit : handleJoinMeeting)}
                         nameSpace="meeting"

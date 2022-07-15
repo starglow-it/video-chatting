@@ -76,6 +76,8 @@ export class MeetingsController {
         } else {
           await user.populate(['socials', 'languages', 'templates']);
 
+          console.log(user.socials);
+
           const templateData = {
             user: user._id,
             templateId: targetTemplate.templateId,

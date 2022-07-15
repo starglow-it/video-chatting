@@ -23,15 +23,15 @@
 .settingsWrapper {
   position: relative;
 
-  height: 100%;
-
   .settingPosition {
+    pointer-events: none;
     position: absolute;
     top: 0;
     left: 0;
   }
 
   .advancedSettings {
+    pointer-events: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -39,6 +39,7 @@
 
   .advancedSettings, .settingPosition {
     &.relative {
+      pointer-events: all;
       position: relative;
       z-index: 1;
     }

@@ -33,7 +33,7 @@ const WelcomePageContainer = memo(() => {
     }, []);
 
     const handleStartOnboarding = useCallback(({ templateId }) => {
-        WebStorage.save({ key: StorageKeysEnum.templateId, data: templateId });
+        WebStorage.save({ key: StorageKeysEnum.templateId, data: { templateId } });
 
         router.push(`/register`);
     }, []);

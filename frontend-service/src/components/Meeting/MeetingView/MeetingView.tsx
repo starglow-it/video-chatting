@@ -11,7 +11,6 @@ import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
 // components
 import {MeetingControlPanel} from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
 import {MeetingUsersVideos} from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
-import {MeetingEndControls} from '@components/Meeting/MeetingEndControls/MeetingEndControls';
 import {MeetingNotes} from '@components/Meeting/MeetingNotes/MeetingNotes';
 import {MeetingSettingsPanel} from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
 import {MeetingGeneralInfo} from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
@@ -57,6 +56,9 @@ import {
 // types
 import {AppDialogsEnum, MeetingAccessStatuses} from '../../../store/types';
 import {useToggle} from "../../../hooks/useToggle";
+import {HangUpIcon} from "@library/icons/HangUpIcon";
+import {ActionButton} from "@library/common/ActionButton/ActionButton";
+import clsx from 'clsx';
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
@@ -67,7 +69,7 @@ const MeetingView = memo(() => {
     const {
         value: isMeetingConnected,
         onSwitchOn: handleAllowActionInMeeting
-    } = useToggle(false)
+    } = useToggle(false);
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
@@ -81,7 +83,6 @@ const MeetingView = memo(() => {
 
     const {
         actions: { onGetCanvasStream },
-        data: { isModelReady },
     } = useContext(VideoEffectsContext);
 
     const prevSharingUserId = usePrevious<number | undefined>(meeting.sharingUserId);
@@ -138,7 +139,7 @@ const MeetingView = memo(() => {
 
     useEffect(() => {
         (async () => {
-            if (localUser.accessStatus === MeetingAccessStatuses.InMeeting && isModelReady) {
+            if (localUser.accessStatus === MeetingAccessStatuses.InMeeting) {
                 const activeStream = onChangeActiveStream();
 
                 if (activeStream) {
@@ -168,7 +169,7 @@ const MeetingView = memo(() => {
                 }
             }
         })();
-    }, [localUser.accessStatus, isModelReady]);
+    }, [localUser.accessStatus]);
 
     useEffect(
         () => {
@@ -185,10 +186,16 @@ const MeetingView = memo(() => {
 
     const handleUpdateMeetingTemplate = useCallback(async updateData => {
         if (updateData) {
-            await updateMeetingTemplateFxWithData(updateData);
+            await updateMeetingTemplateFxWithData(updateData.data);
             updateUserSocketEvent({ username: updateData.data.fullName });
             updateLocalUserEvent({ username: updateData.data.fullName });
         }
+    }, []);
+
+    const handleEndVideoChat = useCallback(() => {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.endMeetingDialog,
+        });
     }, []);
 
     const isAbleToToggleSharing = isOwner || isSharingScreenActive || !meeting.sharingUserId;
@@ -198,7 +205,7 @@ const MeetingView = memo(() => {
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo isScreenSharing={isScreenSharing} src={meetingTemplate.url}>
                 <Image
-                    className={styles.image}
+                    className={clsx(styles.image, {[styles.blured]: Boolean(meetingTemplate.url) })}
                     src={meetingTemplate.previewUrl}
                     layout="fill"
                     objectFit="cover"
@@ -227,8 +234,13 @@ const MeetingView = memo(() => {
                             onAction={isAbleToToggleSharing ? handleToggleSharing : undefined}
                         />
                         <BackgroundAudioControl />
+                        <ActionButton
+                            variant="danger"
+                            onAction={handleEndVideoChat}
+                            className={styles.hangUpButton}
+                            Icon={<HangUpIcon width="32px" height="32px" />}
+                        />
                     </CustomGrid>
-                    <MeetingEndControls />
                     <MeetingGeneralInfo />
                     <MeetingNotes />
                 </MeetingSettingsPanel>

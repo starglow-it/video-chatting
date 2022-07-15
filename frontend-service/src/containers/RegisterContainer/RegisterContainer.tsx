@@ -178,39 +178,45 @@ const RegisterContainer = memo(() => {
                             alignItems="center"
                             className={styles.termsWrapper}
                         >
-                            <CustomCheckbox className={styles.checkbox} {...register('terms')} />
-                            <CustomGrid>
-                                {!is480Media && (
-                                    <CustomTypography
-                                        className={styles.termsText}
-                                        variant="body2"
-                                        nameSpace="common"
-                                        translation="iAgree"
-                                    />
+                            <CustomCheckbox
+                                className={styles.checkbox}
+                                labelClassName={styles.label}
+                                label={(
+                                    <CustomGrid>
+                                        {!is480Media && (
+                                            <CustomTypography
+                                                className={styles.termsText}
+                                                variant="body2"
+                                                nameSpace="common"
+                                                translation="iAgree"
+                                            />
+                                        )}
+                                        <CustomLink
+                                            className={clsx(styles.termsText, styles.termsLink)}
+                                            href="/terms"
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="terms"
+                                        />
+                                        {!is480Media && (
+                                            <CustomTypography
+                                                className={styles.termsText}
+                                                variant="body2"
+                                                nameSpace="common"
+                                                translation="and"
+                                            />
+                                        )}
+                                        <CustomLink
+                                            className={clsx(styles.termsText, styles.termsLink)}
+                                            href="/privacy"
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="privacy"
+                                        />
+                                    </CustomGrid>
                                 )}
-                                <CustomLink
-                                    className={clsx(styles.termsText, styles.termsLink)}
-                                    href="/terms"
-                                    variant="body2"
-                                    nameSpace="common"
-                                    translation="terms"
-                                />
-                                {!is480Media && (
-                                    <CustomTypography
-                                        className={styles.termsText}
-                                        variant="body2"
-                                        nameSpace="common"
-                                        translation="and"
-                                    />
-                                )}
-                                <CustomLink
-                                    className={clsx(styles.termsText, styles.termsLink)}
-                                    href="/privacy"
-                                    variant="body2"
-                                    nameSpace="common"
-                                    translation="privacy"
-                                />
-                            </CustomGrid>
+                                {...register('terms')}
+                            />
                         </CustomGrid>
 
                         <CustomButton
