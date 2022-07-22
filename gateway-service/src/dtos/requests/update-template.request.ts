@@ -72,6 +72,10 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   signBoard: string;
 
   @IsOptional()
+  @IsString({ message: 'Custom link must be string' })
+  customLink: string;
+
+  @IsOptional()
   @IsBoolean({ message: 'isMonetizationEnabled must be boolean' })
   isMonetizationEnabled: boolean;
 

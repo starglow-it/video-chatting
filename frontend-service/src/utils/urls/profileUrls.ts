@@ -20,6 +20,11 @@ export const deleteProfileAvatarUrl = {
     method: HttpMethods.Delete,
 };
 
+export const deleteProfileUrl = {
+    url: `${baseProfileUrl}`,
+    method: HttpMethods.Delete,
+};
+
 export const postProfileAvatarUrl = {
     url: `${baseProfileUrl}/avatar`,
     method: HttpMethods.Post,

@@ -14,7 +14,7 @@ const MainProfileWrapper = memo(
                 alignItems="center"
                 justifyContent="center"
                 sx={{
-                    padding: '94px 20px 0px 20px',
+                    padding: '94px 20px 40px 20px',
                 }}
                 className={className}
             >

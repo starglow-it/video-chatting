@@ -1,6 +1,5 @@
 import {attach, combine } from 'effector-next';
 
-
 import { meetingDomain } from '../domain';
 
 import { ErrorState, MeetingUser, Profile, UpdateTemplateData, UserTemplate } from '../../types';
@@ -25,6 +24,7 @@ export const initialTemplateState: UserTemplate = {
     languages: [],
     socials: [],
     usedAt: '',
+    customLink: '',
     templatePrice: 10,
     templateCurrency: "USD",
     signBoard: 'default',
@@ -42,7 +42,7 @@ export const $isMeetingInstanceExists = $meetingTemplateStore.map(
 export const $isOwner = combine<{ meetingTemplate: UserTemplate; profile: Profile }>({
     meetingTemplate: $meetingTemplateStore,
     profile: $profileStore,
-}).map(({ meetingTemplate, profile }) => Boolean(profile.id) && meetingTemplate.meetingInstance?.owner === profile.id);
+}).map(({ meetingTemplate, profile }) => Boolean(profile.id) && meetingTemplate?.meetingInstance?.owner === profile.id);
 
 export const $isOwnerInMeeting = combine<{ template: UserTemplate; users: MeetingUser[] }>({
     users: $meetingUsersStore,
@@ -65,6 +65,12 @@ export const updateMeetingTemplateFx = meetingDomain.effect<
     ErrorState
 >('updateMeetingTemplateFx');
 
+export const checkCustomLinkFx = meetingDomain.effect<
+    { templateId: UserTemplate["customLink"] },
+    boolean,
+    ErrorState
+>('checkCustomLinkFx');
+
 export const updateMeetingTemplateFxWithData = attach({
     mapParams: (params, states) => ({
         templateId: states.meetingTemplate.id,
@@ -73,4 +79,11 @@ export const updateMeetingTemplateFxWithData = attach({
     }),
     effect: updateMeetingTemplateFx,
     source: combine({ meetingTemplate: $meetingTemplateStore, profile: $profileStore })
+});
+
+export const checkCustomLinkFxWithData = attach({
+    mapParams: (params, ) => ({
+        templateId: params?.templateId,
+    }),
+    effect: checkCustomLinkFx,
 });

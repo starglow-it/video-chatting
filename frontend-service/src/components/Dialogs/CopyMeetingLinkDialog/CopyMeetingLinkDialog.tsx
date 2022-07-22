@@ -4,7 +4,6 @@ import Image from 'next/image';
 import {useRouter} from "next/router";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
-
 // custom
 import {CustomDialog} from "@library/custom/CustomDialog/CustomDialog";
 import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";

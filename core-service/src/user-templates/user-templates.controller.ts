@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { Connection } from 'mongoose';
+import { Types, Connection } from 'mongoose';
 import { plainToClass } from 'class-transformer';
 
 import { UserTemplatesService } from './user-templates.service';
@@ -19,6 +19,7 @@ import { EntityList } from '@shared/types/utils/http/list.type';
 import {
   DELETE_USERS_TEMPLATES,
   GET_USER_TEMPLATE,
+  GET_USER_TEMPLATE_BY_ID,
   GET_USER_TEMPLATES,
   GET_USERS_TEMPLATES,
   UPDATE_USER_TEMPLATE,
@@ -44,11 +45,49 @@ export class UserTemplatesController {
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
+        const customLinkRegexp = new RegExp(`^${id}$`);
+
         const userTemplate =
-          await this.userTemplatesService.findUserTemplateById({
-            id,
+          await this.userTemplatesService.findUserTemplate({
+            query: Types.ObjectId.isValid(id)  ? { _id: id } : { customLink: customLinkRegexp },
             session,
-            populatePath: [
+            populatePaths: [
+              { path: 'socials' },
+              { path: 'businessCategories' },
+              { path: 'languages' },
+              { path: 'meetingInstance' },
+              { path: 'user', populate: { path: 'profileAvatar' } },
+            ],
+          });
+
+        if (userTemplate?.customLink && Types.ObjectId.isValid(id)) {
+          return null;
+        }
+
+        return plainToClass(UserTemplateDTO, userTemplate, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: TEMPLATES_SERVICE,
+        });
+      }
+    });
+  }
+
+  @MessagePattern({ cmd: GET_USER_TEMPLATE_BY_ID })
+  async getUserTemplateById(
+    @Payload() { id }: { id: IUserTemplate['id'] },
+  ): Promise<IUserTemplate> {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const userTemplate =
+          await this.userTemplatesService.findUserTemplate({
+            query: { _id: id },
+            session,
+            populatePaths: [
               { path: 'socials' },
               { path: 'businessCategories' },
               { path: 'languages' },
@@ -134,7 +173,7 @@ export class UserTemplatesController {
         const template = await this.userTemplatesService.findUserTemplateById({
           id: templateId,
           session,
-          populatePath: 'user',
+          populatePaths: 'user',
         });
 
         const newBusinessCategories = await this.businessCategoriesService.find(
@@ -170,6 +209,7 @@ export class UserTemplatesController {
           isMonetizationEnabled: data.isMonetizationEnabled,
           templatePrice: data.templatePrice,
           templateCurrency: data.templateCurrency,
+          customLink: data.customLink,
         };
 
         const userTemplate =

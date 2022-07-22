@@ -5,7 +5,7 @@ import { CORE_PROVIDER } from '@shared/providers';
 import { FIND_USER_BY_ID } from '@shared/patterns/users';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { IUserTemplate } from '@shared/interfaces/user-template.interface';
-import { GET_USER_TEMPLATE } from '@shared/patterns/templates';
+import { GET_USER_TEMPLATE_BY_ID } from '@shared/patterns/templates';
 
 @Injectable()
 export class CoreService {
@@ -26,7 +26,7 @@ export class CoreService {
   async findMeetingTemplate(data: {
     id: IUserTemplate['id'];
   }): Promise<IUserTemplate> {
-    const pattern = { cmd: GET_USER_TEMPLATE };
+    const pattern = { cmd: GET_USER_TEMPLATE_BY_ID };
 
     return this.client.send(pattern, data).toPromise();
   }

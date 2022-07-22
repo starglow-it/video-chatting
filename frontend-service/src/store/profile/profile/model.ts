@@ -14,6 +14,12 @@ export const updateProfileFx = profileDomain.effect<
     void
 >('updateProfileFx');
 
+export const deleteProfileFx = profileDomain.effect<
+    void,
+    void,
+    void
+>('deleteProfileFx');
+
 export const updateProfileEmailFx = profileDomain.effect<
     { email: string },
     Profile | null | undefined,

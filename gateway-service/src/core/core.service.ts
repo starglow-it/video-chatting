@@ -4,6 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { CORE_PROVIDER } from '@shared/providers';
 import {
   COMPARE_PASSWORDS,
+  DELETE_PROFILE,
   DELETE_PROFILE_AVATAR,
   FIND_USER_BY_EMAIL,
   FIND_USER_BY_ID,
@@ -33,6 +34,7 @@ import {
   CREATE_MEETING_DONATION,
   DELETE_MEETING_DONATION,
 } from '@shared/patterns/payments';
+import {IUserTemplate} from "@shared/interfaces/user-template.interface";
 
 @Injectable()
 export class CoreService {
@@ -111,7 +113,7 @@ export class CoreService {
 
   async createMeeting(
     createMeetingData: ICreateMeetingDTO,
-  ): Promise<ICommonMeetingInstanceDTO> {
+  ): Promise<IUserTemplate> {
     const pattern = { cmd: CREATE_MEETING };
 
     return this.client.send(pattern, createMeetingData).toPromise();
@@ -175,6 +177,12 @@ export class CoreService {
 
   async deleteMeetingDonation(data) {
     const pattern = { cmd: DELETE_MEETING_DONATION };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async deleteUser(data) {
+    const pattern = { cmd: DELETE_PROFILE };
 
     return this.client.send(pattern, data).toPromise();
   }

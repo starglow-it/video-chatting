@@ -22,10 +22,10 @@ import { CommonInstanceMeetingRestDTO } from '../dtos/response/common-instance-m
 
 import { MEETINGS_SCOPE } from '@shared/const/api-scopes.const';
 import { ResponseSumType } from '@shared/response/common.response';
-import { ICommonMeetingInstanceDTO } from '@shared/interfaces/common-instance-meeting.interface';
 
 import { CoreService } from '../core/core.service';
 import { CreateMeetingRequest } from '../dtos/requests/create-meeting.request';
+import {IUserTemplate} from "@shared/interfaces/user-template.interface";
 
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
@@ -46,17 +46,17 @@ export class MeetingsController {
   async createMeeting(
     @Request() req,
     @Body() createMeetingData: CreateMeetingRequest,
-  ): Promise<ResponseSumType<ICommonMeetingInstanceDTO>> {
+  ): Promise<ResponseSumType<IUserTemplate>> {
     try {
       // TODO: logic with create instance and assign server ip and server status to the meeting model
-      const meeting = await this.coreService.createMeeting({
+      const userTemplate = await this.coreService.createMeeting({
         userId: req.user.userId,
         templateId: createMeetingData.templateId,
       });
 
       return {
         success: true,
-        result: meeting,
+        result: userTemplate,
       };
     } catch (err) {
       this.logger.error(

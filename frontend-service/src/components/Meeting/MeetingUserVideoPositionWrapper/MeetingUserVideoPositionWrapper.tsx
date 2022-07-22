@@ -26,7 +26,7 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
 
     return (
         <>
-            {finalTop && finalLeft
+            {top && left
                 ? (
                     <CustomBox
                         sx={{ top: finalTop, left: finalLeft }}

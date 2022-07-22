@@ -1,5 +1,5 @@
 import { root } from '../root';
-import { MeetingInstance, MeetingStore, Template } from '../types';
+import { MeetingStore, Template, UserTemplate } from '../types';
 
 export const meetingsDomain = root.createDomain('meetingsDomain');
 
@@ -7,7 +7,7 @@ export const $meetingsStore = meetingsDomain.store<MeetingStore>({});
 
 export const createMeetingFx = meetingsDomain.effect<
     { templateId: Template['id'] },
-    { meeting?: MeetingInstance }
+    { template?: UserTemplate }
 >('createMeetingFx');
 
 export const deleteMeetingFx = meetingsDomain.effect<{ templateId: Template['id'] }, void>(

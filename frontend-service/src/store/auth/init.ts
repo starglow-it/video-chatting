@@ -1,6 +1,6 @@
 import { forward } from 'effector-next';
 
-import { $authStore, checkAuthFx, loginUserFx, logoutUserFx, resetAuthErrorEvent } from './model';
+import {$authStore, checkAuthFx, loginUserFx, logoutUserFx, resetAuthErrorEvent, resetAuthStateEvent} from './model';
 import { clearProfileEvent, setProfileEvent } from '../profile/profile/model';
 
 import { handleLoginUser } from './handlers/handleLoginUser';
@@ -30,4 +30,7 @@ $authStore
     .on(loginUserFx.doneData, (state, data) => data)
     .on(checkAuthFx.doneData, (state, data) => data)
     .on(logoutUserFx.doneData, (state, data) => data)
+    .on(resetAuthStateEvent, () => ({
+        isAuthenticated: false,
+    }))
     .on(resetAuthErrorEvent, ({ error, ...rest }) => ({ ...rest }));

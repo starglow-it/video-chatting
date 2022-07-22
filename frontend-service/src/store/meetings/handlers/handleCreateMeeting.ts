@@ -12,7 +12,7 @@ export const handleCreateMeeting = async (data: { templateId: Template['id'] }) 
 
     if (response.success) {
         return {
-            meeting: response.result,
+            template: response.result,
         };
     } else {
         return {

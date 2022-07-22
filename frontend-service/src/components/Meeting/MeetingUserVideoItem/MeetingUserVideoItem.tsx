@@ -30,8 +30,10 @@ const MeetingUserVideoItem = memo(
         isMicEnabled = true,
         isLocal,
          isAuraActive = false,
-        withoutName,
+         isScreenSharing = false,
         isScreensharingUser = false,
+        onToggleAudio = () => {},
+         onToggleVideo = () => {},
     }: MeetingUserVideoItemProps) => {
         const container = useRef<HTMLVideoElement | null>(null);
 
@@ -77,6 +79,8 @@ const MeetingUserVideoItem = memo(
                         userProfilePhoto={userProfileAvatar}
                         videoRef={container}
                         size={size}
+                        onToggleVideo={onToggleVideo}
+                        isScreenSharing={isScreenSharing}
                     />
                     {isScreensharingUser && (
                         <CustomGrid
@@ -89,20 +93,22 @@ const MeetingUserVideoItem = memo(
                         </CustomGrid>
                     )}
                 </CustomBox>
-                {!withoutName && (
+                {!isScreenSharing && (
                     <CustomPaper className={styles.usernameWrapper} variant="black-glass">
                         <CustomGrid container alignItems="center" wrap="nowrap">
                             <MicIcon
                                 isActive={isMicEnabled}
                                 width="18px"
                                 height="18px"
+                                onClick={onToggleAudio}
                                 className={clsx(styles.micIcon, {
                                     [styles.noAudio]: !isMicEnabled,
+                                    [styles.withAction]: isLocal,
                                 })}
                             />
                             <CustomTypography
                                 color="common.white"
-                                variant="body2"
+                                variant="body3"
                                 className={styles.username}
                             >
                                 {userName}

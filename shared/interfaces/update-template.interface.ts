@@ -5,6 +5,7 @@ export interface IUpdateTemplate {
     fullName: string;
     position: string;
     signBoard: string;
+    customLink?: string;
     businessCategories?: string[];
     languages?: string[];
     isMonetizationEnabled?: boolean;

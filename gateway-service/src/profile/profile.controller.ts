@@ -82,6 +82,29 @@ export class ProfileController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete('/')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete profile' })
+  @ApiOkResponse({
+    description: 'Profile deleted successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async deleteProfile(
+    @Request() req,
+  ): Promise<ResponseSumType<void>> {
+    await this.coreService.deleteUser({
+      userId: req.user.userId,
+    });
+
+    return {
+      success: true,
+      result: undefined,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('/avatar')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update profile avatar' })
@@ -144,7 +167,7 @@ export class ProfileController {
     @Request() req,
   ): Promise<ResponseSumType<ICommonUserDTO>> {
     try {
-      const message = `You have changed email\nNew: ${req.user.email}\nOld: ${updateEmail.email}`;
+      const message = `You have changed email <br/> New: ${updateEmail.email} <br /> Old: ${req.user.email}`;
 
       this.notificationService.sendEmail({
         to: req.user.email,
@@ -383,7 +406,7 @@ export class ProfileController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('templates/:templateId')
+  @Get('/templates/:templateId')
   @ApiOperation({ summary: 'Get Template' })
   @ApiOkResponse({
     type: CommonTemplateRestDTO,

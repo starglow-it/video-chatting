@@ -68,61 +68,6 @@ export class SeederService {
     return;
   }
 
-  async seedUsersTemplates() {
-    const users = await this.usersService.findUsers({
-      query: {},
-      populatePaths: ['socials', 'languages', 'templates'],
-    });
-
-    const templateList = await this.commonTemplatesService.findCommonTemplates({
-      query: {},
-      populatePaths: 'businessCategories',
-    });
-
-    const createUsersTemplates = users.map(async (user) => {
-      const templatesListData = templateList
-        .map((template) => {
-          const isThereTemplateAssigned = [...user?.templates].find(
-            (existedTemplate) => {
-              return existedTemplate.templateId === template.templateId;
-            },
-          );
-
-          if (!isThereTemplateAssigned) {
-            return {
-              templateId: template.templateId,
-              url: template.url,
-              name: template.name,
-              maxParticipants: template.maxParticipants,
-              previewUrl: template.previewUrl,
-              type: template.type,
-              businessCategories: template.businessCategories.map(
-                (category) => category._id,
-              ),
-              fullName: user.fullName,
-              position: user.position,
-              description: user.description || template.description,
-              companyName: user.companyName,
-              contactEmail: user.contactEmail,
-              languages: user.languages.map((language) => language._id),
-              socials: user.socials.map((social) => social._id),
-              usersPosition: template.usersPosition,
-            };
-          }
-        })
-        .filter(Boolean);
-
-      user.templates = await this.userTemplatesService.createUserTemplates({
-        userId: user._id,
-        templates: templatesListData,
-      });
-
-      return user.save();
-    });
-
-    await Promise.all(createUsersTemplates);
-  }
-
   async seedLanguages() {
     const promises = LANGUAGES_TAGS.map(async (language) => {
       const isExists = await this.languagesService.exists({

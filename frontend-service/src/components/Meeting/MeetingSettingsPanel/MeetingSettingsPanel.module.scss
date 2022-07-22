@@ -4,7 +4,6 @@
 .wrapper {
   position: relative;
   height: 100%;
-  z-index: 100;
 }
 
 .settingsWrapper {
@@ -13,7 +12,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1400;
   transform: translateX(rem(392px));
   transition: transform 200ms ease-in;
 

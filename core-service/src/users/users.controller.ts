@@ -11,6 +11,7 @@ import { CommonUserDTO } from '../dtos/common-user.dto';
 import {
   COMPARE_PASSWORDS,
   CREATE_USER,
+  DELETE_PROFILE,
   DELETE_PROFILE_AVATAR,
   FIND_USER_BY_EMAIL,
   FIND_USER_BY_EMAIL_AND_UPDATE,
@@ -371,6 +372,17 @@ export class UsersController {
       excludeExtraneousValues: true,
       enableImplicitConversion: true,
     });
+  }
+
+
+
+  @MessagePattern({ cmd: DELETE_PROFILE })
+  async deleteProfile(
+      @Payload() { userId }: { userId: string },
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      return this.usersService.deleteUser(userId, session);
+    })
   }
 
   @MessagePattern({ cmd: UPDATE_PROFILE })

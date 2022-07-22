@@ -22,10 +22,13 @@ import { TemplateGridProps } from './types';
 
 // styles
 import styles from './TemplatesGrid.module.scss';
+import {useMediaQuery} from "@mui/material";
 
 const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGridProps) => {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
+
+    const is1100Media = useMediaQuery('(max-width:1100px)');
 
     const renderTemplates = useMemo(() => {
         const initialTemplatesRender = list.map(template => ({
@@ -63,7 +66,8 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
                         key={key}
                         display="grid"
                         gap={3}
-                        gridTemplateColumns="repeat(auto-fit, minmax(334px, 1fr))"
+                        gridTemplateColumns={`repeat(${is1100Media ? 'auto-fit' : '3'}, minmax(334px, 1fr))`}
+                        className={styles.grid}
                     >
                         {elements}
                     </CustomBox>
@@ -72,7 +76,7 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
         }
 
         return [];
-    }, [list, skip, count]);
+    }, [list, skip, count, is1100Media]);
 
     const handleLoadTemplates = useCallback(data => {
         setSkip(prev => {
@@ -123,7 +127,7 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
                 {count > 6 ? (
                     <CustomSlider sliderSettings={sliderSettings}>{renderTemplates}</CustomSlider>
                 ) : (
-                    <CustomGrid container gap={2} justifyContent="center">
+                    <CustomGrid container gap={3} justifyContent="center">
                         {renderTemplates}
                     </CustomGrid>
                 )}

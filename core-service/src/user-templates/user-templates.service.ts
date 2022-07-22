@@ -52,14 +52,14 @@ export class UserTemplatesService {
   async findUserTemplateById({
     id,
     session,
-    populatePath,
+   populatePaths,
   }: {
     id: string;
     session: ITransactionSession;
-    populatePath?: CustomPopulateOptions;
+    populatePaths?: CustomPopulateOptions;
   }): Promise<UserTemplateDocument> {
     return this.userTemplate
-      .findById(id, {}, { session: session.session, populate: populatePath })
+      .findById(id, {}, { session: session.session, populate: populatePaths })
       .exec();
   }
 
@@ -67,13 +67,13 @@ export class UserTemplatesService {
     id: IUserTemplate['id'],
     data: UpdateQuery<UserTemplateDocument>,
     { session }: ITransactionSession,
-    populatePath: CustomPopulateOptions,
+    populatePaths: CustomPopulateOptions,
   ): Promise<UserTemplateDocument> {
     return this.userTemplate
       .findByIdAndUpdate(id, data, {
         new: true,
         session,
-        populate: populatePath,
+        populate: populatePaths,
       })
       .exec();
   }

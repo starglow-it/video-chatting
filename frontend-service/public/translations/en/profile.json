@@ -63,5 +63,7 @@
     "templates": "My templates",
     "logout": "Log out",
     "discovery": "Discovery"
-  }
+  },
+  "delete": "Delete Profile",
+  "deleteProfileConfirm": "Delete Profile?"
 }

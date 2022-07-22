@@ -1,0 +1,11 @@
+@import "../../../styles/rem";
+
+.content {
+  width: rem(472px);
+  max-width: 100%;
+  padding: rem(28px 40px);
+}
+
+.buttonsWrapper {
+  margin: rem(40px 0 0 0);
+}

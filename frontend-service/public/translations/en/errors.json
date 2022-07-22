@@ -39,7 +39,14 @@
     },
     "notFound": "The meeting does not exist",
     "maxParticipantsNumber": "Meeting template has reached the participant limit",
-    "requestDenied": "Your request was denied"
+    "requestDenied": "Your request was denied",
+    "settings": {
+      "customLink": {
+        "characters": "Unsupported character is used",
+        "maxLength": "The link should be up to 60 characters long",
+        "busy": "This link name already exists"
+      }
+    }
   },
   "noSpaces": "No spaces allowed",
   "maxLength": {

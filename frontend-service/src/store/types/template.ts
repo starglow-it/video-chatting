@@ -39,6 +39,7 @@ export type UserTemplate = {
     templatePrice: number;
     templateCurrency: "USD" | "CAD";
     position: string;
+    customLink: string;
     languages: Language[];
     socials: SocialLink[];
     meetingInstance?: MeetingInstance;
@@ -46,4 +47,5 @@ export type UserTemplate = {
         profileAvatar: ProfileAvatarT;
     };
     usersPosition: { top: number; left: number }[];
+    links?: { id: string; item: string; position: { top: number; left: number } }[];
 };

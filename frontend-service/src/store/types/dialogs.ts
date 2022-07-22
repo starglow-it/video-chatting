@@ -15,6 +15,7 @@ export type AppDialogsState = {
     copyMeetingLinkDialog: boolean;
     checkResetPasswordEmailDialog: boolean;
     emailResetPasswordDialog: boolean;
+    deleteProfileDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -34,6 +35,7 @@ export enum AppDialogsEnum {
     copyMeetingLinkDialog = 'copyMeetingLinkDialog',
     emailResetPasswordDialog = 'emailResetPasswordDialog',
     checkResetPasswordEmailDialog = 'checkResetPasswordEmailDialog',
+    deleteProfileDialog = 'deleteProfileDialog',
 }
 
 export type DialogActionPayload = {

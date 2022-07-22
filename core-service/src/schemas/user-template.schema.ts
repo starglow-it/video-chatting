@@ -124,6 +124,12 @@ export class UserTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.String,
+    default: '',
+  })
+  customLink: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
     default: 'USD',
   })
   templateCurrency: string;
@@ -150,6 +156,19 @@ export class UserTemplate {
     required: true,
   })
   usersPosition: { top: number; left: number }[];
+
+  @Prop({
+    type: [
+      {
+        item: mongoose.Schema.Types.String,
+        position: {
+          top: mongoose.Schema.Types.Number,
+          left: mongoose.Schema.Types.Number,
+        }
+      },
+    ],
+  })
+  links: { item: string; position: { top: number; left: number } }[];
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

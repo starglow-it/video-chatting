@@ -20,9 +20,11 @@ export interface IUserTemplate {
     isMonetizationEnabled: boolean;
     templatePrice: number;
     templateCurrency: string;
+    customLink: string;
     businessCategories: IBusinessCategory[];
     languages: ILanguage[];
     socials: ISocialLink[];
     user: ITemplateUserDTO;
     usersPosition: { top: number; left: number }[];
+    links?: { item: string; position: { top: number; left: number } }[];
 }

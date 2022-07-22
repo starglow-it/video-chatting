@@ -23,8 +23,6 @@ import {appDialogsApi, createMeetingFx, setDeleteTemplateIdEvent, setScheduleTem
 // styles
 import styles from './ProfileTemplateItem.module.scss';
 
-// stores
-
 // types
 import { ProfileTemplateProps } from './types';
 import { AppDialogsEnum } from '../../../store/types';
@@ -44,7 +42,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
     const handleCreateMeeting = useCallback(async () => {
         await createMeetingFx({ templateId: template.id });
 
-        await router.push(`/meeting/${template.id}`);
+        await router.push(`/meeting/${template.customLink || template.id}`);
     }, []);
 
     const handleOpenDeleteDialog = useCallback(() => {

@@ -136,7 +136,7 @@ sample({
 sample({
     clock: emitUpdateMeetingTemplate,
     source: combine<{ template: UserTemplate }>({ template: $meetingTemplateStore }),
-    fn: ({ template }) => ({ templateId: template.id }),
+    fn: ({ template }) => ({ templateId: template.customLink || template.id }),
     target: updateMeetingTemplateEvent,
 });
 

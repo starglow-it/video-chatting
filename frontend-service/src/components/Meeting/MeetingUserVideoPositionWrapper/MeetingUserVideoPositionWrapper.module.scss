@@ -1,5 +1,6 @@
 .videoWrapper {
-  position: absolute;
+  position: fixed;
+  z-index: 110;
   width: auto;
 
   transform: translate(-50%, -50%);

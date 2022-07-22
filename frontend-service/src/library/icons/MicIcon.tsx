@@ -4,13 +4,14 @@ import { CommonIconProps } from '@library/types';
 
 import { SvgIconWrapper } from '@library/icons/SvgIconWrapper';
 
-const MicIcon = memo(({ isActive, width, height, className }: CommonIconProps) => {
+const MicIcon = memo(({ isActive, width, height, className, onClick }: CommonIconProps) => {
     if (isActive) {
         return (
             <SvgIconWrapper
                 width={width}
                 height={height}
                 className={className}
+                onClick={onClick}
                 viewBox="0 0 48 48"
                 fill="none"
             >
@@ -28,6 +29,7 @@ const MicIcon = memo(({ isActive, width, height, className }: CommonIconProps) =
                 className={className}
                 width={width}
                 height={height}
+                onClick={onClick}
                 viewBox="0 0 48 48"
                 fill="none"
             >

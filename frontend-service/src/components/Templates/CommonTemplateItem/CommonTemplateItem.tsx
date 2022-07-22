@@ -42,8 +42,8 @@ const CommonTemplateItem = memo(({ template }: CommonTemplateItemProps) => {
     const handleStartMeeting = useCallback(async () => {
         const result = await createMeetingFx({ templateId: template.id });
 
-        if (result.meeting) {
-            await Router.push(`/meeting/${result.meeting.id}`);
+        if (result.template) {
+            await Router.push(`/meeting/${result.template?.customLink || result?.template?.id}`);
         }
     }, []);
 

@@ -66,17 +66,20 @@ export class MeetingsController {
             ],
           },
           session,
+          populatePaths: 'meetingInstance'
         });
 
         if (userTemplate) {
+          if (userTemplate?.meetingInstance?._id) {
+            await this.meetingsService.deleteMeeting(userTemplate.meetingInstance._id, session);
+          }
+
           userTemplate.usedAt = Date.now();
           userTemplate.meetingInstance = meeting;
 
           await userTemplate.save();
         } else {
           await user.populate(['socials', 'languages', 'templates']);
-
-          console.log(user.socials);
 
           const templateData = {
             user: user._id,
@@ -98,6 +101,7 @@ export class MeetingsController {
             socials: user.socials.map((social) => social._id),
             meetingInstance: meeting,
             usersPosition: targetTemplate.usersPosition,
+            links: targetTemplate.links,
             signBoard: user.signBoard,
           };
 

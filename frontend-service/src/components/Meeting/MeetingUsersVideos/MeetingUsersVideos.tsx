@@ -1,28 +1,26 @@
-import React, {memo, useMemo} from 'react';
+import React, {memo, useCallback, useMemo} from 'react';
 import { useStore, useStoreMap } from 'effector-react';
-
-// custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
 import { MeetingUserVideoItem } from '@components/Meeting/MeetingUserVideoItem/MeetingUserVideoItem';
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores
-import { $localUserStore, $meetingUsersStore } from '../../../store';
+import {$localUserStore, $meetingConnectedStore, $meetingUsersStore, updateLocalUserEvent} from '../../../store';
 import { $profileStore } from '../../../store';
 import { $meetingStore, $meetingTemplateStore } from '../../../store';
 
+// controller
+import {AgoraController} from "../../../controllers/VideoChatController";
+
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
-
-// styles
-import styles from './MeetingUsersVideos.module.scss';
 
 const MeetingUsersVideos = memo(() => {
     const localUser = useStore($localUserStore);
     const profile = useStore($profileStore);
     const meeting = useStore($meetingStore);
+    const isMeetingConnected = useStore($meetingConnectedStore);
     const meetingTemplate = useStore($meetingTemplateStore);
 
     const users = useStoreMap({
@@ -37,6 +35,9 @@ const MeetingUsersVideos = memo(() => {
     });
 
     const isScreenSharing = Boolean(meeting.sharingUserId);
+
+    const isLocalMicActive = localUser.micStatus === 'active';
+    const isLocalCamActive = localUser.cameraStatus === 'active';
 
     const renderUsers = useMemo(
         () =>
@@ -60,17 +61,43 @@ const MeetingUsersVideos = memo(() => {
                         isCameraEnabled={user.cameraStatus === 'active'}
                         isMicEnabled={user.micStatus === 'active'}
                         userProfileAvatar={user.profileAvatar}
-                        withoutName={isScreenSharing}
                         isAuraActive={user.isAuraActive}
                         isScreensharingUser={meeting.sharingUserId === user.meetingUserId}
+                        isScreenSharing={isScreenSharing}
                     />
                 </MeetingUserVideoPositionWrapper>
             )),
         [users, meeting.sharingUserId, meetingTemplate.usersPosition],
     );
 
+    const handleToggleAudio = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                micStatus: isLocalMicActive ? 'inactive' : 'active',
+            });
+
+            AgoraController.setTracksState({
+                isCameraEnabled: isLocalCamActive,
+                isMicEnabled: !isLocalMicActive,
+            });
+        }
+    }, [isLocalMicActive, isLocalCamActive, isMeetingConnected]);
+
+    const handleToggleVideo = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                cameraStatus: isLocalCamActive ? 'inactive' : 'active',
+            });
+
+            AgoraController.setTracksState({
+                isCameraEnabled: !isLocalCamActive,
+                isMicEnabled: isLocalMicActive,
+            });
+        }
+    }, [isLocalCamActive, isLocalMicActive, isMeetingConnected]);
+
     return (
-        <CustomGrid className={styles.meetingVideos}>
+        <>
             <MeetingUserVideoPositionWrapper
                 elevationIndex={0}
                 key={localUser.id}
@@ -84,16 +111,18 @@ const MeetingUsersVideos = memo(() => {
                     userName={localUser.username}
                     videoTrack={localUser.videoTrack}
                     audioTrack={localUser.audioTrack}
-                    isCameraEnabled={localUser.cameraStatus === 'active'}
-                    isMicEnabled={localUser.micStatus === 'active'}
-                    withoutName={Boolean(meeting?.sharingUserId)}
+                    isCameraEnabled={isLocalCamActive}
+                    isMicEnabled={isLocalMicActive}
+                    isScreenSharing={isScreenSharing}
                     isScreensharingUser={localUser.meetingUserId === meeting?.sharingUserId}
                     isLocal
                     isAuraActive={localUser.isAuraActive}
+                    onToggleAudio={handleToggleAudio}
+                    onToggleVideo={handleToggleVideo}
                 />
             </MeetingUserVideoPositionWrapper>
             {renderUsers}
-        </CustomGrid>
+        </>
     );
 });
 

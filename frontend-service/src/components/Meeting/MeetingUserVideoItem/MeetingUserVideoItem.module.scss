@@ -62,6 +62,10 @@
     &.noAudio {
       color: $primary-red;
     }
+
+    &.withAction {
+      cursor: pointer;
+    }
   }
 
   .username {

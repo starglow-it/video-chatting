@@ -6,6 +6,8 @@ import Image from 'next/image';
 import {Fade} from "@mui/material";
 
 // hooks
+import {useTimer} from "../../../hooks/useTimer";
+import {useToggle} from "../../../hooks/useToggle";
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -20,8 +22,6 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
-import {useTimer} from "../../../hooks/useTimer";
-import {useToggle} from "../../../hooks/useToggle";
 
 // styles
 import styles from './MeetingGeneralInfo.module.scss';
@@ -77,19 +77,21 @@ const MeetingGeneralInfo = memo(() => {
         name: 'fullName',
     });
 
-    const startAtValue = Date.now() - (meeting.startAt || Date.now());
-    const endAtValue = (meeting?.endsAt || Date.now()) - Date.now();
-
     const {
         value: currentTime,
         onStartTimer: handleStartMeetingEnd
-    } = useTimer(startAtValue, endAtValue);
-
-    const is10MinutesLeft = ((meeting?.endsAt || 0) - (meeting.startAt || 0) || Date.now()) - currentTime < 10 * ONE_MINUTE;
+    } = useTimer();
 
     useEffect(() => {
-        handleStartMeetingEnd();
-    }, []);
+        if (meeting?.endsAt && meeting?.startAt) {
+            const endAtValue = (meeting?.endsAt || Date.now()) - Date.now();
+
+            handleStartMeetingEnd(endAtValue);
+        }
+    }, [meeting?.endsAt, meeting?.startAt]);
+
+
+    const is10MinutesLeft = ((meeting?.endsAt || 0) - (meeting.startAt || 0) || Date.now()) - currentTime < 10 * ONE_MINUTE;
 
     useEffect(() => {
         setTimeout(() => {

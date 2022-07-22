@@ -1,13 +1,10 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Theme } from '@mui/material';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 
 // library
 import { LiveOfficeLogo } from '@library/icons/LiveOfficeLogo';
-import { BackgroundLogoLeft } from '@library/icons/BackgroundLogoLeft';
-import { BackgroundLogoRight } from '@library/icons/BackgroundLogoRight';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
@@ -52,20 +49,11 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
     return (
         <CustomBox
             className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}
-            sx={{
-                backgroundColor: (theme: Theme) => theme.background.default,
-            }}
         >
-            <CustomBox className={styles.topLeft}>
-                <BackgroundLogoLeft className={styles.icon} width="544px" height="auto" />
-            </CustomBox>
-
-            <CustomBox className={styles.topRight}>
-                <BackgroundLogoRight className={styles.icon} width="718px" height="auto" />
-            </CustomBox>
             <CustomBox
                 className={clsx(styles.contentWrapper, { [styles.meetingLayout]: isMeetingRoute })}
             >
+                <CustomBox className={styles.bgImage} />
                 <CustomBox className={styles.header}>
                     <CustomGrid container justifyContent="space-between" alignItems="center">
                         <CustomLink href={isAuthenticated ? '/dashboard' : ''}>

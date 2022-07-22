@@ -12,6 +12,8 @@ import styles from './RoundedVideo.module.scss';
 
 // types
 import { RoundedVideoProps } from './types';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import {VideoEyeIcon} from "@library/icons/VideoEyeIcon";
 
 const RoundedVideo = memo(
     ({
@@ -22,6 +24,8 @@ const RoundedVideo = memo(
         isCameraActive,
         isLocal,
         videoRef,
+         onToggleVideo,
+         isScreenSharing,
     }: RoundedVideoProps) => {
         const [isVideoActive, setIsVideoActive] = useState(false);
 
@@ -48,6 +52,29 @@ const RoundedVideo = memo(
                         userName={userName}
                     />
                 )}
+                {isLocal ? (
+                    <CustomGrid
+                        container
+                        direction="column"
+                        className={styles.videoControlOverlay}
+                        onClick={onToggleVideo}
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                        <VideoEyeIcon width={isScreenSharing ? "30px" : "40px"} height={isScreenSharing ? "30px" : "40px"}
+                                      isActive={isCameraActive}/>
+                        {!isScreenSharing
+                            ? (
+                                <CustomTypography
+                                    variant="body3"
+                                    nameSpace="meeting"
+                                    translation={isCameraActive ? "devices.switchOff" : "devices.switchOn"}
+                                />
+                            )
+                            : null
+                        }
+                    </CustomGrid>
+                ) : null}
                 <video
                     onLoadedData={handleVideoLoaded}
                     ref={videoRef}

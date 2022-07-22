@@ -2,7 +2,7 @@ import { string, object } from 'yup';
 import { simpleStringSchema } from '../common';
 import { SocialLink, SocialLinkKeysEnum } from '../../store/types';
 
-const baseUrlSchema = () =>
+export const baseUrlSchema = () =>
     string().matches(
         /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+)?(&[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+)*?$/,
         'url.common',

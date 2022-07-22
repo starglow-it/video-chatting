@@ -8,6 +8,9 @@
   overflow: hidden;
   max-width: rem(334px);
 
+  align-self: center;
+  justify-self: center;
+
   z-index: 10;
 
   &:after {

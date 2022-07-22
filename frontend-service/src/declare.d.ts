@@ -43,6 +43,7 @@ declare module '@mui/material/Paper' {
 declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {
         'custom-cancel': true;
+        'custom-danger': true;
         'custom-primary': true;
         'custom-transparent': true;
     }
@@ -83,6 +84,7 @@ declare module '@mui/material/styles' {
 
     interface ButtonPropsVariantOverrides {
         'custom-cancel': string;
+        'custom-danger': string;
         'custom-primary': string;
         'custom-transparent': string;
     }

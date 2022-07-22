@@ -45,6 +45,15 @@ export class UsersService {
     return user;
   }
 
+  async deleteUser(
+      userId: string,
+    { session }: ITransactionSession,
+  ): Promise<void> {
+    await this.user.deleteOne({ _id: userId }, { session });
+
+    return;
+  }
+
   async findUser({
     query,
     session,

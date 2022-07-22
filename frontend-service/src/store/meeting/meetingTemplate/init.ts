@@ -3,15 +3,17 @@ import {
     $meetingTemplateStore,
     setIsUserSendEnterRequest,
     getMeetingTemplateFx,
-    updateMeetingTemplateFx, updateMeetingTemplateFxWithData,
+    updateMeetingTemplateFx, updateMeetingTemplateFxWithData, checkCustomLinkFx,
 } from './model';
+import {emitUpdateMeetingTemplate} from "../sockets/model";
 
 import { handleUpdateMeetingTemplate } from './handlers/handleUpdateMeetingTemplate';
 import { handleGetMeetingTemplate } from './handlers/handleGetMeetingTemplate';
-import {emitUpdateMeetingTemplate} from "../sockets/model";
+import { handleCheckCustomLink } from './handlers/handleCheckCustomLink';
 
 getMeetingTemplateFx.use(handleGetMeetingTemplate);
 updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);
+checkCustomLinkFx.use(handleCheckCustomLink);
 
 $meetingTemplateStore
     .on(getMeetingTemplateFx.doneData, (state, data) => data)

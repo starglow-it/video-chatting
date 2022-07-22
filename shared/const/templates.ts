@@ -559,6 +559,32 @@ export const templatesData: BaseTemplate[] = [
                 top: 0.57,
                 left: 0.91
             }
+        ],
+        links: [
+            {
+                item: "https://www.ralphlaurenhome.com/products/Furniture/item.aspx?haid=7&collId=&shaid=&sort=&itemId=38525&phaid=",
+                position: { top: 0.80, left: 0.9 }
+            },
+            {
+                item: "https://www.ralphlauren.com/home-shelter-point-lifestyle-cg/umber-walnut-drinks-table/100001390.html?dwvar_100001390_home-furniture-finish=Oiled%20Walnut&cgid=home-shelter-point-lifestyle-cg&webcat=search#ab=en_US_HomeLP_Slot_1_S1_L1_SHOP&start=1&cgid=home-shelter-point-lifestyle-cg",
+                position: { top: 0.9, left: 0.73 }
+            },
+            {
+                item: "https://www.ralphlaurenhome.com/products/Furniture/item.aspx?haid=6&collId=&shaid=&sort=&itemId=38136&phaid=",
+                position: { top: 0.9, left: 0.32 }
+            },
+            {
+                item: "https://www.ralphlauren.com/home-furniture-tables/shelter-point-oak-cocktail-table/100001385.html?ab=en_us_PLP_shelter_point_lifestyle_Slot_5_S1_L1_SHOP",
+                position: { top: 0.75, left: 0.6 }
+            },
+            {
+                item: "https://www.ralphlauren.com/home-shelter-point-lifestyle-cg/modern-mini-hurricane/520026.html?dwvar520026_colorname=Silver&cgid=home-shelter-point-lifestyle-cg&webcat=search#ab=en_US_HomeLP_Slot_1_S1_L1_SHOP&start=1&cgid=home-shelter-point-lifestyle-cg",
+                position: { top: 0.6, left: 0.62 }
+            },
+            {
+                item: "https://www.ralphlauren.com/home-lighting-table-lamps/rl-67-boom-arm-floor-lamp/0042559294.html?pdpR=y",
+                position: { top: 0.35, left: 0.68 }
+            }
         ]
     },
     {
@@ -922,6 +948,41 @@ export const templatesData: BaseTemplate[] = [
                 top: 0.25,
                 left: 0.425
             }
+        ]
+    },
+    {
+        templateId: 27,
+        url: 'https://vimeo.com/689593453',
+        previewUrl: '/templates/images/lakeside3/lakeside3_360p.jpg',
+        name: 'Lakeside Office (3d Model)',
+        maxParticipants: 4,
+        description: 'Get inspired in a calming yet energizing environment',
+        type: 'free',
+        businessCategories: [
+            'Counselling',
+            'Consulting',
+            'Mediation',
+            'Team Meeting',
+            'Restorative',
+            'Calming',
+        ],
+        usersPosition: [
+            {
+                top: 0.59,
+                left: 0.16
+            },
+            {
+                top: 0.54,
+                left: 0.39
+            },
+            {
+                top: 0.54,
+                left: 0.59
+            },
+            {
+                top: 0.59,
+                left: 0.84
+            },
         ]
     }
 ];

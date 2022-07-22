@@ -54,11 +54,26 @@ export class CommonTemplate {
 
   @Prop({
     type: [
-      { top: mongoose.Schema.Types.Number, left: mongoose.Schema.Types.Number },
+      {
+        top: mongoose.Schema.Types.Number,
+        left: mongoose.Schema.Types.Number },
     ],
     required: true,
   })
   usersPosition: { top: number; left: number }[];
+
+  @Prop({
+    type: [
+      {
+        item: mongoose.Schema.Types.String,
+        position: {
+          top: mongoose.Schema.Types.Number,
+          left: mongoose.Schema.Types.Number,
+        }
+      },
+    ],
+  })
+  links: { item: string; position: { top: number; left: number } }[];
 }
 
 export type CommonTemplateDocument = CommonTemplate & Document;

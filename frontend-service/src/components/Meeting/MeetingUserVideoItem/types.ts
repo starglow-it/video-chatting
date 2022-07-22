@@ -17,7 +17,9 @@ export type MeetingUserVideoItemProps = {
     isCameraEnabled: boolean;
     isMicEnabled: boolean;
     isLocal?: boolean;
-    withoutName: boolean;
     isScreensharingUser: boolean;
+    isScreenSharing: boolean;
     isAuraActive: boolean;
+    onToggleAudio?: () => void;
+    onToggleVideo?: () => void;
 };

@@ -12,4 +12,5 @@ export interface ICommonTemplate {
     type: string;
     businessCategories?: IBusinessCategory[];
     usersPosition: { top: number; left: number }[];
+    links?: { item: string; position: { top: number; left: number } }[];
 }

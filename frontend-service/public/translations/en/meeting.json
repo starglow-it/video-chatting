@@ -20,8 +20,8 @@
     "contacts": "Contacts"
   },
   "meetingActions": {
-    "editTemplate": "You can edit info by clicking on avatar",
-    "meetingInfo": "You can view info by clicking on avatar"
+    "editTemplate": "Click avatar to edit profile",
+    "meetingInfo": "Click avatar to view info"
   },
   "buttons": {
     "join": "Join now",
@@ -36,7 +36,9 @@
   },
   "devices": {
     "turnOn":"Turn on",
-    "turnOff":"Turn off"
+    "turnOff":"Turn off",
+    "switchOn":"Switch ON",
+    "switchOff":"Switch OFF"
   },
   "endMeeting": {
     "forHost": "Do you want to <b>Leave Meeting</b> or <b>End it for all</b>?",
@@ -79,8 +81,8 @@
   },
   "modes": {
     "screensharing": {
-      "on": "Turn on sharing",
-      "off": "Turn off sharing",
+      "on": "Screen share",
+      "off": "Turn off Screen share",
       "busy": "Someone is already sharing screen",
       "selfSharing": "You are sharing screen now"
     }
@@ -102,5 +104,14 @@
     "yourCard": "Your card",
     "stripe": "Stripe",
     "payWith": "Pay with"
+  },
+  "customLink": {
+    "yourLink": "your meeting link here",
+    "yourLink2": "Your meeting link here*"
+  },
+  "links": {
+    "onGoods": "Show all the items",
+    "offGoods": "Hide all the items",
+    "buyItem": "Buy this item"
   }
 }

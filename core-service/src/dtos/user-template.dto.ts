@@ -80,6 +80,9 @@ export class UserTemplateDTO implements IUserTemplate {
   signBoard: string;
 
   @Expose()
+  customLink: string;
+
+  @Expose()
   isMonetizationEnabled: boolean;
 
   @Expose()
@@ -91,4 +94,8 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   @Transform((data) => data.obj?.usersPosition)
   usersPosition: { top: number; left: number }[];
+
+  @Expose()
+  @Transform((data) => data.obj?.links?.map(link => ({ id: link._id, item: link.item, position: link.position })))
+  links: { item: string; position: { top: number; left: number } }[];
 }

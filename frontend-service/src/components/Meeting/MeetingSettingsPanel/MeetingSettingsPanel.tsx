@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { Fade } from '@mui/material';
 
 // components
@@ -23,7 +23,7 @@ import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 // styles
 import {
     $isEditTemplateOpenStore,
-    $isMeetingInfoOpenStore,
+    $isMeetingInfoOpenStore, checkCustomLinkFxWithData,
     setEditTemplateOpenEvent, setMeetingInfoOpenEvent,
 } from 'src/store';
 import styles from './MeetingSettingsPanel.module.scss';
@@ -37,6 +37,7 @@ import { businessCategoriesSchema } from '../../../validation/users/businessCate
 import { languagesSchema } from '../../../validation/users/languagesSchema';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { validateSocialLink } from '../../../validation/users/socials';
+import {customTemplateLinkSchema} from "../../../validation/templates/customLink";
 
 // stores
 import { $isOwner } from '../../../store';
@@ -52,7 +53,7 @@ import {MeetingSettingsPanelProps, SettingsData} from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
-
+import frontendConfig from "../../../const/config";
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -64,6 +65,7 @@ const validationSchema = yup.object({
     languages: languagesSchema(),
     signBoard: simpleStringSchema(),
     socials: yup.array().of(validateSocialLink()),
+    customLink: customTemplateLinkSchema(),
 });
 
 const MeetingSettingsPanel = memo(
@@ -88,22 +90,25 @@ const MeetingSettingsPanel = memo(
             defaultValues: {
                 companyName: template.companyName,
                 contactEmail: template.contactEmail,
-                description: template.description,
                 fullName: template.fullName,
                 position: template.position,
                 signBoard: template.signBoard,
                 businessCategories: template.businessCategories.map(category => category.key),
                 languages: template.languages.map(category => category.key),
                 socials: templateSocialLinks,
+                customLink: template.customLink,
+                description: template.description,
             },
         });
 
         const {
             setValue,
             handleSubmit,
-            formState: { dirtyFields },
+            formState: { dirtyFields, errors },
             reset,
             control,
+            setError,
+            setFocus
         } = methods;
 
         const nextSocials = useWatch({
@@ -190,6 +195,16 @@ const MeetingSettingsPanel = memo(
                 } else {
                     const { socials, ...dataWithoutSocials } = data;
 
+                    if (dataWithoutSocials.customLink && template.customLink !== dataWithoutSocials.customLink) {
+                        const isBusy = await checkCustomLinkFxWithData({ templateId: dataWithoutSocials.customLink });
+
+                        if (isBusy) {
+                            setError('customLink', [{ type: 'focus', message: 'meeting.settings.customLink.busy' }]);
+                            setFocus('customLink');
+                            return;
+                        }
+                    }
+
                     const filteredSocials = socials
                         ?.filter((social: SocialLink) => social.value)
                         ?.reduce((acc, b) => ({ ...acc, [b.key]: b.value }), {});
@@ -206,10 +221,18 @@ const MeetingSettingsPanel = memo(
                         ...dataWithoutSocials,
                         socials,
                     });
+
+                    if ((template.customLink || dataWithoutSocials.customLink) && template.customLink !== dataWithoutSocials.customLink) {
+                        Router.push(
+                            `${frontendConfig.frontendUrl}/meeting/${dataWithoutSocials.customLink || template.id}`,
+                            `${frontendConfig.frontendUrl}/meeting/${dataWithoutSocials.customLink || template.id}`,
+                            { shallow: true }
+                        );
+                    }
                 }
                 setEditTemplateOpenEvent(false);
             }),
-            [dirtyFieldsCount, template.id],
+            [dirtyFieldsCount, template.id, template.customLink, errors],
         );
 
         const handleCancelEditTemplate = useCallback(() => {
@@ -249,7 +272,7 @@ const MeetingSettingsPanel = memo(
                                 <Fade in={isEditTemplateOpened}>
                                     <CustomBox className={styles.fadeContentWrapper}>
                                         <form onSubmit={onSubmit} className={styles.form}>
-                                            <EditTemplateForm onCancel={handleCancelEditTemplate}/>
+                                            <EditTemplateForm onCancel={handleCancelEditTemplate} />
                                         </form>
                                     </CustomBox>
                                 </Fade>

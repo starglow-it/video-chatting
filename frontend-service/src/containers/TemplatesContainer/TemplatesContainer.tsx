@@ -59,8 +59,8 @@ const TemplatesContainer = memo(() => {
     const handleChooseTemplate = useCallback(async ({ templateId }) => {
         const result = await createMeetingFx({ templateId });
 
-        if (result.meeting) {
-            await router.push(`/meeting/${result.meeting.id}`);
+        if (result.template) {
+            await router.push(`/meeting/${result.template?.customLink || result?.template?.id}`);
         }
     }, []);
 

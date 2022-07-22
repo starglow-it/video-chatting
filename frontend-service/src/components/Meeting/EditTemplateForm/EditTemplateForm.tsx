@@ -18,6 +18,7 @@ import { SignBoardIcon } from '@library/icons/SignBoardIcon';
 // components
 import { EditTemplatePersonalInfo } from '@components/Meeting/EditTemplatePersonalInfo/EditTemplatePersonalInfo';
 import { EditTemplateCompanyInfo } from '@components/Meeting/EditTemplateCompanyInfo/EditTemplateCompanyInfo';
+import { EditMeetingLink } from '@components/Meeting/EditMeetingLink/EditMeetingLink';
 import { ChooseSignBoard } from '@components/Templates/ChooseSignBoard/ChooseSignBoard';
 
 // styles
@@ -58,6 +59,7 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                         wrap="nowrap"
                         className={styles.formContent}
                     >
+                        <EditMeetingLink />
                         <CustomAccordion
                             AccordionIcon={<PersonIcon width="24px" height="24px" />}
                             currentAccordionId={currentAccordionId}

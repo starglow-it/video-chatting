@@ -11,6 +11,7 @@ export type SettingsData = {
     languages: Language["key"][];
     businessCategories: BusinessCategory["key"][];
     socials: SocialLink[];
+    customLink: string;
 };
 
 export type MeetingSettingsPanelProps = React.PropsWithChildren<{

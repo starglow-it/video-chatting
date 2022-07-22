@@ -11,21 +11,24 @@ import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
 // components
 import {MeetingControlPanel} from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
 import {MeetingUsersVideos} from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
+import {MeetingGoodsLinks} from '@components/Meeting/MeetingGoodsLinks/MeetingGoodsLinks';
 import {MeetingNotes} from '@components/Meeting/MeetingNotes/MeetingNotes';
 import {MeetingSettingsPanel} from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
 import {MeetingGeneralInfo} from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
-import {MeetingBackgroundVideo} from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import {MeetingBackgroundComponent} from '@components/Meeting/MeetingBackgroundComponent/MeetingBackgroundComponent';
 import {MeetingSounds} from "@components/Meeting/MeetingSounds/MeetingSounds";
 import {DevicesSettingsDialog} from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
 import {EndMeetingDialog} from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
 import {InviteAttendeeDialog} from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
 import {UserToKickDialog} from '@components/Dialogs/UserToKickDialog/UserToKickDialog';
-import {AudioDeviceSetUpButton} from '@components/Media/DeviceSetUpButtons/AudioDeviceSetUpButton';
-import {VideoDeviceSetUpButton} from '@components/Media/DeviceSetUpButtons/VideoDeviceSetUpButton';
+import {GoodsLinksButton} from '@components/Meeting/GoodsLinksButton/GoodsLinksButton';
 import {ScreenSharingButton} from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
 import {ScreenSharingLayout} from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import {CopyMeetingLinkDialog} from "@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog";
 import {BackgroundAudioControl} from "@components/Meeting/BackgroundAudioControl/BackgroundAudioControl";
+import {HangUpIcon} from "@library/icons/HangUpIcon";
+import {ActionButton} from "@library/common/ActionButton/ActionButton";
+import clsx from 'clsx';
 import {emptyFunction} from '../../../utils/functions/emptyFunction';
 
 // misc
@@ -50,15 +53,12 @@ import {
     updateMeetingSocketEvent,
     updateMeetingTemplateFxWithData,
     updateUserSocketEvent,
-    appDialogsApi
+    appDialogsApi, setMeetingConnectedEvent
 } from '../../../store';
 
 // types
 import {AppDialogsEnum, MeetingAccessStatuses} from '../../../store/types';
 import {useToggle} from "../../../hooks/useToggle";
-import {HangUpIcon} from "@library/icons/HangUpIcon";
-import {ActionButton} from "@library/common/ActionButton/ActionButton";
-import clsx from 'clsx';
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
@@ -67,8 +67,8 @@ const MeetingView = memo(() => {
     const isOwner = useStore($isOwner);
 
     const {
-        value: isMeetingConnected,
-        onSwitchOn: handleAllowActionInMeeting
+        value: isNeedToShowGoods,
+        onToggleSwitch: handleToggleAllGoods
     } = useToggle(false);
 
     const isLocalMicActive = localUser.micStatus === 'active';
@@ -86,27 +86,6 @@ const MeetingView = memo(() => {
     } = useContext(VideoEffectsContext);
 
     const prevSharingUserId = usePrevious<number | undefined>(meeting.sharingUserId);
-
-    const handleToggleAudio = useCallback(() => {
-        updateLocalUserEvent({
-            micStatus: isLocalMicActive ? 'inactive' : 'active',
-        });
-
-        AgoraController.setTracksState({
-            isCameraEnabled: isLocalCamActive,
-            isMicEnabled: !isLocalMicActive,
-        });
-    }, [isLocalMicActive, isLocalCamActive]);
-
-    const handleToggleVideo = useCallback(() => {
-        updateLocalUserEvent({
-            cameraStatus: isLocalCamActive ? 'inactive' : 'active',
-        });
-        AgoraController.setTracksState({
-            isCameraEnabled: !isLocalCamActive,
-            isMicEnabled: isLocalMicActive,
-        });
-    }, [isLocalCamActive, isLocalMicActive]);
 
     const handleToggleSharing = useCallback(() => {
         if (!meeting.sharingUserId) {
@@ -159,7 +138,8 @@ const MeetingView = memo(() => {
 
                     if (transformedStream) {
                         await AgoraController.initiateConnection({ stream: transformedStream });
-                        handleAllowActionInMeeting();
+
+                        setMeetingConnectedEvent(true);
                     }
 
                     AgoraController.setTracksState({
@@ -203,7 +183,7 @@ const MeetingView = memo(() => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            <MeetingBackgroundVideo isScreenSharing={isScreenSharing} src={meetingTemplate.url}>
+            <MeetingBackgroundComponent isNeedToRenderModel={meetingTemplate.templateId === 27}>
                 <Image
                     className={clsx(styles.image, {[styles.blured]: Boolean(meetingTemplate.url) })}
                     src={meetingTemplate.previewUrl}
@@ -211,24 +191,30 @@ const MeetingView = memo(() => {
                     objectFit="cover"
                 />
                 {isScreenSharing && <ScreenSharingLayout />}
-                <MeetingUsersVideos />
-            </MeetingBackgroundVideo>
+            </MeetingBackgroundComponent>
 
             {Boolean(meetingTemplate?.id) && (
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
                 >
+                    <MeetingUsersVideos />
+                    {
+                        meetingTemplate.templateId === 18
+                            ? <MeetingGoodsLinks show={isNeedToShowGoods} />
+                            : null
+                    }
                     <MeetingControlPanel />
                     <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-                        <AudioDeviceSetUpButton
-                            isMicActive={isLocalMicActive}
-                            onClick={isMeetingConnected ? handleToggleAudio : undefined}
-                        />
-                        <VideoDeviceSetUpButton
-                            isCamActive={isLocalCamActive}
-                            onClick={isMeetingConnected ? handleToggleVideo : undefined}
-                        />
+                        {meetingTemplate?.links?.length
+                            ? (
+                                <GoodsLinksButton
+                                    isActive={isNeedToShowGoods}
+                                    onClick={handleToggleAllGoods}
+                                />
+                            )
+                            : null
+                        }
                         <ScreenSharingButton
                             isSharingActive={Boolean(meeting.sharingUserId)}
                             onAction={isAbleToToggleSharing ? handleToggleSharing : undefined}

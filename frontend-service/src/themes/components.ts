@@ -129,6 +129,19 @@ export const componentsTheme = (theme: Theme) =>
                         },
                     },
                     {
+                        props: { variant: 'custom-danger' },
+                        style: {
+                            background: theme.designSystemColors.red.primary,
+                            color: theme.palette.common.white,
+                            '&:hover': {
+                                background: alpha(theme.designSystemColors.red.primary, 0.6),
+                            },
+                            '&.Mui-disabled': {
+                                background: theme.palette.buttons.cancel.disabled,
+                            },
+                        },
+                    },
+                    {
                         props: { variant: 'custom-common' },
                         style: {
                             background: theme.palette.common.white,

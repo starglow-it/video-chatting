@@ -17,6 +17,8 @@ import { EditPersonalInfo } from '@components/Profile/EditPersonalInfo/EditPerso
 import { EditSocialInfo } from '@components/Profile/EditSocialInfo/EditSocialInfo';
 import { SubmitProfileInfo } from '@components/Profile/SubmitProfileInfo/SubmitProfileInfo';
 import { ConfirmChangeRouteDialog } from '@components/Dialogs/ConfirmChangeRouteDialog/ConfirmChangeRouteDialog';
+import { DeleteProfileDialog } from '@components/Dialogs/DeleteProfileDialog/DeleteProfileDialog';
+import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
 
 // stores
 import { $profileStore, updateProfileFx } from '../../store';
@@ -188,12 +190,14 @@ const EditProfileContainer = memo(() => {
                             <EditCompanyInfo />
                             <EditPersonalInfo />
                             <EditSocialInfo />
+                            <DeleteProfile />
                         </CustomGrid>
                         <SubmitProfileInfo onReset={handleResetForm} />
                     </form>
                 </FormProvider>
             </CustomGrid>
             <ConfirmChangeRouteDialog onConfirm={handleSaveAndQuit} onCancel={handleQuit} />
+            <DeleteProfileDialog />
         </MainProfileWrapper>
     );
 });

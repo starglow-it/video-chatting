@@ -17,3 +17,4 @@ export const checkAuthFx = authDomain.effect<NextPageContext, AuthUserState>('ch
 export const logoutUserFx = authDomain.effect<void, AuthUserState>('logoutUserFx');
 
 export const resetAuthErrorEvent = authDomain.event('resetAuthErrorEvent');
+export const resetAuthStateEvent = authDomain.event('resetAuthStateEvent');
