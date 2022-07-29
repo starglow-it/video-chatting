@@ -8,6 +8,10 @@ import {
   CREATE_STRIPE_ACCOUNT_LINK,
   CREATE_STRIPE_EXPRESS_ACCOUNT,
   DELETE_STRIPE_EXPRESS_ACCOUNT,
+  GET_STRIPE_CHECKOUT_SESSION,
+  GET_STRIPE_PORTAL_SESSION,
+  GET_STRIPE_PRODUCTS,
+  GET_STRIPE_SUBSCRIPTION,
   HANDLE_WEBHOOK,
   LOGIN_STRIPE_EXPRESS_ACCOUNT,
 } from '@shared/patterns/payments';
@@ -54,6 +58,30 @@ export class PaymentsService {
 
   async handleWebhook(data: any) {
     const pattern = { cmd: HANDLE_WEBHOOK };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async getStripeProducts() {
+    const pattern = { cmd: GET_STRIPE_PRODUCTS };
+
+    return this.client.send(pattern, {}).toPromise();
+  }
+
+  async getCheckoutSession(data: { productId: string; meetingToken: string }) {
+    const pattern = { cmd: GET_STRIPE_CHECKOUT_SESSION };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async getPortalSession(data: { subscriptionId: string }) {
+    const pattern = { cmd: GET_STRIPE_PORTAL_SESSION };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async getStripeSubscription(data: { subscriptionId: string }) {
+    const pattern = { cmd: GET_STRIPE_SUBSCRIPTION };
 
     return this.client.send(pattern, data).toPromise();
   }

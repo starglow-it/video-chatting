@@ -2,6 +2,7 @@ import { IBusinessCategory } from "./business-category.interface";
 import {ILanguage} from "./common-language.interface";
 import {ISocialLink} from "./common-social-link.interface";
 import {ITemplateUserDTO} from "./template-user.interface";
+import {IPreviewImage} from "./preview-image.interface";
 
 export interface IUserTemplate {
     id: string;
@@ -11,7 +12,7 @@ export interface IUserTemplate {
     name: string;
     maxParticipants: number;
     description: string;
-    previewUrl: string;
+    previewUrls: IPreviewImage[];
     type: string;
     fullName: string;
     companyName: string;

@@ -1,10 +1,10 @@
-import {attach, combine, forward, sample} from "effector-next";
-import {$meetingStore, updateMeetingEvent} from "../meeting/model";
+import { attach, combine, forward, sample } from 'effector-next';
+import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
     $isOwner,
     $meetingTemplateStore,
-    setIsUserSendEnterRequest
-} from "../meetingTemplate/model";
+    setIsUserSendEnterRequest,
+} from '../meetingTemplate/model';
 import {
     answerAccessMeetingRequestEvent,
     cancelAccessMeetingRequestEvent,
@@ -20,16 +20,23 @@ import {
     meetingSocketEventsController,
     startMeetingSocketEvent,
     updateMeetingSocketEvent,
-    updateMeetingTemplateEvent
-} from "./model";
-import {AppDialogsEnum, Meeting, MeetingUser, UserTemplate, Profile, JoinMeetingResult} from "../../types";
-import {$localUserStore, updateLocalUserEvent} from "../../users/localUser/model";
-import {appDialogsApi} from "../../dialogs/init";
-import {updateMeetingUsersEvent} from "../../users/meetingUsers/model";
-import { sendMeetingAvailableSocketEvent } from "../../waitingRoom/model";
-import {initiateSocketConnectionFx} from "../../socket/model";
-import {$profileStore} from "../../profile/profile/model";
-import {setMeetingErrorEvent} from "../meetingError/model";
+    updateMeetingTemplateEvent,
+} from './model';
+import {
+    AppDialogsEnum,
+    Meeting,
+    MeetingUser,
+    UserTemplate,
+    Profile,
+    JoinMeetingResult,
+} from '../../types';
+import { $localUserStore, updateLocalUserEvent } from '../../users/localUser/model';
+import { appDialogsApi } from '../../dialogs/init';
+import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
+import { sendMeetingAvailableSocketEvent } from '../../waitingRoom/model';
+import { initiateSocketConnectionFx } from '../../socket/model';
+import { $profileStore } from '../../profile/profile/model';
+import { setMeetingErrorEvent } from '../meetingError/model';
 
 const handleMeetingEventsError = (data: string) => {
     setMeetingErrorEvent(data);
@@ -74,11 +81,11 @@ forward({
 sample({
     clock: joinMeetingEventWithData.doneData,
     source: combine({ meetingTemplate: $meetingTemplateStore, isOwner: $isOwner }),
-    filter: (source) => source.isOwner,
-    fn: (source) => ({
+    filter: source => source.isOwner,
+    fn: source => ({
         templateId: source.meetingTemplate.id,
     }),
-    target: sendMeetingAvailableSocketEvent
+    target: sendMeetingAvailableSocketEvent,
 });
 
 export const startMeeting = attach({
@@ -88,8 +95,8 @@ export const startMeeting = attach({
         user: $localUserStore,
     }),
     mapParams: (params, { meeting, user }) => {
-        return ({ meetingId: meeting?.id, user })
-    }
+        return { meetingId: meeting?.id, user };
+    },
 });
 
 export const enterMeetingRequest = attach({
@@ -99,8 +106,8 @@ export const enterMeetingRequest = attach({
         user: $localUserStore,
     }),
     mapParams: (params, { meeting, user }) => {
-        return { meetingId: meeting?.id, user }
-    }
+        return { meetingId: meeting?.id, user };
+    },
 });
 
 sample({
@@ -116,8 +123,6 @@ sample({
     fn: ({ meeting }) => ({ meetingId: meeting?.id }),
     target: leaveMeetingSocketEvent,
 });
-
-
 
 sample({
     clock: emitAnswerAccessMeetingRequest,
@@ -144,7 +149,7 @@ const handleUpdateMeetingEntities = ({ meeting, user, users }: JoinMeetingResult
     if (user) updateLocalUserEvent(user);
     if (meeting) updateMeetingEvent({ meeting });
     if (users) updateMeetingUsersEvent({ users });
-}
+};
 
 joinMeetingEventWithData.doneData.watch(handleUpdateMeetingEntities);
 startMeeting.doneData.watch(handleUpdateMeetingEntities);

@@ -63,6 +63,10 @@ const TemplatePreviewDialog = memo(
             });
         }, [onSchedule, previewTemplate?.id]);
 
+        const previewImage = (previewTemplate?.previewUrls || []).find(
+            preview => preview.resolution === 1080,
+        );
+
         return (
             <CustomDialog
                 open={templatePreviewDialog}
@@ -73,12 +77,17 @@ const TemplatePreviewDialog = memo(
                 <CustomGrid container wrap="nowrap">
                     <CustomGrid className={styles.templatePreview}>
                         <TemplateGeneralInfo
-                            profileAvatar={previewTemplate?.user?.profileAvatar?.url || ''}
-                            companyName={previewTemplate?.companyName || ''}
+                            profileAvatar={previewTemplate?.user?.profileAvatar?.url}
+                            companyName={previewTemplate?.companyName}
                             userName={previewTemplate?.name}
                         />
-                        {Boolean(previewTemplate?.previewUrl) && (
-                            <Image src={previewTemplate?.previewUrl || ''} layout="fill" />
+                        {Boolean(previewImage?.id) && (
+                            <Image
+                                src={previewImage.url}
+                                layout="fill"
+                                objectFit="cover"
+                                objectPosition="center"
+                            />
                         )}
                     </CustomGrid>
                     <CustomBox className={styles.templateInfoContent}>

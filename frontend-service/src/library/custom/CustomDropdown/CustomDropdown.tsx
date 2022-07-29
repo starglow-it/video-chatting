@@ -65,7 +65,7 @@ const Component = (
 };
 
 const CustomDropdown = memo<CustomDropdownProps>(
-    forwardRef<HTMLSelectElement, CustomDropdownProps>(Component)
+    forwardRef<HTMLSelectElement, CustomDropdownProps>(Component),
 );
 
 export { CustomDropdown };

@@ -15,8 +15,7 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
 // stores
-import { $isOwner, $meetingTemplateStore } from '../../../store';
-import { $localUserStore, $meetingUsersStore } from '../../../store';
+import { $localUserStore, $isOwner, $meetingTemplateStore, $meetingUsersStore } from '../../../store';
 
 // styles
 import styles from './MeetingPreview.module.scss';
@@ -43,7 +42,7 @@ const MeetingPreview = memo(() => {
     });
 
     const handleLeaveMeeting = useCallback(() => {
-        router.push(isOwner ? '/dashboard' : '/dashboard/welcome');
+        router.push(isOwner ? '/dashboard' : '/welcome');
     }, []);
 
     const renderCurrentUsers = useMemo(
@@ -64,6 +63,10 @@ const MeetingPreview = memo(() => {
         [users],
     );
 
+    const previewImage = (meetingTemplate?.previewUrls || []).find(
+        image => image.resolution === 240,
+    );
+
     return (
         <CustomGrid
             container
@@ -81,12 +84,14 @@ const MeetingPreview = memo(() => {
                 <ArrowLeftIcon width="32px" height="32px" />
             </CustomGrid>
             <CustomBox className={styles.imageWrapper}>
-                <Image
-                    src={meetingTemplate.previewUrl}
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
-                />
+                {previewImage?.url ? (
+                    <Image
+                        src={previewImage.url}
+                        layout="fill"
+                        objectFit="cover"
+                        objectPosition="center"
+                    />
+                ) : null}
             </CustomBox>
             <ProfileAvatar
                 className={styles.profileAvatar}
@@ -95,7 +100,13 @@ const MeetingPreview = memo(() => {
                 src={meetingTemplate?.user?.profileAvatar?.url || ''}
                 userName={meetingTemplate.fullName}
             />
-            <CustomGrid item container direction="column" className={styles.textWrapper} flex="1 1 auto">
+            <CustomGrid
+                item
+                container
+                direction="column"
+                className={styles.textWrapper}
+                flex="1 1 auto"
+            >
                 <CustomTypography
                     variant="h3bold"
                     color="colors.white.primary"

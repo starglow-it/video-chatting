@@ -13,7 +13,7 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 
 // stores
 import { CommonTemplateItemProps } from '@components/Templates/CommonTemplateItem/types';
-import { appDialogsApi , setPreviewTemplate ,createMeetingFx} from '../../../store';
+import { appDialogsApi, setPreviewTemplate, createMeetingFx } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
@@ -47,6 +47,8 @@ const CommonTemplateItem = memo(({ template }: CommonTemplateItemProps) => {
         }
     }, []);
 
+    const previewImage = (template?.previewUrls || []).find(image => image.resolution === 240);
+
     return (
         <CustomGrid
             className={styles.templateContent}
@@ -56,7 +58,9 @@ const CommonTemplateItem = memo(({ template }: CommonTemplateItemProps) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            <Image src={template.previewUrl} width="334px" height="190px" />
+            {previewImage?.url ? (
+                <Image src={previewImage.url} width="334px" height="190px" />
+            ) : null}
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}

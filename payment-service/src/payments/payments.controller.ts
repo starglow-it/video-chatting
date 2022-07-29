@@ -1,7 +1,6 @@
 import { Controller } from '@nestjs/common';
 import {MessagePattern, Payload, RpcException} from "@nestjs/microservices";
 import {Stripe } from "stripe";
-import {InjectStripe} from "nestjs-stripe";
 
 import {
     CANCEL_PAYMENT_INTENT,
@@ -9,7 +8,11 @@ import {
     CREATE_STRIPE_EXPRESS_ACCOUNT,
     DELETE_STRIPE_EXPRESS_ACCOUNT,
     LOGIN_STRIPE_EXPRESS_ACCOUNT,
-    HANDLE_WEBHOOK, CREATE_STRIPE_ACCOUNT_LINK,
+    HANDLE_WEBHOOK,
+    CREATE_STRIPE_ACCOUNT_LINK,
+    GET_STRIPE_PRODUCTS,
+    GET_STRIPE_CHECKOUT_SESSION,
+    GET_STRIPE_PORTAL_SESSION, GET_STRIPE_SUBSCRIPTION,
 } from "@shared/patterns/payments";
 import { PAYMENTS_SERVICE } from "@shared/const/services.const";
 import { PAYMENTS_SCOPE } from "@shared/const/api-scopes.const";
@@ -17,6 +20,7 @@ import {ConfigClientService} from "../config/config.service";
 import {PaymentsService} from "./payments.service";
 import {CoreService} from "../core/core.service";
 import {ICommonUserDTO} from "@shared/interfaces/common-user.interface";
+import {plans} from "@shared/const/subscriptions.const";
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
@@ -24,7 +28,6 @@ export class PaymentsController {
         private configService: ConfigClientService,
         private paymentService: PaymentsService,
         private coreService: CoreService,
-        @InjectStripe() private readonly stripeClient: Stripe
     ) {}
 
     @MessagePattern({ cmd: CREATE_STRIPE_EXPRESS_ACCOUNT })
@@ -109,13 +112,20 @@ export class PaymentsController {
 
     @MessagePattern({ cmd: CREATE_PAYMENT_INTENT })
     async createPaymentIntent(
-        @Payload() data: { templatePrice: number; templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] },
+        @Payload() data: { stripeSubscriptionId: string; templatePrice: number; templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] },
     ) {
         try {
+            const subscription = await this.paymentService.getSubscription(data.stripeSubscriptionId);
+
+            const product = await this.paymentService.getStripeProduct(subscription.items[0].plan.product);
+
+            const plan = plans[product.name];
+
             const paymentIntent = await this.paymentService.createPaymentIntent({
                 templatePrice: data.templatePrice,
                 templateCurrency: data.templateCurrency,
                 stripeAccountId: data.stripeAccountId,
+                platformFee: plan.features.comissionFee
             });
 
             return  {
@@ -150,6 +160,79 @@ export class PaymentsController {
         }
     }
 
+    @MessagePattern({ cmd: GET_STRIPE_PRODUCTS })
+    async getStripeProducts() {
+        try {
+            const products = await this.paymentService.getStripeProducts();
+
+            const pricesPromise = products.data.map(async product => {
+                // @ts-ignore
+                const price = await this.paymentService.getStripePrice(product.default_price);
+
+                return {
+                    product,
+                    price,
+                }
+            });
+
+            return await Promise.all(pricesPromise);
+        } catch(err) {
+            throw new RpcException({
+                message: err.message,
+                ctx: PAYMENTS_SERVICE,
+            });
+        }
+    }
+
+    @MessagePattern({ cmd: GET_STRIPE_CHECKOUT_SESSION })
+    async getStripeCheckoutSession(
+        @Payload() data: { productId: string; meetingToken: string },
+    ) {
+        try {
+            const product = await this.paymentService.getStripeProduct(data.productId);
+
+            // @ts-ignore
+            return this.paymentService.getStripeCheckoutSession(product.default_price, data.meetingToken);
+        } catch(err) {
+            throw new RpcException({
+                message: err.message,
+                ctx: PAYMENTS_SERVICE,
+            });
+        }
+    }
+
+    @MessagePattern({ cmd: GET_STRIPE_PORTAL_SESSION })
+    async getStripePortalSession(
+        @Payload() data: { subscriptionId: string },
+    ) {
+        try {
+            const frontendUrl = await this.configService.get('frontendUrl');
+
+            const subscription = await this.paymentService.getSubscription(data.subscriptionId);
+
+            return this.paymentService.createSessionPortal(subscription.customer, `${frontendUrl}/dashboard/profile`);
+        } catch(err) {
+            throw new RpcException({
+                message: err.message,
+                ctx: PAYMENTS_SERVICE,
+            });
+        }
+    }
+
+    @MessagePattern({ cmd: GET_STRIPE_SUBSCRIPTION })
+    async getStripeSubscription(
+        @Payload() data: { subscriptionId: string },
+    ) {
+        try {
+            return await this.paymentService.getSubscription(data.subscriptionId);
+        } catch(err) {
+            throw new RpcException({
+                message: err.message,
+                ctx: PAYMENTS_SERVICE,
+            });
+        }
+    }
+
     @MessagePattern({ cmd: HANDLE_WEBHOOK })
     async handleWebhook(
         @Payload() data: { body: any, signature: string },
@@ -160,17 +243,70 @@ export class PaymentsController {
                     sig: data.signature,
                 });
 
+            let subscription: Stripe.Subscription | undefined;
+
             switch (event.type) {
                 case "account.updated":
                     const accountData = event.data.object as Stripe.Account;
 
                     if (accountData.payouts_enabled || accountData.details_submitted) {
-                        await this.coreService.updateUser({
-                            query: { stripeAccountId: accountData.id },
-                            data: { isStripeEnabled: true },
+                        const user = await this.coreService.findUser({
+                            query: {
+                                stripeAccountId: accountData.id
+                            }
                         });
+
+                        if (!user.isStripeEnabled) {
+                            await this.coreService.updateUser({
+                                query: { stripeAccountId: accountData.id },
+                                data: { isStripeEnabled: true },
+                            });
+                        }
                     }
 
+                    break;
+                case 'checkout.session.completed':
+                    const sessionData = event.data.object as Stripe.Checkout.Session;
+
+                    subscription = await this.paymentService.getSubscription(sessionData.subscription);
+
+                    // @ts-ignore
+                    const product = await this.paymentService.getStripeProduct(subscription.plan.product);
+
+                    const plan = plans[product.name];
+
+                    await this.coreService.updateUser({
+                        query: { stripeSessionId: sessionData.id },
+                        data: {
+                            stripeSubscriptionId: sessionData.subscription as string,
+                            subscriptionPlanKey: product.name,
+                            maxTemplatesNumber: plan.features.templatesLimit,
+                            maxMeetingTime: plan.features.timeLimit,
+                        },
+                    });
+                    break;
+                case 'customer.subscription.deleted':
+                    subscription = event.data.object as Stripe.Subscription;
+                    console.log(subscription);
+                    console.log(`Subscription status is ${subscription.status}.`);
+                    break;
+                case 'customer.subscription.created':
+                    subscription = event.data.object as Stripe.Subscription;
+
+                    await this.coreService.updateUser({
+                        query: { stripeSubscriptionId: subscription.id },
+                        data: { isSubscriptionActive: false },
+                    });
+                    break;
+                case 'customer.subscription.updated':
+                    subscription = event.data.object as Stripe.Subscription;
+
+                    await this.coreService.updateUser({
+                        query: { stripeSubscriptionId: subscription.id },
+                        data: {
+                            isSubscriptionActive: subscription.status === 'active',
+                        },
+                    });
                     break;
                 default:
                     console.log(`Unhandled event type ${event.type}.`);

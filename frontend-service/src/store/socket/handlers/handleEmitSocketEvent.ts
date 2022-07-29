@@ -1,6 +1,10 @@
-import { EmitSocketEventPayload } from "../../types";
+import { EmitSocketEventPayload } from '../../types';
 
-export const handleEmitSocketEvent = async ({ eventName, data, socketStore }: EmitSocketEventPayload) => {
+export const handleEmitSocketEvent = async ({
+    eventName,
+    data,
+    socketStore,
+}: EmitSocketEventPayload) => {
     return new Promise((resolve, reject) => {
         socketStore?.socketInstance?.emit(eventName, data, (result: any) => {
             if (result?.success) {
@@ -12,4 +16,4 @@ export const handleEmitSocketEvent = async ({ eventName, data, socketStore }: Em
             }
         });
     });
-}
+};

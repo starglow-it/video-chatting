@@ -10,6 +10,8 @@ export * from './profile/profile/model';
 export * from './profile/profileTemplates/model';
 export * from './profile/profileTemplate/model';
 export * from './payments/model';
+export * from './subscriptions/products/model';
+export * from './subscriptions/subscription/model';
 
 export * from './other/routeToChange/model';
 export * from './other/profileAvatarSetUp/model';
@@ -45,6 +47,8 @@ export * from './profile/profile/init';
 export * from './profile/profileTemplates/init';
 export * from './profile/profileTemplate/init';
 export * from './payments/init';
+export * from './subscriptions/products/init';
+export * from './subscriptions/subscription/init';
 
 export * from './meetings/init';
 export * from './meeting/meeting/init';

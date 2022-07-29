@@ -1,29 +1,34 @@
-import {memo, useCallback} from "react";
-import { useStore } from "effector-react";
+import React, { memo, useCallback } from 'react';
+import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from "@library/custom/CustomGrid/CustomGrid";
-import { CustomTypography } from "@library/custom/CustomTypography/CustomTypography";
-import { CustomDivider } from "@library/custom/CustomDivider/CustomDivider";
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
-import { StripeElement } from "@components/Stripe/StripeElement/StripeElement";
-import {WiggleLoader} from "@library/common/WiggleLoader/WiggleLoader";
-import {CardDataForm} from "@components/Payments/CardDataForm/CardDataForm";
+import { StripeElement } from '@components/Stripe/StripeElement/StripeElement';
+import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { CardDataForm } from '@components/Payments/CardDataForm/CardDataForm';
 
 // stores
-import {PaymentFormProps} from "@components/PaymentForm/types";
-import {$meetingTemplateStore, $paymentIntent, createPaymentIntentWithData,addNotificationEvent} from "../../store";
+import { PaymentFormProps } from '@components/PaymentForm/types';
+import {
+    $meetingTemplateStore,
+    $paymentIntent,
+    createPaymentIntentWithData,
+    addNotificationEvent,
+} from '../../store';
 
 // styles
 import styles from './PaymentForm.module.scss';
 
 // types
-import {NotificationType} from "../../store/types";
+import { NotificationType } from '../../store/types';
 
 const currencySigns = {
-    USD: "$",
-    CAD: "C$",
+    USD: '$',
+    CAD: 'C$',
 };
 
 const Component = ({ onClose }: PaymentFormProps) => {
@@ -52,39 +57,48 @@ const Component = ({ onClose }: PaymentFormProps) => {
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
                 <CustomTypography variant="h3bold" color="colors.white.primary">
-                    {currencySigns[meetingTemplate.templateCurrency]}{meetingTemplate.templatePrice}
+                    {currencySigns[meetingTemplate.templateCurrency]}
+                    {meetingTemplate.templatePrice}
                 </CustomTypography>
                 &nbsp;
-                <CustomTypography className={styles.transparentWhite}>
-                    &#8226;
-                </CustomTypography>
+                <CustomTypography className={styles.transparentWhite}>&#8226;</CustomTypography>
                 &nbsp;
-                <CustomTypography className={styles.transparentWhite} nameSpace="meeting" translation="payments.perSession" />
+                <CustomTypography
+                    className={styles.transparentWhite}
+                    nameSpace="meeting"
+                    translation="payments.perSession"
+                />
             </CustomGrid>
             <CustomDivider light flexItem />
-            {!isCreatePaymentIntentPending && paymentIntent.clientSecret
-                ? (
-                    <CustomGrid container direction="column" className={styles.paymentForm}>
-                        <CustomTypography
-                            variant="body1bold"
-                            color="colors.white.primary"
-                            nameSpace="meeting"
-                            translation="payments.yourCard"
-                            className={styles.title}
+            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+                <CustomGrid container direction="column" className={styles.paymentForm}>
+                    <CustomTypography
+                        variant="body1bold"
+                        color="colors.white.primary"
+                        nameSpace="meeting"
+                        translation="payments.yourCard"
+                        className={styles.title}
+                    />
+                    <StripeElement secret={paymentIntent.clientSecret}>
+                        <CardDataForm
+                            onSubmit={handleSubmit}
+                            onError={handleSubmitError}
+                            paymentIntentSecret={paymentIntent.clientSecret}
                         />
-                        <StripeElement secret={paymentIntent.clientSecret}>
-                            <CardDataForm onSubmit={handleSubmit} onError={handleSubmitError} paymentIntentSecret={paymentIntent.clientSecret} />
-                        </StripeElement>
-                    </CustomGrid>
-                )
-                : (
-                    <CustomGrid container justifyContent="center" alignItems="center" className={styles.loader}>
-                        <WiggleLoader />
-                    </CustomGrid>
-                )
-            }
+                    </StripeElement>
+                </CustomGrid>
+            ) : (
+                <CustomGrid
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+                    className={styles.loader}
+                >
+                    <WiggleLoader />
+                </CustomGrid>
+            )}
         </CustomGrid>
     );
-}
+};
 
 export const PaymentForm = memo<PaymentFormProps>(Component);

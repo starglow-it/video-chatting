@@ -1,8 +1,8 @@
-import {attach} from "effector-next";
-import {initialProfileTemplateState} from "./const";
-import {profileDomain} from "../domain/model";
-import {Profile, Template, UpdateTemplateData} from "../../types";
-import {$profileStore} from "../profile/model";
+import { attach } from 'effector-next';
+import { initialProfileTemplateState } from './const';
+import { profileDomain } from '../domain/model';
+import { Profile, Template, UpdateTemplateData } from '../../types';
+import { $profileStore } from '../profile/model';
 
 export const $profileTemplateStore = profileDomain.store<Template>(initialProfileTemplateState);
 

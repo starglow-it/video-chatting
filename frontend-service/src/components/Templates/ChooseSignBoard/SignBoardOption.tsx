@@ -48,7 +48,7 @@ const Component: React.FunctionComponent<SignOptionProps> = ({ formKey, data, wi
                 value={data.value}
                 label={data.label}
                 classes={{
-                    root: styles.label
+                    root: styles.label,
                 }}
                 control={
                     <CustomRadio

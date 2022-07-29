@@ -29,7 +29,7 @@ const VideoDeviceSetUpButton = memo(
                     <ActionButton
                         variant="transparentBlack"
                         onAction={onClick}
-                        className={clsx(styles.iconButton, {[styles.disabled]: !isThereAction })}
+                        className={clsx(styles.iconButton, { [styles.disabled]: !isThereAction })}
                         Icon={<CameraIcon width="32px" height="32px" isActive={isCamActive} />}
                     />
                 </CustomPaper>

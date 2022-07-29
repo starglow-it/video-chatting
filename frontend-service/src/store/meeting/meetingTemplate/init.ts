@@ -3,9 +3,11 @@ import {
     $meetingTemplateStore,
     setIsUserSendEnterRequest,
     getMeetingTemplateFx,
-    updateMeetingTemplateFx, updateMeetingTemplateFxWithData, checkCustomLinkFx,
+    updateMeetingTemplateFx,
+    updateMeetingTemplateFxWithData,
+    checkCustomLinkFx,
 } from './model';
-import {emitUpdateMeetingTemplate} from "../sockets/model";
+import { emitUpdateMeetingTemplate } from '../sockets/model';
 
 import { handleUpdateMeetingTemplate } from './handlers/handleUpdateMeetingTemplate';
 import { handleGetMeetingTemplate } from './handlers/handleGetMeetingTemplate';

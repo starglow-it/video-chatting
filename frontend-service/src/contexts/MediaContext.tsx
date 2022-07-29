@@ -3,7 +3,7 @@ import { getDevices, getDevicesFromStream } from '../helpers/media/getDevices';
 import { getMediaStream } from '../helpers/media/getMediaStream';
 import { DeviceInputKindEnum } from '../const/media/DEVICE_KINDS';
 import { stopStream } from '../helpers/media/stopStream';
-import {StorageKeysEnum, WebStorage} from "../controllers/WebStorageController";
+import { StorageKeysEnum, WebStorage } from '../controllers/WebStorageController';
 
 type CustomMediaStream = MediaStream | null | undefined;
 
@@ -76,19 +76,22 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
     const [activeStream, setActiveStream] = useState<CustomMediaStream>(null);
     const [changeStream, setChangeStream] = useState<CustomMediaStream>(null);
 
-    const [currentAudioDevice, setCurrentAudioDevice] = useState("");
-    const [currentVideoDevice, setCurrentVideoDevice] = useState("");
+    const [currentAudioDevice, setCurrentAudioDevice] = useState('');
+    const [currentVideoDevice, setCurrentVideoDevice] = useState('');
 
     const [isStreamRequested, setIsStreamRequested] = useState(false);
 
     const handleGetInitialStream = useCallback(async () => {
         setIsStreamRequested(true);
-        setChangeStream((prev) => {
+        setChangeStream(prev => {
             stopStream(prev);
 
             return null;
         });
-        const savedSettings = WebStorage.get<{ savedAudioDeviceId: MediaDeviceInfo['deviceId']; savedVideoDeviceId: MediaDeviceInfo['deviceId'] }>({ key: StorageKeysEnum.meetingSettings });
+        const savedSettings = WebStorage.get<{
+            savedAudioDeviceId: MediaDeviceInfo['deviceId'];
+            savedVideoDeviceId: MediaDeviceInfo['deviceId'];
+        }>({ key: StorageKeysEnum.meetingSettings });
 
         const { stream: initialStream, error: initialError } = await getMediaStream({
             audioDeviceId: savedSettings.savedAudioDeviceId || currentAudioDevice,
@@ -121,7 +124,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             if (stream) {
                 setChangeStream(prev => {
                     const { videoDeviceId: oldDevice } = getDevicesFromStream(prev);
-                    const { videoDeviceId: newDevice, audioDeviceId } = getDevicesFromStream(stream);
+                    const { videoDeviceId: newDevice, audioDeviceId } =
+                        getDevicesFromStream(stream);
 
                     if (oldDevice !== newDevice || !(prev || prev.active)) {
                         stopStream(prev);
@@ -231,10 +235,16 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
                 if (newStream?.stream) {
                     setChangeStream(prev => {
-                        const { videoDeviceId: oldVideoDevice, audioDeviceId: oldAudioDevice } = getDevicesFromStream(prev);
-                        const { videoDeviceId: newVideoDevice, audioDeviceId: newAudioDevice } = getDevicesFromStream(newStream?.stream);
+                        const { videoDeviceId: oldVideoDevice, audioDeviceId: oldAudioDevice } =
+                            getDevicesFromStream(prev);
+                        const { videoDeviceId: newVideoDevice, audioDeviceId: newAudioDevice } =
+                            getDevicesFromStream(newStream?.stream);
 
-                        if (oldVideoDevice !== newVideoDevice || oldAudioDevice !== newAudioDevice || !(prev || prev.active)) {
+                        if (
+                            oldVideoDevice !== newVideoDevice ||
+                            oldAudioDevice !== newAudioDevice ||
+                            !(prev || prev.active)
+                        ) {
                             stopStream(prev);
 
                             setIsCameraActive(isCameraActive);
@@ -313,7 +323,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
         setCurrentAudioDevice('');
         setCurrentVideoDevice('');
         setChangeStream(null);
-    }
+    };
 
     const contextValue = useMemo(() => {
         return {
@@ -324,7 +334,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 onChangeActiveStream: handleChangeActiveStream,
                 onInitDevices: handleGetInitialStream,
                 onGetNewStream: handleGetNewStream,
-                onClearCurrentDevices: handleClearCurrentDevices
+                onClearCurrentDevices: handleClearCurrentDevices,
             },
             data: {
                 changeStream,

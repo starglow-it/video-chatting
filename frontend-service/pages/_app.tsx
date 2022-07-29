@@ -28,7 +28,7 @@ import { baseTheme } from '../src/themes/base';
 import { typographyTheme } from '../src/themes/typography';
 import { componentsTheme } from '../src/themes/components';
 import { uiTheme } from '../src/themes/ui';
-import {initialProfileState} from "../src/store/profile/profile/const";
+import { initialProfileState } from '../src/store/profile/profile/const';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -76,7 +76,7 @@ const CustomApp = ({
             </Provider>
         </CacheProvider>
     );
-}
+};
 
 CustomApp.getInitialProps = async (context: AppContext) => {
     const props = await App.getInitialProps(context);

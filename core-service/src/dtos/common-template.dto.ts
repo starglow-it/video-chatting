@@ -4,6 +4,7 @@ import { IBusinessCategory } from '@shared/interfaces/business-category.interfac
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
+import { PreviewImageDTO } from './preview-image.dto';
 
 export class CommonTemplateDTO implements ICommonTemplate {
   @Expose()
@@ -30,7 +31,8 @@ export class CommonTemplateDTO implements ICommonTemplate {
   maxParticipants: number;
 
   @Expose()
-  previewUrl: string;
+  @Type(() => PreviewImageDTO)
+  previewUrls: ICommonTemplate['previewUrls'];
 
   @Expose()
   type: string;

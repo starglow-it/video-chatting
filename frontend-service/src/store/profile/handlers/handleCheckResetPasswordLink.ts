@@ -1,8 +1,10 @@
-import sendRequestWithCredentials from "../../../helpers/http/sendRequestWithCredentials";
-import { ErrorState } from "../../types";
-import {checkResetPasswordLinkUrl} from "../../../utils/urls";
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
+import { ErrorState } from '../../types';
+import { checkResetPasswordLinkUrl } from '../../../utils/urls';
 
-export const handleCheckResetPasswordLink = async (params: { token: string }): Promise<{ isUserConfirmed: boolean; error?: ErrorState }> => {
+export const handleCheckResetPasswordLink = async (params: {
+    token: string;
+}): Promise<{ isUserConfirmed: boolean; error?: ErrorState }> => {
     const response = await sendRequestWithCredentials<void, ErrorState>({
         ...checkResetPasswordLinkUrl,
         data: params,
@@ -18,4 +20,4 @@ export const handleCheckResetPasswordLink = async (params: { token: string }): P
             error: response.error,
         };
     }
-}
+};

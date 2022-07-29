@@ -1,42 +1,42 @@
-import React, {memo, useCallback, useContext, useEffect} from 'react';
-import {useStore} from 'effector-react';
+import React, { memo, useCallback, useContext, useEffect } from 'react';
+import { useStore } from 'effector-react';
 import Image from 'next/image';
 
 // helpers
-import {usePrevious} from 'src/hooks/usePrevious';
+import { usePrevious } from 'src/hooks/usePrevious';
 
 // custom
-import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
-import {MeetingControlPanel} from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
-import {MeetingUsersVideos} from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
-import {MeetingGoodsLinks} from '@components/Meeting/MeetingGoodsLinks/MeetingGoodsLinks';
-import {MeetingNotes} from '@components/Meeting/MeetingNotes/MeetingNotes';
-import {MeetingSettingsPanel} from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
-import {MeetingGeneralInfo} from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
-import {MeetingBackgroundComponent} from '@components/Meeting/MeetingBackgroundComponent/MeetingBackgroundComponent';
-import {MeetingSounds} from "@components/Meeting/MeetingSounds/MeetingSounds";
-import {DevicesSettingsDialog} from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
-import {EndMeetingDialog} from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
-import {InviteAttendeeDialog} from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
-import {UserToKickDialog} from '@components/Dialogs/UserToKickDialog/UserToKickDialog';
-import {GoodsLinksButton} from '@components/Meeting/GoodsLinksButton/GoodsLinksButton';
-import {ScreenSharingButton} from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
-import {ScreenSharingLayout} from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
-import {CopyMeetingLinkDialog} from "@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog";
-import {BackgroundAudioControl} from "@components/Meeting/BackgroundAudioControl/BackgroundAudioControl";
-import {HangUpIcon} from "@library/icons/HangUpIcon";
-import {ActionButton} from "@library/common/ActionButton/ActionButton";
+import { MeetingControlPanel } from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
+import { MeetingUsersVideos } from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
+import { MeetingGoodsLinks } from '@components/Meeting/MeetingGoodsLinks/MeetingGoodsLinks';
+import { MeetingNotes } from '@components/Meeting/MeetingNotes/MeetingNotes';
+import { MeetingSettingsPanel } from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
+import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
+import { MeetingBackgroundComponent } from '@components/Meeting/MeetingBackgroundComponent/MeetingBackgroundComponent';
+import { MeetingSounds } from '@components/Meeting/MeetingSounds/MeetingSounds';
+import { DevicesSettingsDialog } from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
+import { EndMeetingDialog } from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
+import { InviteAttendeeDialog } from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
+import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKickDialog';
+import { GoodsLinksButton } from '@components/Meeting/GoodsLinksButton/GoodsLinksButton';
+import { ScreenSharingButton } from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
+import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
+import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
+import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
+import { HangUpIcon } from '@library/icons/HangUpIcon';
+import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import clsx from 'clsx';
-import {emptyFunction} from '../../../utils/functions/emptyFunction';
+import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // misc
-import {AgoraController} from '../../../controllers/VideoChatController';
+import { AgoraController } from '../../../controllers/VideoChatController';
 
 // context
-import {MediaContext} from '../../../contexts/MediaContext';
-import {VideoEffectsContext} from '../../../contexts/VideoEffectContext';
+import { MediaContext } from '../../../contexts/MediaContext';
+import { VideoEffectsContext } from '../../../contexts/VideoEffectContext';
 
 // styles
 import styles from './MeetingView.module.scss';
@@ -53,12 +53,13 @@ import {
     updateMeetingSocketEvent,
     updateMeetingTemplateFxWithData,
     updateUserSocketEvent,
-    appDialogsApi, setMeetingConnectedEvent
+    appDialogsApi,
+    setMeetingConnectedEvent,
 } from '../../../store';
 
 // types
-import {AppDialogsEnum, MeetingAccessStatuses} from '../../../store/types';
-import {useToggle} from "../../../hooks/useToggle";
+import { AppDialogsEnum, MeetingAccessStatuses } from '../../../store/types';
+import { useToggle } from '../../../hooks/useToggle';
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
@@ -66,10 +67,7 @@ const MeetingView = memo(() => {
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
 
-    const {
-        value: isNeedToShowGoods,
-        onToggleSwitch: handleToggleAllGoods
-    } = useToggle(false);
+    const { value: isNeedToShowGoods, onToggleSwitch: handleToggleAllGoods } = useToggle(false);
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
@@ -151,18 +149,15 @@ const MeetingView = memo(() => {
         })();
     }, [localUser.accessStatus]);
 
-    useEffect(
-        () => {
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
-            });
+    useEffect(() => {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
+        });
 
-            return () => {
-                AgoraController.leave();
-            }
-        },
-        [],
-    );
+        return () => {
+            AgoraController.leave();
+        };
+    }, []);
 
     const handleUpdateMeetingTemplate = useCallback(async updateData => {
         if (updateData) {
@@ -181,15 +176,26 @@ const MeetingView = memo(() => {
     const isAbleToToggleSharing = isOwner || isSharingScreenActive || !meeting.sharingUserId;
     const isScreenSharing = Boolean(meeting.sharingUserId);
 
+    const previewImage = (meetingTemplate?.previewUrls || []).find(
+        image => image.resolution === 1080,
+    );
+
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundComponent isNeedToRenderModel={meetingTemplate.templateId === 27}>
-                <Image
-                    className={clsx(styles.image, {[styles.blured]: Boolean(meetingTemplate.url) })}
-                    src={meetingTemplate.previewUrl}
-                    layout="fill"
-                    objectFit="cover"
-                />
+                {previewImage?.url
+                    ? (
+                        <Image
+                            className={clsx(styles.image, {
+                                [styles.blured]: Boolean(meetingTemplate.url),
+                            })}
+                            src={previewImage.url}
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                    )
+                    : null
+                }
                 {isScreenSharing && <ScreenSharingLayout />}
             </MeetingBackgroundComponent>
 
@@ -199,22 +205,20 @@ const MeetingView = memo(() => {
                     onTemplateUpdate={handleUpdateMeetingTemplate}
                 >
                     <MeetingUsersVideos />
-                    {
-                        meetingTemplate.templateId === 18
-                            ? <MeetingGoodsLinks show={isNeedToShowGoods} />
-                            : null
+                    {(meetingTemplate.templateId === 18 && !isScreenSharing)
+                        ? (
+                            <MeetingGoodsLinks show={isNeedToShowGoods} />
+                        )
+                        : null
                     }
                     <MeetingControlPanel />
                     <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-                        {meetingTemplate?.links?.length
-                            ? (
-                                <GoodsLinksButton
-                                    isActive={isNeedToShowGoods}
-                                    onClick={handleToggleAllGoods}
-                                />
-                            )
-                            : null
-                        }
+                        {meetingTemplate?.links?.length ? (
+                            <GoodsLinksButton
+                                isActive={isNeedToShowGoods}
+                                onClick={handleToggleAllGoods}
+                            />
+                        ) : null}
                         <ScreenSharingButton
                             isSharingActive={Boolean(meeting.sharingUserId)}
                             onAction={isAbleToToggleSharing ? handleToggleSharing : undefined}

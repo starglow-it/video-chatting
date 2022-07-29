@@ -1,39 +1,39 @@
-import React, {memo, useCallback, useMemo} from "react";
-import * as yup from "yup";
-import {FormProvider, useForm} from "react-hook-form";
+import React, { memo, useCallback, useMemo } from 'react';
+import * as yup from 'yup';
+import { FormProvider, useForm } from 'react-hook-form';
 import Image from 'next/image';
-import {useStore} from "effector-react";
-import { useRouter } from "next/router";
+import { useStore } from 'effector-react';
+import { useRouter } from 'next/router';
 
 // hooks
 
 // custom
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
-import {CustomButton} from "@library/custom/CustomButton/CustomButton";
-import { CustomTypography } from "@library/custom/CustomTypography/CustomTypography";
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import {PasswordInput} from "@library/common/PasswordInput/PasswordInput";
-import {PasswordHints} from "@library/common/PasswordHints/PasswordHints";
-import {useToggle} from "../../hooks/useToggle";
-import {useYupValidationResolver} from "../../hooks/useYupValidationResolver";
+import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
+import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
+import { useToggle } from '../../hooks/useToggle';
+import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // styles
 import styles from './ResetPassword.module.scss';
 
 // validation
-import { passwordSchema } from "../../validation/users/password";
-import {simpleStringSchema} from "../../validation/common";
+import { passwordSchema } from '../../validation/users/password';
+import { simpleStringSchema } from '../../validation/common';
 
 // stores
-import {resetPasswordFx} from "../../store";
+import { resetPasswordFx } from '../../store';
 
 const validationSchema = yup.object({
     newPassword: passwordSchema().required('user.pass.newPassword.new'),
     newPasswordRepeat: simpleStringSchema().required('user.pass.newPassword.newRepeat'),
 });
 
-const Component = ({ onSuccessfulReset }) => {
+const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => {
     const router = useRouter();
 
     const isResetInProgress = useStore(resetPasswordFx.pending);
@@ -47,7 +47,7 @@ const Component = ({ onSuccessfulReset }) => {
     const resolver = useYupValidationResolver<{
         currentPassword: string;
         newPassword: string;
-        newPasswordRepeat: boolean;
+        newPasswordRepeat: string;
     }>(validationSchema);
 
     const methods = useForm({
@@ -59,7 +59,12 @@ const Component = ({ onSuccessfulReset }) => {
         },
     });
 
-    const { handleSubmit, register, setError, formState: { errors } } = methods;
+    const {
+        handleSubmit,
+        register,
+        setError,
+        formState: { errors },
+    } = methods;
 
     const handleFocusInput = useCallback(() => {
         handleShowHints();
@@ -83,25 +88,36 @@ const Component = ({ onSuccessfulReset }) => {
             ]);
         }
 
-        const result = await resetPasswordFx({
-            ...data,
-            token: router?.query?.token
-        });
+            const result = await resetPasswordFx({
+                ...data,
+                token: router?.query?.token as string,
+            });
 
-        if (result?.message) {
-            setError('newPassword', { type: 'focus', message: result?.message });
-        } else {
-            onSuccessfulReset();
-        }
-    }), []);
+            if (result?.message) {
+                setError('newPassword', { type: 'focus', message: result?.message });
+            } else {
+                onSuccessfulReset();
+            }
+        }),
+        [],
+    );
 
     return (
         <CustomGrid container direction="column" alignItems="center">
             <CustomGrid container alignItems="center" gap={1} justifyContent="center">
                 <Image src="/images/lock.png" width="28px" height="28px" />
-                <CustomTypography variant="h2bold" nameSpace="common" translation="reset.newPasswordTitle" />
+                <CustomTypography
+                    variant="h2bold"
+                    nameSpace="common"
+                    translation="reset.newPasswordTitle"
+                />
             </CustomGrid>
-            <CustomTypography textAlign="center" className={styles.text} nameSpace="common" translation="reset.newPasswordText" />
+            <CustomTypography
+                textAlign="center"
+                className={styles.text}
+                nameSpace="common"
+                translation="reset.newPasswordText"
+            />
             <FormProvider {...methods}>
                 <form onSubmit={onSubmit} noValidate autoComplete="off">
                     <CustomGrid container className={styles.newPassword}>
@@ -133,7 +149,7 @@ const Component = ({ onSuccessfulReset }) => {
                 </form>
             </FormProvider>
         </CustomGrid>
-    )
-}
+    );
+};
 
 export const ResetPassword = memo(Component);

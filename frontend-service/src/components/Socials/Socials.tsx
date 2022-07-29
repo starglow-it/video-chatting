@@ -19,10 +19,10 @@ import styles from './Socials.module.scss';
 // const
 import { SOCIAL_LINKS, SOCIALS_ICONS } from '../../const/profile/socials';
 
-const Component: React.FunctionComponent<{ buttonClassName?: string; title?: React.ElementType }> = ({
-    buttonClassName,
-    title,
-}) => {
+const Component: React.FunctionComponent<{
+    buttonClassName?: string;
+    title?: React.ElementType;
+}> = ({ buttonClassName, title }) => {
     const prevFieldsCount = useRef(0);
 
     const {
@@ -72,6 +72,10 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
     );
 
     useEffect(() => {
+        prevFieldsCount.current = fields.length;
+    }, []);
+
+    useEffect(() => {
         if (prevFieldsCount.current < fields.length) {
             prevFieldsCount.current = fields.length;
             setFocus(`socials[${fields.length - 1}].value`);
@@ -82,17 +86,17 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
         () =>
             fields?.map((social, index) => {
                 const Icon = SOCIALS_ICONS[social.key];
-                const inputKey = `socials[${index}].value`
+                const inputKey = `socials[${index}].value`;
                 const fieldError = errors[inputKey]?.[0]?.message;
 
-                const {onChange, ...registerData} = register(inputKey);
+                const { onChange, ...registerData } = register(inputKey);
 
                 const handleClearLink = () => {
                     remove(index);
                 };
 
-                const handleChange = async (event) => {
-                    const {value} = event.target;
+                const handleChange = async event => {
+                    const { value } = event.target;
 
                     if (value) {
                         await onChange(event);
@@ -101,7 +105,7 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
 
                         await onChange(event);
                     }
-                }
+                };
 
                 return (
                     <CustomInput
@@ -147,6 +151,7 @@ const Component: React.FunctionComponent<{ buttonClassName?: string; title?: Rea
 
 Component.defaultProps = {
     buttonClassName: '',
+    title: "",
 };
 
 export const Socials = memo(Component);

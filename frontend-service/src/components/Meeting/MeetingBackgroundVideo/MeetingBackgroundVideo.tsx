@@ -34,7 +34,7 @@ const MeetingBackgroundVideo = memo(
                 } as Options;
 
                 if (containerRef?.current) {
-                    playerRef.current = new VimeoPlayer(containerRef.current!, options);
+                    playerRef.current = new VimeoPlayer(containerRef.current, options);
                 }
             }
         }, []);
@@ -57,17 +57,14 @@ const MeetingBackgroundVideo = memo(
                 } else {
                     setTimeout(() => {
                         playerRef.current?.play();
-                    }, 2000)
+                    }, 2000);
                 }
             }
         }, [isScreenSharing]);
 
         return (
-            <CustomGrid
-                ref={containerRef}
-                className={styles.backgroundVideo}
-            >
-                {children!}
+            <CustomGrid ref={containerRef} className={styles.backgroundVideo}>
+                {children}
             </CustomGrid>
         );
     },

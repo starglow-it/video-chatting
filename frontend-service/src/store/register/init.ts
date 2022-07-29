@@ -6,8 +6,8 @@ import {
     registerUserFx,
     resetRegisterErrorEvent,
 } from './model';
-import {handleRegisterUser} from "./handlers/handleRegisterUser";
-import {handleConfirmRegistration} from "./handlers/handleConfirmRegistration";
+import { handleRegisterUser } from './handlers/handleRegisterUser';
+import { handleConfirmRegistration } from './handlers/handleConfirmRegistration';
 
 registerUserFx.use(handleRegisterUser);
 confirmRegistrationUserFx.use(handleConfirmRegistration);

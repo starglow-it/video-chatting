@@ -30,11 +30,7 @@ import { IToken } from '@shared/interfaces/token.interface';
 import { ICreateMeetingDTO } from '@shared/interfaces/create-meeting.interface';
 import { IUpdateProfile } from '@shared/interfaces/update-profile.interface';
 import { IUpdateProfileAvatar } from '@shared/interfaces/update-profile-avatar.interface';
-import {
-  CREATE_MEETING_DONATION,
-  DELETE_MEETING_DONATION,
-} from '@shared/patterns/payments';
-import {IUserTemplate} from "@shared/interfaces/user-template.interface";
+import { IUserTemplate } from '@shared/interfaces/user-template.interface';
 
 @Injectable()
 export class CoreService {
@@ -165,18 +161,6 @@ export class CoreService {
 
   async resetPassword(data) {
     const pattern = { cmd: RESET_PASSWORD };
-
-    return this.client.send(pattern, data).toPromise();
-  }
-
-  async createMeetingDonation(data) {
-    const pattern = { cmd: CREATE_MEETING_DONATION };
-
-    return this.client.send(pattern, data).toPromise();
-  }
-
-  async deleteMeetingDonation(data) {
-    const pattern = { cmd: DELETE_MEETING_DONATION };
 
     return this.client.send(pattern, data).toPromise();
   }

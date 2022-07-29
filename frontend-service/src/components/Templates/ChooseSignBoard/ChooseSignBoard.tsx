@@ -19,7 +19,7 @@ import { SIGN_BOARDS } from '../../../const/signBoards';
 const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
     optionWidth,
     optionHeight,
-  formKey,
+    formKey,
 }) => {
     const { control } = useFormContext();
 

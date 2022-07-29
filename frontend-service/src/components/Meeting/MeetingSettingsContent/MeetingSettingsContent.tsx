@@ -2,35 +2,33 @@ import React, { memo, useCallback } from 'react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
-import {useFormContext} from "react-hook-form";
+import { useFormContext } from 'react-hook-form';
 
 // helpers
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import {CustomFade} from "@library/custom/CustomFade/CustomFade";
-import {CustomRange} from "@library/custom/CustomRange/CustomRange";
-import {CustomDivider} from "@library/custom/CustomDivider/CustomDivider";
+import { CustomFade } from '@library/custom/CustomFade/CustomFade';
+import { CustomRange } from '@library/custom/CustomRange/CustomRange';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
-import { EditMonetization } from "@components/Meeting/EditMonetization/EditMonetization";
+import { EditMonetization } from '@components/Meeting/EditMonetization/EditMonetization';
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // icons
 import { NewArrowIcon } from '@library/icons/NewArrowIcon';
-import {SpeakerIcon} from "@library/icons/SpeakerIcon/SpeakerIcon";
-import {MusicIcon} from "@library/icons/MusicIcon";
+import { SpeakerIcon } from '@library/icons/SpeakerIcon/SpeakerIcon';
+import { MusicIcon } from '@library/icons/MusicIcon';
 import { ArrowIcon } from '@library/icons/ArrowIcon';
-import {BackgroundBlurIcon} from "@library/icons/BackgroundBlurIcon";
+import { BackgroundBlurIcon } from '@library/icons/BackgroundBlurIcon';
 import { useToggle } from '../../../hooks/useToggle';
 
 // stores
-import {
-    $isOwner
-} from "../../../store";
+import { $isOwner } from '../../../store';
 
 // styles
 import styles from './MeetingSettingsContent.module.scss';
@@ -47,11 +45,13 @@ const Component = ({
     onChangeBackgroundVolume,
     isBlurActive,
     onToggleBlur,
-    isMonetizationEnabled
+    isMonetizationEnabled,
 }: MeetingSettingsContentProps) => {
     const isOwner = useStore($isOwner);
 
-    const { formState: { errors } } = useFormContext();
+    const {
+        formState: { errors },
+    } = useFormContext();
 
     const {
         value: isAudioVideoSettingsOpened,
@@ -63,7 +63,9 @@ const Component = ({
         onChangeBackgroundVolume(event.target.value);
     }, []);
 
-    const templatePriceMessage = ['min', "max"].includes(errors?.templatePrice?.[0]?.type) ? errors?.templatePrice?.[0]?.message : "";
+    const templatePriceMessage = ['min', 'max'].includes(errors?.templatePrice?.[0]?.type)
+        ? errors?.templatePrice?.[0]?.message
+        : '';
 
     return (
         <CustomGrid container direction="column" className={styles.settingsWrapper}>
@@ -132,7 +134,12 @@ const Component = ({
                                 translation="settings.audioVideo"
                             />
                         </CustomGrid>
-                        <CustomGrid container direction="column" gap={2} className={styles.selectDevicesWrapper}>
+                        <CustomGrid
+                            container
+                            direction="column"
+                            gap={2}
+                            className={styles.selectDevicesWrapper}
+                        >
                             <SelectDevices key={stream?.id} />
                             <CustomGrid
                                 container
@@ -176,6 +183,6 @@ const Component = ({
             </CustomGrid>
         </CustomGrid>
     );
-}
+};
 
 export const MeetingSettingsContent = memo(Component);

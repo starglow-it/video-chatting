@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useMemo} from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // components
@@ -6,15 +6,22 @@ import { MeetingUserVideoItem } from '@components/Meeting/MeetingUserVideoItem/M
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores
-import {$localUserStore, $meetingConnectedStore, $meetingUsersStore, updateLocalUserEvent} from '../../../store';
-import { $profileStore } from '../../../store';
-import { $meetingStore, $meetingTemplateStore } from '../../../store';
+import {
+    $localUserStore,
+    $meetingConnectedStore,
+    $meetingUsersStore,
+    updateLocalUserEvent,
+    $profileStore,
+    $meetingTemplateStore,
+    $meetingStore
+} from '../../../store';
 
 // controller
-import {AgoraController} from "../../../controllers/VideoChatController";
+import { AgoraController } from '../../../controllers/VideoChatController';
 
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
+import {useWindowResize} from "../../../hooks/useWindowResize";
 
 const MeetingUsersVideos = memo(() => {
     const localUser = useStore($localUserStore);
@@ -34,10 +41,16 @@ const MeetingUsersVideos = memo(() => {
             ),
     });
 
+    const { width } = useWindowResize();
+
+    const resizeCoeff = width / window.screen.width;
+
     const isScreenSharing = Boolean(meeting.sharingUserId);
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
+
+    const videoSize = isScreenSharing ? 56 : 120 * resizeCoeff < 60 ? 60 : 120 * resizeCoeff > 120 ? 120 : 120 * resizeCoeff;
 
     const renderUsers = useMemo(
         () =>
@@ -50,7 +63,7 @@ const MeetingUsersVideos = memo(() => {
                     left={user?.userPosition?.left}
                 >
                     <MeetingUserVideoItem
-                        size={isScreenSharing ? 56 : 120}
+                        size={videoSize}
                         userName={user.username}
                         videoTrack={
                             meeting.sharingUserId !== user.meetingUserId
@@ -67,7 +80,7 @@ const MeetingUsersVideos = memo(() => {
                     />
                 </MeetingUserVideoPositionWrapper>
             )),
-        [users, meeting.sharingUserId, meetingTemplate.usersPosition],
+        [users, meeting.sharingUserId, meetingTemplate.usersPosition, videoSize],
     );
 
     const handleToggleAudio = useCallback(() => {
@@ -106,7 +119,7 @@ const MeetingUsersVideos = memo(() => {
                 left={localUser?.userPosition?.left}
             >
                 <MeetingUserVideoItem
-                    size={meeting?.sharingUserId ? 56 : 120}
+                    size={videoSize}
                     userProfileAvatar={profile?.profileAvatar?.url || ''}
                     userName={localUser.username}
                     videoTrack={localUser.videoTrack}

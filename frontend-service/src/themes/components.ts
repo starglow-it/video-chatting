@@ -181,11 +181,23 @@ export const componentsTheme = (theme: Theme) =>
                                 background: theme.palette.common.white,
                                 color: theme.palette.common.black,
                             },
-                            '&.Mui-disabled': {
-                                // background: theme.palette.buttons.primary.disabled,
-                            },
                         },
                     },
+                    {
+                        props: { variant: 'custom-black' },
+                        style: {
+                            background: theme.palette.common.black,
+                            color: theme.palette.common.white,
+                            '&:hover': {
+                                background: alpha(theme.palette.common.black, 0.6),
+                                color: theme.palette.common.white,
+                            },
+                            '&.Mui-disabled': {
+                                background: alpha(theme.palette.common.black, 0.6),
+                                color: theme.palette.common.white,
+                            },
+                        },
+                    }
                 ],
                 styleOverrides: {
                     root: {
@@ -322,10 +334,10 @@ export const componentsTheme = (theme: Theme) =>
                     {
                         props: { light: true },
                         style: {
-                            backgroundColor: alpha(theme.designSystemColors.grayscale.normal, 0.4)
-                        }
-                    }
-                ]
-            }
+                            backgroundColor: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                        },
+                    },
+                ],
+            },
         },
     });

@@ -1,4 +1,5 @@
 import { IBusinessCategory } from "./business-category.interface";
+import {IPreviewImage} from "./preview-image.interface";
 
 export interface ICommonTemplate {
     id?: string;
@@ -8,7 +9,7 @@ export interface ICommonTemplate {
     name: string;
     maxParticipants: number;
     description: string;
-    previewUrl: string;
+    previewUrls: IPreviewImage[];
     type: string;
     businessCategories?: IBusinessCategory[];
     usersPosition: { top: number; left: number }[];

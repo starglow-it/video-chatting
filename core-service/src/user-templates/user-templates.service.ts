@@ -52,7 +52,7 @@ export class UserTemplatesService {
   async findUserTemplateById({
     id,
     session,
-   populatePaths,
+    populatePaths,
   }: {
     id: string;
     session: ITransactionSession;

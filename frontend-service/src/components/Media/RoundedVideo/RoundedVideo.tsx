@@ -8,12 +8,12 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // styles
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { VideoEyeIcon } from '@library/icons/VideoEyeIcon';
 import styles from './RoundedVideo.module.scss';
 
 // types
 import { RoundedVideoProps } from './types';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import {VideoEyeIcon} from "@library/icons/VideoEyeIcon";
 
 const RoundedVideo = memo(
     ({
@@ -24,8 +24,8 @@ const RoundedVideo = memo(
         isCameraActive,
         isLocal,
         videoRef,
-         onToggleVideo,
-         isScreenSharing,
+        onToggleVideo,
+        isScreenSharing,
     }: RoundedVideoProps) => {
         const [isVideoActive, setIsVideoActive] = useState(false);
 
@@ -61,18 +61,20 @@ const RoundedVideo = memo(
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <VideoEyeIcon width={isScreenSharing ? "30px" : "40px"} height={isScreenSharing ? "30px" : "40px"}
-                                      isActive={isCameraActive}/>
-                        {!isScreenSharing
-                            ? (
-                                <CustomTypography
-                                    variant="body3"
-                                    nameSpace="meeting"
-                                    translation={isCameraActive ? "devices.switchOff" : "devices.switchOn"}
-                                />
-                            )
-                            : null
-                        }
+                        <VideoEyeIcon
+                            width={isScreenSharing ? '30px' : '40px'}
+                            height={isScreenSharing ? '30px' : '40px'}
+                            isActive={isCameraActive}
+                        />
+                        {!isScreenSharing ? (
+                            <CustomTypography
+                                variant="body3"
+                                nameSpace="meeting"
+                                translation={
+                                    isCameraActive ? 'devices.switchOff' : 'devices.switchOn'
+                                }
+                            />
+                        ) : null}
                     </CustomGrid>
                 ) : null}
                 <video

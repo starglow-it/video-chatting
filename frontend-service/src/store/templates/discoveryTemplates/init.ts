@@ -11,8 +11,8 @@ import {
 } from './model';
 import { handleFetchUsersTemplates } from '../handlers/handleFetchUsersTemplates';
 import { handleSendScheduleInvite } from '../handlers/handleSendScheduleInvite';
-import {appDialogsApi} from "../../dialogs/init";
-import {AppDialogsEnum} from "../../types";
+import { appDialogsApi } from '../../dialogs/init';
+import { AppDialogsEnum } from '../../types';
 
 getUsersTemplatesFx.use(handleFetchUsersTemplates);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
@@ -39,5 +39,5 @@ $scheduleEventLinkStore.on(setScheduleEventLinkEvent, (state, data) => {
         });
     }
 
-    return data
+    return data;
 });

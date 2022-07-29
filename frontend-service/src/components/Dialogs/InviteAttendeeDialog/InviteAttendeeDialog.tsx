@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useState} from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -12,11 +12,11 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // components
-import {ScheduleAttendees} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees";
+import { ScheduleAttendees } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees';
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 // stores
 
-import { $appDialogsStore, appDialogsApi , sendInviteEmailFx } from '../../../store';
+import { $appDialogsStore, appDialogsApi, sendInviteEmailFx } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
@@ -45,17 +45,17 @@ const InviteAttendeeDialog = memo(() => {
         resolver,
     });
 
-    const {
-        handleSubmit,
-        reset
-    } = methods;
+    const { handleSubmit, reset } = methods;
 
-    const onSubmit = useCallback(handleSubmit(async () => {
-        await sendInviteEmailFx({ userEmails, meetingId: router?.query?.token });
-        reset();
-        handleClose();
-        setUserEmails([]);
-    }),[userEmails]);
+    const onSubmit = useCallback(
+        handleSubmit(async () => {
+            await sendInviteEmailFx({ userEmails, meetingId: router?.query?.token });
+            reset();
+            handleClose();
+            setUserEmails([]);
+        }),
+        [userEmails],
+    );
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -63,25 +63,22 @@ const InviteAttendeeDialog = memo(() => {
         });
     }, []);
 
-    const handleAddUserEmail = useCallback((newEmail) => {
+    const handleAddUserEmail = useCallback(newEmail => {
         setUserEmails(prev => {
             if (!prev.some(email => email === newEmail)) {
-                return ([...prev, newEmail]);
+                return [...prev, newEmail];
             }
 
             return prev;
         });
-    },[]);
+    }, []);
 
-    const handleDeleteUserEmail = useCallback((oldEmail) => {
+    const handleDeleteUserEmail = useCallback(oldEmail => {
         setUserEmails(prev => prev.filter(email => email !== oldEmail));
-    },[]);
+    }, []);
 
     return (
-        <CustomDialog
-            contentClassName={styles.content}
-            open={inviteAttendeeByEmailDialog}
-        >
+        <CustomDialog contentClassName={styles.content} open={inviteAttendeeByEmailDialog}>
             <FormProvider {...methods}>
                 <form onSubmit={onSubmit} className={styles.form}>
                     <CustomGrid container direction="column" alignItems="center" gap={2}>

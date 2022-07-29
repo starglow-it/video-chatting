@@ -1,11 +1,12 @@
-import {useCallback, useRef, useState} from "react";
-import {ONE_SECOND} from "../const/time/common";
+import { useCallback, useRef, useState } from 'react';
+import { ONE_SECOND } from '../const/time/common';
 
 export const useTimer = () => {
     const [value, setValue] = useState(0);
     const intervalRef = useRef<number>();
 
-    const handleStartTimer = useCallback((maxValue: number) => {
+    const handleStartTimer = useCallback((startValue: number, maxValue: number) => {
+        setValue(startValue);
         intervalRef.current = setInterval(() => {
             setValue(prev => {
                 if (prev > maxValue) {
@@ -24,6 +25,6 @@ export const useTimer = () => {
     return {
         value,
         onStartTimer: handleStartTimer,
-        onEndTimer: handleStopTimer
-    }
-}
+        onEndTimer: handleStopTimer,
+    };
+};

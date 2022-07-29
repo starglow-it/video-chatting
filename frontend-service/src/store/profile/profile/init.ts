@@ -1,4 +1,4 @@
-import {forward} from "effector-next";
+import { forward } from 'effector-next';
 import {
     $profileStore,
     clearProfileEvent,
@@ -23,10 +23,10 @@ import { handleUpdateProfilePassword } from '../handlers/handleUpdateProfilePass
 import { handleSendResetPasswordLink } from '../handlers/handleSendResetPasswordLink';
 import { handleCheckResetPasswordLink } from '../handlers/handleCheckResetPasswordLink';
 import { handleResetPassword } from '../handlers/handleResetPassword';
-import {handleDeleteProfile} from "../handlers/handleDeleteProfile";
+import { handleDeleteProfile } from '../handlers/handleDeleteProfile';
 
 import { initialProfileState } from './const';
-import {resetAuthStateEvent} from "../../auth/model";
+import { resetAuthStateEvent } from '../../auth/model';
 
 updateProfileFx.use(handleUpdateProfileInfo);
 updateProfilePhotoFx.use(handleUpdateProfilePhoto);
@@ -51,7 +51,7 @@ $profileStore
             return {
                 ...initialProfileState,
                 ...state,
-                ...user
+                ...user,
             };
         }
 
@@ -70,4 +70,9 @@ $profileStore
             ...data,
         }),
     )
-    .on(deleteStripeDataEvent, (state) => ({ ...state, stripeEmail: "", stripeAccountId: "", isStripeEnabled: false }));
+    .on(deleteStripeDataEvent, state => ({
+        ...state,
+        stripeEmail: '',
+        stripeAccountId: '',
+        isStripeEnabled: false,
+    }));

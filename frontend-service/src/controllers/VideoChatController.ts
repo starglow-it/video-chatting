@@ -109,30 +109,32 @@ export class VideoChatController {
             await this.createLocalTracks(stream);
         }
 
-        await this.client.join(this.appId, this.channel, token, this.uid);
+        if (!["CONNECTED", "CONNECTING"].includes( this.client.connectionState)) {
+            await this.client.join(this.appId, this.channel, token, this.uid);
 
-        if (this.localMicTrack && this.localCameraTrack) {
-            await this.client.publish([this.localMicTrack, this.localCameraTrack]);
-        }
+            if (this.localMicTrack && this.localCameraTrack) {
+                await this.client.publish([this.localMicTrack, this.localCameraTrack]);
+            }
 
-        this.subscribeToEvents();
+            this.subscribeToEvents();
 
-        if (this.client?.remoteUsers?.length) {
-            const subscribePromise = this.client.remoteUsers.map(async remoteUser => {
-                if (remoteUser.hasAudio) {
-                    await this.client?.subscribe(remoteUser, 'audio');
-                }
-                if (remoteUser.hasVideo) {
-                    await this.client?.subscribe(remoteUser, 'video');
-                }
+            if (this.client?.remoteUsers?.length) {
+                const subscribePromise = this.client.remoteUsers.map(async remoteUser => {
+                    if (remoteUser.hasAudio) {
+                        await this.client?.subscribe(remoteUser, 'audio');
+                    }
+                    if (remoteUser.hasVideo) {
+                        await this.client?.subscribe(remoteUser, 'video');
+                    }
 
-                updateUserTracksEvent({ userUid: remoteUser.uid, infoType: AUDIO_UNMUTE });
-                updateUserTracksEvent({ userUid: remoteUser.uid, infoType: VIDEO_UNMUTE });
+                    updateUserTracksEvent({ userUid: remoteUser.uid, infoType: AUDIO_UNMUTE });
+                    updateUserTracksEvent({ userUid: remoteUser.uid, infoType: VIDEO_UNMUTE });
 
-                this.onUserPublished?.(remoteUser);
-            });
+                    this.onUserPublished?.(remoteUser);
+                });
 
-            await Promise.all(subscribePromise);
+                await Promise.all(subscribePromise);
+            }
         }
     }
 

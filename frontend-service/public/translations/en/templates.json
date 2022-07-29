@@ -17,7 +17,15 @@
     "title": "Personalize your\nspace",
     "customizeSign": "Customize Sign",
     "monetization": "Add monetization",
-    "stripe": "Connect with <b>Stripe</b>"
+    "stripe": "Connect with <b>Stripe</b>",
+    "subscription": "Subscription",
+    "startButSubscription": "Buy plan",
+    "selectPlan": "Select plan",
+    "subscriptions": {
+      "startHouse": "Get started FREE",
+      "startProfessional": "Get Professional",
+      "startBusiness": "Get Business"
+    }
   },
   "onboarding": {
     "quit": "Quit onboarding?",

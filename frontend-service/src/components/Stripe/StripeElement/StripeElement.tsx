@@ -1,11 +1,11 @@
-import React, { memo } from "react";
+import React, { memo } from 'react';
 
-import {Elements} from '@stripe/react-stripe-js';
-import {loadStripe, StripeElementsOptions} from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 
-import getConfig from "next/config";
+import getConfig from 'next/config';
 
-import {StripeElementProps} from "@components/Stripe/StripeElement/types";
+import { StripeElementProps } from '@components/Stripe/StripeElement/types';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -17,8 +17,8 @@ const Component = ({ secret, children }: React.PropsWithChildren<StripeElementPr
         locale: 'en',
         fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Poppins' }],
         appearance: {
-            colorTextPlaceholder: "rgba(white, 0.6)"
-        }
+            colorTextPlaceholder: 'rgba(white, 0.6)',
+        },
     } as StripeElementsOptions;
 
     return (
@@ -26,6 +26,6 @@ const Component = ({ secret, children }: React.PropsWithChildren<StripeElementPr
             {children}
         </Elements>
     );
-}
+};
 
 export const StripeElement = memo(Component);

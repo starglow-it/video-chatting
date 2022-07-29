@@ -7,10 +7,11 @@ import {
     END_MEETING,
     JOIN_WAITING_ROOM,
     LEAVE_MEETING,
-    SEND_ACCESS_REQUEST, START_MEETING,
+    SEND_ACCESS_REQUEST,
+    START_MEETING,
     UPDATE_MEETING,
-    UPDATE_MEETING_TEMPLATE
-} from "../../../const/socketEvents/emitters";
+    UPDATE_MEETING_TEMPLATE,
+} from '../../../const/socketEvents/emitters';
 
 export const meetingSocketEventsController = meetingDomain.event<SocketState>(
     'meetingSocketEventsController',

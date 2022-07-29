@@ -5,7 +5,13 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import {appDialogsApi, $appDialogsStore, removeUserSocketEvent, $meetingUsersStore, $userToKick } from '../../../store';
+import {
+    appDialogsApi,
+    $appDialogsStore,
+    removeUserSocketEvent,
+    $meetingUsersStore,
+    $userToKick,
+} from '../../../store';
 
 import { AppDialogsEnum } from '../../../store/types';
 

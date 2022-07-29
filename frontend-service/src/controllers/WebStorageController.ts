@@ -9,7 +9,7 @@ class WebStorageController {
     }
 
     get<DataType>({ key }: { key: StorageKeysEnum }): DataType {
-        const storageData = localStorage.getItem(key) || "{}";
+        const storageData = localStorage.getItem(key) || '{}';
 
         return JSON.parse(storageData);
     }

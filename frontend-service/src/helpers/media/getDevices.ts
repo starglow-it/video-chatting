@@ -23,7 +23,9 @@ export const getDevices = async (): Promise<{
     };
 };
 
-export const getDevicesFromStream = (stream?: MediaStream | null | undefined): MediaStreamOptions => {
+export const getDevicesFromStream = (
+    stream?: MediaStream | null | undefined,
+): MediaStreamOptions => {
     const initialValue = {
         audioDeviceId: '',
         videoDeviceId: '',

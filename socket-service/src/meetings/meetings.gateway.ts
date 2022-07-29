@@ -167,20 +167,20 @@ export class MeetingsGateway
               value: 15,
             });
 
-            if (meeting.endsAt - Date.now() > endTimestamp) {
-              this.taskService.deleteTimeout({
-                name: `meeting:finish:${plainMeeting.id}`,
-              });
+            const meetingEndTime = meeting.endsAt - Date.now();
 
-              this.taskService.addTimeout({
-                name: `meeting:finish:${plainMeeting.id}`,
-                ts: endTimestamp,
-                callback: this.endMeeting.bind(this, {
-                  meetingId: meeting._id,
-                  client,
-                }),
-              });
-            }
+            this.taskService.deleteTimeout({
+              name: `meeting:finish:${plainMeeting.id}`,
+            });
+
+            this.taskService.addTimeout({
+              name: `meeting:finish:${plainMeeting.id}`,
+              ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+              callback: this.endMeeting.bind(this, {
+                meetingId: meeting._id,
+                client,
+              }),
+            });
           }
 
           this.emitToRoom(`waitingRoom:${meeting.instanceId}`, UPDATE_MEETING, {
@@ -346,6 +346,8 @@ export class MeetingsGateway
         id: meeting.templateId,
       });
 
+      const mainUser = await this.coreService.findUserById({ userId: template.user.id });
+
       const activeParticipants = await this.usersService.countMany({
         meeting: meeting._id,
         accessStatus: AccessStatusEnum.InMeeting,
@@ -357,7 +359,13 @@ export class MeetingsGateway
           accessStatus: AccessStatusEnum.InMeeting,
           username: message.user.username,
           isAuraActive: message.user.isAuraActive,
-          userPosition: template?.usersPosition?.[activeParticipants - (message?.user?.accessStatus === AccessStatusEnum.InMeeting ? 1 : 0)],
+          userPosition:
+            template?.usersPosition?.[
+              activeParticipants -
+                (message?.user?.accessStatus === AccessStatusEnum.InMeeting
+                  ? 1
+                  : 0)
+            ],
         },
         session,
       );
@@ -370,7 +378,7 @@ export class MeetingsGateway
           value: 90,
         });
 
-        meeting.endsAt = Date.now() + endsAtTimeout;
+        meeting.endsAt = Date.now() + (mainUser.maxMeetingTime < endsAtTimeout && mainUser.subscriptionPlanKey !== 'Business' ? mainUser.maxMeetingTime : endsAtTimeout);
 
         await meeting.save();
 
@@ -523,6 +531,8 @@ export class MeetingsGateway
     }>
   > {
     return withTransaction(this.connection, async (session) => {
+      if (!message.meetingId) return;
+
       const meeting = await this.meetingsService.findById(
         message.meetingId,
         session,
@@ -700,6 +710,27 @@ export class MeetingsGateway
   @SubscribeMessage(END_MEETING)
   async endMeeting(@MessageBody() message: EndMeetingRequestDTO) {
     await withTransaction(this.connection, async (session) => {
+      const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+      );
+
+      const template = await this.coreService.findMeetingTemplate({
+        id: meeting.templateId,
+      });
+
+      const user = await this.coreService.findUserById({ userId: template.user.id });
+      if (user.subscriptionPlanKey !== "Business") {
+        const newTime = user.maxMeetingTime - (Date.now() - meeting.startAt);
+
+        await this.coreService.updateUser({
+          query: { _id: user.id },
+          data: {
+            maxMeetingTime: newTime < 0 ? 0 : newTime,
+          }
+        });
+      }
+
       await this.usersService.deleteMany(
         { meeting: message.meetingId },
         session,
@@ -804,17 +835,17 @@ export class MeetingsGateway
               value: 15,
             });
 
-            if (meeting.endsAt - Date.now() > endTimestamp) {
-              this.taskService.deleteTimeout({
-                name: `meeting:finish:${plainMeeting.id}`,
-              });
+            const meetingEndTime = meeting.endsAt - Date.now();
 
-              this.taskService.addTimeout({
-                name: `meeting:finish:${plainMeeting.id}`,
-                ts: endTimestamp,
-                callback: this.endMeeting.bind(this, message, socket),
-              });
-            }
+            this.taskService.deleteTimeout({
+              name: `meeting:finish:${plainMeeting.id}`,
+            });
+
+            this.taskService.addTimeout({
+              name: `meeting:finish:${plainMeeting.id}`,
+              ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+              callback: this.endMeeting.bind(this, message, socket),
+            });
           }
         }
       }

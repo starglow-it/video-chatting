@@ -83,4 +83,6 @@ export class CommonUserRestDTO implements ICommonUserDTO {
 
   createdAt: Date;
   updatedAt: Date;
+  maxTemplatesNumber: number;
+  maxMeetingTime: number;
 }

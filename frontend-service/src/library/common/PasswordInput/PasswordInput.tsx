@@ -1,4 +1,4 @@
-import React, {ForwardedRef, forwardRef, memo, useCallback, useMemo} from 'react';
+import React, { ForwardedRef, forwardRef, memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 
@@ -21,7 +21,9 @@ import { TranslationProps } from '@library/common/Translation/types';
 import { PasswordInputProps } from './types';
 import { TextFieldProps } from '@mui/material/TextField/TextField';
 
-type ComponentProps = PasswordInputProps & Omit<TextFieldProps, 'error' | 'children'> & TranslationProps;
+type ComponentProps = PasswordInputProps &
+    Omit<TextFieldProps, 'error' | 'children'> &
+    TranslationProps;
 
 const Component = (
     {
@@ -49,12 +51,15 @@ const Component = (
         return translation ? t.translation(translation) : '';
     }, [translation]);
 
-    const handleBlur = useCallback(e => {
-        if (!passwordValue) {
-            onCustomBlur?.();
-        }
-        onBlur?.(e);
-    },[passwordValue]);
+    const handleBlur = useCallback(
+        e => {
+            if (!passwordValue) {
+                onCustomBlur?.();
+            }
+            onBlur?.(e);
+        },
+        [passwordValue],
+    );
 
     return (
         <CustomGrid container direction="column">
@@ -88,6 +93,8 @@ const Component = (
             {error && <ErrorMessage className={styles.errorContainer} error={error} />}
         </CustomGrid>
     );
-}
+};
 
-export const PasswordInput = memo<ComponentProps>(forwardRef<HTMLInputElement, ComponentProps>(Component));
+export const PasswordInput = memo<ComponentProps>(
+    forwardRef<HTMLInputElement, ComponentProps>(Component),
+);

@@ -12,7 +12,7 @@ import {
   COMPARE_PASSWORDS,
   CREATE_USER,
   DELETE_PROFILE,
-  DELETE_PROFILE_AVATAR,
+  DELETE_PROFILE_AVATAR, FIND_USER,
   FIND_USER_BY_EMAIL,
   FIND_USER_BY_EMAIL_AND_UPDATE,
   FIND_USER_BY_ID,
@@ -187,6 +187,31 @@ export class UsersController {
         'languages',
         'profileAvatar',
       ]);
+
+      if (!user) {
+        throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+      }
+
+      return plainToClass(CommonUserDTO, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+    });
+  }
+
+  @MessagePattern({ cmd: FIND_USER })
+  async findUser(@Payload() data: Partial<ICommonUserDTO>) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findUser({
+        query: data,
+        session,
+        populatePaths: [
+          'businessCategories',
+          'socials',
+          'languages',
+          'profileAvatar',
+        ]
+      });
 
       if (!user) {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
@@ -374,15 +399,11 @@ export class UsersController {
     });
   }
 
-
-
   @MessagePattern({ cmd: DELETE_PROFILE })
-  async deleteProfile(
-      @Payload() { userId }: { userId: string },
-  ) {
+  async deleteProfile(@Payload() { userId }: { userId: string }) {
     return withTransaction(this.connection, async (session) => {
       return this.usersService.deleteUser(userId, session);
-    })
+    });
   }
 
   @MessagePattern({ cmd: UPDATE_PROFILE })

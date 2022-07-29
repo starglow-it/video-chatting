@@ -1,6 +1,6 @@
-import {sendRequest} from "../../../helpers/http/sendRequest";
-import {ErrorState} from "../../types";
-import {registerUserUrl} from "../../../utils/urls";
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { ErrorState } from '../../types';
+import { registerUserUrl } from '../../../utils/urls';
 
 export const handleRegisterUser = async params => {
     const response = await sendRequest<void, ErrorState>({
@@ -18,4 +18,4 @@ export const handleRegisterUser = async params => {
             error: response.error,
         };
     }
-}
+};

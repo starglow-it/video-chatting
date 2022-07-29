@@ -19,9 +19,7 @@ import { padArray } from '../../../utils/arrays/padArray';
 import styles from './SubmitProfileInfo.module.scss';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store';
-import { setRouteToChangeEvent } from '../../../store';
-import { $profileStore } from '../../../store';
+import { $profileStore, $appDialogsStore, setRouteToChangeEvent, appDialogsApi } from '../../../store';
 
 // types
 import { AppDialogsEnum, SocialLink } from '../../../store/types';
@@ -54,10 +52,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
         // eslint-disable-next-line
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-        const fieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(
-            reduceValuesNumber,
-            0,
-        );
+        const fieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(reduceValuesNumber, 0);
 
         const paddedNextSocials = padArray<SocialLink>(
             nextSocials,

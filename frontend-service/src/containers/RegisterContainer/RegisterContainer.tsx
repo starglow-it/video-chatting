@@ -181,7 +181,7 @@ const RegisterContainer = memo(() => {
                             <CustomCheckbox
                                 className={styles.checkbox}
                                 labelClassName={styles.label}
-                                label={(
+                                label={
                                     <CustomGrid>
                                         {!is480Media && (
                                             <CustomTypography
@@ -214,7 +214,7 @@ const RegisterContainer = memo(() => {
                                             translation="privacy"
                                         />
                                     </CustomGrid>
-                                )}
+                                }
                                 {...register('terms')}
                             />
                         </CustomGrid>

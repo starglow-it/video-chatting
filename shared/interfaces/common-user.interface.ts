@@ -22,7 +22,13 @@ export interface ICommonUserDTO {
     profileAvatar: IProfileAvatar;
     signBoard: string;
     stripeAccountId: string;
+    stripeSessionId?: string;
+    stripeSubscriptionId?: string;
+    subscriptionPlanKey?: string;
+    isSubscriptionActive?: boolean;
     stripeEmail: string;
     isStripeEnabled: boolean;
     wasSuccessNotificationShown: boolean;
+    maxTemplatesNumber: number;
+    maxMeetingTime: number;
 }

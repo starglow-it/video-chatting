@@ -46,12 +46,14 @@ declare module '@mui/material/Button' {
         'custom-danger': true;
         'custom-primary': true;
         'custom-transparent': true;
+        'custom-common': true;
+        'custom-black': true;
     }
 }
 
 declare module '@mui/material/Slider' {
     interface SliderPropsColorOverrides {
-        'disabled': true;
+        disabled: true;
     }
 }
 
@@ -87,6 +89,8 @@ declare module '@mui/material/styles' {
         'custom-danger': string;
         'custom-primary': string;
         'custom-transparent': string;
+        'custom-common': string;
+        'custom-black': string;
     }
 
     interface Theme {

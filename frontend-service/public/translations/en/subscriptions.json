@@ -1,0 +1,64 @@
+{
+  "subscriptions": {
+    "House": {
+      "features": [
+        {
+          "text": "Accept Payments",
+          "subText": "TheLiveOffice collects a 0.99% processing fee"
+        },
+        {
+          "text": "Time capped on monthly basis",
+          "subText": "120 minutes"
+        },
+        {
+          "text": "1 Free template",
+          "subText": "You can still try and switch scene for free"
+        },
+        {
+          "text": "SSO encrypted",
+          "subText": ""
+        }
+      ]
+    },
+    "Professional": {
+      "features": [
+        {
+          "text": "All <strong>House plan</strong> features",
+          "subText": ""
+        },
+        {
+          "text": "1200 min",
+          "subText": "of meeting time / month "
+        },
+        {
+          "text": "2 Free templates",
+          "subText": ""
+        },
+        {
+          "text": "0% comission",
+          "subText": "from each transaction"
+        }
+      ]
+    },
+    "Business": {
+      "features": [
+        {
+          "text": "All <strong>House plan</strong> features",
+          "subText": ""
+        },
+        {
+          "text": "Unlimited min",
+          "subText": "of meeting time / month "
+        },
+        {
+          "text": "10 Free templates",
+          "subText": ""
+        },
+        {
+          "text": "0% comission",
+          "subText": "from each transaction"
+        }
+      ]
+    }
+  }
+}

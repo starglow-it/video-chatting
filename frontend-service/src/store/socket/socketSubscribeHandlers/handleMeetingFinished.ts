@@ -1,5 +1,5 @@
-import {leaveMeetingEvent} from "../../users/localUser/model";
+import { leaveMeetingEvent } from '../../users/localUser/model';
 
 export const handleMeetingFinished = () => {
     leaveMeetingEvent();
-}
+};

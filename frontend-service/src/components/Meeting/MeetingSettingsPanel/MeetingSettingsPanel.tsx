@@ -23,8 +23,12 @@ import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 // styles
 import {
     $isEditTemplateOpenStore,
-    $isMeetingInfoOpenStore, checkCustomLinkFxWithData,
-    setEditTemplateOpenEvent, setMeetingInfoOpenEvent,
+    $isMeetingInfoOpenStore,
+    checkCustomLinkFxWithData,
+    setEditTemplateOpenEvent,
+    setMeetingInfoOpenEvent,
+    appDialogsApi,
+    $isOwner
 } from 'src/store';
 import styles from './MeetingSettingsPanel.module.scss';
 
@@ -37,11 +41,9 @@ import { businessCategoriesSchema } from '../../../validation/users/businessCate
 import { languagesSchema } from '../../../validation/users/languagesSchema';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { validateSocialLink } from '../../../validation/users/socials';
-import {customTemplateLinkSchema} from "../../../validation/templates/customLink";
+import { customTemplateLinkSchema } from '../../../validation/templates/customLink';
 
 // stores
-import { $isOwner } from '../../../store';
-import { appDialogsApi } from '../../../store';
 
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
@@ -49,11 +51,11 @@ import { padArray } from '../../../utils/arrays/padArray';
 
 // types
 import { AppDialogsEnum, SocialLink } from '../../../store/types';
-import {MeetingSettingsPanelProps, SettingsData} from './types';
+import { MeetingSettingsPanelProps, SettingsData } from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
-import frontendConfig from "../../../const/config";
+import frontendConfig from '../../../const/config';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -79,7 +81,7 @@ const MeetingSettingsPanel = memo(
 
         const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
-        const templateSocialLinks = useMemo<SettingsData["socials"]>(
+        const templateSocialLinks = useMemo<SettingsData['socials']>(
             () => template.socials.map(social => ({ key: social.key, value: social.value })),
             [template?.socials],
         );
@@ -108,7 +110,7 @@ const MeetingSettingsPanel = memo(
             reset,
             control,
             setError,
-            setFocus
+            setFocus,
         } = methods;
 
         const nextSocials = useWatch({
@@ -165,7 +167,7 @@ const MeetingSettingsPanel = memo(
             if (!dirtyFieldsCount || isMeetingInfoOpened) {
                 setEditTemplateOpenEvent(false);
                 setMeetingInfoOpenEvent(false);
-                return
+                return;
             }
 
             appDialogsApi.openDialog({
@@ -195,11 +197,18 @@ const MeetingSettingsPanel = memo(
                 } else {
                     const { socials, ...dataWithoutSocials } = data;
 
-                    if (dataWithoutSocials.customLink && template.customLink !== dataWithoutSocials.customLink) {
-                        const isBusy = await checkCustomLinkFxWithData({ templateId: dataWithoutSocials.customLink });
+                    if (
+                        dataWithoutSocials.customLink &&
+                        template.customLink !== dataWithoutSocials.customLink
+                    ) {
+                        const isBusy = await checkCustomLinkFxWithData({
+                            templateId: dataWithoutSocials.customLink,
+                        });
 
                         if (isBusy) {
-                            setError('customLink', [{ type: 'focus', message: 'meeting.settings.customLink.busy' }]);
+                            setError('customLink', [
+                                { type: 'focus', message: 'meeting.settings.customLink.busy' },
+                            ]);
                             setFocus('customLink');
                             return;
                         }
@@ -222,11 +231,18 @@ const MeetingSettingsPanel = memo(
                         socials,
                     });
 
-                    if ((template.customLink || dataWithoutSocials.customLink) && template.customLink !== dataWithoutSocials.customLink) {
+                    if (
+                        (template.customLink || dataWithoutSocials.customLink) &&
+                        template.customLink !== dataWithoutSocials.customLink
+                    ) {
                         Router.push(
-                            `${frontendConfig.frontendUrl}/meeting/${dataWithoutSocials.customLink || template.id}`,
-                            `${frontendConfig.frontendUrl}/meeting/${dataWithoutSocials.customLink || template.id}`,
-                            { shallow: true }
+                            `${frontendConfig.frontendUrl}/meeting/${
+                                dataWithoutSocials.customLink || template.id
+                            }`,
+                            `${frontendConfig.frontendUrl}/meeting/${
+                                dataWithoutSocials.customLink || template.id
+                            }`,
+                            { shallow: true },
                         );
                     }
                 }
@@ -262,23 +278,18 @@ const MeetingSettingsPanel = memo(
                             height="24px"
                         />
                         <CustomGrid container className={styles.settingsControls} gap={1.5}>
-                            <SetUpDevicesButton
-                                onAction={handleOpenDeviceSettings}
-                            />
+                            <SetUpDevicesButton onAction={handleOpenDeviceSettings} />
                         </CustomGrid>
 
-                        {isOwner
-                            ? (
-                                <Fade in={isEditTemplateOpened}>
-                                    <CustomBox className={styles.fadeContentWrapper}>
-                                        <form onSubmit={onSubmit} className={styles.form}>
-                                            <EditTemplateForm onCancel={handleCancelEditTemplate} />
-                                        </form>
-                                    </CustomBox>
-                                </Fade>
-                            )
-                            : null
-                        }
+                        {isOwner ? (
+                            <Fade in={isEditTemplateOpened}>
+                                <CustomBox className={styles.fadeContentWrapper}>
+                                    <form onSubmit={onSubmit} className={styles.form}>
+                                        <EditTemplateForm onCancel={handleCancelEditTemplate} />
+                                    </form>
+                                </CustomBox>
+                            </Fade>
+                        ) : null}
 
                         <Fade in={isMeetingInfoOpened}>
                             <CustomBox className={styles.fadeContentWrapper}>

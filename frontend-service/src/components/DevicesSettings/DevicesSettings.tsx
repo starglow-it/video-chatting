@@ -1,29 +1,29 @@
-import React, {memo, useCallback, useContext, useEffect, useState} from 'react';
-import {useStore} from 'effector-react';
-import * as yup from "yup";
-import {FormProvider, useForm} from "react-hook-form";
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import { useStore } from 'effector-react';
+import * as yup from 'yup';
+import { FormProvider, useForm } from 'react-hook-form';
 
 // hooks
 // custom
-import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
-import {CustomPaper} from '@library/custom/CustomPaper/CustomPaper';
-import {CustomTypography} from '@library/custom/CustomTypography/CustomTypography';
-import {CustomButton} from '@library/custom/CustomButton/CustomButton';
-import {CustomDivider} from '@library/custom/CustomDivider/CustomDivider';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
-import {WiggleLoader} from '@library/common/WiggleLoader/WiggleLoader';
-import {MediaPreview} from '@components/Media/MediaPreview/MediaPreview';
-import {MeetingSettingsContent} from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
-import {CustomCheckbox} from "@library/custom/CustomCheckbox/CustomCheckbox";
-import {useYupValidationResolver} from "../../hooks/useYupValidationResolver";
-import {useToggle} from "../../hooks/useToggle";
+import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
+import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
+import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
+import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
+import { useToggle } from '../../hooks/useToggle';
 
 // context
-import {VideoEffectsContext} from "../../contexts/VideoEffectContext";
+import { VideoEffectsContext } from '../../contexts/VideoEffectContext';
 
 // context
-import {MediaContext} from '../../contexts/MediaContext';
+import { MediaContext } from '../../contexts/MediaContext';
 
 // stores
 import {
@@ -48,14 +48,14 @@ import {
 } from '../../store';
 
 // types
-import {MeetingAccessStatuses, NotificationType} from '../../store/types';
+import { MeetingAccessStatuses, NotificationType } from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
 
-import {booleanSchema, simpleStringSchema} from "../../validation/common";
-import {templatePriceSchema} from "../../validation/payments/templatePrice";
-import {StorageKeysEnum, WebStorage} from "../../controllers/WebStorageController";
+import { booleanSchema, simpleStringSchema } from '../../validation/common';
+import { templatePriceSchema } from '../../validation/payments/templatePrice';
+import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -73,14 +73,17 @@ const DevicesSettings = memo(() => {
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
-    const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] = useState<number>(backgroundAudioVolume);
+    const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
+        useState<number>(backgroundAudioVolume);
 
-    const {
-        value: needToRememberSettings,
-        onToggleSwitch: handleToggleRememberSettings
-    } = useToggle(false);
+    const { value: needToRememberSettings, onToggleSwitch: handleToggleRememberSettings } =
+        useToggle(false);
 
-    const resolver = useYupValidationResolver<{ templatePrice: number; isMonetizationEnabled: boolean; templateCurrency: string }>(validationSchema);
+    const resolver = useYupValidationResolver<{
+        templatePrice: number;
+        isMonetizationEnabled: boolean;
+        templateCurrency: string;
+    }>(validationSchema);
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -89,12 +92,10 @@ const DevicesSettings = memo(() => {
             isMonetizationEnabled: Boolean(meetingTemplate.isMonetizationEnabled),
             templatePrice: meetingTemplate.templatePrice || 10,
             templateCurrency: meetingTemplate.templateCurrency,
-        }
+        },
     });
 
-    const {
-        handleSubmit,
-    } = methods;
+    const { handleSubmit } = methods;
 
     const {
         data: {
@@ -107,23 +108,20 @@ const DevicesSettings = memo(() => {
             videoDevices,
             currentAudioDevice,
             currentVideoDevice,
-
         },
     } = useContext(MediaContext);
 
     const {
         data: { isBlurActive },
-        actions: { onToggleBlur }
+        actions: { onToggleBlur },
     } = useContext(VideoEffectsContext);
 
-    const {
-        value: isSettingsAudioBackgroundActive,
-        onToggleSwitch: handleToggleBackgroundAudio,
-    } = useToggle(isBackgroundAudioActive);
+    const { value: isSettingsAudioBackgroundActive, onToggleSwitch: handleToggleBackgroundAudio } =
+        useToggle(isBackgroundAudioActive);
 
     useEffect(() => {
         updateLocalUserEvent({
-            isAuraActive: isBlurActive
+            isAuraActive: isBlurActive,
         });
     }, [isBlurActive]);
 
@@ -154,37 +152,33 @@ const DevicesSettings = memo(() => {
 
     const handleJoinMeeting = useCallback(async () => {
         if (!isStreamRequested) {
-            if ((!changeStream && error === 'media.notAllowed') || (changeStream && !error)) {
-                if (isOwner) {
-                    startMeeting();
-                } else {
-                    if (isMeetingInstanceExists && isOwnerInMeeting) {
-                        enterMeetingRequest();
-                    } else {
-                        sendEnterWaitingRoom({});
-                    }
-                    setIsUserSendEnterRequest(true);
-                }
-
-                setBackgroundAudioVolume(settingsBackgroundAudioVolume);
-                setBackgroundAudioActive(isSettingsAudioBackgroundActive);
-
-                if (needToRememberSettings) {
-                    WebStorage.save({
-                        key: StorageKeysEnum.meetingSettings,
-                        data: {
-                            backgroundAudioSetting: isSettingsAudioBackgroundActive,
-                            backgroundAudioVolumeSetting: settingsBackgroundAudioVolume,
-                            blurSetting: isBlurActive,
-                            savedVideoDeviceId: currentVideoDevice,
-                            savedAudioDeviceId: currentAudioDevice,
-                            cameraActiveSetting: isCameraActive,
-                            micActiveSetting: isMicActive,
-                        }
-                    });
-                }
+            if (isOwner) {
+                startMeeting();
             } else {
-                handleToggleCamera();
+                if (isMeetingInstanceExists && isOwnerInMeeting) {
+                    enterMeetingRequest();
+                } else {
+                    sendEnterWaitingRoom({});
+                }
+                setIsUserSendEnterRequest(true);
+            }
+
+            setBackgroundAudioVolume(settingsBackgroundAudioVolume);
+            setBackgroundAudioActive(isSettingsAudioBackgroundActive);
+
+            if (needToRememberSettings) {
+                WebStorage.save({
+                    key: StorageKeysEnum.meetingSettings,
+                    data: {
+                        backgroundAudioSetting: isSettingsAudioBackgroundActive,
+                        backgroundAudioVolumeSetting: settingsBackgroundAudioVolume,
+                        blurSetting: isBlurActive,
+                        savedVideoDeviceId: currentVideoDevice,
+                        savedAudioDeviceId: currentAudioDevice,
+                        cameraActiveSetting: isCameraActive,
+                        micActiveSetting: isMicActive,
+                    },
+                });
             }
         }
     }, [
@@ -209,15 +203,18 @@ const DevicesSettings = memo(() => {
         setIsUserSendEnterRequest(false);
     }, []);
 
-    const onSubmit = useCallback(handleSubmit(async (data) => {
-        try {
-            await updateMeetingTemplateFxWithData(data);
+    const onSubmit = useCallback(
+        handleSubmit(async data => {
+            try {
+                await updateMeetingTemplateFxWithData(data);
 
-            handleJoinMeeting();
-        } catch (e) {
-            console.log(e);
-        }
-    }),[isOwner, handleJoinMeeting]);
+                handleJoinMeeting();
+            } catch (e) {
+                console.log(e);
+            }
+        }),
+        [isOwner, handleJoinMeeting],
+    );
 
     const handleBack = useCallback(() => {
         if (isUserSentEnterRequest) {
@@ -229,6 +226,8 @@ const DevicesSettings = memo(() => {
             accessStatus: MeetingAccessStatuses.EnterName,
         });
     }, [isUserSentEnterRequest]);
+
+    const isEnterMeetingDisabled = !changeStream && error === 'media.notAllowed';
 
     return (
         <CustomPaper className={styles.wrapper}>
@@ -303,8 +302,8 @@ const DevicesSettings = memo(() => {
                                         checked={needToRememberSettings}
                                         onChange={handleToggleRememberSettings}
                                         translationProps={{
-                                            nameSpace: "meeting",
-                                            translation: "settings.remember"
+                                            nameSpace: 'meeting',
+                                            translation: 'settings.remember',
                                         }}
                                     />
                                 )
@@ -313,26 +312,25 @@ const DevicesSettings = memo(() => {
                         </CustomGrid>
                     </CustomGrid>
                 </CustomGrid>
-                <CustomGrid
-                    container
-                    gap={1}
-                    wrap="nowrap"
-                    className={styles.joinBtn}
-                >
-                    {!isUserSentEnterRequest
-                        ? (
-                            <CustomButton
-                                onClick={handleBack}
-                                variant="custom-cancel"
-                                nameSpace="common"
-                                translation="buttons.back"
-                            />
-                        )
-                        : null
-                    }
+                <CustomGrid container gap={1} wrap="nowrap" className={styles.joinBtn}>
+                    {!isUserSentEnterRequest ? (
+                        <CustomButton
+                            onClick={handleBack}
+                            variant="custom-cancel"
+                            nameSpace="common"
+                            translation="buttons.back"
+                        />
+                    ) : null}
 
                     <CustomButton
-                        onClick={isUserSentEnterRequest ? handleCancelRequest : (isOwner ? onSubmit : handleJoinMeeting)}
+                        onClick={
+                            isUserSentEnterRequest
+                                ? handleCancelRequest
+                                : isOwner
+                                ? onSubmit
+                                : handleJoinMeeting
+                        }
+                        disabled={isEnterMeetingDisabled}
                         nameSpace="meeting"
                         variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
                         translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}

@@ -93,18 +93,33 @@ const Component = (props, ref) => {
                                 userName={meetingTemplate.fullName}
                             />
                             <CustomGrid item container direction="column" flex="1 1 auto">
-                                <CustomTypography variant="body1bold" color="colors.white.primary" className={styles.ellips}>
+                                <CustomTypography
+                                    variant="body1bold"
+                                    color="colors.white.primary"
+                                    className={styles.ellips}
+                                >
                                     {meetingTemplate.fullName}
                                 </CustomTypography>
-                                <CustomTypography variant="body2" color="colors.white.primary" className={styles.ellips}>
+                                <CustomTypography
+                                    variant="body2"
+                                    color="colors.white.primary"
+                                    className={styles.ellips}
+                                >
                                     {meetingTemplate.position}
                                 </CustomTypography>
                             </CustomGrid>
                         </CustomGrid>
                         {meetingTemplate.languages?.length ? (
                             <CustomGrid container display="inline-flex" className={styles.language}>
-                                <CustomTypography color="colors.white.primary" className={styles.text}>
-                                    <LanguageIcon width="24px" height="24px" className={styles.icon} />
+                                <CustomTypography
+                                    color="colors.white.primary"
+                                    className={styles.text}
+                                >
+                                    <LanguageIcon
+                                        width="24px"
+                                        height="24px"
+                                        className={styles.icon}
+                                    />
                                     Language: {renderLanguages}
                                 </CustomTypography>
                             </CustomGrid>
@@ -117,67 +132,61 @@ const Component = (props, ref) => {
                             nameSpace="meeting"
                             translation="meetingInfo.company"
                         />
-                        {meetingTemplate.companyName
-                            ? (
-                                <CustomGrid container className={styles.company} gap={1}>
-                                    <PeoplesIcon width="24px" height="24px" />
-                                    <CustomTypography color="colors.white.primary" className={styles.text}>
-                                        {meetingTemplate.companyName}
-                                    </CustomTypography>
-                                </CustomGrid>
-                            )
-                            : null
-                        }
-                        {meetingTemplate.contactEmail
-                            ? (
-                                <CustomGrid container className={styles.email} gap={1}>
-                                    <EmailIcon width="24px" height="24px" />
-                                    <CustomTypography color="colors.white.primary" className={styles.text}>
-                                        {meetingTemplate.contactEmail}
-                                    </CustomTypography>
-                                </CustomGrid>
-                            )
-                            : null
-                        }
-                        {meetingTemplate.description
-                            ? (
-                                <CustomGrid container className={styles.description} gap={1}>
-                                    <CustomTypography color="colors.white.primary" className={styles.text}>
-                                        {meetingTemplate.description}
-                                    </CustomTypography>
-                                </CustomGrid>
-                            )
-                            : null
-                        }
-                        {meetingTemplate?.businessCategories?.length
-                            ? (
-                                <CustomGrid container gap={1}>
-                                    {renderBusinessCategories}
-                                </CustomGrid>
-                            )
-                            : null
-                        }
-                    </CustomGrid>
-                    {meetingTemplate?.socials?.length
-                        ? (
-                            <CustomGrid container direction="column" gap={2}>
+                        {meetingTemplate.companyName ? (
+                            <CustomGrid container className={styles.company} gap={1}>
+                                <PeoplesIcon width="24px" height="24px" />
                                 <CustomTypography
                                     color="colors.white.primary"
-                                    variant="h4bold"
-                                    nameSpace="meeting"
-                                    translation="meetingInfo.contacts"
-                                />
-                                <CustomGrid container gap={1.5}>
-                                    {socialsLink}
-                                </CustomGrid>
+                                    className={styles.text}
+                                >
+                                    {meetingTemplate.companyName}
+                                </CustomTypography>
                             </CustomGrid>
-                        )
-                        : null
-                    }
+                        ) : null}
+                        {meetingTemplate.contactEmail ? (
+                            <CustomGrid container className={styles.email} gap={1}>
+                                <EmailIcon width="24px" height="24px" />
+                                <CustomTypography
+                                    color="colors.white.primary"
+                                    className={styles.text}
+                                >
+                                    {meetingTemplate.contactEmail}
+                                </CustomTypography>
+                            </CustomGrid>
+                        ) : null}
+                        {meetingTemplate.description ? (
+                            <CustomGrid container className={styles.description} gap={1}>
+                                <CustomTypography
+                                    color="colors.white.primary"
+                                    className={styles.text}
+                                >
+                                    {meetingTemplate.description}
+                                </CustomTypography>
+                            </CustomGrid>
+                        ) : null}
+                        {meetingTemplate?.businessCategories?.length ? (
+                            <CustomGrid container gap={1}>
+                                {renderBusinessCategories}
+                            </CustomGrid>
+                        ) : null}
+                    </CustomGrid>
+                    {meetingTemplate?.socials?.length ? (
+                        <CustomGrid container direction="column" gap={2}>
+                            <CustomTypography
+                                color="colors.white.primary"
+                                variant="h4bold"
+                                nameSpace="meeting"
+                                translation="meetingInfo.contacts"
+                            />
+                            <CustomGrid container gap={1.5}>
+                                {socialsLink}
+                            </CustomGrid>
+                        </CustomGrid>
+                    ) : null}
                 </CustomGrid>
             </CustomScroll>
         </CustomGrid>
     );
-}
+};
 
 export const MeetingInfo = memo<any>(forwardRef<HTMLDivElement, any>(Component));

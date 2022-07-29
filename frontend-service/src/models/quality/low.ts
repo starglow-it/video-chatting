@@ -1,59 +1,56 @@
-import * as THREE from 'three'
+import * as THREE from 'three';
 
-const envMapArray = ['512','1k','2k']
-const texturesSizeArray = ['256','512','1K','2K','3K','4K']
+const envMapArray = ['512', '1k', '2k'];
+const texturesSizeArray = ['256', '512', '1K', '2K', '3K', '4K'];
 
 export const quality = {
     id: 'low',
-    pixel_ratio:1,
+    pixel_ratio: 1,
     antialias: false,
-    smaa:false,
-    fxaa:true,
+    smaa: false,
+    fxaa: true,
     ambientLight: true,
     keylight: true,
-    textures:{
-        environment:{
+    textures: {
+        environment: {
             hdr: false,
             size: envMapArray[1],
-            extension: 'jpg'
+            extension: 'jpg',
         },
-        diffuse:{
+        diffuse: {
             allow: true,
             size: texturesSizeArray[1],
-            extension: 'jpg'
+            extension: 'jpg',
         },
-        ao:{
+        ao: {
             allow: true,
             size: texturesSizeArray[2],
-            extension: 'jpg'
+            extension: 'jpg',
         },
-        normal:{
+        normal: {
             allow: true,
             size: texturesSizeArray[1],
-            extension: 'jpg'
+            extension: 'jpg',
         },
-        gloss:{
+        gloss: {
             allow: true,
             size: texturesSizeArray[1],
-            extension: 'jpg'
-            
+            extension: 'jpg',
         },
-        disp:{
+        disp: {
             allow: true,
             size: texturesSizeArray[1],
-            extension: 'jpg'
-            
+            extension: 'jpg',
         },
-        lightsMap:{
+        lightsMap: {
             allow: true,
             size: texturesSizeArray[1],
-            extension: 'jpg'
-            
-        }
+            extension: 'jpg',
+        },
     },
     shadows: {
         enable: true,
         mapSize: 512,
-        type: THREE.PCFSoftShadowMap
-    }
-}
+        type: THREE.PCFSoftShadowMap,
+    },
+};

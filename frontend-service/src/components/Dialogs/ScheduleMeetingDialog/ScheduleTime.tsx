@@ -1,35 +1,43 @@
-import React, { memo, useCallback, useEffect, useMemo } from "react";
-import {useFormContext, useWatch} from "react-hook-form";
-import {MenuItem} from "@mui/material";
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { MenuItem } from '@mui/material';
 
 // custom
-import {CustomDropdown} from "@library/custom/CustomDropdown/CustomDropdown";
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
-import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
-import {CustomInput} from "@library/custom/CustomInput/CustomInput";
+import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // const
-import {TIMEZONES} from "../../../const/time/timezones";
-import {ONE_MINUTE} from "../../../const/time/common";
+import { TIMEZONES } from '../../../const/time/timezones';
+import { ONE_MINUTE } from '../../../const/time/common';
 
 // utils
-import {getHourMinutesString, getTimeList, getTimestamp, getTimeString} from "../../../utils/timezones";
-import {parseTimestamp} from "../../../utils/time/parseTimestamp";
-import {isDatesEqual} from "../../../utils/time/isDatesEqual";
-import {setDayTime} from "../../../utils/time/setTimeFunctions";
+import {
+    getHourMinutesString,
+    getTimeList,
+    getTimestamp,
+    getTimeString,
+} from '../../../utils/timezones';
+import { parseTimestamp } from '../../../utils/time/parseTimestamp';
+import { isDatesEqual } from '../../../utils/time/isDatesEqual';
+import { setDayTime } from '../../../utils/time/setTimeFunctions';
 
 // types
-import {PropsWithClassName} from "../../../types";
+import { PropsWithClassName } from '../../../types';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
 
-const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate: Date | number }>) => {
+const Component = ({
+    className,
+    currentDate,
+}: PropsWithClassName<{ currentDate: Date | number }>) => {
     const {
         register,
         control,
         setValue,
-        formState: { errors }
+        formState: { errors },
     } = useFormContext();
 
     const timeZoneValue = useWatch({
@@ -52,11 +60,11 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
 
         const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
 
-        setValue('startAt', getTimeList(startTime, 30 * ONE_MINUTE, 0, "24:00")[0], {
+        setValue('startAt', getTimeList(startTime, 30 * ONE_MINUTE, 0, '24:00')[0], {
             shouldValidate: true,
             shouldDirty: true,
         });
-    }, [])
+    }, []);
 
     const handleChange = useCallback(event => {
         setValue('timeZone', event.target.value, {
@@ -94,29 +102,33 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
 
         const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
 
-        return getTimeList(startTime, 30 * ONE_MINUTE, 0, "23:30").map(time => (
+        return getTimeList(startTime, 30 * ONE_MINUTE, 0, '23:30').map(time => (
             <MenuItem key={time} value={time}>
                 {time}
             </MenuItem>
-        ))
-    },[currentDate]);
+        ));
+    }, [currentDate]);
 
-    const renderEndTimeList = useMemo(
-        () => {
-            const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(new Date()));
+    const renderEndTimeList = useMemo(() => {
+        const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(new Date()));
 
-            const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now() + 30 * ONE_MINUTE)) : '00:00';
+        const startTime = isTheSameDay
+            ? getHourMinutesString(parseTimestamp(Date.now() + 30 * ONE_MINUTE))
+            : '00:00';
 
-            const timeString = getTimeString(getTimestamp(startAtValue) + 30 * ONE_MINUTE);
+        const timeString = getTimeString(getTimestamp(startAtValue) + 30 * ONE_MINUTE);
 
-            return getTimeList( startAtValue && timeString || startTime, 30 * ONE_MINUTE, 3, "24:00").map(time => (
-                <MenuItem key={time} value={time}>
-                    {time}
-                </MenuItem>
-            ))
-        },
-        [startAtValue, currentDate],
-    );
+        return getTimeList(
+            (startAtValue && timeString) || startTime,
+            30 * ONE_MINUTE,
+            3,
+            '24:00',
+        ).map(time => (
+            <MenuItem key={time} value={time}>
+                {time}
+            </MenuItem>
+        ));
+    }, [startAtValue, currentDate]);
 
     const { onChange, ...restRegisterData } = register('comment', { maxLength: 500 });
 
@@ -132,7 +144,8 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
 
     const renderTimezonesValue = useCallback(
         selected => TIMEZONES.find(timezone => timezone.tzCode === selected)?.name,
-        []);
+        [],
+    );
 
     const renderTimeValue = useCallback(selected => selected, []);
 
@@ -193,13 +206,13 @@ const Component = ({ className, currentDate }: PropsWithClassName<{ currentDate:
                 onChange={handleChangeComment}
                 InputProps={{
                     classes: {
-                        root: styles.input
-                    }
+                        root: styles.input,
+                    },
                 }}
                 {...restRegisterData}
             />
         </CustomGrid>
-    )
-}
+    );
+};
 
 export const ScheduleTime = memo(Component);

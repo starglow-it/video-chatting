@@ -23,7 +23,7 @@ const TemplateGeneralInfo = memo(
         companyName = '',
         signBoard,
     }: TemplateGeneralInfoProps) => {
-        const isThereSignBoard = signBoard && signBoard !== 'default';
+        const isThereSignBoard = Boolean(signBoard) && signBoard !== 'default';
 
         return (
             <CustomGrid
@@ -44,9 +44,9 @@ const TemplateGeneralInfo = memo(
                     <ProfileAvatar
                         className={styles.profileAvatar}
                         src={profileAvatar}
-                        width={signBoard ? '60px' : '40px'}
-                        height={signBoard ? '60px' : '40px'}
                         userName={userName}
+                        width="60px"
+                        height="60px"
                     />
                     <CustomBox className={styles.companyName}>
                         <CustomTypography

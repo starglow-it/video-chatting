@@ -12,8 +12,7 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
 // stores
-import { appDialogsApi } from '../../../store';
-import { setPreviewTemplate } from '../../../store';
+import { setPreviewTemplate, appDialogsApi } from '../../../store';
 
 // styles
 import styles from './DiscoverTemplateItem.module.scss';
@@ -45,6 +44,8 @@ const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => 
         router.push(`/meeting/${template.id}`);
     }, []);
 
+    const previewImage = (template?.previewUrls || []).find(image => image.resolution === 240);
+
     return (
         <CustomGrid
             className={clsx(styles.templateContent, { [styles.blurred]: showPreview })}
@@ -54,13 +55,13 @@ const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => 
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            <Image src={template.previewUrl} layout="fill" />
+            {previewImage?.url ? <Image src={previewImage.url} layout="fill" /> : null}
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}
                 description={template.description}
                 maxParticipants={template.maxParticipants}
-                avatar={template?.user?.profileAvatar?.url}
+                avatar={template?.user?.profileAvatar?.url || ''}
                 type={template.type}
             />
             <Fade in={showPreview}>

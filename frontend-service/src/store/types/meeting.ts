@@ -58,7 +58,7 @@ export type MeetingUser = {
     userPosition?: {
         top: number;
         left: number;
-    }
+    };
 };
 
 export type UpdateTemplateData = {

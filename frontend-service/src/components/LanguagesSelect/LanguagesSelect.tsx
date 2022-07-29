@@ -78,7 +78,7 @@ const LanguagesSelect = memo(({ nameSpace, translation }: LanguagesSelectProps) 
             IconComponent={PlusAddIcon}
             list={renderLanguages}
             classes={{
-                icon: styles.dropDownIcon
+                icon: styles.dropDownIcon,
             }}
         />
     );

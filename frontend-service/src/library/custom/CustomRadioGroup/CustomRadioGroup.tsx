@@ -1,4 +1,4 @@
-import React, {forwardRef, memo} from 'react';
+import React, { forwardRef, memo } from 'react';
 
 import { RadioGroup, RadioGroupProps } from '@mui/material';
 

@@ -4,9 +4,8 @@ export type MeetingSettingsContentProps = {
     onBackgroundToggle: () => void;
     backgroundVolume: number;
     onChangeBackgroundVolume: (volume: number) => void;
-    isBlurActive: boolean
+    isBlurActive: boolean;
     onToggleBlur: () => void;
     isMonetizationEnabled: boolean;
-    onToggleFaceTracking: () => void;
     stream?: MediaStream | undefined | null;
 };

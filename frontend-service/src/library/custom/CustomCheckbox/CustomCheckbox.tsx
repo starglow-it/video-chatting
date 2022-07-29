@@ -1,14 +1,14 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
-import {alpha, Checkbox, FormControlLabel} from '@mui/material';
+import { alpha, Checkbox, FormControlLabel } from '@mui/material';
 
 // types
 import { CustomCheckboxProps } from './types';
 
 // icons
 import { CheckIcon } from '@library/icons/CheckIcon';
-import {Translation} from "@library/common/Translation/Translation";
+import { Translation } from '@library/common/Translation/Translation';
 
 // styles
 import styles from './CustomCheckbox.module.scss';
@@ -20,7 +20,7 @@ const Component = (
     <FormControlLabel
         classes={{
             root: clsx(styles.label, labelClassName),
-            label: styles.labelText
+            label: styles.labelText,
         }}
         control={
             <Checkbox
@@ -35,7 +35,14 @@ const Component = (
                 {...rest}
             />
         }
-        label={label || (<Translation nameSpace={translationProps?.nameSpace} translation={translationProps?.translation} />)}
+        label={
+            label || (
+                <Translation
+                    nameSpace={translationProps?.nameSpace}
+                    translation={translationProps?.translation}
+                />
+            )
+        }
     />
 );
 

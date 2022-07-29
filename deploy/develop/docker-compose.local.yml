@@ -67,7 +67,7 @@ services:
     depends_on:
       - core-service
       - auth-service
-#      - notifications-service
+      - notifications-service
     ports:
       - '3000:3000'
     volumes:
@@ -105,19 +105,19 @@ services:
     networks:
       - liveoffice_local
 
-#  notifications-service:
-#    container_name: liveoffice_notifications
-#    build:
-#      context: ../../
-#      dockerfile: ./notifications-service/Dockerfile.dev
-#    depends_on:
-#      - config-service
-#    volumes:
-#      - ../../notifications-service:/app/notifications-service
-#      - ../../shared:/app/shared
-#      - /app/notifications-service/dist
-#    networks:
-#      - liveoffice_local
+  notifications-service:
+    container_name: liveoffice_notifications
+    build:
+      context: ../../
+      dockerfile: ./notifications-service/Dockerfile.dev
+    depends_on:
+      - config-service
+    volumes:
+      - ../../notifications-service:/app/notifications-service
+      - ../../shared:/app/shared
+      - /app/notifications-service/dist
+    networks:
+      - liveoffice_local
 
   socket-service:
     container_name: liveoffice_socket
@@ -136,20 +136,20 @@ services:
     networks:
       - liveoffice_local
 
-#  payment-service:
-#    container_name: liveoffice_payment
-#    build:
-#      context: ../../
-#      dockerfile: ./payment-service/Dockerfile.dev
-#    depends_on:
-#      - rabbit
-#      - mongo
-#    volumes:
-#      - ../../payment-service:/app/payment-service
-#      - ../../shared:/app/shared
-#      - /app/payment-service/dist
-#    networks:
-#      - liveoffice_local
+  payment-service:
+    container_name: liveoffice_payment
+    build:
+      context: ../../
+      dockerfile: ./payment-service/Dockerfile.dev
+    depends_on:
+      - rabbit
+      - mongo
+    volumes:
+      - ../../payment-service:/app/payment-service
+      - ../../shared:/app/shared
+      - /app/payment-service/dist
+    networks:
+      - liveoffice_local
 
   config-service:
     container_name: liveoffice_config

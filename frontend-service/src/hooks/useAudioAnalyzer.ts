@@ -4,11 +4,9 @@ type ReturnT = {
     volume: number;
     onStartVolumeIndicator: () => void;
     onStopVolumeIndicator: () => void;
-}
+};
 
-export const useAudioVolumeMeter = (
-    stream: MediaStream | null,
-): ReturnT => {
+export const useAudioVolumeMeter = (stream: MediaStream | null): ReturnT => {
     const [volume, setVolume] = useState(0);
 
     const audioContextRef = useRef<AudioContext | null>();
@@ -50,7 +48,7 @@ export const useAudioVolumeMeter = (
 
     const handleStopAnalyzer = async () => {
         sourceRef?.current?.disconnect();
-    }
+    };
 
     useEffect(() => {
         return () => {

@@ -21,4 +21,19 @@ export class AwsConnectorService {
       })
       .promise();
   }
+
+  async uploadFile(fileData: Buffer, key: string): Promise<string> {
+    const Bucket = await this.configService.get('uploadBucket');
+
+    const params = {
+      Bucket,
+      Key: key,
+      Body: fileData,
+      ACL: 'public-read',
+    } as S3.Types.PutObjectRequest;
+
+    const response = await this.s3.upload(params).promise();
+
+    return response.Location;
+  }
 }

@@ -1,4 +1,4 @@
-import {ErrorState, UpdateTemplateData, UserTemplate} from '../../../types';
+import { ErrorState, UpdateTemplateData, UserTemplate } from '../../../types';
 import { sendRequest } from '../../../../helpers/http/sendRequest';
 import { postProfileTemplatesUrl } from '../../../../utils/urls';
 import { initialTemplateState } from '../model';

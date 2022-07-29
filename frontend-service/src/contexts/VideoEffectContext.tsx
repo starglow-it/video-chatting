@@ -1,14 +1,14 @@
 import React, { useEffect, ReactElement, useCallback, useMemo, useRef } from 'react';
 
 // hooks
-import {useToggle} from '../hooks/useToggle';
+import { useToggle } from '../hooks/useToggle';
 
 // custom
-import {CustomGrid} from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // helpers
-import {addBlur} from '../helpers/media/addBlur';
-import {StorageKeysEnum, WebStorage} from "../controllers/WebStorageController";
+import { addBlur } from '../helpers/media/addBlur';
+import { StorageKeysEnum, WebStorage } from '../controllers/WebStorageController';
 
 const resultWidth = 240;
 
@@ -17,7 +17,10 @@ export const VideoEffectsContext = React.createContext({
         isBlurActive: true,
     },
     actions: {
-        onGetCanvasStream: async (stream: MediaStream, options: { isBlurActive: boolean }): Promise<MediaStream> => stream,
+        onGetCanvasStream: async (
+            stream: MediaStream,
+            options: { isBlurActive: boolean },
+        ): Promise<MediaStream> => stream,
         onToggleBlur: () => {},
         onSetBlur: (value: boolean) => {},
     },
@@ -26,12 +29,18 @@ export const VideoEffectsContext = React.createContext({
 const blurFn = addBlur();
 
 export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>): ReactElement => {
-    const savedSettings = WebStorage.get<{ blurSetting: boolean; }>({ key: StorageKeysEnum.meetingSettings });
+    const savedSettings = WebStorage.get<{ blurSetting: boolean }>({
+        key: StorageKeysEnum.meetingSettings,
+    });
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
-    const { value: isBlurActive, onToggleSwitch: handleToggleBlur, onSetSwitch: handleSetBlur } = useToggle(savedSettings?.blurSetting ?? true);
+    const {
+        value: isBlurActive,
+        onToggleSwitch: handleToggleBlur,
+        onSetSwitch: handleSetBlur,
+    } = useToggle(savedSettings?.blurSetting ?? true);
 
     const handleGetActiveStream = useCallback(
         async (stream: MediaStream, options) => {
@@ -60,24 +69,29 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
             videoTrack.enabled = temEnabled;
 
             return stream;
-        },[isBlurActive]);
+        },
+        [isBlurActive],
+    );
 
     useEffect(() => {
         return () => {
             blurFn.destroy();
-        }
+        };
     }, []);
 
-    const contextValue = useMemo(() => ({
-        actions: {
-            onGetCanvasStream: handleGetActiveStream,
-            onToggleBlur: handleToggleBlur,
-            onSetBlur: handleSetBlur
-        },
-        data: {
-            isBlurActive,
-        },
-    }), [isBlurActive, handleGetActiveStream]);
+    const contextValue = useMemo(
+        () => ({
+            actions: {
+                onGetCanvasStream: handleGetActiveStream,
+                onToggleBlur: handleToggleBlur,
+                onSetBlur: handleSetBlur,
+            },
+            data: {
+                isBlurActive,
+            },
+        }),
+        [isBlurActive, handleGetActiveStream],
+    );
 
     return (
         <VideoEffectsContext.Provider value={contextValue}>

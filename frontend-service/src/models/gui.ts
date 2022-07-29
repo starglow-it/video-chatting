@@ -1,4 +1,4 @@
-import * as dat from 'dat.gui'
+import * as dat from 'dat.gui';
 import { config } from './config';
 
 /**
@@ -7,7 +7,7 @@ import { config } from './config';
 export const debugObject = {
     lightmapIntensity: 10,
     aoMapIntensity: 1,
-    emissionMapIntensity: 0.2
+    emissionMapIntensity: 0.2,
 };
 
 export let gui, shadersGui;

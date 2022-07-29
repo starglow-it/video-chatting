@@ -1,6 +1,6 @@
-import {sendRequest} from "../../../helpers/http/sendRequest";
-import {ErrorState} from "../../types";
-import {confirmRegisterUserUrl} from "../../../utils/urls";
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { ErrorState } from '../../types';
+import { confirmRegisterUserUrl } from '../../../utils/urls';
 
 export const handleConfirmRegistration = async (token: string) => {
     const response = await sendRequest<void, ErrorState>({
@@ -18,4 +18,4 @@ export const handleConfirmRegistration = async (token: string) => {
             error: response.error,
         };
     }
-}
+};

@@ -16,7 +16,7 @@ import { AuthenticationLink } from '@components/AuthenticationLink/Authenticatio
 import { LayoutProps } from './types';
 
 // stores
-import {$authStore, joinDashboard} from '../../store';
+import { $authStore, joinDashboard } from '../../store';
 import { disconnectSocketEvent, initiateSocketConnectionFx } from '../../store';
 
 // styles
@@ -47,9 +47,7 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
     }, [router]);
 
     return (
-        <CustomBox
-            className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}
-        >
+        <CustomBox className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}>
             <CustomBox
                 className={clsx(styles.contentWrapper, { [styles.meetingLayout]: isMeetingRoute })}
             >

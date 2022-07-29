@@ -26,28 +26,23 @@ const Component = ({
     isNeedToShowBusinessInfo = true,
     avatar,
 }: TemplateMainInfoProps) => (
-        <Fade in={show}>
-            <CustomGrid className={styles.templateInfo} display="grid">
-                <TemplateAvatarWithInfo
-                    className={styles.avatar}
-                    name={name}
-                    description={description}
-                    avatar={avatar}
-                />
-                <CustomBox className={styles.emptySpace} />
-                {isNeedToShowBusinessInfo && (
-                    <CustomGrid
-                        container
-                        alignItems="flex-end"
-                        gap={1}
-                        className={styles.businessInfo}
-                    >
-                        <TemplateParticipants number={maxParticipants} />
-                        <TemplatePaymentType type={type} />
-                    </CustomGrid>
-                )}
-            </CustomGrid>
-        </Fade>
-    )
+    <Fade in={show}>
+        <CustomGrid className={styles.templateInfo} display="grid">
+            <TemplateAvatarWithInfo
+                className={styles.avatar}
+                name={name}
+                description={description}
+                avatar={avatar}
+            />
+            <CustomBox className={styles.emptySpace} />
+            {isNeedToShowBusinessInfo && (
+                <CustomGrid container alignItems="flex-end" gap={1} className={styles.businessInfo}>
+                    <TemplateParticipants number={maxParticipants} />
+                    <TemplatePaymentType type={type} />
+                </CustomGrid>
+            )}
+        </CustomGrid>
+    </Fade>
+);
 
 export const TemplateMainInfo = memo<TemplateMainInfoProps>(Component);

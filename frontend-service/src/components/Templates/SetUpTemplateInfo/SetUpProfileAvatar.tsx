@@ -28,11 +28,7 @@ import { FileSizeTypesEnum } from '../../../types/fileSize';
 import styles from './SetUpTemplateInfo.module.scss';
 
 // stores
-import {
-    $profileAvatarImage,
-    setProfileAvatar,
-    resetProfileAvatarEvent,
-} from '../../../store';
+import { $profileAvatarImage, setProfileAvatar, resetProfileAvatarEvent } from '../../../store';
 
 // hooks
 import { useFileReader } from '../../../hooks/useFileReader';

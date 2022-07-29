@@ -25,7 +25,7 @@ import { ResponseSumType } from '@shared/response/common.response';
 
 import { CoreService } from '../core/core.service';
 import { CreateMeetingRequest } from '../dtos/requests/create-meeting.request';
-import {IUserTemplate} from "@shared/interfaces/user-template.interface";
+import { IUserTemplate } from '@shared/interfaces/user-template.interface';
 
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {

@@ -1,20 +1,20 @@
-import { memo, useRef, useLayoutEffect } from "react";
+import React, { memo, useRef, useLayoutEffect } from 'react';
 
 // custom
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 import styles from './MeetingBackgroundModel.module.scss';
 
-import {startModel} from "../../../models";
+import { startModel } from '../../../models';
 
-const Component = ({ children }) => {
-    const modelWrapperRef = useRef();
+const Component: React.FunctionComponent = ({ children }) => {
+    const modelWrapperRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
         if (modelWrapperRef.current) {
             const canvas = startModel(
                 '/templates/models/draco/',
-                '/templates/models/models/static/solution_2.glb'
+                '/templates/models/models/static/solution_2.glb',
             );
 
             modelWrapperRef.current.appendChild(canvas);
@@ -26,7 +26,7 @@ const Component = ({ children }) => {
         <CustomGrid ref={modelWrapperRef} className={styles.backgroundModel}>
             {children}
         </CustomGrid>
-    )
-}
+    );
+};
 
 export const MeetingBackgroundModel = memo(Component);

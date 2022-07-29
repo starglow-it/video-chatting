@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useMemo} from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // hooks
@@ -70,19 +70,23 @@ const EnterCodeForm = memo(
             onResendCode();
         }, [onResendCode]);
 
-        const resendText = useMemo(() => !secondsToNextResendCode ? (
-                <CustomTypography
-                    color="colors.blue.primary"
-                    nameSpace="profile"
-                    translation="editProfile.resendCode"
-                    className={styles.resendCodeTest}
-                    onClick={handleResendCode}
-                />
-            ) : (
-                <CustomTypography color="colors.grayscale.normal">
-                    {secondsToNextResendCode} sec till next resend
-                </CustomTypography>
-            ), [handleResendCode, secondsToNextResendCode]);
+        const resendText = useMemo(
+            () =>
+                !secondsToNextResendCode ? (
+                    <CustomTypography
+                        color="colors.blue.primary"
+                        nameSpace="profile"
+                        translation="editProfile.resendCode"
+                        className={styles.resendCodeTest}
+                        onClick={handleResendCode}
+                    />
+                ) : (
+                    <CustomTypography color="colors.grayscale.normal">
+                        {secondsToNextResendCode} sec till next resend
+                    </CustomTypography>
+                ),
+            [handleResendCode, secondsToNextResendCode],
+        );
 
         return (
             <CustomGrid container direction="column" gap={3}>
@@ -91,9 +95,7 @@ const EnterCodeForm = memo(
                         nameSpace="profile"
                         translation="editProfile.verificationCode"
                     />
-                    {!isCodeEntered && (
-                        resendText
-                    )}
+                    {!isCodeEntered && resendText}
                 </CustomGrid>
                 <CustomInput
                     nameSpace="profile"

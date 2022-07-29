@@ -10,7 +10,7 @@ import {
     updateMeetingUsersEvent,
     updateUserTracksEvent,
 } from './model';
-import {$localUserStore, updateLocalUserEvent} from "../localUser/model";
+import { $localUserStore, updateLocalUserEvent } from '../localUser/model';
 
 $meetingUsersStore
     .on(updateMeetingUsersEvent, (state, { users }) => {
@@ -81,5 +81,5 @@ sample({
 
         return targetUser || localUser;
     },
-    target: updateLocalUserEvent
+    target: updateLocalUserEvent,
 });

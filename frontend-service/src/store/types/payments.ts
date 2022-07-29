@@ -1,1 +1,1 @@
-export type PaymentIntentStore = { clientSecret: string; id: string }
+export type PaymentIntentStore = { clientSecret: string; id: string };

@@ -5,6 +5,12 @@ import { UsersModule } from '../users/users.module';
 import { LanguagesModule } from '../languages/languages.module';
 import { BusinessCategoriesModule } from '../business-categories/business-categories.module';
 import { CommonTemplatesModule } from '../common-templates/common-templates.module';
+import { AwsConnectorModule } from '../aws-connector/aws-connector.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  PreviewImage,
+  PreviewImageSchema,
+} from '../schemas/preview-image.schema';
 
 @Module({
   imports: [
@@ -13,6 +19,10 @@ import { CommonTemplatesModule } from '../common-templates/common-templates.modu
     UserTemplatesModule,
     BusinessCategoriesModule,
     LanguagesModule,
+    AwsConnectorModule,
+    MongooseModule.forFeature([
+      { name: PreviewImage.name, schema: PreviewImageSchema },
+    ]),
   ],
   providers: [SeederService],
   exports: [SeederService],

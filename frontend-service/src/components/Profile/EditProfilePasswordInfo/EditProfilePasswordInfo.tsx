@@ -7,20 +7,16 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
-import { updateProfilePasswordFx } from 'src/store';
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 import { useToggle } from '../../../hooks/useToggle';
 
-// custom
-
-// library
 
 // validations
 import { passwordLoginSchema, passwordSchema } from '../../../validation/users/password';
 import { simpleStringSchema } from '../../../validation/common';
 
 // stores
-import { addNotificationEvent } from '../../../store';
+import { addNotificationEvent, updateProfilePasswordFx } from '../../../store';
 
 // types
 import { NotificationType } from '../../../store/types';
@@ -36,7 +32,7 @@ const EditProfilePasswordInfo = memo(({ onCancel, onChanged }: EditProfilePasswo
     const resolver = useYupValidationResolver<{
         currentPassword: string;
         newPassword: string;
-        newPasswordRepeat: boolean;
+        newPasswordRepeat: string;
     }>(validationSchema);
 
     const {

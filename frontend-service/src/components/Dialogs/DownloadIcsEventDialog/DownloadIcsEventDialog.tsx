@@ -5,23 +5,20 @@ import { useStore } from 'effector-react';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import {CustomDialog} from "@library/custom/CustomDialog/CustomDialog";
+import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 
 // components
 import { DownloadIcon } from '@library/icons/DownloadIcon';
 
 // stores
-import {
-    $scheduleEventLinkStore,
-    setScheduleEventLinkEvent,
-} from '../../../store';
-import {$appDialogsStore, appDialogsApi} from "../../../store";
+import { $scheduleEventLinkStore, setScheduleEventLinkEvent } from '../../../store';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // styles
 import styles from './DownloadIcsEventDialog.module.scss';
 
 // types
-import {AppDialogsEnum} from "../../../store/types";
+import { AppDialogsEnum } from '../../../store/types';
 
 const Component = () => {
     const { downloadIcsEventDialog } = useStore($appDialogsStore);
@@ -48,11 +45,16 @@ const Component = () => {
     return (
         <CustomDialog contentClassName={styles.wrapper} open={downloadIcsEventDialog}>
             <CustomGrid container direction="column" alignItems="center" wrap="nowrap" gap={5}>
-                <CustomTypography variant="h4" textAlign="center" nameSpace="templates" translation="scheduleMeeting.downloadIcsTitle" />
+                <CustomTypography
+                    variant="h4"
+                    textAlign="center"
+                    nameSpace="templates"
+                    translation="scheduleMeeting.downloadIcsTitle"
+                />
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
                         nameSpace="common"
-                        translation="buttons.cancel"
+                        translation="buttons.done"
                         variant="custom-cancel"
                         onClick={handleClose}
                     />
@@ -66,6 +68,6 @@ const Component = () => {
             </CustomGrid>
         </CustomDialog>
     );
-}
+};
 
 export const DownloadIcsEventDialog = memo(Component);

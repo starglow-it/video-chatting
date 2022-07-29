@@ -10,6 +10,12 @@ export interface IUpdateProfile {
     signBoard?: string;
     stripeAccountId?: string;
     stripeEmail?: string;
+    stripeSessionId?: string;
+    stripeSubscriptionId?: string;
+    subscriptionPlanKey?: string;
+    isSubscriptionActive?: boolean;
+    maxTemplatesNumber?: number;
+    maxMeetingTime?: number;
     isStripeEnabled?: boolean;
     wasSuccessNotificationShown?: boolean;
     isResetPasswordActive?: boolean;

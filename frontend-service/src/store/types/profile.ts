@@ -43,6 +43,9 @@ export type Profile = {
     signBoard: string;
     stripeAccountId: string;
     stripeEmail: string;
+    stripeSubscriptionId: string;
+    subscriptionPlanKey: string;
+    isSubscriptionActive: boolean;
     isStripeEnabled: boolean;
     wasSuccessNotificationShown: boolean;
     description: string;
@@ -61,4 +64,12 @@ export type UpdateProfileInfo = {
 
 export type UpdateProfileAvatar = {
     file: File;
+};
+
+export type PreviewImage = {
+    id: string;
+    url: string;
+    size: number;
+    mimeType: string;
+    resolution: number;
 };

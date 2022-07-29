@@ -41,6 +41,6 @@ export const addBlur = () => {
         },
         destroy: () => {
             videoEffects?.destroy();
-        }
+        },
     };
 };

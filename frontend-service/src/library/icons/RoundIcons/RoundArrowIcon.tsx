@@ -6,7 +6,14 @@ import { CommonIconProps } from '@library/types';
 
 const RoundArrowIcon = memo(({ className, width, height, ...rest }: CommonIconProps) => {
     return (
-        <SvgIconWrapper className={className} width={width} height={height} viewBox="0 0 24 24" fill="none" {...rest}>
+        <SvgIconWrapper
+            className={className}
+            width={width}
+            height={height}
+            viewBox="0 0 24 24"
+            fill="none"
+            {...rest}
+        >
             <circle cx="12" cy="12" r="12" fill="#BDC8D3" fillOpacity="0.25" />
             <path
                 fillRule="evenodd"

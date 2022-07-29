@@ -1,7 +1,7 @@
-import {setMeetingErrorEvent} from "../../meeting/meetingError/model";
-import {setIsUserSendEnterRequest} from "../../meeting/meetingTemplate/model";
-import {appDialogsApi} from "../../dialogs/init";
-import {AppDialogsEnum} from "../../types";
+import { setMeetingErrorEvent } from '../../meeting/meetingError/model';
+import { setIsUserSendEnterRequest } from '../../meeting/meetingTemplate/model';
+import { appDialogsApi } from '../../dialogs/init';
+import { AppDialogsEnum } from '../../types';
 
 export const handleMeetingError = ({ message }: { message: string }) => {
     setMeetingErrorEvent(message);
@@ -11,4 +11,4 @@ export const handleMeetingError = ({ message }: { message: string }) => {
     appDialogsApi.openDialog({
         dialogKey: AppDialogsEnum.meetingErrorDialog,
     });
-}
+};

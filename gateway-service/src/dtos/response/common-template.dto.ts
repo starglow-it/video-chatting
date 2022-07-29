@@ -2,6 +2,7 @@ import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
 import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { IPreviewImage } from '@shared/interfaces/preview-image.interface';
 
 export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
@@ -30,7 +31,7 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
 
   @Expose()
   @ApiProperty()
-  previewUrl: string;
+  previewUrls: IPreviewImage[];
 
   @Expose()
   @ApiProperty()

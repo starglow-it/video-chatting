@@ -19,17 +19,15 @@ const Component = ({
 }: ComponentType) => (
     <Button disabled={disabled} variant={variant} type={type} {...rest}>
         {Icon}
-        {nameSpace && translation
-            ? (
-                <CustomTypography
-                    nameSpace={nameSpace}
-                    translation={translation}
-                    {...typographyProps}
-                />
-            )
-            : (
-                children
-            )}
+        {nameSpace && translation ? (
+            <CustomTypography
+                nameSpace={nameSpace}
+                translation={translation}
+                {...typographyProps}
+            />
+        ) : (
+            children
+        )}
     </Button>
 );
 

@@ -22,10 +22,10 @@ export const $localUserStore = meetingUsersDomain.store<MeetingUser>(initialMeet
 
 export const resetLocalUserStore = meetingUsersDomain.event('resetLocalUserStore');
 
-export const setLocalUserMediaEvent =
-    meetingUsersDomain.event<{ audioTrack: ILocalAudioTrack; videoTrack: ILocalVideoTrack }>(
-        'setLocalUserMediaEvent',
-    );
+export const setLocalUserMediaEvent = meetingUsersDomain.event<{
+    audioTrack: ILocalAudioTrack;
+    videoTrack: ILocalVideoTrack;
+}>('setLocalUserMediaEvent');
 
 export const updateLocalUserEvent =
     meetingUsersDomain.event<Partial<MeetingUser>>('updateLocalUserEvent');

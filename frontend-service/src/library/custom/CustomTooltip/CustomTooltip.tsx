@@ -17,13 +17,17 @@ const CustomTooltip = memo(
         nameSpace,
         translation,
         children,
-         popperClassName,
+        popperClassName,
         ...rest
     }: TranslationProps & CustomTooltipProps & Omit<TooltipProps, 'title'>) => {
         const { translation: t } = useLocalization(nameSpace);
 
         return (
-            <Tooltip classes={{ popper: clsx(styles.popper, popperClassName) }} title={t(translation)} {...rest}>
+            <Tooltip
+                classes={{ popper: clsx(styles.popper, popperClassName) }}
+                title={t(translation)}
+                {...rest}
+            >
                 {children}
             </Tooltip>
         );

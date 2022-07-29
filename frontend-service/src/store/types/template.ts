@@ -1,7 +1,7 @@
-import { BusinessCategory, Language, ProfileAvatarT, SocialLink } from './profile';
+import { BusinessCategory, Language, ProfileAvatarT, SocialLink, PreviewImage } from './profile';
 import { MeetingInstance } from './meeting';
 
-export type Template = {
+export interface Template {
     id: string;
     usedAt: string;
     templateId: number;
@@ -10,7 +10,7 @@ export type Template = {
     maxParticipants: number;
     businessCategories: BusinessCategory[];
     description: string;
-    previewUrl: string;
+    previewUrls: PreviewImage[];
     type: string;
     companyName: string;
     contactEmail: string;
@@ -18,34 +18,18 @@ export type Template = {
     position: string;
     languages: Language[];
     socials: SocialLink[];
-};
+    customLink: string;
+    links?: { id: string; item: string; position: { top: number; left: number } }[];
+    usersPosition: { top: number; left: number }[];
+}
 
-export type UserTemplate = {
-    id: string;
-    usedAt: string;
-    templateId: number;
-    url: string;
-    name: string;
-    maxParticipants: number;
-    businessCategories: BusinessCategory[];
-    description: string;
-    previewUrl: string;
-    type: string;
-    companyName: string;
-    contactEmail: string;
-    fullName: string;
+export interface UserTemplate extends Template {
     signBoard: string;
     isMonetizationEnabled: boolean;
     templatePrice: number;
-    templateCurrency: "USD" | "CAD";
-    position: string;
-    customLink: string;
-    languages: Language[];
-    socials: SocialLink[];
+    templateCurrency: 'USD' | 'CAD';
     meetingInstance?: MeetingInstance;
     user?: {
         profileAvatar: ProfileAvatarT;
     };
-    usersPosition: { top: number; left: number }[];
-    links?: { id: string; item: string; position: { top: number; left: number } }[];
-};
+}

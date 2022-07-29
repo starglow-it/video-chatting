@@ -1,14 +1,15 @@
 import {ICommonTemplate} from "../interfaces/common-template.interface";
 
-interface BaseTemplate extends Omit<ICommonTemplate, 'businessCategories'> {
+interface BaseTemplate extends Omit<ICommonTemplate, 'businessCategories' | 'previewUrls'> {
     businessCategories: string[];
+    imagesUrl?: string;
 }
 
 export const templatesData: BaseTemplate[] = [
     {
         templateId: 1,
         url: 'https://vimeo.com/683820654/424a4cb337',
-        previewUrl: '/templates/images/ibiza2/ibiza2_540p.jpg',
+        imagesUrl: '/images/ibiza2',
         name: 'Ibiza Patio',
         maxParticipants: 2,
         description: 'Gather round a crackling firepit by the beach',
@@ -36,7 +37,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 2,
         url: 'https://vimeo.com/683821458',
-        previewUrl: '/templates/images/ibiza3/ibiza3_540p.jpg',
+        imagesUrl: '/images/ibiza3',
         name: 'Ibiza Patio',
         maxParticipants: 3,
         description: 'Gather round a crackling firepit by the beach',
@@ -68,7 +69,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 3,
         url: 'https://vimeo.com/683822180/ec56604e5b',
-        previewUrl: '/templates/images/ibiza4/ibiza4_540p.jpg',
+        imagesUrl: '/images/ibiza4',
         name: 'Ibiza Patio',
         maxParticipants: 4,
         description: 'Gather round a crackling firepit by the beach',
@@ -105,7 +106,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 4,
         url: 'https://vimeo.com/689593453',
-        previewUrl: '/templates/images/lakeside3/lakeside3_360p.jpg',
+        imagesUrl: '/images/lakeside3',
         name: 'Lakeside Office',
         maxParticipants: 4,
         description: 'Get inspired in a calming yet energizing environment',
@@ -140,7 +141,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 5,
         url: 'https://vimeo.com/692426911',
-        previewUrl: '/templates/images/rustic/rustic3_540p.jpg',
+        imagesUrl: '/images/rustic',
         name: 'Countryside Office',
         maxParticipants: 3,
         description: 'Enter a rustic office surrounded by Nature',
@@ -173,7 +174,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 6,
         url: 'https://vimeo.com/693199730',
-        previewUrl: '/templates/images/retro/retro3_540p.jpg',
+        imagesUrl: '/images/retro',
         name: "1970's Office",
         maxParticipants: 3,
         description: 'Enjoy the rich visuals of the Retro era',
@@ -204,7 +205,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 7,
         url: 'https://vimeo.com/694742409',
-        previewUrl: '/templates/images/tat/tat2_540p.jpg',
+        imagesUrl: '/images/tat',
         name: "Modern office",
         maxParticipants: 2,
         description: 'Share a private conversation in a sunny office',
@@ -230,7 +231,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 8,
         url: 'https://vimeo.com/695301547/7ff47a2be8',
-        previewUrl: '/templates/images/cascadia/cascadia6_540p.jpg',
+        imagesUrl: '/images/cascadia',
         name: "Cascadia",
         maxParticipants: 6,
         description: 'Meet and chat in an idyllic patio with a dramatic backdrop',
@@ -275,7 +276,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 9,
         url: 'https://vimeo.com/695546151',
-        previewUrl: '/templates/images/therapy_desk/therapist_desk2_540p.jpg',
+        imagesUrl: '/images/therapy_desk',
         name: "Therapy Office (at the desk)",
         maxParticipants: 2,
         description: 'This office is modern yet iconic featuring a calming vista',
@@ -300,7 +301,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 10,
         url: 'https://vimeo.com/695546183',
-        previewUrl: '/templates/images/therapy_session/therapist_session2_540p.jpg',
+        imagesUrl: '/images/therapy_session',
         name: "Therapy Office (on the couch)",
         maxParticipants: 2,
         description: 'This office is modern yet iconic featuring a calming vista',
@@ -325,7 +326,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 11,
         url: 'https://vimeo.com/695855516',
-        previewUrl: '/templates/images/executive/executive3_540p.jpg',
+        imagesUrl: '/images/executive',
         name: "New York Executive",
         maxParticipants: 3,
         description: 'Lead meetings in an office with a prime view on Central Park',
@@ -355,7 +356,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 12,
         url: 'https://vimeo.com/695955149',
-        previewUrl: '/templates/images/executivebeach/executivebeach3_540p.jpg',
+        imagesUrl: '/images/executivebeach',
         name: "Tropical Executive",
         maxParticipants: 3,
         description: 'A neo-classic office featuring ocean views',
@@ -386,7 +387,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 13,
         url: 'https://vimeo.com/696216268',
-        previewUrl: '/templates/images/office/office3_540p.jpg',
+        imagesUrl: '/images/office',
         name: "Regency Office",
         maxParticipants: 2,
         description: 'This office offers a warm and balanced ambiance',
@@ -411,7 +412,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 14,
         url: 'https://vimeo.com/696332207',
-        previewUrl: '/templates/images/graffiti/graffiti6_540p.jpg',
+        imagesUrl: '/images/graffiti',
         name: "Apocalypto",
         maxParticipants: 6,
         description: 'The ultimate huddle',
@@ -452,7 +453,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 15,
         url: 'https://vimeo.com/696774277',
-        previewUrl: '/templates/images/fireandfog/fireandfog_540p.jpg',
+        imagesUrl: '/images/fireandfog',
         name: "Foggy Vista",
         maxParticipants: 2,
         description: 'A soothing and calming ambiance',
@@ -478,7 +479,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 16,
         url: 'https://vimeo.com/696834848',
-        previewUrl: '/templates/images/ocean_vista/ocean_vista2_540p.jpg',
+        imagesUrl: '/images/ocean_vista',
         name: "Ocean View",
         maxParticipants: 2,
         description: 'Take a seat in a restorative and calming set',
@@ -504,7 +505,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 17,
         url: 'https://vimeo.com/696838654',
-        previewUrl: '/templates/images/centralpark/centralpark2_540p.jpg',
+        imagesUrl: '/images/centralpark',
         name: "Central Park View",
         maxParticipants: 2,
         description: "Enjoy a conversation overlooking New York's Central Park",
@@ -530,7 +531,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 18,
         url: 'https://vimeo.com/706268372',
-        previewUrl: '/templates/images/ralph_lauren4/ralph_lauren4_540p.jpg',
+        imagesUrl: '/images/ralph_lauren4',
         name: "Virtual Luxury",
         maxParticipants: 4,
         description: "Ralph Lauren's signature Shelter Point",
@@ -590,7 +591,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 19,
         url: 'https://vimeo.com/709641634',
-        previewUrl: '/templates/images/paris4/paris4_540p.jpg',
+        imagesUrl: '/images/paris4',
         name: "Paris café",
         maxParticipants: 4,
         description: "Sit and relax at a typical Parisian café",
@@ -627,7 +628,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 20,
         url: 'https://vimeo.com/714306605',
-        previewUrl: '/templates/images/clouds6/clouds6_540p.jpg',
+        imagesUrl: '/images/clouds6',
         name: "Cloud 9",
         maxParticipants: 6,
         description: "Enjoy our Together mode while floating in the clouds",
@@ -668,7 +669,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 21,
         url: 'https://vimeo.com/714306354',
-        previewUrl: '/templates/images/firepit6/firepit6_540p.jpg',
+        imagesUrl: '/images/firepit6',
         name: "The Firepit",
         maxParticipants: 6,
         description: "Enjoy our Together mode around a firepit",
@@ -712,7 +713,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 22,
         url: 'https://vimeo.com/714306497',
-        previewUrl: '/templates/images/beach6/beach6_540p.jpg',
+        imagesUrl: '/images/beach6',
         name: "Vista Rica",
         maxParticipants: 6,
         description: "Enjoy our Together mode overlooking a beautiful ocean vista",
@@ -756,7 +757,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 23,
         url: 'https://vimeo.com/719688289',
-        previewUrl: '/templates/images/zen_room4/zen_room4_540p.jpg',
+        imagesUrl: '/images/zen_room4',
         name: "Zen Room",
         maxParticipants: 4,
         description: "Relax in a calm Zen room",
@@ -791,7 +792,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 24,
         url: 'https://vimeo.com/719688394',
-        previewUrl: '/templates/images/zen_pond4/zen_pond4_540p.jpg',
+        imagesUrl: '/images/zen_pond4',
         name: "Zen Pond",
         maxParticipants: 4,
         description: "Zen out at the edge of a still pond",
@@ -826,7 +827,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 25,
         url: 'https://vimeo.com/719922659',
-        previewUrl: '/templates/images/heart6/heart6_540p.jpg',
+        imagesUrl: '/images/heart6',
         name: "Breathing Heart Exercise",
         maxParticipants: 6,
         description: "Box Breathing method for anxiety and calm",
@@ -867,7 +868,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 26,
         url: 'https://vimeo.com/719937967',
-        previewUrl: '/templates/images/abstract6/abstract6_540p.jpg',
+        imagesUrl: '/images/abstract6',
         name: "Abstract Solar",
         maxParticipants: 6,
         description: "A soothing background for meetings",
@@ -910,7 +911,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 27,
         url: '',
-        previewUrl: '/templates/images/calm6/calm6_540p.png',
+        imagesUrl: '/images/calm6',
         name: "Simply Nice",
         maxParticipants: 6,
         description: "A static, professional & calming ambient",
@@ -953,7 +954,7 @@ export const templatesData: BaseTemplate[] = [
     {
         templateId: 27,
         url: 'https://vimeo.com/689593453',
-        previewUrl: '/templates/images/lakeside3/lakeside3_360p.jpg',
+        imagesUrl: '/images/lakeside3',
         name: 'Lakeside Office (3d Model)',
         maxParticipants: 4,
         description: 'Get inspired in a calming yet energizing environment',

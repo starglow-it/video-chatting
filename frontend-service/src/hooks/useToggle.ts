@@ -27,13 +27,9 @@ export const useToggle = (
         setSwitchValue(prev => !prev);
     }, []);
 
-    const handleSetSwitch = useCallback(
-        (value) => {
-            setSwitchValue(value)
-        },
-        [],
-    );
-
+    const handleSetSwitch = useCallback(value => {
+        setSwitchValue(value);
+    }, []);
 
     return {
         value: switchValue,

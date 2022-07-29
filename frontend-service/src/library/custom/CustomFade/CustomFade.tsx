@@ -1,19 +1,21 @@
-import React, { memo } from "react";
+import React, { memo } from 'react';
 
-import { Fade } from "@mui/material";
+import { Fade } from '@mui/material';
 
-import { CustomBox } from "@library/custom/CustomBox/CustomBox";
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
-import {PropsWithClassName} from "../../../types";
+import { PropsWithClassName } from '../../../types';
 
-const Component = ({ open, className, children }: React.PropsWithChildren<PropsWithClassName<{ open: boolean }>>) => {
+const Component = ({
+    open,
+    className,
+    children,
+}: React.PropsWithChildren<PropsWithClassName<{ open: boolean }>>) => {
     return (
         <Fade in={open}>
-            <CustomBox className={className}>
-                {children}
-            </CustomBox>
+            <CustomBox className={className}>{children}</CustomBox>
         </Fade>
     );
-}
+};
 
 export const CustomFade = memo(Component);

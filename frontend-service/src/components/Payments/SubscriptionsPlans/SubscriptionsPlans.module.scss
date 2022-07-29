@@ -1,0 +1,59 @@
+@import '../../../styles/rem';
+@import '../../../styles/variables';
+
+.wrapper {
+  padding: rem(40px);
+  max-width: rem(405px);
+  height: rem(621px);
+}
+
+.content {
+  height: 100%;
+}
+
+.productName {
+  width: min-content;
+  padding: rem(6px 10px);
+  border-radius: rem(12px);
+}
+
+.price {
+  font-style: normal;
+  font-weight: 700;
+  font-size: rem(42px);
+  line-height: rem(58px);
+}
+
+.priceWrapper {
+  margin: rem(16px 0);
+}
+
+.listWrapper {
+  margin: rem(40px 0 auto 0);
+}
+
+.listItem {
+  gap: rem(12px);
+
+  padding: rem(6px 0);
+
+  &:first-child {
+    padding: rem(0 0 6px 0);
+  }
+
+  &:last-child {
+    padding: rem(6px 0 0px 0);
+  }
+}
+
+.listIcon {
+  width: rem(20px);
+  height: rem(20px);
+  min-width: rem(20px);
+  color: $primary-white;
+  background: $primary-black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -66,12 +66,15 @@ export class MeetingsController {
             ],
           },
           session,
-          populatePaths: 'meetingInstance'
+          populatePaths: 'meetingInstance',
         });
 
         if (userTemplate) {
           if (userTemplate?.meetingInstance?._id) {
-            await this.meetingsService.deleteMeeting(userTemplate.meetingInstance._id, session);
+            await this.meetingsService.deleteMeeting(
+              userTemplate.meetingInstance._id,
+              session,
+            );
           }
 
           userTemplate.usedAt = Date.now();
@@ -81,13 +84,29 @@ export class MeetingsController {
         } else {
           await user.populate(['socials', 'languages', 'templates']);
 
+          if (user.templates.length + 1 > user.maxTemplatesNumber) {
+            const [leastUsedTemplate] =
+                await this.userTemplatesService.findUserTemplates({
+                  query: { user: user._id },
+                  options: { sort: '-usedAt', limit: 1 },
+                  session,
+                });
+
+            await this.userTemplatesService.deleteUserTemplate(
+                {
+                  _id: leastUsedTemplate._id.toString(),
+                },
+                session,
+            );
+          }
+
           const templateData = {
             user: user._id,
             templateId: targetTemplate.templateId,
             url: targetTemplate.url,
             name: targetTemplate.name,
             maxParticipants: targetTemplate.maxParticipants,
-            previewUrl: targetTemplate.previewUrl,
+            previewUrls: targetTemplate.previewUrls,
             type: targetTemplate.type,
             businessCategories: targetTemplate.businessCategories.map(
               (category) => category._id,
@@ -111,23 +130,6 @@ export class MeetingsController {
           );
 
           user.templates.push(userTemplate);
-
-          if (user.templates.length >= 18) {
-            const [leastUsedTemplate] =
-              await this.userTemplatesService.findUserTemplates({
-                query: { user: user._id },
-                options: { sort: '-usedAt', limit: 1 },
-                session,
-                populatePaths: 'businessCategories',
-              });
-
-            await this.userTemplatesService.deleteUserTemplate(
-              {
-                id: leastUsedTemplate._id,
-              },
-              session,
-            );
-          }
 
           await user.save();
         }

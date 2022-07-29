@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { BusinessCategoryDocument } from './business-category.schema';
+import { PreviewImageDocument } from './preview-image.schema';
 
 @Schema()
 export class CommonTemplate {
@@ -40,10 +41,10 @@ export class CommonTemplate {
   description: string;
 
   @Prop({
-    type: mongoose.Schema.Types.String,
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PreviewImage' }],
     required: true,
   })
-  previewUrl: string;
+  previewUrls: PreviewImageDocument[];
 
   @Prop({
     type: mongoose.Schema.Types.String,
@@ -56,7 +57,8 @@ export class CommonTemplate {
     type: [
       {
         top: mongoose.Schema.Types.Number,
-        left: mongoose.Schema.Types.Number },
+        left: mongoose.Schema.Types.Number,
+      },
     ],
     required: true,
   })
@@ -69,7 +71,7 @@ export class CommonTemplate {
         position: {
           top: mongoose.Schema.Types.Number,
           left: mongoose.Schema.Types.Number,
-        }
+        },
       },
     ],
   })

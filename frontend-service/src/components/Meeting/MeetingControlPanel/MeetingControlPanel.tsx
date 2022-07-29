@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useRef, useEffect} from 'react';
+import React, { memo, useCallback, useRef, useEffect } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
@@ -13,7 +13,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 // icons
 import { PeoplesIcon } from '@library/icons/PeoplesIcon';
 import { NotesIcon } from '@library/icons/NotesIcon';
-import {MonetizationIcon} from "@library/icons/MonetizationIcon";
+import { MonetizationIcon } from '@library/icons/MonetizationIcon';
 
 // components
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
@@ -25,7 +25,14 @@ import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 
 // stores
-import {$isOwner, $meetingUsersStore, $paymentIntent, $meetingTemplateStore, cancelPaymentIntentWithData, createPaymentIntentWithData} from '../../../store';
+import {
+    $isOwner,
+    $meetingUsersStore,
+    $paymentIntent,
+    $meetingTemplateStore,
+    cancelPaymentIntentWithData,
+    createPaymentIntentWithData,
+} from '../../../store';
 
 // styles
 import styles from './MeetingControlPanel.module.scss';
@@ -46,6 +53,12 @@ const MeetingControlPanel = memo(() => {
         fn: state => state.some(user => user.accessStatus === MeetingAccessStatuses.RequestSent),
     });
 
+    const {
+        values: { isUsersOpen, isLeaveNoteOpen, isPaymentOpen },
+        onSwitchOff: handleSwitchOff,
+        onSwitchToggle: handleSwitchToggle,
+    } = useMultipleToggle(['isUsersOpen', 'isLeaveNoteOpen', 'isPaymentOpen']);
+
     useEffect(() => {
         if (!meetingTemplate.isMonetizationEnabled) {
             handleSwitchOff();
@@ -55,12 +68,6 @@ const MeetingControlPanel = memo(() => {
             }
         }
     }, [meetingTemplate.isMonetizationEnabled]);
-
-    const {
-        values: { isUsersOpen, isLeaveNoteOpen, isPaymentOpen },
-        onSwitchOff: handleSwitchOff,
-        onSwitchToggle: handleSwitchToggle,
-    } = useMultipleToggle(['isUsersOpen', 'isLeaveNoteOpen', 'isPaymentOpen']);
 
     const handleToggleUsers = useCallback(() => {
         handleSwitchToggle('isUsersOpen');
@@ -81,11 +88,15 @@ const MeetingControlPanel = memo(() => {
     const handleClosePayment = useCallback(() => {
         if (paymentIntent?.id) cancelPaymentIntentWithData();
         handleSwitchOff();
-    },[paymentIntent?.id]);
+    }, [paymentIntent?.id]);
 
     return (
         <ClickAwayListener onClickAway={handleClosePayment}>
-            <CustomPaper variant="black-glass" ref={paperRef} className={styles.controlPanelWrapper}>
+            <CustomPaper
+                variant="black-glass"
+                ref={paperRef}
+                className={styles.controlPanelWrapper}
+            >
                 <CustomGrid container gap={0.75}>
                     <ActionButton
                         onAction={handleToggleLeaveNote}
@@ -95,18 +106,15 @@ const MeetingControlPanel = memo(() => {
                         Icon={<NotesIcon width="30px" height="30px" />}
                     />
 
-                    {!isOwner && meetingTemplate.isMonetizationEnabled
-                        ? (
-                            <ActionButton
-                                onAction={handleTogglePayment}
-                                className={clsx(styles.actionButton, styles.withAction, {
-                                    [styles.active]: isPaymentOpen,
-                                })}
-                                Icon={<MonetizationIcon width="30px" height="30px"/>}
-                            />
-                        )
-                        : null
-                    }
+                    {!isOwner && meetingTemplate.isMonetizationEnabled ? (
+                        <ActionButton
+                            onAction={handleTogglePayment}
+                            className={clsx(styles.actionButton, styles.withAction, {
+                                [styles.active]: isPaymentOpen,
+                            })}
+                            Icon={<MonetizationIcon width="30px" height="30px" />}
+                        />
+                    ) : null}
 
                     <ActionButton
                         onAction={handleToggleUsers}

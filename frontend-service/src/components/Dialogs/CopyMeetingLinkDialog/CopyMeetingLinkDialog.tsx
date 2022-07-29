@@ -1,27 +1,27 @@
-import React, {memo, useCallback} from "react";
-import {useStore} from "effector-react";
+import React, { memo, useCallback } from 'react';
+import { useStore } from 'effector-react';
 import Image from 'next/image';
-import {useRouter} from "next/router";
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { useRouter } from 'next/router';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // custom
-import {CustomDialog} from "@library/custom/CustomDialog/CustomDialog";
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
-import {CustomButton} from "@library/custom/CustomButton/CustomButton";
-import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
+import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import {CustomLinkIcon} from "@library/icons/CustomLinkIcon";
-import frontendConfig from "../../../const/config";
+import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
+import frontendConfig from '../../../const/config';
 
 // stores
-import {$appDialogsStore, appDialogsApi} from "../../../store";
+import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // styles
 import styles from './CopyMeetingLinkDialog.module.scss';
 
 // types
-import {AppDialogsEnum} from "../../../store/types";
+import { AppDialogsEnum } from '../../../store/types';
 
 const Component = () => {
     const router = useRouter();
@@ -46,14 +46,27 @@ const Component = () => {
     const meetingLinkText = `${frontendConfig.frontendUrl}/meeting/${router.query.token}`;
 
     return (
-        <CustomDialog open={copyMeetingLinkDialog} contentClassName={styles.wrapper} onClose={handleClose}>
+        <CustomDialog
+            open={copyMeetingLinkDialog}
+            contentClassName={styles.wrapper}
+            onClose={handleClose}
+        >
             <CustomGrid container justifyContent="center">
                 <CustomGrid container justifyContent="center" alignItems="center" gap={1}>
                     <Image src="/images/winking-face.png" width="30px" height="30px" />
-                    <CustomTypography variant="h4bold" nameSpace="meeting" translation="meetingReady" />
+                    <CustomTypography
+                        variant="h4bold"
+                        nameSpace="meeting"
+                        translation="meetingReady"
+                    />
                 </CustomGrid>
 
-                <CustomGrid container wrap="nowrap" justifyContent="space-between" className={styles.copyLink}>
+                <CustomGrid
+                    container
+                    wrap="nowrap"
+                    justifyContent="space-between"
+                    className={styles.copyLink}
+                >
                     <CustomGrid container className={styles.linkWrapper} wrap="nowrap">
                         <CustomLinkIcon width="24px" height="24px" />
                         <CustomTypography className={styles.linkText}>
@@ -61,17 +74,24 @@ const Component = () => {
                         </CustomTypography>
                     </CustomGrid>
 
-                    <CopyToClipboard
-                        text={meetingLinkText}
-                    >
-                        <CustomButton variant="custom-cancel" className={styles.copyButton} nameSpace="common" translation="buttons.copy" />
+                    <CopyToClipboard text={meetingLinkText}>
+                        <CustomButton
+                            variant="custom-cancel"
+                            className={styles.copyButton}
+                            nameSpace="common"
+                            translation="buttons.copy"
+                        />
                     </CopyToClipboard>
                 </CustomGrid>
 
-                <CustomButton nameSpace="meeting" translation="invite.inviteButton" onClick={handleOpenEmailInvite} />
+                <CustomButton
+                    nameSpace="meeting"
+                    translation="invite.inviteButton"
+                    onClick={handleOpenEmailInvite}
+                />
             </CustomGrid>
         </CustomDialog>
-    )
-}
+    );
+};
 
 export const CopyMeetingLinkDialog = memo(Component);

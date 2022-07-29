@@ -1,6 +1,6 @@
-import {setMeetingNotesEvent} from "../../meeting/meetingNotes/model";
-import { MeetingNote } from "../../types";
+import { setMeetingNotesEvent } from '../../meeting/meetingNotes/model';
+import { MeetingNote } from '../../types';
 
-export const handleGetMeetingNotes = ({ meetingNotes }: { meetingNotes: MeetingNote[] } ) => {
+export const handleGetMeetingNotes = ({ meetingNotes }: { meetingNotes: MeetingNote[] }) => {
     setMeetingNotesEvent(meetingNotes);
-}
+};

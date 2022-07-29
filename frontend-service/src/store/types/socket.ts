@@ -7,5 +7,5 @@ export type SocketState = {
 export type EmitSocketEventPayload = {
     eventName: string;
     data?: unknown;
-    socketStore: SocketState
-}
+    socketStore: SocketState;
+};

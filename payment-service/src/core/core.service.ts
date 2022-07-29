@@ -4,7 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { CORE_PROVIDER } from '@shared/providers';
 import {IUpdateProfile} from "@shared/interfaces/update-profile.interface";
 import {ICommonUserDTO} from "@shared/interfaces/common-user.interface";
-import { UPDATE_USER } from "@shared/patterns/users";
+import {FIND_USER, UPDATE_USER} from "@shared/patterns/users";
 
 @Injectable()
 export class CoreService {
@@ -19,6 +19,14 @@ export class CoreService {
     data: Partial<IUpdateProfile>;
   }): Promise<ICommonUserDTO> {
     const pattern = { cmd: UPDATE_USER };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async findUser(data: {
+    query: Partial<ICommonUserDTO>;
+  }): Promise<ICommonUserDTO> {
+    const pattern = { cmd: FIND_USER };
 
     return this.client.send(pattern, data).toPromise();
   }

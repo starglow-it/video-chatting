@@ -79,7 +79,7 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(error),
-                                    [styles.disabled]: !stream?.id
+                                    [styles.disabled]: !stream?.id,
                                 })}
                                 disabled={!stream?.id}
                                 onAction={handleToggleAudio}
@@ -90,7 +90,7 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(error),
-                                    [styles.disabled]: !stream?.id
+                                    [styles.disabled]: !stream?.id,
                                 })}
                                 onAction={handleToggleVideo}
                                 disabled={!stream?.id}

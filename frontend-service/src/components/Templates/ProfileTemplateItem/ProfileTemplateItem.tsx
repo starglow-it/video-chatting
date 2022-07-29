@@ -15,10 +15,15 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
-import {TemplateAvatarWithInfo} from "@components/Templates/TemplateAvatarWithInfo/TemplateAvatarWithInfo";
+import { TemplateAvatarWithInfo } from '@components/Templates/TemplateAvatarWithInfo/TemplateAvatarWithInfo';
 
 // stores
-import {appDialogsApi, createMeetingFx, setDeleteTemplateIdEvent, setScheduleTemplateIdEvent} from "../../../store";
+import {
+    appDialogsApi,
+    createMeetingFx,
+    setDeleteTemplateIdEvent,
+    setScheduleTemplateIdEvent,
+} from '../../../store';
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';
@@ -60,6 +65,8 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
         });
     }, []);
 
+    const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);
+
     return (
         <CustomGrid
             className={styles.templateContent}
@@ -69,9 +76,11 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            <Image src={template.previewUrl} width="334px" height="190px" />
+            {previewImage?.url ? (
+                <Image src={previewImage.url} width="334px" height="190px" />
+            ) : null}
             <TemplateMainInfo
-                avatar={template?.user?.profileAvatar?.url}
+                avatar={template?.user?.profileAvatar?.url || ''}
                 show={!showPreview}
                 name={template.name}
                 description={template.description}
@@ -80,18 +89,19 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                 isNeedToShowBusinessInfo
             />
             <Fade in={showPreview}>
-                <CustomGrid container direction="column" justifyContent="space-between" className={styles.templateMenu}>
+                <CustomGrid
+                    container
+                    direction="column"
+                    justifyContent="space-between"
+                    className={styles.templateMenu}
+                >
                     <TemplateAvatarWithInfo
                         className={styles.avatar}
                         name={template.name}
                         description={template.description}
-                        avatar={template?.user?.profileAvatar?.url}
+                        avatar={template?.user?.profileAvatar?.url || ''}
                     />
-                    <CustomGrid
-                        container
-                        wrap="nowrap"
-                        gap={1.5}
-                    >
+                    <CustomGrid container wrap="nowrap" gap={1.5}>
                         <CustomButton
                             onClick={handleCreateMeeting}
                             className={styles.startMeetingBtn}

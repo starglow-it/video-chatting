@@ -46,7 +46,7 @@ export class UsersService {
   }
 
   async deleteUser(
-      userId: string,
+    userId: string,
     { session }: ITransactionSession,
   ): Promise<void> {
     await this.user.deleteOne({ _id: userId }, { session });
@@ -57,11 +57,13 @@ export class UsersService {
   async findUser({
     query,
     session,
+    populatePaths
   }: {
     query: FilterQuery<UserDocument>;
     session?: ITransactionSession;
+    populatePaths?: CustomPopulateOptions;
   }) {
-    return this.user.findOne(query, {}, { session: session?.session }).exec();
+    return this.user.findOne(query, {}, { populate: populatePaths, session: session?.session }).exec();
   }
 
   async findUsers({
@@ -150,6 +152,12 @@ export class UsersService {
       description: data.description,
       signBoard: data.signBoard,
       stripeAccountId: data.stripeAccountId,
+      stripeSessionId: data.stripeSessionId,
+      stripeSubscriptionId: data.stripeSubscriptionId,
+      subscriptionPlanKey: data.subscriptionPlanKey,
+      maxTemplatesNumber: data.maxTemplatesNumber,
+      maxMeetingTime: data.maxMeetingTime,
+      isSubscriptionActive: data.isSubscriptionActive,
       stripeEmail: data.stripeEmail,
       isStripeEnabled: data.isStripeEnabled,
       wasSuccessNotificationShown: data.wasSuccessNotificationShown,

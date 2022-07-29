@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { Types, Connection } from 'mongoose';
+import { Types, Connection, UpdateQuery } from 'mongoose';
 import { plainToClass } from 'class-transformer';
 
 import { UserTemplatesService } from './user-templates.service';
@@ -28,6 +28,7 @@ import {
 import { withTransaction } from '../helpers/mongo/withTransaction';
 import { TEMPLATES_SERVICE } from '@shared/const/services.const';
 import { LanguagesService } from '../languages/languages.service';
+import { UserTemplateDocument } from '../schemas/user-template.schema';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -47,18 +48,20 @@ export class UserTemplatesController {
       try {
         const customLinkRegexp = new RegExp(`^${id}$`);
 
-        const userTemplate =
-          await this.userTemplatesService.findUserTemplate({
-            query: Types.ObjectId.isValid(id)  ? { _id: id } : { customLink: customLinkRegexp },
-            session,
-            populatePaths: [
-              { path: 'socials' },
-              { path: 'businessCategories' },
-              { path: 'languages' },
-              { path: 'meetingInstance' },
-              { path: 'user', populate: { path: 'profileAvatar' } },
-            ],
-          });
+        const userTemplate = await this.userTemplatesService.findUserTemplate({
+          query: Types.ObjectId.isValid(id)
+            ? { _id: id }
+            : { customLink: customLinkRegexp },
+          session,
+          populatePaths: [
+            { path: 'socials' },
+            { path: 'businessCategories' },
+            { path: 'languages' },
+            { path: 'meetingInstance' },
+            { path: 'previewUrls' },
+            { path: 'user', populate: { path: 'profileAvatar' } },
+          ],
+        });
 
         if (userTemplate?.customLink && Types.ObjectId.isValid(id)) {
           return null;
@@ -83,18 +86,18 @@ export class UserTemplatesController {
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
-        const userTemplate =
-          await this.userTemplatesService.findUserTemplate({
-            query: { _id: id },
-            session,
-            populatePaths: [
-              { path: 'socials' },
-              { path: 'businessCategories' },
-              { path: 'languages' },
-              { path: 'meetingInstance' },
-              { path: 'user', populate: { path: 'profileAvatar' } },
-            ],
-          });
+        const userTemplate = await this.userTemplatesService.findUserTemplate({
+          query: { _id: id },
+          session,
+          populatePaths: [
+            { path: 'socials' },
+            { path: 'businessCategories' },
+            { path: 'languages' },
+            { path: 'meetingInstance' },
+            { path: 'previewUrls' },
+            { path: 'user', populate: { path: 'profileAvatar' } },
+          ],
+        });
 
         return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
@@ -130,7 +133,7 @@ export class UserTemplatesController {
           {
             query: { user: user._id },
             options: { sort: '-usedAt', skip, limit },
-            populatePaths: ['businessCategories', 'user'],
+            populatePaths: ['businessCategories', 'user', 'previewUrls'],
           },
         );
 
@@ -176,41 +179,50 @@ export class UserTemplatesController {
           populatePaths: 'user',
         });
 
-        const newBusinessCategories = await this.businessCategoriesService.find(
-          {
-            query: { key: { $in: data.businessCategories || [] } },
-            session,
-          },
-        );
-
-        const newLanguages = await this.languageService.find({
-          query: { key: { $in: data.languages || [] } },
-          session,
-        });
-
-        const newSocials =
-          await this.userTemplatesService.createUserTemplateSocialsLinks(
-            { userId: template.user._id, socials: data.socials || [] },
-            session,
-          );
-
         const updateTemplateData = {
           fullName: data.fullName,
           position: data.position,
-          languages: newLanguages.map((language) => language._id),
           companyName: data.companyName,
           contactEmail: data.contactEmail,
           description: data.description,
           signBoard: data.signBoard,
-          businessCategories: newBusinessCategories.map(
-            (category) => category._id,
-          ),
-          socials: newSocials.map((social) => social._id),
           isMonetizationEnabled: data.isMonetizationEnabled,
           templatePrice: data.templatePrice,
           templateCurrency: data.templateCurrency,
           customLink: data.customLink,
-        };
+        } as UpdateQuery<UserTemplateDocument>;
+
+        if ('businessCategories' in data) {
+          const newBusinessCategories =
+            await this.businessCategoriesService.find({
+              query: { key: { $in: data.businessCategories || [] } },
+              session,
+            });
+
+          updateTemplateData.businessCategories = newBusinessCategories.map(
+            (category) => category._id,
+          );
+        }
+
+        if ('languages' in data) {
+          const newLanguages = await this.languageService.find({
+            query: { key: { $in: data.languages || [] } },
+            session,
+          });
+
+          updateTemplateData.languages = newLanguages.map(
+            (language) => language._id,
+          );
+        }
+        if ('socials' in data) {
+          const newSocials =
+            await this.userTemplatesService.createUserTemplateSocialsLinks(
+              { userId: template.user._id, socials: data.socials || [] },
+              session,
+            );
+
+          updateTemplateData.socials = newSocials.map((social) => social._id);
+        }
 
         const userTemplate =
           await this.userTemplatesService.findUserTemplateByIdAndUpdate(
@@ -222,6 +234,7 @@ export class UserTemplatesController {
               { path: 'businessCategories' },
               { path: 'languages' },
               { path: 'meetingInstance' },
+              { path: 'previewUrls' },
               { path: 'user', populate: 'profileAvatar' },
             ],
           );
@@ -262,6 +275,7 @@ export class UserTemplatesController {
             options: { sort: '-usedAt', skip, limit },
             populatePaths: [
               { path: 'businessCategories' },
+              { path: 'previewUrls' },
               { path: 'user', populate: { path: 'profileAvatar' } },
             ],
             session,

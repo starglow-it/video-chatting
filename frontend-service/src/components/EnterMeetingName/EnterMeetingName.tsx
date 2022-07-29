@@ -16,7 +16,13 @@ import { fullNameSchema } from '../../validation/users/fullName';
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
-import { $profileStore, $authStore, $isOwner, $meetingTemplateStore, updateLocalUserEvent } from '../../store';
+import {
+    $profileStore,
+    $authStore,
+    $isOwner,
+    $meetingTemplateStore,
+    updateLocalUserEvent,
+} from '../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
@@ -39,7 +45,7 @@ const EnterMeetingName = memo(() => {
         fullName: string;
     }>(validationSchema);
 
-    const { register, handleSubmit } = useForm({
+    const { register, handleSubmit, formState: { errors } } = useForm({
         criteriaMode: 'all',
         resolver,
         defaultValues: {
@@ -58,6 +64,8 @@ const EnterMeetingName = memo(() => {
         }),
         [],
     );
+
+    const fullNameError = errors.fullName?.[0]?.message;
 
     return (
         <CustomPaper className={styles.wrapper}>
@@ -102,6 +110,7 @@ const EnterMeetingName = memo(() => {
                             onBlur={fullNameRegister.onChange}
                             ref={fullNameRegister.ref}
                             name={fullNameRegister.name}
+                            error={fullNameError}
                         />
                         <CustomButton
                             className={styles.button}

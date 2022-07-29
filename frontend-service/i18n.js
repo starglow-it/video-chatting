@@ -5,6 +5,7 @@ const NextI18NextInstance = new NextI18Next({
     defaultLanguage: 'en',
     localePath: 'public/translations',
     useSuspense: true,
+    returnObjects: true,
 });
 
 if (process.env.NODE_ENV !== 'production') {

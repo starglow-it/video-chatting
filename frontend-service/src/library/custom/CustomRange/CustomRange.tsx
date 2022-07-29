@@ -9,24 +9,23 @@ const Component = ({
     onChange,
     defaultValue,
     color,
-   orientation,
+    orientation,
 }: SliderProps & PropsWithClassName<{ Icon?: any }>) => {
     return (
-        <Stack
-            spacing={2}
-            direction="row"
-            className={className}
-            alignItems="center"
-        >
+        <Stack spacing={2} direction="row" className={className} alignItems="center">
             {Icon}
             <Slider
-                sx={orientation === 'vertical' ? {
-                    '& input[type="range"]': {
-                        WebkitAppearance: 'slider-vertical',
-                    },
-                } : {
-                    height: '8px',
-                }}
+                sx={
+                    orientation === 'vertical'
+                        ? {
+                              '& input[type="range"]': {
+                                  WebkitAppearance: 'slider-vertical',
+                              },
+                          }
+                        : {
+                              height: '8px',
+                          }
+                }
                 color={color}
                 defaultValue={defaultValue}
                 value={value}

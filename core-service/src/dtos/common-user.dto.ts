@@ -72,6 +72,15 @@ export class CommonUserDTO implements ICommonUserDTO {
   stripeAccountId: ICommonUserDTO['stripeAccountId'];
 
   @Expose()
+  stripeSessionId: ICommonUserDTO['stripeSessionId'];
+
+  @Expose()
+  stripeSubscriptionId: ICommonUserDTO['stripeSubscriptionId'];
+
+  @Expose()
+  isSubscriptionActive: ICommonUserDTO['isSubscriptionActive'];
+
+  @Expose()
   stripeEmail: ICommonUserDTO['stripeEmail'];
 
   @Expose()
@@ -80,8 +89,15 @@ export class CommonUserDTO implements ICommonUserDTO {
   @Expose()
   wasSuccessNotificationShown: ICommonUserDTO['wasSuccessNotificationShown'];
 
+  @Expose()
+  subscriptionPlanKey: ICommonUserDTO['subscriptionPlanKey'];
+
   tokens: string[];
   password: ICommonUserDTO['password'];
+  maxTemplatesNumber: ICommonUserDTO['maxTemplatesNumber'];
+
+  @Expose()
+  maxMeetingTime: ICommonUserDTO['maxMeetingTime'];
 
   @Expose()
   isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];

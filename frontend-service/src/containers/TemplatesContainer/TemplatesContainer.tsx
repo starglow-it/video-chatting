@@ -16,8 +16,8 @@ import { CommonTemplateItem } from '@components/Templates/CommonTemplateItem/Com
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { ProfileTemplateItem } from '@components/Templates/ProfileTemplateItem/ProfileTemplateItem';
 import { DeleteTemplateDialog } from '@components/Dialogs/DeleteTemplateDialog/DeleteTemplateDialog';
-import {ScheduleMeetingDialog} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog";
-import {DownloadIcsEventDialog} from "@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog";
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 
 // stores
 import { createMeetingFx } from '../../store';

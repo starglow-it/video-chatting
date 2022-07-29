@@ -25,7 +25,14 @@ export const getUsersTemplatesFx = templatesDomain.effect<
 >('getUsersTemplatesFx');
 
 export const sendScheduleInviteFx = templatesDomain.effect<
-    { templateId: string; timeZone: string; comment: string; startAt: any; endAt: any, userEmails: string[] },
+    {
+        templateId: string;
+        timeZone: string;
+        comment: string;
+        startAt: any;
+        endAt: any;
+        userEmails: string[];
+    },
     string | undefined,
     void
 >('sendScheduleInviteFx');

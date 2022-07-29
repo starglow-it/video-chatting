@@ -1,6 +1,6 @@
 import { Profile } from '../../types';
 
-export const initialProfileState: Profile = {
+export const initialProfileState = {
     id: '',
     fullName: '',
     position: '',
@@ -17,5 +17,5 @@ export const initialProfileState: Profile = {
     socials: [],
     businessCategories: [],
     templates: [],
-    signBoard: 'default'
-};
+    signBoard: 'default',
+} as Profile;

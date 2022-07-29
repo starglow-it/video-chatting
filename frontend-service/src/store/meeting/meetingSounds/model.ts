@@ -1,5 +1,5 @@
-import { meetingDomain } from "../domain";
-import { MeetingSoundsEnum } from "../../types";
+import { meetingDomain } from '../domain';
+import { MeetingSoundsEnum } from '../../types';
 
 export const $meetingSoundType = meetingDomain.store<MeetingSoundsEnum>(MeetingSoundsEnum.NoSound);
 

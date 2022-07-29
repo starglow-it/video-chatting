@@ -1,7 +1,12 @@
 import { _24_HOURS, ONE_HOUR, ONE_MINUTE } from '../const/time/common';
-import {addZero} from "./functions/addZero";
+import { addZero } from './functions/addZero';
 
-export const getTimeList = (startAt: string, interval: number, maxIntervals?: number, maxValue?: string): string[] => {
+export const getTimeList = (
+    startAt: string,
+    interval: number,
+    maxIntervals?: number,
+    maxValue?: string,
+): string[] => {
     const intervals = _24_HOURS / interval;
 
     const timeList = new Array(intervals + 1)
@@ -23,7 +28,7 @@ export const getTimeList = (startAt: string, interval: number, maxIntervals?: nu
             const maxTimestamp = getTimestamp(maxValue);
 
             return currentTimestamp >= startAtTimestamp && currentTimestamp <= maxTimestamp;
-        })
+        });
 
     return timeList.slice(0, maxIntervals || intervals);
 };
@@ -44,4 +49,4 @@ export const getTimeString = (timestamp: number): string => {
 
 export const getHourMinutesString = ({ hours, minutes }) => {
     return `${addZero(hours > 0 ? hours : 0)}:${addZero(minutes)}`;
-}
+};

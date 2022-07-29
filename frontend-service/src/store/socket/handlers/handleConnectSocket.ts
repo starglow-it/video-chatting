@@ -1,4 +1,4 @@
-import {io} from "socket.io-client";
+import { io } from 'socket.io-client';
 
 export const handleConnectSocket = async () => {
     const socketInstance = io({ transports: ['websocket'] });
@@ -18,4 +18,4 @@ export const handleConnectSocket = async () => {
     return {
         socketInstance,
     };
-}
+};

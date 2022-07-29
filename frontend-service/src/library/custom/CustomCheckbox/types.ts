@@ -1,4 +1,4 @@
-import {TranslationProps} from "@library/common/Translation/types";
+import { TranslationProps } from '@library/common/Translation/types';
 
 type CustomCheckboxProps = {
     className?: string;

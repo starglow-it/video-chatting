@@ -5,6 +5,8 @@ import { useStore } from 'effector-react';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
+import {useToggle} from "../../hooks/useToggle";
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
@@ -13,6 +15,7 @@ import { SetUpTemplateInfo } from '@components/Templates/SetUpTemplateInfo/SetUp
 import { TemplateGeneralInfo } from '@components/Templates/TemplateGeneralInfo/TemplateGeneralInfo';
 import { LocalVideoPreview } from '@components/Meeting/LocalVideoPreview/LocalVideoPreview';
 import { ConfirmQuitOnboardingDialog } from '@components/Dialogs/ConfirmQuitOnboardingDialog/ConfirmQuitOnboardingDialog';
+import {SubscriptionsPlans} from "@components/Payments/SubscriptionsPlans/SubscriptionsPlans";
 
 // store
 import {
@@ -24,8 +27,7 @@ import {
     getTemplateFx,
     updateProfileFx,
     updateProfilePhotoFx,
-    createMeetingFx,
-    setRouteToChangeEvent
+    setRouteToChangeEvent,
 } from '../../store';
 
 // styles
@@ -59,6 +61,11 @@ const SetUpTemplateContainer = memo(() => {
 
     const forceRef = useRef<boolean>(false);
     const isDataFilled = useRef<boolean>(false);
+
+    const {
+        value: isProfileUpdated,
+        onSwitchOn: handleSetProfileUpdated
+    } = useToggle(false);
 
     useEffect(() => {
         (async () => {
@@ -106,7 +113,7 @@ const SetUpTemplateContainer = memo(() => {
     });
 
     useEffect(() => {
-        isDataFilled.current = fullName && companyName;
+        isDataFilled.current = Boolean(fullName) && Boolean(companyName);
     }, [fullName && companyName]);
 
     const onSubmit = useCallback(
@@ -117,13 +124,9 @@ const SetUpTemplateContainer = memo(() => {
 
             await updateProfileFx(data);
 
-            const result = await createMeetingFx({ templateId: setUpTemplate?.id! });
+            WebStorage.delete({ key: StorageKeysEnum.templateId });
 
-            if (result.meeting) {
-                WebStorage.delete({ key: StorageKeysEnum.templateId });
-
-                await router.push(`/meeting/${result.meeting.id}`);
-            }
+            handleSetProfileUpdated();
         }),
         [profileAvatar.file, setUpTemplate?.id],
     );
@@ -168,11 +171,20 @@ const SetUpTemplateContainer = memo(() => {
         };
     }, [confirmQuitOnboardingDialog]);
 
+    const previewImage = (setUpTemplate?.previewUrls || []).find(
+        preview => preview.resolution === 1080,
+    );
+
     return (
         <CustomGrid container justifyContent="flex-end" className={styles.wrapper}>
-            {setUpTemplate?.previewUrl && (
+            {previewImage?.url && (
                 <CustomGrid container className={styles.imageWrapper}>
-                    <Image src={setUpTemplate?.previewUrl || ''} layout="fill" />
+                    <Image
+                        src={previewImage?.url}
+                        layout="fill"
+                        objectFit="cover"
+                        objectPosition="center"
+                    />
                 </CustomGrid>
             )}
             <FormProvider {...methods}>
@@ -185,6 +197,7 @@ const SetUpTemplateContainer = memo(() => {
                     />
                     <LocalVideoPreview />
                     <SetUpTemplateInfo />
+                    <SubscriptionsPlans isSubscriptionStep={isProfileUpdated} />
                 </form>
             </FormProvider>
             <ConfirmQuitOnboardingDialog onConfirm={handleQuit} onCancel={handleCancel} />

@@ -3,13 +3,14 @@ import {
     $isMeetingInfoOpenStore,
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
-    toggleEditTemplateOpen, toggleMeetingInfoOpen,
-} from "./model";
+    toggleEditTemplateOpen,
+    toggleMeetingInfoOpen,
+} from './model';
 
 $isEditTemplateOpenStore
-    .on(toggleEditTemplateOpen, (state) => !state)
+    .on(toggleEditTemplateOpen, state => !state)
     .on(setEditTemplateOpenEvent, (state, data) => data);
 
 $isMeetingInfoOpenStore
-    .on(toggleMeetingInfoOpen, (state) => !state)
+    .on(toggleMeetingInfoOpen, state => !state)
     .on(setMeetingInfoOpenEvent, (state, data) => data);

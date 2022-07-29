@@ -26,10 +26,10 @@ const PersonalInfo = memo(() => {
                 />
             </CustomGrid>
             <CustomBox
-                rowGap={0.5}
+                gap={0.5}
                 display="grid"
                 gridTemplateColumns="repeat(3, 1fr)"
-                gridTemplateRows="repeat(3, 1fr)"
+                gridTemplateRows="repeat(3, min-content)"
                 className={styles.infoWrapper}
             >
                 <CustomTypography

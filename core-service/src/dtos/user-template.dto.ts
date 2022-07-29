@@ -14,6 +14,7 @@ import { ISocialLink } from '@shared/interfaces/common-social-link.interface';
 import { IUserTemplate } from '@shared/interfaces/user-template.interface';
 import { ITemplateUserDTO } from '@shared/interfaces/template-user.interface';
 import { ICommonMeetingInstanceDTO } from '@shared/interfaces/common-instance-meeting.interface';
+import { PreviewImageDTO } from './preview-image.dto';
 
 export class UserTemplateDTO implements IUserTemplate {
   @Expose()
@@ -21,10 +22,10 @@ export class UserTemplateDTO implements IUserTemplate {
   id: string;
 
   @Expose()
-  description: string;
+  description: IUserTemplate['description'];
 
   @Expose()
-  usedAt: string;
+  usedAt: IUserTemplate['usedAt'];
 
   @Expose()
   @Type(() => CommonBusinessCategoryDTO)
@@ -35,34 +36,35 @@ export class UserTemplateDTO implements IUserTemplate {
   meetingInstance: ICommonMeetingInstanceDTO;
 
   @Expose()
-  templateId: number;
+  templateId: IUserTemplate['templateId'];
 
   @Expose()
-  url: string;
+  url: IUserTemplate['url'];
 
   @Expose()
-  name: string;
+  name: IUserTemplate['name'];
 
   @Expose()
-  maxParticipants: number;
+  maxParticipants: IUserTemplate['maxParticipants'];
 
   @Expose()
-  previewUrl: string;
+  @Type(() => PreviewImageDTO)
+  previewUrls: IUserTemplate['previewUrls'];
 
   @Expose()
-  type: string;
+  type: IUserTemplate['type'];
 
   @Expose()
-  fullName: string;
+  fullName: IUserTemplate['fullName'];
 
   @Expose()
-  companyName: string;
+  companyName: IUserTemplate['companyName'];
 
   @Expose()
-  position: string;
+  position: IUserTemplate['position'];
 
   @Expose()
-  contactEmail: string;
+  contactEmail: IUserTemplate['contactEmail'];
 
   @Expose()
   @Type(() => CommonLanguageDTO)
@@ -80,22 +82,29 @@ export class UserTemplateDTO implements IUserTemplate {
   signBoard: string;
 
   @Expose()
-  customLink: string;
+  customLink: IUserTemplate['customLink'];
 
   @Expose()
-  isMonetizationEnabled: boolean;
+  isMonetizationEnabled: IUserTemplate['isMonetizationEnabled'];
 
   @Expose()
-  templatePrice: number;
+  templatePrice: IUserTemplate['templatePrice'];
 
   @Expose()
-  templateCurrency: string;
+  templateCurrency: IUserTemplate['templateCurrency'];
 
   @Expose()
   @Transform((data) => data.obj?.usersPosition)
-  usersPosition: { top: number; left: number }[];
+  usersPosition: IUserTemplate['usersPosition'];
+  x;
 
   @Expose()
-  @Transform((data) => data.obj?.links?.map(link => ({ id: link._id, item: link.item, position: link.position })))
-  links: { item: string; position: { top: number; left: number } }[];
+  @Transform((data) =>
+    data.obj?.links?.map((link) => ({
+      id: link._id,
+      item: link.item,
+      position: link.position,
+    })),
+  )
+  links: IUserTemplate['links'];
 }

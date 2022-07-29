@@ -6,11 +6,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
-import {
-    $registerStore,
-    confirmRegistrationUserFx,
-    resetRegisterErrorEvent,
-} from '../../store';
+import { $registerStore, confirmRegistrationUserFx, resetRegisterErrorEvent } from '../../store';
 
 import styles from './ConfirmRegistration.module.scss';
 

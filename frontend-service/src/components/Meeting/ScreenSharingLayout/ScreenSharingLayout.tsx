@@ -9,8 +9,7 @@ import { ScreenSharingVideo } from '@components/Meeting/ScreenSharingVideo/Scree
 import { ScreenSharingPlaceholder } from '@components/Meeting/ScreenSharingPlaceholder/ScreenSharingPlaceholder';
 
 // stores
-import { $meetingStore } from '../../../store';
-import { $localUserStore, $meetingUsersStore } from '../../../store';
+import { $meetingStore, $localUserStore, $meetingUsersStore } from '../../../store';
 
 // types
 import { Meeting, MeetingUser } from '../../../store/types';
@@ -42,11 +41,12 @@ const ScreenSharingLayout = memo(() => {
             ) : (
                 <ScreenSharingVideo
                     videoTrack={
-                        isLocalUserScreenSharing ? localUser.videoTrack : screenSharingUser?.videoTrack
+                        isLocalUserScreenSharing
+                            ? localUser.videoTrack
+                            : screenSharingUser?.videoTrack
                     }
                 />
             )}
-
         </CustomGrid>
     );
 });

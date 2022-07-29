@@ -41,7 +41,7 @@ export class CommonTemplatesController {
           await this.commonTemplatesService.findCommonTemplates({
             query: {},
             options: { skip, limit },
-            populatePaths: 'businessCategories',
+            populatePaths: ['businessCategories', 'previewUrls'],
             session,
           });
 
@@ -80,7 +80,10 @@ export class CommonTemplatesController {
           await this.commonTemplatesService.findCommonTemplateById({
             templateId: id,
             session,
-            populatePaths: 'businessCategories',
+            populatePaths: [
+              { path: 'businessCategories'},
+              { path: "previewUrls" }
+            ],
           });
 
         return plainToClass(CommonTemplateDTO, commonTemplates, {

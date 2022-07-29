@@ -1,7 +1,7 @@
-import React, {memo, useCallback, useContext, useEffect, useState} from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
-import * as yup from "yup";
-import {FormProvider, useForm} from "react-hook-form";
+import * as yup from 'yup';
+import { FormProvider, useForm } from 'react-hook-form';
 
 // hooks
 
@@ -16,8 +16,8 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
-import {useToggle} from "../../../hooks/useToggle";
-import {useYupValidationResolver} from "../../../hooks/useYupValidationResolver";
+import { useToggle } from '../../../hooks/useToggle';
+import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // controllers
 import { AgoraController } from '../../../controllers/VideoChatController';
@@ -51,8 +51,8 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 // styles
 import styles from './DevicesSettingsDialog.module.scss';
 
-import {booleanSchema, simpleStringSchema} from "../../../validation/common";
-import {templatePriceSchema} from "../../../validation/payments/templatePrice";
+import { booleanSchema, simpleStringSchema } from '../../../validation/common';
+import { templatePriceSchema } from '../../../validation/payments/templatePrice';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -77,7 +77,13 @@ const DevicesSettingsDialog = memo(() => {
 
     const {
         data: { changeStream, error, videoDevices, audioDevices, isCameraActive, isMicActive },
-        actions: { onToggleCamera, onToggleMic, onChangeActiveStream, onInitDevices, onClearCurrentDevices },
+        actions: {
+            onToggleCamera,
+            onToggleMic,
+            onChangeActiveStream,
+            onInitDevices,
+            onClearCurrentDevices,
+        },
     } = useContext(MediaContext);
 
     const {
@@ -88,19 +94,19 @@ const DevicesSettingsDialog = memo(() => {
     const {
         value: isSettingsAudioBackgroundActive,
         onToggleSwitch: handleToggleBackgroundAudio,
-        onSetSwitch: handleSetBackgroundAudio
+        onSetSwitch: handleSetBackgroundAudio,
     } = useToggle(isBackgroundAudioActive);
 
     const {
         value: isBlurEnabled,
         onToggleSwitch: handleToggleBlur,
-        onSetSwitch: handleSetBlur
+        onSetSwitch: handleSetBlur,
     } = useToggle(isBlurActive);
 
     const resolver = useYupValidationResolver<{
         templateCurrency: string;
         templatePrice: number;
-        isMonetizationEnabled: boolean
+        isMonetizationEnabled: boolean;
     }>(validationSchema);
 
     const methods = useForm({
@@ -109,8 +115,8 @@ const DevicesSettingsDialog = memo(() => {
         defaultValues: {
             isMonetizationEnabled: Boolean(meetingTemplate.isMonetizationEnabled),
             templatePrice: meetingTemplate.templatePrice || 10,
-            templateCurrency: meetingTemplate.templateCurrency || "USD",
-        }
+            templateCurrency: meetingTemplate.templateCurrency || 'USD',
+        },
     });
 
     const handleClose = useCallback(() => {
@@ -138,7 +144,7 @@ const DevicesSettingsDialog = memo(() => {
             onToggleCamera(localUser.cameraStatus !== 'inactive');
             onToggleMic(localUser.micStatus !== 'inactive');
         }
-    }, [changeStream])
+    }, [changeStream]);
 
     const handleSaveSettings = useCallback(async () => {
         appDialogsApi.closeDialog({
@@ -170,7 +176,7 @@ const DevicesSettingsDialog = memo(() => {
             updateLocalUserEvent({
                 cameraStatus: isCameraActive ? 'active' : 'inactive',
                 micStatus: isMicActive ? 'active' : 'inactive',
-                isAuraActive: isBlurEnabled
+                isAuraActive: isBlurEnabled,
             });
 
             addNotificationEvent({
@@ -193,16 +199,23 @@ const DevicesSettingsDialog = memo(() => {
 
     const isDevicesChecking = !(videoDevices.length && audioDevices.length) && !error;
 
-    const onSubmit = useCallback(methods.handleSubmit(async (data) => {
-        if (isOwner) {
-            await updateMeetingTemplateFxWithData(data);
-        }
+    const onSubmit = useCallback(
+        methods.handleSubmit(async data => {
+            if (isOwner) {
+                await updateMeetingTemplateFxWithData(data);
+            }
 
-        handleSaveSettings();
-    }), [handleSaveSettings, isOwner]);
+            handleSaveSettings();
+        }),
+        [handleSaveSettings, isOwner],
+    );
 
     return (
-        <CustomDialog open={devicesSettingsDialog} contentClassName={styles.wrapper} onClose={handleClose}>
+        <CustomDialog
+            open={devicesSettingsDialog}
+            contentClassName={styles.wrapper}
+            onClose={handleClose}
+        >
             <FormProvider {...methods}>
                 <form onSubmit={onSubmit}>
                     <CustomGrid container direction="column">

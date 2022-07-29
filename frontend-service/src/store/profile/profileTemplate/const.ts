@@ -4,7 +4,7 @@ export const initialProfileTemplateState = {
     url: '',
     name: '',
     description: '',
-    previewUrl: '',
+    previewUrls: [],
     type: '',
     companyName: '',
     contactEmail: '',

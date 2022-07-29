@@ -1,8 +1,8 @@
-import React, {memo, useCallback, useEffect, useState} from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
-import clsx from "clsx";
+import clsx from 'clsx';
 
 // hooks
 
@@ -12,19 +12,19 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDatePicker } from '@library/custom/CustomDatePicker/CustomDatePicker';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
-import {CustomFade} from "@library/custom/CustomFade/CustomFade";
+import { CustomFade } from '@library/custom/CustomFade/CustomFade';
 
 // components
-import {ValuesSwitcher} from "@library/common/ValuesSwitcher/ValuesSwitcher";
-import {ScheduleTime} from "@components/Dialogs/ScheduleMeetingDialog/ScheduleTime";
-import {ValuesSwitcherItem} from "@library/common/ValuesSwitcher/types";
+import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
+import { ScheduleTime } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
+import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 import { getTimeZone } from 'src/utils/time/getTimeZone';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
-import {useMultipleToggle} from "../../../hooks/useMultipleToggle";
+import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // stores
@@ -40,7 +40,7 @@ import { AppDialogsEnum } from '../../../store/types';
 
 // validations
 import { simpleStringSchema, simpleStringSchemaWithLength } from '../../../validation/common';
-import {emailSchema} from "../../../validation/users/email";
+import { emailSchema } from '../../../validation/users/email';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
@@ -56,7 +56,7 @@ const validationSchema = yup.object({
 
 const schedulePages: ValuesSwitcherItem[] = [
     { id: 1, value: 'settings', label: 'Settings' },
-    { id: 2, value: 'invite', label: 'Invite others' }
+    { id: 2, value: 'invite', label: 'Invite others' },
 ];
 
 const Component = () => {
@@ -94,14 +94,7 @@ const Component = () => {
         },
     });
 
-    const {
-        handleSubmit,
-        control,
-        setValue,
-        register,
-        trigger,
-        reset,
-    } = methods;
+    const { handleSubmit, control, setValue, register, trigger, reset } = methods;
 
     const selectedDate = useWatch({
         control,
@@ -146,10 +139,10 @@ const Component = () => {
                 });
 
                 handleClose();
-            } catch (e) {
-
-            }
-        }),[scheduleTemplateId, userEmails]);
+            } catch (e) {}
+        }),
+        [scheduleTemplateId, userEmails],
+    );
 
     const handleSelectDate = useCallback((date: Date) => {
         setValue('date', date, {
@@ -176,19 +169,19 @@ const Component = () => {
         }
     }, []);
 
-    const handleAddUserEmail = useCallback((newEmail) => {
+    const handleAddUserEmail = useCallback(newEmail => {
         setUserEmails(prev => {
             if (!prev.some(email => email === newEmail)) {
-                return ([...prev, newEmail]);
+                return [...prev, newEmail];
             }
 
             return prev;
         });
-    },[]);
+    }, []);
 
-    const handleDeleteUserEmail = useCallback((oldEmail) => {
+    const handleDeleteUserEmail = useCallback(oldEmail => {
         setUserEmails(prev => prev.filter(email => email !== oldEmail));
-    },[]);
+    }, []);
 
     return (
         <CustomDialog
@@ -210,7 +203,12 @@ const Component = () => {
                             />
                         </CustomGrid>
                         <CustomDivider orientation="vertical" flexItem />
-                        <CustomGrid className={styles.rightSide} container direction="column" alignItems="center">
+                        <CustomGrid
+                            className={styles.rightSide}
+                            container
+                            direction="column"
+                            alignItems="center"
+                        >
                             <ValuesSwitcher
                                 optionWidth={134}
                                 values={schedulePages}
@@ -219,9 +217,7 @@ const Component = () => {
                             />
                             <CustomGrid className={styles.optionsWrapper}>
                                 <CustomFade open={isSettingsOpen} className={styles.optionItem}>
-                                    <ScheduleTime
-                                        currentDate={selectedDate}
-                                    />
+                                    <ScheduleTime currentDate={selectedDate} />
                                 </CustomFade>
                                 <CustomFade open={isInviteOpen} className={styles.optionItem}>
                                     <ScheduleAttendees
@@ -231,12 +227,7 @@ const Component = () => {
                                     />
                                 </CustomFade>
                             </CustomGrid>
-                            <CustomGrid
-                                container
-                                wrap="nowrap"
-                                gap={2}
-                                className={styles.buttons}
-                            >
+                            <CustomGrid container wrap="nowrap" gap={2} className={styles.buttons}>
                                 <CustomButton
                                     nameSpace="common"
                                     translation="buttons.cancel"
@@ -263,7 +254,7 @@ const Component = () => {
             </FormProvider>
         </CustomDialog>
     );
-}
+};
 
 const ScheduleMeetingDialog = memo(Component);
 

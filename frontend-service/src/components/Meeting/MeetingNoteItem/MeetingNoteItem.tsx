@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
-import CopyToClipboard from "react-copy-to-clipboard";
+import CopyToClipboard from 'react-copy-to-clipboard';
 import Linkify from 'linkify-react';
 // hooks
 
@@ -10,7 +10,7 @@ import Linkify from 'linkify-react';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import {CustomBox} from "@library/custom/CustomBox/CustomBox";
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // icons
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
@@ -18,18 +18,19 @@ import { CopyIcon } from '@library/icons/CopyIcon';
 import { useToggle } from '../../../hooks/useToggle';
 
 // types
-import {MeetingNote, NotificationType} from '../../../store/types';
+import { MeetingNote, NotificationType } from '../../../store/types';
 
 // styles
 import styles from './MeetingNoteItem.module.scss';
 
 // stores
 import {
-    $isOwner, addNotificationEvent,
+    $isOwner,
+    addNotificationEvent,
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
+    $localUserStore
 } from '../../../store';
-import { $localUserStore } from '../../../store';
 
 const MeetingNoteItem = memo(
     ({
@@ -85,7 +86,7 @@ const MeetingNoteItem = memo(
                 type: NotificationType.copyNotification,
                 message: 'meeting.copy.notification',
             });
-        }
+        };
 
         return (
             <Draggable
@@ -107,9 +108,11 @@ const MeetingNoteItem = memo(
                     <CustomScroll className={styles.scroll}>
                         <CustomGrid container className={styles.content}>
                             <CustomTypography className={styles.text}>
-                                <Linkify options={{
-                                    target: "_blank"
-                                }}>
+                                <Linkify
+                                    options={{
+                                        target: '_blank',
+                                    }}
+                                >
                                     {note.content}
                                 </Linkify>
                             </CustomTypography>

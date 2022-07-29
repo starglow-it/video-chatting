@@ -109,7 +109,27 @@ export class User {
   @Prop({
     type: mongoose.Schema.Types.String,
   })
+  stripeSessionId: ICommonUserDTO['stripeSessionId'];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  stripeSubscriptionId: ICommonUserDTO['stripeSubscriptionId'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+  })
+  isSubscriptionActive: ICommonUserDTO['isSubscriptionActive'];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
   stripeEmail: ICommonUserDTO['stripeEmail'];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  subscriptionPlanKey: ICommonUserDTO['subscriptionPlanKey'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
@@ -127,6 +147,18 @@ export class User {
     default: false,
   })
   isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 1,
+  })
+  maxTemplatesNumber: ICommonUserDTO['maxTemplatesNumber'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 120 * 60 * 1000,
+  })
+  maxMeetingTime: ICommonUserDTO['maxMeetingTime'];
 }
 
 export type UserDocument = User & Document;

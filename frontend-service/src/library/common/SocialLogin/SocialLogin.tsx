@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import clsx from "clsx";
+import clsx from 'clsx';
 
 import { Theme } from '@mui/material';
 
@@ -9,7 +9,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import styles from './SocialLogin.module.scss';
 
 import { SocialLoginProps } from './types';
-import { PropsWithClassName } from "../../../types";
+import { PropsWithClassName } from '../../../types';
 import { TranslationProps } from '@library/common/Translation/types';
 
 const sxStyles = {
@@ -19,13 +19,14 @@ const sxStyles = {
         boxShadow: (theme: Theme) => `0px 12px 24px -4px ${theme.palette.shadow.normal}`,
         borderRadius: (theme: Theme) => theme.borderRadius.medium,
         '&:hover': {
-            boxShadow: (theme: Theme) =>
-                `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
+            boxShadow: (theme: Theme) => `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
         },
     },
 };
 
-const Component: React.FunctionComponent<PropsWithClassName<SocialLoginProps & TranslationProps>> = ({ Icon, nameSpace, translation, className, onClick, children }) => {
+const Component: React.FunctionComponent<
+    PropsWithClassName<SocialLoginProps & TranslationProps>
+> = ({ Icon, nameSpace, translation, className, onClick, children }) => {
     return (
         <CustomGrid
             container
@@ -35,19 +36,14 @@ const Component: React.FunctionComponent<PropsWithClassName<SocialLoginProps & T
             justifyContent="center"
             onClick={onClick}
         >
-            {Icon && <Icon className={styles.text} width="24px" height="24px"/>}
-            {nameSpace && translation
-                ? (
-                    <CustomTypography nameSpace={nameSpace} translation={translation} />
-                )
-                : (
-                    <>
-                        {children}
-                    </>
-                )
-            }
+            {Icon && <Icon className={styles.text} width="24px" height="24px" />}
+            {nameSpace && translation ? (
+                <CustomTypography nameSpace={nameSpace} translation={translation} />
+            ) : (
+                <>{children}</>
+            )}
         </CustomGrid>
     );
-}
+};
 
 export const SocialLogin = memo(Component);

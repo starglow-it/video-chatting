@@ -1,6 +1,6 @@
-import {getMeetingTemplateFx} from "../../meeting/meetingTemplate/model";
-import {initiateSocketConnectionFx} from "../model";
-import {enterMeetingRequest, joinMeetingEventWithData} from "../../meeting/sockets/init";
+import { getMeetingTemplateFx } from '../../meeting/meetingTemplate/model';
+import { initiateSocketConnectionFx } from '../model';
+import { enterMeetingRequest, joinMeetingEventWithData } from '../../meeting/sockets/init';
 
 export const handleMeetingAvailable = async ({ templateId }: { templateId: string }) => {
     const meetingTemplate = await getMeetingTemplateFx({ templateId });
@@ -12,4 +12,4 @@ export const handleMeetingAvailable = async ({ templateId }: { templateId: strin
 
         enterMeetingRequest();
     }
-}
+};

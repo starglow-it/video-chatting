@@ -8,11 +8,12 @@ export enum NotificationType {
     PaymentSuccess = 'payment_success',
     PaymentFail = 'password_fail',
     copyNotification = 'text_copied',
+    SubscriptionSuccess = 'subscription_success',
 }
 
 export type Notification = {
-    type: NotificationType,
+    type: NotificationType;
     message: string;
     withSuccessIcon?: boolean;
-    withErrorIcon?: boolean
-}
+    withErrorIcon?: boolean;
+};

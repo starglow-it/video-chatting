@@ -1,3 +1,3 @@
-import {$meetingSoundType, setMeetingSoundType} from "./model";
+import { $meetingSoundType, setMeetingSoundType } from './model';
 
 $meetingSoundType.on(setMeetingSoundType, (state, data) => data);

@@ -10,10 +10,10 @@ import { pageLoaded } from '../../../src/store/root';
 const enhance = withStart(pageLoaded);
 
 const EditProfilePage = (): JSX.Element => (
-        <DashboardLayout>
-            <EditProfileContainer />
-        </DashboardLayout>
-    )
+    <DashboardLayout>
+        <EditProfileContainer />
+    </DashboardLayout>
+);
 
 EditProfilePage.getInitialProps = () => ({
     namespacesRequired: ['common', 'profile', 'templates', 'forms', 'errors', 'dashboard'],

@@ -25,8 +25,18 @@ const SuccessfulRegisterDialog = memo(() => {
     }, []);
 
     return (
-        <CustomDialog open={isUserRegisteredDialog} contentClassName={styles.wrapper} onClose={handleClose}>
-            <CustomGrid container direction="column" justifyContent="center" alignItems="center" className={styles.container}>
+        <CustomDialog
+            open={isUserRegisteredDialog}
+            contentClassName={styles.wrapper}
+            onClose={handleClose}
+        >
+            <CustomGrid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                className={styles.container}
+            >
                 <Image src="/images/email2.png" width="52px" height="52px" />
                 <CustomTypography
                     variant="h2bold"

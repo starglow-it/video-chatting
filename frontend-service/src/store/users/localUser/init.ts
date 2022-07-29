@@ -9,17 +9,17 @@ import {
 } from './model';
 
 $localUserStore
-    .on(updateLocalUserEvent, (state,  user) => ({
+    .on(updateLocalUserEvent, (state, user) => ({
         ...state,
         ...user,
-        username: user.username || state.username
+        username: user.username || state.username,
     }))
     .on(setLocalUserMediaEvent, (state, data) => ({
         ...state,
         videoTrack: data.videoTrack,
         audioTrack: data.audioTrack,
     }))
-    .on(leaveMeetingEvent, (state) => {
+    .on(leaveMeetingEvent, state => {
         Router.push(state.isGenerated ? '/welcome' : '/dashboard');
 
         return state;

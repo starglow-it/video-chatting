@@ -1,5 +1,5 @@
 import { root } from '../root';
-import {Notification} from "../types";
+import { Notification } from '../types';
 
 const notificationsDomain = root.createDomain('notificationsDomain');
 

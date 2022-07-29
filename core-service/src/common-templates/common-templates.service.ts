@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery, Model } from 'mongoose';
+import {FilterQuery, Model, QueryOptions, UpdateQuery} from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 // schemas
@@ -75,7 +75,7 @@ export class CommonTemplatesService {
     populatePaths,
   }: {
     query: FilterQuery<CommonTemplateDocument>;
-    session: ITransactionSession;
+    session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }) {
     return this.commonTemplate.findOne(
@@ -91,5 +91,21 @@ export class CommonTemplatesService {
 
   async countCommonTemplates() {
     return this.commonTemplate.count();
+  }
+
+  async updateCommonTemplate({
+     query,
+     data,
+     session,
+     populatePaths
+  }: {
+    query: FilterQuery<CommonTemplateDocument>;
+    data: UpdateQuery<CommonTemplateDocument>,
+    session?: ITransactionSession;
+    populatePaths?: QueryOptions["populate"];
+  }) {
+    const options: QueryOptions = { session: session?.session, populate: populatePaths, new: true };
+
+    return this.commonTemplate.updateOne(query, data, options);
   }
 }

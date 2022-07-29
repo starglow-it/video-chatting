@@ -8,8 +8,8 @@ import { useStore } from 'effector-react';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // icons
-import {RoundSuccessIcon} from "@library/icons/RoundIcons/RoundSuccessIcon";
-import {RoundErrorIcon} from "@library/icons/RoundIcons/RoundErrorIcon";
+import { RoundSuccessIcon } from '@library/icons/RoundIcons/RoundSuccessIcon';
+import { RoundErrorIcon } from '@library/icons/RoundIcons/RoundErrorIcon';
 import { useLocalization } from '../../hooks/useTranslation';
 
 // store
@@ -20,7 +20,6 @@ import { Notification } from '../../store/types';
 
 // styles
 import styles from './ToastsNotifications.module.scss';
-
 
 const ToastsNotifications = memo(() => {
     const notifications = useStore($notificationsStore);
@@ -61,23 +60,17 @@ const ToastsNotifications = memo(() => {
             }}
             open={open}
             autoHideDuration={3000}
-            message={(
+            message={
                 <CustomGrid container alignItems="center" gap={1}>
-                    {messageInfo?.withSuccessIcon
-                        ? (
-                            <RoundSuccessIcon width="16px" height="16px" />
-                        )
-                        : null
-                    }
-                    {messageInfo?.withErrorIcon
-                        ? (
-                            <RoundErrorIcon width="16px" height="16px" />
-                        )
-                        : null
-                    }
+                    {messageInfo?.withSuccessIcon ? (
+                        <RoundSuccessIcon width="16px" height="16px" />
+                    ) : null}
+                    {messageInfo?.withErrorIcon ? (
+                        <RoundErrorIcon width="16px" height="16px" />
+                    ) : null}
                     {translation(messageInfo?.message || '')}
                 </CustomGrid>
-            )}
+            }
         />
     );
 });

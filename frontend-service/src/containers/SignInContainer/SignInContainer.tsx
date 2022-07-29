@@ -52,8 +52,9 @@ const SignInContainer = memo(() => {
     const router = useRouter();
     const authState = useStore($authStore);
 
-    const resolver =
-        useYupValidationResolver<{ email: string; password: string }>(validationSchema);
+    const resolver = useYupValidationResolver<{ email: string; password: string }>(
+        validationSchema,
+    );
 
     const methods = useForm({
         resolver,
@@ -77,7 +78,9 @@ const SignInContainer = memo(() => {
 
     useEffect(() => {
         if (authState.isAuthenticated) {
-            const initialTemplateId = WebStorage.get<{ templateId: string }>({ key: StorageKeysEnum.templateId });
+            const initialTemplateId = WebStorage.get<{ templateId: string }>({
+                key: StorageKeysEnum.templateId,
+            });
 
             const routeToChange = initialTemplateId?.templateId
                 ? `/dashboard/templates/setup/${initialTemplateId.templateId}`
@@ -168,7 +171,10 @@ const SignInContainer = memo(() => {
                     <form className={styles.socialsWrapper} onSubmit={onSubmit}>
                         <CustomGrid container>
                             <CustomGrid item className={styles.input}>
-                                <EmailInput onClear={handleResetEmailField} {...register('email')} />
+                                <EmailInput
+                                    onClear={handleResetEmailField}
+                                    {...register('email')}
+                                />
                                 {errors?.email?.length && (
                                     <CustomGrid className={styles.errorContainer}>
                                         {emailErrorMessages}

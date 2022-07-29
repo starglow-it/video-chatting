@@ -12,4 +12,6 @@ RUN cd ./core-service && npm ci --silent --legacy-peer-deps
 
 COPY ./core-service ./core-service/
 
+RUN cd ./core-service && npm run build
+
 CMD ["npm", "run", "--prefix", "/app/core-service", "start:dev"]

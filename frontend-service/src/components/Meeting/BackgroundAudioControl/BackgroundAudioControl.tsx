@@ -1,21 +1,21 @@
-import React, { useRef, useCallback, memo } from "react";
-import {useStore} from "effector-react";
-import clsx from "clsx";
+import React, { useRef, useCallback, memo } from 'react';
+import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 // helpers
 
 // custom
-import {CustomPaper} from "@library/custom/CustomPaper/CustomPaper";
-import {CustomTooltip} from "@library/custom/CustomTooltip/CustomTooltip";
-import {CustomRange} from "@library/custom/CustomRange/CustomRange";
-import {CustomPopper} from "@library/custom/CustomPopper/CustomPopper";
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
+import { CustomRange } from '@library/custom/CustomRange/CustomRange';
+import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
-import {ActionButton} from "@library/common/ActionButton/ActionButton";
+import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // icons
-import {SpeakerIcon} from "@library/icons/SpeakerIcon/SpeakerIcon";
-import {useToggle} from "../../../hooks/useToggle";
+import { SpeakerIcon } from '@library/icons/SpeakerIcon/SpeakerIcon';
+import { useToggle } from '../../../hooks/useToggle';
 
 // styles
 import styles from './BackgroundAudioControl.module.scss';
@@ -25,8 +25,8 @@ import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
     setBackgroundAudioVolume,
-    toggleBackgroundAudioActive
-} from "../../../store";
+    toggleBackgroundAudioActive,
+} from '../../../store';
 
 const Component = () => {
     const volume = useStore($backgroundAudioVolume);
@@ -34,10 +34,8 @@ const Component = () => {
 
     const buttonRef = useRef(null);
 
-    const {
-        value: isAudioControlOpen,
-        onToggleSwitch: handleToggleAudioControl
-    } = useToggle(false);
+    const { value: isAudioControlOpen, onToggleSwitch: handleToggleAudioControl } =
+        useToggle(false);
 
     const handleMouseEnter = useCallback(() => {
         if (isBackgroundAudioActive) {
@@ -51,9 +49,9 @@ const Component = () => {
         }
     }, [isBackgroundAudioActive]);
 
-    const handleChangeVolume = useCallback((event) => {
+    const handleChangeVolume = useCallback(event => {
         setBackgroundAudioVolume(event.target.value);
-    },[]);
+    }, []);
 
     const handleToggleBackgroundAudio = useCallback(() => {
         toggleBackgroundAudioActive();
@@ -64,15 +62,32 @@ const Component = () => {
         <CustomTooltip
             classes={{ tooltip: styles.tooltip }}
             nameSpace="meeting"
-            translation={isBackgroundAudioActive ? "features.audioBackground" : "features.audioBackgroundDisabled"}
+            translation={
+                isBackgroundAudioActive
+                    ? 'features.audioBackground'
+                    : 'features.audioBackgroundDisabled'
+            }
         >
-            <CustomPaper variant="black-glass" className={styles.deviceButton} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <CustomPaper
+                variant="black-glass"
+                className={styles.deviceButton}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
                 <ActionButton
                     onAction={handleToggleBackgroundAudio}
                     variant="transparentBlack"
                     ref={buttonRef}
-                    className={clsx(styles.iconButton, {[styles.disabled]: !isBackgroundAudioActive })}
-                    Icon={<SpeakerIcon isActive={isBackgroundAudioActive} width="32px" height="32px" />}
+                    className={clsx(styles.iconButton, {
+                        [styles.disabled]: !isBackgroundAudioActive,
+                    })}
+                    Icon={
+                        <SpeakerIcon
+                            isActive={isBackgroundAudioActive}
+                            width="32px"
+                            height="32px"
+                        />
+                    }
                 />
                 <CustomPopper
                     id="audioControl"

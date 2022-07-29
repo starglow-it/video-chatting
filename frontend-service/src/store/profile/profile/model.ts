@@ -14,11 +14,7 @@ export const updateProfileFx = profileDomain.effect<
     void
 >('updateProfileFx');
 
-export const deleteProfileFx = profileDomain.effect<
-    void,
-    void,
-    void
->('deleteProfileFx');
+export const deleteProfileFx = profileDomain.effect<void, void, void>('deleteProfileFx');
 
 export const updateProfileEmailFx = profileDomain.effect<
     { email: string },
@@ -46,11 +42,14 @@ export const sendResetPasswordLinkFx = profileDomain.effect<{ email: string }, v
     'sendResetPasswordLinkFx',
 );
 
-export const checkResetPasswordLinkFx = profileDomain.effect<{ token: string }, { isUserConfirmed: boolean; error?: ErrorState }, void>(
-    'checkResetPasswordLinkFx',
-);
+export const checkResetPasswordLinkFx = profileDomain.effect<
+    { token: string },
+    { isUserConfirmed: boolean; error?: ErrorState },
+    void
+>('checkResetPasswordLinkFx');
 
-export const resetPasswordFx = profileDomain.effect<{ newPassword: string; newPasswordRepeat: string }, ErrorState | null | undefined, void>(
-    'resetPasswordFx',
-);
-
+export const resetPasswordFx = profileDomain.effect<
+    { newPassword: string; newPasswordRepeat: string; token: string },
+    ErrorState | null | undefined,
+    void
+>('resetPasswordFx');

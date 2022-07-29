@@ -91,9 +91,7 @@ export class ProfileController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async deleteProfile(
-    @Request() req,
-  ): Promise<ResponseSumType<void>> {
+  async deleteProfile(@Request() req): Promise<ResponseSumType<void>> {
     await this.coreService.deleteUser({
       userId: req.user.userId,
     });

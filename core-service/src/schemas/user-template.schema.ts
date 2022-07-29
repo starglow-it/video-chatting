@@ -7,6 +7,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { MeetingInstanceDocument } from './meeting-instance.schema';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { PreviewImageDocument } from './preview-image.schema';
 
 @Schema()
 export class UserTemplate {
@@ -57,10 +58,10 @@ export class UserTemplate {
   description: string;
 
   @Prop({
-    type: mongoose.Schema.Types.String,
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PreviewImage' }],
     required: true,
   })
-  previewUrl: string;
+  previewUrls: PreviewImageDocument[];
 
   @Prop({
     type: mongoose.Schema.Types.String,
@@ -164,7 +165,7 @@ export class UserTemplate {
         position: {
           top: mongoose.Schema.Types.Number,
           left: mongoose.Schema.Types.Number,
-        }
+        },
       },
     ],
   })

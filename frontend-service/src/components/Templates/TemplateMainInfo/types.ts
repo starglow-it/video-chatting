@@ -1,4 +1,4 @@
-import { ProfileAvatarT, Template} from '../../../store/types';
+import { ProfileAvatarT, Template } from '../../../store/types';
 import { PropsWithClassName } from '../../../types';
 
 export type TemplateMainInfoProps = PropsWithClassName<{

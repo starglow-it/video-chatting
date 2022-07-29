@@ -17,7 +17,7 @@ module.exports = enhance({
         turnUserName: process.env.TURN_USERNAME,
         turnPort: parseInt(process.env.TURN_PORT, 10),
         storageHostName: process.env.STORAGE_HOSTNAME,
-        stripePublicKey: process.env.STRIPE_PUBLIC_API_KEY
+        stripePublicKey: process.env.STRIPE_PUBLIC_API_KEY,
     },
     reactStrictMode: true,
     typescript: {
@@ -38,10 +38,10 @@ module.exports = enhance({
             );
         }
 
-        config.module.rules.push( {
+        config.module.rules.push({
             test: /\.(glsl|cs|fs|vert|frag)$/,
             exclude: /node_modules/,
-            use: ['raw-loader']
+            use: ['raw-loader'],
         });
 
         return config;

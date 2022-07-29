@@ -49,14 +49,14 @@ export class PaymentsService {
         return this.stripeClient.accounts.del(accountId);
     }
 
-    async createPaymentIntent({ templatePrice, templateCurrency, stripeAccountId }: { templatePrice: number, templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] }) {
+    async createPaymentIntent({ templatePrice, templateCurrency, stripeAccountId, platformFee }: { platformFee: number, templatePrice: number, templateCurrency: string; stripeAccountId: ICommonUserDTO["stripeAccountId"] }) {
         const amount = templatePrice * 100;
 
         return this.stripeClient.paymentIntents.create({
             amount,
             currency: templateCurrency,
             transfer_data: {
-                amount: (amount - amount * 0.05) - 30,
+                amount: amount - amount * platformFee,
                 destination: stripeAccountId
             },
         });
@@ -85,5 +85,47 @@ export class PaymentsService {
             console.log(`⚠️  Webhook signature verification failed.`, e.message);
             return;
         }
+    }
+
+    async getStripeProducts() {
+        return this.stripeClient.products.list({
+            active: true
+        });
+    }
+
+    async getStripeProduct(productId) {
+        return this.stripeClient.products.retrieve(productId);
+    }
+
+    async getStripeCheckoutSession(priceId, meetingToken) {
+        const frontendUrl = await this.configService.get('frontendUrl');
+
+        return this.stripeClient.checkout.sessions.create({
+            billing_address_collection: 'auto',
+            line_items: [
+                {
+                    price: priceId,
+                    quantity: 1,
+                },
+            ],
+            mode: 'subscription',
+            success_url: `${frontendUrl}/meeting/${meetingToken}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${frontendUrl}/meeting/${meetingToken}?canceled=true`,
+        });
+    }
+
+    async getStripePrice(priceId) {
+        return this.stripeClient.prices.retrieve(priceId);
+    }
+
+    async getSubscription(subscriptionId) {
+        return this.stripeClient.subscriptions.retrieve(subscriptionId);
+    }
+
+    async createSessionPortal(customer, returnUrl) {
+        return this.stripeClient.billingPortal.sessions.create({
+            customer,
+            return_url: returnUrl,
+        });
     }
 }

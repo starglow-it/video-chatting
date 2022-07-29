@@ -18,10 +18,7 @@ import { DashboardNotificationItem } from '@components/Dashboard/DashboardNotifi
 import { DashboardNotificationsProps } from './types';
 
 // stores
-import {
-    $dashboardNotificationsStore,
-    emitReadDashboardNotifications,
-} from '../../../store';
+import { $dashboardNotificationsStore, emitReadDashboardNotifications } from '../../../store';
 
 // styles
 import styles from './DashboardNotifications.module.scss';

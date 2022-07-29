@@ -19,7 +19,13 @@ const Component = ({
     ...rest
 }: LabeledSwitchProps) => {
     return (
-        <CustomGrid container gap={1} className={className} justifyContent="space-between" wrap="nowrap">
+        <CustomGrid
+            container
+            gap={1}
+            className={className}
+            justifyContent="space-between"
+            wrap="nowrap"
+        >
             <CustomGrid container wrap="nowrap">
                 {Icon}
                 <CustomTypography nameSpace={nameSpace} translation={translation} />

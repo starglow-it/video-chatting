@@ -14,8 +14,7 @@ import { EmailIcon } from '@library/icons/EmailIcon';
 import { CopyLinkIcon } from '@library/icons/CopyLinkIcon';
 
 // stores
-import { appDialogsApi } from '../../../store';
-import { addNotificationEvent } from '../../../store';
+import { appDialogsApi, addNotificationEvent } from '../../../store';
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';

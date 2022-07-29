@@ -15,6 +15,7 @@ import { PrevSliderArrow } from '@library/icons/PrevSliderArrow';
 import { NextSliderArrow } from '@library/icons/NextSliderArrow';
 
 // helpers
+import { useMediaQuery } from '@mui/material';
 import { unflatArray } from '../../../utils/functions/unflatArray';
 
 // types
@@ -22,7 +23,16 @@ import { TemplateGridProps } from './types';
 
 // styles
 import styles from './TemplatesGrid.module.scss';
-import {useMediaQuery} from "@mui/material";
+
+const DotsComponent = (dots: React.ReactNode) => <ul>{dots}</ul>
+
+const PagingComponent = (activeSlider) => function(i: number) {
+  return <div
+        className={clsx(styles.dotSlider, {
+            [styles.activeDot]: activeSlider === i,
+        })}
+    />
+}
 
 const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGridProps) => {
     const [activeSlider, setActiveSlider] = useState(0);
@@ -66,7 +76,9 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
                         key={key}
                         display="grid"
                         gap={3}
-                        gridTemplateColumns={`repeat(${is1100Media ? 'auto-fit' : '3'}, minmax(334px, 1fr))`}
+                        gridTemplateColumns={`repeat(${
+                            is1100Media ? 'auto-fit' : '3'
+                        }, minmax(334px, 1fr))`}
                         className={styles.grid}
                     >
                         {elements}
@@ -100,14 +112,8 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
             dotsClass: styles.slider,
             afterChange: handleLoadTemplates,
             beforeChange: handleChangeActiveSlider,
-            appendDots: (dots: any) => <ul>{dots}</ul>,
-            customPaging: (i: number) => (
-                <div
-                    className={clsx(styles.dotSlider, {
-                        [styles.activeDot]: activeSlider === i,
-                    })}
-                />
-            ),
+            appendDots: DotsComponent,
+            customPaging: PagingComponent(activeSlider),
             nextArrow: <NextSliderArrow customClassName={styles.nextArrow} />,
             prevArrow: <PrevSliderArrow customClassName={styles.prevArrow} />,
         }),
@@ -134,6 +140,6 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
             </CustomBox>
         </CustomGrid>
     );
-}
+};
 
 export const TemplatesGrid = memo(Component);

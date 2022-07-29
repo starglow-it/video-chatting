@@ -4,7 +4,7 @@ import {
   Controller,
   Delete,
   Get,
-  Logger,
+  Logger, Param,
   Post,
   Request,
   Response,
@@ -219,6 +219,7 @@ export class PaymentsController {
         templatePrice: userTemplate.templatePrice,
         templateCurrency: userTemplate.templateCurrency?.toLowerCase(),
         stripeAccountId: user.stripeAccountId,
+        stripeSubscriptionId: user.stripeSubscriptionId,
       });
 
       return {
@@ -253,10 +254,6 @@ export class PaymentsController {
   ): Promise<ResponseSumType<any>> {
     try {
       await this.paymentsService.cancelPaymentIntent({
-        paymentIntentId: data.paymentIntentId,
-      });
-
-      await this.coreService.deleteMeetingDonation({
         paymentIntentId: data.paymentIntentId,
       });
 
@@ -306,6 +303,141 @@ export class PaymentsController {
           message: `An error occurs, while connect stripe account`,
         },
         JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/products')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Products' })
+  @ApiOkResponse({
+    description: 'Get Products',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getStripeProducts(): Promise<ResponseSumType<any>> {
+    try {
+      const products = await this.paymentsService.getStripeProducts();
+
+      return {
+        success: true,
+        result: products
+      }
+    } catch (err) {
+      this.logger.error(
+          {
+            message: `An error occurs, while get stripe products`,
+          },
+          JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/products/:productId/:meetingToken')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Buy Products' })
+  @ApiOkResponse({
+    description: 'Buy Product',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async buyProduct(
+      @Request() req,
+      @Param('productId') productId: string,
+      @Param('meetingToken') meetingToken: string,
+  ): Promise<ResponseSumType<any>> {
+    try {
+      const session = await this.paymentsService.getCheckoutSession({ productId, meetingToken });
+
+      await this.coreService.findUserAndUpdate({
+        userId: req.user.userId,
+        data: { stripeSessionId: session.id }
+      });
+
+      return {
+        success: true,
+        result: {
+          url: session.url
+        }
+      }
+    } catch (err) {
+      this.logger.error(
+          {
+            message: `An error occurs, while buy stripe product`,
+          },
+          JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/portal/:subscriptionId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Portal Session Url' })
+  @ApiOkResponse({
+    description: 'Get Portal Session Url',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getPortalSession(
+      @Param('subscriptionId') subscriptionId: string,
+  ): Promise<ResponseSumType<any>> {
+    try {
+      const portalSessionUrl = await this.paymentsService.getPortalSession({ subscriptionId });
+
+      return {
+        success: true,
+        result: portalSessionUrl
+      }
+    } catch (err) {
+      this.logger.error(
+          {
+            message: `An error occurs, while get portal session url`,
+          },
+          JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/subscriptions/:subscriptionId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Subscription' })
+  @ApiOkResponse({
+    description: 'Get Subscription',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getStripeSubscription(
+      @Param('subscriptionId') subscriptionId: string,
+  ): Promise<ResponseSumType<any>> {
+    try {
+      const subscription = await this.paymentsService.getStripeSubscription({ subscriptionId });
+
+      return {
+        success: true,
+        result: subscription
+      }
+    } catch (err) {
+      this.logger.error(
+          {
+            message: `An error occurs, while get portal session url`,
+          },
+          JSON.stringify(err),
       );
 
       throw new BadRequestException(err);

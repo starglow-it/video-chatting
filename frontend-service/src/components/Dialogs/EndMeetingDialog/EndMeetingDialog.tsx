@@ -1,4 +1,3 @@
-
 import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -16,7 +15,7 @@ import {
     $meetingTemplateStore,
     emitEndMeetingEvent,
     emitLeaveMeetingEvent,
-    $localUserStore
+    $localUserStore,
 } from 'src/store';
 import styles from './EndMeetingDialog.module.scss';
 

@@ -14,8 +14,7 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 import { AppDialogsEnum, Template } from '../../../store/types';
 
 // stores
-import { appDialogsApi } from '../../../store';
-import { setPreviewTemplate } from '../../../store';
+import { setPreviewTemplate, appDialogsApi } from '../../../store';
 
 // styles
 import styles from './OnboardingTemplateItem.module.scss';
@@ -48,6 +47,8 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
         router.push('/register');
     }, []);
 
+    const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 1080);
+
     return (
         <CustomGrid
             className={styles.templateContent}
@@ -57,7 +58,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            <Image src={template.previewUrl} layout="fill" />
+            {previewImage?.url ? <Image src={previewImage.url} layout="fill" /> : null}
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}

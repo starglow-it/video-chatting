@@ -4,8 +4,8 @@ import { createSocketEvent } from '../../socket/model';
 import {
     GET_MEETING_NOTES_EVENT,
     REMOVE_MEETING_NOTE_EVENT,
-    SEND_MEETING_NOTE_EVENT
-} from "../../../const/socketEvents/emitters";
+    SEND_MEETING_NOTE_EVENT,
+} from '../../../const/socketEvents/emitters';
 
 const initialMeetingsNotesState: MeetingNote[] = [];
 

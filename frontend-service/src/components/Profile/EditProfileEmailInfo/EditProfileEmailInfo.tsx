@@ -26,11 +26,10 @@ import { useYupValidationResolver } from '../../../hooks/useYupValidationResolve
 import styles from './EditProfileEmailInfo.module.scss';
 
 // stores
-import { updateProfileEmailFx } from '../../../store';
+import { addNotificationEvent, updateProfileEmailFx } from '../../../store';
 
 // types
 import { NotificationType } from '../../../store/types';
-import { addNotificationEvent } from '../../../store';
 
 const validationSchema = yup.object({
     password: passwordLoginSchema().required('required'),

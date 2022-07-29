@@ -70,7 +70,7 @@ const Component = () => {
             </CustomGrid>
         </CustomDialog>
     );
-}
+};
 
 const DeleteTemplateDialog = memo(Component);
 

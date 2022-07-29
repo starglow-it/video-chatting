@@ -19,6 +19,8 @@ import { SetUpTemplateProgress } from './SetUpTemplateProgress';
 
 // styles
 import styles from './SetUpTemplateInfo.module.scss';
+import {updateProfileFx} from "../../../store";
+import {useStore} from "effector-react";
 
 enum TemplateSetUpSteps {
     companyName = 'companyName',
@@ -35,6 +37,8 @@ const STEPS = {
 };
 
 const SetUpTemplateInfo = memo(() => {
+    const isUpdatePending = useStore(updateProfileFx.pending);
+
     const { trigger } = useFormContext();
     const [currentStep, setCurrentStep] = useState(0);
 
@@ -43,7 +47,7 @@ const SetUpTemplateInfo = memo(() => {
         const isValid = await trigger(stepKey);
 
         if (isValid || stepKey === TemplateSetUpSteps.profileAvatar) {
-            setCurrentStep(prev => (prev + 1 < Object.keys(STEPS).length ? prev + 1 : prev));
+            setCurrentStep(prev => prev + 1);
         }
     }, [currentStep]);
 
@@ -64,6 +68,8 @@ const SetUpTemplateInfo = memo(() => {
     );
 
     const isTheLastStep = currentStep === Object.keys(STEPS).length - 1;
+
+    if (currentStep > Object.keys(STEPS).length - 1) return null;
 
     return (
         <CustomPaper className={styles.wrapper}>
@@ -96,6 +102,7 @@ const SetUpTemplateInfo = memo(() => {
                 />
                 <CustomButton
                     type="submit"
+                    disabled={isUpdatePending}
                     className={clsx(styles.button, { [styles.hide]: !isTheLastStep })}
                     nameSpace="templates"
                     translation="buttons.done"

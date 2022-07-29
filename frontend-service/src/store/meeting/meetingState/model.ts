@@ -1,4 +1,4 @@
-import {meetingDomain} from "../domain";
+import { meetingDomain } from '../domain';
 
 export const $isEditTemplateOpenStore = meetingDomain.store<boolean>(false);
 export const $isMeetingInfoOpenStore = meetingDomain.store<boolean>(false);

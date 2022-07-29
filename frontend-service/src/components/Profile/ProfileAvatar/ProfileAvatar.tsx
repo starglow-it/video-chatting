@@ -14,7 +14,8 @@ import styles from './ProfileAvatar.module.scss';
 // types
 import { ProfileAvatarProps } from './types';
 
-const Component = ({
+const Component = (
+    {
         onClick = emptyFunction,
         src,
         className,
@@ -23,8 +24,8 @@ const Component = ({
         userName,
         withoutShadow,
     }: ProfileAvatarProps,
-    ref: ForwardedRef<HTMLDivElement>) => {
-
+    ref: ForwardedRef<HTMLDivElement>,
+) => {
     const splitName = userName
         ?.split(' ')
         .map(word => word[0]?.toUpperCase())
@@ -66,7 +67,7 @@ const Component = ({
             )}
         </CustomGrid>
     );
-}
+};
 
 const ProfileAvatar = memo<ProfileAvatarProps>(
     forwardRef<HTMLDivElement, ProfileAvatarProps>(Component),
