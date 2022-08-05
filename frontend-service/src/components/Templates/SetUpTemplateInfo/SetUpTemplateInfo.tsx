@@ -11,6 +11,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // components
+import {useStore} from "effector-react";
 import { SetUpCompanyName } from './SetUpCompanyName';
 import { SetUpFullName } from './SetUpFullName';
 import { SetUpProfileAvatar } from './SetUpProfileAvatar';
@@ -20,7 +21,6 @@ import { SetUpTemplateProgress } from './SetUpTemplateProgress';
 // styles
 import styles from './SetUpTemplateInfo.module.scss';
 import {updateProfileFx} from "../../../store";
-import {useStore} from "effector-react";
 
 enum TemplateSetUpSteps {
     companyName = 'companyName',

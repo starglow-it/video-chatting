@@ -1,17 +1,12 @@
 import {ICommonUserDTO} from "../interfaces/common-user.interface";
 
-type TokenType = {
+export type TokenType = {
     token: string;
     expiresAt: number;
 };
 
-type TokenPairWithUserType = {
+export type TokenPairWithUserType = {
     accessToken: TokenType;
     refreshToken: TokenType;
     user: ICommonUserDTO;
-}
-
-export {
-    TokenType,
-    TokenPairWithUserType
 }

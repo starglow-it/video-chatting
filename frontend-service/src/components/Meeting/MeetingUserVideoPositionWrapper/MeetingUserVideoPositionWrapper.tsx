@@ -14,34 +14,34 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
     elevationIndex,
     children,
     isScreensharing,
-    top,
+    bottom,
     left,
 }: MeetingUserVideoPositionWrapperProps) => {
-    const [finalTop, setTop] = useState('50%');
+    const [finalBottom, setBottom] = useState('50%');
     const [finalLeft, setLeft] = useState('50%');
 
     useLayoutEffect(() => {
         if (isScreensharing) {
             setLeft('calc(100% - 28px)');
-            setTop(`calc(50% + ${70 * elevationIndex}px)`);
+            setBottom(`calc(50% - ${70 * elevationIndex}px)`);
         } else {
             setLeft(`${left * 100}%`);
-            setTop(`${top * 100}%`);
+            setBottom(`${bottom * 100}%`);
         }
-    }, [isScreensharing, elevationIndex, top, left]);
+    }, [isScreensharing, elevationIndex, bottom, left]);
 
-    if (top && left) {
+    if (bottom && left) {
         return (
             <CustomBox
-                sx={{ top: finalTop, left: finalLeft }}
+                sx={{ bottom: finalBottom, left: finalLeft }}
                 className={clsx(styles.videoWrapper, { [styles.sharing]: isScreensharing })}
             >
                 {children}
             </CustomBox>
         );
-    } 
-        return null;
-    
+    }
+
+    return null;
 };
 
 export const MeetingUserVideoPositionWrapper = memo(Component);

@@ -157,6 +157,9 @@ services:
       context: ../../
       dockerfile: ./config-service/Dockerfile.dev
     environment:
+      - NODE_ENV=develop
+      - PORT=4000
+      - IS_LOCAL=true
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
@@ -168,10 +171,10 @@ services:
       - GATEWAY_PORT=3000
       - JWT_SECRET=jwtSecret
       - MONGO_URI=mongodb://mongo:27017/theliveoffice
-      - SMTP_HOST=smtp.gmail.com
-      - SMTP_PORT=465
-      - SMTP_USER=vladislav.e@fora-soft.com
-      - SMTP_PASS=xoiwmfwquupyhcoj
+      - SMTP_USER=Anna.Novak@theliveoffice.com
+      - SMTP_USER_NAME=The LiveOffice
+      - MANDRILL_API_KEY=HMiY4jDu5GFZKzsFk4oY0Q
+      - EMAIL_SERVICE=mailchimp
       - DEFAULT_SERVER_IP=localhost
       - APP_ID=9d88cb47f5e648c1b2b3c6ee8563e655
       - APP_CERTIFICATE=5eeb44cc55e94718ab3cdde84f278174
@@ -180,6 +183,7 @@ services:
       - SECRET_ACCESS_KEY=XSGnjAdSXoRYhTAntNNJYhHCY7MeJseUujCDvcHK
       - ACCESS_KEY=04F4BOA4E0QRBSF0BW37
       - STRIPE_WEBHOOK_SECRET=whsec_6d3900c5a120c61ff289e3a7dd018c836870dce6b2826fb42e36a069f8b0a2f9
+      - STRIPE_EXPRESS_WEBHOOK_SECRET=whsec_6d3900c5a120c61ff289e3a7dd018c836870dce6b2826fb42e36a069f8b0a2f9
       - STRIPE_API_KEY=sk_test_51Jf4TEH8cTQqzxoDo2a4yQkZO6TvoPzaZwZbzaMJkP9DGwF5ISXa6SO5nCGOcDCrCUtF3h3Ip2k8YOS46LVaG2r800C67SnDuA
     depends_on:
       - mongo

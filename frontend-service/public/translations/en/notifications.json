@@ -29,6 +29,7 @@
   },
   "subscriptions": {
     "subscriptionBusinessSuccess": "Thank you for subscribing to Live Office Business!",
-    "subscriptionProfessionalSuccess": "Thank you for subscribing to Live Office Professional!"
+    "subscriptionProfessionalSuccess": "Thank you for subscribing to Live Office Professional!",
+    "subscriptionFail": "An error occurred during the subscription. Please try again"
   }
 }

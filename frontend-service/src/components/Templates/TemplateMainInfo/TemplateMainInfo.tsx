@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-
 import { Fade } from '@mui/material';
 
 // custom
@@ -9,7 +8,7 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 // components
 import { TemplateParticipants } from '@components/Templates/TemplateParticipants/TemplateParticipants';
 import { TemplatePaymentType } from '@components/Templates/TemplatePaymentType/TemplatePaymentType';
-import { TemplateAvatarWithInfo } from '@components/Templates/TemplateAvatarWithInfo/TemplateAvatarWithInfo';
+import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 
 // types
 import { TemplateMainInfoProps } from '@components/Templates/TemplateMainInfo/types';
@@ -24,15 +23,13 @@ const Component = ({
     maxParticipants,
     type,
     isNeedToShowBusinessInfo = true,
-    avatar,
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">
-            <TemplateAvatarWithInfo
+            <TemplateInfo
                 className={styles.avatar}
                 name={name}
                 description={description}
-                avatar={avatar}
             />
             <CustomBox className={styles.emptySpace} />
             {isNeedToShowBusinessInfo && (

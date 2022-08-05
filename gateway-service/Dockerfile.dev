@@ -1,4 +1,4 @@
-FROM node:16.14.0-alpine
+FROM node:16.16.0-alpine
 
 WORKDIR /app/
 
@@ -6,7 +6,7 @@ COPY ./shared ./shared
 
 RUN mkdir ./gateway-service
 
-COPY ./gateway-service/package*.json ./gateway-service/
+ADD ./gateway-service/package*.json ./gateway-service/
 
 RUN cd ./gateway-service && npm i --legacy-peer-deps
 

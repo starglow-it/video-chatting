@@ -36,6 +36,7 @@ export * from './templates/setUpTemplate/model';
 export * from './templates/discoveryTemplates/model';
 export * from './waitingRoom/model';
 export * from './dashboardNotifications/model';
+export * from './ui/window/model';
 
 export * from './socket/init';
 
@@ -73,5 +74,6 @@ export * from './templates/setUpTemplate/init';
 export * from './templates/discoveryTemplates/init';
 export * from './waitingRoom/init';
 export * from './dashboardNotifications/init';
+export * from './ui/window/init';
 
 export * from './users/init';

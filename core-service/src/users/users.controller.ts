@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
+import {plainToClass, plainToInstance} from 'class-transformer';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -12,7 +12,8 @@ import {
   COMPARE_PASSWORDS,
   CREATE_USER,
   DELETE_PROFILE,
-  DELETE_PROFILE_AVATAR, FIND_USER,
+  DELETE_PROFILE_AVATAR,
+  FIND_USER,
   FIND_USER_BY_EMAIL,
   FIND_USER_BY_EMAIL_AND_UPDATE,
   FIND_USER_BY_ID,
@@ -179,9 +180,7 @@ export class UsersController {
   @MessagePattern({ cmd: FIND_USER_BY_ID })
   async findUserById(@Payload() data: { userId: ICommonUserDTO['id'] }) {
     return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findById(data.userId, session);
-
-      await user.populate([
+      const user = await this.usersService.findById(data.userId, session, [
         'businessCategories',
         'socials',
         'languages',
@@ -192,7 +191,7 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -210,7 +209,7 @@ export class UsersController {
           'socials',
           'languages',
           'profileAvatar',
-        ]
+        ],
       });
 
       if (!user) {

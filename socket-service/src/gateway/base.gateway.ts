@@ -13,6 +13,10 @@ export class BaseGateway {
     this.server.sockets.in(roomId).emit(eventName, data);
   }
 
+  broadcastToRoom(socket, roomId: string, eventName: string, data: any = {}) {
+    socket.broadcast.to(roomId).emit(eventName, data);
+  }
+
   async getSocket(roomId, socketId) {
     const sockets = await this.server.sockets.in(roomId).fetchSockets();
 

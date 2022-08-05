@@ -149,6 +149,8 @@ services:
       dockerfile: ./config-service/Dockerfile
     restart: always
     environment:
+      - NODE_ENV=production
+      - PORT=4000
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
@@ -173,6 +175,8 @@ services:
       - ACCESS_KEY
       - STRIPE_API_KEY
       - STRIPE_WEBHOOK_SECRET
+      - STRIPE_EXPRESS_WEBHOOK_SECRET
+      - MANDRILL_API_KEY
     depends_on:
       - mongo
       - rabbit

@@ -16,8 +16,7 @@ import { AuthenticationLink } from '@components/AuthenticationLink/Authenticatio
 import { LayoutProps } from './types';
 
 // stores
-import { $authStore, joinDashboard } from '../../store';
-import { disconnectSocketEvent, initiateSocketConnectionFx } from '../../store';
+import {$authStore, $isSocketConnected, initiateSocketConnectionEvent, disconnectSocketEvent, joinDashboard} from '../../store';
 
 // styles
 import styles from './Layout.module.scss';
@@ -25,6 +24,7 @@ import styles from './Layout.module.scss';
 const Layout = memo(({ children }: LayoutProps): JSX.Element => {
     const { isAuthenticated } = useStore($authStore);
     const [isMeetingRoute, setIsMeetingRoute] = useState(false);
+    const isSocketConnected = useStore($isSocketConnected);
 
     const router = useRouter();
 
@@ -33,9 +33,7 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
             const isDashboardRoute = new RegExp('dashboard').test(router.pathname);
 
             if (isDashboardRoute) {
-                await initiateSocketConnectionFx();
-
-                await joinDashboard();
+                initiateSocketConnectionEvent();
             } else {
                 disconnectSocketEvent();
             }
@@ -43,11 +41,19 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
     }, [router.pathname]);
 
     useEffect(() => {
+        if (isSocketConnected) {
+            joinDashboard();
+        }
+    }, [isSocketConnected]);
+
+    useEffect(() => {
         setIsMeetingRoute(router.pathname.includes('meeting'));
     }, [router]);
 
     return (
-        <CustomBox className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}>
+        <CustomBox
+            className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}
+        >
             <CustomBox
                 className={clsx(styles.contentWrapper, { [styles.meetingLayout]: isMeetingRoute })}
             >

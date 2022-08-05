@@ -106,6 +106,8 @@ export class MeetingNotesGateway extends BaseGateway {
         session,
       );
 
+      if (!user) return;
+
       await user.populate('meeting');
 
       const meetingNotes = await this.meetingNotesService.findMany(

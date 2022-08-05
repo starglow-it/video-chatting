@@ -7,6 +7,5 @@ export type TemplateMainInfoProps = PropsWithClassName<{
     maxParticipants: Template['maxParticipants'];
     type: Template['type'];
     isNeedToShowBusinessInfo?: boolean;
-    avatar?: ProfileAvatarT['url'];
     show: boolean;
 }>;

@@ -1,12 +1,14 @@
 import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import Image from 'next/image';
+import clsx from 'clsx';
 
 // helpers
 import { usePrevious } from 'src/hooks/usePrevious';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import {CustomBox} from "@library/custom/CustomBox/CustomBox";
 
 // components
 import { MeetingControlPanel } from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
@@ -28,7 +30,6 @@ import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog
 import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
 import { HangUpIcon } from '@library/icons/HangUpIcon';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import clsx from 'clsx';
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // misc
@@ -116,7 +117,7 @@ const MeetingView = memo(() => {
 
     useEffect(() => {
         (async () => {
-            if (localUser.accessStatus === MeetingAccessStatuses.InMeeting) {
+            if (localUser.accessStatus === MeetingAccessStatuses.InMeeting && meeting.id && localUser.meetingUserId) {
                 const activeStream = onChangeActiveStream();
 
                 if (activeStream) {
@@ -147,7 +148,7 @@ const MeetingView = memo(() => {
                 }
             }
         })();
-    }, [localUser.accessStatus]);
+    }, [localUser.accessStatus, meeting.id, localUser.meetingUserId]);
 
     useEffect(() => {
         appDialogsApi.openDialog({
@@ -182,20 +183,24 @@ const MeetingView = memo(() => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            <MeetingBackgroundComponent isNeedToRenderModel={meetingTemplate.templateId === 27}>
-                {previewImage?.url
-                    ? (
-                        <Image
-                            className={clsx(styles.image, {
-                                [styles.blured]: Boolean(meetingTemplate.url),
-                            })}
-                            src={previewImage.url}
-                            layout="fill"
-                            objectFit="cover"
-                        />
-                    )
-                    : null
-                }
+            <MeetingBackgroundComponent isNeedToRenderModel={meetingTemplate.templateId === 28}>
+                <CustomBox className={styles.imageWrapper}>
+                    {previewImage?.url
+                        ? (
+                            <Image
+                                className={clsx(styles.image, {
+                                    [styles.blured]: Boolean(meetingTemplate.url),
+                                })}
+                                src={previewImage.url}
+                                width="100%"
+                                height="100%"
+                                layout="fill"
+                                objectFit="cover"
+                            />
+                        )
+                        : null
+                    }
+                </CustomBox>
                 {isScreenSharing && <ScreenSharingLayout />}
             </MeetingBackgroundComponent>
 
@@ -223,7 +228,7 @@ const MeetingView = memo(() => {
                             isSharingActive={Boolean(meeting.sharingUserId)}
                             onAction={isAbleToToggleSharing ? handleToggleSharing : undefined}
                         />
-                        <BackgroundAudioControl />
+                        {meetingTemplate.isAudioAvailable ? <BackgroundAudioControl/> : null}
                         <ActionButton
                             variant="danger"
                             onAction={handleEndVideoChat}

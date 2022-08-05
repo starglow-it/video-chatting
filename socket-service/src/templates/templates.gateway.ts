@@ -45,9 +45,9 @@ export class TemplatesGateway extends BaseGateway {
         await user.populate('meeting');
 
         this.emitToRoom(
-            `meeting:${user.meeting._id}`,
-            EmitEvents.UPDATE_MEETING_TEMPLATE,
-            { templateId: data.templateId },
+          `meeting:${user.meeting._id}`,
+          EmitEvents.UPDATE_MEETING_TEMPLATE,
+          { templateId: data.templateId },
         );
       }
     });

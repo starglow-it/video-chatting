@@ -39,5 +39,9 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
 
   @Expose()
   @ApiProperty()
-  usersPosition: { top: number; left: number }[];
+  isAudioAvailable: boolean;
+
+  @Expose()
+  @ApiProperty()
+  usersPosition: { bottom: number; left: number }[];
 }

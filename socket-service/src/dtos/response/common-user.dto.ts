@@ -42,7 +42,7 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
   @Expose()
   @Transform((data) => {
     return {
-      top: data.obj?.userPosition?.top,
+      bottom: data.obj?.userPosition?.bottom,
       left: data.obj?.userPosition?.left,
     };
   })

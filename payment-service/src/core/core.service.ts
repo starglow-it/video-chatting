@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 import { CORE_PROVIDER } from '@shared/providers';
-import {IUpdateProfile} from "@shared/interfaces/update-profile.interface";
-import {ICommonUserDTO} from "@shared/interfaces/common-user.interface";
-import {FIND_USER, UPDATE_USER} from "@shared/patterns/users";
+import { IUpdateProfile } from '@shared/interfaces/update-profile.interface';
+import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { FIND_USER, UPDATE_USER } from '@shared/patterns/users';
 
 @Injectable()
 export class CoreService {

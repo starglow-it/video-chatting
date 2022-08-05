@@ -58,7 +58,15 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            {previewImage?.url ? <Image src={previewImage.url} layout="fill" /> : null}
+            {previewImage?.url
+                ? (
+                    <Image
+                        src={previewImage.url}
+                        layout="fill"
+                    />
+                )
+                : null
+            }
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}

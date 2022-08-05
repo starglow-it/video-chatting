@@ -1,7 +1,7 @@
-import { attach, combine, forward, sample } from 'effector-next';
+import {attach, combine, guard, sample} from 'effector-next';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
-    $isOwner,
+    $isOwner, $isUserSendEnterRequest,
     $meetingTemplateStore,
     setIsUserSendEnterRequest,
 } from '../meetingTemplate/model';
@@ -11,13 +11,14 @@ import {
     emitAnswerAccessMeetingRequest,
     emitCancelEnterMeetingEvent,
     emitEndMeetingEvent,
+    emitEnterMeetingEvent,
+    emitEnterWaitingRoom,
     emitLeaveMeetingEvent,
     emitUpdateMeetingTemplate,
     endMeetingEvent,
     enterMeetingRequestSocketEvent,
     joinMeetingEvent,
     leaveMeetingSocketEvent,
-    meetingSocketEventsController,
     startMeetingSocketEvent,
     updateMeetingSocketEvent,
     updateMeetingTemplateEvent,
@@ -28,27 +29,15 @@ import {
     MeetingUser,
     UserTemplate,
     Profile,
-    JoinMeetingResult,
+    JoinMeetingResult, MeetingAccessStatuses,
 } from '../../types';
 import { $localUserStore, updateLocalUserEvent } from '../../users/localUser/model';
 import { appDialogsApi } from '../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { sendMeetingAvailableSocketEvent } from '../../waitingRoom/model';
-import { initiateSocketConnectionFx } from '../../socket/model';
 import { $profileStore } from '../../profile/profile/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
-
-const handleMeetingEventsError = (data: string) => {
-    setMeetingErrorEvent(data);
-    setIsUserSendEnterRequest(false);
-    appDialogsApi.openDialog({
-        dialogKey: AppDialogsEnum.meetingErrorDialog,
-    });
-};
-
-joinMeetingEvent.failData.watch(handleMeetingEventsError);
-enterMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
-answerAccessMeetingRequestEvent.failData.watch(handleMeetingEventsError);
+import {sendEnterWaitingRoom} from "../../waitingRoom/init";
 
 export const joinMeetingEventWithData = attach({
     effect: joinMeetingEvent,
@@ -73,9 +62,24 @@ export const joinMeetingEventWithData = attach({
     }),
 });
 
-forward({
-    from: initiateSocketConnectionFx.doneData,
-    to: meetingSocketEventsController,
+export const startMeeting = attach({
+    effect: startMeetingSocketEvent,
+    source: combine<{ meeting: Meeting; user: MeetingUser }>({
+        meeting: $meetingStore,
+        user: $localUserStore,
+    }),
+    mapParams: (params, { meeting, user }) => ({ meetingId: meeting?.id, user }),
+});
+
+export const enterMeetingRequest = attach({
+    effect: enterMeetingRequestSocketEvent,
+    source: combine<{ meeting: Meeting; user: MeetingUser }>({
+        meeting: $meetingStore,
+        user: $localUserStore,
+    }),
+    mapParams: (params, { meeting, user }) => ({
+        meetingId: meeting?.id, user
+    }),
 });
 
 sample({
@@ -88,26 +92,18 @@ sample({
     target: sendMeetingAvailableSocketEvent,
 });
 
-export const startMeeting = attach({
-    effect: startMeetingSocketEvent,
-    source: combine<{ meeting: Meeting; user: MeetingUser }>({
-        meeting: $meetingStore,
-        user: $localUserStore,
-    }),
-    mapParams: (params, { meeting, user }) => {
-        return { meetingId: meeting?.id, user };
-    },
+guard({
+    clock: emitEnterMeetingEvent,
+    source: combine({ isUserSendEnterRequest: $isUserSendEnterRequest, localUser: $localUserStore }),
+    filter: ({ isUserSendEnterRequest, localUser }) => isUserSendEnterRequest && localUser.accessStatus === MeetingAccessStatuses.Waiting,
+    target: enterMeetingRequest,
 });
 
-export const enterMeetingRequest = attach({
-    effect: enterMeetingRequestSocketEvent,
-    source: combine<{ meeting: Meeting; user: MeetingUser }>({
-        meeting: $meetingStore,
-        user: $localUserStore,
-    }),
-    mapParams: (params, { meeting, user }) => {
-        return { meetingId: meeting?.id, user };
-    },
+guard({
+    clock: emitEnterWaitingRoom,
+    source: $isUserSendEnterRequest,
+    filter: (isUserSendEnterRequest) => !isUserSendEnterRequest,
+    target: sendEnterWaitingRoom,
 });
 
 sample({
@@ -134,7 +130,9 @@ sample({
 sample({
     clock: emitCancelEnterMeetingEvent,
     source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
-    fn: ({ meeting }) => ({ meetingId: meeting?.id }),
+    fn: ({ meeting }) => ({
+        meetingId: meeting?.id
+    }),
     target: cancelAccessMeetingRequestEvent,
 });
 
@@ -145,14 +143,44 @@ sample({
     target: updateMeetingTemplateEvent,
 });
 
-const handleUpdateMeetingEntities = ({ meeting, user, users }: JoinMeetingResult) => {
-    if (user) updateLocalUserEvent(user);
-    if (meeting) updateMeetingEvent({ meeting });
-    if (users) updateMeetingUsersEvent({ users });
+const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
+    if (data?.user) updateLocalUserEvent(data?.user);
+    if (data?.meeting) updateMeetingEvent({ meeting: data?.meeting });
+    if (data?.users) updateMeetingUsersEvent({ users: data?.users });
 };
+
+const handleMeetingEventsError = (data: string) => {
+    setMeetingErrorEvent(data);
+    setIsUserSendEnterRequest(false);
+    appDialogsApi.openDialog({
+        dialogKey: AppDialogsEnum.meetingErrorDialog,
+    });
+};
+
+joinMeetingEvent.failData.watch(handleMeetingEventsError);
+enterMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
+answerAccessMeetingRequestEvent.failData.watch(handleMeetingEventsError);
 
 joinMeetingEventWithData.doneData.watch(handleUpdateMeetingEntities);
 startMeeting.doneData.watch(handleUpdateMeetingEntities);
 enterMeetingRequest.doneData.watch(handleUpdateMeetingEntities);
 cancelAccessMeetingRequestEvent.doneData.watch(handleUpdateMeetingEntities);
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+
+sample({
+    clock: [enterMeetingRequest.doneData, sendEnterWaitingRoom.doneData],
+    fn: () => true,
+    target: setIsUserSendEnterRequest
+});
+
+sample({
+    clock: sendEnterWaitingRoom.doneData,
+    fn: () => ({ accessStatus: MeetingAccessStatuses.Waiting }),
+    target: updateLocalUserEvent
+});
+
+sample({
+    clock: cancelAccessMeetingRequestEvent.doneData,
+    fn: () => false,
+    target: setIsUserSendEnterRequest
+});

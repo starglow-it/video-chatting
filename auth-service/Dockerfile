@@ -1,4 +1,4 @@
-FROM node:16.14.0-alpine AS builder
+FROM node:16.16.0-alpine AS builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY ./auth-service ./auth-service/
 
 RUN cd ./auth-service && npm run build
 
-FROM node:16.14.0-alpine
+FROM node:16.16.0-alpine
 
 WORKDIR /app
 

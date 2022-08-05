@@ -10,6 +10,8 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 // styles
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { VideoEyeIcon } from '@library/icons/VideoEyeIcon';
+
+// styles
 import styles from './RoundedVideo.module.scss';
 
 // types
@@ -52,31 +54,37 @@ const RoundedVideo = memo(
                         userName={userName}
                     />
                 )}
-                {isLocal ? (
-                    <CustomGrid
-                        container
-                        direction="column"
-                        className={styles.videoControlOverlay}
-                        onClick={onToggleVideo}
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                        <VideoEyeIcon
-                            width={isScreenSharing ? '30px' : '40px'}
-                            height={isScreenSharing ? '30px' : '40px'}
-                            isActive={isCameraActive}
-                        />
-                        {!isScreenSharing ? (
-                            <CustomTypography
-                                variant="body3"
-                                nameSpace="meeting"
-                                translation={
-                                    isCameraActive ? 'devices.switchOff' : 'devices.switchOn'
-                                }
+                {isLocal
+                    ? (
+                        <CustomGrid
+                            container
+                            direction="column"
+                            className={styles.videoControlOverlay}
+                            onClick={onToggleVideo}
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <VideoEyeIcon
+                                width={isScreenSharing ? '30px' : '40px'}
+                                height={isScreenSharing ? '30px' : '40px'}
+                                isActive={isCameraActive}
                             />
-                        ) : null}
-                    </CustomGrid>
-                ) : null}
+                            {!isScreenSharing && size > 84
+                                ? (
+                                    <CustomTypography
+                                        variant="body3"
+                                        nameSpace="meeting"
+                                        translation={
+                                            isCameraActive ? 'devices.switchOff' : 'devices.switchOn'
+                                        }
+                                    />
+                                )
+                                : null
+                            }
+                        </CustomGrid>
+                    )
+                    : null
+                }
                 <video
                     onLoadedData={handleVideoLoaded}
                     ref={videoRef}

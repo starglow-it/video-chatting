@@ -1,33 +1,43 @@
 import { useMemo, ForwardedRef, memo, forwardRef } from "react";
+import {Trans} from "react-i18next";
+import clsx from "clsx";
+import {List, ListItem, ListItemIcon} from "@mui/material";
 
+// hooks
+import {useLocalization} from "../../../hooks/useTranslation";
+import {useToggle} from "../../../hooks/useToggle";
+
+// custom
 import { CustomPaper} from "@library/custom/CustomPaper/CustomPaper";
 import { CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
 import { CustomGrid } from "@library/custom/CustomGrid/CustomGrid";
 import { CustomBox} from "@library/custom/CustomBox/CustomBox";
 import { CustomButton } from "@library/custom/CustomButton/CustomButton";
 
-import styles from './SubscriptionsPlans.module.scss';
-import {useLocalization} from "../../../hooks/useTranslation";
-import {List, ListItem, ListItemIcon} from "@mui/material";
+// icons
 import {RoundCheckIcon} from "@library/icons/RoundIcons/RoundCheckIcon";
-import {Trans} from "react-i18next";
 
-const planColors: Record<string, string> = {
-    "House": "#69E071",
-    "Professional": "#2E6DF2",
-    "Business": "#FF884E"
-}
+// styles
+import styles from './SubscriptionsPlans.module.scss';
 
-const currencies: Record<string, string> = {
-    "cad": "C$",
-    "usd": "$"
-}
+// const
+import {currencies, planColors} from "src/const/profile/subscriptions";
 
-const Component = ({ product, price, onChooseSubscription, isDisabled }: { isDisabled: boolean; product: any, price: any; onChooseSubscription: (productId: string, isPaid: boolean) => void }, ref: ForwardedRef<HTMLDivElement>) => {
+// types
+import {SubscriptionPlanItemProps} from "./types";
+
+const Component = ({ product, price, onChooseSubscription, isDisabled, activePlanKey }: SubscriptionPlanItemProps, ref: ForwardedRef<HTMLDivElement>) => {
     const isFree = price.unit_amount === 0;
 
+    const {
+        value: isShowMore,
+        onToggleSwitch: handleToggleShowMore,
+    } = useToggle(false);
+
     const handleChooseSubscription = () => {
-        onChooseSubscription(product.id, !isFree);
+        if (product.name !== activePlanKey) {
+            onChooseSubscription(product.id, !isFree);
+        }
     }
 
     const { translation } = useLocalization('subscriptions');
@@ -36,31 +46,31 @@ const Component = ({ product, price, onChooseSubscription, isDisabled }: { isDis
         ? `${currencies[price?.currency]}${price.unit_amount / 100}`
         : "FREE";
 
-    const renderFeaturesListItems = useMemo(() => {
-        return translation(`subscriptions.${product.name}`)?.features?.map((feature) => {
-            return (
-                <ListItem alignItems="center" disablePadding className={styles.listItem}>
-                    <ListItemIcon classes={{ root: styles.listIcon }}>
-                        <RoundCheckIcon width="20px" height="20px" />
-                    </ListItemIcon>
-                    <CustomGrid container direction="column">
-                        <CustomTypography varian="body2">
-                            <Trans i18nKey="userMessagesUnread">
-                                {feature.text}
-                            </Trans>
-                        </CustomTypography>
-                        <CustomTypography variant="body2" color="colors.grayscale.normal">
-                            {feature.subText}
-                        </CustomTypography>
-                    </CustomGrid>
-                </ListItem>
-            )
-        });
-    }, []);
+    const templateFeaturesText = translation(`subscriptions.${product.name}`);
+
+    const renderFeaturesListItems = useMemo(() => templateFeaturesText?.[`${isShowMore ? "more" : "features"}`]?.map((feature, i) => (
+        <ListItem key={i} alignItems="center" disablePadding className={styles.listItem}>
+            <ListItemIcon classes={{ root: styles.listIcon }}>
+                <RoundCheckIcon width="20px" height="20px" />
+            </ListItemIcon>
+            <CustomGrid container direction="column">
+                <CustomTypography variant="body2">
+                    <Trans>
+                        {feature.text}
+                    </Trans>
+                </CustomTypography>
+                <CustomTypography variant="body2" color="colors.grayscale.normal">
+                    {feature.subText}
+                </CustomTypography>
+            </CustomGrid>
+        </ListItem>
+    )), [isShowMore]);
+
+    const isActive = activePlanKey === product.name;
 
     return (
         <CustomPaper ref={ref} className={styles.wrapper}>
-            <CustomGrid container direction="column" className={styles.content} wrap="nowrap">
+            <CustomGrid container direction="column" wrap="nowrap">
                 <CustomBox className={styles.productName} sx={{ backgroundColor: planColors[product.name as string] }}>
                     <CustomTypography variant="body1bold" color="colors.white.primary">
                         {product.name}
@@ -88,12 +98,23 @@ const Component = ({ product, price, onChooseSubscription, isDisabled }: { isDis
                     {renderFeaturesListItems}
                 </List>
 
+                {templateFeaturesText?.more?.length && (
+                    <CustomTypography
+                        onClick={handleToggleShowMore}
+                        className={styles.expandBtn}
+                        color="colors.blue.primary"
+                        nameSpace="common"
+                        translation={isShowMore ? 'hide' : 'more'}
+                    />
+                )}
+
                 <CustomButton
                     variant="custom-black"
-                    nameSpace="templates"
+                    nameSpace="subscriptions"
                     disabled={isDisabled}
-                    translation={`setUpSpace.subscriptions.start${product.name}`}
+                    translation={isActive ? "buttons.currentPlan" : `buttons.start${product.name}`}
                     onClick={handleChooseSubscription}
+                    className={clsx(styles.button, {[styles.active]: isActive})}
                 />
             </CustomGrid>
         </CustomPaper>

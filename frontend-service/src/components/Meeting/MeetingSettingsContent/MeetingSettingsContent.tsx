@@ -46,6 +46,7 @@ const Component = ({
     isBlurActive,
     onToggleBlur,
     isMonetizationEnabled,
+    isAudioActive
 }: MeetingSettingsContentProps) => {
     const isOwner = useStore($isOwner);
 
@@ -141,42 +142,47 @@ const Component = ({
                             className={styles.selectDevicesWrapper}
                         >
                             <SelectDevices key={stream?.id} />
-                            <CustomGrid
-                                container
-                                direction="column"
-                                wrap="nowrap"
-                                className={clsx(styles.audioSettings, {
-                                    [styles.withVolume]: isBackgroundActive,
-                                })}
-                            >
-                                <LabeledSwitch
-                                    Icon={<MusicIcon width="24px" height="24px" />}
-                                    nameSpace="meeting"
-                                    translation="features.audioBackground"
-                                    checked={isBackgroundActive}
-                                    onChange={onBackgroundToggle}
-                                    className={styles.audioWrapper}
-                                />
-                                <CustomFade open={isBackgroundActive}>
-                                    <CustomDivider />
-                                    <CustomRange
-                                        color={backgroundVolume ? 'primary' : 'disabled'}
-                                        value={backgroundVolume}
-                                        onChange={handleChangeVolume}
-                                        className={clsx(styles.audioRange, {
-                                            [styles.inactive]: !backgroundVolume,
+                            {isAudioActive
+                                ? (
+                                    <CustomGrid
+                                        container
+                                        direction="column"
+                                        wrap="nowrap"
+                                        className={clsx(styles.audioSettings, {
+                                            [styles.withVolume]: isBackgroundActive,
                                         })}
-                                        Icon={
-                                            <SpeakerIcon
-                                                isActive={Boolean(backgroundVolume)}
-                                                isHalfVolume={backgroundVolume < 50}
-                                                width="24px"
-                                                height="24px"
+                                    >
+                                        <LabeledSwitch
+                                            Icon={<MusicIcon width="24px" height="24px" />}
+                                            nameSpace="meeting"
+                                            translation="features.audioBackground"
+                                            checked={isBackgroundActive}
+                                            onChange={onBackgroundToggle}
+                                            className={styles.audioWrapper}
+                                        />
+                                        <CustomFade open={isBackgroundActive}>
+                                            <CustomDivider />
+                                            <CustomRange
+                                                color={backgroundVolume ? 'primary' : 'disabled'}
+                                                value={backgroundVolume}
+                                                onChange={handleChangeVolume}
+                                                className={clsx(styles.audioRange, {
+                                                    [styles.inactive]: !backgroundVolume,
+                                                })}
+                                                Icon={
+                                                    <SpeakerIcon
+                                                        isActive={Boolean(backgroundVolume)}
+                                                        isHalfVolume={backgroundVolume < 50}
+                                                        width="24px"
+                                                        height="24px"
+                                                    />
+                                                }
                                             />
-                                        }
-                                    />
-                                </CustomFade>
-                            </CustomGrid>
+                                        </CustomFade>
+                                    </CustomGrid>
+                                )
+                                : null
+                            }
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>

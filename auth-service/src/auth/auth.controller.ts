@@ -22,11 +22,10 @@ import { AuthService } from './auth.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 
 // helpers
-import { createConfirmRegistrationMessage } from '../helpers/createConfirmRegistrationMessage';
-import { createResetPasswordLinkMessage } from '../helpers/createResetPasswordLinkMessage';
 import { IToken } from '@shared/interfaces/token.interface';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { ResetPasswordTokenService } from '../reset-password-token/reset-password-token.service';
+import { emailTemplates } from '@shared/const/email-templates.const';
 
 @Controller('auth')
 export class AuthController {
@@ -57,10 +56,16 @@ export class AuthController {
       });
 
       this.notificationService.sendConfirmRegistrationEmail({
-        message: createConfirmRegistrationMessage({
-          link: `${frontendUrl}/confirm-registration?token=${token.token}`,
-        }),
-        to: registerRequest.email,
+        template: {
+          key: emailTemplates.emailVerification,
+          data: [
+            {
+              name: 'CONFIRMLINK',
+              content: `${frontendUrl}/confirm-registration?token=${token.token}`,
+            },
+          ],
+        },
+        to: [{ email: registerRequest.email, name: registerRequest.email }],
       });
 
       return user;
@@ -81,8 +86,21 @@ export class AuthController {
       await this.coreService.deleteToken(confirmUser);
 
       await this.notificationService.sendConfirmRegistrationEmail({
-        message: 'Welcome to The LiveOffice',
-        to: confirmTokenPayload?.email,
+        template: {
+          key: emailTemplates.welcomeEmail,
+          data: [
+            {
+              name: 'FNAME',
+              content: confirmTokenPayload?.email,
+            },
+          ],
+        },
+        to: [
+          {
+            email: confirmTokenPayload?.email,
+            name: confirmTokenPayload.email,
+          },
+        ],
       });
 
       return this.coreService.findUserByEmailAndUpdate({
@@ -178,11 +196,16 @@ export class AuthController {
       });
 
       this.notificationService.sendConfirmRegistrationEmail({
-        message: createResetPasswordLinkMessage({
-          url: frontendUrl,
-          token: token.token,
-        }),
-        to: data.email,
+        template: {
+          key: emailTemplates.resetPassword,
+          data: [
+            {
+              name: 'RESETURL',
+              content: `${frontendUrl}/reset-password?token=${token.token}`,
+            },
+          ],
+        },
+        to: [{ email: data.email, name: user.fullName }],
       });
     } catch (err) {
       throw new RpcException(err);

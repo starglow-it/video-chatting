@@ -1,15 +1,13 @@
 import { getMeetingTemplateFx } from '../../meeting/meetingTemplate/model';
-import { initiateSocketConnectionFx } from '../model';
-import { enterMeetingRequest, joinMeetingEventWithData } from '../../meeting/sockets/init';
+import { joinMeetingEventWithData } from '../../meeting/sockets/init';
+import {emitEnterMeetingEvent} from "../../meeting/sockets/model";
 
 export const handleMeetingAvailable = async ({ templateId }: { templateId: string }) => {
     const meetingTemplate = await getMeetingTemplateFx({ templateId });
 
     if (meetingTemplate?.meetingInstance?.serverIp) {
-        await initiateSocketConnectionFx();
-
         await joinMeetingEventWithData({});
 
-        enterMeetingRequest();
+        emitEnterMeetingEvent();
     }
 };

@@ -44,6 +44,7 @@ import { IUserTemplate } from '@shared/interfaces/user-template.interface';
 import { UpdateTemplateRequest } from '../dtos/requests/update-template.request';
 import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
 import { TemplatesService } from '../templates/templates.service';
+import { emailTemplates } from '@shared/const/email-templates.const';
 
 @Controller('profile')
 export class ProfileController {
@@ -92,8 +93,24 @@ export class ProfileController {
     description: 'Forbidden',
   })
   async deleteProfile(@Request() req): Promise<ResponseSumType<void>> {
+    const targetUser = await this.coreService.findUserById({
+      userId: req.user.userId,
+    });
+
     await this.coreService.deleteUser({
       userId: req.user.userId,
+    });
+
+    this.notificationService.sendEmail({
+      template: {
+        key: emailTemplates.deletedAccount,
+      },
+      to: [
+        {
+          email: targetUser.email,
+          name: targetUser.fullName,
+        },
+      ],
     });
 
     return {
@@ -165,21 +182,39 @@ export class ProfileController {
     @Request() req,
   ): Promise<ResponseSumType<ICommonUserDTO>> {
     try {
-      const message = `You have changed email <br/> New: ${updateEmail.email} <br /> Old: ${req.user.email}`;
+      const frontendUrl = await this.configService.get('frontendUrl');
 
-      this.notificationService.sendEmail({
-        to: req.user.email,
-        message,
+      const user = await this.coreService.findUserByEmail({
+        email: req.user.email,
       });
 
-      const user = await this.coreService.findUserAndUpdate({
+      this.notificationService.sendEmail({
+        to: [{ email: updateEmail.email, name: user.fullName }],
+        template: {
+          key: emailTemplates.emailUpdated,
+          data: [{ name: 'BACKURL', content: `${frontendUrl}/dashboard` }],
+        },
+      });
+
+      this.notificationService.sendEmail({
+        to: [{ email: req.user.email, name: user.fullName }],
+        template: {
+          key: emailTemplates.emailOldUpdated,
+          data: [
+              { name: 'BACKURL', content: `${frontendUrl}/dashboard` },
+              { name: 'NEWEMAIL', content: `${updateEmail.email}` }
+          ],
+        },
+      });
+
+      const updatedUser = await this.coreService.findUserAndUpdate({
         userId: req.user.userId,
         data: updateEmail,
       });
 
       return {
         success: true,
-        result: user,
+        result: updatedUser,
       };
     } catch (err) {
       this.logger.error(
@@ -288,6 +323,8 @@ export class ProfileController {
         throw new BadRequestException(USER_EXISTS);
       }
 
+      const user = await this.coreService.findUserById({ userId: req.user.userId });
+
       const code = generateVerificationCode(7);
 
       await this.coreService.setVerificationCode({
@@ -295,11 +332,15 @@ export class ProfileController {
         userId: req.user.userId,
       });
 
-      const message = `Your verification code: ${code}`;
-
       this.notificationService.sendEmail({
-        to: verifyData.email,
-        message,
+        to: [{ email: verifyData.email, name: user.fullName }],
+        template: {
+          key: emailTemplates.codeVerification,
+          data: [
+            { name: 'CODE', content: code },
+            { name: 'USERNAME', content: user.fullName }
+          ],
+        },
       });
 
       return {

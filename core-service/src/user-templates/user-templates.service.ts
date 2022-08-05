@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
 
 // schemas
 import {
@@ -138,5 +138,25 @@ export class UserTemplatesService {
     });
 
     return this.social.create(newSocials, { session });
+  }
+
+  async updateUserTemplate({
+    query,
+    data,
+    session,
+    populatePaths,
+  }: {
+    query: FilterQuery<UserTemplateDocument>;
+    data: UpdateQuery<UserTemplateDocument>;
+    session?: ITransactionSession;
+    populatePaths?: QueryOptions['populate'];
+  }) {
+    const options: QueryOptions = {
+      session: session?.session,
+      populate: populatePaths,
+      new: true,
+    };
+
+    return this.userTemplate.updateOne(query, data, options);
   }
 }

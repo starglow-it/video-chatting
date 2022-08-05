@@ -163,9 +163,7 @@ const DevicesSettingsDialog = memo(() => {
             });
 
             if (transformedStream) {
-                if (!meeting.sharingUserId) {
-                    await AgoraController.setUpDevices(transformedStream);
-                }
+                await AgoraController.setUpDevices(transformedStream);
 
                 AgoraController.setTracksState({
                     isCameraEnabled: isSharingScreenActive ? true : isCameraActive,
@@ -241,6 +239,7 @@ const DevicesSettingsDialog = memo(() => {
                                         onChangeBackgroundVolume={setVolume}
                                         isBlurActive={isBlurEnabled}
                                         onToggleBlur={handleToggleBlur}
+                                        isAudioActive={meetingTemplate.isAudioAvailable}
                                         title={
                                             <CustomTypography
                                                 className={styles.title}

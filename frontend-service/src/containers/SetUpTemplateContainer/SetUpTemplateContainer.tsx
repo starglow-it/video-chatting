@@ -27,7 +27,7 @@ import {
     getTemplateFx,
     updateProfileFx,
     updateProfilePhotoFx,
-    setRouteToChangeEvent,
+    setRouteToChangeEvent, createMeetingFx, startCheckoutSessionForSubscriptionFx,
 } from '../../store';
 
 // styles
@@ -58,6 +58,9 @@ const SetUpTemplateContainer = memo(() => {
     const profileAvatar = useStore($profileAvatarImage);
     const { confirmQuitOnboardingDialog } = useStore($appDialogsStore);
     const routeToChange = useStore($routeToChangeStore);
+
+    const isCreateMeetingPending = useStore(createMeetingFx.pending);
+    const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
 
     const forceRef = useRef<boolean>(false);
     const isDataFilled = useRef<boolean>(false);
@@ -95,7 +98,7 @@ const SetUpTemplateContainer = memo(() => {
         },
     });
 
-    const { handleSubmit, control } = methods;
+    const { handleSubmit, control, formState: { isSubmitSuccessful } } = methods;
 
     const companyName = useWatch({
         control,
@@ -171,6 +174,20 @@ const SetUpTemplateContainer = memo(() => {
         };
     }, [confirmQuitOnboardingDialog]);
 
+    const handleChooseSubscription = async (productId, isPaid) => {
+        const result = await createMeetingFx({ templateId: setUpTemplate?.id! });
+
+        if (result.template && isPaid) {
+            const response = await startCheckoutSessionForSubscriptionFx({ productId, meetingToken: result.template.id });
+
+            if (response?.url) {
+                return router.push(response.url);
+            }
+        } else if (result.template) {
+            await router.push(`/meeting/${result.template.id}`);
+        }
+    }
+
     const previewImage = (setUpTemplate?.previewUrls || []).find(
         preview => preview.resolution === 1080,
     );
@@ -196,8 +213,12 @@ const SetUpTemplateContainer = memo(() => {
                         userName={fullName}
                     />
                     <LocalVideoPreview />
-                    <SetUpTemplateInfo />
-                    <SubscriptionsPlans isSubscriptionStep={isProfileUpdated} />
+                    {!isSubmitSuccessful && <SetUpTemplateInfo/>}
+                    <SubscriptionsPlans
+                        isSubscriptionStep={isProfileUpdated}
+                        isDisabled={isCreateMeetingPending || isSubscriptionPurchasePending}
+                        onChooseSubscription={handleChooseSubscription}
+                    />
                 </form>
             </FormProvider>
             <ConfirmQuitOnboardingDialog onConfirm={handleQuit} onCancel={handleCancel} />

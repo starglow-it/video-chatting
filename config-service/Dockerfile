@@ -1,4 +1,8 @@
-FROM node:16.14.0-alpine AS builder
+FROM node:16.16.0-alpine AS builder
+
+RUN apk update
+RUN apk upgrade
+RUN apk add --no-cache git
 
 WORKDIR /app
 
@@ -14,13 +18,10 @@ COPY ./config-service ./config-service/
 
 RUN cd ./config-service && npm run build
 
-FROM node:16.14.0-alpine
+FROM node:16.16.0-alpine
 
 WORKDIR /app
 
 COPY --from=builder /app ./
 
-EXPOSE 4000
-
-CMD ["npm", "run", "--prefix", "/app/config-service", "start:prod"]
-
+CMD ["npm", "run", "--prefix", "/app/config-service", "start"]

@@ -13,7 +13,8 @@ import {
     updateLocalUserEvent,
     $profileStore,
     $meetingTemplateStore,
-    $meetingStore
+    $meetingStore,
+    $windowSizeStore
 } from '../../../store';
 
 // controller
@@ -21,7 +22,6 @@ import { AgoraController } from '../../../controllers/VideoChatController';
 
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
-import {useWindowResize} from "../../../hooks/useWindowResize";
 
 const MeetingUsersVideos = memo(() => {
     const localUser = useStore($localUserStore);
@@ -29,6 +29,7 @@ const MeetingUsersVideos = memo(() => {
     const meeting = useStore($meetingStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const { width } = useStore($windowSizeStore);
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -40,8 +41,6 @@ const MeetingUsersVideos = memo(() => {
                     localUser.id !== user.id,
             ),
     });
-
-    const { width } = useWindowResize();
 
     const resizeCoeff = width / window.screen.width;
 
@@ -59,7 +58,7 @@ const MeetingUsersVideos = memo(() => {
                     key={user.id}
                     elevationIndex={index + 1}
                     isScreensharing={isScreenSharing}
-                    top={user?.userPosition?.top}
+                    bottom={user?.userPosition?.bottom}
                     left={user?.userPosition?.left}
                 >
                     <MeetingUserVideoItem
@@ -115,7 +114,7 @@ const MeetingUsersVideos = memo(() => {
                 elevationIndex={0}
                 key={localUser.id}
                 isScreensharing={Boolean(meeting.sharingUserId)}
-                top={localUser?.userPosition?.top}
+                bottom={localUser?.userPosition?.bottom}
                 left={localUser?.userPosition?.left}
             >
                 <MeetingUserVideoItem

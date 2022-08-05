@@ -14,6 +14,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: 'Gather round a crackling firepit by the beach',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Sounds',
@@ -25,11 +26,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.27
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.58
             },
         ]
@@ -42,6 +43,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 3,
         description: 'Gather round a crackling firepit by the beach',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Sounds',
@@ -53,15 +55,15 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.19
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.44
             },
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.69
             }
         ]
@@ -74,6 +76,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 4,
         description: 'Gather round a crackling firepit by the beach',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Sounds',
@@ -86,19 +89,19 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.17
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.39
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.59
             },
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.74
             }
         ]
@@ -111,6 +114,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 4,
         description: 'Get inspired in a calming yet energizing environment',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Consulting',
@@ -121,19 +125,19 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.16
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.39
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.59
             },
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.84
             },
         ]
@@ -146,6 +150,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 3,
         description: 'Enter a rustic office surrounded by Nature',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Consulting',
@@ -158,15 +163,15 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.53,
+                bottom: 0.47,
                 left: 0.19
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.49
             },
             {
-                top: 0.51,
+                bottom: 0.49,
                 left: 0.76
             }
         ]
@@ -179,6 +184,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 3,
         description: 'Enjoy the rich visuals of the Retro era',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Consulting',
@@ -189,15 +195,15 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.49,
+                bottom: 0.41,
                 left: 0.15
             },
             {
-                top: 0.49,
+                bottom: 0.41,
                 left: 0.49
             },
             {
-                top: 0.49,
+                bottom: 0.41,
                 left: 0.83
             }
         ]
@@ -210,6 +216,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: 'Share a private conversation in a sunny office',
         type: 'free',
+        isAudioAvailable: false,
         businessCategories: [
             'Counselling',
             'Consulting',
@@ -219,11 +226,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.56,
+                bottom: 0.44,
                 left: 0.15
             },
             {
-                top: 0.56,
+                bottom: 0.44,
                 left: 0.84
             }
         ]
@@ -236,6 +243,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: 'Meet and chat in an idyllic patio with a dramatic backdrop',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Consulting',
@@ -248,27 +256,27 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.79,
+                bottom: 0.21,
                 left: 0.17
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.3
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.44
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.62
             },
             {
-                top: 0.77,
+                bottom: 0.23,
                 left: 0.78
             },
             {
-                top: 0.78,
+                bottom: 0.22,
                 left: 0.91
             }
         ]
@@ -281,6 +289,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: 'This office is modern yet iconic featuring a calming vista',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Calming',
@@ -289,11 +298,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.57,
+                bottom: 0.43,
                 left: 0.37
             },
             {
-                top: 0.66,
+                bottom: 0.34,
                 left: 0.17
             }
         ]
@@ -306,6 +315,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: 'This office is modern yet iconic featuring a calming vista',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Calming',
@@ -314,11 +324,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.63,
+                bottom: 0.37,
                 left: 0.6
             },
             {
-                top: 0.67,
+                bottom: 0.33,
                 left: 0.83
             }
         ]
@@ -331,6 +341,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 3,
         description: 'Lead meetings in an office with a prime view on Central Park',
         type: 'free',
+        isAudioAvailable: false,
         businessCategories: [
             'Legal',
             'Consulting',
@@ -340,15 +351,15 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.47,
+                bottom: 0.53,
                 left: 0.67
             },
             {
-                top: 0.57,
+                bottom: 0.43,
                 left: 0.3
             },
             {
-                top: 0.79,
+                bottom: 0.21,
                 left: 0.42
             }
         ]
@@ -361,6 +372,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 3,
         description: 'A neo-classic office featuring ocean views',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Legal',
             'Consulting',
@@ -371,15 +383,15 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.49,
+                bottom: 0.51,
                 left: 0.55
             },
             {
-                top: 0.67,
+                bottom: 0.33,
                 left: 0.32
             },
             {
-                top: 0.67,
+                bottom: 0.33,
                 left: 0.82
             }
         ]
@@ -392,6 +404,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: 'This office offers a warm and balanced ambiance',
         type: 'free',
+        isAudioAvailable: false,
         businessCategories: [
             'Legal',
             'Consulting',
@@ -400,11 +413,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.49,
+                bottom: 0.51,
                 left: 0.14
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.79
             }
         ]
@@ -417,6 +430,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: 'The ultimate huddle',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Team meeting',
             'Calming',
@@ -425,27 +439,27 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.81,
+                bottom: 0.19,
                 left: 0.1
             },
             {
-                top: 0.74,
+                bottom: 0.26,
                 left: 0.3
             },
             {
-                top: 0.94,
+                bottom: 0.1,
                 left: 0.39
             },
             {
-                top: 0.89,
+                bottom: 0.11,
                 left: 0.64
             },
             {
-                top: 0.79,
+                bottom: 0.21,
                 left: 0.82
             },
             {
-                top: 0.66,
+                bottom: 0.34,
                 left: 0.49
             }
         ]
@@ -458,6 +472,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: 'A soothing and calming ambiance',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Therapy',
             'Calming',
@@ -467,11 +482,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.39
             },
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.61
             }
         ]
@@ -484,6 +499,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: 'Take a seat in a restorative and calming set',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Therapy',
             'Calming',
@@ -493,11 +509,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.39
             },
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.61
             }
         ]
@@ -510,6 +526,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 2,
         description: "Enjoy a conversation overlooking New York's Central Park",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Therapy',
             'Calming',
@@ -519,11 +536,11 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.39
             },
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.61
             }
         ]
@@ -536,6 +553,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 4,
         description: "Ralph Lauren's signature Shelter Point",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Store',
             'Team meeting',
@@ -545,19 +563,19 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.64,
+                bottom: 0.36,
                 left: 0.05
             },
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.34
             },
             {
-                top: 0.69,
+                bottom: 0.31,
                 left: 0.82
             },
             {
-                top: 0.57,
+                bottom: 0.43,
                 left: 0.91
             }
         ],
@@ -596,6 +614,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 4,
         description: "Sit and relax at a typical Parisian café",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Consulting',
@@ -608,19 +627,19 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.80,
+                bottom: 0.20,
                 left: 0.15
             },
             {
-                top: 0.76,
+                bottom: 0.24,
                 left: 0.48
             },
             {
-                top: 0.71,
+                bottom: 0.29,
                 left: 0.72
             },
             {
-                top: 0.67,
+                bottom: 0.33,
                 left: 0.93
             }
         ]
@@ -633,6 +652,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: "Enjoy our Together mode while floating in the clouds",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Team meeting',
             'Calming',
@@ -641,27 +661,27 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.575
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.65
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.575
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.425
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.35
             },
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.425
             }
         ]
@@ -674,6 +694,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: "Enjoy our Together mode around a firepit",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Therapy',
             'Counselling',
@@ -685,27 +706,27 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.575
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.65
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.575
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.425
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.35
             },
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.425
             }
         ]
@@ -718,6 +739,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: "Enjoy our Together mode overlooking a beautiful ocean vista",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             "Team meeting",
             'Consulting',
@@ -729,27 +751,27 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.575
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.65
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.575
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.425
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.35
             },
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.425
             }
         ]
@@ -762,6 +784,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 4,
         description: "Relax in a calm Zen room",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             "Counselling",
             'Meditation',
@@ -772,19 +795,19 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.72,
+                bottom: 0.28,
                 left: 0.20
             },
             {
-                top: 0.76,
+                bottom: 0.24,
                 left: 0.385
             },
             {
-                top: 0.76,
+                bottom: 0.24,
                 left: 0.595
             },
             {
-                top: 0.72,
+                bottom: 0.28,
                 left: 0.795
             }
         ]
@@ -797,6 +820,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 4,
         description: "Zen out at the edge of a still pond",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             "Counselling",
             'Meditation',
@@ -807,19 +831,19 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.72,
+                bottom: 0.28,
                 left: 0.20
             },
             {
-                top: 0.76,
+                bottom: 0.24,
                 left: 0.385
             },
             {
-                top: 0.76,
+                bottom: 0.24,
                 left: 0.595
             },
             {
-                top: 0.72,
+                bottom: 0.28,
                 left: 0.795
             }
         ]
@@ -832,6 +856,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: "Box Breathing method for anxiety and calm",
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Meditation',
             'Team meeting',
@@ -840,27 +865,27 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.575
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.65
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.575
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.425
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.35
             },
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.425
             }
         ]
@@ -873,6 +898,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: "A soothing background for meetings",
         type: 'free',
+        isAudioAvailable: false,
         businessCategories: [
             "Team meeting",
             "Consulting",
@@ -883,27 +909,27 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.575
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.65
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.575
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.425
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.35
             },
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.425
             }
         ]
@@ -916,6 +942,7 @@ export const templatesData: BaseTemplate[] = [
         maxParticipants: 6,
         description: "A static, professional & calming ambient",
         type: 'free',
+        isAudioAvailable: false,
         businessCategories: [
             "Team meeting",
             "Consulting",
@@ -926,39 +953,40 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.575
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.65
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.575
             },
             {
-                top: 0.75,
+                bottom: 0.25,
                 left: 0.425
             },
             {
-                top: 0.50,
+                bottom: 0.50,
                 left: 0.35
             },
             {
-                top: 0.25,
+                bottom: 0.75,
                 left: 0.425
             }
         ]
     },
     {
-        templateId: 27,
+        templateId: 28,
         url: 'https://vimeo.com/689593453',
         imagesUrl: '/images/lakeside3',
         name: 'Lakeside Office (3d Model)',
         maxParticipants: 4,
         description: 'Get inspired in a calming yet energizing environment',
         type: 'free',
+        isAudioAvailable: true,
         businessCategories: [
             'Counselling',
             'Consulting',
@@ -969,19 +997,19 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.16
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.39
             },
             {
-                top: 0.54,
+                bottom: 0.46,
                 left: 0.59
             },
             {
-                top: 0.59,
+                bottom: 0.41,
                 left: 0.84
             },
         ]

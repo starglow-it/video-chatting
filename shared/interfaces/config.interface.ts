@@ -3,7 +3,6 @@ export interface IConfig {
     rabbitMqAuthQueue: string;
     rabbitMqNotificationsQueue: string;
     rabbitMqPaymentQueue: string;
-    rabbitMqInstanceMangerQueue: string;
     rabbitMqUser: string;
     rabbitMqPass: string;
     rabbitMqHost: string;
@@ -11,10 +10,9 @@ export interface IConfig {
     jwtSecret: string;
     frontendUrl: string;
     gatewayPort: string;
-    smtpHost: string;
-    smtpPort: string;
     smtpUser: string;
     smtpPass: string;
+    smtpUserName: string;
     defaultServerIp: string;
     appId: string;
     appCertificate: string;
@@ -24,6 +22,12 @@ export interface IConfig {
     storageHostname: string;
     stripeApiKey: string;
     stripeWebhookSecret: string;
+    stripeExpressWebhookSecret: string;
+    mandrillApiKey: string;
+    isLocal: string;
+    nodeEnv: string;
+    port: string;
+    emailService: string;
 }
 
 export type ConfigKeysType = keyof IConfig;

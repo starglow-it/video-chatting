@@ -1,6 +1,13 @@
-FROM node:16.14.0-alpine
+FROM node:16.16.0-alpine
 
-WORKDIR /app/
+RUN apk update
+RUN apk upgrade
+RUN apk add --no-cache git
+RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache g++ make
+
+RUN mkdir /app
+WORKDIR /app
 
 COPY ./shared ./shared
 
@@ -12,4 +19,4 @@ RUN cd ./notifications-service && npm ci --silent --legacy-peer-deps
 
 COPY ./notifications-service ./notifications-service/
 
-CMD ["npm", "run", "--prefix", "/app/notifications-service", "start:dev"]
+CMD ["npm", "run", "--prefix", "/app/notifications-service", "dev"]

@@ -9,7 +9,7 @@ import { Global, Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { Socket } from 'socket.io';
-import { plainToClass } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 
 import {
   ANSWER_ACCESS_REQUEST,
@@ -236,10 +236,7 @@ export class MeetingsGateway
       }
 
       if (!meeting) {
-        return {
-          success: false,
-          message: 'meeting.notFound',
-        };
+        return;
       }
 
       const activeParticipants = await this.usersService.countMany({
@@ -346,7 +343,9 @@ export class MeetingsGateway
         id: meeting.templateId,
       });
 
-      const mainUser = await this.coreService.findUserById({ userId: template.user.id });
+      const mainUser = await this.coreService.findUserById({
+        userId: template.user.id,
+      });
 
       const activeParticipants = await this.usersService.countMany({
         meeting: meeting._id,
@@ -378,13 +377,19 @@ export class MeetingsGateway
           value: 90,
         });
 
-        meeting.endsAt = Date.now() + (mainUser.maxMeetingTime < endsAtTimeout && mainUser.subscriptionPlanKey !== 'Business' ? mainUser.maxMeetingTime : endsAtTimeout);
+        const realEndsAtTimeout =
+          mainUser.maxMeetingTime < endsAtTimeout &&
+          mainUser.subscriptionPlanKey !== 'Business'
+            ? mainUser.maxMeetingTime
+            : endsAtTimeout;
+
+        meeting.endsAt = Date.now() + realEndsAtTimeout;
 
         await meeting.save();
 
         this.taskService.addTimeout({
           name: `meeting:finish:${message.meetingId}`,
-          ts: endsAtTimeout,
+          ts: realEndsAtTimeout,
           callback: this.endMeeting.bind(this, {
             meetingId: meeting._id,
           }),
@@ -485,7 +490,7 @@ export class MeetingsGateway
           enableImplicitConversion: true,
         });
 
-        const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -531,7 +536,7 @@ export class MeetingsGateway
     }>
   > {
     return withTransaction(this.connection, async (session) => {
-      if (!message.meetingId) return;
+      if (!message.meetingId) return { success: true };
 
       const meeting = await this.meetingsService.findById(
         message.meetingId,
@@ -546,17 +551,12 @@ export class MeetingsGateway
 
       await meeting.populate(['owner', 'users']);
 
-      const plainUser = plainToClass(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
       const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
 
-      const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -566,9 +566,16 @@ export class MeetingsGateway
         users: plainUsers,
       });
 
-      this.emitToSocketId(user.socketId, UPDATE_USER, {
-        user: plainUser,
-      });
+      if (user?.socketId) {
+        const plainUser = plainToClass(CommonUserDTO, user, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+
+        this.emitToSocketId(user.socketId, UPDATE_USER, {
+          user: plainUser,
+        });
+      }
 
       return {
         success: true,
@@ -669,6 +676,8 @@ export class MeetingsGateway
           session,
         );
 
+        if (!user) return;
+
         const plainUser = plainToClass(CommonUserDTO, user, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
@@ -711,23 +720,25 @@ export class MeetingsGateway
   async endMeeting(@MessageBody() message: EndMeetingRequestDTO) {
     await withTransaction(this.connection, async (session) => {
       const meeting = await this.meetingsService.findById(
-          message.meetingId,
-          session,
+        message.meetingId,
+        session,
       );
 
       const template = await this.coreService.findMeetingTemplate({
         id: meeting.templateId,
       });
 
-      const user = await this.coreService.findUserById({ userId: template.user.id });
-      if (user.subscriptionPlanKey !== "Business") {
+      const user = await this.coreService.findUserById({
+        userId: template.user.id,
+      });
+      if (user.subscriptionPlanKey !== 'Business') {
         const newTime = user.maxMeetingTime - (Date.now() - meeting.startAt);
 
         await this.coreService.updateUser({
           query: { _id: user.id },
           data: {
             maxMeetingTime: newTime < 0 ? 0 : newTime,
-          }
+          },
         });
       }
 

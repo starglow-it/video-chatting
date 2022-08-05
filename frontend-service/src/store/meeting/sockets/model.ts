@@ -1,5 +1,5 @@
 import { meetingDomain } from '../domain';
-import { SocketState, MeetingUser } from '../../types';
+import { MeetingUser } from '../../types';
 import { createSocketEvent } from '../../socket/model';
 import {
     ANSWER_ACCESS_REQUEST,
@@ -13,13 +13,10 @@ import {
     UPDATE_MEETING_TEMPLATE,
 } from '../../../const/socketEvents/emitters';
 
-export const meetingSocketEventsController = meetingDomain.event<SocketState>(
-    'meetingSocketEventsController',
-);
-
 export const emitEndMeetingEvent = meetingDomain.event('emitEndMeetingEvent');
 export const emitLeaveMeetingEvent = meetingDomain.event('emitLeaveMeetingEvent');
 export const emitEnterMeetingEvent = meetingDomain.event('emitEnterMeetingEvent');
+export const emitEnterWaitingRoom = meetingDomain.event('emitEnterWaitingRoom');
 export const emitCancelEnterMeetingEvent = meetingDomain.event('emitCancelEnterMeetingEvent');
 export const emitAnswerAccessMeetingRequest = meetingDomain.event<{
     isUserAccepted: boolean;

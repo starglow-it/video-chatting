@@ -47,7 +47,8 @@
     "schedule": "Schedule",
     "done": "Done",
     "copy": "Copy",
-    "back": "Go back"
+    "back": "Go back",
+    "upgrade": "Upgrade"
   },
   "login": {
     "welcome": "Welcome back",

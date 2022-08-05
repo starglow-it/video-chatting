@@ -12,6 +12,7 @@ export interface ICommonTemplate {
     previewUrls: IPreviewImage[];
     type: string;
     businessCategories?: IBusinessCategory[];
-    usersPosition: { top: number; left: number }[];
+    usersPosition: { bottom: number; left: number }[];
     links?: { item: string; position: { top: number; left: number } }[];
+    isAudioAvailable: boolean;
 }

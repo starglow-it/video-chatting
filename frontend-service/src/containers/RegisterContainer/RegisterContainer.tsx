@@ -117,7 +117,7 @@ const RegisterContainer = memo(() => {
 
     return (
         <>
-            <CenteredPaper className={styles.wrapper} onClose={handleCloseRegister}>
+            <CenteredPaper className={styles.wrapper}>
                 <CustomGrid container alignItems="center" justifyContent="center">
                     <CustomBox className={styles.image}>
                         <Image width="28" height="28" src="/images/hi-hand.png" alt="hi-hand" />

@@ -57,13 +57,19 @@ export class UsersService {
   async findUser({
     query,
     session,
-    populatePaths
+    populatePaths,
   }: {
     query: FilterQuery<UserDocument>;
     session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }) {
-    return this.user.findOne(query, {}, { populate: populatePaths, session: session?.session }).exec();
+    return this.user
+      .findOne(
+        query,
+        {},
+        { populate: populatePaths, session: session?.session },
+      )
+      .exec();
   }
 
   async findUsers({
@@ -104,8 +110,8 @@ export class UsersService {
     );
   }
 
-  async findById(id: ICommonUserDTO['id'], { session }: ITransactionSession) {
-    return this.user.findById(id, {}, { session }).exec();
+  async findById(id: ICommonUserDTO['id'], { session }: ITransactionSession, populatePaths?: CustomPopulateOptions) {
+    return this.user.findById(id, {}, { session, populate: populatePaths }).exec();
   }
 
   async hashPassword(pass: string): Promise<string> {

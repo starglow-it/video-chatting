@@ -21,9 +21,7 @@ import { DeleteProfileDialog } from '@components/Dialogs/DeleteProfileDialog/Del
 import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
 
 // stores
-import { $profileStore, updateProfileFx } from '../../store';
-import { $routeToChangeStore } from '../../store';
-import { appDialogsApi } from '../../store';
+import { $routeToChangeStore, $profileStore, updateProfileFx, appDialogsApi } from '../../store';
 
 // validations
 import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';

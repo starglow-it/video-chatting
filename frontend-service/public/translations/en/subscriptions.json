@@ -1,10 +1,24 @@
 {
+  "buttons": {
+    "showMore": "Show more",
+    "upgrade": "Upgrade",
+    "startHouse": "Get started FREE",
+    "startProfessional": "Get Professional",
+    "startBusiness": "Get Business",
+    "currentPlan": "Current plan"
+  },
+
   "subscriptions": {
+    "selectPlan": "Select plan",
+    "title": "Subscriptions",
+    "nextPayment": "Next payment: {{nextPaymentDate}}",
+    "current": "Subscription: <strong>{{currentSub}}</strong>",
+    "manage": "Manage",
     "House": {
       "features": [
         {
           "text": "Accept Payments",
-          "subText": "TheLiveOffice collects a 0.99% processing fee"
+          "subText": "0.99% processing fee"
         },
         {
           "text": "Time capped on monthly basis",
@@ -18,12 +32,47 @@
           "text": "SSO encrypted",
           "subText": ""
         }
+      ],
+      "more": [
+        {
+          "text": "Accept Payments",
+          "subText": "TheLiveOffice collects a 0.99% processing fee"
+        },
+        {
+          "text": "Immersive video calls"
+        },
+        {
+          "text": "Easy screen sharing"
+        },
+        {
+          "text": "Easy call scheduling"
+        },
+        {
+          "text": "Enhanced privacy"
+        },
+        {
+          "text": "No download necessary"
+        },
+        {
+          "text": "No extension required"
+        },
+        {
+          "text": "SSO encrypted"
+        },
+        {
+          "text": "Time capped on monthly basis",
+          "subText": "120 minutes"
+        },
+        {
+          "text": "1 Free template",
+          "subText": "You can still try and switch scene for free"
+        }
       ]
     },
     "Professional": {
       "features": [
         {
-          "text": "All <strong>House plan</strong> features",
+          "text": "Everything in <strong>House</strong>",
           "subText": ""
         },
         {
@@ -43,7 +92,7 @@
     "Business": {
       "features": [
         {
-          "text": "All <strong>House plan</strong> features",
+          "text": "All <strong>Professional</strong> features",
           "subText": ""
         },
         {

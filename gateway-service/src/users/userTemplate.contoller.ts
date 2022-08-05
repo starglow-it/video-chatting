@@ -24,10 +24,10 @@ import { generateIcsEventData } from '../utils/generateIcsEventData';
 import { UploadService } from '../upload/upload.service';
 import { v4 as uuidv4 } from 'uuid';
 
-import { receiverScheduleMessage } from '../utils/emailMessages/receiverScheduleMessage';
 import { formatDate } from '../utils/dateHelpers/formatDate';
 import { parseDateObject } from '../utils/dateHelpers/parseDateObject';
 import { getTzOffset } from '../utils/dateHelpers/getTzOffset';
+import { emailTemplates } from '@shared/const/email-templates.const';
 
 @Controller('users/templates')
 export class UserTemplateController {
@@ -125,27 +125,28 @@ export class UserTemplateController {
 
       const icsLink = await this.uploadService.uploadFile(content, key);
 
-      const icsEventData = {
-        method: 'request',
-        path: icsLink,
-      };
-
       const startAtDate = formatDate(startAt, data.timeZone);
-      const endAtDate = formatDate(endAt, data.timeZone);
-
-      const receiverMessage = receiverScheduleMessage({
-        senderFullName: senderUser.fullName,
-        templateName: template.name,
-        startAt: startAtDate,
-        endAt: endAtDate,
-        comment: data.comment,
-        meetingLink: `${frontendUrl}/meeting/${template.id}`,
-      });
 
       await this.notificationService.sendEmail({
-        to: data.userEmails,
-        message: receiverMessage,
-        icalEvent: icsEventData,
+        template: {
+          key: emailTemplates.meetingInviteIcs,
+          data: [
+            {
+              name: 'MEETINGURL',
+              content: `${frontendUrl}/meeting/${
+                template.customLink || template.id
+              }`,
+            },
+            { name: 'DATE', content: startAtDate },
+            {
+              name: 'SENDER',
+              content: `${senderUser.fullName} (${senderUser.email})`,
+            },
+          ],
+        },
+        to: data.userEmails.map((email) => ({ email, name: email })),
+        icsEventLink: icsLink,
+        icalEventContent: content,
       });
 
       return {

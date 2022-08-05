@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { useStore } from 'effector-react';
+import React, { useEffect, memo } from 'react';
+import { useStore, useStoreMap } from 'effector-react';
 import Image from 'next/image';
 
 // components
@@ -14,21 +14,46 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // stores
-import { $profileStore } from '../../../store';
+import {$profileStore, $profileTemplatesStore, getProfileTemplatesFx} from '../../../store';
 
 // styles
 import styles from './MainInfo.module.scss';
-
-// types
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 const MainInfo = memo(() => {
     const profileState = useStore($profileStore);
+
+    const lastProfileTemplate = useStoreMap({
+        store: $profileTemplatesStore,
+        keys: [],
+        fn: (state) => state?.list?.sort?.((a, b) => new Date(a.usedAt).getTime() < new Date(b.usedAt).getTime() ? 1 : 0)?.[0],
+    });
+
+    useEffect(() => {
+        getProfileTemplatesFx({ limit: 6, skip: 0 });
+    }, []);
+
+    const previewImage = (lastProfileTemplate?.previewUrls || []).find(image => image.resolution === 1080);
 
     return (
         <CustomPaper className={styles.wrapper}>
             <CustomGrid container direction="column">
                 <SocialLinks />
-                <Image src="/images/defaultTemplateImage.png" width="100%" height="210px" />
+                <CustomBox className={styles.imageWrapper}>
+                    {previewImage?.url
+                        ? (
+                            <Image
+                                src={previewImage.url}
+                                width="100%"
+                                height="100%"
+                                layout="fill"
+                                objectFit="cover"
+                                objectPosition="center"
+                            />
+                        )
+                        : null
+                    }
+                </CustomBox>
                 <CustomGrid
                     className={styles.profileInfoWrapper}
                     container

@@ -29,6 +29,7 @@ export const initialTemplateState: UserTemplate = {
     templateCurrency: 'USD',
     signBoard: 'default',
     isMonetizationEnabled: false,
+    isAudioAvailable: false,
     usersPosition: [],
 };
 

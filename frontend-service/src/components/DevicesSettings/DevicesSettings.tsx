@@ -37,11 +37,11 @@ import {
     $profileStore,
     addNotificationEvent,
     emitCancelEnterMeetingEvent,
+    emitEnterWaitingRoom,
     enterMeetingRequest,
     sendEnterWaitingRoom,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
-    setIsUserSendEnterRequest,
     startMeeting,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
@@ -72,6 +72,8 @@ const DevicesSettings = memo(() => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const isEnterMeetingRequestPending = useStore(enterMeetingRequest.pending);
+    const isEnterWaitingRoomRequestPending = useStore(sendEnterWaitingRoom.pending);
 
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
@@ -158,9 +160,8 @@ const DevicesSettings = memo(() => {
                 if (isMeetingInstanceExists && isOwnerInMeeting) {
                     enterMeetingRequest();
                 } else {
-                    sendEnterWaitingRoom({});
+                    emitEnterWaitingRoom();
                 }
-                setIsUserSendEnterRequest(true);
             }
 
             setBackgroundAudioVolume(settingsBackgroundAudioVolume);
@@ -200,7 +201,6 @@ const DevicesSettings = memo(() => {
 
     const handleCancelRequest = useCallback(async () => {
         emitCancelEnterMeetingEvent();
-        setIsUserSendEnterRequest(false);
     }, []);
 
     const onSubmit = useCallback(
@@ -219,7 +219,6 @@ const DevicesSettings = memo(() => {
     const handleBack = useCallback(() => {
         if (isUserSentEnterRequest) {
             emitCancelEnterMeetingEvent();
-            setIsUserSendEnterRequest(false);
         }
 
         updateLocalUserEvent({
@@ -227,7 +226,9 @@ const DevicesSettings = memo(() => {
         });
     }, [isUserSentEnterRequest]);
 
-    const isEnterMeetingDisabled = !changeStream && error === 'media.notAllowed';
+    const isEnterMeetingDisabled = !changeStream && error === 'media.notAllowed'
+        || isEnterMeetingRequestPending
+        || isEnterWaitingRoomRequestPending;
 
     return (
         <CustomPaper className={styles.wrapper}>
@@ -285,6 +286,7 @@ const DevicesSettings = memo(() => {
                                     onBackgroundToggle={handleToggleBackgroundAudio}
                                     onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
                                     onToggleBlur={onToggleBlur}
+                                    isAudioActive={meetingTemplate.isAudioAvailable}
                                     title={
                                         <CustomTypography
                                             className={styles.title}
@@ -313,15 +315,17 @@ const DevicesSettings = memo(() => {
                     </CustomGrid>
                 </CustomGrid>
                 <CustomGrid container gap={1} wrap="nowrap" className={styles.joinBtn}>
-                    {!isUserSentEnterRequest ? (
-                        <CustomButton
-                            onClick={handleBack}
-                            variant="custom-cancel"
-                            nameSpace="common"
-                            translation="buttons.back"
-                        />
-                    ) : null}
-
+                    {!isUserSentEnterRequest
+                        ? (
+                            <CustomButton
+                                onClick={handleBack}
+                                variant="custom-cancel"
+                                nameSpace="common"
+                                translation="buttons.back"
+                            />
+                        )
+                        : null
+                    }
                     <CustomButton
                         onClick={
                             isUserSentEnterRequest

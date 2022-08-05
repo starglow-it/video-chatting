@@ -1,19 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { CONFIG_PROVIDER } from '@shared/providers';
 import { ConfigKeysType, IConfig } from '@shared/interfaces/config.interface';
+import { sendHttpRequest } from '../utils/http/sendHttpRequest';
 
-@Injectable()
 export class ConfigClientService {
-  constructor(
-    @Inject(CONFIG_PROVIDER)
-    private readonly client: ClientProxy,
-  ) {}
+  constructor() {}
 
-  async get(key: keyof IConfig): Promise<string> {
+  async get(key: ConfigKeysType): Promise<string> {
     try {
-      const pattern = { cmd: 'get' };
-      return await this.client.send<ConfigKeysType>(pattern, key).toPromise();
+      const response = await sendHttpRequest({
+        url: `http://config-service:4000/v1/config/${key}`,
+        method: 'GET',
+      });
+
+      return response.data.success;
     } catch (err) {
       console.error(err);
 
@@ -23,8 +21,12 @@ export class ConfigClientService {
 
   async getAll(): Promise<IConfig> {
     try {
-      const pattern = { cmd: 'getAll' };
-      return await this.client.send<IConfig>(pattern, {}).toPromise();
+      const response = await sendHttpRequest({
+        url: 'http://config-service:4000/v1/config',
+        method: 'GET',
+      });
+
+      return response.data.success;
     } catch (err) {
       console.error(err);
 

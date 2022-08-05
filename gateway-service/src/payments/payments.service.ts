@@ -12,6 +12,7 @@ import {
   GET_STRIPE_PORTAL_SESSION,
   GET_STRIPE_PRODUCTS,
   GET_STRIPE_SUBSCRIPTION,
+  HANDLE_EXPRESS_WEBHOOK,
   HANDLE_WEBHOOK,
   LOGIN_STRIPE_EXPRESS_ACCOUNT,
 } from '@shared/patterns/payments';
@@ -62,13 +63,19 @@ export class PaymentsService {
     return this.client.send(pattern, data).toPromise();
   }
 
+  async handleExpressWebhook(data: any) {
+    const pattern = { cmd: HANDLE_EXPRESS_WEBHOOK };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
   async getStripeProducts() {
     const pattern = { cmd: GET_STRIPE_PRODUCTS };
 
     return this.client.send(pattern, {}).toPromise();
   }
 
-  async getCheckoutSession(data: { productId: string; meetingToken: string }) {
+  async getCheckoutSession(data: { productId: string; meetingToken: string; baseUrl: string }) {
     const pattern = { cmd: GET_STRIPE_CHECKOUT_SESSION };
 
     return this.client.send(pattern, data).toPromise();

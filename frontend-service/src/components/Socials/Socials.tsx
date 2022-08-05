@@ -1,7 +1,7 @@
 import React, { useRef, memo, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import {useFieldArray, useFormContext, useWatch} from 'react-hook-form';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -19,6 +19,64 @@ import styles from './Socials.module.scss';
 // const
 import { SOCIAL_LINKS, SOCIALS_ICONS } from '../../const/profile/socials';
 
+const SocialInput = ({ social, index, onRemove }) => {
+    const { register, formState: { errors }, control } = useFormContext();
+
+    const inputValue = useWatch({
+        control,
+        name: `socials[${index}]`
+    });
+
+    const Icon = SOCIALS_ICONS[social.key];
+    const inputKey = `socials[${index}].value`;
+    const fieldError = errors[inputKey]?.[0]?.message;
+
+    const { onChange, ...registerData } = register(inputKey);
+
+    const handleClearLink = () => {
+        onRemove(index);
+    };
+
+    const handleChange = async event => {
+        const { value } = event.target;
+
+        if (value) {
+            event.target.value = /https?/g.test(value) && /https?/g.test(inputValue.value) ? value.replace(/https:\/\//, '') : value;
+
+            await onChange(event);
+        } else {
+            event.target.value = 'https://';
+
+            await onChange(event);
+        }
+    };
+
+    return (
+        <CustomInput
+            error={fieldError}
+            InputProps={{
+                startAdornment: (
+                    <InputAdornment position="start">
+                        <Icon />
+                    </InputAdornment>
+                ),
+                endAdornment: (
+                    <InputAdornment position="end">
+                        <TrashIcon
+                            width="24px"
+                            height="24px"
+                            className={styles.trashIcon}
+                            onClick={handleClearLink}
+                        />
+                    </InputAdornment>
+                ),
+            }}
+            onChange={handleChange}
+            {...registerData}
+        />
+    );
+}
+
 const Component: React.FunctionComponent<{
     buttonClassName?: string;
     title?: React.ElementType;
@@ -26,13 +84,16 @@ const Component: React.FunctionComponent<{
     const prevFieldsCount = useRef(0);
 
     const {
-        register,
         control,
         setFocus,
         formState: { errors },
     } = useFormContext();
 
     const { fields, remove, append } = useFieldArray({ control, name: 'socials' });
+
+    const handleRemove = (index) => {
+        remove(index);
+    }
 
     const renderSocials = useMemo(
         () =>
@@ -45,7 +106,7 @@ const Component: React.FunctionComponent<{
                 const handleAction = () => {
                     if (isThereField) {
                         if (fieldIndex !== -1) {
-                            remove(fieldIndex);
+                            handleRemove(fieldIndex);
                         }
                     } else {
                         append({ key: social.key, value: 'https://' });
@@ -84,55 +145,14 @@ const Component: React.FunctionComponent<{
 
     const profileLinks = useMemo(
         () =>
-            fields?.map((social, index) => {
-                const Icon = SOCIALS_ICONS[social.key];
-                const inputKey = `socials[${index}].value`;
-                const fieldError = errors[inputKey]?.[0]?.message;
-
-                const { onChange, ...registerData } = register(inputKey);
-
-                const handleClearLink = () => {
-                    remove(index);
-                };
-
-                const handleChange = async event => {
-                    const { value } = event.target;
-
-                    if (value) {
-                        await onChange(event);
-                    } else {
-                        event.target.value = 'https://';
-
-                        await onChange(event);
-                    }
-                };
-
-                return (
-                    <CustomInput
-                        key={social.id}
-                        error={fieldError}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Icon />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <TrashIcon
-                                        width="24px"
-                                        height="24px"
-                                        className={styles.trashIcon}
-                                        onClick={handleClearLink}
-                                    />
-                                </InputAdornment>
-                            ),
-                        }}
-                        onChange={handleChange}
-                        {...registerData}
-                    />
-                );
-            }),
+            fields?.map((social, index) => (
+                <SocialInput
+                    onRemove={handleRemove}
+                    key={social.id}
+                    social={social}
+                    index={index}
+                />
+            )),
         [fields, errors],
     );
 

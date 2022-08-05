@@ -4,7 +4,8 @@ import {
   Controller,
   Delete,
   Get,
-  Logger, Param,
+  Logger,
+  Param,
   Post,
   Request,
   Response,
@@ -275,9 +276,9 @@ export class PaymentsController {
 
   @Post('/webhook')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Catch Webbhook Requests' })
+  @ApiOperation({ summary: 'Catch Webhook Requests' })
   @ApiOkResponse({
-    description: 'Catch Webbhook Requests',
+    description: 'Catch Webhook Requests',
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
@@ -291,6 +292,42 @@ export class PaymentsController {
       const signature = req.headers['stripe-signature'];
 
       await this.paymentsService.handleWebhook({
+        signature,
+        body: body,
+      });
+
+      // Return a 200 response to acknowledge receipt of the event
+      res.send();
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while connect stripe account`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('/express-webhook')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Catch Express Webhook Requests' })
+  @ApiOkResponse({
+    description: 'Catch Webhook Requests',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async expressWebhookHandler(
+    @Body() body: any,
+    @Request() req,
+    @Response() res,
+  ): Promise<void> {
+    try {
+      const signature = req.headers['stripe-signature'];
+
+      await this.paymentsService.handleExpressWebhook({
         signature,
         body: body,
       });
@@ -325,14 +362,14 @@ export class PaymentsController {
 
       return {
         success: true,
-        result: products
-      }
+        result: products,
+      };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get stripe products`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get stripe products`,
+        },
+        JSON.stringify(err),
       );
 
       throw new BadRequestException(err);
@@ -340,7 +377,7 @@ export class PaymentsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/products/:productId/:meetingToken')
+  @Post('/products/:productId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Buy Products' })
   @ApiOkResponse({
@@ -350,30 +387,34 @@ export class PaymentsController {
     description: 'Forbidden',
   })
   async buyProduct(
-      @Request() req,
-      @Param('productId') productId: string,
-      @Param('meetingToken') meetingToken: string,
+    @Request() req,
+    @Body() body: {baseUrl: string; meetingToken: string},
+    @Param('productId') productId: string,
   ): Promise<ResponseSumType<any>> {
     try {
-      const session = await this.paymentsService.getCheckoutSession({ productId, meetingToken });
+      const session = await this.paymentsService.getCheckoutSession({
+        productId,
+        meetingToken: body.meetingToken,
+        baseUrl: body.baseUrl,
+      });
 
       await this.coreService.findUserAndUpdate({
         userId: req.user.userId,
-        data: { stripeSessionId: session.id }
+        data: { stripeSessionId: session.id },
       });
 
       return {
         success: true,
         result: {
-          url: session.url
-        }
-      }
+          url: session.url,
+        },
+      };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while buy stripe product`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while buy stripe product`,
+        },
+        JSON.stringify(err),
       );
 
       throw new BadRequestException(err);
@@ -381,7 +422,7 @@ export class PaymentsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/portal/:subscriptionId')
+  @Get('/portal/:subscriptionId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Portal Session Url' })
   @ApiOkResponse({
@@ -391,21 +432,25 @@ export class PaymentsController {
     description: 'Forbidden',
   })
   async getPortalSession(
-      @Param('subscriptionId') subscriptionId: string,
+    @Param('subscriptionId') subscriptionId: string,
   ): Promise<ResponseSumType<any>> {
     try {
-      const portalSessionUrl = await this.paymentsService.getPortalSession({ subscriptionId });
+      const portalSession = await this.paymentsService.getPortalSession({
+        subscriptionId,
+      });
 
       return {
         success: true,
-        result: portalSessionUrl
-      }
+        result: {
+          url: portalSession.url
+        },
+      };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get portal session url`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get portal session url`,
+        },
+        JSON.stringify(err),
       );
 
       throw new BadRequestException(err);
@@ -423,21 +468,23 @@ export class PaymentsController {
     description: 'Forbidden',
   })
   async getStripeSubscription(
-      @Param('subscriptionId') subscriptionId: string,
+    @Param('subscriptionId') subscriptionId: string,
   ): Promise<ResponseSumType<any>> {
     try {
-      const subscription = await this.paymentsService.getStripeSubscription({ subscriptionId });
+      const subscription = await this.paymentsService.getStripeSubscription({
+        subscriptionId,
+      });
 
       return {
         success: true,
-        result: subscription
-      }
+        result: subscription,
+      };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get portal session url`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get portal session url`,
+        },
+        JSON.stringify(err),
       );
 
       throw new BadRequestException(err);

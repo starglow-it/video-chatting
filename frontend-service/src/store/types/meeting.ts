@@ -26,11 +26,12 @@ export type MeetingInstance = {
 };
 
 export enum MeetingAccessStatuses {
+    EnterName = 'enterName',
+    Settings = 'settings',
     Waiting = 'waiting',
     RequestSent = 'requestSent',
     InMeeting = 'inMeeting',
     Rejected = 'rejected',
-    EnterName = 'enterName',
     Kicked = 'Kicked',
 }
 
@@ -56,7 +57,7 @@ export type MeetingUser = {
     audioTrack?: ILocalAudioTrack | IRemoteAudioTrack;
     videoTrack?: ILocalVideoTrack | IRemoteVideoTrack;
     userPosition?: {
-        top: number;
+        bottom: number;
         left: number;
     };
 };

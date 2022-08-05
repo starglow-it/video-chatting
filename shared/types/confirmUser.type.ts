@@ -1,7 +1,3 @@
-type ConfirmUser = {
+export type ConfirmUser = {
     token: string;
-}
-
-export {
-    ConfirmUser
 }

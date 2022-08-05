@@ -102,13 +102,13 @@ export class SeederService {
           });
         } else {
           const templateBusinessCategories =
-              await this.businessCategoriesService.find({
-                query: {
-                  value: {
-                    $in: templateData.businessCategories,
-                  },
+            await this.businessCategoriesService.find({
+              query: {
+                value: {
+                  $in: templateData.businessCategories,
                 },
-              });
+              },
+            });
 
           await this.commonTemplatesService.updateCommonTemplate({
             query: {
@@ -117,8 +117,21 @@ export class SeederService {
             data: {
               ...templateData,
               businessCategories: templateBusinessCategories.map((category) =>
-                  category._id.toString(),
+                category._id.toString(),
               ),
+            },
+          });
+
+          await this.userTemplatesService.updateUserTemplate({
+            query: {
+              templateId: templateData.templateId,
+            },
+            data: {
+              url: templateData.url,
+              maxParticipants: templateData.maxParticipants,
+              type: templateData.type,
+              isAudioAvailable: templateData.isAudioAvailable,
+              usersPosition: templateData.usersPosition,
             },
           });
         }

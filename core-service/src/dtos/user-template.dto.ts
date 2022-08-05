@@ -94,9 +94,11 @@ export class UserTemplateDTO implements IUserTemplate {
   templateCurrency: IUserTemplate['templateCurrency'];
 
   @Expose()
+  isAudioAvailable: IUserTemplate['isAudioAvailable'];
+
+  @Expose()
   @Transform((data) => data.obj?.usersPosition)
   usersPosition: IUserTemplate['usersPosition'];
-  x;
 
   @Expose()
   @Transform((data) =>

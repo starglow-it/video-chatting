@@ -38,5 +38,8 @@ export class CommonTemplateDTO implements ICommonTemplate {
   type: string;
 
   @Expose()
-  usersPosition: { top: number; left: number }[];
+  isAudioAvailable: boolean;
+
+  @Expose()
+  usersPosition: { bottom: number; left: number }[];
 }

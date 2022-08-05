@@ -55,13 +55,20 @@ const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => 
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            {previewImage?.url ? <Image src={previewImage.url} layout="fill" /> : null}
+            {previewImage?.url
+                ? (
+                    <Image
+                        src={previewImage.url}
+                        layout="fill"
+                    />
+                )
+                : null
+            }
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}
                 description={template.description}
                 maxParticipants={template.maxParticipants}
-                avatar={template?.user?.profileAvatar?.url || ''}
                 type={template.type}
             />
             <Fade in={showPreview}>

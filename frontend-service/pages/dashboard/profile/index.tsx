@@ -17,7 +17,7 @@ const DashboardPage: NextPage = (): JSX.Element => (
 );
 
 DashboardPage.getInitialProps = () => ({
-    namespacesRequired: ['common', 'profile', 'dashboard'],
+    namespacesRequired: ['common', 'profile', 'dashboard', 'subscriptions'],
 });
 
 export default enhance(DashboardPage);

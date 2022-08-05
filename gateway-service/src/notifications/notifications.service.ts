@@ -12,8 +12,6 @@ export class NotificationsService {
   }
 
   async sendEmail(data) {
-    const pattern = { cmd: SEND_EMAIL_PATTERN };
-
-    return this.client.send(pattern, data).toPromise();
+    return this.client.send(SEND_EMAIL_PATTERN, data).toPromise();
   }
 }

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { useRef, memo, useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
 // custom
@@ -24,19 +24,23 @@ import { TemplateGridProps } from './types';
 // styles
 import styles from './TemplatesGrid.module.scss';
 
-const DotsComponent = (dots: React.ReactNode) => <ul>{dots}</ul>
+const DotsComponent = (dotsRef: any) => function(dots: React.ReactNode) {
+  return <ul ref={dotsRef}>{dots}</ul>
+}
 
-const PagingComponent = (activeSlider) => function(i: number) {
-  return <div
-        className={clsx(styles.dotSlider, {
-            [styles.activeDot]: activeSlider === i,
-        })}
-    />
+const PagingComponent = (activeSlider: number) => function(i: number) {
+  return (
+      <div
+          className={clsx(styles.dotSlider, { [styles.activeDot]: activeSlider === i })}
+      />
+  );
 }
 
 const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGridProps) => {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
+
+    const dotsRef = useRef();
 
     const is1100Media = useMediaQuery('(max-width:1100px)');
 
@@ -112,12 +116,12 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
             dotsClass: styles.slider,
             afterChange: handleLoadTemplates,
             beforeChange: handleChangeActiveSlider,
-            appendDots: DotsComponent,
+            appendDots: DotsComponent(dotsRef),
             customPaging: PagingComponent(activeSlider),
-            nextArrow: <NextSliderArrow customClassName={styles.nextArrow} />,
-            prevArrow: <PrevSliderArrow customClassName={styles.prevArrow} />,
+            nextArrow: <NextSliderArrow customClassName={styles.nextArrow} dotsRef={dotsRef} />,
+            prevArrow: <PrevSliderArrow customClassName={styles.prevArrow} dotsRef={dotsRef} />,
         }),
-        [handleLoadTemplates, activeSlider],
+        [handleLoadTemplates, activeSlider, handleChangeActiveSlider],
     );
 
     return (

@@ -10,7 +10,6 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // icons
-// import { DiscoveryIcon } from '@library/icons/DiscoveryIcon';
 import { TemplatesIcon } from '@library/icons/TemplatesIcon';
 import { ExitIcon } from '@library/icons/ExitIcon';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -42,13 +41,6 @@ const DashBoardNavigation = memo(() => {
         [router.pathname],
     );
 
-    /*
-    const isDiscoveryLinkActive = useMemo(
-        () => router.pathname === '/dashboard/discovery',
-        [router.pathname],
-    );
-     */
-
     const handleProfilePage = useCallback(() => {
         router.push('/dashboard/profile');
     }, []);
@@ -56,10 +48,6 @@ const DashBoardNavigation = memo(() => {
     const handleTemplatesPage = useCallback(() => {
         router.push('/dashboard');
     }, []);
-
-    /* const handleDiscoveryPage = useCallback(() => {
-        router.push('/dashboard/discovery');
-    }, []); */
 
     return (
         <CustomPaper className={styles.dashboardNavigation}>
@@ -85,17 +73,6 @@ const DashBoardNavigation = memo(() => {
                 </CustomTooltip>
 
                 <CustomDivider className={styles.divider} light />
-
-                {/* <CustomTooltip nameSpace="profile" translation="pages.discovery" placement="right">
-                    <DiscoveryIcon
-                        onClick={handleDiscoveryPage}
-                        width="28px"
-                        height="28px"
-                        className={clsx(styles.linkIcon, {
-                            [styles.activeIcon]: isDiscoveryLinkActive,
-                        })}
-                    />
-                </CustomTooltip> */}
 
                 <CustomTooltip nameSpace="profile" translation="pages.templates" placement="right">
                     <TemplatesIcon

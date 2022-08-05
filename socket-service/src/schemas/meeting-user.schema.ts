@@ -31,6 +31,7 @@ export class MeetingUser {
       AccessStatusEnum.Rejected,
       AccessStatusEnum.RequestSent,
       AccessStatusEnum.EnterName,
+      AccessStatusEnum.Settings,
     ],
   })
   accessStatus: string;
@@ -78,11 +79,11 @@ export class MeetingUser {
 
   @Prop({
     type: {
-      top: mongoose.Schema.Types.Number,
+      bottom: mongoose.Schema.Types.Number,
       left: mongoose.Schema.Types.Number,
     },
   })
-  userPosition: { top: number; left: number };
+  userPosition: { bottom: number; left: number };
 }
 
 export type MeetingUserDocument = MeetingUser & Document;

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {FilterQuery, Model, QueryOptions, UpdateQuery} from 'mongoose';
+import { FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 // schemas
@@ -94,17 +94,21 @@ export class CommonTemplatesService {
   }
 
   async updateCommonTemplate({
-     query,
-     data,
-     session,
-     populatePaths
+    query,
+    data,
+    session,
+    populatePaths,
   }: {
     query: FilterQuery<CommonTemplateDocument>;
-    data: UpdateQuery<CommonTemplateDocument>,
+    data: UpdateQuery<CommonTemplateDocument>;
     session?: ITransactionSession;
-    populatePaths?: QueryOptions["populate"];
+    populatePaths?: QueryOptions['populate'];
   }) {
-    const options: QueryOptions = { session: session?.session, populate: populatePaths, new: true };
+    const options: QueryOptions = {
+      session: session?.session,
+      populate: populatePaths,
+      new: true,
+    };
 
     return this.commonTemplate.updateOne(query, data, options);
   }

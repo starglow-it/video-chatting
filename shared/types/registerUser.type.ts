@@ -1,17 +1,12 @@
 import { TokenPayloadType } from "./token-payload.type";
 
-interface IUserCredentials {
+export interface IUserCredentials {
     email?: string;
     userId?: string;
     password: string;
 }
 
-type UserCredentialsWithTokenPair = {
+export type UserCredentialsWithTokenPair = {
     user: IUserCredentials;
     token: TokenPayloadType;
-}
-
-export {
-    IUserCredentials,
-    UserCredentialsWithTokenPair
 }

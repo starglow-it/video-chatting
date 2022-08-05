@@ -5,6 +5,7 @@ export const DELETE_STRIPE_EXPRESS_ACCOUNT = 'delete_stripe_express_account';
 export const CREATE_PAYMENT_INTENT = 'create_payment_intent';
 export const CANCEL_PAYMENT_INTENT = 'cancel_payment_intent';
 export const HANDLE_WEBHOOK = 'handle_webhook';
+export const HANDLE_EXPRESS_WEBHOOK = 'handle_express_webhook';
 export const GET_STRIPE_PRODUCTS = 'get_stripe_products';
 export const GET_STRIPE_CHECKOUT_SESSION = 'get_stripe_checkout_session';
 export const GET_STRIPE_PORTAL_SESSION = 'get_stripe_portal_session';

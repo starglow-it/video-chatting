@@ -4,7 +4,7 @@ import { EditProfileContainer } from '@containers/EditProfileContainer/EditProfi
 
 import { DashboardLayout } from '@components/DashboardLayout/DashboardLayout';
 
-import { pageLoaded } from '../../../src/store/root';
+import { pageLoaded } from '../../../src/store';
 
 // @ts-ignore
 const enhance = withStart(pageLoaded);

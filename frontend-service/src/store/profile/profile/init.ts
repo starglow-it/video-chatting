@@ -57,7 +57,6 @@ $profileStore
 
         return state;
     })
-    .on(deleteProfileFx.doneData, () => initialProfileState)
     .on(
         [
             updateProfilePhotoFx.doneData,

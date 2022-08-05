@@ -5,12 +5,14 @@ import { PersonalInfoSection } from '@components/Profile/PersonalInfoSection/Per
 import { MainInfo } from '@components/Profile/MainInfo/MainInfo';
 
 import styles from './ProfileContainer.module.scss';
+import {SubscriptionInfo} from "@components/Profile/SubscriptionInfo/SubscriptionInfo";
 
 const ProfileContainer = memo(() => {
     return (
         <MainProfileWrapper className={styles.wrapper}>
             <MainInfo />
             <PersonalInfoSection />
+            <SubscriptionInfo />
         </MainProfileWrapper>
     );
 });

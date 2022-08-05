@@ -1,16 +1,13 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useStore } from 'effector-react';
 
-// hooks
-
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { MeetingNoteItem } from '@components/Meeting/MeetingNoteItem/MeetingNoteItem';
-import { useWindowResize } from '../../../hooks/useWindowResize';
 
 // stores
 import {
-    $meetingNotesStore,
+    $meetingNotesStore, $windowSizeStore,
     getMeetingNotesSocketEvent,
     resetMeetingNotesEvent,
 } from '../../../store';
@@ -20,10 +17,9 @@ import styles from './MeetingNotes.module.scss';
 
 const MeetingNotes = memo(() => {
     const meetingNotes = useStore($meetingNotesStore);
+    const { height } = useStore($windowSizeStore);
 
     const [lastDraggedSet, setLastDraggedSet] = useState([]);
-
-    const { height } = useWindowResize();
 
     useEffect(() => {
         getMeetingNotesSocketEvent();

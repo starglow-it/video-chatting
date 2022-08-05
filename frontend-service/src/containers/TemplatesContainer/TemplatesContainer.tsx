@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useLayoutEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
@@ -42,13 +42,13 @@ const TemplatesContainer = memo(() => {
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         (async () => {
             await getTemplatesFx({ limit: 6, skip: 0 });
         })();
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         (async () => {
             if (!isTemplateDeleting) {
                 await getProfileTemplatesFx({ limit: skipProfileTemplates, skip: 0 });

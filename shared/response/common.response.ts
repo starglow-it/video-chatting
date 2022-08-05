@@ -8,8 +8,4 @@ type FailedType = {
     success: false;
 }
 
-type ResponseSumType<T> = SuccessType<T> | FailedType;
-
-export {
-    ResponseSumType
-}
+export type ResponseSumType<T> = SuccessType<T> | FailedType;

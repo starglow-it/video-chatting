@@ -58,9 +58,16 @@ const CommonTemplateItem = memo(({ template }: CommonTemplateItemProps) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            {previewImage?.url ? (
-                <Image src={previewImage.url} width="334px" height="190px" />
-            ) : null}
+            {previewImage?.url
+                ? (
+                    <Image
+                        src={previewImage.url}
+                        width="334px"
+                        height="190px"
+                    />
+                )
+                : null
+            }
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}

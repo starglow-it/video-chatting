@@ -109,7 +109,7 @@ export class VideoChatController {
             await this.createLocalTracks(stream);
         }
 
-        if (!["CONNECTED", "CONNECTING"].includes( this.client.connectionState)) {
+        if (!["CONNECTED", "CONNECTING"].includes(this.client.connectionState)) {
             await this.client.join(this.appId, this.channel, token, this.uid);
 
             if (this.localMicTrack && this.localCameraTrack) {
@@ -222,19 +222,21 @@ export class VideoChatController {
 
     async setUpDevices(stream: MediaStream) {
         try {
-            this.localMicTrack?.stop?.();
-            this.localMicTrack?.close?.();
-            this.localCameraTrack?.stop?.();
-            this.localCameraTrack?.close?.();
+            if ("CONNECTED" === this.client.connectionState) {
+                this.localMicTrack?.stop?.();
+                this.localMicTrack?.close?.();
+                this.localCameraTrack?.stop?.();
+                this.localCameraTrack?.close?.();
 
-            if (this.localCameraTrack && this.localMicTrack) {
-                this.client?.unpublish([this.localCameraTrack, this.localMicTrack]);
-            }
+                if (this.localCameraTrack && this.localMicTrack) {
+                    this.client?.unpublish([this.localCameraTrack, this.localMicTrack]);
+                }
 
-            await this.createLocalTracks(stream);
+                await this.createLocalTracks(stream);
 
-            if (this.localMicTrack && this.localCameraTrack) {
-                await this.client?.publish([this.localMicTrack, this.localCameraTrack]);
+                if (this.localMicTrack && this.localCameraTrack) {
+                    await this.client?.publish([this.localMicTrack, this.localCameraTrack]);
+                }
             }
         } catch (e) {
             console.log(e);
@@ -254,34 +256,36 @@ export class VideoChatController {
 
     async startScreensharing() {
         try {
-            this.screenSharingTrack = await AgoraRTC.createScreenVideoTrack(
-                {
-                    encoderConfig: {
-                        frameRate: 30,
-                        height: 720,
-                        width: 1280,
+            if ("CONNECTED" === this.client.connectionState) {
+                this.screenSharingTrack = await AgoraRTC.createScreenVideoTrack(
+                    {
+                        encoderConfig: {
+                            frameRate: 30,
+                            height: 720,
+                            width: 1280,
+                        },
                     },
-                },
-                'disable',
-            );
+                    'disable',
+                );
 
-            this.screenSharingTrack.on('track-ended', () => {
-                this.onSharingStarted?.({ sharingUserId: null });
-            });
-
-            await this.client.unpublish(this.localCameraTrack);
-            this.localCameraTrack?.stop?.();
-            this.localCameraTrack?.close?.();
-
-            this.client?.publish(this.screenSharingTrack);
-
-            if (this.localMicTrack) {
-                this.onLocalTracks?.({
-                    audioTrack: this.localMicTrack,
-                    videoTrack: this.screenSharingTrack,
+                this.screenSharingTrack.on('track-ended', () => {
+                    this.onSharingStarted?.({ sharingUserId: null });
                 });
+
+                await this.client.unpublish(this.localCameraTrack);
+                this.localCameraTrack?.stop?.();
+                this.localCameraTrack?.close?.();
+
+                this.client?.publish(this.screenSharingTrack);
+
+                if (this.localMicTrack) {
+                    this.onLocalTracks?.({
+                        audioTrack: this.localMicTrack,
+                        videoTrack: this.screenSharingTrack,
+                    });
+                }
+                if (this.uid) this.onSharingStarted?.({ sharingUserId: this.uid });
             }
-            if (this.uid) this.onSharingStarted?.({ sharingUserId: this.uid });
         } catch (err: unknown) {
             console.log(err);
         }
@@ -289,30 +293,32 @@ export class VideoChatController {
 
     async stopScreensharing({ stream }: { stream: MediaStream }) {
         try {
-            this.screenSharingTrack?.stop?.();
-            this.screenSharingTrack?.close?.();
+            if ("CONNECTED" === this.client.connectionState) {
+                this.screenSharingTrack?.stop?.();
+                this.screenSharingTrack?.close?.();
 
-            await this.client.unpublish(this.screenSharingTrack);
+                await this.client.unpublish(this.screenSharingTrack);
 
-            const videoTrack = stream?.getVideoTracks()[0];
+                const videoTrack = stream?.getVideoTracks()[0];
 
-            const config = {
-                mediaStreamTrack: videoTrack,
-            } as CustomVideoTrackInitConfig;
+                const config = {
+                    mediaStreamTrack: videoTrack,
+                } as CustomVideoTrackInitConfig;
 
-            this.localCameraTrack = await AgoraRTC.createCustomVideoTrack(config);
+                this.localCameraTrack = await AgoraRTC.createCustomVideoTrack(config);
 
-            if (this.localCameraTrack) {
-                this.client?.publish(this.localCameraTrack);
+                if (this.localCameraTrack) {
+                    this.client?.publish(this.localCameraTrack);
+                }
+
+                if (this.localMicTrack && this.localCameraTrack) {
+                    this.onLocalTracks?.({
+                        audioTrack: this.localMicTrack,
+                        videoTrack: this.localCameraTrack,
+                    });
+                }
+                if (this.uid) this.onSharingStarted?.({ sharingUserId: null });
             }
-
-            if (this.localMicTrack && this.localCameraTrack) {
-                this.onLocalTracks?.({
-                    audioTrack: this.localMicTrack,
-                    videoTrack: this.localCameraTrack,
-                });
-            }
-            if (this.uid) this.onSharingStarted?.({ sharingUserId: null });
         } catch (err: unknown) {
             console.log(err);
         }

@@ -4,11 +4,8 @@
 .wrapper {
   padding: rem(40px);
   max-width: rem(405px);
-  height: rem(621px);
-}
-
-.content {
-  height: 100%;
+  min-height: rem(639px);
+  display: flex;
 }
 
 .productName {
@@ -29,7 +26,7 @@
 }
 
 .listWrapper {
-  margin: rem(40px 0 auto 0);
+  margin: rem(40px 0 16px 0);
 }
 
 .listItem {
@@ -56,4 +53,25 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.expandBtn {
+  cursor: pointer;
+  margin: rem(0 0 45px 0);
+}
+
+.button {
+  margin: auto 0 0 0;
+  height: 56px;
+}
+
+.active {
+  background: rgba($primary-orange, 0.1);
+  border-radius: rem(10px);
+  color: $primary-orange;
+
+  &:hover {
+    background: rgba($primary-orange, 0.1);
+    color: $primary-orange;
+  }
 }

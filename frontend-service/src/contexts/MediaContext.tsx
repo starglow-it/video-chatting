@@ -168,18 +168,6 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
     }, [currentAudioDevice, currentVideoDevice, isCameraActive, isMicActive]);
 
     useEffect(() => {
-        return () => {
-            stopStream(activeStream);
-        };
-    }, [activeStream]);
-
-    useEffect(() => {
-        return () => {
-            stopStream(changeStream);
-        };
-    }, [changeStream]);
-
-    useEffect(() => {
         navigator.mediaDevices.ondevicechange = async () => {
             const { audio, video } = await getDevices();
 
@@ -195,6 +183,18 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
         };
     }, []);
 
+    useEffect(() => {
+        return () => {
+            stopStream(activeStream);
+        };
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            stopStream(changeStream);
+        };
+    }, [changeStream]);
+
     const handleChangeActiveStream = useCallback(() => {
         const newStream = changeStream?.clone();
 
@@ -204,8 +204,6 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
                 return newStream;
             });
-
-            stopStream(changeStream);
 
             return newStream;
         }

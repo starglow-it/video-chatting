@@ -1,9 +1,9 @@
 import React, {memo, useEffect} from "react";
-import {formatCountDown} from "../../../utils/time/formatCountdown";
 import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
+import {useStore} from "effector-react";
+import {formatCountDown} from "../../../utils/time/formatCountdown";
 import {ONE_MINUTE} from "../../../const/time/common";
 import {useTimer} from "../../../hooks/useTimer";
-import {useStore} from "effector-react";
 import {$meetingStore} from "../../../store";
 
 const Component = () => {

@@ -86,17 +86,17 @@ export class MeetingsController {
 
           if (user.templates.length + 1 > user.maxTemplatesNumber) {
             const [leastUsedTemplate] =
-                await this.userTemplatesService.findUserTemplates({
-                  query: { user: user._id },
-                  options: { sort: '-usedAt', limit: 1 },
-                  session,
-                });
+              await this.userTemplatesService.findUserTemplates({
+                query: { user: user._id },
+                options: { sort: '-usedAt', limit: 1 },
+                session,
+              });
 
             await this.userTemplatesService.deleteUserTemplate(
-                {
-                  _id: leastUsedTemplate._id.toString(),
-                },
-                session,
+              {
+                _id: leastUsedTemplate._id.toString(),
+              },
+              session,
             );
           }
 
@@ -120,6 +120,7 @@ export class MeetingsController {
             socials: user.socials.map((social) => social._id),
             meetingInstance: meeting,
             usersPosition: targetTemplate.usersPosition,
+            isAudioAvailable: targetTemplate.isAudioAvailable,
             links: targetTemplate.links,
             signBoard: user.signBoard,
           };

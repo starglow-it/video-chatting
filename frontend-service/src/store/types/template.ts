@@ -19,8 +19,9 @@ export interface Template {
     languages: Language[];
     socials: SocialLink[];
     customLink: string;
+    isAudioAvailable: boolean;
     links?: { id: string; item: string; position: { top: number; left: number } }[];
-    usersPosition: { top: number; left: number }[];
+    usersPosition: { bottom: number; left: number }[];
 }
 
 export interface UserTemplate extends Template {

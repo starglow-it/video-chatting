@@ -1,4 +1,4 @@
-import React, {memo, useContext, useEffect} from 'react';
+import React, { memo, useContext, useEffect, useLayoutEffect} from 'react';
 import {useStore} from 'effector-react';
 import {useRouter} from 'next/router';
 
@@ -18,8 +18,7 @@ import {MediaContext} from '../../contexts/MediaContext';
 // stores
 import {
     $localUserStore,
-    $meetingTemplateStore, $profileStore,
-    addNotificationEvent,
+    $meetingTemplateStore,
     appDialogsApi,
     getMeetingTemplateFx,
     joinMeetingEventWithData,
@@ -33,20 +32,23 @@ import {
     startMeeting,
     updateLocalUserEvent,
     initiateSocketConnectionEvent,
-    $isSocketConnected
+    $isSocketConnected,
+    initWindowListeners,
+    removeWindowListeners,
+    $isOwner
 } from '../../store';
 
 // types
-import {MeetingAccessStatuses, NotificationType} from '../../store/types';
+import {MeetingAccessStatuses} from '../../store/types';
 
 // styles
 import styles from './MeetingContainer.module.scss';
 
 import {StorageKeysEnum, WebStorage} from '../../controllers/WebStorageController';
 import {
-    $subscriptionStore,
     getSubscriptionWithDataFx
 } from "../../store";
+import {useSubscriptionNotification} from "../../hooks/useSubscriptionNotification";
 
 const NotMeetingComponent = memo(() => {
     const meetingUser = useStore($localUserStore);
@@ -65,8 +67,7 @@ const MeetingContainer = memo(() => {
 
     const meetingUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const subscription = useStore($subscriptionStore);
-    const profile = useStore($profileStore);
+    const isOwner = useStore($isOwner);
     const isSocketConnected = useStore($isSocketConnected);
 
     const {
@@ -77,31 +78,24 @@ const MeetingContainer = memo(() => {
         getSubscriptionWithDataFx();
     }, []);
 
-    useEffect(() => {
-        if (subscription?.id) {
-            const planName = profile.subscriptionPlanKey;
-
-            if (router.query.success === "true" && router.query.session_id) {
-                router.push(`/meeting/${router.query.token}`, `/meeting/${router.query.token}`, { shallow: true });
-
-                addNotificationEvent({
-                    type: NotificationType.SubscriptionSuccess,
-                    message: `subscriptions.subscription${planName}Success`,
-                    withSuccessIcon: true,
-                });
-            }
+    useLayoutEffect(() => {
+        initWindowListeners();
+        return () => {
+            removeWindowListeners();
         }
-    }, [subscription?.id]);
+    }, []);
+
+    useSubscriptionNotification();
 
     useEffect(() => {
         (async () => {
-            await onInitDevices();
-
-            await getMeetingTemplateFx({
+            getMeetingTemplateFx({
                 templateId: router.query.token as string,
             });
 
             initiateSocketConnectionEvent();
+
+            await onInitDevices();
         })();
 
         return () => {
@@ -139,7 +133,7 @@ const MeetingContainer = memo(() => {
                 if (meetingTemplate?.meetingInstance?.serverIp) {
                     await joinMeetingEventWithData();
 
-                    if (Object.keys(savedSettings)?.length) {
+                    if (Object.keys(savedSettings)?.length && isOwner) {
                         startMeeting();
                     }
                 } else {
@@ -147,7 +141,7 @@ const MeetingContainer = memo(() => {
                 }
             }
         })()
-    }, [meetingTemplate?.meetingInstance?.serverIp, isSocketConnected]);
+    }, [meetingTemplate?.meetingInstance?.serverIp, isSocketConnected, isOwner]);
 
     return (
         <>

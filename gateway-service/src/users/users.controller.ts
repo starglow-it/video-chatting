@@ -23,6 +23,7 @@ import {
 import { ConfigClientService } from '../config/config.service';
 import { InviteAttendeeEmailRequest } from '../dtos/requests/invite-attendee-email.request';
 import { TemplatesService } from '../templates/templates.service';
+import { emailTemplates } from '@shared/const/email-templates.const';
 
 @Controller('users')
 export class UsersController {
@@ -56,14 +57,18 @@ export class UsersController {
 
       const frontendUrl = await this.configService.get('frontendUrl');
 
-      const message = `
-        ${user.fullName} (${user.email}) has invited you to the meeting
-        <a href="${frontendUrl}/meeting/${data.meetingId}">Click to join meeting</a>
-    `;
-
       await this.notificationService.sendEmail({
-        to: data.userEmails,
-        message,
+        to: data.userEmails.map((email) => ({ email, name: email })),
+        template: {
+          key: emailTemplates.meetingInvite,
+          data: [
+            {
+              name: 'MEETINGURL',
+              content: `${frontendUrl}/meeting/${data.meetingId}`,
+            },
+            { name: 'SENDER', content: `${user.fullName} (${user.email})` },
+          ],
+        },
       });
     } catch (err) {
       this.logger.error(

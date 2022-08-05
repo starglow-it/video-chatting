@@ -21,7 +21,7 @@ import {
     $authStore,
     $isOwner,
     $meetingTemplateStore,
-    updateLocalUserEvent,
+    updateLocalUserEvent, $isSocketConnected,
 } from '../../store';
 
 // types
@@ -38,6 +38,7 @@ const EnterMeetingName = memo(() => {
     const { isAuthenticated } = useStore($authStore);
     const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const isSocketConnected = useStore($isSocketConnected);
 
     const isOwner = useStore($isOwner);
 
@@ -59,7 +60,7 @@ const EnterMeetingName = memo(() => {
         handleSubmit(data => {
             updateLocalUserEvent({
                 username: data.fullName,
-                accessStatus: MeetingAccessStatuses.Waiting,
+                accessStatus: MeetingAccessStatuses.Settings,
             });
         }),
         [],
@@ -113,6 +114,7 @@ const EnterMeetingName = memo(() => {
                             error={fullNameError}
                         />
                         <CustomButton
+                            disabled={!isSocketConnected}
                             className={styles.button}
                             type="submit"
                             nameSpace="meeting"

@@ -15,7 +15,7 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
-import { TemplateAvatarWithInfo } from '@components/Templates/TemplateAvatarWithInfo/TemplateAvatarWithInfo';
+import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 
 // stores
 import {
@@ -76,11 +76,17 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            {previewImage?.url ? (
-                <Image src={previewImage.url} width="334px" height="190px" />
-            ) : null}
+            {previewImage?.url
+                ? (
+                    <Image
+                        src={previewImage.url}
+                        width="334px"
+                        height="190px"
+                    />
+                )
+                : null
+            }
             <TemplateMainInfo
-                avatar={template?.user?.profileAvatar?.url || ''}
                 show={!showPreview}
                 name={template.name}
                 description={template.description}
@@ -95,11 +101,10 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                     justifyContent="space-between"
                     className={styles.templateMenu}
                 >
-                    <TemplateAvatarWithInfo
+                    <TemplateInfo
                         className={styles.avatar}
                         name={template.name}
                         description={template.description}
-                        avatar={template?.user?.profileAvatar?.url || ''}
                     />
                     <CustomGrid container wrap="nowrap" gap={1.5}>
                         <CustomButton

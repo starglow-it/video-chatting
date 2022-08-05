@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Fade } from '@mui/material';
 
 // hooks
-import { useToggle } from '../../../hooks/useToggle';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -24,6 +23,7 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
 import {MeetingTimer} from "@components/Meeting/MeetingTimer/MeetingTimer";
+import { useToggle } from '../../../hooks/useToggle';
 
 // styles
 import styles from './MeetingGeneralInfo.module.scss';

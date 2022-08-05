@@ -12,15 +12,18 @@ import styles from './MeetingBackgroundVideo.module.scss';
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
-import { $backgroundAudioVolume, $isBackgroundAudioActive } from '../../../store';
+import {$backgroundAudioVolume, $isBackgroundAudioActive, $windowSizeStore} from '../../../store';
 
 const MeetingBackgroundVideo = memo(
     ({ children, src, isScreenSharing }: MeetingBackgroundVideoProps) => {
+        const { width, height } = useStore($windowSizeStore);
         const playerRef = useRef<Player | null>(null);
         const containerRef = useRef<HTMLDivElement | null>(null);
 
         const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
         const backgroundAudioVolume = useStore($backgroundAudioVolume);
+
+        const ratio = width / height;
 
         useLayoutEffect(() => {
             if (src) {
@@ -63,7 +66,7 @@ const MeetingBackgroundVideo = memo(
         }, [isScreenSharing]);
 
         return (
-            <CustomGrid ref={containerRef} className={styles.backgroundVideo}>
+            <CustomGrid ref={containerRef} className={styles.backgroundVideo} style={ratio > 16 / 9 && !isScreenSharing ? { bottom: "0", display: 'inline-table' } : { display: "inline-grid" }}>
                 {children}
             </CustomGrid>
         );

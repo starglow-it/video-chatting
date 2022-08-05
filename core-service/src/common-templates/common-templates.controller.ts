@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { Connection } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { plainToClass } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
@@ -48,7 +48,7 @@ export class CommonTemplatesController {
         const commonTemplatesCount =
           await this.commonTemplatesService.countCommonTemplates();
 
-        const parsedTemplates = plainToClass(
+        const parsedTemplates = plainToInstance(
           CommonTemplateDTO,
           commonTemplates,
           {
@@ -81,8 +81,8 @@ export class CommonTemplatesController {
             templateId: id,
             session,
             populatePaths: [
-              { path: 'businessCategories'},
-              { path: "previewUrls" }
+              { path: 'businessCategories' },
+              { path: 'previewUrls' },
             ],
           });
 

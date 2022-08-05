@@ -31,12 +31,17 @@ export const getProductsUrl = {
     method: HttpMethods.Get,
 };
 
+export const getCustomerPortalSessionUrl = ({ subscriptionId }: { subscriptionId: string }) => ({
+    url: `${serverUrl}/${paymentsScope}/portal/${subscriptionId}`,
+    method: HttpMethods.Get,
+});
+
 export const getSubscriptionUrl = ({ subscriptionId }: { subscriptionId: string }) => ({
     url: `${serverUrl}/${paymentsScope}/subscriptions/${subscriptionId}`,
     method: HttpMethods.Get,
 });
 
-export const startCheckoutSessionUrl = ({ productId, meetingToken }: { productId: string; meetingToken: string }) => ({
-    url: `${serverUrl}/${paymentsScope}/products/${productId}/${meetingToken}`,
-    method: HttpMethods.Get,
+export const startCheckoutSessionUrl = ({ productId }: { productId: string }) => ({
+    url: `${serverUrl}/${paymentsScope}/products/${productId}`,
+    method: HttpMethods.Post,
 });

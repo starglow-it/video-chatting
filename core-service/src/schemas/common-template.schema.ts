@@ -54,15 +54,20 @@ export class CommonTemplate {
   type: string;
 
   @Prop({
+    type: mongoose.Schema.Types.Boolean,
+  })
+  isAudioAvailable: boolean;
+
+  @Prop({
     type: [
       {
-        top: mongoose.Schema.Types.Number,
+        bottom: mongoose.Schema.Types.Number,
         left: mongoose.Schema.Types.Number,
       },
     ],
     required: true,
   })
-  usersPosition: { top: number; left: number }[];
+  usersPosition: { bottom: number; left: number }[];
 
   @Prop({
     type: [

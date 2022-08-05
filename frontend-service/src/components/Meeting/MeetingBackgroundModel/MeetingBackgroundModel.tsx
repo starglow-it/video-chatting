@@ -7,7 +7,7 @@ import styles from './MeetingBackgroundModel.module.scss';
 
 import { startModel } from '../../../models';
 
-const Component: React.FunctionComponent = ({ children }) => {
+const Component: React.FunctionComponent<any> = ({ children }) => {
     const modelWrapperRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
