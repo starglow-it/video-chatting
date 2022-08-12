@@ -11,27 +11,44 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // components
 import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
-import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { CommonTemplateItem } from '@components/Templates/CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { ProfileTemplateItem } from '@components/Templates/ProfileTemplateItem/ProfileTemplateItem';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
+// dialogs
+import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { DeleteTemplateDialog } from '@components/Dialogs/DeleteTemplateDialog/DeleteTemplateDialog';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
+import { ReplaceTemplateDialog } from '@components/Dialogs/ReplaceTemplateDialog/ReplaceTemplateDialog';
+import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExpiredDialog';
 
 // stores
-import { createMeetingFx } from '../../store';
 import {
+    $isOwner,
+    $profileStore,
     $profileTemplatesStore,
     $skipProfileTemplates,
-    setSkipProfileTemplates,
+    $templatesStore,
+    appDialogsApi,
+    createMeetingFx,
     deleteProfileTemplateFx,
     getProfileTemplatesFx,
+    getTemplatesFx,
+    setReplaceTemplateIdEvent,
+    setSkipProfileTemplates,
 } from '../../store';
-import { $templatesStore, getTemplatesFx } from '../../store';
 
 // styles
 import styles from './TemplatesContainer.module.scss';
+
+// types
+import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
+
+// utils
+import { getClientMeetingUrl } from '../../utils/urls';
+import { formatCountDown } from '../../utils/time/formatCountdown';
 
 const TemplatesContainer = memo(() => {
     const router = useRouter();
@@ -39,6 +56,8 @@ const TemplatesContainer = memo(() => {
     const profileTemplates = useStore($profileTemplatesStore);
     const templates = useStore($templatesStore);
     const skipProfileTemplates = useStore($skipProfileTemplates);
+    const profile = useStore($profileStore);
+    const isOwner = useStore($isOwner);
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
 
@@ -60,7 +79,9 @@ const TemplatesContainer = memo(() => {
         const result = await createMeetingFx({ templateId });
 
         if (result.template) {
-            await router.push(`/meeting/${result.template?.customLink || result?.template?.id}`);
+            await router.push(
+                getClientMeetingUrl(result.template?.customLink || result?.template?.id),
+            );
         }
     }, []);
 
@@ -75,9 +96,43 @@ const TemplatesContainer = memo(() => {
         await getTemplatesFx({ limit: 6 * newPage, skip: 0 });
     }, []);
 
+    const handleChooseCommonTemplate = async (templateId: Template['id']) => {
+        if (profile.maxTemplatesNumber === profileTemplates.count) {
+            setReplaceTemplateIdEvent(templateId);
+
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.replaceTemplateConfirmDialog,
+            });
+
+            return;
+        }
+
+        const result = await createMeetingFx({ templateId });
+
+        if (result.template) {
+            await router.push(
+                getClientMeetingUrl(result.template?.customLink || result?.template?.id),
+            );
+        }
+    };
+
+    const handleChooseProfileTemplate = async (templateId: UserTemplate['id']) => {
+        const result = await createMeetingFx({ templateId });
+
+        if (result.template) {
+            await router.push(
+                getClientMeetingUrl(result.template?.customLink || result?.template?.id || ''),
+            );
+        }
+    };
+
+    const timeLimit = formatCountDown(profile.maxMeetingTime, { hours: true, minutes: true });
+
+    const templatesLimit = `${profileTemplates.count}/${profile.maxTemplatesNumber}`;
+
     return (
         <MainProfileWrapper>
-            {isThereProfileTemplates && (
+            <ConditionalRender condition={isThereProfileTemplates}>
                 <CustomGrid container direction="column" justifyContent="center">
                     <CustomGrid container alignItems="center" justifyContent="center">
                         <CustomBox className={styles.image}>
@@ -94,14 +149,34 @@ const TemplatesContainer = memo(() => {
                             translation="myTemplates"
                         />
                     </CustomGrid>
+                    <CustomGrid container justifyContent="center">
+                        <CustomTypography
+                            color="colors.grayscale.semidark"
+                            nameSpace="subscriptions"
+                            translation="limits.time"
+                            options={{ timeLimit }}
+                        />
+                        &nbsp;
+                        <CustomTypography color="colors.grayscale.semidark">
+                            &#8226;
+                        </CustomTypography>
+                        &nbsp;
+                        <CustomTypography
+                            color="colors.grayscale.semidark"
+                            nameSpace="subscriptions"
+                            translation="limits.templates"
+                            options={{ templatesLimit }}
+                        />
+                    </CustomGrid>
                     <TemplatesGrid
                         list={profileTemplates.list}
                         count={profileTemplates.count}
                         onPageChange={handleProfileTemplatesPageChange}
+                        onChooseTemplate={handleChooseProfileTemplate}
                         TemplateComponent={ProfileTemplateItem}
                     />
                 </CustomGrid>
-            )}
+            </ConditionalRender>
             <CustomGrid
                 className={clsx(styles.commonTemplates, {
                     [styles.noProfileTemplates]: !isThereProfileTemplates,
@@ -129,6 +204,7 @@ const TemplatesContainer = memo(() => {
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleCommonTemplatesPageChange}
+                    onChooseTemplate={handleChooseCommonTemplate}
                     TemplateComponent={CommonTemplateItem}
                 />
             </CustomGrid>
@@ -140,6 +216,11 @@ const TemplatesContainer = memo(() => {
             <DeleteTemplateDialog />
             <ScheduleMeetingDialog />
             <DownloadIcsEventDialog />
+            <ReplaceTemplateDialog />
+
+            <ConditionalRender condition={isOwner}>
+                <TimeExpiredDialog />
+            </ConditionalRender>
         </MainProfileWrapper>
     );
 });

@@ -44,9 +44,9 @@ export class UsersService {
 
   async findById(
     id: string,
-    { session }: ITransactionSession,
+    session?: ITransactionSession,
   ): Promise<MeetingUserDocument> {
-    return this.meetingUser.findById(id, {}, { session });
+    return this.meetingUser.findById(id, {}, { session: session?.session });
   }
 
   async findOneAndUpdate(

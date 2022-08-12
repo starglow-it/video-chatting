@@ -10,6 +10,11 @@ export const postProfileUrl = {
     method: HttpMethods.Post,
 };
 
+export const getProfileUrl = {
+    url: baseProfileUrl,
+    method: HttpMethods.Get,
+};
+
 export const profilePasswordUrl = {
     url: `${baseProfileUrl}/password`,
     method: HttpMethods.Post,

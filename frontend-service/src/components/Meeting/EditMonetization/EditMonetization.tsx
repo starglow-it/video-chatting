@@ -14,16 +14,11 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
 
-// types
-import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
-
 // styles
 import styles from './EditMonetization.module.scss';
 
-const currencyValues: ValuesSwitcherItem[] = [
-    { id: 1, value: 'USD', label: 'USD' },
-    { id: 2, value: 'CAD', label: 'CAD' },
-];
+// const
+import { currencyValues } from '../../../const/profile/subscriptions';
 
 const Component = () => {
     const { register, control, setValue } = useFormContext();
@@ -48,7 +43,7 @@ const Component = () => {
         [activeCurrency],
     );
 
-    const regsiterData = register('templatePrice');
+    const registerData = register('templatePrice');
 
     return (
         <CustomGrid
@@ -96,7 +91,7 @@ const Component = () => {
                                 root: styles.inputWrapper,
                                 input: styles.input,
                             }}
-                            {...regsiterData}
+                            {...registerData}
                         />
                         <ValuesSwitcher
                             optionWidth={56}

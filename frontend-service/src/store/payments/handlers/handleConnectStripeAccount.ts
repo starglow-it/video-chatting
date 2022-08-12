@@ -10,6 +10,4 @@ export const handleConnectStripeAccount = async (): Promise<{ url: string } | un
     if (response.success) {
         return response.result;
     }
-
-    return;
 };

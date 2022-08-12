@@ -4,20 +4,22 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
 // hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import { useToggle } from '@hooks/useToggle';
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
 
 // components
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
-import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
-import { useToggle } from '../../hooks/useToggle';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // context
 import { VideoEffectsContext } from '../../contexts/VideoEffectContext';
@@ -103,11 +105,9 @@ const DevicesSettings = memo(() => {
         data: {
             isStreamRequested,
             changeStream,
-            error,
+            audioError,
             isMicActive,
             isCameraActive,
-            audioDevices,
-            videoDevices,
             currentAudioDevice,
             currentVideoDevice,
         },
@@ -138,7 +138,7 @@ const DevicesSettings = memo(() => {
                 micStatus: !isMicActive ? 'active' : 'inactive',
             });
         }
-    }, [changeStream, isMicActive, error]);
+    }, [changeStream, isMicActive]);
 
     const handleToggleCamera = useCallback(() => {
         if (changeStream) {
@@ -150,18 +150,16 @@ const DevicesSettings = memo(() => {
                 cameraStatus: !isCameraActive ? 'active' : 'inactive',
             });
         }
-    }, [changeStream, isCameraActive, error]);
+    }, [changeStream, isCameraActive]);
 
     const handleJoinMeeting = useCallback(async () => {
         if (!isStreamRequested) {
             if (isOwner) {
-                startMeeting();
+                await startMeeting({});
+            } else if (isMeetingInstanceExists && isOwnerInMeeting) {
+                await enterMeetingRequest({});
             } else {
-                if (isMeetingInstanceExists && isOwnerInMeeting) {
-                    enterMeetingRequest();
-                } else {
-                    emitEnterWaitingRoom();
-                }
+                emitEnterWaitingRoom();
             }
 
             setBackgroundAudioVolume(settingsBackgroundAudioVolume);
@@ -185,7 +183,6 @@ const DevicesSettings = memo(() => {
     }, [
         isOwner,
         changeStream,
-        error,
         isStreamRequested,
         isMeetingInstanceExists,
         isOwnerInMeeting,
@@ -205,13 +202,9 @@ const DevicesSettings = memo(() => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            try {
-                await updateMeetingTemplateFxWithData(data);
+            await updateMeetingTemplateFxWithData(data);
 
-                handleJoinMeeting();
-            } catch (e) {
-                console.log(e);
-            }
+            await handleJoinMeeting();
         }),
         [isOwner, handleJoinMeeting],
     );
@@ -226,9 +219,12 @@ const DevicesSettings = memo(() => {
         });
     }, [isUserSentEnterRequest]);
 
-    const isEnterMeetingDisabled = !changeStream && error === 'media.notAllowed'
-        || isEnterMeetingRequestPending
-        || isEnterWaitingRoomRequestPending;
+    const isEnterMeetingDisabled =
+        audioError === 'media.notAllowed' ||
+        isEnterMeetingRequestPending ||
+        isEnterWaitingRoomRequestPending;
+
+    const joinHandler = isOwner ? onSubmit : handleJoinMeeting;
 
     return (
         <CustomPaper className={styles.wrapper}>
@@ -247,8 +243,7 @@ const DevicesSettings = memo(() => {
                             direction="column"
                             wrap="nowrap"
                         >
-                            {isUserSentEnterRequest ||
-                            (!(videoDevices.length && audioDevices.length) && !error) ? (
+                            {isUserSentEnterRequest ? (
                                 <>
                                     <CustomTypography
                                         className={styles.title}
@@ -286,6 +281,7 @@ const DevicesSettings = memo(() => {
                                     onBackgroundToggle={handleToggleBackgroundAudio}
                                     onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
                                     onToggleBlur={onToggleBlur}
+                                    isMonetizationAvailable
                                     isAudioActive={meetingTemplate.isAudioAvailable}
                                     title={
                                         <CustomTypography
@@ -297,44 +293,32 @@ const DevicesSettings = memo(() => {
                                     }
                                 />
                             )}
-                            {isOwner
-                                ? (
-                                    <CustomCheckbox
-                                        labelClassName={styles.label}
-                                        checked={needToRememberSettings}
-                                        onChange={handleToggleRememberSettings}
-                                        translationProps={{
-                                            nameSpace: 'meeting',
-                                            translation: 'settings.remember',
-                                        }}
-                                    />
-                                )
-                                : null
-                            }
+                            <ConditionalRender condition={isOwner}>
+                                <CustomCheckbox
+                                    labelClassName={styles.label}
+                                    checked={needToRememberSettings}
+                                    onChange={handleToggleRememberSettings}
+                                    translationProps={{
+                                        nameSpace: 'meeting',
+                                        translation: 'settings.remember',
+                                    }}
+                                />
+                            </ConditionalRender>
                         </CustomGrid>
                     </CustomGrid>
                 </CustomGrid>
                 <CustomGrid container gap={1} wrap="nowrap" className={styles.joinBtn}>
-                    {!isUserSentEnterRequest
-                        ? (
-                            <CustomButton
-                                onClick={handleBack}
-                                variant="custom-cancel"
-                                nameSpace="common"
-                                translation="buttons.back"
-                            />
-                        )
-                        : null
-                    }
+                    <ConditionalRender condition={!isUserSentEnterRequest}>
+                        <CustomButton
+                            onClick={handleBack}
+                            variant="custom-cancel"
+                            nameSpace="common"
+                            translation="buttons.back"
+                        />
+                    </ConditionalRender>
                     <CustomButton
-                        onClick={
-                            isUserSentEnterRequest
-                                ? handleCancelRequest
-                                : isOwner
-                                ? onSubmit
-                                : handleJoinMeeting
-                        }
-                        disabled={isEnterMeetingDisabled}
+                        onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
+                        disabled={isEnterMeetingDisabled || isStreamRequested}
                         nameSpace="meeting"
                         variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
                         translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}

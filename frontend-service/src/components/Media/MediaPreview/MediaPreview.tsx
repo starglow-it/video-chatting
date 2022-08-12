@@ -19,8 +19,7 @@ import { CameraIcon } from '@library/icons/CameraIcon';
 import { MediaContext } from '../../../contexts/MediaContext';
 
 // stores
-import { $profileStore } from '../../../store';
-import { $localUserStore } from '../../../store';
+import { $profileStore, $localUserStore } from '../../../store';
 
 // types
 import { MediaPreviewProps } from './types';
@@ -34,7 +33,7 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
     const localUser = useStore($localUserStore);
 
     const {
-        data: { error, videoDevices, audioDevices, isMicActive, isCameraActive },
+        data: { videoDevices, audioDevices, isMicActive, isCameraActive, videoError, audioError },
         actions: { onToggleMic, onToggleCamera },
     } = useContext(MediaContext);
 
@@ -57,14 +56,18 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
     }, [onToggleCamera, onToggleAudio, isMicActive]);
 
     const isNeedToRenderDevices =
-        (Boolean(videoDevices.length || audioDevices.length) && !error) ||
-        (!(videoDevices.length || audioDevices.length) && error);
+        (Boolean(videoDevices.length || audioDevices.length) && !audioError) ||
+        (!(videoDevices.length || audioDevices.length) && audioError);
+
+    const isVideoDisabled = !stream?.id || Boolean(videoError);
+    const isAudioDisabled = !stream?.id || Boolean(audioError);
 
     return (
         <CustomGrid container direction="column" className={styles.previewWrapper}>
             <RoundedVideo
                 isLocal
                 isCameraActive={isCameraActive}
+                isVideoAvailable={!isVideoDisabled}
                 userName={localUser?.username || ''}
                 userProfilePhoto={profile.profileAvatar?.url || ''}
                 videoRef={videoRef}
@@ -75,25 +78,25 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                 <>
                     <VolumeAnalyzer key={stream?.id} />
                     <CustomGrid container className={styles.controlsWrapper}>
-                        <CustomTooltip nameSpace="errors" translation={error}>
+                        <CustomTooltip nameSpace="errors" translation={audioError}>
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
-                                    [styles.withError]: Boolean(error),
-                                    [styles.disabled]: !stream?.id,
+                                    [styles.withError]: Boolean(audioError),
+                                    [styles.disabled]: isAudioDisabled,
                                 })}
-                                disabled={!stream?.id}
+                                disabled={isAudioDisabled}
                                 onAction={handleToggleAudio}
                                 Icon={<MicIcon width="32px" height="32px" isActive={isMicActive} />}
                             />
                         </CustomTooltip>
-                        <CustomTooltip nameSpace="errors" translation={error}>
+                        <CustomTooltip nameSpace="errors" translation={videoError}>
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
-                                    [styles.withError]: Boolean(error),
-                                    [styles.disabled]: !stream?.id,
+                                    [styles.withError]: Boolean(videoError),
+                                    [styles.disabled]: isVideoDisabled,
                                 })}
                                 onAction={handleToggleVideo}
-                                disabled={!stream?.id}
+                                disabled={isVideoDisabled}
                                 Icon={
                                     <CameraIcon
                                         width="32px"

@@ -3,33 +3,32 @@ import { useStore } from 'effector-react';
 import Image from 'next/image';
 import clsx from 'clsx';
 
-// helpers
+// hooks
 import { usePrevious } from 'src/hooks/usePrevious';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import {CustomBox} from "@library/custom/CustomBox/CustomBox";
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { MeetingControlPanel } from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
+import { MeetingControlButtons } from '@components/Meeting/MeetingControlButtons/MeetingControlButtons';
 import { MeetingUsersVideos } from '@components/Meeting/MeetingUsersVideos/MeetingUsersVideos';
 import { MeetingGoodsLinks } from '@components/Meeting/MeetingGoodsLinks/MeetingGoodsLinks';
 import { MeetingNotes } from '@components/Meeting/MeetingNotes/MeetingNotes';
 import { MeetingSettingsPanel } from '@components/Meeting/MeetingSettingsPanel/MeetingSettingsPanel';
 import { MeetingGeneralInfo } from '@components/Meeting/MeetingGeneralInfo/MeetingGeneralInfo';
-import { MeetingBackgroundComponent } from '@components/Meeting/MeetingBackgroundComponent/MeetingBackgroundComponent';
 import { MeetingSounds } from '@components/Meeting/MeetingSounds/MeetingSounds';
 import { DevicesSettingsDialog } from '@components/Dialogs/DevicesSettingsDialog/DevicesSettingsDialog';
 import { EndMeetingDialog } from '@components/Dialogs/EndMeetingDialog/EndMeetingDialog';
 import { InviteAttendeeDialog } from '@components/Dialogs/InviteAttendeeDialog/InviteAttendeeDialog';
 import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKickDialog';
-import { GoodsLinksButton } from '@components/Meeting/GoodsLinksButton/GoodsLinksButton';
-import { ScreenSharingButton } from '@components/Meeting/ScreenSharingButton/ScreenSharingButton';
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
-import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
-import { HangUpIcon } from '@library/icons/HangUpIcon';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // misc
@@ -60,7 +59,6 @@ import {
 
 // types
 import { AppDialogsEnum, MeetingAccessStatuses } from '../../../store/types';
-import { useToggle } from '../../../hooks/useToggle';
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
@@ -68,12 +66,8 @@ const MeetingView = memo(() => {
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
 
-    const { value: isNeedToShowGoods, onToggleSwitch: handleToggleAllGoods } = useToggle(false);
-
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
-
-    const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
     const {
         data: { isMicActive, isCameraActive },
@@ -85,14 +79,6 @@ const MeetingView = memo(() => {
     } = useContext(VideoEffectsContext);
 
     const prevSharingUserId = usePrevious<number | undefined>(meeting.sharingUserId);
-
-    const handleToggleSharing = useCallback(() => {
-        if (!meeting.sharingUserId) {
-            AgoraController.startScreensharing();
-        } else if (isOwner || isSharingScreenActive) {
-            updateMeetingSocketEvent({ sharingUserId: null });
-        }
-    }, [isSharingScreenActive, meeting.sharingUserId, isOwner]);
 
     const handleStopScreenSharing = useCallback(async () => {
         const newStream = await onGetNewStream();
@@ -117,7 +103,11 @@ const MeetingView = memo(() => {
 
     useEffect(() => {
         (async () => {
-            if (localUser.accessStatus === MeetingAccessStatuses.InMeeting && meeting.id && localUser.meetingUserId) {
+            if (
+                localUser.accessStatus === MeetingAccessStatuses.InMeeting &&
+                meeting.id &&
+                localUser.meetingUserId
+            ) {
                 const activeStream = onChangeActiveStream();
 
                 if (activeStream) {
@@ -168,13 +158,6 @@ const MeetingView = memo(() => {
         }
     }, []);
 
-    const handleEndVideoChat = useCallback(() => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.endMeetingDialog,
-        });
-    }, []);
-
-    const isAbleToToggleSharing = isOwner || isSharingScreenActive || !meeting.sharingUserId;
     const isScreenSharing = Boolean(meeting.sharingUserId);
 
     const previewImage = (meetingTemplate?.previewUrls || []).find(
@@ -183,26 +166,23 @@ const MeetingView = memo(() => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            <MeetingBackgroundComponent isNeedToRenderModel={meetingTemplate.templateId === 28}>
+            <MeetingBackgroundVideo isScreenSharing={isScreenSharing} src={meetingTemplate.url}>
                 <CustomBox className={styles.imageWrapper}>
-                    {previewImage?.url
-                        ? (
-                            <Image
-                                className={clsx(styles.image, {
-                                    [styles.blured]: Boolean(meetingTemplate.url),
-                                })}
-                                src={previewImage.url}
-                                width="100%"
-                                height="100%"
-                                layout="fill"
-                                objectFit="cover"
-                            />
-                        )
-                        : null
-                    }
+                    <ConditionalRender condition={Boolean(previewImage?.url)}>
+                        <Image
+                            className={clsx(styles.image, {
+                                [styles.blured]: Boolean(meetingTemplate.url),
+                            })}
+                            src={previewImage?.url}
+                            width="100%"
+                            height="100%"
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                    </ConditionalRender>
                 </CustomBox>
                 {isScreenSharing && <ScreenSharingLayout />}
-            </MeetingBackgroundComponent>
+            </MeetingBackgroundVideo>
 
             {Boolean(meetingTemplate?.id) && (
                 <MeetingSettingsPanel
@@ -210,32 +190,13 @@ const MeetingView = memo(() => {
                     onTemplateUpdate={handleUpdateMeetingTemplate}
                 >
                     <MeetingUsersVideos />
-                    {(meetingTemplate.templateId === 18 && !isScreenSharing)
-                        ? (
-                            <MeetingGoodsLinks show={isNeedToShowGoods} />
-                        )
-                        : null
-                    }
+                    <ConditionalRender
+                        condition={meetingTemplate.templateId === 18 && !isScreenSharing}
+                    >
+                        <MeetingGoodsLinks />
+                    </ConditionalRender>
                     <MeetingControlPanel />
-                    <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-                        {meetingTemplate?.links?.length ? (
-                            <GoodsLinksButton
-                                isActive={isNeedToShowGoods}
-                                onClick={handleToggleAllGoods}
-                            />
-                        ) : null}
-                        <ScreenSharingButton
-                            isSharingActive={Boolean(meeting.sharingUserId)}
-                            onAction={isAbleToToggleSharing ? handleToggleSharing : undefined}
-                        />
-                        {meetingTemplate.isAudioAvailable ? <BackgroundAudioControl/> : null}
-                        <ActionButton
-                            variant="danger"
-                            onAction={handleEndVideoChat}
-                            className={styles.hangUpButton}
-                            Icon={<HangUpIcon width="32px" height="32px" />}
-                        />
-                    </CustomGrid>
+                    <MeetingControlButtons />
                     <MeetingGeneralInfo />
                     <MeetingNotes />
                 </MeetingSettingsPanel>

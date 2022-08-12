@@ -4,17 +4,15 @@ import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfi
 import { PersonalInfoSection } from '@components/Profile/PersonalInfoSection/PersonalInfoSection';
 import { MainInfo } from '@components/Profile/MainInfo/MainInfo';
 
+import { SubscriptionInfo } from '@components/Profile/SubscriptionInfo/SubscriptionInfo';
 import styles from './ProfileContainer.module.scss';
-import {SubscriptionInfo} from "@components/Profile/SubscriptionInfo/SubscriptionInfo";
 
-const ProfileContainer = memo(() => {
-    return (
-        <MainProfileWrapper className={styles.wrapper}>
-            <MainInfo />
-            <PersonalInfoSection />
-            <SubscriptionInfo />
-        </MainProfileWrapper>
-    );
-});
+const ProfileContainer = memo(() => (
+    <MainProfileWrapper className={styles.wrapper}>
+        <MainInfo />
+        <PersonalInfoSection />
+        <SubscriptionInfo />
+    </MainProfileWrapper>
+));
 
 export { ProfileContainer };

@@ -19,8 +19,8 @@ import { appDialogsApi, addNotificationEvent } from '../../../store';
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
-// config
-import frontendConfig from '../../../const/config';
+// utils
+import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
 
 // styles
 import styles from './MeetingInviteParticipants.module.scss';
@@ -52,7 +52,7 @@ const MeetingInviteParticipants = memo(() => {
                     translation="invite.title"
                 />
                 <CopyToClipboard
-                    text={`${frontendConfig.frontendUrl}/meeting/${router.query.token}`}
+                    text={getClientMeetingUrlWithDomain(router.query.token)}
                     onCopy={handleLinkCopied}
                 >
                     <CustomTooltip nameSpace="meeting" translation="invite.copyLink">

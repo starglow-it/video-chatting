@@ -16,22 +16,8 @@
   }
 }
 
-.devicesWrapper {
-  position: absolute;
-  z-index: 100;
-  bottom: rem(8px);
-  right: rem(20px);
-  width: auto;
-}
-
 .imageWrapper {
   position: absolute;
   width: 100%;
   height: 100%;
-}
-
-.hangUpButton {
-  width: rem(56px);
-  height: rem(56px);
-  border-radius: rem(12px);
 }

@@ -8,19 +8,17 @@ type ComponentProps = React.PropsWithChildren<CommonIconProps> & SvgIconProps;
 const Component = (
     { width, height, children, className, onClick, ...rest }: ComponentProps,
     ref: ForwardedRef<SVGSVGElement>,
-) => {
-    return (
-        <SvgIcon
-            ref={ref}
-            sx={{ width, height }}
-            className={className || ''}
-            onClick={onClick}
-            {...rest}
-        >
-            {children}
-        </SvgIcon>
-    );
-};
+) => (
+    <SvgIcon
+        ref={ref}
+        sx={{ width, height }}
+        className={className || ''}
+        onClick={onClick}
+        {...rest}
+    >
+        {children}
+    </SvgIcon>
+);
 
 export const SvgIconWrapper = memo<ComponentProps>(
     forwardRef<SVGSVGElement, ComponentProps>(Component),

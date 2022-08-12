@@ -4,14 +4,19 @@ import { getMediaStream } from '../helpers/media/getMediaStream';
 import { DeviceInputKindEnum } from '../const/media/DEVICE_KINDS';
 import { stopStream } from '../helpers/media/stopStream';
 import { StorageKeysEnum, WebStorage } from '../controllers/WebStorageController';
+import { CustomMediaStream } from '../types';
 
-type CustomMediaStream = MediaStream | null | undefined;
+type ChangeMediaStreamData = {
+    kind: DeviceInputKindEnum;
+    deviceId: MediaDeviceInfo['deviceId'];
+};
 
 type MediaContextType = {
     data: {
         changeStream: CustomMediaStream;
         activeStream: CustomMediaStream;
-        error: string;
+        audioError: string;
+        videoError: string;
         videoDevices: MediaDeviceInfo[];
         audioDevices: MediaDeviceInfo[];
         isMicActive: boolean;
@@ -38,14 +43,10 @@ type UseMediaDevices = {
     videoDevices: MediaDeviceInfo[];
 };
 
-type ChangeMediaStreamData = {
-    kind: DeviceInputKindEnum;
-    deviceId: MediaDeviceInfo['deviceId'];
-};
-
 export const MediaContext = React.createContext<MediaContextType>({
     data: {
-        error: '',
+        videoError: '',
+        audioError: '',
         changeStream: null,
         activeStream: null,
         videoDevices: [],
@@ -72,7 +73,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
     const [videoDevices, setVideoDevices] = useState<UseMediaDevices['videoDevices']>([]);
     const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
     const [isMicActive, setIsMicActive] = useState<boolean>(true);
-    const [error, setError] = useState<string>('');
+    const [audioError, setAudioError] = useState<string>('');
+    const [videoError, setVideoError] = useState<string>('');
     const [activeStream, setActiveStream] = useState<CustomMediaStream>(null);
     const [changeStream, setChangeStream] = useState<CustomMediaStream>(null);
 
@@ -93,13 +95,19 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             savedVideoDeviceId: MediaDeviceInfo['deviceId'];
         }>({ key: StorageKeysEnum.meetingSettings });
 
-        const { stream: initialStream, error: initialError } = await getMediaStream({
+        const {
+            stream: initialStream,
+            audioError: initialAudioError,
+            videoError: initialVideoError,
+        } = await getMediaStream({
             audioDeviceId: savedSettings.savedAudioDeviceId || currentAudioDevice,
             videoDeviceId: savedSettings.savedVideoDeviceId || currentVideoDevice,
         });
 
-        if (initialError) {
-            setError(initialError);
+        setAudioError(initialAudioError);
+        setVideoError(initialVideoError);
+
+        if (initialAudioError && initialVideoError) {
             setIsStreamRequested(false);
             return;
         }
@@ -116,7 +124,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             const audioDevice =
                 audio.find(device => device.deviceId === audioDeviceId) || audio?.[0];
 
-            const { stream, error } = await getMediaStream({
+            const { stream, audioError, videoError } = await getMediaStream({
                 audioDeviceId: audioDevice?.deviceId,
                 videoDeviceId: videoDevice?.deviceId,
             });
@@ -127,7 +135,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                     const { videoDeviceId: newDevice, audioDeviceId } =
                         getDevicesFromStream(stream);
 
-                    if (oldDevice !== newDevice || !(prev || prev.active)) {
+                    if (oldDevice !== newDevice || !(prev || prev?.active)) {
                         stopStream(prev);
 
                         setIsCameraActive(isCameraActive);
@@ -143,7 +151,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
                     return prev;
                 });
-                setError('');
+                setAudioError('');
+                setVideoError('');
 
                 if (audio.length) {
                     setAudioDevices(audio);
@@ -154,13 +163,9 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 }
             }
 
-            if (error) {
-                setError(error);
-                setChangeStream(prev => {
-                    stopStream(prev);
-
-                    return null;
-                });
+            if (audioError || videoError) {
+                setAudioError(audioError);
+                setVideoError(videoError);
             }
 
             setIsStreamRequested(false);
@@ -183,17 +188,19 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
         };
     }, []);
 
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             stopStream(activeStream);
-        };
-    }, []);
+        },
+        [],
+    );
 
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             stopStream(changeStream);
-        };
-    }, [changeStream]);
+        },
+        [changeStream],
+    );
 
     const handleChangeActiveStream = useCallback(() => {
         const newStream = changeStream?.clone();
@@ -241,15 +248,15 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                         if (
                             oldVideoDevice !== newVideoDevice ||
                             oldAudioDevice !== newAudioDevice ||
-                            !(prev || prev.active)
+                            !(prev || prev?.active)
                         ) {
                             stopStream(prev);
 
                             setIsCameraActive(isCameraActive);
                             setIsMicActive(isMicActive);
 
-                            setCurrentAudioDevice(prev => newAudioDevice || prev);
-                            setCurrentVideoDevice(prev => newVideoDevice || prev);
+                            setCurrentAudioDevice(prevDevice => newAudioDevice || prevDevice);
+                            setCurrentVideoDevice(prevDevice => newVideoDevice || prevDevice);
 
                             return newStream?.stream;
                         }
@@ -258,11 +265,13 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
                         return prev;
                     });
-                    setError('');
+                    setAudioError('');
+                    setVideoError('');
                 }
 
                 if (newStream?.error) {
-                    setError(newStream?.error);
+                    setAudioError(newStream?.audioError);
+                    setVideoError(newStream?.videoError);
                     setChangeStream(null);
                 }
             }
@@ -312,7 +321,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
             return stream;
         });
-        setError('');
+        setVideoError('');
+        setAudioError('');
 
         return stream;
     }, [currentAudioDevice, currentVideoDevice]);
@@ -323,8 +333,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
         setChangeStream(null);
     };
 
-    const contextValue = useMemo(() => {
-        return {
+    const contextValue = useMemo(
+        () => ({
             actions: {
                 onToggleCamera: handleToggleCamera,
                 onToggleMic: handleToggleMic,
@@ -337,7 +347,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             data: {
                 changeStream,
                 activeStream,
-                error,
+                videoError,
+                audioError,
                 videoDevices,
                 audioDevices,
                 isCameraActive,
@@ -346,25 +357,27 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 currentVideoDevice,
                 isStreamRequested,
             },
-        };
-    }, [
-        handleToggleCamera,
-        handleToggleMic,
-        handleChangeStream,
-        handleChangeActiveStream,
-        handleGetInitialStream,
-        handleGetNewStream,
-        changeStream,
-        activeStream,
-        error,
-        isStreamRequested,
-        videoDevices,
-        audioDevices,
-        isCameraActive,
-        isMicActive,
-        currentAudioDevice,
-        currentVideoDevice,
-    ]);
+        }),
+        [
+            handleToggleCamera,
+            handleToggleMic,
+            handleChangeStream,
+            handleChangeActiveStream,
+            handleGetInitialStream,
+            handleGetNewStream,
+            changeStream,
+            activeStream,
+            videoError,
+            audioError,
+            isStreamRequested,
+            videoDevices,
+            audioDevices,
+            isCameraActive,
+            isMicActive,
+            currentAudioDevice,
+            currentVideoDevice,
+        ],
+    );
 
     return <MediaContext.Provider value={contextValue}>{children}</MediaContext.Provider>;
 };

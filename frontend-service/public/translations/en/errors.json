@@ -38,7 +38,7 @@
       "title": "Meeting Error"
     },
     "notFound": "The meeting does not exist",
-    "maxParticipantsNumber": "Meeting template has reached the participant limit",
+    "maxParticipantsNumber": "Meeting room has reached the participant limit",
     "requestDenied": "Your request was denied",
     "settings": {
       "customLink": {
@@ -54,8 +54,8 @@
     "300": "Maximum allowed characters is 300"
   },
   "templatePrice": {
-    "max": "Maximum template price is 999,999",
-    "min": "Minimum template price is 0.5"
+    "max": "Maximum room price is 999,999",
+    "min": "Minimum room price is 0.5"
   },
   "required": "This field is required",
   "url": {

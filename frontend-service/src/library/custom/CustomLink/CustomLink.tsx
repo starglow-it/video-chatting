@@ -4,12 +4,11 @@ import clsx from 'clsx';
 import { LinkProps } from 'next/dist/client/link';
 import { TypographyProps } from '@mui/material';
 
+import { TranslationProps } from '@library/common/Translation/types';
+import { CustomLinkProps } from '@library/custom/CustomLink/types';
 import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 import styles from './CustomLink.module.scss';
-
-import { TranslationProps } from '@library/common/Translation/types';
-import { CustomLinkProps } from '@library/custom/CustomLink/types';
 
 const CustomLink = memo(
     ({
@@ -22,23 +21,21 @@ const CustomLink = memo(
     }: CustomLinkProps &
         TypographyProps &
         Partial<TranslationProps> &
-        React.PropsWithChildren<LinkProps>) => {
-        return (
-            <Link href={href}>
-                {nameSpace && translation ? (
-                    <CustomTypography
-                        nameSpace={nameSpace}
-                        translation={translation}
-                        color="colors.blue.primary"
-                        className={clsx(styles.link, className)}
-                        {...rest}
-                    />
-                ) : (
-                    children
-                )}
-            </Link>
-        );
-    },
+        React.PropsWithChildren<LinkProps>) => (
+        <Link href={href}>
+            {nameSpace && translation ? (
+                <CustomTypography
+                    nameSpace={nameSpace}
+                    translation={translation}
+                    color="colors.blue.primary"
+                    className={clsx(styles.link, className)}
+                    {...rest}
+                />
+            ) : (
+                children
+            )}
+        </Link>
+    ),
 );
 
 export { CustomLink };

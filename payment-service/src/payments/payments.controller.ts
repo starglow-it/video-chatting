@@ -1,7 +1,8 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Stripe } from 'stripe';
 
+// patterns
 import {
   CANCEL_PAYMENT_INTENT,
   CREATE_PAYMENT_INTENT,
@@ -16,18 +17,28 @@ import {
   GET_STRIPE_SUBSCRIPTION,
   HANDLE_EXPRESS_WEBHOOK,
 } from '@shared/patterns/payments';
-import { PAYMENTS_SERVICE } from '@shared/const/services.const';
-import { PAYMENTS_SCOPE } from '@shared/const/api-scopes.const';
+
+// services
 import { ConfigClientService } from '../config/config.service';
 import { PaymentsService } from './payments.service';
 import { CoreService } from '../core/core.service';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { NotificationsService } from '../notifications/notifications.service';
+
+// const
 import { emailTemplates } from '@shared/const/email-templates.const';
 import { plans } from '@shared/const/subscriptions.const';
+import { PAYMENTS_SERVICE } from '@shared/const/services.const';
+import { PAYMENTS_SCOPE } from '@shared/const/api-scopes.const';
+
+// interfaces
+import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { addMonthsCustom } from '../utils/dates/addMonths';
+import { addDaysCustom } from '../utils/dates/addDaysCustom';
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
+  private readonly logger = new Logger(PaymentsController.name);
+
   constructor(
     private configService: ConfigClientService,
     private notificationsService: NotificationsService,
@@ -40,6 +51,11 @@ export class PaymentsController {
     @Payload() data: { accountId: string; email: string },
   ) {
     try {
+      this.logger.log({
+        message: `createStripeExpressAccount input payload`,
+        ctx: data,
+      });
+
       if (!data.accountId) {
         const account = await this.paymentService.createExpressAccount({
           email: data.email,
@@ -70,6 +86,11 @@ export class PaymentsController {
 
   @MessagePattern({ cmd: CREATE_STRIPE_ACCOUNT_LINK })
   async createStripeAccountLink(@Payload() data: { accountId: string }) {
+    this.logger.log({
+      message: `createStripeAccountLink input payload`,
+      ctx: data,
+    });
+
     const accountLink = await this.paymentService.createExpressAccountLink({
       accountId: data.accountId,
     });
@@ -82,6 +103,11 @@ export class PaymentsController {
   @MessagePattern({ cmd: LOGIN_STRIPE_EXPRESS_ACCOUNT })
   async loginStripeExpressAccount(@Payload() data: { accountId: string }) {
     try {
+      this.logger.log({
+        message: `loginStripeExpressAccount input payload`,
+        ctx: data,
+      });
+
       const existedAccount = await this.paymentService.getExpressAccount({
         accountId: data.accountId,
       });
@@ -104,6 +130,11 @@ export class PaymentsController {
   @MessagePattern({ cmd: DELETE_STRIPE_EXPRESS_ACCOUNT })
   async deleteStripeExpressAccount(@Payload() data: { accountId: string }) {
     try {
+      this.logger.log({
+        message: `deleteStripeExpressAccount input payload`,
+        ctx: data,
+      });
+
       await this.paymentService.deleteExpressAccount({
         accountId: data.accountId,
       });
@@ -128,15 +159,25 @@ export class PaymentsController {
     },
   ) {
     try {
-      const subscription = await this.paymentService.getSubscription(
-        data.stripeSubscriptionId,
-      );
+      this.logger.log({
+        message: `createPaymentIntent input payload`,
+        ctx: data,
+      });
 
-      const product = await this.paymentService.getStripeProduct(
-        subscription.items[0].plan.product,
-      );
+      let product = null;
 
-      const plan = plans[product.name || "House" ];
+      if (data.stripeSubscriptionId) {
+        const subscription = await this.paymentService.getSubscription(
+          data.stripeSubscriptionId,
+        );
+
+        product = await this.paymentService.getStripeProduct(
+          // @ts-ignore
+          subscription?.plan?.product,
+        );
+      }
+
+      const plan = plans[product?.name || 'House'];
 
       const paymentIntent = await this.paymentService.createPaymentIntent({
         templatePrice: data.templatePrice,
@@ -160,6 +201,11 @@ export class PaymentsController {
   @MessagePattern({ cmd: CANCEL_PAYMENT_INTENT })
   async cancelPaymentIntent(@Payload() data: { paymentIntentId: string }) {
     try {
+      this.logger.log({
+        message: `cancelPaymentIntent input payload`,
+        ctx: data,
+      });
+
       const paymentIntent = await this.paymentService.getPaymentIntent({
         paymentIntentId: data.paymentIntentId,
       });
@@ -194,8 +240,7 @@ export class PaymentsController {
 
       const pricesPromise = products.data.map(async (product) => {
         const price = await this.paymentService.getStripePrice(
-            // @ts-ignore
-            product.default_price,
+          product.default_price,
         );
 
         return {
@@ -215,15 +260,24 @@ export class PaymentsController {
 
   @MessagePattern({ cmd: GET_STRIPE_CHECKOUT_SESSION })
   async getStripeCheckoutSession(
-    @Payload() data: { productId: string; meetingToken: string; baseUrl: string },
+    @Payload()
+    data: {
+      productId: string;
+      meetingToken: string;
+      baseUrl: string;
+    },
   ) {
     try {
+      this.logger.log({
+        message: `getStripeCheckoutSession input payload`,
+        ctx: data,
+      });
+
       const product = await this.paymentService.getStripeProduct(
         data.productId,
       );
 
       return this.paymentService.getStripeCheckoutSession(
-          // @ts-ignore
         product.default_price,
         data.baseUrl,
         data.meetingToken,
@@ -239,6 +293,11 @@ export class PaymentsController {
   @MessagePattern({ cmd: GET_STRIPE_PORTAL_SESSION })
   async getStripePortalSession(@Payload() data: { subscriptionId: string }) {
     try {
+      this.logger.log({
+        message: `getStripePortalSession input payload`,
+        ctx: data,
+      });
+
       const frontendUrl = await this.configService.get('frontendUrl');
 
       const subscription = await this.paymentService.getSubscription(
@@ -246,8 +305,8 @@ export class PaymentsController {
       );
 
       return this.paymentService.createSessionPortal(
-          subscription.customer,
-          `${frontendUrl}/dashboard/profile`,
+        subscription.customer,
+        `${frontendUrl}/dashboard/profile`,
       );
     } catch (err) {
       throw new RpcException({
@@ -260,6 +319,11 @@ export class PaymentsController {
   @MessagePattern({ cmd: GET_STRIPE_SUBSCRIPTION })
   async getStripeSubscription(@Payload() data: { subscriptionId: string }) {
     try {
+      this.logger.log({
+        message: `getStripePortalSession input payload`,
+        ctx: data,
+      });
+
       return await this.paymentService.getSubscription(data.subscriptionId);
     } catch (err) {
       throw new RpcException({
@@ -272,27 +336,30 @@ export class PaymentsController {
   @MessagePattern({ cmd: HANDLE_WEBHOOK })
   async handleWebhook(@Payload() data: { body: any; signature: string }) {
     try {
+      const environment = await this.configService.get('environment');
+
       const event = await this.paymentService.createWebhookEvent({
         body: Buffer.from(data.body.data),
         sig: data.signature,
       });
 
       let subscription: Stripe.Subscription | undefined;
+      let invoice: Stripe.Invoice | undefined;
 
       switch (event.type) {
         case 'checkout.session.completed':
           const sessionData = event.data.object as Stripe.Checkout.Session;
 
           subscription = await this.paymentService.getSubscription(
-              sessionData.subscription,
+            sessionData.subscription,
           );
 
           const product = await this.paymentService.getStripeProduct(
-              // @ts-ignore
-              subscription.plan.product,
+            // @ts-ignore
+            subscription.plan.product,
           );
 
-          const plan = plans[product.name];
+          const plan = plans[product.name || 'House'];
 
           await this.coreService.updateUser({
             query: { stripeSessionId: sessionData.id },
@@ -306,8 +373,25 @@ export class PaymentsController {
           break;
         case 'customer.subscription.deleted':
           subscription = event.data.object as Stripe.Subscription;
-          console.log(subscription);
-          console.log(`Subscription status is ${subscription.status}.`);
+
+          const planData = plans['House'];
+
+          await this.coreService.updateUser({
+            query: { stripeSubscriptionId: subscription.id },
+            data: {
+              isSubscriptionActive: false,
+              stripeSubscriptionId: null,
+              subscriptionPlanKey: 'House',
+              maxTemplatesNumber: planData.features.templatesLimit,
+              maxMeetingTime: planData.features.timeLimit,
+              renewSubscriptionTimestampInSeconds:
+                (environment === 'demo'
+                  ? addMonthsCustom(Date.now(), 1)
+                  : addDaysCustom(Date.now(), 1)
+                ).getTime() / 1000,
+            },
+          });
+
           break;
         case 'customer.subscription.created':
           subscription = event.data.object as Stripe.Subscription;
@@ -316,24 +400,59 @@ export class PaymentsController {
             query: { stripeSubscriptionId: subscription.id },
             data: { isSubscriptionActive: false },
           });
+
           break;
-        case 'customer.subscription.updated':
-          subscription = event.data.object as Stripe.Subscription;
+        case 'invoice.payment_succeeded':
+          invoice = event.data.object as Stripe.Invoice;
+
+          const subscriptionData = await this.paymentService.getSubscription(
+            invoice.subscription,
+          );
+
+          const productData = await this.paymentService.getStripeProduct(
+            // @ts-ignore
+            subscriptionData.plan.product,
+          );
+
+          const planData = plans[productData.name || 'House'];
+
+          await this.coreService.updateUser({
+            query: { stripeSubscriptionId: invoice.subscription },
+            data: {
+              subscriptionPlanKey: productData.name,
+              maxTemplatesNumber: planData.features.templatesLimit,
+              maxMeetingTime: planData.features.timeLimit,
+              renewSubscriptionTimestampInSeconds:
+                subscriptionData.current_period_end,
+            },
+          });
+
+          break;
+        case 'invoice.paid':
+          invoice = event.data.object as Stripe.Invoice;
+          subscription = await this.paymentService.getSubscription(
+            invoice.subscription,
+          );
 
           const frontendUrl = await this.configService.get('frontendUrl');
 
           const user = await this.coreService.findUser({
-            query: { stripeSubscriptionId: subscription.id },
+            stripeSubscriptionId: subscription.id,
           });
 
           await this.coreService.updateUser({
             query: { stripeSubscriptionId: subscription.id },
             data: {
               isSubscriptionActive: subscription.status === 'active',
+              renewSubscriptionTimestampInSeconds:
+                subscription.current_period_end,
             },
           });
 
-          if (!user.isSubscriptionActive && subscription.status === 'active') {
+          if (
+            Boolean(user.isSubscriptionActive) === false &&
+            subscription.status === 'active'
+          ) {
             this.notificationsService.sendEmail({
               template: {
                 key: emailTemplates.subscriptionSuccessful,
@@ -365,9 +484,11 @@ export class PaymentsController {
   }
 
   @MessagePattern({ cmd: HANDLE_EXPRESS_WEBHOOK })
-  async handleExpressWebhook(@Payload() data: { body: any; signature: string }) {
+  async handleExpressWebhook(
+    @Payload() data: { body: any; signature: string },
+  ) {
     try {
-      const event = await this.paymentService.createWebhookEvent({
+      const event = await this.paymentService.createExpressWebhookEvent({
         body: Buffer.from(data.body.data),
         sig: data.signature,
       });
@@ -380,28 +501,27 @@ export class PaymentsController {
             const frontendUrl = await this.configService.get('frontendUrl');
 
             const user = await this.coreService.findUser({
-              query: {
-                stripeAccountId: accountData.id,
-              },
+              stripeAccountId: accountData.id,
             });
 
-            if (!user.isStripeEnabled) {
-                await this.coreService.updateUser({
-                    query: { stripeAccountId: accountData.id },
-                    data: { isStripeEnabled: true },
-                });
+            if (!user.isStripeEnabled && user.id && accountData.id) {
+              await this.coreService.updateUser({
+                query: { stripeAccountId: accountData.id },
+                data: { isStripeEnabled: true },
+              });
 
-                this.notificationsService.sendEmail({
-                    template: {
-                        key: emailTemplates.stripeLinked,
-                        data: [
-                            {
-                                name: "BACKURL", content: `${frontendUrl}/dashboard/profile`
-                            }
-                        ]
+              this.notificationsService.sendEmail({
+                template: {
+                  key: emailTemplates.stripeLinked,
+                  data: [
+                    {
+                      name: 'BACKURL',
+                      content: `${frontendUrl}/dashboard/profile`,
                     },
-                    to: [{ email: user.email, name: user.fullName }],
-                });
+                  ],
+                },
+                to: [{ email: user.email, name: user.fullName }],
+              });
             }
           }
           break;

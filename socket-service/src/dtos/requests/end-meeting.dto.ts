@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IEndMeeting } from '../../interfaces/end-meeting.interface';
 
 export class EndMeetingRequestDTO implements IEndMeeting {
@@ -9,4 +9,10 @@ export class EndMeetingRequestDTO implements IEndMeeting {
     message: 'meeting.invalid',
   })
   readonly meetingId: string;
+
+  @IsOptional()
+  @IsString({
+    message: 'reason.invalid',
+  })
+  readonly reason: string;
 }

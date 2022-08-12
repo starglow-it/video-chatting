@@ -2,6 +2,8 @@ import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // hooks
+import { useToggle } from '@hooks/useToggle';
+import { useCountDown } from '@hooks/useCountDown';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -12,8 +14,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 // components
 import { IconButton, InputAdornment } from '@mui/material';
 import { SuccessIcon } from '@library/icons/SuccessIcon';
-import { useToggle } from '../../../hooks/useToggle';
-import { useCountDown } from '../../../hooks/useCountDown';
 
 // styles
 import styles from './EnterCodeForm.module.scss';

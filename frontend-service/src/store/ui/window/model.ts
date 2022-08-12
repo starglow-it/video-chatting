@@ -1,4 +1,4 @@
-import { uiDomain } from "../domain/model";
+import { uiDomain } from '../domain/model';
 
 export const $windowSizeStore = uiDomain.createStore({
     width: 0,
@@ -8,4 +8,6 @@ export const $windowSizeStore = uiDomain.createStore({
 export const initWindowListeners = uiDomain.createEvent('initWindowListeners');
 export const removeWindowListeners = uiDomain.createEvent('initWindowListeners');
 
-export const setWindowSizeEvent = uiDomain.createEvent<{ width: number; height: number }>('setWindowSizeEvent');
+export const setWindowSizeEvent = uiDomain.createEvent<{ width: number; height: number }>(
+    'setWindowSizeEvent',
+);

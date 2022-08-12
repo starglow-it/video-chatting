@@ -77,6 +77,7 @@ const EditCompanyInfo = memo(() => {
                             <BusinessCategoriesSelect
                                 nameSpace="profile"
                                 translation="editProfile.businessCategories"
+                                formKey="businessCategories"
                             />
 
                             <CustomInput

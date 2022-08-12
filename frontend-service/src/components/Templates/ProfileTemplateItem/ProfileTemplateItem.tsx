@@ -1,7 +1,8 @@
 import React, { memo, useCallback, useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { Fade } from '@mui/material';
+import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -12,6 +13,7 @@ import { DeleteIcon } from '@library/icons/DeleteIcon';
 
 // common
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
@@ -19,8 +21,9 @@ import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 
 // stores
 import {
+    $profileStore,
+    addNotificationEvent,
     appDialogsApi,
-    createMeetingFx,
     setDeleteTemplateIdEvent,
     setScheduleTemplateIdEvent,
 } from '../../../store';
@@ -30,10 +33,13 @@ import styles from './ProfileTemplateItem.module.scss';
 
 // types
 import { ProfileTemplateProps } from './types';
-import { AppDialogsEnum } from '../../../store/types';
+import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
-const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
-    const router = useRouter();
+const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplateProps) => {
+    const profile = useStore($profileStore);
+
+    const isDisabled = profile.maxMeetingTime === 0;
+
     const [showPreview, setShowPreview] = useState(false);
 
     const handleShowPreview = useCallback(() => {
@@ -45,9 +51,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
     }, []);
 
     const handleCreateMeeting = useCallback(async () => {
-        await createMeetingFx({ templateId: template.id });
-
-        await router.push(`/meeting/${template.customLink || template.id}`);
+        onChooseTemplate(template.id);
     }, []);
 
     const handleOpenDeleteDialog = useCallback(() => {
@@ -67,6 +71,13 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
 
     const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);
 
+    const handleShowToast = () => {
+        addNotificationEvent({
+            type: NotificationType.NoTimeLeft,
+            message: `subscriptions.noTimeLeft`,
+        });
+    };
+
     return (
         <CustomGrid
             className={styles.templateContent}
@@ -76,16 +87,9 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            {previewImage?.url
-                ? (
-                    <Image
-                        src={previewImage.url}
-                        width="334px"
-                        height="190px"
-                    />
-                )
-                : null
-            }
+            <ConditionalRender condition={Boolean(previewImage?.url)}>
+                <Image src={previewImage?.url} width="334px" height="190px" />
+            </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}
@@ -108,9 +112,13 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                     />
                     <CustomGrid container wrap="nowrap" gap={1.5}>
                         <CustomButton
-                            onClick={handleCreateMeeting}
-                            className={styles.startMeetingBtn}
+                            onMouseEnter={isDisabled ? handleShowToast : undefined}
+                            onClick={!isDisabled ? handleCreateMeeting : undefined}
+                            className={clsx(styles.startMeetingBtn, {
+                                [styles.disabled]: isDisabled,
+                            })}
                             nameSpace="templates"
+                            disableRipple={isDisabled}
                             translation="buttons.startMeeting"
                             typographyProps={{
                                 variant: 'body2',
@@ -118,8 +126,9 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                         />
                         <CustomButton
                             variant="custom-transparent"
-                            onClick={handleScheduleMeeting}
+                            onClick={!isDisabled ? handleScheduleMeeting : undefined}
                             className={styles.startMeetingBtn}
+                            disableRipple={isDisabled}
                             nameSpace="templates"
                             translation="buttons.schedule"
                             typographyProps={{

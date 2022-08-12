@@ -1,17 +1,24 @@
 import React, { ForwardedRef, forwardRef, memo, useMemo } from 'react';
-
 import { FormControl, InputLabel, Select } from '@mui/material';
 
-import { CustomDropdownProps } from './types';
+// hooks
+import { useLocalization } from '@hooks/useTranslation';
 
-import styles from './CustomDropdown.module.scss';
-
-import { useLocalization } from '../../../hooks/useTranslation';
+// common
 import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
-const Component = (
-    {
+// types
+import { CustomDropdownProps } from './types';
+
+// styles
+import styles from './CustomDropdown.module.scss';
+
+const Component: React.FunctionComponent<CustomDropdownProps> = (
+    props: CustomDropdownProps,
+    ref: ForwardedRef<HTMLSelectElement>,
+) => {
+    const {
         list,
         selectId,
         labelId,
@@ -22,14 +29,11 @@ const Component = (
         IconComponent,
         error,
         ...rest
-    }: CustomDropdownProps,
-    ref: ForwardedRef<HTMLSelectElement>,
-) => {
+    } = props;
+
     const t = useLocalization(nameSpace);
 
-    const label = useMemo(() => {
-        return translation ? t.translation(translation) : '';
-    }, [translation]);
+    const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
 
     return (
         <FormControl className={styles.select} error={Boolean(error)}>
@@ -42,7 +46,7 @@ const Component = (
                 renderValue={renderValue}
                 inputProps={{
                     className: styles.selectInput,
-                    placeholder: placeholder,
+                    placeholder,
                 }}
                 MenuProps={{
                     PopoverClasses: {
@@ -64,8 +68,6 @@ const Component = (
     );
 };
 
-const CustomDropdown = memo<CustomDropdownProps>(
-    forwardRef<HTMLSelectElement, CustomDropdownProps>(Component),
-);
+const CustomDropdown = memo(forwardRef(Component));
 
 export { CustomDropdown };

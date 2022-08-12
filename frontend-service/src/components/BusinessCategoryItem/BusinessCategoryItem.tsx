@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
-import clsx from 'clsx';
 
-// custom components
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+// custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+
+// common
+import { TagItem } from '@library/common/TagItem/TagItem';
 
 // types
 import { BusinessCategoryItemProps } from './types';
@@ -11,19 +12,16 @@ import { BusinessCategoryItemProps } from './types';
 // styles
 import styles from './BusinessCategoryItem.module.scss';
 
-const BusinessCategoryItem = memo(
-    ({ category, className, typographyVariant }: BusinessCategoryItemProps) => (
-        <CustomGrid item alignItems="center" className={clsx(styles.categoryWrapper, className)}>
-            <CustomTypography
-                className={styles.tagText}
-                variant={typographyVariant}
-                component="span"
-                color={category.color}
-            >
-                {category.value}
-            </CustomTypography>
-        </CustomGrid>
-    ),
+const Component = ({ category, className, typographyVariant }: BusinessCategoryItemProps) => (
+    <TagItem className={className}>
+        <CustomTypography
+            className={styles.tagText}
+            variant={typographyVariant}
+            color={category.color}
+        >
+            {category.value}
+        </CustomTypography>
+    </TagItem>
 );
 
-export { BusinessCategoryItem };
+export const BusinessCategoryItem = memo(Component);

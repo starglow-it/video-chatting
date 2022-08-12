@@ -4,8 +4,8 @@ export const handleEmitSocketEvent = async ({
     eventName,
     data,
     socketStore,
-}: EmitSocketEventPayload) => {
-    return new Promise((resolve, reject) => {
+}: EmitSocketEventPayload) =>
+    new Promise((resolve, reject) => {
         socketStore?.socketInstance?.emit(eventName, data, (result: any) => {
             if (result?.success) {
                 resolve(result?.result);
@@ -16,4 +16,3 @@ export const handleEmitSocketEvent = async ({
             }
         });
     });
-};

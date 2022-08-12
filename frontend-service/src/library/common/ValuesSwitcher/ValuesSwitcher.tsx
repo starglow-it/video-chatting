@@ -36,9 +36,10 @@ const Component = ({ optionWidth, values, activeValue, onValueChanged }: ValueSw
         [values, activeValue, onValueChanged],
     );
 
-    const style = useMemo(() => {
-        return { '--left': `${left}px`, '--width': `${optionWidth}px` } as React.CSSProperties;
-    }, [left]);
+    const style = useMemo(
+        () => ({ '--left': `${left}px`, '--width': `${optionWidth}px` } as React.CSSProperties),
+        [left],
+    );
 
     return (
         <CustomGrid container wrap="nowrap" className={styles.wrapper}>

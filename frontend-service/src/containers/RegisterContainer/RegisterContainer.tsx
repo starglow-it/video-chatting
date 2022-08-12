@@ -7,7 +7,8 @@ import { useRouter } from 'next/router';
 import { useForm, useWatch, FormProvider } from 'react-hook-form';
 import { useMediaQuery } from '@mui/material';
 
-// library
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // icons
 // import { GoogleIcon } from '@library/icons/GoogleIcon';
@@ -30,16 +31,15 @@ import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
 import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
 
 // stores
+import { RegisterUserParams } from 'src/store/types';
 import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store';
 
 // types
-import { RegisterUserParams } from 'src/store/types';
 
 // styles
 import styles from './RegisterContainer.module.scss';
 
 // validations
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { emailSchema } from '../../validation/users/email';
 import { passwordSchema } from '../../validation/users/password';
 
@@ -129,7 +129,7 @@ const RegisterContainer = memo(() => {
                         translation="getStarted.title"
                     />
                 </CustomGrid>
-                {/*<CustomGrid container direction="column" className={styles.socialsWrapper}>
+                {/* <CustomGrid container direction="column" className={styles.socialsWrapper}>
                 <CustomGrid item className={styles.googleLogin}>
                     <SocialLogin
                         Icon={GoogleIcon}
@@ -149,7 +149,7 @@ const RegisterContainer = memo(() => {
                 className={styles.createAccountSeparator}
                 nameSpace="register"
                 translation="getStarted.createNewAcc"
-            />*/}
+            /> */}
                 <FormProvider {...methods}>
                     <form className={styles.socialsWrapper} onSubmit={onSubmit}>
                         <CustomGrid container>
@@ -221,7 +221,7 @@ const RegisterContainer = memo(() => {
 
                         <CustomButton
                             className={styles.registerButton}
-                            disabled={!Boolean(isTermsAccepted)}
+                            disabled={!isTermsAccepted}
                             type="submit"
                             nameSpace="register"
                             translation="getStarted.button"

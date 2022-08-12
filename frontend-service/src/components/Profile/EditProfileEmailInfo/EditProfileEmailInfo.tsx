@@ -2,10 +2,13 @@ import React, { memo, useCallback } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 
+// hooks
+import { useToggle } from '@hooks/useToggle';
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+
 // helpers
 import { EnterCodeForm } from '@components/Profile/EnterCodeForm/EnterCodeForm';
 import { EnterEmailForm } from '@components/Profile/EnterEmailForm/EnterEmailForm';
-import { useToggle } from '../../../hooks/useToggle';
 import {
     codeVerificationUrl,
     emailVerificationUrl,
@@ -20,7 +23,6 @@ import { EnterPasswordForm } from '../EnterPasswordForm/EnterPasswordForm';
 import { passwordLoginSchema } from '../../../validation/users/password';
 import { emailSchema } from '../../../validation/users/email';
 import { simpleStringSchemaWithLength } from '../../../validation/common';
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // styles
 import styles from './EditProfileEmailInfo.module.scss';

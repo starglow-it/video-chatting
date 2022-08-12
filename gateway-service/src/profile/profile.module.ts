@@ -1,14 +1,24 @@
 import { Module } from '@nestjs/common';
-import { ProfileController } from './profile.controller';
-import { ProfileService } from './profile.service';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '../config/config.module';
-import { ConfigClientService } from '../config/config.service';
-import { JWT_ACCESS_EXPIRE } from '@shared/const/jwt.const';
-import { CoreModule } from '../core/core.module';
-import { NotificationsModule } from '../notifications/notifications.module';
 import { PassportModule } from '@nestjs/passport';
+
+// const
+import { JWT_ACCESS_EXPIRE } from '@shared/const/jwt.const';
+
+// modules
 import { TemplatesModule } from '../templates/templates.module';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { CoreModule } from '../core/core.module';
+import { ConfigModule } from '../config/config.module';
+
+// services
+import { ConfigClientService } from '../config/config.service';
+import { ProfileService } from './profile.service';
+
+// controllers
+import { ProfileTemplatesController } from './profile-templates.controller';
+import { ProfileAvatarController } from './profile-avatar.controller';
+import { ProfileController } from './profile.controller';
 
 @Module({
   imports: [
@@ -27,7 +37,11 @@ import { TemplatesModule } from '../templates/templates.module';
       },
     }),
   ],
-  controllers: [ProfileController],
+  controllers: [
+    ProfileController,
+    ProfileTemplatesController,
+    ProfileAvatarController,
+  ],
   providers: [ProfileService],
 })
 export class ProfileModule {}

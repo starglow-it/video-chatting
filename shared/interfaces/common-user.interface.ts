@@ -31,4 +31,5 @@ export interface ICommonUserDTO {
     wasSuccessNotificationShown: boolean;
     maxTemplatesNumber: number;
     maxMeetingTime: number;
+    renewSubscriptionTimestampInSeconds: number;
 }

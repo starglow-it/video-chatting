@@ -5,6 +5,8 @@ import * as yup from 'yup';
 import clsx from 'clsx';
 
 // hooks
+import { useMultipleToggle } from '@hooks/useMultipleToggle';
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
@@ -24,12 +26,11 @@ import { ScheduleAttendees } from './ScheduleAttendees';
 // helpers
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
-import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store';
 import {
+    appDialogsApi,
+    $appDialogsStore,
     $scheduleTemplateIdStore,
     sendScheduleInviteFx,
     setScheduleTemplateIdEvent,

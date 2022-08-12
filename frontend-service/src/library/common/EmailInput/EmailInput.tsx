@@ -2,6 +2,9 @@ import React, { forwardRef, memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 
+// hooks
+import { useLocalization } from '@hooks/useTranslation';
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
@@ -9,12 +12,10 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
-import { useLocalization } from '../../../hooks/useTranslation';
-
 // types
-import { EmailInputProps } from './types';
 import { TextFieldProps } from '@mui/material/TextField/TextField';
 import { TranslationProps } from '@library/common/Translation/types';
+import { EmailInputProps } from './types';
 
 // styles
 import styles from './EmailInput.module.scss';

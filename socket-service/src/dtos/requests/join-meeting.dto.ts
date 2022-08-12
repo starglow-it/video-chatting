@@ -13,14 +13,6 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
   })
   readonly profileId?: string;
 
-  @IsNotEmpty({
-    message: 'Instance id property is empty',
-  })
-  @IsString({
-    message: 'meeting.invalid',
-  })
-  readonly instanceId: string;
-
   @IsString({
     message: 'meeting.invalid',
   })

@@ -2,8 +2,7 @@ import React, { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // hooks
-
-// stores
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
@@ -19,8 +18,9 @@ import { EditProfilePasswordInfo } from '@components/Profile/EditProfilePassword
 
 // icons
 import { LockIcon } from '@library/icons/LockIcon';
+
+// stores
 import { $profileStore } from '../../../store';
-import { useToggle } from '../../../hooks/useToggle';
 
 // styles
 import styles from './EditAccountInfo.module.scss';

@@ -8,6 +8,9 @@ import * as yup from 'yup';
 
 import { useMediaQuery } from '@mui/material';
 
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+
 // icons
 import { GoogleIcon } from '@library/icons/GoogleIcon';
 import { LinkedInIcon } from '@library/icons/LinkedInIcon';
@@ -40,7 +43,6 @@ import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store';
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 const validationSchema = yup.object({
@@ -111,21 +113,25 @@ const SignInContainer = memo(() => {
 
     const is480Media = useMediaQuery('(max-width:480px)');
 
-    const passwordErrorMessages = useMemo(() => {
-        return errors?.password
-            ?.filter((error: ValidationError) => error.message !== 'required')
-            .map((error: Partial<ValidationError>) => {
-                return <ErrorMessage key={error.message} error={`user.pass.${error.message}`} />;
-            });
-    }, [errors?.password]);
+    const passwordErrorMessages = useMemo(
+        () =>
+            errors?.password
+                ?.filter((error: ValidationError) => error.message !== 'required')
+                .map((error: Partial<ValidationError>) => (
+                    <ErrorMessage key={error.message} error={`user.pass.${error.message}`} />
+                )),
+        [errors?.password],
+    );
 
-    const emailErrorMessages = useMemo(() => {
-        return errors.email
-            ?.filter((error: ValidationError) => error.message !== 'required')
-            .map((error: Partial<ValidationError>) => {
-                return <ErrorMessage key={error.message} error={`${error.message}`} />;
-            });
-    }, [errors.email]);
+    const emailErrorMessages = useMemo(
+        () =>
+            errors.email
+                ?.filter((error: ValidationError) => error.message !== 'required')
+                .map((error: Partial<ValidationError>) => (
+                    <ErrorMessage key={error.message} error={`${error.message}`} />
+                )),
+        [errors.email],
+    );
 
     return (
         <>
@@ -146,7 +152,7 @@ const SignInContainer = memo(() => {
                         translation="login.welcome"
                     />
                 </CustomGrid>
-                {/*<CustomGrid container direction="column" className={styles.socialsWrapper}>
+                {/* <CustomGrid container direction="column" className={styles.socialsWrapper}>
                 <CustomGrid item className={styles.googleLogin}>
                     <SocialLogin
                         Icon={GoogleIcon}
@@ -166,7 +172,7 @@ const SignInContainer = memo(() => {
                 className={styles.signInSeparator}
                 nameSpace="common"
                 translation="login.separatorText"
-            />*/}
+            /> */}
                 <FormProvider {...methods}>
                     <form className={styles.socialsWrapper} onSubmit={onSubmit}>
                         <CustomGrid container>

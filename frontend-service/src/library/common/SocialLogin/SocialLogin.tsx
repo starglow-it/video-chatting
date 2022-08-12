@@ -6,11 +6,11 @@ import { Theme } from '@mui/material';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
+import { TranslationProps } from '@library/common/Translation/types';
 import styles from './SocialLogin.module.scss';
 
 import { SocialLoginProps } from './types';
 import { PropsWithClassName } from '../../../types';
-import { TranslationProps } from '@library/common/Translation/types';
 
 const sxStyles = {
     wrapper: {
@@ -26,24 +26,22 @@ const sxStyles = {
 
 const Component: React.FunctionComponent<
     PropsWithClassName<SocialLoginProps & TranslationProps>
-> = ({ Icon, nameSpace, translation, className, onClick, children }) => {
-    return (
-        <CustomGrid
-            container
-            alignItems="center"
-            className={clsx(styles.wrapper, className)}
-            sx={sxStyles.wrapper}
-            justifyContent="center"
-            onClick={onClick}
-        >
-            {Icon && <Icon className={styles.text} width="24px" height="24px" />}
-            {nameSpace && translation ? (
-                <CustomTypography nameSpace={nameSpace} translation={translation} />
-            ) : (
-                <>{children}</>
-            )}
-        </CustomGrid>
-    );
-};
+> = ({ Icon, nameSpace, translation, className, onClick, children }) => (
+    <CustomGrid
+        container
+        alignItems="center"
+        className={clsx(styles.wrapper, className)}
+        sx={sxStyles.wrapper}
+        justifyContent="center"
+        onClick={onClick}
+    >
+        {Icon && <Icon className={styles.text} width="24px" height="24px" />}
+        {nameSpace && translation ? (
+            <CustomTypography nameSpace={nameSpace} translation={translation} />
+        ) : (
+            <>{children}</>
+        )}
+    </CustomGrid>
+);
 
 export const SocialLogin = memo(Component);

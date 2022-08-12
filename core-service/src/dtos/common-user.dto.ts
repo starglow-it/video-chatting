@@ -94,6 +94,11 @@ export class CommonUserDTO implements ICommonUserDTO {
 
   tokens: string[];
   password: ICommonUserDTO['password'];
+
+  @Expose()
+  renewSubscriptionTimestampInSeconds: ICommonUserDTO['renewSubscriptionTimestampInSeconds'];
+
+  @Expose()
   maxTemplatesNumber: ICommonUserDTO['maxTemplatesNumber'];
 
   @Expose()

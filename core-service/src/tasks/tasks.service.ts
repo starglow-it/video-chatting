@@ -28,6 +28,29 @@ export class TasksService {
     this.logger.log(`Timeout with name [${name}] will fire after ${ts}ms`);
   }
 
+  addInterval({
+    name,
+    ts,
+    callback,
+  }: {
+    name: string;
+    ts: number;
+    callback: () => void;
+  }) {
+    const isExists = this.schedulerRegistry.doesExists('interval', name);
+
+    if (isExists) return;
+
+    const interval = setInterval(() => {
+      this.logger.log(`Interval with name [${name}] is going to fire`);
+      callback();
+      this.logger.log(`Interval with name [${name}] will fire after ${ts}ms`);
+    }, ts);
+
+    this.schedulerRegistry.addInterval(name, interval);
+    this.logger.log(`Interval with name [${name}] will fire after ${ts}ms`);
+  }
+
   deleteTimeout({ name }: { name: string }) {
     const timeout = this.schedulerRegistry.doesExists('timeout', name);
 

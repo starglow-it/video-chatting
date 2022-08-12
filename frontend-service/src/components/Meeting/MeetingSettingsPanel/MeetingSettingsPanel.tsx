@@ -6,21 +6,25 @@ import { useStore } from 'effector-react';
 import Router, { useRouter } from 'next/router';
 import { Fade } from '@mui/material';
 
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+
 // components
-import { SetUpDevicesButton } from '@components/Media/DeviceSetUpButtons/SetUpDevicesButton';
 import { ConfirmCancelChangesDialog } from '@components/Dialogs/ConfirmCancelChangesDialog/ConfirmCancelChangesDialog';
 import { EditTemplateForm } from '@components/Meeting/EditTemplateForm/EditTemplateForm';
 import { MeetingInfo } from '@components/Meeting/MeetingInfo/MeetingInfo';
 
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // icons
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
-// styles
+// stores
 import {
     $isEditTemplateOpenStore,
     $isMeetingInfoOpenStore,
@@ -28,12 +32,13 @@ import {
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
     appDialogsApi,
-    $isOwner
+    $isOwner,
 } from 'src/store';
+
+// styles
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../../validation/users/companyName';
 import { emailSchema } from '../../../validation/users/email';
 import { simpleStringSchema } from '../../../validation/common';
@@ -42,8 +47,6 @@ import { languagesSchema } from '../../../validation/users/languagesSchema';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { validateSocialLink } from '../../../validation/users/socials';
 import { customTemplateLinkSchema } from '../../../validation/templates/customLink';
-
-// stores
 
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
@@ -55,7 +58,9 @@ import { MeetingSettingsPanelProps, SettingsData } from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
-import frontendConfig from '../../../const/config';
+
+// utils
+import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -184,12 +189,6 @@ const MeetingSettingsPanel = memo(
             });
         }, [templateSocialLinks]);
 
-        const handleOpenDeviceSettings = useCallback(() => {
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.devicesSettingsDialog,
-            });
-        }, []);
-
         const onSubmit = useCallback(
             handleSubmit(async data => {
                 if (!dirtyFieldsCount) {
@@ -235,15 +234,11 @@ const MeetingSettingsPanel = memo(
                         (template.customLink || dataWithoutSocials.customLink) &&
                         template.customLink !== dataWithoutSocials.customLink
                     ) {
-                        Router.push(
-                            `${frontendConfig.frontendUrl}/meeting/${
-                                dataWithoutSocials.customLink || template.id
-                            }`,
-                            `${frontendConfig.frontendUrl}/meeting/${
-                                dataWithoutSocials.customLink || template.id
-                            }`,
-                            { shallow: true },
+                        const roomUrl = getClientMeetingUrlWithDomain(
+                            dataWithoutSocials.customLink || template.id,
                         );
+
+                        Router.push(roomUrl, roomUrl, { shallow: true });
                     }
                 }
                 setEditTemplateOpenEvent(false);
@@ -277,11 +272,8 @@ const MeetingSettingsPanel = memo(
                             width="24px"
                             height="24px"
                         />
-                        <CustomGrid container className={styles.settingsControls} gap={1.5}>
-                            <SetUpDevicesButton onAction={handleOpenDeviceSettings} />
-                        </CustomGrid>
 
-                        {isOwner ? (
+                        <ConditionalRender condition={isOwner}>
                             <Fade in={isEditTemplateOpened}>
                                 <CustomBox className={styles.fadeContentWrapper}>
                                     <form onSubmit={onSubmit} className={styles.form}>
@@ -289,7 +281,7 @@ const MeetingSettingsPanel = memo(
                                     </form>
                                 </CustomBox>
                             </Fade>
-                        ) : null}
+                        </ConditionalRender>
 
                         <Fade in={isMeetingInfoOpened}>
                             <CustomBox className={styles.fadeContentWrapper}>

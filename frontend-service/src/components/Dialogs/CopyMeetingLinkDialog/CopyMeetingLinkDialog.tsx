@@ -12,7 +12,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 
 // components
 import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
-import frontendConfig from '../../../const/config';
 
 // stores
 import { $appDialogsStore, appDialogsApi } from '../../../store';
@@ -22,6 +21,9 @@ import styles from './CopyMeetingLinkDialog.module.scss';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
+
+// utils
+import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
 
 const Component = () => {
     const router = useRouter();
@@ -43,7 +45,7 @@ const Component = () => {
         });
     }, []);
 
-    const meetingLinkText = `${frontendConfig.frontendUrl}/meeting/${router.query.token}`;
+    const meetingLinkText = getClientMeetingUrlWithDomain(router.query.token);
 
     return (
         <CustomDialog

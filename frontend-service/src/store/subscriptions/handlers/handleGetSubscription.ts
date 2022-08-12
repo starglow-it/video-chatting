@@ -1,6 +1,6 @@
-import sendRequestWithCredentials from "../../../helpers/http/sendRequestWithCredentials";
-import { ErrorState } from "../../types";
-import { getSubscriptionUrl } from "../../../utils/urls";
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
+import { ErrorState } from '../../types';
+import { getSubscriptionUrl } from '../../../utils/urls';
 
 export const handleGetSubscription = async ({ subscriptionId }: { subscriptionId: string }) => {
     if (subscriptionId) {
@@ -12,6 +12,4 @@ export const handleGetSubscription = async ({ subscriptionId }: { subscriptionId
             return response.result;
         }
     }
-
-    return;
-}
+};

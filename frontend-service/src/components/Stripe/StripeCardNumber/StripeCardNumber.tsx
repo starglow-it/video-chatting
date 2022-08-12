@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import {CardNumberElement, CardNumberElementProps} from '@stripe/react-stripe-js';
+import { CardNumberElement, CardNumberElementProps } from '@stripe/react-stripe-js';
 
 import styles from '../StripeCommon.module.scss';
 

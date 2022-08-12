@@ -3,13 +3,16 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
 // hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import { useToggle } from '@hooks/useToggle';
+
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+
+// common
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
-import { useToggle } from '../../../hooks/useToggle';
-
 
 // validations
 import { passwordLoginSchema, passwordSchema } from '../../../validation/users/password';

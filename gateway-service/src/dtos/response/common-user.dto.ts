@@ -81,8 +81,18 @@ export class CommonUserRestDTO implements ICommonUserDTO {
   @ApiProperty()
   isResetPasswordActive: boolean;
 
+  @Expose()
+  @ApiProperty()
+  maxTemplatesNumber: number;
+
+  @Expose()
+  @ApiProperty()
+  renewSubscriptionTimestampInSeconds: number;
+
+  @Expose()
+  @ApiProperty()
+  maxMeetingTime: number;
+
   createdAt: Date;
   updatedAt: Date;
-  maxTemplatesNumber: number;
-  maxMeetingTime: number;
 }

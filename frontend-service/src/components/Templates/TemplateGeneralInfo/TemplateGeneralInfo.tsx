@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -30,9 +31,9 @@ const TemplateGeneralInfo = memo(
                 container
                 className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
             >
-                {isThereSignBoard ? (
+                <ConditionalRender condition={isThereSignBoard}>
                     <Image src={`/images/boards/${signBoard}.png`} width="360px" height="244px" />
-                ) : null}
+                </ConditionalRender>
                 <CustomGrid
                     gap={1}
                     container

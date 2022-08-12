@@ -138,7 +138,7 @@ export class PaymentsController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while connect stripe account`,
+          message: `An error occurs, while get login url`,
         },
         JSON.stringify(err),
       );
@@ -183,7 +183,7 @@ export class PaymentsController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while connect stripe account`,
+          message: `An error occurs, while delete stripe account`,
         },
         JSON.stringify(err),
       );
@@ -232,7 +232,7 @@ export class PaymentsController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while connect stripe account`,
+          message: `An error occurs, while create payment intent`,
         },
         JSON.stringify(err),
       );
@@ -265,7 +265,7 @@ export class PaymentsController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while connect stripe account`,
+          message: `An error occurs, while cancel payment intent`,
         },
         JSON.stringify(err),
       );
@@ -301,7 +301,7 @@ export class PaymentsController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while connect stripe account`,
+          message: `An error occurs, while stripe webhooks event`,
         },
         JSON.stringify(err),
       );
@@ -337,7 +337,7 @@ export class PaymentsController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while connect stripe account`,
+          message: `An error occurs, while stripe express webhook event`,
         },
         JSON.stringify(err),
       );
@@ -388,7 +388,7 @@ export class PaymentsController {
   })
   async buyProduct(
     @Request() req,
-    @Body() body: {baseUrl: string; meetingToken: string},
+    @Body() body: { baseUrl: string; meetingToken: string },
     @Param('productId') productId: string,
   ): Promise<ResponseSumType<any>> {
     try {
@@ -442,7 +442,7 @@ export class PaymentsController {
       return {
         success: true,
         result: {
-          url: portalSession.url
+          url: portalSession.url,
         },
       };
     } catch (err) {

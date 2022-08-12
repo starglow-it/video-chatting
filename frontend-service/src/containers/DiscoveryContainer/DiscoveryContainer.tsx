@@ -27,6 +27,7 @@ import styles from './DiscoveryContainer.module.scss';
 
 // types
 import { AppDialogsEnum } from '../../store/types';
+import { getClientMeetingUrl } from '../../utils/urls';
 
 const DiscoveryContainer = memo(() => {
     const router = useRouter();
@@ -40,7 +41,7 @@ const DiscoveryContainer = memo(() => {
     }, []);
 
     const handleEnterWaitingRoom = useCallback(({ templateId }) => {
-        router.push(`/meeting/${templateId}`);
+        router.push(getClientMeetingUrl(templateId));
     }, []);
 
     const handleUserTemplatesPageChange = useCallback(async newPage => {

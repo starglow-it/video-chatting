@@ -37,21 +37,21 @@ $meetingUsersStore
 
         return state;
     })
-    .on(updateMeetingUserEvent, (state, { user }) => {
-        return state.map(_user => (_user.id === user?.id ? { ..._user, ...user } : _user));
-    })
-    .on(removeMeetingUsersEvent, (state, { users }) => {
-        return !users ? state : state.filter(_user => !users?.includes(_user.id));
-    })
-    .on(setMeetingUserMediaEvent, (state, user) => {
-        return state.map(_user =>
+    .on(updateMeetingUserEvent, (state, { user }) =>
+        state.map(_user => (_user.id === user?.id ? { ..._user, ...user } : _user)),
+    )
+    .on(removeMeetingUsersEvent, (state, { users }) =>
+        !users ? state : state.filter(_user => !users?.includes(_user.id)),
+    )
+    .on(setMeetingUserMediaEvent, (state, user) =>
+        state.map(_user =>
             _user.meetingUserId === user.uid
                 ? { ..._user, audioTrack: user.audioTrack, videoTrack: user.videoTrack }
                 : _user,
-        );
-    })
-    .on(updateUserTracksEvent, (state, data) => {
-        return state.map(user => {
+        ),
+    )
+    .on(updateUserTracksEvent, (state, data) =>
+        state.map(user => {
             const isTargetUser = user.meetingUserId === data.userUid;
             if (isTargetUser) {
                 return {
@@ -69,8 +69,8 @@ $meetingUsersStore
                 };
             }
             return user;
-        });
-    })
+        }),
+    )
     .reset(resetMeetingUsersStore);
 
 sample({

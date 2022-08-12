@@ -7,6 +7,7 @@ export type MeetingSettingsContentProps = {
     isBlurActive: boolean;
     onToggleBlur: () => void;
     isMonetizationEnabled: boolean;
+    isMonetizationAvailable: boolean;
     isAudioActive: boolean;
     stream?: MediaStream | undefined | null;
 };

@@ -58,7 +58,7 @@
   color: $primary-white;
 
   &.withAction {
-    @include withHoverAction($dark-orange, $light-orange);
+    @include withHoverAction($light-orange, $dark-orange);
   }
 }
 

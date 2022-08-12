@@ -1,5 +1,3 @@
 import isToday from 'date-fns/isToday';
 
-export const isTodayDate = (date: Date | number) => {
-    return isToday(date);
-};
+export const isTodayDate = (date: Date | number) => isToday(date);

@@ -31,6 +31,10 @@ async function bootstrap() {
   app.setGlobalPrefix(ROOT_SCOPE);
 
   app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
+  app.use(
+    '/api/payments/express-webhook',
+    express.raw({ type: 'application/json' }),
+  );
 
   // Swagger setup
   const options = new DocumentBuilder()

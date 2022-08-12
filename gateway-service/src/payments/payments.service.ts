@@ -75,7 +75,11 @@ export class PaymentsService {
     return this.client.send(pattern, {}).toPromise();
   }
 
-  async getCheckoutSession(data: { productId: string; meetingToken: string; baseUrl: string }) {
+  async getCheckoutSession(data: {
+    productId: string;
+    meetingToken: string;
+    baseUrl: string;
+  }) {
     const pattern = { cmd: GET_STRIPE_CHECKOUT_SESSION };
 
     return this.client.send(pattern, data).toPromise();

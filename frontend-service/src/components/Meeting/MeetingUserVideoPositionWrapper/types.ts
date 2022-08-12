@@ -6,5 +6,6 @@ export type MeetingUserVideoPositionWrapperProps = Required<
         elevationIndex: number;
         bottom: number | undefined;
         left: number | undefined;
+        usersNumber: number | undefined;
     }>
 >;

@@ -15,7 +15,13 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
 // stores
-import { $localUserStore, $isOwner, $meetingTemplateStore, $meetingUsersStore } from '../../../store';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import {
+    $localUserStore,
+    $isOwner,
+    $meetingTemplateStore,
+    $meetingUsersStore,
+} from '../../../store';
 
 // styles
 import styles from './MeetingPreview.module.scss';
@@ -84,14 +90,14 @@ const MeetingPreview = memo(() => {
                 <ArrowLeftIcon width="32px" height="32px" />
             </CustomGrid>
             <CustomBox className={styles.imageWrapper}>
-                {previewImage?.url ? (
+                <ConditionalRender condition={Boolean(previewImage?.url)}>
                     <Image
-                        src={previewImage.url}
+                        src={previewImage?.url}
                         layout="fill"
                         objectFit="cover"
                         objectPosition="center"
                     />
-                ) : null}
+                </ConditionalRender>
             </CustomBox>
             <ProfileAvatar
                 className={styles.profileAvatar}
@@ -104,6 +110,8 @@ const MeetingPreview = memo(() => {
                 item
                 container
                 direction="column"
+                alignItems="center"
+                justifyContent="center"
                 className={styles.textWrapper}
                 flex="1 1 auto"
             >
@@ -114,8 +122,16 @@ const MeetingPreview = memo(() => {
                 >
                     {meetingTemplate.companyName}
                 </CustomTypography>
+                <ConditionalRender condition={!isOwner}>
+                    <CustomTypography
+                        color="colors.white.primary"
+                        nameSpace="meeting"
+                        translation="preview.invitedText"
+                    />
+                </ConditionalRender>
                 <CustomTypography
                     variant="body1"
+                    textAlign="center"
                     color="colors.white.primary"
                     className={styles.description}
                 >

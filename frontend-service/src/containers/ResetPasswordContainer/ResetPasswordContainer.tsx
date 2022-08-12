@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // hooks
-import { useToggle } from '../../hooks/useToggle';
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -12,6 +12,7 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ResetPassword } from '@components/ResetPassword/ResetPassword';
 import { NotValidLink } from '@components/NotValidLink/NotValidLink';
 import { ResetSuccessful } from '@components/ResetPassword/ResetSuccessful';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // styles
 import styles from './ResetPasswordContainer.module.scss';
@@ -52,13 +53,19 @@ const Component = () => {
 
     return (
         <CustomPaper className={styles.wrapper}>
-            {isUserConfirmed && !isConfirmPending && !isResetSuccessful ? (
+            <ConditionalRender
+                condition={isUserConfirmed && !isConfirmPending && !isResetSuccessful}
+            >
                 <ResetPassword onSuccessfulReset={handleShowSuccess} />
-            ) : null}
+            </ConditionalRender>
 
-            {error && !isConfirmPending ? <NotValidLink /> : null}
+            <ConditionalRender condition={Boolean(error) && !isConfirmPending}>
+                <NotValidLink />
+            </ConditionalRender>
 
-            {isResetSuccessful ? <ResetSuccessful /> : null}
+            <ConditionalRender condition={isResetSuccessful}>
+                <ResetSuccessful />
+            </ConditionalRender>
         </CustomPaper>
     );
 };

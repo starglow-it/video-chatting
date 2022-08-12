@@ -3,8 +3,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 
 // hooks
-import { useLocalization } from '../../../hooks/useTranslation';
-import { useToggle } from '../../../hooks/useToggle';
+import { useLocalization } from '@hooks/useTranslation';
+import { useToggle } from '@hooks/useToggle';
 
 // components
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
@@ -18,8 +18,8 @@ import styles from '@library/custom/CustomInput/CustomInput.module.scss';
 
 // types
 import { TranslationProps } from '@library/common/Translation/types';
-import { PasswordInputProps } from './types';
 import { TextFieldProps } from '@mui/material/TextField/TextField';
+import { PasswordInputProps } from './types';
 
 type ComponentProps = PasswordInputProps &
     Omit<TextFieldProps, 'error' | 'children'> &
@@ -47,9 +47,7 @@ const Component = (
 
     const t = useLocalization(nameSpace);
 
-    const label = useMemo(() => {
-        return translation ? t.translation(translation) : '';
-    }, [translation]);
+    const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
 
     const handleBlur = useCallback(
         e => {

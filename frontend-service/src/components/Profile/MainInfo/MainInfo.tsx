@@ -8,17 +8,20 @@ import { SocialLinks } from '@components/SocialLinks/SocialLinks';
 import { ProfileDescription } from '@components/Profile/ProfileDescription/ProfileDescription';
 import { ProfileBusinessTags } from '@components/Profile/ProfileBusinessTags/ProfileBusinessTags';
 
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // stores
-import {$profileStore, $profileTemplatesStore, getProfileTemplatesFx} from '../../../store';
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { $profileStore, $profileTemplatesStore, getProfileTemplatesFx } from '../../../store';
 
 // styles
 import styles from './MainInfo.module.scss';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 const MainInfo = memo(() => {
     const profileState = useStore($profileStore);
@@ -26,33 +29,35 @@ const MainInfo = memo(() => {
     const lastProfileTemplate = useStoreMap({
         store: $profileTemplatesStore,
         keys: [],
-        fn: (state) => state?.list?.sort?.((a, b) => new Date(a.usedAt).getTime() < new Date(b.usedAt).getTime() ? 1 : 0)?.[0],
+        fn: state =>
+            state?.list?.sort?.((a, b) =>
+                new Date(a.usedAt).getTime() < new Date(b.usedAt).getTime() ? 1 : 0,
+            )?.[0],
     });
 
     useEffect(() => {
         getProfileTemplatesFx({ limit: 6, skip: 0 });
     }, []);
 
-    const previewImage = (lastProfileTemplate?.previewUrls || []).find(image => image.resolution === 1080);
+    const previewImage = (lastProfileTemplate?.previewUrls || []).find(
+        image => image.resolution === 1080,
+    );
 
     return (
         <CustomPaper className={styles.wrapper}>
             <CustomGrid container direction="column">
                 <SocialLinks />
                 <CustomBox className={styles.imageWrapper}>
-                    {previewImage?.url
-                        ? (
-                            <Image
-                                src={previewImage.url}
-                                width="100%"
-                                height="100%"
-                                layout="fill"
-                                objectFit="cover"
-                                objectPosition="center"
-                            />
-                        )
-                        : null
-                    }
+                    <ConditionalRender condition={Boolean(previewImage?.url)}>
+                        <Image
+                            src={previewImage?.url}
+                            width="100%"
+                            height="100%"
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="center"
+                        />
+                    </ConditionalRender>
                 </CustomBox>
                 <CustomGrid
                     className={styles.profileInfoWrapper}

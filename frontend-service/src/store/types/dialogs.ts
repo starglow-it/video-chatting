@@ -13,9 +13,10 @@ export type AppDialogsState = {
     scheduleMeetingDialog: boolean;
     downloadIcsEventDialog: boolean;
     copyMeetingLinkDialog: boolean;
-    checkResetPasswordEmailDialog: boolean;
     emailResetPasswordDialog: boolean;
     deleteProfileDialog: boolean;
+    replaceTemplateConfirmDialog: boolean;
+    timeExpiredDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -34,8 +35,9 @@ export enum AppDialogsEnum {
     downloadIcsEventDialog = 'downloadIcsEventDialog',
     copyMeetingLinkDialog = 'copyMeetingLinkDialog',
     emailResetPasswordDialog = 'emailResetPasswordDialog',
-    checkResetPasswordEmailDialog = 'checkResetPasswordEmailDialog',
     deleteProfileDialog = 'deleteProfileDialog',
+    replaceTemplateConfirmDialog = 'replaceTemplateConfirmDialog',
+    timeExpiredDialog = 'timeExpiredDialog',
 }
 
 export type DialogActionPayload = {

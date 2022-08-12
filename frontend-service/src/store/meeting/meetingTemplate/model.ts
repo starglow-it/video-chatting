@@ -35,6 +35,10 @@ export const initialTemplateState: UserTemplate = {
 
 export const $meetingTemplateStore = meetingDomain.store<UserTemplate>(initialTemplateState);
 
+export const resetMeetingTemplateStoreEvent = meetingDomain.createEvent(
+    'resetMeetingTemplateStoreEvent',
+);
+
 export const $isUserSendEnterRequest = meetingDomain.store<boolean>(false);
 export const $isMeetingInstanceExists = $meetingTemplateStore.map(
     state => state?.meetingInstance?.id,

@@ -30,6 +30,7 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
     'nodeEnv',
     'port',
     'emailService',
+    'environment',
 ];
 
 export const DefaultConfigValues: Record<ConfigKeysType, string | number | boolean> = {
@@ -62,4 +63,5 @@ export const DefaultConfigValues: Record<ConfigKeysType, string | number | boole
     nodeEnv: 'develop',
     port: 4000,
     emailService: 'gmail',
+    environment: 'local',
 }

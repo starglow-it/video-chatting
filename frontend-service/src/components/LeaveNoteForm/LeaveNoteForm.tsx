@@ -2,7 +2,8 @@ import React, { memo, useCallback } from 'react';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
-// styles
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -22,7 +23,6 @@ import { MAX_NOTE_CONTENT } from '../../const/general';
 
 // validation
 import { simpleStringSchemaWithLength } from '../../validation/common';
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
 import { sendMeetingNoteSocketEvent } from '../../store';

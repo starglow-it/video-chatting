@@ -5,4 +5,4 @@ export type SubscriptionPlanCardProps = {
     onChooseSubscription: (productId: string, isPaid: boolean) => void;
     onOpenPlans: () => void;
     isDisabled: boolean;
-}
+};

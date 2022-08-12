@@ -44,6 +44,7 @@ const EditTemplateCompanyInfo = memo(() => {
             <BusinessCategoriesSelect
                 nameSpace="meeting"
                 translation="templates.businessCategories"
+                formKey="businessCategories"
             />
         </CustomGrid>
     );

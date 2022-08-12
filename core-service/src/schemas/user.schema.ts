@@ -128,12 +128,13 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: "House"
+    default: 'House',
   })
   subscriptionPlanKey: ICommonUserDTO['subscriptionPlanKey'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
+    default: false,
   })
   isStripeEnabled: ICommonUserDTO['isStripeEnabled'];
 
@@ -160,6 +161,11 @@ export class User {
     default: 120 * 60 * 1000,
   })
   maxMeetingTime: ICommonUserDTO['maxMeetingTime'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+  })
+  renewSubscriptionTimestampInSeconds: ICommonUserDTO['renewSubscriptionTimestampInSeconds'];
 }
 
 export type UserDocument = User & Document;

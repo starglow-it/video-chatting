@@ -2,9 +2,8 @@ import React, { memo, useContext, useEffect, useMemo } from 'react';
 
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { VolumeIndicator } from '@components/Media/VolumeAnalyzer/VolumeIndicator';
+import { useAudioVolumeMeter } from '@hooks/useAudioAnalyzer';
 import { MediaContext } from '../../../contexts/MediaContext';
-
-import { useAudioVolumeMeter } from '../../../hooks/useAudioAnalyzer';
 
 import styles from './VolumeAnalyzer.module.scss';
 

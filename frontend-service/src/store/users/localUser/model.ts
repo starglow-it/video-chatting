@@ -30,4 +30,4 @@ export const setLocalUserMediaEvent = meetingUsersDomain.event<{
 export const updateLocalUserEvent =
     meetingUsersDomain.event<Partial<MeetingUser>>('updateLocalUserEvent');
 
-export const leaveMeetingEvent = meetingUsersDomain.event('leaveMeetingEvent');
+export const leaveMeetingEvent = meetingUsersDomain.event<{ reason?: string }>('leaveMeetingEvent');

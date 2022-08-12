@@ -298,12 +298,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                bottom: 0.43,
-                left: 0.37
+                bottom: 0.57,
+                left: 0.47
             },
             {
-                bottom: 0.34,
-                left: 0.17
+                bottom: 0.35,
+                left: 0.22
             }
         ]
     },
@@ -324,12 +324,12 @@ export const templatesData: BaseTemplate[] = [
         ],
         usersPosition: [
             {
-                bottom: 0.37,
-                left: 0.6
+                bottom: 0.45,
+                left: 0.4
             },
             {
-                bottom: 0.33,
-                left: 0.83
+                bottom: 0.30,
+                left: 0.75
             }
         ]
     },
@@ -447,12 +447,12 @@ export const templatesData: BaseTemplate[] = [
                 left: 0.3
             },
             {
-                bottom: 0.1,
-                left: 0.39
+                bottom: 0.11,
+                left: 0.64
             },
             {
                 bottom: 0.11,
-                left: 0.64
+                left: 0.39
             },
             {
                 bottom: 0.21,
@@ -460,7 +460,7 @@ export const templatesData: BaseTemplate[] = [
             },
             {
                 bottom: 0.34,
-                left: 0.49
+                left: 0.52
             }
         ]
     },
@@ -510,11 +510,11 @@ export const templatesData: BaseTemplate[] = [
         usersPosition: [
             {
                 bottom: 0.31,
-                left: 0.39
+                left: 0.31
             },
             {
                 bottom: 0.31,
-                left: 0.61
+                left: 0.65
             }
         ]
     },

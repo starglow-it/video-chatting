@@ -3,6 +3,7 @@ import {
     $profileStore,
     clearProfileEvent,
     setProfileEvent,
+    getProfileFx,
     updateProfileFx,
     deleteProfilePhotoFx,
     updateProfileEmailFx,
@@ -15,6 +16,7 @@ import {
     deleteStripeDataEvent,
 } from './model';
 
+import { handleGetProfile } from '../handlers/handleGetProfile';
 import { handleUpdateProfileInfo } from '../handlers/handleUpdateProfileInfo';
 import { handleUpdateProfilePhoto } from '../handlers/handleUpdateProfilePhoto';
 import { handleDeleteProfilePhoto } from '../handlers/handleDeleteProfilePhoto';
@@ -28,6 +30,7 @@ import { handleDeleteProfile } from '../handlers/handleDeleteProfile';
 import { initialProfileState } from './const';
 import { resetAuthStateEvent } from '../../auth/model';
 
+getProfileFx.use(handleGetProfile);
 updateProfileFx.use(handleUpdateProfileInfo);
 updateProfilePhotoFx.use(handleUpdateProfilePhoto);
 deleteProfilePhotoFx.use(handleDeleteProfilePhoto);
@@ -59,6 +62,7 @@ $profileStore
     })
     .on(
         [
+            getProfileFx.doneData,
             updateProfilePhotoFx.doneData,
             updateProfileFx.doneData,
             deleteProfilePhotoFx.doneData,

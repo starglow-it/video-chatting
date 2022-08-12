@@ -15,7 +15,8 @@ export const handleLoginUser = async (params: LoginUserPayload) => {
             isAuthenticated: response.success,
             user: response?.result?.user,
         };
-    } else if (!response.success) {
+    }
+    if (!response.success) {
         return {
             isAuthenticated: false,
             error: response?.error,

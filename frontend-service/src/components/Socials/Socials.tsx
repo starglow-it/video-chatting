@@ -1,7 +1,7 @@
 import React, { useRef, memo, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 
-import {useFieldArray, useFormContext, useWatch} from 'react-hook-form';
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -20,11 +20,15 @@ import styles from './Socials.module.scss';
 import { SOCIAL_LINKS, SOCIALS_ICONS } from '../../const/profile/socials';
 
 const SocialInput = ({ social, index, onRemove }) => {
-    const { register, formState: { errors }, control } = useFormContext();
+    const {
+        register,
+        formState: { errors },
+        control,
+    } = useFormContext();
 
     const inputValue = useWatch({
         control,
-        name: `socials[${index}]`
+        name: `socials[${index}]`,
     });
 
     const Icon = SOCIALS_ICONS[social.key];
@@ -41,7 +45,10 @@ const SocialInput = ({ social, index, onRemove }) => {
         const { value } = event.target;
 
         if (value) {
-            event.target.value = /https?/g.test(value) && /https?/g.test(inputValue.value) ? value.replace(/https:\/\//, '') : value;
+            event.target.value =
+                /https?/g.test(value) && /https?/g.test(inputValue.value)
+                    ? value.replace(/https:\/\//, '')
+                    : value;
 
             await onChange(event);
         } else {
@@ -75,7 +82,7 @@ const SocialInput = ({ social, index, onRemove }) => {
             {...registerData}
         />
     );
-}
+};
 
 const Component: React.FunctionComponent<{
     buttonClassName?: string;
@@ -91,9 +98,9 @@ const Component: React.FunctionComponent<{
 
     const { fields, remove, append } = useFieldArray({ control, name: 'socials' });
 
-    const handleRemove = (index) => {
+    const handleRemove = index => {
         remove(index);
-    }
+    };
 
     const renderSocials = useMemo(
         () =>
@@ -171,7 +178,7 @@ const Component: React.FunctionComponent<{
 
 Component.defaultProps = {
     buttonClassName: '',
-    title: "",
+    title: '',
 };
 
 export const Socials = memo(Component);

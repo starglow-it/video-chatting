@@ -2,6 +2,9 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
 // styles
+import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
+import { getPreviousMonth } from 'src/utils/time/getPreviousMonth';
+import { getDaysOfWeek } from 'src/utils/time/getDaysOfWeek';
 import styles from './CustomDatePicker.module.scss';
 
 // custom
@@ -9,13 +12,10 @@ import { CustomGrid } from '../CustomGrid/CustomGrid';
 import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 // icons
-import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
 
 // time utils
 import { formatDate } from '../../../utils/time/formatDate';
-import { getPreviousMonth } from 'src/utils/time/getPreviousMonth';
 import { getNextMonth } from '../../../utils/time/getNextMonth';
-import { getDaysOfWeek } from 'src/utils/time/getDaysOfWeek';
 import { getCalendarMonthData } from '../../../utils/time/getCalendarMonthData';
 import { isWeekendDay } from '../../../utils/time/isWeekendDay';
 import { isCurrentMonthDay } from '../../../utils/time/isCurrentMonthDay';
@@ -47,23 +47,27 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
         onDateSelected?.(date);
     }, []);
 
-    const weekDays = useMemo(() => {
-        return getDaysOfWeek().map(dayOfWeek => {
-            const key = formatDate(dayOfWeek, 'EEEEEE');
+    const weekDays = useMemo(
+        () =>
+            getDaysOfWeek().map(dayOfWeek => {
+                const key = formatDate(dayOfWeek, 'EEEEEE');
 
-            return (
-                <CustomTypography
-                    key={key}
-                    variant="body1bold"
-                    color={
-                        isWeekendDay(dayOfWeek) ? 'colors.grayscale.normal' : 'colors.black.primary'
-                    }
-                >
-                    {key}
-                </CustomTypography>
-            );
-        });
-    }, []);
+                return (
+                    <CustomTypography
+                        key={key}
+                        variant="body1bold"
+                        color={
+                            isWeekendDay(dayOfWeek)
+                                ? 'colors.grayscale.normal'
+                                : 'colors.black.primary'
+                        }
+                    >
+                        {key}
+                    </CustomTypography>
+                );
+            }),
+        [],
+    );
 
     const renderMonth = useMemo(() => {
         const monthData = getCalendarMonthData(currentMonthDate);

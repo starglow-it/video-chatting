@@ -151,6 +151,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4000
+      - ENVIRONMENT=demo
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue

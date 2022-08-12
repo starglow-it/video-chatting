@@ -1,17 +1,18 @@
 import React, { memo } from 'react';
-import clsx from 'clsx';
 
+// custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
+// common
+import { TagItem } from '@library/common/TagItem/TagItem';
+
+// types
 import { LanguageTagItemProps } from './types';
 
-import styles from './LanguageTagItem.module.scss';
+const Component = ({ className, language }: LanguageTagItemProps) => (
+    <TagItem className={className}>
+        <CustomTypography>{language?.value}</CustomTypography>
+    </TagItem>
+);
 
-const LanguageTagItem = memo(({ className, language }: LanguageTagItemProps) => (
-    <CustomGrid item alignItems="center" className={clsx(styles.languageWrapper, className)}>
-        <CustomTypography component="span">{language?.value}</CustomTypography>
-    </CustomGrid>
-));
-
-export { LanguageTagItem };
+export const LanguageTagItem = memo(Component);

@@ -8,6 +8,4 @@ export const handleDeleteProfile = async (): Promise<void> => {
     await sendRequestWithCredentials<void, ErrorState>(deleteProfileUrl);
 
     deleteAuthCookies(undefined);
-
-    return;
 };

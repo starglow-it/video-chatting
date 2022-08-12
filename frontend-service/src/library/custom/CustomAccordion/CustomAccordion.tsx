@@ -2,14 +2,13 @@ import React, { memo, useCallback } from 'react';
 
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 
-import { CustomAccordionProps } from './types';
-
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // icons
 import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
+import { CustomAccordionProps } from './types';
 
 import styles from './CustomAccordion.module.scss';
 

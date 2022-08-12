@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-
+import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import { MenuItem } from '@mui/material';
 
 // components
@@ -11,6 +11,8 @@ import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+
+// components
 import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
 
 // styles
@@ -23,16 +25,18 @@ import { BUSINESS_CATEGORIES } from '../../const/businessCategories';
 import { BusinessCategoriesSelectProps } from './types';
 
 const BusinessCategoriesSelect = memo(
-    ({ nameSpace, translation }: BusinessCategoriesSelectProps) => {
+    ({ nameSpace, translation, formKey }: BusinessCategoriesSelectProps) => {
         const { setValue, control, register } = useFormContext();
 
         const categoriesValue = useWatch({
             control,
-            name: 'businessCategories',
+            name: formKey,
         });
 
-        const handleChange = useCallback(event => {
-            setValue('businessCategories', event.target.value, {
+        const registerData = register(formKey);
+
+        const handleChange = useCallback((event: SelectChangeEvent<string[]>) => {
+            setValue(formKey, event.target.value, {
                 shouldValidate: true,
                 shouldDirty: true,
             });
@@ -49,13 +53,13 @@ const BusinessCategoriesSelect = memo(
         );
 
         const renderValues = useCallback(
-            (selected: unknown): React.ReactNode => (
+            (selected: string[]): React.ReactNode => (
                 <CustomScroll className={styles.tagsWrapper}>
                     <CustomGrid container gap={1}>
                         {selected.map(selectedKey => {
                             const selectedCategory = BUSINESS_CATEGORIES.find(
                                 tag => tag.key === selectedKey,
-                            )!;
+                            );
 
                             if (selectedCategory) {
                                 return (
@@ -66,7 +70,7 @@ const BusinessCategoriesSelect = memo(
                                 );
                             }
 
-                            return <></>;
+                            return null;
                         })}
                     </CustomGrid>
                 </CustomScroll>
@@ -79,9 +83,9 @@ const BusinessCategoriesSelect = memo(
                 nameSpace={nameSpace}
                 translation={translation}
                 selectId="businessCategoriesSelect"
-                labelId="businessCategories"
+                labelId={formKey}
                 multiple
-                {...register('businessCategories')}
+                {...registerData}
                 value={categoriesValue}
                 onChange={handleChange}
                 renderValue={renderValues}

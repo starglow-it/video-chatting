@@ -26,11 +26,7 @@ const Component = ({
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">
-            <TemplateInfo
-                className={styles.avatar}
-                name={name}
-                description={description}
-            />
+            <TemplateInfo className={styles.avatar} name={name} description={description} />
             <CustomBox className={styles.emptySpace} />
             {isNeedToShowBusinessInfo && (
                 <CustomGrid container alignItems="flex-end" gap={1} className={styles.businessInfo}>

@@ -7,6 +7,9 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
 // components
 import { MicIcon } from '@library/icons/MicIcon';
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
@@ -77,6 +80,7 @@ const MeetingUserVideoItem = memo(
                     <RoundedVideo
                         isLocal={isLocal}
                         isCameraActive={isCameraEnabled && !isScreensharingUser}
+                        isVideoAvailable
                         userName={userName}
                         userProfilePhoto={userProfileAvatar}
                         videoRef={container}
@@ -95,19 +99,26 @@ const MeetingUserVideoItem = memo(
                         </CustomGrid>
                     )}
                 </CustomBox>
-                {!isScreenSharing && (
-                    <CustomPaper className={styles.usernameWrapper} variant="black-glass">
-                        <CustomGrid container alignItems="center" wrap="nowrap">
+                <ConditionalRender condition={(isScreenSharing && isLocal) || !isScreenSharing}>
+                    <CustomPaper
+                        className={clsx(styles.usernameWrapper, {
+                            [styles.forSharing]: isScreenSharing && isLocal,
+                        })}
+                        variant="black-glass"
+                    >
+                        {((isScreenSharing && isLocal) || !isScreenSharing) && (
                             <MicIcon
                                 isActive={isMicEnabled}
-                                width="18px"
-                                height="18px"
+                                width={isScreenSharing && isLocal ? '16px' : '18px'}
+                                height={isScreenSharing && isLocal ? '16px' : '18px'}
                                 onClick={onToggleAudio}
                                 className={clsx(styles.micIcon, {
                                     [styles.noAudio]: !isMicEnabled,
                                     [styles.withAction]: isLocal,
                                 })}
                             />
+                        )}
+                        {!isScreenSharing && (
                             <CustomTypography
                                 color="common.white"
                                 variant="body3"
@@ -115,9 +126,9 @@ const MeetingUserVideoItem = memo(
                             >
                                 {userName}
                             </CustomTypography>
-                        </CustomGrid>
+                        )}
                     </CustomPaper>
-                )}
+                </ConditionalRender>
             </CustomGrid>
         );
     },

@@ -18,6 +18,7 @@ export interface IUpdateProfile {
     maxMeetingTime?: number;
     isStripeEnabled?: boolean;
     wasSuccessNotificationShown?: boolean;
+    renewSubscriptionTimestampInSeconds?: number;
     isResetPasswordActive?: boolean;
     socials: {
         youtube?: string;

@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import {plainToClass, plainToInstance} from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -41,7 +41,8 @@ import {
   USER_NOT_FOUND,
 } from '@shared/const/errors/users';
 import { USER_TOKEN_NOT_FOUND } from '@shared/const/errors/tokens';
-
+// const
+import { USERS_SERVICE } from '@shared/const/services.const';
 // mongo
 import {
   ITransactionSession,
@@ -62,17 +63,21 @@ import { VerificationCodeService } from '../verification-code/verification-code.
 import { UsersService } from './users.service';
 import { UserTokenService } from '../user-token/user-token.service';
 
-// const
-import { USERS_SERVICE } from '@shared/const/services.const';
-
 // types
 import { TokenPayloadType } from '@shared/types/token-payload.type';
 import { TokenTypes } from '@shared/const/tokens.const';
+import { addMonthsCustom } from '../utils/dates/addMonths';
+import { TasksService } from '../tasks/tasks.service';
+import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
+import { TimeoutTypesEnum } from '../types/timeoutTypes.enum';
+import { plans } from '@shared/const/subscriptions.const';
+import { addDaysCustom } from '../utils/dates/addDaysCustom';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
+    private tasksService: TasksService,
     private languagesService: LanguagesService,
     private userTokenService: UserTokenService,
     private businessCategoriesService: BusinessCategoriesService,
@@ -81,6 +86,54 @@ export class UsersController {
     private verificationCodeService: VerificationCodeService,
     @InjectConnection() private connection: Connection,
   ) {}
+
+  startCheckSubscriptions() {
+    this.tasksService.addInterval({
+      name: 'checkSubscriptions',
+      ts: getTimeoutTimestamp({
+        value: 1,
+        type: TimeoutTypesEnum.Hours,
+      }),
+      callback: this.checkSubscriptions.bind(this),
+    });
+  }
+
+  async checkSubscriptions() {
+    const environment = await this.configService.get('environment');
+
+    const users = await this.usersService.findUsers({
+      query: {},
+    });
+
+    const usersPromises = users.map(async (user) => {
+      const productKey = user.subscriptionPlanKey;
+
+      if (productKey === 'House') {
+        if (user.renewSubscriptionTimestampInSeconds < Date.now() / 1000) {
+          const plan = plans[productKey];
+
+          const nextRenewDate =
+            environment === 'demo'
+              ? addMonthsCustom(Date.now(), 1)
+              : addDaysCustom(Date.now(), 1);
+
+          const nextRenewDateInSeconds = nextRenewDate.getTime() / 1000;
+
+          await this.usersService.findByIdAndUpdate(user._id, {
+            maxMeetingTime: plan.features.timeLimit,
+            maxTemplatesNumber: plan.features.templatesLimit,
+            renewSubscriptionTimestampInSeconds: Math.ceil(
+              nextRenewDateInSeconds,
+            ),
+          });
+        }
+      }
+
+      return;
+    });
+
+    await Promise.all(usersPromises);
+  }
 
   @MessagePattern({ cmd: USER_EXISTS })
   async checkIfUserExists(
@@ -99,8 +152,19 @@ export class UsersController {
       this.connection,
       async (session: ITransactionSession) => {
         try {
+          const environment = await this.configService.get('environment');
+
+          const renewSubscriptionTimestampInSeconds =
+            (environment === 'demo'
+              ? addMonthsCustom(Date.now(), 1)
+              : addDaysCustom(Date.now(), 1)
+            ).getTime() / 1000;
+
           const newUser = await this.usersService.createUser(
-            registerUserData.user,
+            {
+              ...registerUserData.user,
+              renewSubscriptionTimestampInSeconds,
+            },
             session,
           );
 

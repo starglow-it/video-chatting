@@ -5,6 +5,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { IConfig } from '@shared/interfaces/config.interface';
 import { ConfigClientService } from './config/config.service';
 import { SeederService } from './seeder/seeder.service';
+import { UsersController } from './users/users.controller';
 
 async function bootstrap() {
   const appContext = await NestFactory.createApplicationContext(AppModule);
@@ -12,6 +13,7 @@ async function bootstrap() {
   const config: IConfig = await configService.getAll();
 
   const seeder = appContext.get(SeederService);
+  const usersController = appContext.get(UsersController);
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
@@ -32,6 +34,8 @@ async function bootstrap() {
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
   await seeder.seedCommonTemplates();
+
+  usersController.startCheckSubscriptions();
 
   return app.listen();
 }

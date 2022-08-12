@@ -1,14 +1,18 @@
 import React, { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
+// custom
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
-import { $meetingTemplateStore } from '../../../store';
+// stores
+import { $isGoodsVisible, $meetingTemplateStore } from '../../../store';
 
+// styles
 import styles from './MeetingGoodsLinks.module.scss';
 
-const Component = ({ show }: { show: boolean }) => {
+const Component = () => {
+    const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
 
     const renderItems = useMemo(
@@ -25,8 +29,8 @@ const Component = ({ show }: { show: boolean }) => {
 
                 return (
                     <CustomTooltip
-                        {...(show ? { open: true } : {})}
-                        key={`${link.id}_${show}`}
+                        {...(isGoodsVisible ? { open: true } : {})}
+                        key={`${link.id}_${isGoodsVisible}`}
                         nameSpace="meeting"
                         translation="links.buyItem"
                         placement="bottom"
@@ -48,7 +52,7 @@ const Component = ({ show }: { show: boolean }) => {
                     </CustomTooltip>
                 );
             }),
-        [meetingTemplate?.links, show],
+        [meetingTemplate?.links, isGoodsVisible],
     );
 
     return <>{renderItems}</>;

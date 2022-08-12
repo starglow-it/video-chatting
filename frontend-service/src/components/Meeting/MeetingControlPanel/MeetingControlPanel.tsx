@@ -5,6 +5,7 @@ import { Fade } from '@mui/material';
 import ClickAwayListener from '@mui/base/ClickAwayListener/ClickAwayListener';
 
 // hooks
+import { useMultipleToggle } from '@hooks/useMultipleToggle';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -19,12 +20,13 @@ import { MonetizationIcon } from '@library/icons/MonetizationIcon';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
 import { MeetingInviteParticipants } from '@components/Meeting/MeetingInviteParticipants/MeetingInviteParticipants';
+import { MeetingMonetization } from '@components/Meeting/MeetingMonetization/MeetingMonetization';
 import { MeetingUsersList } from '@components/Meeting/MeetingUsersList/MeetingUsersList';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
-import { useMultipleToggle } from '../../../hooks/useMultipleToggle';
 
 // stores
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 import {
     $isOwner,
     $meetingUsersStore,
@@ -32,6 +34,7 @@ import {
     $meetingTemplateStore,
     cancelPaymentIntentWithData,
     createPaymentIntentWithData,
+    $profileStore,
 } from '../../../store';
 
 // styles
@@ -43,7 +46,9 @@ import { MeetingAccessStatuses } from '../../../store/types';
 const MeetingControlPanel = memo(() => {
     const isOwner = useStore($isOwner);
     const paymentIntent = useStore($paymentIntent);
+    const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);
 
     const paperRef = useRef(null);
 
@@ -78,12 +83,14 @@ const MeetingControlPanel = memo(() => {
     }, []);
 
     const handleTogglePayment = useCallback(() => {
-        if (!isPaymentOpen && !paymentIntent?.id) {
+        if (!isPaymentOpen && !paymentIntent?.id && !isOwner) {
             createPaymentIntentWithData();
         }
 
+        if (paymentIntent?.id) cancelPaymentIntentWithData();
+
         handleSwitchToggle('isPaymentOpen');
-    }, [isPaymentOpen, paymentIntent?.id]);
+    }, [isPaymentOpen, paymentIntent?.id, isOwner]);
 
     const handleClosePayment = useCallback(() => {
         if (paymentIntent?.id) cancelPaymentIntentWithData();
@@ -105,16 +112,23 @@ const MeetingControlPanel = memo(() => {
                         })}
                         Icon={<NotesIcon width="30px" height="30px" />}
                     />
-
-                    {!isOwner && meetingTemplate.isMonetizationEnabled ? (
+                    <ConditionalRender
+                        condition={
+                            isOwner
+                                ? Boolean(profile.isStripeEnabled && profile.stripeAccountId)
+                                : meetingTemplate.isMonetizationEnabled
+                        }
+                    >
                         <ActionButton
-                            onAction={handleTogglePayment}
+                            onAction={
+                                !isCreatePaymentIntentPending ? handleTogglePayment : undefined
+                            }
                             className={clsx(styles.actionButton, styles.withAction, {
                                 [styles.active]: isPaymentOpen,
                             })}
                             Icon={<MonetizationIcon width="30px" height="30px" />}
                         />
-                    ) : null}
+                    </ConditionalRender>
 
                     <ActionButton
                         onAction={handleToggleUsers}
@@ -142,7 +156,12 @@ const MeetingControlPanel = memo(() => {
 
                     <Fade in={isPaymentOpen}>
                         <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
-                            <PaymentForm onClose={handleClosePayment} />
+                            <ConditionalRender condition={!isOwner}>
+                                <PaymentForm onClose={handleClosePayment} />
+                            </ConditionalRender>
+                            <ConditionalRender condition={isOwner}>
+                                <MeetingMonetization />
+                            </ConditionalRender>
                         </CustomPaper>
                     </Fade>
                 </CustomGrid>

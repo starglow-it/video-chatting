@@ -11,19 +11,17 @@ import { GridProps } from '@mui/material';
 import styles from './TagWrapper.module.scss';
 
 const TagWrapper = memo(
-    forwardRef(({ children, className, ...rest }: React.PropsWithChildren<GridProps & {}>, ref) => {
-        return (
-            <CustomGrid
-                ref={ref}
-                item
-                alignItems="center"
-                className={clsx(styles.tagWrapper, className)}
-                {...rest}
-            >
-                {children}
-            </CustomGrid>
-        );
-    }),
+    forwardRef(({ children, className, ...rest }: React.PropsWithChildren<GridProps & {}>, ref) => (
+        <CustomGrid
+            ref={ref}
+            item
+            alignItems="center"
+            className={clsx(styles.tagWrapper, className)}
+            {...rest}
+        >
+            {children}
+        </CustomGrid>
+    )),
 );
 
 export { TagWrapper };

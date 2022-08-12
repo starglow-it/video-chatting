@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import { ClickAwayListener } from '@mui/material';
 
-// helpers
+// hooks
+import { useToggle } from '@hooks/useToggle';
 
 // library
 import { EditRoundIcon } from '@library/icons/EditRoundIcon';
@@ -20,7 +21,6 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomList } from '@library/custom/CustomList/CustomList';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
-import { useToggle } from '../../../hooks/useToggle';
 
 // stores
 import { $profileStore, deleteProfilePhotoFx, updateProfilePhotoFx } from '../../../store';

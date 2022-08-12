@@ -5,6 +5,9 @@ import Image from 'next/image';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
 
+// hooks
+import { useFileReader } from '@hooks/useFileReader';
+
 // custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -29,9 +32,6 @@ import styles from './SetUpTemplateInfo.module.scss';
 
 // stores
 import { $profileAvatarImage, setProfileAvatar, resetProfileAvatarEvent } from '../../../store';
-
-// hooks
-import { useFileReader } from '../../../hooks/useFileReader';
 
 const SetUpProfileAvatar = memo(() => {
     const profileAvatar = useStore($profileAvatarImage);

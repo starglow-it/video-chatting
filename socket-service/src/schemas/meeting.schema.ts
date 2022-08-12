@@ -33,12 +33,6 @@ export class Meeting {
     required: true,
     type: mongoose.Schema.Types.String,
   })
-  instanceId: string;
-
-  @Prop({
-    required: true,
-    type: mongoose.Schema.Types.String,
-  })
   templateId: string;
 
   @Prop({
@@ -58,7 +52,6 @@ export class Meeting {
 
   @Prop({
     type: mongoose.Schema.Types.Number,
-    default: Date.now,
   })
   startAt: number;
 

@@ -17,6 +17,4 @@ export const handleSendScheduleInvite = async (data: {
     if (response.success) {
         return response.result.icsLink;
     }
-
-    return;
 };

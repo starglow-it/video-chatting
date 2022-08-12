@@ -12,10 +12,9 @@ export const handleRegisterUser = async params => {
         return {
             isUserRegistered: response.success,
         };
-    } else {
-        return {
-            isUserRegistered: response.success,
-            error: response.error,
-        };
     }
+    return {
+        isUserRegistered: response.success,
+        error: response.error,
+    };
 };

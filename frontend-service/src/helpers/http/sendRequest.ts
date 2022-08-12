@@ -4,7 +4,7 @@ import { ApiParams, FailedResult, SuccessResult } from '../../store/types';
 export async function sendRequest<Result, Error>(
     options: ApiParams & AxiosRequestConfig = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
-    const url = options.url;
+    const { url } = options;
 
     const { token, ...restOptions } = options;
 

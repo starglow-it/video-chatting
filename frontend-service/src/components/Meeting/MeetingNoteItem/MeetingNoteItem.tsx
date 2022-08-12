@@ -4,7 +4,9 @@ import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Linkify from 'linkify-react';
+
 // hooks
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -15,7 +17,6 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 // icons
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 import { CopyIcon } from '@library/icons/CopyIcon';
-import { useToggle } from '../../../hooks/useToggle';
 
 // types
 import { MeetingNote, NotificationType } from '../../../store/types';
@@ -29,7 +30,7 @@ import {
     addNotificationEvent,
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
-    $localUserStore
+    $localUserStore,
 } from '../../../store';
 
 const MeetingNoteItem = memo(

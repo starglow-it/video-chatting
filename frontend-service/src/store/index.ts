@@ -30,13 +30,11 @@ export * from './meeting/meetingState/model';
 export * from './meeting/sockets/model';
 export * from './meeting/meetingSounds/model';
 
-export * from './templates/templates/model';
-export * from './templates/templatePreview/model';
-export * from './templates/setUpTemplate/model';
-export * from './templates/discoveryTemplates/model';
+export * from './templates/model';
 export * from './waitingRoom/model';
 export * from './dashboardNotifications/model';
 export * from './ui/window/model';
+export * from './ui/goods/model';
 
 export * from './socket/init';
 
@@ -68,12 +66,10 @@ export * from './users/localUser/init';
 export * from './users/meetingUsers/init';
 export * from './users/userToKick/init';
 
-export * from './templates/templates/init';
-export * from './templates/templatePreview/init';
-export * from './templates/setUpTemplate/init';
-export * from './templates/discoveryTemplates/init';
+export * from './templates/init';
 export * from './waitingRoom/init';
 export * from './dashboardNotifications/init';
 export * from './ui/window/init';
+export * from './ui/goods/init';
 
 export * from './users/init';

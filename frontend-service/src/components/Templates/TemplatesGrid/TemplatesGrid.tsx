@@ -8,7 +8,6 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
 import { SkeletonTemplate } from '@components/Templates/SkeletonTemplate/SkeletonTemplate';
-import { SearchTemplates } from '@components/Templates/SearchTemplates/SearchTemplates';
 
 // icons
 import { PrevSliderArrow } from '@library/icons/PrevSliderArrow';
@@ -24,19 +23,29 @@ import { TemplateGridProps } from './types';
 // styles
 import styles from './TemplatesGrid.module.scss';
 
-const DotsComponent = (dotsRef: any) => function(dots: React.ReactNode) {
-  return <ul ref={dotsRef}>{dots}</ul>
-}
+const DotsComponent = (dotsRef: any) =>
+    function (dots: React.ReactNode) {
+        return <ul ref={dotsRef}>{dots}</ul>;
+    };
 
-const PagingComponent = (activeSlider: number) => function(i: number) {
-  return (
-      <div
-          className={clsx(styles.dotSlider, { [styles.activeDot]: activeSlider === i })}
-      />
-  );
-}
+const PagingComponent = (activeSlider: number) =>
+    function (i: number) {
+        return (
+            <div className={clsx(styles.dotSlider, { [styles.activeDot]: activeSlider === i })} />
+        );
+    };
 
-const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGridProps) => {
+const Component = ({
+    TemplateComponent,
+    list,
+    count,
+    onPageChange,
+    onChooseTemplate,
+    outerClassName,
+    innerClassName,
+    itemWidth = 334,
+    itemGap = 3,
+}: TemplateGridProps) => {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
 
@@ -47,7 +56,13 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
     const renderTemplates = useMemo(() => {
         const initialTemplatesRender = list.map(template => ({
             id: template.id,
-            component: <TemplateComponent key={template.id} template={template} />,
+            component: (
+                <TemplateComponent
+                    key={template.id}
+                    template={template}
+                    onChooseTemplate={onChooseTemplate}
+                />
+            ),
         }));
 
         if (count <= 6) {
@@ -79,11 +94,10 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
                     <CustomBox
                         key={key}
                         display="grid"
-                        gap={3}
+                        gap={itemGap}
                         gridTemplateColumns={`repeat(${
                             is1100Media ? 'auto-fit' : '3'
-                        }, minmax(334px, 1fr))`}
-                        className={styles.grid}
+                        }, minmax(${itemWidth}px, 1fr))`}
                     >
                         {elements}
                     </CustomBox>
@@ -92,7 +106,7 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
         }
 
         return [];
-    }, [list, skip, count, is1100Media]);
+    }, [list, skip, count, is1100Media, onChooseTemplate]);
 
     const handleLoadTemplates = useCallback(data => {
         setSkip(prev => {
@@ -130,10 +144,9 @@ const Component = ({ TemplateComponent, list, count, onPageChange }: TemplateGri
             direction="column"
             justifyContent="center"
             alignItems="center"
-            className={styles.templatesWrapper}
+            className={outerClassName || styles.templatesWrapper}
         >
-            <SearchTemplates />
-            <CustomBox className={styles.templatesContent}>
+            <CustomBox className={innerClassName || styles.templatesContent}>
                 {count > 6 ? (
                     <CustomSlider sliderSettings={sliderSettings}>{renderTemplates}</CustomSlider>
                 ) : (

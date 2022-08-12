@@ -3,8 +3,8 @@ import setDate from 'date-fns/setDate';
 import getDay from 'date-fns/getDay';
 import addMonths from 'date-fns/addMonths';
 
-import { unflatArray } from '../functions/unflatArray';
 import { addDays, subDays } from 'date-fns';
+import { unflatArray } from '../functions/unflatArray';
 
 export const getCalendarMonthData = (date: Date): (number | Date)[][] => {
     const daysInMonth = getDaysInMonth(date);

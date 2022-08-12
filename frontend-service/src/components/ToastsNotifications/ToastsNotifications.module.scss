@@ -6,11 +6,3 @@
   left: 50%;
   transform: translateX(-50%);
 }
-
-.snackbar {
-  bottom: rem(100px);
-
-  @media (min-width: rem(600px)) {
-    bottom: rem(100px);
-  }
-}

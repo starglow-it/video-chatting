@@ -3,6 +3,9 @@ import { useStore } from 'effector-react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -13,7 +16,6 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // validation
 import { fullNameSchema } from '../../validation/users/fullName';
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // stores
 import {
@@ -21,7 +23,8 @@ import {
     $authStore,
     $isOwner,
     $meetingTemplateStore,
-    updateLocalUserEvent, $isSocketConnected,
+    updateLocalUserEvent,
+    $isSocketConnected,
 } from '../../store';
 
 // types
@@ -46,7 +49,11 @@ const EnterMeetingName = memo(() => {
         fullName: string;
     }>(validationSchema);
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
         criteriaMode: 'all',
         resolver,
         defaultValues: {

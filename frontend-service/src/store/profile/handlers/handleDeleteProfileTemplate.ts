@@ -15,6 +15,4 @@ export const handleDeleteProfileTemplate = async ({
     if (response.success) {
         return response.result;
     }
-
-    return;
 };

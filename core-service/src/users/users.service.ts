@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 
@@ -7,7 +7,6 @@ import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from '../schemas/user.schema';
 
 // shared
-import { IUserCredentials } from '@shared/types/registerUser.type';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { ITransactionSession } from '../helpers/mongo/withTransaction';
 import { IUpdateProfile } from '@shared/interfaces/update-profile.interface';
@@ -35,7 +34,7 @@ export class UsersService {
   }
 
   async createUser(
-    data: IUserCredentials,
+    data: UpdateQuery<UserDocument>,
     { session }: ITransactionSession,
   ): Promise<UserDocument> {
     data.password = await this.hashPassword(data.password);
@@ -72,6 +71,25 @@ export class UsersService {
       .exec();
   }
 
+  async updateUsers({
+    query,
+    data,
+    populatePaths,
+    session,
+  }: {
+    query: FilterQuery<UserDocument>;
+    data: UpdateQuery<UserDocument>;
+    session?: ITransactionSession;
+    populatePaths?: CustomPopulateOptions;
+  }) {
+    return this.user
+      .updateMany(query, data, {
+        session: session?.session,
+        populate: populatePaths,
+      })
+      .exec();
+  }
+
   async findUsers({
     query,
     populatePaths,
@@ -88,7 +106,7 @@ export class UsersService {
 
   async findUserAndUpdate(
     query: FilterQuery<UserDocument>,
-    data: Partial<ICommonUserDTO>,
+    data: UpdateQuery<UserDocument>,
     { session }: ITransactionSession,
   ) {
     return this.user.findOneAndUpdate(
@@ -101,17 +119,23 @@ export class UsersService {
   async findByIdAndUpdate(
     id: ICommonUserDTO['id'],
     data: Partial<ICommonUserDTO>,
-    { session }: ITransactionSession,
+    session?: ITransactionSession,
   ) {
     return this.user.findByIdAndUpdate(
       id,
       { $set: data },
-      { session, new: true },
+      { session: session?.session, new: true },
     );
   }
 
-  async findById(id: ICommonUserDTO['id'], { session }: ITransactionSession, populatePaths?: CustomPopulateOptions) {
-    return this.user.findById(id, {}, { session, populate: populatePaths }).exec();
+  async findById(
+    id: ICommonUserDTO['id'],
+    { session }: ITransactionSession,
+    populatePaths?: CustomPopulateOptions,
+  ) {
+    return this.user
+      .findById(id, {}, { session, populate: populatePaths })
+      .exec();
   }
 
   async hashPassword(pass: string): Promise<string> {

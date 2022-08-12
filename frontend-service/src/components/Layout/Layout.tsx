@@ -8,6 +8,8 @@ import { LiveOfficeLogo } from '@library/icons/LiveOfficeLogo';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
+import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { AuthenticationLink } from '@components/AuthenticationLink/AuthenticationLink';
@@ -16,7 +18,12 @@ import { AuthenticationLink } from '@components/AuthenticationLink/Authenticatio
 import { LayoutProps } from './types';
 
 // stores
-import {$authStore, $isSocketConnected, initiateSocketConnectionEvent, disconnectSocketEvent, joinDashboard} from '../../store';
+import {
+    $authStore,
+    $isSocketConnected,
+    initiateSocketConnectionEvent,
+    joinDashboard,
+} from '../../store';
 
 // styles
 import styles from './Layout.module.scss';
@@ -30,12 +37,10 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
 
     useEffect(() => {
         (async () => {
-            const isDashboardRoute = new RegExp('dashboard').test(router.pathname);
+            const isDashboardRoute = /dashboard/.test(router.pathname);
 
             if (isDashboardRoute) {
                 initiateSocketConnectionEvent();
-            } else {
-                disconnectSocketEvent();
             }
         })();
     }, [router.pathname]);
@@ -47,13 +52,18 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
     }, [isSocketConnected]);
 
     useEffect(() => {
-        setIsMeetingRoute(router.pathname.includes('meeting'));
+        const isTargetRoute =
+            router.pathname.includes('room') ||
+            router.pathname.includes('dashboard/templates/setup');
+
+        setIsMeetingRoute(isTargetRoute);
     }, [router]);
 
     return (
-        <CustomBox
-            className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}
-        >
+        <CustomBox className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}>
+            <ConditionalRender condition={isMeetingRoute}>
+                <TimeLimitNotification />
+            </ConditionalRender>
             <CustomBox
                 className={clsx(styles.contentWrapper, { [styles.meetingLayout]: isMeetingRoute })}
             >
@@ -72,7 +82,7 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
                         <CustomGrid>{!isAuthenticated && <AuthenticationLink />}</CustomGrid>
                     </CustomGrid>
                 </CustomBox>
-                {children!}
+                {children}
             </CustomBox>
         </CustomBox>
     );

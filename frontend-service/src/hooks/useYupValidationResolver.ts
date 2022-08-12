@@ -64,12 +64,11 @@ export const useYupValidationResolver = <Values>(
                             };
                         }, initialReduceState),
                     };
-                } else {
-                    return {
-                        values: {},
-                        errors: {},
-                    };
                 }
+                return {
+                    values: {},
+                    errors: {},
+                };
             }
         },
         [validationSchema],

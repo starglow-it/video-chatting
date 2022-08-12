@@ -3,6 +3,7 @@ export type RoundedVideoProps = {
     userProfilePhoto: string;
     userName: string;
     isCameraActive?: boolean;
+    isVideoAvailable?: boolean;
     isLocal?: boolean;
     size: number;
     videoRef?: any;

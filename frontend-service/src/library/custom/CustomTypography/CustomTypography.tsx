@@ -1,11 +1,14 @@
-import React, { forwardRef, memo } from 'react';
+import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 import { Typography } from '@mui/material';
 
+// common
 import { Translation } from '@library/common/Translation/Translation';
 
+// types
 import { CustomTypographyProps } from './types';
 
+// styles
 import styles from './CustomTypography.module.scss';
 
 const Component = (
@@ -18,7 +21,7 @@ const Component = (
         options,
         ...rest
     }: CustomTypographyProps,
-    ref,
+    ref: ForwardedRef<HTMLSpanElement>,
 ) => (
     <Typography
         component="span"
@@ -34,8 +37,6 @@ const Component = (
     </Typography>
 );
 
-const CustomTypography = memo<CustomTypographyProps>(
-    forwardRef<HTMLDivElement, CustomTypographyProps>(Component),
+export const CustomTypography = memo<CustomTypographyProps>(
+    forwardRef<HTMLSpanElement, CustomTypographyProps>(Component),
 );
-
-export { CustomTypography };

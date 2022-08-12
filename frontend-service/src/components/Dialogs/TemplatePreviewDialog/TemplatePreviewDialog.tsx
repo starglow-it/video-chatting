@@ -9,6 +9,9 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
 // components
 import { TemplateParticipants } from '@components/Templates/TemplateParticipants/TemplateParticipants';
 import { TemplatePaymentType } from '@components/Templates/TemplatePaymentType/TemplatePaymentType';
@@ -21,11 +24,17 @@ import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { ScheduleIcon } from '@library/icons/ScheduleIcon';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store';
-import { $templatePreviewStore } from '../../../store';
+import clsx from 'clsx';
+import {
+    $appDialogsStore,
+    $profileStore,
+    addNotificationEvent,
+    appDialogsApi,
+    $templatePreviewStore,
+} from '../../../store';
 
 // types
-import { AppDialogsEnum } from '../../../store/types';
+import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { TemplatePreviewDialogProps } from './types';
 
 // styles
@@ -40,6 +49,9 @@ const TemplatePreviewDialog = memo(
     }: TemplatePreviewDialogProps) => {
         const { templatePreviewDialog } = useStore($appDialogsStore);
         const previewTemplate = useStore($templatePreviewStore);
+        const profile = useStore($profileStore);
+
+        const isTimeLimitReached = profile.maxMeetingTime === 0;
 
         const handleClose = useCallback(() => {
             appDialogsApi.closeDialog({
@@ -50,13 +62,13 @@ const TemplatePreviewDialog = memo(
         const handleChooseTemplate = useCallback(async () => {
             if (previewTemplate?.id) {
                 onChooseTemplate?.({
-                    templateId: previewTemplate?.id!,
+                    templateId: previewTemplate.id,
                 });
             }
         }, [previewTemplate?.id]);
 
         const handleScheduleMeeting = useCallback(() => {
-            previewTemplate?.id && onSchedule?.({ templateId: previewTemplate?.id });
+            if (previewTemplate?.id) onSchedule?.({ templateId: previewTemplate?.id });
 
             appDialogsApi.closeDialog({
                 dialogKey: AppDialogsEnum.templatePreviewDialog,
@@ -66,6 +78,13 @@ const TemplatePreviewDialog = memo(
         const previewImage = (previewTemplate?.previewUrls || []).find(
             preview => preview.resolution === 1080,
         );
+
+        const handleShowToast = () => {
+            addNotificationEvent({
+                type: NotificationType.NoTimeLeft,
+                message: `subscriptions.noTimeLeft`,
+            });
+        };
 
         return (
             <CustomDialog
@@ -77,18 +96,17 @@ const TemplatePreviewDialog = memo(
                 <CustomGrid container wrap="nowrap">
                     <CustomGrid className={styles.templatePreview}>
                         <TemplateGeneralInfo
-                            profileAvatar={previewTemplate?.user?.profileAvatar?.url}
                             companyName={previewTemplate?.companyName}
                             userName={previewTemplate?.name}
                         />
-                        {Boolean(previewImage?.id) && (
+                        <ConditionalRender condition={Boolean(previewImage?.id)}>
                             <Image
-                                src={previewImage.url}
+                                src={previewImage?.url || ''}
                                 layout="fill"
                                 objectFit="cover"
                                 objectPosition="center"
                             />
-                        )}
+                        </ConditionalRender>
                     </CustomGrid>
                     <CustomBox className={styles.templateInfoContent}>
                         <CustomGrid
@@ -156,8 +174,12 @@ const TemplatePreviewDialog = memo(
                             )}
 
                             <CustomButton
-                                onClick={handleChooseTemplate}
-                                className={styles.chooseBtn}
+                                onMouseEnter={isTimeLimitReached ? handleShowToast : undefined}
+                                onClick={!isTimeLimitReached ? handleChooseTemplate : undefined}
+                                className={clsx(styles.chooseBtn, {
+                                    [styles.disabled]: isTimeLimitReached,
+                                })}
+                                disableRipple={isTimeLimitReached}
                                 nameSpace="templates"
                                 translation={`buttons.${chooseButtonKey}`}
                             />

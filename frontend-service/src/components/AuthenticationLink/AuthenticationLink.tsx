@@ -1,15 +1,20 @@
 import React, { useMemo, memo } from 'react';
 import { useRouter } from 'next/router';
 
+// custom
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
+// styles
 import styles from './AuthenticationLink.module.scss';
+
+// const
+import { clientRoutes } from '../../const/client-routes';
 
 const AuthenticationLink = memo(() => {
     const router = useRouter();
-    const isNotLoginPage = !router.pathname.includes('login');
+    const isNotLoginPage = !router.pathname.includes(clientRoutes.loginRoute);
 
     const customLinkProps = useMemo(
         () => ({
@@ -17,7 +22,7 @@ const AuthenticationLink = memo(() => {
                 isNotLoginPage ? 'haveAccount' : 'dontHaveAccount'
             }`,
             link: `${isNotLoginPage ? 'signIn' : 'signUp'}.label`,
-            href: isNotLoginPage ? '/login' : '/welcome',
+            href: isNotLoginPage ? clientRoutes.loginRoute : clientRoutes.welcomeRoute,
         }),
         [isNotLoginPage],
     );

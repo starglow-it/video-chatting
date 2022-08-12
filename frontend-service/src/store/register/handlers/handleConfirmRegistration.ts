@@ -12,10 +12,9 @@ export const handleConfirmRegistration = async (token: string) => {
         return {
             isUserConfirmed: response?.success,
         };
-    } else {
-        return {
-            isUserConfirmed: response?.success,
-            error: response.error,
-        };
     }
+    return {
+        isUserConfirmed: response?.success,
+        error: response.error,
+    };
 };

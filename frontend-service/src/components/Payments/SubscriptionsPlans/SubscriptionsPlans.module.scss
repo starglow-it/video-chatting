@@ -3,9 +3,10 @@
 
 .wrapper {
   padding: rem(40px);
-  max-width: rem(405px);
+  width: rem(420px);
   min-height: rem(639px);
   display: flex;
+  pointer-events: all;
 }
 
 .productName {
@@ -27,6 +28,7 @@
 
 .listWrapper {
   margin: rem(40px 0 16px 0);
+  max-height: rem(214px);
 }
 
 .listItem {
@@ -53,11 +55,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: rem(4px 0 0 0);
 }
 
 .expandBtn {
+  width: min-content;
   cursor: pointer;
   margin: rem(0 0 45px 0);
+  white-space: nowrap;
 }
 
 .button {

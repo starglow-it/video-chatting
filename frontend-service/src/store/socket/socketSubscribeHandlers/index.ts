@@ -6,6 +6,7 @@ import {
     ON_MEETING_ERROR,
     ON_MEETING_FINISHED,
     ON_MEETING_TEMPLATE_UPDATE,
+    ON_MEETING_TIME_LIMIT,
     ON_MEETING_UPDATE,
     ON_PLAY_SOUND,
     ON_REMOVE_MEETING_NOTE,
@@ -33,6 +34,7 @@ import { handleKickUser } from './handleKickUser';
 import { handleMeetingFinished } from './handleMeetingFinished';
 import { handleUpdateUsers } from './handleUpdateUsers';
 import { handleRemoveUsers } from './handleRemoveUsers';
+import { handleMeetingTimeLimit } from './handleMeetingTimeLimit';
 
 const SUBSCRIBE_HANDLERS_REGISTRY = new Map([
     [
@@ -125,8 +127,13 @@ const SUBSCRIBE_HANDLERS_REGISTRY = new Map([
             handler: handleRemoveUsers,
         },
     ],
+    [
+        ON_MEETING_TIME_LIMIT,
+        {
+            handler: handleMeetingTimeLimit,
+        },
+    ],
 ]);
 
-export const getSocketSubscribeHandler = (eventName: string) => {
-    return SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler;
-};
+export const getSocketSubscribeHandler = (eventName: string) =>
+    SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler;

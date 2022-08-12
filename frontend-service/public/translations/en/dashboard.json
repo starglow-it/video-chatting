@@ -9,5 +9,10 @@
       "0": "Joined"
     }
   },
-  "meetingScheduled": "Meeting Scheduled"
+  "meetingScheduled": "Meeting Scheduled",
+  "replaceTemplate": {
+    "title": "Replace one of your Rooms?",
+    "text": "Your plan allows you to use {{maxTemplates}} Rooms at the \n same time",
+    "titleSecond": "Which one do you want \n to replace?"
+  }
 }

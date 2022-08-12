@@ -9,15 +9,19 @@ import { Provider } from 'effector-react/ssr';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { Layout } from '@components/Layout/Layout';
 
+// hooks
+import { useScope } from '@hooks/useScope';
+
 // stores
 
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
+
 import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
+
 import { root, $profileStore, $authStore, checkAuthFx } from '../src/store';
 
-import { useScope } from '../src/hooks/useScope';
 import { redirectTo } from '../src/helpers/http/redirectTo';
 import createEmotionCache from '../src/createEmotionCache';
 import globalStyles from '../src/app.styles';

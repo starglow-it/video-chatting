@@ -139,6 +139,7 @@ services:
       - PORT=4000
       - EMAIL_SERVICE
       - GATEWAY_PORT=3000
+      - ENVIRONMENT=develop
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue

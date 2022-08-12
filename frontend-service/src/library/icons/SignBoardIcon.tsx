@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
 
-import { SvgIconWrapper } from './SvgIconWrapper';
-
 import { CommonIconProps } from '@library/types';
+import { SvgIconWrapper } from './SvgIconWrapper';
 
 const Component = ({ width, height, onClick, className }: CommonIconProps) => (
     <SvgIconWrapper

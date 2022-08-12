@@ -5,6 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useRouter } from 'next/router';
 
 // hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
@@ -13,9 +14,8 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // components
 import { ScheduleAttendees } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees';
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
-// stores
 
+// stores
 import { $appDialogsStore, appDialogsApi, sendInviteEmailFx } from '../../../store';
 
 // types

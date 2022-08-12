@@ -5,7 +5,7 @@ import {
     IRemoteAudioTrack,
     IRemoteVideoTrack,
 } from 'agora-rtc-sdk-ng';
-import { Profile, Template } from '../types';
+import { Profile, Template } from '.';
 
 export type Meeting = {
     id: string;

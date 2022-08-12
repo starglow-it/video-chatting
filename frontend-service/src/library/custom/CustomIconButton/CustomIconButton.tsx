@@ -7,13 +7,11 @@ import { CustomIconButtonProps } from './types';
 import styles from './CustomIconButton.module.scss';
 
 const CustomIconButton = memo(
-    ({ className, children, ...rest }: CustomIconButtonProps & IconButtonProps) => {
-        return (
-            <IconButton className={clsx(styles.iconButton, className)} {...rest}>
-                {children}
-            </IconButton>
-        );
-    },
+    ({ className, children, ...rest }: CustomIconButtonProps & IconButtonProps) => (
+        <IconButton className={clsx(styles.iconButton, className)} {...rest}>
+            {children}
+        </IconButton>
+    ),
 );
 
 export { CustomIconButton };

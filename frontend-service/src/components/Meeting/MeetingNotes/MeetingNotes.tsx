@@ -7,7 +7,8 @@ import { MeetingNoteItem } from '@components/Meeting/MeetingNoteItem/MeetingNote
 
 // stores
 import {
-    $meetingNotesStore, $windowSizeStore,
+    $meetingNotesStore,
+    $windowSizeStore,
     getMeetingNotesSocketEvent,
     resetMeetingNotesEvent,
 } from '../../../store';

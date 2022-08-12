@@ -50,13 +50,14 @@ export const useAudioVolumeMeter = (stream: MediaStream | null): ReturnT => {
         sourceRef?.current?.disconnect();
     };
 
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             if (sourceRef.current) {
                 sourceRef.current.disconnect();
             }
-        };
-    }, []);
+        },
+        [],
+    );
 
     return {
         volume,

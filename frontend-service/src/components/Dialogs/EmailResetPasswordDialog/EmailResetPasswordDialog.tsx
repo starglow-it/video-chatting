@@ -4,6 +4,10 @@ import Image from 'next/image';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import { useCountDown } from '@hooks/useCountDown';
+
 // custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -12,7 +16,7 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store';
+import { sendResetPasswordLinkFx, $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
@@ -20,13 +24,8 @@ import { AppDialogsEnum } from '../../../store/types';
 // styles
 import styles from './EmailResetPasswordDialog.module.scss';
 
-// hooks
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
-import { useCountDown } from '../../../hooks/useCountDown';
-
 // validations
 import { emailSchema } from '../../../validation/users/email';
-import { sendResetPasswordLinkFx } from '../../../store';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),

@@ -9,24 +9,22 @@ import { CustomPopperProps } from './types';
 import { CustomBox } from '../CustomBox/CustomBox';
 
 const CustomPopper = memo(
-    ({ id, open, anchorEl, children, className, ...rest }: CustomPopperProps) => {
-        return (
-            <Popper
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                className={clsx(className, styles.popper)}
-                transition
-                {...rest}
-            >
-                {({ TransitionProps }) => (
-                    <Fade {...TransitionProps} timeout={350}>
-                        <CustomBox>{children}</CustomBox>
-                    </Fade>
-                )}
-            </Popper>
-        );
-    },
+    ({ id, open, anchorEl, children, className, ...rest }: CustomPopperProps) => (
+        <Popper
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            className={clsx(className, styles.popper)}
+            transition
+            {...rest}
+        >
+            {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                    <CustomBox>{children}</CustomBox>
+                </Fade>
+            )}
+        </Popper>
+    ),
 );
 
 export { CustomPopper };

@@ -5,7 +5,9 @@ import { useStore } from 'effector-react';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
-import {useToggle} from "../../hooks/useToggle";
+// hooks
+import { useToggle } from '@hooks/useToggle';
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -15,7 +17,7 @@ import { SetUpTemplateInfo } from '@components/Templates/SetUpTemplateInfo/SetUp
 import { TemplateGeneralInfo } from '@components/Templates/TemplateGeneralInfo/TemplateGeneralInfo';
 import { LocalVideoPreview } from '@components/Meeting/LocalVideoPreview/LocalVideoPreview';
 import { ConfirmQuitOnboardingDialog } from '@components/Dialogs/ConfirmQuitOnboardingDialog/ConfirmQuitOnboardingDialog';
-import {SubscriptionsPlans} from "@components/Payments/SubscriptionsPlans/SubscriptionsPlans";
+import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
 
 // store
 import {
@@ -27,14 +29,15 @@ import {
     getTemplateFx,
     updateProfileFx,
     updateProfilePhotoFx,
-    setRouteToChangeEvent, createMeetingFx, startCheckoutSessionForSubscriptionFx,
+    setRouteToChangeEvent,
+    createMeetingFx,
+    startCheckoutSessionForSubscriptionFx,
 } from '../../store';
 
 // styles
 import styles from './SetUpTemplateContainer.module.scss';
 
 // validations
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../validation/users/companyName';
 import { fullNameSchema } from '../../validation/users/fullName';
 import { simpleStringSchema } from '../../validation/common';
@@ -44,6 +47,7 @@ import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageControl
 
 // types
 import { AppDialogsEnum } from '../../store/types';
+import { getClientMeetingUrl } from '../../utils/urls';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -65,10 +69,7 @@ const SetUpTemplateContainer = memo(() => {
     const forceRef = useRef<boolean>(false);
     const isDataFilled = useRef<boolean>(false);
 
-    const {
-        value: isProfileUpdated,
-        onSwitchOn: handleSetProfileUpdated
-    } = useToggle(false);
+    const { value: isProfileUpdated, onSwitchOn: handleSetProfileUpdated } = useToggle(false);
 
     useEffect(() => {
         (async () => {
@@ -98,7 +99,11 @@ const SetUpTemplateContainer = memo(() => {
         },
     });
 
-    const { handleSubmit, control, formState: { isSubmitSuccessful } } = methods;
+    const {
+        handleSubmit,
+        control,
+        formState: { isSubmitSuccessful },
+    } = methods;
 
     const companyName = useWatch({
         control,
@@ -178,15 +183,18 @@ const SetUpTemplateContainer = memo(() => {
         const result = await createMeetingFx({ templateId: setUpTemplate?.id! });
 
         if (result.template && isPaid) {
-            const response = await startCheckoutSessionForSubscriptionFx({ productId, meetingToken: result.template.id });
+            const response = await startCheckoutSessionForSubscriptionFx({
+                productId,
+                meetingToken: result.template.id,
+            });
 
             if (response?.url) {
                 return router.push(response.url);
             }
         } else if (result.template) {
-            await router.push(`/meeting/${result.template.id}`);
+            await router.push(getClientMeetingUrl(result.template.id));
         }
-    }
+    };
 
     const previewImage = (setUpTemplate?.previewUrls || []).find(
         preview => preview.resolution === 1080,
@@ -213,7 +221,7 @@ const SetUpTemplateContainer = memo(() => {
                         userName={fullName}
                     />
                     <LocalVideoPreview />
-                    {!isSubmitSuccessful && <SetUpTemplateInfo/>}
+                    {!isSubmitSuccessful && <SetUpTemplateInfo />}
                     <SubscriptionsPlans
                         isSubscriptionStep={isProfileUpdated}
                         isDisabled={isCreateMeetingPending || isSubscriptionPurchasePending}

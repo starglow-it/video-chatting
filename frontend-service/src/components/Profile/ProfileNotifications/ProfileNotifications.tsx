@@ -3,6 +3,7 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // hooks
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
@@ -12,7 +13,6 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 import { BellIcon } from '@library/icons/BellIcon';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { DashboardNotifications } from '@components/Dashboard/DashboardNotifications/DashboardNotifications';
-import { useToggle } from '../../../hooks/useToggle';
 
 // styles
 import styles from './ProfileNotifications.module.scss';

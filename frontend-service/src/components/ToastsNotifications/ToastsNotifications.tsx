@@ -3,14 +3,15 @@ import { Snackbar } from '@mui/material';
 import { useStore } from 'effector-react';
 
 // hooks
+import { useLocalization } from '@hooks/useTranslation';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
 import { RoundSuccessIcon } from '@library/icons/RoundIcons/RoundSuccessIcon';
 import { RoundErrorIcon } from '@library/icons/RoundIcons/RoundErrorIcon';
-import { useLocalization } from '../../hooks/useTranslation';
 
 // store
 import { $notificationsStore, removeNotification } from '../../store';
@@ -59,15 +60,15 @@ const ToastsNotifications = memo(() => {
                 horizontal: 'center',
             }}
             open={open}
-            autoHideDuration={3000}
+            {...(messageInfo?.withManualClose ? { autoHideDuration: 3000 } : {})}
             message={
                 <CustomGrid container alignItems="center" gap={1}>
-                    {messageInfo?.withSuccessIcon ? (
+                    <ConditionalRender condition={messageInfo?.withSuccessIcon || false}>
                         <RoundSuccessIcon width="16px" height="16px" />
-                    ) : null}
-                    {messageInfo?.withErrorIcon ? (
+                    </ConditionalRender>
+                    <ConditionalRender condition={messageInfo?.withErrorIcon || false}>
                         <RoundErrorIcon width="16px" height="16px" />
-                    ) : null}
+                    </ConditionalRender>
                     {translation(messageInfo?.message || '')}
                 </CustomGrid>
             }

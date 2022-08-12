@@ -9,25 +9,44 @@ import AgoraRTC, {
 import getConfig from 'next/config';
 import { sendRequest } from '../helpers/http/sendRequest';
 import { generateAgoraTokenUrl } from '../utils/urls';
-import { AUDIO_UNMUTE, TRACKS_INFO, VIDEO_UNMUTE } from '../const/media/agora/UPDATE_INFO_TYPES';
+import {
+    AUDIO_MUTE,
+    AUDIO_UNMUTE,
+    TRACKS_INFO,
+    VIDEO_MUTE,
+    VIDEO_UNMUTE,
+} from '../const/media/agora/UPDATE_INFO_TYPES';
 import { updateUserTracksEvent } from '../store';
 
 const { publicRuntimeConfig } = getConfig();
 
 export class VideoChatController {
     readonly client: IAgoraRTCClient;
+
     private channel?: string;
+
     private uid?: IAgoraRTCRemoteUser['uid'];
+
     private isPublisher: boolean;
+
     private localMicTrack?: ILocalAudioTrack;
+
     private localCameraTrack?: ILocalVideoTrack;
+
     private screenSharingTrack?: ILocalVideoTrack;
+
     private onUserPublished?: (user: IAgoraRTCRemoteUser) => void;
+
     private onUserUnPublished?: (user: IAgoraRTCRemoteUser) => void;
+
     private onUserJoined?: (user: IAgoraRTCRemoteUser) => void;
+
     private onSharingStarted?: (data: { sharingUserId: IAgoraRTCRemoteUser['uid'] | null }) => void;
+
     private onSharingStopped?: (data: { sharingUserId: IAgoraRTCRemoteUser['uid'] | null }) => void;
+
     private userLeft?: (user: IAgoraRTCRemoteUser) => void;
+
     private onLocalTracks?: (data: {
         audioTrack: ILocalAudioTrack;
         videoTrack: ILocalVideoTrack;
@@ -95,7 +114,7 @@ export class VideoChatController {
             generateAgoraTokenUrl(this.channel, this.uid as number, this.isPublisher),
         );
 
-        return response.result?.token!;
+        return response?.result?.token;
     };
 
     async initiateConnection({ stream }: { stream?: MediaStream | null }) {
@@ -109,11 +128,15 @@ export class VideoChatController {
             await this.createLocalTracks(stream);
         }
 
-        if (!["CONNECTED", "CONNECTING"].includes(this.client.connectionState)) {
+        if (!['CONNECTED', 'CONNECTING'].includes(this.client.connectionState)) {
             await this.client.join(this.appId, this.channel, token, this.uid);
 
-            if (this.localMicTrack && this.localCameraTrack) {
-                await this.client.publish([this.localMicTrack, this.localCameraTrack]);
+            if (this.localMicTrack) {
+                await this.client.publish(this.localMicTrack);
+            }
+
+            if (this.localCameraTrack) {
+                await this.client.publish(this.localCameraTrack);
             }
 
             this.subscribeToEvents();
@@ -150,7 +173,9 @@ export class VideoChatController {
             mediaStreamTrack: audioTrack,
         } as CustomAudioTrackInitConfig;
 
-        this.localCameraTrack = await AgoraRTC.createCustomVideoTrack(videoConfig);
+        this.localCameraTrack = videoTrack
+            ? await AgoraRTC.createCustomVideoTrack(videoConfig)
+            : undefined;
 
         this.localMicTrack = await AgoraRTC.createCustomAudioTrack(audioConfig);
 
@@ -179,10 +204,16 @@ export class VideoChatController {
                     try {
                         if (mediaType === 'audio' && user.hasAudio) {
                             await this.client?.subscribe(user, 'audio');
-                            updateUserTracksEvent({ userUid: user.uid, infoType: AUDIO_UNMUTE });
+                            updateUserTracksEvent({
+                                userUid: user.uid,
+                                infoType: user?._audio_muted_ ? AUDIO_MUTE : AUDIO_UNMUTE,
+                            });
                         } else if (mediaType === 'video' && user.hasVideo) {
                             await this.client?.subscribe(user, 'video');
-                            updateUserTracksEvent({ userUid: user.uid, infoType: VIDEO_UNMUTE });
+                            updateUserTracksEvent({
+                                userUid: user.uid,
+                                infoType: user?._video_muted_ ? VIDEO_MUTE : VIDEO_UNMUTE,
+                            });
                         }
                     } catch (err) {
                         console.log(err);
@@ -191,10 +222,6 @@ export class VideoChatController {
                     }
                 },
             );
-
-            this.client.on('user-unpublished', (user: IAgoraRTCRemoteUser) => {
-                // this.onUserUnPublished?.(user);
-            });
 
             this.client.on('user-info-updated', (user: number, infoType) => {
                 if (TRACKS_INFO.includes(infoType)) {
@@ -220,25 +247,33 @@ export class VideoChatController {
         }
     }
 
-    async setUpDevices(stream: MediaStream) {
+    async setUpDevices(
+        stream: MediaStream,
+        options: {
+            isCameraEnabled: boolean;
+            isMicEnabled: boolean;
+        },
+    ) {
         try {
-            if ("CONNECTED" === this.client.connectionState) {
+            if (this.client.connectionState === 'CONNECTED') {
                 this.localMicTrack?.stop?.();
                 this.localMicTrack?.close?.();
+
                 this.localCameraTrack?.stop?.();
                 this.localCameraTrack?.close?.();
-
-                if (this.localCameraTrack && this.localMicTrack) {
-                    this.client?.unpublish([this.localCameraTrack, this.localMicTrack]);
-                }
+                await this.client?.unpublish();
 
                 await this.createLocalTracks(stream);
 
                 if (this.localMicTrack && this.localCameraTrack) {
+                    this.localCameraTrack?.setMuted(!options.isCameraEnabled);
+                    this.localMicTrack?.setMuted(!options.isMicEnabled);
+
                     await this.client?.publish([this.localMicTrack, this.localCameraTrack]);
                 }
             }
         } catch (e) {
+            // eslint-disable-next-line no-console
             console.log(e);
         }
     }
@@ -256,7 +291,7 @@ export class VideoChatController {
 
     async startScreensharing() {
         try {
-            if ("CONNECTED" === this.client.connectionState) {
+            if (this.client.connectionState === 'CONNECTED') {
                 this.screenSharingTrack = await AgoraRTC.createScreenVideoTrack(
                     {
                         encoderConfig: {
@@ -287,13 +322,14 @@ export class VideoChatController {
                 if (this.uid) this.onSharingStarted?.({ sharingUserId: this.uid });
             }
         } catch (err: unknown) {
+            // eslint-disable-next-line no-console
             console.log(err);
         }
     }
 
     async stopScreensharing({ stream }: { stream: MediaStream }) {
         try {
-            if ("CONNECTED" === this.client.connectionState) {
+            if (this.client.connectionState === 'CONNECTED') {
                 this.screenSharingTrack?.stop?.();
                 this.screenSharingTrack?.close?.();
 
@@ -320,6 +356,7 @@ export class VideoChatController {
                 if (this.uid) this.onSharingStarted?.({ sharingUserId: null });
             }
         } catch (err: unknown) {
+            // eslint-disable-next-line no-console
             console.log(err);
         }
     }

@@ -31,5 +31,5 @@ const businessSubscription = {
 export const plans = {
     "House": houseSubscription,
     "Professional": professionalSubscription,
-    "Business": businessSubscription
+    "Business": businessSubscription,
 }

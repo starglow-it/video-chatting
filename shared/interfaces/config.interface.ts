@@ -28,6 +28,7 @@ export interface IConfig {
     nodeEnv: string;
     port: string;
     emailService: string;
+    environment: string;
 }
 
 export type ConfigKeysType = keyof IConfig;

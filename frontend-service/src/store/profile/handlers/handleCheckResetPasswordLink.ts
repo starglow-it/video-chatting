@@ -14,10 +14,9 @@ export const handleCheckResetPasswordLink = async (params: {
         return {
             isUserConfirmed: response?.success,
         };
-    } else {
-        return {
-            isUserConfirmed: response?.success,
-            error: response.error,
-        };
     }
+    return {
+        isUserConfirmed: response?.success,
+        error: response.error,
+    };
 };

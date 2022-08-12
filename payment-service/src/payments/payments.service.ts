@@ -91,6 +91,20 @@ export class PaymentsService {
     }
   }
 
+  async createExpressWebhookEvent({
+    body,
+    sig,
+  }): Promise<Stripe.Event | undefined> {
+    try {
+      const secret = await this.configService.get('stripeExpressWebhookSecret');
+
+      return this.stripeClient.webhooks.constructEvent(body, sig, secret);
+    } catch (e) {
+      console.log(`⚠️  Webhook signature verification failed.`, e.message);
+      return;
+    }
+  }
+
   async getStripeProducts() {
     return this.stripeClient.products.list({
       active: true,
@@ -104,7 +118,7 @@ export class PaymentsService {
   async getStripeCheckoutSession(priceId, basePath, meetingToken) {
     const frontendUrl = await this.configService.get('frontendUrl');
 
-    const meetingPath = `/meeting/${meetingToken}`;
+    const meetingPath = `/room/${meetingToken}`;
 
     const baseUrl = `${frontendUrl}/${meetingToken ? meetingPath : basePath}`;
 
@@ -117,6 +131,7 @@ export class PaymentsService {
         },
       ],
       mode: 'subscription',
+      allow_promotion_codes: true,
       success_url: `${baseUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}?canceled=true`,
     });

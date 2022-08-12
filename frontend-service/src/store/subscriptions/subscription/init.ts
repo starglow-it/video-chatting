@@ -1,5 +1,5 @@
-import {$subscriptionStore, getSubscriptionFx} from "./model";
-import {handleGetSubscription} from "../handlers/handleGetSubscription";
+import { $subscriptionStore, getSubscriptionFx } from './model';
+import { handleGetSubscription } from '../handlers/handleGetSubscription';
 
 getSubscriptionFx.use(handleGetSubscription);
 

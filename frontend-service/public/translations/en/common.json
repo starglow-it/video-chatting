@@ -48,7 +48,9 @@
     "done": "Done",
     "copy": "Copy",
     "back": "Go back",
-    "upgrade": "Upgrade"
+    "upgrade": "Upgrade",
+    "update": "Update",
+    "replace": "Replace"
   },
   "login": {
     "welcome": "Welcome back",

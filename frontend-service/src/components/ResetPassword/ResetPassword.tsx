@@ -6,6 +6,8 @@ import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
 // hooks
+import { useToggle } from '@hooks/useToggle';
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -15,8 +17,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 // components
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
-import { useToggle } from '../../hooks/useToggle';
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 
 // styles
 import styles from './ResetPassword.module.scss';
@@ -81,12 +81,13 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
         return errors?.newPassword?.message;
     }, [errors?.newPassword]);
 
-    const onSubmit = useCallback(handleSubmit(async (data) => {
-        if (data.newPassword !== data.newPasswordRepeat) {
-            return setError('newPasswordRepeat', [
-                { message: 'user.pass.newPassword.notMatch' },
-            ]);
-        }
+    const onSubmit = useCallback(
+        handleSubmit(async data => {
+            if (data.newPassword !== data.newPasswordRepeat) {
+                return setError('newPasswordRepeat', [
+                    { message: 'user.pass.newPassword.notMatch' },
+                ]);
+            }
 
             const result = await resetPasswordFx({
                 ...data,

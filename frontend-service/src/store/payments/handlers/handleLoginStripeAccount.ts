@@ -10,6 +10,4 @@ export const handleLoginStripeAccount = async () => {
     if (response.success) {
         return response.result;
     }
-
-    return;
 };

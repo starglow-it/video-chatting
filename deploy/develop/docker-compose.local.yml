@@ -5,7 +5,7 @@ networks:
     external:
       name: liveoffice_network
   liveoffice_local:
-      name: liveoffice_local
+    name: liveoffice_local
 
 services:
   mongo:
@@ -125,14 +125,14 @@ services:
       context: ../../
       dockerfile: ./socket-service/Dockerfile.dev
     depends_on:
+      - config-service
       - rabbit
       - mongo
     ports:
       - "8080:8080"
     volumes:
-      - ../../socket-service:/app/socket-service
+      - ../../socket-service/src:/app/socket-service/src
       - ../../shared:/app/shared
-      - /app/socket-service/dist
     networks:
       - liveoffice_local
 
@@ -142,12 +142,12 @@ services:
       context: ../../
       dockerfile: ./payment-service/Dockerfile.dev
     depends_on:
+      - config-service
       - rabbit
       - mongo
     volumes:
-      - ../../payment-service:/app/payment-service
+      - ../../payment-service/src:/app/payment-service/src
       - ../../shared:/app/shared
-      - /app/payment-service/dist
     networks:
       - liveoffice_local
 
@@ -160,6 +160,7 @@ services:
       - NODE_ENV=develop
       - PORT=4000
       - IS_LOCAL=true
+      - ENVIRONMENT=local
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
@@ -194,5 +195,3 @@ services:
       - /app/config-service/dist
     networks:
       - liveoffice_local
-
-

@@ -1,6 +1,6 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { SliderArrowProps } from '@library/types';
-import {RoundArrowIcon} from "@library/icons/RoundIcons/RoundArrowIcon";
+import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
 
 const PrevSliderArrow = memo(({ customClassName, onClick, dotsRef }: SliderArrowProps) => {
     const [value, setValue] = useState(0);
@@ -14,7 +14,7 @@ const PrevSliderArrow = memo(({ customClassName, onClick, dotsRef }: SliderArrow
     if (!rect?.width) return null;
 
     const style = {
-        "--offset": `${rect?.width / 2 + 20 + 34}px`
+        '--offset': `${rect?.width / 2 + 20 + 34}px`,
     } as React.CSSProperties;
 
     return (

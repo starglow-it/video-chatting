@@ -22,6 +22,7 @@ TemplatesPage.getInitialProps = () => ({
         'templates',
         'dashboard',
         'notifications',
+        'subscriptions',
         'profile',
         'forms',
         'errors',

@@ -16,6 +16,7 @@ import {
     ON_MEETING_ERROR,
     ON_MEETING_FINISHED,
     ON_MEETING_TEMPLATE_UPDATE,
+    ON_MEETING_TIME_LIMIT,
     ON_MEETING_UPDATE,
     ON_PLAY_SOUND,
     ON_REMOVE_MEETING_NOTE,
@@ -55,7 +56,6 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         ON_SEND_DASHBOARD_NOTIFICATION,
         getSocketSubscribeHandler(ON_SEND_DASHBOARD_NOTIFICATION),
     );
-
     socketInstance?.on(
         ON_MEETING_ENTER_REQUEST,
         getSocketSubscribeHandler(ON_MEETING_ENTER_REQUEST),
@@ -66,7 +66,6 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         getSocketSubscribeHandler(ON_MEETING_TEMPLATE_UPDATE),
     );
     socketInstance?.on(ON_MEETING_FINISHED, getSocketSubscribeHandler(ON_MEETING_FINISHED));
-
     socketInstance?.on(ON_SEND_MEETING_NOTE, getSocketSubscribeHandler(ON_SEND_MEETING_NOTE));
     socketInstance?.on(ON_REMOVE_MEETING_NOTE, getSocketSubscribeHandler(ON_REMOVE_MEETING_NOTE));
     socketInstance?.on(ON_GET_MEETING_NOTES, getSocketSubscribeHandler(ON_GET_MEETING_NOTES));
@@ -78,4 +77,5 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     socketInstance?.on(ON_USER_KICK, getSocketSubscribeHandler(ON_USER_KICK));
     socketInstance?.on(ON_USERS_UPDATE, getSocketSubscribeHandler(ON_USERS_UPDATE));
     socketInstance?.on(ON_USERS_REMOVE, getSocketSubscribeHandler(ON_USERS_REMOVE));
+    socketInstance?.on(ON_MEETING_TIME_LIMIT, getSocketSubscribeHandler(ON_MEETING_TIME_LIMIT));
 });

@@ -18,6 +18,4 @@ export const getFileSizeValue = ({
 }: {
     amount: number;
     sizeType: FileSizeTypesEnum;
-}) => {
-    return fileSizeTypesValues[sizeType] * amount;
-};
+}) => fileSizeTypesValues[sizeType] * amount;

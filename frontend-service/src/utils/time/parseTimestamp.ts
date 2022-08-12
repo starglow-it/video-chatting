@@ -8,12 +8,10 @@ type ParsedTimeStamp = {
     minutes: number;
 };
 
-export const parseTimestamp = (ts: number): ParsedTimeStamp => {
-    return {
-        year: dateFns.getYear(ts),
-        month: dateFns.getMonth(ts) + 1,
-        day: dateFns.getDate(ts),
-        hours: dateFns.getHours(ts),
-        minutes: dateFns.getMinutes(ts),
-    };
-};
+export const parseTimestamp = (ts: number): ParsedTimeStamp => ({
+    year: dateFns.getYear(ts),
+    month: dateFns.getMonth(ts) + 1,
+    day: dateFns.getDate(ts),
+    hours: dateFns.getHours(ts),
+    minutes: dateFns.getMinutes(ts),
+});

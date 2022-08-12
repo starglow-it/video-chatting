@@ -21,13 +21,13 @@ import { withTransaction } from '../helpers/mongo/withTransaction';
 
 // dtos
 import { CommonMeetingDTO } from '../dtos/common-meeting.dto';
+import { UserTemplateDTO } from '../dtos/user-template.dto';
 
 // services
 import { UsersService } from '../users/users.service';
 import { MeetingsService } from './meetings.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { CommonTemplatesService } from '../common-templates/common-templates.service';
-import { UserTemplateDTO } from '../dtos/user-template.dto';
 
 @Controller('meetings')
 export class MeetingsController {
@@ -50,9 +50,7 @@ export class MeetingsController {
           });
 
         const meeting = await this.meetingsService.create(
-          {
-            userId: data.userId,
-          },
+          { userId: data.userId },
           session,
         );
 
@@ -83,22 +81,6 @@ export class MeetingsController {
           await userTemplate.save();
         } else {
           await user.populate(['socials', 'languages', 'templates']);
-
-          if (user.templates.length + 1 > user.maxTemplatesNumber) {
-            const [leastUsedTemplate] =
-              await this.userTemplatesService.findUserTemplates({
-                query: { user: user._id },
-                options: { sort: '-usedAt', limit: 1 },
-                session,
-              });
-
-            await this.userTemplatesService.deleteUserTemplate(
-              {
-                _id: leastUsedTemplate._id.toString(),
-              },
-              session,
-            );
-          }
 
           const templateData = {
             user: user._id,

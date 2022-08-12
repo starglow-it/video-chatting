@@ -5,9 +5,28 @@
     "startHouse": "Get started FREE",
     "startProfessional": "Get Professional",
     "startBusiness": "Get Business",
+    "startHouseDaily": "Get started FREE",
+    "startProfessionalDaily": "Get Daily Professional",
+    "startBusinessDaily": "Get Daily Business",
     "currentPlan": "Current plan"
   },
-
+  "limits": {
+    "time": "Remaining meeting time: <strong>{{timeLimit}}</strong>",
+    "templates": "Templates available: <strong>{{templatesLimit}}</strong>"
+  },
+  "plans": {
+    "features": {
+      "hide": "Hide",
+      "show": "Show more"
+    }
+  },
+  "timeExpired": {
+    "title": "Meeting time is over",
+    "text": " A new package of minutes will be credited to you on {{renewTime}} \nTo increase the limit update the subscription"
+  },
+  "timeLimit": {
+    "text": "You have {{minutesLeft}} minutes of meeting time left before {{renewTime}}. To increase the limit - update"
+  },
   "subscriptions": {
     "selectPlan": "Select plan",
     "title": "Subscriptions",
@@ -17,73 +36,91 @@
     "House": {
       "features": [
         {
+          "key": "payments",
           "text": "Accept Payments",
           "subText": "0.99% processing fee"
         },
         {
+          "key": "meetingTime",
           "text": "Time capped on monthly basis",
           "subText": "120 minutes"
         },
         {
-          "text": "1 Free template",
-          "subText": "You can still try and switch scene for free"
+          "key": "rooms",
+          "text": "1 Free Room",
+          "subText": "You can still try and switch room for free"
         },
         {
+          "key": "ssl",
           "text": "SSO encrypted",
           "subText": ""
         }
       ],
       "more": [
         {
+          "key": "payments",
           "text": "Accept Payments",
           "subText": "TheLiveOffice collects a 0.99% processing fee"
         },
         {
+          "key": "videochat",
           "text": "Immersive video calls"
         },
         {
+          "key": "sharing",
           "text": "Easy screen sharing"
         },
         {
+          "key": "schedule",
           "text": "Easy call scheduling"
         },
         {
+          "key": "privacy",
           "text": "Enhanced privacy"
         },
         {
+          "key": "no_download",
           "text": "No download necessary"
         },
         {
+          "key": "no_extensions",
           "text": "No extension required"
         },
         {
+          "key": "ssl",
           "text": "SSO encrypted"
         },
         {
+          "key": "meetingTime",
           "text": "Time capped on monthly basis",
           "subText": "120 minutes"
         },
         {
-          "text": "1 Free template",
-          "subText": "You can still try and switch scene for free"
+          "key": "rooms",
+          "text": "1 Free Room",
+          "subText": "You can still try and switch room for free"
         }
       ]
     },
     "Professional": {
       "features": [
         {
-          "text": "Everything in <strong>House</strong>",
+          "key": "house",
+          "text": "All House plan features",
           "subText": ""
         },
         {
+          "key": "meetingTime",
           "text": "1200 min",
           "subText": "of meeting time / month "
         },
         {
-          "text": "2 Free templates",
+          "key": "rooms",
+          "text": "2 Free Rooms",
           "subText": ""
         },
         {
+          "key": "payments",
           "text": "0% comission",
           "subText": "from each transaction"
         }
@@ -92,18 +129,22 @@
     "Business": {
       "features": [
         {
-          "text": "All <strong>Professional</strong> features",
+          "key": "professional",
+          "text": "All Professional features",
           "subText": ""
         },
         {
+          "key": "meetingTime",
           "text": "Unlimited min",
           "subText": "of meeting time / month "
         },
         {
-          "text": "10 Free templates",
+          "key": "rooms",
+          "text": "10 Free Rooms",
           "subText": ""
         },
         {
+          "key": "payments",
           "text": "0% comission",
           "subText": "from each transaction"
         }

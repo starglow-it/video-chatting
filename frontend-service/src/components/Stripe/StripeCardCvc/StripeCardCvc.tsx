@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import {CardCvcElement, CardCvcElementProps} from '@stripe/react-stripe-js';
+import { CardCvcElement, CardCvcElementProps } from '@stripe/react-stripe-js';
 
 import { PropsWithClassName } from '../../../types';
 

@@ -10,12 +10,12 @@ export const getMeetingUrl = (templateId: string) => ({
 });
 
 export const getUserTemplatesUrl = ({ templateId }: { templateId: string }) => ({
-    url: `${serverUrl}/${usersScope}/templates/${templateId ? templateId : ''}`,
+    url: `${serverUrl}/${usersScope}/templates/${templateId || ''}`,
     method: HttpMethods.Get,
 });
 
 export const postUserTemplatesUrl = ({ templateId }: { templateId: string }) => ({
-    url: `${serverUrl}/${usersScope}/templates/${templateId ? templateId : ''}`,
+    url: `${serverUrl}/${usersScope}/templates/${templateId || ''}`,
     method: HttpMethods.Post,
 });
 

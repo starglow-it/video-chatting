@@ -35,6 +35,11 @@
     .button {
       width: auto;
       padding: rem(8px 13px);
+
+      &.disabled {
+        background: rgba($primary-orange, 0.6);
+        color: rgba($primary-white, 0.6);
+      }
     }
   }
 }

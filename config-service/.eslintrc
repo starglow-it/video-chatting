@@ -10,6 +10,7 @@
         ],
         "import/prefer-default-export": "off",
         "import/no-default-export": "warn",
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}],
         "max-len": [
             "error",
             {

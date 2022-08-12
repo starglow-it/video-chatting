@@ -5,6 +5,9 @@ import Image from 'next/image';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -24,7 +27,6 @@ import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
 import { $routeToChangeStore, $profileStore, updateProfileFx, appDialogsApi } from '../../store';
 
 // validations
-import { useYupValidationResolver } from '../../hooks/useYupValidationResolver';
 import { companyNameSchema } from '../../validation/users/companyName';
 import { emailSchema } from '../../validation/users/email';
 import { simpleStringSchema } from '../../validation/common';
@@ -69,9 +71,10 @@ const EditProfileContainer = memo(() => {
         socials: { key: string; value: string }[];
     }>(validationSchema);
 
-    const profileLinks = useMemo<{ key: string; value: string }[]>(() => {
-        return profile.socials.map(social => ({ key: social.key, value: social.value }));
-    }, [profile.socials]);
+    const profileLinks = useMemo<{ key: string; value: string }[]>(
+        () => profile.socials.map(social => ({ key: social.key, value: social.value })),
+        [profile.socials],
+    );
 
     const methods = useForm({
         criteriaMode: 'all',

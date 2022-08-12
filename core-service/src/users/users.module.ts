@@ -15,6 +15,7 @@ import {
 import { AwsConnectorModule } from '../aws-connector/aws-connector.module';
 import { LanguagesModule } from '../languages/languages.module';
 import { VerificationCodeModule } from '../verification-code/verification-code.module';
+import { TasksModule } from '../tasks/tasks.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { VerificationCodeModule } from '../verification-code/verification-code.m
     BusinessCategoriesModule,
     AwsConnectorModule,
     VerificationCodeModule,
+    TasksModule,
     MongooseModule.forFeature([
       { name: Language.name, schema: LanguageSchema },
       { name: User.name, schema: UserSchema },

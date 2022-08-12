@@ -1,23 +1,24 @@
-import React, {useMemo, memo, useEffect} from "react";
-import {useStore} from "effector-react";
-import { useRouter } from "next/router";
-import {Trans} from "react-i18next";
+import React, { useMemo, memo, useEffect } from 'react';
+import { useStore } from 'effector-react';
+import { useRouter } from 'next/router';
 
 // hooks
-import {useSubscriptionNotification} from "../../../hooks/useSubscriptionNotification";
-import {useLocalization} from "../../../hooks/useTranslation";
-import {useToggle} from "../../../hooks/useToggle";
+import { useToggle } from '@hooks/useToggle';
+import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
 
 // custom
-import {CustomGrid} from "@library/custom/CustomGrid/CustomGrid";
-import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
-import {CustomPaper} from "@library/custom/CustomPaper/CustomPaper";
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
-import {SubscriptionsPlans} from "@components/Payments/SubscriptionsPlans/SubscriptionsPlans";
-import {ShopIcon} from "@library/icons/ShopIcon";
-import { WiggleLoader } from "@library/common/WiggleLoader/WiggleLoader";
-import {SubscriptionPlanCard} from "@components/Profile/SubscriptionPlanCard/SubscriptionPlanCard";
+import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
+import { ShopIcon } from '@library/icons/ShopIcon';
+import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { SubscriptionPlanCard } from '@components/Profile/SubscriptionPlanCard/SubscriptionPlanCard';
 
 // store
 import {
@@ -27,14 +28,14 @@ import {
     getCustomerPortalSessionUrlFx,
     getStripeProductsFx,
     getSubscriptionWithDataFx,
-    startCheckoutSessionForSubscriptionFx
-} from "../../../store";
+    startCheckoutSessionForSubscriptionFx,
+} from '../../../store';
 
 // helpers
-import {formatDate} from "../../../utils/time/formatDate";
+import { formatDate } from '../../../utils/time/formatDate';
 
 // styles
-import styles from "./SubscriptionInfo.module.scss";
+import styles from './SubscriptionInfo.module.scss';
 
 const Component = () => {
     const router = useRouter();
@@ -48,7 +49,7 @@ const Component = () => {
     const {
         value: isSubscriptionsOpen,
         onSwitchOn: handleOpenSubscriptionPlans,
-        onSwitchOff: handleCloseSubscriptionPlans
+        onSwitchOff: handleCloseSubscriptionPlans,
     } = useToggle(false);
 
     useEffect(() => {
@@ -56,90 +57,92 @@ const Component = () => {
         getSubscriptionWithDataFx();
     }, []);
 
-    useSubscriptionNotification();
+    useSubscriptionNotification('/dashboard/profile');
 
     const handleChooseSubscription = async (productId: string, isPaid: boolean) => {
         if (isPaid && !profile.stripeSubscriptionId) {
-            const response = await startCheckoutSessionForSubscriptionFx({ productId, baseUrl: "/dashboard/profile" });
+            const response = await startCheckoutSessionForSubscriptionFx({
+                productId,
+                baseUrl: '/dashboard/profile',
+            });
 
             if (response?.url) {
                 return router.push(response.url);
             }
         } else if (profile.stripeSubscriptionId) {
-            const response = await getCustomerPortalSessionUrlFx({ subscriptionId: profile.stripeSubscriptionId });
+            const response = await getCustomerPortalSessionUrlFx({
+                subscriptionId: profile.stripeSubscriptionId,
+            });
 
             if (response?.url) {
                 return router.push(response.url);
             }
         }
-    }
+    };
 
-    const nextPaymentDate = subscription?.current_period_end ? formatDate(subscription?.current_period_end * 1000, 'dd MMM, yyyy') : '';
+    const nextPaymentDate = subscription?.current_period_end
+        ? formatDate(subscription?.current_period_end * 1000, 'dd MMM, yyyy')
+        : '';
 
     const handleOpenSubscriptionPortal = async () => {
-        const response = await getCustomerPortalSessionUrlFx({ subscriptionId: profile.stripeSubscriptionId });
+        const response = await getCustomerPortalSessionUrlFx({
+            subscriptionId: profile.stripeSubscriptionId,
+        });
 
         if (response?.url) {
             return router.push(response.url);
         }
-    }
+    };
 
-    const renderSubscriptionPlans = useMemo(() => products.map(product => {
-        return (
-            <SubscriptionPlanCard
-                key={product?.product?.id}
-                activePlanKey={profile.subscriptionPlanKey}
-                product={product?.product}
-                price={product?.price}
-                onOpenPlans={handleOpenSubscriptionPlans}
-                onChooseSubscription={handleChooseSubscription}
-                isDisabled={isSubscriptionPurchasePending}
-            />
-        )
-    }), [products, profile.subscriptionPlanKey, isSubscriptionPurchasePending]);
-
-    const { translation } = useLocalization('subscriptions');
+    const renderSubscriptionPlans = useMemo(
+        () =>
+            products.map(product => (
+                <SubscriptionPlanCard
+                    key={product?.product?.id}
+                    activePlanKey={profile.subscriptionPlanKey}
+                    product={product?.product}
+                    price={product?.price}
+                    onOpenPlans={handleOpenSubscriptionPlans}
+                    onChooseSubscription={handleChooseSubscription}
+                    isDisabled={isSubscriptionPurchasePending}
+                />
+            )),
+        [products, profile.subscriptionPlanKey, isSubscriptionPurchasePending],
+    );
 
     return (
         <CustomPaper className={styles.paperWrapper}>
             <CustomGrid container direction="column" gap={3.5}>
                 <CustomGrid container alignItems="center" gap={1}>
                     <ShopIcon width="25px" height="24px" className={styles.icon} />
-                    <Trans i18nKey="subscriptions.current">
-                        {translation("subscriptions.current", {currentSub: profile.subscriptionPlanKey || "House"})}
-                    </Trans>
-                    {profile.stripeSubscriptionId
-                        ? (
-                            <CustomTypography
-                                className={styles.manage}
-                                nameSpace="subscriptions"
-                                color="colors.blue.primary"
-                                translation="subscriptions.manage"
-                                onClick={handleOpenSubscriptionPortal}
-                            />
-                        )
-                        : null
-                    }
-                    {nextPaymentDate
-                        ? (
-                            <CustomTypography
-                                className={styles.nextPayment}
-                                color="colors.grayscale.normal"
-                                nameSpace="subscriptions"
-                                translation="subscriptions.nextPayment"
-                                options={{nextPaymentDate}}
-                            />
-                        )
-                        : null
-                    }
+                    <CustomTypography
+                        nameSpace="subscriptions"
+                        translation="subscriptions.current"
+                        options={{
+                            currentSub: profile.subscriptionPlanKey || 'House',
+                        }}
+                    />
+                    <ConditionalRender condition={Boolean(profile.stripeSubscriptionId)}>
+                        <CustomTypography
+                            className={styles.manage}
+                            nameSpace="subscriptions"
+                            color="colors.blue.primary"
+                            translation="subscriptions.manage"
+                            onClick={handleOpenSubscriptionPortal}
+                        />
+                    </ConditionalRender>
+                    <ConditionalRender condition={Boolean(nextPaymentDate)}>
+                        <CustomTypography
+                            className={styles.nextPayment}
+                            color="colors.grayscale.normal"
+                            nameSpace="subscriptions"
+                            translation="subscriptions.nextPayment"
+                            options={{ nextPaymentDate }}
+                        />
+                    </ConditionalRender>
                 </CustomGrid>
                 <CustomGrid container alignItems="center" justifyContent="center" gap={2.5}>
-                    {isGetProductsPending
-                        ? (
-                            <WiggleLoader />
-                        )
-                        : renderSubscriptionPlans
-                    }
+                    {isGetProductsPending ? <WiggleLoader /> : renderSubscriptionPlans}
                 </CustomGrid>
             </CustomGrid>
             <SubscriptionsPlans
@@ -150,7 +153,7 @@ const Component = () => {
                 isDisabled={isSubscriptionPurchasePending}
             />
         </CustomPaper>
-    )
-}
+    );
+};
 
 export const SubscriptionInfo = memo(Component);

@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // controllers
-import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 // custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
@@ -15,6 +14,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
+import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 // styles
 import styles from './WelcomePageContainer.module.scss';

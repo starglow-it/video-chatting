@@ -7,7 +7,7 @@ import { MeetingUserAudioItemProps } from '@components/Meeting/MeetingUserAudioI
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // hooks
-import { useAudioVolumeMeter } from '../../../hooks/useAudioAnalyzer';
+import { useAudioVolumeMeter } from '@hooks/useAudioAnalyzer';
 
 // styles
 import styles from './MeetingUserAudioItem.module.scss';

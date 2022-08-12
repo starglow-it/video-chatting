@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import Slider, {Settings} from 'react-slick';
+import Slider, { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -31,9 +31,9 @@ const CustomSlider = memo(({ children, sliderSettings }: CustomSliderProps) => {
             nextArrow={commonSettings.nextArrow}
             prevArrow={commonSettings.prevArrow}
         >
-            {React.Children.map(children, child => {
-                return <div>{child}</div>;
-            })}
+            {React.Children.map(children, child => (
+                <div>{child}</div>
+            ))}
         </Slider>
     );
 });

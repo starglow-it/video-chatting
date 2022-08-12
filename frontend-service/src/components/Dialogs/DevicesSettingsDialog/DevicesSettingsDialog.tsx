@@ -4,6 +4,8 @@ import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 
 // hooks
+import { useToggle } from '@hooks/useToggle';
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom components
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
@@ -13,11 +15,8 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // components
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
-import { useToggle } from '../../../hooks/useToggle';
-import { useYupValidationResolver } from '../../../hooks/useYupValidationResolver';
 
 // controllers
 import { AgoraController } from '../../../controllers/VideoChatController';
@@ -76,7 +75,7 @@ const DevicesSettingsDialog = memo(() => {
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
     const {
-        data: { changeStream, error, videoDevices, audioDevices, isCameraActive, isMicActive },
+        data: { changeStream, isCameraActive, isMicActive },
         actions: {
             onToggleCamera,
             onToggleMic,
@@ -140,11 +139,9 @@ const DevicesSettingsDialog = memo(() => {
     }, [devicesSettingsDialog]);
 
     useEffect(() => {
-        if (changeStream) {
-            onToggleCamera(localUser.cameraStatus !== 'inactive');
-            onToggleMic(localUser.micStatus !== 'inactive');
-        }
-    }, [changeStream]);
+        onToggleCamera(localUser.cameraStatus !== 'inactive');
+        onToggleMic(localUser.micStatus !== 'inactive');
+    }, [localUser.cameraStatus, localUser.micStatus]);
 
     const handleSaveSettings = useCallback(async () => {
         appDialogsApi.closeDialog({
@@ -156,15 +153,26 @@ const DevicesSettingsDialog = memo(() => {
         setBackgroundAudioActive(isSettingsAudioBackgroundActive);
 
         if (changeStream) {
-            const newStream = onChangeActiveStream();
+            if (isBlurActive !== isBlurEnabled) {
+                const newStream = onChangeActiveStream();
 
-            const transformedStream = await onGetCanvasStream(newStream, {
-                isBlurActive: isBlurEnabled,
-            });
+                const transformedStream = await onGetCanvasStream(newStream, {
+                    isBlurActive: isBlurEnabled,
+                });
 
-            if (transformedStream) {
-                await AgoraController.setUpDevices(transformedStream);
+                if (transformedStream) {
+                    await AgoraController.setUpDevices(transformedStream, {
+                        isCameraEnabled: isSharingScreenActive ? true : isCameraActive,
+                        isMicEnabled: isMicActive,
+                    });
+                }
 
+                updateLocalUserEvent({
+                    isAuraActive: isBlurEnabled,
+                });
+
+                updateUserSocketEvent({ isAuraActive: isBlurEnabled });
+            } else {
                 AgoraController.setTracksState({
                     isCameraEnabled: isSharingScreenActive ? true : isCameraActive,
                     isMicEnabled: isMicActive,
@@ -174,15 +182,12 @@ const DevicesSettingsDialog = memo(() => {
             updateLocalUserEvent({
                 cameraStatus: isCameraActive ? 'active' : 'inactive',
                 micStatus: isMicActive ? 'active' : 'inactive',
-                isAuraActive: isBlurEnabled,
             });
 
             addNotificationEvent({
                 type: NotificationType.DevicesAction,
                 message: 'meeting.devices.saved',
             });
-
-            updateUserSocketEvent({ isAuraActive: isBlurEnabled });
         }
     }, [
         isCameraActive,
@@ -193,9 +198,8 @@ const DevicesSettingsDialog = memo(() => {
         backgroundAudioVolume,
         isSettingsAudioBackgroundActive,
         isBlurEnabled,
+        isBlurActive,
     ]);
-
-    const isDevicesChecking = !(videoDevices.length && audioDevices.length) && !error;
 
     const onSubmit = useCallback(
         methods.handleSubmit(async data => {
@@ -227,29 +231,26 @@ const DevicesSettingsDialog = memo(() => {
                                 wrap="nowrap"
                                 gap={2}
                             >
-                                {isDevicesChecking ? (
-                                    <WiggleLoader className={styles.loader} />
-                                ) : (
-                                    <MeetingSettingsContent
-                                        stream={changeStream}
-                                        isBackgroundActive={isSettingsAudioBackgroundActive}
-                                        onBackgroundToggle={handleToggleBackgroundAudio}
-                                        backgroundVolume={volume}
-                                        isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
-                                        onChangeBackgroundVolume={setVolume}
-                                        isBlurActive={isBlurEnabled}
-                                        onToggleBlur={handleToggleBlur}
-                                        isAudioActive={meetingTemplate.isAudioAvailable}
-                                        title={
-                                            <CustomTypography
-                                                className={styles.title}
-                                                variant="h3bold"
-                                                nameSpace="meeting"
-                                                translation="settings.main"
-                                            />
-                                        }
-                                    />
-                                )}
+                                <MeetingSettingsContent
+                                    stream={changeStream}
+                                    isBackgroundActive={isSettingsAudioBackgroundActive}
+                                    onBackgroundToggle={handleToggleBackgroundAudio}
+                                    backgroundVolume={volume}
+                                    isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
+                                    isMonetizationAvailable={false}
+                                    onChangeBackgroundVolume={setVolume}
+                                    isBlurActive={isBlurEnabled}
+                                    onToggleBlur={handleToggleBlur}
+                                    isAudioActive={meetingTemplate.isAudioAvailable}
+                                    title={
+                                        <CustomTypography
+                                            className={styles.title}
+                                            variant="h3bold"
+                                            nameSpace="meeting"
+                                            translation="settings.main"
+                                        />
+                                    }
+                                />
                             </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>

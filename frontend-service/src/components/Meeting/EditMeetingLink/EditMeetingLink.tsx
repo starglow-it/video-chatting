@@ -66,7 +66,7 @@ const Component = () => {
 
     const registerData = register('customLink');
 
-    const meetingLinkStart = `* /meeting/`;
+    const meetingLinkStart = `* /room/`;
 
     const customLinkError = errors.customLink?.[0]?.message;
 

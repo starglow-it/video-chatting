@@ -19,7 +19,7 @@ module.exports = enhance({
         storageHostName: process.env.STORAGE_HOSTNAME,
         stripePublicKey: process.env.STRIPE_PUBLIC_API_KEY,
     },
-    reactStrictMode: true,
+    reactStrictMode: false,
     typescript: {
         ignoreBuildErrors: true,
     },

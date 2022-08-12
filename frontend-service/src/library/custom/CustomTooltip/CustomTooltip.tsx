@@ -3,7 +3,7 @@ import { Tooltip, TooltipProps } from '@mui/material';
 import clsx from 'clsx';
 
 // hooks
-import { useLocalization } from '../../../hooks/useTranslation';
+import { useLocalization } from '@hooks/useTranslation';
 
 // types
 import { TranslationProps } from '@library/common/Translation/types';

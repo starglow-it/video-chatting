@@ -1,65 +1,69 @@
-import React, { memo, useContext, useEffect, useLayoutEffect} from 'react';
-import {useStore} from 'effector-react';
-import {useRouter} from 'next/router';
+import React, { memo, useContext, useEffect, useLayoutEffect } from 'react';
+import { useStore } from 'effector-react';
+import { useRouter } from 'next/router';
+
+// hooks
+import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
 
 // common
-import {CustomBox} from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // components
-import {EnterMeetingName} from '@components/EnterMeetingName/EnterMeetingName';
-import {KickedUser} from '@components/KickedUser/KickedUser';
-import {MeetingView} from '@components/Meeting/MeetingView/MeetingView';
-import {MeetingErrorDialog} from '@components/Dialogs/MeetingErrorDialog/MeetingErrorDialog';
-import {VideoEffectsProvider} from '../../contexts/VideoEffectContext';
-import {MeetingPreview} from '@components/Meeting/MeetingPreview/MeetingPreview';
-import {DevicesSettings} from '@components/DevicesSettings/DevicesSettings';
-import {MediaContext} from '../../contexts/MediaContext';
+import { EnterMeetingName } from '@components/EnterMeetingName/EnterMeetingName';
+import { KickedUser } from '@components/KickedUser/KickedUser';
+import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
+import { MeetingErrorDialog } from '@components/Dialogs/MeetingErrorDialog/MeetingErrorDialog';
+import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPreview';
+import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
+import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
+import { MediaContext } from '../../contexts/MediaContext';
+import { VideoEffectsProvider } from '../../contexts/VideoEffectContext';
 
 // stores
 import {
     $localUserStore,
     $meetingTemplateStore,
-    appDialogsApi,
+    $isOwner,
+    $isSocketConnected,
     getMeetingTemplateFx,
     joinMeetingEventWithData,
     joinRoomBeforeMeetingSocketEvent,
+    startMeeting,
+    getSubscriptionWithDataFx,
+    appDialogsApi,
     resetLocalUserStore,
     resetMeetingStore,
     resetMeetingUsersStore,
     resetSocketStore,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
-    startMeeting,
     updateLocalUserEvent,
     initiateSocketConnectionEvent,
-    $isSocketConnected,
     initWindowListeners,
     removeWindowListeners,
-    $isOwner
+    resetMeetingTemplateStoreEvent,
 } from '../../store';
 
 // types
-import {MeetingAccessStatuses} from '../../store/types';
+import { MeetingAccessStatuses } from '../../store/types';
 
 // styles
 import styles from './MeetingContainer.module.scss';
 
-import {StorageKeysEnum, WebStorage} from '../../controllers/WebStorageController';
-import {
-    getSubscriptionWithDataFx
-} from "../../store";
-import {useSubscriptionNotification} from "../../hooks/useSubscriptionNotification";
+import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+import { getClientMeetingUrl } from '../../utils/urls';
 
 const NotMeetingComponent = memo(() => {
     const meetingUser = useStore($localUserStore);
 
     if (meetingUser.accessStatus === MeetingAccessStatuses.EnterName) {
         return <EnterMeetingName />;
-    } else if (meetingUser.accessStatus === MeetingAccessStatuses.Kicked) {
-        return <KickedUser />;
-    } else {
-        return <DevicesSettings />;
     }
+    if (meetingUser.accessStatus === MeetingAccessStatuses.Kicked) {
+        return <KickedUser />;
+    }
+
+    return <DevicesSettings />;
 });
 
 const MeetingContainer = memo(() => {
@@ -80,12 +84,13 @@ const MeetingContainer = memo(() => {
 
     useLayoutEffect(() => {
         initWindowListeners();
+
         return () => {
             removeWindowListeners();
-        }
+        };
     }, []);
 
-    useSubscriptionNotification();
+    useSubscriptionNotification(getClientMeetingUrl(router.query.token));
 
     useEffect(() => {
         (async () => {
@@ -103,6 +108,7 @@ const MeetingContainer = memo(() => {
             resetLocalUserStore();
             resetMeetingStore();
             resetSocketStore();
+            resetMeetingTemplateStoreEvent();
             appDialogsApi.resetDialogs();
         };
     }, []);
@@ -140,7 +146,7 @@ const MeetingContainer = memo(() => {
                     await joinRoomBeforeMeetingSocketEvent({ templateId: router.query.token });
                 }
             }
-        })()
+        })();
     }, [meetingTemplate?.meetingInstance?.serverIp, isSocketConnected, isOwner]);
 
     return (

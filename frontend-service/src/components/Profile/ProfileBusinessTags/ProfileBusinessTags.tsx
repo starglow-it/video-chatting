@@ -3,8 +3,7 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // hooks
-
-// stores
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -16,8 +15,9 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 // components
 import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
 import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
+
+// stores
 import { $profileStore } from '../../../store';
-import { useToggle } from '../../../hooks/useToggle';
 
 // types
 import { BusinessCategory } from '../../../store/types';

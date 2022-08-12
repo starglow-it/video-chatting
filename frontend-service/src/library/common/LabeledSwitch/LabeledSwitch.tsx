@@ -13,26 +13,25 @@ const Component = ({
     nameSpace,
     translation,
     checked,
+    color,
     onChange,
     className,
     SwitchComponent,
     ...rest
-}: LabeledSwitchProps) => {
-    return (
-        <CustomGrid
-            container
-            gap={1}
-            className={className}
-            justifyContent="space-between"
-            wrap="nowrap"
-        >
-            <CustomGrid container wrap="nowrap">
-                {Icon}
-                <CustomTypography nameSpace={nameSpace} translation={translation} />
-            </CustomGrid>
-            {SwitchComponent || <CustomSwitch checked={checked} onChange={onChange} {...rest} />}
+}: LabeledSwitchProps) => (
+    <CustomGrid
+        container
+        gap={1}
+        className={className}
+        justifyContent="space-between"
+        wrap="nowrap"
+    >
+        <CustomGrid container wrap="nowrap">
+            {Icon}
+            <CustomTypography color={color} nameSpace={nameSpace} translation={translation} />
         </CustomGrid>
-    );
-};
+        {SwitchComponent || <CustomSwitch checked={checked} onChange={onChange} {...rest} />}
+    </CustomGrid>
+);
 
 export const LabeledSwitch = memo(Component);

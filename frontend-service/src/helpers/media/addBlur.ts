@@ -8,7 +8,7 @@ const supportedBrowsersArray: string[] = [
     BROWSER_NAMES.edge,
 ];
 
-let isBlurSupported =
+const isBlurSupported =
     supportedBrowsersArray.includes(browserData?.browser?.name || '') &&
     browserData.platform.type === 'desktop';
 
@@ -23,7 +23,7 @@ export const addBlur = () => {
                     if (!effectBackground) {
                         effectBackground = new EffectBackground();
 
-                        effectBackground.setBackgroundImage('/images/orange.png');
+                        await effectBackground.setBackgroundImage('/images/orange.png');
                     }
 
                     if (!videoEffects) {

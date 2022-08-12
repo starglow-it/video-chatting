@@ -28,11 +28,12 @@ export const useCountDown = (initialValue: number): UseCountDownReturn => {
         clearInterval(intervalRef.current);
     }, []);
 
-    return useMemo(() => {
-        return {
+    return useMemo(
+        () => ({
             value: countdown,
             onStartCountDown: handleStartCountDown,
             onStopCountDown: handleStopTimer,
-        };
-    }, [countdown]);
+        }),
+        [countdown],
+    );
 };

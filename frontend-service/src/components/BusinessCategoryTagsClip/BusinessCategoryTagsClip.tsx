@@ -2,6 +2,7 @@ import React, { memo, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 
 // hooks
+import { useToggle } from '@hooks/useToggle';
 
 // components
 import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
@@ -13,7 +14,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
-import { useToggle } from '../../hooks/useToggle';
 
 // styles
 import styles from './BusinessCategoryTagsClip.module.scss';

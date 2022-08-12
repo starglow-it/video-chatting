@@ -14,9 +14,8 @@ export const handleCreateMeeting = async (data: { templateId: Template['id'] }) 
         return {
             template: response.result,
         };
-    } else {
-        return {
-            error: response.error,
-        };
     }
+    return {
+        error: response.error,
+    };
 };

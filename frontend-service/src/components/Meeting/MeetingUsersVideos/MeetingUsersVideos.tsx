@@ -14,7 +14,7 @@ import {
     $profileStore,
     $meetingTemplateStore,
     $meetingStore,
-    $windowSizeStore
+    $windowSizeStore,
 } from '../../../store';
 
 // controller
@@ -48,15 +48,21 @@ const MeetingUsersVideos = memo(() => {
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
+    const coefValue = 120 * resizeCoeff;
 
-    const videoSize = isScreenSharing ? 56 : 120 * resizeCoeff < 60 ? 60 : 120 * resizeCoeff > 120 ? 120 : 120 * resizeCoeff;
+    const videoSizeForBigScreen = coefValue > 120 ? 120 : coefValue;
+
+    const videoSizeForMeeting = coefValue < 60 ? 60 : videoSizeForBigScreen;
+
+    const videoSize = isScreenSharing ? 56 : videoSizeForMeeting;
 
     const renderUsers = useMemo(
         () =>
             users.map((user, index) => (
                 <MeetingUserVideoPositionWrapper
                     key={user.id}
-                    elevationIndex={index + 1}
+                    usersNumber={users?.length}
+                    elevationIndex={index}
                     isScreensharing={isScreenSharing}
                     bottom={user?.userPosition?.bottom}
                     left={user?.userPosition?.left}
@@ -110,9 +116,11 @@ const MeetingUsersVideos = memo(() => {
 
     return (
         <>
+            {renderUsers}
             <MeetingUserVideoPositionWrapper
-                elevationIndex={0}
+                elevationIndex={(users?.length || 0) + 1}
                 key={localUser.id}
+                usersNumber={users?.length}
                 isScreensharing={Boolean(meeting.sharingUserId)}
                 bottom={localUser?.userPosition?.bottom}
                 left={localUser?.userPosition?.left}
@@ -133,7 +141,6 @@ const MeetingUsersVideos = memo(() => {
                     onToggleVideo={handleToggleVideo}
                 />
             </MeetingUserVideoPositionWrapper>
-            {renderUsers}
         </>
     );
 });

@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 // custom
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
@@ -58,15 +59,9 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
             onMouseEnter={handleShowPreview}
             onMouseLeave={handleHidePreview}
         >
-            {previewImage?.url
-                ? (
-                    <Image
-                        src={previewImage.url}
-                        layout="fill"
-                    />
-                )
-                : null
-            }
+            <ConditionalRender condition={Boolean(previewImage?.url)}>
+                <Image src={previewImage?.url} layout="fill" />
+            </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}

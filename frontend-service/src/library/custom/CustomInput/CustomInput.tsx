@@ -1,23 +1,24 @@
-import React, { forwardRef, memo } from 'react';
-import { useMemo } from 'react';
+import React, { useMemo, forwardRef, memo } from 'react';
 import { TextField } from '@mui/material';
 
+// hooks
+import { useLocalization } from '@hooks/useTranslation';
+
+// custom
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
+// types
 import { CustomInputProps } from '@library/custom/CustomInput/types';
 
-import { useLocalization } from '../../../hooks/useTranslation';
-
+// styles
 import styles from './CustomInput.module.scss';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 const CustomInput = memo(
     forwardRef(({ nameSpace, translation, error, ...rest }: CustomInputProps, ref) => {
         const t = useLocalization(nameSpace);
 
-        const label = useMemo(() => {
-            return translation ? t.translation(translation) : '';
-        }, [translation]);
+        const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
 
         return (
             <CustomGrid container direction="column">

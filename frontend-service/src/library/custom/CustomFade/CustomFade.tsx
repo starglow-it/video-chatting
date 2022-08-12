@@ -10,12 +10,10 @@ const Component = ({
     open,
     className,
     children,
-}: React.PropsWithChildren<PropsWithClassName<{ open: boolean }>>) => {
-    return (
-        <Fade in={open}>
-            <CustomBox className={className}>{children}</CustomBox>
-        </Fade>
-    );
-};
+}: React.PropsWithChildren<PropsWithClassName<{ open: boolean }>>) => (
+    <Fade in={open}>
+        <CustomBox className={className}>{children}</CustomBox>
+    </Fade>
+);
 
 export const CustomFade = memo(Component);

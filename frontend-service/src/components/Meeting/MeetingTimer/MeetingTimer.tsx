@@ -1,10 +1,20 @@
-import React, {memo, useEffect} from "react";
-import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
-import {useStore} from "effector-react";
-import {formatCountDown} from "../../../utils/time/formatCountdown";
-import {ONE_MINUTE} from "../../../const/time/common";
-import {useTimer} from "../../../hooks/useTimer";
-import {$meetingStore} from "../../../store";
+import React, { memo, useEffect } from 'react';
+import { useStore } from 'effector-react';
+
+// hooks
+import { useTimer } from '@hooks/useTimer';
+
+// custom
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+
+// stores
+import { $meetingStore } from '../../../store';
+
+// utils
+import { formatCountDown } from '../../../utils/time/formatCountdown';
+
+// const
+import { ONE_MINUTE } from '../../../const/time/common';
 
 const Component = () => {
     const meeting = useStore($meetingStore);
@@ -32,7 +42,7 @@ const Component = () => {
             In progress: &nbsp;
             {formatCountDown(currentTime, { hours: true, minutes: true })}
         </CustomTypography>
-    )
-}
+    );
+};
 
 export const MeetingTimer = memo(Component);

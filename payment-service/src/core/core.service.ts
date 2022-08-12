@@ -23,9 +23,7 @@ export class CoreService {
     return this.client.send(pattern, data).toPromise();
   }
 
-  async findUser(data: {
-    query: Partial<ICommonUserDTO>;
-  }): Promise<ICommonUserDTO> {
+  async findUser(data: Partial<ICommonUserDTO>): Promise<ICommonUserDTO> {
     const pattern = { cmd: FIND_USER };
 
     return this.client.send(pattern, data).toPromise();

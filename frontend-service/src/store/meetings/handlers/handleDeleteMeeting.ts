@@ -14,9 +14,8 @@ export const handleDeleteMeeting = async (data: { templateId: Template['id'] }):
         return {
             meeting: response.result,
         };
-    } else {
-        return {
-            error: response.error,
-        };
     }
+    return {
+        error: response.error,
+    };
 };

@@ -4,7 +4,8 @@ import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
 import { useFormContext } from 'react-hook-form';
 
-// helpers
+// hooks
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -12,6 +13,9 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomFade } from '@library/custom/CustomFade/CustomFade';
 import { CustomRange } from '@library/custom/CustomRange/CustomRange';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
@@ -25,7 +29,6 @@ import { SpeakerIcon } from '@library/icons/SpeakerIcon/SpeakerIcon';
 import { MusicIcon } from '@library/icons/MusicIcon';
 import { ArrowIcon } from '@library/icons/ArrowIcon';
 import { BackgroundBlurIcon } from '@library/icons/BackgroundBlurIcon';
-import { useToggle } from '../../../hooks/useToggle';
 
 // stores
 import { $isOwner } from '../../../store';
@@ -46,7 +49,8 @@ const Component = ({
     isBlurActive,
     onToggleBlur,
     isMonetizationEnabled,
-    isAudioActive
+    isMonetizationAvailable,
+    isAudioActive,
 }: MeetingSettingsContentProps) => {
     const isOwner = useStore($isOwner);
 
@@ -109,7 +113,13 @@ const Component = ({
                                 onChange={onToggleBlur}
                                 className={styles.switchWrapper}
                             />
-                            {isOwner && isMonetizationEnabled ? <EditMonetization /> : null}
+                            <ConditionalRender
+                                condition={
+                                    isOwner && isMonetizationEnabled && isMonetizationAvailable
+                                }
+                            >
+                                <EditMonetization />
+                            </ConditionalRender>
                             <ErrorMessage error={templatePriceMessage} />
                         </CustomGrid>
                     </CustomGrid>
@@ -142,47 +152,44 @@ const Component = ({
                             className={styles.selectDevicesWrapper}
                         >
                             <SelectDevices key={stream?.id} />
-                            {isAudioActive
-                                ? (
-                                    <CustomGrid
-                                        container
-                                        direction="column"
-                                        wrap="nowrap"
-                                        className={clsx(styles.audioSettings, {
-                                            [styles.withVolume]: isBackgroundActive,
-                                        })}
-                                    >
-                                        <LabeledSwitch
-                                            Icon={<MusicIcon width="24px" height="24px" />}
-                                            nameSpace="meeting"
-                                            translation="features.audioBackground"
-                                            checked={isBackgroundActive}
-                                            onChange={onBackgroundToggle}
-                                            className={styles.audioWrapper}
+                            <ConditionalRender condition={isAudioActive}>
+                                <CustomGrid
+                                    container
+                                    direction="column"
+                                    wrap="nowrap"
+                                    className={clsx(styles.audioSettings, {
+                                        [styles.withVolume]: isBackgroundActive,
+                                    })}
+                                >
+                                    <LabeledSwitch
+                                        Icon={<MusicIcon width="24px" height="24px" />}
+                                        nameSpace="meeting"
+                                        translation="features.audioBackground"
+                                        checked={isBackgroundActive}
+                                        onChange={onBackgroundToggle}
+                                        className={styles.audioWrapper}
+                                    />
+                                    <CustomFade open={isBackgroundActive}>
+                                        <CustomDivider />
+                                        <CustomRange
+                                            color={backgroundVolume ? 'primary' : 'disabled'}
+                                            value={backgroundVolume}
+                                            onChange={handleChangeVolume}
+                                            className={clsx(styles.audioRange, {
+                                                [styles.inactive]: !backgroundVolume,
+                                            })}
+                                            Icon={
+                                                <SpeakerIcon
+                                                    isActive={Boolean(backgroundVolume)}
+                                                    isHalfVolume={backgroundVolume < 50}
+                                                    width="24px"
+                                                    height="24px"
+                                                />
+                                            }
                                         />
-                                        <CustomFade open={isBackgroundActive}>
-                                            <CustomDivider />
-                                            <CustomRange
-                                                color={backgroundVolume ? 'primary' : 'disabled'}
-                                                value={backgroundVolume}
-                                                onChange={handleChangeVolume}
-                                                className={clsx(styles.audioRange, {
-                                                    [styles.inactive]: !backgroundVolume,
-                                                })}
-                                                Icon={
-                                                    <SpeakerIcon
-                                                        isActive={Boolean(backgroundVolume)}
-                                                        isHalfVolume={backgroundVolume < 50}
-                                                        width="24px"
-                                                        height="24px"
-                                                    />
-                                                }
-                                            />
-                                        </CustomFade>
-                                    </CustomGrid>
-                                )
-                                : null
-                            }
+                                    </CustomFade>
+                                </CustomGrid>
+                            </ConditionalRender>
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>

@@ -19,7 +19,9 @@ export const initialDialogsState: AppDialogsState = {
     downloadIcsEventDialog: false,
     copyMeetingLinkDialog: false,
     emailResetPasswordDialog: false,
-    checkResetPasswordEmailDialog: false,
+    deleteProfileDialog: false,
+    replaceTemplateConfirmDialog: false,
+    timeExpiredDialog: false,
 };
 
 export const $appDialogsStore = dialogsDomain.store<AppDialogsState>(initialDialogsState);

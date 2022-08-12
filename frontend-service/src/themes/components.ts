@@ -197,7 +197,7 @@ export const componentsTheme = (theme: Theme) =>
                                 color: theme.palette.common.white,
                             },
                         },
-                    }
+                    },
                 ],
                 styleOverrides: {
                     root: {
@@ -226,23 +226,23 @@ export const componentsTheme = (theme: Theme) =>
                 variants: [
                     {
                         props: { variant: 'black-glass' },
-                        style: {
+                        style: ({ ownerState }) => ({
                             position: 'relative',
                             zIndex: 10,
                             background: 'none',
-                            borderRadius: '12px',
+                            borderRadius: `${ownerState.borderRadius || 12}px`,
 
                             '&:after': {
                                 content: "''",
                                 position: 'absolute',
                                 inset: 0,
-                                borderRadius: '12px',
+                                borderRadius: `${ownerState.borderRadius || 12}px`,
                                 backdropFilter: 'blur(28px)',
                                 zIndex: -1,
                                 background: alpha(theme.designSystemColors.black.primary, 0.6),
                                 overflow: 'hidden',
                             },
-                        },
+                        }),
                     },
                 ],
                 styleOverrides: {

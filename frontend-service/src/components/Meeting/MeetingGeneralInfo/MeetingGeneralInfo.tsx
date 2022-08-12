@@ -6,9 +6,13 @@ import Image from 'next/image';
 import { Fade } from '@mui/material';
 
 // hooks
+import { useToggle } from '@hooks/useToggle';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
+
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
 import { EditIcon } from '@library/icons/EditIcon';
@@ -22,14 +26,18 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
-import {MeetingTimer} from "@components/Meeting/MeetingTimer/MeetingTimer";
-import { useToggle } from '../../../hooks/useToggle';
+import { MeetingTimer } from '@components/Meeting/MeetingTimer/MeetingTimer';
 
 // styles
 import styles from './MeetingGeneralInfo.module.scss';
 
 // store
-import { $isOwner, $meetingTemplateStore, toggleEditTemplateOpen, toggleMeetingInfoOpen} from '../../../store';
+import {
+    $isOwner,
+    $meetingTemplateStore,
+    toggleEditTemplateOpen,
+    toggleMeetingInfoOpen,
+} from '../../../store';
 
 const MeetingGeneralInfo = memo(() => {
     const isOwner = useStore($isOwner);
@@ -90,16 +98,9 @@ const MeetingGeneralInfo = memo(() => {
             ref={wrapperRef}
             className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
         >
-            {isThereSignBoard
-                ? (
-                    <Image
-                        src={`/images/boards/${targetSignBoard}.png`}
-                        width="360px"
-                        height="244px"
-                    />
-                )
-                : null
-            }
+            <ConditionalRender condition={isThereSignBoard}>
+                <Image src={`/images/boards/${targetSignBoard}.png`} width="360px" height="244px" />
+            </ConditionalRender>
             <CustomGrid
                 gap={1}
                 container
@@ -149,10 +150,7 @@ const MeetingGeneralInfo = memo(() => {
                             [styles.withoutBoard]: !isThereSignBoard,
                         })}
                     >
-                        {isOwner
-                            ? companyName
-                            : meetingTemplate.companyName
-                        }
+                        {isOwner ? companyName : meetingTemplate.companyName}
                     </CustomTypography>
                     <MeetingTimer />
                 </CustomGrid>

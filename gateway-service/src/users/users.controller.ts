@@ -64,7 +64,7 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${frontendUrl}/meeting/${data.meetingId}`,
+              content: `${frontendUrl}/room/${data.meetingId}`,
             },
             { name: 'SENDER', content: `${user.fullName} (${user.email})` },
           ],

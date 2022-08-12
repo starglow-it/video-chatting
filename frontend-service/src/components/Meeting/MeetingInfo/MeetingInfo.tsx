@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useMemo } from 'react';
+import React, { ForwardedRef, forwardRef, memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
@@ -6,6 +6,9 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
 import { InfoIcon } from '@library/icons/InfoIcon';
@@ -24,9 +27,10 @@ import { $meetingTemplateStore } from '../../../store';
 // styles
 import styles from './MeetingInfo.module.scss';
 
+// const
 import { SOCIALS_ICONS } from '../../../const/profile/socials';
 
-const Component = (props, ref) => {
+const Component = (_: unknown, ref: ForwardedRef<HTMLDivElement>) => {
     const meetingTemplate = useStore($meetingTemplateStore);
 
     const renderLanguages = useMemo(
@@ -109,7 +113,7 @@ const Component = (props, ref) => {
                                 </CustomTypography>
                             </CustomGrid>
                         </CustomGrid>
-                        {meetingTemplate.languages?.length ? (
+                        <ConditionalRender condition={Boolean(meetingTemplate.languages?.length)}>
                             <CustomGrid container display="inline-flex" className={styles.language}>
                                 <CustomTypography
                                     color="colors.white.primary"
@@ -123,7 +127,7 @@ const Component = (props, ref) => {
                                     Language: {renderLanguages}
                                 </CustomTypography>
                             </CustomGrid>
-                        ) : null}
+                        </ConditionalRender>
                     </CustomGrid>
                     <CustomGrid container direction="column" gap={2}>
                         <CustomTypography
@@ -132,7 +136,7 @@ const Component = (props, ref) => {
                             nameSpace="meeting"
                             translation="meetingInfo.company"
                         />
-                        {meetingTemplate.companyName ? (
+                        <ConditionalRender condition={Boolean(meetingTemplate.companyName)}>
                             <CustomGrid container className={styles.company} gap={1}>
                                 <PeoplesIcon width="24px" height="24px" />
                                 <CustomTypography
@@ -142,8 +146,8 @@ const Component = (props, ref) => {
                                     {meetingTemplate.companyName}
                                 </CustomTypography>
                             </CustomGrid>
-                        ) : null}
-                        {meetingTemplate.contactEmail ? (
+                        </ConditionalRender>
+                        <ConditionalRender condition={Boolean(meetingTemplate.contactEmail)}>
                             <CustomGrid container className={styles.email} gap={1}>
                                 <EmailIcon width="24px" height="24px" />
                                 <CustomTypography
@@ -153,8 +157,8 @@ const Component = (props, ref) => {
                                     {meetingTemplate.contactEmail}
                                 </CustomTypography>
                             </CustomGrid>
-                        ) : null}
-                        {meetingTemplate.description ? (
+                        </ConditionalRender>
+                        <ConditionalRender condition={Boolean(meetingTemplate.description)}>
                             <CustomGrid container className={styles.description} gap={1}>
                                 <CustomTypography
                                     color="colors.white.primary"
@@ -163,14 +167,16 @@ const Component = (props, ref) => {
                                     {meetingTemplate.description}
                                 </CustomTypography>
                             </CustomGrid>
-                        ) : null}
-                        {meetingTemplate?.businessCategories?.length ? (
+                        </ConditionalRender>
+                        <ConditionalRender
+                            condition={Boolean(meetingTemplate?.businessCategories?.length)}
+                        >
                             <CustomGrid container gap={1}>
                                 {renderBusinessCategories}
                             </CustomGrid>
-                        ) : null}
+                        </ConditionalRender>
                     </CustomGrid>
-                    {meetingTemplate?.socials?.length ? (
+                    <ConditionalRender condition={Boolean(meetingTemplate?.socials?.length)}>
                         <CustomGrid container direction="column" gap={2}>
                             <CustomTypography
                                 color="colors.white.primary"
@@ -182,11 +188,11 @@ const Component = (props, ref) => {
                                 {socialsLink}
                             </CustomGrid>
                         </CustomGrid>
-                    ) : null}
+                    </ConditionalRender>
                 </CustomGrid>
             </CustomScroll>
         </CustomGrid>
     );
 };
 
-export const MeetingInfo = memo<any>(forwardRef<HTMLDivElement, any>(Component));
+export const MeetingInfo = memo<unknown>(forwardRef<HTMLDivElement, unknown>(Component));

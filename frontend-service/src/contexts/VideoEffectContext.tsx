@@ -1,7 +1,7 @@
 import React, { useEffect, ReactElement, useCallback, useMemo, useRef } from 'react';
 
 // hooks
-import { useToggle } from '../hooks/useToggle';
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -44,40 +44,39 @@ export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>)
 
     const handleGetActiveStream = useCallback(
         async (stream: MediaStream, options) => {
-            const blurStream = new MediaStream();
-
             const newBlurSetting = options?.isBlurActive ?? isBlurActive;
 
             let videoTrack = stream.getVideoTracks()[0];
 
-            const temEnabled = videoTrack.enabled;
+            if (videoTrack) {
+                const temEnabled = videoTrack.enabled;
 
-            videoTrack.enabled = true;
+                videoTrack.enabled = true;
 
-            if (newBlurSetting) {
-                videoTrack = await blurFn.start(videoTrack);
+                if (newBlurSetting) {
+                    videoTrack = await blurFn.start(videoTrack);
+                }
+
+                const track = stream.getVideoTracks()[0];
+
+                stream.removeTrack(track);
+
+                stream.addTrack(videoTrack);
+
+                videoTrack.enabled = temEnabled;
             }
-
-            blurStream.addTrack(videoTrack);
-
-            const track = stream.getVideoTracks()[0];
-
-            stream.removeTrack(track);
-
-            stream.addTrack(videoTrack);
-
-            videoTrack.enabled = temEnabled;
 
             return stream;
         },
         [isBlurActive],
     );
 
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             blurFn.destroy();
-        };
-    }, []);
+        },
+        [],
+    );
 
     const contextValue = useMemo(
         () => ({

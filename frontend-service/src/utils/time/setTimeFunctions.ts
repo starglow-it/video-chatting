@@ -11,9 +11,5 @@ export const setDayTime = (
         seconds: 0,
         milliseconds: 0,
     },
-): Date => {
-    return setHours(
-        setMinutes(setSeconds(setMilliseconds(date, milliseconds), seconds), minutes),
-        hours,
-    );
-};
+): Date =>
+    setHours(setMinutes(setSeconds(setMilliseconds(date, milliseconds), seconds), minutes), hours);

@@ -133,7 +133,7 @@ export class UserTemplateController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${frontendUrl}/meeting/${
+              content: `${frontendUrl}/room/${
                 template.customLink || template.id
               }`,
             },

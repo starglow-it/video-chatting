@@ -1,4 +1,4 @@
-import { Template } from '../types';
+import { Template } from '.';
 
 export type BusinessCategory = {
     key: string;
@@ -49,6 +49,9 @@ export type Profile = {
     isStripeEnabled: boolean;
     wasSuccessNotificationShown: boolean;
     description: string;
+    maxTemplatesNumber: number;
+    renewSubscriptionTimestampInSeconds: number;
+    maxMeetingTime: number;
     socials: SocialLink[];
     languages: Language[];
     businessCategories: BusinessCategory[];

@@ -7,6 +7,4 @@ export const handleSendResetPasswordLink = async (params: { email: string }): Pr
         ...sendResetPasswordLinkUrl,
         data: params,
     });
-
-    return;
 };

@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Types, Connection, UpdateQuery } from 'mongoose';
-import { plainToClass } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 
 import { UserTemplatesService } from './user-templates.service';
 import { BusinessCategoriesService } from '../business-categories/business-categories.service';
@@ -142,10 +142,14 @@ export class UserTemplatesController {
             user: user._id,
           });
 
-        const parsedTemplates = plainToClass(UserTemplateDTO, userTemplates, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const parsedTemplates = plainToInstance(
+          UserTemplateDTO,
+          userTemplates,
+          {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          },
+        );
 
         return {
           list: parsedTemplates,

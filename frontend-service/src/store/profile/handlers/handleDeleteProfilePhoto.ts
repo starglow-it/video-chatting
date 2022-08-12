@@ -9,6 +9,4 @@ export const handleDeleteProfilePhoto = async (): Promise<Profile | null | undef
     if (response.success) {
         return response.result;
     }
-
-    return;
 };

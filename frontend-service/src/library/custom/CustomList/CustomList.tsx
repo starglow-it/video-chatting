@@ -1,8 +1,7 @@
 import React, { memo, useMemo } from 'react';
 
-import { CustomListProps } from './types';
-
 import { List, ListItem } from '@mui/material';
+import { CustomListProps } from './types';
 
 import styles from './CustomList.module.scss';
 

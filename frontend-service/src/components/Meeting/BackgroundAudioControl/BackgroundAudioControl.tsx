@@ -2,7 +2,8 @@ import React, { useRef, useCallback, memo } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
-// helpers
+// hooks
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -15,7 +16,6 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // icons
 import { SpeakerIcon } from '@library/icons/SpeakerIcon/SpeakerIcon';
-import { useToggle } from '../../../hooks/useToggle';
 
 // styles
 import styles from './BackgroundAudioControl.module.scss';
@@ -70,6 +70,7 @@ const Component = () => {
         >
             <CustomPaper
                 variant="black-glass"
+                borderRadius={8}
                 className={styles.deviceButton}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
@@ -84,8 +85,8 @@ const Component = () => {
                     Icon={
                         <SpeakerIcon
                             isActive={isBackgroundAudioActive}
-                            width="32px"
-                            height="32px"
+                            width="22px"
+                            height="22px"
                         />
                     }
                 />

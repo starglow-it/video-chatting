@@ -3,18 +3,16 @@ import clsx from 'clsx';
 
 import { alpha, Checkbox, FormControlLabel } from '@mui/material';
 
-// types
-import { CustomCheckboxProps } from './types';
-
 // icons
 import { CheckIcon } from '@library/icons/CheckIcon';
 import { Translation } from '@library/common/Translation/Translation';
+import { CustomCheckboxProps } from './types';
 
 // styles
 import styles from './CustomCheckbox.module.scss';
 
-const Component = (
-    { className, translationProps, label, labelClassName, ...rest }: CustomCheckboxProps,
+const Component: React.FunctionComponent<CustomCheckboxProps> = (
+    { className, translationProps, label, labelClassName, ...rest },
     ref: ForwardedRef<HTMLInputElement>,
 ) => (
     <FormControlLabel
@@ -46,6 +44,4 @@ const Component = (
     />
 );
 
-export const CustomCheckbox = memo<CustomCheckboxProps>(
-    forwardRef<HTMLInputElement, CustomCheckboxProps>(Component),
-);
+export const CustomCheckbox = memo(forwardRef(Component));

@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import { ButtonUnstyled } from '@mui/base';
 
 // types
-import { ActionButtonProps } from './types';
 import { ButtonProps } from '@mui/material';
+import { ActionButtonProps } from './types';
 
 // styles
 import styles from './ActionButton.module.scss';

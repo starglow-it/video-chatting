@@ -10,7 +10,8 @@ import { ArrowIcon } from '@library/icons/ArrowIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
-// components
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 
@@ -78,7 +79,7 @@ const MonetizationInfo = memo(() => {
                     nameSpace="profile"
                     translation="monetization.title"
                 />
-                {profile.stripeAccountId ? (
+                <ConditionalRender condition={Boolean(profile.stripeAccountId)}>
                     <CustomTypography
                         className={styles.disconnect}
                         onClick={
@@ -92,15 +93,17 @@ const MonetizationInfo = memo(() => {
                         nameSpace="profile"
                         translation="monetization.disconnect"
                     />
-                ) : null}
+                </ConditionalRender>
             </CustomGrid>
-            {!profile.isStripeEnabled && profile.stripeAccountId ? (
+            <ConditionalRender
+                condition={!profile.isStripeEnabled && Boolean(profile.stripeAccountId)}
+            >
                 <CustomTypography
                     color="colors.grayscale.normal"
                     nameSpace="profile"
                     translation="monetization.setUpStripeText"
                 />
-            ) : null}
+            </ConditionalRender>
             <CustomGrid container gap={6}>
                 {profile.isStripeEnabled && profile.stripeAccountId ? (
                     <SocialLogin className={styles.buttonWrapper} onClick={handleLoginStripe}>

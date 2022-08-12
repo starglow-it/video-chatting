@@ -8,6 +8,10 @@ export const setProfileEvent = profileDomain.event<{ user?: Profile }>('setProfi
 export const clearProfileEvent = profileDomain.event('clearProfileEvent');
 export const deleteStripeDataEvent = profileDomain.event('deleteStripeDataEvent');
 
+export const getProfileFx = profileDomain.effect<void, Profile | null | undefined, void>(
+    'getProfileFx',
+);
+
 export const updateProfileFx = profileDomain.effect<
     UpdateProfileInfo,
     Profile | null | undefined,

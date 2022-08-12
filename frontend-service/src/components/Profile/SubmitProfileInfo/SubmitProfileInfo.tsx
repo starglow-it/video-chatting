@@ -19,7 +19,12 @@ import { padArray } from '../../../utils/arrays/padArray';
 import styles from './SubmitProfileInfo.module.scss';
 
 // stores
-import { $profileStore, $appDialogsStore, setRouteToChangeEvent, appDialogsApi } from '../../../store';
+import {
+    $profileStore,
+    $appDialogsStore,
+    setRouteToChangeEvent,
+    appDialogsApi,
+} from '../../../store';
 
 // types
 import { AppDialogsEnum, SocialLink } from '../../../store/types';

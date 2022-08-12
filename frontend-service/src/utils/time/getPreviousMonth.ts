@@ -1,5 +1,3 @@
 import subMonths from 'date-fns/subMonths';
 
-export const getPreviousMonth = (date: Date): Date => {
-    return subMonths(date, 1);
-};
+export const getPreviousMonth = (date: Date): Date => subMonths(date, 1);

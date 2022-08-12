@@ -12,7 +12,8 @@ export const handleUpdateProfileInfo = async (
 
     if (response.success) {
         return response.result;
-    } else if (!response.success) {
+    }
+    if (!response.success) {
         return response.result;
     }
 };

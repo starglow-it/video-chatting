@@ -40,7 +40,15 @@ export class DashboardGateway extends BaseGateway {
     @MessageBody() message: { userId: string },
     @ConnectedSocket() socket: Socket,
   ) {
-    if (!message?.userId) return;
+    if (!message?.userId) {
+      this.logger.error({
+        message: 'no user id',
+        ctx: message,
+      });
+
+      return;
+    }
+
     this.logger.log(`User joined dashboard room`);
 
     const user = await this.coreService.findUserById({
@@ -62,13 +70,13 @@ export class DashboardGateway extends BaseGateway {
 
   @SubscribeMessage(SEND_MEETING_AVAILABLE)
   async sendMeetingAvailable(
-      @MessageBody() message: { templateId: string },
-      @ConnectedSocket() socket: Socket,
-) {
+    @MessageBody() message: { templateId: string },
+    @ConnectedSocket() socket: Socket,
+  ) {
     this.logger.log(`Emit meeting available ${message.templateId}`);
 
     this.broadcastToRoom(
-        socket,
+      socket,
       `waitingRoom:${message.templateId}`,
       SEND_MEETING_AVAILABLE,
       message,

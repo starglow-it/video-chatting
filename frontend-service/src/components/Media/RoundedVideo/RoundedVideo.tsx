@@ -4,6 +4,9 @@ import clsx from 'clsx';
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
 // avatar
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
@@ -23,11 +26,12 @@ const RoundedVideo = memo(
         userProfilePhoto,
         className,
         size,
-        isCameraActive,
-        isLocal,
         videoRef,
         onToggleVideo,
-        isScreenSharing,
+        isCameraActive = false,
+        isVideoAvailable = false,
+        isLocal = false,
+        isScreenSharing = false,
     }: RoundedVideoProps) => {
         const [isVideoActive, setIsVideoActive] = useState(false);
 
@@ -45,7 +49,7 @@ const RoundedVideo = memo(
                 sx={{ width: `${size}px`, height: `${size}px` }}
                 className={clsx(styles.videoWrapper, className)}
             >
-                {!(isCameraActive && isVideoActive) && (
+                {!(isCameraActive && isVideoActive && isVideoAvailable) && (
                     <ProfileAvatar
                         src={userProfilePhoto}
                         className={styles.avatarOverlay}
@@ -54,37 +58,31 @@ const RoundedVideo = memo(
                         userName={userName}
                     />
                 )}
-                {isLocal
-                    ? (
-                        <CustomGrid
-                            container
-                            direction="column"
-                            className={styles.videoControlOverlay}
-                            onClick={onToggleVideo}
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            <VideoEyeIcon
-                                width={isScreenSharing ? '30px' : '40px'}
-                                height={isScreenSharing ? '30px' : '40px'}
-                                isActive={isCameraActive}
+                <ConditionalRender condition={isLocal}>
+                    <CustomGrid
+                        container
+                        direction="column"
+                        className={styles.videoControlOverlay}
+                        onClick={onToggleVideo}
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                        <VideoEyeIcon
+                            width={isScreenSharing ? '30px' : '40px'}
+                            height={isScreenSharing ? '30px' : '40px'}
+                            isActive={isCameraActive}
+                        />
+                        <ConditionalRender condition={!isScreenSharing && size > 84}>
+                            <CustomTypography
+                                variant="body3"
+                                nameSpace="meeting"
+                                translation={
+                                    isCameraActive ? 'devices.switchOff' : 'devices.switchOn'
+                                }
                             />
-                            {!isScreenSharing && size > 84
-                                ? (
-                                    <CustomTypography
-                                        variant="body3"
-                                        nameSpace="meeting"
-                                        translation={
-                                            isCameraActive ? 'devices.switchOff' : 'devices.switchOn'
-                                        }
-                                    />
-                                )
-                                : null
-                            }
-                        </CustomGrid>
-                    )
-                    : null
-                }
+                        </ConditionalRender>
+                    </CustomGrid>
+                </ConditionalRender>
                 <video
                     onLoadedData={handleVideoLoaded}
                     ref={videoRef}

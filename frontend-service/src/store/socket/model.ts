@@ -1,4 +1,4 @@
-import {attach, combine, guard} from 'effector-next';
+import { attach, combine, guard } from 'effector-next';
 
 import { root } from '../root';
 
@@ -32,9 +32,11 @@ export const $isSocketConnecting = initiateSocketConnectionFx.pending;
 
 guard({
     clock: initiateSocketConnectionEvent,
-    source: combine({ isSocketConnecting: $isSocketConnecting, socket: $socketStore }),
-    filter: ({ isSocketConnecting, socket }) => !isSocketConnecting && !socket.socketInstance,
+    source: combine({
+        isSocketConnecting: $isSocketConnecting,
+        isSocketConnected: $isSocketConnected,
+    }),
+    filter: ({ isSocketConnecting, isSocketConnected }) =>
+        !isSocketConnecting && !isSocketConnected,
     target: initiateSocketConnectionFx,
 });
-
-

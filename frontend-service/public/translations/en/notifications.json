@@ -28,8 +28,11 @@
     "connectAccountFail": "An error occurred during the connection. Please try again"
   },
   "subscriptions": {
+    "noTimeLeft": "You've run out of meeting minutes",
     "subscriptionBusinessSuccess": "Thank you for subscribing to Live Office Business!",
+    "subscriptionBusinessDailySuccess": "Thank you for subscribing to Live Office BusinessDaily!",
     "subscriptionProfessionalSuccess": "Thank you for subscribing to Live Office Professional!",
+    "subscriptionProfessionalDailySuccess": "Thank you for subscribing to Live Office ProfessionalDaily!",
     "subscriptionFail": "An error occurred during the subscription. Please try again"
   }
 }

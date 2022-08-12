@@ -15,15 +15,11 @@ const HiddenPaper = memo(
         className,
         open,
         children,
-    }: React.PropsWithChildren<PropsWithClassName<{ open: boolean }>>) => {
-        return (
-            <CustomPaper
-                className={clsx(className, styles.hiddenContainer, { [styles.open]: open })}
-            >
-                {children}
-            </CustomPaper>
-        );
-    },
+    }: React.PropsWithChildren<PropsWithClassName<{ open: boolean }>>) => (
+        <CustomPaper className={clsx(className, styles.hiddenContainer, { [styles.open]: open })}>
+            {children}
+        </CustomPaper>
+    ),
 );
 
 export { HiddenPaper };

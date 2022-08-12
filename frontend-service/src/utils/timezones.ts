@@ -47,6 +47,5 @@ export const getTimeString = (timestamp: number): string => {
     return `${hours > 0 ? addZero(hours) : '00'}:${addZero(minutes)}`;
 };
 
-export const getHourMinutesString = ({ hours, minutes }) => {
-    return `${addZero(hours > 0 ? hours : 0)}:${addZero(minutes)}`;
-};
+export const getHourMinutesString = ({ hours, minutes }) =>
+    `${addZero(hours > 0 ? hours : 0)}:${addZero(minutes)}`;

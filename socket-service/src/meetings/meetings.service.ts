@@ -29,9 +29,9 @@ export class MeetingsService {
 
   async findById(
     id: string,
-    { session }: ITransactionSession,
+    session?: ITransactionSession,
   ): Promise<MeetingDocument> {
-    return this.meeting.findById(id, {}, { session }).exec();
+    return this.meeting.findById(id, {}, { session: session?.session }).exec();
   }
 
   async addUserToMeeting(
@@ -71,7 +71,7 @@ export class MeetingsService {
   }
 
   async deleteById({ meetingId }, { session }: ITransactionSession) {
-    return this.meeting.deleteOne({ id: meetingId }).session(session);
+    return this.meeting.deleteOne({ _id: meetingId }).session(session);
   }
 
   async updateMeetingById(

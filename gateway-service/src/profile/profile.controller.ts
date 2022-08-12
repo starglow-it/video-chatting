@@ -5,10 +5,7 @@ import {
   Delete,
   Get,
   Logger,
-  Param,
-  ParseIntPipe,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -24,7 +21,12 @@ import { generateVerificationCode } from '../utils/generateVerificationCode';
 
 // shared
 import { ResponseSumType } from '@shared/response/common.response';
+
+// const
+import { emailTemplates } from '@shared/const/email-templates.const';
 import { SAME_PASSWORD, USER_EXISTS } from '@shared/const/errors/users';
+
+// interfaces
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 
 // guards
@@ -32,19 +34,11 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 
 // request
 import { UpdateProfileRequest } from '../dtos/requests/update-profile.request';
-import { UpdateProfileAvatarRequest } from '../dtos/requests/update-profile-avatar.request';
 
 // services
-import { ConfigClientService } from '../config/config.service';
-import { NotificationsService } from '../notifications/notifications.service';
 import { CoreService } from '../core/core.service';
-import { CommonTemplateRestDTO } from '../dtos/response/common-template.dto';
-import { EntityList } from '@shared/types/utils/http/list.type';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
-import { UpdateTemplateRequest } from '../dtos/requests/update-template.request';
-import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
-import { TemplatesService } from '../templates/templates.service';
-import { emailTemplates } from '@shared/const/email-templates.const';
+import { NotificationsService } from '../notifications/notifications.service';
+import { ConfigClientService } from '../config/config.service';
 
 @Controller('profile')
 export class ProfileController {
@@ -54,8 +48,28 @@ export class ProfileController {
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
     private coreService: CoreService,
-    private templatesService: TemplatesService,
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get profile' })
+  @ApiOkResponse({
+    description: 'Profile retrieved successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getProfile(@Request() req): Promise<ResponseSumType<ICommonUserDTO>> {
+    const user = await this.coreService.findUserById({
+      userId: req.user.userId,
+    });
+
+    return {
+      success: true,
+      result: user,
+    };
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('/')
@@ -120,54 +134,6 @@ export class ProfileController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/avatar')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update profile avatar' })
-  @ApiOkResponse({
-    description: 'Profile avatar updated successfully',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  async updateProfileAvatar(
-    @Body() data: UpdateProfileAvatarRequest,
-    @Request() req,
-  ): Promise<ResponseSumType<ICommonUserDTO>> {
-    const user = await this.coreService.findUserAndUpdateAvatar({
-      userId: req.user.userId,
-      data,
-    });
-
-    return {
-      success: true,
-      result: user,
-    };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete('/avatar')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete profile avatar' })
-  @ApiOkResponse({
-    description: 'Profile avatar deleted successfully',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  async deleteProfileAvatar(
-    @Request() req,
-  ): Promise<ResponseSumType<ICommonUserDTO>> {
-    const user = await this.coreService.deleteProfileAvatar({
-      userId: req.user.userId,
-    });
-
-    return {
-      success: true,
-      result: user,
-    };
-  }
-
-  @UseGuards(JwtAuthGuard)
   @Post('/email')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update profile email' })
@@ -201,8 +167,8 @@ export class ProfileController {
         template: {
           key: emailTemplates.emailOldUpdated,
           data: [
-              { name: 'BACKURL', content: `${frontendUrl}/dashboard` },
-              { name: 'NEWEMAIL', content: `${updateEmail.email}` }
+            { name: 'BACKURL', content: `${frontendUrl}/dashboard` },
+            { name: 'NEWEMAIL', content: `${updateEmail.email}` },
           ],
         },
       });
@@ -219,7 +185,7 @@ export class ProfileController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while send verification code`,
+          message: `An error occurs, while update profile email`,
         },
         JSON.stringify(err),
       );
@@ -255,7 +221,7 @@ export class ProfileController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while send verification code`,
+          message: `An error occurs, while verify password`,
         },
         JSON.stringify(err),
       );
@@ -323,7 +289,9 @@ export class ProfileController {
         throw new BadRequestException(USER_EXISTS);
       }
 
-      const user = await this.coreService.findUserById({ userId: req.user.userId });
+      const user = await this.coreService.findUserById({
+        userId: req.user.userId,
+      });
 
       const code = generateVerificationCode(7);
 
@@ -338,7 +306,7 @@ export class ProfileController {
           key: emailTemplates.codeVerification,
           data: [
             { name: 'CODE', content: code },
-            { name: 'USERNAME', content: user.fullName }
+            { name: 'USERNAME', content: user.fullName },
           ],
         },
       });
@@ -396,155 +364,6 @@ export class ProfileController {
       this.logger.error(
         {
           message: `An error occurs, while update password`,
-        },
-        JSON.stringify(err),
-      );
-
-      throw new BadRequestException(err);
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/templates')
-  @ApiOperation({ summary: 'Get Profile Templates' })
-  @ApiOkResponse({
-    type: CommonTemplateRestDTO,
-    description: 'Get Profile Templates Success',
-  })
-  async getUserTemplates(
-    @Request() req,
-    @Query('skip', ParseIntPipe) skip: number,
-    @Query('limit', ParseIntPipe) limit: number,
-  ): Promise<ResponseSumType<EntityList<IUserTemplate>>> {
-    try {
-      if (req.user) {
-        const template = await this.templatesService.getUserTemplates({
-          userId: req.user.userId,
-          skip,
-          limit,
-        });
-
-        return {
-          success: true,
-          result: template,
-        };
-      }
-      return {
-        success: false,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while get profile templates`,
-        },
-        JSON.stringify(err),
-      );
-
-      throw new BadRequestException(err);
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/templates/:templateId')
-  @ApiOperation({ summary: 'Get Template' })
-  @ApiOkResponse({
-    type: CommonTemplateRestDTO,
-    description: 'Get Profile Template Success',
-  })
-  async getUserTemplate(@Param('templateId') templateId: string) {
-    try {
-      if (templateId) {
-        const template = await this.templatesService.getUserTemplate({
-          id: templateId,
-        });
-
-        return {
-          success: true,
-          result: template,
-        };
-      }
-      return {
-        success: false,
-        result: null,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while get profile template`,
-        },
-        JSON.stringify(err),
-      );
-
-      throw new BadRequestException(err);
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('/templates/:templateId')
-  @ApiOperation({ summary: 'Update Profile Template' })
-  @ApiOkResponse({
-    type: CommonTemplateRestDTO,
-    description: 'Update Profile Template Success',
-  })
-  async updateUserTemplate(
-    @Body() updateTemplateData: UpdateTemplateRequest,
-    @Param('templateId') templateId: ICommonTemplate['id'],
-  ): Promise<ResponseSumType<ICommonTemplate>> {
-    try {
-      if (templateId) {
-        const template = await this.templatesService.updateUserTemplate({
-          templateId,
-          data: updateTemplateData,
-        });
-
-        return {
-          success: true,
-          result: template,
-        };
-      }
-      return {
-        success: false,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while update profile template`,
-        },
-        JSON.stringify(err),
-      );
-
-      throw new BadRequestException(err);
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete('/templates/:templateId')
-  @ApiOperation({ summary: 'Delete Profile Template' })
-  @ApiOkResponse({
-    type: CommonTemplateRestDTO,
-    description: 'Delete Profile Template Success',
-  })
-  async deleteUserTemplate(
-    @Param('templateId') templateId: IUserTemplate['id'],
-  ): Promise<ResponseSumType<void>> {
-    try {
-      if (templateId) {
-        await this.templatesService.deleteUserTemplate({
-          templateId,
-        });
-
-        return {
-          success: true,
-          result: undefined,
-        };
-      }
-      return {
-        success: false,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while delete profile template`,
         },
         JSON.stringify(err),
       );

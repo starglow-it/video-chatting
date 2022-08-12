@@ -1,0 +1,65 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+%base-wrapper-icon-button {
+  width: rem(34px);
+  height: rem(34px);
+  border-radius: 22.5%;
+}
+
+%base-icon-button {
+  width: 100%;
+  height: 100%;
+  cursor: default;
+  border-radius: rem(8px);
+}
+
+.devicesWrapper {
+  position: absolute;
+  z-index: 100;
+  bottom: rem(8px);
+  right: rem(20px);
+  width: auto;
+}
+
+.hangUpButton {
+  width: rem(34px);
+  height: rem(34px);
+  border-radius: rem(8px);
+}
+
+.deviceButton {
+  @extend %base-wrapper-icon-button;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.goodsButton {
+  @extend %base-icon-button;
+
+  &.disabled {
+    color: $normal-gray-scale;
+  }
+}
+
+.sharingButton {
+  @extend %base-icon-button;
+
+  &.noRights {
+    color: rgba($primary-white, 0.25);
+  }
+
+  &.active {
+    color: $primary-red;
+  }
+}
+
+.settingsButton {
+  @extend %base-icon-button;
+}
+
+.tooltip {
+  margin: rem(2px 0 0 0) !important;
+}
