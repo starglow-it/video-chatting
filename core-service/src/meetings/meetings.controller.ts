@@ -90,6 +90,7 @@ export class MeetingsController {
             maxParticipants: targetTemplate.maxParticipants,
             previewUrls: targetTemplate.previewUrls,
             type: targetTemplate.type,
+            priceInCents: targetTemplate.priceInCents,
             businessCategories: targetTemplate.businessCategories.map(
               (category) => category._id,
             ),

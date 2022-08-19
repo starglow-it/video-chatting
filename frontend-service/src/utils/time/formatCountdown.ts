@@ -14,8 +14,10 @@ export const formatCountDown = (
     const hoursTime = Math.floor(hoursNumber);
 
     const finalHours = `${addZero(hoursTime)}`;
-    const finalMinutes = `:${addZero(minutesTime)}`;
-    const finalSeconds = `:${addZero(secondsNumber)}`;
+    const finalMinutes = `${addZero(minutesTime)}`;
+    const finalSeconds = `${addZero(secondsNumber)}`;
 
-    return `${hours ? finalHours : ''}${minutes ? finalMinutes : ''}${seconds ? finalSeconds : ''}`;
+    return `${hours ? finalHours : ''}${hours && minutes ? ':' : ''}${minutes ? finalMinutes : ''}${
+        minutes && seconds ? ':' : ''
+    }${seconds ? finalSeconds : ''}`;
 };

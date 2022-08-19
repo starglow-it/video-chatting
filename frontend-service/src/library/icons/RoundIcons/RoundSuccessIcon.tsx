@@ -1,9 +1,17 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 import { CommonIconProps } from '@library/types';
 
 const Component = ({ width, height, className, onClick, ...rest }: CommonIconProps) => (
-    <svg width={width} height={height} viewBox="0 0 16 16" fill="none" {...rest}>
+    <svg
+        width={width}
+        height={height}
+        className={className}
+        onClick={onClick}
+        viewBox="0 0 16 16"
+        fill="none"
+        {...rest}
+    >
         <circle cx="8" cy="8" r="8" fill="#69E071" />
         <path
             fillRule="evenodd"

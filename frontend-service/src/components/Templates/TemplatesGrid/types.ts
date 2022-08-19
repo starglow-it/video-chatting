@@ -19,9 +19,9 @@ export type TemplateGridProps = {
     list: (UserTemplate | Template)[];
     count: number;
     onPageChange: (page: number) => void;
-    onChooseTemplate:
-        | ((templateId: Template['id']) => Promise<void>)
-        | ((templateId: UserTemplate['id']) => Promise<void>);
+    onChooseTemplate?:
+        | ((templateId: Template['id']) => Promise<void> | void)
+        | ((templateId: UserTemplate['id']) => Promise<void> | void);
     outerClassName?: string;
     innerClassName?: string;
     itemWidth?: number;

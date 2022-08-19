@@ -34,10 +34,8 @@ forward({
 });
 
 $authStore
-    .on(loginUserFx.doneData, (state, data) => data)
-    .on(checkAuthFx.doneData, (state, data) => data)
-    .on(logoutUserFx.doneData, (state, data) => data)
+    .on([loginUserFx.doneData, checkAuthFx.doneData, logoutUserFx.doneData], (state, data) => data)
     .on(resetAuthStateEvent, () => ({
         isAuthenticated: false,
     }))
-    .on(resetAuthErrorEvent, ({ error, ...rest }) => ({ ...rest }));
+    .on(resetAuthErrorEvent, state => ({ ...state, error: null }));

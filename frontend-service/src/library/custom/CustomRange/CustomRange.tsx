@@ -1,5 +1,5 @@
 import { Slider, SliderProps, Stack } from '@mui/material';
-import { memo } from 'react';
+import { ReactElement, memo } from 'react';
 import { PropsWithClassName } from '../../../types';
 
 const Component = ({
@@ -10,7 +10,7 @@ const Component = ({
     defaultValue,
     color,
     orientation,
-}: SliderProps & PropsWithClassName<{ Icon?: any }>) => (
+}: SliderProps & PropsWithClassName<{ Icon?: ReactElement }>) => (
     <Stack spacing={2} direction="row" className={className} alignItems="center">
         {Icon}
         <Slider

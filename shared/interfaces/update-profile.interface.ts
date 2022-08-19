@@ -11,6 +11,7 @@ export interface IUpdateProfile {
     stripeAccountId?: string;
     stripeEmail?: string;
     stripeSessionId?: string;
+    stripeCustomerId?: string;
     stripeSubscriptionId?: string;
     subscriptionPlanKey?: string;
     isSubscriptionActive?: boolean;

@@ -26,6 +26,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { TemplatesService } from '../templates/templates.service';
+import { CommonTemplateRestDTO } from '../dtos/response/common-template.dto';
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
@@ -203,7 +204,6 @@ export class PaymentsController {
   })
   async createPaymentIntent(
     @Body() body: { templateId: string },
-    @Request() req,
   ): Promise<
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
@@ -483,6 +483,65 @@ export class PaymentsController {
       this.logger.error(
         {
           message: `An error occurs, while get portal session url`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/templates/:templateId')
+  @ApiOperation({ summary: 'Purchase Template' })
+  @ApiOkResponse({
+    type: CommonTemplateRestDTO,
+    description: 'Purchase Common Template Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async purchaseCommonTemplate(
+    @Request() req,
+    @Param('templateId') templateId: string,
+  ) {
+    try {
+      if (templateId) {
+        const template = await this.templateService.getCommonTemplate({
+          id: templateId,
+        });
+
+        const user = await this.coreService.findUserById({
+          userId: req.user.userId,
+        });
+
+        const productCheckoutSession =
+          await this.paymentsService.getProductCheckoutSession({
+            productId: template.stripeProductId,
+            customerEmail: user.email,
+            customer: user.stripeCustomerId,
+          });
+
+        await this.coreService.findUserAndUpdate({
+          userId: req.user.userId,
+          data: {
+            stripeSessionId: productCheckoutSession.id,
+          },
+        });
+
+        return {
+          success: true,
+          result: productCheckoutSession.url,
+        };
+      }
+      return {
+        success: false,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while purchase common template`,
         },
         JSON.stringify(err),
       );

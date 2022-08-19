@@ -8,8 +8,8 @@ export const handleConnectSocket = async () => {
             resolve(true);
         });
 
-        socketInstance.on('connect_error', async () => {
-            reject(false);
+        socketInstance.on('connect_error', async err => {
+            reject(err);
         });
     });
 

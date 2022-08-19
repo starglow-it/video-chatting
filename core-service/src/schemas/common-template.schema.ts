@@ -54,9 +54,19 @@ export class CommonTemplate {
   type: string;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+  })
+  priceInCents: number;
+
+  @Prop({
     type: mongoose.Schema.Types.Boolean,
   })
   isAudioAvailable: boolean;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  stripeProductId: string;
 
   @Prop({
     type: [

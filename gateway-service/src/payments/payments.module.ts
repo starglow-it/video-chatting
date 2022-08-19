@@ -25,12 +25,10 @@ import { TemplatesModule } from '../templates/templates.module';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],
-      useFactory: async (config: ConfigClientService) => {
-        return {
-          secret: await config.get('jwtSecret'),
-          signOptions: { expiresIn: JWT_ACCESS_EXPIRE },
-        };
-      },
+      useFactory: async (config: ConfigClientService) => ({
+        secret: await config.get('jwtSecret'),
+        signOptions: { expiresIn: JWT_ACCESS_EXPIRE },
+      }),
     }),
     ClientsModule.registerAsync([
       {
@@ -60,5 +58,6 @@ import { TemplatesModule } from '../templates/templates.module';
   ],
   controllers: [PaymentsController],
   providers: [PaymentsService],
+  exports: [PaymentsService],
 })
 export class PaymentsModule {}

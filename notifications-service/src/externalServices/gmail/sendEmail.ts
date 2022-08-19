@@ -1,8 +1,8 @@
-import nodemailer, {Transporter} from 'nodemailer';
+import nodemailer, { Transporter } from 'nodemailer';
 
-import {SendEmailRequest} from "@shared/requests/sendEmail.request";
-import {getAllConfigVars, getConfigVar} from "../../services/config";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { SendEmailRequest } from '@shared/requests/sendEmail.request';
+import { getAllConfigVars, getConfigVar } from '../../services/config';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 let transport: Transporter<SMTPTransport.SentMessageInfo> | null = null;
 
@@ -17,14 +17,19 @@ const getOrCreateTransport = async () => {
         service: 'gmail',
         auth: {
             user: smtpUser,
-            pass: smtpPass
+            pass: smtpPass,
         },
     });
 
     return transport;
-}
+};
 
-export const sendEmail = async ({ to, subject, html, icalEventLink }: SendEmailRequest) => {
+export const sendEmail = async ({
+    to,
+    subject,
+    html,
+    icalEventLink,
+}: SendEmailRequest) => {
     try {
         const transportClient = await getOrCreateTransport();
 
@@ -32,9 +37,7 @@ export const sendEmail = async ({ to, subject, html, icalEventLink }: SendEmailR
 
         await transportClient.sendMail({
             from: smtpUser,
-            to: Array.isArray(to)
-                ? to.map(({ email}) => email)
-                : to.email,
+            to: Array.isArray(to) ? to.map(({ email }) => email) : to.email,
             subject,
             html,
             icalEvent: icalEventLink,

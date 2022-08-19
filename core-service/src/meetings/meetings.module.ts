@@ -12,8 +12,8 @@ import { CommonTemplatesModule } from '../common-templates/common-templates.modu
 
 @Module({
   imports: [
-    UserTemplatesModule,
-    CommonTemplatesModule,
+    forwardRef(() => UserTemplatesModule),
+    forwardRef(() => CommonTemplatesModule),
     MongooseModule.forFeature([
       {
         name: MeetingInstance.name,

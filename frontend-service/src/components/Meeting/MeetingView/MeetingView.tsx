@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useContext, useEffect } from 'react';
-import { useStore } from 'effector-react';
+import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
+import { useStore, useStoreMap } from 'effector-react';
 import Image from 'next/image';
 import clsx from 'clsx';
 
@@ -47,6 +47,7 @@ import {
     $meetingStore,
     $meetingTemplateStore,
     $localUserStore,
+    $meetingUsersStore,
     setLocalUserMediaEvent,
     setMeetingUserMediaEvent,
     updateLocalUserEvent,
@@ -55,10 +56,11 @@ import {
     updateUserSocketEvent,
     appDialogsApi,
     setMeetingConnectedEvent,
+    addNotificationEvent,
 } from '../../../store';
 
 // types
-import { AppDialogsEnum, MeetingAccessStatuses } from '../../../store/types';
+import { AppDialogsEnum, MeetingAccessStatuses, NotificationType } from '../../../store/types';
 
 const MeetingView = memo(() => {
     const meeting = useStore($meetingStore);
@@ -66,8 +68,16 @@ const MeetingView = memo(() => {
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
 
+    const hostUser = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [meeting.hostUserId],
+        fn: (state, [hostUserId]) => state.find(user => user.id === hostUserId) || null,
+    });
+
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
+
+    const prevHostUserId = useRef<string>('');
 
     const {
         data: { isMicActive, isCameraActive },
@@ -96,10 +106,28 @@ const MeetingView = memo(() => {
     }, [onGetNewStream, isLocalCamActive, isLocalMicActive]);
 
     useEffect(() => {
-        if (!meeting.sharingUserId && prevSharingUserId === localUser.meetingUserId) {
+        if (
+            Boolean(localUser.meetingUserId) &&
+            !meeting.sharingUserId &&
+            prevSharingUserId === localUser.meetingUserId
+        ) {
             handleStopScreenSharing();
         }
     }, [prevSharingUserId, meeting.sharingUserId, handleStopScreenSharing]);
+
+    useEffect(() => {
+        if (hostUser && prevHostUserId.current !== hostUser?.id) {
+            prevHostUserId.current = hostUser.id;
+
+            addNotificationEvent({
+                type: NotificationType.HostChanged,
+                message:
+                    localUser.id === hostUser?.id
+                        ? 'You are host now'
+                        : `${hostUser.username} is host now`,
+            });
+        }
+    }, [hostUser?.id, hostUser?.username, localUser?.id]);
 
     useEffect(() => {
         (async () => {
@@ -191,7 +219,7 @@ const MeetingView = memo(() => {
                 >
                     <MeetingUsersVideos />
                     <ConditionalRender
-                        condition={meetingTemplate.templateId === 18 && !isScreenSharing}
+                        condition={meetingTemplate.templateId === 20 && !isScreenSharing}
                     >
                         <MeetingGoodsLinks />
                     </ConditionalRender>

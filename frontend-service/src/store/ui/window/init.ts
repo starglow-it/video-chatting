@@ -13,7 +13,7 @@ const handleResize = () => {
 };
 
 $windowSizeStore
-    .on(initWindowListeners, state => {
+    .on(initWindowListeners, () => {
         window.addEventListener('resize', handleResize);
         return {
             width: window.innerWidth,

@@ -115,7 +115,21 @@ export class PaymentsService {
     return this.stripeClient.products.retrieve(productId);
   }
 
-  async getStripeCheckoutSession(priceId, basePath, meetingToken) {
+  async getStripeCheckoutSession({
+    paymentMode,
+    priceId,
+    basePath,
+    meetingToken,
+    customerEmail,
+    customer,
+  }: {
+    paymentMode: Stripe.Checkout.SessionCreateParams.Mode;
+    priceId: string;
+    basePath: string;
+    meetingToken?: string;
+    customerEmail: string;
+    customer?: string;
+  }) {
     const frontendUrl = await this.configService.get('frontendUrl');
 
     const meetingPath = `/room/${meetingToken}`;
@@ -130,7 +144,8 @@ export class PaymentsService {
           quantity: 1,
         },
       ],
-      mode: 'subscription',
+      ...(customer ? { customer } : { customer_email: customerEmail }),
+      mode: paymentMode,
       allow_promotion_codes: true,
       success_url: `${baseUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}?canceled=true`,
@@ -150,5 +165,60 @@ export class PaymentsService {
       customer,
       return_url: returnUrl,
     });
+  }
+
+  async createProduct(productData: {
+    name: string;
+    priceInCents: number;
+    description: string;
+    images?: string[];
+    type: string;
+  }) {
+    const environment = await this.configService.get('environment');
+
+    return this.stripeClient.products.create({
+      name: productData.name,
+      active: true,
+      default_price_data: {
+        currency: 'usd',
+        unit_amount: productData.priceInCents,
+        ...(productData.type === 'subscription'
+          ? {
+              recurring: {
+                interval: environment === 'demo' ? 'month' : 'day',
+              },
+            }
+          : {}),
+      },
+      metadata: {
+        type: productData.type,
+      },
+      description: productData.description,
+      images: productData.images,
+    });
+  }
+
+  async getProduct(productId) {
+    return this.stripeClient.products.retrieve(productId);
+  }
+
+  async getCustomer({ customerId }: { customerId: string }) {
+    return this.stripeClient.customers.retrieve(customerId);
+  }
+
+  async getCheckoutSession(checkoutId) {
+    return this.stripeClient.checkout.sessions.retrieve(checkoutId, {
+      expand: ['line_items'],
+    });
+  }
+
+  async getStripeSubscriptions(): Promise<Stripe.Product[]> {
+    const allProducts = await this.stripeClient.products.list({
+      active: true,
+    });
+
+    return allProducts.data.filter(
+      (product) => product.metadata.type === 'subscription',
+    );
   }
 }

@@ -78,11 +78,13 @@ export class CommonTemplatesService {
     session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }) {
-    return this.commonTemplate.findOne(
-      query,
-      {},
-      { session: session?.session, populate: populatePaths },
-    );
+    return this.commonTemplate
+      .findOne(
+        query,
+        {},
+        { session: session?.session, populate: populatePaths },
+      )
+      .exec();
   }
 
   async createCommonTemplate(data: ICommonTemplate) {

@@ -1,5 +1,5 @@
-import { Global } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
+import { Global, Logger } from '@nestjs/common';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import {
   ConnectedSocket,
   MessageBody,
@@ -40,6 +40,8 @@ import { CommonMeetingDTO } from '../dtos/response/common-meeting.dto';
 @Global()
 @WebSocketGateway({ transports: ['websocket', 'polling'] })
 export class UsersGateway extends BaseGateway {
+  private readonly logger = new Logger(UsersGateway.name);
+
   constructor(
     private meetingsService: MeetingsService,
     private usersService: UsersService,
@@ -72,7 +74,7 @@ export class UsersGateway extends BaseGateway {
         enableImplicitConversion: true,
       });
 
-      const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -90,6 +92,43 @@ export class UsersGateway extends BaseGateway {
     });
   }
 
+  @SubscribeMessage(SubscribeEvents.CHANGE_HOST)
+  async changeHost(@MessageBody() message: { userId: string }) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findById(message.userId, session);
+
+      if (!user) {
+        this.logger.error({
+          message: 'no user found',
+          ctx: {
+            socketId: message.userId,
+          },
+        });
+
+        return;
+      }
+
+      await user.populate('meeting');
+
+      const meeting = await this.meetingsService.findByIdAndUpdate(
+        user.meeting._id,
+        {
+          hostUserId: message.userId,
+        },
+        session,
+      );
+
+      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+
+      this.emitToRoom(`meeting:${meeting._id}`, UPDATE_MEETING, {
+        meeting: plainMeeting,
+      });
+    });
+  }
+
   @SubscribeMessage(SubscribeEvents.REMOVE_USER)
   async removeUser(
     @MessageBody() message: RemoveUserRequestDTO,
@@ -101,22 +140,34 @@ export class UsersGateway extends BaseGateway {
         await user.populate('meeting');
 
         if (user.meeting) {
+          const updateData = {
+            sharingUserId: user.meeting.sharingUserId,
+            hostUserId: user.meeting.hostUserId,
+          };
+
           if (user.meeting.sharingUserId === user.meetingUserId) {
-            const meeting = await this.meetingsService.updateMeetingById(
-              user.meeting._id,
-              { sharingUserId: null },
-              session,
-            );
-
-            const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
-              excludeExtraneousValues: true,
-              enableImplicitConversion: true,
-            });
-
-            this.emitToRoom(`meeting:${meeting._id}`, UPDATE_MEETING, {
-              meeting: plainMeeting,
-            });
+            updateData.sharingUserId = null;
           }
+
+          if (user.meeting.hostUserId === user.id) {
+            updateData.hostUserId = null;
+          }
+
+          const meeting = await this.meetingsService.updateMeetingById(
+            user.meeting._id,
+            updateData,
+            session,
+          );
+
+          const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          this.emitToRoom(`meeting:${meeting._id}`, UPDATE_MEETING, {
+            meeting: plainMeeting,
+          });
+
           this.emitToRoom(`meeting:${user.meeting._id}`, REMOVE_USERS, {
             users: [user._id],
           });

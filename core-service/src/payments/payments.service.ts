@@ -1,64 +1,20 @@
-import { FilterQuery, Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import {
-  MeetingDonation,
-  MeetingDonationDocument,
-} from '../schemas/meeting-donation.schema';
-import { ITransactionSession } from '../helpers/mongo/withTransaction';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { CustomPopulateOptions } from '../types/custom';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+
+import { PAYMENTS_PROVIDER } from '@shared/providers';
+import { CREATE_TEMPLATE_STRIPE_PRODUCT } from '@shared/patterns/payments';
 
 @Injectable()
 export class PaymentsService {
-  constructor(
-    @InjectModel(MeetingDonation.name)
-    private meetingDonation: Model<MeetingDonationDocument>,
-  ) {}
+  constructor(@Inject(PAYMENTS_PROVIDER) private client: ClientProxy) {}
 
-  async createMeetingDonation({
-    data,
-    session,
-  }: {
-    data: { userId: ICommonUserDTO['id']; paymentIntentId: string };
-    session: ITransactionSession;
+  async createTemplateStripeProduct(data: {
+    name: string;
+    priceInCents: number;
+    description: string;
   }) {
-    return this.meetingDonation.create(
-      [
-        {
-          user: data.userId,
-          paymentIntentId: data.paymentIntentId,
-        },
-      ],
-      { session: session?.session },
-    );
-  }
+    const pattern = { cmd: CREATE_TEMPLATE_STRIPE_PRODUCT };
 
-  async deleteMeetingDonation({
-    query,
-    session,
-  }: {
-    query: FilterQuery<MeetingDonationDocument>;
-    session: ITransactionSession;
-  }) {
-    return this.meetingDonation.deleteMany(query, {
-      session: session?.session,
-    });
-  }
-
-  async findMeetingDonation({
-    query,
-    session,
-    populatePath,
-  }: {
-    query: FilterQuery<MeetingDonationDocument>;
-    session: ITransactionSession;
-    populatePath: CustomPopulateOptions;
-  }) {
-    return this.meetingDonation.findOne(
-      query,
-      {},
-      { session: session?.session, populate: populatePath },
-    );
+    return this.client.send(pattern, data).toPromise();
   }
 }

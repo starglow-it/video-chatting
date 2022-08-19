@@ -20,7 +20,16 @@ import styles from './TimeLimitNotification.module.scss';
 import { formatDate } from '../../utils/time/formatDate';
 
 // stores
-import { $isOwner, $profileStore } from '../../store';
+import {
+    $isBusinessSubscription,
+    $isOwner,
+    $isPaidMeetingTemplate,
+    $localUserStore,
+    $profileStore,
+} from '../../store';
+
+// types
+import { MeetingAccessStatuses } from '../../store/types';
 
 type ComponentProps = unknown;
 
@@ -32,25 +41,34 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
 
     const profile = useStore($profileStore);
     const isOwner = useStore($isOwner);
+    const localUser = useStore($localUserStore);
+    const isBusinessSubscription = useStore($isBusinessSubscription);
+    const isPaidMeetingTemplate = useStore($isPaidMeetingTemplate);
 
     const handleOpenProfile = () => {
-        router.push('/dashboard/profile');
+        window.open('/dashboard/profile', '_blank');
     };
+
+    const isDashboardRoute = /dashboard/.test(router.pathname);
 
     const handleClose = () => {
         setOpenState(false);
         setHiddenState(true);
     };
 
-    const minutesLeft = Math.ceil(profile.maxMeetingTime / 1000 / 60);
+    const minutesLeft = Math.floor(profile.maxMeetingTime / 1000 / 60);
 
     useEffect(() => {
-        const planName = profile.subscriptionPlanKey;
-
-        if (minutesLeft <= 20 && planName !== 'Business' && isOwner && !isHidden) {
+        if (minutesLeft <= 20 && !isBusinessSubscription && !isHidden && isDashboardRoute) {
             setOpenState(true);
         }
-    }, [profile.maxMeetingTime, profile.subscriptionPlanKey, isOwner]);
+    }, [minutesLeft, isBusinessSubscription, isOwner, isPaidMeetingTemplate, isDashboardRoute]);
+
+    useEffect(() => {
+        if (localUser.accessStatus === MeetingAccessStatuses.InMeeting) {
+            setOpenState(false);
+        }
+    }, [localUser.accessStatus]);
 
     const renewTime = formatDate(
         profile?.renewSubscriptionTimestampInSeconds
@@ -84,7 +102,10 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                         className={styles.text}
                         nameSpace="subscriptions"
                         translation="timeLimit.text"
-                        options={{ minutesLeft, renewTime }}
+                        options={{
+                            minutesLeft: `${minutesLeft} minute${minutesLeft === 1 ? '' : 's'}`,
+                            renewTime,
+                        }}
                     />
                     <CustomButton
                         variant="custom-common"

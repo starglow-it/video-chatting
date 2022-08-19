@@ -1,7 +1,4 @@
-import setHours from 'date-fns/setHours';
-import setMinutes from 'date-fns/setMinutes';
-import setSeconds from 'date-fns/setSeconds';
-import setMilliseconds from 'date-fns/setMilliseconds';
+import { setHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns';
 
 export const setDayTime = (
     date: Date | number,

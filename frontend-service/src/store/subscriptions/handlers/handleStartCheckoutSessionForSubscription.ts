@@ -1,17 +1,14 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { ErrorState } from '../../types';
 import { startCheckoutSessionUrl } from '../../../utils/urls';
+import { GetCheckoutSessionUrlPayload, GetCheckoutSessionUrlResponse } from '../products/types';
 
 export const handleStartCheckoutSessionForSubscription = async ({
     productId,
     meetingToken,
     baseUrl,
-}: {
-    productId: string;
-    meetingToken: string;
-    baseUrl: string;
-}): Promise<{ url: string } | undefined> => {
-    const response = await sendRequestWithCredentials<{ url: string }, ErrorState>({
+}: GetCheckoutSessionUrlPayload): Promise<GetCheckoutSessionUrlResponse> => {
+    const response = await sendRequestWithCredentials<GetCheckoutSessionUrlResponse, ErrorState>({
         ...startCheckoutSessionUrl({ productId }),
         data: {
             meetingToken,

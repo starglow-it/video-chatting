@@ -10,7 +10,8 @@ import {
   DELETE_STRIPE_EXPRESS_ACCOUNT,
   GET_STRIPE_CHECKOUT_SESSION,
   GET_STRIPE_PORTAL_SESSION,
-  GET_STRIPE_PRODUCTS,
+  GET_STRIPE_PRODUCT_CHECKOUT_SESSION,
+  GET_STRIPE_SUBSCRIPTIONS_PRODUCTS,
   GET_STRIPE_SUBSCRIPTION,
   HANDLE_EXPRESS_WEBHOOK,
   HANDLE_WEBHOOK,
@@ -70,7 +71,7 @@ export class PaymentsService {
   }
 
   async getStripeProducts() {
-    const pattern = { cmd: GET_STRIPE_PRODUCTS };
+    const pattern = { cmd: GET_STRIPE_SUBSCRIPTIONS_PRODUCTS };
 
     return this.client.send(pattern, {}).toPromise();
   }
@@ -93,6 +94,16 @@ export class PaymentsService {
 
   async getStripeSubscription(data: { subscriptionId: string }) {
     const pattern = { cmd: GET_STRIPE_SUBSCRIPTION };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async getProductCheckoutSession(data: {
+    productId: string;
+    customerEmail: string;
+    customer: string;
+  }) {
+    const pattern = { cmd: GET_STRIPE_PRODUCT_CHECKOUT_SESSION };
 
     return this.client.send(pattern, data).toPromise();
   }

@@ -8,7 +8,7 @@ import { ConfigClientService } from '../config/config.service';
 import { JWT_ACCESS_EXPIRE } from '@shared/const/jwt.const';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { CoreModule } from '../core/core.module';
-import { UserTemplateController } from './userTemplate.contoller';
+import { UserTemplateController } from './user-templates.contoller';
 import { TemplatesModule } from '../templates/templates.module';
 import { UploadModule } from '../upload/upload.module';
 

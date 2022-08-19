@@ -2,7 +2,15 @@ import React, { memo } from 'react';
 import { CommonIconProps } from '@library/types';
 
 const NotesIcon = memo(({ width, height, className, onClick, ...rest }: CommonIconProps) => (
-    <svg width={width} height={height} viewBox="0 0 32 32" fill="none" {...rest}>
+    <svg
+        width={width}
+        height={height}
+        className={className}
+        onClick={onClick}
+        viewBox="0 0 32 32"
+        fill="none"
+        {...rest}
+    >
         <path
             fillRule="evenodd"
             clipRule="evenodd"

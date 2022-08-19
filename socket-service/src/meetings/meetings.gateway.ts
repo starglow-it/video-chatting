@@ -111,6 +111,10 @@ export class MeetingsGateway
             user?.meeting?.sharingUserId === user?.meetingUserId
               ? null
               : user?.meeting?.sharingUserId,
+          hostUserId:
+            user?.meeting?.hostUserId === user?.id
+              ? null
+              : user?.meeting?.hostUserId,
         },
         session,
       );
@@ -426,7 +430,8 @@ export class MeetingsGateway
 
         const realEndsAtTimeout =
           mainUser.maxMeetingTime < endsAtTimeout &&
-          mainUser.subscriptionPlanKey !== 'Business'
+          mainUser.subscriptionPlanKey !== 'Business' &&
+          template.type === 'free'
             ? mainUser.maxMeetingTime
             : endsAtTimeout;
 
@@ -448,20 +453,24 @@ export class MeetingsGateway
         }),
       });
 
-      this.taskService.addTimeout({
-        name: `meeting:timeLimit:${message.meetingId}`,
-        ts:
-          finishTime -
-          getTimeoutTimestamp({
-            value: 20,
-            type: TimeoutTypesEnum.Minutes,
-          }),
-        callback: this.sendTimeLimit.bind(this, {
-          meetingId: meeting._id,
-          userId: user._id,
-          mainUserId: mainUser.id,
-        }),
-      });
+      if (template.type === 'free') {
+        const timeLimitNotificationTimeout = getTimeoutTimestamp({
+          value: 20,
+          type: TimeoutTypesEnum.Minutes,
+        });
+
+        if (finishTime > timeLimitNotificationTimeout) {
+          this.taskService.addTimeout({
+            name: `meeting:timeLimit:${message.meetingId}`,
+            ts: finishTime - timeLimitNotificationTimeout,
+            callback: this.sendTimeLimit.bind(this, {
+              meetingId: meeting._id,
+              userId: user._id,
+              mainUserId: mainUser.id,
+            }),
+          });
+        }
+      }
 
       const plainUser = plainToClass(CommonUserDTO, user, {
         excludeExtraneousValues: true,
@@ -602,6 +611,7 @@ export class MeetingsGateway
       message: 'cancelAccessRequest event',
       ctx: message,
     });
+
     return withTransaction(this.connection, async (session) => {
       if (!message.meetingId) return { success: true };
 
@@ -770,7 +780,7 @@ export class MeetingsGateway
         enableImplicitConversion: true,
       });
 
-      const plainUsers = plainToClass(CommonUserDTO, meeting.users, {
+      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -816,7 +826,7 @@ export class MeetingsGateway
         userId: template.user.id,
       });
 
-      if (user.subscriptionPlanKey !== 'Business') {
+      if (user.subscriptionPlanKey !== 'Business' || template.type === 'free') {
         const newTime = user.maxMeetingTime - (Date.now() - meeting.startAt);
 
         await this.coreService.updateUser({
@@ -884,6 +894,12 @@ export class MeetingsGateway
         if (meeting) {
           await meeting.populate(['owner', 'users']);
 
+          if (meeting.hostUserId === user.id) {
+            meeting.hostUserId = null;
+
+            await meeting.save();
+          }
+
           const updateUsersPromises = meeting.users.map(async (user, index) => {
             const userPosition = template.usersPosition?.[index];
 
@@ -905,7 +921,7 @@ export class MeetingsGateway
             session,
           );
 
-          const plainUsers = plainToClass(CommonUserDTO, meetingUsers, {
+          const plainUsers = plainToInstance(CommonUserDTO, meetingUsers, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });
@@ -1003,11 +1019,13 @@ export class MeetingsGateway
 
     const meeting = await this.meetingsService.findById(meetingId);
 
+    if (!meeting) return;
+
     const mainUser = await this.coreService.findUserById({
       userId: mainUserId,
     });
 
-    const newTime = mainUser.maxMeetingTime - (Date.now() - meeting.startAt);
+    const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
     await this.coreService.updateUser({
       query: { _id: mainUser.id },
@@ -1016,6 +1034,8 @@ export class MeetingsGateway
       },
     });
 
-    this.emitToSocketId(user.socketId, 'meeting:timeLimit');
+    if (user?.socketId) {
+      this.emitToSocketId(user?.socketId, 'meeting:timeLimit');
+    }
   }
 }

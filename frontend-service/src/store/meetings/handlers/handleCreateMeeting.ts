@@ -1,9 +1,14 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { ErrorState, Template } from '../../types';
 import { createMeetingUrl } from '../../../utils/urls';
+import { CreateMeetingPayload, CreateMeetingResponse } from '../types';
 
-export const handleCreateMeeting = async (data: { templateId: Template['id'] }) => {
-    const response = await sendRequestWithCredentials<any, ErrorState>({
+export const handleCreateMeeting = async (
+    data: CreateMeetingPayload,
+): Promise<CreateMeetingResponse> => {
+    const response = await sendRequestWithCredentials<
+        CreateMeetingResponse['template'],
+        CreateMeetingResponse['error']
+    >({
         ...createMeetingUrl,
         data: {
             templateId: data.templateId,

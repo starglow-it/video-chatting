@@ -31,7 +31,11 @@ import { FileSizeTypesEnum } from '../../../types/fileSize';
 import styles from './SetUpTemplateInfo.module.scss';
 
 // stores
-import { $profileAvatarImage, setProfileAvatar, resetProfileAvatarEvent } from '../../../store';
+import {
+    $profileAvatarImage,
+    setProfileAvatarEvent,
+    resetProfileAvatarEvent,
+} from '../../../store';
 
 const SetUpProfileAvatar = memo(() => {
     const profileAvatar = useStore($profileAvatarImage);
@@ -48,7 +52,7 @@ const SetUpProfileAvatar = memo(() => {
 
         const dataUrl = await onFileAvailable(file);
 
-        setProfileAvatar({
+        setProfileAvatarEvent({
             file,
             dataUrl,
         });

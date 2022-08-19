@@ -5,10 +5,12 @@ import { IConfig } from '@shared/interfaces/config.interface';
 
 import { AppModule } from './app.module';
 import { ConfigClientService } from './config/config.service';
+import { PaymentsController } from './payments/payments.controller';
 
 async function bootstrap() {
   const appContext = await NestFactory.createApplicationContext(AppModule);
   const configService = appContext.get(ConfigClientService);
+  const paymentsController = appContext.get(PaymentsController);
   const config: IConfig = await configService.getAll();
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -26,6 +28,8 @@ async function bootstrap() {
       },
     },
   );
+
+  await paymentsController.createSubscriptionsIfNotExists();
 
   await app.listen();
 }

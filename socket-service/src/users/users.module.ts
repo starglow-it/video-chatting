@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MeetingUser, MeetingUserSchema } from '../schemas/meeting-user.schema';
@@ -16,7 +15,7 @@ import { UsersGateway } from './users.gateway';
     ]),
     forwardRef(() => MeetingsModule),
   ],
-  controllers: [UsersController],
+  controllers: [],
   providers: [UsersService, UsersGateway],
   exports: [UsersService],
 })

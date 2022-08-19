@@ -34,7 +34,7 @@ const UserToKickDialog = memo(() => {
     }, []);
 
     const handleKickUser = useCallback(() => {
-        userToKick && removeUserSocketEvent({ id: userToKick });
+        if (userToKick) removeUserSocketEvent({ id: userToKick });
         handleClose();
     }, [userToKick]);
 

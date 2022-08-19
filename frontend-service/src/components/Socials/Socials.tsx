@@ -176,9 +176,4 @@ const Component: React.FunctionComponent<{
     );
 };
 
-Component.defaultProps = {
-    buttonClassName: '',
-    title: '',
-};
-
 export const Socials = memo(Component);

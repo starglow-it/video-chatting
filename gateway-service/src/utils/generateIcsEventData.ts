@@ -43,7 +43,6 @@ export const generateIcsEventData = async ({
   } as EventAttributes;
 
   return new Promise((resolve, reject) => {
-    // @ts-ignore
     ics.createEvent(eventData, (err, value) => {
       if (err) reject(err);
       resolve(Buffer.from(value, 'utf8'));

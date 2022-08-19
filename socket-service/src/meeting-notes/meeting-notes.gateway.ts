@@ -8,7 +8,6 @@ import { Global } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
 import { Connection } from 'mongoose';
-import { plainToClass } from 'class-transformer';
 
 import {
   GET_MEETING_NOTES_EVENT,
@@ -28,6 +27,7 @@ import {
   SEND_MEETING_NOTE,
 } from '../const/emitSocketEvents.const';
 import { RemoveMeetingNoteRequestDTO } from '../dtos/requests/notes/remove-meeting-note.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Global()
 @WebSocketGateway({ transports: ['websocket', 'polling'] })
@@ -63,7 +63,7 @@ export class MeetingNotesGateway extends BaseGateway {
         session,
       );
 
-      const meetingNote = plainToClass(MeetingNoteDTO, newNote, {
+      const meetingNote = plainToInstance(MeetingNoteDTO, newNote, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -116,7 +116,7 @@ export class MeetingNotesGateway extends BaseGateway {
         'user',
       );
 
-      const plainMeetingNotes = plainToClass(MeetingNoteDTO, meetingNotes, {
+      const plainMeetingNotes = plainToInstance(MeetingNoteDTO, meetingNotes, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });

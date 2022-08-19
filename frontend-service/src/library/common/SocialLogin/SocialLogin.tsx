@@ -1,16 +1,18 @@
-import React, { memo } from 'react';
+import React, { memo, PropsWithChildren } from 'react';
 import clsx from 'clsx';
-
 import { Theme } from '@mui/material';
 
+// custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
-import { TranslationProps } from '@library/common/Translation/types';
-import styles from './SocialLogin.module.scss';
-
+// types
+import { TranslationProps } from '../Translation/types';
 import { SocialLoginProps } from './types';
 import { PropsWithClassName } from '../../../types';
+
+// styles
+import styles from './SocialLogin.module.scss';
 
 const sxStyles = {
     wrapper: {
@@ -24,9 +26,14 @@ const sxStyles = {
     },
 };
 
-const Component: React.FunctionComponent<
-    PropsWithClassName<SocialLoginProps & TranslationProps>
-> = ({ Icon, nameSpace, translation, className, onClick, children }) => (
+const Component = ({
+    Icon,
+    nameSpace,
+    translation,
+    className,
+    onClick,
+    children,
+}: PropsWithChildren<PropsWithClassName<SocialLoginProps & TranslationProps>>) => (
     <CustomGrid
         container
         alignItems="center"
@@ -39,7 +46,7 @@ const Component: React.FunctionComponent<
         {nameSpace && translation ? (
             <CustomTypography nameSpace={nameSpace} translation={translation} />
         ) : (
-            <>{children}</>
+            children
         )}
     </CustomGrid>
 );

@@ -1,4 +1,7 @@
-export const parseBoolean = (str: string | undefined, def: boolean): boolean => {
+export const parseBoolean = (
+    str: string | undefined,
+    def: boolean,
+): boolean => {
     if (!str && str?.length === 0) {
         return def;
     }

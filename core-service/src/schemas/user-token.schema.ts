@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { UserDocument } from './user.schema';
-import { TokenTypes, TokenTypesValues } from '@shared/const/tokens.const';
+import { TokenTypes } from '@shared/const/tokens.const';
 
 @Schema()
 export class UserToken {
@@ -15,7 +15,7 @@ export class UserToken {
   @Prop({
     type: mongoose.Schema.Types.String,
     required: true,
-    enum: TokenTypesValues,
+    enum: Object.values(TokenTypes),
   })
   type: TokenTypes;
 

@@ -1,17 +1,17 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { getProfileTemplateUrl } from '../../../utils/urls';
 
-import { ErrorState, Profile, Template } from '../../types';
+import { ErrorState, Profile, UserTemplate } from '../../types';
 
 import { initialProfileTemplateState } from '../profileTemplate/const';
 
 export const handleFetchProfileTemplate = async ({
     templateId,
 }: {
-    templateId: Template['id'];
+    templateId: UserTemplate['id'];
     userId: Profile['id'];
-}): Promise<Template> => {
-    const response = await sendRequestWithCredentials<Template, ErrorState>(
+}): Promise<UserTemplate> => {
+    const response = await sendRequestWithCredentials<UserTemplate, ErrorState>(
         getProfileTemplateUrl({ templateId }),
     );
 

@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef, memo } from 'react';
+import React, { useMemo, forwardRef, memo, ForwardedRef } from 'react';
 import { TextField } from '@mui/material';
 
 // hooks
@@ -14,19 +14,20 @@ import { CustomInputProps } from '@library/custom/CustomInput/types';
 // styles
 import styles from './CustomInput.module.scss';
 
-const CustomInput = memo(
-    forwardRef(({ nameSpace, translation, error, ...rest }: CustomInputProps, ref) => {
-        const t = useLocalization(nameSpace);
+const Component = (
+    { nameSpace, translation, error, ...rest }: CustomInputProps,
+    ref: ForwardedRef<HTMLInputElement>,
+) => {
+    const t = useLocalization(nameSpace);
 
-        const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
+    const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
 
-        return (
-            <CustomGrid container direction="column">
-                <TextField inputRef={ref} label={label} {...rest} error={Boolean(error)} />
-                {error && <ErrorMessage className={styles.errorContainer} error={error} />}
-            </CustomGrid>
-        );
-    }),
-);
+    return (
+        <CustomGrid container direction="column">
+            <TextField inputRef={ref} label={label} error={Boolean(error)} {...rest} />
+            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
+        </CustomGrid>
+    );
+};
 
-export { CustomInput };
+export const CustomInput = memo(forwardRef(Component));

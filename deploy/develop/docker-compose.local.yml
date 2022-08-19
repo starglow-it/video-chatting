@@ -45,7 +45,7 @@ services:
       - TURN_USERNAME=kurentoturn
       - TURN_PORT=3486
       - STORAGE_HOSTNAME=ewr1.vultrobjects.com
-      - STRIPE_PUBLIC_API_KEY=pk_test_51Jf4TEH8cTQqzxoDB7pImIVJvmV73rBrlkaVFhvt2z18wWZkvnTZC0pd7o885YF88pCZNBNSz3VHPdpwtjtVVvfT00iI423CSn
+      - STRIPE_PUBLIC_API_KEY=pk_test_51L8KoiAe6q1d3oOzzjO5EvRVIqH2I9bZf9ea2HS8WacaUnI7M0C8i1ZQtufjqWdmpnexm5nDQJOIR6JIPCjefYCw00pNjB9Uss
     volumes:
       - type: bind
         source: ../../frontend-service/pages
@@ -88,6 +88,7 @@ services:
       - ../../core-service:/app/core-service
       - ../../shared:/app/shared
       - /app/core-service/dist
+      - /app/core-service/images
     networks:
       - liveoffice_local
 
@@ -183,9 +184,9 @@ services:
       - STORAGE_HOSTNAME=ewr1.vultrobjects.com
       - SECRET_ACCESS_KEY=XSGnjAdSXoRYhTAntNNJYhHCY7MeJseUujCDvcHK
       - ACCESS_KEY=04F4BOA4E0QRBSF0BW37
-      - STRIPE_WEBHOOK_SECRET=whsec_6d3900c5a120c61ff289e3a7dd018c836870dce6b2826fb42e36a069f8b0a2f9
-      - STRIPE_EXPRESS_WEBHOOK_SECRET=whsec_6d3900c5a120c61ff289e3a7dd018c836870dce6b2826fb42e36a069f8b0a2f9
-      - STRIPE_API_KEY=sk_test_51Jf4TEH8cTQqzxoDo2a4yQkZO6TvoPzaZwZbzaMJkP9DGwF5ISXa6SO5nCGOcDCrCUtF3h3Ip2k8YOS46LVaG2r800C67SnDuA
+      - STRIPE_WEBHOOK_SECRET=whsec_97d80c44737cde34881b52ccdc3150d86be3b18e7a06a26e25be655f86bd54c5
+      - STRIPE_EXPRESS_WEBHOOK_SECRET=whsec_97d80c44737cde34881b52ccdc3150d86be3b18e7a06a26e25be655f86bd54c5
+      - STRIPE_API_KEY=sk_test_51L8KoiAe6q1d3oOzK36FAXMBsjCQuTvjwtaN2D7buS5yt4P2P5nYILdTEHHusk0SRr2hDR1fx3GIjBLbTdYgBxCK00UBZgWeJB
     depends_on:
       - mongo
       - rabbit

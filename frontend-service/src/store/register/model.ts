@@ -1,11 +1,12 @@
-import { root } from '../root';
 import { RegisteredUserState, RegisterUserParams } from '../types';
+import { rootDomain } from '../domains';
 
-export const registerDomain = root.createDomain('registerDomain');
+export const registerDomain = rootDomain.createDomain('registerDomain');
 
 export const initialRegisterState: RegisteredUserState = {
     isUserRegistered: false,
     isUserConfirmed: false,
+    error: null,
 };
 
 export const $registerStore = registerDomain.store<RegisteredUserState>(initialRegisterState);

@@ -14,7 +14,7 @@ const PrevSliderArrow = memo(({ customClassName, onClick, dotsRef }: SliderArrow
     if (!rect?.width) return null;
 
     const style = {
-        '--offset': `${rect?.width / 2 + 20 + 34}px`,
+        '--offset': `${(rect?.width ?? 0) / 2 + 20 + 34}px`,
     } as React.CSSProperties;
 
     return (

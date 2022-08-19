@@ -34,6 +34,7 @@ const Component = () => {
 
     const handleUpgradeSubscription = () => {
         router.push('/dashboard/profile');
+        handleClose();
     };
 
     const renewTime = formatDate(

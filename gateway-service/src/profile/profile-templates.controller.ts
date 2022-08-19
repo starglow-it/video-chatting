@@ -41,20 +41,15 @@ export class ProfileTemplatesController {
     @Query('limit', ParseIntPipe) limit: number,
   ): Promise<ResponseSumType<EntityList<IUserTemplate>>> {
     try {
-      if (req.user) {
-        const template = await this.templatesService.getUserTemplates({
-          userId: req.user.userId,
-          skip,
-          limit,
-        });
+      const template = await this.templatesService.getUserTemplates({
+        userId: req.user.userId,
+        skip,
+        limit,
+      });
 
-        return {
-          success: true,
-          result: template,
-        };
-      }
       return {
-        success: false,
+        success: true,
+        result: template,
       };
     } catch (err) {
       this.logger.error(

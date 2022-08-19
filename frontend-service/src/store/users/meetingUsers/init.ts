@@ -53,19 +53,16 @@ $meetingUsersStore
     .on(updateUserTracksEvent, (state, data) =>
         state.map(user => {
             const isTargetUser = user.meetingUserId === data.userUid;
+
             if (isTargetUser) {
+                const videoStatus = data.infoType === VIDEO_MUTE ? 'inactive' : 'active';
+
+                const audioStatus = data.infoType === AUDIO_MUTE ? 'inactive' : 'active';
+
                 return {
                     ...user,
-                    cameraStatus: data.infoType.includes('video')
-                        ? data.infoType === VIDEO_MUTE
-                            ? 'inactive'
-                            : 'active'
-                        : user.cameraStatus,
-                    micStatus: data.infoType.includes('audio')
-                        ? data.infoType === AUDIO_MUTE
-                            ? 'inactive'
-                            : 'active'
-                        : user.micStatus,
+                    cameraStatus: data.infoType.includes('video') ? videoStatus : user.cameraStatus,
+                    micStatus: data.infoType.includes('audio') ? audioStatus : user.micStatus,
                 };
             }
             return user;

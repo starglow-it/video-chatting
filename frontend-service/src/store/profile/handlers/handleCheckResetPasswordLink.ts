@@ -1,10 +1,11 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { ErrorState } from '../../types';
 import { checkResetPasswordLinkUrl } from '../../../utils/urls';
+import { CheckResetPasswordLinkPayload, CheckResetPasswordLinkResponse } from '../types';
 
-export const handleCheckResetPasswordLink = async (params: {
-    token: string;
-}): Promise<{ isUserConfirmed: boolean; error?: ErrorState }> => {
+export const handleCheckResetPasswordLink = async (
+    params: CheckResetPasswordLinkPayload,
+): Promise<CheckResetPasswordLinkResponse> => {
     const response = await sendRequestWithCredentials<void, ErrorState>({
         ...checkResetPasswordLinkUrl,
         data: params,

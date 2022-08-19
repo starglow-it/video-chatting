@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { Connection } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
@@ -23,12 +23,19 @@ import { CommonTemplatesService } from './common-templates.service';
 
 // helpers
 import { withTransaction } from '../helpers/mongo/withTransaction';
+import { ADD_TEMPLATE_TO_USER } from '@shared/patterns/templates';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
+import { MeetingsService } from '../meetings/meetings.service';
+import { UsersService } from '../users/users.service';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
   constructor(
     @InjectConnection() private connection: Connection,
     private commonTemplatesService: CommonTemplatesService,
+    private userTemplatesService: UserTemplatesService,
+    private meetingsService: MeetingsService,
+    private usersService: UsersService,
   ) {}
 
   @MessagePattern({ cmd: GET_COMMON_TEMPLATES })
@@ -86,7 +93,7 @@ export class CommonTemplatesController {
             ],
           });
 
-        return plainToClass(CommonTemplateDTO, commonTemplates, {
+        return plainToInstance(CommonTemplateDTO, commonTemplates, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -97,5 +104,64 @@ export class CommonTemplatesController {
         ctx: TEMPLATES_SERVICE,
       });
     }
+  }
+
+  @MessagePattern({ cmd: ADD_TEMPLATE_TO_USER })
+  async addTemplateToUser(
+    @Payload() data: { productId: string; customerId: string },
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const targetTemplate =
+        await this.commonTemplatesService.findCommonTemplate({
+          query: { stripeProductId: data.productId },
+          session,
+        });
+
+      const targetUer = await this.usersService.findUser({
+        query: { stripeCustomerId: data.customerId },
+        session,
+        populatePaths: ['socials', 'languages', 'templates'],
+      });
+
+      const meeting = await this.meetingsService.create(
+        { userId: targetUer._id },
+        session,
+      );
+
+      const templateData = {
+        user: targetUer._id,
+        templateId: targetTemplate.templateId,
+        url: targetTemplate.url,
+        name: targetTemplate.name,
+        maxParticipants: targetTemplate.maxParticipants,
+        previewUrls: targetTemplate.previewUrls,
+        type: targetTemplate.type,
+        priceInCents: targetTemplate.priceInCents,
+        businessCategories: targetTemplate.businessCategories.map(
+          (category) => category._id,
+        ),
+        fullName: targetUer.fullName,
+        position: targetUer.position,
+        description: targetUer.description || targetTemplate.description,
+        companyName: targetUer.companyName,
+        contactEmail: targetUer.contactEmail,
+        languages: targetUer.languages.map((language) => language._id),
+        socials: targetUer.socials.map((social) => social._id),
+        meetingInstance: meeting,
+        usersPosition: targetTemplate.usersPosition,
+        isAudioAvailable: targetTemplate.isAudioAvailable,
+        links: targetTemplate.links,
+        signBoard: targetUer.signBoard,
+      };
+
+      const [userTemplate] = await this.userTemplatesService.createUserTemplate(
+        templateData,
+        session,
+      );
+
+      targetUer.templates.push(userTemplate);
+
+      await targetUer.save();
+    });
   }
 }

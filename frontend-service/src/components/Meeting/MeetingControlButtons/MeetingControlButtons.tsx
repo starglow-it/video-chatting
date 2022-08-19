@@ -23,13 +23,13 @@ import { GoodsIcon } from '@library/icons/GoodsIcon';
 // stores
 import {
     $isGoodsVisible,
-    $isOwner,
     $localUserStore,
     $meetingTemplateStore,
     $meetingStore,
     appDialogsApi,
     toggleIsGoodsVisible,
     updateMeetingSocketEvent,
+    $isMeetingHostStore,
 } from '../../../store';
 
 // types
@@ -42,7 +42,7 @@ import { AgoraController } from '../../../controllers/VideoChatController';
 import styles from './MeetingControlButtons.module.scss';
 
 const Component = () => {
-    const isOwner = useStore($isOwner);
+    const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
     const isGoodsVisible = useStore($isGoodsVisible);
@@ -50,7 +50,7 @@ const Component = () => {
 
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
-    const isAbleToToggleSharing = isOwner || isSharingScreenActive || !meeting.sharingUserId;
+    const isAbleToToggleSharing = isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
 
     const handleOpenDeviceSettings = useCallback(() => {
         appDialogsApi.openDialog({
@@ -67,10 +67,10 @@ const Component = () => {
     const handleToggleSharing = useCallback(() => {
         if (!meeting.sharingUserId) {
             AgoraController.startScreensharing();
-        } else if (isOwner || isSharingScreenActive) {
+        } else if (isMeetingHost || isSharingScreenActive) {
             updateMeetingSocketEvent({ sharingUserId: null });
         }
-    }, [isSharingScreenActive, meeting.sharingUserId, isOwner]);
+    }, [isSharingScreenActive, meeting.sharingUserId, isMeetingHost]);
 
     const isSharingActive = Boolean(meeting.sharingUserId);
 

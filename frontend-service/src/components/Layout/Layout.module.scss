@@ -9,14 +9,18 @@
 }
 
 .main {
-  position: absolute;
   width: 100%;
   height: 100%;
-  border: rem(1px) solid transparent;
+  border: rem(0px) solid transparent;
+
+  .relativeLayout {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
 
   &.meetingLayout {
     height: 100vh;
-    position: relative;
     overflow: hidden;
   }
 }
@@ -64,11 +68,14 @@
 .contentWrapper {
   width: 100%;
 
+  &.relativeLayout {
+    position: relative;
+  }
+
   &.meetingLayout {
     height: 100%;
     max-height: 100%;
     overflow: hidden;
-    position: relative;
   }
 }
 

@@ -38,13 +38,13 @@ import {
     $meetingTemplateStore,
     $profileStore,
     addNotificationEvent,
-    emitCancelEnterMeetingEvent,
     emitEnterWaitingRoom,
-    enterMeetingRequest,
-    sendEnterWaitingRoom,
+    sendCancelAccessMeetingRequestEvent,
+    sendEnterMeetingRequestSocketEvent,
+    sendEnterWaitingRoomSocketEvent,
+    sendStartMeetingSocketEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
-    startMeeting,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
 } from '../../store';
@@ -74,8 +74,8 @@ const DevicesSettings = memo(() => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
-    const isEnterMeetingRequestPending = useStore(enterMeetingRequest.pending);
-    const isEnterWaitingRoomRequestPending = useStore(sendEnterWaitingRoom.pending);
+    const isEnterMeetingRequestPending = useStore(sendEnterMeetingRequestSocketEvent.pending);
+    const isEnterWaitingRoomRequestPending = useStore(sendEnterWaitingRoomSocketEvent.pending);
 
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
@@ -155,9 +155,9 @@ const DevicesSettings = memo(() => {
     const handleJoinMeeting = useCallback(async () => {
         if (!isStreamRequested) {
             if (isOwner) {
-                await startMeeting({});
+                await sendStartMeetingSocketEvent();
             } else if (isMeetingInstanceExists && isOwnerInMeeting) {
-                await enterMeetingRequest({});
+                await sendEnterMeetingRequestSocketEvent();
             } else {
                 emitEnterWaitingRoom();
             }
@@ -197,7 +197,7 @@ const DevicesSettings = memo(() => {
     ]);
 
     const handleCancelRequest = useCallback(async () => {
-        emitCancelEnterMeetingEvent();
+        sendCancelAccessMeetingRequestEvent();
     }, []);
 
     const onSubmit = useCallback(
@@ -211,7 +211,7 @@ const DevicesSettings = memo(() => {
 
     const handleBack = useCallback(() => {
         if (isUserSentEnterRequest) {
-            emitCancelEnterMeetingEvent();
+            sendCancelAccessMeetingRequestEvent();
         }
 
         updateLocalUserEvent({

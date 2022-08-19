@@ -5,6 +5,7 @@ export interface ICommonMeetingDTO {
   sharingUserId: number;
   isMonetizationEnabled: boolean;
   mode: string;
+  hostUserId: string;
   ownerProfileId: string;
   endsAt: number;
   startAt: number;

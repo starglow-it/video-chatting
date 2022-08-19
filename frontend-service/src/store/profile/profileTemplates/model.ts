@@ -1,39 +1,42 @@
 import { attach } from 'effector-next';
-
-import { profileDomain } from '../domain/model';
+import { profileDomain } from '../../domains';
 
 import { $profileStore } from '../profile/model';
 
-import { EntityList, Profile, Template, UserTemplate } from '../../types';
-
 import { initialProfileTemplatesStore } from './const';
 
-export const $profileTemplatesStore = profileDomain.store<EntityList<Template>>(
+import { EntityList, Profile, UserTemplate } from '../../types';
+import {
+    DeleteProfileTemplatesPayload,
+    GetProfileTemplatesPayload,
+    GetProfileTemplatesResponse,
+} from '../types';
+
+export const $profileTemplatesStore = profileDomain.createStore<EntityList<UserTemplate>>(
     initialProfileTemplatesStore,
 );
+export const $skipProfileTemplates = profileDomain.createStore<number>(0);
+export const $deleteProfileTemplateId = profileDomain.createStore<UserTemplate['id']>('');
 
-export const $skipProfileTemplates = profileDomain.store<number>(0);
-export const $deleteProfileTemplateId = profileDomain.store<UserTemplate['id']>('');
-
-export const setSkipProfileTemplates = profileDomain.event<number>('setSkipProfileTemplates');
-export const setDeleteTemplateIdEvent = profileDomain.event<UserTemplate['id']>(
+export const setSkipProfileTemplates = profileDomain.createEvent<number>('setSkipProfileTemplates');
+export const setDeleteTemplateIdEvent = profileDomain.createEvent<UserTemplate['id']>(
     'setDeleteTemplateIdEvent',
 );
 
-export const getProfileTemplatesBase = profileDomain.effect<
-    { limit: number; skip: number; userId: string },
-    EntityList<Template>,
+export const getProfileTemplatesBase = profileDomain.createEffect<
+    GetProfileTemplatesPayload,
+    GetProfileTemplatesResponse,
     void
 >('getProfileTemplatesBase');
+
+export const deleteProfileTemplateFx = profileDomain.createEffect<
+    DeleteProfileTemplatesPayload,
+    void,
+    void
+>('deleteProfileTemplateFx');
 
 export const getProfileTemplatesFx = attach({
     effect: getProfileTemplatesBase,
     source: $profileStore,
     mapParams: ({ limit, skip }, profile: Profile) => ({ userId: profile.id, limit, skip }),
 });
-
-export const deleteProfileTemplateFx = profileDomain.effect<
-    { templateId: UserTemplate['id'] },
-    void,
-    void
->('deleteProfileTemplateFx');

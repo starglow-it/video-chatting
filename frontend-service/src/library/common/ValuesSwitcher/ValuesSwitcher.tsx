@@ -16,8 +16,8 @@ import { ValueSwitcherProps } from './types';
 const Component = ({ optionWidth, values, activeValue, onValueChanged }: ValueSwitcherProps) => {
     const [left, setLeft] = useState(0);
 
-    const handleUpdateActiveElement = useCallback((left: number) => {
-        setLeft(left);
+    const handleUpdateActiveElement = useCallback((newLeft: number) => {
+        setLeft(newLeft);
     }, []);
 
     const renderValues = useMemo(

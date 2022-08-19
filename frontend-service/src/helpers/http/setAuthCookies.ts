@@ -1,13 +1,13 @@
 import { NextPageContext, GetServerSidePropsContext } from 'next';
 import { setCookie } from 'nookies';
-import { parse, serialize } from 'cookie';
+import { CookieSerializeOptions, parse, serialize } from 'cookie';
 import { AuthToken } from '../../store/types';
 
 function updateAppContextCookie(
     ctx: NextPageContext | GetServerSidePropsContext | undefined,
     path: string,
     value: string,
-    options: Object = {},
+    options: CookieSerializeOptions,
 ) {
     const parsed = parse(ctx?.req?.headers.cookie?.toString() ?? '');
     if (!parsed[path] && ctx?.req) {
@@ -23,13 +23,13 @@ export default function setAuthCookies(
     refresh?: AuthToken,
 ): void {
     updateAppContextCookie(ctx, 'accessToken', access?.token as string, {
-        expires: access ? new Date(access?.expiresAt) : 0,
+        expires: access?.expiresAt && new Date(access?.expiresAt),
         path: '/',
     });
 
     if (refresh) {
         updateAppContextCookie(ctx, 'refreshToken', refresh?.token as string, {
-            expires: refresh ? new Date(refresh?.expiresAt) : 0,
+            expires: refresh?.expiresAt && new Date(refresh?.expiresAt),
             path: '/',
         });
     }

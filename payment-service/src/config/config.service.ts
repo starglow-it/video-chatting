@@ -2,8 +2,6 @@ import { ConfigKeysType, IConfig } from '@shared/interfaces/config.interface';
 import { sendHttpRequest } from '../utils/http/sendHttpRequest';
 
 export class ConfigClientService {
-  constructor() {}
-
   async get(key: ConfigKeysType): Promise<string> {
     try {
       const response = await sendHttpRequest({

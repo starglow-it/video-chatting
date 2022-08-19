@@ -122,7 +122,7 @@ export class UsersController {
           await this.usersService.findByIdAndUpdate(user._id, {
             maxMeetingTime: plan.features.timeLimit,
             maxTemplatesNumber: plan.features.templatesLimit,
-            renewSubscriptionTimestampInSeconds: Math.ceil(
+            renewSubscriptionTimestampInSeconds: Math.floor(
               nextRenewDateInSeconds,
             ),
           });
@@ -234,7 +234,7 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -280,7 +280,7 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -343,7 +343,7 @@ export class UsersController {
         });
       }
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -456,7 +456,7 @@ export class UsersController {
       throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
     }
 
-    return plainToClass(CommonUserDTO, user, {
+    return plainToInstance(CommonUserDTO, user, {
       excludeExtraneousValues: true,
       enableImplicitConversion: true,
     });
@@ -576,7 +576,7 @@ export class UsersController {
         'profileAvatar',
       ]);
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -607,7 +607,7 @@ export class UsersController {
         'profileAvatar',
       ]);
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });

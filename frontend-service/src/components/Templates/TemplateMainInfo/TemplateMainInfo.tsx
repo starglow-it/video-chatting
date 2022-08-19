@@ -4,6 +4,7 @@ import { Fade } from '@mui/material';
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { TemplateParticipants } from '@components/Templates/TemplateParticipants/TemplateParticipants';
@@ -22,6 +23,7 @@ const Component = ({
     description,
     maxParticipants,
     type,
+    priceInCents,
     isNeedToShowBusinessInfo = true,
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
@@ -31,7 +33,9 @@ const Component = ({
             {isNeedToShowBusinessInfo && (
                 <CustomGrid container alignItems="flex-end" gap={1} className={styles.businessInfo}>
                     <TemplateParticipants number={maxParticipants} />
-                    <TemplatePaymentType type={type} />
+                    <ConditionalRender condition={Boolean(type)}>
+                        <TemplatePaymentType type={type} priceInCents={priceInCents} />
+                    </ConditionalRender>
                 </CustomGrid>
             )}
         </CustomGrid>

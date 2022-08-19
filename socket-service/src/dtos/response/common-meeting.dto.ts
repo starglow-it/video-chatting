@@ -21,6 +21,9 @@ export class CommonMeetingDTO implements ICommonMeetingDTO {
   sharingUserId: number;
 
   @Expose()
+  hostUserId: string;
+
+  @Expose()
   endsAt: number;
 
   @Expose()

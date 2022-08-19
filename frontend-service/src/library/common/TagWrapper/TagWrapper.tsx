@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
 // custom
@@ -10,18 +10,19 @@ import { GridProps } from '@mui/material';
 // styles
 import styles from './TagWrapper.module.scss';
 
-const TagWrapper = memo(
-    forwardRef(({ children, className, ...rest }: React.PropsWithChildren<GridProps & {}>, ref) => (
-        <CustomGrid
-            ref={ref}
-            item
-            alignItems="center"
-            className={clsx(styles.tagWrapper, className)}
-            {...rest}
-        >
-            {children}
-        </CustomGrid>
-    )),
+const Component = (
+    { children, className, ...rest }: React.PropsWithChildren<GridProps>,
+    ref: ForwardedRef<HTMLDivElement>,
+) => (
+    <CustomGrid
+        ref={ref}
+        item
+        alignItems="center"
+        className={clsx(styles.tagWrapper, className)}
+        {...rest}
+    >
+        {children}
+    </CustomGrid>
 );
 
-export { TagWrapper };
+export const TagWrapper = memo(forwardRef(Component));

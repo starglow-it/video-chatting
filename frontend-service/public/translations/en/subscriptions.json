@@ -25,7 +25,8 @@
     "text": " A new package of minutes will be credited to you on {{renewTime}} \nTo increase the limit update the subscription"
   },
   "timeLimit": {
-    "text": "You have {{minutesLeft}} minutes of meeting time left before {{renewTime}}. To increase the limit - update"
+    "text": "You have {{minutesLeft}} of meeting time left before {{renewTime}}. To increase the limit - update",
+    "warning": "Meeting time is running out. Update to increase the limit"
   },
   "subscriptions": {
     "selectPlan": "Select plan",

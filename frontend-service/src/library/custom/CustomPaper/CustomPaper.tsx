@@ -1,13 +1,14 @@
-import { ForwardedRef, forwardRef, memo } from 'react';
+import { ForwardedRef, forwardRef, memo, PropsWithChildren } from 'react';
 
 import { Paper, PaperProps } from '@mui/material';
 
-const CustomPaper = memo(
-    forwardRef(({ children, ...rest }: PaperProps, ref: ForwardedRef<HTMLDivElement>) => (
-        <Paper ref={ref} {...rest}>
-            {children}
-        </Paper>
-    )),
+const Component = (
+    { children, ...rest }: PropsWithChildren<PaperProps>,
+    ref: ForwardedRef<HTMLDivElement>,
+) => (
+    <Paper ref={ref} {...rest}>
+        {children}
+    </Paper>
 );
 
-export { CustomPaper };
+export const CustomPaper = memo(forwardRef(Component));

@@ -7,5 +7,5 @@ deleteMeetingFx.use(handleDeleteMeeting);
 
 $meetingsStore.on(createMeetingFx.doneData, (state, data) => ({
     ...state,
-    currentMeeting: data.meeting,
+    currentMeeting: data.template,
 }));

@@ -1,6 +1,7 @@
 import { VIDEO_CONSTRAINTS } from '../../const/media/VIDEO_CONSTRAINTS';
 
 import { MediaStreamOptions } from './types';
+import { CustomMediaStream } from '../../types';
 
 const MEDIA_STREAMS_ERROR = new Map([
     ['Permission denied', 'media.notAllowed'],
@@ -22,9 +23,8 @@ export const getVideoMediaStream = async (
         });
 
         return { stream: videoStream };
-    } catch (e: any) {
-        console.log(e);
-        return { error: MEDIA_STREAMS_ERROR.get(e.message) || e.message };
+    } catch (e: unknown) {
+        return { error: MEDIA_STREAMS_ERROR.get(e?.message) || e?.message };
     }
 };
 
@@ -40,22 +40,30 @@ export const getAudioMediaStream = async (
         });
 
         return { stream: audioStream };
-    } catch (e: any) {
-        return { error: MEDIA_STREAMS_ERROR.get(e.message) || e.message };
+    } catch (e: unknown) {
+        return { error: MEDIA_STREAMS_ERROR.get(e?.message) || e?.message };
     }
 };
 
-export const composeMediaStream = (streamOne, streamTwo) => {
+export const composeMediaStream = (streamOne: CustomMediaStream, streamTwo: CustomMediaStream) => {
     const newStream = new MediaStream();
 
     const audioTracks = [
-        ...(streamOne ? streamOne.getTracks().filter(track => track.kind === 'audio') : []),
-        ...(streamTwo ? streamTwo.getTracks().filter(track => track.kind === 'audio') : []),
+        ...(streamOne
+            ? streamOne.getTracks().filter((track: MediaStreamTrack) => track.kind === 'audio')
+            : []),
+        ...(streamTwo
+            ? streamTwo.getTracks().filter((track: MediaStreamTrack) => track.kind === 'audio')
+            : []),
     ];
 
     const videoTracks = [
-        ...(streamOne ? streamOne.getTracks().filter(track => track.kind === 'video') : []),
-        ...(streamTwo ? streamTwo.getTracks().filter(track => track.kind === 'video') : []),
+        ...(streamOne
+            ? streamOne.getTracks().filter((track: MediaStreamTrack) => track.kind === 'video')
+            : []),
+        ...(streamTwo
+            ? streamTwo.getTracks().filter((track: MediaStreamTrack) => track.kind === 'video')
+            : []),
     ];
 
     if (audioTracks.length) newStream.addTrack(audioTracks[0]);

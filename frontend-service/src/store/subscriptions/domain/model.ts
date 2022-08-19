@@ -1,3 +1,3 @@
-import { root } from '../../root';
+import { rootDomain } from '../../domains';
 
-export const subscriptionsDomain = root.createDomain('subscriptionsDomain');
+export const subscriptionsDomain = rootDomain.createDomain('subscriptionsDomain');

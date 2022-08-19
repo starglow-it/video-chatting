@@ -50,7 +50,8 @@
     "back": "Go back",
     "upgrade": "Upgrade",
     "update": "Update",
-    "replace": "Replace"
+    "replace": "Replace",
+    "buy": "Buy"
   },
   "login": {
     "welcome": "Welcome back",

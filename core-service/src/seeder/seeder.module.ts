@@ -11,6 +11,7 @@ import {
   PreviewImage,
   PreviewImageSchema,
 } from '../schemas/preview-image.schema';
+import { PaymentsModule } from '../payments/payments.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import {
     UserTemplatesModule,
     BusinessCategoriesModule,
     LanguagesModule,
+    PaymentsModule,
     AwsConnectorModule,
     MongooseModule.forFeature([
       { name: PreviewImage.name, schema: PreviewImageSchema },

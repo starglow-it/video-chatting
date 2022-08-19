@@ -23,6 +23,7 @@ const Component = (
         height,
         userName,
         withoutShadow,
+        ...rest
     }: ProfileAvatarProps,
     ref: ForwardedRef<HTMLDivElement>,
 ) => {
@@ -41,6 +42,7 @@ const Component = (
             className={clsx(className, styles.wrapper, { [styles.shadow]: !withoutShadow })}
             sx={{ width, height }}
             onClick={onClick}
+            {...rest}
         >
             {src ? (
                 <Image
@@ -69,8 +71,6 @@ const Component = (
     );
 };
 
-const ProfileAvatar = memo<ProfileAvatarProps>(
+export const ProfileAvatar = memo<ProfileAvatarProps>(
     forwardRef<HTMLDivElement, ProfileAvatarProps>(Component),
 );
-
-export { ProfileAvatar };

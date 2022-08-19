@@ -14,6 +14,7 @@ export interface IUserTemplate {
     description: string;
     previewUrls: IPreviewImage[];
     type: string;
+    priceInCents: number;
     fullName: string;
     companyName: string;
     position: string;

@@ -18,9 +18,9 @@ import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem
 import {
     $discoveryTemplatesStore,
     getUsersTemplatesFx,
+    appDialogsApi,
     setScheduleTemplateIdEvent,
 } from '../../store';
-import { appDialogsApi } from '../../store';
 
 // styles
 import styles from './DiscoveryContainer.module.scss';

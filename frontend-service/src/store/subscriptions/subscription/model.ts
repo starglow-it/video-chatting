@@ -2,12 +2,13 @@ import { attach } from 'effector-next';
 import { subscriptionsDomain } from '../domain/model';
 import { ErrorState } from '../../types';
 import { $profileStore } from '../../profile/profile/model';
+import { GetSubscriptionPayload } from './types';
 
-export const $subscriptionStore = subscriptionsDomain.createStore({});
+export const $subscriptionStore = subscriptionsDomain.createStore<unknown>({});
 
 export const getSubscriptionFx = subscriptionsDomain.createEffect<
-    { subscriptionId: string },
-    any,
+    GetSubscriptionPayload,
+    unknown,
     ErrorState
 >('getSubscriptionFx');
 

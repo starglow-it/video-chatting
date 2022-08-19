@@ -16,6 +16,8 @@ import {
     sendScheduleInviteFx,
     setScheduleEventLinkEvent,
     setScheduleTemplateIdEvent,
+    purchaseTemplateFx,
+    getUserTemplateFx,
 } from './model';
 
 import { appDialogsApi } from '../dialogs/init';
@@ -25,13 +27,17 @@ import { AppDialogsEnum, Template } from '../types';
 
 // handlers
 import { handleFetchUsersTemplates } from './handlers/handleFetchUsersTemplates';
+import { handleFetchUserTemplate } from './handlers/handleFetchUsersTemplate';
 import { handleSendScheduleInvite } from './handlers/handleSendScheduleInvite';
 import { handleFetchTemplates } from './handlers/handleFetchTemplates';
 import { handleFetchCommonTemplate } from './handlers/handleFetchCommonTemplate';
+import { handlePurchaseTemplate } from './handlers/handlePurchaseTemplate';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
 getUsersTemplatesFx.use(handleFetchUsersTemplates);
+getUserTemplateFx.use(handleFetchUserTemplate);
+purchaseTemplateFx.use(handlePurchaseTemplate);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
 
 $templatesStore.on(getTemplatesFx.doneData, (state, data) => ({

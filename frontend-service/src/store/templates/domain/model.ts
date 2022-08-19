@@ -1,3 +1,3 @@
-import { root } from '../../root';
+import { rootDomain } from '../../domains';
 
-export const templatesDomain = root.createDomain('templatesDomain');
+export const templatesDomain = rootDomain.createDomain('templatesDomain');

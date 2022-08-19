@@ -9,7 +9,7 @@ import {
 import { TokenPairWithUserType } from '@shared/types/token-pair-with-user.type';
 import { TokenTypes } from '@shared/const/tokens.const';
 import { UsersService } from '../users/users.service';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { CommonUserDTO } from '../dtos/common-user.dto';
 import { withTransaction } from '../helpers/mongo/withTransaction';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -85,7 +85,7 @@ export class UserTokenController {
 
         await userModel.save();
 
-        return plainToClass(CommonUserDTO, userModel, {
+        return plainToInstance(CommonUserDTO, userModel, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });

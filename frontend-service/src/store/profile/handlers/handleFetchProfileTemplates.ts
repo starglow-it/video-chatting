@@ -1,4 +1,4 @@
-import { EntityList, ErrorState, Template } from '../../types';
+import { EntityList, ErrorState, UserTemplate } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { profileTemplatesUrl } from '../../../utils/urls';
 import { initialProfileTemplatesStore } from '../profileTemplates/const';
@@ -10,8 +10,8 @@ export const handleFetchProfileTemplates = async ({
     limit: number;
     skip: number;
     userId: string;
-}): Promise<EntityList<Template>> => {
-    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(
+}): Promise<EntityList<UserTemplate>> => {
+    const response = await sendRequestWithCredentials<EntityList<UserTemplate>, ErrorState>(
         profileTemplatesUrl({ limit, skip }),
     );
 

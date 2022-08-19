@@ -63,7 +63,7 @@ const EditProfileContainer = memo(() => {
     const resolver = useYupValidationResolver<{
         companyName: string;
         contactEmail: string;
-        description: boolean;
+        description: string;
         businessCategories: any[];
         languages: any[];
         fullName: string;

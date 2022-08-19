@@ -1,4 +1,4 @@
-import React, { memo, useContext, useEffect, useLayoutEffect } from 'react';
+import React, { memo, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -15,7 +15,6 @@ import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 import { MeetingErrorDialog } from '@components/Dialogs/MeetingErrorDialog/MeetingErrorDialog';
 import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPreview';
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
-import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
 import { MediaContext } from '../../contexts/MediaContext';
 import { VideoEffectsProvider } from '../../contexts/VideoEffectContext';
 
@@ -26,9 +25,8 @@ import {
     $isOwner,
     $isSocketConnected,
     getMeetingTemplateFx,
-    joinMeetingEventWithData,
+    sendJoinMeetingEventSocketEvent,
     joinRoomBeforeMeetingSocketEvent,
-    startMeeting,
     getSubscriptionWithDataFx,
     appDialogsApi,
     resetLocalUserStore,
@@ -42,6 +40,7 @@ import {
     initWindowListeners,
     removeWindowListeners,
     resetMeetingTemplateStoreEvent,
+    sendStartMeetingSocketEvent,
 } from '../../store';
 
 // types
@@ -52,6 +51,7 @@ import styles from './MeetingContainer.module.scss';
 
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
+import { setTimeLimitWarningEvent } from '../../store/roomStores';
 
 const NotMeetingComponent = memo(() => {
     const meetingUser = useStore($localUserStore);
@@ -74,8 +74,10 @@ const MeetingContainer = memo(() => {
     const isOwner = useStore($isOwner);
     const isSocketConnected = useStore($isSocketConnected);
 
+    const [startMeeting, setStartMeeting] = useState(false);
+
     const {
-        actions: { onInitDevices },
+        actions: { onInitDevices, onClearCurrentDevices },
     } = useContext(MediaContext);
 
     useEffect(() => {
@@ -90,7 +92,7 @@ const MeetingContainer = memo(() => {
         };
     }, []);
 
-    useSubscriptionNotification(getClientMeetingUrl(router.query.token));
+    useSubscriptionNotification(getClientMeetingUrl(router.query.token as string));
 
     useEffect(() => {
         (async () => {
@@ -99,8 +101,6 @@ const MeetingContainer = memo(() => {
             });
 
             initiateSocketConnectionEvent();
-
-            await onInitDevices();
         })();
 
         return () => {
@@ -109,13 +109,17 @@ const MeetingContainer = memo(() => {
             resetMeetingStore();
             resetSocketStore();
             resetMeetingTemplateStoreEvent();
+            setTimeLimitWarningEvent(false);
             appDialogsApi.resetDialogs();
+            onClearCurrentDevices();
         };
     }, []);
 
     useEffect(() => {
         (async () => {
             if (isSocketConnected) {
+                await onInitDevices();
+
                 const savedSettings = WebStorage.get<{
                     blurSetting: boolean;
                     micActiveSetting: boolean;
@@ -127,31 +131,33 @@ const MeetingContainer = memo(() => {
                 if (Object.keys(savedSettings)?.length) {
                     setBackgroundAudioVolume(savedSettings.backgroundAudioVolumeSetting);
                     setBackgroundAudioActive(savedSettings.backgroundAudioSetting);
-
-                    updateLocalUserEvent({
-                        accessStatus: MeetingAccessStatuses.InMeeting,
-                        isAuraActive: savedSettings.blurSetting,
-                        cameraStatus: savedSettings.cameraActiveSetting ? 'active' : 'inactive',
-                        micStatus: savedSettings.micActiveSetting ? 'active' : 'inactive',
-                    });
                 }
 
                 if (meetingTemplate?.meetingInstance?.serverIp) {
-                    await joinMeetingEventWithData();
+                    await sendJoinMeetingEventSocketEvent();
 
                     if (Object.keys(savedSettings)?.length && isOwner) {
-                        startMeeting();
+                        updateLocalUserEvent({
+                            isAuraActive: savedSettings.blurSetting,
+                            cameraStatus: savedSettings.cameraActiveSetting ? 'active' : 'inactive',
+                            micStatus: savedSettings.micActiveSetting ? 'active' : 'inactive',
+                        });
+
+                        await sendStartMeetingSocketEvent();
                     }
                 } else {
-                    await joinRoomBeforeMeetingSocketEvent({ templateId: router.query.token });
+                    await joinRoomBeforeMeetingSocketEvent({
+                        templateId: router.query.token as string,
+                    });
                 }
+                setStartMeeting(true);
             }
         })();
     }, [meetingTemplate?.meetingInstance?.serverIp, isSocketConnected, isOwner]);
 
     return (
         <>
-            {Boolean(meetingTemplate?.id) && (
+            {Boolean(meetingTemplate?.id) && isSocketConnected && startMeeting && (
                 <VideoEffectsProvider>
                     {MeetingAccessStatuses.InMeeting !== meetingUser.accessStatus ? (
                         <CustomBox className={styles.waitingRoomWrapper}>

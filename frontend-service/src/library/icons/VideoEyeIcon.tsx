@@ -1,8 +1,8 @@
-import { memo } from 'react';
-
+import React, { memo } from 'react';
 import { SvgIconWrapper } from '@library/icons/SvgIconWrapper';
+import { CommonIconProps } from '@library/types';
 
-const Component = ({ width, height, isActive }) => {
+const Component = ({ width, height, isActive }: CommonIconProps) => {
     if (isActive) {
         return (
             <SvgIconWrapper width={width} height={height} viewBox="0 0 40 40" fill="none">

@@ -1,20 +1,20 @@
 import React, { memo, useMemo } from 'react';
 
-// utils
-
-// types
-
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
-import { DashboardNotification } from '../../../store/types/dashboard';
+
+// utils
 import { getTimeString } from '../../../utils/functions/getTimeString';
 
 // styles
 import styles from './DashboardNotificationItem.module.scss';
+
+// types
+import { DashboardNotification } from '../../../store/types';
 
 const DashboardNotificationItem = memo(
     ({ notification }: { notification: DashboardNotification }) => {

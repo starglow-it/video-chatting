@@ -7,7 +7,11 @@ export interface IArgs {
     channel: Channel;
 }
 
-export const createQueue = async ({ channel, exchangeName, queue }: IArgs): Promise<void> => {
+export const createQueue = async ({
+    channel,
+    exchangeName,
+    queue,
+}: IArgs): Promise<void> => {
     await channel.assertQueue(queue.name, queue.options);
     await channel.bindQueue(queue.name, exchangeName, queue.binding);
 };

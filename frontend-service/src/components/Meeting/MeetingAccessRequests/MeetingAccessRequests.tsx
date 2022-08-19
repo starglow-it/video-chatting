@@ -9,8 +9,7 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/MeetingUsersListItem';
 
 // stores
-import { $meetingUsersStore } from '../../../store';
-import { emitAnswerAccessMeetingRequest } from '../../../store';
+import { $meetingUsersStore, sendAnswerAccessMeetingRequestEvent } from '../../../store';
 
 // types
 import { MeetingAccessStatuses, MeetingUser } from '../../../store/types';
@@ -27,11 +26,11 @@ const MeetingAccessRequests = memo(() => {
 
     const renderRequestUsers = useMemo(() => {
         const handleAcceptUser = ({ userId }: { userId: MeetingUser['id'] }) => {
-            emitAnswerAccessMeetingRequest({ isUserAccepted: true, userId });
+            sendAnswerAccessMeetingRequestEvent({ isUserAccepted: true, userId });
         };
 
         const handleRejectUser = ({ userId }: { userId: MeetingUser['id'] }) => {
-            emitAnswerAccessMeetingRequest({ isUserAccepted: false, userId });
+            sendAnswerAccessMeetingRequestEvent({ isUserAccepted: false, userId });
         };
 
         return requestUsers.map(user => (

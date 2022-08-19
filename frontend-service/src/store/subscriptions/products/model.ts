@@ -1,18 +1,29 @@
 import { subscriptionsDomain } from '../domain/model';
 import { ErrorState } from '../../types';
+import {
+    GetCheckoutSessionUrlPayload,
+    GetCheckoutSessionUrlResponse,
+    GetPortalSessionUrlPayload,
+    GetPortalSessionUrlResponse,
+    ProductsStore,
+} from './types';
 
-export const $productsStore = subscriptionsDomain.createStore<{ product: any; price: any }[]>([]);
+export const $productsStore = subscriptionsDomain.createStore<ProductsStore>([]);
 
-export const getStripeProductsFx = subscriptionsDomain.createEffect<void, void, void>(
-    'getStripeProductsFx',
-);
+export const getStripeProductsFx = subscriptionsDomain.createEffect<
+    void,
+    ProductsStore,
+    ErrorState
+>('getStripeProductsFx');
+
 export const startCheckoutSessionForSubscriptionFx = subscriptionsDomain.createEffect<
-    { productId: string; meetingToken?: string; baseUrl: string },
-    { url: string } | undefined,
+    GetCheckoutSessionUrlPayload,
+    GetCheckoutSessionUrlResponse,
     ErrorState
 >('startCheckoutSessionForSubscriptionFx');
+
 export const getCustomerPortalSessionUrlFx = subscriptionsDomain.createEffect<
-    { subscriptionId: string },
-    { url: string } | undefined,
+    GetPortalSessionUrlPayload,
+    GetPortalSessionUrlResponse,
     ErrorState
 >('getCustomerPortalSessionUrlFx');

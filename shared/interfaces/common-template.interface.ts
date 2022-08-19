@@ -11,8 +11,10 @@ export interface ICommonTemplate {
     description: string;
     previewUrls: IPreviewImage[];
     type: string;
+    priceInCents?: number;
     businessCategories?: IBusinessCategory[];
     usersPosition: { bottom: number; left: number }[];
     links?: { item: string; position: { top: number; left: number } }[];
+    stripeProductId?: string;
     isAudioAvailable: boolean;
 }

@@ -1,6 +1,8 @@
 const houseSubscription = {
     name: "House",
     key: "house",
+    priceInCents: 0,
+    description: "Best for trying and occasional use",
     features: {
         templatesLimit: 1,
         timeLimit: 120 * 60 * 1000,
@@ -11,6 +13,8 @@ const houseSubscription = {
 const professionalSubscription = {
     name: "Professional",
     key: "professional",
+    priceInCents: 2900,
+    description: "Best for trying and occasional use",
     features: {
         templatesLimit: 2,
         timeLimit: 1200 * 60 * 1000,
@@ -21,6 +25,8 @@ const professionalSubscription = {
 const businessSubscription = {
     name: "Business",
     key: "business",
+    priceInCents: 7900,
+    description: "Best for trying and occasional use",
     features: {
         templatesLimit: 10,
         timeLimit: null,
@@ -29,7 +35,7 @@ const businessSubscription = {
 }
 
 export const plans = {
-    "House": houseSubscription,
-    "Professional": professionalSubscription,
     "Business": businessSubscription,
+    "Professional": professionalSubscription,
+    "House": houseSubscription,
 }

@@ -1,9 +1,8 @@
-import { root } from '../root';
 import { Notification } from '../types';
+import { notificationsDomain } from '../domains';
 
-const notificationsDomain = root.createDomain('notificationsDomain');
+export const $notificationsStore = notificationsDomain.createStore<Notification[]>([]);
 
-export const $notificationsStore = notificationsDomain.store<Notification[]>([]);
-
-export const addNotificationEvent = notificationsDomain.event<Notification>('addNotificationEvent');
-export const removeNotification = notificationsDomain.event('removeNotification');
+export const addNotificationEvent =
+    notificationsDomain.createEvent<Notification>('addNotificationEvent');
+export const removeNotification = notificationsDomain.createEvent<void>('removeNotification');

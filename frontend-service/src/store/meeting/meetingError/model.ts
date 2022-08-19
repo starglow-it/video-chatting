@@ -1,5 +1,5 @@
-import { meetingDomain } from '../domain';
+import { meetingDomain } from '../../domains';
 
-export const $meetingErrorStore = meetingDomain.store<string>('');
+export const $meetingErrorStore = meetingDomain.createStore<string>('');
 
-export const setMeetingErrorEvent = meetingDomain.event<string>('setMeetingErrorEvent');
+export const setMeetingErrorEvent = meetingDomain.createEvent<string>('setMeetingErrorEvent');

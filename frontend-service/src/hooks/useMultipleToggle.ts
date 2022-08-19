@@ -1,53 +1,52 @@
 import { useCallback, useState } from 'react';
 
+type Values<Keys> = { [key in keyof Keys]: boolean };
+
 export const useMultipleToggle = <Keys>(
-    keys: Keys[],
-    defaultKey?: Keys,
+    keys: (keyof Keys)[],
+    defaultKey?: keyof Keys,
 ): {
-    values: { [key: string]: boolean };
-    onSwitchOn: (key: Keys) => void;
-    onSwitchToggle: (key: Keys) => void;
+    values: Values<Keys>;
+    onSwitchOn: (key: keyof Keys) => void;
+    onSwitchToggle: (key: keyof Keys) => void;
     onSwitchOff: () => void;
 } => {
     const [values, setValues] = useState(() => {
-        const initialState = {} as { [key: string]: boolean };
+        const initialState = {} as Values<Keys>;
 
         return keys.reduce((acc, b) => ({ ...acc, [b]: defaultKey === b }), initialState);
     });
 
-    const handleSwitchOn = useCallback((key: Keys) => {
+    const handleSwitchOn = useCallback((key: keyof Keys) => {
         setValues(prev => {
-            const keys = Object.keys(prev);
+            const prevEntries = Object.entries(prev) as [keyof Keys, boolean][];
 
-            keys.forEach(objectKey =>
-                objectKey === key ? (prev[objectKey] = true) : (prev[objectKey] = false),
-            );
+            const initialState = {} as Values<Keys>;
 
-            return { ...prev };
+            return prevEntries.reduce((acc, b) => ({ ...acc, [b[0]]: b[0] === key }), initialState);
         });
     }, []);
 
     const handleSwitchOff = useCallback(() => {
         setValues(prev => {
-            const keys = Object.keys(prev);
+            const prevEntries = Object.entries(prev) as [keyof Keys, boolean][];
 
-            keys.forEach(objectKey => (prev[objectKey] = false));
+            const initialState = {} as Values<Keys>;
 
-            return { ...prev };
+            return prevEntries.reduce((acc, b) => ({ ...acc, [b[0]]: false }), initialState);
         });
     }, []);
 
-    const handleSwitchToggle = useCallback((key: Keys) => {
+    const handleSwitchToggle = useCallback((key: keyof Keys) => {
         setValues(prev => {
-            const keys = Object.keys(prev);
+            const prevEntries = Object.entries(prev) as [keyof Keys, boolean][];
 
-            keys.forEach(objectKey =>
-                objectKey === key
-                    ? (prev[objectKey] = !prev[objectKey])
-                    : (prev[objectKey] = false),
+            const initialState = {} as Values<Keys>;
+
+            return prevEntries.reduce(
+                (acc, b) => ({ ...acc, [b[0]]: key === b[0] ? !b[1] : false }),
+                initialState,
             );
-
-            return { ...prev };
         });
     }, []);
 

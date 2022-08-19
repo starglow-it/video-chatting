@@ -1,11 +1,11 @@
-import { attach, combine } from 'effector-next';
+import { attach, combine, Store } from 'effector-next';
+import { meetingDomain } from '../../domains';
 
-import { meetingDomain } from '../domain';
-
-import { ErrorState, MeetingUser, Profile, UpdateTemplateData, UserTemplate } from '../../types';
+import { ErrorState, MeetingUser, Profile, UserTemplate } from '../../types';
 
 import { $profileStore } from '../../profile/profile/model';
 import { $meetingUsersStore } from '../../users/meetingUsers/model';
+import { UpdateTemplatePayload } from '../../profile/types';
 
 export const initialTemplateState: UserTemplate = {
     id: '',
@@ -26,20 +26,31 @@ export const initialTemplateState: UserTemplate = {
     usedAt: '',
     customLink: '',
     templatePrice: 10,
+    priceInCents: 0,
     templateCurrency: 'USD',
     signBoard: 'default',
     isMonetizationEnabled: false,
     isAudioAvailable: false,
     usersPosition: [],
+    meetingInstance: {
+        id: '',
+        serverIp: '',
+        owner: '',
+        serverStatus: '',
+    },
 };
 
-export const $meetingTemplateStore = meetingDomain.store<UserTemplate>(initialTemplateState);
+export const $meetingTemplateStore = meetingDomain.createStore<UserTemplate>(initialTemplateState);
+
+export const $isPaidMeetingTemplate = $meetingTemplateStore.map(
+    template => template.type === 'paid',
+);
 
 export const resetMeetingTemplateStoreEvent = meetingDomain.createEvent(
     'resetMeetingTemplateStoreEvent',
 );
 
-export const $isUserSendEnterRequest = meetingDomain.store<boolean>(false);
+export const $isUserSendEnterRequest = meetingDomain.createStore<boolean>(false);
 export const $isMeetingInstanceExists = $meetingTemplateStore.map(
     state => state?.meetingInstance?.id,
 );
@@ -59,34 +70,46 @@ export const $isOwnerInMeeting = combine<{ template: UserTemplate; users: Meetin
     Boolean(users.find(user => user.profileId === template?.meetingInstance?.owner)),
 );
 
-export const setIsUserSendEnterRequest = meetingDomain.event<boolean>('setIsUserSendEnterRequest');
+export const setIsUserSendEnterRequest = meetingDomain.createEvent<boolean>(
+    'setIsUserSendEnterRequest',
+);
 
-export const getMeetingTemplateFx = meetingDomain.effect<
+export const getMeetingTemplateFx = meetingDomain.createEffect<
     { templateId: UserTemplate['id'] },
     UserTemplate,
     ErrorState
 >('getMeetingTemplateFx');
 
-export const updateMeetingTemplateFx = meetingDomain.effect<
-    UpdateTemplateData,
+export const updateMeetingTemplateFx = meetingDomain.createEffect<
+    UpdateTemplatePayload,
     UserTemplate,
     ErrorState
 >('updateMeetingTemplateFx');
 
-export const checkCustomLinkFx = meetingDomain.effect<
+export const checkCustomLinkFx = meetingDomain.createEffect<
     { templateId: UserTemplate['customLink'] },
     boolean,
     ErrorState
 >('checkCustomLinkFx');
 
-export const updateMeetingTemplateFxWithData = attach({
+export const updateMeetingTemplateFxWithData = attach<
+    Partial<UserTemplate>,
+    Store<{
+        meetingTemplate: UserTemplate;
+        profile: Profile;
+    }>,
+    typeof updateMeetingTemplateFx
+>({
     mapParams: (params, states) => ({
         templateId: states.meetingTemplate.id,
         userId: states.profile.id,
         data: params,
     }),
     effect: updateMeetingTemplateFx,
-    source: combine({ meetingTemplate: $meetingTemplateStore, profile: $profileStore }),
+    source: combine<{ meetingTemplate: UserTemplate; profile: Profile }>({
+        meetingTemplate: $meetingTemplateStore,
+        profile: $profileStore,
+    }),
 });
 
 export const checkCustomLinkFxWithData = attach({

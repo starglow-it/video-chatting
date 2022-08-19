@@ -8,7 +8,14 @@ import { useTimer } from '@hooks/useTimer';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // stores
-import { $meetingStore } from '../../../store';
+import {
+    $isBusinessSubscription,
+    $isOwner,
+    $localUserStore,
+    $meetingStore,
+    $profileStore,
+} from '../../../store';
+import { $timeLimitWarningStore, setTimeLimitWarningEvent } from '../../../store/roomStores';
 
 // utils
 import { formatCountDown } from '../../../utils/time/formatCountdown';
@@ -16,19 +23,46 @@ import { formatCountDown } from '../../../utils/time/formatCountdown';
 // const
 import { ONE_MINUTE } from '../../../const/time/common';
 
+// types
+import { MeetingAccessStatuses } from '../../../store/types';
+
 const Component = () => {
     const meeting = useStore($meetingStore);
+    const profile = useStore($profileStore);
+    const isOwner = useStore($isOwner);
+    const localUser = useStore($localUserStore);
+    const timeLimitWarning = useStore($timeLimitWarningStore);
+    const isBusinessSubscription = useStore($isBusinessSubscription);
 
-    const { value: currentTime, onStartTimer: handleStartMeetingEnd } = useTimer();
+    const { value: currentTime, onStartTimer: handleStartMeetingEnd } = useTimer(true);
 
     useEffect(() => {
         if (meeting?.endsAt && meeting?.startAt) {
             const endAtValue = (meeting?.endsAt || Date.now()) - Date.now();
-            const startValue = Date.now() - meeting?.startAt;
+            const startValue = Date.now() - (meeting?.startAt || 0);
 
             handleStartMeetingEnd(startValue, endAtValue);
         }
     }, [meeting?.endsAt, meeting?.startAt]);
+
+    useEffect(() => {
+        if (
+            (profile.maxMeetingTime - currentTime) / (1000 * 60) < 20 &&
+            !timeLimitWarning &&
+            localUser?.accessStatus === MeetingAccessStatuses.InMeeting &&
+            !isBusinessSubscription &&
+            isOwner
+        ) {
+            setTimeLimitWarningEvent(true);
+        }
+    }, [
+        currentTime,
+        profile.maxMeetingTime,
+        timeLimitWarning,
+        localUser?.accessStatus,
+        isOwner,
+        isBusinessSubscription,
+    ]);
 
     const is10MinutesLeft =
         ((meeting?.endsAt || 0) - (meeting.startAt || 0) || Date.now()) - currentTime <

@@ -58,6 +58,6 @@ export default async function sendRequestWithCredentials<Result, Error>(
     return sendRequest({
         url: path,
         ...requestOptions,
-        token: result?.accessToken?.token!,
+        token: result?.accessToken?.token,
     });
 }

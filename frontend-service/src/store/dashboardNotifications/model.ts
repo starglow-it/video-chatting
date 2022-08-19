@@ -1,21 +1,17 @@
-import { root } from '../root';
-import { DashboardNotification } from '../types/dashboard';
+import { appDomain } from '../domains';
 import { createSocketEvent } from '../socket/model';
+import { DashboardNotification, Profile } from '../types';
+import { EMIT_GET_NOTIFICATIONS, EMIT_READ_NOTIFICATIONS } from '../../const/socketEvents/emitters';
 
-const dashboardNotificationsDomain = root.createDomain('dashboardNotificationsDomain');
+export const $dashboardNotificationsStore = appDomain.createStore<DashboardNotification[]>([]);
+export const setDashboardNotifications = appDomain.createEvent<DashboardNotification[]>();
 
-export const $dashboardNotificationsStore = dashboardNotificationsDomain.store<
+export const getDashboardNotificationsSocketEvent = createSocketEvent<
+    { profileId: Profile['id'] },
     DashboardNotification[]
->([]);
-export const setDashboardNotifications =
-    dashboardNotificationsDomain.event<DashboardNotification[]>();
+>(EMIT_GET_NOTIFICATIONS);
 
-export const emitGetDashboardNotifications = dashboardNotificationsDomain.event(
-    'emitGetDashboardNotifications',
-);
-export const emitReadDashboardNotifications = dashboardNotificationsDomain.event(
-    'emitGetDashboardNotifications',
-);
-
-export const getDashboardNotifications = createSocketEvent('dashboard:getNotifications');
-export const readDashboardNotifications = createSocketEvent('dashboard:readNotifications');
+export const readDashboardNotificationsSocketEvent = createSocketEvent<
+    { profileId: Profile['id']; notifications: DashboardNotification['id'][] },
+    DashboardNotification[]
+>(EMIT_READ_NOTIFICATIONS);

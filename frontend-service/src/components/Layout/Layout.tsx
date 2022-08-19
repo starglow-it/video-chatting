@@ -1,18 +1,21 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 
 // library
 import { LiveOfficeLogo } from '@library/icons/LiveOfficeLogo';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
+// custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
-import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { AuthenticationLink } from '@components/AuthenticationLink/AuthenticationLink';
+import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
+import { TimeLimitWarning } from '@components/TimeLimitWarning/TimeLimitWarning';
 
 // types
 import { LayoutProps } from './types';
@@ -22,23 +25,22 @@ import {
     $authStore,
     $isSocketConnected,
     initiateSocketConnectionEvent,
-    joinDashboard,
+    sendJoinDashboardSocketEvent,
 } from '../../store';
 
 // styles
 import styles from './Layout.module.scss';
 
-const Layout = memo(({ children }: LayoutProps): JSX.Element => {
+const Component: React.FunctionComponent<LayoutProps> = ({ children }) => {
     const { isAuthenticated } = useStore($authStore);
-    const [isMeetingRoute, setIsMeetingRoute] = useState(false);
     const isSocketConnected = useStore($isSocketConnected);
 
     const router = useRouter();
 
+    const isDashboardRoute = /dashboard/.test(router.pathname);
+
     useEffect(() => {
         (async () => {
-            const isDashboardRoute = /dashboard/.test(router.pathname);
-
             if (isDashboardRoute) {
                 initiateSocketConnectionEvent();
             }
@@ -47,25 +49,33 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
 
     useEffect(() => {
         if (isSocketConnected) {
-            joinDashboard();
+            sendJoinDashboardSocketEvent();
         }
     }, [isSocketConnected]);
 
-    useEffect(() => {
-        const isTargetRoute =
-            router.pathname.includes('room') ||
-            router.pathname.includes('dashboard/templates/setup');
-
-        setIsMeetingRoute(isTargetRoute);
-    }, [router]);
+    const isMeetingRoute =
+        router.pathname.includes('room') || router.pathname.includes('dashboard/templates/setup');
 
     return (
-        <CustomBox className={clsx(styles.main, { [styles.meetingLayout]: isMeetingRoute })}>
-            <ConditionalRender condition={isMeetingRoute}>
+        <CustomBox
+            className={clsx(styles.main, {
+                [styles.meetingLayout]: isMeetingRoute,
+                [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
+            })}
+        >
+            <ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
                 <TimeLimitNotification />
             </ConditionalRender>
+
+            <ConditionalRender condition={isMeetingRoute}>
+                <TimeLimitWarning />
+            </ConditionalRender>
+
             <CustomBox
-                className={clsx(styles.contentWrapper, { [styles.meetingLayout]: isMeetingRoute })}
+                className={clsx(styles.contentWrapper, {
+                    [styles.meetingLayout]: isMeetingRoute,
+                    [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
+                })}
             >
                 <CustomBox className={styles.bgImage} />
                 <CustomBox className={styles.header}>
@@ -86,6 +96,6 @@ const Layout = memo(({ children }: LayoutProps): JSX.Element => {
             </CustomBox>
         </CustomBox>
     );
-});
+};
 
-export { Layout };
+export const Layout = memo(Component);

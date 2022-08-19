@@ -1,18 +1,21 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
-// custom components
+// custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
+// components
 import { MeetingUsersListItem } from './MeetingUsersListItem';
 
 // stores
 import {
-    $isOwner,
     $localUserStore,
     $meetingUsersStore,
     setUserToKickEvent,
     appDialogsApi,
+    changeHostSocketEvent,
+    $isMeetingHostStore,
+    $meetingStore,
 } from '../../../store';
 
 // types
@@ -23,7 +26,8 @@ import styles from './MeetingUsersList.module.scss';
 
 const MeetingUsersList = memo(() => {
     const localUser = useStore($localUserStore);
-    const isOwner = useStore($isOwner);
+    const meeting = useStore($meetingStore);
+    const isMeetingHost = useStore($isMeetingHostStore);
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -38,6 +42,10 @@ const MeetingUsersList = memo(() => {
         });
     }, []);
 
+    const handleChangeHost = useCallback(({ userId }) => {
+        changeHostSocketEvent({ userId });
+    }, []);
+
     const renderUsersList = useMemo(
         () =>
             users.map(user => (
@@ -45,10 +53,12 @@ const MeetingUsersList = memo(() => {
                     key={user.id}
                     user={user}
                     isLocalItem={localUser.id === user.id}
-                    onDeleteUser={isOwner ? handleKickUser : undefined}
+                    isOwnerItem={meeting.owner === user.id}
+                    onDeleteUser={isMeetingHost ? handleKickUser : undefined}
+                    onChangeHost={isMeetingHost ? handleChangeHost : undefined}
                 />
             )),
-        [users, localUser],
+        [users, localUser, isMeetingHost, meeting.owner],
     );
 
     return (

@@ -11,11 +11,15 @@ import {
   LOGIN_STRIPE_EXPRESS_ACCOUNT,
   HANDLE_WEBHOOK,
   CREATE_STRIPE_ACCOUNT_LINK,
-  GET_STRIPE_PRODUCTS,
   GET_STRIPE_CHECKOUT_SESSION,
   GET_STRIPE_PORTAL_SESSION,
   GET_STRIPE_SUBSCRIPTION,
   HANDLE_EXPRESS_WEBHOOK,
+  GET_TEMPLATE_STRIPE_PRODUCT,
+  CREATE_TEMPLATE_STRIPE_PRODUCT,
+  GET_STRIPE_PRODUCT_CHECKOUT_SESSION,
+  GET_STRIPE_SUBSCRIPTIONS_PRODUCTS,
+  GET_STRIPE_TEMPLATES_PRODUCTS,
 } from '@shared/patterns/payments';
 
 // services
@@ -32,8 +36,11 @@ import { PAYMENTS_SCOPE } from '@shared/const/api-scopes.const';
 
 // interfaces
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+
+// utils
 import { addMonthsCustom } from '../utils/dates/addMonths';
 import { addDaysCustom } from '../utils/dates/addDaysCustom';
+import { executePromiseQueue } from '../utils/executePromiseQueue';
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
@@ -233,12 +240,38 @@ export class PaymentsController {
     }
   }
 
-  @MessagePattern({ cmd: GET_STRIPE_PRODUCTS })
-  async getStripeProducts() {
+  @MessagePattern({ cmd: GET_STRIPE_TEMPLATES_PRODUCTS })
+  async getStripeTemplatesProducts() {
     try {
       const products = await this.paymentService.getStripeProducts();
 
       const pricesPromise = products.data.map(async (product) => {
+        const price = await this.paymentService.getStripePrice(
+          product.default_price,
+        );
+
+        return {
+          product,
+          price,
+        };
+      });
+
+      return await Promise.all(pricesPromise);
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: PAYMENTS_SERVICE,
+      });
+    }
+  }
+
+  @MessagePattern({ cmd: GET_STRIPE_SUBSCRIPTIONS_PRODUCTS })
+  async getStripeSubscriptionsProducts() {
+    try {
+      const subscriptionProducts =
+        await this.paymentService.getStripeSubscriptions();
+
+      const pricesPromise = subscriptionProducts.map(async (product) => {
         const price = await this.paymentService.getStripePrice(
           product.default_price,
         );
@@ -265,6 +298,8 @@ export class PaymentsController {
       productId: string;
       meetingToken: string;
       baseUrl: string;
+      customerEmail: string;
+      customer: string;
     },
   ) {
     try {
@@ -277,11 +312,14 @@ export class PaymentsController {
         data.productId,
       );
 
-      return this.paymentService.getStripeCheckoutSession(
-        product.default_price,
-        data.baseUrl,
-        data.meetingToken,
-      );
+      return this.paymentService.getStripeCheckoutSession({
+        paymentMode: 'subscription',
+        priceId: product.default_price as string,
+        basePath: data.baseUrl,
+        meetingToken: data.meetingToken,
+        customerEmail: data.customerEmail,
+        customer: data.customer,
+      });
     } catch (err) {
       throw new RpcException({
         message: err.message,
@@ -336,141 +374,45 @@ export class PaymentsController {
   @MessagePattern({ cmd: HANDLE_WEBHOOK })
   async handleWebhook(@Payload() data: { body: any; signature: string }) {
     try {
-      const environment = await this.configService.get('environment');
-
       const event = await this.paymentService.createWebhookEvent({
         body: Buffer.from(data.body.data),
         sig: data.signature,
       });
 
-      let subscription: Stripe.Subscription | undefined;
-      let invoice: Stripe.Invoice | undefined;
-
       switch (event.type) {
-        case 'checkout.session.completed':
-          const sessionData = event.data.object as Stripe.Checkout.Session;
-
-          subscription = await this.paymentService.getSubscription(
-            sessionData.subscription,
-          );
-
-          const product = await this.paymentService.getStripeProduct(
-            // @ts-ignore
-            subscription.plan.product,
-          );
-
-          const plan = plans[product.name || 'House'];
+        case 'customer.created':
+          const customer = event.data.object as Stripe.Customer;
 
           await this.coreService.updateUser({
-            query: { stripeSessionId: sessionData.id },
-            data: {
-              stripeSubscriptionId: sessionData.subscription as string,
-              subscriptionPlanKey: product.name,
-              maxTemplatesNumber: plan.features.templatesLimit,
-              maxMeetingTime: plan.features.timeLimit,
-            },
+            query: { email: customer.email },
+            data: { stripeCustomerId: customer.id },
           });
+
+          break;
+        case 'checkout.session.completed':
+          await this.handleCheckoutSessionCompleted(
+            event.data.object as Stripe.Checkout.Session,
+          );
           break;
         case 'customer.subscription.deleted':
-          subscription = event.data.object as Stripe.Subscription;
-
-          const planData = plans['House'];
-
-          await this.coreService.updateUser({
-            query: { stripeSubscriptionId: subscription.id },
-            data: {
-              isSubscriptionActive: false,
-              stripeSubscriptionId: null,
-              subscriptionPlanKey: 'House',
-              maxTemplatesNumber: planData.features.templatesLimit,
-              maxMeetingTime: planData.features.timeLimit,
-              renewSubscriptionTimestampInSeconds:
-                (environment === 'demo'
-                  ? addMonthsCustom(Date.now(), 1)
-                  : addDaysCustom(Date.now(), 1)
-                ).getTime() / 1000,
-            },
-          });
-
+          await this.handleSubscriptionDeleted(
+            event.data.object as Stripe.Subscription,
+          );
           break;
         case 'customer.subscription.created':
-          subscription = event.data.object as Stripe.Subscription;
-
-          await this.coreService.updateUser({
-            query: { stripeSubscriptionId: subscription.id },
-            data: { isSubscriptionActive: false },
-          });
-
+          await this.handleSubscriptionCreated(
+            event.data.object as Stripe.Subscription,
+          );
           break;
         case 'invoice.payment_succeeded':
-          invoice = event.data.object as Stripe.Invoice;
-
-          const subscriptionData = await this.paymentService.getSubscription(
-            invoice.subscription,
+          await this.handleSubscriptionUpdate(
+            event.data.object as Stripe.Invoice,
           );
-
-          const productData = await this.paymentService.getStripeProduct(
-            // @ts-ignore
-            subscriptionData.plan.product,
-          );
-
-          const planData = plans[productData.name || 'House'];
-
-          await this.coreService.updateUser({
-            query: { stripeSubscriptionId: invoice.subscription },
-            data: {
-              subscriptionPlanKey: productData.name,
-              maxTemplatesNumber: planData.features.templatesLimit,
-              maxMeetingTime: planData.features.timeLimit,
-              renewSubscriptionTimestampInSeconds:
-                subscriptionData.current_period_end,
-            },
-          });
-
           break;
         case 'invoice.paid':
-          invoice = event.data.object as Stripe.Invoice;
-          subscription = await this.paymentService.getSubscription(
-            invoice.subscription,
+          await this.handleFirstSubscription(
+            event.data.object as Stripe.Invoice,
           );
-
-          const frontendUrl = await this.configService.get('frontendUrl');
-
-          const user = await this.coreService.findUser({
-            stripeSubscriptionId: subscription.id,
-          });
-
-          await this.coreService.updateUser({
-            query: { stripeSubscriptionId: subscription.id },
-            data: {
-              isSubscriptionActive: subscription.status === 'active',
-              renewSubscriptionTimestampInSeconds:
-                subscription.current_period_end,
-            },
-          });
-
-          if (
-            Boolean(user.isSubscriptionActive) === false &&
-            subscription.status === 'active'
-          ) {
-            this.notificationsService.sendEmail({
-              template: {
-                key: emailTemplates.subscriptionSuccessful,
-                data: [
-                  {
-                    name: 'BACKURL',
-                    content: `${frontendUrl}/dashboard/profile`,
-                  },
-                  {
-                    name: 'USERNAME',
-                    content: user.fullName,
-                  },
-                ],
-              },
-              to: [{ email: user.email, name: user.fullName }],
-            });
-          }
-
           break;
         default:
           console.log(`Unhandled event type ${event.type}.`);
@@ -534,5 +476,197 @@ export class PaymentsController {
         ctx: PAYMENTS_SERVICE,
       });
     }
+  }
+
+  @MessagePattern({ cmd: CREATE_TEMPLATE_STRIPE_PRODUCT })
+  async createTemplateStripeProduct(
+    @Payload()
+    data: {
+      name: string;
+      priceInCents: number;
+      description: string;
+      images: string[];
+    },
+  ) {
+    return this.paymentService.createProduct({ type: 'template', ...data });
+  }
+
+  @MessagePattern({ cmd: GET_TEMPLATE_STRIPE_PRODUCT })
+  async getTemplateStripeProduct(@Payload() data: { productId: string }) {
+    return this.paymentService.getProduct(data.productId);
+  }
+
+  @MessagePattern({ cmd: GET_STRIPE_PRODUCT_CHECKOUT_SESSION })
+  async getProductCheckoutSession(
+    @Payload()
+    data: {
+      productId: string;
+      customerEmail: string;
+      customer: string;
+    },
+  ) {
+    const product = await this.paymentService.getProduct(data.productId);
+
+    if (product?.id) {
+      return this.paymentService.getStripeCheckoutSession({
+        paymentMode: 'payment',
+        priceId: product.default_price as string,
+        basePath: 'dashboard',
+        customerEmail: data.customerEmail,
+        customer: data.customer,
+      });
+    }
+
+    return {};
+  }
+
+  async handleFirstSubscription(invoice: Stripe.Invoice) {
+    const subscription = await this.paymentService.getSubscription(
+      invoice.subscription,
+    );
+
+    const frontendUrl = await this.configService.get('frontendUrl');
+
+    const user = await this.coreService.findUser({
+      stripeSubscriptionId: subscription.id,
+    });
+
+    await this.coreService.updateUser({
+      query: { stripeSubscriptionId: subscription.id },
+      data: {
+        isSubscriptionActive: subscription.status === 'active',
+        renewSubscriptionTimestampInSeconds: subscription.current_period_end,
+      },
+    });
+
+    if (
+      Boolean(user.isSubscriptionActive) === false &&
+      subscription.status === 'active'
+    ) {
+      this.notificationsService.sendEmail({
+        template: {
+          key: emailTemplates.subscriptionSuccessful,
+          data: [
+            {
+              name: 'BACKURL',
+              content: `${frontendUrl}/dashboard/profile`,
+            },
+            {
+              name: 'USERNAME',
+              content: user.fullName,
+            },
+          ],
+        },
+        to: [{ email: user.email, name: user.fullName }],
+      });
+    }
+  }
+
+  async handleSubscriptionUpdate(invoice: Stripe.Invoice) {
+    const subscription = await this.paymentService.getSubscription(
+      invoice.subscription,
+    );
+
+    const productData = await this.paymentService.getStripeProduct(
+      // @ts-ignore
+      subscription.plan.product,
+    );
+
+    const currentPlan = plans[productData.name || 'House'];
+
+    await this.coreService.updateUser({
+      query: { stripeSubscriptionId: invoice.subscription },
+      data: {
+        subscriptionPlanKey: productData.name,
+        maxTemplatesNumber: currentPlan.features.templatesLimit,
+        maxMeetingTime: currentPlan.features.timeLimit,
+        renewSubscriptionTimestampInSeconds: subscription.current_period_end,
+      },
+    });
+  }
+
+  async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+    const environment = await this.configService.get('environment');
+
+    const planData = plans['House'];
+
+    await this.coreService.updateUser({
+      query: { stripeSubscriptionId: subscription.id },
+      data: {
+        isSubscriptionActive: false,
+        stripeSubscriptionId: null,
+        subscriptionPlanKey: 'House',
+        maxTemplatesNumber: planData.features.templatesLimit,
+        maxMeetingTime: planData.features.timeLimit,
+        renewSubscriptionTimestampInSeconds:
+          (environment === 'demo'
+            ? addMonthsCustom(Date.now(), 1)
+            : addDaysCustom(Date.now(), 1)
+          ).getTime() / 1000,
+      },
+    });
+  }
+
+  async handleSubscriptionCreated(subscription: Stripe.Subscription) {
+    await this.coreService.updateUser({
+      query: { stripeSubscriptionId: subscription.id },
+      data: { isSubscriptionActive: false },
+    });
+  }
+
+  async createSubscriptionsIfNotExists() {
+    const subscriptions = await this.paymentService.getStripeSubscriptions();
+
+    if (!subscriptions?.length) {
+      const plansPromises = Object.values(plans).map(
+        (planData) => async () =>
+          this.paymentService.createProduct({
+            name: planData.name,
+            priceInCents: planData.priceInCents,
+            description: planData.description,
+            type: 'subscription',
+          }),
+      );
+
+      await executePromiseQueue(plansPromises);
+    }
+  }
+
+  async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+    if (!session.subscription) {
+      const checkout = await this.paymentService.getCheckoutSession(session.id);
+
+      const item = checkout.line_items.data[0];
+
+      const productId = item.price.product;
+
+      await this.coreService.addTemplateToUser({
+        productId: productId as string,
+        customerId: checkout.customer as string,
+      });
+
+      return;
+    }
+
+    const subscription = await this.paymentService.getSubscription(
+      session.subscription,
+    );
+
+    const product = await this.paymentService.getStripeProduct(
+      // @ts-ignore
+      subscription.plan.product,
+    );
+
+    const plan = plans[product.name || 'House'];
+
+    await this.coreService.updateUser({
+      query: { stripeSessionId: session.id },
+      data: {
+        stripeSubscriptionId: session.subscription as string,
+        subscriptionPlanKey: product.name,
+        maxTemplatesNumber: plan.features.templatesLimit,
+        maxMeetingTime: plan.features.timeLimit,
+      },
+    });
   }
 }

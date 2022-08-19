@@ -21,11 +21,11 @@ import styles from './ProfileNotifications.module.scss';
 import {
     $dashboardNotificationsStore,
     $isSocketConnected,
-    emitGetDashboardNotifications,
+    sendGetDashboardNotificationsSocketEvent,
 } from '../../../store';
 
 // types
-import { DashboardNotificationReadStatus } from '../../../store/types/dashboard';
+import { DashboardNotificationReadStatus } from '../../../store/types';
 
 const ProfileNotifications = memo(() => {
     const isMainSocketConnected = useStore($isSocketConnected);
@@ -43,7 +43,7 @@ const ProfileNotifications = memo(() => {
 
     useEffect(() => {
         if (isMainSocketConnected) {
-            emitGetDashboardNotifications();
+            sendGetDashboardNotificationsSocketEvent();
         }
     }, [isMainSocketConnected]);
 

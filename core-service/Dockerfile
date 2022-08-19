@@ -16,6 +16,9 @@ RUN cd ./core-service && npm run build
 
 FROM node:16.16.0-alpine
 
+RUN apk update
+RUN apk add ffmpeg
+
 WORKDIR /app
 
 COPY --from=builder /app ./

@@ -1,7 +1,5 @@
-import { root } from '../root';
 import { AppDialogsState } from '../types';
-
-export const dialogsDomain = root.domain('dialogs');
+import { dialogsDomain } from '../domains';
 
 export const initialDialogsState: AppDialogsState = {
     isUserRegisteredDialog: false,
@@ -24,4 +22,4 @@ export const initialDialogsState: AppDialogsState = {
     timeExpiredDialog: false,
 };
 
-export const $appDialogsStore = dialogsDomain.store<AppDialogsState>(initialDialogsState);
+export const $appDialogsStore = dialogsDomain.createStore<AppDialogsState>(initialDialogsState);

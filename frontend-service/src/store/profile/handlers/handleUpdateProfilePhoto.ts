@@ -3,10 +3,11 @@ import { postProfileAvatarUrl, uploadProfileAvatarUrl } from '../../../utils/url
 import { sendRequest } from '../../../helpers/http/sendRequest';
 
 import { ErrorState, Profile, UpdateProfileAvatar } from '../../types';
+import { CommonProfileResponse } from '../types';
 
 export const handleUpdateProfilePhoto = async ({
     file,
-}: UpdateProfileAvatar): Promise<Profile | undefined | null> => {
+}: UpdateProfileAvatar): Promise<CommonProfileResponse> => {
     const formData = new FormData();
 
     formData.append('profileAvatar', file, file.name);

@@ -1,8 +1,8 @@
-import React, { memo, useCallback } from 'react';
-import { useStore } from 'effector-react';
-import clsx from 'clsx';
+import React, { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useStore, useStoreMap } from 'effector-react';
 import { Fade } from '@mui/material';
 import { useRouter } from 'next/router';
+import clsx from 'clsx';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
@@ -37,23 +37,41 @@ import {
 import styles from './ReplaceTemplateDialog.module.scss';
 
 // types
-import { AppDialogsEnum, UserTemplate } from '../../../store/types';
+import { AppDialogsEnum, EntityList, UserTemplate } from '../../../store/types';
 import { getClientMeetingUrl } from '../../../utils/urls';
 
 const Component = () => {
     const router = useRouter();
 
     const { replaceTemplateConfirmDialog } = useStore($appDialogsStore);
-    const profileTemplates = useStore($profileTemplatesStore);
     const deleteProfileTemplateId = useStore($deleteProfileTemplateId);
     const replaceTemplateId = useStore($replaceTemplateIdStore);
     const profile = useStore($profileStore);
+
+    const [elementHeight, setElementHeight] = useState(0);
+
+    const messageRef = useRef<HTMLDivElement | null>(null);
+    const replaceRef = useRef<HTMLDivElement | null>(null);
+
+    const freeTemplates = useStoreMap<EntityList<UserTemplate>, UserTemplate[], []>({
+        store: $profileTemplatesStore,
+        keys: [],
+        fn: state => state?.list.filter(template => template.type === 'free'),
+    });
 
     const {
         value: isReplaceStep,
         onToggleSwitch: handleToggleReplaceStep,
         onSwitchOff: handleResetSwitch,
     } = useToggle(false);
+
+    useLayoutEffect(() => {
+        const messageContainerHeight =
+            messageRef?.current?.getBoundingClientRect?.()?.height || 176;
+        const replaceContainerHeight = replaceRef?.current?.getBoundingClientRect?.()?.height || 0;
+
+        setElementHeight(isReplaceStep ? replaceContainerHeight : messageContainerHeight);
+    }, [isReplaceStep]);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -66,7 +84,7 @@ const Component = () => {
         handleToggleReplaceStep();
     }, []);
 
-    const handleProfileTemplatesPageChange = useCallback(async newPage => {
+    const handleProfileTemplatesPageChange = useCallback(async (newPage: number) => {
         await getProfileTemplatesFx({ limit: 6 * newPage, skip: 0 });
 
         setSkipProfileTemplates(6 * newPage);
@@ -95,19 +113,22 @@ const Component = () => {
         }
     };
 
+    const style = { '--height': `${elementHeight}px` } as React.CSSProperties;
+
     return (
         <CustomDialog
             onClose={handleClose}
             open={replaceTemplateConfirmDialog}
-            contentClassName={clsx(styles.wrapper, { [styles.replace]: isReplaceStep })}
+            contentClassName={styles.wrapper}
         >
-            <CustomGrid container sx={{ position: 'relative' }}>
+            <CustomGrid container className={styles.content} style={style}>
                 <Fade in={!isReplaceStep}>
                     <CustomGrid
                         className={styles.info}
                         container
                         justifyContent="center"
                         direction="column"
+                        ref={messageRef}
                     >
                         <CustomTypography
                             textAlign="center"
@@ -143,6 +164,7 @@ const Component = () => {
                         container
                         direction="column"
                         wrap="nowrap"
+                        ref={replaceRef}
                     >
                         <CustomTypography
                             className={styles.title}
@@ -156,14 +178,21 @@ const Component = () => {
                             itemGap={1.25}
                             outerClassName={styles.templatesOuterWrapper}
                             innerClassName={styles.templatesInnerWrapper}
-                            list={profileTemplates.list}
-                            count={profileTemplates.count}
+                            list={freeTemplates}
+                            count={freeTemplates?.length}
                             onPageChange={handleProfileTemplatesPageChange}
                             onChooseTemplate={handleChooseProfileTemplate}
                             TemplateComponent={ReplaceTemplateItem}
                         />
 
-                        <CustomGrid className={styles.buttons} container wrap="nowrap" gap={2}>
+                        <CustomGrid
+                            className={clsx(styles.buttons, {
+                                [styles.withSlider]: freeTemplates?.length > 6,
+                            })}
+                            container
+                            wrap="nowrap"
+                            gap={2}
+                        >
                             <CustomButton
                                 onClick={handleClose}
                                 variant="custom-cancel"
@@ -173,6 +202,7 @@ const Component = () => {
                             <CustomButton
                                 onClick={handleReplaceTemplate}
                                 nameSpace="common"
+                                disabled={!deleteProfileTemplateId}
                                 translation="buttons.replace"
                             />
                         </CustomGrid>

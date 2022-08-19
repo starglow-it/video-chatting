@@ -6,7 +6,10 @@ import * as morgan from 'morgan';
 
 import { vars } from './vars';
 
-import { onApiError, onApiNotFound } from '../utils/rest/middlewares/errorHandler';
+import {
+    onApiError,
+    onApiNotFound,
+} from '../utils/rest/middlewares/errorHandler';
 import routes from '../rest';
 
 const { logs } = vars;

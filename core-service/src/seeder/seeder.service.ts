@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import * as path from 'path';
-import * as fsPromises from 'fs/promises';
 import { InjectModel } from '@nestjs/mongoose';
+import * as mkdirp from 'mkdirp';
+import * as fsPromises from 'fs/promises';
 
 // services
 import { UsersService } from '../users/users.service';
@@ -22,6 +23,9 @@ import {
   PreviewImage,
   PreviewImageDocument,
 } from '../schemas/preview-image.schema';
+import { PaymentsService } from '../payments/payments.service';
+import { getScreenShots } from '../utils/images/getScreenShots';
+import { executePromiseQueue } from '../utils/executePromiseQueue';
 
 @Injectable()
 export class SeederService {
@@ -31,6 +35,7 @@ export class SeederService {
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
     private languagesService: LanguagesService,
+    private paymentsService: PaymentsService,
     private awsService: AwsConnectorService,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
@@ -53,94 +58,157 @@ export class SeederService {
   }
 
   async seedCommonTemplates(): Promise<void> {
-    const promises = templatesData.map(
-      async ({ imagesUrl, ...templateData }) => {
-        const isExists = await this.commonTemplatesService.exists({
-          templateId: templateData.templateId,
-        });
-
-        if (!isExists) {
-          const templateBusinessCategories =
-            await this.businessCategoriesService.find({
-              query: {
-                value: {
-                  $in: templateData.businessCategories,
-                },
-              },
-            });
-
-          const imagesPath = path.join(__dirname, '../../../..', imagesUrl);
-
-          const images = await fsPromises.readdir(imagesPath);
-
-          const uploadedImagesPromises = images.map(async (image) => {
-            const resolution = image.match(/_(\d*)p\./);
-            const file = await fsPromises.readFile(`${imagesPath}/${image}`);
-            const fileStats = await fsPromises.stat(`${imagesPath}/${image}`);
-            const uploadKey = `templates${imagesUrl}/${image}`;
-            const imageLink = await this.awsService.uploadFile(file, uploadKey);
-
-            const imageFile = await this.previewImage.create({
-              url: imageLink,
-              size: fileStats.size,
-              mimeType: 'image/png',
-              key: uploadKey,
-              resolution: resolution?.[1],
-            });
-
-            return imageFile._id;
-          });
-
-          const previewUrls = await Promise.all(uploadedImagesPromises);
-
-          await this.commonTemplatesService.createCommonTemplate({
-            ...templateData,
-            previewUrls,
-            businessCategories: templateBusinessCategories.map((category) =>
-              category._id.toString(),
-            ),
-          });
-        } else {
-          const templateBusinessCategories =
-            await this.businessCategoriesService.find({
-              query: {
-                value: {
-                  $in: templateData.businessCategories,
-                },
-              },
-            });
-
-          await this.commonTemplatesService.updateCommonTemplate({
-            query: {
+    try {
+      const promises = templatesData.map(
+        ({ imagesUrl, videoPath, imagePath, ...templateData }) =>
+          async () => {
+            const isExists = await this.commonTemplatesService.exists({
               templateId: templateData.templateId,
-            },
-            data: {
-              ...templateData,
-              businessCategories: templateBusinessCategories.map((category) =>
-                category._id.toString(),
-              ),
-            },
-          });
+            });
 
-          await this.userTemplatesService.updateUserTemplate({
-            query: {
-              templateId: templateData.templateId,
-            },
-            data: {
-              url: templateData.url,
-              maxParticipants: templateData.maxParticipants,
-              type: templateData.type,
-              isAudioAvailable: templateData.isAudioAvailable,
-              usersPosition: templateData.usersPosition,
-            },
-          });
-        }
-      },
-    );
+            if (!isExists) {
+              const templateBusinessCategories =
+                await this.businessCategoriesService.find({
+                  query: {
+                    value: {
+                      $in: templateData.businessCategories,
+                    },
+                  },
+                });
 
-    await Promise.all(promises);
+              let images;
+              let imagesFiles;
 
-    return;
+              if (videoPath) {
+                const videoFile = path.join(
+                  __dirname,
+                  '../../../../files',
+                  videoPath,
+                );
+
+                const outputPath = path.join(
+                  __dirname,
+                  '../../../../images',
+                  imagePath,
+                );
+
+                await mkdirp(outputPath);
+
+                await getScreenShots(
+                  videoFile,
+                  path.join(outputPath, imagePath),
+                );
+              }
+
+              imagesFiles = path.join(
+                __dirname,
+                '../../../../images',
+                imagesUrl || imagePath,
+              );
+
+              images = await fsPromises.readdir(imagesFiles);
+
+              const uploadedImagesPromises = images.map(async (image) => {
+                const resolution = image.match(/_(\d*)p\./);
+                const file = await fsPromises.readFile(
+                  `${imagesFiles}/${image}`,
+                );
+                const fileStats = await fsPromises.stat(
+                  `${imagesFiles}/${image}`,
+                );
+                const uploadKey = `templates/${templateData.type}${
+                  imagesUrl || videoPath
+                }/${image}`;
+
+                const imageLink = await this.awsService.uploadFile(
+                  file,
+                  uploadKey,
+                );
+
+                await this.previewImage.deleteMany({
+                  key: uploadKey,
+                });
+
+                return this.previewImage.create({
+                  url: imageLink,
+                  size: fileStats.size,
+                  mimeType: 'image/png',
+                  key: uploadKey,
+                  resolution: resolution?.[1],
+                });
+              });
+
+              const previewUrls = await Promise.all(uploadedImagesPromises);
+
+              const imageIds = previewUrls.map((image) => image._id);
+
+              const createData = {
+                ...templateData,
+                previewUrls: imageIds,
+                businessCategories: templateBusinessCategories.map((category) =>
+                  category._id.toString(),
+                ),
+                stripeProductId: null,
+              };
+
+              if (templateData.type === 'paid') {
+                const stripeProduct =
+                  await this.paymentsService.createTemplateStripeProduct({
+                    name: templateData.name,
+                    description: templateData.description,
+                    priceInCents: templateData.priceInCents,
+                  });
+
+                createData.stripeProductId = stripeProduct.id;
+              }
+              await this.commonTemplatesService.createCommonTemplate(
+                createData,
+              );
+            } else {
+              const templateBusinessCategories =
+                await this.businessCategoriesService.find({
+                  query: {
+                    value: {
+                      $in: templateData.businessCategories,
+                    },
+                  },
+                });
+
+              await this.commonTemplatesService.updateCommonTemplate({
+                query: {
+                  templateId: templateData.templateId,
+                },
+                data: {
+                  ...templateData,
+                  businessCategories: templateBusinessCategories.map(
+                    (category) => category._id.toString(),
+                  ),
+                },
+              });
+
+              await this.userTemplatesService.updateUserTemplate({
+                query: {
+                  templateId: templateData.templateId,
+                },
+                data: {
+                  url: templateData.url,
+                  maxParticipants: templateData.maxParticipants,
+                  type: templateData.type,
+                  priceInCents: templateData.priceInCents,
+                  isAudioAvailable: templateData.isAudioAvailable,
+                  usersPosition: templateData.usersPosition,
+                },
+              });
+            }
+          },
+      );
+
+      await executePromiseQueue(promises);
+
+      return;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async seedLanguages() {

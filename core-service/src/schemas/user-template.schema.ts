@@ -71,6 +71,11 @@ export class UserTemplate {
   type: string;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+  })
+  priceInCents: number;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
   })
   fullName: string;

@@ -183,6 +183,7 @@ export class UsersService {
       signBoard: data.signBoard,
       stripeAccountId: data.stripeAccountId,
       stripeSessionId: data.stripeSessionId,
+      stripeCustomerId: data.stripeCustomerId,
       stripeSubscriptionId: data.stripeSubscriptionId,
       subscriptionPlanKey: data.subscriptionPlanKey,
       maxTemplatesNumber: data.maxTemplatesNumber,

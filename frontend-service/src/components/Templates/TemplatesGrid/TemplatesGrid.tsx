@@ -15,7 +15,7 @@ import { NextSliderArrow } from '@library/icons/NextSliderArrow';
 
 // helpers
 import { useMediaQuery } from '@mui/material';
-import { unflatArray } from '../../../utils/functions/unflatArray';
+import { unflatArray } from '../../../utils/arrays/unflatArray';
 
 // types
 import { TemplateGridProps } from './types';

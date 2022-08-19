@@ -107,10 +107,6 @@ export class DashboardGateway extends BaseGateway {
         notification,
       },
     );
-
-    return {
-      success: true,
-    };
   }
 
   @SubscribeMessage(GET_DASHBOARD_NOTIFICATIONS_EVENT)

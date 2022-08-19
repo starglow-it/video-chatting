@@ -29,6 +29,7 @@ import { withTransaction } from '../helpers/mongo/withTransaction';
 import { TEMPLATES_SERVICE } from '@shared/const/services.const';
 import { LanguagesService } from '../languages/languages.service';
 import { UserTemplateDocument } from '../schemas/user-template.schema';
+import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -42,7 +43,8 @@ export class UserTemplatesController {
 
   @MessagePattern({ cmd: GET_USER_TEMPLATE })
   async getUserTemplate(
-    @Payload() { id }: { id: IUserTemplate['id'] },
+    @Payload()
+    { id }: { id: IUserTemplate['id'] | ICommonTemplate['templateId'] },
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
@@ -51,7 +53,9 @@ export class UserTemplatesController {
         const userTemplate = await this.userTemplatesService.findUserTemplate({
           query: Types.ObjectId.isValid(id)
             ? { _id: id }
-            : { customLink: customLinkRegexp },
+            : Number.isNaN(Number(id))
+            ? { customLink: customLinkRegexp }
+            : { templateId: id },
           session,
           populatePaths: [
             { path: 'socials' },
@@ -291,10 +295,14 @@ export class UserTemplatesController {
             user: { $ne: user },
           });
 
-        const parsedTemplates = plainToClass(UserTemplateDTO, userTemplates, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const parsedTemplates = plainToInstance(
+          UserTemplateDTO,
+          userTemplates,
+          {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          },
+        );
 
         return {
           list: parsedTemplates,

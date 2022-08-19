@@ -60,7 +60,9 @@ const Component = ({
 
         const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
 
-        setValue('startAt', getTimeList(startTime, 30 * ONE_MINUTE, 0, '24:00')[0], {
+        const timeList = getTimeList(startTime, 30 * ONE_MINUTE, 0)[0];
+
+        setValue('startAt', timeList, {
             shouldValidate: true,
             shouldDirty: true,
         });
@@ -102,7 +104,9 @@ const Component = ({
 
         const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
 
-        return getTimeList(startTime, 30 * ONE_MINUTE, 0, '23:30').map(time => (
+        const timeList = getTimeList(startTime, 30 * ONE_MINUTE, 0, '23:30');
+
+        return timeList.map(time => (
             <MenuItem key={time} value={time}>
                 {time}
             </MenuItem>
@@ -118,12 +122,9 @@ const Component = ({
 
         const timeString = getTimeString(getTimestamp(startAtValue) + 30 * ONE_MINUTE);
 
-        return getTimeList(
-            (startAtValue && timeString) || startTime,
-            30 * ONE_MINUTE,
-            3,
-            '24:00',
-        ).map(time => (
+        const timeList = getTimeList((startAtValue && timeString) || startTime, 30 * ONE_MINUTE, 3);
+
+        return timeList.map(time => (
             <MenuItem key={time} value={time}>
                 {time}
             </MenuItem>

@@ -56,6 +56,12 @@ export class Meeting {
   startAt: number;
 
   @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MeetingUser',
+  })
+  hostUserId: MeetingUserDocument;
+
+  @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MeetingUser' }],
   })
   users: MeetingUserDocument[];

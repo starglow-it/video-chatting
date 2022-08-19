@@ -18,9 +18,9 @@ import {
     $appDialogsStore,
     $isOwner,
     $meetingTemplateStore,
-    emitEndMeetingEvent,
-    emitLeaveMeetingEvent,
     $localUserStore,
+    sendEndMeetingSocketEvent,
+    sendLeaveMeetingSocketEvent,
 } from 'src/store';
 
 // styles
@@ -47,13 +47,13 @@ const EndMeetingDialog = memo(() => {
 
     const handleLeave = useCallback(() => {
         handleClose();
-        emitLeaveMeetingEvent();
+        sendLeaveMeetingSocketEvent();
         router.push(localUser.isGenerated ? '/welcome' : '/dashboard');
     }, [localUser.isGenerated]);
 
     const handleEndMeeting = useCallback(async () => {
         handleClose();
-        emitEndMeetingEvent();
+        sendEndMeetingSocketEvent();
         await deleteMeetingFx({ templateId: meetingTemplate.id });
         router.push('/dashboard');
     }, []);

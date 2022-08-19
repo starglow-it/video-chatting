@@ -1,12 +1,11 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { ErrorState } from '../../types';
 import { resetPasswordUrl } from '../../../utils/urls';
+import { ResetPasswordPayload } from '../types';
 
-export const handleResetPassword = async (params: {
-    newPassword: string;
-    newPasswordRepeat: string;
-    token: string;
-}): Promise<ErrorState | null | undefined> => {
+export const handleResetPassword = async (
+    params: ResetPasswordPayload,
+): Promise<ErrorState | null | undefined> => {
     const response = await sendRequestWithCredentials<null | undefined, ErrorState>({
         ...resetPasswordUrl,
         data: params,

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // controllers
@@ -17,12 +17,16 @@ import {
 import { LanguagesModule } from '../languages/languages.module';
 import { UsersModule } from '../users/users.module';
 import { BusinessCategoriesModule } from '../business-categories/business-categories.module';
+import { UserTemplatesModule } from '../user-templates/user-templates.module';
+import { MeetingsModule } from '../meetings/meetings.module';
 
 @Module({
   imports: [
     UsersModule,
     LanguagesModule,
     BusinessCategoriesModule,
+    UserTemplatesModule,
+    forwardRef(() => MeetingsModule),
     MongooseModule.forFeature([
       { name: CommonTemplate.name, schema: CommonTemplateSchema },
     ]),

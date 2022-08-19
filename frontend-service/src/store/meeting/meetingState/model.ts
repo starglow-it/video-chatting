@@ -1,9 +1,12 @@
-import { meetingDomain } from '../domain';
+import { meetingDomain } from '../../domains';
 
-export const $isEditTemplateOpenStore = meetingDomain.store<boolean>(false);
-export const $isMeetingInfoOpenStore = meetingDomain.store<boolean>(false);
+export const $isEditTemplateOpenStore = meetingDomain.createStore<boolean>(false);
+export const $isMeetingInfoOpenStore = meetingDomain.createStore<boolean>(false);
 
-export const toggleEditTemplateOpen = meetingDomain.event('toggleEditTemplateOpen');
-export const toggleMeetingInfoOpen = meetingDomain.event('toggleMeetingInfoOpen');
-export const setEditTemplateOpenEvent = meetingDomain.event<boolean>('setEditTemplateOpenEvent');
-export const setMeetingInfoOpenEvent = meetingDomain.event<boolean>('setMeetingInfoOpenEvent');
+export const toggleEditTemplateOpen = meetingDomain.createEvent('toggleEditTemplateOpen');
+export const toggleMeetingInfoOpen = meetingDomain.createEvent('toggleMeetingInfoOpen');
+export const setEditTemplateOpenEvent = meetingDomain.createEvent<boolean>(
+    'setEditTemplateOpenEvent',
+);
+export const setMeetingInfoOpenEvent =
+    meetingDomain.createEvent<boolean>('setMeetingInfoOpenEvent');

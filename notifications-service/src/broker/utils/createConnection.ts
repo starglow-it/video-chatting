@@ -11,7 +11,9 @@ export const createConnection = async (): Promise<Connection> => {
         process.exit();
     });
     connection.on('blocked', (reason) => {
-        logger.error(`Error; Broker.createConnection; Rabbit connection block by ${reason}`);
+        logger.error(
+            `Error; Broker.createConnection; Rabbit connection block by ${reason}`,
+        );
         process.exit();
     });
 

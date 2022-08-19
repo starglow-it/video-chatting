@@ -23,6 +23,7 @@ export interface ICommonUserDTO {
     signBoard: string;
     stripeAccountId: string;
     stripeSessionId?: string;
+    stripeCustomerId?: string;
     stripeSubscriptionId?: string;
     subscriptionPlanKey?: string;
     isSubscriptionActive?: boolean;

@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
-import {ConfigKeys, DefaultConfigValues } from "@shared/interfaces/keys";
-import {ConfigKeysType, IConfig} from "@shared/interfaces/config.interface";
+import { ConfigKeys, DefaultConfigValues } from '@shared/interfaces/keys';
+import { ConfigKeysType, IConfig } from '@shared/interfaces/config.interface';
 import camelCase from 'camelcase';
 
 dotenv.config();

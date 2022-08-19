@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Connection } from 'mongoose';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
@@ -121,7 +121,7 @@ export class DashboardNotificationsController {
           });
         }
 
-        return plainToClass(DashboardNotificationDTO, notification, {
+        return plainToInstance(DashboardNotificationDTO, notification, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -149,7 +149,7 @@ export class DashboardNotificationsController {
             ],
           });
 
-        return plainToClass(DashboardNotificationDTO, notifications, {
+        return plainToInstance(DashboardNotificationDTO, notifications, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -190,7 +190,7 @@ export class DashboardNotificationsController {
             ],
           });
 
-        return plainToClass(DashboardNotificationDTO, updatedNotifications, {
+        return plainToInstance(DashboardNotificationDTO, updatedNotifications, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });

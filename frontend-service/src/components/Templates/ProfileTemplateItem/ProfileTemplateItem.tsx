@@ -21,6 +21,7 @@ import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 
 // stores
 import {
+    $isBusinessSubscription,
     $profileStore,
     addNotificationEvent,
     appDialogsApi,
@@ -37,8 +38,10 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplateProps) => {
     const profile = useStore($profileStore);
+    const isBusinessSubscription = useStore($isBusinessSubscription);
 
-    const isDisabled = profile.maxMeetingTime === 0;
+    const isDisabled =
+        profile.maxMeetingTime === 0 && !isBusinessSubscription && template.type !== 'paid';
 
     const [showPreview, setShowPreview] = useState(false);
 
@@ -56,6 +59,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
 
     const handleOpenDeleteDialog = useCallback(() => {
         setDeleteTemplateIdEvent(template.id);
+
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.deleteTemplateDialog,
         });
@@ -88,14 +92,13 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <Image src={previewImage?.url} width="334px" height="190px" />
+                <Image src={previewImage?.url || ''} width="334px" height="190px" />
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}
                 name={template.name}
                 description={template.description}
                 maxParticipants={template.maxParticipants}
-                type={template.type}
                 isNeedToShowBusinessInfo
             />
             <Fade in={showPreview}>
@@ -136,12 +139,14 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                             }}
                         />
                     </CustomGrid>
-                    <ActionButton
-                        variant="transparent"
-                        onAction={handleOpenDeleteDialog}
-                        className={styles.deleteBtn}
-                        Icon={<DeleteIcon width="22px" height="22px" />}
-                    />
+                    <ConditionalRender condition={template.type !== 'paid'}>
+                        <ActionButton
+                            variant="transparent"
+                            onAction={handleOpenDeleteDialog}
+                            className={styles.deleteBtn}
+                            Icon={<DeleteIcon width="22px" height="22px" />}
+                        />
+                    </ConditionalRender>
                 </CustomGrid>
             </Fade>
         </CustomGrid>

@@ -26,7 +26,7 @@ export const VideoEffectsContext = React.createContext({
     },
 });
 
-const blurFn = addBlur();
+const blurFn = addBlur('/images/orange.png');
 
 export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>): ReactElement => {
     const savedSettings = WebStorage.get<{ blurSetting: boolean }>({

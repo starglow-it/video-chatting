@@ -1,5 +1,5 @@
 import { SvgIconWrapper } from '@library/icons/SvgIconWrapper';
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { CommonIconProps } from '@library/types';
 
 const Component = ({
@@ -8,7 +8,7 @@ const Component = ({
     className,
     onClick,
     isActive,
-    isHalfVolume,
+    isHalfVolume = false,
 }: CommonIconProps & { isHalfVolume?: boolean }) => {
     if (isActive) {
         if (isHalfVolume) {

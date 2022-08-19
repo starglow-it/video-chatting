@@ -35,6 +35,7 @@ import {
     cancelPaymentIntentWithData,
     createPaymentIntentWithData,
     $profileStore,
+    $isMeetingHostStore,
 } from '../../../store';
 
 // styles
@@ -45,6 +46,7 @@ import { MeetingAccessStatuses } from '../../../store/types';
 
 const MeetingControlPanel = memo(() => {
     const isOwner = useStore($isOwner);
+    const isMeetingHost = useStore($isMeetingHostStore);
     const paymentIntent = useStore($paymentIntent);
     const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -97,6 +99,10 @@ const MeetingControlPanel = memo(() => {
         handleSwitchOff();
     }, [paymentIntent?.id]);
 
+    const handleUpdateMonetization = () => {
+        handleSwitchOff();
+    };
+
     return (
         <ClickAwayListener onClickAway={handleClosePayment}>
             <CustomPaper
@@ -134,7 +140,7 @@ const MeetingControlPanel = memo(() => {
                         onAction={handleToggleUsers}
                         className={clsx(styles.actionButton, styles.withAction, {
                             [styles.active]: isUsersOpen,
-                            [styles.newRequests]: isThereNewRequests && isOwner,
+                            [styles.newRequests]: isThereNewRequests && isMeetingHost,
                         })}
                         Icon={<PeoplesIcon width="30px" height="30px" />}
                     />
@@ -142,7 +148,7 @@ const MeetingControlPanel = memo(() => {
                 <CustomGrid className={styles.panelsWrapper}>
                     <Fade in={isUsersOpen}>
                         <CustomPaper variant="black-glass" className={styles.commonOpenPanel}>
-                            {isOwner && <MeetingAccessRequests />}
+                            {isMeetingHost && <MeetingAccessRequests />}
                             <MeetingUsersList />
                             <MeetingInviteParticipants />
                         </CustomPaper>
@@ -160,7 +166,7 @@ const MeetingControlPanel = memo(() => {
                                 <PaymentForm onClose={handleClosePayment} />
                             </ConditionalRender>
                             <ConditionalRender condition={isOwner}>
-                                <MeetingMonetization />
+                                <MeetingMonetization onUpdate={handleUpdateMonetization} />
                             </ConditionalRender>
                         </CustomPaper>
                     </Fade>

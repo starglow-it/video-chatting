@@ -13,9 +13,7 @@ registerUserFx.use(handleRegisterUser);
 confirmRegistrationUserFx.use(handleConfirmRegistration);
 
 $registerStore
-    .on(resetRegisterErrorEvent, ({ error, ...rest }) => ({
-        ...rest,
-    }))
+    .on(resetRegisterErrorEvent, state => ({ ...state, error: null }))
     .on<RegisteredUserState>(registerUserFx.doneData, (_state, data) => {
         if (data.isUserRegistered) {
             appDialogsApi.openDialog({

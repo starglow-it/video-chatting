@@ -15,7 +15,8 @@
       "info": "Meeting info copied",
       "link": "Meeting link copied",
       "notification": "Text copied"
-    }
+    },
+    "inviteSent": "Invite sent"
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",
@@ -33,6 +34,8 @@
     "subscriptionBusinessDailySuccess": "Thank you for subscribing to Live Office BusinessDaily!",
     "subscriptionProfessionalSuccess": "Thank you for subscribing to Live Office Professional!",
     "subscriptionProfessionalDailySuccess": "Thank you for subscribing to Live Office ProfessionalDaily!",
-    "subscriptionFail": "An error occurred during the subscription. Please try again"
+    "subscriptionFail": "An error occurred during the subscription. Please try again",
+    "templateSuccess": "The purchase was successful. New template added to My Templates",
+    "templateFail": "Something happened during the payment. You can repeat the purchase."
   }
 }

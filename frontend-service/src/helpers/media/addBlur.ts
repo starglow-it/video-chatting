@@ -12,7 +12,7 @@ const isBlurSupported =
     supportedBrowsersArray.includes(browserData?.browser?.name || '') &&
     browserData.platform.type === 'desktop';
 
-export const addBlur = () => {
+export const addBlur = (imageUrl: string) => {
     let effectBackground: EffectBackground | null = null;
     let videoEffects: VideoEffects | null = null;
 
@@ -23,7 +23,7 @@ export const addBlur = () => {
                     if (!effectBackground) {
                         effectBackground = new EffectBackground();
 
-                        await effectBackground.setBackgroundImage('/images/orange.png');
+                        await effectBackground.setBackgroundImage(imageUrl);
                     }
 
                     if (!videoEffects) {
@@ -35,7 +35,6 @@ export const addBlur = () => {
 
                 return rawTrack;
             } catch (e) {
-                console.log('log error', e.message);
                 return rawTrack;
             }
         },

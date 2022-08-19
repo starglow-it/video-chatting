@@ -7,6 +7,7 @@ export const ANSWER_ACCESS_REQUEST = 'meeting:accessRequest:answer';
 export const CANCEL_ACCESS_REQUEST = 'meeting:accessRequest:cancel';
 export const UPDATE_USER = 'users:updateUser';
 export const REMOVE_USER = 'users:removeUser';
+export const CHANGE_HOST = 'users:changeHost';
 export const UPDATE_MEETING_TEMPLATE = 'template:update';
 export const SEND_MEETING_NOTE_EVENT = 'meeting:notes:create';
 export const REMOVE_MEETING_NOTE_EVENT = 'meeting:notes:delete';
@@ -22,6 +23,7 @@ export default {
   END_MEETING,
   LEAVE_MEETING,
   REMOVE_USER,
+  CHANGE_HOST,
   UPDATE_MEETING_TEMPLATE,
   SEND_MEETING_NOTE_EVENT,
   REMOVE_MEETING_NOTE_EVENT,

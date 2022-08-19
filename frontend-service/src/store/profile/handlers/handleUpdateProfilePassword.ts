@@ -1,12 +1,11 @@
 import { ErrorState, Profile } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { profilePasswordUrl } from '../../../utils/urls';
+import { CommonProfileResponse, UpdateProfilePasswordPayload } from '../types';
 
-export const handleUpdateProfilePassword = async (params: {
-    currentPassword: string;
-    newPassword: string;
-    newPasswordRepeat: string;
-}): Promise<Profile | ErrorState | null | undefined> => {
+export const handleUpdateProfilePassword = async (
+    params: UpdateProfilePasswordPayload,
+): Promise<CommonProfileResponse | ErrorState> => {
     const response = await sendRequestWithCredentials<Profile, ErrorState>({
         ...profilePasswordUrl,
         data: params,

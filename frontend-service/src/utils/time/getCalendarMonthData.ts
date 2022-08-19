@@ -1,12 +1,7 @@
-import getDaysInMonth from 'date-fns/getDaysInMonth';
-import setDate from 'date-fns/setDate';
-import getDay from 'date-fns/getDay';
-import addMonths from 'date-fns/addMonths';
+import { addDays, subDays, addMonths, getDay, setDate, getDaysInMonth } from 'date-fns';
+import { unflatArray } from '../arrays/unflatArray';
 
-import { addDays, subDays } from 'date-fns';
-import { unflatArray } from '../functions/unflatArray';
-
-export const getCalendarMonthData = (date: Date): (number | Date)[][] => {
+export const getCalendarMonthData = (date: Date): Date[][] => {
     const daysInMonth = getDaysInMonth(date);
 
     const currentMonthDaysNumber = new Array(daysInMonth)

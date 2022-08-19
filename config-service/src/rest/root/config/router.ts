@@ -12,12 +12,8 @@ const router = Router();
  *
  * @apiSuccess {String} hello String
  */
-router.get(
-    '/:key',
-    controller.getConfigKey,
-);
+router.get('/:key', controller.getConfigKey);
 
 router.get('/', controller.getAllConfigKeys);
 
-// eslint-disable-next-line import/no-default-export
 export default router;

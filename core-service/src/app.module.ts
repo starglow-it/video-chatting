@@ -19,6 +19,7 @@ import { AwsConnectorModule } from './aws-connector/aws-connector.module';
 import { CommonTemplatesModule } from './common-templates/common-templates.module';
 import { VerificationCodeModule } from './verification-code/verification-code.module';
 import { DashboardNotificationsModule } from './dashboard-notifications/dashboard-notifications.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { DashboardNotificationsModule } from './dashboard-notifications/dashboar
     AwsConnectorModule,
     VerificationCodeModule,
     DashboardNotificationsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

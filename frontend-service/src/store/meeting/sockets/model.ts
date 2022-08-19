@@ -1,36 +1,63 @@
-import { meetingDomain } from '../domain';
-import { MeetingUser } from '../../types';
+import { meetingDomain } from '../../domains';
 import { createSocketEvent } from '../../socket/model';
 import {
-    ANSWER_ACCESS_REQUEST,
-    CANCEL_ACCESS_REQUEST,
-    END_MEETING,
-    JOIN_WAITING_ROOM,
-    LEAVE_MEETING,
-    SEND_ACCESS_REQUEST,
-    START_MEETING,
-    UPDATE_MEETING,
-    UPDATE_MEETING_TEMPLATE,
+    EMIT_ANSWER_ACCESS_REQUEST,
+    EMIT_CANCEL_ACCESS_REQUEST,
+    EMIT_END_MEETING,
+    EMIT_JOIN_WAITING_ROOM,
+    EMIT_LEAVE_MEETING,
+    EMIT_SEND_ACCESS_REQUEST,
+    EMIT_START_MEETING,
+    EMIT_UPDATE_MEETING,
+    EMIT_UPDATE_MEETING_TEMPLATE,
 } from '../../../const/socketEvents/emitters';
 
-export const emitEndMeetingEvent = meetingDomain.event('emitEndMeetingEvent');
-export const emitLeaveMeetingEvent = meetingDomain.event('emitLeaveMeetingEvent');
-export const emitEnterMeetingEvent = meetingDomain.event('emitEnterMeetingEvent');
-export const emitEnterWaitingRoom = meetingDomain.event('emitEnterWaitingRoom');
-export const emitCancelEnterMeetingEvent = meetingDomain.event('emitCancelEnterMeetingEvent');
-export const emitAnswerAccessMeetingRequest = meetingDomain.event<{
-    isUserAccepted: boolean;
-    userId: MeetingUser['id'];
-}>('emitAnswerAccessMeetingRequest');
-export const emitUpdateMeetingTemplate = meetingDomain.event<void>('emitUpdateMeetingTemplate');
+import {
+    AnswerAccessMeetingRequestPayload,
+    CancelAccessMeetingRequestPayload,
+    EndMeetingPayload,
+    EnterMeetingRequestPayload,
+    JoinMeetingPayload,
+    LeaveMeetingPayload,
+    StartMeetingPayload,
+    JoinMeetingResponse,
+    StartMeetingResponse,
+    EnterMeetingRequestResponse,
+    CancelAccessMeetingRequestResponse,
+    UpdateMeetingTemplatePayload,
+} from './types';
+import { Meeting } from '../../types';
+
+export const emitEnterMeetingEvent = meetingDomain.createEvent('emitEnterMeetingEvent');
+export const emitEnterWaitingRoom = meetingDomain.createEvent('emitEnterWaitingRoom');
 
 // socket events
-export const joinMeetingEvent = createSocketEvent(JOIN_WAITING_ROOM);
-export const endMeetingEvent = createSocketEvent(END_MEETING);
-export const leaveMeetingSocketEvent = createSocketEvent(LEAVE_MEETING);
-export const startMeetingSocketEvent = createSocketEvent(START_MEETING);
-export const updateMeetingSocketEvent = createSocketEvent(UPDATE_MEETING);
-export const enterMeetingRequestSocketEvent = createSocketEvent(SEND_ACCESS_REQUEST);
-export const answerAccessMeetingRequestEvent = createSocketEvent(ANSWER_ACCESS_REQUEST);
-export const cancelAccessMeetingRequestEvent = createSocketEvent(CANCEL_ACCESS_REQUEST);
-export const updateMeetingTemplateEvent = createSocketEvent(UPDATE_MEETING_TEMPLATE);
+export const joinMeetingSocketEvent = createSocketEvent<JoinMeetingPayload, JoinMeetingResponse>(
+    EMIT_JOIN_WAITING_ROOM,
+);
+export const endMeetingSocketEvent = createSocketEvent<EndMeetingPayload, void>(EMIT_END_MEETING);
+export const leaveMeetingSocketEvent = createSocketEvent<LeaveMeetingPayload, void>(
+    EMIT_LEAVE_MEETING,
+);
+export const startMeetingSocketEvent = createSocketEvent<StartMeetingPayload, StartMeetingResponse>(
+    EMIT_START_MEETING,
+);
+export const updateMeetingSocketEvent = createSocketEvent<Partial<Meeting>, Meeting>(
+    EMIT_UPDATE_MEETING,
+);
+export const enterMeetingRequestSocketEvent = createSocketEvent<
+    EnterMeetingRequestPayload,
+    EnterMeetingRequestResponse
+>(EMIT_SEND_ACCESS_REQUEST);
+export const answerAccessMeetingRequestSocketEvent = createSocketEvent<
+    AnswerAccessMeetingRequestPayload,
+    void
+>(EMIT_ANSWER_ACCESS_REQUEST);
+export const cancelAccessMeetingRequestSocketEvent = createSocketEvent<
+    CancelAccessMeetingRequestPayload,
+    CancelAccessMeetingRequestResponse
+>(EMIT_CANCEL_ACCESS_REQUEST);
+export const updateMeetingTemplateSocketEvent = createSocketEvent<
+    UpdateMeetingTemplatePayload,
+    void
+>(EMIT_UPDATE_MEETING_TEMPLATE);

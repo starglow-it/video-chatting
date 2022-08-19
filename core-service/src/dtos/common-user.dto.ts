@@ -75,6 +75,9 @@ export class CommonUserDTO implements ICommonUserDTO {
   stripeSessionId: ICommonUserDTO['stripeSessionId'];
 
   @Expose()
+  stripeCustomerId: ICommonUserDTO['stripeCustomerId'];
+
+  @Expose()
   stripeSubscriptionId: ICommonUserDTO['stripeSubscriptionId'];
 
   @Expose()

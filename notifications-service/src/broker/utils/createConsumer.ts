@@ -8,15 +8,19 @@ interface IArgs {
     noAck?: boolean;
 }
 
-export const createConsumer = async ({
-    queueName, prefetch, noAck,
-}: IArgs, ...handlers: IBrokerHandler[]): Promise<void> => {
+export const createConsumer = async (
+    { queueName, prefetch, noAck }: IArgs,
+    ...handlers: IBrokerHandler[]
+): Promise<void> => {
     const connection = await getConnection();
     const channel = await connection.createChannel();
     await channel.prefetch(prefetch, true);
-    await channel.consume(queueName, wrapMsgPayloadWithCatch({
-        handlers,
-        channel,
-        noAck,
-    }));
+    await channel.consume(
+        queueName,
+        wrapMsgPayloadWithCatch({
+            handlers,
+            channel,
+            noAck,
+        }),
+    );
 };

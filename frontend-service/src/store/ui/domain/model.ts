@@ -1,3 +1,3 @@
-import { root } from '../../root';
+import { rootDomain } from '../../domains';
 
-export const uiDomain = root.createDomain('uiDomain');
+export const uiDomain = rootDomain.createDomain('uiDomain');

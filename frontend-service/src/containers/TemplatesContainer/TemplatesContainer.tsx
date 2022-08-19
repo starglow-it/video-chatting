@@ -2,7 +2,10 @@ import React, { memo, useCallback, useLayoutEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
+
+// hooks
+import { useTemplateNotification } from '@hooks/useTemplateNotification';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -26,7 +29,7 @@ import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExp
 
 // stores
 import {
-    $isOwner,
+    $isBusinessSubscription,
     $profileStore,
     $profileTemplatesStore,
     $skipProfileTemplates,
@@ -36,6 +39,7 @@ import {
     deleteProfileTemplateFx,
     getProfileTemplatesFx,
     getTemplatesFx,
+    purchaseTemplateFx,
     setReplaceTemplateIdEvent,
     setSkipProfileTemplates,
 } from '../../store';
@@ -57,9 +61,17 @@ const TemplatesContainer = memo(() => {
     const templates = useStore($templatesStore);
     const skipProfileTemplates = useStore($skipProfileTemplates);
     const profile = useStore($profileStore);
-    const isOwner = useStore($isOwner);
+    const isBusinessSubscription = useStore($isBusinessSubscription);
+
+    const freeTemplatesCount = useStoreMap({
+        store: $profileTemplatesStore,
+        keys: [],
+        fn: state => state?.list?.filter(template => template.type === 'free')?.length || 0,
+    });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
+
+    useTemplateNotification('/dashboard');
 
     useLayoutEffect(() => {
         (async () => {
@@ -75,29 +87,43 @@ const TemplatesContainer = memo(() => {
         })();
     }, [isTemplateDeleting]);
 
-    const handleChooseTemplate = useCallback(async ({ templateId }) => {
-        const result = await createMeetingFx({ templateId });
+    const handleChooseTemplate = useCallback(
+        async ({ templateId }: { templateId: Template['id'] }) => {
+            const result = await createMeetingFx({ templateId });
 
-        if (result.template) {
-            await router.push(
-                getClientMeetingUrl(result.template?.customLink || result?.template?.id),
-            );
-        }
-    }, []);
+            if (result.template) {
+                await router.push(
+                    getClientMeetingUrl(result.template?.customLink || result?.template?.id),
+                );
+            }
+        },
+        [],
+    );
 
     const isThereProfileTemplates = Boolean(profileTemplates?.list?.length);
 
-    const handleProfileTemplatesPageChange = useCallback(async newPage => {
+    const handleProfileTemplatesPageChange = useCallback(async (newPage: number) => {
         await getProfileTemplatesFx({ limit: 6 * newPage, skip: 0 });
+
         setSkipProfileTemplates(6 * newPage);
     }, []);
 
-    const handleCommonTemplatesPageChange = useCallback(async newPage => {
+    const handleCommonTemplatesPageChange = useCallback(async (newPage: number) => {
         await getTemplatesFx({ limit: 6 * newPage, skip: 0 });
     }, []);
 
     const handleChooseCommonTemplate = async (templateId: Template['id']) => {
-        if (profile.maxTemplatesNumber === profileTemplates.count) {
+        const targetTemplate = templates?.list?.find(template => template.id === templateId);
+
+        if (targetTemplate?.type === 'paid') {
+            const response = await purchaseTemplateFx({ templateId });
+
+            router.push(response.url);
+
+            return;
+        }
+
+        if (profile.maxTemplatesNumber === freeTemplatesCount) {
             setReplaceTemplateIdEvent(templateId);
 
             appDialogsApi.openDialog({
@@ -128,7 +154,7 @@ const TemplatesContainer = memo(() => {
 
     const timeLimit = formatCountDown(profile.maxMeetingTime, { hours: true, minutes: true });
 
-    const templatesLimit = `${profileTemplates.count}/${profile.maxTemplatesNumber}`;
+    const templatesLimit = `${freeTemplatesCount}/${profile.maxTemplatesNumber}`;
 
     return (
         <MainProfileWrapper>
@@ -150,16 +176,18 @@ const TemplatesContainer = memo(() => {
                         />
                     </CustomGrid>
                     <CustomGrid container justifyContent="center">
-                        <CustomTypography
-                            color="colors.grayscale.semidark"
-                            nameSpace="subscriptions"
-                            translation="limits.time"
-                            options={{ timeLimit }}
-                        />
-                        &nbsp;
-                        <CustomTypography color="colors.grayscale.semidark">
-                            &#8226;
-                        </CustomTypography>
+                        <ConditionalRender condition={!isBusinessSubscription}>
+                            <CustomTypography
+                                color="colors.grayscale.semidark"
+                                nameSpace="subscriptions"
+                                translation="limits.time"
+                                options={{ timeLimit }}
+                            />
+                            &nbsp;
+                            <CustomTypography color="colors.grayscale.semidark">
+                                &#8226;
+                            </CustomTypography>
+                        </ConditionalRender>
                         &nbsp;
                         <CustomTypography
                             color="colors.grayscale.semidark"
@@ -218,9 +246,7 @@ const TemplatesContainer = memo(() => {
             <DownloadIcsEventDialog />
             <ReplaceTemplateDialog />
 
-            <ConditionalRender condition={isOwner}>
-                <TimeExpiredDialog />
-            </ConditionalRender>
+            <TimeExpiredDialog />
         </MainProfileWrapper>
     );
 });

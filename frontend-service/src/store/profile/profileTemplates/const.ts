@@ -1,6 +1,6 @@
-import { EntityList, Template } from '../../types';
+import { EntityList, UserTemplate } from '../../types';
 
-export const initialProfileTemplatesStore: EntityList<Template> = {
+export const initialProfileTemplatesStore: EntityList<UserTemplate> = {
     list: [],
     count: 0,
 };

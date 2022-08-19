@@ -31,6 +31,7 @@ import {
     addNotificationEvent,
     appDialogsApi,
     $templatePreviewStore,
+    $isBusinessSubscription,
 } from '../../../store';
 
 // types
@@ -50,8 +51,12 @@ const TemplatePreviewDialog = memo(
         const { templatePreviewDialog } = useStore($appDialogsStore);
         const previewTemplate = useStore($templatePreviewStore);
         const profile = useStore($profileStore);
+        const isBusinessSubscription = useStore($isBusinessSubscription);
 
-        const isTimeLimitReached = profile.maxMeetingTime === 0;
+        const isTimeLimitReached =
+            profile.maxMeetingTime === 0 &&
+            !isBusinessSubscription &&
+            previewTemplate?.type !== 'paid';
 
         const handleClose = useCallback(() => {
             appDialogsApi.closeDialog({

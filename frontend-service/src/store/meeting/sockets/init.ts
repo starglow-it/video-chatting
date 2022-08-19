@@ -1,4 +1,4 @@
-import { attach, combine, guard, sample } from 'effector-next';
+import { attach, combine, guard, sample, Store } from 'effector-next';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
     $isOwner,
@@ -6,24 +6,27 @@ import {
     $meetingTemplateStore,
     setIsUserSendEnterRequest,
 } from '../meetingTemplate/model';
+import { $localUserStore, updateLocalUserEvent } from '../../users/localUser/model';
+import { $profileStore } from '../../profile/profile/model';
 import {
-    answerAccessMeetingRequestEvent,
-    cancelAccessMeetingRequestEvent,
-    emitAnswerAccessMeetingRequest,
-    emitCancelEnterMeetingEvent,
-    emitEndMeetingEvent,
     emitEnterMeetingEvent,
     emitEnterWaitingRoom,
-    emitLeaveMeetingEvent,
-    emitUpdateMeetingTemplate,
-    endMeetingEvent,
+    endMeetingSocketEvent,
     enterMeetingRequestSocketEvent,
-    joinMeetingEvent,
+    joinMeetingSocketEvent,
     leaveMeetingSocketEvent,
     startMeetingSocketEvent,
     updateMeetingSocketEvent,
-    updateMeetingTemplateEvent,
+    answerAccessMeetingRequestSocketEvent,
+    cancelAccessMeetingRequestSocketEvent,
+    updateMeetingTemplateSocketEvent,
 } from './model';
+import { meetingAvailableSocketEvent } from '../../waitingRoom/model';
+import { sendEnterWaitingRoomSocketEvent } from '../../waitingRoom/init';
+import { appDialogsApi } from '../../dialogs/init';
+import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
+import { setMeetingErrorEvent } from '../meetingError/model';
+
 import {
     AppDialogsEnum,
     Meeting,
@@ -33,17 +36,15 @@ import {
     JoinMeetingResult,
     MeetingAccessStatuses,
 } from '../../types';
-import { $localUserStore, updateLocalUserEvent } from '../../users/localUser/model';
-import { appDialogsApi } from '../../dialogs/init';
-import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
-import { sendMeetingAvailableSocketEvent } from '../../waitingRoom/model';
-import { $profileStore } from '../../profile/profile/model';
-import { setMeetingErrorEvent } from '../meetingError/model';
-import { sendEnterWaitingRoom } from '../../waitingRoom/init';
+import { SendAnswerMeetingRequestParams } from './types';
 
-export const joinMeetingEventWithData = attach({
-    effect: joinMeetingEvent,
-    source: combine<{ profile: Profile; template: UserTemplate; localUser: MeetingUser }>({
+export const sendJoinMeetingEventSocketEvent = attach<
+    void,
+    Store<{ profile: Profile; template: UserTemplate; localUser: MeetingUser }>,
+    typeof joinMeetingSocketEvent
+>({
+    effect: joinMeetingSocketEvent,
+    source: combine({
         profile: $profileStore,
         template: $meetingTemplateStore,
         localUser: $localUserStore,
@@ -63,18 +64,26 @@ export const joinMeetingEventWithData = attach({
     }),
 });
 
-export const startMeeting = attach({
+export const sendStartMeetingSocketEvent = attach<
+    void,
+    Store<{ meeting: Meeting; user: MeetingUser }>,
+    typeof startMeetingSocketEvent
+>({
     effect: startMeetingSocketEvent,
-    source: combine<{ meeting: Meeting; user: MeetingUser }>({
+    source: combine({
         meeting: $meetingStore,
         user: $localUserStore,
     }),
     mapParams: (params, { meeting, user }) => ({ meetingId: meeting?.id, user }),
 });
 
-export const enterMeetingRequest = attach({
+export const sendEnterMeetingRequestSocketEvent = attach<
+    void,
+    Store<{ meeting: Meeting; user: MeetingUser }>,
+    typeof enterMeetingRequestSocketEvent
+>({
     effect: enterMeetingRequestSocketEvent,
-    source: combine<{ meeting: Meeting; user: MeetingUser }>({
+    source: combine({
         meeting: $meetingStore,
         user: $localUserStore,
     }),
@@ -84,14 +93,66 @@ export const enterMeetingRequest = attach({
     }),
 });
 
+export const sendEndMeetingSocketEvent = attach<
+    void,
+    Store<{ meeting: Meeting }>,
+    typeof endMeetingSocketEvent
+>({
+    effect: endMeetingSocketEvent,
+    source: combine({ meeting: $meetingStore }),
+    mapParams: (params, { meeting }) => ({ meetingId: meeting?.id }),
+});
+
+export const sendLeaveMeetingSocketEvent = attach<
+    void,
+    Store<{ meeting: Meeting }>,
+    typeof leaveMeetingSocketEvent
+>({
+    effect: leaveMeetingSocketEvent,
+    source: combine({ meeting: $meetingStore }),
+    mapParams: (params, { meeting }) => ({ meetingId: meeting?.id }),
+});
+
+export const sendAnswerAccessMeetingRequestEvent = attach<
+    SendAnswerMeetingRequestParams,
+    Store<{ meeting: Meeting }>,
+    typeof answerAccessMeetingRequestSocketEvent
+>({
+    effect: answerAccessMeetingRequestSocketEvent,
+    source: combine({ meeting: $meetingStore }),
+    mapParams: (params, { meeting }) => ({ meetingId: meeting?.id, ...params }),
+});
+
+export const sendCancelAccessMeetingRequestEvent = attach<
+    void,
+    Store<{ meeting: Meeting }>,
+    typeof cancelAccessMeetingRequestSocketEvent
+>({
+    effect: cancelAccessMeetingRequestSocketEvent,
+    source: combine({ meeting: $meetingStore }),
+    mapParams: (params, { meeting }) => ({
+        meetingId: meeting?.id,
+    }),
+});
+
+export const sendUpdateMeetingTemplateSocketEvent = attach<
+    void,
+    Store<{ template: UserTemplate }>,
+    typeof updateMeetingTemplateSocketEvent
+>({
+    effect: updateMeetingTemplateSocketEvent,
+    source: combine({ template: $meetingTemplateStore }),
+    mapParams: (params, { template }) => ({ templateId: template.customLink || template.id }),
+});
+
 sample({
-    clock: joinMeetingEventWithData.doneData,
+    clock: sendJoinMeetingEventSocketEvent.doneData,
     source: combine({ meetingTemplate: $meetingTemplateStore, isOwner: $isOwner }),
     filter: source => source.isOwner,
     fn: source => ({
         templateId: source.meetingTemplate.id,
     }),
-    target: sendMeetingAvailableSocketEvent,
+    target: meetingAvailableSocketEvent,
 });
 
 guard({
@@ -102,51 +163,14 @@ guard({
     }),
     filter: ({ isUserSendEnterRequest, localUser }) =>
         isUserSendEnterRequest && localUser.accessStatus === MeetingAccessStatuses.Waiting,
-    target: enterMeetingRequest,
+    target: sendEnterMeetingRequestSocketEvent,
 });
 
 guard({
     clock: emitEnterWaitingRoom,
     source: $isUserSendEnterRequest,
     filter: isUserSendEnterRequest => !isUserSendEnterRequest,
-    target: sendEnterWaitingRoom,
-});
-
-sample({
-    clock: emitEndMeetingEvent,
-    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
-    fn: ({ meeting }) => ({ meetingId: meeting?.id }),
-    target: endMeetingEvent,
-});
-
-sample({
-    clock: emitLeaveMeetingEvent,
-    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
-    fn: ({ meeting }) => ({ meetingId: meeting?.id }),
-    target: leaveMeetingSocketEvent,
-});
-
-sample({
-    clock: emitAnswerAccessMeetingRequest,
-    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
-    fn: ({ meeting }, data) => ({ meetingId: meeting?.id, ...data }),
-    target: answerAccessMeetingRequestEvent,
-});
-
-sample({
-    clock: emitCancelEnterMeetingEvent,
-    source: combine<{ meeting: Meeting }>({ meeting: $meetingStore }),
-    fn: ({ meeting }) => ({
-        meetingId: meeting?.id,
-    }),
-    target: cancelAccessMeetingRequestEvent,
-});
-
-sample({
-    clock: emitUpdateMeetingTemplate,
-    source: combine<{ template: UserTemplate }>({ template: $meetingTemplateStore }),
-    fn: ({ template }) => ({ templateId: template.customLink || template.id }),
-    target: updateMeetingTemplateEvent,
+    target: sendEnterWaitingRoomSocketEvent,
 });
 
 const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
@@ -163,30 +187,29 @@ const handleMeetingEventsError = (data: string) => {
     });
 };
 
-joinMeetingEvent.failData.watch(handleMeetingEventsError);
+joinMeetingSocketEvent.failData.watch(handleMeetingEventsError);
 enterMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
-answerAccessMeetingRequestEvent.failData.watch(handleMeetingEventsError);
-
-joinMeetingEventWithData.doneData.watch(handleUpdateMeetingEntities);
-startMeeting.doneData.watch(handleUpdateMeetingEntities);
-enterMeetingRequest.doneData.watch(handleUpdateMeetingEntities);
-cancelAccessMeetingRequestEvent.doneData.watch(handleUpdateMeetingEntities);
+answerAccessMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
+joinMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+startMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+cancelAccessMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 
 sample({
-    clock: [enterMeetingRequest.doneData, sendEnterWaitingRoom.doneData],
+    clock: [sendEnterMeetingRequestSocketEvent.doneData, sendEnterWaitingRoomSocketEvent.doneData],
     fn: () => true,
     target: setIsUserSendEnterRequest,
 });
 
 sample({
-    clock: sendEnterWaitingRoom.doneData,
+    clock: sendEnterWaitingRoomSocketEvent.doneData,
     fn: () => ({ accessStatus: MeetingAccessStatuses.Waiting }),
     target: updateLocalUserEvent,
 });
 
 sample({
-    clock: cancelAccessMeetingRequestEvent.doneData,
+    clock: cancelAccessMeetingRequestSocketEvent.doneData,
     fn: () => false,
     target: setIsUserSendEnterRequest,
 });

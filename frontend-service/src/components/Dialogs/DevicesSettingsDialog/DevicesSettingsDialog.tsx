@@ -59,14 +59,13 @@ const validationSchema = yup.object({
     templateCurrency: simpleStringSchema().required('required'),
 });
 
-const DevicesSettingsDialog = memo(() => {
+const Component = () => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
     const profile = useStore($profileStore);
     const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
-
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
@@ -75,7 +74,7 @@ const DevicesSettingsDialog = memo(() => {
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
     const {
-        data: { changeStream, isCameraActive, isMicActive },
+        data: { changeStream, isCameraActive, isMicActive, isStreamRequested },
         actions: {
             onToggleCamera,
             onToggleMic,
@@ -139,9 +138,11 @@ const DevicesSettingsDialog = memo(() => {
     }, [devicesSettingsDialog]);
 
     useEffect(() => {
-        onToggleCamera(localUser.cameraStatus !== 'inactive');
-        onToggleMic(localUser.micStatus !== 'inactive');
-    }, [localUser.cameraStatus, localUser.micStatus]);
+        if (!isStreamRequested) {
+            onToggleCamera(localUser.cameraStatus !== 'inactive');
+            onToggleMic(localUser.micStatus !== 'inactive');
+        }
+    }, [localUser.cameraStatus, localUser.micStatus, devicesSettingsDialog, isStreamRequested]);
 
     const handleSaveSettings = useCallback(async () => {
         appDialogsApi.closeDialog({
@@ -264,6 +265,6 @@ const DevicesSettingsDialog = memo(() => {
             </FormProvider>
         </CustomDialog>
     );
-});
+};
 
-export { DevicesSettingsDialog };
+export const DevicesSettingsDialog = memo(Component);

@@ -9,7 +9,6 @@ import {
     deleteStripeAccountFx,
     loginStripeAccountFx,
 } from './model';
-import { deleteStripeDataEvent } from '../profile/profile/model';
 
 import { handleConnectStripeAccount } from './handlers/handleConnectStripeAccount';
 import { handleLoginStripeAccount } from './handlers/handleLoginStripeAccount';
@@ -44,8 +43,6 @@ loginStripeAccountFx.doneData.watch(result => {
         window.open(result.url, '_blank');
     }
 });
-
-deleteStripeAccountFx.doneData.watch(deleteStripeDataEvent);
 
 $paymentIntent.on(
     [createPaymentIntentWithData.doneData, cancelPaymentIntentFx.doneData],

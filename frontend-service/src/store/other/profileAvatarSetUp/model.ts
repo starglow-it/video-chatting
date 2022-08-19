@@ -1,4 +1,4 @@
-import { otherStoresDomain } from '../domain/model';
+import { otherStoresDomain } from '../../domains';
 
 type UploadProfileAvatar = { file: File | null; dataUrl: string };
 
@@ -8,7 +8,9 @@ const initialProfileAvatarState: UploadProfileAvatar = {
 };
 
 export const $profileAvatarImage =
-    otherStoresDomain.store<UploadProfileAvatar>(initialProfileAvatarState);
+    otherStoresDomain.createStore<UploadProfileAvatar>(initialProfileAvatarState);
 
-export const setProfileAvatar = otherStoresDomain.event<UploadProfileAvatar>('setProfileAvatar');
-export const resetProfileAvatarEvent = otherStoresDomain.event('setProfileAvatar');
+export const setProfileAvatarEvent =
+    otherStoresDomain.createEvent<UploadProfileAvatar>('setProfileAvatarEvent');
+export const resetProfileAvatarEvent =
+    otherStoresDomain.createEvent<void>('resetProfileAvatarEvent');

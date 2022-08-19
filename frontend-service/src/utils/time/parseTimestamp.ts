@@ -1,12 +1,5 @@
 import * as dateFns from 'date-fns';
-
-type ParsedTimeStamp = {
-    year: number;
-    month: number;
-    day: number;
-    hours: number;
-    minutes: number;
-};
+import { ParsedTimeStamp } from '../../types';
 
 export const parseTimestamp = (ts: number): ParsedTimeStamp => ({
     year: dateFns.getYear(ts),

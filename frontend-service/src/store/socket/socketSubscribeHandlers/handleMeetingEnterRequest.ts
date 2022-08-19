@@ -1,6 +1,6 @@
 import { updateMeetingUserEvent } from '../../users/meetingUsers/model';
-import { MeetingUser } from '../../types';
+import { UpdateMeetingUserPayload } from '../types';
 
-export const handleMeetingEnterRequest = (data: { user: MeetingUser }) => {
+export const handleMeetingEnterRequest = (data: UpdateMeetingUserPayload) => {
     updateMeetingUserEvent({ user: data.user });
 };

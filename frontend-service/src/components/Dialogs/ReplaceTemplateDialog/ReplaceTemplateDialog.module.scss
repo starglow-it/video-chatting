@@ -4,14 +4,15 @@
   position: relative;
   padding: rem(40px);
   width: rem(472px);
-  min-height: rem(262px);
   display: flex;
+}
 
-  transition: min-height 200ms linear;
+.content {
+  display: flex;
+  position: relative;
+  height: var(--height);
 
-  &.replace {
-    min-height: rem(508px);
-  }
+  transition: height 200ms linear;
 }
 
 .title {
@@ -20,7 +21,11 @@
 }
 
 .buttons {
-  margin: rem(auto 0 0 0);
+  margin: rem(40px 0 0 0);
+
+  &.withSlider {
+    margin: rem(108px 0 0 0);
+  }
 }
 
 .text {
@@ -39,7 +44,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
 }
 
 .templatesInnerWrapper {

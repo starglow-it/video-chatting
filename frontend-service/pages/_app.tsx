@@ -20,7 +20,7 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 
 import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
 
-import { root, $profileStore, $authStore, checkAuthFx } from '../src/store';
+import { $profileStore, $authStore, checkAuthFx } from '../src/store';
 
 import { redirectTo } from '../src/helpers/http/redirectTo';
 import createEmotionCache from '../src/createEmotionCache';
@@ -33,6 +33,7 @@ import { typographyTheme } from '../src/themes/typography';
 import { componentsTheme } from '../src/themes/components';
 import { uiTheme } from '../src/themes/ui';
 import { initialProfileState } from '../src/store/profile/profile/const';
+import { rootDomain } from '../src/store/domains';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -50,10 +51,10 @@ const CustomApp = ({
     pageProps,
     emotionCache = clientSideEmotionCache,
 }: AppProps & { emotionCache: EmotionCache }): JSX.Element => {
-    const scope = useScope(root, pageProps.initialState);
+    const scope = useScope(rootDomain, pageProps.initialState);
 
     if (pageProps.initialState) {
-        hydrate(root, { values: pageProps.initialState });
+        hydrate(rootDomain, { values: pageProps.initialState });
     }
 
     return (

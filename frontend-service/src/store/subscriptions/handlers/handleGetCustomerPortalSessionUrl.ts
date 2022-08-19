@@ -1,13 +1,12 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { ErrorState } from '../../types';
 import { getCustomerPortalSessionUrl } from '../../../utils/urls';
+import { GetPortalSessionUrlPayload, GetPortalSessionUrlResponse } from '../products/types';
 
 export const handleGetCustomerPortalSessionUrl = async ({
     subscriptionId,
-}: {
-    subscriptionId: string;
-}) => {
-    const response = await sendRequestWithCredentials<any, ErrorState>(
+}: GetPortalSessionUrlPayload) => {
+    const response = await sendRequestWithCredentials<GetPortalSessionUrlResponse, ErrorState>(
         getCustomerPortalSessionUrl({ subscriptionId }),
     );
 

@@ -1,16 +1,44 @@
 import { Module } from '@nestjs/common';
-import { PaymentsController } from './payments.controller';
-import { PaymentsService } from './payments.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import {
-  MeetingDonation,
-  MeetingDonationSchema,
-} from '../schemas/meeting-donation.schema';
+  ClientProvider,
+  ClientsModule,
+  Transport,
+} from '@nestjs/microservices';
+
+import { PAYMENTS_PROVIDER } from '@shared/providers';
+
+import { PaymentsController } from './payments.controller';
+
+import { PaymentsService } from './payments.service';
+import { ConfigClientService } from '../config/config.service';
+import { ConfigModule } from '../config/config.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: MeetingDonation.name, schema: MeetingDonationSchema },
+    ClientsModule.registerAsync([
+      {
+        name: PAYMENTS_PROVIDER,
+        imports: [ConfigModule],
+        inject: [ConfigClientService],
+        useFactory: async (
+          config: ConfigClientService,
+        ): Promise<ClientProvider> => {
+          const allConfig = await config.getAll();
+
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: [
+                `amqp://${allConfig.rabbitMqUser}:${allConfig.rabbitMqPass}@${allConfig.rabbitMqHost}`,
+              ],
+              queue: allConfig.rabbitMqPaymentQueue,
+              queueOptions: {
+                durable: false,
+              },
+            },
+          };
+        },
+      },
     ]),
   ],
   controllers: [PaymentsController],

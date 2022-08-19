@@ -1,5 +1,6 @@
 import { EntityList, Template, UserTemplate } from '../types';
 import { templatesDomain } from './domain/model';
+import { ParsedTimeStamp } from '../../types';
 
 const initialTemplatesStore: EntityList<Template> = {
     list: [],
@@ -54,13 +55,25 @@ export const getUsersTemplatesFx = templatesDomain.effect<
     void
 >('getUsersTemplatesFx');
 
+export const getUserTemplateFx = templatesDomain.effect<
+    { templateId: Template['templateId'] },
+    UserTemplate | null | undefined,
+    void
+>('getUserTemplateFx');
+
+export const purchaseTemplateFx = templatesDomain.effect<
+    { templateId: Template['id'] },
+    { url: string },
+    void
+>('purchaseTemplateFx');
+
 export const sendScheduleInviteFx = templatesDomain.effect<
     {
         templateId: string;
         timeZone: string;
         comment: string;
-        startAt: any;
-        endAt: any;
+        startAt: ParsedTimeStamp;
+        endAt: ParsedTimeStamp;
         userEmails: string[];
     },
     string | undefined,

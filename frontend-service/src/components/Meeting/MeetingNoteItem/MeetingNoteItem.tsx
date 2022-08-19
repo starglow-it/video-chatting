@@ -13,6 +13,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
@@ -26,11 +27,11 @@ import styles from './MeetingNoteItem.module.scss';
 
 // stores
 import {
-    $isOwner,
     addNotificationEvent,
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
     $localUserStore,
+    $isMeetingHostStore,
 } from '../../../store';
 
 const MeetingNoteItem = memo(
@@ -48,7 +49,7 @@ const MeetingNoteItem = memo(
         dragIndex: number;
     }) => {
         const localUser = useStore($localUserStore);
-        const isOwner = useStore($isOwner);
+        const isMeetingHost = useStore($isMeetingHostStore);
 
         const isMeetingNoteOwner = localUser.id === note.user;
 
@@ -119,14 +120,14 @@ const MeetingNoteItem = memo(
                             </CustomTypography>
                         </CustomGrid>
                     </CustomScroll>
-                    {(isOwner || isMeetingNoteOwner) && (
+                    <ConditionalRender condition={isMeetingHost || isMeetingNoteOwner}>
                         <RoundCloseIcon
                             width="20px"
                             height="20px"
                             className={styles.unpinButton}
                             onClick={handleUnpinNote}
                         />
-                    )}
+                    </ConditionalRender>
                 </CustomGrid>
             </Draggable>
         );

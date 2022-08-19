@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 let scope: Scope;
 
 function initializeScope(domain: Domain, initialData: unknown) {
-    const _scope = fork(domain, {
+    const innerScope = fork(domain, {
         values: {
             ...(scope ? serialize(scope, { onlyChanges: true }) : {}),
             ...(typeof initialData === 'object' ? initialData : {}),
@@ -12,10 +12,10 @@ function initializeScope(domain: Domain, initialData: unknown) {
     });
 
     if (typeof window !== 'undefined') {
-        scope = _scope;
+        scope = innerScope;
     }
 
-    return _scope;
+    return innerScope;
 }
 
 export function useScope(domain: Domain, initialState: unknown) {

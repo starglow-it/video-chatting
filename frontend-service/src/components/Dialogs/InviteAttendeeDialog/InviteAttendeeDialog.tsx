@@ -16,10 +16,15 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { ScheduleAttendees } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees';
 
 // stores
-import { $appDialogsStore, appDialogsApi, sendInviteEmailFx } from '../../../store';
+import {
+    $appDialogsStore,
+    addNotificationEvent,
+    appDialogsApi,
+    sendInviteEmailFx,
+} from '../../../store';
 
 // types
-import { AppDialogsEnum } from '../../../store/types';
+import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 // styles
 import styles from './InviteAttendeeDialog.module.scss';
@@ -47,21 +52,26 @@ const InviteAttendeeDialog = memo(() => {
 
     const { handleSubmit, reset } = methods;
 
+    const handleClose = useCallback(() => {
+        appDialogsApi.closeDialog({
+            dialogKey: AppDialogsEnum.inviteAttendeeByEmailDialog,
+        });
+    }, []);
+
     const onSubmit = useCallback(
         handleSubmit(async () => {
             await sendInviteEmailFx({ userEmails, meetingId: router?.query?.token });
             reset();
             handleClose();
             setUserEmails([]);
+
+            addNotificationEvent({
+                type: NotificationType.InviteSent,
+                message: 'meeting.inviteSent',
+            });
         }),
         [userEmails],
     );
-
-    const handleClose = useCallback(() => {
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.inviteAttendeeByEmailDialog,
-        });
-    }, []);
 
     const handleAddUserEmail = useCallback(newEmail => {
         setUserEmails(prev => {

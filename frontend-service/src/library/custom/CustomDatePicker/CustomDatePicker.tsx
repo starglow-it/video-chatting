@@ -42,7 +42,7 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
         setCurrentMonth(prev => getNextMonth(prev));
     }, []);
 
-    const handleChangeSelectDate = useCallback(date => {
+    const handleChangeSelectDate = useCallback((date: Date) => {
         setSelectedDate(() => date);
         onDateSelected?.(date);
     }, []);
@@ -72,7 +72,7 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
     const renderMonth = useMemo(() => {
         const monthData = getCalendarMonthData(currentMonthDate);
 
-        return monthData.map((week, index) => {
+        return monthData.map(week => {
             const renderWeeks = week.map(weekDay => {
                 const isActiveDate = isCurrentMonthDay(currentMonthDate, weekDay);
 
@@ -81,10 +81,14 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
 
                 const day = formatDate(weekDay, 'd');
 
+                const handleChooseWeekDay = () => {
+                    handleChangeSelectDate(weekDay);
+                };
+
                 return (
                     <CustomGrid
                         key={day}
-                        onClick={handleChangeSelectDate.bind(null, weekDay)}
+                        onClick={handleChooseWeekDay}
                         container
                         justifyContent="center"
                         alignItems="center"
@@ -108,7 +112,7 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
 
             return (
                 <CustomGrid
-                    key={index}
+                    key={week?.[0]?.getTime()}
                     container
                     justifyContent="space-between"
                     alignItems="center"
@@ -156,6 +160,4 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
     );
 };
 
-const CustomDatePicker = memo<CustomDatePickerProps>(Component);
-
-export { CustomDatePicker };
+export const CustomDatePicker = memo<CustomDatePickerProps>(Component);

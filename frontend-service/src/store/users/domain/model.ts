@@ -1,3 +1,3 @@
-import { root } from '../../root';
+import { rootDomain } from '../../domains';
 
-export const meetingUsersDomain = root.createDomain('meetingUsersDomain');
+export const meetingUsersDomain = rootDomain.createDomain('meetingUsersDomain');

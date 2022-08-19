@@ -18,7 +18,10 @@ import { DashboardNotificationItem } from '@components/Dashboard/DashboardNotifi
 import { DashboardNotificationsProps } from './types';
 
 // stores
-import { $dashboardNotificationsStore, emitReadDashboardNotifications } from '../../../store';
+import {
+    $dashboardNotificationsStore,
+    sendReadDashboardNotificationsSocketEvent,
+} from '../../../store';
 
 // styles
 import styles from './DashboardNotifications.module.scss';
@@ -29,7 +32,7 @@ const Component: React.FunctionComponent<ComponentPropsType> = ({ onClickAway },
     const dashboardNotifications = useStore($dashboardNotificationsStore);
 
     const handleMarkAllNotificationAsRead = useCallback(() => {
-        emitReadDashboardNotifications();
+        sendReadDashboardNotificationsSocketEvent();
     }, []);
 
     const renderDashboardNotifications = useMemo(

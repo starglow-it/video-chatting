@@ -5,5 +5,4 @@ const router = Router();
 
 router.use('/config', configRoutes);
 
-// eslint-disable-next-line import/no-default-export
 export default router;

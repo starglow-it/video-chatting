@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { IConfig } from '@shared/interfaces/config.interface';
 import { ConfigClientService } from './config/config.service';
 import { SeederService } from './seeder/seeder.service';
@@ -33,7 +33,7 @@ async function bootstrap() {
 
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
-  await seeder.seedCommonTemplates();
+  seeder.seedCommonTemplates();
 
   usersController.startCheckSubscriptions();
 

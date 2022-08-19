@@ -8,11 +8,11 @@ import {
     checkCustomLinkFx,
     resetMeetingTemplateStoreEvent,
 } from './model';
-import { emitUpdateMeetingTemplate } from '../sockets/model';
 
 import { handleUpdateMeetingTemplate } from './handlers/handleUpdateMeetingTemplate';
 import { handleGetMeetingTemplate } from './handlers/handleGetMeetingTemplate';
 import { handleCheckCustomLink } from './handlers/handleCheckCustomLink';
+import { sendUpdateMeetingTemplateSocketEvent } from '../sockets/init';
 
 getMeetingTemplateFx.use(handleGetMeetingTemplate);
 updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);
@@ -27,5 +27,5 @@ $meetingTemplateStore.reset(resetMeetingTemplateStoreEvent);
 $isUserSendEnterRequest.on(setIsUserSendEnterRequest, (state, data) => data);
 
 updateMeetingTemplateFxWithData.doneData.watch(() => {
-    emitUpdateMeetingTemplate();
+    sendUpdateMeetingTemplateSocketEvent();
 });

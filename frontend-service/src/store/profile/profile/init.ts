@@ -13,9 +13,12 @@ import {
     checkResetPasswordLinkFx,
     resetPasswordFx,
     deleteProfileFx,
-    deleteStripeDataEvent,
 } from './model';
+import { initialProfileState } from './const';
+import { resetAuthStateEvent } from '../../auth/model';
+import { deleteStripeAccountFx } from '../../payments/model';
 
+// handlers
 import { handleGetProfile } from '../handlers/handleGetProfile';
 import { handleUpdateProfileInfo } from '../handlers/handleUpdateProfileInfo';
 import { handleUpdateProfilePhoto } from '../handlers/handleUpdateProfilePhoto';
@@ -26,9 +29,6 @@ import { handleSendResetPasswordLink } from '../handlers/handleSendResetPassword
 import { handleCheckResetPasswordLink } from '../handlers/handleCheckResetPasswordLink';
 import { handleResetPassword } from '../handlers/handleResetPassword';
 import { handleDeleteProfile } from '../handlers/handleDeleteProfile';
-
-import { initialProfileState } from './const';
-import { resetAuthStateEvent } from '../../auth/model';
 
 getProfileFx.use(handleGetProfile);
 updateProfileFx.use(handleUpdateProfileInfo);
@@ -73,7 +73,7 @@ $profileStore
             ...data,
         }),
     )
-    .on(deleteStripeDataEvent, state => ({
+    .on(deleteStripeAccountFx.doneData, state => ({
         ...state,
         stripeEmail: '',
         stripeAccountId: '',

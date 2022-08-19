@@ -38,7 +38,13 @@ export class CommonTemplateDTO implements ICommonTemplate {
   type: string;
 
   @Expose()
+  priceInCents: number;
+
+  @Expose()
   isAudioAvailable: boolean;
+
+  @Expose()
+  stripeProductId: string;
 
   @Expose()
   usersPosition: { bottom: number; left: number }[];

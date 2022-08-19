@@ -12,12 +12,12 @@ export const initExchanges = async ({ connection }: IArgs): Promise<void> => {
     const exchanges = Object.values(exchangesList);
 
     await Promise.all(
-        exchanges.map((exchange) => (
+        exchanges.map((exchange) =>
             createExchange({
                 channel,
                 exchange,
-            })
-        )),
+            }),
+        ),
     );
     await channel.close();
 };

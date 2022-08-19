@@ -1,8 +1,8 @@
-import Mailchimp, {Recipient} from '@mailchimp/mailchimp_transactional';
+import Mailchimp, { Recipient } from '@mailchimp/mailchimp_transactional';
 
-import {SendEmailRequest} from "@shared/requests/sendEmail.request";
-import {getConfigVar} from "../../services/config";
-import {Readable} from "stream";
+import { SendEmailRequest } from '@shared/requests/sendEmail.request';
+import { getConfigVar } from '../../services/config';
+import { Readable } from 'stream';
 
 let client: Mailchimp.ApiClient | null;
 
@@ -18,16 +18,22 @@ const getOrCreateClient = async () => {
     client = Mailchimp(apiKey!);
 
     return client;
-}
+};
 
-export const sendEmail = async ({ to, subject, html, template, icalEventContent }: SendEmailRequest) => {
+export const sendEmail = async ({
+    to,
+    subject,
+    html,
+    template,
+    icalEventContent,
+}: SendEmailRequest) => {
     const emailClient = await getOrCreateClient();
 
     const smtpUser = await getConfigVar('smtpUser');
     const smtpUserName = await getConfigVar('smtpUserName');
 
     const sendTo: Recipient[] = Array.isArray(to)
-        ? to.map(({ email, name}) => ({ email, name, type: 'to' }))
+        ? to.map(({ email, name }) => ({ email, name, type: 'to' }))
         : [{ ...to, type: 'to' }];
 
     if (template?.key) {
@@ -49,34 +55,34 @@ export const sendEmail = async ({ to, subject, html, template, icalEventContent 
                 from_email: smtpUser,
                 from_name: smtpUserName,
                 to: sendTo,
-                merge_language: "mailchimp",
+                merge_language: 'mailchimp',
                 global_merge_vars: [
                     ...(template.data ?? []),
                     {
-                        name: "LIST_ADDRESS_HTML",
-                        content: smtpUser
+                        name: 'LIST_ADDRESS_HTML',
+                        content: smtpUser,
                     },
                     {
-                        name: "COMPANY",
-                        content: smtpUserName
+                        name: 'COMPANY',
+                        content: smtpUserName,
                     },
                     {
-                        name: "DESCRIPTION",
-                        content: "Video conference platform"
-                    }
+                        name: 'DESCRIPTION',
+                        content: 'Video conference platform',
+                    },
                 ],
                 // @ts-ignore
                 attachments: icalEventContent
                     ? [
-                        {
-                            type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
-                            name: "invite.ics",
-                            // @ts-ignore
-                            content: Readable.from(icalEventContent.data)
-                        }
-                    ]
-                    : []
-            }
+                          {
+                              type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
+                              name: 'invite.ics',
+                              // @ts-ignore
+                              content: Readable.from(icalEventContent.data),
+                          },
+                      ]
+                    : [],
+            },
         });
 
         return;

@@ -6,7 +6,8 @@ type CommonIconProps = {
     height: string;
     className?: string;
     isActive?: boolean;
-    onClick?: ((() => void) & React.MouseEventHandler<any>) | undefined;
+    style?: React.CSSProperties;
+    onClick?: ((() => void) & React.MouseEventHandler<unknown>) | undefined;
 };
 
 type CustomButtonProps = {
@@ -20,6 +21,7 @@ export type SliderArrowProps = {
     customClassName?: string;
     style?: string;
     onClick?: () => void;
+    dotsRef: unknown;
 };
 
 export type { CustomButtonProps, CommonIconProps };

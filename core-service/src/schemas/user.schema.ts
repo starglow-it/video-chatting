@@ -114,6 +114,11 @@ export class User {
   @Prop({
     type: mongoose.Schema.Types.String,
   })
+  stripeCustomerId: ICommonUserDTO['stripeCustomerId'];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+  })
   stripeSubscriptionId: ICommonUserDTO['stripeSubscriptionId'];
 
   @Prop({

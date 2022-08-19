@@ -1,5 +1,5 @@
 import { serverUrl, templatesScope, usersScope } from './baseData';
-import { HttpMethods } from '../../store/types';
+import { HttpMethods, Template } from '../../store/types';
 
 export const TEMPLATES_URL = `${templatesScope}`;
 
@@ -7,6 +7,11 @@ export const templatesUrl = `${serverUrl}/${TEMPLATES_URL}`;
 
 export const usersTemplatesUrl = ({ skip = 0, limit = 0 }) => ({
     url: `${serverUrl}/${usersScope}/templates?skip=${skip}&limit=${limit}`,
+    method: HttpMethods.Get,
+});
+
+export const userTemplateUrl = ({ templateId }: { templateId: Template['templateId'] }) => ({
+    url: `${serverUrl}/${usersScope}/templates/${templateId}`,
     method: HttpMethods.Get,
 });
 
