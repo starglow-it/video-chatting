@@ -17,60 +17,58 @@ import styles from './ConfirmQuitOnboardingDialog.module.scss';
 import { ConfirmQuitOnboardingDialogProps } from './types';
 import { AppDialogsEnum } from '../../../store/types';
 
-const ConfirmQuitOnboardingDialog = memo(
-    ({ onConfirm, onCancel }: ConfirmQuitOnboardingDialogProps) => {
-        const { confirmQuitOnboardingDialog } = useStore($appDialogsStore);
+const Component = ({ onConfirm, onCancel }: ConfirmQuitOnboardingDialogProps) => {
+    const { confirmQuitOnboardingDialog } = useStore($appDialogsStore);
 
-        const handleClose = useCallback(() => {
-            appDialogsApi.closeDialog({
-                dialogKey: AppDialogsEnum.confirmQuitOnboardingDialog,
-            });
-        }, []);
+    const handleClose = useCallback(() => {
+        appDialogsApi.closeDialog({
+            dialogKey: AppDialogsEnum.confirmQuitOnboardingDialog,
+        });
+    }, []);
 
-        const handleCancel = useCallback(() => {
-            onCancel?.();
-        }, [onCancel]);
+    const handleCancel = useCallback(() => {
+        onCancel?.();
+    }, [onCancel]);
 
-        const handleConfirm = useCallback(() => {
-            onConfirm?.();
-        }, [onConfirm]);
+    const handleConfirm = useCallback(() => {
+        onConfirm?.();
+    }, [onConfirm]);
 
-        return (
-            <CustomDialog
-                contentClassName={styles.content}
-                open={confirmQuitOnboardingDialog}
-                onBackdropClick={handleClose}
-                onClose={handleClose}
-            >
-                <CustomGrid container direction="column" alignItems="center" gap={3}>
-                    <CustomTypography
-                        variant="h4bold"
-                        nameSpace="templates"
-                        translation="onboarding.quit"
+    return (
+        <CustomDialog
+            contentClassName={styles.content}
+            open={confirmQuitOnboardingDialog}
+            onBackdropClick={handleClose}
+            onClose={handleClose}
+        >
+            <CustomGrid container direction="column" alignItems="center" gap={3}>
+                <CustomTypography
+                    variant="h4bold"
+                    nameSpace="templates"
+                    translation="onboarding.quit"
+                />
+                <CustomTypography
+                    nameSpace="templates"
+                    translation="onboarding.explanation"
+                    align="center"
+                    className={styles.text}
+                />
+                <CustomGrid container gap={1.5} className={styles.buttons} wrap="nowrap">
+                    <CustomButton
+                        onClick={handleConfirm}
+                        variant="custom-cancel"
+                        nameSpace="common"
+                        translation="buttons.quit"
                     />
-                    <CustomTypography
-                        nameSpace="templates"
-                        translation="onboarding.explanation"
-                        align="center"
-                        className={styles.text}
+                    <CustomButton
+                        onClick={handleCancel}
+                        nameSpace="common"
+                        translation="buttons.stay"
                     />
-                    <CustomGrid container gap={1.5} className={styles.buttons} wrap="nowrap">
-                        <CustomButton
-                            onClick={handleConfirm}
-                            variant="custom-cancel"
-                            nameSpace="common"
-                            translation="buttons.quit"
-                        />
-                        <CustomButton
-                            onClick={handleCancel}
-                            nameSpace="common"
-                            translation="buttons.stay"
-                        />
-                    </CustomGrid>
                 </CustomGrid>
-            </CustomDialog>
-        );
-    },
-);
+            </CustomGrid>
+        </CustomDialog>
+    );
+};
 
-export { ConfirmQuitOnboardingDialog };
+export const ConfirmQuitOnboardingDialog = memo(Component);

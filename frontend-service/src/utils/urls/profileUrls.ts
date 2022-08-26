@@ -1,4 +1,4 @@
-import { HttpMethods } from '../../store/types';
+import { HttpMethods, Template } from '../../store/types';
 import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
 
 export const PROFILE_URL = `${profileScope}`;
@@ -37,6 +37,15 @@ export const postProfileAvatarUrl = {
 
 export const profileTemplatesUrl = ({ skip, limit }: { skip?: number; limit?: number }) => ({
     url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}`,
+    method: HttpMethods.Get,
+});
+
+export const profileTemplateByTemplateIdUrl = ({
+    templateId,
+}: {
+    templateId: Template['templateId'];
+}) => ({
+    url: `${baseProfileUrl}/templates/id/${templateId}`,
     method: HttpMethods.Get,
 });
 

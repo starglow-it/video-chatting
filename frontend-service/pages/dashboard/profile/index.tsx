@@ -5,9 +5,8 @@ import { ProfileContainer } from '@containers/ProfileContainer/ProfileContainer'
 
 import { DashboardLayout } from '@components/DashboardLayout/DashboardLayout';
 
-import { pageLoaded } from '../../../src/store/root';
+import { pageLoaded } from '../../../src/store';
 
-// @ts-ignore
 const enhance = withStart(pageLoaded);
 
 const DashboardPage: NextPage = (): JSX.Element => (

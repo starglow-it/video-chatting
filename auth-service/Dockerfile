@@ -6,9 +6,9 @@ COPY ./shared ./shared
 
 RUN mkdir ./auth-service
 
-COPY ./auth-service/package*.json ./auth-service/
+COPY ./auth-service/package.json ./auth-service/
 
-RUN cd ./auth-service && npm ci --silent
+RUN cd ./auth-service && npm i --legacy-peer-deps
 
 COPY ./auth-service ./auth-service/
 

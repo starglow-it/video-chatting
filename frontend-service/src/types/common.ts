@@ -8,3 +8,13 @@ export type ParsedTimeStamp = {
     hours: number;
     minutes: number;
 };
+
+export type SavedSettings = {
+    blurSetting: boolean;
+    savedAudioDeviceId: MediaDeviceInfo['deviceId'];
+    savedVideoDeviceId: MediaDeviceInfo['deviceId'];
+    micActiveSetting: boolean;
+    cameraActiveSetting: boolean;
+    backgroundAudioVolumeSetting: number;
+    backgroundAudioSetting: boolean;
+};

@@ -71,6 +71,10 @@ export class MeetingNotesGateway extends BaseGateway {
       this.emitToRoom(`meeting:${user.meeting._id}`, SEND_MEETING_NOTE, {
         meetingNotes: [meetingNote],
       });
+
+      return {
+        success: true,
+      };
     });
   }
 

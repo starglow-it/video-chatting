@@ -31,6 +31,10 @@
 .deviceButton {
   @extend %base-wrapper-icon-button;
 
+  &.inactive {
+    color: rgba($primary-white, 0.25);
+  }
+
   display: flex;
   justify-content: center;
   align-items: center;

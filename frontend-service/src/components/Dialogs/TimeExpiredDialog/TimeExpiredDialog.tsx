@@ -20,6 +20,9 @@ import { $appDialogsStore, $profileStore, appDialogsApi } from '../../../store';
 // types
 import { AppDialogsEnum } from '../../../store/types';
 
+// const
+import { profileRoute } from '../../../const/client-routes';
+
 const Component = () => {
     const router = useRouter();
     const profile = useStore($profileStore);
@@ -33,7 +36,7 @@ const Component = () => {
     };
 
     const handleUpgradeSubscription = () => {
-        router.push('/dashboard/profile');
+        router.push(profileRoute);
         handleClose();
     };
 

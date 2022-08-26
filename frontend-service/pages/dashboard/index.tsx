@@ -5,9 +5,8 @@ import { TemplatesContainer } from '@containers/TemplatesContainer/TemplatesCont
 
 import { DashboardLayout } from '@components/DashboardLayout/DashboardLayout';
 
-import { pageLoaded } from '../../src/store/root';
+import { pageLoaded } from '../../src/store';
 
-// @ts-ignore
 const enhance = withStart(pageLoaded);
 
 const TemplatesPage: NextPage = (): JSX.Element => (

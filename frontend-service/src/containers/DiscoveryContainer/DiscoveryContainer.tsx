@@ -26,7 +26,7 @@ import {
 import styles from './DiscoveryContainer.module.scss';
 
 // types
-import { AppDialogsEnum } from '../../store/types';
+import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
 import { getClientMeetingUrl } from '../../utils/urls';
 
 const DiscoveryContainer = memo(() => {
@@ -40,15 +40,15 @@ const DiscoveryContainer = memo(() => {
         })();
     }, []);
 
-    const handleEnterWaitingRoom = useCallback(({ templateId }) => {
+    const handleEnterWaitingRoom = useCallback((templateId: Template['id']) => {
         router.push(getClientMeetingUrl(templateId));
     }, []);
 
-    const handleUserTemplatesPageChange = useCallback(async newPage => {
+    const handleUserTemplatesPageChange = useCallback(async (newPage: number) => {
         await getUsersTemplatesFx({ limit: 6 * newPage, skip: 0 });
     }, []);
 
-    const handleScheduleMeeting = useCallback(({ templateId }) => {
+    const handleScheduleMeeting = useCallback(({ templateId }: { templateId: Template['id'] }) => {
         setScheduleTemplateIdEvent(templateId);
 
         appDialogsApi.openDialog({
@@ -79,7 +79,7 @@ const DiscoveryContainer = memo(() => {
                         translation="pages.discovery"
                     />
                 </CustomGrid>
-                <TemplatesGrid
+                <TemplatesGrid<UserTemplate>
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleUserTemplatesPageChange}

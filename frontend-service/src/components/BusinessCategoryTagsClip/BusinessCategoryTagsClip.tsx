@@ -23,11 +23,11 @@ import { BusinessCategory } from '../../store/types';
 
 const Component = ({
     lines,
-    tags,
+    tags = [],
     maxWidth,
 }: {
     lines: number;
-    tags?: BusinessCategory[];
+    tags: BusinessCategory[];
     maxWidth: number;
 }) => {
     const [isNeedToRenderSeeAllTags, setIsNeedToRenderSeeAllTags] = useState<boolean>(false);
@@ -48,12 +48,12 @@ const Component = ({
 
         const [firstTag, ...restTags] = tags || [];
 
-        const searchArray = tags?.length < 3 ? restTags : tags;
+        const searchArray = tags.length < 3 ? restTags : tags;
 
         const initialReduceArray = new Array(lines + 1)
             .fill({ elements: [], overallWidth: 0 })
             .map((line, index) =>
-                index === lines - 1 && firstTag && tags?.length < 3
+                index === lines - 1 && firstTag && (tags?.length || 0) < 3
                     ? { ...line, elements: [firstTag] }
                     : line,
             );
@@ -85,6 +85,7 @@ const Component = ({
                 if (indexLine !== findLineIndex) {
                     return line;
                 }
+                return line;
             });
         }, initialReduceArray);
     }, [isNeedToRenderSeeAllTags, tags]);

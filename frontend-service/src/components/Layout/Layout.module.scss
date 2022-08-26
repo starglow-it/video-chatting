@@ -13,7 +13,7 @@
   height: 100%;
   border: rem(0px) solid transparent;
 
-  .relativeLayout {
+  &.relativeLayout {
     display: flex;
     flex-direction: column;
     position: relative;

@@ -6,7 +6,7 @@ import { ChooseFileProps } from './types';
 
 import styles from './ChooseFile.module.scss';
 
-const ChooseFile = memo(({ accept, onChoose, children }: ChooseFileProps) => {
+const Component = ({ accept, onChoose, children }: ChooseFileProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const acceptMime = useMemo(() => accept.join(', '), [accept]);
@@ -18,9 +18,14 @@ const ChooseFile = memo(({ accept, onChoose, children }: ChooseFileProps) => {
         }
     }, []);
 
-    const handleChooseFile = useCallback(({ target: { files } }) => {
-        onChoose(files[0]);
-    }, []);
+    const handleChooseFile = useCallback(
+        ({ target: { files } }: React.ChangeEvent<HTMLInputElement>) => {
+            if (files?.[0]) {
+                onChoose(files?.[0]);
+            }
+        },
+        [],
+    );
 
     return (
         <CustomBox className={styles.uploadFileWrapper} onClick={handleStartChooseFile}>
@@ -34,6 +39,6 @@ const ChooseFile = memo(({ accept, onChoose, children }: ChooseFileProps) => {
             {children}
         </CustomBox>
     );
-});
+};
 
-export { ChooseFile };
+export const ChooseFile = memo(Component);

@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import { DashBoardNavigation } from '@components/DashBoardNavigation/DashBoardNavigation';
 import { ProfileNotifications } from '@components/Profile/ProfileNotifications/ProfileNotifications';
 
-const DashboardLayout = memo(({ children }: React.PropsWithChildren<any>) => (
+const Component = memo(({ children }: React.PropsWithChildren) => (
     <>
         <DashBoardNavigation />
         <ProfileNotifications />
@@ -11,4 +11,4 @@ const DashboardLayout = memo(({ children }: React.PropsWithChildren<any>) => (
     </>
 ));
 
-export { DashboardLayout };
+export const DashboardLayout = memo(Component);

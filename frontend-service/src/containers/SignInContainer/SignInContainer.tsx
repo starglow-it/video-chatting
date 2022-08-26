@@ -5,15 +5,10 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
 import * as yup from 'yup';
-
 import { useMediaQuery } from '@mui/material';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
-
-// icons
-import { GoogleIcon } from '@library/icons/GoogleIcon';
-import { LinkedInIcon } from '@library/icons/LinkedInIcon';
 
 // custom
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
@@ -22,8 +17,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // common
-import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
-import { BlockSeparator } from '@library/common/BlockSeparator/BlockSeparator';
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
@@ -37,20 +30,23 @@ import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPassword
 import styles from './SignInContainer.module.scss';
 
 // stores
-import { LoginUserParams } from '../../store/types';
 import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store';
+
+// types
+import { LoginUserParams } from '../../store/types';
 
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+import { dashboardRoute, setUpTemplateRoute } from '../../const/client-routes';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
     password: passwordLoginSchema().required('required'),
 });
 
-const SignInContainer = memo(() => {
+const Component = () => {
     const router = useRouter();
     const authState = useStore($authStore);
 
@@ -60,7 +56,10 @@ const SignInContainer = memo(() => {
 
     const methods = useForm({
         resolver,
-        defaultValues: { email: '', password: '' },
+        defaultValues: {
+            email: '',
+            password: '',
+        },
     });
 
     const {
@@ -85,8 +84,8 @@ const SignInContainer = memo(() => {
             });
 
             const routeToChange = initialTemplateId?.templateId
-                ? `/dashboard/templates/setup/${initialTemplateId.templateId}`
-                : '/dashboard';
+                ? `${setUpTemplateRoute}/${initialTemplateId.templateId}`
+                : dashboardRoute;
 
             router.push(routeToChange);
         }
@@ -106,10 +105,6 @@ const SignInContainer = memo(() => {
         reset();
         resetAuthErrorEvent();
     };
-
-    const handleClosePage = useCallback(() => {
-        router.push('/');
-    }, []);
 
     const is480Media = useMediaQuery('(max-width:480px)');
 
@@ -152,27 +147,6 @@ const SignInContainer = memo(() => {
                         translation="login.welcome"
                     />
                 </CustomGrid>
-                {/* <CustomGrid container direction="column" className={styles.socialsWrapper}>
-                <CustomGrid item className={styles.googleLogin}>
-                    <SocialLogin
-                        Icon={GoogleIcon}
-                        nameSpace="common"
-                        translation={`login.socialLogin.google${is480Media ? 'Mobile' : ''}`}
-                    />
-                </CustomGrid>
-                <CustomGrid item>
-                    <SocialLogin
-                        Icon={LinkedInIcon}
-                        nameSpace="common"
-                        translation={`login.socialLogin.linkedIn${is480Media ? 'Mobile' : ''}`}
-                    />
-                </CustomGrid>
-            </CustomGrid>
-            <BlockSeparator
-                className={styles.signInSeparator}
-                nameSpace="common"
-                translation="login.separatorText"
-            /> */}
                 <FormProvider {...methods}>
                     <form className={styles.socialsWrapper} onSubmit={onSubmit}>
                         <CustomGrid container>
@@ -224,6 +198,6 @@ const SignInContainer = memo(() => {
             <EmailResetPasswordDialog />
         </>
     );
-});
+};
 
-export { SignInContainer };
+export const SignInContainer = memo(Component);

@@ -6,7 +6,6 @@ import { DashboardLayout } from '@components/DashboardLayout/DashboardLayout';
 
 import { pageLoaded } from '../../../src/store';
 
-// @ts-ignore
 const enhance = withStart(pageLoaded);
 
 const EditProfilePage = (): JSX.Element => (

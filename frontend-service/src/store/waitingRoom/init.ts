@@ -1,10 +1,15 @@
-import { attach, combine } from 'effector-next';
+import { attach, combine, Store } from 'effector-next';
 import { joinDashboardSocketEvent, enterWaitingRoomSocketEvent } from './model';
 import { $profileStore } from '../profile/profile/model';
 import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
 import { $localUserStore } from '../users/localUser/model';
+import { Profile } from '../types';
 
-export const sendJoinDashboardSocketEvent = attach({
+export const sendJoinDashboardSocketEvent = attach<
+    void,
+    Store<{ profile: Profile }>,
+    typeof joinDashboardSocketEvent
+>({
     effect: joinDashboardSocketEvent,
     source: combine({ profile: $profileStore }),
     mapParams: (_, { profile }) => ({ userId: profile.id }),

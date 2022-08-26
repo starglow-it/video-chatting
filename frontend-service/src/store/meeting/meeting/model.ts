@@ -26,6 +26,8 @@ export const $isMeetingHostStore = combine({
         (!meeting.hostUserId && meeting.owner === localUser.id),
 );
 
+export const $isScreensharingStore = $meetingStore.map(meeting => Boolean(meeting.sharingUserId));
+
 export const updateMeetingEvent = meetingDomain.createEvent<{ meeting?: Meeting }>(
     'updateMeetingEvent',
 );

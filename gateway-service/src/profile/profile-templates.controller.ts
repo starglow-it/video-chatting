@@ -171,4 +171,44 @@ export class ProfileTemplatesController {
       throw new BadRequestException(err);
     }
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/id/:templateId')
+  @ApiOperation({ summary: 'Get Template by template id' })
+  @ApiOkResponse({
+    type: CommonTemplateRestDTO,
+    description: 'Get Profile Template Success',
+  })
+  async getUserTemplateByTemplateId(
+    @Request() req,
+    @Param('templateId') templateId: string,
+  ) {
+    try {
+      if (templateId) {
+        const template =
+          await this.templatesService.getUserTemplateByTemplateId({
+            id: templateId,
+            userId: req.user.userId,
+          });
+
+        return {
+          success: true,
+          result: template,
+        };
+      }
+      return {
+        success: false,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get profile template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
 }

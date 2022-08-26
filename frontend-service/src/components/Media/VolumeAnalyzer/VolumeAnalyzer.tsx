@@ -5,13 +5,10 @@ import { VolumeIndicator } from '@components/Media/VolumeAnalyzer/VolumeIndicato
 import { useAudioVolumeMeter } from '@hooks/useAudioAnalyzer';
 import { MediaContext } from '../../../contexts/MediaContext';
 
+// styles
 import styles from './VolumeAnalyzer.module.scss';
 
-const INDICATORS = [...new Array(6).fill(0).keys()];
-
-const INDICATOR_STEPS = [1, 17, 33, 49, 65, 84];
-
-const VolumeAnalyzer = memo(() => {
+const VolumeAnalyzer = memo(({ indicatorsNumber = 6 }: { indicatorsNumber: number }) => {
     const {
         data: { changeStream },
     } = useContext(MediaContext);
@@ -22,14 +19,22 @@ const VolumeAnalyzer = memo(() => {
         onStartVolumeIndicator();
     }, []);
 
+    const indicatorSteps = useMemo(
+        () =>
+            [...new Array(indicatorsNumber).fill(0).keys()].map((indicator, index, arr) =>
+                Math.ceil((100 / arr.length) * index),
+            ),
+        [indicatorsNumber],
+    );
+
     const renderVolumeIndicator = useMemo(
         () =>
-            INDICATORS.map((indicator, i) => {
-                const targetStepIndex = INDICATOR_STEPS.findIndex(step => volume <= step);
+            indicatorSteps.map((indicator, i) => {
+                const targetStepIndex = indicatorSteps.findIndex(step => volume <= step);
 
-                const targetStepValue = INDICATOR_STEPS[targetStepIndex];
+                const targetStepValue = indicatorSteps[targetStepIndex];
 
-                const prevRangeValue = INDICATOR_STEPS[targetStepIndex - 1] || 0;
+                const prevRangeValue = indicatorSteps[targetStepIndex - 1] || 0;
 
                 const targetRangeValue = targetStepValue - prevRangeValue;
                 const volumeRangeValue = volume - prevRangeValue;
@@ -43,7 +48,7 @@ const VolumeAnalyzer = memo(() => {
 
                 return <VolumeIndicator key={indicator} opacity={currentOpacity} />;
             }),
-        [volume],
+        [indicatorSteps, volume],
     );
 
     return (

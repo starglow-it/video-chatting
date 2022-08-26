@@ -1,6 +1,7 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import Image from 'next/image';
+import clsx from 'clsx';
 
 // custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
@@ -24,7 +25,6 @@ import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { ScheduleIcon } from '@library/icons/ScheduleIcon';
 
 // stores
-import clsx from 'clsx';
 import {
     $appDialogsStore,
     $profileStore,
@@ -32,6 +32,7 @@ import {
     appDialogsApi,
     $templatePreviewStore,
     $isBusinessSubscription,
+    getProfileTemplateByTemplateIdFx,
 } from '../../../store';
 
 // types
@@ -41,159 +42,169 @@ import { TemplatePreviewDialogProps } from './types';
 // styles
 import styles from './TemplatePreviewDialog.module.scss';
 
-const TemplatePreviewDialog = memo(
-    ({
-        onChooseTemplate,
-        chooseButtonKey,
-        isNeedToRenderTemplateInfo,
-        onSchedule,
-    }: TemplatePreviewDialogProps) => {
-        const { templatePreviewDialog } = useStore($appDialogsStore);
-        const previewTemplate = useStore($templatePreviewStore);
-        const profile = useStore($profileStore);
-        const isBusinessSubscription = useStore($isBusinessSubscription);
+const Component = ({
+    onChooseTemplate,
+    chooseButtonKey,
+    isNeedToRenderTemplateInfo,
+    onSchedule,
+}: TemplatePreviewDialogProps) => {
+    const { templatePreviewDialog } = useStore($appDialogsStore);
+    const previewTemplate = useStore($templatePreviewStore);
+    const profile = useStore($profileStore);
+    const isBusinessSubscription = useStore($isBusinessSubscription);
 
-        const isTimeLimitReached =
-            profile.maxMeetingTime === 0 &&
-            !isBusinessSubscription &&
-            previewTemplate?.type !== 'paid';
+    const [isDisabled, setIsDisabled] = useState(false);
 
-        const handleClose = useCallback(() => {
-            appDialogsApi.closeDialog({
-                dialogKey: AppDialogsEnum.templatePreviewDialog,
-            });
-        }, []);
+    const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
-        const handleChooseTemplate = useCallback(async () => {
-            if (previewTemplate?.id) {
-                onChooseTemplate?.({
-                    templateId: previewTemplate.id,
+    const handleClose = useCallback(() => {
+        appDialogsApi.closeDialog({
+            dialogKey: AppDialogsEnum.templatePreviewDialog,
+        });
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (previewTemplate?.templateId && templatePreviewDialog) {
+                const userTemplate = await getProfileTemplateByTemplateIdFx({
+                    templateId: previewTemplate?.templateId,
                 });
+
+                if (userTemplate?.id) {
+                    setIsDisabled(true);
+                }
             }
-        }, [previewTemplate?.id]);
+        })();
+    }, [previewTemplate?.templateId, templatePreviewDialog]);
 
-        const handleScheduleMeeting = useCallback(() => {
-            if (previewTemplate?.id) onSchedule?.({ templateId: previewTemplate?.id });
+    const handleChooseTemplate = useCallback(async () => {
+        if (previewTemplate?.id) {
+            onChooseTemplate?.(previewTemplate.id);
+        }
+    }, [previewTemplate?.id]);
 
-            appDialogsApi.closeDialog({
-                dialogKey: AppDialogsEnum.templatePreviewDialog,
-            });
-        }, [onSchedule, previewTemplate?.id]);
+    const handleScheduleMeeting = useCallback(() => {
+        if (previewTemplate?.id) onSchedule?.({ templateId: previewTemplate?.id });
 
-        const previewImage = (previewTemplate?.previewUrls || []).find(
-            preview => preview.resolution === 1080,
-        );
+        appDialogsApi.closeDialog({
+            dialogKey: AppDialogsEnum.templatePreviewDialog,
+        });
+    }, [onSchedule, previewTemplate?.id]);
 
-        const handleShowToast = () => {
-            addNotificationEvent({
-                type: NotificationType.NoTimeLeft,
-                message: `subscriptions.noTimeLeft`,
-            });
-        };
+    const previewImage = (previewTemplate?.previewUrls || []).find(
+        preview => preview.resolution === 1080,
+    );
 
-        return (
-            <CustomDialog
-                open={templatePreviewDialog}
-                onBackdropClick={handleClose}
-                contentClassName={styles.dialogContent}
-                maxWidth="lg"
-            >
-                <CustomGrid container wrap="nowrap">
-                    <CustomGrid className={styles.templatePreview}>
-                        <TemplateGeneralInfo
-                            companyName={previewTemplate?.companyName}
-                            userName={previewTemplate?.name}
+    const handleShowToast = () => {
+        addNotificationEvent({
+            type: NotificationType.NoTimeLeft,
+            message: `subscriptions.noTimeLeft`,
+        });
+    };
+
+    return (
+        <CustomDialog
+            open={templatePreviewDialog}
+            onBackdropClick={handleClose}
+            contentClassName={styles.dialogContent}
+            maxWidth="lg"
+        >
+            <CustomGrid container wrap="nowrap">
+                <CustomGrid className={styles.templatePreview}>
+                    <TemplateGeneralInfo
+                        companyName={previewTemplate?.companyName}
+                        userName={previewTemplate?.name}
+                    />
+                    <ConditionalRender condition={Boolean(previewImage?.id)}>
+                        <Image
+                            src={previewImage?.url || ''}
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="center"
                         />
-                        <ConditionalRender condition={Boolean(previewImage?.id)}>
-                            <Image
-                                src={previewImage?.url || ''}
-                                layout="fill"
-                                objectFit="cover"
-                                objectPosition="center"
-                            />
-                        </ConditionalRender>
-                    </CustomGrid>
-                    <CustomBox className={styles.templateInfoContent}>
-                        <CustomGrid
-                            container
-                            wrap="nowrap"
-                            justifyContent="space-between"
-                            className={styles.templateInfo}
-                            gap={2}
-                        >
-                            <BusinessCategoryTagsClip
-                                lines={1}
-                                maxWidth={210}
-                                tags={previewTemplate?.businessCategories || []}
-                            />
-                            {isNeedToRenderTemplateInfo && (
-                                <CustomGrid
-                                    container
-                                    className={styles.templateType}
-                                    justifyContent="flex-end"
-                                    gap={1}
-                                    wrap="nowrap"
-                                >
-                                    <TemplatePaymentType type={previewTemplate?.type || ''} />
-                                    <TemplateParticipants
-                                        number={previewTemplate?.maxParticipants || 0}
-                                    />
-                                </CustomGrid>
-                            )}
-                        </CustomGrid>
-                        <CustomTypography className={styles.name} variant="h2bold">
-                            {previewTemplate?.name || ''}
-                        </CustomTypography>
-                        <CustomTypography className={styles.description}>
-                            {previewTemplate?.description || ''}
-                        </CustomTypography>
-                        <CustomGrid
-                            container
-                            wrap="nowrap"
-                            className={styles.buttons}
-                            alignItems="flex-end"
-                            gap={2}
-                        >
-                            <ActionButton
-                                variant="decline"
-                                onAction={handleClose}
-                                className={styles.backBtn}
-                                Icon={<ArrowLeftIcon width="36px" height="36px" />}
-                            />
-
-                            {Boolean(onSchedule) && (
-                                <CustomButton
-                                    variant="custom-common"
-                                    className={styles.scheduleButton}
-                                    onClick={handleScheduleMeeting}
-                                    Icon={
-                                        <ScheduleIcon
-                                            className={styles.scheduleIcon}
-                                            width="36px"
-                                            height="36px"
-                                        />
-                                    }
-                                    nameSpace="common"
-                                    translation="buttons.schedule"
-                                />
-                            )}
-
-                            <CustomButton
-                                onMouseEnter={isTimeLimitReached ? handleShowToast : undefined}
-                                onClick={!isTimeLimitReached ? handleChooseTemplate : undefined}
-                                className={clsx(styles.chooseBtn, {
-                                    [styles.disabled]: isTimeLimitReached,
-                                })}
-                                disableRipple={isTimeLimitReached}
-                                nameSpace="templates"
-                                translation={`buttons.${chooseButtonKey}`}
-                            />
-                        </CustomGrid>
-                    </CustomBox>
+                    </ConditionalRender>
                 </CustomGrid>
-            </CustomDialog>
-        );
-    },
-);
+                <CustomBox className={styles.templateInfoContent}>
+                    <CustomGrid
+                        container
+                        wrap="nowrap"
+                        justifyContent="space-between"
+                        className={styles.templateInfo}
+                        gap={2}
+                    >
+                        <BusinessCategoryTagsClip
+                            lines={1}
+                            maxWidth={210}
+                            tags={previewTemplate?.businessCategories}
+                        />
+                        {isNeedToRenderTemplateInfo && (
+                            <CustomGrid
+                                container
+                                className={styles.templateType}
+                                justifyContent="flex-end"
+                                gap={1}
+                                wrap="nowrap"
+                            >
+                                <TemplatePaymentType type={previewTemplate?.type || ''} />
+                                <TemplateParticipants
+                                    number={previewTemplate?.maxParticipants || 0}
+                                />
+                            </CustomGrid>
+                        )}
+                    </CustomGrid>
+                    <CustomTypography className={styles.name} variant="h2bold">
+                        {previewTemplate?.name || ''}
+                    </CustomTypography>
+                    <CustomTypography className={styles.description}>
+                        {previewTemplate?.description || ''}
+                    </CustomTypography>
+                    <CustomGrid
+                        container
+                        wrap="nowrap"
+                        className={styles.buttons}
+                        alignItems="flex-end"
+                        gap={2}
+                    >
+                        <ActionButton
+                            variant="decline"
+                            onAction={handleClose}
+                            className={styles.backBtn}
+                            Icon={<ArrowLeftIcon width="36px" height="36px" />}
+                        />
 
-export { TemplatePreviewDialog };
+                        {Boolean(onSchedule) && (
+                            <CustomButton
+                                variant="custom-common"
+                                className={styles.scheduleButton}
+                                onClick={handleScheduleMeeting}
+                                Icon={
+                                    <ScheduleIcon
+                                        className={styles.scheduleIcon}
+                                        width="36px"
+                                        height="36px"
+                                    />
+                                }
+                                nameSpace="common"
+                                translation="buttons.schedule"
+                            />
+                        )}
+
+                        <CustomButton
+                            onMouseEnter={isTimeLimitReached ? handleShowToast : undefined}
+                            onClick={!isTimeLimitReached ? handleChooseTemplate : undefined}
+                            className={clsx(styles.chooseBtn, {
+                                [styles.disabled]: isTimeLimitReached,
+                            })}
+                            disabled={isDisabled}
+                            disableRipple={isTimeLimitReached}
+                            nameSpace="templates"
+                            translation={`buttons.${chooseButtonKey}`}
+                        />
+                    </CustomGrid>
+                </CustomBox>
+            </CustomGrid>
+        </CustomDialog>
+    );
+};
+
+export const TemplatePreviewDialog = memo(Component);

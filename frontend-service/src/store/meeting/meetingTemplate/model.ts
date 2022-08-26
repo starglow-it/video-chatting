@@ -42,10 +42,6 @@ export const initialTemplateState: UserTemplate = {
 
 export const $meetingTemplateStore = meetingDomain.createStore<UserTemplate>(initialTemplateState);
 
-export const $isPaidMeetingTemplate = $meetingTemplateStore.map(
-    template => template.type === 'paid',
-);
-
 export const resetMeetingTemplateStoreEvent = meetingDomain.createEvent(
     'resetMeetingTemplateStoreEvent',
 );

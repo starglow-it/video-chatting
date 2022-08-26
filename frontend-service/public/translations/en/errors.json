@@ -34,12 +34,26 @@
     "notAllowed": "You should allow use of devices in the browser"
   },
   "meeting": {
-    "dialog": {
-      "title": "Meeting Error"
+    "notFound": {
+      "title": "Meeting Error",
+      "text": "The meeting does not exist",
+      "button": "Continue"
     },
-    "notFound": "The meeting does not exist",
-    "maxParticipantsNumber": "Meeting room has reached the participant limit",
-    "requestDenied": "Your request was denied",
+    "timeLimit": {
+      "title": "Meeting was canceled",
+      "text": "Host run out of meeting minutes. Contact them\nto resolve the issues.",
+      "button": "Homepage"
+    },
+    "maxParticipantsNumber": {
+      "title": "Meeting Error",
+      "text": "Meeting room has reached the participant limit",
+      "button": "Continue"
+    },
+    "requestDenied": {
+      "title": "Meeting Error",
+      "text": "Your request was denied",
+      "button": "Continue"
+    },
     "settings": {
       "customLink": {
         "characters": "Unsupported character is used",

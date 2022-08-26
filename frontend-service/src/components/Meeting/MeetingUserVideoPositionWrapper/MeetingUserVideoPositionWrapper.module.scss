@@ -1,13 +1,11 @@
 .videoWrapper {
-  position: fixed;
-  z-index: 110;
-  width: auto;
-
+  position: absolute;
   transform: translate(-50%, 50%);
-
   transition: top 200ms linear, left 200ms linear;
+  pointer-events: all;
 
   &.sharing {
-    transform: translate(-100%, 50%);
+    transform: unset;
+    position: relative;
   }
 }

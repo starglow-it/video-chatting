@@ -2,6 +2,9 @@ import React, { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -19,17 +22,21 @@ import { HangUpIcon } from '@library/icons/HangUpIcon';
 import { SettingsIcon } from '@library/icons/SettingsIcon';
 import { SharingIcon } from '@library/icons/SharingIcon';
 import { GoodsIcon } from '@library/icons/GoodsIcon';
+import { MicIcon } from '@library/icons/MicIcon';
 
 // stores
 import {
     $isGoodsVisible,
     $localUserStore,
     $meetingTemplateStore,
+    $isMeetingHostStore,
     $meetingStore,
+    $meetingConnectedStore,
     appDialogsApi,
     toggleIsGoodsVisible,
     updateMeetingSocketEvent,
-    $isMeetingHostStore,
+    updateLocalUserEvent,
+    $isScreensharingStore,
 } from '../../../store';
 
 // types
@@ -45,8 +52,10 @@ const Component = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
+    const isSharingActive = useStore($isScreensharingStore);
     const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const isMeetingConnected = useStore($meetingConnectedStore);
 
     const isSharingScreenActive = localUser.meetingUserId === meeting.sharingUserId;
 
@@ -57,6 +66,11 @@ const Component = () => {
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
         });
     }, []);
+
+    const isMicActive = localUser.micStatus === 'active';
+    const isCamActive = localUser.cameraStatus === 'active';
+
+    const { isMobile } = useBrowserDetect();
 
     const handleEndVideoChat = useCallback(() => {
         appDialogsApi.openDialog({
@@ -72,7 +86,18 @@ const Component = () => {
         }
     }, [isSharingScreenActive, meeting.sharingUserId, isMeetingHost]);
 
-    const isSharingActive = Boolean(meeting.sharingUserId);
+    const handleToggleMic = useCallback(() => {
+        if (isMeetingConnected) {
+            updateLocalUserEvent({
+                micStatus: isMicActive ? 'inactive' : 'active',
+            });
+
+            AgoraController.setTracksState({
+                isCameraEnabled: isCamActive,
+                isMicEnabled: !isMicActive,
+            });
+        }
+    }, [isMeetingConnected, isMicActive, isCamActive]);
 
     const sharingAction = isAbleToToggleSharing ? handleToggleSharing : undefined;
 
@@ -110,36 +135,54 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
-
-            <CustomTooltip
-                classes={{ tooltip: styles.tooltip }}
-                nameSpace="meeting"
-                translation={tooltipTranslation}
-            >
+            <ConditionalRender condition={isMobile}>
                 <CustomPaper variant="black-glass" borderRadius={8} className={styles.deviceButton}>
                     <ActionButton
                         variant="transparentBlack"
-                        onAction={sharingAction}
-                        className={clsx(styles.sharingButton, {
-                            [styles.active]: isSharingActive && isAbleToToggleSharing,
-                            [styles.noRights]: isSharingActive && !isAbleToToggleSharing,
-                        })}
-                        Icon={<SharingIcon width="22px" height="22px" />}
+                        onAction={handleToggleMic}
+                        className={clsx(styles.deviceButton, { [styles.inactive]: !isMicActive })}
+                        Icon={<MicIcon isActive={isMicActive} width="22px" height="22px" />}
                     />
                 </CustomPaper>
-            </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={!isMobile}>
+                <CustomTooltip
+                    classes={{ tooltip: styles.tooltip }}
+                    nameSpace="meeting"
+                    translation={tooltipTranslation}
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={sharingAction}
+                            className={clsx(styles.sharingButton, {
+                                [styles.active]: isSharingActive && isAbleToToggleSharing,
+                                [styles.noRights]: isSharingActive && !isAbleToToggleSharing,
+                            })}
+                            Icon={<SharingIcon width="22px" height="22px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+
             <ConditionalRender condition={meetingTemplate.isAudioAvailable}>
                 <BackgroundAudioControl />
             </ConditionalRender>
 
-            <CustomPaper variant="black-glass" borderRadius={8} className={styles.deviceButton}>
-                <ActionButton
-                    variant="transparentBlack"
-                    onAction={handleOpenDeviceSettings}
-                    className={styles.settingsButton}
-                    Icon={<SettingsIcon width="22px" height="22px" />}
-                />
-            </CustomPaper>
+            <ConditionalRender condition={!isMobile}>
+                <CustomPaper variant="black-glass" borderRadius={8} className={styles.deviceButton}>
+                    <ActionButton
+                        variant="transparentBlack"
+                        onAction={handleOpenDeviceSettings}
+                        className={styles.settingsButton}
+                        Icon={<SettingsIcon width="22px" height="22px" />}
+                    />
+                </CustomPaper>
+            </ConditionalRender>
 
             <ActionButton
                 variant="danger"

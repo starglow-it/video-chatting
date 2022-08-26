@@ -4,6 +4,7 @@ import { useStore } from 'effector-react';
 
 // hooks
 import { useLocalization } from '@hooks/useTranslation';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -22,13 +23,15 @@ import { Notification } from '../../store/types';
 // styles
 import styles from './ToastsNotifications.module.scss';
 
-const ToastsNotifications = memo(() => {
+const Component = () => {
     const notifications = useStore($notificationsStore);
 
     const { translation } = useLocalization('notifications');
 
     const [open, setOpen] = useState(false);
     const [messageInfo, setMessageInfo] = useState<Notification>();
+
+    const { isMobile } = useBrowserDetect();
 
     useEffect(() => {
         if (notifications.length && !messageInfo) {
@@ -57,7 +60,7 @@ const ToastsNotifications = memo(() => {
             TransitionProps={{ onExited: handleExited }}
             anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'center',
+                horizontal: isMobile ? 'left' : 'center',
             }}
             open={open}
             {...(messageInfo?.withManualClose ? { autoHideDuration: 3000 } : {})}
@@ -74,6 +77,6 @@ const ToastsNotifications = memo(() => {
             }
         />
     );
-});
+};
 
-export { ToastsNotifications };
+export const ToastsNotifications = memo(Component);

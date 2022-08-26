@@ -6,9 +6,9 @@ COPY ./shared ./shared
 
 RUN mkdir ./payment-service
 
-COPY ./payment-service/package*.json ./payment-service/
+COPY ./payment-service/package.json ./payment-service/
 
-RUN cd ./payment-service && npm ci --silent --legacy-peer-deps
+RUN cd ./payment-service && npm i --legacy-peer-deps --force
 
 COPY ./payment-service ./payment-service/
 

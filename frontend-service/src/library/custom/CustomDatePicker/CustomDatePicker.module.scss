@@ -17,25 +17,31 @@
 
   cursor: pointer;
 
-  &.blocked {
-    cursor: default;
-    pointer-events: none;
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    border-radius: 50%;
+    z-index: 1;
   }
 
   &.activeDay {
-    z-index: 1;
-
     .day {
+      z-index: 2;
       color: $primary-white;
     }
 
     &:after {
-      content: "";
-      position: absolute;
-      inset: 0;
       background: $primary-orange;
-      border-radius: 50%;
-      z-index: -1;
+    }
+  }
+
+  &.blocked {
+    &:hover {
+      &:after {
+        background: rgba(189, 200, 211, 0.25);
+      }
     }
   }
 }

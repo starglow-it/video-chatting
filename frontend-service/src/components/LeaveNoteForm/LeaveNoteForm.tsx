@@ -1,6 +1,10 @@
 import React, { memo, useCallback } from 'react';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useStore } from 'effector-react';
+import { Theme } from '@mui/system';
+import createStyles from '@mui/styles/createStyles';
+import { makeStyles } from '@mui/styles';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -16,9 +20,6 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { DeleteIcon } from '@library/icons/DeleteIcon';
 
 // const
-import createStyles from '@mui/styles/createStyles';
-import { Theme } from '@mui/system';
-import { makeStyles } from '@mui/styles';
 import { MAX_NOTE_CONTENT } from '../../const/general';
 
 // validation
@@ -27,6 +28,7 @@ import { simpleStringSchemaWithLength } from '../../validation/common';
 // stores
 import { sendMeetingNoteSocketEvent } from '../../store';
 
+// styles
 import styles from './LeaveNoteForm.module.scss';
 
 const validationSchema = yup.object({
@@ -38,35 +40,34 @@ const useStyles = makeStyles((theme: Theme) =>
         textField: {
             '& .MuiInputLabel-root': {
                 '&.Mui-focused': {
-                    color: 'white',
-                    // color: theme.palette.colors.white.primary,
+                    color: theme.palette.colors.white.primary,
                 },
             },
             '& .MuiOutlinedInput-root': {
                 background: 'transparent',
-                // color: theme.palette.colors.white.primary,
-                color: 'white',
+                color: theme.palette.colors.white.primary,
                 '&.Mui-focused, &:hover': {
-                    color: 'white',
-                    // color: theme.palette.colors.white.primary,
+                    color: theme.palette.colors.white.primary,
                     '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'white',
-                        // borderColor: theme.palette.colors.white.primary
+                        borderColor: theme.palette.colors.white.primary,
                     },
                 },
             },
             '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'white',
-                // borderColor: theme.palette.colors.white.primary
+                borderColor: theme.palette.colors.white.primary,
             },
         },
     }),
 );
 
-const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
+type FormType = { note: string };
+
+const Component = ({ onCancel }: { onCancel: () => void }) => {
     const materialStyles = useStyles();
 
-    const resolver = useYupValidationResolver<{ note: string }>(validationSchema);
+    const isSendNotePending = useStore(sendMeetingNoteSocketEvent.pending);
+
+    const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const methods = useForm({
         resolver,
@@ -81,7 +82,7 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
     });
 
     const onSubmit = useCallback(
-        handleSubmit(data => {
+        handleSubmit(async data => {
             sendMeetingNoteSocketEvent(data);
             reset();
             onCancel();
@@ -90,6 +91,7 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
     );
 
     const handleCancelLeaveNote = useCallback(() => {
+        console.log('cancel');
         reset();
         onCancel();
     }, []);
@@ -98,7 +100,9 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
 
     const handleChange = useCallback(async event => {
         if (event.target.value.length > MAX_NOTE_CONTENT) {
+            /* eslint-disable no-param-reassign */
             event.target.value = event.target.value.slice(0, MAX_NOTE_CONTENT);
+            /* eslint-enable no-param-reassign */
         }
 
         await onChange(event);
@@ -120,12 +124,14 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
                     <ActionButton
                         onAction={onSubmit}
                         variant="accept"
+                        disabled={isSendNotePending}
                         className={styles.submitNote}
                         Icon={<AcceptIcon width="23px" height="23px" />}
                     />
                     <ActionButton
                         variant="decline"
                         onAction={handleCancelLeaveNote}
+                        disabled={isSendNotePending}
                         className={styles.cancelNote}
                         Icon={<DeleteIcon width="23px" height="23px" />}
                     />
@@ -142,6 +148,6 @@ const LeaveNoteForm = memo(({ onCancel }: { onCancel: () => void }) => {
             </CustomGrid>
         </FormProvider>
     );
-});
+};
 
-export { LeaveNoteForm };
+export const LeaveNoteForm = memo(Component);

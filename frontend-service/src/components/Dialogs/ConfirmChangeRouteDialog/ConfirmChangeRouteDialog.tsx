@@ -17,7 +17,7 @@ import styles from './ConfirmChangeRouteDialog.module.scss';
 import { AppDialogsEnum } from '../../../store/types';
 import { ConfirmChangeRouteDialogProps } from './types';
 
-const ConfirmChangeRouteDialog = memo(({ onConfirm, onCancel }: ConfirmChangeRouteDialogProps) => {
+const Component = ({ onConfirm, onCancel }: ConfirmChangeRouteDialogProps) => {
     const { confirmChangeRouteDialog } = useStore($appDialogsStore);
 
     const handleClose = useCallback(() => {
@@ -59,6 +59,6 @@ const ConfirmChangeRouteDialog = memo(({ onConfirm, onCancel }: ConfirmChangeRou
             </CustomGrid>
         </CustomDialog>
     );
-});
+};
 
-export { ConfirmChangeRouteDialog };
+export const ConfirmChangeRouteDialog = memo(Component);

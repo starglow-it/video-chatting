@@ -12,8 +12,9 @@ import styles from './AuthenticationLink.module.scss';
 // const
 import { clientRoutes } from '../../const/client-routes';
 
-const AuthenticationLink = memo(() => {
+const Component = () => {
     const router = useRouter();
+
     const isNotLoginPage = !router.pathname.includes(clientRoutes.loginRoute);
 
     const customLinkProps = useMemo(
@@ -37,11 +38,12 @@ const AuthenticationLink = memo(() => {
             />
             <CustomLink
                 nameSpace="common"
+                variant="body2"
                 translation={customLinkProps.link}
                 href={customLinkProps.href}
             />
         </CustomGrid>
     );
-});
+};
 
-export { AuthenticationLink };
+export const AuthenticationLink = memo(Component);

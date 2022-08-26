@@ -3,9 +3,8 @@ import { withStart } from 'effector-next';
 
 import { RegisterContainer } from '@containers/RegisterContainer/RegisterContainer';
 
-import { pageLoaded } from '../src/store/root';
+import { pageLoaded } from '../src/store';
 
-// @ts-ignore
 const enhance = withStart(pageLoaded);
 
 const RegisterPage: NextPage = (): JSX.Element => <RegisterContainer />;

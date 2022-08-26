@@ -10,7 +10,7 @@ export const usersTemplatesUrl = ({ skip = 0, limit = 0 }) => ({
     method: HttpMethods.Get,
 });
 
-export const userTemplateUrl = ({ templateId }: { templateId: Template['templateId'] }) => ({
+export const userTemplateUrl = ({ templateId }: { templateId: Template['id'] }) => ({
     url: `${serverUrl}/${usersScope}/templates/${templateId}`,
     method: HttpMethods.Get,
 });

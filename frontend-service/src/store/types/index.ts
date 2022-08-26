@@ -325,6 +325,7 @@ export enum NotificationType {
     NoTimeLeft = 'no_time_left',
     InviteSent = 'invite_sent',
     HostChanged = 'host_changed',
+    SubscriptionEndDate = 'subscription_end_date',
 }
 
 export type Notification = {

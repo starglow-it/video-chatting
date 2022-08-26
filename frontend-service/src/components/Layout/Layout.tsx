@@ -1,7 +1,10 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, PropsWithChildren, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
+
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // library
 import { LiveOfficeLogo } from '@library/icons/LiveOfficeLogo';
@@ -30,14 +33,15 @@ import {
 
 // styles
 import styles from './Layout.module.scss';
+import { dashboardRoute } from '../../const/client-routes';
 
-const Component: React.FunctionComponent<LayoutProps> = ({ children }) => {
+const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const { isAuthenticated } = useStore($authStore);
     const isSocketConnected = useStore($isSocketConnected);
 
     const router = useRouter();
 
-    const isDashboardRoute = /dashboard/.test(router.pathname);
+    const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(router.pathname);
 
     useEffect(() => {
         (async () => {
@@ -46,6 +50,8 @@ const Component: React.FunctionComponent<LayoutProps> = ({ children }) => {
             }
         })();
     }, [router.pathname]);
+
+    const { isMobile } = useBrowserDetect();
 
     useEffect(() => {
         if (isSocketConnected) {
@@ -78,20 +84,22 @@ const Component: React.FunctionComponent<LayoutProps> = ({ children }) => {
                 })}
             >
                 <CustomBox className={styles.bgImage} />
-                <CustomBox className={styles.header}>
-                    <CustomGrid container justifyContent="space-between" alignItems="center">
-                        <CustomLink href={isAuthenticated ? '/dashboard' : ''}>
-                            <LiveOfficeLogo
-                                className={clsx(isAuthenticated, {
-                                    [styles.link]: isAuthenticated,
-                                })}
-                                width="210px"
-                                height="44px"
-                            />
-                        </CustomLink>
-                        <CustomGrid>{!isAuthenticated && <AuthenticationLink />}</CustomGrid>
-                    </CustomGrid>
-                </CustomBox>
+                <ConditionalRender condition={!isMobile}>
+                    <CustomBox className={styles.header}>
+                        <CustomGrid container justifyContent="space-between" alignItems="center">
+                            <CustomLink href={isAuthenticated ? dashboardRoute : ''}>
+                                <LiveOfficeLogo
+                                    className={clsx(isAuthenticated, {
+                                        [styles.link]: isAuthenticated,
+                                    })}
+                                    width="210px"
+                                    height="44px"
+                                />
+                            </CustomLink>
+                            <CustomGrid>{!isAuthenticated && <AuthenticationLink />}</CustomGrid>
+                        </CustomGrid>
+                    </CustomBox>
+                </ConditionalRender>
                 {children}
             </CustomBox>
         </CustomBox>

@@ -5,12 +5,13 @@ import { $profileStore } from '../profile/model';
 
 import { initialProfileTemplatesStore } from './const';
 
-import { EntityList, Profile, UserTemplate } from '../../types';
+import { EntityList, Profile, Template, UserTemplate } from '../../types';
 import {
     DeleteProfileTemplatesPayload,
     GetProfileTemplatesPayload,
     GetProfileTemplatesResponse,
 } from '../types';
+import { templatesDomain } from '../../templates/domain/model';
 
 export const $profileTemplatesStore = profileDomain.createStore<EntityList<UserTemplate>>(
     initialProfileTemplatesStore,
@@ -34,6 +35,12 @@ export const deleteProfileTemplateFx = profileDomain.createEffect<
     void,
     void
 >('deleteProfileTemplateFx');
+
+export const getProfileTemplateByTemplateIdFx = templatesDomain.effect<
+    { templateId: Template['templateId'] },
+    UserTemplate | null | undefined,
+    void
+>('getUserTemplateByTemplateIdFx');
 
 export const getProfileTemplatesFx = attach({
     effect: getProfileTemplatesBase,

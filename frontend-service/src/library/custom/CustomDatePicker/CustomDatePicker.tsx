@@ -1,17 +1,8 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
-// styles
-import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
-import { getPreviousMonth } from 'src/utils/time/getPreviousMonth';
-import { getDaysOfWeek } from 'src/utils/time/getDaysOfWeek';
-import styles from './CustomDatePicker.module.scss';
-
-// custom
-import { CustomGrid } from '../CustomGrid/CustomGrid';
-import { CustomTypography } from '../CustomTypography/CustomTypography';
-
 // icons
+import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
 
 // time utils
 import { formatDate } from '../../../utils/time/formatDate';
@@ -22,17 +13,43 @@ import { isCurrentMonthDay } from '../../../utils/time/isCurrentMonthDay';
 import { isDatesEqual } from '../../../utils/time/isDatesEqual';
 import { isBefore } from '../../../utils/time/isBefore';
 import { isTodayDate } from '../../../utils/time/isToday';
+import { getPreviousMonth } from '../../../utils/time/getPreviousMonth';
+import { getDaysOfWeek } from '../../../utils/time/getDaysOfWeek';
+
+// custom
+import { CustomGrid } from '../CustomGrid/CustomGrid';
+import { CustomTypography } from '../CustomTypography/CustomTypography';
+
+// stores
+import { addNotificationEvent } from '../../../store';
 
 // types
 import { CustomDatePickerProps } from './types';
+import { NotificationType } from '../../../store/types';
 
-const Component = ({ selected, startDate, className, onDateSelected }: CustomDatePickerProps) => {
+// styles
+import styles from './CustomDatePicker.module.scss';
+
+const Component = ({
+    selected,
+    startDate,
+    className,
+    onDateSelected,
+    blockedDate,
+}: CustomDatePickerProps) => {
     const [selectedDate, setSelectedDate] = useState<Date>(selected || new Date());
     const [currentMonthDate, setCurrentMonth] = useState<Date>(new Date());
 
     useEffect(() => {
         setCurrentMonth(selectedDate);
     }, [selectedDate]);
+
+    useEffect(() => {
+        if (isBefore(selectedDate, blockedDate)) {
+            setSelectedDate(blockedDate);
+            onDateSelected(blockedDate);
+        }
+    }, []);
 
     const handleSetPrevMonth = useCallback(() => {
         setCurrentMonth(prev => getPreviousMonth(prev));
@@ -78,11 +95,26 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
 
                 const isDateBefore = isBefore(weekDay, startDate) && !isTodayDate(weekDay);
                 const isEqual = isDatesEqual(weekDay, selectedDate);
+                const isBlockedDate =
+                    isBefore(weekDay, blockedDate) && !isDatesEqual(weekDay, blockedDate);
 
                 const day = formatDate(weekDay, 'd');
 
                 const handleChooseWeekDay = () => {
-                    handleChangeSelectDate(weekDay);
+                    if (!isDateBefore && !isBlockedDate) {
+                        handleChangeSelectDate(weekDay);
+                        return;
+                    }
+
+                    if (
+                        isBlockedDate &&
+                        (!isBefore(weekDay, new Date()) || isDatesEqual(weekDay, new Date()))
+                    ) {
+                        addNotificationEvent({
+                            type: NotificationType.SubscriptionEndDate,
+                            message: 'subscriptions.endDate',
+                        });
+                    }
                 };
 
                 return (
@@ -93,15 +125,19 @@ const Component = ({ selected, startDate, className, onDateSelected }: CustomDat
                         justifyContent="center"
                         alignItems="center"
                         className={clsx(styles.dayWrapper, {
-                            [styles.blocked]: isDateBefore,
+                            [styles.blocked]: isDateBefore || isBlockedDate,
                             [styles.activeDay]: isEqual,
                         })}
                     >
                         <CustomTypography
                             variant={isEqual ? 'body1bold' : 'body1'}
-                            className={clsx(styles.day, { [styles.hideWeekDay]: !isActiveDate })}
+                            className={clsx(styles.day, {
+                                [styles.hideWeekDay]: !isActiveDate,
+                            })}
                             color={
-                                isDateBefore ? 'colors.grayscale.normal' : 'colors.black.primary'
+                                isDateBefore || isBlockedDate
+                                    ? 'colors.grayscale.normal'
+                                    : 'colors.black.primary'
                             }
                         >
                             {day}

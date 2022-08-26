@@ -4,9 +4,8 @@ import React from 'react';
 
 import { WelcomePageContainer } from '@containers/WelcomePageContainer/WelcomePageContainer';
 
-import { pageLoaded } from '../src/store/root';
+import { pageLoaded } from '../src/store';
 
-// @ts-ignore
 const enhance = withStart(pageLoaded);
 
 const WelcomePage: NextPage = (): JSX.Element => <WelcomePageContainer />;

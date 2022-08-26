@@ -21,6 +21,7 @@ import { setPreviewTemplate, appDialogsApi } from '../../../store';
 import styles from './OnboardingTemplateItem.module.scss';
 
 import { StorageKeysEnum, WebStorage } from '../../../controllers/WebStorageController';
+import { clientRoutes } from '../../../const/client-routes';
 
 const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
     const router = useRouter();
@@ -45,7 +46,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
     const handleSetUpTemplate = useCallback(() => {
         WebStorage.save({ key: StorageKeysEnum.templateId, data: { templateId: template.id } });
 
-        router.push('/register');
+        router.push(clientRoutes.registerRoute);
     }, []);
 
     const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 1080);
@@ -82,6 +83,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
                     <CustomButton
                         onClick={handleSetUpTemplate}
                         className={styles.button}
+                        disaabled={template.type === 'paid'}
                         nameSpace="templates"
                         translation="buttons.getStarted"
                     />

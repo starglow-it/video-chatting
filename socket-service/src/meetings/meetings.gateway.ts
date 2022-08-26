@@ -250,6 +250,21 @@ export class MeetingsGateway
         session,
       );
 
+      const template = await this.coreService.findMeetingTemplate({
+        id: meeting.templateId,
+      });
+
+      const mainUser = await this.coreService.findUserById({
+        userId: template.user.id,
+      });
+
+      if (mainUser.maxMeetingTime === 0) {
+        return {
+          success: false,
+          message: 'meeting.timeLimit',
+        };
+      }
+
       if (message.isOwner && !meeting) {
         meeting = await this.meetingsService.createMeeting(
           {
@@ -422,19 +437,19 @@ export class MeetingsGateway
 
       let finishTime;
 
+      const endsAtTimeout = getTimeoutTimestamp({
+        type: TimeoutTypesEnum.Minutes,
+        value: 90,
+      });
+
+      const realEndsAtTimeout =
+        mainUser.maxMeetingTime < endsAtTimeout &&
+        mainUser.subscriptionPlanKey !== 'Business' &&
+        template.type === 'free'
+          ? mainUser.maxMeetingTime
+          : endsAtTimeout;
+
       if (!meeting.endsAt) {
-        const endsAtTimeout = getTimeoutTimestamp({
-          type: TimeoutTypesEnum.Minutes,
-          value: 90,
-        });
-
-        const realEndsAtTimeout =
-          mainUser.maxMeetingTime < endsAtTimeout &&
-          mainUser.subscriptionPlanKey !== 'Business' &&
-          template.type === 'free'
-            ? mainUser.maxMeetingTime
-            : endsAtTimeout;
-
         meeting.endsAt = Date.now() + realEndsAtTimeout;
 
         await meeting.save();
@@ -453,7 +468,10 @@ export class MeetingsGateway
         }),
       });
 
-      if (template.type === 'free') {
+      if (
+        template.type === 'free' &&
+        mainUser.subscriptionPlanKey !== 'Business'
+      ) {
         const timeLimitNotificationTimeout = getTimeoutTimestamp({
           value: 20,
           type: TimeoutTypesEnum.Minutes,

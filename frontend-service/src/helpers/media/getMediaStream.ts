@@ -3,10 +3,14 @@ import { VIDEO_CONSTRAINTS } from '../../const/media/VIDEO_CONSTRAINTS';
 import { MediaStreamOptions } from './types';
 import { CustomMediaStream } from '../../types';
 
-const MEDIA_STREAMS_ERROR = new Map([
-    ['Permission denied', 'media.notAllowed'],
-    ['Permission dismissed', 'media.notAllowed'],
-]);
+const MEDIA_STREAMS_ERROR = new Map([['NotAllowedError', 'media.notAllowed']]);
+
+export type GetMediaStream = {
+    stream?: MediaStream | null;
+    audioError?: string;
+    videoError?: string;
+    error?: string;
+};
 
 export const getVideoMediaStream = async (
     videoDeviceId: MediaStreamOptions['videoDeviceId'],
@@ -24,7 +28,9 @@ export const getVideoMediaStream = async (
 
         return { stream: videoStream };
     } catch (e: unknown) {
-        return { error: MEDIA_STREAMS_ERROR.get(e?.message) || e?.message };
+        const typedError = e as Error;
+
+        return { error: MEDIA_STREAMS_ERROR.get(typedError?.name) || typedError?.message };
     }
 };
 
@@ -41,7 +47,10 @@ export const getAudioMediaStream = async (
 
         return { stream: audioStream };
     } catch (e: unknown) {
-        return { error: MEDIA_STREAMS_ERROR.get(e?.message) || e?.message };
+        console.log(e);
+        const typedError = e as Error;
+
+        return { error: MEDIA_STREAMS_ERROR.get(typedError?.name) || typedError?.message };
     }
 };
 
@@ -75,11 +84,7 @@ export const composeMediaStream = (streamOne: CustomMediaStream, streamTwo: Cust
 export const getMediaStream = async ({
     audioDeviceId,
     videoDeviceId,
-}: MediaStreamOptions = {}): Promise<{
-    stream?: MediaStream | null;
-    audioError?: string;
-    videoError?: string;
-}> => {
+}: MediaStreamOptions = {}): Promise<GetMediaStream> => {
     const { stream: videoStream, error: videoStreamError } = await getVideoMediaStream(
         videoDeviceId,
     );

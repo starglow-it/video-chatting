@@ -28,6 +28,9 @@ import styles from './TimeLimitWarning.module.scss';
 // utils
 import { formatCountDown } from '../../utils/time/formatCountdown';
 
+// const
+import { profileRoute } from '../../const/client-routes';
+
 type ComponentProps = unknown;
 
 const Component: React.FunctionComponent<ComponentProps> = () => {
@@ -45,7 +48,7 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     }, [timeLimitWarning, profile.maxMeetingTime]);
 
     const handleOpenProfile = () => {
-        router.push('/dashboard/profile');
+        router.push(profileRoute);
     };
 
     const minutesLeft = Math.floor(profile.maxMeetingTime / 1000 / 60);

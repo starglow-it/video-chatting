@@ -18,14 +18,14 @@ import { CustomFade } from '@library/custom/CustomFade/CustomFade';
 
 // components
 import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
-import { ScheduleTime } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
-import { getTimeZone } from 'src/utils/time/getTimeZone';
+import { ScheduleTime } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
 import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
+import { getTimeZone } from '../../../utils/time/getTimeZone';
 
 // stores
 import {
@@ -34,6 +34,7 @@ import {
     $scheduleTemplateIdStore,
     sendScheduleInviteFx,
     setScheduleTemplateIdEvent,
+    $profileStore,
 } from '../../../store';
 
 // types
@@ -52,7 +53,7 @@ const validationSchema = yup.object({
     endAt: simpleStringSchema().required('required'),
     comment: simpleStringSchemaWithLength(500),
     currentUserEmail: emailSchema(),
-    date: simpleStringSchema().required('required'),
+    date: yup.date().required('required'),
 });
 
 const schedulePages: ValuesSwitcherItem[] = [
@@ -60,10 +61,21 @@ const schedulePages: ValuesSwitcherItem[] = [
     { id: 2, value: 'invite', label: 'Invite others' },
 ];
 
+type FormType = {
+    timeZone: string;
+    date: Date;
+    startAt: string;
+    endAt: string;
+    comment: string;
+    currentUserEmail: string;
+};
+
 const Component = () => {
     const { scheduleMeetingDialog } = useStore($appDialogsStore);
-    const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
     const scheduleTemplateId = useStore($scheduleTemplateIdStore);
+    const profile = useStore($profileStore);
+
+    const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
 
     const [activeSchedulePage, setActiveSchedulePage] = useState(schedulePages[0]);
     const [userEmails, setUserEmails] = useState<string[]>([]);
@@ -73,14 +85,7 @@ const Component = () => {
         onSwitchOn: handleOpenOption,
     } = useMultipleToggle(['isSettingsOpen', 'isInviteOpen'], 'isSettingsOpen');
 
-    const resolver = useYupValidationResolver<{
-        timeZone: string;
-        date: string;
-        startAt: string;
-        endAt: string;
-        comment: string;
-        currentUserEmail: string;
-    }>(validationSchema);
+    const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -91,7 +96,9 @@ const Component = () => {
             endAt: '',
             comment: '',
             currentUserEmail: '',
-            date: new Date(),
+            date: profile.renewSubscriptionTimestampInSeconds
+                ? new Date(profile.renewSubscriptionTimestampInSeconds * 1000)
+                : new Date(),
         },
     });
 
@@ -140,7 +147,9 @@ const Component = () => {
                 });
 
                 handleClose();
-            } catch (e) {}
+            } catch (e) {
+                console.log(e);
+            }
         }),
         [scheduleTemplateId, userEmails],
     );
@@ -170,7 +179,7 @@ const Component = () => {
         }
     }, []);
 
-    const handleAddUserEmail = useCallback(newEmail => {
+    const handleAddUserEmail = useCallback((newEmail: string) => {
         setUserEmails(prev => {
             if (!prev.some(email => email === newEmail)) {
                 return [...prev, newEmail];
@@ -180,7 +189,7 @@ const Component = () => {
         });
     }, []);
 
-    const handleDeleteUserEmail = useCallback(oldEmail => {
+    const handleDeleteUserEmail = useCallback((oldEmail: string) => {
         setUserEmails(prev => prev.filter(email => email !== oldEmail));
     }, []);
 
@@ -199,6 +208,9 @@ const Component = () => {
                                 className={styles.datePicker}
                                 selected={selectedDate}
                                 startDate={new Date()}
+                                blockedDate={
+                                    new Date(profile.renewSubscriptionTimestampInSeconds * 1000)
+                                }
                                 onDateSelected={handleSelectDate}
                                 {...restDateRegisterData}
                             />
@@ -218,7 +230,13 @@ const Component = () => {
                             />
                             <CustomGrid className={styles.optionsWrapper}>
                                 <CustomFade open={isSettingsOpen} className={styles.optionItem}>
-                                    <ScheduleTime currentDate={selectedDate} />
+                                    <ScheduleTime
+                                        currentDate={selectedDate}
+                                        blockedDate={
+                                            (profile.renewSubscriptionTimestampInSeconds ||
+                                                Date.now() / 1000) * 1000
+                                        }
+                                    />
                                 </CustomFade>
                                 <CustomFade open={isInviteOpen} className={styles.optionItem}>
                                     <ScheduleAttendees
@@ -257,6 +275,4 @@ const Component = () => {
     );
 };
 
-const ScheduleMeetingDialog = memo(Component);
-
-export { ScheduleMeetingDialog };
+export const ScheduleMeetingDialog = memo(Component);

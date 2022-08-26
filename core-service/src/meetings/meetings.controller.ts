@@ -91,21 +91,21 @@ export class MeetingsController {
             previewUrls: targetTemplate.previewUrls,
             type: targetTemplate.type,
             priceInCents: targetTemplate.priceInCents,
+            description: targetTemplate.description,
+            usersPosition: targetTemplate.usersPosition,
+            isAudioAvailable: targetTemplate.isAudioAvailable,
+            links: targetTemplate.links,
             businessCategories: targetTemplate.businessCategories.map(
               (category) => category._id,
             ),
             fullName: user.fullName,
             position: user.position,
-            description: user.description || targetTemplate.description,
             companyName: user.companyName,
             contactEmail: user.contactEmail,
             languages: user.languages.map((language) => language._id),
             socials: user.socials.map((social) => social._id),
-            meetingInstance: meeting,
-            usersPosition: targetTemplate.usersPosition,
-            isAudioAvailable: targetTemplate.isAudioAvailable,
-            links: targetTemplate.links,
             signBoard: user.signBoard,
+            meetingInstance: meeting,
           };
 
           [userTemplate] = await this.userTemplatesService.createUserTemplate(

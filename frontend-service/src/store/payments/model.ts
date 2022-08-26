@@ -1,8 +1,8 @@
-import { attach, combine } from 'effector-next';
+import { attach, Store } from 'effector-next';
 import { paymentsDomain } from '../domains';
 
 import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
-import { ErrorState, PaymentIntentStore } from '../types';
+import { ErrorState, PaymentIntentStore, UserTemplate } from '../types';
 import {
     CancelPaymentIntentPayload,
     ConnectStripeAccountResponse,
@@ -39,18 +39,26 @@ export const cancelPaymentIntentFx = paymentsDomain.effect<
     ErrorState
 >('cancelPaymentIntentFx');
 
-export const createPaymentIntentWithData = attach({
+export const createPaymentIntentWithData = attach<
+    void,
+    Store<UserTemplate>,
+    typeof createPaymentIntentFx
+>({
     effect: createPaymentIntentFx,
-    source: combine({ meetingTemplate: $meetingTemplateStore }),
-    mapParams: (params, { meetingTemplate }) => ({
+    source: $meetingTemplateStore,
+    mapParams: (params, meetingTemplate) => ({
         templateId: meetingTemplate.id,
     }),
 });
 
-export const cancelPaymentIntentWithData = attach({
+export const cancelPaymentIntentWithData = attach<
+    void,
+    Store<PaymentIntentStore>,
+    typeof cancelPaymentIntentFx
+>({
     effect: cancelPaymentIntentFx,
-    source: combine({ paymentIntent: $paymentIntent }),
-    mapParams: (params, { paymentIntent }) => ({
+    source: $paymentIntent,
+    mapParams: (params, paymentIntent) => ({
         paymentIntentId: paymentIntent.id,
     }),
 });

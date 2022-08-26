@@ -45,6 +45,7 @@ declare module '@mui/material/Button' {
         'custom-cancel': true;
         'custom-danger': true;
         'custom-primary': true;
+        'custom-error': true;
         'custom-transparent': true;
         'custom-common': true;
         'custom-black': true;
@@ -88,6 +89,7 @@ declare module '@mui/material/styles' {
         'custom-cancel': string;
         'custom-danger': string;
         'custom-primary': string;
+        'custom-error': string;
         'custom-transparent': string;
         'custom-common': string;
         'custom-black': string;

@@ -8,8 +8,12 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // store
-import { $appDialogsStore, appDialogsApi } from '../../../store';
-import { $deleteProfileTemplateId, deleteProfileTemplateFx } from '../../../store';
+import {
+    $appDialogsStore,
+    appDialogsApi,
+    $deleteProfileTemplateId,
+    deleteProfileTemplateFx,
+} from '../../../store';
 
 // styles
 import styles from './DeleteTemplateDialog.module.scss';
@@ -27,12 +31,12 @@ const Component = () => {
         });
     }, []);
 
-    const handleDeleteTemplate = useCallback(() => {
+    const handleDeleteTemplate = useCallback(async () => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.deleteTemplateDialog,
         });
 
-        deleteProfileTemplateFx({ templateId: deleteProfileTemplateId });
+        await deleteProfileTemplateFx({ templateId: deleteProfileTemplateId });
     }, [deleteProfileTemplateId]);
 
     return (
@@ -72,6 +76,4 @@ const Component = () => {
     );
 };
 
-const DeleteTemplateDialog = memo(Component);
-
-export { DeleteTemplateDialog };
+export const DeleteTemplateDialog = memo(Component);

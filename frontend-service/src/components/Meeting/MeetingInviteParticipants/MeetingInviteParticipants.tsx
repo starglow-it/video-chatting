@@ -25,13 +25,14 @@ import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
 // styles
 import styles from './MeetingInviteParticipants.module.scss';
 
-const MeetingInviteParticipants = memo(() => {
+const Component = ({ onAction }: { onAction?: () => void }) => {
     const router = useRouter();
 
     const handleOpenEmailInvite = useCallback(() => {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.inviteAttendeeByEmailDialog,
         });
+        onAction?.();
     }, []);
 
     const handleLinkCopied = useCallback(() => {
@@ -39,6 +40,7 @@ const MeetingInviteParticipants = memo(() => {
             type: NotificationType.LinkInfoCopied,
             message: 'meeting.copy.link',
         });
+        onAction?.();
     }, []);
 
     return (
@@ -72,6 +74,6 @@ const MeetingInviteParticipants = memo(() => {
             </CustomGrid>
         </>
     );
-});
+};
 
-export { MeetingInviteParticipants };
+export const MeetingInviteParticipants = memo(Component);

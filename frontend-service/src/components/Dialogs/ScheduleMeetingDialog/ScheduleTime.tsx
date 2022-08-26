@@ -22,17 +22,22 @@ import {
 import { parseTimestamp } from '../../../utils/time/parseTimestamp';
 import { isDatesEqual } from '../../../utils/time/isDatesEqual';
 import { setDayTime } from '../../../utils/time/setTimeFunctions';
+import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
+import { isBefore } from '../../../utils/time/isBefore';
 
 // types
 import { PropsWithClassName } from '../../../types';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
+import { addNotificationEvent } from '../../../store';
+import { NotificationType } from '../../../store/types';
 
 const Component = ({
     className,
     currentDate,
-}: PropsWithClassName<{ currentDate: Date | number }>) => {
+    blockedDate,
+}: PropsWithClassName<{ currentDate: Date | number; blockedDate: Date }>) => {
     const {
         register,
         control,
@@ -56,13 +61,15 @@ const Component = ({
     });
 
     useEffect(() => {
-        const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(new Date()));
+        const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(blockedDate));
 
-        const startTime = isTheSameDay ? getHourMinutesString(parseTimestamp(Date.now())) : '00:00';
+        const startTime = isTheSameDay
+            ? getHourMinutesString(parseTimestamp(blockedDate))
+            : '00:00';
 
-        const timeList = getTimeList(startTime, 30 * ONE_MINUTE, 0)[0];
+        const timeList = getTimeList(startTime, 30 * ONE_MINUTE, 0);
 
-        setValue('startAt', timeList, {
+        setValue('startAt', timeList[0], {
             shouldValidate: true,
             shouldDirty: true,
         });
@@ -76,10 +83,17 @@ const Component = ({
     }, []);
 
     const handleChangeStartAt = useCallback(event => {
-        setValue('startAt', event.target.value, {
-            shouldValidate: true,
-            shouldDirty: true,
-        });
+        if (!isBefore(getDateTimestamp(currentDate, event.target.value), blockedDate)) {
+            setValue('startAt', event.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
+        } else {
+            addNotificationEvent({
+                type: NotificationType.SubscriptionEndDate,
+                message: 'subscriptions.endDate',
+            });
+        }
     }, []);
 
     const handleChangeEndAt = useCallback(event => {
@@ -107,11 +121,21 @@ const Component = ({
         const timeList = getTimeList(startTime, 30 * ONE_MINUTE, 0, '23:30');
 
         return timeList.map(time => (
-            <MenuItem key={time} value={time}>
+            <MenuItem
+                key={time}
+                value={time}
+                classes={
+                    isBefore(getDateTimestamp(currentDate, time), blockedDate)
+                        ? {
+                              root: styles.disabledItem,
+                          }
+                        : {}
+                }
+            >
                 {time}
             </MenuItem>
         ));
-    }, [currentDate]);
+    }, [currentDate, blockedDate]);
 
     const renderEndTimeList = useMemo(() => {
         const isTheSameDay = isDatesEqual(setDayTime(currentDate), setDayTime(new Date()));
@@ -129,7 +153,7 @@ const Component = ({
                 {time}
             </MenuItem>
         ));
-    }, [startAtValue, currentDate]);
+    }, [startAtValue, currentDate, blockedDate]);
 
     const { onChange, ...restRegisterData } = register('comment', { maxLength: 500 });
 
@@ -137,6 +161,7 @@ const Component = ({
 
     const handleChangeComment = useCallback(async event => {
         if (event.target.value.length > 500) {
+            // eslint-disable-next-line no-param-reassign
             event.target.value = event.target.value.slice(0, 500);
         }
 

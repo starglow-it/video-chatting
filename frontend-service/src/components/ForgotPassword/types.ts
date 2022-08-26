@@ -1,1 +1,1 @@
-export type ForgotPasswordProps = {};
+export type ForgotPasswordProps = unknown;

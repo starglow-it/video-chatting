@@ -16,7 +16,7 @@ export const socketEventRequest = socketDomain.effect<EmitSocketEventPayload, un
     'socketEventRequest',
 );
 
-export const initiateSocketConnectionFx = socketDomain.effect<void, unknown>(
+export const initiateSocketConnectionFx = socketDomain.effect<void, SocketState>(
     'initiateSocketConnectionFx',
 );
 

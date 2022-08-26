@@ -11,7 +11,19 @@
 .profileAvatar {
   border: 1px solid white;
   margin: rem(0 16px 0 0);
-  flex: 0 0 90px;
+  flex: 0 0 rem(90px);
+
+  &.mobile {
+    flex: 0 0 rem(50px);
+  }
+}
+
+.userAvatar {
+  border: 1px solid $primary-white;
+
+  &:not(:first-child) {
+    margin: rem(0  0 0 -15px);
+  }
 }
 
 .backButton {
@@ -26,6 +38,25 @@
   box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
   border-radius: 50%;
   cursor: pointer;
+
+  &.mobile {
+    position: relative;
+
+    top: unset;
+    left: unset;
+    width: rem(34px);
+    height: rem(34px);
+
+    border-radius: rem(8px);
+
+    margin: rem(12px 0 24px 0);
+  }
+
+  .text {
+    position: absolute;
+    left: calc(100% + 12px);
+    pointer-events: none;
+  }
 }
 
 .imageWrapper {
@@ -50,13 +81,9 @@
 .inMeetingAvatars {
   position: relative;
   width: auto;
-
-  .userAvatar {
-    border: 1px solid #FFFFFF;
-    &:not(:first-child) {
-      margin: rem(0  0 0 -15px);
-    }
-  }
+  align-self: flex-start;
+  flex: 1 0 auto;
+  justify-content: flex-end;
 }
 
 .companyName {

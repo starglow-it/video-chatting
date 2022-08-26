@@ -1064,7 +1064,7 @@ export const templatesData: BaseTemplate[] = [
     maxParticipants: 4,
     description: "A soothing background for meetings",
     type: "free",
-    isAudioAvailable: false,
+    isAudioAvailable: true,
     businessCategories: [
       "Team meeting",
       "Consulting",
@@ -1102,7 +1102,7 @@ export const templatesData: BaseTemplate[] = [
     description: "A soothing background for meetings",
     type: "paid",
     priceInCents: 1000,
-    isAudioAvailable: false,
+    isAudioAvailable: true,
     businessCategories: [
       "Team meeting",
       "Consulting",

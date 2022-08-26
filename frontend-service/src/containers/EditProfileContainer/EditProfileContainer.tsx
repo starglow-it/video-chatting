@@ -39,7 +39,7 @@ import { validateSocialLink } from '../../validation/users/socials';
 import styles from './EditProfileContainer.module.scss';
 
 // types
-import { AppDialogsEnum, SocialLink } from '../../store/types';
+import { AppDialogsEnum, BusinessCategory, Language, SocialLink } from '../../store/types';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -55,7 +55,7 @@ const validationSchema = yup.object({
 const EditProfileContainer = memo(() => {
     const router = useRouter();
 
-    const popperRef = useRef();
+    const popperRef = useRef<HTMLDivElement | null>(null);
 
     const profile = useStore($profileStore);
     const routeToChange = useStore($routeToChangeStore);
@@ -64,8 +64,8 @@ const EditProfileContainer = memo(() => {
         companyName: string;
         contactEmail: string;
         description: string;
-        businessCategories: any[];
-        languages: any[];
+        businessCategories: BusinessCategory['key'][];
+        languages: Language['key'][];
         fullName: string;
         position: string;
         socials: { key: string; value: string }[];

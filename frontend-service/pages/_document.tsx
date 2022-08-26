@@ -1,5 +1,4 @@
 import React from 'react';
-import getConfig from 'next/config';
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
 import { withFork } from 'effector-next';
 import createEmotionServer from '@emotion/server/create-instance';
@@ -8,16 +7,14 @@ import createEmotionCache from '../src/createEmotionCache';
 
 import { baseTheme } from '../src/themes/base';
 
-const { publicRuntimeConfig } = getConfig();
-
 const enhance = withFork({ debug: false });
+
 class MyDocument extends Document {
     render(): JSX.Element {
         return (
             <Html lang="en">
                 <Head>
                     <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
-                    <title>{publicRuntimeConfig.applicationName}</title>
                     <meta name="theme-color" content={baseTheme.palette.primary.main} />
                     <link
                         rel="stylesheet"

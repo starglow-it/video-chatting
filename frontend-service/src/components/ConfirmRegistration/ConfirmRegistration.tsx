@@ -2,15 +2,21 @@ import React, { memo, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
+// custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
+// stores
 import { $registerStore, confirmRegistrationUserFx, resetRegisterErrorEvent } from '../../store';
 
+// styles
 import styles from './ConfirmRegistration.module.scss';
 
-const ConfirmRegistration = memo(() => {
+// const
+import { clientRoutes } from '../../const/client-routes';
+
+const Component = () => {
     const router = useRouter();
     const { isUserConfirmed } = useStore($registerStore);
     const [error, setError] = useState('');
@@ -36,8 +42,8 @@ const ConfirmRegistration = memo(() => {
 
     useEffect(() => {
         if (isUserConfirmed || error) {
-            setTimeout(() => {
-                router.push('/login');
+            setTimeout(async () => {
+                await router.push(clientRoutes.loginRoute);
             }, 3000);
         }
     }, [isUserConfirmed, error]);
@@ -68,6 +74,6 @@ const ConfirmRegistration = memo(() => {
             </CustomGrid>
         </CustomPaper>
     );
-});
+};
 
-export { ConfirmRegistration };
+export const ConfirmRegistration = memo(Component);

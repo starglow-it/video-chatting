@@ -1,12 +1,17 @@
-import React, { memo, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
+import clsx from 'clsx';
 
 // hooks
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // common
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // components
 import { EnterMeetingName } from '@components/EnterMeetingName/EnterMeetingName';
@@ -40,30 +45,46 @@ import {
     initWindowListeners,
     removeWindowListeners,
     resetMeetingTemplateStoreEvent,
+    initLandscapeListener,
+    removeLandscapeListener,
     sendStartMeetingSocketEvent,
 } from '../../store';
+import { setTimeLimitWarningEvent } from '../../store/roomStores';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
+import { SavedSettings } from '../../types';
 
 // styles
 import styles from './MeetingContainer.module.scss';
 
+// utils
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
-import { setTimeLimitWarningEvent } from '../../store/roomStores';
 
 const NotMeetingComponent = memo(() => {
     const meetingUser = useStore($localUserStore);
 
-    if (meetingUser.accessStatus === MeetingAccessStatuses.EnterName) {
-        return <EnterMeetingName />;
-    }
-    if (meetingUser.accessStatus === MeetingAccessStatuses.Kicked) {
-        return <KickedUser />;
-    }
+    const ChildComponent = useMemo(() => {
+        if (meetingUser.accessStatus === MeetingAccessStatuses.EnterName) {
+            return EnterMeetingName;
+        }
+        if (meetingUser.accessStatus === MeetingAccessStatuses.Kicked) {
+            return KickedUser;
+        }
 
-    return <DevicesSettings />;
+        return DevicesSettings;
+    }, [meetingUser.accessStatus]);
+
+    return (
+        <CustomPaper className={styles.wrapper}>
+            <CustomScroll className={styles.scroll}>
+                <CustomGrid container direction="column" wrap="nowrap">
+                    <ChildComponent />
+                </CustomGrid>
+            </CustomScroll>
+        </CustomPaper>
+    );
 });
 
 const MeetingContainer = memo(() => {
@@ -84,11 +105,15 @@ const MeetingContainer = memo(() => {
         getSubscriptionWithDataFx();
     }, []);
 
+    const { isMobile } = useBrowserDetect();
+
     useLayoutEffect(() => {
         initWindowListeners();
+        initLandscapeListener();
 
         return () => {
             removeWindowListeners();
+            removeLandscapeListener();
         };
     }, []);
 
@@ -120,13 +145,16 @@ const MeetingContainer = memo(() => {
             if (isSocketConnected) {
                 await onInitDevices();
 
-                const savedSettings = WebStorage.get<{
-                    blurSetting: boolean;
-                    micActiveSetting: boolean;
-                    cameraActiveSetting: boolean;
-                    backgroundAudioVolumeSetting: number;
-                    backgroundAudioSetting: boolean;
-                }>({ key: StorageKeysEnum.meetingSettings });
+                const savedSettings = WebStorage.get<
+                    Pick<
+                        SavedSettings,
+                        | 'blurSetting'
+                        | 'micActiveSetting'
+                        | 'cameraActiveSetting'
+                        | 'backgroundAudioVolumeSetting'
+                        | 'backgroundAudioSetting'
+                    >
+                >({ key: StorageKeysEnum.meetingSettings });
 
                 if (Object.keys(savedSettings)?.length) {
                     setBackgroundAudioVolume(savedSettings.backgroundAudioVolumeSetting);
@@ -160,7 +188,11 @@ const MeetingContainer = memo(() => {
             {Boolean(meetingTemplate?.id) && isSocketConnected && startMeeting && (
                 <VideoEffectsProvider>
                     {MeetingAccessStatuses.InMeeting !== meetingUser.accessStatus ? (
-                        <CustomBox className={styles.waitingRoomWrapper}>
+                        <CustomBox
+                            className={clsx(styles.waitingRoomWrapper, {
+                                [styles.mobile]: isMobile,
+                            })}
+                        >
                             <MeetingPreview />
                             <NotMeetingComponent />
                         </CustomBox>

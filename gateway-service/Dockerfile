@@ -6,9 +6,9 @@ COPY ./shared ./shared
 
 RUN mkdir ./gateway-service
 
-COPY ./gateway-service/package*.json ./gateway-service/
+COPY ./gateway-service/package.json ./gateway-service/
 
-RUN cd ./gateway-service && npm ci --silent --legacy-peer-deps
+RUN cd ./gateway-service && npm i --legacy-peer-deps
 
 COPY ./gateway-service ./gateway-service/
 

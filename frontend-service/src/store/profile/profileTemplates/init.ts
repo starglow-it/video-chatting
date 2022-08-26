@@ -3,6 +3,7 @@ import {
     $profileTemplatesStore,
     $skipProfileTemplates,
     deleteProfileTemplateFx,
+    getProfileTemplateByTemplateIdFx,
     getProfileTemplatesBase,
     getProfileTemplatesFx,
     setDeleteTemplateIdEvent,
@@ -10,9 +11,11 @@ import {
 } from './model';
 import { handleFetchProfileTemplates } from '../handlers/handleFetchProfileTemplates';
 import { handleDeleteProfileTemplate } from '../handlers/handleDeleteProfileTemplate';
+import { handleFetchProfileTemplateByTemplateId } from '../handlers/handleFetchProfileTemplateByTemplateId';
 
 getProfileTemplatesBase.use(handleFetchProfileTemplates);
 deleteProfileTemplateFx.use(handleDeleteProfileTemplate);
+getProfileTemplateByTemplateIdFx.use(handleFetchProfileTemplateByTemplateId);
 
 $profileTemplatesStore.on(getProfileTemplatesFx.doneData, (state, data) => data);
 

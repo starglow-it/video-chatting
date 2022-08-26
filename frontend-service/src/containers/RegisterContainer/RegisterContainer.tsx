@@ -3,18 +3,11 @@ import clsx from 'clsx';
 import * as yup from 'yup';
 import Image from 'next/image';
 import { useStore } from 'effector-react';
-import { useRouter } from 'next/router';
 import { useForm, useWatch, FormProvider } from 'react-hook-form';
 import { useMediaQuery } from '@mui/material';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
-
-// icons
-// import { GoogleIcon } from '@library/icons/GoogleIcon';
-// import { LinkedInIcon } from '@library/icons/LinkedInIcon';
-// import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
-// import { BlockSeparator } from '@library/common/BlockSeparator/BlockSeparator';
 
 // custom
 import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
@@ -24,17 +17,18 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
+// common
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
+
+// dialogs
 import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
 
 // stores
 import { RegisterUserParams } from 'src/store/types';
 import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store';
-
-// types
 
 // styles
 import styles from './RegisterContainer.module.scss';
@@ -49,8 +43,7 @@ const validationSchema = yup.object({
     terms: yup.boolean().required(),
 });
 
-const RegisterContainer = memo(() => {
-    const router = useRouter();
+const Component = () => {
     const { error } = useStore($registerStore);
 
     const [showHints, setHints] = useState<boolean>(false);
@@ -97,10 +90,6 @@ const RegisterContainer = memo(() => {
         setHints(false);
     }, []);
 
-    const handleCloseRegister = useCallback(async () => {
-        await router.push('/');
-    }, []);
-
     const handleFocusInput = useCallback(() => {
         setHints(true);
     }, []);
@@ -129,27 +118,6 @@ const RegisterContainer = memo(() => {
                         translation="getStarted.title"
                     />
                 </CustomGrid>
-                {/* <CustomGrid container direction="column" className={styles.socialsWrapper}>
-                <CustomGrid item className={styles.googleLogin}>
-                    <SocialLogin
-                        Icon={GoogleIcon}
-                        nameSpace="register"
-                        translation={`getStarted.socialLogin.google${is480Media ? 'Mobile' : ''}`}
-                    />
-                </CustomGrid>
-                <CustomGrid item>
-                    <SocialLogin
-                        Icon={LinkedInIcon}
-                        nameSpace="register"
-                        translation={`getStarted.socialLogin.linkedIn${is480Media ? 'Mobile' : ''}`}
-                    />
-                </CustomGrid>
-            </CustomGrid>
-            <BlockSeparator
-                className={styles.createAccountSeparator}
-                nameSpace="register"
-                translation="getStarted.createNewAcc"
-            /> */}
                 <FormProvider {...methods}>
                     <form className={styles.socialsWrapper} onSubmit={onSubmit}>
                         <CustomGrid container>
@@ -232,6 +200,6 @@ const RegisterContainer = memo(() => {
             <SuccessfulRegisterDialog />
         </>
     );
-});
+};
 
-export { RegisterContainer };
+export const RegisterContainer = memo(Component);

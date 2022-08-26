@@ -2,6 +2,7 @@ import React, { useEffect, ReactElement, useCallback, useMemo, useRef } from 're
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -9,64 +10,77 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 // helpers
 import { addBlur } from '../helpers/media/addBlur';
 import { StorageKeysEnum, WebStorage } from '../controllers/WebStorageController';
+import { CustomMediaStream, SavedSettings } from '../types';
+import { emptyFunction } from '../utils/functions/emptyFunction';
 
 const resultWidth = 240;
 
-export const VideoEffectsContext = React.createContext({
+export const VideoEffectsContext = React.createContext<{
+    data: { isBlurActive: boolean };
+    actions: {
+        onGetCanvasStream: (
+            stream: CustomMediaStream,
+            options?: { isBlurActive: boolean },
+        ) => Promise<CustomMediaStream | void>;
+        onToggleBlur: (() => void) | typeof emptyFunction;
+        onSetBlur: ((value: boolean) => void) | typeof emptyFunction;
+    };
+}>({
     data: {
         isBlurActive: true,
     },
     actions: {
-        onGetCanvasStream: async (
-            stream: MediaStream,
-            options: { isBlurActive: boolean },
-        ): Promise<MediaStream> => stream,
-        onToggleBlur: () => {},
-        onSetBlur: (value: boolean) => {},
+        onGetCanvasStream: async (stream: CustomMediaStream) => stream,
+        onToggleBlur: emptyFunction,
+        onSetBlur: emptyFunction,
     },
 });
 
 const blurFn = addBlur('/images/orange.png');
 
-export const VideoEffectsProvider = ({ children }: React.PropsWithChildren<any>): ReactElement => {
-    const savedSettings = WebStorage.get<{ blurSetting: boolean }>({
+export const VideoEffectsProvider = ({ children }: React.PropsWithChildren): ReactElement => {
+    const savedSettings = WebStorage.get<Pick<SavedSettings, 'blurSetting'>>({
         key: StorageKeysEnum.meetingSettings,
     });
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
+    const { isMobile } = useBrowserDetect();
+
     const {
         value: isBlurActive,
         onToggleSwitch: handleToggleBlur,
         onSetSwitch: handleSetBlur,
-    } = useToggle(savedSettings?.blurSetting ?? true);
+    } = useToggle(savedSettings?.blurSetting ?? !isMobile);
 
     const handleGetActiveStream = useCallback(
-        async (stream: MediaStream, options) => {
-            const newBlurSetting = options?.isBlurActive ?? isBlurActive;
+        async (stream: CustomMediaStream, options?: { isBlurActive: boolean }) => {
+            if (stream) {
+                const newBlurSetting = options?.isBlurActive ?? isBlurActive;
 
-            let videoTrack = stream.getVideoTracks()[0];
+                let videoTrack = stream?.getVideoTracks()[0];
 
-            if (videoTrack) {
-                const temEnabled = videoTrack.enabled;
+                if (videoTrack) {
+                    const temEnabled = videoTrack.enabled;
 
-                videoTrack.enabled = true;
+                    videoTrack.enabled = true;
 
-                if (newBlurSetting) {
-                    videoTrack = await blurFn.start(videoTrack);
+                    if (newBlurSetting) {
+                        videoTrack = await blurFn.start(videoTrack);
+                    }
+
+                    const track = stream.getVideoTracks()[0];
+
+                    stream.removeTrack(track);
+
+                    stream.addTrack(videoTrack);
+
+                    videoTrack.enabled = temEnabled;
                 }
 
-                const track = stream.getVideoTracks()[0];
-
-                stream.removeTrack(track);
-
-                stream.addTrack(videoTrack);
-
-                videoTrack.enabled = temEnabled;
+                return stream;
             }
-
-            return stream;
         },
         [isBlurActive],
     );

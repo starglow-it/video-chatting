@@ -1,13 +1,14 @@
 import { NextPageContext } from 'next';
 import { destroyCookie } from 'nookies';
+import { clientRoutes } from '../../const/client-routes';
 
 export function deleteAuthCookies(ctx: NextPageContext | undefined) {
     destroyCookie(ctx, 'accessToken', {
-        path: '/',
+        path: clientRoutes.indexRoute,
         expires: undefined,
     });
     destroyCookie(ctx, 'refreshToken', {
-        path: '/',
+        path: clientRoutes.indexRoute,
         expires: undefined,
     });
 }

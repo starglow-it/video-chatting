@@ -2,6 +2,9 @@ import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+
 // custom
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -45,6 +48,8 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
         })();
     }, [stream]);
 
+    const { isMobile } = useBrowserDetect();
+
     const handleToggleVideo = useCallback(() => {
         onToggleVideo?.();
         onToggleCamera(!isCameraActive);
@@ -62,8 +67,15 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
     const isVideoDisabled = !stream?.id || Boolean(videoError);
     const isAudioDisabled = !stream?.id || Boolean(audioError);
 
+    const buttonsSize = isMobile ? '22px' : '32px';
+
     return (
-        <CustomGrid container direction="column" className={styles.previewWrapper}>
+        <CustomGrid
+            container
+            direction={isMobile ? 'row' : 'column'}
+            wrap="nowrap"
+            className={clsx(styles.previewWrapper, { [styles.mobile]: isMobile })}
+        >
             <RoundedVideo
                 isLocal
                 isCameraActive={isCameraActive}
@@ -71,22 +83,29 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                 userName={localUser?.username || ''}
                 userProfilePhoto={profile.profileAvatar?.url || ''}
                 videoRef={videoRef}
-                size={116}
+                size={isMobile ? 99 : 116}
                 className={styles.previewVideo}
             />
             {isNeedToRenderDevices && (
-                <>
-                    <VolumeAnalyzer key={stream?.id} />
+                <CustomGrid container direction="column" className={styles.mediaWrapper}>
+                    <VolumeAnalyzer key={stream?.id} indicatorsNumber={isMobile ? 9 : 6} />
                     <CustomGrid container className={styles.controlsWrapper}>
                         <CustomTooltip nameSpace="errors" translation={audioError}>
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(audioError),
                                     [styles.disabled]: isAudioDisabled,
+                                    [styles.mobile]: isMobile,
                                 })}
                                 disabled={isAudioDisabled}
                                 onAction={handleToggleAudio}
-                                Icon={<MicIcon width="32px" height="32px" isActive={isMicActive} />}
+                                Icon={
+                                    <MicIcon
+                                        width={buttonsSize}
+                                        height={buttonsSize}
+                                        isActive={isMicActive}
+                                    />
+                                }
                             />
                         </CustomTooltip>
                         <CustomTooltip nameSpace="errors" translation={videoError}>
@@ -94,20 +113,21 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(videoError),
                                     [styles.disabled]: isVideoDisabled,
+                                    [styles.mobile]: isMobile,
                                 })}
                                 onAction={handleToggleVideo}
                                 disabled={isVideoDisabled}
                                 Icon={
                                     <CameraIcon
-                                        width="32px"
-                                        height="32px"
+                                        width={buttonsSize}
+                                        height={buttonsSize}
                                         isActive={isCameraActive}
                                     />
                                 }
                             />
                         </CustomTooltip>
                     </CustomGrid>
-                </>
+                </CustomGrid>
             )}
         </CustomGrid>
     );

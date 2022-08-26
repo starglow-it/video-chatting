@@ -1,20 +1,23 @@
 import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
+// custom
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
+// stores
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
+// types
+import { ConfirmCancelChangesDialogProps } from './types';
 import { AppDialogsEnum } from '../../../store/types';
 
-import { ConfirmCancelChangesDialogProps } from './types';
-
+// styles
 import styles from './ConfirmCancelChangesDialog.module.scss';
 
-const ConfirmCancelChangesDialog = memo(({ onClose }: ConfirmCancelChangesDialogProps) => {
+const Component = ({ onClose }: ConfirmCancelChangesDialogProps) => {
     const { editMeetingTemplateDialog } = useStore($appDialogsStore);
 
     const handleClose = useCallback(() => {
@@ -64,6 +67,6 @@ const ConfirmCancelChangesDialog = memo(({ onClose }: ConfirmCancelChangesDialog
             </CustomGrid>
         </CustomDialog>
     );
-});
+};
 
-export { ConfirmCancelChangesDialog };
+export const ConfirmCancelChangesDialog = memo(Component);

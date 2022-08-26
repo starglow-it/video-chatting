@@ -24,79 +24,77 @@ import { BUSINESS_CATEGORIES } from '../../const/businessCategories';
 // types
 import { BusinessCategoriesSelectProps } from './types';
 
-const BusinessCategoriesSelect = memo(
-    ({ nameSpace, translation, formKey }: BusinessCategoriesSelectProps) => {
-        const { setValue, control, register } = useFormContext();
+const Component = ({ nameSpace, translation, formKey }: BusinessCategoriesSelectProps) => {
+    const { setValue, control, register } = useFormContext();
 
-        const categoriesValue = useWatch({
-            control,
-            name: formKey,
+    const categoriesValue = useWatch({
+        control,
+        name: formKey,
+    });
+
+    const registerData = register(formKey);
+
+    const handleChange = useCallback((event: SelectChangeEvent<string[]>) => {
+        setValue(formKey, event.target.value, {
+            shouldValidate: true,
+            shouldDirty: true,
         });
+    }, []);
 
-        const registerData = register(formKey);
+    const renderBusinessCategoriesList = useMemo(
+        () =>
+            BUSINESS_CATEGORIES.map(name => (
+                <MenuItem key={name.key} value={name.key}>
+                    <CustomTypography transform="capitalize">{name.value}</CustomTypography>
+                </MenuItem>
+            )),
+        [],
+    );
 
-        const handleChange = useCallback((event: SelectChangeEvent<string[]>) => {
-            setValue(formKey, event.target.value, {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
-        }, []);
+    const renderValues = useCallback(
+        (selected: string[]): React.ReactNode => (
+            <CustomScroll className={styles.tagsWrapper}>
+                <CustomGrid container gap={1}>
+                    {selected.map(selectedKey => {
+                        const selectedCategory = BUSINESS_CATEGORIES.find(
+                            tag => tag.key === selectedKey,
+                        );
 
-        const renderBusinessCategoriesList = useMemo(
-            () =>
-                BUSINESS_CATEGORIES.map(name => (
-                    <MenuItem key={name.key} value={name.key}>
-                        <CustomTypography transform="capitalize">{name.value}</CustomTypography>
-                    </MenuItem>
-                )),
-            [],
-        );
-
-        const renderValues = useCallback(
-            (selected: string[]): React.ReactNode => (
-                <CustomScroll className={styles.tagsWrapper}>
-                    <CustomGrid container gap={1}>
-                        {selected.map(selectedKey => {
-                            const selectedCategory = BUSINESS_CATEGORIES.find(
-                                tag => tag.key === selectedKey,
+                        if (selectedCategory) {
+                            return (
+                                <BusinessCategoryItem
+                                    key={selectedKey}
+                                    category={selectedCategory}
+                                />
                             );
+                        }
 
-                            if (selectedCategory) {
-                                return (
-                                    <BusinessCategoryItem
-                                        key={selectedKey}
-                                        category={selectedCategory}
-                                    />
-                                );
-                            }
+                        return null;
+                    })}
+                </CustomGrid>
+            </CustomScroll>
+        ),
+        [],
+    );
 
-                            return null;
-                        })}
-                    </CustomGrid>
-                </CustomScroll>
-            ),
-            [],
-        );
+    return (
+        <CustomDropdown
+            nameSpace={nameSpace}
+            translation={translation}
+            selectId="businessCategoriesSelect"
+            labelId={formKey}
+            multiple
+            {...registerData}
+            value={categoriesValue}
+            onChange={handleChange}
+            renderValue={renderValues}
+            IconComponent={PlusAddIcon}
+            list={renderBusinessCategoriesList}
+            classes={{
+                icon: styles.dropDownIcon,
+            }}
+        />
+    );
+};
 
-        return (
-            <CustomDropdown
-                nameSpace={nameSpace}
-                translation={translation}
-                selectId="businessCategoriesSelect"
-                labelId={formKey}
-                multiple
-                {...registerData}
-                value={categoriesValue}
-                onChange={handleChange}
-                renderValue={renderValues}
-                IconComponent={PlusAddIcon}
-                list={renderBusinessCategoriesList}
-                classes={{
-                    icon: styles.dropDownIcon,
-                }}
-            />
-        );
-    },
-);
-
-export { BusinessCategoriesSelect };
+export const BusinessCategoriesSelect = memo(Component);

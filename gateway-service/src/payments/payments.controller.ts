@@ -208,9 +208,15 @@ export class PaymentsController {
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
     try {
-      const userTemplate = await this.templateService.getUserTemplate({
+      const userTemplate = await this.templateService.getUserTemplateById({
         id: body.templateId,
       });
+
+      if (!userTemplate) {
+        return {
+          success: false,
+        };
+      }
 
       const user = await this.coreService.findUserById({
         userId: userTemplate.user.id,

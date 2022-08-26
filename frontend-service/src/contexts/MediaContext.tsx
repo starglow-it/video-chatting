@@ -1,10 +1,11 @@
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { getDevices, getDevicesFromStream } from '../helpers/media/getDevices';
-import { getMediaStream } from '../helpers/media/getMediaStream';
+import { GetMediaStream, getMediaStream } from '../helpers/media/getMediaStream';
 import { DeviceInputKindEnum } from '../const/media/DEVICE_KINDS';
 import { stopStream } from '../helpers/media/stopStream';
 import { StorageKeysEnum, WebStorage } from '../controllers/WebStorageController';
-import { CustomMediaStream } from '../types';
+import { CustomMediaStream, SavedSettings } from '../types';
+import { emptyFunction } from '../utils/functions/emptyFunction';
 
 type ChangeMediaStreamData = {
     kind: DeviceInputKindEnum;
@@ -15,8 +16,8 @@ type MediaContextType = {
     data: {
         changeStream: CustomMediaStream;
         activeStream: CustomMediaStream;
-        audioError: string;
-        videoError: string;
+        audioError: string | undefined;
+        videoError: string | undefined;
         videoDevices: MediaDeviceInfo[];
         audioDevices: MediaDeviceInfo[];
         isMicActive: boolean;
@@ -26,15 +27,15 @@ type MediaContextType = {
         isStreamRequested: boolean;
     };
     actions: {
-        onToggleCamera: (isEnabled?: boolean) => void;
-        onToggleMic: (isEnabled?: boolean) => void;
+        onToggleCamera: ((isEnabled?: boolean) => Promise<void>) | typeof emptyFunction;
+        onToggleMic: ((isEnabled?: boolean) => Promise<void>) | typeof emptyFunction;
         onChangeStream:
             | (({ kind, deviceId }: ChangeMediaStreamData) => Promise<void>)
-            | (() => void);
+            | typeof emptyFunction;
         onChangeActiveStream: () => CustomMediaStream;
-        onGetNewStream: () => Promise<CustomMediaStream>;
-        onInitDevices: () => Promise<void>;
-        onClearCurrentDevices: () => void;
+        onGetNewStream: (() => Promise<CustomMediaStream>) | typeof emptyFunction;
+        onInitDevices: (() => Promise<void>) | typeof emptyFunction;
+        onClearCurrentDevices: (() => void) | typeof emptyFunction;
     };
 };
 
@@ -58,23 +59,23 @@ export const MediaContext = React.createContext<MediaContextType>({
         isStreamRequested: false,
     },
     actions: {
-        onChangeStream: () => {},
+        onChangeStream: emptyFunction,
         onGetNewStream: async () => null,
         onChangeActiveStream: () => null,
-        onInitDevices: async () => {},
-        onToggleCamera: () => {},
-        onToggleMic: () => {},
-        onClearCurrentDevices: () => {},
+        onInitDevices: emptyFunction,
+        onToggleCamera: emptyFunction,
+        onToggleMic: emptyFunction,
+        onClearCurrentDevices: emptyFunction,
     },
 });
 
-export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>): ReactElement => {
+export const MediaContextProvider = ({ children }: React.PropsWithChildren): ReactElement => {
     const [audioDevices, setAudioDevices] = useState<UseMediaDevices['audioDevices']>([]);
     const [videoDevices, setVideoDevices] = useState<UseMediaDevices['videoDevices']>([]);
     const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
     const [isMicActive, setIsMicActive] = useState<boolean>(true);
-    const [audioError, setAudioError] = useState<string>('');
-    const [videoError, setVideoError] = useState<string>('');
+    const [audioError, setAudioError] = useState<string | undefined>('');
+    const [videoError, setVideoError] = useState<string | undefined>('');
     const [activeStream, setActiveStream] = useState<CustomMediaStream>(null);
     const [changeStream, setChangeStream] = useState<CustomMediaStream>(null);
 
@@ -90,10 +91,10 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
             return null;
         });
-        const savedSettings = WebStorage.get<{
-            savedAudioDeviceId: MediaDeviceInfo['deviceId'];
-            savedVideoDeviceId: MediaDeviceInfo['deviceId'];
-        }>({ key: StorageKeysEnum.meetingSettings });
+
+        const savedSettings = WebStorage.get<
+            Pick<SavedSettings, 'savedAudioDeviceId' | 'savedVideoDeviceId'>
+        >({ key: StorageKeysEnum.meetingSettings });
 
         const {
             stream: initialStream,
@@ -124,7 +125,11 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             const audioDevice =
                 audio.find(device => device.deviceId === audioDeviceId) || audio?.[0];
 
-            const { stream, audioError, videoError } = await getMediaStream({
+            const {
+                stream,
+                audioError: newAudioError,
+                videoError: newVideoError,
+            } = await getMediaStream({
                 audioDeviceId: audioDevice?.deviceId,
                 videoDeviceId: videoDevice?.deviceId,
             });
@@ -132,17 +137,21 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
             if (stream) {
                 setChangeStream(prev => {
                     const { videoDeviceId: oldDevice } = getDevicesFromStream(prev);
-                    const { videoDeviceId: newDevice, audioDeviceId } =
+                    const { videoDeviceId: newVideoDeviceId, audioDeviceId: newAudioDeviceId } =
                         getDevicesFromStream(stream);
 
-                    if (oldDevice !== newDevice || !(prev || prev?.active)) {
+                    if (oldDevice !== newVideoDeviceId || !prev || !prev?.active) {
                         stopStream(prev);
 
                         setIsCameraActive(isCameraActive);
                         setIsMicActive(isMicActive);
 
-                        setCurrentAudioDevice(prev => audioDeviceId || prev);
-                        setCurrentVideoDevice(prev => newDevice || prev);
+                        setCurrentAudioDevice(
+                            prevAudioDeviceId => newAudioDeviceId || prevAudioDeviceId,
+                        );
+                        setCurrentVideoDevice(
+                            prevVideoDeviceId => newVideoDeviceId || prevVideoDeviceId,
+                        );
 
                         return stream;
                     }
@@ -163,9 +172,9 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 }
             }
 
-            if (audioError || videoError) {
-                setAudioError(audioError);
-                setVideoError(videoError);
+            if (newAudioError || newVideoError) {
+                setAudioError(newAudioError);
+                setVideoError(newVideoError);
             }
 
             setIsStreamRequested(false);
@@ -219,7 +228,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
 
     const handleChangeStream = useCallback(
         async ({ kind, deviceId }: ChangeMediaStreamData) => {
-            let newStream = null;
+            let newStream: GetMediaStream = {};
 
             if (changeStream) {
                 const { audioDeviceId, videoDeviceId } = getDevicesFromStream(changeStream);
@@ -248,7 +257,8 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                         if (
                             oldVideoDevice !== newVideoDevice ||
                             oldAudioDevice !== newAudioDevice ||
-                            !(prev || prev?.active)
+                            !prev ||
+                            !prev?.active
                         ) {
                             stopStream(prev);
 
@@ -280,7 +290,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
     );
 
     const handleToggleCamera = useCallback(
-        isEnabled => {
+        async (isEnabled?: boolean) => {
             const videoTrack = changeStream?.getVideoTracks()[0];
 
             if (videoTrack) {
@@ -289,14 +299,14 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 setIsCameraActive(() => newState);
                 videoTrack.enabled = newState;
             } else {
-                handleGetInitialStream();
+                await handleGetInitialStream();
             }
         },
         [changeStream, isCameraActive],
     );
 
     const handleToggleMic = useCallback(
-        isEnabled => {
+        async (isEnabled?: boolean) => {
             const audioTrack = changeStream?.getAudioTracks()[0];
 
             if (audioTrack) {
@@ -304,7 +314,7 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren<any>)
                 setIsMicActive(() => newState);
                 audioTrack.enabled = newState;
             } else {
-                handleGetInitialStream();
+                await handleGetInitialStream();
             }
         },
         [changeStream, isMicActive],

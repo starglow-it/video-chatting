@@ -6,7 +6,7 @@ export type RoundedVideoProps = {
     isVideoAvailable?: boolean;
     isLocal?: boolean;
     size: number;
-    videoRef?: any;
+    videoRef?: HTMLVideoElement | null;
     isScreenSharing?: boolean;
     onToggleVideo?: () => void;
 };

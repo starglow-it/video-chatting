@@ -3,6 +3,7 @@
 
 .selectDevicesWrapper {
   margin: rem(30px 0 0 0);
+  width: 100%;
 }
 
 .advancedButton {
@@ -42,6 +43,7 @@
       pointer-events: all;
       position: relative;
       z-index: 1;
+      width: 100%;
     }
   }
 }

@@ -3,6 +3,7 @@ import { useStore } from 'effector-react';
 import Image from 'next/image';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { ValidationError } from 'yup';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -31,6 +32,8 @@ const validationSchema = yup.object({
     email: emailSchema().required('required'),
 });
 
+type ResetEmailForm = { email: string };
+
 const Component = () => {
     const { emailResetPasswordDialog } = useStore($appDialogsStore);
 
@@ -40,11 +43,14 @@ const Component = () => {
         onStopCountDown: handleStopCountDown,
     } = useCountDown(30);
 
-    const resolver = useYupValidationResolver<{ email: string }>(validationSchema);
+    const resolver = useYupValidationResolver<ResetEmailForm>(validationSchema);
 
-    const methods = useForm({
+    const methods = useForm<ResetEmailForm, never>({
         criteriaMode: 'all',
         resolver,
+        defaultValues: {
+            email: '',
+        },
     });
 
     const {
@@ -69,6 +75,8 @@ const Component = () => {
         }),
         [],
     );
+
+    const emailErrors = errors?.email as unknown as ValidationError[];
 
     return (
         <CustomDialog
@@ -152,7 +160,7 @@ const Component = () => {
                                 <CustomInput
                                     nameSpace="forms"
                                     translation="email"
-                                    error={errors?.email?.[0]?.message}
+                                    error={emailErrors?.[0]?.message}
                                     {...register('email')}
                                 />
                                 <CustomButton

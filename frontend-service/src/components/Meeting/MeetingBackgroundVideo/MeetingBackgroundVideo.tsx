@@ -12,73 +12,78 @@ import styles from './MeetingBackgroundVideo.module.scss';
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
-import { $backgroundAudioVolume, $isBackgroundAudioActive, $windowSizeStore } from '../../../store';
+import {
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
+    $isScreensharingStore,
+    $windowSizeStore,
+} from '../../../store';
 
-const MeetingBackgroundVideo = memo(
-    ({ children, src, isScreenSharing }: MeetingBackgroundVideoProps) => {
-        const { width, height } = useStore($windowSizeStore);
-        const playerRef = useRef<Player | null>(null);
-        const containerRef = useRef<HTMLDivElement | null>(null);
+const Component = ({ children, src }: MeetingBackgroundVideoProps) => {
+    const { width, height } = useStore($windowSizeStore);
+    const isScreenSharing = useStore($isScreensharingStore);
 
-        const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
-        const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const playerRef = useRef<Player | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
-        const ratio = width / height;
+    const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
+    const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
-        useLayoutEffect(() => {
-            if (src) {
-                const options = {
-                    url: src,
-                    responsive: true,
-                    loop: true,
-                    background: true,
-                    keyboard: false,
-                    quality: '1080p',
-                } as Options;
+    const ratio = width / height;
 
-                if (containerRef?.current) {
-                    playerRef.current = new VimeoPlayer(containerRef.current, options);
-                }
+    useLayoutEffect(() => {
+        if (src) {
+            const options = {
+                url: src,
+                responsive: true,
+                loop: true,
+                background: true,
+                keyboard: false,
+                quality: '1080p',
+            } as Options;
+
+            if (containerRef?.current) {
+                playerRef.current = new VimeoPlayer(containerRef.current, options);
             }
-        }, []);
+        }
+    }, []);
 
-        useEffect(() => {
-            (async () => {
-                if (playerRef?.current) {
-                    await playerRef?.current?.setMuted?.(!isAudioBackgroundActive);
-                    await playerRef?.current?.setVolume?.(
-                        isAudioBackgroundActive ? backgroundAudioVolume / 100 : 0,
-                    );
-                }
-            })();
-        }, [isAudioBackgroundActive, backgroundAudioVolume]);
-
-        useEffect(() => {
-            if (playerRef.current) {
-                if (isScreenSharing) {
-                    playerRef.current?.pause();
-                } else {
-                    setTimeout(() => {
-                        playerRef.current?.play();
-                    }, 2000);
-                }
+    useEffect(() => {
+        (async () => {
+            if (playerRef?.current) {
+                await playerRef?.current?.setMuted?.(!isAudioBackgroundActive);
+                await playerRef?.current?.setVolume?.(
+                    isAudioBackgroundActive ? backgroundAudioVolume / 100 : 0,
+                );
             }
-        }, [isScreenSharing]);
+        })();
+    }, [isAudioBackgroundActive, backgroundAudioVolume]);
 
-        return (
-            <CustomGrid
-                ref={containerRef}
-                className={styles.backgroundVideo}
-                style={
-                    ratio > 16 / 9 && !isScreenSharing
-                        ? { bottom: '0', display: 'inline-table' }
-                        : { display: 'inline-grid' }
-                }
-            >
-                {children}
-            </CustomGrid>
-        );
-    },
-);
+    useEffect(() => {
+        if (playerRef.current) {
+            if (isScreenSharing) {
+                playerRef.current?.pause();
+            } else {
+                setTimeout(() => {
+                    playerRef.current?.play();
+                }, 2000);
+            }
+        }
+    }, [isScreenSharing]);
 
-export { MeetingBackgroundVideo };
+    return (
+        <CustomGrid
+            ref={containerRef}
+            className={styles.backgroundVideo}
+            style={
+                ratio > 16 / 9 && !isScreenSharing
+                    ? { bottom: '0', display: 'inline-table' }
+                    : { display: 'inline-grid' }
+            }
+        >
+            {children}
+        </CustomGrid>
+    );
+};
+
+export const MeetingBackgroundVideo = memo(Component);

@@ -36,7 +36,7 @@ const validationSchema = yup.object({
     currentUserEmail: emailSchema(),
 });
 
-const InviteAttendeeDialog = memo(() => {
+const Component = () => {
     const router = useRouter();
     const { inviteAttendeeByEmailDialog } = useStore($appDialogsStore);
     const isInviteEmailsSent = useStore(sendInviteEmailFx.pending);
@@ -68,12 +68,13 @@ const InviteAttendeeDialog = memo(() => {
             addNotificationEvent({
                 type: NotificationType.InviteSent,
                 message: 'meeting.inviteSent',
+                withSuccessIcon: true,
             });
         }),
         [userEmails],
     );
 
-    const handleAddUserEmail = useCallback(newEmail => {
+    const handleAddUserEmail = useCallback((newEmail: string) => {
         setUserEmails(prev => {
             if (!prev.some(email => email === newEmail)) {
                 return [...prev, newEmail];
@@ -83,7 +84,7 @@ const InviteAttendeeDialog = memo(() => {
         });
     }, []);
 
-    const handleDeleteUserEmail = useCallback(oldEmail => {
+    const handleDeleteUserEmail = useCallback((oldEmail: string) => {
         setUserEmails(prev => prev.filter(email => email !== oldEmail));
     }, []);
 
@@ -117,6 +118,6 @@ const InviteAttendeeDialog = memo(() => {
             </FormProvider>
         </CustomDialog>
     );
-});
+};
 
-export { InviteAttendeeDialog };
+export const InviteAttendeeDialog = memo(Component);

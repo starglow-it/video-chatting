@@ -5,13 +5,16 @@ import { useRouter } from 'next/router';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
+// const
+import { clientRoutes } from '../../const/client-routes';
+
 const Component = () => {
     const router = useRouter();
     const timeoutRef = useRef<number | null>(null);
 
     useEffect(() => {
         timeoutRef.current = setTimeout(() => {
-            router.push('/login');
+            router.push(clientRoutes.loginRoute);
         }, 3000);
 
         return () => {

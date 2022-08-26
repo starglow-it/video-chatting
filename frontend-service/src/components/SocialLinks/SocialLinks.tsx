@@ -20,13 +20,14 @@ import styles from './SocialLinks.module.scss';
 
 // const
 import { SOCIALS_ICONS } from '../../const/profile/socials';
+import { editProfileRoute } from '../../const/client-routes';
 
 const SocialLinks = memo(() => {
     const router = useRouter();
     const profileState = useStore($profileStore);
 
     const handleEditProfile = useCallback(() => {
-        router?.push('/dashboard/profile/edit');
+        router?.push(editProfileRoute);
     }, []);
 
     const socialsLink = useMemo(

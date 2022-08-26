@@ -86,4 +86,12 @@
 .scrollWrapper {
   overflow: hidden;
   height: rem(220px);
+
+  &.mobile {
+    height: rem(100px);
+  }
+}
+
+.disabledItem {
+  opacity: 0.38;
 }

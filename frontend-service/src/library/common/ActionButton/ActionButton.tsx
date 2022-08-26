@@ -33,8 +33,6 @@ const Component = (
     );
 };
 
-const ActionButton = memo<ComponentPropsType>(
+export const ActionButton = memo<ComponentPropsType>(
     forwardRef<HTMLButtonElement, ComponentPropsType>(Component),
 );
-
-export { ActionButton };

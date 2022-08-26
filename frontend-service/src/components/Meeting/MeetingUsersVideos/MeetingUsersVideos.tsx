@@ -1,9 +1,18 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
+import clsx from 'clsx';
+import ClickAwayListener from '@mui/base/ClickAwayListener/ClickAwayListener';
+
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // components
 import { MeetingUserVideoItem } from '@components/Meeting/MeetingUserVideoItem/MeetingUserVideoItem';
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
+
+// custom
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // stores
 import {
@@ -15,6 +24,9 @@ import {
     $meetingTemplateStore,
     $meetingStore,
     $windowSizeStore,
+    $isScreensharingStore,
+    $isSideUsersOpenStore,
+    setIsSideUsersOpenEvent,
 } from '../../../store';
 
 // controller
@@ -23,13 +35,20 @@ import { AgoraController } from '../../../controllers/VideoChatController';
 // types
 import { MeetingAccessStatuses } from '../../../store/types';
 
-const MeetingUsersVideos = memo(() => {
+import styles from './MeetingUsersVideos.module.scss';
+
+const Component = () => {
     const localUser = useStore($localUserStore);
     const profile = useStore($profileStore);
     const meeting = useStore($meetingStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const isScreenSharing = useStore($isScreensharingStore);
+    const isSideUsersOpen = useStore($isSideUsersOpenStore);
+
     const { width } = useStore($windowSizeStore);
+
+    const { isMobile } = useBrowserDetect();
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -44,13 +63,14 @@ const MeetingUsersVideos = memo(() => {
 
     const resizeCoeff = width / window.screen.width;
 
-    const isScreenSharing = Boolean(meeting.sharingUserId);
-
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
-    const coefValue = 120 * resizeCoeff;
 
-    const videoSizeForBigScreen = coefValue > 120 ? 120 : coefValue;
+    const baseSize = isMobile ? 90 : 120;
+
+    const coefValue = baseSize * resizeCoeff;
+
+    const videoSizeForBigScreen = coefValue > baseSize ? baseSize : coefValue;
 
     const videoSizeForMeeting = coefValue < 60 ? 60 : videoSizeForBigScreen;
 
@@ -58,11 +78,9 @@ const MeetingUsersVideos = memo(() => {
 
     const renderUsers = useMemo(
         () =>
-            users.map((user, index) => (
+            users.map(user => (
                 <MeetingUserVideoPositionWrapper
                     key={user.id}
-                    usersNumber={users?.length}
-                    elevationIndex={index}
                     isScreensharing={isScreenSharing}
                     bottom={user?.userPosition?.bottom}
                     left={user?.userPosition?.left}
@@ -114,14 +132,61 @@ const MeetingUsersVideos = memo(() => {
         }
     }, [isLocalCamActive, isLocalMicActive, isMeetingConnected]);
 
+    const handleClosePanel = useCallback(() => {
+        if (isSideUsersOpen) {
+            setIsSideUsersOpenEvent(false);
+        }
+    }, [isSideUsersOpen]);
+
+    if (isScreenSharing && isMobile) {
+        return (
+            <CustomGrid
+                className={clsx(styles.usersWrapper, styles.sharing, styles.mobileSharing, {
+                    [styles.open]: isSideUsersOpen,
+                })}
+            >
+                <ConditionalRender condition={isSideUsersOpen}>
+                    <ClickAwayListener onClickAway={handleClosePanel}>
+                        <CustomGrid />
+                    </ClickAwayListener>
+                </ConditionalRender>
+                {renderUsers}
+                <MeetingUserVideoPositionWrapper
+                    key={localUser.id}
+                    isScreensharing={isScreenSharing}
+                    bottom={localUser?.userPosition?.bottom}
+                    left={localUser?.userPosition?.left}
+                >
+                    <MeetingUserVideoItem
+                        size={videoSize}
+                        userProfileAvatar={profile?.profileAvatar?.url || ''}
+                        userName={localUser.username}
+                        videoTrack={localUser.videoTrack}
+                        audioTrack={localUser.audioTrack}
+                        isCameraEnabled={isLocalCamActive}
+                        isMicEnabled={isLocalMicActive}
+                        isScreenSharing={isScreenSharing}
+                        isScreensharingUser={localUser.meetingUserId === meeting?.sharingUserId}
+                        isLocal
+                        isAuraActive={localUser.isAuraActive}
+                        onToggleAudio={handleToggleAudio}
+                        onToggleVideo={handleToggleVideo}
+                    />
+                </MeetingUserVideoPositionWrapper>
+            </CustomGrid>
+        );
+    }
+
     return (
-        <>
+        <CustomGrid
+            className={clsx(styles.usersWrapper, {
+                [styles.sharing]: isScreenSharing,
+            })}
+        >
             {renderUsers}
             <MeetingUserVideoPositionWrapper
-                elevationIndex={(users?.length || 0) + 1}
                 key={localUser.id}
-                usersNumber={users?.length}
-                isScreensharing={Boolean(meeting.sharingUserId)}
+                isScreensharing={isScreenSharing}
                 bottom={localUser?.userPosition?.bottom}
                 left={localUser?.userPosition?.left}
             >
@@ -141,8 +206,8 @@ const MeetingUsersVideos = memo(() => {
                     onToggleVideo={handleToggleVideo}
                 />
             </MeetingUserVideoPositionWrapper>
-        </>
+        </CustomGrid>
     );
-});
+};
 
-export { MeetingUsersVideos };
+export const MeetingUsersVideos = memo(Component);

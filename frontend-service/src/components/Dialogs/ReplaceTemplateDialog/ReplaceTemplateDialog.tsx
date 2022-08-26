@@ -173,7 +173,7 @@ const Component = () => {
                             nameSpace="dashboard"
                             translation="replaceTemplate.titleSecond"
                         />
-                        <TemplatesGrid
+                        <TemplatesGrid<UserTemplate>
                             itemWidth={124}
                             itemGap={1.25}
                             outerClassName={styles.templatesOuterWrapper}

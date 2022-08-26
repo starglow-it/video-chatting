@@ -5,6 +5,21 @@
   position: relative;
   margin: rem(0 40px 0 0);
   width: auto;
+
+  &.mobile {
+    width: 100%;
+
+    margin: rem(0 0 28px 0);
+
+    .previewVideo {
+      margin: rem(0 45px 0 0);
+      flex: rem(0 0 99px);
+    }
+
+    .mediaWrapper {
+      width: 100%;
+    }
+  }
 }
 
 .previewVideo {
@@ -33,6 +48,10 @@
     }
     &.disabled {
       color: $normal-gray-scale;
+    }
+    &.mobile {
+      width: rem(40px);
+      height: rem(40px);
     }
   }
 }

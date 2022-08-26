@@ -2,16 +2,17 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import clsx from 'clsx';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // validation
@@ -37,7 +38,7 @@ const validationSchema = yup.object({
     fullName: fullNameSchema().required('required'),
 });
 
-const EnterMeetingName = memo(() => {
+const Component = () => {
     const { isAuthenticated } = useStore($authStore);
     const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -48,6 +49,8 @@ const EnterMeetingName = memo(() => {
     const resolver = useYupValidationResolver<{
         fullName: string;
     }>(validationSchema);
+
+    const { isMobile } = useBrowserDetect();
 
     const {
         register,
@@ -76,14 +79,19 @@ const EnterMeetingName = memo(() => {
     const fullNameError = errors.fullName?.[0]?.message;
 
     return (
-        <CustomPaper className={styles.wrapper}>
-            <CustomGrid container direction="column">
-                <CustomTypography
-                    variant="h3bold"
-                    nameSpace="meeting"
-                    translation="enterName.title"
-                />
-                <CustomGrid container>
+        <CustomGrid
+            container
+            direction="column"
+            className={clsx({ [styles.contentWrapper]: isMobile })}
+        >
+            <CustomTypography
+                variant="h3bold"
+                nameSpace="meeting"
+                textAlign={isMobile ? 'center' : 'left'}
+                translation="enterName.title"
+            />
+            <CustomGrid container direction="column" flex="1 1 auto">
+                <CustomGrid container justifyContent={isMobile ? 'center' : 'left'}>
                     <CustomTypography
                         className={styles.title}
                         nameSpace="meeting"
@@ -109,29 +117,30 @@ const EnterMeetingName = memo(() => {
                             />
                         </>
                     )}
-                    <form onSubmit={onSubmit} className={styles.formContent}>
-                        <CustomInput
-                            nameSpace="forms"
-                            translation="yourName"
-                            value={fullNameRegister.value}
-                            onChange={fullNameRegister.onChange}
-                            onBlur={fullNameRegister.onChange}
-                            ref={fullNameRegister.ref}
-                            name={fullNameRegister.name}
-                            error={fullNameError}
-                        />
-                        <CustomButton
-                            disabled={!isSocketConnected}
-                            className={styles.button}
-                            type="submit"
-                            nameSpace="meeting"
-                            translation="buttons.continue"
-                        />
-                    </form>
                 </CustomGrid>
-            </CustomGrid>
-        </CustomPaper>
-    );
-});
 
-export { EnterMeetingName };
+                <form onSubmit={onSubmit} className={styles.formContent}>
+                    <CustomInput
+                        nameSpace="forms"
+                        translation="yourName"
+                        value={fullNameRegister.value}
+                        onChange={fullNameRegister.onChange}
+                        onBlur={fullNameRegister.onBlur}
+                        ref={fullNameRegister.ref}
+                        name={fullNameRegister.name}
+                        error={fullNameError}
+                    />
+                    <CustomButton
+                        disabled={!isSocketConnected}
+                        className={clsx(styles.button, { [styles.mobile]: isMobile })}
+                        type="submit"
+                        nameSpace="meeting"
+                        translation="buttons.continue"
+                    />
+                </form>
+            </CustomGrid>
+        </CustomGrid>
+    );
+};
+
+export const EnterMeetingName = memo(Component);

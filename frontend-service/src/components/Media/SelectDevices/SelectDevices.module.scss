@@ -3,12 +3,13 @@
 
 .selectDeviceInput {
   background: #FBFBFC;
-  max-width: rem(316px);
+  max-width: 100%;
   max-height: rem(50px);
 }
 
 .activeItem {
   width: rem(255px);
+  max-width: 100%;
 }
 
 .activeValue {

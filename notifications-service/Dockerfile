@@ -10,9 +10,9 @@ COPY ./shared ./shared
 
 RUN mkdir ./notifications-service
 
-COPY ./notifications-service/package*.json ./notifications-service/
+COPY ./notifications-service/package.json ./notifications-service/
 
-RUN cd ./notifications-service && npm ci --silent --legacy-peer-deps
+RUN cd ./notifications-service && npm i --legacy-peer-deps
 
 COPY ./notifications-service ./notifications-service/
 

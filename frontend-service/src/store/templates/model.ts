@@ -56,7 +56,7 @@ export const getUsersTemplatesFx = templatesDomain.effect<
 >('getUsersTemplatesFx');
 
 export const getUserTemplateFx = templatesDomain.effect<
-    { templateId: Template['templateId'] },
+    { templateId: Template['id'] },
     UserTemplate | null | undefined,
     void
 >('getUserTemplateFx');

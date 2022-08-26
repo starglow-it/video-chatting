@@ -2,6 +2,10 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { InputAdornment } from '@mui/material';
 import Image from 'next/image';
+import clsx from 'clsx';
+
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -44,6 +48,8 @@ const Component = ({
         name: 'currentUserEmail',
     });
 
+    const { isMobile } = useBrowserDetect();
+
     const handleAddUserEmail = useCallback(async () => {
         const isThereNoErrors = await trigger('currentUserEmail');
 
@@ -54,10 +60,10 @@ const Component = ({
     }, [currentUserEmail]);
 
     const handleEnterPress = useCallback(
-        event => {
+        async (event: React.KeyboardEvent<HTMLDivElement>) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                handleAddUserEmail();
+                await handleAddUserEmail();
             }
         },
         [currentUserEmail],
@@ -117,7 +123,7 @@ const Component = ({
             <CustomGrid
                 container
                 flex="1 1 auto"
-                className={styles.scrollWrapper}
+                className={clsx(styles.scrollWrapper, { [styles.mobile]: isMobile })}
                 direction="column"
                 alignItems={userEmails?.length ? 'flex-start' : 'center'}
                 justifyContent="center"

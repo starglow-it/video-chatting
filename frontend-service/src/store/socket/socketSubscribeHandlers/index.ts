@@ -1,21 +1,8 @@
 // subscribe events
 import {
-    ON_GET_MEETING_NOTES,
-    ON_MEETING_AVAILABLE,
-    ON_MEETING_ENTER_REQUEST,
-    ON_MEETING_ERROR,
-    ON_MEETING_FINISHED,
-    ON_MEETING_TEMPLATE_UPDATE,
-    ON_MEETING_TIME_LIMIT,
-    ON_MEETING_UPDATE,
-    ON_PLAY_SOUND,
-    ON_REMOVE_MEETING_NOTE,
-    ON_SEND_DASHBOARD_NOTIFICATION,
-    ON_SEND_MEETING_NOTE,
-    ON_USER_KICK,
-    ON_USER_UPDATE,
-    ON_USERS_REMOVE,
-    ON_USERS_UPDATE,
+    DashboardSubscribeEvents,
+    MeetingSubscribeEvents,
+    UsersSubscribeEvents,
 } from '../../../const/socketEvents/subscribers';
 
 // handlers
@@ -35,105 +22,100 @@ import { handleMeetingFinished } from './handleMeetingFinished';
 import { handleUpdateUsers } from './handleUpdateUsers';
 import { handleRemoveUsers } from './handleRemoveUsers';
 import { handleMeetingTimeLimit } from './handleMeetingTimeLimit';
+import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
-const SUBSCRIBE_HANDLERS_REGISTRY = new Map([
+type SocketHandlerData = {
+    handler: (...args: any[]) => void;
+};
+
+type MeetingSocketHandlerDataMap = Map<MeetingSubscribeEvents, SocketHandlerData>;
+type DashboardSocketHandlerDataMap = Map<DashboardSubscribeEvents, SocketHandlerData>;
+type UsersSocketHandlerDataMap = Map<UsersSubscribeEvents, SocketHandlerData>;
+
+const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap = new Map([
+    [MeetingSubscribeEvents.OnMeetingEnterRequest, { handler: handleMeetingEnterRequest }],
     [
-        ON_MEETING_AVAILABLE,
-        {
-            handler: handleMeetingAvailable,
-        },
-    ],
-    [
-        ON_SEND_DASHBOARD_NOTIFICATION,
-        {
-            handler: handleDashboardNotification,
-        },
-    ],
-    [
-        ON_MEETING_ENTER_REQUEST,
-        {
-            handler: handleMeetingEnterRequest,
-        },
-    ],
-    [
-        ON_MEETING_UPDATE,
+        MeetingSubscribeEvents.OnUpdateMeeting,
         {
             handler: handleUpdateMeeting,
         },
     ],
     [
-        ON_MEETING_TEMPLATE_UPDATE,
+        MeetingSubscribeEvents.OnUpdateMeetingTemplate,
         {
             handler: handleUpdateMeetingTemplate,
         },
     ],
     [
-        ON_SEND_MEETING_NOTE,
+        MeetingSubscribeEvents.OnSendMeetingNote,
         {
             handler: handleSendMeetingNote,
         },
     ],
     [
-        ON_REMOVE_MEETING_NOTE,
+        MeetingSubscribeEvents.OnRemoveMeetingNote,
         {
             handler: handleRemoveMeetingNote,
         },
     ],
     [
-        ON_GET_MEETING_NOTES,
+        MeetingSubscribeEvents.OnGetMeetingNotes,
         {
             handler: handleGetMeetingNotes,
         },
     ],
     [
-        ON_MEETING_ERROR,
+        MeetingSubscribeEvents.OnMeetingError,
         {
             handler: handleMeetingError,
         },
     ],
     [
-        ON_PLAY_SOUND,
+        MeetingSubscribeEvents.OnPlaySound,
         {
             handler: handlePlaySound,
         },
     ],
     [
-        ON_USER_UPDATE,
-        {
-            handler: handleUpdateUser,
-        },
-    ],
-    [
-        ON_USER_KICK,
-        {
-            handler: handleKickUser,
-        },
-    ],
-    [
-        ON_MEETING_FINISHED,
+        MeetingSubscribeEvents.OnFinishMeeting,
         {
             handler: handleMeetingFinished,
         },
     ],
     [
-        ON_USERS_UPDATE,
-        {
-            handler: handleUpdateUsers,
-        },
-    ],
-    [
-        ON_USERS_REMOVE,
-        {
-            handler: handleRemoveUsers,
-        },
-    ],
-    [
-        ON_MEETING_TIME_LIMIT,
+        MeetingSubscribeEvents.OnMeetingTimeLimit,
         {
             handler: handleMeetingTimeLimit,
         },
     ],
 ]);
 
-export const getSocketSubscribeHandler = (eventName: string) =>
-    SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler;
+const DASHBOARD_SUBSCRIBE_HANDLERS_REGISTRY: DashboardSocketHandlerDataMap = new Map([
+    [
+        DashboardSubscribeEvents.OnSendDashboardNotification,
+        { handler: handleDashboardNotification },
+    ],
+    [DashboardSubscribeEvents.OnMeetingAvailable, { handler: handleMeetingAvailable }],
+]);
+
+const USERS_SUBSCRIBE_HANDLERS_REGISTRY: UsersSocketHandlerDataMap = new Map([
+    [UsersSubscribeEvents.OnRemoveUsers, { handler: handleRemoveUsers }],
+    [UsersSubscribeEvents.OnUpdateUsers, { handler: handleUpdateUsers }],
+    [UsersSubscribeEvents.OnKickUser, { handler: handleKickUser }],
+    [UsersSubscribeEvents.OnUpdateUser, { handler: handleUpdateUser }],
+]);
+
+export const getDashboardSocketSubscribeHandler = (
+    eventName: DashboardSubscribeEvents,
+): SocketHandlerData['handler'] =>
+    DASHBOARD_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction;
+
+export const getMeetingSocketSubscribeHandler = (
+    eventName: MeetingSubscribeEvents,
+): SocketHandlerData['handler'] =>
+    MEETING_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction;
+
+export const getUsersSocketSubscribeHandler = (
+    eventName: UsersSubscribeEvents,
+): SocketHandlerData['handler'] =>
+    USERS_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction;

@@ -66,7 +66,7 @@ export class PaymentsService {
       amount,
       currency: templateCurrency,
       transfer_data: {
-        amount: amount - amount * platformFee,
+        amount: Math.floor(amount - amount * platformFee),
         destination: stripeAccountId,
       },
     });

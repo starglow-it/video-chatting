@@ -11,7 +11,7 @@ RUN mkdir ./core-service
 
 COPY ./core-service/package*.json ./core-service/
 
-RUN cd ./core-service && npm ci --silent --legacy-peer-deps
+RUN cd ./core-service && npm i --legacy-peer-deps
 
 COPY ./core-service ./core-service/
 

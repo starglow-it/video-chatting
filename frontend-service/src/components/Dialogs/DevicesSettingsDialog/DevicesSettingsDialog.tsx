@@ -45,11 +45,12 @@ import {
 } from '../../../store';
 
 // types
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { AppDialogsEnum, NotificationType, UserTemplate } from '../../../store/types';
 
 // styles
 import styles from './DevicesSettingsDialog.module.scss';
 
+// validations
 import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 import { templatePriceSchema } from '../../../validation/payments/templatePrice';
 
@@ -58,6 +59,12 @@ const validationSchema = yup.object({
     isMonetizationEnabled: booleanSchema().required('required'),
     templateCurrency: simpleStringSchema().required('required'),
 });
+
+type MonetizationFormType = {
+    templateCurrency: UserTemplate['templateCurrency'];
+    templatePrice: UserTemplate['templatePrice'];
+    isMonetizationEnabled: UserTemplate['isMonetizationEnabled'];
+};
 
 const Component = () => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
@@ -101,11 +108,7 @@ const Component = () => {
         onSetSwitch: handleSetBlur,
     } = useToggle(isBlurActive);
 
-    const resolver = useYupValidationResolver<{
-        templateCurrency: string;
-        templatePrice: number;
-        isMonetizationEnabled: boolean;
-    }>(validationSchema);
+    const resolver = useYupValidationResolver<MonetizationFormType>(validationSchema);
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -172,7 +175,7 @@ const Component = () => {
                     isAuraActive: isBlurEnabled,
                 });
 
-                updateUserSocketEvent({ isAuraActive: isBlurEnabled });
+                await updateUserSocketEvent({ isAuraActive: isBlurEnabled });
             } else {
                 AgoraController.setTracksState({
                     isCameraEnabled: isSharingScreenActive ? true : isCameraActive,
@@ -208,7 +211,7 @@ const Component = () => {
                 await updateMeetingTemplateFxWithData(data);
             }
 
-            handleSaveSettings();
+            await handleSaveSettings();
         }),
         [handleSaveSettings, isOwner],
     );

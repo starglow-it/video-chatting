@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import Router, { useRouter } from 'next/router';
 import clsx from 'clsx';
@@ -15,38 +15,34 @@ import { ExitIcon } from '@library/icons/ExitIcon';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
-import { $profileStore } from '../../store';
-import { logoutUserFx } from '../../store';
+import { $profileStore, logoutUserFx } from '../../store';
 
 // styles
 import styles from './DashBoardNavigation.module.scss';
 
-const DashBoardNavigation = memo(() => {
+// const
+import { clientRoutes, dashboardRoute, profileRoute } from '../../const/client-routes';
+
+const Component = () => {
     const profileState = useStore($profileStore);
     const router = useRouter();
 
     const handleLogout = useCallback(async () => {
         await logoutUserFx();
 
-        await Router.push('/login');
+        await Router.push(clientRoutes.loginRoute);
     }, []);
 
-    const isTemplatesLinkActive = useMemo(
-        () => router.pathname === '/dashboard',
-        [router.pathname],
-    );
+    const isTemplatesLinkActive = router.pathname === dashboardRoute;
 
-    const isProfilePageActive = useMemo(
-        () => router.pathname === '/dashboard/profile',
-        [router.pathname],
-    );
+    const isProfilePageActive = router.pathname === profileRoute;
 
-    const handleProfilePage = useCallback(() => {
-        router.push('/dashboard/profile');
+    const handleProfilePage = useCallback(async () => {
+        await router.push(profileRoute);
     }, []);
 
-    const handleTemplatesPage = useCallback(() => {
-        router.push('/dashboard');
+    const handleTemplatesPage = useCallback(async () => {
+        await router.push(dashboardRoute);
     }, []);
 
     return (
@@ -96,6 +92,6 @@ const DashBoardNavigation = memo(() => {
             </CustomGrid>
         </CustomPaper>
     );
-});
+};
 
-export { DashBoardNavigation };
+export const DashBoardNavigation = memo(Component);

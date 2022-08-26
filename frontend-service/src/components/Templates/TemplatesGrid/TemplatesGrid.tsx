@@ -1,5 +1,6 @@
 import React, { useRef, memo, useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
+import { useMediaQuery } from '@mui/material';
 
 // custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
@@ -14,7 +15,6 @@ import { PrevSliderArrow } from '@library/icons/PrevSliderArrow';
 import { NextSliderArrow } from '@library/icons/NextSliderArrow';
 
 // helpers
-import { useMediaQuery } from '@mui/material';
 import { unflatArray } from '../../../utils/arrays/unflatArray';
 
 // types
@@ -23,19 +23,19 @@ import { TemplateGridProps } from './types';
 // styles
 import styles from './TemplatesGrid.module.scss';
 
-const DotsComponent = (dotsRef: any) =>
-    function (dots: React.ReactNode) {
+const DotsComponent = (dotsRef: React.MutableRefObject<HTMLUListElement | null>) =>
+    function render(dots: React.ReactNode) {
         return <ul ref={dotsRef}>{dots}</ul>;
     };
 
 const PagingComponent = (activeSlider: number) =>
-    function (i: number) {
+    function render(i: number) {
         return (
             <div className={clsx(styles.dotSlider, { [styles.activeDot]: activeSlider === i })} />
         );
     };
 
-const Component = ({
+const Component = <TemplateType extends { id: string }>({
     TemplateComponent,
     list,
     count,
@@ -45,11 +45,11 @@ const Component = ({
     innerClassName,
     itemWidth = 334,
     itemGap = 3,
-}: TemplateGridProps) => {
+}: TemplateGridProps<TemplateType>) => {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
 
-    const dotsRef = useRef();
+    const dotsRef = useRef<HTMLUListElement | null>(null);
 
     const is1100Media = useMediaQuery('(max-width:1100px)');
 
@@ -108,7 +108,7 @@ const Component = ({
         return [];
     }, [list, skip, count, is1100Media, onChooseTemplate]);
 
-    const handleLoadTemplates = useCallback(data => {
+    const handleLoadTemplates = useCallback((data: number) => {
         setSkip(prev => {
             const newSkip = prev > data ? prev : data;
 
@@ -159,4 +159,4 @@ const Component = ({
     );
 };
 
-export const TemplatesGrid = memo(Component);
+export const TemplatesGrid = memo(Component) as typeof Component;

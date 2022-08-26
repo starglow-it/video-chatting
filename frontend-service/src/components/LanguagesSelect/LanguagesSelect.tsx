@@ -54,7 +54,7 @@ const LanguagesSelect = memo(({ nameSpace, translation }: LanguagesSelectProps) 
                     {selected.map(selectedKey => {
                         const selectedLanguage = LANGUAGES_TAGS.find(
                             tag => tag.key === selectedKey,
-                        )!;
+                        );
 
                         return <LanguageTagItem key={selectedKey} language={selectedLanguage} />;
                     })}

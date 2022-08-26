@@ -1,7 +1,7 @@
 export type SubscriptionPlanCardProps = {
     activePlanKey: string;
-    product: any;
-    price: any;
+    product: unknown;
+    price: unknown;
     onChooseSubscription: (productId: string, isPaid: boolean) => void;
     onOpenPlans: () => void;
     isDisabled: boolean;

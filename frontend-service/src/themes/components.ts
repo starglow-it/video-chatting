@@ -172,6 +172,19 @@ export const componentsTheme = (theme: Theme) =>
                         },
                     },
                     {
+                        props: { variant: 'custom-error' },
+                        style: {
+                            background: theme.designSystemColors.red.primary,
+                            color: theme.palette.common.white,
+                            '&:hover': {
+                                background: theme.designSystemColors.red.dark,
+                            },
+                            '&.Mui-disabled': {
+                                background: theme.palette.buttons.primary.disabled,
+                            },
+                        },
+                    },
+                    {
                         props: { variant: 'custom-transparent' },
                         style: {
                             background: 'transparent',

@@ -2,14 +2,15 @@ import React, { memo, useCallback, useContext, useEffect, useState } from 'react
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
+import clsx from 'clsx';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useToggle } from '@hooks/useToggle';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
@@ -50,13 +51,15 @@ import {
 } from '../../store';
 
 // types
-import { MeetingAccessStatuses, NotificationType } from '../../store/types';
+import { MeetingAccessStatuses, NotificationType, UserTemplate } from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
 
 import { booleanSchema, simpleStringSchema } from '../../validation/common';
 import { templatePriceSchema } from '../../validation/payments/templatePrice';
+
+// controllers
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 const validationSchema = yup.object({
@@ -65,7 +68,13 @@ const validationSchema = yup.object({
     templateCurrency: simpleStringSchema().required('required'),
 });
 
-const DevicesSettings = memo(() => {
+type MonetizationFormType = {
+    templatePrice: UserTemplate['templatePrice'];
+    isMonetizationEnabled: UserTemplate['isMonetizationEnabled'];
+    templateCurrency: UserTemplate['templateCurrency'];
+};
+
+const Component = () => {
     const isOwner = useStore($isOwner);
     const profile = useStore($profileStore);
     const isOwnerInMeeting = useStore($isOwnerInMeeting);
@@ -74,20 +83,14 @@ const DevicesSettings = memo(() => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+
     const isEnterMeetingRequestPending = useStore(sendEnterMeetingRequestSocketEvent.pending);
     const isEnterWaitingRoomRequestPending = useStore(sendEnterWaitingRoomSocketEvent.pending);
 
     const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
 
-    const { value: needToRememberSettings, onToggleSwitch: handleToggleRememberSettings } =
-        useToggle(false);
-
-    const resolver = useYupValidationResolver<{
-        templatePrice: number;
-        isMonetizationEnabled: boolean;
-        templateCurrency: string;
-    }>(validationSchema);
+    const resolver = useYupValidationResolver<MonetizationFormType>(validationSchema);
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -118,8 +121,13 @@ const DevicesSettings = memo(() => {
         actions: { onToggleBlur },
     } = useContext(VideoEffectsContext);
 
+    const { value: needToRememberSettings, onToggleSwitch: handleToggleRememberSettings } =
+        useToggle(false);
+
     const { value: isSettingsAudioBackgroundActive, onToggleSwitch: handleToggleBackgroundAudio } =
         useToggle(isBackgroundAudioActive);
+
+    const { isMobile } = useBrowserDetect();
 
     useEffect(() => {
         updateLocalUserEvent({
@@ -153,32 +161,30 @@ const DevicesSettings = memo(() => {
     }, [changeStream, isCameraActive]);
 
     const handleJoinMeeting = useCallback(async () => {
-        if (!isStreamRequested) {
-            if (isOwner) {
-                await sendStartMeetingSocketEvent();
-            } else if (isMeetingInstanceExists && isOwnerInMeeting) {
-                await sendEnterMeetingRequestSocketEvent();
-            } else {
-                emitEnterWaitingRoom();
-            }
+        if (isOwner) {
+            await sendStartMeetingSocketEvent();
+        } else if (isMeetingInstanceExists && isOwnerInMeeting) {
+            await sendEnterMeetingRequestSocketEvent();
+        } else {
+            emitEnterWaitingRoom();
+        }
 
-            setBackgroundAudioVolume(settingsBackgroundAudioVolume);
-            setBackgroundAudioActive(isSettingsAudioBackgroundActive);
+        setBackgroundAudioVolume(settingsBackgroundAudioVolume);
+        setBackgroundAudioActive(isSettingsAudioBackgroundActive);
 
-            if (needToRememberSettings) {
-                WebStorage.save({
-                    key: StorageKeysEnum.meetingSettings,
-                    data: {
-                        backgroundAudioSetting: isSettingsAudioBackgroundActive,
-                        backgroundAudioVolumeSetting: settingsBackgroundAudioVolume,
-                        blurSetting: isBlurActive,
-                        savedVideoDeviceId: currentVideoDevice,
-                        savedAudioDeviceId: currentAudioDevice,
-                        cameraActiveSetting: isCameraActive,
-                        micActiveSetting: isMicActive,
-                    },
-                });
-            }
+        if (needToRememberSettings) {
+            WebStorage.save({
+                key: StorageKeysEnum.meetingSettings,
+                data: {
+                    backgroundAudioSetting: isSettingsAudioBackgroundActive,
+                    backgroundAudioVolumeSetting: settingsBackgroundAudioVolume,
+                    blurSetting: isBlurActive,
+                    savedVideoDeviceId: currentVideoDevice,
+                    savedAudioDeviceId: currentAudioDevice,
+                    cameraActiveSetting: isCameraActive,
+                    micActiveSetting: isMicActive,
+                },
+            });
         }
     }, [
         isOwner,
@@ -197,21 +203,21 @@ const DevicesSettings = memo(() => {
     ]);
 
     const handleCancelRequest = useCallback(async () => {
-        sendCancelAccessMeetingRequestEvent();
+        await sendCancelAccessMeetingRequestEvent();
     }, []);
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            await updateMeetingTemplateFxWithData(data);
+            await updateMeetingTemplateFxWithData(data as Partial<UserTemplate>);
 
             await handleJoinMeeting();
         }),
         [isOwner, handleJoinMeeting],
     );
 
-    const handleBack = useCallback(() => {
+    const handleBack = useCallback(async () => {
         if (isUserSentEnterRequest) {
-            sendCancelAccessMeetingRequestEvent();
+            await sendCancelAccessMeetingRequestEvent();
         }
 
         updateLocalUserEvent({
@@ -219,32 +225,37 @@ const DevicesSettings = memo(() => {
         });
     }, [isUserSentEnterRequest]);
 
+    const isAudioError = Boolean(audioError);
+
     const isEnterMeetingDisabled =
-        audioError === 'media.notAllowed' ||
-        isEnterMeetingRequestPending ||
-        isEnterWaitingRoomRequestPending;
+        isAudioError || isEnterMeetingRequestPending || isEnterWaitingRoomRequestPending;
 
     const joinHandler = isOwner ? onSubmit : handleJoinMeeting;
 
     return (
-        <CustomPaper className={styles.wrapper}>
-            <FormProvider {...methods}>
-                <CustomGrid container direction="column">
-                    <CustomGrid container wrap="nowrap" className={styles.settingsContent}>
-                        <MediaPreview
-                            stream={changeStream}
-                            onToggleAudio={handleToggleMic}
-                            onToggleVideo={handleToggleCamera}
-                        />
-                        <CustomDivider orientation="vertical" flexItem />
-                        <CustomGrid
-                            className={styles.devicesWrapper}
-                            container
-                            direction="column"
-                            wrap="nowrap"
-                        >
-                            {isUserSentEnterRequest ? (
-                                <>
+        <FormProvider {...methods}>
+            <CustomGrid container direction="column" wrap="nowrap">
+                <CustomGrid
+                    container
+                    direction={isMobile ? 'column' : 'row'}
+                    wrap="nowrap"
+                    className={clsx(styles.settingsContent, { [styles.mobile]: isMobile })}
+                >
+                    <MediaPreview
+                        stream={changeStream}
+                        onToggleAudio={handleToggleMic}
+                        onToggleVideo={handleToggleCamera}
+                    />
+                    <CustomDivider orientation="vertical" flexItem />
+                    <CustomGrid
+                        className={styles.devicesWrapper}
+                        container
+                        direction={isMobile && isUserSentEnterRequest ? 'column-reverse' : 'column'}
+                        wrap="nowrap"
+                    >
+                        {isUserSentEnterRequest ? (
+                            <>
+                                <CustomGrid container direction="column">
                                     <CustomTypography
                                         className={styles.title}
                                         variant="h3bold"
@@ -257,76 +268,91 @@ const DevicesSettings = memo(() => {
                                         nameSpace="meeting"
                                         translation="enterPermission"
                                     />
-                                    <CustomGrid
-                                        container
-                                        alignItems="center"
-                                        className={styles.loader}
-                                        gap={1}
-                                    >
-                                        <WiggleLoader />
-                                        <CustomTypography
-                                            color="colors.orange.primary"
-                                            nameSpace="meeting"
-                                            translation="waitForHost"
-                                        />
-                                    </CustomGrid>
-                                </>
-                            ) : (
-                                <MeetingSettingsContent
-                                    stream={changeStream}
-                                    isBackgroundActive={isSettingsAudioBackgroundActive}
-                                    backgroundVolume={settingsBackgroundAudioVolume}
-                                    isBlurActive={isBlurActive}
-                                    isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
-                                    onBackgroundToggle={handleToggleBackgroundAudio}
-                                    onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
-                                    onToggleBlur={onToggleBlur}
-                                    isMonetizationAvailable
-                                    isAudioActive={meetingTemplate.isAudioAvailable}
-                                    title={
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation="readyToJoin"
-                                        />
-                                    }
-                                />
-                            )}
-                            <ConditionalRender condition={isOwner}>
-                                <CustomCheckbox
-                                    labelClassName={styles.label}
-                                    checked={needToRememberSettings}
-                                    onChange={handleToggleRememberSettings}
-                                    translationProps={{
-                                        nameSpace: 'meeting',
-                                        translation: 'settings.remember',
-                                    }}
-                                />
-                            </ConditionalRender>
-                        </CustomGrid>
+                                </CustomGrid>
+                                <CustomGrid
+                                    container
+                                    alignItems="center"
+                                    direction={isMobile ? 'row' : 'column-reverse'}
+                                    className={clsx(styles.loader, { [styles.mobile]: isMobile })}
+                                    gap={1}
+                                >
+                                    <WiggleLoader />
+                                    <CustomTypography
+                                        color="colors.orange.primary"
+                                        nameSpace="meeting"
+                                        translation="waitForHost"
+                                    />
+                                </CustomGrid>
+                            </>
+                        ) : (
+                            <MeetingSettingsContent
+                                stream={changeStream}
+                                isBackgroundActive={isSettingsAudioBackgroundActive}
+                                backgroundVolume={settingsBackgroundAudioVolume}
+                                isBlurActive={isBlurActive}
+                                isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
+                                onBackgroundToggle={handleToggleBackgroundAudio}
+                                onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
+                                onToggleBlur={onToggleBlur}
+                                isMonetizationAvailable
+                                isAudioActive={meetingTemplate.isAudioAvailable}
+                                title={
+                                    <CustomTypography
+                                        className={styles.title}
+                                        variant="h3bold"
+                                        nameSpace="meeting"
+                                        translation={isMobile ? 'settings.main' : 'readyToJoin'}
+                                    />
+                                }
+                            />
+                        )}
+                        <ConditionalRender condition={isOwner}>
+                            <CustomCheckbox
+                                labelClassName={styles.label}
+                                checked={needToRememberSettings}
+                                onChange={handleToggleRememberSettings}
+                                translationProps={{
+                                    nameSpace: 'meeting',
+                                    translation: 'settings.remember',
+                                }}
+                            />
+                        </ConditionalRender>
                     </CustomGrid>
                 </CustomGrid>
-                <CustomGrid container gap={1} wrap="nowrap" className={styles.joinBtn}>
-                    <ConditionalRender condition={!isUserSentEnterRequest}>
-                        <CustomButton
-                            onClick={handleBack}
-                            variant="custom-cancel"
-                            nameSpace="common"
-                            translation="buttons.back"
-                        />
-                    </ConditionalRender>
+            </CustomGrid>
+            <ConditionalRender condition={isMobile && isAudioError}>
+                <CustomTypography
+                    textAlign="center"
+                    color="colors.red.primary"
+                    nameSpace="meeting"
+                    translation="allowAudio"
+                    className={styles.devicesError}
+                />
+            </ConditionalRender>
+            <CustomGrid
+                container
+                gap={1}
+                wrap="nowrap"
+                className={clsx(styles.joinBtn, { [styles.mobile]: isMobile })}
+            >
+                <ConditionalRender condition={!isUserSentEnterRequest}>
                     <CustomButton
-                        onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
-                        disabled={isEnterMeetingDisabled || isStreamRequested}
-                        nameSpace="meeting"
-                        variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
-                        translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
+                        onClick={handleBack}
+                        variant="custom-cancel"
+                        nameSpace="common"
+                        translation="buttons.back"
                     />
-                </CustomGrid>
-            </FormProvider>
-        </CustomPaper>
+                </ConditionalRender>
+                <CustomButton
+                    onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
+                    disabled={isEnterMeetingDisabled || isStreamRequested}
+                    nameSpace="meeting"
+                    variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
+                    translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
+                />
+            </CustomGrid>
+        </FormProvider>
     );
-});
+};
 
-export { DevicesSettings };
+export const DevicesSettings = memo(Component);

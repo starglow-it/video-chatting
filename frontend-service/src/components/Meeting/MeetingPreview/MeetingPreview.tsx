@@ -1,6 +1,10 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
+import clsx from 'clsx';
+
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // image
 import Image from 'next/image';
@@ -13,9 +17,10 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // stores
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 import {
     $localUserStore,
     $isOwner,
@@ -27,14 +32,19 @@ import {
 import styles from './MeetingPreview.module.scss';
 
 // types
-import { MeetingAccessStatuses } from '../../../store/types';
+import { MeetingAccessStatuses, MeetingUser } from '../../../store/types';
 
-const MeetingPreview = memo(() => {
+// const
+import { clientRoutes, dashboardRoute } from '../../../const/client-routes';
+
+const Component = () => {
     const router = useRouter();
 
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
+
+    const { isMobile } = useBrowserDetect();
 
     const users = useStoreMap({
         store: $meetingUsersStore,
@@ -47,108 +57,115 @@ const MeetingPreview = memo(() => {
             ),
     });
 
-    const handleLeaveMeeting = useCallback(() => {
-        router.push(isOwner ? '/dashboard' : '/welcome');
+    const handleLeaveMeeting = useCallback(async () => {
+        await router.push(isOwner ? dashboardRoute : clientRoutes.welcomeRoute);
     }, []);
-
-    const renderCurrentUsers = useMemo(
-        () =>
-            users.map(
-                user => (
-                    <ProfileAvatar
-                        key={user.id}
-                        className={styles.userAvatar}
-                        width="32px"
-                        height="32px"
-                        src={user?.profileAvatar}
-                        userName={user.username}
-                    />
-                ),
-                [],
-            ),
-        [users],
-    );
 
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 240,
     );
 
+    const renderUserAvatar = useCallback(
+        (user: MeetingUser) => (
+            <ProfileAvatar
+                key={user.id}
+                className={styles.userAvatar}
+                width="32px"
+                height="32px"
+                src={user?.profileAvatar}
+                userName={user.username}
+            />
+        ),
+        [],
+    );
+
     return (
-        <CustomGrid
-            container
-            alignItems="center"
-            className={styles.meetingPreviewWrapper}
-            wrap="nowrap"
-        >
+        <CustomGrid>
             <CustomGrid
                 container
                 justifyContent="center"
                 alignItems="center"
                 onClick={handleLeaveMeeting}
-                className={styles.backButton}
+                className={clsx(styles.backButton, { [styles.mobile]: isMobile })}
             >
-                <ArrowLeftIcon width="32px" height="32px" />
-            </CustomGrid>
-            <CustomBox className={styles.imageWrapper}>
-                <ConditionalRender condition={Boolean(previewImage?.url)}>
-                    <Image
-                        src={previewImage?.url}
-                        layout="fill"
-                        objectFit="cover"
-                        objectPosition="center"
-                    />
-                </ConditionalRender>
-            </CustomBox>
-            <ProfileAvatar
-                className={styles.profileAvatar}
-                width="90px"
-                height="90px"
-                src={meetingTemplate?.user?.profileAvatar?.url || ''}
-                userName={meetingTemplate.fullName}
-            />
-            <CustomGrid
-                item
-                container
-                direction="column"
-                alignItems="center"
-                justifyContent="center"
-                className={styles.textWrapper}
-                flex="1 1 auto"
-            >
-                <CustomTypography
-                    variant="h3bold"
-                    color="colors.white.primary"
-                    className={styles.companyName}
-                >
-                    {meetingTemplate.companyName}
-                </CustomTypography>
-                <ConditionalRender condition={!isOwner}>
+                <ArrowLeftIcon
+                    width={isMobile ? '22px' : '32px'}
+                    height={isMobile ? '22px' : '32px'}
+                />
+                <ConditionalRender condition={isMobile}>
                     <CustomTypography
-                        color="colors.white.primary"
+                        color="colors.black.primary"
                         nameSpace="meeting"
-                        translation="preview.invitedText"
+                        translation="rooms"
+                        className={styles.text}
                     />
                 </ConditionalRender>
-                <CustomTypography
-                    variant="body1"
-                    textAlign="center"
-                    color="colors.white.primary"
-                    className={styles.description}
-                >
-                    {meetingTemplate.description}
-                </CustomTypography>
             </CustomGrid>
+
             <CustomGrid
                 container
-                alignSelf="flex-start"
-                justifyContent="flex-end"
-                className={styles.inMeetingAvatars}
-                flex="1 0 auto"
+                alignItems="center"
+                className={styles.meetingPreviewWrapper}
+                wrap="nowrap"
             >
-                {renderCurrentUsers}
+                <CustomBox className={styles.imageWrapper}>
+                    <ConditionalRender condition={Boolean(previewImage?.url)}>
+                        <Image
+                            src={previewImage?.url}
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="center"
+                        />
+                    </ConditionalRender>
+                </CustomBox>
+                <ProfileAvatar
+                    className={clsx(styles.profileAvatar, { [styles.mobile]: isMobile })}
+                    width={isMobile ? '50px' : '90px'}
+                    height={isMobile ? '50px' : '90px'}
+                    src={meetingTemplate?.user?.profileAvatar?.url || ''}
+                    userName={meetingTemplate.fullName}
+                />
+                <CustomGrid
+                    item
+                    container
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    className={styles.textWrapper}
+                    flex="1 1 auto"
+                >
+                    <CustomTypography
+                        variant="h3bold"
+                        color="colors.white.primary"
+                        className={styles.companyName}
+                    >
+                        {meetingTemplate.companyName}
+                    </CustomTypography>
+                    <ConditionalRender condition={!isOwner}>
+                        <CustomTypography
+                            textAlign="center"
+                            color="colors.white.primary"
+                            nameSpace="meeting"
+                            translation="preview.invitedText"
+                        />
+                    </ConditionalRender>
+                    <CustomTypography
+                        variant="body1"
+                        textAlign="center"
+                        color="colors.white.primary"
+                        className={styles.description}
+                    >
+                        {meetingTemplate.description}
+                    </CustomTypography>
+                </CustomGrid>
+                <UsersAvatarsCounter<MeetingUser>
+                    renderItem={renderUserAvatar}
+                    className={styles.inMeetingAvatars}
+                    users={users}
+                />
             </CustomGrid>
         </CustomGrid>
     );
-});
+};
 
-export { MeetingPreview };
+export const MeetingPreview = memo(Component);

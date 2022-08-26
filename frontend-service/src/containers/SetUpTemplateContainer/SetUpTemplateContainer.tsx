@@ -47,6 +47,8 @@ import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageControl
 
 // types
 import { AppDialogsEnum } from '../../store/types';
+
+// utils
 import { getClientMeetingUrl } from '../../utils/urls';
 
 const validationSchema = yup.object({
@@ -149,7 +151,7 @@ const SetUpTemplateContainer = memo(() => {
                     dialogKey: AppDialogsEnum.confirmQuitOnboardingDialog,
                 });
 
-                throw 'routeChange aborted';
+                throw new Error('routeChange aborted');
             }
         }
     };
@@ -179,20 +181,22 @@ const SetUpTemplateContainer = memo(() => {
         };
     }, [confirmQuitOnboardingDialog]);
 
-    const handleChooseSubscription = async (productId, isPaid) => {
-        const result = await createMeetingFx({ templateId: setUpTemplate?.id! });
+    const handleChooseSubscription = async (productId: string, isPaid: boolean) => {
+        if (setUpTemplate?.id) {
+            const result = await createMeetingFx({ templateId: setUpTemplate.id });
 
-        if (result.template && isPaid) {
-            const response = await startCheckoutSessionForSubscriptionFx({
-                productId,
-                meetingToken: result.template.id,
-            });
+            if (result.template && isPaid) {
+                const response = await startCheckoutSessionForSubscriptionFx({
+                    productId,
+                    meetingToken: result.template.id,
+                });
 
-            if (response?.url) {
-                return router.push(response.url);
+                if (response?.url) {
+                    return router.push(response.url);
+                }
+            } else if (result.template) {
+                await router.push(getClientMeetingUrl(result.template.id));
             }
-        } else if (result.template) {
-            await router.push(getClientMeetingUrl(result.template.id));
         }
     };
 

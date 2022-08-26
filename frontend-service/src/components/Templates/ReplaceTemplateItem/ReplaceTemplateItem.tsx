@@ -38,7 +38,7 @@ const Component = ({ template, onChooseTemplate }: ReplaceTemplateItemProps) => 
             onClick={handleChooseTemplate}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <Image src={previewImage?.url} width="334px" height="190px" />
+                <Image src={previewImage?.url || ''} width="334px" height="190px" />
             </ConditionalRender>
             <Fade in={isChosenForReplace}>
                 <CustomGrid

@@ -6,9 +6,9 @@ COPY ./shared ./shared
 
 RUN mkdir ./socket-service
 
-COPY ./socket-service/package*.json ./socket-service/
+COPY ./socket-service/package.json ./socket-service/
 
-RUN cd ./socket-service && npm ci --silent --legacy-peer-deps
+RUN cd ./socket-service && npm i --legacy-peer-deps
 
 COPY ./socket-service ./socket-service/
 

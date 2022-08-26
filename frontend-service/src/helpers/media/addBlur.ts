@@ -1,12 +1,14 @@
 import { VideoEffects, EffectBackground } from '@vkontakte/calls-video-effects';
 import { BROWSER_NAMES } from '../../types/browsers';
-import { browserData } from '../../utils/browser/detectBrowser';
+import { getBrowserData } from '../../utils/browser/detectBrowser';
 
 const supportedBrowsersArray: string[] = [
     BROWSER_NAMES.chrome,
     BROWSER_NAMES.chromium,
     BROWSER_NAMES.edge,
 ];
+
+const browserData = getBrowserData();
 
 const isBlurSupported =
     supportedBrowsersArray.includes(browserData?.browser?.name || '') &&

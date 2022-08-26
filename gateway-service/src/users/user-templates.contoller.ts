@@ -45,7 +45,7 @@ export class UserTemplateController {
   @ApiOperation({ summary: 'Get Template' })
   @ApiOkResponse({
     type: CommonTemplateRestDTO,
-    description: 'Get Profile Template Success',
+    description: 'Get User Template Success',
   })
   async getUserTemplateById(@Param('templateId') templateId: string) {
     try {

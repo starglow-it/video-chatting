@@ -5,7 +5,6 @@ import { SetUpTemplateContainer } from '@containers/SetUpTemplateContainer/SetUp
 
 import { pageLoaded } from '../../../../src/store';
 
-// @ts-ignore
 const enhance = withStart(pageLoaded);
 
 const SetupTemplatePage: NextPage = (): JSX.Element => <SetUpTemplateContainer />;

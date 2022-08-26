@@ -20,16 +20,13 @@ import styles from './TimeLimitNotification.module.scss';
 import { formatDate } from '../../utils/time/formatDate';
 
 // stores
-import {
-    $isBusinessSubscription,
-    $isOwner,
-    $isPaidMeetingTemplate,
-    $localUserStore,
-    $profileStore,
-} from '../../store';
+import { $isBusinessSubscription, $isOwner, $localUserStore, $profileStore } from '../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
+
+// const
+import { dashboardRoute, profileRoute } from '../../const/client-routes';
 
 type ComponentProps = unknown;
 
@@ -43,13 +40,12 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     const isOwner = useStore($isOwner);
     const localUser = useStore($localUserStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
-    const isPaidMeetingTemplate = useStore($isPaidMeetingTemplate);
 
     const handleOpenProfile = () => {
-        window.open('/dashboard/profile', '_blank');
+        window.open(profileRoute, '_blank');
     };
 
-    const isDashboardRoute = /dashboard/.test(router.pathname);
+    const isDashboardRoute = new RegExp(dashboardRoute).test(router.pathname);
 
     const handleClose = () => {
         setOpenState(false);
@@ -62,7 +58,7 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
         if (minutesLeft <= 20 && !isBusinessSubscription && !isHidden && isDashboardRoute) {
             setOpenState(true);
         }
-    }, [minutesLeft, isBusinessSubscription, isOwner, isPaidMeetingTemplate, isDashboardRoute]);
+    }, [minutesLeft, isBusinessSubscription, isOwner, isDashboardRoute]);
 
     useEffect(() => {
         if (localUser.accessStatus === MeetingAccessStatuses.InMeeting) {

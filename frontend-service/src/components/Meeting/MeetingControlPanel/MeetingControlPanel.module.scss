@@ -1,13 +1,32 @@
 @import "../../../styles/variables";
 @import "../../../styles/rem";
 
-.controlPanelWrapper {
+.panelWrapper {
   position: absolute;
   top: rem(27px);
   left: 50%;
   transform: translateX(-50%);
-  padding: rem(6px);
   z-index: 1000;
+  width: auto;
+
+  &.mobile {
+    top: rem(20px);
+    right: rem(20px);
+    left: unset;
+    transform: unset;
+  }
+}
+
+.userAvatar {
+  border: 1px solid $primary-white;
+
+  &:not(:first-child) {
+    margin: rem(0  0 0 -15px);
+  }
+}
+
+.controlPanelWrapper {
+  padding: rem(6px);
 
   .actionButton {
     position: relative;
@@ -26,6 +45,11 @@
       &:hover {
         background: rgba($primary-white, 0.25);
       }
+    }
+
+    &.mobile {
+      width: rem(32px);
+      height: rem(32px);
     }
 
     &.newRequests {
@@ -60,6 +84,10 @@
   opacity: 0;
   transform: translate(-50%, 0);
 
+  &.mobile {
+    transform: unset;
+  }
+
   &.open {
     opacity: 1;
   }
@@ -70,4 +98,25 @@
   top: 100%;
   left: 50%;
   transform: translate(-50%, rem(8px));
+}
+
+.mobileControlPanelWrapper {
+  padding: rem(6px 12px);
+}
+
+.mobilePanelsWrapper {
+  position: fixed;
+  inset: 0;
+  padding: rem(20px);
+  display: flex;
+  justify-content: center;
+  background: rgba($primary-black, 0.6);
+  backdrop-filter: blur(28px);
+
+  .closeIcon {
+    position: absolute;
+    top: rem(20px);
+    right: rem(20px);
+    color: rgba($primary-white, 0.6);
+  }
 }

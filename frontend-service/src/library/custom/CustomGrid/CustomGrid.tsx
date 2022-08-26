@@ -1,11 +1,15 @@
-import React, { ForwardedRef, forwardRef, memo } from 'react';
+import React, { ForwardedRef, forwardRef, memo, PropsWithChildren } from 'react';
 
 import { Grid, GridProps } from '@mui/material';
 
-const Component = ({ children, ...rest }: GridProps, ref: ForwardedRef<HTMLDivElement>) => (
-        <Grid ref={ref} {...rest}>
-            {children}
-        </Grid>
-    );
+type CustomGripProps = Omit<GridProps, 'children'> & PropsWithChildren;
 
-export const CustomGrid = memo<GridProps>(forwardRef<HTMLDivElement, GridProps>(Component));
+const Component = ({ children, ...rest }: CustomGripProps, ref: ForwardedRef<HTMLDivElement>) => (
+    <Grid ref={ref} {...rest}>
+        {children}
+    </Grid>
+);
+
+export const CustomGrid = memo<CustomGripProps>(
+    forwardRef<HTMLDivElement, CustomGripProps>(Component),
+);

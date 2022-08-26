@@ -29,6 +29,7 @@ import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKic
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import { MobilePortraitStub } from '@library/common/MobilePortraitStub/MobilePortraitStub';
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // misc
@@ -57,13 +58,17 @@ import {
     appDialogsApi,
     setMeetingConnectedEvent,
     addNotificationEvent,
+    checkIsPortraitLayoutEvent,
+    $isScreensharingStore,
 } from '../../../store';
 
 // types
 import { AppDialogsEnum, MeetingAccessStatuses, NotificationType } from '../../../store/types';
+import { isMobile } from '../../../utils/browser/detectBrowser';
 
-const MeetingView = memo(() => {
+const Component = () => {
     const meeting = useStore($meetingStore);
+    const isScreenSharing = useStore($isScreensharingStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
@@ -169,9 +174,13 @@ const MeetingView = memo(() => {
     }, [localUser.accessStatus, meeting.id, localUser.meetingUserId]);
 
     useEffect(() => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
-        });
+        if (isMobile()) {
+            checkIsPortraitLayoutEvent();
+        } else {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
+            });
+        }
 
         return () => {
             AgoraController.leave();
@@ -181,12 +190,10 @@ const MeetingView = memo(() => {
     const handleUpdateMeetingTemplate = useCallback(async updateData => {
         if (updateData) {
             await updateMeetingTemplateFxWithData(updateData.data);
-            updateUserSocketEvent({ username: updateData.data.fullName });
             updateLocalUserEvent({ username: updateData.data.fullName });
+            await updateUserSocketEvent({ username: updateData.data.fullName });
         }
     }, []);
-
-    const isScreenSharing = Boolean(meeting.sharingUserId);
 
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
@@ -194,14 +201,14 @@ const MeetingView = memo(() => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            <MeetingBackgroundVideo isScreenSharing={isScreenSharing} src={meetingTemplate.url}>
+            <MeetingBackgroundVideo src={meetingTemplate.url}>
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>
                         <Image
                             className={clsx(styles.image, {
                                 [styles.blured]: Boolean(meetingTemplate.url),
                             })}
-                            src={previewImage?.url}
+                            src={previewImage?.url || ''}
                             width="100%"
                             height="100%"
                             layout="fill"
@@ -209,7 +216,9 @@ const MeetingView = memo(() => {
                         />
                     </ConditionalRender>
                 </CustomBox>
-                {isScreenSharing && <ScreenSharingLayout />}
+                <ConditionalRender condition={isScreenSharing}>
+                    <ScreenSharingLayout />
+                </ConditionalRender>
             </MeetingBackgroundVideo>
 
             {Boolean(meetingTemplate?.id) && (
@@ -236,8 +245,9 @@ const MeetingView = memo(() => {
             <UserToKickDialog />
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
+            <MobilePortraitStub />
         </CustomGrid>
     );
-});
+};
 
-export { MeetingView };
+export const MeetingView = memo(Component);

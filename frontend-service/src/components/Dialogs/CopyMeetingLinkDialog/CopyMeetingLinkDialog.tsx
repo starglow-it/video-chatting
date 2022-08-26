@@ -45,7 +45,7 @@ const Component = () => {
         });
     }, []);
 
-    const meetingLinkText = getClientMeetingUrlWithDomain(router.query.token);
+    const meetingLinkText = getClientMeetingUrlWithDomain(router.query.token as string);
 
     return (
         <CustomDialog

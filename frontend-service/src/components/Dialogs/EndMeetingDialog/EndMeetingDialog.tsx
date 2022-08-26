@@ -21,7 +21,7 @@ import {
     $localUserStore,
     sendEndMeetingSocketEvent,
     sendLeaveMeetingSocketEvent,
-} from 'src/store';
+} from '../../../store';
 
 // styles
 import styles from './EndMeetingDialog.module.scss';
@@ -29,7 +29,10 @@ import styles from './EndMeetingDialog.module.scss';
 // types
 import { AppDialogsEnum } from '../../../store/types';
 
-const EndMeetingDialog = memo(() => {
+// const
+import { clientRoutes, dashboardRoute } from '../../../const/client-routes';
+
+const Component = () => {
     const router = useRouter();
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
@@ -45,18 +48,22 @@ const EndMeetingDialog = memo(() => {
         });
     }, []);
 
-    const handleLeave = useCallback(() => {
+    const handleLeave = useCallback(async () => {
         handleClose();
-        sendLeaveMeetingSocketEvent();
-        router.push(localUser.isGenerated ? '/welcome' : '/dashboard');
+        await Promise.all([
+            sendLeaveMeetingSocketEvent(),
+            router.push(localUser.isGenerated ? clientRoutes.welcomeRoute : dashboardRoute),
+        ]);
     }, [localUser.isGenerated]);
 
     const handleEndMeeting = useCallback(async () => {
         handleClose();
-        sendEndMeetingSocketEvent();
-        await deleteMeetingFx({ templateId: meetingTemplate.id });
-        router.push('/dashboard');
-    }, []);
+        await Promise.all([
+            sendEndMeetingSocketEvent(),
+            deleteMeetingFx({ templateId: meetingTemplate.id }),
+            router.push(dashboardRoute),
+        ]);
+    }, [meetingTemplate.id]);
 
     return (
         <CustomDialog
@@ -78,25 +85,44 @@ const EndMeetingDialog = memo(() => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <CustomButton
-                    onClick={handleLeave}
-                    className={styles.baseBtn}
-                    nameSpace="meeting"
-                    translation="buttons.leave"
-                    variant="custom-cancel"
-                />
-                {isOwner && (
-                    <CustomButton
-                        onClick={handleEndMeeting}
-                        className={styles.baseBtn}
-                        nameSpace="meeting"
-                        translation="buttons.end"
-                        variant="custom-primary"
-                    />
+                {isOwner ? (
+                    <>
+                        <CustomButton
+                            onClick={handleLeave}
+                            className={styles.baseBtn}
+                            nameSpace="meeting"
+                            translation="buttons.leave"
+                            variant="custom-cancel"
+                        />
+                        <CustomButton
+                            onClick={handleEndMeeting}
+                            className={styles.baseBtn}
+                            nameSpace="meeting"
+                            translation="buttons.end"
+                            variant="custom-error"
+                        />
+                    </>
+                ) : (
+                    <>
+                        <CustomButton
+                            onClick={handleClose}
+                            className={styles.baseBtn}
+                            nameSpace="meeting"
+                            translation="buttons.cancel"
+                            variant="custom-cancel"
+                        />
+                        <CustomButton
+                            onClick={handleLeave}
+                            className={styles.baseBtn}
+                            nameSpace="common"
+                            translation="buttons.leave"
+                            variant="custom-error"
+                        />
+                    </>
                 )}
             </CustomGrid>
         </CustomDialog>
     );
-});
+};
 
-export { EndMeetingDialog };
+export const EndMeetingDialog = memo(Component);

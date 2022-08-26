@@ -1,4 +1,6 @@
-export const ON_USERS_UPDATE = 'users:update';
-export const ON_USERS_REMOVE = 'users:remove';
-export const ON_USER_UPDATE = 'user:update';
-export const ON_USER_KICK = 'users:kick';
+export enum UsersSubscribeEvents {
+    OnUpdateUsers = 'users:update',
+    OnRemoveUsers = 'users:remove',
+    OnUpdateUser = 'user:remove',
+    OnKickUser = 'users:kick',
+}

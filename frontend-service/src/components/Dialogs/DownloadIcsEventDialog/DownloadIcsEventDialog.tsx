@@ -11,8 +11,12 @@ import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { DownloadIcon } from '@library/icons/DownloadIcon';
 
 // stores
-import { $scheduleEventLinkStore, setScheduleEventLinkEvent } from '../../../store';
-import { $appDialogsStore, appDialogsApi } from '../../../store';
+import {
+    $appDialogsStore,
+    appDialogsApi,
+    $scheduleEventLinkStore,
+    setScheduleEventLinkEvent,
+} from '../../../store';
 
 // styles
 import styles from './DownloadIcsEventDialog.module.scss';

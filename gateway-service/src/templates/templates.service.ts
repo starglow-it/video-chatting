@@ -4,6 +4,8 @@ import {
   GET_COMMON_TEMPLATE,
   GET_COMMON_TEMPLATES,
   GET_USER_TEMPLATE,
+  GET_USER_TEMPLATE_BY_ID,
+  GET_USER_TEMPLATE_BY_TEMPLATE_ID,
   GET_USER_TEMPLATES,
   GET_USERS_TEMPLATES,
   UPDATE_USER_TEMPLATE,
@@ -31,6 +33,18 @@ export class TemplatesService {
 
   async getUserTemplate(data): Promise<IUserTemplate> {
     const pattern = { cmd: GET_USER_TEMPLATE };
+
+    return this.coreService.sendCustom(pattern, data);
+  }
+
+  async getUserTemplateById(data): Promise<IUserTemplate> {
+    const pattern = { cmd: GET_USER_TEMPLATE_BY_ID };
+
+    return this.coreService.sendCustom(pattern, data);
+  }
+
+  async getUserTemplateByTemplateId(data): Promise<IUserTemplate> {
+    const pattern = { cmd: GET_USER_TEMPLATE_BY_TEMPLATE_ID };
 
     return this.coreService.sendCustom(pattern, data);
   }

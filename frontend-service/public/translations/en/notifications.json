@@ -16,7 +16,7 @@
       "link": "Meeting link copied",
       "notification": "Text copied"
     },
-    "inviteSent": "Invite sent"
+    "inviteSent": "The invitation has been sent"
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",
@@ -36,6 +36,7 @@
     "subscriptionProfessionalDailySuccess": "Thank you for subscribing to Live Office ProfessionalDaily!",
     "subscriptionFail": "An error occurred during the subscription. Please try again",
     "templateSuccess": "The purchase was successful. New template added to My Templates",
-    "templateFail": "Something happened during the payment. You can repeat the purchase."
+    "templateFail": "Something happened during the payment. You can repeat the purchase.",
+    "endDate": "You cannot schedule these dates as you run out of meeting minutes. Go to Profile to upgrade"
   }
 }

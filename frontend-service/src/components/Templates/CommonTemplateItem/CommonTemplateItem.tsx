@@ -19,7 +19,7 @@ import {
     $profileTemplatesStore,
     addNotificationEvent,
     appDialogsApi,
-    getUserTemplateFx,
+    getProfileTemplateByTemplateIdFx,
     setPreviewTemplate,
 } from '../../../store';
 
@@ -30,7 +30,7 @@ import { CommonTemplateItemProps } from './types';
 // styles
 import styles from './CommonTemplateItem.module.scss';
 
-const CommonTemplateItem = memo(({ template, onChooseTemplate }: CommonTemplateItemProps) => {
+const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
 
@@ -41,8 +41,7 @@ const CommonTemplateItem = memo(({ template, onChooseTemplate }: CommonTemplateI
     });
 
     const isTemplatesLimitReached = profile.maxTemplatesNumber <= freeTemplatesCount;
-    const isTimeLimitReached =
-        profile.maxMeetingTime === 0 && !isBusinessSubscription && template.type !== 'paid';
+    const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
@@ -64,7 +63,9 @@ const CommonTemplateItem = memo(({ template, onChooseTemplate }: CommonTemplateI
 
     useEffect(() => {
         (async () => {
-            const userTemplate = await getUserTemplateFx({ templateId: template.templateId });
+            const userTemplate = await getProfileTemplateByTemplateIdFx({
+                templateId: template.templateId,
+            });
 
             if (userTemplate?.id) {
                 setIsDisabled(true);
@@ -73,7 +74,7 @@ const CommonTemplateItem = memo(({ template, onChooseTemplate }: CommonTemplateI
     }, []);
 
     const handleStartMeeting = useCallback(async () => {
-        onChooseTemplate(template.id);
+        await onChooseTemplate?.(template.id);
     }, [onChooseTemplate]);
 
     const previewImage = (template?.previewUrls || []).find(image => image.resolution === 240);
@@ -85,9 +86,9 @@ const CommonTemplateItem = memo(({ template, onChooseTemplate }: CommonTemplateI
         });
     };
 
-    const handleBuyTemplate = () => {
-        onChooseTemplate(template.id);
-    };
+    const handleBuyTemplate = useCallback(async () => {
+        await onChooseTemplate?.(template.id);
+    }, [onChooseTemplate]);
 
     const isFree = !template.priceInCents;
 
@@ -150,6 +151,6 @@ const CommonTemplateItem = memo(({ template, onChooseTemplate }: CommonTemplateI
             </Fade>
         </CustomGrid>
     );
-});
+};
 
-export { CommonTemplateItem };
+export const CommonTemplateItem = memo(Component);

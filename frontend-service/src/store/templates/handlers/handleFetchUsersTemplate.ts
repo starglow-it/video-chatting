@@ -2,10 +2,10 @@ import { ErrorState, Template, UserTemplate } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { userTemplateUrl } from '../../../utils/urls';
 
-const handleFetchUserTemplate = async ({
+export const handleFetchUserTemplate = async ({
     templateId,
 }: {
-    templateId: Template['templateId'];
+    templateId: Template['id'];
 }): Promise<UserTemplate | undefined | null> => {
     const response = await sendRequestWithCredentials<UserTemplate, ErrorState>(
         userTemplateUrl({ templateId }),
@@ -17,5 +17,3 @@ const handleFetchUserTemplate = async ({
 
     return response.result;
 };
-
-export { handleFetchUserTemplate };

@@ -40,8 +40,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
 
-    const isDisabled =
-        profile.maxMeetingTime === 0 && !isBusinessSubscription && template.type !== 'paid';
+    const isDisabled = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
 
@@ -54,7 +53,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
     }, []);
 
     const handleCreateMeeting = useCallback(async () => {
-        onChooseTemplate(template.id);
+        onChooseTemplate?.(template.id);
     }, []);
 
     const handleOpenDeleteDialog = useCallback(() => {
@@ -129,9 +128,8 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                         />
                         <CustomButton
                             variant="custom-transparent"
-                            onClick={!isDisabled ? handleScheduleMeeting : undefined}
+                            onClick={handleScheduleMeeting}
                             className={styles.startMeetingBtn}
-                            disableRipple={isDisabled}
                             nameSpace="templates"
                             translation="buttons.schedule"
                             typographyProps={{

@@ -7,6 +7,7 @@
     "audioVideo": "Audio & video",
     "remember": "Remember my settings"
   },
+  "allowAudio": "Allow access to your microphone",
   "preview": {
     "invitedText": "invited you to this special scene"
   },
@@ -45,7 +46,7 @@
   },
   "endMeeting": {
     "forHost": "Do you want to <b>Leave Meeting</b> or <b>End it for all</b>?",
-    "forAttendee": "Do you want to <b>Leave Meeting</b>?"
+    "forAttendee": "Leave Meeting?"
   },
   "invite": {
     "title": "Invite attendees",
@@ -116,5 +117,9 @@
     "onGoods": "Show all the items",
     "offGoods": "Hide all the items",
     "buyItem": "Buy this item"
+  },
+  "rooms": "Rooms",
+  "portraitLayout": {
+    "text": "Please shift to the landscape view on your device for the best experience in Live Office meetings"
   }
 }

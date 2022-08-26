@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
@@ -6,6 +6,7 @@ import { useFormContext } from 'react-hook-form';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -58,11 +59,19 @@ const Component = ({
         formState: { errors },
     } = useFormContext();
 
+    const { isSafari, isMobile } = useBrowserDetect();
+
     const {
         value: isAudioVideoSettingsOpened,
         onSwitchOff: handleCloseAudioVideoSettings,
         onSwitchOn: handleOpenAudioVideoSettings,
-    } = useToggle(false);
+    } = useToggle(isMobile);
+
+    useEffect(() => {
+        if (isSafari) {
+            handleOpenAudioVideoSettings();
+        }
+    }, [isSafari]);
 
     const handleChangeVolume = useCallback(event => {
         onChangeBackgroundVolume(event.target.value);
@@ -92,7 +101,7 @@ const Component = ({
                                 container
                                 justifyContent="center"
                                 alignItems="center"
-                                onClick={handleOpenAudioVideoSettings}
+                                onClick={!isSafari ? handleOpenAudioVideoSettings : undefined}
                                 className={styles.advancedButton}
                             >
                                 <CustomTypography
@@ -105,14 +114,16 @@ const Component = ({
                             </CustomGrid>
                         </CustomGrid>
                         <CustomGrid container gap={2} direction="column">
-                            <LabeledSwitch
-                                Icon={<BackgroundBlurIcon width="24px" height="24px" />}
-                                nameSpace="meeting"
-                                translation="features.blurBackground"
-                                checked={isBlurActive}
-                                onChange={onToggleBlur}
-                                className={styles.switchWrapper}
-                            />
+                            <ConditionalRender condition={!isSafari}>
+                                <LabeledSwitch
+                                    Icon={<BackgroundBlurIcon width="24px" height="24px" />}
+                                    nameSpace="meeting"
+                                    translation="features.blurBackground"
+                                    checked={isBlurActive}
+                                    onChange={onToggleBlur}
+                                    className={styles.switchWrapper}
+                                />
+                            </ConditionalRender>
                             <ConditionalRender
                                 condition={
                                     isOwner && isMonetizationEnabled && isMonetizationAvailable
@@ -137,7 +148,7 @@ const Component = ({
                                 className={styles.arrowIcon}
                                 width="32px"
                                 height="32px"
-                                onClick={handleCloseAudioVideoSettings}
+                                onClick={!isSafari ? handleCloseAudioVideoSettings : undefined}
                             />
                             <CustomTypography
                                 variant="h3bold"

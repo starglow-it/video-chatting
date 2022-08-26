@@ -16,9 +16,10 @@ const Component = ({
     onClose,
     children,
     contentClassName,
+    className,
     ...rest
 }: Omit<DialogProps, 'onClose'> & CustomDialogProps) => (
-    <Dialog open={open} {...rest}>
+    <Dialog classes={{ paper: className }} open={open} {...rest}>
         <DialogContent className={contentClassName || ''}>{children}</DialogContent>
         {onClose && (
             <DialogActions classes={{ root: styles.closeIcon }}>

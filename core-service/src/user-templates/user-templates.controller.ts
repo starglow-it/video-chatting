@@ -20,6 +20,7 @@ import {
   DELETE_USERS_TEMPLATES,
   GET_USER_TEMPLATE,
   GET_USER_TEMPLATE_BY_ID,
+  GET_USER_TEMPLATE_BY_TEMPLATE_ID,
   GET_USER_TEMPLATES,
   GET_USERS_TEMPLATES,
   UPDATE_USER_TEMPLATE,
@@ -44,7 +45,7 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: GET_USER_TEMPLATE })
   async getUserTemplate(
     @Payload()
-    { id }: { id: IUserTemplate['id'] | ICommonTemplate['templateId'] },
+    { id }: { id: IUserTemplate['id'] },
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
@@ -53,9 +54,7 @@ export class UserTemplatesController {
         const userTemplate = await this.userTemplatesService.findUserTemplate({
           query: Types.ObjectId.isValid(id)
             ? { _id: id }
-            : Number.isNaN(Number(id))
-            ? { customLink: customLinkRegexp }
-            : { templateId: id },
+            : { customLink: customLinkRegexp },
           session,
           populatePaths: [
             { path: 'socials' },
@@ -70,6 +69,45 @@ export class UserTemplatesController {
         if (userTemplate?.customLink && Types.ObjectId.isValid(id)) {
           return null;
         }
+
+        return plainToClass(UserTemplateDTO, userTemplate, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: TEMPLATES_SERVICE,
+        });
+      }
+    });
+  }
+
+  @MessagePattern({ cmd: GET_USER_TEMPLATE_BY_TEMPLATE_ID })
+  async getUserTemplateByTemplateId(
+    @Payload()
+    {
+      id,
+      userId,
+    }: {
+      id: ICommonTemplate['templateId'];
+      userId: ICommonUserDTO['id'];
+    },
+  ): Promise<IUserTemplate> {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const userTemplate = await this.userTemplatesService.findUserTemplate({
+          query: { templateId: id, user: userId },
+          session,
+          populatePaths: [
+            { path: 'socials' },
+            { path: 'businessCategories' },
+            { path: 'languages' },
+            { path: 'meetingInstance' },
+            { path: 'previewUrls' },
+            { path: 'user', populate: { path: 'profileAvatar' } },
+          ],
+        });
 
         return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,

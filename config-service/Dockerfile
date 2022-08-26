@@ -10,9 +10,9 @@ COPY ./shared ./shared
 
 RUN mkdir ./config-service
 
-COPY ./config-service/package*.json ./config-service/
+COPY ./config-service/package.json ./config-service/
 
-RUN cd ./config-service && npm ci --silent --legacy-peer-deps
+RUN cd ./config-service && npm i --legacy-peer-deps
 
 COPY ./config-service ./config-service/
 

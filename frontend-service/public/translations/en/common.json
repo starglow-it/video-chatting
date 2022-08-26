@@ -51,7 +51,8 @@
     "upgrade": "Upgrade",
     "update": "Update",
     "replace": "Replace",
-    "buy": "Buy"
+    "buy": "Buy",
+    "leave": "Leave"
   },
   "login": {
     "welcome": "Welcome back",

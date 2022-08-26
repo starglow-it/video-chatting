@@ -31,6 +31,4 @@ const Component = ({
     </Button>
 );
 
-const CustomButton = memo<ComponentType>(Component);
-
-export { CustomButton };
+export const CustomButton = memo<ComponentType>(Component);

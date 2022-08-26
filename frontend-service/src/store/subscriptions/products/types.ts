@@ -1,7 +1,7 @@
 export type GetCheckoutSessionUrlPayload = {
     productId: string;
     meetingToken?: string;
-    baseUrl: string;
+    baseUrl?: string;
 };
 
 export type GetPortalSessionUrlPayload = { subscriptionId: string };

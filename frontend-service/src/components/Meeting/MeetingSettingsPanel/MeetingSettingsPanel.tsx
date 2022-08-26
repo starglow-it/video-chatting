@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
@@ -58,6 +58,7 @@ import { MeetingSettingsPanelProps, SettingsData } from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
+import { dashboardRoute } from '../../../const/client-routes';
 
 // utils
 import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
@@ -75,225 +76,220 @@ const validationSchema = yup.object({
     customLink: customTemplateLinkSchema(),
 });
 
-const MeetingSettingsPanel = memo(
-    ({ template, onTemplateUpdate, children }: MeetingSettingsPanelProps) => {
-        const isEditTemplateOpened = useStore($isEditTemplateOpenStore);
-        const isMeetingInfoOpened = useStore($isMeetingInfoOpenStore);
+const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPanelProps) => {
+    const isEditTemplateOpened = useStore($isEditTemplateOpenStore);
+    const isMeetingInfoOpened = useStore($isMeetingInfoOpenStore);
 
-        const isOwner = useStore($isOwner);
+    const isOwner = useStore($isOwner);
 
-        const router = useRouter();
+    const router = useRouter();
 
-        const resolver = useYupValidationResolver<SettingsData>(validationSchema);
+    const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
-        const templateSocialLinks = useMemo<SettingsData['socials']>(
-            () => template.socials.map(social => ({ key: social.key, value: social.value })),
-            [template?.socials],
+    const templateSocialLinks = useMemo<SettingsData['socials']>(
+        () => template.socials.map(social => ({ key: social.key, value: social.value })),
+        [template?.socials],
+    );
+
+    const methods = useForm({
+        criteriaMode: 'all',
+        resolver,
+        defaultValues: {
+            companyName: template.companyName,
+            contactEmail: template.contactEmail,
+            fullName: template.fullName,
+            position: template.position,
+            signBoard: template.signBoard,
+            businessCategories: template.businessCategories.map(category => category.key),
+            languages: template.languages.map(category => category.key),
+            socials: templateSocialLinks,
+            customLink: template.customLink,
+            description: template.description,
+        },
+    });
+
+    const {
+        setValue,
+        handleSubmit,
+        formState: { dirtyFields, errors },
+        reset,
+        control,
+        setError,
+        setFocus,
+    } = methods;
+
+    const nextSocials = useWatch({
+        control,
+        name: 'socials',
+    });
+
+    useEffect(() => {
+        (async () => {
+            const roomUrl = getClientMeetingUrlWithDomain(template.customLink || template.id);
+
+            await Router.push(roomUrl, roomUrl, { shallow: true });
+        })();
+    }, [template.customLink, template.id]);
+
+    const dirtyFieldsCount = useMemo(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
+
+        const values: (boolean | { [key: string]: boolean })[] =
+            Object.values(dirtyFieldsWithOutSocials);
+
+        const newDirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
+
+        const paddedNextSocials = padArray<SocialLink>(
+            (nextSocials || []) as SocialLink[],
+            Object.keys(SOCIAL_LINKS).length,
+        );
+        const paddedCurrentSocials = padArray<SocialLink>(
+            template?.socials || [],
+            Object.keys(SOCIAL_LINKS).length,
         );
 
-        const methods = useForm({
-            criteriaMode: 'all',
-            resolver,
-            defaultValues: {
-                companyName: template.companyName,
-                contactEmail: template.contactEmail,
-                fullName: template.fullName,
-                position: template.position,
-                signBoard: template.signBoard,
-                businessCategories: template.businessCategories.map(category => category.key),
-                languages: template.languages.map(category => category.key),
-                socials: templateSocialLinks,
-                customLink: template.customLink,
-                description: template.description,
-            },
+        const changedFields = paddedCurrentSocials.map(social => {
+            const targetSocial = paddedNextSocials?.find(
+                currentSocial => currentSocial?.key === social?.key,
+            );
+            const isBothEmpty = targetSocial?.value === undefined && social?.value === undefined;
+
+            const isExistedNotChanged =
+                targetSocial?.value && targetSocial?.value === social?.value;
+
+            return isBothEmpty || isExistedNotChanged;
         });
 
-        const {
-            setValue,
-            handleSubmit,
-            formState: { dirtyFields, errors },
-            reset,
-            control,
-            setError,
-            setFocus,
-        } = methods;
-
-        const nextSocials = useWatch({
-            control,
-            name: 'socials',
-        });
-
-        const dirtyFieldsCount = useMemo(() => {
-            const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
-
-            const values: (boolean | { [key: string]: boolean })[] =
-                Object.values(dirtyFieldsWithOutSocials);
-
-            const dirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
-
-            const paddedNextSocials = padArray<SocialLink>(
-                (nextSocials || []) as SocialLink[],
-                Object.keys(SOCIAL_LINKS).length,
-            );
-            const paddedCurrentSocials = padArray<SocialLink>(
-                template?.socials || [],
-                Object.keys(SOCIAL_LINKS).length,
-            );
-
-            const changedFields = paddedCurrentSocials.map(social => {
-                const targetSocial = paddedNextSocials?.find(
+        const changedNewFields = paddedNextSocials
+            .map(social => {
+                const targetSocial = paddedCurrentSocials?.find(
                     currentSocial => currentSocial?.key === social?.key,
                 );
-                const isBothEmpty =
-                    targetSocial?.value === undefined && social?.value === undefined;
 
-                const isExistedNotChanged =
-                    targetSocial?.value && targetSocial?.value === social?.value;
+                return !targetSocial?.value && social?.value;
+            })
+            .filter(Boolean);
 
-                return isBothEmpty || isExistedNotChanged;
-            });
+        const numberOfChangedFields = changedFields.filter(value => !value).length;
 
-            const changedNewFields = paddedNextSocials
-                .map(social => {
-                    const targetSocial = paddedCurrentSocials?.find(
-                        currentSocial => currentSocial?.key === social?.key,
-                    );
+        return newDirtyFieldsCount + numberOfChangedFields + changedNewFields.length;
+    }, [Object.keys(dirtyFields).length, nextSocials, template.socials]);
 
-                    return !targetSocial?.value && social?.value;
-                })
-                .filter(Boolean);
+    const handleCloseSettingsPanel = useCallback(() => {
+        if (!dirtyFieldsCount || isMeetingInfoOpened) {
+            setEditTemplateOpenEvent(false);
+            setMeetingInfoOpenEvent(false);
+            return;
+        }
 
-            const numberOfChangedFields = changedFields.filter(value => !value).length;
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.editMeetingTemplateDialog,
+        });
+    }, [dirtyFieldsCount]);
 
-            return dirtyFieldsCount + numberOfChangedFields + changedNewFields.length;
-        }, [Object.keys(dirtyFields).length, nextSocials, template.socials]);
+    const handleConfirmClose = useCallback(() => {
+        setEditTemplateOpenEvent(false);
+        reset();
+        setValue('socials', templateSocialLinks, {
+            shouldDirty: true,
+            shouldValidate: true,
+        });
+    }, [templateSocialLinks]);
 
-        const handleCloseSettingsPanel = useCallback(() => {
-            if (!dirtyFieldsCount || isMeetingInfoOpened) {
-                setEditTemplateOpenEvent(false);
-                setMeetingInfoOpenEvent(false);
-                return;
+    const onSubmit = useCallback(
+        handleSubmit(async data => {
+            if (!dirtyFieldsCount) {
+                onTemplateUpdate();
+            } else {
+                const { socials, ...dataWithoutSocials } = data;
+
+                if (
+                    dataWithoutSocials.customLink &&
+                    template.customLink !== dataWithoutSocials.customLink
+                ) {
+                    const isBusy = await checkCustomLinkFxWithData({
+                        templateId: dataWithoutSocials.customLink,
+                    });
+
+                    if (isBusy) {
+                        setError('customLink', [
+                            { type: 'focus', message: 'meeting.settings.customLink.busy' },
+                        ]);
+                        setFocus('customLink');
+                        return;
+                    }
+                }
+
+                const filteredSocials = socials
+                    ?.filter((social: SocialLink) => social.value)
+                    ?.reduce((acc, b) => ({ ...acc, [b.key]: b.value }), {});
+
+                onTemplateUpdate({
+                    data: {
+                        ...dataWithoutSocials,
+                        socials: filteredSocials || {},
+                    },
+                    templateId: template.id,
+                });
+
+                reset({
+                    ...dataWithoutSocials,
+                    socials,
+                });
             }
+            setEditTemplateOpenEvent(false);
+        }),
+        [dirtyFieldsCount, template.id, template.customLink, errors],
+    );
 
+    const handleCancelEditTemplate = useCallback(() => {
+        if (dirtyFieldsCount) {
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.editMeetingTemplateDialog,
             });
-        }, [dirtyFieldsCount]);
+        } else {
+            router.push(dashboardRoute);
+        }
+    }, [dirtyFieldsCount]);
 
-        const handleConfirmClose = useCallback(() => {
-            setEditTemplateOpenEvent(false);
-            reset();
-            setValue('socials', templateSocialLinks, {
-                shouldDirty: true,
-                shouldValidate: true,
-            });
-        }, [templateSocialLinks]);
+    return (
+        <CustomBox className={styles.wrapper}>
+            <FormProvider {...methods}>
+                {children}
+                <CustomPaper
+                    variant="black-glass"
+                    className={clsx(styles.settingsWrapper, {
+                        [styles.open]: isEditTemplateOpened || isMeetingInfoOpened,
+                    })}
+                >
+                    <RoundCloseIcon
+                        className={styles.closeIcon}
+                        onClick={handleCloseSettingsPanel}
+                        width="24px"
+                        height="24px"
+                    />
 
-        const onSubmit = useCallback(
-            handleSubmit(async data => {
-                if (!dirtyFieldsCount) {
-                    onTemplateUpdate();
-                } else {
-                    const { socials, ...dataWithoutSocials } = data;
-
-                    if (
-                        dataWithoutSocials.customLink &&
-                        template.customLink !== dataWithoutSocials.customLink
-                    ) {
-                        const isBusy = await checkCustomLinkFxWithData({
-                            templateId: dataWithoutSocials.customLink,
-                        });
-
-                        if (isBusy) {
-                            setError('customLink', [
-                                { type: 'focus', message: 'meeting.settings.customLink.busy' },
-                            ]);
-                            setFocus('customLink');
-                            return;
-                        }
-                    }
-
-                    const filteredSocials = socials
-                        ?.filter((social: SocialLink) => social.value)
-                        ?.reduce((acc, b) => ({ ...acc, [b.key]: b.value }), {});
-
-                    onTemplateUpdate({
-                        data: {
-                            ...dataWithoutSocials,
-                            socials: filteredSocials || {},
-                        },
-                        templateId: template.id,
-                    });
-
-                    reset({
-                        ...dataWithoutSocials,
-                        socials,
-                    });
-
-                    if (
-                        (template.customLink || dataWithoutSocials.customLink) &&
-                        template.customLink !== dataWithoutSocials.customLink
-                    ) {
-                        const roomUrl = getClientMeetingUrlWithDomain(
-                            dataWithoutSocials.customLink || template.id,
-                        );
-
-                        Router.push(roomUrl, roomUrl, { shallow: true });
-                    }
-                }
-                setEditTemplateOpenEvent(false);
-            }),
-            [dirtyFieldsCount, template.id, template.customLink, errors],
-        );
-
-        const handleCancelEditTemplate = useCallback(() => {
-            if (dirtyFieldsCount) {
-                appDialogsApi.openDialog({
-                    dialogKey: AppDialogsEnum.editMeetingTemplateDialog,
-                });
-            } else {
-                router.push('/dashboard');
-            }
-        }, [dirtyFieldsCount]);
-
-        return (
-            <CustomBox className={styles.wrapper}>
-                <FormProvider {...methods}>
-                    {children}
-                    <CustomPaper
-                        variant="black-glass"
-                        className={clsx(styles.settingsWrapper, {
-                            [styles.open]: isEditTemplateOpened || isMeetingInfoOpened,
-                        })}
-                    >
-                        <RoundCloseIcon
-                            className={styles.closeIcon}
-                            onClick={handleCloseSettingsPanel}
-                            width="24px"
-                            height="24px"
-                        />
-
-                        <ConditionalRender condition={isOwner}>
-                            <Fade in={isEditTemplateOpened}>
-                                <CustomBox className={styles.fadeContentWrapper}>
-                                    <form onSubmit={onSubmit} className={styles.form}>
-                                        <EditTemplateForm onCancel={handleCancelEditTemplate} />
-                                    </form>
-                                </CustomBox>
-                            </Fade>
-                        </ConditionalRender>
-
-                        <Fade in={isMeetingInfoOpened}>
+                    <ConditionalRender condition={isOwner}>
+                        <Fade in={isEditTemplateOpened}>
                             <CustomBox className={styles.fadeContentWrapper}>
-                                <MeetingInfo />
+                                <form onSubmit={onSubmit} className={styles.form}>
+                                    <EditTemplateForm onCancel={handleCancelEditTemplate} />
+                                </form>
                             </CustomBox>
                         </Fade>
-                    </CustomPaper>
-                    <ConfirmCancelChangesDialog onClose={handleConfirmClose} />
-                </FormProvider>
-            </CustomBox>
-        );
-    },
-);
+                    </ConditionalRender>
 
-export { MeetingSettingsPanel };
+                    <Fade in={isMeetingInfoOpened}>
+                        <CustomBox className={styles.fadeContentWrapper}>
+                            <MeetingInfo />
+                        </CustomBox>
+                    </Fade>
+                </CustomPaper>
+                <ConfirmCancelChangesDialog onClose={handleConfirmClose} />
+            </FormProvider>
+        </CustomBox>
+    );
+};
+
+export const MeetingSettingsPanel = memo(Component);

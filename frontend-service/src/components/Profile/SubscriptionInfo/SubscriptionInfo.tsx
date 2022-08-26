@@ -37,6 +37,9 @@ import { formatDate } from '../../../utils/time/formatDate';
 // styles
 import styles from './SubscriptionInfo.module.scss';
 
+// const
+import { profileRoute } from '../../../const/client-routes';
+
 const Component = () => {
     const router = useRouter();
     const subscription = useStore($subscriptionStore);
@@ -57,13 +60,13 @@ const Component = () => {
         getSubscriptionWithDataFx();
     }, []);
 
-    useSubscriptionNotification('/dashboard/profile');
+    useSubscriptionNotification(profileRoute);
 
     const handleChooseSubscription = async (productId: string, isPaid: boolean) => {
         if (isPaid && !profile.stripeSubscriptionId) {
             const response = await startCheckoutSessionForSubscriptionFx({
                 productId,
-                baseUrl: '/dashboard/profile',
+                baseUrl: profileRoute,
             });
 
             if (response?.url) {
@@ -81,7 +84,7 @@ const Component = () => {
     };
 
     const nextPaymentDate = subscription?.current_period_end
-        ? formatDate(subscription?.current_period_end * 1000, 'dd MMM, yyyy')
+        ? formatDate((subscription?.current_period_end || Date.now()) * 1000, 'dd MMM, yyyy')
         : '';
 
     const handleOpenSubscriptionPortal = async () => {

@@ -53,6 +53,7 @@ import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
 // utils
 import { getClientMeetingUrl } from '../../utils/urls';
 import { formatCountDown } from '../../utils/time/formatCountdown';
+import { dashboardRoute } from '../../const/client-routes';
 
 const TemplatesContainer = memo(() => {
     const router = useRouter();
@@ -71,7 +72,7 @@ const TemplatesContainer = memo(() => {
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
 
-    useTemplateNotification('/dashboard');
+    useTemplateNotification(dashboardRoute);
 
     useLayoutEffect(() => {
         (async () => {
@@ -86,19 +87,6 @@ const TemplatesContainer = memo(() => {
             }
         })();
     }, [isTemplateDeleting]);
-
-    const handleChooseTemplate = useCallback(
-        async ({ templateId }: { templateId: Template['id'] }) => {
-            const result = await createMeetingFx({ templateId });
-
-            if (result.template) {
-                await router.push(
-                    getClientMeetingUrl(result.template?.customLink || result?.template?.id),
-                );
-            }
-        },
-        [],
-    );
 
     const isThereProfileTemplates = Boolean(profileTemplates?.list?.length);
 
@@ -196,7 +184,7 @@ const TemplatesContainer = memo(() => {
                             options={{ templatesLimit }}
                         />
                     </CustomGrid>
-                    <TemplatesGrid
+                    <TemplatesGrid<UserTemplate>
                         list={profileTemplates.list}
                         count={profileTemplates.count}
                         onPageChange={handleProfileTemplatesPageChange}
@@ -228,7 +216,7 @@ const TemplatesContainer = memo(() => {
                         translation="selectTemplates"
                     />
                 </CustomGrid>
-                <TemplatesGrid
+                <TemplatesGrid<Template>
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleCommonTemplatesPageChange}
@@ -239,7 +227,7 @@ const TemplatesContainer = memo(() => {
             <TemplatePreviewDialog
                 isNeedToRenderTemplateInfo
                 chooseButtonKey="chooseTemplate"
-                onChooseTemplate={handleChooseTemplate}
+                onChooseTemplate={handleChooseCommonTemplate}
             />
             <DeleteTemplateDialog />
             <ScheduleMeetingDialog />
