@@ -71,7 +71,9 @@ const MeetingUsersListItem = memo(
                     </ConditionalRender>
 
                     <ConditionalRender
-                        condition={!isLocalItem && !isAcceptRequest && isMeetingHost}
+                        condition={
+                            !isLocalItem && !isAcceptRequest && isMeetingHost && !user.isGenerated
+                        }
                     >
                         <ActionButton
                             variant="decline"

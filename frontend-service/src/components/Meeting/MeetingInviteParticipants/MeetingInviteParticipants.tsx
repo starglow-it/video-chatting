@@ -1,12 +1,14 @@
 import React, { memo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useStore } from 'effector-react';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
@@ -14,7 +16,7 @@ import { EmailIcon } from '@library/icons/EmailIcon';
 import { CopyLinkIcon } from '@library/icons/CopyLinkIcon';
 
 // stores
-import { appDialogsApi, addNotificationEvent } from '../../../store';
+import { appDialogsApi, addNotificationEvent, $localUserStore } from '../../../store';
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
@@ -27,6 +29,8 @@ import styles from './MeetingInviteParticipants.module.scss';
 
 const Component = ({ onAction }: { onAction?: () => void }) => {
     const router = useRouter();
+
+    const localUser = useStore($localUserStore);
 
     const handleOpenEmailInvite = useCallback(() => {
         appDialogsApi.openDialog({
@@ -64,13 +68,15 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
                         />
                     </CustomTooltip>
                 </CopyToClipboard>
-                <CustomTooltip nameSpace="meeting" translation="invite.sendInvite">
-                    <ActionButton
-                        onAction={handleOpenEmailInvite}
-                        className={styles.button}
-                        Icon={<EmailIcon width="24px" height="24px" />}
-                    />
-                </CustomTooltip>
+                <ConditionalRender condition={!localUser.isGenerated}>
+                    <CustomTooltip nameSpace="meeting" translation="invite.sendInvite">
+                        <ActionButton
+                            onAction={handleOpenEmailInvite}
+                            className={styles.button}
+                            Icon={<EmailIcon width="24px" height="24px" />}
+                        />
+                    </CustomTooltip>
+                </ConditionalRender>
             </CustomGrid>
         </>
     );

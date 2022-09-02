@@ -4,6 +4,7 @@ import * as path from 'path';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mkdirp from 'mkdirp';
 import * as fsPromises from 'fs/promises';
+import * as uuid from 'uuid';
 
 // services
 import { UsersService } from '../users/users.service';
@@ -76,9 +77,6 @@ export class SeederService {
                   },
                 });
 
-              let images;
-              let imagesFiles;
-
               if (videoPath) {
                 const videoFile = path.join(
                   __dirname,
@@ -100,25 +98,21 @@ export class SeederService {
                 );
               }
 
-              imagesFiles = path.join(
+              const files = path.join(
                 __dirname,
                 '../../../../images',
                 imagesUrl || imagePath,
               );
 
-              images = await fsPromises.readdir(imagesFiles);
+              const imagesPaths = await fsPromises.readdir(files);
 
-              const uploadedImagesPromises = images.map(async (image) => {
+              const uploadedImagesPromises = imagesPaths.map(async (image) => {
                 const resolution = image.match(/_(\d*)p\./);
-                const file = await fsPromises.readFile(
-                  `${imagesFiles}/${image}`,
-                );
-                const fileStats = await fsPromises.stat(
-                  `${imagesFiles}/${image}`,
-                );
+                const file = await fsPromises.readFile(`${files}/${image}`);
+                const fileStats = await fsPromises.stat(`${files}/${image}`);
                 const uploadKey = `templates/${templateData.type}${
                   imagesUrl || videoPath
-                }/${image}`;
+                }/${uuid.v4()}/${image}`;
 
                 const imageLink = await this.awsService.uploadFile(
                   file,
@@ -126,8 +120,14 @@ export class SeederService {
                 );
 
                 await this.previewImage.deleteMany({
-                  key: uploadKey,
+                  key: new RegExp(
+                    `^templates/${templateData.type}${imagesUrl || videoPath}$`,
+                  ),
                 });
+
+                await this.awsService.deleteResource(
+                  `templates/${templateData.type}${imagesUrl || videoPath}`,
+                );
 
                 return this.previewImage.create({
                   url: imageLink,
@@ -155,7 +155,7 @@ export class SeederService {
                 const stripeProduct =
                   await this.paymentsService.createTemplateStripeProduct({
                     name: templateData.name,
-                    description: templateData.description,
+                    description: templateData.shortDescription,
                     priceInCents: templateData.priceInCents,
                   });
 

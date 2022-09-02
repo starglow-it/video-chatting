@@ -13,9 +13,10 @@ import { $appDialogsStore, appDialogsApi } from '../../../store';
 // types
 import { AppDialogsEnum } from '../../../store/types';
 
+// styles
 import styles from './SuccessfulRegisterDialog.module.scss';
 
-const SuccessfulRegisterDialog = memo(() => {
+const Component = () => {
     const { isUserRegisteredDialog } = useStore($appDialogsStore);
 
     const handleClose = useCallback(() => {
@@ -54,6 +55,6 @@ const SuccessfulRegisterDialog = memo(() => {
             </CustomGrid>
         </CustomDialog>
     );
-});
+};
 
-export { SuccessfulRegisterDialog };
+export const SuccessfulRegisterDialog = memo(Component);

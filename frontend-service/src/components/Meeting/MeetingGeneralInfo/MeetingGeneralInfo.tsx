@@ -7,6 +7,7 @@ import { Fade } from '@mui/material';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -39,7 +40,7 @@ import {
     toggleMeetingInfoOpen,
 } from '../../../store';
 
-const MeetingGeneralInfo = memo(() => {
+const Component = () => {
     const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
 
@@ -61,9 +62,11 @@ const MeetingGeneralInfo = memo(() => {
         name: 'signBoard',
     });
 
+    const { isMobile } = useBrowserDetect();
+
     const targetSignBoard = isOwner ? signBoard : meetingTemplate.signBoard;
 
-    const isThereSignBoard = targetSignBoard && targetSignBoard !== 'default';
+    const isThereSignBoard = !isMobile && targetSignBoard && targetSignBoard !== 'default';
 
     const companyName = useWatch({
         control,
@@ -185,6 +188,6 @@ const MeetingGeneralInfo = memo(() => {
             </CustomPopper>
         </CustomGrid>
     );
-});
+};
 
-export { MeetingGeneralInfo };
+export const MeetingGeneralInfo = memo(Component);

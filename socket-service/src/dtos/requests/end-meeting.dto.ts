@@ -14,5 +14,5 @@ export class EndMeetingRequestDTO implements IEndMeeting {
   @IsString({
     message: 'reason.invalid',
   })
-  readonly reason: string;
+  readonly reason?: string;
 }

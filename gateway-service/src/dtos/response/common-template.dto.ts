@@ -31,6 +31,10 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
 
   @Expose()
   @ApiProperty()
+  shortDescription: string;
+
+  @Expose()
+  @ApiProperty()
   previewUrls: IPreviewImage[];
 
   @Expose()

@@ -15,6 +15,9 @@ export class CommonTemplateDTO implements ICommonTemplate {
   description: string;
 
   @Expose()
+  shortDescription: string;
+
+  @Expose()
   @Type(() => CommonBusinessCategoryDTO)
   businessCategories: IBusinessCategory[];
 

@@ -92,9 +92,9 @@ export const MediaContextProvider = ({ children }: React.PropsWithChildren): Rea
             return null;
         });
 
-        const savedSettings = WebStorage.get<
-            Pick<SavedSettings, 'savedAudioDeviceId' | 'savedVideoDeviceId'>
-        >({ key: StorageKeysEnum.meetingSettings });
+        const savedSettings = WebStorage.get<SavedSettings>({
+            key: StorageKeysEnum.meetingSettings,
+        });
 
         const {
             stream: initialStream,

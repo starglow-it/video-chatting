@@ -11,6 +11,7 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // icons
 import { PeoplesIcon } from '@library/icons/PeoplesIcon';
@@ -56,7 +57,7 @@ const Component = () => {
     const paymentIntent = useStore($paymentIntent);
     const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isScrensharing = useStore($isScreensharingStore);
+    const isScreensharing = useStore($isScreensharingStore);
     const users = useStore($meetingUsersStore);
 
     const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);
@@ -259,21 +260,21 @@ const Component = () => {
                             condition={isUsersOpen || isLeaveNoteOpen || isPaymentOpen}
                         >
                             <CustomGrid className={styles.mobilePanelsWrapper}>
-                                <ConditionalRender condition={isMobile}>
+                                <CustomScroll>
                                     <CloseIcon
                                         onClick={handleCloseMobilePanel}
                                         className={styles.closeIcon}
                                         width="40px"
                                         height="40px"
                                     />
-                                </ConditionalRender>
-                                {commonContent}
+                                    {commonContent}
+                                </CustomScroll>
                             </CustomGrid>
                         </ConditionalRender>
                     )}
                 </CustomPaper>
             </ClickAwayListener>
-            <ConditionalRender condition={isMobile && isScrensharing}>
+            <ConditionalRender condition={isMobile && isScreensharing}>
                 <CustomPaper
                     variant="black-glass"
                     className={clsx(styles.mobileControlPanelWrapper)}

@@ -65,6 +65,21 @@ export class DashboardGateway extends BaseGateway {
   ) {
     this.logger.log(`User joined waiting room ${message.templateId}`);
 
+    const targetTemplate = await this.coreService.findMeetingTemplate({
+      id: message.templateId,
+    });
+
+    const user = await this.coreService.findUserById({
+      userId: targetTemplate.user.id,
+    });
+
+    if (!user.maxMeetingTime && user.subscriptionPlanKey !== 'Business') {
+      return {
+        success: false,
+        message: 'meeting.timeLimit',
+      };
+    }
+
     socket.join(`waitingRoom:${message.templateId}`);
   }
 

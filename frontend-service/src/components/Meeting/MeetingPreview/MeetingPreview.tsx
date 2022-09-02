@@ -65,6 +65,8 @@ const Component = () => {
         image => image.resolution === 240,
     );
 
+    console.log(previewImage);
+
     const renderUserAvatar = useCallback(
         (user: MeetingUser) => (
             <ProfileAvatar
@@ -155,7 +157,7 @@ const Component = () => {
                         color="colors.white.primary"
                         className={styles.description}
                     >
-                        {meetingTemplate.description}
+                        {meetingTemplate.shortDescription}
                     </CustomTypography>
                 </CustomGrid>
                 <UsersAvatarsCounter<MeetingUser>

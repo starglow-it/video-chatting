@@ -145,16 +145,9 @@ const MeetingContainer = memo(() => {
             if (isSocketConnected) {
                 await onInitDevices();
 
-                const savedSettings = WebStorage.get<
-                    Pick<
-                        SavedSettings,
-                        | 'blurSetting'
-                        | 'micActiveSetting'
-                        | 'cameraActiveSetting'
-                        | 'backgroundAudioVolumeSetting'
-                        | 'backgroundAudioSetting'
-                    >
-                >({ key: StorageKeysEnum.meetingSettings });
+                const savedSettings = WebStorage.get<SavedSettings>({
+                    key: StorageKeysEnum.meetingSettings,
+                });
 
                 if (Object.keys(savedSettings)?.length) {
                     setBackgroundAudioVolume(savedSettings.backgroundAudioVolumeSetting);

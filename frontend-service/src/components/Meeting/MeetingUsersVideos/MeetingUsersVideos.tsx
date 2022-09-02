@@ -202,7 +202,7 @@ const Component = () => {
                     isScreensharingUser={localUser.meetingUserId === meeting?.sharingUserId}
                     isLocal
                     isAuraActive={localUser.isAuraActive}
-                    onToggleAudio={handleToggleAudio}
+                    onToggleAudio={isMobile ? undefined : handleToggleAudio}
                     onToggleVideo={handleToggleVideo}
                 />
             </MeetingUserVideoPositionWrapper>

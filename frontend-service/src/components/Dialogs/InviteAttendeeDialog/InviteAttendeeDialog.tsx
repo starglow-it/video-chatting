@@ -60,16 +60,20 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit(async () => {
-            await sendInviteEmailFx({ userEmails, meetingId: router?.query?.token });
-            reset();
-            handleClose();
-            setUserEmails([]);
+            try {
+                await sendInviteEmailFx({ userEmails, meetingId: router?.query?.token });
+                reset();
+                handleClose();
+                setUserEmails([]);
 
-            addNotificationEvent({
-                type: NotificationType.InviteSent,
-                message: 'meeting.inviteSent',
-                withSuccessIcon: true,
-            });
+                addNotificationEvent({
+                    type: NotificationType.InviteSent,
+                    message: 'meeting.inviteSent',
+                    withSuccessIcon: true,
+                });
+            } catch (e) {
+                console.log(e);
+            }
         }),
         [userEmails],
     );

@@ -10,7 +10,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 // stores
 import {
     $isBusinessSubscription,
-    $isOwner,
+    $isMeetingHostStore,
     $localUserStore,
     $meetingStore,
     $profileStore,
@@ -29,7 +29,7 @@ import { MeetingAccessStatuses } from '../../../store/types';
 const Component = () => {
     const meeting = useStore($meetingStore);
     const profile = useStore($profileStore);
-    const isOwner = useStore($isOwner);
+    const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
     const timeLimitWarning = useStore($timeLimitWarningStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
@@ -51,16 +51,19 @@ const Component = () => {
             !timeLimitWarning &&
             localUser?.accessStatus === MeetingAccessStatuses.InMeeting &&
             !isBusinessSubscription &&
-            isOwner
+            isMeetingHost
         ) {
             setTimeLimitWarningEvent(true);
+        }
+        if (!isMeetingHost) {
+            setTimeLimitWarningEvent(false);
         }
     }, [
         currentTime,
         profile.maxMeetingTime,
         timeLimitWarning,
         localUser?.accessStatus,
-        isOwner,
+        isMeetingHost,
         isBusinessSubscription,
     ]);
 

@@ -121,7 +121,7 @@ const Component = () => {
     }, [prevSharingUserId, meeting.sharingUserId, handleStopScreenSharing]);
 
     useEffect(() => {
-        if (hostUser && prevHostUserId.current !== hostUser?.id) {
+        if (prevHostUserId.current && hostUser && prevHostUserId.current !== hostUser?.id) {
             prevHostUserId.current = hostUser.id;
 
             addNotificationEvent({

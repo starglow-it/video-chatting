@@ -92,6 +92,7 @@ export class MeetingsController {
             type: targetTemplate.type,
             priceInCents: targetTemplate.priceInCents,
             description: targetTemplate.description,
+            shortDescription: targetTemplate.shortDescription,
             usersPosition: targetTemplate.usersPosition,
             isAudioAvailable: targetTemplate.isAudioAvailable,
             links: targetTemplate.links,

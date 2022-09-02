@@ -1,10 +1,13 @@
 import React, { memo, useCallback } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
+// custom
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+
+// stores
 import {
     appDialogsApi,
     $appDialogsStore,
@@ -13,11 +16,13 @@ import {
     $userToKick,
 } from '../../../store';
 
+// types
 import { AppDialogsEnum } from '../../../store/types';
 
+// styles
 import styles from './UserToKickDialog.module.scss';
 
-const UserToKickDialog = memo(() => {
+const Component = () => {
     const { userToKickDialog } = useStore($appDialogsStore);
     const userToKick = useStore($userToKick);
 
@@ -72,6 +77,6 @@ const UserToKickDialog = memo(() => {
             </CustomGrid>
         </CustomDialog>
     );
-});
+};
 
-export { UserToKickDialog };
+export const UserToKickDialog = memo(Component);

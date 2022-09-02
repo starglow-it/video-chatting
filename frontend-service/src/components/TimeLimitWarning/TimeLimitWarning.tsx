@@ -39,11 +39,17 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     const profile = useStore($profileStore);
     const timeLimitWarning = useStore($timeLimitWarningStore);
 
-    const { value: currentTime, onStartTimer: handleStartMeetingEnd } = useTimer(false);
+    const {
+        value: currentTime,
+        onStartTimer: handleStartMeetingEnd,
+        onEndTimer: handleStopMeetingEnd,
+    } = useTimer(false);
 
     useEffect(() => {
         if (timeLimitWarning) {
             handleStartMeetingEnd(profile.maxMeetingTime, 0);
+        } else {
+            handleStopMeetingEnd();
         }
     }, [timeLimitWarning, profile.maxMeetingTime]);
 

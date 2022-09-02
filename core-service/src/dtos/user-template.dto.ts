@@ -25,6 +25,9 @@ export class UserTemplateDTO implements IUserTemplate {
   description: IUserTemplate['description'];
 
   @Expose()
+  shortDescription: IUserTemplate['shortDescription'];
+
+  @Expose()
   usedAt: IUserTemplate['usedAt'];
 
   @Expose()

@@ -50,6 +50,7 @@ export interface Template {
     url: string;
     name: string;
     description: string;
+    shortDescription: string;
     type: string;
     companyName: string;
     contactEmail: string;

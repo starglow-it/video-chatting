@@ -1,10 +1,15 @@
 import React, { memo, useCallback, useContext, useMemo } from 'react';
-
 import { MenuItem, Select } from '@mui/material';
+
+// hooks
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+
+// common
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
 import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
@@ -25,6 +30,8 @@ const SelectDevices = memo(() => {
         data: { changeStream, audioDevices, videoDevices, currentAudioDevice, currentVideoDevice },
         actions: { onChangeStream },
     } = useContext(MediaContext);
+
+    const { isMobile } = useBrowserDetect();
 
     const handleChangeCamera = useCallback(
         ({ target: { value } }) => {
@@ -66,7 +73,7 @@ const SelectDevices = memo(() => {
         [videoDevices],
     );
 
-    const handleRenderValue = useCallback(
+    const handleRenderVideoValue = useCallback(
         value => (
             <CustomGrid className={styles.activeItem} container alignItems="center" wrap="nowrap">
                 <CameraIcon className={styles.activeIcon} isActive width="24px" height="24px" />
@@ -78,20 +85,35 @@ const SelectDevices = memo(() => {
         [videoDevices],
     );
 
+    const handleRenderAudioValue = useCallback(
+        value => (
+            <CustomGrid className={styles.activeItem} container alignItems="center" wrap="nowrap">
+                <MicIcon className={styles.activeIcon} isActive width="24px" height="24px" />
+                <CustomTypography className={styles.activeValue}>
+                    {audioDevices.find(device => device.deviceId === value)?.label}
+                </CustomTypography>
+            </CustomGrid>
+        ),
+        [audioDevices],
+    );
+
     return (
         <>
-            <Select
-                className={styles.selectDeviceInput}
-                value={currentVideoDevice}
-                onChange={handleChangeCamera}
-                IconComponent={RoundArrowIcon}
-                MenuProps={{
-                    disableScrollLock: true,
-                }}
-                renderValue={handleRenderValue}
-            >
-                {renderVideoDevicesMenuItems}
-            </Select>
+            <ConditionalRender condition={!isMobile}>
+                <Select
+                    className={styles.selectDeviceInput}
+                    value={currentVideoDevice}
+                    onChange={handleChangeCamera}
+                    IconComponent={RoundArrowIcon}
+                    MenuProps={{
+                        disableScrollLock: true,
+                    }}
+                    renderValue={handleRenderVideoValue}
+                >
+                    {renderVideoDevicesMenuItems}
+                </Select>
+            </ConditionalRender>
+
             <Select
                 className={styles.selectDeviceInput}
                 value={currentAudioDevice}
@@ -100,24 +122,7 @@ const SelectDevices = memo(() => {
                 MenuProps={{
                     disableScrollLock: true,
                 }}
-                renderValue={value => (
-                    <CustomGrid
-                        className={styles.activeItem}
-                        container
-                        alignItems="center"
-                        wrap="nowrap"
-                    >
-                        <MicIcon
-                            className={styles.activeIcon}
-                            isActive
-                            width="24px"
-                            height="24px"
-                        />
-                        <CustomTypography className={styles.activeValue}>
-                            {audioDevices.find(device => device.deviceId === value)?.label}
-                        </CustomTypography>
-                    </CustomGrid>
-                )}
+                renderValue={handleRenderAudioValue}
             >
                 {renderAudioDevicesMenuItems}
             </Select>

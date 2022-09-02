@@ -16,11 +16,11 @@ import {
     deleteMeetingFx,
     appDialogsApi,
     $appDialogsStore,
-    $isOwner,
     $meetingTemplateStore,
     $localUserStore,
     sendEndMeetingSocketEvent,
     sendLeaveMeetingSocketEvent,
+    $isMeetingHostStore,
 } from '../../../store';
 
 // styles
@@ -35,7 +35,7 @@ import { clientRoutes, dashboardRoute } from '../../../const/client-routes';
 const Component = () => {
     const router = useRouter();
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isOwner = useStore($isOwner);
+    const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
 
     const { translation } = useLocalization('meeting');
@@ -50,19 +50,15 @@ const Component = () => {
 
     const handleLeave = useCallback(async () => {
         handleClose();
-        await Promise.all([
-            sendLeaveMeetingSocketEvent(),
-            router.push(localUser.isGenerated ? clientRoutes.welcomeRoute : dashboardRoute),
-        ]);
+        await sendLeaveMeetingSocketEvent();
+        await router.push(localUser.isGenerated ? clientRoutes.welcomeRoute : dashboardRoute);
     }, [localUser.isGenerated]);
 
     const handleEndMeeting = useCallback(async () => {
         handleClose();
-        await Promise.all([
-            sendEndMeetingSocketEvent(),
-            deleteMeetingFx({ templateId: meetingTemplate.id }),
-            router.push(dashboardRoute),
-        ]);
+        await sendEndMeetingSocketEvent();
+        await deleteMeetingFx({ templateId: meetingTemplate.id });
+        await router.push(dashboardRoute);
     }, [meetingTemplate.id]);
 
     return (
@@ -76,7 +72,7 @@ const Component = () => {
                 variant="h4"
                 textAlign="center"
                 dangerouslySetInnerHTML={{
-                    __html: translation(`endMeeting.${isOwner ? 'forHost' : 'forAttendee'}`),
+                    __html: translation(`endMeeting.${isMeetingHost ? 'forHost' : 'forAttendee'}`),
                 }}
             />
             <CustomGrid
@@ -85,7 +81,7 @@ const Component = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                {isOwner ? (
+                {isMeetingHost ? (
                     <>
                         <CustomButton
                             onClick={handleLeave}

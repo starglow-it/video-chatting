@@ -12,8 +12,6 @@ import { Layout } from '@components/Layout/Layout';
 // hooks
 import { useScope } from '@hooks/useScope';
 
-// stores
-
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
@@ -32,8 +30,16 @@ import { baseTheme } from '../src/themes/base';
 import { typographyTheme } from '../src/themes/typography';
 import { componentsTheme } from '../src/themes/components';
 import { uiTheme } from '../src/themes/ui';
+
+// stores
 import { initialProfileState } from '../src/store/profile/profile/const';
 import { rootDomain } from '../src/store/domains';
+import {
+    dashboardRoute,
+    loginRoute,
+    registerRoute,
+    welcomeRoute,
+} from '../src/const/client-routes';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -43,8 +49,8 @@ const clientSideEmotionCache = createEmotionCache();
 
 const enhance = withHydrate();
 
-const REGISTER_REDIRECT_ROUTES: string[] = ['/login', '/register', '/welcome'];
-const LOGIN_REDIRECT_ROUTES: string[] = ['/dashboard'];
+const REGISTER_REDIRECT_ROUTES: string[] = [loginRoute, registerRoute, welcomeRoute];
+const LOGIN_REDIRECT_ROUTES: string[] = [dashboardRoute];
 
 const CustomApp = ({
     Component,
@@ -99,9 +105,9 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     );
 
     if (data.isAuthenticated && isRegisterRedirectRoute) {
-        redirectTo(context?.ctx ?? null, '/dashboard');
+        redirectTo(context?.ctx ?? null, dashboardRoute);
     } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
-        redirectTo(context?.ctx ?? null, '/login');
+        redirectTo(context?.ctx ?? null, loginRoute);
     }
 
     props.pageProps.initialState = {

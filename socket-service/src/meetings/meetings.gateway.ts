@@ -59,6 +59,7 @@ import {
   ITransactionSession,
   withTransaction,
 } from '../helpers/mongo/withTransaction';
+import { MeetingTimeService } from '../modules/meeting-time/meeting-time.service';
 
 @Global()
 @WebSocketGateway({ transports: ['websocket', 'polling'] })
@@ -72,6 +73,7 @@ export class MeetingsGateway
     private usersService: UsersService,
     private coreService: CoreService,
     private taskService: TasksService,
+    private meetingHostTimeService: MeetingTimeService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
@@ -132,6 +134,10 @@ export class MeetingsGateway
 
       const template = await this.coreService.findMeetingTemplate({
         id: meeting.templateId,
+      });
+
+      const profileUser = await this.coreService.findUserById({
+        userId: template.user.id,
       });
 
       await this.usersService.deleteUser({ socketId: client.id }, session);
@@ -209,6 +215,28 @@ export class MeetingsGateway
         });
       }
 
+      const hostTimeData = await this.meetingHostTimeService.find({
+        query: {
+          host: plainUser.id,
+          meeting: plainMeeting.id,
+        },
+      });
+
+      const timeToExtract = hostTimeData.reduce(
+        (acc, b) => acc + ((b.endAt ?? Date.now()) - b.startAt),
+        0,
+      );
+
+      await this.coreService.updateUser({
+        query: { _id: profileUser.id },
+        data: {
+          maxMeetingTime:
+            timeToExtract > profileUser.maxMeetingTime
+              ? 0
+              : profileUser.maxMeetingTime - timeToExtract,
+        },
+      });
+
       this.emitToRoom(`waitingRoom:${meeting.templateId}`, UPDATE_MEETING, {
         meeting: plainMeeting,
         users: plainUsers,
@@ -250,21 +278,6 @@ export class MeetingsGateway
         session,
       );
 
-      const template = await this.coreService.findMeetingTemplate({
-        id: meeting.templateId,
-      });
-
-      const mainUser = await this.coreService.findUserById({
-        userId: template.user.id,
-      });
-
-      if (mainUser.maxMeetingTime === 0) {
-        return {
-          success: false,
-          message: 'meeting.timeLimit',
-        };
-      }
-
       if (message.isOwner && !meeting) {
         meeting = await this.meetingsService.createMeeting(
           {
@@ -285,6 +298,24 @@ export class MeetingsGateway
         });
 
         return;
+      }
+
+      const template = await this.coreService.findMeetingTemplate({
+        id: meeting.templateId,
+      });
+
+      const mainUser = await this.coreService.findUserById({
+        userId: template.user.id,
+      });
+
+      if (
+        mainUser.maxMeetingTime === 0 &&
+        mainUser.subscriptionPlanKey !== 'Business'
+      ) {
+        return {
+          success: false,
+          message: 'meeting.timeLimit',
+        };
       }
 
       const activeParticipants = await this.usersService.countMany({
@@ -316,7 +347,7 @@ export class MeetingsGateway
       if (message.isOwner) {
         meeting = await this.meetingsService.updateMeetingById(
           meeting._id,
-          { owner: user._id },
+          { owner: user._id, hostUserId: user._id },
           session,
         );
       }
@@ -442,22 +473,23 @@ export class MeetingsGateway
         value: 90,
       });
 
-      const realEndsAtTimeout =
-        mainUser.maxMeetingTime < endsAtTimeout &&
-        mainUser.subscriptionPlanKey !== 'Business' &&
-        template.type === 'free'
-          ? mainUser.maxMeetingTime
-          : endsAtTimeout;
-
       if (!meeting.endsAt) {
-        meeting.endsAt = Date.now() + realEndsAtTimeout;
+        meeting.endsAt = Date.now() + endsAtTimeout;
 
         await meeting.save();
 
-        finishTime = realEndsAtTimeout;
+        finishTime = endsAtTimeout;
       } else {
         finishTime = meeting.endsAt - Date.now();
       }
+
+      await this.meetingHostTimeService.create({
+        data: {
+          host: user.id,
+          meeting: meeting.id,
+        },
+        session,
+      });
 
       this.taskService.addTimeout({
         name: `meeting:finish:${message.meetingId}`,
@@ -468,10 +500,7 @@ export class MeetingsGateway
         }),
       });
 
-      if (
-        template.type === 'free' &&
-        mainUser.subscriptionPlanKey !== 'Business'
-      ) {
+      if (mainUser.subscriptionPlanKey !== 'Business') {
         const timeLimitNotificationTimeout = getTimeoutTimestamp({
           value: 20,
           type: TimeoutTypesEnum.Minutes,
@@ -556,7 +585,7 @@ export class MeetingsGateway
           session,
         );
 
-        await meeting.populate(['owner', 'users']);
+        await meeting.populate(['owner', 'users', 'hostUserId']);
 
         const activeParticipants = await this.usersService.countMany({
           meeting: meeting._id,
@@ -586,18 +615,18 @@ export class MeetingsGateway
         });
 
         if (
-          meeting?.owner?.socketId &&
-          meeting?.owner?.accessStatus === AccessStatusEnum.InMeeting
+          meeting?.hostUserId?.socketId &&
+          meeting?.hostUserId?.accessStatus === AccessStatusEnum.InMeeting
         ) {
           this.emitToSocketId(
-            meeting?.owner?.socketId,
+            meeting?.hostUserId?.socketId,
             RECEIVE_ACCESS_REQUEST,
             {
               user: plainUser,
             },
           );
 
-          this.emitToSocketId(meeting?.owner?.socketId, PLAY_SOUND, {
+          this.emitToSocketId(meeting?.hostUserId?.socketId, PLAY_SOUND, {
             soundType: MeetingSoundsEnum.NewAttendee,
           });
         }
@@ -821,7 +850,7 @@ export class MeetingsGateway
       message: 'endMeeting event',
       ctx: message,
     });
-    await withTransaction(this.connection, async (session) => {
+    return withTransaction(this.connection, async (session) => {
       const meeting = await this.meetingsService.findById(
         message.meetingId,
         session,
@@ -836,24 +865,50 @@ export class MeetingsGateway
         return;
       }
 
-      const template = await this.coreService.findMeetingTemplate({
-        id: meeting.templateId,
+      const meetingUsers = await this.usersService.findUsers(
+        { meeting: meeting.id, accessStatus: AccessStatusEnum.InMeeting },
+        session,
+      );
+
+      const targetUsersIds = meetingUsers
+        .filter((user) => !user.isGenerated)
+        .map((user) => user.profileId);
+
+      const profileUsers = await this.coreService.findUsersById({
+        userIds: targetUsersIds,
       });
 
-      const user = await this.coreService.findUserById({
-        userId: template.user.id,
+      const meetingTimeAccounting = profileUsers.map(async (profileUser) => {
+        if (profileUser.subscriptionPlanKey !== 'Business') {
+          const targetUser = meetingUsers.find(
+            (meetingUser) => meetingUser.profileId === profileUser.id,
+          );
+
+          const hostTimeData = await this.meetingHostTimeService.find({
+            query: {
+              host: targetUser.id,
+              meeting: meeting._id,
+            },
+          });
+
+          const timeToExtract = hostTimeData.reduce(
+            (acc, b) => acc + ((b.endAt ?? Date.now()) - b.startAt),
+            0,
+          );
+
+          await this.coreService.updateUser({
+            query: { _id: profileUser.id },
+            data: {
+              maxMeetingTime:
+                timeToExtract > profileUser.maxMeetingTime
+                  ? 0
+                  : profileUser.maxMeetingTime - timeToExtract,
+            },
+          });
+        }
       });
 
-      if (user.subscriptionPlanKey !== 'Business' || template.type === 'free') {
-        const newTime = user.maxMeetingTime - (Date.now() - meeting.startAt);
-
-        await this.coreService.updateUser({
-          query: { _id: user.id },
-          data: {
-            maxMeetingTime: newTime < 0 ? 0 : newTime,
-          },
-        });
-      }
+      await Promise.all(meetingTimeAccounting);
 
       await this.usersService.deleteMany(
         { meeting: message.meetingId },
@@ -872,6 +927,10 @@ export class MeetingsGateway
       this.emitToRoom(`meeting:${message.meetingId}`, MEETING_FINISHED, {
         reason: message.reason,
       });
+
+      return {
+        success: true,
+      };
     });
   }
 
@@ -906,8 +965,6 @@ export class MeetingsGateway
         const template = await this.coreService.findMeetingTemplate({
           id: meeting.templateId,
         });
-
-        await this.usersService.deleteUser({ socketId: socket.id }, session);
 
         if (meeting) {
           await meeting.populate(['owner', 'users']);
@@ -963,28 +1020,90 @@ export class MeetingsGateway
             users: [plainUser.id],
           });
 
-          const isOwner = plainMeeting.owner === plainUser.id;
+          const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
 
-          if (isOwner) {
-            const endTimestamp = getTimeoutTimestamp({
-              type: TimeoutTypesEnum.Minutes,
-              value: 15,
+          const profileUser = await this.coreService.findUserById({
+            userId: template.user.id,
+          });
+
+          if (profileUser.subscriptionPlanKey !== 'Business') {
+            const hostTimeData = await this.meetingHostTimeService.find({
+              query: {
+                host: plainUser.id,
+                meeting: plainMeeting.id,
+              },
             });
 
-            const meetingEndTime = meeting.endsAt - Date.now();
+            const timeToExtract = hostTimeData.reduce(
+              (acc, b) => acc + ((b.endAt ?? Date.now()) - b.startAt),
+              0,
+            );
+
+            await this.coreService.updateUser({
+              query: { _id: profileUser.id },
+              data: {
+                maxMeetingTime:
+                  timeToExtract > profileUser.maxMeetingTime
+                    ? 0
+                    : profileUser.maxMeetingTime - timeToExtract,
+              },
+            });
+          }
+
+          const activeParticipants = await this.usersService.countMany({
+            meeting: meeting._id,
+            accessStatus: AccessStatusEnum.InMeeting,
+          });
+
+          if (activeParticipants === 1) {
+            await this.usersService.deleteMany(
+              { meeting: message.meetingId },
+              session,
+            );
+
+            await this.meetingsService.deleteById(
+              { meetingId: message.meetingId },
+              session,
+            );
 
             this.taskService.deleteTimeout({
-              name: `meeting:finish:${plainMeeting.id}`,
+              name: `meeting:finish:${message.meetingId}`,
             });
+          } else {
+            if (isMeetingHost) {
+              this.taskService.deleteTimeout({
+                name: `meeting:timeLimit:${message.meetingId}`,
+              });
 
-            this.taskService.addTimeout({
-              name: `meeting:finish:${plainMeeting.id}`,
-              ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-              callback: this.endMeeting.bind(this, message, socket),
-            });
+              await this.usersService.deleteUser(
+                { socketId: socket.id },
+                session,
+              );
+              const endTimestamp = getTimeoutTimestamp({
+                type: TimeoutTypesEnum.Minutes,
+                value: 15,
+              });
+
+              const meetingEndTime = meeting.endsAt - Date.now();
+
+              this.taskService.deleteTimeout({
+                name: `meeting:finish:${plainMeeting.id}`,
+              });
+
+              this.taskService.addTimeout({
+                name: `meeting:finish:${plainMeeting.id}`,
+                ts:
+                  meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+                callback: this.endMeeting.bind(this, message, socket),
+              });
+            }
           }
         }
       }
+
+      return {
+        success: true,
+      };
     });
   }
 

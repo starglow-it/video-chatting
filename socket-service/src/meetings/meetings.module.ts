@@ -7,6 +7,7 @@ import { MeetingsGateway } from './meetings.gateway';
 import { UsersModule } from '../users/users.module';
 import { TasksModule } from '../tasks/tasks.module';
 import { CoreModule } from '../core/core.module';
+import { MeetingTimeModule } from '../modules/meeting-time/meeting-time.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CoreModule } from '../core/core.module';
     forwardRef(() => UsersModule),
     TasksModule,
     CoreModule,
+    MeetingTimeModule,
   ],
   controllers: [],
   providers: [MeetingsService, MeetingsGateway],

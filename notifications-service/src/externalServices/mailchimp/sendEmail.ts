@@ -1,4 +1,6 @@
-import Mailchimp, { Recipient } from '@mailchimp/mailchimp_transactional';
+import Mailchimp, {
+    MessageRecipient,
+} from '@mailchimp/mailchimp_transactional';
 
 import { SendEmailRequest } from '@shared/requests/sendEmail.request';
 import { getConfigVar } from '../../services/config';
@@ -32,7 +34,7 @@ export const sendEmail = async ({
     const smtpUser = await getConfigVar('smtpUser');
     const smtpUserName = await getConfigVar('smtpUserName');
 
-    const sendTo: Recipient[] = Array.isArray(to)
+    const sendTo: MessageRecipient[] = Array.isArray(to)
         ? to.map(({ email, name }) => ({ email, name, type: 'to' }))
         : [{ ...to, type: 'to' }];
 

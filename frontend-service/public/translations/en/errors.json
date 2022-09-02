@@ -54,6 +54,11 @@
       "text": "Your request was denied",
       "button": "Continue"
     },
+    "userHasNoTimeLeft": {
+      "title": "Meeting Error",
+      "text": "This user has not time left to be a host",
+      "button": "Continue"
+    },
     "settings": {
       "customLink": {
         "characters": "Unsupported character is used",

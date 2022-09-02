@@ -17,6 +17,7 @@ import {
   FIND_USER_BY_EMAIL,
   FIND_USER_BY_EMAIL_AND_UPDATE,
   FIND_USER_BY_ID,
+  FIND_USERS_BY_ID,
   LOGIN_USER_BY_EMAIL,
   RESET_PASSWORD,
   SET_RESET_PASSWORD_TOKEN,
@@ -256,6 +257,21 @@ export class UsersController {
       }
 
       return plainToInstance(CommonUserDTO, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+    });
+  }
+
+  @MessagePattern({ cmd: FIND_USERS_BY_ID })
+  async findUsersById(@Payload() data: { userIds: ICommonUserDTO['id'][] }) {
+    return withTransaction(this.connection, async (session) => {
+      const users = await this.usersService.findUsers({
+        query: { _id: { $in: data.userIds } },
+        session,
+      });
+
+      return plainToInstance(CommonUserDTO, users, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });

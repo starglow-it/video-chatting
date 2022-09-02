@@ -1,6 +1,8 @@
-import {IProfileAvatar} from "./profile-avatar.interface";
+import { IProfileAvatar } from "./profile-avatar.interface";
+import { ICommonUserDTO } from "./common-user.interface";
 
 export interface ITemplateUserDTO {
-    id: string;
-    profileAvatar: IProfileAvatar;
+  id: string;
+  profileAvatar: IProfileAvatar;
+  maxMeetingTime: ICommonUserDTO["maxMeetingTime"];
 }

@@ -19,12 +19,12 @@ import {
 } from '../../../store';
 
 // types
-import { MeetingAccessStatuses, AppDialogsEnum } from '../../../store/types';
+import { MeetingAccessStatuses, AppDialogsEnum, MeetingUser } from '../../../store/types';
 
 // styles
 import styles from './MeetingUsersList.module.scss';
 
-const MeetingUsersList = memo(() => {
+const Component = () => {
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
     const isMeetingHost = useStore($isMeetingHostStore);
@@ -42,8 +42,8 @@ const MeetingUsersList = memo(() => {
         });
     }, []);
 
-    const handleChangeHost = useCallback(({ userId }) => {
-        changeHostSocketEvent({ userId });
+    const handleChangeHost = useCallback(async ({ userId }: { userId: MeetingUser['id'] }) => {
+        await changeHostSocketEvent({ userId });
     }, []);
 
     const renderUsersList = useMemo(
@@ -66,6 +66,6 @@ const MeetingUsersList = memo(() => {
             {renderUsersList}
         </CustomGrid>
     );
-});
+};
 
-export { MeetingUsersList };
+export const MeetingUsersList = memo(Component);

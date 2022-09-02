@@ -39,7 +39,7 @@ export const VideoEffectsContext = React.createContext<{
 const blurFn = addBlur('/images/orange.png');
 
 export const VideoEffectsProvider = ({ children }: React.PropsWithChildren): ReactElement => {
-    const savedSettings = WebStorage.get<Pick<SavedSettings, 'blurSetting'>>({
+    const savedSettings = WebStorage.get<SavedSettings>({
         key: StorageKeysEnum.meetingSettings,
     });
 

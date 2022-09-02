@@ -16,6 +16,9 @@ import {
 // styles
 import styles from './MeetingNotes.module.scss';
 
+// utils
+import { isMobile } from '../../../utils/browser/detectBrowser';
+
 const MeetingNotes = memo(() => {
     const meetingNotes = useStore($meetingNotesStore);
     const { height } = useStore($windowSizeStore);
@@ -23,7 +26,7 @@ const MeetingNotes = memo(() => {
     const [lastDraggedSet, setLastDraggedSet] = useState([]);
 
     useEffect(() => {
-        getMeetingNotesSocketEvent();
+        if (!isMobile()) getMeetingNotesSocketEvent();
 
         return () => {
             resetMeetingNotesEvent();

@@ -35,7 +35,7 @@ export * from './waitingRoom/model';
 export * from './dashboardNotifications/model';
 export * from './ui/window/model';
 export * from './ui/goods/model';
-export * from './ui/oriantation/model';
+export * from './ui/orientation/model';
 export * from './ui/model';
 
 export * from './socket/init';
@@ -73,7 +73,7 @@ export * from './waitingRoom/init';
 export * from './dashboardNotifications/init';
 export * from './ui/window/init';
 export * from './ui/goods/init';
-export * from './ui/oriantation/init';
+export * from './ui/orientation/init';
 export * from './ui/init';
 
 export * from './users/init';

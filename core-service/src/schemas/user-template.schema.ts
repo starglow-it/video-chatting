@@ -53,9 +53,14 @@ export class UserTemplate {
   @Prop({
     type: mongoose.Schema.Types.String,
     required: true,
-    default: 'Dumb description',
   })
   description: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true,
+  })
+  shortDescription: string;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PreviewImage' }],

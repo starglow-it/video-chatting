@@ -2,6 +2,7 @@ import { VIDEO_CONSTRAINTS } from '../../const/media/VIDEO_CONSTRAINTS';
 
 import { MediaStreamOptions } from './types';
 import { CustomMediaStream } from '../../types';
+import { isMobile } from '../../utils/browser/detectBrowser';
 
 const MEDIA_STREAMS_ERROR = new Map([['NotAllowedError', 'media.notAllowed']]);
 
@@ -20,10 +21,12 @@ export const getVideoMediaStream = async (
 }> => {
     try {
         const videoStream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                ...VIDEO_CONSTRAINTS,
-                ...(videoDeviceId ? { deviceId: videoDeviceId } : {}),
-            },
+            video: isMobile()
+                ? {}
+                : {
+                      ...VIDEO_CONSTRAINTS,
+                      ...(videoDeviceId ? { deviceId: videoDeviceId } : {}),
+                  },
         });
 
         return { stream: videoStream };
@@ -42,7 +45,7 @@ export const getAudioMediaStream = async (
 }> => {
     try {
         const audioStream = await navigator.mediaDevices.getUserMedia({
-            audio: audioDeviceId ? { deviceId: audioDeviceId } : true,
+            audio: isMobile() || !audioDeviceId ? true : { deviceId: audioDeviceId },
         });
 
         return { stream: audioStream };

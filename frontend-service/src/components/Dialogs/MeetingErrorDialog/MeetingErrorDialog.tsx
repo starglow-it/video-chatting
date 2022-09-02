@@ -38,7 +38,7 @@ const Component = () => {
         if (error === 'meeting.timeLimit') {
             router.push(dashboardRoute);
         }
-    }, []);
+    }, [error]);
 
     const { isMobile } = useBrowserDetect();
 
@@ -51,7 +51,7 @@ const Component = () => {
             onBackdropClick={handleClose}
         >
             <CustomGrid container alignItems="center" direction="column">
-                <CustomGrid container alignItems="center">
+                <CustomGrid container alignItems="center" justifyContent="center">
                     <WarningIcon className={styles.icon} width="36px" height="36px" />
                     <CustomTypography
                         variant="h3bold"
@@ -60,7 +60,11 @@ const Component = () => {
                     />
                 </CustomGrid>
 
-                <CustomTypography nameSpace="errors" translation={`${error}.text`} />
+                <CustomTypography
+                    textAlign="center"
+                    nameSpace="errors"
+                    translation={`${error}.text`}
+                />
 
                 <CustomButton
                     nameSpace="errors"

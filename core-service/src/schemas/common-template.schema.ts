@@ -41,6 +41,12 @@ export class CommonTemplate {
   description: string;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true,
+  })
+  shortDescription: string;
+
+  @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PreviewImage' }],
     required: true,
   })

@@ -2,7 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 import { CORE_PROVIDER } from '@shared/providers';
-import { FIND_USER_BY_ID, UPDATE_USER } from '@shared/patterns/users';
+import {
+  FIND_USER_BY_ID,
+  FIND_USERS_BY_ID,
+  UPDATE_USER,
+} from '@shared/patterns/users';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { IUserTemplate } from '@shared/interfaces/user-template.interface';
 import { GET_USER_TEMPLATE_BY_ID } from '@shared/patterns/templates';
@@ -19,6 +23,14 @@ export class CoreService {
     userId: ICommonUserDTO['id'];
   }): Promise<ICommonUserDTO> {
     const pattern = { cmd: FIND_USER_BY_ID };
+
+    return this.client.send(pattern, data).toPromise();
+  }
+
+  async findUsersById(data: {
+    userIds: ICommonUserDTO['id'][];
+  }): Promise<ICommonUserDTO[]> {
+    const pattern = { cmd: FIND_USERS_BY_ID };
 
     return this.client.send(pattern, data).toPromise();
   }

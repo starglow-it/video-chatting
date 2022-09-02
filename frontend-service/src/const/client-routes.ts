@@ -8,7 +8,7 @@ export const roomRoute = '/room';
 export const dashboardRoute = '/dashboard';
 export const profileRoute = '/dashboard/profile';
 export const editProfileRoute = '/dashboard/profile/edit';
-export const setUpTemplateRoute = '/dashboard/templates/setup/';
+export const setUpTemplateRoute = '/dashboard/templates/setup';
 
 export const clientRoutes = {
     loginRoute,

@@ -105,7 +105,6 @@ const Component = ({
     return (
         <CustomDialog
             open={templatePreviewDialog}
-            onBackdropClick={handleClose}
             contentClassName={styles.dialogContent}
             maxWidth="lg"
         >
