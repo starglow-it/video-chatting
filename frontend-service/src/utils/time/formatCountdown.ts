@@ -3,7 +3,12 @@ import { addZero } from '../functions/addZero';
 
 export const formatCountDown = (
     time: number,
-    { hours, minutes, seconds }: { hours?: boolean; minutes?: boolean; seconds?: boolean },
+    {
+        hours,
+        minutes,
+        seconds,
+        numeric = true,
+    }: { hours?: boolean; minutes?: boolean; seconds?: boolean; numeric?: boolean },
 ) => {
     const hoursNumber = time / ONE_HOUR;
     const minutesNumber = time % ONE_HOUR;
@@ -17,7 +22,13 @@ export const formatCountDown = (
     const finalMinutes = `${addZero(minutesTime)}`;
     const finalSeconds = `${addZero(secondsNumber)}`;
 
-    return `${hours ? finalHours : ''}${hours && minutes ? ':' : ''}${minutes ? finalMinutes : ''}${
-        minutes && seconds ? ':' : ''
-    }${seconds ? finalSeconds : ''}`;
+    if (numeric) {
+        return `${hours ? finalHours : ''}${hours && minutes ? ':' : ''}${
+            minutes ? finalMinutes : ''
+        }${minutes && seconds ? ':' : ''}${seconds ? finalSeconds : ''}`;
+    }
+
+    return `${hours ? finalHours : ''}${hours ? 'h ' : ''}${minutes ? finalMinutes : ''}${
+        minutes ? 'm ' : ''
+    }${seconds ? finalSeconds : ''}${seconds ? 'sec' : ''}`;
 };

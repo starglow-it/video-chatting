@@ -153,7 +153,7 @@ export class UsersGateway extends BaseGateway {
         });
 
         if (prevProfileHostUser.subscriptionPlanKey !== 'Business') {
-          await this.meetingHostTimeService.update({
+          const hostTimeData = await this.meetingHostTimeService.update({
             query: {
               host: prevHostUser.id,
               meeting: meeting.id,
@@ -163,6 +163,21 @@ export class UsersGateway extends BaseGateway {
               endAt: Date.now(),
             },
           });
+
+          const newTime =
+            profileUser.maxMeetingTime -
+            (hostTimeData.endAt - hostTimeData.startAt);
+
+          await this.coreService.updateUser({
+            query: { _id: profileUser.id },
+            data: {
+              maxMeetingTime: newTime < 0 ? 0 : newTime,
+            },
+          });
+
+          if (prevHostUser?.socketId) {
+            this.emitToSocketId(prevHostUser?.socketId, 'meeting:timeLimit');
+          }
         }
       }
 

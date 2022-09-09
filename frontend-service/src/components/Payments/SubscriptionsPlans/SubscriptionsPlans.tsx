@@ -26,7 +26,7 @@ const Component = ({
     isSubscriptionStep,
     onChooseSubscription,
     isDisabled,
-    activePlanKey,
+    activePlanKey = 'House',
     onClose,
 }: SubscriptionsPlansProps) => {
     const products = useStore($productsStore);

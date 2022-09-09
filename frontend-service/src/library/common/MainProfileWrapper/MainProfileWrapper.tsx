@@ -15,7 +15,7 @@ const Component = (
         alignItems="center"
         justifyContent="center"
         sx={{
-            padding: '94px 20px 40px 20px',
+            padding: '94px 20px 100px 20px',
         }}
         className={className}
     >

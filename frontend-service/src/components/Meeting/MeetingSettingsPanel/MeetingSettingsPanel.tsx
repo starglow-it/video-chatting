@@ -203,13 +203,20 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                 onTemplateUpdate();
             } else {
                 const { socials, ...dataWithoutSocials } = data;
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { socials: dirtySocials, ...dirtyDataWithoutSocials } = dirtyFields;
 
-                if (
-                    dataWithoutSocials.customLink &&
-                    template.customLink !== dataWithoutSocials.customLink
-                ) {
+                const dirtyFieldsKeys = Object.keys(dirtyDataWithoutSocials);
+
+                const filteredData = Object.fromEntries(
+                    Object.entries(dataWithoutSocials).filter(([key]) =>
+                        dirtyFieldsKeys.includes(key),
+                    ),
+                );
+
+                if (filteredData.customLink && template.customLink !== filteredData.customLink) {
                     const isBusy = await checkCustomLinkFxWithData({
-                        templateId: dataWithoutSocials.customLink,
+                        templateId: filteredData.customLink,
                     });
 
                     if (isBusy) {
@@ -227,7 +234,7 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
 
                 onTemplateUpdate({
                     data: {
-                        ...dataWithoutSocials,
+                        ...filteredData,
                         socials: filteredSocials || {},
                     },
                     templateId: template.id,

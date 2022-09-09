@@ -91,7 +91,6 @@ const Component = ({ onCancel }: { onCancel: () => void }) => {
     );
 
     const handleCancelLeaveNote = useCallback(() => {
-        console.log('cancel');
         reset();
         onCancel();
     }, []);

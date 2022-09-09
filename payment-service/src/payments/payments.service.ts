@@ -198,6 +198,13 @@ export class PaymentsService {
     });
   }
 
+  async updateProduct(productId, data) {
+    return this.stripeClient.products.update(productId, {
+      name: data.name,
+      description: data.description,
+    });
+  }
+
   async getProduct(productId) {
     return this.stripeClient.products.retrieve(productId);
   }

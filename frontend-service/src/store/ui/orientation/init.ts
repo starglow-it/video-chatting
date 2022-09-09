@@ -19,7 +19,7 @@ $isPortraitLayout
     })
     .on(
         checkIsPortraitLayoutEvent,
-        () => window.orientation ?? window?.screen?.orientation?.angle === 0,
+        () => (window.orientation ?? window?.screen?.orientation?.angle) === 0,
     )
     .on(removeLandscapeListener, state => {
         window.removeEventListener('orientationchange', handleChangeLayout);

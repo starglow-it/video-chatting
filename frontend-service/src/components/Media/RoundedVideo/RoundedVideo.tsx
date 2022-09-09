@@ -58,7 +58,7 @@ const RoundedVideo = memo(
                         userName={userName}
                     />
                 )}
-                <ConditionalRender condition={isLocal}>
+                <ConditionalRender condition={isLocal && Boolean(onToggleVideo)}>
                     <CustomGrid
                         container
                         direction="column"

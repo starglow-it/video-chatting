@@ -1,4 +1,5 @@
 import React, { memo, useCallback } from 'react';
+import clsx from 'clsx';
 
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 
@@ -15,10 +16,13 @@ import styles from './CustomAccordion.module.scss';
 const CustomAccordion = memo(
     ({
         AccordionIcon,
+        AccordionSummaryIcon,
         currentAccordionId,
         accordionId,
         nameSpace,
         translation,
+        typographyVariant,
+        variant = 'base',
         onChange,
         children,
     }: CustomAccordionProps) => {
@@ -28,6 +32,10 @@ const CustomAccordion = memo(
 
         return (
             <Accordion
+                className={clsx({
+                    [styles.base]: variant === 'base',
+                    [styles.huge]: variant === 'large',
+                })}
                 classes={{
                     root: styles.accordion,
                 }}
@@ -36,13 +44,25 @@ const CustomAccordion = memo(
                 expanded={currentAccordionId === accordionId}
                 onChange={handleChangeAccordion}
             >
-                <AccordionSummary expandIcon={<RoundArrowIcon width="24px" height="24px" />}>
+                <AccordionSummary
+                    expandIcon={
+                        AccordionSummaryIcon ?? <RoundArrowIcon width="24px" height="24px" />
+                    }
+                    className={styles.summary}
+                    classes={{
+                        content: styles.content,
+                    }}
+                >
                     <CustomGrid container gap={1}>
                         {AccordionIcon}
-                        <CustomTypography nameSpace={nameSpace} translation={translation} />
+                        <CustomTypography
+                            nameSpace={nameSpace}
+                            translation={translation}
+                            variant={typographyVariant}
+                        />
                     </CustomGrid>
                 </AccordionSummary>
-                <AccordionDetails>{children}</AccordionDetails>
+                <AccordionDetails className={styles.details}>{children}</AccordionDetails>
             </Accordion>
         );
     },

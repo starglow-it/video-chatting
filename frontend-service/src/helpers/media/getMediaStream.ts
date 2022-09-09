@@ -50,7 +50,6 @@ export const getAudioMediaStream = async (
 
         return { stream: audioStream };
     } catch (e: unknown) {
-        console.log(e);
         const typedError = e as Error;
 
         return { error: MEDIA_STREAMS_ERROR.get(typedError?.name) || typedError?.message };

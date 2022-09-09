@@ -20,11 +20,7 @@ export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
 export const $isMeetingHostStore = combine({
     localUser: $localUserStore,
     meeting: $meetingStore,
-}).map(
-    ({ localUser, meeting }) =>
-        (meeting.hostUserId && localUser.id === meeting.hostUserId) ||
-        (!meeting.hostUserId && meeting.owner === localUser.id),
-);
+}).map(({ localUser, meeting }) => localUser.id === meeting.hostUserId);
 
 export const $isScreensharingStore = $meetingStore.map(meeting => Boolean(meeting.sharingUserId));
 

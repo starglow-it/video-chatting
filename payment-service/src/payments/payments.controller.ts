@@ -629,6 +629,17 @@ export class PaymentsController {
       );
 
       await executePromiseQueue(plansPromises);
+    } else {
+      const updateProducts = subscriptions.map(async (product) => {
+        const planData = plans[product.name || 'House'];
+
+        return this.paymentService.updateProduct(product.id, {
+          name: planData.name,
+          description: planData.description,
+        });
+      });
+
+      await Promise.all(updateProducts);
     }
   }
 

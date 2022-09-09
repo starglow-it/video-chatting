@@ -75,5 +75,10 @@
     "youtube": "Youtube",
     "facebook": "Facebook",
     "custom": "Custom link"
+  },
+  "footer": {
+    "company": "© TheLiveOffice, 2021",
+    "agreements": "Agreements",
+    "support": "Support"
   }
 }

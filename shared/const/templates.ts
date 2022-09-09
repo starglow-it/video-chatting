@@ -482,7 +482,7 @@ export const templatesData: BaseTemplate[] = [
     name: "Regency Office",
     maxParticipants: 2,
     description:
-      "If you're loking for a calm safe space for a private converstaion this may your spot",
+      "If you're looking for a calm safe space for a private conversation this may your spot",
     shortDescription: "Treat your guests to a warm and balanced ambiance ",
     type: "free",
     isAudioAvailable: false,
@@ -1324,7 +1324,7 @@ export const templatesData: BaseTemplate[] = [
     ],
   },
   {
-    templateId: 36,
+    templateId: 37,
     url: "https://vimeo.com/738444916/62d0257c94",
     videoPath: "/perk-central",
     imagePath: "/free-perk-central",

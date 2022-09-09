@@ -1,0 +1,38 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.wrapper {
+  margin: rem(84px auto 0 auto);
+  width: rem(840px);
+  max-width: 100%;
+}
+
+.content {
+  width: 100%;
+  margin: rem(56px 0 100px 0);
+}
+
+.termsText {
+  white-space: pre-wrap;
+}
+
+.chipsContainer {
+  margin: rem(28px 0 0);
+
+  .emptyItem {
+    max-width: rem(44px);
+    width: 100%;
+    flex: 1;
+  }
+}
+
+.backButton {
+  width: rem(44px);
+  height: rem(44px);
+  background: $primary-white;
+  border: 1px solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+}

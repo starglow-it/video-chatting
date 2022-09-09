@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
@@ -20,7 +20,13 @@ import styles from './TimeLimitNotification.module.scss';
 import { formatDate } from '../../utils/time/formatDate';
 
 // stores
-import { $isBusinessSubscription, $isOwner, $localUserStore, $profileStore } from '../../store';
+import {
+    $authStore,
+    $isBusinessSubscription,
+    $isOwner,
+    $localUserStore,
+    $profileStore,
+} from '../../store';
 
 // types
 import { MeetingAccessStatuses } from '../../store/types';
@@ -40,25 +46,32 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     const isOwner = useStore($isOwner);
     const localUser = useStore($localUserStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
+    const { isAuthenticated } = useStore($authStore);
 
-    const handleOpenProfile = () => {
+    const handleOpenProfile = useCallback(() => {
         window.open(profileRoute, '_blank');
-    };
+    }, []);
 
     const isDashboardRoute = new RegExp(dashboardRoute).test(router.pathname);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setOpenState(false);
         setHiddenState(true);
-    };
+    }, []);
 
     const minutesLeft = Math.floor(profile.maxMeetingTime / 1000 / 60);
 
     useEffect(() => {
-        if (minutesLeft <= 20 && !isBusinessSubscription && !isHidden && isDashboardRoute) {
+        if (
+            minutesLeft <= 20 &&
+            isAuthenticated &&
+            !isBusinessSubscription &&
+            !isHidden &&
+            isDashboardRoute
+        ) {
             setOpenState(true);
         }
-    }, [minutesLeft, isBusinessSubscription, isOwner, isDashboardRoute]);
+    }, [minutesLeft, isBusinessSubscription, isOwner, isDashboardRoute, isAuthenticated]);
 
     useEffect(() => {
         if (localUser.accessStatus === MeetingAccessStatuses.InMeeting) {

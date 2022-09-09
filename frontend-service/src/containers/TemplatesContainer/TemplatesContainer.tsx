@@ -55,7 +55,7 @@ import { getClientMeetingUrl } from '../../utils/urls';
 import { formatCountDown } from '../../utils/time/formatCountdown';
 import { dashboardRoute } from '../../const/client-routes';
 
-const TemplatesContainer = memo(() => {
+const Component = () => {
     const router = useRouter();
 
     const profileTemplates = useStore($profileTemplatesStore);
@@ -100,6 +100,16 @@ const TemplatesContainer = memo(() => {
         await getTemplatesFx({ limit: 6 * newPage, skip: 0 });
     }, []);
 
+    const handleCreateMeeting = async ({ templateId }) => {
+        const result = await createMeetingFx({ templateId });
+
+        if (result.template) {
+            await router.push(
+                getClientMeetingUrl(result.template?.customLink || result?.template?.id),
+            );
+        }
+    };
+
     const handleChooseCommonTemplate = async (templateId: Template['id']) => {
         const targetTemplate = templates?.list?.find(template => template.id === templateId);
 
@@ -121,26 +131,40 @@ const TemplatesContainer = memo(() => {
             return;
         }
 
-        const result = await createMeetingFx({ templateId });
+        await handleCreateMeeting({ templateId });
+    };
 
-        if (result.template) {
-            await router.push(
-                getClientMeetingUrl(result.template?.customLink || result?.template?.id),
-            );
+    const handleReplaceTemplate = async ({
+        templateId,
+        deleteTemplateId,
+    }: {
+        deleteTemplateId: UserTemplate['id'];
+        templateId: Template['id'];
+    }) => {
+        const targetTemplate = templates?.list?.find(template => template.id === templateId);
+
+        if (targetTemplate?.type === 'paid') {
+            const response = await purchaseTemplateFx({ templateId });
+
+            router.push(response.url);
+
+            return;
         }
+
+        deleteProfileTemplateFx({ templateId: deleteTemplateId });
+
+        await handleCreateMeeting({ templateId });
     };
 
     const handleChooseProfileTemplate = async (templateId: UserTemplate['id']) => {
-        const result = await createMeetingFx({ templateId });
-
-        if (result.template) {
-            await router.push(
-                getClientMeetingUrl(result.template?.customLink || result?.template?.id || ''),
-            );
-        }
+        await handleCreateMeeting({ templateId });
     };
 
-    const timeLimit = formatCountDown(profile.maxMeetingTime, { hours: true, minutes: true });
+    const timeLimit = formatCountDown(profile.maxMeetingTime, {
+        hours: true,
+        minutes: true,
+        numeric: false,
+    });
 
     const templatesLimit = `${freeTemplatesCount}/${profile.maxTemplatesNumber}`;
 
@@ -232,11 +256,10 @@ const TemplatesContainer = memo(() => {
             <DeleteTemplateDialog />
             <ScheduleMeetingDialog />
             <DownloadIcsEventDialog />
-            <ReplaceTemplateDialog />
-
+            <ReplaceTemplateDialog onReplaceTemplate={handleReplaceTemplate} />
             <TimeExpiredDialog />
         </MainProfileWrapper>
     );
-});
+};
 
-export { TemplatesContainer };
+export const TemplatesContainer = memo(Component);

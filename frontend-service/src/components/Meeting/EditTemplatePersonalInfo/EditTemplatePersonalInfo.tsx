@@ -6,7 +6,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 import { LanguagesSelect } from '@components/LanguagesSelect/LanguagesSelect';
 
-const EditTemplatePersonalInfo = memo(() => {
+const Component = () => {
     const {
         formState: { errors },
         register,
@@ -32,6 +32,6 @@ const EditTemplatePersonalInfo = memo(() => {
             <LanguagesSelect nameSpace="meeting" translation="templates.languages" />
         </CustomGrid>
     );
-});
+};
 
-export { EditTemplatePersonalInfo };
+export const EditTemplatePersonalInfo = memo(Component);

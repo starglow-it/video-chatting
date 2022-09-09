@@ -1,5 +1,26 @@
 @import "../../../styles/rem";
 
-.accordion {
+.base {
   border-radius: rem(10px);
+}
+
+.huge {
+  border-radius: rem(24px);
+  padding: rem(0 0 40px);
+
+  &:before {
+    content: none;
+  }
+
+  .summary {
+    padding: rem(40px 40px 0);
+
+    .content {
+      margin: rem(0);
+    }
+  }
+
+  .details {
+    padding: rem(24px 104px 0 40px);
+  }
 }

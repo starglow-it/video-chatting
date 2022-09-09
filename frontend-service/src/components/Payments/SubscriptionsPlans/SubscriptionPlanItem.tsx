@@ -114,7 +114,6 @@ const Component = (
                 </ConditionalRender>
 
                 <CustomButton
-                    variant="custom-black"
                     nameSpace="subscriptions"
                     disabled={isDisabled}
                     translation={isActive ? 'buttons.currentPlan' : `buttons.start${product.name}`}

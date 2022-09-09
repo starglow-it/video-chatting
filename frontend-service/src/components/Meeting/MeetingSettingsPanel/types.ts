@@ -4,7 +4,7 @@ import { BusinessCategory, Language, SocialLink, UserTemplate } from '../../../s
 export type SettingsData = {
     companyName: string;
     contactEmail: string;
-    description: boolean;
+    description: string;
     fullName: string;
     position: string;
     signBoard: string;

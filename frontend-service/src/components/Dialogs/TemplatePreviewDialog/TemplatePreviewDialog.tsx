@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import Image from 'next/image';
 import clsx from 'clsx';
@@ -32,7 +32,6 @@ import {
     appDialogsApi,
     $templatePreviewStore,
     $isBusinessSubscription,
-    getProfileTemplateByTemplateIdFx,
 } from '../../../store';
 
 // types
@@ -53,8 +52,6 @@ const Component = ({
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
 
-    const [isDisabled, setIsDisabled] = useState(false);
-
     const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const handleClose = useCallback(() => {
@@ -62,20 +59,6 @@ const Component = ({
             dialogKey: AppDialogsEnum.templatePreviewDialog,
         });
     }, []);
-
-    useEffect(() => {
-        (async () => {
-            if (previewTemplate?.templateId && templatePreviewDialog) {
-                const userTemplate = await getProfileTemplateByTemplateIdFx({
-                    templateId: previewTemplate?.templateId,
-                });
-
-                if (userTemplate?.id) {
-                    setIsDisabled(true);
-                }
-            }
-        })();
-    }, [previewTemplate?.templateId, templatePreviewDialog]);
 
     const handleChooseTemplate = useCallback(async () => {
         if (previewTemplate?.id) {
@@ -194,7 +177,6 @@ const Component = ({
                             className={clsx(styles.chooseBtn, {
                                 [styles.disabled]: isTimeLimitReached,
                             })}
-                            disabled={isDisabled}
                             disableRipple={isTimeLimitReached}
                             nameSpace="templates"
                             translation={`buttons.${chooseButtonKey}`}

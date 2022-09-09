@@ -1,11 +1,17 @@
 import React from 'react';
 import { TranslationProps } from '@library/common/Translation/types';
+import { TypographyVariant } from '@mui/material';
+
+type CustomAccordionVariants = 'base' | 'large';
 
 type BaseCustomAccordionProps = {
     currentAccordionId: string;
     accordionId: string;
-    AccordionIcon: JSX.Element;
+    AccordionIcon?: JSX.Element;
+    AccordionSummaryIcon?: JSX.Element;
     onChange: (accordionId: string) => void;
+    typographyVariant?: TypographyVariant;
+    variant?: CustomAccordionVariants;
 };
 
 export type CustomAccordionProps = React.PropsWithChildren<BaseCustomAccordionProps> &

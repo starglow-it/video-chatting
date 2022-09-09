@@ -11,8 +11,6 @@ const getOrCreateTransport = async () => {
 
     const { smtpUser, smtpPass } = await getAllConfigVars();
 
-    console.log(smtpUser, smtpPass);
-
     transport = nodemailer.createTransport({
         service: 'gmail',
         auth: {

@@ -82,7 +82,7 @@ const Component = () => {
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
 
-    const prevHostUserId = useRef<string>('');
+    const prevHostUserId = useRef<string>(meeting.hostUserId);
 
     const {
         data: { isMicActive, isCameraActive },
@@ -121,7 +121,7 @@ const Component = () => {
     }, [prevSharingUserId, meeting.sharingUserId, handleStopScreenSharing]);
 
     useEffect(() => {
-        if (prevHostUserId.current && hostUser && prevHostUserId.current !== hostUser?.id) {
+        if (hostUser && prevHostUserId.current !== hostUser?.id) {
             prevHostUserId.current = hostUser.id;
 
             addNotificationEvent({

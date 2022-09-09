@@ -352,5 +352,35 @@ export const componentsTheme = (theme: Theme) =>
                     },
                 ],
             },
+            MuiChip: {
+                variants: [
+                    {
+                        props: { size: 'medium' },
+                        style: {
+                            height: '44px',
+                            borderRadius: '22px',
+                            fontSize: theme.typography.pxToRem(16),
+                            lineHeight: theme.typography.pxToRem(24),
+                        },
+                    },
+                ],
+                styleOverrides: {
+                    root: {
+                        cursor: 'pointer',
+                        backgroundColor: theme.designSystemColors.white.primary,
+                        color: theme.designSystemColors.black.primary,
+                        boxShadow: `0px 12px 24px -4px ${theme.palette.shadow.normal}`,
+
+                        '&:hover': {
+                            boxShadow: `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
+                            backgroundColor: theme.designSystemColors.white.primary,
+                            color: theme.designSystemColors.black.primary,
+                        },
+                    },
+                    label: {
+                        padding: '10px 22px',
+                    },
+                },
+            },
         },
     });

@@ -2,12 +2,9 @@
   "buttons": {
     "showMore": "Show more",
     "upgrade": "Upgrade",
-    "startHouse": "Get started FREE",
-    "startProfessional": "Get Professional",
-    "startBusiness": "Get Business",
-    "startHouseDaily": "Get started FREE",
-    "startProfessionalDaily": "Get Daily Professional",
-    "startBusinessDaily": "Get Daily Business",
+    "startHouse": "Get My House Account",
+    "startProfessional": "Get My Professional Account",
+    "startBusiness": "Get My Business Account",
     "currentPlan": "Current plan"
   },
   "limits": {

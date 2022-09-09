@@ -84,7 +84,7 @@ const Component = () => {
         reset({
             email: '',
             password: '',
-            terms: true,
+            terms: false,
         });
         resetRegisterErrorEvent();
         setHints(false);

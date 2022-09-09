@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import { Fade } from '@mui/material';
-import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 // hooks
@@ -25,8 +24,6 @@ import {
     $profileTemplatesStore,
     $replaceTemplateIdStore,
     appDialogsApi,
-    createMeetingFx,
-    deleteProfileTemplateFx,
     getProfileTemplatesFx,
     setDeleteTemplateIdEvent,
     setReplaceTemplateIdEvent,
@@ -37,12 +34,16 @@ import {
 import styles from './ReplaceTemplateDialog.module.scss';
 
 // types
-import { AppDialogsEnum, EntityList, UserTemplate } from '../../../store/types';
-import { getClientMeetingUrl } from '../../../utils/urls';
+import { AppDialogsEnum, EntityList, Template, UserTemplate } from '../../../store/types';
 
-const Component = () => {
-    const router = useRouter();
-
+const Component = ({
+    onReplaceTemplate,
+}: {
+    onReplaceTemplate: (data: {
+        deleteTemplateId: UserTemplate['id'];
+        templateId: Template['id'];
+    }) => void;
+}) => {
     const { replaceTemplateConfirmDialog } = useStore($appDialogsStore);
     const deleteProfileTemplateId = useStore($deleteProfileTemplateId);
     const replaceTemplateId = useStore($replaceTemplateIdStore);
@@ -104,13 +105,10 @@ const Component = () => {
 
         handleResetSwitch();
 
-        deleteProfileTemplateFx({ templateId: deleteProfileTemplateId });
-
-        const result = await createMeetingFx({ templateId: replaceTemplateId });
-
-        if (result.template) {
-            await router.push(getClientMeetingUrl(result?.template?.id));
-        }
+        onReplaceTemplate?.({
+            templateId: replaceTemplateId,
+            deleteTemplateId: deleteProfileTemplateId,
+        });
     };
 
     const style = { '--height': `${elementHeight}px` } as React.CSSProperties;

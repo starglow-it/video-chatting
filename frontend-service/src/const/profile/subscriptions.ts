@@ -1,12 +1,9 @@
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 
 export const planColors: Record<string, string> = {
-    House: '#69E071',
+    House: '#30BE39',
     Professional: '#2E6DF2',
     Business: '#FF884E',
-    HouseDaily: '#69E071',
-    ProfessionalDaily: '#2E6DF2',
-    BusinessDaily: '#FF884E',
 };
 
 export const currencies: Record<string, string> = {

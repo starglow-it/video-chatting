@@ -19,6 +19,7 @@ import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { AuthenticationLink } from '@components/AuthenticationLink/AuthenticationLink';
 import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
 import { TimeLimitWarning } from '@components/TimeLimitWarning/TimeLimitWarning';
+import { Footer } from '@components/Footer/Footer';
 
 // types
 import { LayoutProps } from './types';
@@ -101,6 +102,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     </CustomBox>
                 </ConditionalRender>
                 {children}
+                <Footer />
             </CustomBox>
         </CustomBox>
     );

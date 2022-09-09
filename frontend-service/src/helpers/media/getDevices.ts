@@ -6,7 +6,7 @@ export const getDevices = async (): Promise<{
     video: MediaDeviceInfo[];
 }> => {
     const allDevices = await navigator.mediaDevices.enumerateDevices();
-    console.log(allDevices);
+
     const inputDevices = allDevices.filter(
         device =>
             Boolean(device.label) &&

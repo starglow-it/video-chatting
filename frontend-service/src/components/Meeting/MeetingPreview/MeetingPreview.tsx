@@ -65,8 +65,6 @@ const Component = () => {
         image => image.resolution === 240,
     );
 
-    console.log(previewImage);
-
     const renderUserAvatar = useCallback(
         (user: MeetingUser) => (
             <ProfileAvatar
