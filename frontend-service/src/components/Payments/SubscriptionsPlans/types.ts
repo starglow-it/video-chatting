@@ -1,5 +1,5 @@
 export type SubscriptionPlanItemProps = {
-    activePlanKey: string;
+    activePlanKey?: string;
     isDisabled: boolean;
     product: any;
     price: any;
@@ -9,7 +9,10 @@ export type SubscriptionPlanItemProps = {
 export type SubscriptionsPlansProps = {
     activePlanKey?: string;
     isDisabled: boolean;
+    title?: JSX.Element;
     onClose?: () => void;
     isSubscriptionStep: boolean;
+    withBackgroundBlur?: boolean;
+    withActivePlan?: boolean;
     onChooseSubscription: (productId: string, isPaid: boolean) => void;
 };

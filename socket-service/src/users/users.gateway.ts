@@ -1,4 +1,4 @@
-import { Global, Logger } from '@nestjs/common';
+import { Global } from '@nestjs/common';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import {
   ConnectedSocket,
@@ -39,15 +39,10 @@ import { CommonMeetingDTO } from '../dtos/response/common-meeting.dto';
 
 // helpers
 import { withTransaction } from '../helpers/mongo/withTransaction';
-import { getTimeoutTimestamp } from '../utils/getTimeoutTimestamp';
-
-import { TimeoutTypesEnum } from '../types/timeoutTypes.enum';
 
 @Global()
 @WebSocketGateway({ transports: ['websocket', 'polling'] })
 export class UsersGateway extends BaseGateway {
-  private readonly logger = new Logger(UsersGateway.name);
-
   constructor(
     private meetingsService: MeetingsService,
     private usersService: UsersService,
@@ -98,151 +93,6 @@ export class UsersGateway extends BaseGateway {
           user: plainUser,
         },
       };
-    });
-  }
-
-  @SubscribeMessage(SubscribeEvents.CHANGE_HOST)
-  async changeHost(@MessageBody() message: { userId: string }) {
-    return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findById(message.userId, session);
-
-      if (!user) {
-        this.logger.error({
-          message: '[changeHost]: no user found',
-          ctx: {
-            socketId: message.userId,
-          },
-        });
-
-        return;
-      }
-
-      const profileUser = await this.coreService.findUserById({
-        userId: user.profileId,
-      });
-
-      await user.populate([{ path: 'meeting', populate: 'hostUserId' }]);
-
-      const meeting = await this.meetingsService.findByIdAndUpdate(
-        user.meeting._id,
-        {
-          hostUserId: message.userId,
-        },
-        session,
-      );
-
-      if (
-        profileUser &&
-        !profileUser?.maxMeetingTime &&
-        profileUser?.subscriptionPlanKey !== 'Business'
-      ) {
-        return {
-          success: false,
-          message: 'meeting.userHasNoTimeLeft',
-        };
-      }
-
-      if (user?.meeting?.hostUserId?._id) {
-        const prevHostUser = await this.usersService.findById(
-          user?.meeting?.hostUserId?._id,
-          session,
-        );
-
-        const prevProfileHostUser = await this.coreService.findUserById({
-          userId: prevHostUser.profileId,
-        });
-
-        if (prevProfileHostUser.subscriptionPlanKey !== 'Business') {
-          const hostTimeData = await this.meetingHostTimeService.update({
-            query: {
-              host: prevHostUser.id,
-              meeting: meeting.id,
-              endAt: null,
-            },
-            data: {
-              endAt: Date.now(),
-            },
-          });
-
-          const newTime =
-            profileUser.maxMeetingTime -
-            (hostTimeData.endAt - hostTimeData.startAt);
-
-          await this.coreService.updateUser({
-            query: { _id: profileUser.id },
-            data: {
-              maxMeetingTime: newTime < 0 ? 0 : newTime,
-            },
-          });
-
-          if (prevHostUser?.socketId) {
-            this.emitToSocketId(prevHostUser?.socketId, 'meeting:timeLimit');
-          }
-        }
-      }
-
-      if (profileUser?.subscriptionPlanKey !== 'Business') {
-        await this.meetingHostTimeService.create({
-          data: {
-            host: user.id,
-            meeting: meeting.id,
-          },
-        });
-
-        this.taskService.deleteTimeout({
-          name: `meeting:timeLimit:${meeting.id}`,
-        });
-
-        const finishTime = meeting.endsAt - Date.now();
-
-        const timeLimitNotificationTimeout = getTimeoutTimestamp({
-          value: 20,
-          type: TimeoutTypesEnum.Minutes,
-        });
-
-        if (finishTime > timeLimitNotificationTimeout) {
-          this.taskService.addTimeout({
-            name: `meeting:timeLimit:${meeting.id}`,
-            ts: finishTime - timeLimitNotificationTimeout,
-            callback: async () => {
-              const hostTimeData = await this.meetingHostTimeService.update({
-                query: {
-                  host: user.id,
-                  meeting: meeting.id,
-                  endAt: null,
-                },
-                data: {
-                  endAt: Date.now(),
-                },
-              });
-
-              const newTime =
-                profileUser.maxMeetingTime -
-                (hostTimeData.endAt - hostTimeData.startAt);
-
-              await this.coreService.updateUser({
-                query: { _id: profileUser.id },
-                data: {
-                  maxMeetingTime: newTime < 0 ? 0 : newTime,
-                },
-              });
-
-              if (user?.socketId) {
-                this.emitToSocketId(user?.socketId, 'meeting:timeLimit');
-              }
-            },
-          });
-        }
-      }
-
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      this.emitToRoom(`meeting:${meeting._id}`, UPDATE_MEETING, {
-        meeting: plainMeeting,
-      });
     });
   }
 

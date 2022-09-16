@@ -1,4 +1,4 @@
-import React, { memo, PropsWithChildren, useEffect } from 'react';
+import React, { memo, PropsWithChildren, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -32,9 +32,13 @@ import {
     sendJoinDashboardSocketEvent,
 } from '../../store';
 
+// const
+import { createRoomRoute, dashboardRoute, roomRoute } from '../../const/client-routes';
+
 // styles
 import styles from './Layout.module.scss';
-import { dashboardRoute } from '../../const/client-routes';
+
+const ROUTES_WITHOUT_FOOTER: string[] = [roomRoute, createRoomRoute];
 
 const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const { isAuthenticated } = useStore($authStore);
@@ -43,6 +47,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const router = useRouter();
 
     const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(router.pathname);
+
+    const shouldShowFooter = useMemo(
+        () => !ROUTES_WITHOUT_FOOTER.find(route => new RegExp(`${route}`).test(router.pathname)),
+        [router.pathname],
+    );
 
     useEffect(() => {
         (async () => {
@@ -78,32 +87,48 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                 <TimeLimitWarning />
             </ConditionalRender>
 
-            <CustomBox
+            <CustomGrid
+                container
+                direction="column"
+                flex={1}
+                flexWrap="nowrap"
                 className={clsx(styles.contentWrapper, {
                     [styles.meetingLayout]: isMeetingRoute,
                     [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
                 })}
             >
-                <CustomBox className={styles.bgImage} />
-                <ConditionalRender condition={!isMobile}>
-                    <CustomBox className={styles.header}>
-                        <CustomGrid container justifyContent="space-between" alignItems="center">
-                            <CustomLink href={isAuthenticated ? dashboardRoute : ''}>
-                                <LiveOfficeLogo
-                                    className={clsx(isAuthenticated, {
-                                        [styles.link]: isAuthenticated,
-                                    })}
-                                    width="210px"
-                                    height="44px"
-                                />
-                            </CustomLink>
-                            <CustomGrid>{!isAuthenticated && <AuthenticationLink />}</CustomGrid>
-                        </CustomGrid>
-                    </CustomBox>
+                <CustomGrid item flex={1}>
+                    <CustomBox className={styles.bgImage} />
+                    <ConditionalRender condition={!isMobile}>
+                        <CustomBox className={styles.header}>
+                            <CustomGrid
+                                container
+                                justifyContent="space-between"
+                                alignItems="center"
+                            >
+                                <CustomLink href={isAuthenticated ? dashboardRoute : ''}>
+                                    <LiveOfficeLogo
+                                        className={clsx(isAuthenticated, {
+                                            [styles.link]: isAuthenticated,
+                                        })}
+                                        width="210px"
+                                        height="44px"
+                                    />
+                                </CustomLink>
+                                <CustomGrid>
+                                    {!isAuthenticated && <AuthenticationLink />}
+                                </CustomGrid>
+                            </CustomGrid>
+                        </CustomBox>
+                    </ConditionalRender>
+                    {children}
+                </CustomGrid>
+                <ConditionalRender condition={shouldShowFooter}>
+                    <CustomGrid item>
+                        <Footer />
+                    </CustomGrid>
                 </ConditionalRender>
-                {children}
-                <Footer />
-            </CustomBox>
+            </CustomGrid>
         </CustomBox>
     );
 };

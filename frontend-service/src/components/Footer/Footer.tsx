@@ -6,6 +6,7 @@ import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { DoubleArrowIcon } from '@library/icons/DoubleArrowIcon';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 import styles from './Footer.module.scss';
 
@@ -36,13 +37,15 @@ const Component = () => {
                     translation="footer.agreements"
                     href="/agreements"
                 />
-                <CustomLink
-                    variant="body3"
-                    nameSpace="common"
-                    color="colors.grayscale.semidark"
-                    translation="footer.support"
-                    href="/support"
-                />
+                <ConditionalRender condition={false}>
+                    <CustomLink
+                        variant="body3"
+                        nameSpace="common"
+                        color="colors.grayscale.semidark"
+                        translation="footer.support"
+                        href="/support"
+                    />
+                </ConditionalRender>
             </CustomGrid>
 
             <ActionButton

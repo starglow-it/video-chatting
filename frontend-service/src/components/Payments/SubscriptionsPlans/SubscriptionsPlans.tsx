@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import Image from 'next/image';
 import Backdrop from '@mui/material/Backdrop';
@@ -26,7 +26,10 @@ const Component = ({
     isSubscriptionStep,
     onChooseSubscription,
     isDisabled,
-    activePlanKey = 'House',
+    activePlanKey,
+    title,
+    withBackgroundBlur = false,
+    withActivePlan = true,
     onClose,
 }: SubscriptionsPlansProps) => {
     const products = useStore($productsStore);
@@ -40,24 +43,29 @@ const Component = ({
         })();
     }, [isSubscriptionStep, products.length]);
 
-    const handleChosenSubscription = async (productId: string, isPaid: boolean) => {
-        onChooseSubscription(productId, isPaid);
-    };
+    const handleChosenSubscription = useCallback(
+        async (productId: string, isPaid: boolean) => {
+            onChooseSubscription(productId, isPaid);
+        },
+        [onChooseSubscription],
+    );
 
     const renderSubscriptionPlans = useMemo(
         () =>
-            products.map((product, i) => (
-                <Slide key={product?.product?.name} in timeout={i * 200}>
-                    <SubscriptionPlanItem
-                        activePlanKey={activePlanKey}
-                        product={product?.product}
-                        price={product?.price}
-                        onChooseSubscription={handleChosenSubscription}
-                        isDisabled={isDisabled}
-                    />
-                </Slide>
-            )),
-        [products, isDisabled, activePlanKey],
+            products
+                .filter(product => withActivePlan || product?.product?.name !== activePlanKey)
+                .map((product, i) => (
+                    <Slide key={product?.product?.name} in timeout={i * 200}>
+                        <SubscriptionPlanItem
+                            activePlanKey={activePlanKey}
+                            product={product?.product}
+                            price={product?.price}
+                            onChooseSubscription={handleChosenSubscription}
+                            isDisabled={isDisabled}
+                        />
+                    </Slide>
+                )),
+        [products, isDisabled, activePlanKey, withActivePlan, handleChosenSubscription],
     );
 
     const handleClose = () => {
@@ -66,7 +74,11 @@ const Component = ({
 
     return (
         <Backdrop
-            sx={{ zIndex: theme => theme.zIndex.drawer + 1, pointerEvents: 'none' }}
+            sx={{
+                zIndex: theme => theme.zIndex.drawer + 1,
+                pointerEvents: 'none',
+                backdropFilter: withBackgroundBlur ? 'blur(28px)' : undefined,
+            }}
             open={isSubscriptionStep}
         >
             <ConditionalRender condition={isProductsLoading}>
@@ -76,13 +88,21 @@ const Component = ({
                 <ClickAwayListener onClickAway={handleClose}>
                     <CustomGrid container direction="column" justifyContent="center" gap={4}>
                         <CustomGrid container justifyContent="center" alignItems="center" gap={1}>
-                            <Image src="/images/winking-face.png" width="30px" height="30px" />
-                            <CustomTypography
-                                variant="h2bold"
-                                nameSpace="subscriptions"
-                                color="colors.white.primary"
-                                translation="subscriptions.selectPlan"
-                            />
+                            {title ?? (
+                                <>
+                                    <Image
+                                        src="/images/winking-face.png"
+                                        width="30px"
+                                        height="30px"
+                                    />
+                                    <CustomTypography
+                                        variant="h2bold"
+                                        nameSpace="subscriptions"
+                                        color="colors.white.primary"
+                                        translation="subscriptions.selectPlan"
+                                    />
+                                </>
+                            )}
                         </CustomGrid>
                         <CustomGrid container gap={2} justifyContent="center" alignItems="center">
                             {renderSubscriptionPlans}

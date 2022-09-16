@@ -49,6 +49,7 @@ declare module '@mui/material/Button' {
         'custom-transparent': true;
         'custom-common': true;
         'custom-black': true;
+        'custom-gray': true;
     }
 }
 
@@ -93,6 +94,7 @@ declare module '@mui/material/styles' {
         'custom-transparent': string;
         'custom-common': string;
         'custom-black': string;
+        'custom-gray': string;
     }
 
     interface Theme {

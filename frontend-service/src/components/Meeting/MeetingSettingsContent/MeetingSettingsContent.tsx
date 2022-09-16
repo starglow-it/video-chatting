@@ -65,7 +65,7 @@ const Component = ({
         value: isAudioVideoSettingsOpened,
         onSwitchOff: handleCloseAudioVideoSettings,
         onSwitchOn: handleOpenAudioVideoSettings,
-    } = useToggle(isMobile);
+    } = useToggle(isMobile || isSafari);
 
     useEffect(() => {
         if (isSafari) {
@@ -144,12 +144,14 @@ const Component = ({
                 <Fade in={isAudioVideoSettingsOpened}>
                     <CustomGrid container>
                         <CustomGrid container gap={1.5} alignItems="center">
-                            <ArrowIcon
-                                className={styles.arrowIcon}
-                                width="32px"
-                                height="32px"
-                                onClick={!isSafari ? handleCloseAudioVideoSettings : undefined}
-                            />
+                            <ConditionalRender condition={!isMobile && !isSafari}>
+                                <ArrowIcon
+                                    className={styles.arrowIcon}
+                                    width="32px"
+                                    height="32px"
+                                    onClick={handleCloseAudioVideoSettings}
+                                />
+                            </ConditionalRender>
                             <CustomTypography
                                 variant="h3bold"
                                 nameSpace="meeting"

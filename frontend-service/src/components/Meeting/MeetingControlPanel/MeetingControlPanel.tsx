@@ -135,11 +135,13 @@ const Component = () => {
                         variant="black-glass"
                         className={clsx(styles.commonOpenPanel, { [styles.mobile]: isMobile })}
                     >
-                        {isMeetingHost && <MeetingAccessRequests />}
-                        <MeetingUsersList />
-                        <MeetingInviteParticipants
-                            onAction={isMobile ? handleCloseMobilePanel : undefined}
-                        />
+                        <CustomScroll>
+                            {isMeetingHost && <MeetingAccessRequests />}
+                            <MeetingUsersList />
+                            <MeetingInviteParticipants
+                                onAction={isMobile ? handleCloseMobilePanel : undefined}
+                            />
+                        </CustomScroll>
                     </CustomPaper>
                 </Fade>
 

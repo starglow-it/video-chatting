@@ -15,6 +15,7 @@ export const initialTemplateState: UserTemplate = {
     maxParticipants: 0,
     businessCategories: [],
     description: '',
+    shortDescription: '',
     previewUrls: [],
     type: '',
     companyName: '',

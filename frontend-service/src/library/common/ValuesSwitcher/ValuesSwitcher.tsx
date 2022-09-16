@@ -1,4 +1,5 @@
 import React, { memo, useMemo, useCallback, useState } from 'react';
+import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -13,12 +14,22 @@ import styles from './ValuesSwitcher.module.scss';
 // types
 import { ValueSwitcherProps } from './types';
 
-const Component = ({ optionWidth, values, activeValue, onValueChanged }: ValueSwitcherProps) => {
+const Component = ({
+    optionWidth,
+    values,
+    activeValue,
+    onValueChanged,
+    variant = 'primary',
+}: ValueSwitcherProps) => {
     const [left, setLeft] = useState(0);
 
-    const handleUpdateActiveElement = useCallback((newLeft: number) => {
-        setLeft(newLeft);
-    }, []);
+    const handleUpdateActiveElement = useCallback(
+        (newLeft: number) => {
+            const shift = variant === 'transparent' ? 6 : 0;
+            setLeft(newLeft + shift);
+        },
+        [variant],
+    );
 
     const renderValues = useMemo(
         () =>
@@ -27,13 +38,14 @@ const Component = ({ optionWidth, values, activeValue, onValueChanged }: ValueSw
                     key={value.id}
                     index={index}
                     value={value}
+                    variant={variant}
                     optionWidth={optionWidth}
                     activeValue={activeValue}
                     onValueChanged={onValueChanged}
                     onUpdateActiveElement={handleUpdateActiveElement}
                 />
             )),
-        [values, activeValue, onValueChanged],
+        [values, activeValue, onValueChanged, variant],
     );
 
     const style = useMemo(
@@ -42,7 +54,14 @@ const Component = ({ optionWidth, values, activeValue, onValueChanged }: ValueSw
     );
 
     return (
-        <CustomGrid container wrap="nowrap" className={styles.wrapper}>
+        <CustomGrid
+            container
+            wrap="nowrap"
+            className={clsx(styles.wrapper, {
+                [styles.primary]: variant === 'primary',
+                [styles.transparent]: variant === 'transparent',
+            })}
+        >
             <CustomGrid
                 className={styles.activeItem}
                 style={style}

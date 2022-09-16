@@ -6,11 +6,13 @@ import { useStore, useStoreMap } from 'effector-react';
 
 // hooks
 import { useTemplateNotification } from '@hooks/useTemplateNotification';
+import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomChip } from '@library/custom/CustomChip/CustomChip';
 
 // components
 import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
@@ -18,6 +20,7 @@ import { CommonTemplateItem } from '@components/Templates/CommonTemplateItem/Com
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { ProfileTemplateItem } from '@components/Templates/ProfileTemplateItem/ProfileTemplateItem';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
 
 // dialogs
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
@@ -27,9 +30,13 @@ import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDial
 import { ReplaceTemplateDialog } from '@components/Dialogs/ReplaceTemplateDialog/ReplaceTemplateDialog';
 import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExpiredDialog';
 
+// icons
+import { PlusIcon } from '@library/icons/PlusIcon';
+
 // stores
 import {
     $isBusinessSubscription,
+    $isProfessionalSubscription,
     $profileStore,
     $profileTemplatesStore,
     $skipProfileTemplates,
@@ -37,15 +44,20 @@ import {
     appDialogsApi,
     createMeetingFx,
     deleteProfileTemplateFx,
+    getCustomerPortalSessionUrlFx,
     getProfileTemplatesFx,
     getTemplatesFx,
     purchaseTemplateFx,
     setReplaceTemplateIdEvent,
     setSkipProfileTemplates,
+    startCheckoutSessionForSubscriptionFx,
 } from '../../store';
 
 // styles
 import styles from './TemplatesContainer.module.scss';
+
+// const
+import { createRoomRoute, dashboardRoute } from '../../const/client-routes';
 
 // types
 import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
@@ -53,7 +65,6 @@ import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
 // utils
 import { getClientMeetingUrl } from '../../utils/urls';
 import { formatCountDown } from '../../utils/time/formatCountdown';
-import { dashboardRoute } from '../../const/client-routes';
 
 const Component = () => {
     const router = useRouter();
@@ -63,6 +74,7 @@ const Component = () => {
     const skipProfileTemplates = useStore($skipProfileTemplates);
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
+    const isProfessionalSubscription = useStore($isProfessionalSubscription);
 
     const freeTemplatesCount = useStoreMap({
         store: $profileTemplatesStore,
@@ -71,6 +83,12 @@ const Component = () => {
     });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
+
+    const {
+        value: isSubscriptionsOpen,
+        onSwitchOn: handleOpenSubscriptionPlans,
+        onSwitchOff: handleCloseSubscriptionPlans,
+    } = useToggle(false);
 
     useTemplateNotification(dashboardRoute);
 
@@ -100,7 +118,7 @@ const Component = () => {
         await getTemplatesFx({ limit: 6 * newPage, skip: 0 });
     }, []);
 
-    const handleCreateMeeting = async ({ templateId }) => {
+    const handleCreateMeeting = useCallback(async ({ templateId }) => {
         const result = await createMeetingFx({ templateId });
 
         if (result.template) {
@@ -108,57 +126,99 @@ const Component = () => {
                 getClientMeetingUrl(result.template?.customLink || result?.template?.id),
             );
         }
-    };
+    }, []);
 
-    const handleChooseCommonTemplate = async (templateId: Template['id']) => {
-        const targetTemplate = templates?.list?.find(template => template.id === templateId);
+    const handleChooseCommonTemplate = useCallback(
+        async (templateId: Template['id']) => {
+            const targetTemplate = templates?.list?.find(template => template.id === templateId);
 
-        if (targetTemplate?.type === 'paid') {
-            const response = await purchaseTemplateFx({ templateId });
+            if (targetTemplate?.type === 'paid') {
+                const response = await purchaseTemplateFx({ templateId });
 
-            router.push(response.url);
+                router.push(response.url);
 
+                return;
+            }
+
+            if (profile.maxTemplatesNumber === freeTemplatesCount) {
+                setReplaceTemplateIdEvent(templateId);
+
+                appDialogsApi.openDialog({
+                    dialogKey: AppDialogsEnum.replaceTemplateConfirmDialog,
+                });
+
+                return;
+            }
+
+            await handleCreateMeeting({ templateId });
+        },
+        [templates, profile.maxTemplatesNumber, freeTemplatesCount, handleCreateMeeting],
+    );
+
+    const handleReplaceTemplate = useCallback(
+        async ({
+            templateId,
+            deleteTemplateId,
+        }: {
+            deleteTemplateId: UserTemplate['id'];
+            templateId: Template['id'];
+        }) => {
+            const targetTemplate = templates?.list?.find(template => template.id === templateId);
+
+            if (targetTemplate?.type === 'paid') {
+                const response = await purchaseTemplateFx({ templateId });
+
+                router.push(response.url);
+
+                return;
+            }
+
+            deleteProfileTemplateFx({ templateId: deleteTemplateId });
+
+            await handleCreateMeeting({ templateId });
+        },
+        [templates, handleCreateMeeting],
+    );
+
+    const handleChooseProfileTemplate = useCallback(
+        async (templateId: UserTemplate['id']) => {
+            await handleCreateMeeting({ templateId });
+        },
+        [handleCreateMeeting],
+    );
+
+    const handleCreateRoomClick = useCallback(() => {
+        if (isBusinessSubscription || isProfessionalSubscription) {
+            router.push(createRoomRoute);
             return;
         }
 
-        if (profile.maxTemplatesNumber === freeTemplatesCount) {
-            setReplaceTemplateIdEvent(templateId);
+        handleOpenSubscriptionPlans();
+    }, [isBusinessSubscription, isProfessionalSubscription, handleOpenSubscriptionPlans]);
 
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.replaceTemplateConfirmDialog,
-            });
+    const handleChooseSubscription = useCallback(
+        async (productId: string, isPaid: boolean) => {
+            if (isPaid && !profile.stripeSubscriptionId) {
+                const response = await startCheckoutSessionForSubscriptionFx({
+                    productId,
+                    baseUrl: createRoomRoute,
+                });
 
-            return;
-        }
+                if (response?.url) {
+                    return router.push(response.url);
+                }
+            } else if (profile.stripeSubscriptionId) {
+                const response = await getCustomerPortalSessionUrlFx({
+                    subscriptionId: profile.stripeSubscriptionId,
+                });
 
-        await handleCreateMeeting({ templateId });
-    };
-
-    const handleReplaceTemplate = async ({
-        templateId,
-        deleteTemplateId,
-    }: {
-        deleteTemplateId: UserTemplate['id'];
-        templateId: Template['id'];
-    }) => {
-        const targetTemplate = templates?.list?.find(template => template.id === templateId);
-
-        if (targetTemplate?.type === 'paid') {
-            const response = await purchaseTemplateFx({ templateId });
-
-            router.push(response.url);
-
-            return;
-        }
-
-        deleteProfileTemplateFx({ templateId: deleteTemplateId });
-
-        await handleCreateMeeting({ templateId });
-    };
-
-    const handleChooseProfileTemplate = async (templateId: UserTemplate['id']) => {
-        await handleCreateMeeting({ templateId });
-    };
+                if (response?.url) {
+                    return router.push(response.url);
+                }
+            }
+        },
+        [profile.stripeSubscriptionId],
+    );
 
     const timeLimit = formatCountDown(profile.maxMeetingTime, {
         hours: true,
@@ -208,6 +268,16 @@ const Component = () => {
                             options={{ templatesLimit }}
                         />
                     </CustomGrid>
+                    <ConditionalRender condition={false}>
+                        <CustomChip
+                            active
+                            nameSpace="templates"
+                            translation="createRoom"
+                            onClick={handleCreateRoomClick}
+                            icon={<PlusIcon width="24px" height="24px" />}
+                            className={styles.createRoomButton}
+                        />
+                    </ConditionalRender>
                     <TemplatesGrid<UserTemplate>
                         list={profileTemplates.list}
                         count={profileTemplates.count}
@@ -240,6 +310,18 @@ const Component = () => {
                         translation="selectTemplates"
                     />
                 </CustomGrid>
+                <ConditionalRender condition={false}>
+                    <ConditionalRender condition={!isThereProfileTemplates}>
+                        <CustomChip
+                            active
+                            nameSpace="templates"
+                            translation="createRoom"
+                            onClick={handleCreateRoomClick}
+                            icon={<PlusIcon width="24px" height="24px" />}
+                            className={styles.createRoomButton}
+                        />
+                    </ConditionalRender>
+                </ConditionalRender>
                 <TemplatesGrid<Template>
                     list={templates.list}
                     count={templates.count}
@@ -248,6 +330,33 @@ const Component = () => {
                     TemplateComponent={CommonTemplateItem}
                 />
             </CustomGrid>
+            <SubscriptionsPlans
+                withBackgroundBlur
+                isSubscriptionStep={isSubscriptionsOpen}
+                isDisabled={false}
+                withActivePlan={false}
+                activePlanKey={profile.subscriptionPlanKey}
+                onChooseSubscription={handleChooseSubscription}
+                title={
+                    <CustomGrid
+                        container
+                        direction="column"
+                        alignItems="center"
+                        className={styles.subscriptionPlansTitle}
+                    >
+                        <CustomTypography
+                            variant="h2"
+                            nameSpace="subscriptions"
+                            translation="upgradePlan.title"
+                        />
+                        <CustomTypography
+                            nameSpace="subscriptions"
+                            translation="upgradePlan.description"
+                        />
+                    </CustomGrid>
+                }
+                onClose={handleCloseSubscriptionPlans}
+            />
             <TemplatePreviewDialog
                 isNeedToRenderTemplateInfo
                 chooseButtonKey="chooseTemplate"

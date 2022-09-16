@@ -85,7 +85,7 @@
   transform: translate(-50%, 0);
 
   &.mobile {
-    transform: unset;
+    left: 50%;
   }
 
   &.open {
@@ -108,15 +108,14 @@
   position: fixed;
   inset: 0;
   padding: rem(20px);
-  display: flex;
   justify-content: center;
   background: rgba($primary-black, 0.6);
   backdrop-filter: blur(28px);
 
   .closeIcon {
     position: absolute;
-    top: rem(20px);
-    right: rem(20px);
+    top: 0;
+    right: 0;
     color: rgba($primary-white, 0.6);
   }
 }

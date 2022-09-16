@@ -34,5 +34,6 @@
     "noEmails": "You have not added users",
     "downloadIcsTitle": "An email reminder was sent to you and the other party",
     "downloadIcs": "Download ICS"
-  }
+  },
+  "createRoom": "Create room"
 }

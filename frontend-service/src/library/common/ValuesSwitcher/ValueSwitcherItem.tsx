@@ -14,6 +14,7 @@ const Component = ({
     index,
     onValueChanged,
     onUpdateActiveElement,
+    variant = 'primary',
 }: ValueSwitcherItemProps) => {
     useEffect(() => {
         if (activeValue.value === value.value) {
@@ -25,6 +26,9 @@ const Component = ({
         onValueChanged(value);
     }, [onValueChanged]);
 
+    const typographyColor =
+        variant === 'primary' ? 'colors.grayscale.normal' : 'colors.white.normal';
+
     return (
         <CustomGrid
             container
@@ -34,7 +38,7 @@ const Component = ({
             className={styles.item}
             style={{ '--width': `${optionWidth}px` }}
         >
-            <CustomTypography color="colors.grayscale.normal" variant="body2">
+            <CustomTypography color={typographyColor} variant="body2">
                 {value.label}
             </CustomTypography>
         </CustomGrid>

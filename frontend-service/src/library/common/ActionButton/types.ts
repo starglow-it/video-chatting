@@ -11,5 +11,6 @@ export type ActionButtonProps = {
         | 'cancel'
         | 'transparent'
         | 'transparentBlack'
+        | 'gray'
         | undefined;
 };

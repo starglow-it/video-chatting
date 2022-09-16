@@ -20,6 +20,8 @@ export const initialDialogsState: AppDialogsState = {
     deleteProfileDialog: false,
     replaceTemplateConfirmDialog: false,
     timeExpiredDialog: false,
+    hostTimeExpiredDialog: false,
+    confirmCancelRoomCreationDialog: false,
 };
 
 export const $appDialogsStore = dialogsDomain.createStore<AppDialogsState>(initialDialogsState);

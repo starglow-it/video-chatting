@@ -235,6 +235,8 @@ export type AppDialogsState = {
     deleteProfileDialog: boolean;
     replaceTemplateConfirmDialog: boolean;
     timeExpiredDialog: boolean;
+    hostTimeExpiredDialog: boolean;
+    confirmCancelRoomCreationDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -256,6 +258,8 @@ export enum AppDialogsEnum {
     deleteProfileDialog = 'deleteProfileDialog',
     replaceTemplateConfirmDialog = 'replaceTemplateConfirmDialog',
     timeExpiredDialog = 'timeExpiredDialog',
+    confirmCancelRoomCreationDialog = 'confirmCancelRoomCreationDialog',
+    hostTimeExpiredDialog = 'hostTimeExpiredDialog',
 }
 
 export type DialogActionPayload = {
@@ -327,11 +331,13 @@ export enum NotificationType {
     InviteSent = 'invite_sent',
     HostChanged = 'host_changed',
     SubscriptionEndDate = 'subscription_end_date',
+    UploadFileFail = 'upload_file_fail',
 }
 
 export type Notification = {
     type: NotificationType;
     message: string;
+    messageOptions?: { [key: string]: any };
     withSuccessIcon?: boolean;
     withErrorIcon?: boolean;
     withManualClose?: boolean;

@@ -172,6 +172,19 @@ export const componentsTheme = (theme: Theme) =>
                         },
                     },
                     {
+                        props: { variant: 'custom-gray' },
+                        style: {
+                            background: theme.palette.buttons.gray.main,
+                            color: theme.palette.common.white,
+                            '&:hover': {
+                                background: theme.palette.buttons.gray.hover,
+                            },
+                            '&.Mui-disabled': {
+                                background: theme.palette.buttons.gray.disabled,
+                            },
+                        },
+                    },
+                    {
                         props: { variant: 'custom-error' },
                         style: {
                             background: theme.designSystemColors.red.primary,
@@ -370,6 +383,7 @@ export const componentsTheme = (theme: Theme) =>
                         backgroundColor: theme.designSystemColors.white.primary,
                         color: theme.designSystemColors.black.primary,
                         boxShadow: `0px 12px 24px -4px ${theme.palette.shadow.normal}`,
+                        padding: '10px 0px',
 
                         '&:hover': {
                             boxShadow: `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
@@ -378,7 +392,12 @@ export const componentsTheme = (theme: Theme) =>
                         },
                     },
                     label: {
-                        padding: '10px 22px',
+                        padding: '0',
+                        margin: '0 20px 0 20px',
+                    },
+                    icon: {
+                        margin: '0 -20px 0 12px',
+                        color: 'inherit',
                     },
                 },
             },

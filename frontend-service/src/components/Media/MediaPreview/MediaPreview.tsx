@@ -31,7 +31,7 @@ import { MediaPreviewProps } from './types';
 import styles from './MediaPreview.module.scss';
 
 const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPreviewProps) => {
-    const videoRef = useRef<HTMLVideoElement>();
+    const videoRef = useRef<HTMLVideoElement | null>(null);
     const profile = useStore($profileStore);
     const localUser = useStore($localUserStore);
 
@@ -85,6 +85,7 @@ const MediaPreview = memo(({ stream, onToggleAudio, onToggleVideo }: MediaPrevie
                 videoRef={videoRef}
                 size={isMobile ? 99 : 116}
                 className={styles.previewVideo}
+                onToggleVideo={handleToggleVideo}
             />
             {isNeedToRenderDevices && (
                 <CustomGrid container direction="column" className={styles.mediaWrapper}>

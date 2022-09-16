@@ -1,0 +1,29 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: $dark-white;
+}
+
+.controlPanel {
+  width: 100%;
+  position: relative;
+  padding: rem(28px);
+
+  .navigationPaper {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .closeButton {
+    position: absolute;
+    right: rem(28px);
+    width: rem(46px);
+    height: rem(46px);
+  }
+}

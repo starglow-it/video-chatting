@@ -57,7 +57,7 @@ const validationSchema = yup.object({
     signBoard: simpleStringSchema().required('required'),
 });
 
-const SetUpTemplateContainer = memo(() => {
+const Component = () => {
     const router = useRouter();
 
     const setUpTemplate = useStore($setUpTemplateStore);
@@ -236,6 +236,6 @@ const SetUpTemplateContainer = memo(() => {
             <ConfirmQuitOnboardingDialog onConfirm={handleQuit} onCancel={handleCancel} />
         </CustomGrid>
     );
-});
+};
 
-export { SetUpTemplateContainer };
+export const SetUpTemplateContainer = memo(Component);

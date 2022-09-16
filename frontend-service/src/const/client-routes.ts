@@ -5,6 +5,7 @@ export const resetPasswordRoute = '/reset-password';
 export const registerRoute = '/register';
 export const confirmRegistrationRoute = '/confirm-registration';
 export const roomRoute = '/room';
+export const createRoomRoute = `${roomRoute}/create`;
 export const dashboardRoute = '/dashboard';
 export const profileRoute = '/dashboard/profile';
 export const editProfileRoute = '/dashboard/profile/edit';

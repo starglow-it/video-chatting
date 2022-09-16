@@ -15,7 +15,7 @@ const EditTemplateCompanyInfo = memo(() => {
         register,
     } = useFormContext();
 
-    const currentEmailErrorMessage: string = errors?.email?.[0]?.message || '';
+    const currentEmailErrorMessage: string = errors?.contactEmail?.[0]?.message || '';
     const currentCompanyNameErrorMessage: string = errors?.companyName?.[0]?.message || '';
     const currentDescriptionErrorMessage: string = errors?.description?.[0]?.message || '';
 

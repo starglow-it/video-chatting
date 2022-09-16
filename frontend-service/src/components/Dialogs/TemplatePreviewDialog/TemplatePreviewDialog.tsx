@@ -88,8 +88,11 @@ const Component = ({
     return (
         <CustomDialog
             open={templatePreviewDialog}
+            onClose={handleClose}
             contentClassName={styles.dialogContent}
             maxWidth="lg"
+            withCloseButton={false}
+            withNativeCloseBehavior
         >
             <CustomGrid container wrap="nowrap">
                 <CustomGrid className={styles.templatePreview}>

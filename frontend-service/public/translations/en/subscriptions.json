@@ -46,7 +46,7 @@
         {
           "key": "rooms",
           "text": "1 Free Room",
-          "subText": "You can still try and switch room for free"
+          "subText": "You can still switch room for free"
         },
         {
           "key": "ssl",
@@ -104,13 +104,13 @@
       "features": [
         {
           "key": "house",
-          "text": "All House plan features",
+          "text": "All House features",
           "subText": ""
         },
         {
           "key": "meetingTime",
-          "text": "1200 min",
-          "subText": "of meeting time / month "
+          "text": "1200 min / month",
+          "subText": ""
         },
         {
           "key": "rooms",
@@ -133,8 +133,8 @@
         },
         {
           "key": "meetingTime",
-          "text": "Unlimited min",
-          "subText": "of meeting time / month "
+          "text": "Unlimited meeting time",
+          "subText": ""
         },
         {
           "key": "rooms",
@@ -148,5 +148,9 @@
         }
       ]
     }
+  },
+  "upgradePlan": {
+    "title": "Upgrade plan to Create room",
+    "description": "Only users with Professional and Business plan can create rooms"
   }
 }

@@ -22,6 +22,7 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { MediaContext } from '../../contexts/MediaContext';
 import { VideoEffectsProvider } from '../../contexts/VideoEffectContext';
+import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 
 // stores
 import {
@@ -194,6 +195,7 @@ const MeetingContainer = memo(() => {
                     )}
                 </VideoEffectsProvider>
             )}
+            <HostTimeExpiredDialog />
             <MeetingErrorDialog />
         </>
     );

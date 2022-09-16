@@ -90,3 +90,18 @@
     @include withHoverAction("", rgba($primary-black, 0.75));
   }
 }
+
+.gray {
+  background: rgba($primary-black, 0.6);
+  color: $primary-white;
+  border-radius: rem(12px);
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &:hover {
+    background: rgba($primary-black, 0.75);
+  }
+
+  &.withAction {
+    @include withHoverAction("", rgba($primary-black, 0.75));
+  }
+}

@@ -52,7 +52,8 @@
     "update": "Update",
     "replace": "Replace",
     "buy": "Buy",
-    "leave": "Leave"
+    "leave": "Leave",
+    "homePage": "Homepage"
   },
   "login": {
     "welcome": "Welcome back",

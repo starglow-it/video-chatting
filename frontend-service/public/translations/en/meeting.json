@@ -121,5 +121,10 @@
   "rooms": "Rooms",
   "portraitLayout": {
     "text": "Please shift to the landscape view on your device for the best experience in Live Office meetings"
+  },
+  "expired": {
+    "title": "Meeting was canceled",
+    "text": "Host run out of meeting minutes. Contact them\nto resolve the issues.",
+    "button": "Homepage"
   }
 }

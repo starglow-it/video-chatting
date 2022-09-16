@@ -11,7 +11,7 @@ import { Connection } from 'mongoose';
 import { Socket } from 'socket.io';
 import { plainToClass, plainToInstance } from 'class-transformer';
 
-import {
+import SubscribeEvents, {
   ANSWER_ACCESS_REQUEST,
   CANCEL_ACCESS_REQUEST,
   END_MEETING,
@@ -182,6 +182,7 @@ export class MeetingsGateway
       }
 
       const isOwner = plainMeeting.owner === plainUser.id;
+      const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
 
       if (
         !isOwner &&
@@ -193,7 +194,10 @@ export class MeetingsGateway
         });
       }
 
-      if (isOwner && plainUser?.accessStatus !== AccessStatusEnum.Waiting) {
+      if (
+        isMeetingHost &&
+        plainUser?.accessStatus !== AccessStatusEnum.Waiting
+      ) {
         const endTimestamp = getTimeoutTimestamp({
           type: TimeoutTypesEnum.Minutes,
           value: 15,
@@ -493,7 +497,11 @@ export class MeetingsGateway
 
       this.taskService.addTimeout({
         name: `meeting:finish:${message.meetingId}`,
-        ts: finishTime,
+        ts:
+          mainUser.maxMeetingTime < finishTime &&
+          mainUser.subscriptionPlanKey !== 'Business'
+            ? mainUser.maxMeetingTime
+            : finishTime,
         callback: this.endMeeting.bind(this, {
           meetingId: meeting._id,
           reason: 'expired',
@@ -1104,6 +1112,182 @@ export class MeetingsGateway
       return {
         success: true,
       };
+    });
+  }
+
+  @SubscribeMessage(SubscribeEvents.CHANGE_HOST)
+  async changeHost(@MessageBody() message: { userId: string }) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findById(message.userId, session);
+
+      if (!user) {
+        this.logger.error({
+          message: '[changeHost]: no user found',
+          ctx: {
+            socketId: message.userId,
+          },
+        });
+
+        return;
+      }
+
+      const profileUser = await this.coreService.findUserById({
+        userId: user.profileId,
+      });
+
+      await user.populate([{ path: 'meeting', populate: 'hostUserId' }]);
+
+      if (
+        profileUser &&
+        !profileUser?.maxMeetingTime &&
+        profileUser?.subscriptionPlanKey !== 'Business'
+      ) {
+        return {
+          success: false,
+          message: 'meeting.userHasNoTimeLeft',
+        };
+      }
+
+      const meeting = await this.meetingsService.findById(
+        user.meeting._id,
+        session,
+      );
+
+      if (user?.meeting?.hostUserId?._id) {
+        const prevHostUser = await this.usersService.findById(
+          user?.meeting?.hostUserId?._id,
+          session,
+        );
+
+        const prevProfileHostUser = await this.coreService.findUserById({
+          userId: prevHostUser.profileId,
+        });
+
+        if (prevProfileHostUser.subscriptionPlanKey !== 'Business') {
+          const hostTimeData = await this.meetingHostTimeService.update({
+            query: {
+              host: prevHostUser.id,
+              meeting: meeting.id,
+              endAt: null,
+            },
+            data: {
+              endAt: Date.now(),
+            },
+          });
+
+          const newTime =
+            prevProfileHostUser.maxMeetingTime -
+            (hostTimeData.endAt - hostTimeData.startAt);
+
+          await this.coreService.updateUser({
+            query: { _id: prevProfileHostUser.id },
+            data: {
+              maxMeetingTime: newTime < 0 ? 0 : newTime,
+            },
+          });
+
+          if (prevHostUser?.socketId) {
+            this.emitToSocketId(prevHostUser?.socketId, 'meeting:timeLimit');
+          }
+        }
+      }
+
+      if (profileUser?.subscriptionPlanKey !== 'Business') {
+        const newMeeting = await this.meetingsService.updateMeetingById(
+          meeting.id,
+          {
+            hostUserId: message.userId,
+          },
+          session,
+        );
+
+        await this.meetingHostTimeService.create({
+          data: {
+            host: user.id,
+            meeting: meeting.id,
+          },
+        });
+
+        this.taskService.deleteTimeout({
+          name: `meeting:timeLimit:${meeting.id}`,
+        });
+
+        const timeLimitNotificationTimeout = getTimeoutTimestamp({
+          value: 20,
+          type: TimeoutTypesEnum.Minutes,
+        });
+
+        const meetingEndTime = meeting.endsAt - Date.now();
+
+        this.taskService.deleteTimeout({
+          name: `meeting:finish:${meeting.id}`,
+        });
+
+        this.taskService.addTimeout({
+          name: `meeting:finish:${meeting.id}`,
+          ts:
+            profileUser.maxMeetingTime < meetingEndTime
+              ? profileUser.maxMeetingTime
+              : meetingEndTime,
+          callback: this.endMeeting.bind(this, {
+            meetingId: meeting._id,
+            reason: 'expired',
+          }),
+        });
+
+        if (profileUser.maxMeetingTime < meetingEndTime) {
+          this.taskService.addTimeout({
+            name: `meeting:timeLimit:${meeting.id}`,
+            ts:
+              profileUser.maxMeetingTime < timeLimitNotificationTimeout
+                ? 0
+                : profileUser.maxMeetingTime - timeLimitNotificationTimeout,
+            callback: async () => {
+              const hostTimeData = await this.meetingHostTimeService.update({
+                query: {
+                  host: user.id,
+                  meeting: meeting.id,
+                  endAt: null,
+                },
+                data: {
+                  endAt: Date.now(),
+                },
+              });
+
+              const newTime =
+                profileUser.maxMeetingTime -
+                (hostTimeData.endAt - hostTimeData.startAt);
+
+              await this.coreService.updateUser({
+                query: { _id: profileUser.id },
+                data: {
+                  maxMeetingTime: newTime < 0 ? 0 : newTime,
+                },
+              });
+
+              if (user?.socketId) {
+                this.emitToSocketId(user?.socketId, 'meeting:timeLimit');
+              }
+
+              await this.meetingHostTimeService.create({
+                data: {
+                  host: user.id,
+                  meeting: meeting.id,
+                },
+              });
+            },
+          });
+        }
+
+        const plainMeeting = plainToClass(CommonMeetingDTO, newMeeting, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+
+        this.emitToRoom(`meeting:${meeting._id}`, UPDATE_MEETING, {
+          meeting: plainMeeting,
+        });
+      }
     });
   }
 

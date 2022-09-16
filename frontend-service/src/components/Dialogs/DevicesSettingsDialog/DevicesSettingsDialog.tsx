@@ -147,13 +147,17 @@ const Component = () => {
         }
     }, [localUser.cameraStatus, localUser.micStatus, devicesSettingsDialog, isStreamRequested]);
 
+    useEffect(() => {
+        setVolume(backgroundAudioVolume);
+    }, [backgroundAudioVolume]);
+
     const handleSaveSettings = useCallback(async () => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
         });
 
         onSetBlur(isBlurEnabled);
-        setBackgroundAudioVolume(backgroundAudioVolume);
+        setBackgroundAudioVolume(volume);
         setBackgroundAudioActive(isSettingsAudioBackgroundActive);
 
         if (changeStream) {
@@ -199,7 +203,7 @@ const Component = () => {
         changeStream,
         meeting.sharingUserId,
         isSharingScreenActive,
-        backgroundAudioVolume,
+        volume,
         isSettingsAudioBackgroundActive,
         isBlurEnabled,
         isBlurActive,

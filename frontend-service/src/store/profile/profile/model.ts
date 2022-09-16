@@ -17,6 +17,9 @@ export const $profileStore = profileDomain.createStore<Profile>(initialProfileSt
 export const $isBusinessSubscription = $profileStore.map(
     profile => profile.subscriptionPlanKey === 'Business',
 );
+export const $isProfessionalSubscription = $profileStore.map(
+    profile => profile.subscriptionPlanKey === 'Professional',
+);
 
 export const setProfileEvent = profileDomain.createEvent<{ user?: Profile }>('setProfileEvent');
 export const clearProfileEvent = profileDomain.createEvent('clearProfileEvent');

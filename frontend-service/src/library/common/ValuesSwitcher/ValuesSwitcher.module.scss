@@ -4,9 +4,6 @@
 .wrapper {
   width: min-content;
   position: relative;
-  background: rgba($normal-gray-scale, 0.25);
-  border-radius: rem(6px);
-  color: $primary-black;
 
   .item {
     width: var(--width);
@@ -17,7 +14,6 @@
 
   .activeItem {
     position: absolute;
-    top: 0;
     left: var(--left);
 
     width: var(--width);
@@ -30,5 +26,27 @@
     border-radius: rem(6px);
 
     transition: left 200ms ease-in;
+  }
+}
+
+.primary {
+  background: rgba($normal-gray-scale, 0.25);
+  border-radius: rem(6px);
+  color: $primary-black;
+
+  .activeItem {
+    top: 0;
+  }
+}
+
+.transparent {
+  border-radius: rem(12px);
+  height: rem(46px);
+  align-items: center;
+  padding: rem(6px);
+  color: $primary-white;
+
+  .activeItem {
+    color: $primary-black;
   }
 }

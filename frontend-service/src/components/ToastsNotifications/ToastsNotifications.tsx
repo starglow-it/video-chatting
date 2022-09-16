@@ -14,6 +14,9 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { RoundSuccessIcon } from '@library/icons/RoundIcons/RoundSuccessIcon';
 import { RoundErrorIcon } from '@library/icons/RoundIcons/RoundErrorIcon';
 
+// const
+import { ONE_SECOND } from '../../const/time/common';
+
 // store
 import { $notificationsStore, removeNotification } from '../../store';
 
@@ -22,6 +25,8 @@ import { Notification } from '../../store/types';
 
 // styles
 import styles from './ToastsNotifications.module.scss';
+
+const AUTO_HIDE_DURATION = 7 * ONE_SECOND;
 
 const Component = () => {
     const notifications = useStore($notificationsStore);
@@ -63,7 +68,7 @@ const Component = () => {
                 horizontal: isMobile ? 'left' : 'center',
             }}
             open={open}
-            {...(messageInfo?.withManualClose ? { autoHideDuration: 3000 } : {})}
+            {...(messageInfo?.withManualClose ? {} : { autoHideDuration: AUTO_HIDE_DURATION })}
             message={
                 <CustomGrid container alignItems="center" gap={1}>
                     <ConditionalRender condition={messageInfo?.withSuccessIcon || false}>
@@ -72,7 +77,7 @@ const Component = () => {
                     <ConditionalRender condition={messageInfo?.withErrorIcon || false}>
                         <RoundErrorIcon width="16px" height="16px" />
                     </ConditionalRender>
-                    {translation(messageInfo?.message || '')}
+                    {translation(messageInfo?.message || '', messageInfo?.messageOptions ?? {})}
                 </CustomGrid>
             }
         />

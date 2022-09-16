@@ -1,0 +1,26 @@
+{
+  "cancel": {
+    "title": "Cancel Room creation?",
+    "description": "All your settings will be lost.",
+    "buttons": {
+      "cancel": "Cancel",
+      "stay": "Stay"
+    }
+  },
+  "tooltips": {
+    "cancel": "Cancel room creation"
+  },
+  "uploadBackground": {
+    "title": "Upload your Room background",
+    "description": "Drag & Drop file here or click button",
+    "tip": {
+      "title": "Image/Video",
+      "imageRestricts": "jpg, .heic or .png / Up to {{maxSize}} MB",
+      "videoRestricts": ".mp4 / Up to {{maxSize}} MB"
+    },
+    "actions": {
+      "upload": "Upload",
+      "change": "Change"
+    }
+  }
+}

@@ -15,7 +15,7 @@ export class TasksService {
     ts: number;
     callback: () => void;
   }) {
-    const isExists = this.schedulerRegistry.doesExists('timeout', name);
+    const isExists = this.schedulerRegistry.doesExist('timeout', name);
 
     if (isExists) return;
 
@@ -29,11 +29,15 @@ export class TasksService {
   }
 
   deleteTimeout({ name }: { name: string }) {
-    const timeout = this.schedulerRegistry.doesExists('timeout', name);
+    const timeout = this.schedulerRegistry.doesExist('timeout', name);
 
     if (!timeout) return;
 
     this.schedulerRegistry.deleteTimeout(name);
     this.logger.log(`Timeout with name [${name}] deleted`);
+  }
+
+  isTimeoutExists({ name }) {
+    return this.schedulerRegistry.doesExist('timeout', name);
   }
 }
