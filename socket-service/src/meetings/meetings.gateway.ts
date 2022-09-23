@@ -896,6 +896,7 @@ export class MeetingsGateway
             query: {
               host: targetUser.id,
               meeting: meeting._id,
+              endAt: null,
             },
           });
 

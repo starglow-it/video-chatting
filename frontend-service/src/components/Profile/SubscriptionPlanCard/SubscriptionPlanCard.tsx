@@ -40,7 +40,7 @@ const Component = ({
 
     const priceString = !isFree
         ? `${currencies[price?.currency]}${price.unit_amount / 100}`
-        : 'Free';
+        : 'FREE';
 
     const { translation } = useLocalization('subscriptions');
 

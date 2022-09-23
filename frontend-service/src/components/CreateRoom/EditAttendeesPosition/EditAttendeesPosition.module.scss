@@ -1,0 +1,30 @@
+@import "../../../styles/rem";
+
+.wrapper {
+  height: 100%;
+  width: 100%;
+  .stubWrapper {
+    pointer-events: none;
+  }
+}
+
+.buttonsGroup {
+  position: absolute;
+  bottom: rem(28px);
+  left: 50%;
+  transform: translate(-50%);
+
+  .button {
+    max-width: rem(113px);
+    width: 100%;
+  }
+
+  .actionButton {
+    width: rem(50px);
+    height: rem(50px);
+    border-radius: rem(12px);
+    .icon {
+      transform: scaleX(-1);
+    }
+  }
+}

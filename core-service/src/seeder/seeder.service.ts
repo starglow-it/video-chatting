@@ -152,14 +152,23 @@ export class SeederService {
               };
 
               if (templateData.type === 'paid') {
-                const stripeProduct =
-                  await this.paymentsService.createTemplateStripeProduct({
+                const existingTemplateProduct =
+                  await this.paymentsService.getStripeTemplateProductByName({
                     name: templateData.name,
-                    description: templateData.shortDescription,
-                    priceInCents: templateData.priceInCents,
                   });
 
-                createData.stripeProductId = stripeProduct.id;
+                if (existingTemplateProduct?.id) {
+                  createData.stripeProductId = existingTemplateProduct.id;
+                } else {
+                  const stripeProduct =
+                    await this.paymentsService.createTemplateStripeProduct({
+                      name: templateData.name,
+                      description: templateData.shortDescription,
+                      priceInCents: templateData.priceInCents,
+                    });
+
+                  createData.stripeProductId = stripeProduct.id;
+                }
               }
               await this.commonTemplatesService.createCommonTemplate(
                 createData,

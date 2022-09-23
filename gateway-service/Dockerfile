@@ -1,18 +1,20 @@
 FROM node:16.16.0-alpine AS builder
 
+RUN npm install -g @nestjs/cli
+
 WORKDIR /app
 
 COPY ./shared ./shared
 
 RUN mkdir ./gateway-service
 
-COPY ./gateway-service/package.json ./gateway-service/
+COPY ./gateway-service/package*.json ./gateway-service/
 
-RUN cd ./gateway-service && npm i --legacy-peer-deps
+RUN cd ./gateway-service && npm ci --legacy-peer-deps
 
 COPY ./gateway-service ./gateway-service/
 
-RUN cd ./gateway-service && npm run build
+RUN npm run --prefix=/app/gateway-service build
 
 FROM node:16.16.0-alpine
 

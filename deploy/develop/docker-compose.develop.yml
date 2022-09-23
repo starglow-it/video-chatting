@@ -144,10 +144,10 @@ services:
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
       - RABBIT_MQ_NOTIFICATIONS_QUEUE=rabbitMqNotificationsQueue
-      - FRONTEND_URL=https://dev-liveoffice.staging.forasoft.com
       - RABBIT_MQ_USER
       - RABBIT_MQ_PASS
       - RABBIT_MQ_HOST
+      - FRONTEND_URL=https://dev-liveoffice.staging.forasoft.com
       - JWT_SECRET
       - MONGO_URI
       - SMTP_HOST

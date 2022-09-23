@@ -6,13 +6,15 @@ stages:
   - update_jira_issues
   - update_demo_traefik
   - update_demo
+  - update_production_traefik
+  - update_production
   - auto_push
 
 variables:
   GIT_DEPTH: 10
 
 .docker-base:
-  image: registry.s2.git.fora-soft.com/forasoft/dind
+  image: registry.s2.git.fora-soft.com/forasoft/dind2022
   environment:
     name: ${CI_COMMIT_REF_NAME}
   interruptible: true
@@ -29,4 +31,5 @@ include:
   - 'pipelines/staging.yml'
   - 'pipelines/test.yml'
   - 'pipelines/autopush_code.yml'
- 
+  - 'pipelines/production.yml'
+

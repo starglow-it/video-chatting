@@ -228,4 +228,14 @@ export class PaymentsService {
       (product) => product.metadata.type === 'subscription',
     );
   }
+
+  async getStripeTemplates(): Promise<Stripe.Product[]> {
+    const allProducts = await this.stripeClient.products.list({
+      active: true,
+    });
+
+    return allProducts.data.filter(
+      (product) => product.metadata.type === 'template',
+    );
+  }
 }

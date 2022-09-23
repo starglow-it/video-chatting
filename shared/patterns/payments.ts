@@ -13,5 +13,6 @@ export const GET_STRIPE_CHECKOUT_SESSION = 'get_stripe_checkout_session';
 export const GET_STRIPE_PORTAL_SESSION = 'get_stripe_portal_session';
 export const GET_STRIPE_SUBSCRIPTION = 'get_stripe_subscription';
 export const GET_TEMPLATE_STRIPE_PRODUCT = 'get_template_stripe_product';
+export const GET_TEMPLATE_STRIPE_PRODUCT_BY_NAME = 'get_template_stripe_product_by_name';
 export const CREATE_TEMPLATE_STRIPE_PRODUCT = 'create_template_stripe_product';
 export const GET_STRIPE_PRODUCT_CHECKOUT_SESSION = 'get_stripe_product_checkout_session';

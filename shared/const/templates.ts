@@ -408,8 +408,8 @@ export const templatesData: BaseTemplate[] = [
   {
     templateId: 12,
     url: "https://vimeo.com/695855516",
-    videoPath: "/executive1",
-    imagePath: "/free-executive1",
+    videoPath: "/executive",
+    imagePath: "/free-executive",
     name: "New York Executive",
     maxParticipants: 3,
     description:
@@ -1278,9 +1278,9 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 36,
-    url: "https://vimeo.com/738444916/62d0257c94",
-    videoPath: "/perk-central",
-    imagePath: "/perk-central",
+    url: "https://vimeo.com/719688289/5241eddabb",
+    videoPath: "/perk_central",
+    imagePath: "/perk_central",
     name: "Perk Central",
     maxParticipants: 6,
     description: "This place calls for friends or making friends",
@@ -1325,9 +1325,9 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 37,
-    url: "https://vimeo.com/738444916/62d0257c94",
-    videoPath: "/perk-central",
-    imagePath: "/free-perk-central",
+    url: "https://vimeo.com/719688289/5241eddabb",
+    videoPath: "/perk_central",
+    imagePath: "/free-perk_central",
     name: "Perk Central",
     maxParticipants: 4,
     description: "This place calls for friends or making friends",

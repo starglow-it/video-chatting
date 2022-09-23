@@ -6,7 +6,7 @@ import { ChipProps } from '@mui/material/Chip/Chip';
 type CustomChipProps = React.PropsWithoutRef<{
     active?: boolean;
 }> &
-    Omit<ChipProps, 'label'> &
+    ChipProps &
     TranslationProps;
 
 export type { CustomChipProps };

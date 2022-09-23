@@ -20,9 +20,9 @@ import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 import { MeetingErrorDialog } from '@components/Dialogs/MeetingErrorDialog/MeetingErrorDialog';
 import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPreview';
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
+import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MediaContext } from '../../contexts/MediaContext';
 import { VideoEffectsProvider } from '../../contexts/VideoEffectContext';
-import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 
 // stores
 import {
@@ -165,17 +165,17 @@ const MeetingContainer = memo(() => {
                             micStatus: savedSettings.micActiveSetting ? 'active' : 'inactive',
                         });
 
-                        await sendStartMeetingSocketEvent();
+                        sendStartMeetingSocketEvent();
                     }
                 } else {
-                    await joinRoomBeforeMeetingSocketEvent({
+                    joinRoomBeforeMeetingSocketEvent({
                         templateId: router.query.token as string,
                     });
                 }
                 setStartMeeting(true);
             }
         })();
-    }, [meetingTemplate?.meetingInstance?.serverIp, isSocketConnected, isOwner]);
+    }, [isSocketConnected, meetingTemplate?.meetingInstance?.serverIp, isOwner]);
 
     return (
         <>

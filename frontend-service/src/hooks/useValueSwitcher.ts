@@ -11,6 +11,7 @@ type UseValueSwitcherReturnType = {
     activeItem: ValuesSwitcherItem;
     onValueChange: (item: ValuesSwitcherItem) => void;
     onNextValue: () => void;
+    onPreviousValue: () => void;
 };
 
 export const useValueSwitcher = ({
@@ -35,10 +36,18 @@ export const useValueSwitcher = ({
         setActiveValue(values[newInd].value);
     }, [activeValue]);
 
+    const handlePreviousValue = useCallback(() => {
+        const currentInd = values.findIndex(({ value }) => activeValue === value);
+        const newInd = currentInd - 1 === -1 ? currentInd : currentInd - 1;
+
+        setActiveValue(values[newInd].value);
+    }, [activeValue]);
+
     return {
         activeValue,
         activeItem,
         onValueChange: handleValueChange,
         onNextValue: handleNextValue,
+        onPreviousValue: handlePreviousValue,
     };
 };

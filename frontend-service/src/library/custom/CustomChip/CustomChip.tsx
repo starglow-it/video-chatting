@@ -13,7 +13,7 @@ import { CustomChipProps } from './types';
 import styles from './CustomChip.module.scss';
 
 const Component: React.FunctionComponent<CustomChipProps> = (
-    { active = false, className, nameSpace, translation, ...rest },
+    { active = false, className, nameSpace, translation, label, ...rest },
     ref: ForwardedRef<HTMLInputElement>,
 ) => (
     <Chip
@@ -21,7 +21,7 @@ const Component: React.FunctionComponent<CustomChipProps> = (
         className={clsx(className, {
             [styles.active]: active,
         })}
-        label={<CustomTypography nameSpace={nameSpace} translation={translation} />}
+        label={label ?? <CustomTypography nameSpace={nameSpace} translation={translation} />}
         {...rest}
     />
 );

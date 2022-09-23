@@ -28,6 +28,7 @@ const Component: React.FunctionComponent<CustomDropdownProps> = (
         placeholder,
         IconComponent,
         error,
+        variant = 'primary',
         ...rest
     } = props;
 
@@ -59,6 +60,7 @@ const Component: React.FunctionComponent<CustomDropdownProps> = (
                     },
                 }}
                 IconComponent={IconComponent || RoundArrowIcon}
+                className={styles[variant]}
                 {...rest}
             >
                 {list}

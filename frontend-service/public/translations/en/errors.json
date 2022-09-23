@@ -69,7 +69,9 @@
   },
   "noSpaces": "No spaces allowed",
   "maxLength": {
+    "60": "Maximum allowed characters is 60",
     "100": "Maximum allowed characters is 100",
+    "200": "Maximum allowed characters is 200",
     "300": "Maximum allowed characters is 300"
   },
   "templatePrice": {
@@ -85,5 +87,9 @@
     "twitter": "Enter valid Twitter link",
     "linkedin": "Enter valid LinkedIn link",
     "custom": "Entered link is invalid"
+  },
+  "tags": {
+    "unacceptableSymbols": "Please use alphabetic only",
+    "max": "Maximum tags number is 6"
   }
 }

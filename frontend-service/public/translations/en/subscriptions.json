@@ -40,8 +40,7 @@
         },
         {
           "key": "meetingTime",
-          "text": "Time capped on monthly basis",
-          "subText": "120 minutes"
+          "text": "120 min / month"
         },
         {
           "key": "rooms",
@@ -90,8 +89,7 @@
         },
         {
           "key": "meetingTime",
-          "text": "Time capped on monthly basis",
-          "subText": "120 minutes"
+          "text": "120 min / month"
         },
         {
           "key": "rooms",

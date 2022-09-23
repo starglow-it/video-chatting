@@ -1,9 +1,15 @@
 import { attach, combine, Store } from 'effector-next';
-import { joinDashboardSocketEvent, enterWaitingRoomSocketEvent } from './model';
+import {
+    enterWaitingRoomSocketEvent,
+    joinDashboardSocketEvent,
+    joinRoomBeforeMeetingSocketEvent,
+} from './model';
 import { $profileStore } from '../profile/profile/model';
 import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
 import { $localUserStore } from '../users/localUser/model';
-import { Profile } from '../types';
+import { AppDialogsEnum, Profile } from '../types';
+import { setMeetingErrorEvent } from '../meeting/meetingError/model';
+import { appDialogsApi } from '../dialogs/init';
 
 export const sendJoinDashboardSocketEvent = attach<
     void,
@@ -28,4 +34,11 @@ export const sendEnterWaitingRoomSocketEvent = attach({
         templateId: meetingTemplate.id,
         username: localUser.username,
     }),
+});
+
+joinRoomBeforeMeetingSocketEvent.failData.watch(data => {
+    setMeetingErrorEvent(data);
+    appDialogsApi.openDialog({
+        dialogKey: AppDialogsEnum.meetingErrorDialog,
+    });
 });

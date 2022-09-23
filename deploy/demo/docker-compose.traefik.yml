@@ -28,8 +28,8 @@ services:
     labels:
       - "traefik.enable=true"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/data/traefik/config:/etc/traefik.d"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/letsencrypt:/letsencrypt
     ports:
       - mode: host
         protocol: tcp

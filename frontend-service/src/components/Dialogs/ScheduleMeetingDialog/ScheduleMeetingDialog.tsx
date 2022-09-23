@@ -210,8 +210,11 @@ const Component = () => {
                                 selected={selectedDate}
                                 startDate={new Date()}
                                 blockedDate={
-                                    profile.maxMeetingTime === 0 &&
-                                    new Date(profile.renewSubscriptionTimestampInSeconds * 1000)
+                                    profile.maxMeetingTime === 0
+                                        ? new Date(
+                                              profile.renewSubscriptionTimestampInSeconds * 1000,
+                                          )
+                                        : new Date()
                                 }
                                 onDateSelected={handleSelectDate}
                                 {...restDateRegisterData}
@@ -235,9 +238,12 @@ const Component = () => {
                                     <ScheduleTime
                                         currentDate={selectedDate}
                                         blockedDate={
-                                            profile.maxMeetingTime === 0 &&
-                                            (profile.renewSubscriptionTimestampInSeconds ||
-                                                Date.now() / 1000) * 1000
+                                            profile.maxMeetingTime === 0
+                                                ? new Date(
+                                                      profile.renewSubscriptionTimestampInSeconds *
+                                                          1000,
+                                                  )
+                                                : new Date()
                                         }
                                     />
                                 </CustomFade>

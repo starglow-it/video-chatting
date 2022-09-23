@@ -53,6 +53,12 @@ declare module '@mui/material/Button' {
     }
 }
 
+declare module '@mui/material/Chip' {
+    interface ChipPropsVariantOverrides {
+        'custom-squared': true;
+    }
+}
+
 declare module '@mui/material/Slider' {
     interface SliderPropsColorOverrides {
         disabled: true;
@@ -215,5 +221,11 @@ declare module '@mui/material/styles' {
             hover: string;
             contrast: string;
         };
+    }
+}
+
+declare module 'yup' {
+    interface StringSchema {
+        unicodeLettersString(errorMessage: string): StringSchema;
     }
 }

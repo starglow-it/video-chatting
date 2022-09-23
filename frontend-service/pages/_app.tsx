@@ -25,6 +25,7 @@ import { redirectTo } from '../src/helpers/http/redirectTo';
 import createEmotionCache from '../src/createEmotionCache';
 import globalStyles from '../src/app.styles';
 import { appWithTranslation } from '../i18n';
+import '../src/validation';
 
 // themes
 import { baseTheme } from '../src/themes/base';

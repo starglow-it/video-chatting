@@ -22,5 +22,17 @@
       "upload": "Upload",
       "change": "Change"
     }
+  },
+  "editDescription": {
+    "form": {
+      "nameAndAttendees": "Name & Attendees",
+      "description": "Description",
+      "tags": "Tags",
+      "link": "Custom link"
+    }
+  },
+  "editPositions": {
+    "tooltip": "Drag & Drop users to the right places",
+    "user": "User {{index}}"
   }
 }

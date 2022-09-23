@@ -1,0 +1,43 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/rem";
+
+.wrapper {
+  cursor: pointer;
+  width: rem(110px);
+  &:hover {
+    .avatarStub {
+      border: rem(1px) solid $primary-orange;
+    }
+  }
+}
+
+.draggable {
+  pointer-events: all;
+}
+
+.avatarStub {
+  background-color: $dark-gray-scale;
+  border-radius: 50%;
+  width: rem(110px);
+  height: rem(110px);
+  border: rem(1px) solid $primary-white;
+  box-shadow: rem(0 12px 24px -4px) color($primary-black, 0.24);
+
+  .icon {
+    color: rgba($primary-white, 0.6);
+  }
+}
+
+.paper {
+  padding: rem(4px 8px);
+  color: $primary-white;
+  width: fit-content;
+  align-self: center;
+}
+
+.tooltip {
+  background: rgba($primary-black, 0.6);
+  height: unset;
+  padding: rem(16px);
+  border-radius: rem(12px);
+}

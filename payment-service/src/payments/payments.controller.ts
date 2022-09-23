@@ -20,6 +20,7 @@ import {
   GET_STRIPE_PRODUCT_CHECKOUT_SESSION,
   GET_STRIPE_SUBSCRIPTIONS_PRODUCTS,
   GET_STRIPE_TEMPLATES_PRODUCTS,
+  GET_TEMPLATE_STRIPE_PRODUCT_BY_NAME,
 } from '@shared/patterns/payments';
 
 // services
@@ -494,6 +495,13 @@ export class PaymentsController {
   @MessagePattern({ cmd: GET_TEMPLATE_STRIPE_PRODUCT })
   async getTemplateStripeProduct(@Payload() data: { productId: string }) {
     return this.paymentService.getProduct(data.productId);
+  }
+
+  @MessagePattern({ cmd: GET_TEMPLATE_STRIPE_PRODUCT_BY_NAME })
+  async getTemplateStripeProductByName(@Payload() data: { name: string }) {
+    const templatesList = await this.paymentService.getStripeTemplates();
+
+    return templatesList.filter((template) => template.name === data.name);
   }
 
   @MessagePattern({ cmd: GET_STRIPE_PRODUCT_CHECKOUT_SESSION })

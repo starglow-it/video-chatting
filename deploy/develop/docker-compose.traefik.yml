@@ -11,33 +11,50 @@ networks:
 
 services:
   traefik:
-    image: traefik:v2.4
+    image: traefik:v2.8.4
     logging: *default-logging
     container_name: "traefik"
     restart: always
     command:
+      - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.network=liveoffice_traefikpublic"
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
       - "--providers.file=true"
-      - "--providers.file.directory=/etc/traefik.d"
       - "--providers.file.watch=true"
       - "--accesslog=true"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      #       livekit redirect middleware (pattern)
+      - traefik.http.middlewares.livekit_server_pattern.redirectregex.regex=https:\/\/([^/]+)-([^/]+)-([^/]+)-([^/]+)\.livekit\.liveoffice\.forasoft\.com
+      - traefik.http.middlewares.livekit_server_pattern.redirectregex.replacement=http://$$1.$$2.$$3.$$4:7880
+      #       socket redirect middleware (pattern)
+      - traefik.http.middlewares.livekit_server_pattern.redirectregex.regex=https:\/\/([^/]+)-([^/]+)-([^/]+)-([^/]+)\.socket\.liveoffice\.forasoft\.com
+      - traefik.http.middlewares.livekit_server_pattern.redirectregex.replacement=http://$$1.$$2.$$3.$$4:8080
     labels:
       - "traefik.enable=true"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/data/traefik/config:/etc/traefik.d"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/letsencrypt/archive/livekit.liveoffice.forasoft.com:/etc/certs/
+      - /data/traefik/config/certs-traefik.yaml:/etc/traefik/dynamic/certs-traefik.yaml
     ports:
-      - mode: host
-        protocol: tcp
-        published: 80
-        target: 80
-      - mode: host
-        protocol: tcp
-        published: 443
-        target: 443
+      - 80:80
+      - 443:443
+      - 127.0.0.1:8069:8080
     networks:
       - traefikpublic
+
+#  whoami:
+#    image: "traefik/whoami"
+#    restart: always
+#    labels:
+#      - traefik.enable=true
+#      - traefik.docker.network=traefikpublic
+#      - traefik.http.routers.whoami.rule=Host(`whoami.liveoffice.forasoft.com`)
+#      - traefik.http.routers.whoami.entrypoints=https
+#      - traefik.http.routers.whoami.tls=true
+#      - traefik.http.services.whoami.loadbalancer.server.port=80
+#    networks:
+#      - traefikpublic

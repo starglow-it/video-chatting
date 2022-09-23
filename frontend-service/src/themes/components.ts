@@ -297,6 +297,47 @@ export const componentsTheme = (theme: Theme) =>
                 },
             },
             MuiOutlinedInput: {
+                variants: [
+                    {
+                        props: { color: 'secondary' },
+                        style: {
+                            background: 'transparent',
+                            color: theme.designSystemColors.white.primary,
+                            '.MuiOutlinedInput-notchedOutline': {
+                                border: `1px solid ${alpha(
+                                    theme.designSystemColors.grayscale.normal,
+                                    0.6,
+                                )}`,
+                            },
+                            '&.Mui-focused': {
+                                color: theme.designSystemColors.white.primary,
+                                '.MuiOutlinedInput-notchedOutline': {
+                                    border: `1px solid ${theme.designSystemColors.white.primary}`,
+                                },
+                            },
+                            '&:hover': {
+                                '.MuiOutlinedInput-notchedOutline': {
+                                    border: `1px solid ${theme.designSystemColors.white.primary}`,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        props: { color: 'secondary', error: true },
+                        style: {
+                            '&:hover': {
+                                '.MuiOutlinedInput-notchedOutline': {
+                                    border: `1px solid ${theme.designSystemColors.red.primary}`,
+                                },
+                            },
+                            '&.Mui-focused': {
+                                '.MuiOutlinedInput-notchedOutline': {
+                                    border: `1px solid ${theme.designSystemColors.red.primary}`,
+                                },
+                            },
+                        },
+                    },
+                ],
                 styleOverrides: {
                     root: {
                         borderRadius: '10px',
@@ -377,6 +418,18 @@ export const componentsTheme = (theme: Theme) =>
                         },
                     },
                 ],
+                variants: [
+                    {
+                        props: { variant: 'custom-squared' },
+                        style: {
+                            borderRadius: '6px',
+
+                            '& .MuiChip-deleteIcon': {
+                                color: theme.designSystemColors.black.primary,
+                            },
+                        },
+                    },
+                ],
                 styleOverrides: {
                     root: {
                         cursor: 'pointer',
@@ -398,6 +451,22 @@ export const componentsTheme = (theme: Theme) =>
                     icon: {
                         margin: '0 -20px 0 12px',
                         color: 'inherit',
+                    },
+                },
+            },
+            MuiAutocomplete: {
+                styleOverrides: {
+                    listbox: {
+                        '& .MuiAutocomplete-option[aria-selected="true"]': {
+                            background: 'transparent',
+                            color: theme.designSystemColors.orange.primary,
+                            '&:hover': {
+                                background: 'transparent',
+                            },
+                        },
+                    },
+                    paper: {
+                        margin: '12px 0 0',
                     },
                 },
             },
