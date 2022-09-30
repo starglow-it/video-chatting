@@ -1,0 +1,10 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.languagesWrapper {
+  max-height: rem(300px);
+}
+
+.dropDownIcon {
+  color: $primary-orange;
+}

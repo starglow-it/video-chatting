@@ -1,0 +1,130 @@
+{
+  "readyToJoin": "Ready to join?",
+  "checkDevices": "Check your device settings before you join the meeting",
+  "requestSent": "Request sent",
+  "settings": {
+    "main": "Settings",
+    "audioVideo": "Audio & video",
+    "remember": "Remember my settings"
+  },
+  "allowAudio": "Allow access to your microphone",
+  "preview": {
+    "invitedText": "invited you to this special scene"
+  },
+  "enterPermission": "You need a permission from the participant to join",
+  "mic": "Microphone",
+  "cam": "Camera",
+  "over": "Meeting is over",
+  "kicked": "You have been removed from the meeting",
+  "waitForHost": "Waiting for host",
+  "meetingReady": "Invite others to join",
+  "meetingInfo": {
+    "title": "Meeting info",
+    "company": "Company",
+    "contacts": "Contacts"
+  },
+  "meetingActions": {
+    "editTemplate": "Click avatar to edit profile",
+    "meetingInfo": "Click avatar to view info"
+  },
+  "buttons": {
+    "join": "Join now",
+    "cancel": "Cancel",
+    "saveSettings": "Save settings",
+    "leave": "Leave meeting",
+    "end": "End meeting",
+    "send": "Send",
+    "continue": "Continue",
+    "kick": "Kick",
+    "stay": "Stay"
+  },
+  "devices": {
+    "turnOn":"Turn on",
+    "turnOff":"Turn off",
+    "switchOn":"Switch ON",
+    "switchOff":"Switch OFF"
+  },
+  "endMeeting": {
+    "forHost": "Do you want to <b>Leave Meeting</b> or <b>End it for all</b>?",
+    "forAttendee": "Leave Meeting?"
+  },
+  "invite": {
+    "title": "Invite attendees",
+    "emailTitle": "Email invitation",
+    "copyLink": "Copy link",
+    "sendInvite": "Send invite email",
+    "copyMeetingInfo": "Copy meeting info",
+    "inviteButton": "Invite with email",
+    "sendInvitation": "Send invitations"
+  },
+  "enterName": {
+    "title": "Welcome",
+    "text": {
+      "part1": "Enter your name",
+      "part2": "or",
+      "part3": "Sign in",
+      "part4": "if you have an account"
+    }
+  },
+  "templates": {
+    "editTemplate": "Edit room",
+    "personal": "Personal",
+    "company": "Business",
+    "links": "Links",
+    "signBoard": "Signboards",
+    "languages": "Languages",
+    "businessCategories": "Business Categories",
+    "buttons": {
+      "saveChanges": "Save Changes",
+      "cancelChanges": "Cancel Changes"
+    },
+    "cancelChanges": {
+      "title": "Cancel changes?",
+      "text": "If you leave now all the changes be lost"
+    }
+  },
+  "modes": {
+    "screensharing": {
+      "on": "Screen share",
+      "off": "Turn off Screen share",
+      "busy": "Someone is already sharing screen",
+      "selfSharing": "You are sharing screen now"
+    }
+  },
+  "features": {
+    "blurBackground": "Background blur",
+    "faceTracking": "Face detection",
+    "audioBackground": "Background audio",
+    "monetization": "Monetization",
+    "audioBackgroundDisabled": "Background audio disabled",
+    "notes": {
+      "title": "Leave a note",
+      "input": "Type here",
+      "unpin": "Unpin"
+    }
+  },
+  "payments": {
+    "perSession": "per session",
+    "yourCard": "Your card",
+    "stripe": "Stripe",
+    "payWith": "Pay with"
+  },
+  "customLink": {
+    "yourLink": "your meeting link here",
+    "yourLink2": "Your meeting link here*"
+  },
+  "links": {
+    "onGoods": "Show all the items",
+    "offGoods": "Hide all the items",
+    "buyItem": "Buy this item"
+  },
+  "rooms": "Rooms",
+  "portraitLayout": {
+    "text": "Please shift to the landscape view on your device for the best experience in Live Office meetings"
+  },
+  "expired": {
+    "title": "Meeting was canceled",
+    "text": "Host run out of meeting minutes. Contact them\nto resolve the issues.",
+    "button": "Homepage"
+  }
+}

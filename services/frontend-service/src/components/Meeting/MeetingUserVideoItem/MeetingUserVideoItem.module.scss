@@ -1,0 +1,89 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.profileImage {
+  border: rem(1px) solid $primary-white;
+}
+
+.media {
+  position: relative;
+
+  .activeSharing {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: rem(18px);
+    height: rem(18px);
+    border-radius: 50%;
+    background-color: $primary-orange;
+    color: $primary-white;
+    z-index: 1000;
+  }
+}
+
+.aura {
+  &:after {
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    position: absolute;
+    content: "";
+    box-shadow: 0 0 30px 20px #D39164;
+    border: 1px solid #D39164;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  &:before {
+    width: calc(100% + 1px);
+    height: calc(100% + 1px);
+    z-index: 1;
+    position: absolute;
+    content: "";
+    border: 1px solid #D39164;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+}
+
+.usernameWrapper {
+  max-width: rem(146px);
+  min-width: rem(32px);
+  max-height: rem(34px);
+  min-height: rem(24px);
+  padding: rem(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: rem(8px) 0 0 0;
+
+  &.forSharing {
+    padding: rem(4px 8px);
+  }
+
+  .micIcon {
+    color: $primary-white;
+
+    &.noAudio {
+      color: $primary-red;
+    }
+
+    &.withAction {
+      cursor: pointer;
+    }
+  }
+
+  .username {
+    max-width: 100%;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0 0 0 rem(8px);
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "email": "Email",
+  "password": "Password",
+  "yourName": "Your name",
+  "companyName": "Company Name",
+  "contactEmail": "Contact Email",
+  "businessDescription": "Describe your business",
+  "businessCategories": "Business categories",
+  "position": "Position",
+  "fullName": "Full name",
+  "editTimezone": "Timezone",
+  "startAt": "Starts",
+  "endAt": "Ends",
+  "comment": "Comment",
+  "labels": {
+    "companyName": "What is your company name?",
+    "fullName": "What is your name?",
+    "profileAvatar": "Upload profile image (optional)",
+    "dragAndDrop": "Tap or drag here"
+  },
+  "addUserEmail": "Add user email"
+}

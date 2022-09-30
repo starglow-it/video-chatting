@@ -1,0 +1,21 @@
+Build Balancer Instance Image:
+  stage: build_scaling_instance_image
+  image: pearlthoughts/packer-ansible:latest
+  tags: [liveoffice-deploy]
+  environment:
+    name: ${CI_COMMIT_REF_NAME}
+  interruptible: true
+  only:
+    variables:
+      - $VULTR_SNAPSHOT_BUILD == "1" && $CI_COMMIT_REF_NAME =~ /^(develop|demo|production)$/
+  except:
+    variables:
+      - $CLIENT_PUSH_ACTIVE == "true"
+  script:
+    - apk add curl
+    - cd deploy/packer
+    - packer init ./vultr_ubuntu_instance.pkr.hcl
+    - packer build -force --var "rabbit_mq_core_port=${RABBIT_MQ_CORE_PORT}" --var "livekit_api_key=${LIVEKIT_API_KEY}" --var "livekit_api_secret=${LIVEKIT_API_SECRET}" --var "default_server_ip=${DEFAULT_SERVER_IP}" ./vultr_ubuntu_instance.pkr.hcl
+    - export VULTR_SNAPSHOT_ID=$(sh ../../scripts/get_image_id.sh)
+    - echo $VULTR_SNAPSHOT_ID
+    - sh ../../scripts/push_token_variable.sh $API_GITLAB_TOKEN VULTR_SNAPSHOT_ID $VULTR_SNAPSHOT_ID

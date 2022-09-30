@@ -1,0 +1,10 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.icon {
+  color: $primary-red;
+}
+
+.text {
+  margin: rem(8px 0 0 0);
+}

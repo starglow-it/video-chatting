@@ -5,13 +5,12 @@ api:
   dashboard: true
   insecure: true
 
-
 providers:
   docker:
     network: traefik
-    exposedbydefault: false
+    exposedByDefault: false
 
-entrypoints:
+entryPoints:
   http:
     address: :80
     http:
@@ -23,7 +22,7 @@ entrypoints:
   https:
     address: :443
 
-certificatesresolvers:
+certificatesResolvers:
   simple-resolver:
     acme:
       httpchallenge:
@@ -38,4 +37,4 @@ certificatesresolvers:
       storage: /letsencrypt/acme.json
 
 
-accesslog: true
+accessLog: {}

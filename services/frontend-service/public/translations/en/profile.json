@@ -1,0 +1,69 @@
+{
+  "personalInfo": {
+    "title": "Personal",
+    "name": "Name",
+    "position": "Position",
+    "languages": "Languages"
+  },
+  "monetization": {
+    "title": "Monetization",
+    "description": "Set donation amount for payment by other participants",
+    "connectWith": "Connect with",
+    "stripe": "Stripe",
+    "goToDashboard": "Go to stripe Dashboard",
+    "disconnect": "Disconnect",
+    "setUp": "Set Up",
+    "setUpStripeText": "Your Stripe account is not fully setup. Please, complete the account creation process."
+  },
+  "editProfile": {
+    "password": "Enter password to continue",
+    "code": "Verification code",
+    "verificationCode": "We sent you a verification code to your new email. Enter this code to continue.",
+    "resendCode": "Resend code",
+    "newEmail": "New Email",
+    "title": "Edit Profile",
+    "changeEmail": "Change Email",
+    "changePassword": "Change Password",
+    "businessCategories": "Business Categories",
+    "languages": "Languages",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "newPasswordRepeat": "Repeat new password",
+    "company": {
+      "title": "Little more about your business"
+    },
+    "personal": {
+      "title": "A bit about yourself"
+    },
+    "social": {
+      "title": "Add your social media links"
+    },
+    "submitProfile": {
+      "newChanges": "New changes:"
+    }
+  },
+  "account": "Account",
+  "personal": "Personal",
+  "social": "Social",
+  "company": "Company",
+  "withOutSave": "Quit without saving?",
+  "avatar": {
+    "upload": "Upload New",
+    "edit": "Edit Photo",
+    "delete": "Delete"
+  },
+  "upload": {
+    "profileAvatar": {
+      "maxSize": "Up to 2MB",
+      "invalidFileType": "It is not a supported image format.\n Please try a JPEG, JPG or PNG file."
+    }
+  },
+  "pages": {
+    "profile": "My profile",
+    "templates": "My rooms",
+    "logout": "Log out",
+    "discovery": "Discovery"
+  },
+  "delete": "Delete Profile",
+  "deleteProfileConfirm": "Delete Profile?"
+}

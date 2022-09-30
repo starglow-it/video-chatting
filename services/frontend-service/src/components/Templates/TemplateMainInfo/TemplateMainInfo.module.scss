@@ -1,0 +1,40 @@
+@import "../../../styles/mixins";
+@import "../../../styles/rem";
+
+.templateInfo {
+  position: absolute;
+  inset: 0;
+  padding: rem(18px 15px);
+  grid: "avatar avatar" min-content
+        "avatar avatar" min-content
+        "emptySpace emptySpace" 1fr
+        "businessInfo  businessInfo" min-content
+        / min-content auto;
+  grid-template-columns: 1fr fit-content(20%);
+  z-index: 10;
+
+  .avatar {
+    width: 100%;
+    position: relative;
+    grid-area: avatar;
+  }
+
+  .title {
+    grid-area: title;
+    @extend %text-ellips;
+  }
+
+  .description {
+    @extend %text-ellips;
+    max-width: 90%;
+    grid-area: description;
+  }
+
+  .emptySpace {
+    grid-area: emptySpace;
+  }
+
+  .businessInfo {
+    grid-area: businessInfo;
+  }
+}

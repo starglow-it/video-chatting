@@ -12,7 +12,7 @@ services:
     restart: always
 
   rabbit:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.10.7-management
     restart: always
     hostname: rabbitmq
     environment:

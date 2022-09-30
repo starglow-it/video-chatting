@@ -1,0 +1,30 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.image {
+  width: rem(40px);
+  height: rem(40px);
+  display: block;
+  margin: 0 rem(12px) 0 0;
+}
+
+.commonTemplates {
+  margin: rem(108px 0 64px 0);
+
+  &.noProfileTemplates {
+    margin: 0 0 rem(64px) 0;
+  }
+}
+
+.createRoomButton {
+  max-width: rem(162px);
+  width: 100%;
+  align-self: center;
+  margin: rem(20px 0 0);
+}
+
+.subscriptionPlansTitle {
+  color: $primary-white;
+  max-width: rem(405px);
+  text-align: center;
+}

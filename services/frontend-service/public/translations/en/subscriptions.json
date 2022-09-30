@@ -1,0 +1,156 @@
+{
+  "buttons": {
+    "showMore": "Show more",
+    "upgrade": "Upgrade",
+    "startHouse": "Get My House Account",
+    "startProfessional": "Get My Professional Account",
+    "startBusiness": "Get My Business Account",
+    "upgradeToProfessional": "Upgrade to Professional",
+    "upgradeToBusiness": "Upgrade to Business",
+    "currentPlan": "Current plan"
+  },
+  "limits": {
+    "time": "Remaining meeting time: <strong>{{timeLimit}}</strong>",
+    "templates": "Templates available: <strong>{{templatesLimit}}</strong>"
+  },
+  "plans": {
+    "features": {
+      "hide": "Hide",
+      "show": "Show more"
+    }
+  },
+  "timeExpired": {
+    "title": "Meeting time is over",
+    "text": " A new package of minutes will be credited to you on {{renewTime}} \nTo increase the limit update the subscription"
+  },
+  "timeLimit": {
+    "text": "You have {{minutesLeft}} of meeting time left before {{renewTime}}. To increase the limit - update",
+    "warning": "Meeting time is running out. Update to increase the limit"
+  },
+  "subscriptions": {
+    "selectPlan": "Select plan",
+    "title": "Subscriptions",
+    "nextPayment": "Next payment: {{nextPaymentDate}}",
+    "current": "Subscription: <strong>{{currentSub}}</strong>",
+    "manage": "Manage",
+    "House": {
+      "features": [
+        {
+          "key": "payments",
+          "text": "Accept Payments",
+          "subText": "0.99% processing fee"
+        },
+        {
+          "key": "meetingTime",
+          "text": "120 min / month"
+        },
+        {
+          "key": "rooms",
+          "text": "1 Free Room",
+          "subText": "You can still switch room for free"
+        },
+        {
+          "key": "ssl",
+          "text": "SSO encrypted",
+          "subText": ""
+        }
+      ],
+      "more": [
+        {
+          "key": "payments",
+          "text": "Accept Payments",
+          "subText": "TheLiveOffice collects a 0.99% processing fee"
+        },
+        {
+          "key": "videochat",
+          "text": "Immersive video calls"
+        },
+        {
+          "key": "sharing",
+          "text": "Easy screen sharing"
+        },
+        {
+          "key": "schedule",
+          "text": "Easy call scheduling"
+        },
+        {
+          "key": "privacy",
+          "text": "Enhanced privacy"
+        },
+        {
+          "key": "no_download",
+          "text": "No download necessary"
+        },
+        {
+          "key": "no_extensions",
+          "text": "No extension required"
+        },
+        {
+          "key": "ssl",
+          "text": "SSO encrypted"
+        },
+        {
+          "key": "meetingTime",
+          "text": "120 min / month"
+        },
+        {
+          "key": "rooms",
+          "text": "1 Free Room",
+          "subText": "You can still try and switch room for free"
+        }
+      ]
+    },
+    "Professional": {
+      "features": [
+        {
+          "key": "house",
+          "text": "All House features",
+          "subText": ""
+        },
+        {
+          "key": "meetingTime",
+          "text": "1200 min / month",
+          "subText": ""
+        },
+        {
+          "key": "rooms",
+          "text": "2 Free Rooms",
+          "subText": ""
+        },
+        {
+          "key": "payments",
+          "text": "0% comission",
+          "subText": "from each transaction"
+        }
+      ]
+    },
+    "Business": {
+      "features": [
+        {
+          "key": "professional",
+          "text": "All Professional features",
+          "subText": ""
+        },
+        {
+          "key": "meetingTime",
+          "text": "Unlimited meeting time",
+          "subText": ""
+        },
+        {
+          "key": "rooms",
+          "text": "10 Free Rooms",
+          "subText": ""
+        },
+        {
+          "key": "payments",
+          "text": "0% comission",
+          "subText": "from each transaction"
+        }
+      ]
+    }
+  },
+  "upgradePlan": {
+    "title": "Upgrade plan to Create room",
+    "description": "Only users with Professional and Business plan can create rooms"
+  }
+}

@@ -1,0 +1,28 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.form {
+  width: 100%;
+}
+
+.cancelNote {
+  height: rem(32px);
+  width: rem(32px);
+  border-radius: rem(8px);
+  margin: rem(0 0 0 8px);
+  color: $primary-white;
+}
+
+.submitNote {
+  height: rem(32px);
+  width: rem(32px);
+  border-radius: rem(8px);
+}
+
+.textLength {
+  margin: rem(0 12px 0 auto);
+}
+
+.textField {
+  background: transparent;
+}

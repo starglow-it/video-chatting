@@ -1,14 +1,14 @@
 version: '3.7'
 
 networks:
-  traefikpublic:
+  traefik:
     external:
-      name: liveoffice_traefikpublic
-  liveoffice_demo:
+      name: traefik
+  liveoffice_production:
 
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:5.0
     command: [ "--replSet", "rs0", "--bind_ip_all" ]
     hostname: mongo
     healthcheck:
@@ -21,7 +21,7 @@ services:
     volumes:
       - /data/liveoffice/mongo:/data/db
     networks:
-      - liveoffice_demo
+      - liveoffice_production
 
   rabbit:
     image: rabbitmq:3-management
@@ -38,7 +38,7 @@ services:
     volumes:
       - /data/liveoffice/rabbit:/var/lib/rabbitmq
     networks:
-      - liveoffice_demo
+      - liveoffice_production
 
   frontend-service:
     build:
@@ -50,24 +50,25 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - FRONTEND_URL=https://demo.theliveoffice.com
+      - FRONTEND_URL
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service
-      - GATE_WAY_URL=http://gateway-service:3000
       - TURN_URL
       - TURN_PASSWORD
       - TURN_USERNAME
       - TURN_PORT
-      - STORAGE_HOSTNAME
+      - VULTR_STORAGE_HOSTNAME
       - STRIPE_PUBLIC_API_KEY
+      - BASE_ENV_DOMAIN
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.entrypoints=http"
-      - "traefik.http.routers.frontend.rule=Host(`demo.theliveoffice.com`)"
+      - "traefik.http.routers.frontend.rule=Host(`theliveoffice.com`)"
+      - "traefik.http.routers.frontend.entrypoints=https"
+      - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
     networks:
-      - traefikpublic
-      - liveoffice_demo
+      - traefik
+      - liveoffice_production
 
   gateway-service:
     build:
@@ -81,12 +82,13 @@ services:
       - rabbit
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gateway.rule=Host(`demo.theliveoffice.com`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.gateway.entrypoints=http"
+      - "traefik.http.routers.gateway.rule=Host(`theliveoffice.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway.entrypoints=https"
+      - "traefik.http.routers.gateway.tls=true"
       - "traefik.http.services.gateway.loadbalancer.server.port=3000"
     networks:
-      - traefikpublic
-      - liveoffice_demo
+      - traefik
+      - liveoffice_production
 
   socket-service:
     build:
@@ -97,12 +99,13 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.socket.rule=Host(`demo.theliveoffice.com`) && PathPrefix(`/socket.io`)"
-      - "traefik.http.routers.socket.entrypoints=http"
+      - "traefik.http.routers.socket.rule=Host(`theliveoffice.com`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.socket.entrypoints=https"
+      - "traefik.http.routers.socket.tls=true"
       - "traefik.http.services.socket.loadbalancer.server.port=8080"
     networks:
-      - traefikpublic
-      - liveoffice_demo
+      - traefik
+      - liveoffice_production
 
   core-service:
     build:
@@ -112,7 +115,7 @@ services:
     depends_on:
       - config-service
     networks:
-      - liveoffice_demo
+      - liveoffice_production
 
   auth-service:
     build:
@@ -122,7 +125,7 @@ services:
     depends_on:
       - config-service
     networks:
-      - liveoffice_demo
+      - liveoffice_production
 
   notifications-service:
     build:
@@ -132,7 +135,7 @@ services:
     depends_on:
       - config-service
     networks:
-      - liveoffice_demo
+      - liveoffice_production
 
   payment-service:
     build:
@@ -141,8 +144,16 @@ services:
     restart: always
     depends_on:
       - config-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.payments.rule=Host(`theliveoffice.com`) && PathPrefix(`/payments`)"
+      - "traefik.http.routers.payments.entrypoints=https"
+      - "traefik.http.routers.payments.tls=true"
+      - "traefik.http.services.payments.loadbalancer.server.port=5000"
+    ports:
+      - "5000:5000"
     networks:
-      - liveoffice_demo
+      - liveoffice_production
 
   config-service:
     build:
@@ -154,7 +165,7 @@ services:
       - PORT=4000
       - EMAIL_SERVICE
       - GATEWAY_PORT=3000
-      - ENVIRONMENT=demo
+      - ENVIRONMENT=production
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
@@ -162,7 +173,7 @@ services:
       - RABBIT_MQ_USER
       - RABBIT_MQ_PASS
       - RABBIT_MQ_HOST
-      - FRONTEND_URL=https://demo.theliveoffice.com
+      - FRONTEND_URL=https://theliveoffice.com
       - JWT_SECRET
       - MONGO_URI
       - SMTP_HOST
@@ -172,26 +183,18 @@ services:
       - DEFAULT_SERVER_IP
       - APP_ID
       - APP_CERTIFICATE
-      - UPLOAD_BUCKET
-      - STORAGE_HOSTNAME
-      - SECRET_ACCESS_KEY
-      - ACCESS_KEY
+      - VULTR_UPLOAD_BUCKET
+      - VULTR_STORAGE_HOSTNAME
+      - VULTR_SECRET_ACCESS_KEY
+      - VULTR_ACCESS_KEY
       - STRIPE_API_KEY
       - STRIPE_WEBHOOK_SECRET
       - STRIPE_EXPRESS_WEBHOOK_SECRET
       - MANDRILL_API_KEY
+      - SUPPORT_SCALING
+      - NUMBER_OF_ACTIVE_SERVERS
     depends_on:
       - mongo
       - rabbit
     networks:
-      - liveoffice_demo
-
-  turn:
-    build:
-      context: ../../turn-server
-      dockerfile: Dockerfile
-    restart: always
-    command: 'liveofficeturn liveofficeturnpassword liveoffice'
-    ports:
-      - 3478:3478
-      - 3478:3478/udp
+      - liveoffice_production

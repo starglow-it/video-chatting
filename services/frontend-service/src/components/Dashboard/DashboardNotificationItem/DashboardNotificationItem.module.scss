@@ -1,0 +1,18 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.notificationWrapper {
+  padding: rem(20px);
+  border-top: 1px solid rgba($normal-gray-scale, 0.4);
+}
+
+.fullName {
+  @extend %text-ellips;
+  max-width: rem(300px);
+  white-space: nowrap;
+}
+
+.profileAvatar {
+  flex: 0 0 auto;
+}

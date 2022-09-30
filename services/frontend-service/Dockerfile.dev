@@ -1,0 +1,18 @@
+FROM node:16.16.0-alpine
+
+WORKDIR /app
+
+COPY ./package*.json ./
+
+RUN npm i --legacy-peer-deps --force
+
+ARG VULTR_STORAGE_HOSTNAME
+ENV VULTR_STORAGE_HOSTNAME=$VULTR_STORAGE_HOSTNAME
+
+COPY ./ ./
+
+RUN npm run build
+
+EXPOSE 8000
+
+CMD ["npm", "run", "dev"]

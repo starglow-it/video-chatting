@@ -1,0 +1,16 @@
+@import "src/styles/variables";
+@import "src/styles/rem";
+
+.popper {
+  z-index: 1200;
+  cursor: pointer;
+}
+
+.blackGlass {
+  .tooltip {
+    background: rgba($primary-black, 0.6);
+    height: unset;
+    padding: rem(16px);
+    border-radius: rem(12px);
+  }
+}

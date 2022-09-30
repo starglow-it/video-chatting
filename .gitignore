@@ -1,6 +1,5 @@
 .idea
 node_modules
-/deploy/environments/.env.local
 .env
 doc
 *.log

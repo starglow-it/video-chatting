@@ -1,0 +1,31 @@
+import { Profile } from '../../types';
+
+export const initialProfileState = {
+    id: '',
+    fullName: '',
+    position: '',
+    profileAvatar: {
+        url: '',
+        size: 0,
+        mimeType: '',
+    },
+    companyName: '',
+    email: '',
+    contactEmail: '',
+    description: '',
+    languages: [],
+    socials: [],
+    businessCategories: [],
+    templates: [],
+    signBoard: 'default',
+    subscriptionPlanKey: 'House',
+    stripeAccountId: '',
+    stripeEmail: '',
+    stripeSubscriptionId: '',
+    renewSubscriptionTimestampInSeconds: 0,
+    isStripeEnabled: false,
+    isSubscriptionActive: false,
+    maxTemplatesNumber: 0,
+    maxMeetingTime: 0,
+    wasSuccessNotificationShown: false,
+} as Profile;

@@ -1,0 +1,98 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+%common-wrapper {
+  color: $primary-white;
+  padding: rem(14px);
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: rem(8px);
+}
+
+.wrapper {
+  padding: rem(14px);
+  height: 100%;
+}
+
+.header {
+  color: $primary-white;
+  margin: rem(0 0 20px 0);
+}
+
+.avatar {
+  flex: 0 0 50px;
+}
+
+.mainInfo {
+  position: relative;
+  @extend %common-wrapper;
+}
+
+.language {
+  @extend %common-wrapper;
+
+  .text {
+    display: inline-flex;
+  }
+
+  .icon {
+    margin: rem(0 8px 0 0);
+  }
+}
+
+.link {
+  @extend %common-wrapper;
+
+  .linkText {
+    max-width: rem(280px);
+    @extend %text-ellips;
+  }
+}
+
+.commonSectionWrapper {
+  @extend %common-wrapper;
+}
+
+.company {
+  @extend %common-wrapper;
+
+  .text {
+    max-width: rem(280px);
+    @extend %text-ellips;
+  }
+}
+
+.email {
+  @extend %common-wrapper;
+
+  .text {
+    @extend %text-ellips;
+  }
+}
+
+.description {
+  @extend %common-wrapper;
+
+  .text {
+    @include multiline-clip(5);
+  }
+}
+
+.socialBtn {
+  display: flex;
+  height: rem(60px);
+  width: rem(60px);
+  padding: rem(5px);
+  background: $primary-white;
+  border: none;
+  border-radius: rem(12px);
+}
+
+.ellips {
+  @include multiline-clip(1);
+  word-break: break-word;
+}
+
+.scroll {
+  width: 100%;
+}

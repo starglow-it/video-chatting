@@ -1,0 +1,79 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.settingsContent {
+  min-height: rem(235px);
+  margin: rem(0 0 26px 0);
+
+  &.mobile {
+    .devicesWrapper {
+      margin: rem(28px 0 0 0);
+    }
+  }
+}
+
+.previewWrapper {
+  position: relative;
+  margin: rem(0 40px 0 0);
+  width: auto;
+}
+
+.previewVideo {
+  margin: rem(0 0 20px 0);
+}
+
+.controlsWrapper {
+  margin: auto 0 0 0;
+
+  .controlBtn {
+    border-radius: rem(10px);
+    border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+    color: $primary-black;
+    padding: rem(8px);
+    width: rem(50px);
+    height: rem(50px);
+
+    &:first-child {
+      margin: rem(0 12px 0 0);
+    }
+    &.inactive {
+      color: $normal-gray-scale;
+    }
+    &.withError {
+      color: $primary-red;
+    }
+  }
+}
+
+.devicesWrapper {
+  margin: rem(0 0 0 40px);
+  width: 100%;
+
+  .title {
+    margin: rem(0 0 4px 0);
+  }
+}
+
+.joinBtn {
+  margin: rem(64px 0 0 0);
+
+  &.mobile {
+    margin: rem(auto 0 0 0);
+  }
+}
+
+.loader {
+  margin: rem(28px auto 0 auto);
+
+  &.mobile {
+    margin: rem(0 auto 12px auto);
+  }
+}
+
+.label {
+  margin: rem(16px 0 0 0);
+}
+
+.devicesError {
+  margin: rem(0 0 18px 0);
+}

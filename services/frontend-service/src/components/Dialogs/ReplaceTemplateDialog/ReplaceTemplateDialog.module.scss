@@ -1,0 +1,56 @@
+@import "../../../styles/rem";
+
+.wrapper {
+  position: relative;
+  padding: rem(40px);
+  width: rem(472px);
+  display: flex;
+}
+
+.content {
+  display: flex;
+  position: relative;
+  height: var(--height);
+
+  transition: height 200ms linear;
+}
+
+.title {
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.buttons {
+  margin: rem(40px 0 0 0);
+
+  &.withSlider {
+    margin: rem(108px 0 0 0);
+  }
+}
+
+.text {
+  margin: rem(8px 0 40px 0);
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.info {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.templates {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.templatesInnerWrapper {
+  width: 100%;
+  justify-items: center;
+}
+
+.templatesOuterWrapper {
+  margin: rem(40px 0 0 0);
+}

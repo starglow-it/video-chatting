@@ -1,0 +1,45 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.usersWrapper {
+  .userItem {
+    &:first-child {
+      margin: rem(0 0 5px 0);
+    }
+
+    &:not(:first-child) {
+      margin: rem(5px 0 5px 0);
+    }
+  }
+}
+
+.profileAvatar {
+  margin: rem(0 8px 0 0);
+  flex: 0 0 auto;
+}
+
+.deleteUser {
+  color: $primary-white;
+  height: rem(32px);
+  width: rem(32px);
+  border-radius: rem(8px);
+}
+
+.btnGroup {
+  padding: rem(0 0 0 8px);
+  margin: 0 0 0 auto;
+  width: auto;
+}
+
+.acceptUser {
+  height: rem(32px);
+  width: rem(32px);
+  border-radius: rem(8px);
+}
+
+.userName {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

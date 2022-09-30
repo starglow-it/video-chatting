@@ -1,0 +1,28 @@
+@import "../../../styles/rem";
+
+.content {
+  width: rem(472px);
+  padding: rem(40px);
+}
+
+.form {
+  width: 100%;
+}
+
+.titleContent {
+  margin: rem(0 0 32px 0);
+}
+
+.image {
+  width: rem(30px);
+  height: rem(30px);
+  margin: rem(0 8px 0 0);
+}
+
+.button {
+  margin: rem(64px 0 0 0);
+}
+
+.emails {
+  width: 100%;
+}

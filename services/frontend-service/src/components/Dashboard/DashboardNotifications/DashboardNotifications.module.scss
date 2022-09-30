@@ -1,0 +1,35 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.bellIcon {
+  color: $normal-gray-scale;
+  margin: rem(0 4px 0 0);
+}
+
+.paper {
+  margin: rem(8px 0 0 0);
+  box-shadow: rem(0px 12px 24px -4px) rgba(15, 15, 16, 0.24);
+  border-radius: rem(16px);
+}
+
+.markAllAsRead {
+  margin: 0 0 0 auto;
+  cursor: pointer;
+}
+
+.header {
+  padding: rem(32px 32px 26px 32px);
+}
+
+.noNotificationsWrapper {
+  width: rem(424px);
+  height: rem(210px);
+}
+
+.notificationsWrapper {
+  width: rem(424px);
+}
+
+.notificationsScroll {
+  max-height: rem(265px);
+}

@@ -9,6 +9,16 @@
     variables:
       - $CLIENT_PUSH_ACTIVE == "true"
 
+.common-staging:
+  stage: update
+  timeout: 3 hours
+  extends:
+    - .staging
+  script:
+    - cd deploy/develop
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --force-recreate --remove-orphans
+
 Update Traefik:
   stage: update_traefik
   extends:
@@ -20,26 +30,13 @@ Update Traefik:
   interruptible: true
 
 Update Staging:
-  stage: update
   extends:
-    - .staging
-  script:
-    - cd deploy/develop
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
-  interruptible: true
+    - .common-staging
   except: [testing]
 
-
 Update_Test:
-  stage: update
   extends:
-    - .staging
-  script:
-    - cd deploy/develop
-    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
-  interruptible: true
+    - .common-staging
   only: [testing]
   when: manual
   allow_failure: false

@@ -1,7 +1,7 @@
 stages:
-  - test
-  - build
+  - sonarqube_scan
   - update_traefik
+  - build_scaling_instance_image
   - update
   - update_jira_issues
   - update_demo_traefik
@@ -19,17 +19,11 @@ variables:
     name: ${CI_COMMIT_REF_NAME}
   interruptible: true
 
-.code-maintainance-base:
-  tags: [ liveoffice-deploy ]
-  image: node:lts
-  interruptible: true
-  only:
-    - merge_requests
-
 include:
   - 'pipelines/demo.yml'
   - 'pipelines/staging.yml'
-  - 'pipelines/test.yml'
   - 'pipelines/autopush_code.yml'
   - 'pipelines/production.yml'
+  - 'pipelines/build_instance.yml'
+  - 'pipelines/sonarqbue.yml'
 

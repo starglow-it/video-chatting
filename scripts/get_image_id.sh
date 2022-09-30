@@ -1,0 +1,1 @@
+cat ./manifest.json | grep -o '"artifact_id": "[0-9a-z-]*"' | grep -o "[0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*-[0-9a-z]*"

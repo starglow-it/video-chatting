@@ -1,0 +1,84 @@
+@import "../../styles/rem";
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: rem(20px);
+}
+
+.main {
+  flex: 1;
+  border: rem(0px) solid transparent;
+
+  &.relativeLayout {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  &.meetingLayout {
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+.topLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  max-width: 40%;
+  width: rem(544px);
+  height: rem(544px);
+
+  .icon {
+    max-width: 100%;
+  }
+}
+
+.topRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  max-width: 40%;
+  max-height: 100%;
+  width: rem(718px);
+  height: rem(718px);
+
+  .icon {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+.bgImage {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-image: url("/images/clouds_background.png");
+  background-repeat: repeat;
+  background-size: cover;
+  z-index: -1;
+}
+
+.contentWrapper {
+  height: 100%;
+  width: 100%;
+
+  &.relativeLayout {
+    position: relative;
+  }
+
+  &.meetingLayout {
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+  }
+}
+
+.link {
+  cursor: pointer;
+}

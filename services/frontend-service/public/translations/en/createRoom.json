@@ -1,0 +1,65 @@
+{
+  "actions": {
+    "submit": "Create Room"
+  },
+  "cancel": {
+    "title": "Cancel Room creation?",
+    "description": "All your settings will be lost.",
+    "buttons": {
+      "cancel": "Cancel",
+      "stay": "Stay"
+    }
+  },
+  "tooltips": {
+    "cancel": "Cancel room creation"
+  },
+  "uploadBackground": {
+    "title": "Upload your Room background",
+    "description": "Drag & Drop file here or click button",
+    "tip": {
+      "title": "Image/Video",
+      "resolution": "16:9 (ex. 1920 x 1080)",
+      "imageRestricts": "jpg, .heic or .png / Up to {{maxSize}} MB",
+      "videoRestricts": ".mp4 / Up to {{maxSize}} MB"
+    },
+    "actions": {
+      "upload": "Upload",
+      "change": "Change"
+    }
+  },
+  "editDescription": {
+    "form": {
+      "nameAndAttendees": "Name & Attendees",
+      "description": "Description",
+      "tags": "Tags",
+      "link": "Custom link"
+    }
+  },
+  "editPositions": {
+    "attendees": "Attendees: {{number}}",
+    "tooltip": "Drag & Drop users to the right places",
+    "user": "User {{index}}"
+  },
+  "editPrivacy": {
+    "title": "What kind of Room?",
+    "private": {
+      "title": "Create Private Room",
+      "availability": "the Room will be available for you in My Rooms",
+      "editable": "you can edit the Room anytime",
+      "changePrivacyPossibility": "you can make the Room public anytime"
+    },
+    "public": {
+      "title": "Create Public Room",
+      "availability": "the Room will be available for everyone in The Live Office library",
+      "editable": "once created, you will not be able to edit the Room",
+      "changePrivacyPossibility": "once created, you will not be able to make the Room private"
+    }
+  },
+  "preview": {
+    "about": "About this room:",
+    "type": {
+      "public": "Public",
+      "private": "Private"
+    }
+  }
+}

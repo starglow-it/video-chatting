@@ -1,0 +1,58 @@
+{
+  "name": "notification-service",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=16.16.0"
+  },
+  "main": "src/index.ts",
+  "nodemonConfig": {
+    "ignore": [
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/index.ts",
+    "ext": "ts, js"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.server.json",
+    "start": "node -r tsconfig-paths/register -r ts-node/register ./dist/notifications-service/src/index.js",
+    "dev": "nodemon src/index.ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint ./src/ --fix",
+    "lint:fix": "eslint ./src/ --fix",
+    "lint:watch": "npm run lint --watch",
+    "package:update": "ncu -u",
+    "deps:check": "depcheck"
+  },
+  "dependencies": {
+    "@mailchimp/mailchimp_transactional": "1.0.47",
+    "amqplib": "0.10.3",
+    "axios": "0.27.2",
+    "depcheck": "^1.4.3",
+    "dotenv": "16.0.2",
+    "nodemailer": "6.7.8",
+    "npm-check": "6.0.1",
+    "tsconfig-paths": "4.1.0",
+    "winston": "3.8.2"
+  },
+  "devDependencies": {
+    "@types/amqplib": "0.8.2",
+    "@types/mailchimp__mailchimp_transactional": "1.0.5",
+    "@types/node": "18.7.16",
+    "@types/nodemailer": "6.4.5",
+    "@typescript-eslint/eslint-plugin": "5.36.2",
+    "@typescript-eslint/parser": "5.36.2",
+    "eslint": "8.23.0",
+    "eslint-config-airbnb-typescript": "17.0.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "nodemon": "2.0.19",
+    "prettier": "2.7.1",
+    "ts-node": "10.9.1",
+    "typescript": "4.8.3"
+  }
+}

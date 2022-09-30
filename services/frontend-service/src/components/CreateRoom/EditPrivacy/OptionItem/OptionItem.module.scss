@@ -1,0 +1,28 @@
+@import "src/styles/rem";
+@import "src/styles/variables";
+
+.container {
+  padding: rem(16px 20px);
+  border: rem(1px) solid rgba($primary-white, 0.25);
+  border-radius: rem(16px);
+  cursor: pointer;
+
+  &:hover, &.active {
+    border: rem(2px) solid $primary-orange;
+    margin: rem(-1px);
+
+    .iconWrapper {
+      background-color: $primary-orange;
+    }
+  }
+
+  .iconWrapper {
+    width: rem(24px);
+    height: rem(24px);
+    border-radius: rem(7px);
+    background-color: $primary-black;
+    .icon {
+      color: $primary-white;
+    }
+  }
+}

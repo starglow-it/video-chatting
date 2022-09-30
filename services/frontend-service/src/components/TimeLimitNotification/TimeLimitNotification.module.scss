@@ -1,0 +1,40 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.snackBarRoot {
+  position: relative;
+  top: 0;
+  left: 0;
+  bottom: unset;
+  width: 100%;
+  height: rem(52px);
+}
+
+.snackBarContent {
+  width: 100%;
+  background: $light-orange;
+  padding: rem(11px 0);
+  border-radius: 0;
+}
+
+.snackBarAction {
+  position: absolute;
+  right: 12px;
+  margin: 0;
+}
+
+.button {
+  padding: rem(4px 8px);
+  width: min-content;
+  border-radius: rem(6px);
+  background: $primary-white;
+  color: $primary-black;
+}
+
+.wrapper {
+  color: $primary-black;
+}
+
+.text {
+  margin: rem(0 24px 0 4px);
+}

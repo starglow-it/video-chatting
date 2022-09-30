@@ -1,0 +1,28 @@
+import { UserTemplate } from '../../types';
+
+export const initialProfileTemplateState: UserTemplate = {
+    id: '',
+    usedAt: '',
+    url: '',
+    name: '',
+    description: '',
+    previewUrls: [],
+    type: '',
+    companyName: '',
+    contactEmail: '',
+    fullName: '',
+    position: '',
+    maxParticipants: 0,
+    templateId: 0,
+    businessCategories: [],
+    languages: [],
+    socials: [],
+    isMonetizationEnabled: false,
+    signBoard: 'default',
+    templatePrice: 10,
+    templateCurrency: 'USD',
+    customLink: '',
+    isAudioAvailable: false,
+    usersPosition: [],
+    priceInCents: 0,
+};

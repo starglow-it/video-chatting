@@ -1,0 +1,378 @@
+import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useStore } from 'effector-react';
+import * as yup from 'yup';
+import { FormProvider, useForm } from 'react-hook-form';
+import clsx from 'clsx';
+
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import { useToggle } from '@hooks/useToggle';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+
+// custom
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
+
+// components
+import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
+import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
+// stores
+import { $profileStore, addNotificationEvent } from '../../store';
+import {
+    $audioErrorStore,
+    $backgroundAudioVolume,
+    $changeStreamStore,
+    $currentAudioDeviceStore,
+    $currentVideoDeviceStore,
+    $isAuraActive,
+    $isBackgroundAudioActive,
+    $isCameraActiveStore,
+    $isMeetingInstanceExists,
+    $isMicActiveStore,
+    $isOwner,
+    $isOwnerInMeeting,
+    $isStreamRequestedStore,
+    $isUserSendEnterRequest,
+    $meetingTemplateStore,
+    emitEnterWaitingRoom,
+    initDevicesEventFxWithStore,
+    sendCancelAccessMeetingRequestEvent,
+    sendEnterMeetingRequestSocketEvent,
+    sendEnterWaitingRoomSocketEvent,
+    sendStartMeetingSocketEvent,
+    setActiveStreamEvent,
+    setBackgroundAudioActive,
+    setBackgroundAudioVolume,
+    setIsAuraActive,
+    toggleIsAuraActive,
+    updateLocalUserEvent,
+    updateMeetingTemplateFxWithData,
+} from '../../store/roomStores';
+
+// types
+import { MeetingAccessStatuses, NotificationType, UserTemplate } from '../../store/types';
+
+// styles
+import styles from './DevicesSettings.module.scss';
+
+import { booleanSchema, simpleStringSchema } from '../../validation/common';
+import { templatePriceSchema } from '../../validation/payments/templatePrice';
+
+// controllers
+import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+import { SavedSettings } from '../../types';
+import { applyBlur } from '../../store/roomStores/videoChat/helpers/applyBlur';
+
+const validationSchema = yup.object({
+    templatePrice: templatePriceSchema(),
+    isMonetizationEnabled: booleanSchema(),
+    templateCurrency: simpleStringSchema().required('required'),
+});
+
+type MonetizationFormType = {
+    templatePrice: UserTemplate['templatePrice'];
+    isMonetizationEnabled: UserTemplate['isMonetizationEnabled'];
+    templateCurrency: UserTemplate['templateCurrency'];
+};
+
+const Component = () => {
+    const profile = useStore($profileStore);
+
+    const isStreamRequested = useStore($isStreamRequestedStore);
+    const changeStream = useStore($changeStreamStore);
+    const audioError = useStore($audioErrorStore);
+    const isMicActive = useStore($isMicActiveStore);
+    const isCameraActive = useStore($isCameraActiveStore);
+    const currentAudioDevice = useStore($currentAudioDeviceStore);
+    const currentVideoDevice = useStore($currentVideoDeviceStore);
+    const isOwner = useStore($isOwner);
+    const isOwnerInMeeting = useStore($isOwnerInMeeting);
+    const isMeetingInstanceExists = useStore($isMeetingInstanceExists);
+    const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
+    const meetingTemplate = useStore($meetingTemplateStore);
+    const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
+    const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    const isAuraActive = useStore($isAuraActive);
+
+    const isEnterMeetingRequestPending = useStore(sendEnterMeetingRequestSocketEvent.pending);
+    const isEnterWaitingRoomRequestPending = useStore(sendEnterWaitingRoomSocketEvent.pending);
+
+    const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
+        useState<number>(backgroundAudioVolume);
+
+    const resolver = useYupValidationResolver<MonetizationFormType>(validationSchema);
+
+    const methods = useForm({
+        criteriaMode: 'all',
+        resolver,
+        defaultValues: {
+            isMonetizationEnabled: Boolean(meetingTemplate.isMonetizationEnabled),
+            templatePrice: meetingTemplate.templatePrice || 10,
+            templateCurrency: meetingTemplate.templateCurrency,
+        },
+    });
+
+    const { handleSubmit } = methods;
+
+    const { value: needToRememberSettings, onToggleSwitch: handleToggleRememberSettings } =
+        useToggle(false);
+
+    const { value: isSettingsAudioBackgroundActive, onToggleSwitch: handleToggleBackgroundAudio } =
+        useToggle(isBackgroundAudioActive);
+
+    const { isMobile } = useBrowserDetect();
+
+    useEffect(() => {
+        initDevicesEventFxWithStore();
+
+        const savedSettings = WebStorage.get<SavedSettings>({
+            key: StorageKeysEnum.meetingSettings,
+        });
+
+        setIsAuraActive(savedSettings?.auraSetting ?? !isMobile);
+    }, []);
+
+    useEffect(() => {
+        updateLocalUserEvent({
+            isAuraActive,
+        });
+    }, [isAuraActive]);
+
+    const handleToggleMic = useCallback(() => {
+        if (changeStream) {
+            addNotificationEvent({
+                type: NotificationType.MicAction,
+                message: `meeting.mic.${isMicActive ? 'off' : 'on'}`,
+            });
+
+            updateLocalUserEvent({
+                micStatus: isMicActive ? 'inactive' : 'active',
+            });
+        }
+    }, [changeStream, isMicActive]);
+
+    const handleToggleCamera = useCallback(() => {
+        if (changeStream) {
+            addNotificationEvent({
+                type: NotificationType.CamAction,
+                message: `meeting.cam.${isCameraActive ? 'off' : 'on'}`,
+            });
+            updateLocalUserEvent({
+                cameraStatus: isCameraActive ? 'inactive' : 'active',
+            });
+        }
+    }, [changeStream, isCameraActive]);
+
+    const handleJoinMeeting = useCallback(async () => {
+        updateLocalUserEvent({
+            micStatus: isMicActive ? 'active' : 'inactive',
+            cameraStatus: isCameraActive ? 'active' : 'inactive',
+        });
+
+        if (isOwner) {
+            await sendStartMeetingSocketEvent();
+        } else if (isMeetingInstanceExists && isOwnerInMeeting) {
+            await sendEnterMeetingRequestSocketEvent();
+        } else {
+            emitEnterWaitingRoom();
+        }
+
+        setBackgroundAudioVolume(settingsBackgroundAudioVolume);
+        setBackgroundAudioActive(isSettingsAudioBackgroundActive);
+
+        if (needToRememberSettings) {
+            WebStorage.save({
+                key: StorageKeysEnum.meetingSettings,
+                data: {
+                    backgroundAudioSetting: isSettingsAudioBackgroundActive,
+                    backgroundAudioVolumeSetting: settingsBackgroundAudioVolume,
+                    auraSetting: isAuraActive,
+                    savedVideoDeviceId: currentVideoDevice,
+                    savedAudioDeviceId: currentAudioDevice,
+                    cameraActiveSetting: isCameraActive,
+                    micActiveSetting: isMicActive,
+                },
+            });
+        }
+
+        const clonedStream = changeStream?.clone();
+
+        const streamWithBackground = await applyBlur(clonedStream, { isAuraActive });
+
+        setActiveStreamEvent(streamWithBackground);
+    }, [
+        isOwner,
+        changeStream,
+        isStreamRequested,
+        isMeetingInstanceExists,
+        isOwnerInMeeting,
+        isAuraActive,
+        isSettingsAudioBackgroundActive,
+        settingsBackgroundAudioVolume,
+        needToRememberSettings,
+        currentVideoDevice,
+        currentAudioDevice,
+        isCameraActive,
+        isMicActive,
+    ]);
+
+    const handleCancelRequest = useCallback(async () => {
+        await sendCancelAccessMeetingRequestEvent();
+    }, []);
+
+    const onSubmit = useCallback(
+        handleSubmit(async data => {
+            await updateMeetingTemplateFxWithData(data as Partial<UserTemplate>);
+
+            await handleJoinMeeting();
+        }),
+        [isOwner, handleJoinMeeting],
+    );
+
+    const handleBack = useCallback(async () => {
+        if (isUserSentEnterRequest) {
+            await sendCancelAccessMeetingRequestEvent();
+        }
+
+        updateLocalUserEvent({
+            accessStatus: MeetingAccessStatuses.EnterName,
+        });
+    }, [isUserSentEnterRequest]);
+
+    const isAudioError = Boolean(audioError);
+
+    const isEnterMeetingDisabled =
+        isAudioError || isEnterMeetingRequestPending || isEnterWaitingRoomRequestPending;
+
+    const joinHandler = isOwner ? onSubmit : handleJoinMeeting;
+
+    return (
+        <FormProvider {...methods}>
+            <CustomGrid container direction="column" wrap="nowrap">
+                <CustomGrid
+                    container
+                    direction={isMobile ? 'column' : 'row'}
+                    wrap="nowrap"
+                    className={clsx(styles.settingsContent, { [styles.mobile]: isMobile })}
+                >
+                    <MediaPreview
+                        stream={changeStream}
+                        onToggleAudio={handleToggleMic}
+                        onToggleVideo={handleToggleCamera}
+                    />
+                    <CustomDivider orientation="vertical" flexItem />
+                    <CustomGrid
+                        className={styles.devicesWrapper}
+                        container
+                        direction={isMobile && isUserSentEnterRequest ? 'column-reverse' : 'column'}
+                        wrap="nowrap"
+                    >
+                        {isUserSentEnterRequest ? (
+                            <>
+                                <CustomGrid container direction="column">
+                                    <CustomTypography
+                                        className={styles.title}
+                                        variant="h3bold"
+                                        nameSpace="meeting"
+                                        translation="requestSent"
+                                    />
+                                    <CustomTypography
+                                        variant="body1"
+                                        color="text.secondary"
+                                        nameSpace="meeting"
+                                        translation="enterPermission"
+                                    />
+                                </CustomGrid>
+                                <CustomGrid
+                                    container
+                                    alignItems="center"
+                                    direction={isMobile ? 'row' : 'column-reverse'}
+                                    className={clsx(styles.loader, { [styles.mobile]: isMobile })}
+                                    gap={1}
+                                >
+                                    <WiggleLoader />
+                                    <CustomTypography
+                                        color="colors.orange.primary"
+                                        nameSpace="meeting"
+                                        translation="waitForHost"
+                                    />
+                                </CustomGrid>
+                            </>
+                        ) : (
+                            <MeetingSettingsContent
+                                stream={changeStream}
+                                isBackgroundActive={isSettingsAudioBackgroundActive}
+                                backgroundVolume={settingsBackgroundAudioVolume}
+                                isAuraActive={isAuraActive}
+                                isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
+                                onBackgroundToggle={handleToggleBackgroundAudio}
+                                onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
+                                onToggleAura={toggleIsAuraActive}
+                                isMonetizationAvailable
+                                isAudioActive={meetingTemplate.isAudioAvailable}
+                                title={
+                                    <CustomTypography
+                                        className={styles.title}
+                                        variant="h3bold"
+                                        nameSpace="meeting"
+                                        translation={isMobile ? 'settings.main' : 'readyToJoin'}
+                                    />
+                                }
+                            />
+                        )}
+                        <ConditionalRender condition={isOwner}>
+                            <CustomCheckbox
+                                labelClassName={styles.label}
+                                checked={needToRememberSettings}
+                                onChange={handleToggleRememberSettings}
+                                translationProps={{
+                                    nameSpace: 'meeting',
+                                    translation: 'settings.remember',
+                                }}
+                            />
+                        </ConditionalRender>
+                    </CustomGrid>
+                </CustomGrid>
+            </CustomGrid>
+            <ConditionalRender condition={isMobile && isAudioError}>
+                <CustomTypography
+                    textAlign="center"
+                    color="colors.red.primary"
+                    nameSpace="meeting"
+                    translation="allowAudio"
+                    className={styles.devicesError}
+                />
+            </ConditionalRender>
+            <CustomGrid
+                container
+                gap={1}
+                wrap="nowrap"
+                className={clsx(styles.joinBtn, { [styles.mobile]: isMobile })}
+            >
+                <ConditionalRender condition={!isUserSentEnterRequest}>
+                    <CustomButton
+                        onClick={handleBack}
+                        variant="custom-cancel"
+                        nameSpace="common"
+                        translation="buttons.back"
+                    />
+                </ConditionalRender>
+                <CustomButton
+                    onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
+                    disabled={isEnterMeetingDisabled || isStreamRequested}
+                    nameSpace="meeting"
+                    variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
+                    translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
+                />
+            </CustomGrid>
+        </FormProvider>
+    );
+};
+
+export const DevicesSettings = memo(Component);

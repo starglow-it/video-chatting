@@ -1,0 +1,54 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: $dark-white;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.controlPanel {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  padding: rem(28px);
+
+  .navigationPaper {
+    max-width: rem(591px);
+    width: 100%;
+  }
+
+  .closeButton {
+    width: rem(46px);
+    height: rem(46px);
+  }
+
+  .iconPlaceholder {
+    width: rem(56px);
+    height: rem(56px);
+    background-color: $primary-white;
+    border-radius: 50%;
+    box-shadow: rem(0 12px 24px -4px) color($primary-black, 0.24);
+  }
+
+  .mainInfo {
+    padding: rem(7px 12px);
+    .name {
+      word-break: break-word;
+    }
+    .type {
+      color: rgba($primary-white, 0.6);
+    }
+    .privacyIcon {
+      color: rgba($primary-white, 0.6);
+    }
+  }
+}

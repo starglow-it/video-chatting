@@ -1,0 +1,19 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.paperWrapper {
+  padding: rem(40px);
+}
+
+.icon {
+  color: $primary-black;
+}
+
+.contentWrapper {
+  max-width: rem(392px);
+}
+
+.socialBtn {
+  height: rem(56px);
+  width: rem(56px);
+}

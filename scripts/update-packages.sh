@@ -1,8 +1,11 @@
-cd auth-service && ncu -u
-cd ../config-service && ncu -u
-cd ../core-service && ncu -u
-cd ../frontend-service && ncu -u
-cd ../gateway-service && ncu -u
-cd ../notifications-service && ncu -u
-cd ../payment-service && ncu -u
-cd ../socket-service && ncu -u
+npm run package:update --prefix=services/auth-service
+npm run package:update --prefix=services/config-service
+npm run package:update --prefix=services/core-service
+npm run package:update --prefix=services/frontend-service --force
+npm run package:update --prefix=services/gateway-service
+npm run package:update --prefix=services/notifications-service
+npm run package:update --prefix=services/payment-service --force
+npm run package:update --prefix=services/socket-service
+npm run package:update --prefix=services/meeting-socket-service
+npm run package:update --prefix=services/scaling-service
+npm run package:update --prefix=services/media-server-service

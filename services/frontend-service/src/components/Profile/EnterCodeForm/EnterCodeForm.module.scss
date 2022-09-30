@@ -1,0 +1,15 @@
+@import "../../../styles/variables";
+
+.form {
+  width: 100%;
+}
+
+.resendCodeTest {
+  text-decoration: underline;
+  cursor: pointer;
+  width: auto;
+}
+
+.successIcon {
+  color: $primary-green;
+}

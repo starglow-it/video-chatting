@@ -1,0 +1,95 @@
+{
+  "user": {
+    "exits": "This email is already used",
+    "invalid": "Email is Invalid",
+    "notFound": "Email or Password is incorrect",
+    "notConfirmed": "Email or Password is incorrect",
+    "tokenNotFound": "Invalid confirmation link",
+    "code": {
+      "incorrect": "Code is incorrect"
+    },
+    "pass": {
+      "invalid": "Please enter valid password",
+      "incorrect": "Password is incorrect",
+      "length": "Min length 8 characters",
+      "empty": "Please enter the password",
+      "notVerified": "Email or Password is incorrect",
+      "characters": "should contain at least one letter and numerical digit",
+      "minLength": "should be at least 8 characters in length",
+      "newPassword": {
+        "new": "Please, enter your new password",
+        "newRepeat": "Please, repeat your new password",
+        "notMatch": "Passwords do not match",
+        "samePassword": "Please enter different password"
+      },
+      "newResetPassword": {
+        "samePassword": "Your old and new password are the same. Try another one"
+      }
+    },
+    "credentials": {
+      "invalid": "Email or Password is incorrect"
+    }
+  },
+  "media": {
+    "notAllowed": "You should allow use of devices in the browser"
+  },
+  "meeting": {
+    "notFound": {
+      "title": "Meeting Error",
+      "text": "The meeting does not exist",
+      "button": "Continue"
+    },
+    "timeLimit": {
+      "title": "Meeting was canceled",
+      "text": "Host run out of meeting minutes. Contact them\nto resolve the issues.",
+      "button": "Homepage"
+    },
+    "maxParticipantsNumber": {
+      "title": "Meeting Error",
+      "text": "Meeting room has reached the participant limit",
+      "button": "Continue"
+    },
+    "requestDenied": {
+      "title": "Meeting Error",
+      "text": "Your request was denied",
+      "button": "Continue"
+    },
+    "userHasNoTimeLeft": {
+      "title": "Meeting Error",
+      "text": "This user has not time left to be a host",
+      "button": "Continue"
+    },
+    "settings": {
+      "customLink": {
+        "characters": "Unsupported character is used",
+        "maxLength": "The link should be up to 60 characters long",
+        "busy": "This link name already exists"
+      }
+    }
+  },
+  "noSpaces": "No spaces allowed",
+  "maxLength": {
+    "60": "Maximum allowed characters is 60",
+    "100": "Maximum allowed characters is 100",
+    "200": "Maximum allowed characters is 200",
+    "300": "Maximum allowed characters is 300"
+  },
+  "templatePrice": {
+    "max": "Maximum room price is 999,999",
+    "min": "Minimum room price is 0.5"
+  },
+  "required": "This field is required",
+  "url": {
+    "common": "Entered link is invalid",
+    "youtube": "Enter valid Youtube link",
+    "facebook": "Enter valid Facebook link",
+    "instagram": "Enter valid Instagram link",
+    "twitter": "Enter valid Twitter link",
+    "linkedin": "Enter valid LinkedIn link",
+    "custom": "Entered link is invalid"
+  },
+  "tags": {
+    "unacceptableSymbols": "Please use alphabetic only",
+    "max": "Maximum tags number is 6"
+  }
+}

@@ -8,7 +8,7 @@ networks:
 
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:5.0
     command: [ "--replSet", "rs0", "--bind_ip_all" ]
     hostname: mongo
     healthcheck:
@@ -50,16 +50,19 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - FRONTEND_URL=https://demo.theliveoffice.com
+      - FRONTEND_URL
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service
-      - GATE_WAY_URL=http://gateway-service:3000
       - TURN_URL
       - TURN_PASSWORD
       - TURN_USERNAME
       - TURN_PORT
-      - STORAGE_HOSTNAME
+      - LIVEKIT_WSS
+      - MEETING_SOCKET_URL
+      - DEFAULT_SERVER_IP
+      - VULTR_STORAGE_HOSTNAME
       - STRIPE_PUBLIC_API_KEY
+      - BASE_ENV_DOMAIN
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.entrypoints=http"
@@ -153,16 +156,19 @@ services:
       - NODE_ENV=production
       - PORT=4000
       - EMAIL_SERVICE
-      - GATEWAY_PORT=3000
       - ENVIRONMENT=demo
       - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
+      - RABBIT_MQ_SOCKET_QUEUE=rabbitMqSocketQueue
       - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
       - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
       - RABBIT_MQ_NOTIFICATIONS_QUEUE=rabbitMqNotificationsQueue
+      - RABBIT_MQ_MEDIA_SERVER_QUEUE=rabbitMqMediaServerQueue
+      - RABBIT_MQ_SCALING_QUEUE=rabbitMqScalingQueue
       - RABBIT_MQ_USER
       - RABBIT_MQ_PASS
       - RABBIT_MQ_HOST
-      - FRONTEND_URL=https://demo.theliveoffice.com
+      - GATEWAY_PORT=3000
+      - FRONTEND_URL
       - JWT_SECRET
       - MONGO_URI
       - SMTP_HOST
@@ -170,28 +176,19 @@ services:
       - SMTP_USER
       - SMTP_PASS
       - DEFAULT_SERVER_IP
-      - APP_ID
-      - APP_CERTIFICATE
-      - UPLOAD_BUCKET
-      - STORAGE_HOSTNAME
-      - SECRET_ACCESS_KEY
-      - ACCESS_KEY
+      - DEFAULT_DOMAIN
+      - VULTR_UPLOAD_BUCKET
+      - VULTR_STORAGE_HOSTNAME
+      - VULTR_SECRET_ACCESS_KEY
+      - VULTR_ACCESS_KEY
       - STRIPE_API_KEY
       - STRIPE_WEBHOOK_SECRET
       - STRIPE_EXPRESS_WEBHOOK_SECRET
       - MANDRILL_API_KEY
+      - SUPPORT_SCALING
+      - NUMBER_OF_ACTIVE_SERVERS
     depends_on:
       - mongo
       - rabbit
     networks:
       - liveoffice_demo
-
-  turn:
-    build:
-      context: ../../turn-server
-      dockerfile: Dockerfile
-    restart: always
-    command: 'liveofficeturn liveofficeturnpassword liveoffice'
-    ports:
-      - 3478:3478
-      - 3478:3478/udp

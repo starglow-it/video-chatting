@@ -1,0 +1,107 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+@mixin withHoverAction($activeColor, $hoverColor) {
+  cursor: pointer;
+
+  @if $hoverColor != '' {
+    &:hover {
+      background: $hoverColor;
+      @content
+    }
+  }
+
+  @if $activeColor != '' {
+    &:active {
+      background: $activeColor;
+    }
+  }
+}
+
+.iconWrapper {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  cursor: default;
+
+  &.withAction {
+    @include withHoverAction('', '');
+  }
+}
+
+.danger {
+  background: $primary-red;
+  color: $primary-white;
+  backdrop-filter: blur(rem(28px));
+  cursor: default;
+
+  &.withAction {
+    @include withHoverAction($dark-red, $light-red);
+  }
+}
+
+.decline {
+  background: rgba($primary-white, 0.25);
+  color: $primary-black;
+  backdrop-filter: blur(rem(28px));
+
+  &.withAction {
+    @include withHoverAction($dark-white, rgba($normal-gray-scale, 0.4));
+  }
+}
+
+.accept {
+  background: $primary-orange;
+  color: $primary-white;
+
+  &.withAction {
+    @include withHoverAction($light-orange, $dark-orange);
+  }
+}
+
+.cancel {
+  background: rgba($normal-gray-scale, 0.25);
+  color: $primary-black;
+}
+
+.transparent {
+  background: transparent;
+  color: $primary-white;
+  border: rem(1px) solid $primary-white;
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &.withAction {
+    @include withHoverAction("", $primary-white) {
+      color: $primary-black;
+    };
+  }
+}
+
+.transparentBlack {
+  background: transparent;
+  color: $primary-white;
+  border: none;
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &.withAction {
+    @include withHoverAction("", rgba($primary-black, 0.75));
+  }
+}
+
+.gray {
+  background: rgba($primary-black, 0.6);
+  color: $primary-white;
+  border-radius: rem(12px);
+  transition: color 200ms ease-in-out, background 200ms ease-in-out;
+
+  &:hover {
+    background: rgba($primary-black, 0.75);
+  }
+
+  &.withAction {
+    @include withHoverAction("", rgba($primary-black, 0.75));
+  }
+}

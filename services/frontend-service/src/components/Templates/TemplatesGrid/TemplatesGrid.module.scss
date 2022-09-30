@@ -1,0 +1,70 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.templatesWrapper {
+  margin: rem(40px) 0 0 0;
+}
+
+.templatesContent {
+  max-width: rem(1054px);
+  width: 100%;
+  justify-items: center;
+
+  @media (max-width: 1100px) {
+    max-width: rem(705px);
+  }
+}
+
+.dots {
+  margin: rem(85px) 0 0 0;
+}
+
+.slider {
+  position: absolute;
+  bottom: -62px;
+  display: flex;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: rem(12px);
+  justify-content: center;
+  width: min-content;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  .dotSlider {
+    width: rem(8px);
+    height: rem(8px);
+    border-radius: 50%;
+    background: rgba($normal-gray-scale, 0.4);
+    cursor: pointer;
+    transition: background 200ms linear;
+
+    &.activeDot {
+      background: #0F0F10;
+    }
+  }
+}
+
+%arrow {
+  position: absolute;
+  display: block;
+  bottom: -62px;
+  cursor: pointer;
+  opacity: 0.4;
+
+  &:hover {
+    opacity: 1
+  }
+}
+.prevArrow {
+  @extend %arrow;
+  left: calc(50% - var(--offset));
+  transform: translateY(13px) rotate(90deg);
+}
+
+.nextArrow {
+  @extend %arrow;
+  left: calc(50% + var(--offset));
+  transform: translateY(13px) rotate(-90deg);
+}

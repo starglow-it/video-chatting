@@ -1,0 +1,42 @@
+{
+  "selectTemplates": "Select a Room",
+  "myTemplates": "My Rooms",
+  "buttons": {
+    "startMeeting": "Enter",
+    "replace": "Replace",
+    "preview": "Preview",
+    "getStarted": "Get started",
+    "previewSpace": "More...",
+    "chooseTemplate": "Get started with this room",
+    "continue": "Continue",
+    "done": "Done",
+    "joinMeeting": "Join room",
+    "schedule": "Schedule",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "noTemplates": "You dont have any rooms yet :(",
+  "setUpSpace": {
+    "title": "Personalize your\nspace",
+    "customizeSign": "Customize Sign",
+    "monetization": "Add monetization",
+    "stripe": "Connect with <b>Stripe</b>",
+    "subscription": "Subscription"
+  },
+  "onboarding": {
+    "quit": "Quit onboarding?",
+    "explanation": "Some features may not be available \n if you skip onboarding. To use platform in full, finish onboarding or fill in the information in the profile manually"
+  },
+  "deleteTemplate": {
+    "title": "Delete room?",
+    "text": "You will lose all related data and custom settings \n (default settings are available any time)",
+    "textPublicTemplate": "The Room will be deleted from your Rooms and from The Live Office library. However, it will stay available for people who added it to their Rooms"
+  },
+  "noSignBoard": "No Sign",
+  "scheduleMeeting": {
+    "noEmails": "You have not added users",
+    "downloadIcsTitle": "An email reminder was sent to you and the other party",
+    "downloadIcs": "Download ICS"
+  },
+  "createRoom": "Create room"
+}

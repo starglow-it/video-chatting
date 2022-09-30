@@ -1,0 +1,62 @@
+@import "../../../styles/rem";
+@import "../../../styles/mixins";
+@import "../../../styles/variables";
+
+.linkWrapper {
+  width: 100%;
+  position: relative;
+  background: rgba($primary-white, 0.25);
+  border-radius: rem(10px);
+  padding: rem(13px 10px);
+  color: $primary-white;
+
+  &.error {
+    &:after {
+      position: absolute;
+      content: "";
+      inset: 0;
+      border: 2px solid $primary-red;
+      border-radius: rem(10px);
+    }
+  }
+}
+
+.textLinkWrapper {
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+
+  .text {
+    position: relative;
+    right: 0;
+    animation: runningText 2000ms infinite alternate linear;
+  }
+}
+
+.linkTail {
+  white-space: nowrap;
+  @extend %text-ellips;
+}
+
+.linkStart {
+  color: rgba($primary-white, 0.6);
+  flex: 0 0 auto;
+}
+
+.inputWrapper {
+  flex: 1 0 auto;
+  color: rgba($primary-white, 0.6);
+
+  .input::placeholder {
+    color: rgba($primary-white, 0.6);
+  }
+}
+
+@keyframes runningText {
+  from {
+    right: 0;
+  }
+  to {
+    right: var(--leftOffset);
+  }
+}

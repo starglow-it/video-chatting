@@ -1,0 +1,40 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.dashboardNavigation {
+  position: fixed;
+  width: rem(68px);
+  z-index: 100;
+  left: rem(20px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: rem(20px);
+
+  .profileImage {
+    display: inline-block;
+
+    &.activeProfile {
+      border: rem(1px) solid $primary-orange;
+    }
+
+    margin: rem(0 0 8px 0);
+  }
+}
+
+.iconsWrapper {
+  .icon {
+    cursor: pointer;
+  }
+
+  .divider {
+    align-self: stretch;
+  }
+}
+
+.activeIcon {
+  color: $primary-orange;
+}
+
+.linkIcon {
+  cursor: pointer;
+}

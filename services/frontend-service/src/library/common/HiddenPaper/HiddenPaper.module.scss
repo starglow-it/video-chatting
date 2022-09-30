@@ -1,0 +1,26 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.hiddenContainer {
+  position: absolute;
+  box-shadow: rem(0px 12px 24px -4px) rgba($primary-black, 0.24);
+  border-radius: 12px;
+  top: 100%;
+  left: 50%;
+  opacity: 0;
+
+  transition: all 200ms linear;
+
+  transform: translate(-50%, 0);
+
+  pointer-events: none;
+  user-select: none;
+
+  &.open {
+    transform: translate(-50%, 8px);
+    pointer-events: initial;
+    user-select: initial;
+
+    opacity: 1;
+  }
+}

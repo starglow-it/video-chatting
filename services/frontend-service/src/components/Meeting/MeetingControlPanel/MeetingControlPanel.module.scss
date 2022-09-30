@@ -1,0 +1,121 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.panelWrapper {
+  position: absolute;
+  top: rem(27px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: auto;
+
+  &.mobile {
+    top: rem(20px);
+    right: rem(20px);
+    left: unset;
+    transform: unset;
+  }
+}
+
+.userAvatar {
+  border: 1px solid $primary-white;
+
+  &:not(:first-child) {
+    margin: rem(0  0 0 -15px);
+  }
+}
+
+.controlPanelWrapper {
+  padding: rem(6px);
+
+  .actionButton {
+    position: relative;
+    background: transparent;
+    color: $primary-white;
+    border: none;
+    width: rem(44px);
+    height: rem(44px);
+    border-radius: rem(6px);
+
+    &.active {
+      background: rgba($primary-white, 0.25);
+    }
+
+    &.withAction {
+      &:hover {
+        background: rgba($primary-white, 0.25);
+      }
+    }
+
+    &.mobile {
+      width: rem(32px);
+      height: rem(32px);
+    }
+
+    &.newRequests {
+      background: rgba($primary-orange, 0.1);
+
+      &:hover {
+        background: rgba($primary-orange, 0.25);
+      }
+
+      &:after {
+        content: "";
+        width: rem(13px);
+        height: rem(13px);
+
+        border-radius: 50%;
+
+        background: $primary-orange;
+
+        position: absolute;
+        top: -1px;
+        right: -1px;
+      }
+    }
+  }
+}
+
+.commonOpenPanel {
+  position: absolute;
+  max-width: rem(392px);
+  min-width: rem(372px);
+  padding: rem(20px);
+  opacity: 0;
+  transform: translate(-50%, 0);
+
+  &.mobile {
+    left: 50%;
+  }
+
+  &.open {
+    opacity: 1;
+  }
+}
+
+.panelsWrapper {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, rem(8px));
+}
+
+.mobileControlPanelWrapper {
+  padding: rem(6px 12px);
+}
+
+.mobilePanelsWrapper {
+  position: fixed;
+  inset: 0;
+  padding: rem(20px);
+  justify-content: center;
+  background: rgba($primary-black, 0.6);
+  backdrop-filter: blur(28px);
+
+  .closeIcon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: rgba($primary-white, 0.6);
+  }
+}

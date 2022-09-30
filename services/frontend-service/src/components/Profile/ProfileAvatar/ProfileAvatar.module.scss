@@ -1,0 +1,17 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.wrapper {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6663FF 0%, #65FFDA 100%);
+
+  &.shadow {
+    box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.24);
+
+  }
+  .text {
+    color: $primary-white;
+  }
+}

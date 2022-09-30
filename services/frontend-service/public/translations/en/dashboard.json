@@ -1,0 +1,18 @@
+{
+  "notifications": {
+    "noNotifications": "No notifications yet",
+    "title": "Notifications",
+    "readAll": "Mark all as read",
+    "timeAgo": "{{time}} ago",
+    "justNow": "Just now",
+    "types": {
+      "0": "Joined"
+    }
+  },
+  "meetingScheduled": "Meeting Scheduled",
+  "replaceTemplate": {
+    "title": "Replace one of your Rooms?",
+    "text": "Your plan allows you to use {{maxTemplates}} Rooms at the \n same time",
+    "titleSecond": "Which one do you want \n to replace?"
+  }
+}

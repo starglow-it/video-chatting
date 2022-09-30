@@ -1,0 +1,33 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+@import "../../../styles/rem";
+
+.personIcon {
+  color: $primary-black;
+  margin: rem(0 6px 0 0);
+}
+
+.infoWrapper {
+  width: 100%;
+  margin: rem(16px 0 0 0);
+}
+
+.fullNameWrapper {
+  overflow: hidden;
+
+  .fullNameText {
+    @include multiline-clip(2) {
+      max-width: rem(200px);
+    }
+  }
+}
+
+.positionWrapper {
+  overflow: hidden;
+
+  .positionText {
+    @include multiline-clip(2) {
+      max-width: rem(200px);
+    }
+  }
+}

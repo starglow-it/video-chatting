@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   traefik:
-    build: ./traefik
+    build:
+      context: ./traefik
+      dockerfile: Dockerfile
     container_name: traefik
     restart: always
     ports:
@@ -27,7 +29,6 @@ services:
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
     networks:
       - traefik
-
 
 networks:
   traefik:
