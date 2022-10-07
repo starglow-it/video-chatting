@@ -44,8 +44,8 @@ export const initialTemplateState: UserTemplate = {
 export const $meetingTemplateStore = meetingDomain.createStore<UserTemplate>(initialTemplateState);
 
 export const $isUserSendEnterRequest = meetingDomain.createStore<boolean>(false);
-export const $isMeetingInstanceExists = $meetingTemplateStore.map(
-    state => state?.meetingInstance?.id,
+export const $isMeetingInstanceExists = $meetingTemplateStore.map(state =>
+    Boolean(state?.meetingInstance?.id),
 );
 
 export const $isOwner = combine<{ meetingTemplate: UserTemplate; profile: Profile }>({

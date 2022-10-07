@@ -1,7 +1,21 @@
-import { EntityList, Template, UploadTemplateFile, UserTemplate } from '../types';
+import { EntityList, Template, UserTemplate } from '../types';
 import { templatesDomain } from './domain/model';
-import { ParsedTimeStamp } from '../../types';
 import { IUserTemplate } from '../../../../shared/interfaces/user-template.interface';
+import {
+    CreateTemplateResponse,
+    EditTemplatePayload,
+    EditTemplateResponse,
+    EditUserTemplateResponse,
+    GetEditingTemplatePayload,
+    GetEditingTemplateResponse,
+    GetUserTemplatePayload,
+    PurchaseTemplatePayload,
+    SendScheduleInvitePayload,
+    UploadTemplateFilePayload,
+    UploadTemplateFileResponse,
+    UploadUserTemplateFilePayload,
+    UploadUserTemplateFileResponse,
+} from './types';
 
 const initialTemplatesStore: EntityList<Template> = {
     list: [],
@@ -58,62 +72,55 @@ export const getUsersTemplatesFx = templatesDomain.effect<
 >('getUsersTemplatesFx');
 
 export const getUserTemplateFx = templatesDomain.effect<
-    { templateId: Template['id'] },
+    GetUserTemplatePayload,
     UserTemplate | null | undefined,
     void
 >('getUserTemplateFx');
 
 export const purchaseTemplateFx = templatesDomain.effect<
-    { templateId: Template['id'] },
+    PurchaseTemplatePayload,
     { url: string },
     void
 >('purchaseTemplateFx');
 
 export const sendScheduleInviteFx = templatesDomain.effect<
-    {
-        templateId: string;
-        timeZone: string;
-        comment: string;
-        startAt: ParsedTimeStamp;
-        endAt: ParsedTimeStamp;
-        userEmails: string[];
-    },
+    SendScheduleInvitePayload,
     string | undefined,
     void
 >('sendScheduleInviteFx');
 
 export const uploadTemplateFileFx = templatesDomain.effect<
-    { id: string; file: File },
-    Template | null,
+    UploadTemplateFilePayload,
+    UploadTemplateFileResponse,
     void
 >('uploadTemplateFile');
 
 export const uploadUserTemplateFileFx = templatesDomain.effect<
-    { templateId: string; data: { file: File } },
-    UserTemplate | null,
+    UploadUserTemplateFilePayload,
+    UploadUserTemplateFileResponse,
     void
 >('uploadUserTemplateFile');
 
 export const editUserTemplateFileFx = templatesDomain.effect<
-    Omit<Partial<UserTemplate>, 'businessCategories'> & UploadTemplateFile,
-    UserTemplate | null,
+    UploadUserTemplateFilePayload,
+    EditUserTemplateResponse,
     void
 >('editUserTemplateFile');
 
-export const createTemplateFx = templatesDomain.effect<void, Template | undefined, void>(
+export const createTemplateFx = templatesDomain.effect<void, CreateTemplateResponse, void>(
     'createTemplate',
 );
 
 export const editTemplateFx = templatesDomain.effect<
-    Omit<Partial<Template>, 'businessCategories' | 'previewUrls'> & UploadTemplateFile,
-    Template | null,
+    EditTemplatePayload,
+    EditTemplateResponse,
     void
 >('editTemplate');
 
 export const getEditingTemplateFx = templatesDomain.effect<
-    { templateId: UserTemplate['id'] },
-    UserTemplate | undefined,
+    GetEditingTemplatePayload,
+    GetEditingTemplateResponse,
     void
-    >('getEditingTemplateFx');
+>('getEditingTemplateFx');
 
 export const clearTemplateDraft = templatesDomain.event('clearTemplateDraft');

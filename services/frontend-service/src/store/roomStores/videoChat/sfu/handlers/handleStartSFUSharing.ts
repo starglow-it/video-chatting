@@ -11,8 +11,6 @@ export const handleStartSFUSharing = async ({ room, userId }: StartSFUSharingPay
             localParticipant.unpublishTrack(oldSharingTrack.videoTrack.mediaStreamTrack);
         }
 
-        console.log('setScreenShareEnabled');
-
         await localParticipant.setScreenShareEnabled(
             true,
             { audio: false },

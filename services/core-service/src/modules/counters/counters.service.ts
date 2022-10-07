@@ -39,10 +39,12 @@ export class CountersService {
     session: ITransactionSession;
     new?: boolean;
   }) {
-    return this.counter.findOneAndUpdate(query, data, {
-      new: true,
-      session: session?.session,
-    }).exec();
+    return this.counter
+      .findOneAndUpdate(query, data, {
+        new: true,
+        session: session?.session,
+      })
+      .exec();
   }
 
   async exists(query: FilterQuery<CounterDocument>) {

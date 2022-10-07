@@ -10,4 +10,4 @@ export const parseBoolean = (
 
 export const isBoolean = (str: string) => {
     return ['true', '1', '0', 'false'].includes(str as string);
-}
+};

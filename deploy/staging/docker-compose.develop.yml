@@ -1,0 +1,309 @@
+version: "3.7"
+
+networks:
+  traefikpublic:
+    external:
+      name: liveoffice_traefikpublic
+  liveoffice_dev:
+
+services:
+  mongo:
+    container_name: develop_mongodb
+    ports:
+      - '127.0.0.1:56100:27017'
+    volumes:
+      - /data/liveoffice/develop/mongo:/data/db
+    networks:
+      - liveoffice_dev
+    labels:
+      - "io.portainer.accesscontrol.public"
+
+  rabbit:
+    container_name: develop_rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - /data/liveoffice/develop/rabbit:/var/lib/rabbitmq
+    networks:
+      - liveoffice_dev
+    labels:
+      - "io.portainer.accesscontrol.public"
+
+  livekit-service:
+    container_name: develop_livekit
+    build:
+      context: ../../services/
+      dockerfile: ./livekit-service/Dockerfile
+      args:
+        - LIVEKIT_IP
+        - LIVEKIT_API_KEY
+        - LIVEKIT_API_SECRET
+    restart: unless-stopped
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+      - "6789:6789"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.livekit_dev.rule=Host(`dev.livekit.liveoffice.forasoft.com`)"
+      - "traefik.http.routers.livekit_dev.entrypoints=https"
+      - "traefik.http.routers.livekit_dev.tls=true"
+      - "traefik.http.services.livekit_dev.loadbalancer.server.port=7880"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
+  frontend-service:
+    container_name: develop_frontend
+    build: ../../services/frontend-service
+    restart: unless-stopped
+    environment:
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
+      - FRONTEND_URL
+      - GATEWAY_PORT=3000
+      - GATEWAY_HOST=gateway-service
+      - TURN_URL
+      - TURN_PASSWORD
+      - TURN_USERNAME
+      - TURN_PORT
+      - LIVEKIT_WSS
+      - MEETING_SOCKET_URL
+      - DEFAULT_SERVER_IP
+      - VULTR_STORAGE_HOSTNAME
+      - STRIPE_PUBLIC_API_KEY
+      - BASE_ENV_DOMAIN
+      - SUPPORT_EMAIL
+    ports:
+      - '8000:8000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.front_dev.rule=Host(`dev.liveoffice.forasoft.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_dev.entrypoints=https"
+      - "traefik.http.routers.front_dev.tls=true"
+      - "traefik.http.services.front_dev.loadbalancer.server.port=8000"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
+  gateway-service:
+    container_name: develop_gateway
+    build:
+      context: ../../services
+      dockerfile: ./gateway-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - '3000:3000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gateway_dev.rule=Host(`dev.liveoffice.forasoft.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway_dev.entrypoints=https"
+      - "traefik.http.routers.gateway_dev.tls=true"
+      - "traefik.http.services.gateway_dev.loadbalancer.server.port=3000"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
+  socket-service:
+    container_name: develop_socket
+    build:
+      context: ../../services
+      dockerfile: ./socket-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - '8082:8080'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.socket_dev.rule=Host(`dev.liveoffice.forasoft.com`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.socket_dev.entrypoints=https"
+      - "traefik.http.routers.socket_dev.tls=true"
+      - "traefik.http.services.socket_dev.loadbalancer.server.port=8080"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
+  meeting-socket-service:
+    container_name: develop_meeting_socket
+    build:
+      context: ../../services
+      dockerfile: ./meeting-socket-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - '8180:8180'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.meeting_socket_dev.rule=Host(`dev.socket.liveoffice.forasoft.com`)"
+      - "traefik.http.routers.meeting_socket_dev.entrypoints=https"
+      - "traefik.http.routers.meeting_socket_dev.tls=true"
+      - "traefik.http.services.meeting_socket_dev.loadbalancer.server.port=8180"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
+  payment-service:
+    container_name: develop_payment
+    build:
+      context: ../../services
+      dockerfile: ./payment-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - "5100:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.payments_dev.rule=Host(`dev.liveoffice.forasoft.com`) && PathPrefix(`/payments`)"
+      - "traefik.http.routers.payments_dev.entrypoints=https"
+      - "traefik.http.routers.payments_dev.tls=true"
+      - "traefik.http.services.payments_dev.loadbalancer.server.port=5000"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
+  core-service:
+    container_name: develop_core
+    build:
+      context: ../../services
+      dockerfile: ./core-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - liveoffice_dev
+    labels:
+      - "io.portainer.accesscontrol.public"
+
+  auth-service:
+    container_name: develop_auth
+    build:
+      context: ../../services
+      dockerfile: ./auth-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - liveoffice_dev
+    labels:
+      - "io.portainer.accesscontrol.public"
+
+  notifications-service:
+    container_name: develop_notifications
+    build:
+      context: ../../services
+      dockerfile: ./notifications-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - liveoffice_dev
+    labels:
+      - "io.portainer.accesscontrol.public"
+
+  media-server-service:
+    container_name: develop_media-server
+    build:
+      context: ../../services
+      dockerfile: ./media-server-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - liveoffice_dev
+    labels:
+      - "io.portainer.accesscontrol.public"
+
+  scaling-service:
+    container_name: develop_scaling
+    build:
+      context: ../../services
+      dockerfile: ./scaling-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    labels:
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
+  config-service:
+    container_name: develop_config
+    build:
+      context: ../../services
+      dockerfile: ./config-service/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - rabbit
+    labels:
+      - "io.portainer.accesscontrol.public"
+    environment:
+      - RABBIT_MQ_CORE_QUEUE
+      - RABBIT_MQ_SOCKET_QUEUE
+      - RABBIT_MQ_AUTH_QUEUE
+      - RABBIT_MQ_PAYMENT_QUEUE
+      - RABBIT_MQ_NOTIFICATIONS_QUEUE
+      - RABBIT_MQ_MEDIA_SERVER_QUEUE
+      - RABBIT_MQ_SCALING_QUEUE
+      - RABBIT_MQ_USER
+      - RABBIT_MQ_PASS
+      - RABBIT_MQ_HOST
+      - RABBIT_MQ_CORE_HOST=${DEFAULT_SERVER_IP}
+      - RABBIT_MQ_CORE_PORT
+      - VULTR_UPLOAD_BUCKET
+      - VULTR_STORAGE_HOSTNAME
+      - VULTR_SECRET_ACCESS_KEY
+      - VULTR_ACCESS_KEY
+      - VULTR_SNAPSHOT_ID
+      - VULTR_API_KEY
+      - STRIPE_API_KEY
+      - STRIPE_WEBHOOK_SECRET
+      - STRIPE_EXPRESS_WEBHOOK_SECRET
+      - LIVEKIT_API_KEY
+      - LIVEKIT_API_SECRET
+      - LIVEKIT_HOST
+      - NODE_ENV=production
+      - PORT=4000
+      - EMAIL_SERVICE
+      - ENVIRONMENT=develop
+      - GATEWAY_PORT=3000
+      - FRONTEND_URL
+      - JWT_SECRET
+      - MONGO_URI
+      - SMTP_HOST
+      - SMTP_PORT
+      - SMTP_USER
+      - SMTP_PASS
+      - DEFAULT_SERVER_IP
+      - DEFAULT_DOMAIN
+      - MANDRILL_API_KEY
+      - SUPPORT_SCALING
+      - NUMBER_OF_ACTIVE_SERVERS
+      - SUPPORT_EMAIL
+    ports:
+      - "4100:4000"
+    networks:
+      - liveoffice_dev

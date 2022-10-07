@@ -1,4 +1,4 @@
-FROM node:16.16.0-alpine AS builder
+FROM node:18.7.0-alpine AS builder
 
 RUN apk update
 RUN apk upgrade
@@ -10,15 +10,15 @@ COPY ./shared ./shared
 
 RUN mkdir ./config-service
 
-COPY ./config-service/package.json ./config-service/
+COPY ./config-service/package*.json ./config-service/
 
-RUN cd ./config-service && npm i --legacy-peer-deps
+RUN npm ci --legacy-peer-deps --silent --prefix=/app/config-service
 
 COPY ./config-service ./config-service/
 
-RUN cd ./config-service && npm run build
+RUN npm run build --prefix=/app/config-service
 
-FROM node:16.16.0-alpine
+FROM node:18.7.0-alpine
 
 WORKDIR /app
 

@@ -1,31 +1,31 @@
 import { forward } from 'effector';
 
 import {
-    $setUpTemplateStore,
-    getTemplateFx,
-    $templatePreviewStore,
-    setPreviewTemplate,
-    $replaceTemplateIdStore,
-    $templatesStore,
-    getTemplatesFx,
-    setReplaceTemplateIdEvent,
     $discoveryTemplatesStore,
+    $replaceTemplateIdStore,
     $scheduleEventLinkStore,
     $scheduleTemplateIdStore,
+    $setUpTemplateStore,
     $templateDraft,
+    $templatePreviewStore,
+    $templatesStore,
+    clearTemplateDraft,
+    createTemplateFx,
+    editTemplateFx,
+    editUserTemplateFileFx,
+    getEditingTemplateFx,
+    getTemplateFx,
+    getTemplatesFx,
     getUsersTemplatesFx,
+    getUserTemplateFx,
+    purchaseTemplateFx,
     sendScheduleInviteFx,
+    setPreviewTemplate,
+    setReplaceTemplateIdEvent,
     setScheduleEventLinkEvent,
     setScheduleTemplateIdEvent,
-    purchaseTemplateFx,
-    getUserTemplateFx,
     uploadTemplateFileFx,
-    editTemplateFx,
-    createTemplateFx,
-    getEditingTemplateFx,
     uploadUserTemplateFileFx,
-    editUserTemplateFileFx,
-    clearTemplateDraft,
 } from './model';
 
 import { appDialogsApi } from '../dialogs/init';
@@ -42,9 +42,8 @@ import { handleFetchCommonTemplate } from './handlers/handleFetchCommonTemplate'
 import { handlePurchaseTemplate } from './handlers/handlePurchaseTemplate';
 import { handleEditTemplate } from './handlers/handleEditTemplate';
 import { handleCreateTemplate } from './handlers/handleCreateTemplate';
-import {
-    handleUpdateMeetingTemplate
-} from '../roomStores/meeting/meetingTemplate/handlers/handleUpdateMeetingTemplate';
+import { handleUploadTemplateFile } from './handlers/handleUploadTemplateFile';
+import { handleUploadUserTemplateFile } from './handlers/handleUploadUserTemplateFile';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -53,11 +52,11 @@ getUserTemplateFx.use(handleFetchUserTemplate);
 purchaseTemplateFx.use(handlePurchaseTemplate);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
 createTemplateFx.use(handleCreateTemplate);
-uploadTemplateFileFx.use(handleEditTemplate);
+uploadTemplateFileFx.use(handleUploadTemplateFile);
 editTemplateFx.use(handleEditTemplate);
 getEditingTemplateFx.use(handleFetchUserTemplate);
-uploadUserTemplateFileFx.use(handleUpdateMeetingTemplate);
-editUserTemplateFileFx.use(handleUpdateMeetingTemplate);
+uploadUserTemplateFileFx.use(handleUploadUserTemplateFile);
+editUserTemplateFileFx.use(handleUploadUserTemplateFile);
 
 $templatesStore.on(getTemplatesFx.doneData, (state, data) => ({
     ...state,
@@ -83,11 +82,17 @@ $scheduleEventLinkStore.on(setScheduleEventLinkEvent, (state, data) => {
 
     return data;
 });
-$templateDraft.on(createTemplateFx.doneData, (state, data) => data);
-$templateDraft.on(editTemplateFx.doneData, (state, data) => data);
-$templateDraft.on(getEditingTemplateFx.doneData, (state, data) => data);
-$templateDraft.on(editUserTemplateFileFx.doneData, (state, data) => data);
-$templateDraft.reset(clearTemplateDraft);
+$templateDraft
+    .on(
+        [
+            createTemplateFx.doneData,
+            editTemplateFx.doneData,
+            getEditingTemplateFx.doneData,
+            editUserTemplateFileFx.doneData,
+        ],
+        (state, data) => data,
+    )
+    .reset(clearTemplateDraft);
 
 $replaceTemplateIdStore.on(setReplaceTemplateIdEvent, (state, data) => data);
 

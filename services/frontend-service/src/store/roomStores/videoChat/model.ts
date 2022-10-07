@@ -6,10 +6,6 @@ export const $serverTypeStore = videoChatDomain.createStore(ServerTypes.P2P);
 export const $connectionsStore = videoChatDomain.createStore<ConnectionsStore>({});
 export const $tracksStore = videoChatDomain.createStore<TracksStore>({});
 
-$connectionsStore.watch(state => {
-    console.log(state);
-});
-
 export const initVideoChatEvent = videoChatDomain.createEvent<{ serverType: ServerTypes }>(
     'initVideoChatController',
 );

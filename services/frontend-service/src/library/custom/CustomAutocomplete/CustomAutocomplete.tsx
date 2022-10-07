@@ -11,7 +11,9 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomChip } from '@library/custom/CustomChip/CustomChip';
 
 // types
-import { CustomAutocompleteProps } from '@library/custom/CustomAutocomplete/types';
+import { CustomAutocompleteProps } from './types';
+
+import styles from './CustomAutocomplete.module.scss';
 
 const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) => {
     const renderInput = useCallback(
@@ -35,6 +37,10 @@ const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) 
             control={control}
             render={({ field: { value, onChange } }) => (
                 <Autocomplete
+                    classes={{
+                        root: styles.root,
+                        input: styles.input,
+                    }}
                     renderInput={inputProps => renderInput(inputProps, value)}
                     renderTags={(tagValue, getTagProps) =>
                         tagValue.map((option, index) => (

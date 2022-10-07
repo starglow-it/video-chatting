@@ -68,7 +68,6 @@ export class AuthController {
     @Body() registerUserRequest: UserCredentialsRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-      console.log('checkIfUserExists')
       const isUserExists = await this.coreService.checkIfUserExists({
         email: registerUserRequest.email,
       });
@@ -77,7 +76,6 @@ export class AuthController {
         throw new DataValidationException(USER_EXISTS);
       }
 
-      console.log('register')
       await this.authService.register(registerUserRequest);
 
       return {
@@ -335,9 +333,8 @@ export class AuthController {
   })
   async logoutUser(@Body() body: TokenRequest): Promise<ResponseSumType<null>> {
     try {
-      console.log('logoutUser');
       await this.authService.logoutUser({ token: body.token });
-      console.log('after logoutUser');
+
       return { success: true, result: null };
     } catch (err) {
       this.logger.error(

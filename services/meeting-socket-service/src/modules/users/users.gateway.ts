@@ -41,8 +41,8 @@ import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
-    origin: "*",
-  }
+    origin: '*',
+  },
 })
 export class UsersGateway extends BaseGateway {
   constructor(

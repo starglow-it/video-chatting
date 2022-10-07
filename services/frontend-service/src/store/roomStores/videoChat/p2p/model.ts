@@ -1,13 +1,13 @@
 import { videoChatDomain } from '../../../domains';
 import { ErrorState, MeetingUser } from '../../../types';
 import {
+    ChangeActiveStreamPayload,
     ConnectionsStore,
     CreatePeerConnectionsPayload,
     GetAnswerPayload,
     GetIceCandidatePayload,
     GetOfferPayload,
 } from '../types';
-import { CustomMediaStream } from '../../../../types';
 
 // effects
 export const createPeerConnectionFx = videoChatDomain.createEffect<
@@ -15,11 +15,6 @@ export const createPeerConnectionFx = videoChatDomain.createEffect<
     ConnectionsStore,
     ErrorState
 >('createPeerConnectionFx');
-export const createLocalPeerConnectionsFx = videoChatDomain.createEffect<
-    CreatePeerConnectionsPayload,
-    ConnectionsStore,
-    ErrorState
->('createLocalPeerConnectionsFx');
 export const removeConnectionsFx = videoChatDomain.createEffect<
     ConnectionsStore,
     MeetingUser['id'][]
@@ -38,12 +33,7 @@ export const stopScreenSharingFx = videoChatDomain.createEffect<
     MeetingUser['id'][]
 >('stopScreenSharingFx');
 export const changeP2PActiveStreamFx = videoChatDomain.createEffect<
-    {
-        connections: ConnectionsStore;
-        stream: CustomMediaStream;
-        isCameraActive: boolean;
-        isMicActive: boolean;
-    },
+    ChangeActiveStreamPayload,
     void
 >('changeP2PActiveStreamFx');
 

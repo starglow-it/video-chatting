@@ -10,10 +10,10 @@ import {
     CancelAccessMeetingRequestPayload,
     EndMeetingPayload,
     EnterMeetingRequestPayload,
-    JoinMeetingPayload,
+    JoinWaitingRoomPayload,
     LeaveMeetingPayload,
     StartMeetingPayload,
-    JoinMeetingResponse,
+    JoinWaitingRoomResponse,
     StartMeetingResponse,
     EnterMeetingRequestResponse,
     CancelAccessMeetingRequestResponse,
@@ -28,9 +28,9 @@ export const emitEnterMeetingEvent = meetingDomain.createEvent('emitEnterMeeting
 export const emitEnterWaitingRoom = meetingDomain.createEvent('emitEnterWaitingRoom');
 
 // socket events
-export const joinMeetingSocketEvent = createMeetingSocketEvent<
-    JoinMeetingPayload,
-    JoinMeetingResponse
+export const joinWaitingRoomSocketEvent = createMeetingSocketEvent<
+    JoinWaitingRoomPayload,
+    JoinWaitingRoomResponse
 >(MeetingSocketEmitters.JoinWaitingRoom);
 export const endMeetingSocketEvent = createMeetingSocketEvent<EndMeetingPayload, void>(
     MeetingSocketEmitters.EndMeeting,

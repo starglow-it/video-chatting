@@ -10,7 +10,6 @@ export const handlePublishTracks = async ({
 }: PublishTracksPayload) => {
     try {
         if (room) {
-            console.log('handlePublishTracks')
             const videoTrack = stream?.getVideoTracks?.()?.[0];
             const audioTrack = stream?.getAudioTracks?.()?.[0];
 

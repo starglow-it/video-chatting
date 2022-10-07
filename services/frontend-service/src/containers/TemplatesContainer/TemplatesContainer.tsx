@@ -78,8 +78,8 @@ const Component = () => {
 
     const freeTemplatesCount = useStoreMap({
         store: $profileTemplatesStore,
-        keys: [],
-        fn: state => state?.list?.filter(template => template.type === 'free')?.length || 0,
+        keys: [profile.id],
+        fn: (state, [profileId]) => state?.list?.filter(template => template.type === 'free' && template.author !== profileId)?.length || 0,
     });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);

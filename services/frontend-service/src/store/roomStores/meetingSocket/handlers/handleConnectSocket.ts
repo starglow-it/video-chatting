@@ -8,9 +8,10 @@ export const handleConnectSocket = async ({
 }: {
     serverIp: UserTemplate['meetingInstance']['serverIp'];
 }) => {
-    const socketUrl = ['localhost', frontendConfig.defaultServerIp].includes(serverIp)
-        ? frontendConfig.meetingSocketUrl
-        : getMeetingInstanceSocketUrl(serverIp);
+    const socketUrl =
+        !['localhost', frontendConfig.defaultServerIp].includes(serverIp) && serverIp
+            ? getMeetingInstanceSocketUrl(serverIp)
+            : frontendConfig.meetingSocketUrl;
 
     const socketInstance = io(socketUrl, {
         transports: ['websocket'],

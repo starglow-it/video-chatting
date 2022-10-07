@@ -6,6 +6,7 @@ import {
   BusinessCategory,
   BusinessCategorySchema,
 } from '../../schemas/business-category.schema';
+import { BusinessCategoriesController } from './business-categories.controller';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import {
       { name: BusinessCategory.name, schema: BusinessCategorySchema },
     ]),
   ],
+  controllers: [BusinessCategoriesController],
   providers: [BusinessCategoriesService],
   exports: [BusinessCategoriesService],
 })

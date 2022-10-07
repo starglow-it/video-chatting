@@ -7,7 +7,7 @@ import styles from './ValuesSwitcher.module.scss';
 
 import { ValueSwitcherItemProps } from './types';
 
-const Component = ({
+const Component = <ValueType extends number | string>({
     optionWidth,
     activeValue,
     value,
@@ -15,7 +15,7 @@ const Component = ({
     onValueChanged,
     onUpdateActiveElement,
     variant = 'primary',
-}: ValueSwitcherItemProps) => {
+}: ValueSwitcherItemProps<ValueType>) => {
     useEffect(() => {
         if (activeValue.value === value.value) {
             onUpdateActiveElement(index * optionWidth);

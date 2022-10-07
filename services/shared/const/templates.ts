@@ -3,7 +3,7 @@ import { ICommonTemplate } from "../interfaces/common-template.interface";
 interface BaseTemplate
   extends Omit<
     ICommonTemplate,
-    "businessCategories" | "previewUrls" | "stripeProductId"
+    "businessCategories" | "previewUrls" | "stripeProductId" | "url"
   > {
   businessCategories: string[];
   imagesUrl?: string;
@@ -14,7 +14,6 @@ interface BaseTemplate
 export const templatesData: BaseTemplate[] = [
   {
     templateId: 1,
-    url: "https://vimeo.com/683820654/424a4cb337",
     videoPath: "/ibiza2",
     imagePath: "/free-ibiza2",
     name: "Ibiza Patio",
@@ -48,7 +47,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 2,
-    url: "https://vimeo.com/683821458",
     videoPath: "/ibiza3",
     imagePath: "/free-ibiza3",
     name: "Mt Fuji Patio",
@@ -86,7 +84,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 3,
-    url: "https://vimeo.com/683822180/ec56604e5b",
     videoPath: "/ibiza4",
     imagePath: "/free-ibiza4",
     name: "Ibiza Patio",
@@ -129,7 +126,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 4,
-    url: "https://vimeo.com/689593453",
     videoPath: "/lake_harmony",
     imagePath: "/free-lake_harmony",
     name: "Lakeside Office",
@@ -171,7 +167,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 5,
-    url: "https://vimeo.com/692426911",
     videoPath: "/rustic",
     imagePath: "/free-rustic",
     name: "Countryside Office",
@@ -210,7 +205,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 6,
-    url: "https://vimeo.com/693199730",
     videoPath: "/retro",
     imagePath: "/free-retro",
     name: "1970's Office",
@@ -247,7 +241,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 7,
-    url: "https://vimeo.com/694742409",
     videoPath: "/tat",
     imagePath: "/free-tat",
     name: "Modern office",
@@ -279,7 +272,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 8,
-    url: "https://vimeo.com/695301547/7ff47a2be8",
     videoPath: "/cascadia",
     imagePath: "/cascadia",
     name: "Cascadia",
@@ -332,7 +324,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 9,
-    url: "https://vimeo.com/695301547/7ff47a2be8",
     videoPath: "/cascadia",
     imagePath: "/free-cascadia",
     name: "Cascadia",
@@ -376,7 +367,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 10,
-    url: "https://vimeo.com/695546151",
     videoPath: "/therapist-hi",
     imagePath: "/free-therapist-hi",
     name: "Therapy Office (at the desk)",
@@ -402,7 +392,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 11,
-    url: "https://vimeo.com/695546183",
     videoPath: "/therapist-session",
     imagePath: "/free-therapist-session",
     name: "Therapy Office (on the couch)",
@@ -429,7 +418,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 12,
-    url: "https://vimeo.com/695855516",
     videoPath: "/executive",
     imagePath: "/free-executive",
     name: "New York Executive",
@@ -466,7 +454,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 13,
-    url: "https://vimeo.com/695955149",
     videoPath: "/executivebeach",
     imagePath: "/free-executivebeach",
     name: "Tropical Executive",
@@ -502,7 +489,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 14,
-    url: "https://vimeo.com/696216268",
     videoPath: "/office",
     imagePath: "/free-office",
     name: "Regency Office",
@@ -528,7 +514,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 15,
-    url: "https://vimeo.com/696332207",
     videoPath: "/graffiti",
     imagePath: "/free-graffiti",
     name: "Apocalypto",
@@ -562,7 +547,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 16,
-    url: "https://vimeo.com/696332207",
     videoPath: "/graffiti",
     imagePath: "/graffiti",
     name: "Apocalypto",
@@ -605,7 +589,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 17,
-    url: "https://vimeo.com/696774277",
     videoPath: "/fireandfog",
     imagePath: "/free-fireandfog",
     name: "Modern 1-on-1: Fog",
@@ -630,7 +613,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 18,
-    url: "https://vimeo.com/696834848",
     videoPath: "/ocean_vista",
     imagePath: "/free-ocean_vista",
     name: "Modern 1-on-1: Ocean",
@@ -655,7 +637,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 19,
-    url: "https://vimeo.com/696838654",
     videoPath: "/centralpark",
     imagePath: "/free-centralpark",
     name: "Modern 1-on-1: Central Park",
@@ -681,7 +662,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 20,
-    url: "https://vimeo.com/706268372",
     videoPath: "/ralph_lauren",
     imagePath: "/free-ralph_lauren",
     name: "Virtual Luxury (Store)",
@@ -746,7 +726,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 21,
-    url: "https://vimeo.com/709641634",
     videoPath: "/paris_final",
     imagePath: "/free-paris_final",
     name: "Paris café",
@@ -788,7 +767,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 22,
-    url: "https://vimeo.com/714306605",
     videoPath: "/together_clouds",
     imagePath: "/together_clouds",
     name: "Cloud 9 (Together Mode)",
@@ -830,7 +808,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 23,
-    url: "https://vimeo.com/714306605",
     videoPath: "/together_clouds",
     imagePath: "/free-together_clouds",
     name: "Cloud 9 (Together Mode)",
@@ -863,7 +840,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 24,
-    url: "https://vimeo.com/714306354",
     videoPath: "/loop_campfire",
     imagePath: "/free-loop_campfire",
     name: "The Firepit (Together Mode)",
@@ -904,7 +880,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 25,
-    url: "https://vimeo.com/714306354",
     videoPath: "/loop_campfire",
     imagePath: "/loop_campfire",
     name: "The Firepit (Together Mode)",
@@ -954,7 +929,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 26,
-    url: "https://vimeo.com/714306497",
     videoPath: "/together_beach",
     imagePath: "/together_beach",
     name: "Vista Rica (Together Mode)",
@@ -1005,7 +979,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 28,
-    url: "https://vimeo.com/719688394",
     videoPath: "/zen2-loop",
     imagePath: "/free-zen2-loop",
     name: "Zen Pond",
@@ -1045,7 +1018,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 29,
-    url: "https://vimeo.com/719922659",
     videoPath: "/heart",
     imagePath: "/heart4",
     name: "Breating Heart Exercise (Together Mode)",
@@ -1084,7 +1056,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 30,
-    url: "https://vimeo.com/719922659",
     videoPath: "/heart",
     imagePath: "/heart6",
     name: "Breating Heart Exercise (Together Mode)",
@@ -1131,7 +1102,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 31,
-    url: "https://vimeo.com/719937967",
     videoPath: "/abstract",
     imagePath: "/free-abstract",
     name: "Abstract Solar (Together Mode)",
@@ -1171,7 +1141,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 32,
-    url: "https://vimeo.com/719937967",
     videoPath: "/abstract",
     imagePath: "/abstract",
     name: "Abstract Solar (Together Mode)",
@@ -1220,8 +1189,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 33,
-    url: "",
-    imagesUrl: "/calm6",
+    imagesUrl: "/free-calm6",
     imagePath: "/free-calm6",
     name: "Simply Nice (Together Mode)",
     maxParticipants: 4,
@@ -1260,7 +1228,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 34,
-    url: "",
     imagesUrl: "/calm6",
     imagePath: "/calm6",
     name: "Simply Nice (Together Mode)",
@@ -1309,7 +1276,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 36,
-    url: "https://vimeo.com/719688289/5241eddabb",
     videoPath: "/perk_central",
     imagePath: "/perk_central",
     name: "Perk Central",
@@ -1358,7 +1324,6 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 37,
-    url: "https://vimeo.com/719688289/5241eddabb",
     videoPath: "/perk_central",
     imagePath: "/free-perk_central",
     name: "Perk Central",

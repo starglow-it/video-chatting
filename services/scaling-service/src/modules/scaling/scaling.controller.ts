@@ -7,17 +7,33 @@ import {
 } from '@shared/broker-payloads/meetings';
 import { ScalingService } from './scaling.service';
 import { CoreService } from '../../services/core/core.service';
+import { ConfigClientService } from '../../services/config/config.service';
 
 @Controller('scaling')
 export class ScalingController {
+  vultrSnapshotId: string;
+
   constructor(
     private scalingService: ScalingService,
     private coreService: CoreService,
+    private configService: ConfigClientService,
   ) {}
+
+  async onModuleInit() {
+    this.vultrSnapshotId = await this.configService.get<string>(
+      'vultrSnapshotId',
+    );
+  }
 
   @MessagePattern({ cmd: ScalingBrokerPatterns.CreateServer })
   async createServer(@Payload() payload: CreateServerPayload) {
-    const newInstance = await this.scalingService.createServer(payload);
+    const newInstance = await this.scalingService.createServer();
+
+    await this.coreService.createMeetingInstance({
+      instanceId: newInstance.instanceId,
+      serverStatus: 'pending',
+      snapshotId: this.vultrSnapshotId,
+    });
 
     return {
       instanceId: newInstance.instanceId,

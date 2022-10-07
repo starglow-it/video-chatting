@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { VultrService } from '../../services/vultr/vultr.service';
 import { CoreService } from '../../services/core/core.service';
-import {sleep} from "../../utils/sleep";
-import {getTimeoutTimestamp} from "../../utils/getTimeoutTimestamp";
-import {TimeoutTypesEnum} from "../../types/timeoutTypes.enum";
-import {ConfigClientService} from "../../services/config/config.service";
+import { sleep } from '../../utils/sleep';
+import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
+import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
+import { ConfigClientService } from '../../services/config/config.service';
 
 const IP_ADDRESS_RECONNECT_TIMEOUT = getTimeoutTimestamp({
   type: TimeoutTypesEnum.Seconds,
@@ -31,20 +31,22 @@ export class ScalingService {
   constructor(
     private vultrService: VultrService,
     private coreService: CoreService,
-    private configService: ConfigClientService
+    private configService: ConfigClientService,
   ) {}
 
   async onModuleInit() {
     this.environment = await this.configService.get<string>('environment');
-    this.numberOfActiveServers = await this.configService.get<number>('numberOfActiveServers');
-    this.vultrSnapshotId = await this.configService.get<string>('vultrSnapshotId');
+    this.numberOfActiveServers = await this.configService.get<number>(
+      'numberOfActiveServers',
+    );
+    this.vultrSnapshotId = await this.configService.get<string>(
+      'vultrSnapshotId',
+    );
   }
 
-  async createServer(data?: any) {
+  async createServer() {
     try {
-      this.logger.log(
-          `User with id:${data.userId} started meeting with template:${data.templateId}`,
-      );
+      this.logger.log(`Start create free server`);
 
       const newInstance = await this.vultrService.createInstance();
 
@@ -67,14 +69,14 @@ export class ScalingService {
 
     if (instanceData.data.instance.main_ip !== '0.0.0.0') {
       this.logger.log(
-          `Server ${instanceId} has ip address - ${instanceData.data.instance.main_ip}`,
+        `Server ${instanceId} has ip address - ${instanceData.data.instance.main_ip}`,
       );
 
       return instanceData.data.instance.main_ip;
     }
 
     this.logger.log(
-        `No public IP on instance ${instanceId} or instance not ready yet.`,
+      `No public IP on instance ${instanceId} or instance not ready yet.`,
     );
 
     if (reconnectAttempt * IP_ADDRESS_RECONNECT_TIMEOUT < MAX_WAIT_TIMEOUT) {
@@ -89,7 +91,7 @@ export class ScalingService {
     return '';
   }
 
-  async getActiveServerStatus({ instanceId, reconnectAttempt = 0}) {
+  async getActiveServerStatus({ instanceId, reconnectAttempt = 0 }) {
     const instanceData = await this.vultrService.getActiveServerStatus({
       instanceId,
     });
@@ -101,7 +103,7 @@ export class ScalingService {
     }
 
     this.logger.log(
-        `Instance with id - ${instanceId} still has inactive state`,
+      `Instance with id - ${instanceId} still has inactive state`,
     );
 
     if (reconnectAttempt * RECONNECT_TIMEOUT < MAX_WAIT_TIMEOUT) {
@@ -151,47 +153,73 @@ export class ScalingService {
         owner: null,
       });
 
-      this.logger.debug(`Max number of instances: ${this.numberOfActiveServers}`);
-      this.logger.debug(`Current number of active instances: ${freeServers?.length}`);
-      this.logger.debug(`Current number of pending instances: ${freePendingServers?.length}`);
+      this.logger.debug(
+        `Max number of instances: ${this.numberOfActiveServers}`,
+      );
+      this.logger.debug(
+        `Current number of active instances: ${freeServers?.length}`,
+      );
+      this.logger.debug(
+        `Current number of pending instances: ${freePendingServers?.length}`,
+      );
 
-      this.logger.debug(`Need to create ${this.numberOfActiveServers - (freeServers?.length + freePendingServers?.length)} instances`);
+      this.logger.debug(
+        `Need to create ${
+          this.numberOfActiveServers -
+          (freeServers?.length + freePendingServers?.length)
+        } instances`,
+      );
 
       if (freePendingServers?.length) {
-        const waitForPendingServersPromises = freePendingServers.map(async (instance) => {
-          const instanceData = await this.vultrService.getInstance({ instanceId: instance.instanceId });
-
-          if (!instanceData) {
-            this.logger.debug('Mark free server instance as "stopped"....');
-
-            return this.coreService.updateMeetingInstance({
+        const waitForPendingServersPromises = freePendingServers.map(
+          async (instance) => {
+            const instanceData = await this.vultrService.getInstance({
               instanceId: instance.instanceId,
-              data: {
-                serverStatus: 'stopped'
-              },
             });
-          }
 
-          this.logger.debug(`Try to get active status of the ${instanceData.main_ip} instance`);
+            if (!instanceData) {
+              this.logger.debug('Mark free server instance as "stopped"....');
 
-          if (instanceData.server_status === 'ok') {
-            this.logger.debug(`Instance with ip:${instanceData.main_ip} is active`);
-            await this.coreService.updateMeetingInstance({
-              instanceId: instance.instanceId,
-              data: {
-                serverStatus: 'active'
-              },
-            });
-          }
-        });
+              return this.coreService.updateMeetingInstance({
+                instanceId: instance.instanceId,
+                data: {
+                  serverStatus: 'stopped',
+                },
+              });
+            }
+
+            this.logger.debug(
+              `Try to get active status of the ${instanceData.main_ip} instance`,
+            );
+
+            if (instanceData.server_status === 'ok') {
+              this.logger.debug(
+                `Instance with ip:${instanceData.main_ip} is active`,
+              );
+              await this.coreService.updateMeetingInstance({
+                instanceId: instance.instanceId,
+                data: {
+                  serverStatus: 'active',
+                },
+              });
+            }
+          },
+        );
 
         await Promise.all(waitForPendingServersPromises);
       }
 
-      if (this.numberOfActiveServers > freeServers?.length + freePendingServers?.length) {
-        const createServersNumber = this.numberOfActiveServers - (freeServers?.length + freePendingServers?.length);
+      if (
+        this.numberOfActiveServers >
+        freeServers?.length + freePendingServers?.length
+      ) {
+        const createServersNumber =
+          this.numberOfActiveServers -
+          (freeServers?.length + freePendingServers?.length);
 
-        const createServersPromises = [...new Array(createServersNumber).fill(0).keys()].map(async () => {
+        const createServersPromises = [
+          ...new Array(createServersNumber).fill(0).keys(),
+        ].map(async () => {
           this.logger.debug('Creating new instance....');
 
           const newInstance = await this.vultrService.createInstance();
@@ -204,13 +232,15 @@ export class ScalingService {
 
           this.logger.debug('Try to get ip address');
 
-          const ipAddress = await this.getPublicIpAddress({ instanceId: newInstance.id });
+          const ipAddress = await this.getPublicIpAddress({
+            instanceId: newInstance.id,
+          });
 
           await this.coreService.updateMeetingInstance({
             instanceId: newInstance.id,
             data: {
               serverIp: ipAddress,
-              serverStatus: 'pending'
+              serverStatus: 'pending',
             },
           });
 
@@ -221,48 +251,60 @@ export class ScalingService {
           await this.coreService.updateMeetingInstance({
             instanceId: newInstance.id,
             data: {
-              serverStatus: 'active'
+              serverStatus: 'active',
             },
           });
         });
 
         await Promise.all(createServersPromises);
-      } else if (this.numberOfActiveServers < freeServers?.length + freePendingServers?.length) {
-        const stopServersNumber = (freeServers?.length + freePendingServers?.length) - this.numberOfActiveServers;
+      } else if (
+        this.numberOfActiveServers <
+        freeServers?.length + freePendingServers?.length
+      ) {
+        const stopServersNumber =
+          freeServers?.length +
+          freePendingServers?.length -
+          this.numberOfActiveServers;
 
-        const stopServersPromises = [...freePendingServers, ...freeServers].slice(0, stopServersNumber).map(async (instance) => {
-          this.logger.debug('Mark free server instance as "stopped"....');
+        const stopServersPromises = [...freePendingServers, ...freeServers]
+          .slice(0, stopServersNumber)
+          .map(async (instance) => {
+            this.logger.debug('Mark free server instance as "stopped"....');
 
-          return this.coreService.updateMeetingInstance({
-            instanceId: instance.instanceId,
-            data: {
-              serverStatus: 'stopped'
-            },
+            return this.coreService.updateMeetingInstance({
+              instanceId: instance.instanceId,
+              data: {
+                serverStatus: 'stopped',
+              },
+            });
           });
-        });
 
         await Promise.all(stopServersPromises);
       }
 
       this.logger.debug('Start check invalid instances');
 
-      const updateDatabaseInstancesPromises = freeServers.map(async (instance) => {
-        this.logger.debug(`Check instance with id ${instance.instanceId}`);
+      const updateDatabaseInstancesPromises = freeServers.map(
+        async (instance) => {
+          this.logger.debug(`Check instance with id ${instance.instanceId}`);
 
-        const instanceData = await this.vultrService.getInstance({ instanceId: instance.instanceId });
+          const instanceData = await this.vultrService.getInstance({
+            instanceId: instance.instanceId,
+          });
 
           if (!instanceData) {
             this.logger.debug('Mark free server instance as "stopped"....');
             return this.coreService.updateMeetingInstance({
               instanceId: instance.instanceId,
               data: {
-                serverStatus: 'stopped'
+                serverStatus: 'stopped',
               },
             });
           }
 
           return;
-      });
+        },
+      );
 
       await Promise.all(updateDatabaseInstancesPromises);
     } catch (e) {
@@ -273,18 +315,20 @@ export class ScalingService {
   async terminateOldSnapshotInstances() {
     const meetingInstances = await this.coreService.getMeetingInstances({});
 
-    meetingInstances.forEach(instance => {
+    const promises = meetingInstances.map(async (instance) => {
       this.logger.debug(`Check snapshots`);
       if (instance.snapshotId !== this.vultrSnapshotId) {
         this.logger.debug(`Snapshots not equal`);
         this.logger.debug(`Mark server ${instance.instanceId} as stopped`);
-        this.coreService.updateMeetingInstance({
+        await this.coreService.updateMeetingInstance({
           instanceId: instance.instanceId,
           data: {
             serverStatus: 'stopped',
-          }
+          },
         });
       }
     });
+
+    await Promise.all(promises);
   }
 }

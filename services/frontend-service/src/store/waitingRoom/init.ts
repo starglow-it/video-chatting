@@ -1,9 +1,7 @@
 import { attach, combine, Store } from 'effector-next';
-import { joinDashboardSocketEvent, joinRoomBeforeMeetingSocketEvent } from './model';
+import { joinDashboardSocketEvent } from './model';
 import { $profileStore } from '../profile/profile/model';
-import { AppDialogsEnum, Profile } from '../types';
-import { setMeetingErrorEvent } from '../roomStores';
-import { appDialogsApi } from '../dialogs/init';
+import { Profile } from '../types';
 
 export const sendJoinDashboardSocketEvent = attach<
     void,
@@ -13,11 +11,4 @@ export const sendJoinDashboardSocketEvent = attach<
     effect: joinDashboardSocketEvent,
     source: combine({ profile: $profileStore }),
     mapParams: (_, { profile }) => ({ userId: profile.id }),
-});
-
-joinRoomBeforeMeetingSocketEvent.failData.watch(data => {
-    setMeetingErrorEvent(data);
-    appDialogsApi.openDialog({
-        dialogKey: AppDialogsEnum.meetingErrorDialog,
-    });
 });

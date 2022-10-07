@@ -7,5 +7,4 @@ export const isNumber = (str) => {
     const num = Number(str);
 
     return !Number.isNaN(num);
-}
-
+};

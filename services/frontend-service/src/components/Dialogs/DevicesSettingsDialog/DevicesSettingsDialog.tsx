@@ -26,6 +26,8 @@ import {
     addNotificationEvent,
 } from '../../../store';
 import {
+    $audioDevicesStore,
+    $audioErrorStore,
     $backgroundAudioVolume,
     $changeStreamStore,
     $isAuraActive,
@@ -35,8 +37,9 @@ import {
     $isOwner,
     $isStreamRequestedStore,
     $localUserStore,
-    $meetingStore,
     $meetingTemplateStore,
+    $videoDevicesStore,
+    $videoErrorStore,
     initDevicesEventFxWithStore,
     resetMediaStoreEvent,
     setActiveStreamEvent,
@@ -59,7 +62,8 @@ import styles from './DevicesSettingsDialog.module.scss';
 // validations
 import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 import { templatePriceSchema } from '../../../validation/payments/templatePrice';
-import { applyBlur } from '../../../store/roomStores/videoChat/helpers/applyBlur';
+import { BackgroundManager } from '../../../helpers/media/applyBlur';
+import { changeTracksState } from '../../../helpers/media/changeTrackState';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -78,7 +82,6 @@ const Component = () => {
     const profile = useStore($profileStore);
 
     const localUser = useStore($localUserStore);
-    const meeting = useStore($meetingStore);
     const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
@@ -88,10 +91,12 @@ const Component = () => {
     const isMicActive = useStore($isMicActiveStore);
     const isStreamRequested = useStore($isStreamRequestedStore);
     const isAuraActive = useStore($isAuraActive);
+    const videoDevices = useStore($videoDevicesStore);
+    const audioDevices = useStore($audioDevicesStore);
+    const videoError = useStore($videoErrorStore);
+    const audioError = useStore($audioErrorStore);
 
     const [volume, setVolume] = useState<number>(backgroundAudioVolume);
-
-    const isSharingScreenActive = localUser.id === meeting.sharingUserId;
 
     const {
         value: isSettingsAudioBackgroundActive,
@@ -104,6 +109,12 @@ const Component = () => {
         onToggleSwitch: handleToggleAura,
         onSetSwitch: handleSetAura,
     } = useToggle(isAuraActive);
+
+    const { value: isNewCameraSettingActive, onToggleSwitch: handleToggleNewCameraSetting } =
+        useToggle(isCameraActive);
+
+    const { value: isNewMicSettingActive, onToggleSwitch: handleToggleNewMicSetting } =
+        useToggle(isMicActive);
 
     const resolver = useYupValidationResolver<MonetizationFormType>(validationSchema);
 
@@ -152,6 +163,22 @@ const Component = () => {
         setVolume(backgroundAudioVolume);
     }, [backgroundAudioVolume]);
 
+    const handleToggleCamera = () => {
+        changeTracksState({
+            enabled: !isNewCameraSettingActive,
+            tracks: changeStream?.getVideoTracks(),
+        });
+        handleToggleNewCameraSetting();
+    };
+
+    const handleToggleMic = () => {
+        changeTracksState({
+            enabled: !isNewMicSettingActive,
+            tracks: changeStream?.getAudioTracks(),
+        });
+        handleToggleNewMicSetting();
+    };
+
     const handleSaveSettings = useCallback(async () => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
@@ -171,13 +198,13 @@ const Component = () => {
             }
 
             updateLocalUserEvent({
-                cameraStatus: isCameraActive ? 'active' : 'inactive',
-                micStatus: isMicActive ? 'active' : 'inactive',
+                cameraStatus: isNewCameraSettingActive ? 'active' : 'inactive',
+                micStatus: isNewMicSettingActive ? 'active' : 'inactive',
             });
 
             setDevicesPermission({
-                isMicEnabled: isMicActive,
-                isCamEnabled: isCameraActive,
+                isMicEnabled: isNewMicSettingActive,
+                isCamEnabled: isNewCameraSettingActive,
             });
 
             addNotificationEvent({
@@ -187,18 +214,20 @@ const Component = () => {
 
             const clonedStream = changeStream?.clone();
 
-            const streamWithBackground = await applyBlur(clonedStream, {
-                isAuraActive: isAuraEnabled,
-            });
+            await BackgroundManager.init();
+
+            const streamWithBackground = await BackgroundManager.applyBlur(
+                clonedStream,
+                isNewCameraSettingActive,
+                isAuraEnabled,
+            );
 
             setActiveStreamEvent(streamWithBackground);
         }
     }, [
-        isCameraActive,
-        isMicActive,
+        isNewCameraSettingActive,
+        isNewMicSettingActive,
         changeStream,
-        meeting.sharingUserId,
-        isSharingScreenActive,
         volume,
         isSettingsAudioBackgroundActive,
         isAuraEnabled,
@@ -226,7 +255,19 @@ const Component = () => {
                 <form onSubmit={onSubmit}>
                     <CustomGrid container direction="column">
                         <CustomGrid container wrap="nowrap">
-                            <MediaPreview stream={changeStream} />
+                            <MediaPreview
+                                videoError={videoError}
+                                audioError={audioError}
+                                videoDevices={videoDevices}
+                                audioDevices={audioDevices}
+                                isCameraActive={isNewCameraSettingActive}
+                                isMicActive={isNewMicSettingActive}
+                                onToggleVideo={handleToggleCamera}
+                                onToggleAudio={handleToggleMic}
+                                stream={changeStream}
+                                profileAvatar={profile.profileAvatar?.url}
+                                userName={localUser?.username}
+                            />
                             <CustomDivider orientation="vertical" flexItem />
                             <CustomGrid
                                 className={styles.devicesWrapper}

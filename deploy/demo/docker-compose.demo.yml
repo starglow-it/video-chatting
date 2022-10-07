@@ -63,6 +63,7 @@ services:
       - VULTR_STORAGE_HOSTNAME
       - STRIPE_PUBLIC_API_KEY
       - BASE_ENV_DOMAIN
+      - SUPPORT_EMAIL
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.entrypoints=http"
@@ -187,6 +188,7 @@ services:
       - MANDRILL_API_KEY
       - SUPPORT_SCALING
       - NUMBER_OF_ACTIVE_SERVERS
+      - SUPPORT_EMAIL
     depends_on:
       - mongo
       - rabbit

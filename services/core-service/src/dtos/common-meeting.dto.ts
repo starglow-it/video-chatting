@@ -19,7 +19,7 @@ export class CommonMeetingDTO implements ICommonMeetingInstance {
   owner: ICommonUserDTO['id'];
 
   @Expose()
-  serverStatus: ICommonMeetingInstance["serverStatus"];
+  serverStatus: ICommonMeetingInstance['serverStatus'];
 
   @Expose()
   instanceId: ICommonMeetingInstance['instanceId'];

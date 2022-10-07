@@ -24,8 +24,8 @@ import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
-    origin: "*",
-  }
+    origin: '*',
+  },
 })
 export class MeetingNotesGateway extends BaseGateway {
   constructor(

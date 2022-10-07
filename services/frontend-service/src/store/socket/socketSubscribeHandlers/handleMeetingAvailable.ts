@@ -1,18 +1,5 @@
-import {
-    getMeetingTemplateFx,
-    sendJoinMeetingEventSocketEvent,
-    emitEnterMeetingEvent,
-} from '../../roomStores';
+import { getUserTemplateFx } from '../../templates/model';
 
 export const handleMeetingAvailable = async ({ templateId }: { templateId: string }) => {
-    const meetingTemplate = await getMeetingTemplateFx({ templateId });
-
-    if (
-        meetingTemplate?.meetingInstance?.serverIp &&
-        meetingTemplate.meetingInstance.serverStatus === 'active'
-    ) {
-        await sendJoinMeetingEventSocketEvent();
-
-        emitEnterMeetingEvent();
-    }
+    getUserTemplateFx({ templateId, withCredentials: false });
 };

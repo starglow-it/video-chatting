@@ -11,7 +11,7 @@
   },
   "limits": {
     "time": "Remaining meeting time: <strong>{{timeLimit}}</strong>",
-    "templates": "Templates available: <strong>{{templatesLimit}}</strong>"
+    "templates": "Rooms available: <strong>{{templatesLimit}}</strong>"
   },
   "plans": {
     "features": {
@@ -105,6 +105,11 @@
         {
           "key": "house",
           "text": "All House features",
+          "subText": ""
+        },
+        {
+          "key": "uploadTemplates",
+          "text": "Upload your own Room (pic & video)",
           "subText": ""
         },
         {

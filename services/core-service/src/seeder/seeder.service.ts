@@ -4,7 +4,6 @@ import * as path from 'path';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mkdirp from 'mkdirp';
 import * as fsPromises from 'fs/promises';
-import * as uuid from 'uuid';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -99,63 +98,49 @@ export class SeederService {
                 },
               });
 
+            let videoFile;
+
+            const outputPath = path.join(
+              __dirname,
+              '../../../../images',
+              imagePath,
+            );
+
             if (!isExists) {
               if (videoPath) {
-                const videoFile = path.join(
+                videoFile = path.join(
                   __dirname,
                   '../../../../files',
                   `${videoPath}.mp4`,
                 );
 
-                const outputPath = path.join(
-                  __dirname,
-                  '../../../../images',
-                  imagePath,
-                );
-
                 await mkdirp(outputPath);
 
-                await getScreenShots(
-                  videoFile,
-                  path.join(outputPath, imagePath),
-                );
+                await getScreenShots(videoFile, outputPath);
               }
 
-              const imagesFiles = path.join(
-                __dirname,
-                '../../../../images',
-                imagesUrl || imagePath,
+              const images = await fsPromises.readdir(outputPath);
+
+              await this.awsService.deleteFolder(
+                `templates/images${imagePath}`,
               );
 
-              const images = await fsPromises.readdir(imagesFiles);
-
-              const templateUUID = uuid.v4();
-
               const uploadedImagesPromises = images.map(async (image) => {
-                const resolution = image.match(/_(\d*)p\./);
+                const resolution = image.match(/(\d*)p\./);
                 const file = await fsPromises.readFile(
-                  `${imagesFiles}/${image}`,
+                  `${outputPath}/${image}`,
                 );
                 const fileStats = await fsPromises.stat(
-                  `${imagesFiles}/${image}`,
+                  `${outputPath}/${image}`,
                 );
-                const uploadKey = `templates/${templateData.type}${
-                  imagesUrl || videoPath
-                }/${templateUUID}/${image}`;
+
+                const uploadKey = `templates/images${imagePath}/${image}`;
+
+                this.previewImage.deleteOne({ key: uploadKey });
 
                 const imageLink = await this.awsService.uploadFile(
                   file,
                   uploadKey,
-                );
-
-                await this.previewImage.deleteMany({
-                  key: new RegExp(
-                    `^templates/${templateData.type}${imagesUrl || videoPath}$`,
-                  ),
-                });
-
-                await this.awsService.deleteResource(
-                  `templates/${templateData.type}${imagesUrl || videoPath}`,
                 );
 
                 return this.previewImage.create({
@@ -169,7 +154,7 @@ export class SeederService {
 
               const previewUrls = await Promise.all(uploadedImagesPromises);
 
-              const imageIds = previewUrls.map((image) => image._id);
+              const imageIds = previewUrls.map((image) => image._id.toString());
 
               const createData = {
                 ...templateData,
@@ -199,9 +184,31 @@ export class SeederService {
                   createData.stripeProductId = stripeProduct.id;
                 }
               }
-              await this.commonTemplatesService.createCommonTemplate(
-                  { data: createData },
-              );
+
+              const newTemplate =
+                await this.commonTemplatesService.createCommonTemplate({
+                  data: createData,
+                });
+
+              if (videoPath) {
+                const uploadKey = `templates/videos${videoPath}${videoPath}.mp4`;
+
+                const file = await fsPromises.readFile(videoFile);
+
+                const videoLink = await this.awsService.uploadFile(
+                  file,
+                  uploadKey,
+                );
+
+                await this.commonTemplatesService.updateCommonTemplate({
+                  query: {
+                    templateId: newTemplate.templateId,
+                  },
+                  data: {
+                    url: videoLink,
+                  },
+                });
+              }
             } else {
               await this.commonTemplatesService.updateCommonTemplate({
                 query: {
@@ -220,7 +227,6 @@ export class SeederService {
                   templateId: templateData.templateId,
                 },
                 data: {
-                  url: templateData.url,
                   maxParticipants: templateData.maxParticipants,
                   type: templateData.type,
                   priceInCents: templateData.priceInCents,
@@ -256,12 +262,10 @@ export class SeederService {
           sort: '-templateId',
         });
 
-        if (template) {
-          await this.countersService.create({
-            key: counterType,
-            value: template.templateId,
-          });
-        }
+        await this.countersService.create({
+          key: counterType,
+          value: template ? template.templateId : 1,
+        });
       }
     });
 

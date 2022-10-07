@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { ValidationExceptionFilter } from './filters/validation-exception.filter';
 import { ValidationException } from './exceptions/validation.exception';
-import {ConfigClientService} from "./services/config/config.service";
+import { ConfigClientService } from './services/config/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,7 +21,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-      origin: frontendUrl
+    origin: frontendUrl,
   });
 
   app.useGlobalPipes(

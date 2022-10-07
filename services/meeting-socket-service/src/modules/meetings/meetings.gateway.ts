@@ -84,8 +84,8 @@ type SendDevicesPermissionsPayload = {
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
-    origin: "*",
-  }
+    origin: '*',
+  },
 })
 export class MeetingsGateway
   extends BaseGateway
@@ -168,38 +168,12 @@ export class MeetingsGateway
         id: meeting.templateId,
       });
 
-      const updateUsersPromises = meeting.users.map(async (user, index) => {
-        const userPosition = template?.usersPosition?.[index];
-
-        const updateUser = await this.usersService.findOne({
-          query: {
-            _id: user._id,
-          },
-          session,
-        });
-
-        updateUser.userPosition = userPosition;
-
-        return updateUser.save({ session: session.session });
-      });
-
-      try {
-        await Promise.all(updateUsersPromises);
-      } catch (e) {
-        console.log(e);
-      }
-
       const meetingUsers = await this.usersService.findUsers(
         { meeting: meeting.id },
         session,
       );
 
       const activeParticipants = meetingUsers.length;
-
-      const plainUsers = plainToInstance(CommonUserDTO, meetingUsers, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
 
       const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
@@ -279,23 +253,71 @@ export class MeetingsGateway
           });
         }
 
-        this.emitToRoom(
-          `waitingRoom:${meeting.templateId}`,
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        );
+        this.taskService.addTimeout({
+          name: 'meeting:changeUsersPositions',
+          ts: getTimeoutTimestamp({ value: 1, type: TimeoutTypesEnum.Seconds }),
+          callback: async () => {
+            return withTransaction(this.connection, async (session) => {
+              const meeting = await this.meetingsService.findById(
+                user?.meeting?._id,
+                session,
+                'users',
+              );
 
-        this.emitToRoom(
-          `meeting:${plainMeeting.id}`,
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
+              const updateUsersPromises = meeting.users.map(
+                async (user, index) => {
+                  const userPosition = template?.usersPosition?.[index];
+
+                  const updateUser = await this.usersService.findOne({
+                    query: {
+                      _id: user._id,
+                    },
+                    session,
+                  });
+
+                  updateUser.userPosition = userPosition;
+
+                  return updateUser.save();
+                },
+              );
+
+              await Promise.all(updateUsersPromises);
+
+              const meetingUsers = await this.usersService.findUsers(
+                { meeting: meeting.id },
+                session,
+              );
+
+              const plainUsers = plainToInstance(CommonUserDTO, meetingUsers, {
+                excludeExtraneousValues: true,
+                enableImplicitConversion: true,
+              });
+
+              const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+                excludeExtraneousValues: true,
+                enableImplicitConversion: true,
+              });
+
+              this.emitToRoom(
+                `waitingRoom:${meeting.templateId}`,
+                MeetingEmitEvents.UpdateMeeting,
+                {
+                  meeting: plainMeeting,
+                  users: plainUsers,
+                },
+              );
+
+              this.emitToRoom(
+                `meeting:${plainMeeting.id}`,
+                MeetingEmitEvents.UpdateMeeting,
+                {
+                  meeting: plainMeeting,
+                  users: plainUsers,
+                },
+              );
+            });
           },
-        );
+        });
       }
     });
   }
@@ -507,13 +529,7 @@ export class MeetingsGateway
           cameraStatus: message.user.cameraStatus,
           username: message.user.username,
           isAuraActive: message.user.isAuraActive,
-          userPosition:
-            template?.usersPosition?.[
-              activeParticipants -
-                (message?.user?.accessStatus === AccessStatusEnum.InMeeting
-                  ? 1
-                  : 0)
-            ],
+          userPosition: template?.usersPosition?.[activeParticipants],
         },
         session,
       );
@@ -941,71 +957,91 @@ export class MeetingsGateway
 
   @SubscribeMessage(MeetingSubscribeEvents.OnEndMeeting)
   async endMeeting(@MessageBody() message: EndMeetingRequestDTO) {
-    return withTransaction(this.connection, async (session) => {
-      const meeting = await this.meetingsService.findById(
-        message.meetingId,
-        session,
-      );
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
 
-      if (!meeting) {
+        if (!meeting) {
+          return {
+            success: true,
+          };
+        }
+
+        const template = await this.coreService.findMeetingTemplateById({
+          id: meeting.templateId,
+        });
+
+        if (!template) {
+          return {
+            success: true,
+          };
+        }
+
+        const meetingUsers = await this.usersService.findUsers(
+          { meeting: meeting.id, accessStatus: AccessStatusEnum.InMeeting },
+          session,
+        );
+
+        const targetUsersIds = meetingUsers
+          .filter((user) => !user.isGenerated)
+          .map((user) => user.profileId);
+
+        const profileUsers = await this.coreService.findUsersById({
+          userIds: targetUsersIds,
+        });
+
+        const meetingTimeAccounting = profileUsers.map(async (profileUser) => {
+          if (profileUser.subscriptionPlanKey !== 'Business') {
+            const targetUser = meetingUsers.find(
+              (meetingUser) => meetingUser.profileId === profileUser.id,
+            );
+
+            await this.meetingsCommonService.handleTimeLimit({
+              session,
+              profileId: profileUser.id,
+              maxProfileTime: profileUser.maxMeetingTime,
+              meetingUserId: targetUser.id,
+              meetingId: meeting._id,
+            });
+          }
+        });
+
+        await Promise.all(meetingTimeAccounting);
+
+        this.emitToRoom(
+          `meeting:${message.meetingId}`,
+          MeetingEmitEvents.FinishMeeting,
+          {
+            reason: message.reason,
+          },
+        );
+
+        await this.meetingsCommonService.handleClearMeetingData({
+          instanceId: template.meetingInstance.instanceId,
+          meetingId: message.meetingId,
+          session,
+        });
+
         return {
           success: true,
         };
-      }
-
-      const template = await this.coreService.findMeetingTemplate({
-        id: meeting.templateId,
       });
-
-      const meetingUsers = await this.usersService.findUsers(
-        { meeting: meeting.id, accessStatus: AccessStatusEnum.InMeeting },
-        session,
-      );
-
-      const targetUsersIds = meetingUsers
-        .filter((user) => !user.isGenerated)
-        .map((user) => user.profileId);
-
-      const profileUsers = await this.coreService.findUsersById({
-        userIds: targetUsersIds,
-      });
-
-      const meetingTimeAccounting = profileUsers.map(async (profileUser) => {
-        if (profileUser.subscriptionPlanKey !== 'Business') {
-          const targetUser = meetingUsers.find(
-            (meetingUser) => meetingUser.profileId === profileUser.id,
-          );
-
-          await this.meetingsCommonService.handleTimeLimit({
-            session,
-            profileId: profileUser.id,
-            maxProfileTime: profileUser.maxMeetingTime,
-            meetingUserId: targetUser.id,
-            meetingId: meeting._id,
-          });
-        }
-      });
-
-      await Promise.all(meetingTimeAccounting);
-
-      await this.meetingsCommonService.handleClearMeetingData({
-        instanceId: template.meetingInstance.instanceId,
-        meetingId: message.meetingId,
-        session,
-      });
-
-      this.emitToRoom(
-        `meeting:${message.meetingId}`,
-        MeetingEmitEvents.FinishMeeting,
+    } catch (err) {
+      this.logger.error(
         {
-          reason: message.reason,
+          message: `An error occurs, while end meeting`,
+          ctx: message,
         },
+        JSON.stringify(err),
       );
 
       return {
         success: true,
       };
-    });
+    }
   }
 
   @SubscribeMessage(MeetingSubscribeEvents.OnLeaveMeeting)

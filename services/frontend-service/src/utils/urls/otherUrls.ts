@@ -10,3 +10,8 @@ export const sendScheduleInviteUrl = {
     url: `${serverUrl}/${usersScope}/templates/schedule`,
     method: HttpMethods.Post,
 };
+
+export const sendContactFormUrl = {
+    url: `${serverUrl}/${usersScope}/contacts`,
+    method: HttpMethods.Post,
+};

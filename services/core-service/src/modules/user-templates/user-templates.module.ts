@@ -7,7 +7,10 @@ import {
   UserTemplateSchema,
 } from '../../schemas/user-template.schema';
 import { SocialLink, SocialLinkSchema } from '../../schemas/social-link.schema';
-import { PreviewImage, PreviewImageSchema } from '../../schemas/preview-image.schema';
+import {
+  PreviewImage,
+  PreviewImageSchema,
+} from '../../schemas/preview-image.schema';
 
 // modules
 import { LanguagesModule } from '../languages/languages.module';

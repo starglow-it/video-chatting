@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import clsx from 'clsx';
-import { useStore } from 'effector-react';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -18,35 +17,26 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { MicIcon } from '@library/icons/MicIcon';
 import { CameraIcon } from '@library/icons/CameraIcon';
 
-// stores
-import { $profileStore } from '../../../store';
-import {
-    $audioDevicesStore,
-    $audioErrorStore,
-    $isCameraActiveStore,
-    $isMicActiveStore,
-    $localUserStore,
-    $videoDevicesStore,
-    $videoErrorStore,
-    toggleDevicesEvent,
-} from '../../../store/roomStores';
-
 // types
 import { MediaPreviewProps } from './types';
 
 // styles
 import styles from './MediaPreview.module.scss';
 
-const Component = ({ stream, onToggleAudio, onToggleVideo }: MediaPreviewProps) => {
+const Component = ({
+    videoError,
+    audioError,
+    videoDevices,
+    audioDevices,
+    isMicActive,
+    isCameraActive,
+    stream,
+    onToggleAudio,
+    onToggleVideo,
+    profileAvatar,
+    userName,
+}: MediaPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const profile = useStore($profileStore);
-    const localUser = useStore($localUserStore);
-    const videoDevices = useStore($videoDevicesStore);
-    const audioDevices = useStore($audioDevicesStore);
-    const isMicActive = useStore($isMicActiveStore);
-    const isCameraActive = useStore($isCameraActiveStore);
-    const videoError = useStore($videoErrorStore);
-    const audioError = useStore($audioErrorStore);
 
     useEffect(() => {
         (async () => {
@@ -60,17 +50,11 @@ const Component = ({ stream, onToggleAudio, onToggleVideo }: MediaPreviewProps) 
 
     const handleToggleVideo = useCallback(() => {
         onToggleVideo?.();
-        toggleDevicesEvent({
-            isCamEnabled: !isCameraActive,
-        });
-    }, [isCameraActive]);
+    }, [onToggleVideo]);
 
     const handleToggleAudio = useCallback(() => {
         onToggleAudio?.();
-        toggleDevicesEvent({
-            isMicEnabled: !isMicActive,
-        });
-    }, [isMicActive]);
+    }, [onToggleAudio]);
 
     const isNeedToRenderDevices =
         (Boolean(videoDevices.length || audioDevices.length) && !audioError) ||
@@ -92,8 +76,8 @@ const Component = ({ stream, onToggleAudio, onToggleVideo }: MediaPreviewProps) 
                 isLocal
                 isCameraActive={isCameraActive}
                 isVideoAvailable={!isVideoDisabled}
-                userName={localUser?.username || ''}
-                userProfilePhoto={profile.profileAvatar?.url || ''}
+                userName={userName}
+                userProfilePhoto={profileAvatar}
                 videoRef={videoRef}
                 size={isMobile ? 99 : 116}
                 className={styles.previewVideo}

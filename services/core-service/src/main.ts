@@ -38,14 +38,15 @@ async function bootstrap() {
     },
   );
 
+  await app.listen();
+
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
+  await seeder.createCounter();
   await seeder.seedCommonTemplates();
-  seeder.createCounter();
 
   usersController.startCheckSubscriptions();
-
-  return app.listen();
+  return;
 }
 
 bootstrap().then(() => {

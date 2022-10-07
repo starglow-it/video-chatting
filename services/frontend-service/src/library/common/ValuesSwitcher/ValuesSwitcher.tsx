@@ -14,13 +14,13 @@ import styles from './ValuesSwitcher.module.scss';
 // types
 import { ValueSwitcherProps } from './types';
 
-const Component = ({
+const Component = <ValueType extends string | number>({
     optionWidth,
     values,
     activeValue,
     onValueChanged,
     variant = 'primary',
-}: ValueSwitcherProps) => {
+}: ValueSwitcherProps<ValueType>) => {
     const [left, setLeft] = useState(0);
 
     const handleUpdateActiveElement = useCallback(
@@ -76,4 +76,4 @@ const Component = ({
     );
 };
 
-export const ValuesSwitcher = memo<ValueSwitcherProps>(Component);
+export const ValuesSwitcher = memo(Component) as typeof Component;

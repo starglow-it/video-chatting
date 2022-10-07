@@ -20,6 +20,7 @@ export type GetUserTemplateByIdPayload = {
 };
 export type UpdateUserTemplatePayload = {
   templateId: IUserTemplate["id"];
+  userId: ICommonUserDTO["id"];
   data: IUpdateTemplate;
 };
 
@@ -38,4 +39,5 @@ export type DeleteUsersTemplatesPayload = { templateId: IUserTemplate["id"], use
 export type AddTemplateToUserPayload = {
   productId: string;
   customerId: string;
+  sessionId: string;
 };

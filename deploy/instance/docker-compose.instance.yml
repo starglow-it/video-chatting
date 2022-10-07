@@ -4,11 +4,30 @@ networks:
   liveoffice_instance:
 
 services:
+  mongo:
+    ports:
+      - '127.0.0.1:56100:27017'
+    volumes:
+      - /data/liveoffice/mongo:/data/db
+    networks:
+      - liveoffice_instance
+
+  rabbit:
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - /data/liveoffice/rabbit:/var/lib/rabbitmq
+    networks:
+      - liveoffice_instance
+
   web:
     build: ./nginx
     restart: unless-stopped
     ports:
       - "80:80"
+    networks:
+      - liveoffice_instance
 
   livekit-service:
     build:
@@ -24,6 +43,8 @@ services:
       - "7881:7881"
       - "7882:7882/udp"
       - "6789:6789"
+    networks:
+      - liveoffice_instance
 
   meeting-socket-service:
     build:
@@ -35,6 +56,8 @@ services:
     environment:
       WAIT_HOSTS: config-service:4000
       WAIT_TIMEOUT: 60000
+    networks:
+      - liveoffice_instance
 
   config-service:
     build:
@@ -61,3 +84,5 @@ services:
     depends_on:
       - mongo
       - rabbit
+    networks:
+      - liveoffice_instance

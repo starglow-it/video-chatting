@@ -7,7 +7,6 @@ export const handleGetLiveKitToken = async ({
     templateId,
     userId,
 }: GetLiveKitTokenPayload): Promise<string> => {
-    console.log('handleGetLiveKitToken')
     const response = await sendRequestWithCredentials<string, ErrorState>({
         ...getSFUTokenUrl,
         data: {

@@ -56,7 +56,9 @@ export class CommonTemplatesController {
           });
 
         const commonTemplatesCount =
-          await this.commonTemplatesService.countCommonTemplates({ query: { draft: false, isPublic: true } });
+          await this.commonTemplatesService.countCommonTemplates({
+            query: { draft: false, isPublic: true },
+          });
 
         const parsedTemplates = plainToInstance(
           CommonTemplateDTO,
@@ -119,7 +121,12 @@ export class CommonTemplatesController {
         });
 
       const targetUser = await this.usersService.findUser({
-        query: { stripeCustomerId: data.customerId },
+        query: {
+          $or: [
+            { stripeSessionId: data.sessionId },
+            { stripeCustomerId: data.customerId },
+          ],
+        },
         session,
         populatePaths: ['socials', 'languages', 'templates'],
       });
@@ -191,13 +198,12 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.CreateTemplate })
   async createTemplate(@Payload() data: { userId: string }) {
     return withTransaction(this.connection, async (session) => {
-      const template =
-        await this.commonTemplatesService.createCommonTemplate({
-          data: {
-            author: data.userId,
-          },
-          session,
-        });
+      const template = await this.commonTemplatesService.createCommonTemplate({
+        data: {
+          author: data.userId,
+        },
+        session,
+      });
 
       return plainToInstance(CommonTemplateDTO, template, {
         excludeExtraneousValues: true,
@@ -218,12 +224,10 @@ export class CommonTemplatesController {
 
       const businessCategoriesPromises = await Promise.all(
         businessCategories?.map(async (category) => {
-          const [existingCategory] = (
-            await this.businessCategoriesService.find({
-              query: { key: category },
-              session,
-            })
-          );
+          const [existingCategory] = await this.businessCategoriesService.find({
+            query: { key: category },
+            session,
+          });
           return (
             existingCategory ??
             this.businessCategoriesService.create({

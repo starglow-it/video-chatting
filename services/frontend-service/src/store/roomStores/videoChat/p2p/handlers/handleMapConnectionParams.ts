@@ -5,8 +5,8 @@ import {
     OfferExchangePayload,
 } from '../../types';
 import { Meeting, MeetingUser } from '../../../../types';
-import { getConnectionKey } from '../../helpers/getConnectionKey';
 import { ConnectionType, StreamType } from '../../../../../const/webrtc';
+import { getConnectionKey } from '../../../../../helpers/media/getConnectionKey';
 
 export const handleMapConnectionParams = (
     data: OfferExchangePayload | AnswerExchangePayload | IceCandidatesExchangePayload,

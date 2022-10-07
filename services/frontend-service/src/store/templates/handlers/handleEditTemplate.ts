@@ -3,14 +3,13 @@ import { updateTemplateUrl } from 'src/utils/urls';
 import { generateFormData } from 'src/utils/form/generateFormData';
 
 // types
-import { ErrorState, Template, UploadTemplateFile } from '../../types';
+import { ErrorState, Template } from '../../types';
+import { EditTemplatePayload } from '../types';
 
 // helpers
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 
-export const handleEditTemplate = async (
-    data: Omit<Partial<Template>, 'businessCategories'> & UploadTemplateFile,
-): Promise<Template | null> => {
+export const handleEditTemplate = async (data: EditTemplatePayload): Promise<Template | null> => {
     const formData = generateFormData(data);
 
     const response = await sendRequestWithCredentials<Template | null, ErrorState>({

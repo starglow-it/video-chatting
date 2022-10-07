@@ -28,7 +28,13 @@ export class MeetingsService {
     return meeting;
   }
 
-  async deleteMeeting({ query, session }: { query: FilterQuery<MeetingInstanceDocument>; session: ITransactionSession }) {
+  async deleteMeeting({
+    query,
+    session,
+  }: {
+    query: FilterQuery<MeetingInstanceDocument>;
+    session: ITransactionSession;
+  }) {
     return this.meetingInstance.deleteOne(query, { session: session.session });
   }
 

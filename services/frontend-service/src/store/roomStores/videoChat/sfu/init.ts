@@ -19,7 +19,7 @@ import {
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingTemplateStore } from '../../meeting/meetingTemplate/model';
 import { $activeStreamStore, $isCameraActiveStore, $isMicActiveStore } from '../localMedia/model';
-import { $isScreenSharingStore, $meetingStore } from '../../meeting/meeting/model';
+import { $meetingStore } from '../../meeting/meeting/model';
 
 import { handleGetLiveKitToken } from './handlers/handleGetLiveKitToken';
 import { handlePublishTracks } from './handlers/handlePublishTracks';
@@ -102,25 +102,10 @@ sample({
 
 sample({
     clock: startSFUSharingEvent,
-    source: $localUserStore,
-    fn: localUser => ({ sharingUserId: localUser.id }),
-    target: updateMeetingSocketEvent,
-});
-
-sample({
-    clock: stopSFUSharingEvent,
-    fn: () => ({ sharingUserId: null }),
-    target: updateMeetingSocketEvent,
-});
-
-sample({
-    clock: $isScreenSharingStore,
     source: combine({
         room: $SFURoom,
         localUser: $localUserStore,
-        meeting: $meetingStore,
     }),
-    filter: ({ meeting, localUser }, data) => data && meeting.sharingUserId === localUser.id,
     fn: ({ room, localUser }) => ({
         room,
         userId: localUser.id,
@@ -129,13 +114,12 @@ sample({
 });
 
 sample({
-    clock: $isScreenSharingStore,
+    clock: stopSFUSharingEvent,
     source: combine({
         room: $SFURoom,
         localUser: $localUserStore,
         meeting: $meetingStore,
     }),
-    filter: ({ meeting, localUser }, data) => localUser.id === meeting.sharingUserId && !data,
     fn: ({ room, localUser, meeting }) => ({
         room,
         userId: localUser.id,
@@ -150,4 +134,16 @@ sample({
         room: $SFURoom,
     }),
     target: disconnectFromSFUFx,
+});
+
+startSFUSharingFx.done.watch(({ params }) => {
+    updateMeetingSocketEvent({
+        sharingUserId: params.userId,
+    });
+});
+
+stopSFUSharingFx.done.watch(() => {
+    updateMeetingSocketEvent({
+        sharingUserId: null,
+    });
 });

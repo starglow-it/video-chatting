@@ -15,7 +15,7 @@
   extends:
     - .staging
   script:
-    - cd deploy/develop
+    - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --force-recreate --remove-orphans
 
@@ -24,7 +24,7 @@ Update Traefik:
   extends:
     - .staging
   script:
-    - cd deploy/develop
+    - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml up -d --build --force-recreate --remove-orphans
   interruptible: true

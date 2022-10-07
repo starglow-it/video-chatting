@@ -23,8 +23,6 @@ import { CORE_PROVIDER } from '@shared/providers';
         ): Promise<ClientProvider> => {
           const allConfig = await config.getAll();
 
-          console.log(`amqp://${allConfig.rabbitMqUser}:${allConfig.rabbitMqPass}@${allConfig.rabbitMqCoreHost}:${allConfig.rabbitMqCorePort}`);
-
           return {
             transport: Transport.RMQ,
             options: {

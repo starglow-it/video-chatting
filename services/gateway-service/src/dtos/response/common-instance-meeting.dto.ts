@@ -28,5 +28,5 @@ export class CommonInstanceMeetingRestDTO implements ICommonMeetingInstance {
   @ApiProperty()
   instanceId: ICommonMeetingInstance['instanceId'];
 
-  snapshotId: ICommonMeetingInstance["snapshotId"];
+  snapshotId: ICommonMeetingInstance['snapshotId'];
 }

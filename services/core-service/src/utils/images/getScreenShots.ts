@@ -15,26 +15,27 @@ export const getScreenShots = async (
 ) => {
   const promises = resolutions.map((resolution) => {
     return new Promise((resolve, reject) => {
-      let options = fileType === 'video'
-        ? [
+      const options =
+        fileType === 'video'
+          ? [
               '-f image2',
               '-vframes 1',
               '-vcodec png',
               '-f rawvideo',
               `-s ${resolution.value}`,
               '-ss 00:00:01',
-          ]
-        : [];
+            ]
+          : [];
 
       ffmpeg(inputPath)
         .on('end', function () {
-          resolve(`${outputPath}_${resolution.key}.png`);
+          resolve(`${outputPath}/${resolution.key}.png`);
         })
         .on('error', function (err) {
           reject(err);
         })
         .outputOptions(options)
-        .output(`${outputPath}_${resolution.key}.png`)
+        .output(`${outputPath}/${resolution.key}.png`)
         .run();
     });
   });

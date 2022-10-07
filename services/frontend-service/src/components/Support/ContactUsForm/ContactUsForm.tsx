@@ -1,0 +1,251 @@
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import clsx from 'clsx';
+import { useRouter } from 'next/router';
+import { useStore } from 'effector-react';
+
+// hooks
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+
+// custom
+import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomInput } from '@library/custom/CustomInput/CustomInput';
+import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomLink } from '@library/custom/CustomLink/CustomLink';
+import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
+import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
+// hooks
+import { useToggle } from '@hooks/useToggle';
+
+// icons
+import { DoneIcon } from '@library/icons/DoneIcon';
+
+// validations
+import frontendConfig from 'src/const/config';
+import { MAX_CONTACT_US_MESSAGE_LENGTH } from 'src/const/general';
+import { fullNameSchema } from '../../../validation/users/fullName';
+import { simpleStringSchemaWithLength } from '../../../validation/common';
+import { emailSchema } from '../../../validation/users/email';
+
+// const
+import { dashboardRoute } from '../../../const/client-routes';
+
+// types
+import { ContactFormPayload } from '../../../store/types';
+
+// store
+import { sendContactFormFx } from '../../../store/other/contactUs/model';
+import { $profileStore } from '../../../store';
+
+// styles
+import styles from './ContactUsForm.module.scss';
+
+const validationSchema = yup.object({
+    email: emailSchema().required('required'),
+    name: fullNameSchema().required('required'),
+    message: simpleStringSchemaWithLength(MAX_CONTACT_US_MESSAGE_LENGTH).required('required'),
+});
+
+const defaultValues: ContactFormPayload = {
+    email: '',
+    name: '',
+    message: '',
+};
+
+const Component = () => {
+    const router = useRouter();
+
+    const resolver = useYupValidationResolver<ContactFormPayload>(validationSchema);
+
+    const methods = useForm<ContactFormPayload>({
+        resolver,
+        defaultValues,
+    });
+
+    const profile = useStore($profileStore);
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setValue,
+        formState: { errors },
+    } = methods;
+
+    const { onChange: onChangeMessage, ...restMessageProps } = useMemo(
+        () => register('message'),
+        [],
+    );
+    const nameProps = useMemo(() => register('name'), []);
+    const emailProps = useMemo(() => register('email'), []);
+
+    const { value: isSubmitButtonEnabled, onToggleSwitch: onToggleSubmitButtonEnabled } =
+        useToggle(false);
+
+    const { value: isAppealSent, onSwitchOn: onAppealSent } = useToggle(false);
+
+    const isSendContactFormPending = useStore(sendContactFormFx.pending);
+
+    useEffect(() => {
+        if (profile.email) {
+            setValue('email', profile.email);
+        }
+    }, [profile.email]);
+
+    useEffect(() => {
+        if (profile.fullName) {
+            setValue('name', profile.fullName);
+        }
+    }, [profile.fullName]);
+
+    const handleChangeMessage = useCallback(async event => {
+        if (event.target.value.length > MAX_CONTACT_US_MESSAGE_LENGTH) {
+            /* eslint-disable no-param-reassign */
+            event.target.value = event.target.value.slice(0, MAX_CONTACT_US_MESSAGE_LENGTH);
+            /* eslint-enable no-param-reassign */
+        }
+
+        await onChangeMessage(event);
+    }, []);
+
+    const onSubmit = useCallback(
+        handleSubmit(async data => {
+            const response = await sendContactFormFx({
+                email: data.email,
+                name: data.name,
+                message: data.message,
+            });
+            if (response.success) {
+                reset();
+                onAppealSent();
+            }
+        }),
+        [],
+    );
+
+    const handleClickHomepage = useCallback(() => {
+        router.push(dashboardRoute);
+    }, []);
+
+    const errorName: string = errors?.name?.[0]?.message ?? '';
+    const errorEmail: string = errors?.email?.[0]?.message ?? '';
+    const errorMessage: string = errors?.message?.[0]?.message ?? '';
+
+    return (
+        <CustomPaper className={styles.wrapper}>
+            <form onSubmit={onSubmit}>
+                <ConditionalRender condition={!isAppealSent}>
+                    <CustomGrid container direction="column" alignItems="center">
+                        <CustomTypography
+                            nameSpace="static"
+                            translation="contacts.form.title"
+                            variant="h3bold"
+                            className={styles.title}
+                        />
+                        <CustomGrid item container justifyContent="center">
+                            <CustomTypography
+                                nameSpace="static"
+                                translation="contacts.form.description"
+                                className={styles.description}
+                            />
+                            <CustomLink href={`mailto:${frontendConfig.supportEmail}`}>
+                                {frontendConfig.supportEmail}
+                            </CustomLink>
+                        </CustomGrid>
+                        <CustomTypography
+                            nameSpace="static"
+                            translation="contacts.form.yourDetails"
+                            variant="body1bold"
+                            className={styles.subtitle}
+                        />
+                        <CustomGrid container flexWrap="nowrap" gap={3}>
+                            <CustomInput
+                                nameSpace="static"
+                                translation="contacts.form.inputs.name.placeholder"
+                                error={errorName}
+                                {...nameProps}
+                            />
+                            <CustomInput
+                                nameSpace="static"
+                                translation="contacts.form.inputs.email.placeholder"
+                                error={errorEmail}
+                                {...emailProps}
+                            />
+                        </CustomGrid>
+                        <CustomTypography
+                            nameSpace="static"
+                            translation="contacts.form.message"
+                            variant="body1bold"
+                            className={styles.subtitle}
+                        />
+                        <CustomGrid container>
+                            <CustomInput
+                                multiline
+                                rows={3}
+                                nameSpace="static"
+                                translation="contacts.form.inputs.message.placeholder"
+                                error={errorMessage}
+                                onChange={handleChangeMessage}
+                                {...restMessageProps}
+                            />
+                        </CustomGrid>
+                        <CustomCheckbox
+                            onChange={onToggleSubmitButtonEnabled}
+                            translationProps={{
+                                nameSpace: 'static',
+                                translation: 'contacts.form.checkbox',
+                            }}
+                            labelClassName={styles.checkbox}
+                        />
+                        {isSendContactFormPending ? (
+                            <WiggleLoader className={styles.loader} />
+                        ) : (
+                            <CustomButton
+                                disabled={!isSubmitButtonEnabled}
+                                nameSpace="static"
+                                translation="contacts.form.actions.submit"
+                                type="submit"
+                                className={styles.submitButton}
+                            />
+                        )}
+                    </CustomGrid>
+                </ConditionalRender>
+                <ConditionalRender condition={isAppealSent}>
+                    <CustomGrid
+                        container
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        className={styles.success}
+                    >
+                        <DoneIcon width="48px" height="48px" className={styles.icon} />
+                        <CustomTypography
+                            nameSpace="static"
+                            translation="contacts.success.title"
+                            variant="h3bold"
+                            className={clsx(styles.text, styles.title)}
+                        />
+                        <CustomTypography
+                            nameSpace="static"
+                            translation="contacts.success.description"
+                            className={clsx(styles.text, styles.description)}
+                        />
+                        <CustomButton
+                            nameSpace="static"
+                            translation="contacts.success.button"
+                            className={styles.button}
+                            onClick={handleClickHomepage}
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
+            </form>
+        </CustomPaper>
+    );
+};
+
+export const ContactUsForm = memo(Component);

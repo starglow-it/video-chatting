@@ -1,16 +1,20 @@
-FROM node:16.16.0-alpine AS builder
+FROM node:18.7.0-alpine as builder
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package*.json ./
 
-RUN npm i --legacy-peer-deps --force
+RUN npm ci --legacy-peer-deps --force
 
 COPY . ./
 
 RUN npm run build
 
-FROM node:16.16.0-alpine
+FROM node:18.7.0-alpine
+
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+
+RUN chmod +x /wait
 
 WORKDIR /app
 
@@ -18,4 +22,4 @@ COPY --from=builder /app ./
 
 EXPOSE 8000
 
-CMD ["npm", "run", "start"]
+CMD /wait && npm run start

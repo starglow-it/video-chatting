@@ -11,7 +11,6 @@ import {
 } from 'livekit-client';
 
 import { removeConnectionStream, setConnectionStream } from '../../model';
-import { getConnectionKey } from '../../helpers/getConnectionKey';
 import { getLiveKitTokenFx } from '../model';
 import { ConnectToSFUPayload } from '../../types';
 import { MeetingUser } from '../../../../types';
@@ -20,6 +19,7 @@ import { ConnectionType, StreamType, TrackKind } from '../../../../../const/webr
 import { updateMeetingSocketEvent } from '../../../meeting/sockets/model';
 import frontendConfig from '../../../../../const/config';
 import { getMeetingInstanceLivekitUrl } from '../../../../../utils/functions/getMeetingInstanceLivekitUrl';
+import { getConnectionKey } from '../../../../../helpers/media/getConnectionKey';
 
 const getConnectionIdHelper = ({
     source,
@@ -58,7 +58,6 @@ const handleLocalTrackPublished = (
     localTrackPublication: LocalTrackPublication,
     localParticipant: LocalParticipant,
 ) => {
-    console.log('handleLocalTrackPublished');
     setConnectionStream(
         setStreamDataHelper({
             type: localTrackPublication.kind as unknown as TrackKind,
@@ -134,8 +133,6 @@ const handleParticipantConnected = (participant: RemoteParticipant) => {
 };
 
 export const handleConnectToSFU = async ({ templateId, userId, serverIp }: ConnectToSFUPayload) => {
-    console.log('handleConnectToSFU')
-
     const token = await getLiveKitTokenFx({
         templateId,
         userId,
@@ -163,7 +160,7 @@ export const handleConnectToSFU = async ({ templateId, userId, serverIp }: Conne
             console.log(args);
         })
         .on(RoomEvent.Disconnected, (...args) => {
-            console.log('RoomEvent.Disconnected', RoomEvent.Disconnected)
+            console.log('RoomEvent.Disconnected', RoomEvent.Disconnected);
             console.log(args);
         })
         .on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed);
@@ -171,8 +168,6 @@ export const handleConnectToSFU = async ({ templateId, userId, serverIp }: Conne
     const livekitWssUrl = ['localhost', frontendConfig.defaultServerIp].includes(serverIp)
         ? frontendConfig.livekitWss
         : getMeetingInstanceLivekitUrl(serverIp);
-
-    console.log('room.connect');
 
     await room.connect(livekitWssUrl, token);
 

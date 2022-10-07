@@ -264,7 +264,7 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.UpdateUserTemplate })
   async updateUserTemplate(
     @Payload()
-    { templateId, data }: UpdateUserTemplatePayload,
+    { templateId, userId, data }: UpdateUserTemplatePayload,
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
@@ -336,10 +336,25 @@ export class UserTemplatesController {
               { path: 'languages' },
               { path: 'meetingInstance' },
               { path: 'previewUrls' },
+              { path: 'author' },
               { path: 'user', populate: 'profileAvatar' },
             ],
           );
 
+        if (userTemplate?.author?._id?.toString?.() === userId) {
+          const updateCommonTemplateData = {
+            isPublic: userTemplate.isPublic,
+          };
+          await this.commonTemplatesService.updateCommonTemplate({
+            query: {
+              templateId: userTemplate.templateId,
+            },
+            data: {
+              $set: updateCommonTemplateData,
+            },
+            session,
+          });
+        }
         return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
@@ -408,13 +423,18 @@ export class UserTemplatesController {
   ): Promise<undefined> {
     try {
       return withTransaction(this.connection, async (session) => {
-        const userTemplate = await this.userTemplatesService.findUserTemplateById({ id: templateId, session, populatePaths: 'author' });
+        const userTemplate =
+          await this.userTemplatesService.findUserTemplateById({
+            id: templateId,
+            session,
+            populatePaths: 'author',
+          });
 
         if (!userTemplate) {
           return;
         }
 
-        if (userTemplate.author._id.toString() === userId) {
+        if (userTemplate?.author?._id?.toString?.() === userId) {
           await this.commonTemplatesService.updateCommonTemplate({
             query: {
               templateId: userTemplate.templateId,
@@ -423,7 +443,7 @@ export class UserTemplatesController {
               isPublic: false,
             },
             session,
-          })
+          });
         }
         await this.userTemplatesService.deleteUserTemplate(
           { _id: templateId },
@@ -442,7 +462,7 @@ export class UserTemplatesController {
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.UploadProfileTemplateFile })
   async uploadProfileTemplateFile(
-      @Payload() data: { url: string; id: string; mimeType: string },
+    @Payload() data: { url: string; id: string; mimeType: string },
   ) {
     const { url, id, mimeType } = data;
 

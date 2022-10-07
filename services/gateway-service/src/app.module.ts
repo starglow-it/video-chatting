@@ -9,6 +9,7 @@ import { TemplatesModule } from './modules/templates/templates.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     UploadModule,
     ProfileModule,
     PaymentsModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],

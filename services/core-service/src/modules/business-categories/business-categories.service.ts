@@ -24,13 +24,23 @@ export class BusinessCategoriesService {
 
   async find({
     query,
+    options,
     session,
   }: {
     query: FilterQuery<BusinessCategoryDocument>;
     session?: ITransactionSession;
+    options?: { skip: number; limit: number };
   }) {
     return this.businessCategory
-      .find(query, {}, { session: session?.session })
+      .find(
+        query,
+        {},
+        {
+          skip: options?.skip,
+          limit: options?.limit,
+          session: session?.session,
+        },
+      )
       .exec();
   }
 
@@ -38,5 +48,9 @@ export class BusinessCategoriesService {
     const existedDocument = await this.businessCategory.exists(query).exec();
 
     return Boolean(existedDocument?._id);
+  }
+
+  async count(query: FilterQuery<BusinessCategoryDocument>): Promise<number> {
+    return this.businessCategory.count(query).exec();
   }
 }

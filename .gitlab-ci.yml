@@ -14,7 +14,7 @@ variables:
   GIT_DEPTH: 10
 
 .docker-base:
-  image: registry.s2.git.fora-soft.com/forasoft/dind2022
+  image: forasoft/dind
   environment:
     name: ${CI_COMMIT_REF_NAME}
   interruptible: true

@@ -67,7 +67,14 @@ const Component = ({
                         />
                     </Slide>
                 )),
-        [products, isDisabled, activePlanKey, withActivePlan, buttonTranslation, handleChosenSubscription],
+        [
+            products,
+            isDisabled,
+            activePlanKey,
+            withActivePlan,
+            buttonTranslation,
+            handleChosenSubscription,
+        ],
     );
 
     const handleClose = () => {

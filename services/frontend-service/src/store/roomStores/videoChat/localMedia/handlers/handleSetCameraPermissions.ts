@@ -9,6 +9,7 @@ export const handleSetCameraPermissions = (
 
         if (videoTrack) {
             const newState = isCamEnabled ?? !isCameraActive;
+
             videoTrack.enabled = newState;
             return newState;
         }

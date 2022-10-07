@@ -2,7 +2,7 @@ import { MutableRefObject } from 'react';
 
 export type RoundedVideoProps = {
     className?: string;
-    userProfilePhoto: string;
+    userProfilePhoto?: string;
     userName: string;
     isCameraActive?: boolean;
     isVideoAvailable?: boolean;

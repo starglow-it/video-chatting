@@ -44,6 +44,7 @@ export interface IConfig {
   environment: string;
   supportScaling: boolean;
   numberOfActiveServers: number;
+  supportEmail: string;
 }
 
 export type ConfigKeysType = keyof IConfig;

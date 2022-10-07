@@ -1,6 +1,5 @@
 import { ErrorState, UserTemplate } from '../../types';
 import { postProfileTemplatesUrl } from '../../../utils/urls';
-import { initialTemplateState } from '../../roomStores';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { UpdateTemplatePayload } from '../types';
@@ -8,7 +7,7 @@ import { UpdateTemplatePayload } from '../types';
 export const handleUpdateProfileTemplate = async ({
     templateId,
     data,
-}: UpdateTemplatePayload): Promise<UserTemplate> => {
+}: UpdateTemplatePayload): Promise<UserTemplate | null> => {
     const response = await sendRequestWithCredentials<UserTemplate, ErrorState>({
         ...postProfileTemplatesUrl({ templateId }),
         data,
@@ -18,5 +17,5 @@ export const handleUpdateProfileTemplate = async ({
         return response.result;
     }
 
-    return initialTemplateState;
+    return null;
 };

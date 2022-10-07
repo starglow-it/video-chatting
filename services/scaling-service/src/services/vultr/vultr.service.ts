@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigClientService } from '../config/config.service';
 import { sendHttpRequest } from '../../utils/http/sendHttpRequest';
-import {createInstanceUrl, getInstanceUrl} from './vultr.const';
+import { createInstanceUrl, getInstanceUrl } from './vultr.const';
 
 @Injectable()
 export class VultrService {
@@ -32,7 +32,7 @@ export class VultrService {
           region: 'yto',
           plan: 'vhf-2c-4gb',
           label: `[LOF]: ${this.environment}_instance`,
-          firewall_group_id: "7012de2e-d669-4d0a-98aa-19f72d248b6d"
+          firewall_group_id: '7012de2e-d669-4d0a-98aa-19f72d248b6d',
         },
       });
 
@@ -52,7 +52,7 @@ export class VultrService {
         headers: {
           Authorization: `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json',
-        }
+        },
       });
 
       return response.data.instance;
@@ -68,9 +68,7 @@ export class VultrService {
     return this.getInstance({ instanceId });
   }
 
-  async getPublicIpAddress({
-    instanceId,
-  }) {
+  async getPublicIpAddress({ instanceId }) {
     this.logger.debug(`getPublicIpAddress for instance ${instanceId}`);
 
     return sendHttpRequest({

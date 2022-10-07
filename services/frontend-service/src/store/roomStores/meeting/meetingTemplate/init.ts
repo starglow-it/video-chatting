@@ -14,6 +14,7 @@ import { handleUpdateMeetingTemplate } from './handlers/handleUpdateMeetingTempl
 import { handleGetMeetingTemplate } from './handlers/handleGetMeetingTemplate';
 import { handleCheckCustomLink } from './handlers/handleCheckCustomLink';
 import { sendUpdateMeetingTemplateSocketEvent } from '../sockets/init';
+import { getUserTemplateFx } from '../../../templates/model';
 
 getMeetingTemplateFx.use(handleGetMeetingTemplate);
 updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);
@@ -21,6 +22,7 @@ checkCustomLinkFx.use(handleCheckCustomLink);
 
 $meetingTemplateStore
     .on(getMeetingTemplateFx.doneData, (state, data) => data)
+    .on(getUserTemplateFx.doneData, (state, data) => data || state)
     .on(updateMeetingTemplateFx.doneData, (state, data) => data)
     .reset([resetRoomStores, resetMeetingTemplateStoreEvent]);
 

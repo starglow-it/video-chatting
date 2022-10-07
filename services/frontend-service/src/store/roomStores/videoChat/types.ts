@@ -114,13 +114,16 @@ export type CreatePeerConnectionsPayload = {
         socketId: MeetingUser['socketId'];
         userId: MeetingUser['id'];
         senderId: MeetingUser['id'];
-        isLocal: boolean;
+        connectionType: ConnectionType;
+        streamType: StreamType;
+        isInitial: boolean;
     }[];
-    options: {
+    options?: {
         isAudioEnabled?: boolean;
         isVideoEnabled?: boolean;
         isAuraActive?: boolean;
-        stream: CustomMediaStream;
+        stream?: CustomMediaStream;
+        onTrackEnded?: () => void;
     };
 };
 
@@ -212,4 +215,11 @@ export type StopSFUSharingPayload = {
     room: RoomStore;
     userId: MeetingUser['id'];
     sharingUserId: Meeting['sharingUserId'];
+};
+
+export type ChangeActiveStreamPayload = {
+    connections: ConnectionsStore;
+    stream: CustomMediaStream;
+    isCameraActive: boolean;
+    isMicActive: boolean;
 };

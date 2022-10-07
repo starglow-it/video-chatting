@@ -43,11 +43,5 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
                 DashboardSubscribeEvents.OnSendDashboardNotification,
             ),
         );
-        socketInstance.on(
-            DashboardSubscribeEvents.OnSendAvailableMeetingInstance,
-            getDashboardSocketSubscribeHandler(
-                DashboardSubscribeEvents.OnSendAvailableMeetingInstance,
-            ),
-        );
     }
 });

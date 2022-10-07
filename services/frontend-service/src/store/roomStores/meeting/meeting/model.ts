@@ -3,6 +3,11 @@ import { combine } from 'effector-next';
 import { Meeting } from '../../../types';
 import { meetingDomain } from '../../../domains';
 import { $localUserStore } from '../../users/localUser/model';
+import { JoinMeetingEventPayload, JoinMeetingFxPayload } from './types';
+import { $tracksStore } from '../../videoChat/model';
+import { getConnectionKey } from '../../../../helpers/media/getConnectionKey';
+import { ConnectionType, StreamType } from '../../../../const/webrtc';
+import { $sharingStream } from '../../videoChat/localMedia/model';
 
 const initialMeetingState: Meeting = {
     id: '',
@@ -24,6 +29,29 @@ export const $isMeetingHostStore = combine({
 
 export const $isScreenSharingStore = $meetingStore.map(meeting => Boolean(meeting.sharingUserId));
 
+export const $isScreenSharingActiveStore = combine({
+    meeting: $meetingStore,
+    localUser: $localUserStore,
+    tracks: $tracksStore,
+    stream: $sharingStream,
+}).map(
+    ({ stream, meeting, tracks, localUser }) =>
+        Boolean(meeting.sharingUserId) &&
+        (Boolean(
+            tracks[
+                getConnectionKey({
+                    userId: meeting.sharingUserId || '',
+                    streamType: StreamType.SCREEN_SHARING,
+                    connectionType:
+                        meeting.sharingUserId === localUser.id
+                            ? ConnectionType.PUBLISH
+                            : ConnectionType.VIEW,
+                })
+            ]?.videoTrack,
+        ) ||
+            Boolean(stream?.id)),
+);
+
 export const updateMeetingEvent = meetingDomain.createEvent<{ meeting?: Meeting }>(
     'updateMeetingEvent',
 );
@@ -31,3 +59,13 @@ export const updateMeetingEvent = meetingDomain.createEvent<{ meeting?: Meeting 
 export const setMeetingConnectedEvent = meetingDomain.createEvent<boolean>(
     'setMeetingConnectedEvent',
 );
+
+export const joinMeetingFx = meetingDomain.createEffect<JoinMeetingFxPayload, void>(
+    'joinMeetingFx',
+);
+
+export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<void, void>(
+    'joinMeetingInWaitingRoomFx',
+);
+export const joinMeetingEvent =
+    meetingDomain.createEvent<JoinMeetingEventPayload>('joinMeetingEvent');

@@ -1,4 +1,4 @@
-FROM node:16.16.0-alpine
+FROM node:18.7.0-alpine
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -12,13 +12,13 @@ RUN mkdir ./payment-service
 
 COPY ./payment-service/package*.json ./payment-service/
 
-RUN cd ./payment-service && npm i --legacy-peer-deps --force
+RUN npm ci --silent --legacy-peer-deps --force --prefix=/app/payment-service
 
 COPY ./payment-service ./payment-service/
 
-RUN cd ./payment-service && npm run build
+RUN npm run build --prefix=/app/payment-service
 
 EXPOSE 5000
 
-CMD /wait && npm run --prefix=/app/payment-service start:dev
+CMD /wait && npm run start:dev --prefix=/app/payment-service
 

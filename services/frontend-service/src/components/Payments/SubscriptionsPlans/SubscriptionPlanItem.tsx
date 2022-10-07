@@ -30,7 +30,14 @@ import { SubscriptionPlanItemProps } from './types';
 import styles from './SubscriptionsPlans.module.scss';
 
 const Component = (
-    { product, price, onChooseSubscription, isDisabled, activePlanKey, buttonTranslation = 'buttons.start' }: SubscriptionPlanItemProps,
+    {
+        product,
+        price,
+        onChooseSubscription,
+        isDisabled,
+        activePlanKey,
+        buttonTranslation = 'buttons.start',
+    }: SubscriptionPlanItemProps,
     ref: ForwardedRef<HTMLDivElement>,
 ) => {
     const isFree = price.unit_amount === 0;
@@ -116,7 +123,9 @@ const Component = (
                 <CustomButton
                     nameSpace="subscriptions"
                     disabled={isDisabled}
-                    translation={isActive ? 'buttons.currentPlan' : `${buttonTranslation}${product.name}`}
+                    translation={
+                        isActive ? 'buttons.currentPlan' : `${buttonTranslation}${product.name}`
+                    }
                     onClick={handleChooseSubscription}
                     className={clsx(styles.button, { [styles.active]: isActive })}
                 />

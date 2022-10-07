@@ -1,17 +1,11 @@
-import { ConnectionsStore } from '../../types';
-import { CustomMediaStream } from '../../../../../types';
+import { ChangeActiveStreamPayload } from '../../types';
 
 export const handleChangeActiveP2PStream = async ({
     connections,
     stream,
     isCameraActive,
     isMicActive,
-}: {
-    connections: ConnectionsStore;
-    stream: CustomMediaStream;
-    isCameraActive: boolean;
-    isMicActive: boolean;
-}) => {
+}: ChangeActiveStreamPayload): Promise<void> => {
     const changeStreamPromises = Object.entries(connections).map(async ([, connection]) => {
         await connection.connection.changeStream(stream as MediaStream);
         connection.connection.updateDevicePermissions({
@@ -20,5 +14,5 @@ export const handleChangeActiveP2PStream = async ({
         });
     });
 
-    return Promise.all(changeStreamPromises);
+    await Promise.all(changeStreamPromises);
 };

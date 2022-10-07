@@ -16,6 +16,7 @@ import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
 // components
 import { FAQ } from '@components/Support/Faq/Faq';
+import { ContactUsForm } from '@components/Support/ContactUsForm/ContactUsForm';
 
 // styles
 import styles from './Support.module.scss';
@@ -82,6 +83,9 @@ const Component = () => {
             <CustomGrid container className={styles.content}>
                 <ConditionalRender condition={activeTab.value === Tabs.Faq}>
                     <FAQ />
+                </ConditionalRender>
+                <ConditionalRender condition={activeTab.value === Tabs.Contacts}>
+                    <ContactUsForm />
                 </ConditionalRender>
             </CustomGrid>
         </CustomGrid>

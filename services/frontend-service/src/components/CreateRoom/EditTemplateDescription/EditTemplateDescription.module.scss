@@ -20,6 +20,14 @@
   }
 }
 
+.customLinkLabel {
+  margin: rem(24px 0 4px);
+
+  &:first-child {
+    margin: rem(0 0 4px);
+  }
+}
+
 .buttonsGroup {
   position: absolute;
   bottom: rem(28px);

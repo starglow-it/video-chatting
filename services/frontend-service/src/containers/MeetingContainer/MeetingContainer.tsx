@@ -2,7 +2,6 @@ import React, { memo, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import dynamic from 'next/dynamic';
 
 // hooks
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
@@ -13,6 +12,7 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { EnterMeetingName } from '@components/EnterMeetingName/EnterMeetingName';
@@ -21,32 +21,39 @@ import { MeetingErrorDialog } from '@components/Dialogs/MeetingErrorDialog/Meeti
 import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPreview';
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
+import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 
 // stores
+import { useToggle } from '@hooks/useToggle';
 import {
     appDialogsApi,
     getSubscriptionWithDataFx,
     initLandscapeListener,
     initWindowListeners,
-    joinRoomBeforeMeetingSocketEvent,
     removeLandscapeListener,
     removeWindowListeners,
     resetRoomStores,
-    startWaitForServerSocketEvent,
 } from '../../store';
 import {
     $isMeetingSocketConnected,
+    $isMeetingSocketConnecting,
     $isOwner,
     $localUserStore,
     $meetingTemplateStore,
     getMeetingTemplateFx,
-    sendJoinMeetingEventSocketEvent,
-    sendStartMeetingSocketEvent,
+    initDevicesEventFxWithStore,
+    initiateMeetingSocketConnectionEvent,
+    joinMeetingEvent,
+    joinRoomBeforeMeetingSocketEvent,
+    sendJoinWaitingRoomSocketEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
+    setCurrentAudioDeviceEvent,
+    setCurrentVideoDeviceEvent,
+    setIsAudioActiveEvent,
+    setIsAuraActive,
+    setIsCameraActiveEvent,
     updateLocalUserEvent,
-    initiateMeetingSocketConnectionEvent,
-    $isMeetingSocketConnecting,
 } from '../../store/roomStores';
 
 // types
@@ -60,23 +67,19 @@ import styles from './MeetingContainer.module.scss';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 
-const MeetingView = dynamic(() => import('@components/Meeting/MeetingView/MeetingView'), {
-    ssr: false,
-});
-
 const NotMeetingComponent = memo(() => {
-    const meetingUser = useStore($localUserStore);
+    const localUser = useStore($localUserStore);
 
     const ChildComponent = useMemo(() => {
-        if (meetingUser.accessStatus === MeetingAccessStatuses.EnterName) {
+        if (localUser.accessStatus === MeetingAccessStatuses.EnterName) {
             return EnterMeetingName;
         }
-        if (meetingUser.accessStatus === MeetingAccessStatuses.Kicked) {
+        if (localUser.accessStatus === MeetingAccessStatuses.Kicked) {
             return KickedUser;
         }
 
         return DevicesSettings;
-    }, [meetingUser.accessStatus]);
+    }, [localUser.accessStatus]);
 
     return (
         <CustomPaper className={styles.wrapper}>
@@ -92,7 +95,7 @@ const NotMeetingComponent = memo(() => {
 const MeetingContainer = memo(() => {
     const router = useRouter();
 
-    const meetingUser = useStore($localUserStore);
+    const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
@@ -103,6 +106,8 @@ const MeetingContainer = memo(() => {
     }, []);
 
     const { isMobile } = useBrowserDetect();
+
+    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
 
     useEffect(() => {
         initWindowListeners();
@@ -137,15 +142,9 @@ const MeetingContainer = memo(() => {
     useEffect(() => {
         (async () => {
             if (meetingTemplate?.meetingInstance?.serverStatus === 'inactive') {
-                if (isOwner) {
-                    startWaitForServerSocketEvent({
-                        templateId: meetingTemplate.id,
-                    });
-                } else {
-                    joinRoomBeforeMeetingSocketEvent({
-                        templateId: meetingTemplate.id,
-                    });
-                }
+                joinRoomBeforeMeetingSocketEvent({
+                    templateId: meetingTemplate.id,
+                });
             }
         })();
     }, [meetingTemplate?.meetingInstance]);
@@ -169,20 +168,31 @@ const MeetingContainer = memo(() => {
             if (Object.keys(savedSettings)?.length) {
                 setBackgroundAudioVolume(savedSettings.backgroundAudioVolumeSetting);
                 setBackgroundAudioActive(savedSettings.backgroundAudioSetting);
+                setIsAuraActive(savedSettings.auraSetting);
+                setIsCameraActiveEvent(savedSettings.cameraActiveSetting);
+                setIsAudioActiveEvent(savedSettings.micActiveSetting);
+                setCurrentAudioDeviceEvent(savedSettings.savedAudioDeviceId);
+                setCurrentVideoDeviceEvent(savedSettings.savedVideoDeviceId);
             }
 
             if (isMeetingSocketConnected) {
-                await sendJoinMeetingEventSocketEvent();
+                await initDevicesEventFxWithStore();
+
+                await sendJoinWaitingRoomSocketEvent();
 
                 if (Object.keys(savedSettings)?.length && isOwner) {
                     updateLocalUserEvent({
-                        isAuraActive: savedSettings.auraSetting,
-                        cameraStatus: savedSettings.cameraActiveSetting ? 'active' : 'inactive',
-                        micStatus: savedSettings.micActiveSetting ? 'active' : 'inactive',
+                        accessStatus: MeetingAccessStatuses.InMeeting,
                     });
 
-                    sendStartMeetingSocketEvent();
+                    joinMeetingEvent({
+                        isSettingsAudioBackgroundActive: savedSettings.backgroundAudioSetting,
+                        settingsBackgroundAudioVolume: savedSettings.backgroundAudioVolumeSetting,
+                        needToRememberSettings: false,
+                    });
                 }
+
+                handleSetSettingsChecked();
             }
         })();
     }, [isMeetingSocketConnected, isOwner]);
@@ -190,8 +200,10 @@ const MeetingContainer = memo(() => {
     return (
         <>
             {Boolean(meetingTemplate?.id) && (
-                <>
-                    {MeetingAccessStatuses.InMeeting !== meetingUser.accessStatus ? (
+                <ConditionalRender condition={isSettingsChecked}>
+                    <ConditionalRender
+                        condition={MeetingAccessStatuses.InMeeting !== localUser.accessStatus}
+                    >
                         <CustomBox
                             className={clsx(styles.waitingRoomWrapper, {
                                 [styles.mobile]: isMobile,
@@ -200,10 +212,13 @@ const MeetingContainer = memo(() => {
                             <MeetingPreview />
                             <NotMeetingComponent />
                         </CustomBox>
-                    ) : (
+                    </ConditionalRender>
+                    <ConditionalRender
+                        condition={localUser.accessStatus === MeetingAccessStatuses.InMeeting}
+                    >
                         <MeetingView />
-                    )}
-                </>
+                    </ConditionalRender>
+                </ConditionalRender>
             )}
             <HostTimeExpiredDialog />
             <MeetingErrorDialog />

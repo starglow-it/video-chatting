@@ -30,13 +30,15 @@ export class UploadService {
   }
 
   async deleteFolder(keyFolder: string) {
-    const bucket = await this.configService.get('vultrUploadBucket');
-    const objects = await this.s3
-      .listObjects({
-        Bucket: bucket,
-        Prefix: keyFolder,
-      })
-      .promise();
+    const bucket = await this.configService.get<string>('vultrUploadBucket');
+
+    const params = {
+      Bucket: bucket,
+      Prefix: keyFolder,
+    } as S3.Types.ListObjectsRequest;
+
+    const objects = await this.s3.listObjects(params).promise();
+
     await this.s3
       .deleteObjects({
         Bucket: bucket,
@@ -45,6 +47,7 @@ export class UploadService {
         },
       })
       .promise();
+
     return this.s3
       .deleteObject({
         Bucket: bucket,

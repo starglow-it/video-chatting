@@ -16,9 +16,9 @@ import { ConnectionType, StreamType } from '../../../const/webrtc';
 
 // styles
 import styles from './ScreenSharingLayout.module.scss';
+import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
 
 // utils
-import { getConnectionKey } from '../../../store/roomStores/videoChat/helpers/getConnectionKey';
 
 const Component = () => {
     const meeting = useStore($meetingStore);

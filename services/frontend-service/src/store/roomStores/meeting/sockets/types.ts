@@ -1,6 +1,6 @@
 import { Meeting, MeetingAccessStatuses, MeetingUser, Profile, UserTemplate } from '../../../types';
 
-export type JoinMeetingPayload = {
+export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
     profileUserName: Profile['fullName'];
     profileAvatar: Profile['profileAvatar']['url'];
@@ -27,7 +27,11 @@ export type UpdateMeetingTemplatePayload = {
     templateId: UserTemplate['customLink'] | UserTemplate['id'];
 };
 
-export type JoinMeetingResponse = { user?: MeetingUser; meeting?: Meeting; users?: MeetingUser[] };
+export type JoinWaitingRoomResponse = {
+    user?: MeetingUser;
+    meeting?: Meeting;
+    users?: MeetingUser[];
+};
 export type StartMeetingResponse = { user?: MeetingUser; meeting?: Meeting; users?: MeetingUser[] };
 export type EnterMeetingRequestResponse = {
     user?: MeetingUser;

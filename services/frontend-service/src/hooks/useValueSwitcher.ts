@@ -1,31 +1,33 @@
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 import { useCallback, useMemo, useState } from 'react';
 
-type UseValueSwitcherArgs = {
-    values: ValuesSwitcherItem[];
-    initialValue: string;
+type ValueType = string | number;
+
+type UseValueSwitcherArgs<T extends ValueType> = {
+    values: ValuesSwitcherItem<T>[];
+    initialValue: T;
 };
 
-type UseValueSwitcherReturnType = {
-    activeValue: string;
-    activeItem: ValuesSwitcherItem;
-    onValueChange: (item: ValuesSwitcherItem) => void;
+type UseValueSwitcherReturnType<T extends ValueType> = {
+    activeValue: T;
+    activeItem: ValuesSwitcherItem<T>;
+    onValueChange: (item: ValuesSwitcherItem<T>) => void;
     onNextValue: () => void;
     onPreviousValue: () => void;
 };
 
-export const useValueSwitcher = ({
+export const useValueSwitcher = <T extends ValueType>({
     values,
     initialValue,
-}: UseValueSwitcherArgs): UseValueSwitcherReturnType => {
-    const [activeValue, setActiveValue] = useState(initialValue);
+}: UseValueSwitcherArgs<T>): UseValueSwitcherReturnType<T> => {
+    const [activeValue, setActiveValue] = useState<T>(initialValue);
 
     const activeItem = useMemo(
         () => values.find(item => item.value === activeValue) || values[0],
         [values, activeValue],
     );
 
-    const handleValueChange = useCallback(({ value }: ValuesSwitcherItem) => {
+    const handleValueChange = useCallback(({ value }: ValuesSwitcherItem<T>) => {
         setActiveValue(value);
     }, []);
 

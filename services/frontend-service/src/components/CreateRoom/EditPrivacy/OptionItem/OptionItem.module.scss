@@ -16,6 +16,12 @@
     }
   }
 
+  .successIcon {
+    color: $primary-white;
+    background-color: rgba($primary-white, 0.25);
+    border-radius: 50%;
+  }
+
   .iconWrapper {
     width: rem(24px);
     height: rem(24px);

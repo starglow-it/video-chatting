@@ -8,7 +8,6 @@ import {
   Param,
   Get,
   Body,
-  Delete,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -26,6 +25,8 @@ import { ResponseSumType } from '@shared/response/common.response';
 import { CoreService } from '../../services/core/core.service';
 import { MediaServerService } from '../../services/media-server/media-server.service';
 import { TemplatesService } from '../templates/templates.service';
+import { ScalingService } from '../../services/scaling/scaling.service';
+import { ConfigClientService } from '../../services/config/config.service';
 
 import { CreateMeetingRequest } from '../../dtos/requests/create-meeting.request';
 import { IUserTemplate } from '@shared/interfaces/user-template.interface';
@@ -34,11 +35,21 @@ import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.re
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
   private readonly logger = new Logger();
+  private supportScaling: boolean;
+
   constructor(
     private coreService: CoreService,
     private templatesService: TemplatesService,
     private mediaServerService: MediaServerService,
+    private scalingService: ScalingService,
+    private configService: ConfigClientService,
   ) {}
+
+  async onModuleInit() {
+    this.supportScaling = await this.configService.get<boolean>(
+      'supportScaling',
+    );
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('/')
@@ -72,6 +83,10 @@ export class MeetingsController {
         templateId: userTemplate.id,
       });
 
+      if (this.supportScaling) {
+        this.scalingService.createServerInstance({});
+      }
+
       return {
         success: true,
         result: updatedUserTemplate,
@@ -80,41 +95,6 @@ export class MeetingsController {
       this.logger.error(
         {
           message: `An error occurs, while create meeting`,
-        },
-        JSON.stringify(err),
-      );
-      throw new BadRequestException(err);
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete('/')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete Meeting' })
-  @ApiOkResponse({
-    type: CommonInstanceMeetingRestDTO,
-    description: 'Delete Meeting Success',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  async deleteMeeting(
-    @Request() req,
-    @Body() deleteMeetingData: { templateId: string },
-  ): Promise<ResponseSumType<void>> {
-    try {
-      await this.coreService.deleteMeeting({
-        templateId: deleteMeetingData.templateId,
-      });
-
-      return {
-        success: true,
-        result: undefined,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while delete meeting`,
         },
         JSON.stringify(err),
       );

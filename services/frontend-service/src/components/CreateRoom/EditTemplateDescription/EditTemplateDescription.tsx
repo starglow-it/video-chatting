@@ -1,7 +1,9 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { useStore } from 'effector-react';
 import { MenuItem } from '@mui/material';
 
+// stores
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -18,11 +20,17 @@ import { ArrowDownIcon } from '@library/icons/ArrowDownIcon';
 
 // types
 import { EditTemplateDescriptionProps } from '@components/CreateRoom/EditTemplateDescription/types';
+import { $businessCategoriesStore, getBusinessCategoriesFx } from '../../../store';
 
 // const
-import { MAX_DESCRIPTION_LENGTH, MAX_PARTICIPANTS_NUMBER } from '../../../const/templates/info';
+import {
+    MAX_DESCRIPTION_LENGTH,
+    MAX_NAME_LENGTH,
+    MAX_PARTICIPANTS_NUMBER,
+} from '../../../const/templates/info';
 import frontendConfig from '../../../const/config';
 
+// styles
 import styles from './EditTemplateDescription.module.scss';
 
 const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER }, (_, i) => ({
@@ -31,10 +39,13 @@ const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER },
 }));
 
 const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps) => {
+    const businessCategories = useStore($businessCategoriesStore);
+
     const {
         register,
         control,
         trigger,
+        setError,
         formState: { errors },
     } = useFormContext();
 
@@ -47,6 +58,12 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
         name: 'participantsNumber',
     });
 
+    useEffect(() => {
+        (() => {
+            getBusinessCategoriesFx({});
+        })();
+    }, []);
+
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger(['name', 'description', 'tags', 'customLink']);
         if (response) {
@@ -54,7 +71,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
         }
     }, [onNextStep]);
 
-    const nameProps = useMemo(() => register('name'), []);
+    const { onChange: onChangeName, ...nameProps } = useMemo(() => register('name'), []);
     const customLinkProps = useMemo(() => register('customLink'), []);
     const participantsNumberProps = useMemo(() => register('participantsNumber'), []);
     const { onChange: onChangeDescription, ...descriptionProps } = useMemo(
@@ -66,8 +83,24 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
         if (event.target.value.length > MAX_DESCRIPTION_LENGTH) {
             // eslint-disable-next-line no-param-reassign
             event.target.value = event.target.value.slice(0, MAX_DESCRIPTION_LENGTH);
+            setError('description', [
+                { type: 'focus', message: `maxLength.${MAX_DESCRIPTION_LENGTH}` },
+            ]);
+        } else {
+            setError('description', [{ message: '', type: 'focus' }]);
         }
         onChangeDescription(event);
+    }, []);
+
+    const handleChangeName = useCallback(event => {
+        if (event.target.value.length > MAX_NAME_LENGTH) {
+            // eslint-disable-next-line no-param-reassign
+            event.target.value = event.target.value.slice(0, MAX_NAME_LENGTH);
+            setError('name', [{ type: 'focus', message: `maxLength.${MAX_NAME_LENGTH}` }]);
+        } else {
+            setError('name', [{ message: '', type: 'focus' }]);
+        }
+        onChangeName(event);
     }, []);
 
     const participantsNumberList = useMemo(
@@ -108,14 +141,15 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         className={styles.label}
                     />
                     <CustomGrid container flexWrap="nowrap" gap={2} columns={10}>
-                        <CustomGrid xs={8}>
+                        <CustomGrid item xs={8}>
                             <CustomInput
                                 color="secondary"
                                 error={nameErrorMessage}
+                                onChange={handleChangeName}
                                 {...nameProps}
                             />
                         </CustomGrid>
-                        <CustomGrid xs={2}>
+                        <CustomGrid item xs={2}>
                             <CustomDropdown
                                 selectId="1"
                                 variant="transparent"
@@ -141,6 +175,8 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         color="secondary"
                         onChange={handleChangeDescription}
                         error={descriptionErrorMessage}
+                        multiline
+                        rows={3}
                         {...descriptionProps}
                     />
                     <CustomTypography
@@ -156,10 +192,10 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         includeInputInList
                         disableClearable
                         autoHighlight
-                        options={[]} // TODO: populate
+                        options={businessCategories.list.map(tag => tag.value)}
                         control={control}
                         name="tags"
-                        autoComplete={false}
+                        autoComplete
                         error={tagsErrorMessage}
                     />
                     <CustomGrid

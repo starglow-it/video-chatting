@@ -27,9 +27,9 @@ import { ConnectionType, StreamType } from '../../../const/webrtc';
 
 // styles
 import styles from './MeetingUserVideoItem.module.scss';
+import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
 
 // utils
-import { getConnectionKey } from '../../../store/roomStores/videoChat/helpers/getConnectionKey';
 
 const Component = ({
     size,

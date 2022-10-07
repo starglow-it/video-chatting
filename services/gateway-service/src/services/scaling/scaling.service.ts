@@ -13,7 +13,7 @@ export class ScalingService {
     await this.client.connect();
   }
 
-  async createServer(payload?: CreateServerPayload): Promise<{
+  async createServerInstance(payload?: CreateServerPayload): Promise<{
     instanceId: ICommonMeetingInstance['instanceId'];
     serverIp: ICommonMeetingInstance['serverIp'];
   }> {

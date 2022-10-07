@@ -12,7 +12,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // stores
-import { appDialogsApi, $appDialogsStore, deleteMeetingFx } from '../../../store';
+import { appDialogsApi, $appDialogsStore } from '../../../store';
 import {
     $isMeetingHostStore,
     $localUserStore,
@@ -58,9 +58,7 @@ const Component = () => {
         handleClose();
         disconnectFromVideoChatEvent();
 
-        deleteMeetingFx({ templateId: meetingTemplate.id });
-
-        await sendEndMeetingSocketEvent();
+        sendEndMeetingSocketEvent();
 
         await router.push(dashboardRoute);
     }, [meetingTemplate.id]);

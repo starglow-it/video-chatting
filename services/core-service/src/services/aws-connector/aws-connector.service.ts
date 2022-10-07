@@ -12,19 +12,23 @@ export class AwsConnectorService {
   ) {}
 
   async deleteResource(key: string) {
-    const vultrUploadBucket = await this.configService.get<string>('vultrUploadBucket');
+    const vultrUploadBucket = await this.configService.get<string>(
+      'vultrUploadBucket',
+    );
 
     return new Promise((resolve, reject) => {
-      this.s3
-          .deleteObject({
-            Bucket: vultrUploadBucket,
-            Key: key,
-          }, (err, data) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(data);
-          })
+      this.s3.deleteObject(
+        {
+          Bucket: vultrUploadBucket,
+          Key: key,
+        },
+        (err, data) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(data);
+        },
+      );
     });
   }
 
@@ -45,5 +49,32 @@ export class AwsConnectorService {
     }
 
     return response.Location;
+  }
+
+  async deleteFolder(keyFolder: string) {
+    const bucket = await this.configService.get<string>('vultrUploadBucket');
+
+    const params = {
+      Bucket: bucket,
+      Prefix: keyFolder,
+    } as S3.Types.ListObjectsRequest;
+
+    const objects = await this.s3.listObjects(params).promise();
+
+    await this.s3
+      .deleteObjects({
+        Bucket: bucket,
+        Delete: {
+          Objects: objects.Contents?.map(({ Key }) => ({ Key })) ?? [],
+        },
+      })
+      .promise();
+
+    return this.s3
+      .deleteObject({
+        Bucket: bucket,
+        Key: keyFolder,
+      })
+      .promise();
   }
 }

@@ -13,14 +13,18 @@ import { CardDataForm } from '@components/Payments/CardDataForm/CardDataForm';
 
 // stores
 import { PaymentFormProps } from '@components/PaymentForm/types';
-import { $paymentIntent, createPaymentIntentWithData, addNotificationEvent } from '../../store';
+import { addNotificationEvent } from '../../store';
+import {
+    $meetingTemplateStore,
+    $paymentIntent,
+    createPaymentIntentWithData,
+} from '../../store/roomStores';
 
 // styles
 import styles from './PaymentForm.module.scss';
 
 // types
 import { NotificationType } from '../../store/types';
-import { $meetingTemplateStore } from '../../store/roomStores';
 
 const currencySigns = {
     USD: '$',

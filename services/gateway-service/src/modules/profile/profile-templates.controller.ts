@@ -9,8 +9,10 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  Request, UploadedFile,
-  UseGuards, UseInterceptors,
+  Request,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
@@ -31,17 +33,17 @@ export class ProfileTemplatesController {
   private readonly logger = new Logger();
 
   constructor(
-      private templatesService: TemplatesService,
-      private uploadService: UploadService,
-      private coreService: CoreService,
+    private templatesService: TemplatesService,
+    private uploadService: UploadService,
+    private coreService: CoreService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  @ApiOperation({ summary: 'Get Profile Templates' })
+  @ApiOperation({ summary: 'Get Profile Rooms' })
   @ApiOkResponse({
     type: CommonTemplateRestDTO,
-    description: 'Get Profile Templates Success',
+    description: 'Get Profile Rooms Success',
   })
   async getProfileTemplates(
     @Request() req,
@@ -79,11 +81,12 @@ export class ProfileTemplatesController {
     description: 'Update Profile Template Success',
   })
   @UseInterceptors(
-      FileInterceptor('file', {
-        preservePath: true,
-      }),
+    FileInterceptor('file', {
+      preservePath: true,
+    }),
   )
   async updateProfileTemplate(
+    @Request() req,
     @Body() updateTemplateData: UpdateTemplateRequest,
     @Param('templateId') templateId: ICommonTemplate['id'],
     @UploadedFile() file: Express.Multer.File,
@@ -92,15 +95,18 @@ export class ProfileTemplatesController {
       if (templateId) {
         if (file) {
           const { fileName, extension } = getFileNameAndExtension(
-              file.originalname,
+            file.originalname,
           );
           const uploadKey = `templates/videos/${templateId}/${fileName}.${extension}`;
 
           await this.uploadService.deleteFolder(
-              `templates/videos/${templateId}`,
+            `templates/videos/${templateId}`,
           );
 
-          let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
+          const url = await this.uploadService.uploadFile(
+            file.buffer,
+            uploadKey,
+          );
 
           await this.coreService.uploadProfileTemplateFile({
             url,
@@ -111,6 +117,7 @@ export class ProfileTemplatesController {
 
         const template = await this.templatesService.updateUserTemplate({
           templateId,
+          userId: req.user.userId,
           data: updateTemplateData,
         });
 

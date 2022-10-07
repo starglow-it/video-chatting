@@ -1,88 +1,62 @@
-import React, { memo, useEffect, useRef } from 'react';
-import VimeoPlayer, { Player, Options } from '@vimeo/player';
+import React, { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
+import { VideoJsPlayerOptions } from 'video.js';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // styles
-import styles from './MeetingBackgroundVideo.module.scss';
+import { CustomVideoPlayer } from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // types
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
-import { $windowSizeStore } from '../../../store';
 import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
-    $isScreenSharingStore,
+    $isScreenSharingActiveStore,
 } from '../../../store/roomStores';
 
+// styles
+import styles from './MeetingBackgroundVideo.module.scss';
+
 const Component = ({ children, src }: MeetingBackgroundVideoProps) => {
-    const { width, height } = useStore($windowSizeStore);
-    const isScreenSharing = useStore($isScreenSharingStore);
-
-    const playerRef = useRef<Player | null>(null);
-    const containerRef = useRef<HTMLDivElement | null>(null);
-
+    const isScreenSharing = useStore($isScreenSharingActiveStore);
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
-    const ratio = width / height;
-
-    useEffect(() => {
-        if (src) {
-            const options = {
-                url: src,
-                responsive: true,
-                loop: true,
-                background: true,
-                keyboard: false,
-                quality: '1080p',
-            } as Options;
-
-            if (containerRef?.current) {
-                playerRef.current = new VimeoPlayer(containerRef.current, options);
-            }
-        }
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            if (playerRef?.current) {
-                await playerRef?.current?.setMuted?.(!isAudioBackgroundActive);
-                await playerRef?.current?.setVolume?.(
-                    isAudioBackgroundActive ? backgroundAudioVolume / 100 : 0,
-                );
-            }
-        })();
-    }, [isAudioBackgroundActive, backgroundAudioVolume]);
-
-    useEffect(() => {
-        if (playerRef.current) {
-            if (isScreenSharing) {
-                playerRef.current?.pause();
-            } else {
-                setTimeout(() => {
-                    playerRef.current?.play();
-                }, 2000);
-            }
-        }
-    }, [isScreenSharing]);
+    const videoJsOptions = useMemo(
+        (): VideoJsPlayerOptions => ({
+            autoplay: true,
+            controls: false,
+            responsive: false,
+            fill: true,
+            loop: true,
+            sources: [
+                {
+                    src,
+                    type: 'video/mp4',
+                },
+            ],
+        }),
+        [src],
+    );
 
     return (
-        <CustomGrid
-            ref={containerRef}
-            className={styles.backgroundVideo}
-            style={
-                ratio > 16 / 9 && !isScreenSharing
-                    ? { bottom: '0', display: 'inline-table' }
-                    : { display: 'inline-grid' }
-            }
-        >
-            {children}
-        </CustomGrid>
+        <ConditionalRender condition={Boolean(src)}>
+            <CustomGrid className={styles.backgroundVideo}>
+                <CustomVideoPlayer
+                    isPlaying={!isScreenSharing}
+                    isMuted={!isAudioBackgroundActive}
+                    volume={backgroundAudioVolume}
+                    options={videoJsOptions}
+                    className={styles.player}
+                />
+                {children}
+            </CustomGrid>
+        </ConditionalRender>
     );
 };
 

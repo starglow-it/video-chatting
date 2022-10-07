@@ -156,6 +156,3 @@ sample({
             : ServerTypes.P2P,
     target: setServerType,
 });
-
-// popup with settings of sharing
-// reconnect logic

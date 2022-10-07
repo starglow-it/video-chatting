@@ -33,6 +33,32 @@
     }
   },
   "contacts": {
-    "title": "Contact us"
+    "title": "Contact us",
+    "form": {
+      "title": "Have questions?",
+      "description": "Just write us a message or email on ",
+      "yourDetails": "Your details",
+      "message": "Message",
+      "checkbox": "I agree to Terms&Conditions and Privacy Policy",
+      "inputs": {
+        "name": {
+          "placeholder": "Name"
+        },
+        "email": {
+          "placeholder": "Email"
+        },
+        "message": {
+          "placeholder": "Enter your message"
+        }
+      },
+      "actions": {
+        "submit": "Get in touch"
+      }
+    },
+    "success": {
+      "title": "Success!",
+      "description": "We received your message.\nOur Team will be in touch with you shortly",
+      "button": "Homepage"
+    }
   }
 }

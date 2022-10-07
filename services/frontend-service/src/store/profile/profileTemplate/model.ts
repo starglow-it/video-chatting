@@ -19,7 +19,7 @@ export const getProfileTemplateBaseEffect = profileDomain.createEffect<
 
 export const updateProfileTemplateBaseEffect = profileDomain.createEffect<
     UpdateTemplatePayload,
-    UserTemplate,
+    UserTemplate | null,
     void
 >('updateProfileTemplateBaseEffect');
 

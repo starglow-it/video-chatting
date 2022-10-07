@@ -24,11 +24,12 @@ import { ConfigClientService } from '../../services/config/config.service';
 
 // payloads
 import {
-  DeleteMeetingPayload,
   GetMeetingPayload,
   AssignMeetingInstancePayload,
   UpdateMeetingInstancePayload,
-  GetMeetingInstancePayload, CreateMeetingInstancePayload, DeleteMeetingInstancePayload,
+  GetMeetingInstancePayload,
+  CreateMeetingInstancePayload,
+  DeleteMeetingInstancePayload,
 } from '@shared/broker-payloads/meetings';
 
 @Controller('meetings')
@@ -46,8 +47,12 @@ export class MeetingsController {
   ) {}
 
   async onModuleInit() {
-    this.supportScaling = await this.configService.get<boolean>('supportScaling');
-    this.defaultServerIp = await this.configService.get<string>('defaultServerIp');
+    this.supportScaling = await this.configService.get<boolean>(
+      'supportScaling',
+    );
+    this.defaultServerIp = await this.configService.get<string>(
+      'defaultServerIp',
+    );
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.UpdateMeetingInstance })
@@ -84,24 +89,32 @@ export class MeetingsController {
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.DeleteMeetingInstance })
-  async deleteMeetingInstance(@Payload() payload: DeleteMeetingInstancePayload) {
-    return withTransaction(this.connection, async (session) => {
-      const meetingInstances = await this.meetingsService.deleteMeeting({
-        query: { _id: payload.id },
-        session,
-      });
+  async deleteMeetingInstance(
+    @Payload() payload: DeleteMeetingInstancePayload,
+  ) {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        await this.meetingsService.deleteMeeting({
+          query: { _id: payload.id },
+          session,
+        });
 
-      return plainToInstance(CommonMeetingDTO, meetingInstances, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+        return;
       });
-    });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.CreateMeetingInstance })
-  async createMeetingInstance(@Payload() payload: CreateMeetingInstancePayload) {
+  async createMeetingInstance(
+    @Payload() payload: CreateMeetingInstancePayload,
+  ) {
     return withTransaction(this.connection, async (session) => {
-      const meetingInstances = await this.meetingsService.create(payload, session);
+      const meetingInstances = await this.meetingsService.create(
+        payload,
+        session,
+      );
 
       return plainToInstance(CommonMeetingDTO, meetingInstances, {
         excludeExtraneousValues: true,
@@ -126,41 +139,42 @@ export class MeetingsController {
       if (this.supportScaling && userTemplate.maxParticipants > 4) {
         [meeting] = await this.meetingsService.find({
           query: {
-            serverStatus: "active",
+            serverStatus: 'active',
             owner: null,
           },
-          session
+          session,
         });
 
-        await this.meetingsService.update({
+        meeting = await this.meetingsService.update({
           query: {
-            _id: meeting.id
+            _id: meeting.id,
           },
           data: {
-            owner: payload.userId
+            owner: payload.userId,
           },
-          session
+          session,
         });
       } else {
-        meeting = await this.meetingsService.create({
-          serverStatus: 'active',
-          serverIp: this.defaultServerIp,
-          owner: payload.userId
-        }, session);
+        meeting = await this.meetingsService.create(
+          {
+            serverStatus: 'active',
+            serverIp: this.defaultServerIp,
+            owner: payload.userId,
+          },
+          session,
+        );
       }
 
       if (userTemplate?.meetingInstance?._id) {
-        await this.meetingsService.update(
-            {
-              query: {
-                _id: userTemplate.meetingInstance._id
-              },
-              data: {
-                owner: null,
-              },
-              session
-            }
-        );
+        await this.meetingsService.update({
+          query: {
+            _id: userTemplate.meetingInstance._id,
+          },
+          data: {
+            owner: null,
+          },
+          session,
+        });
       }
 
       userTemplate.usedAt = Date.now();
@@ -173,26 +187,6 @@ export class MeetingsController {
         enableImplicitConversion: true,
       });
     });
-  }
-
-  @MessagePattern({ cmd: MeetingBrokerPatterns.DeleteMeeting })
-  async deleteMeeting(@Payload() data: DeleteMeetingPayload) {
-    try {
-      return withTransaction(this.connection, async (session) => {
-        const userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: { _id: data?.templateId },
-          session,
-          populatePaths: 'meetingInstance',
-        });
-
-        await this.meetingsService.deleteMeeting({
-          query: { _id: userTemplate.meetingInstance._id },
-          session
-        });
-      });
-    } catch (e) {
-      throw new RpcException({ message: e.message, ctx: CORE_SERVICE });
-    }
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.GetMeeting })

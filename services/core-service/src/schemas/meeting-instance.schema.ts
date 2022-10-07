@@ -25,7 +25,7 @@ export class MeetingInstance {
     type: mongoose.Schema.Types.String,
     default: 'inactive',
   })
-  serverStatus: ICommonMeetingInstance["serverStatus"];
+  serverStatus: ICommonMeetingInstance['serverStatus'];
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

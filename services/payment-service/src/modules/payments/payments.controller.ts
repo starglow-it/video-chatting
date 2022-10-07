@@ -543,7 +543,7 @@ export class PaymentsController {
   async getTemplateStripeProductByName(@Payload() data: { name: string }) {
     const templatesList = await this.paymentService.getStripeTemplates();
 
-    return templatesList.filter((template) => template.name === data.name);
+    return templatesList.filter((template) => template.name === data.name)[0];
   }
 
   @MessagePattern({
@@ -705,6 +705,7 @@ export class PaymentsController {
       await this.coreService.addTemplateToUser({
         productId: productId as string,
         customerId: checkout.customer as string,
+        sessionId: session.id as string,
       });
 
       return;

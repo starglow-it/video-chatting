@@ -25,31 +25,29 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 // stores
 import { $profileStore, addNotificationEvent } from '../../store';
 import {
+    $audioDevicesStore,
     $audioErrorStore,
     $backgroundAudioVolume,
     $changeStreamStore,
-    $currentAudioDeviceStore,
-    $currentVideoDeviceStore,
     $isAuraActive,
     $isBackgroundAudioActive,
     $isCameraActiveStore,
-    $isMeetingInstanceExists,
     $isMicActiveStore,
     $isOwner,
-    $isOwnerInMeeting,
     $isStreamRequestedStore,
     $isUserSendEnterRequest,
+    $localUserStore,
     $meetingTemplateStore,
-    emitEnterWaitingRoom,
+    $videoDevicesStore,
+    $videoErrorStore,
     initDevicesEventFxWithStore,
+    joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
     sendEnterMeetingRequestSocketEvent,
     sendEnterWaitingRoomSocketEvent,
-    sendStartMeetingSocketEvent,
-    setActiveStreamEvent,
-    setBackgroundAudioActive,
-    setBackgroundAudioVolume,
+    setIsAudioActiveEvent,
     setIsAuraActive,
+    setIsCameraActiveEvent,
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
@@ -67,7 +65,6 @@ import { templatePriceSchema } from '../../validation/payments/templatePrice';
 // controllers
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 import { SavedSettings } from '../../types';
-import { applyBlur } from '../../store/roomStores/videoChat/helpers/applyBlur';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -83,17 +80,18 @@ type MonetizationFormType = {
 
 const Component = () => {
     const profile = useStore($profileStore);
+    const localUser = useStore($localUserStore);
 
     const isStreamRequested = useStore($isStreamRequestedStore);
     const changeStream = useStore($changeStreamStore);
-    const audioError = useStore($audioErrorStore);
     const isMicActive = useStore($isMicActiveStore);
     const isCameraActive = useStore($isCameraActiveStore);
-    const currentAudioDevice = useStore($currentAudioDeviceStore);
-    const currentVideoDevice = useStore($currentVideoDeviceStore);
+    const videoDevices = useStore($videoDevicesStore);
+    const audioDevices = useStore($audioDevicesStore);
+    const videoError = useStore($videoErrorStore);
+    const audioError = useStore($audioErrorStore);
+
     const isOwner = useStore($isOwner);
-    const isOwnerInMeeting = useStore($isOwnerInMeeting);
-    const isMeetingInstanceExists = useStore($isMeetingInstanceExists);
     const isUserSentEnterRequest = useStore($isUserSendEnterRequest);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
@@ -145,82 +143,35 @@ const Component = () => {
     }, [isAuraActive]);
 
     const handleToggleMic = useCallback(() => {
-        if (changeStream) {
-            addNotificationEvent({
-                type: NotificationType.MicAction,
-                message: `meeting.mic.${isMicActive ? 'off' : 'on'}`,
-            });
-
-            updateLocalUserEvent({
-                micStatus: isMicActive ? 'inactive' : 'active',
-            });
-        }
-    }, [changeStream, isMicActive]);
-
-    const handleToggleCamera = useCallback(() => {
-        if (changeStream) {
-            addNotificationEvent({
-                type: NotificationType.CamAction,
-                message: `meeting.cam.${isCameraActive ? 'off' : 'on'}`,
-            });
-            updateLocalUserEvent({
-                cameraStatus: isCameraActive ? 'inactive' : 'active',
-            });
-        }
-    }, [changeStream, isCameraActive]);
-
-    const handleJoinMeeting = useCallback(async () => {
-        updateLocalUserEvent({
-            micStatus: isMicActive ? 'active' : 'inactive',
-            cameraStatus: isCameraActive ? 'active' : 'inactive',
+        addNotificationEvent({
+            type: NotificationType.MicAction,
+            message: `meeting.mic.${isMicActive ? 'off' : 'on'}`,
         });
 
-        if (isOwner) {
-            await sendStartMeetingSocketEvent();
-        } else if (isMeetingInstanceExists && isOwnerInMeeting) {
-            await sendEnterMeetingRequestSocketEvent();
-        } else {
-            emitEnterWaitingRoom();
-        }
+        updateLocalUserEvent({
+            micStatus: isMicActive ? 'inactive' : 'active',
+        });
+        setIsAudioActiveEvent(!isMicActive);
+    }, [isMicActive]);
 
-        setBackgroundAudioVolume(settingsBackgroundAudioVolume);
-        setBackgroundAudioActive(isSettingsAudioBackgroundActive);
+    const handleToggleCamera = useCallback(() => {
+        addNotificationEvent({
+            type: NotificationType.CamAction,
+            message: `meeting.cam.${isCameraActive ? 'off' : 'on'}`,
+        });
+        updateLocalUserEvent({
+            cameraStatus: isCameraActive ? 'inactive' : 'active',
+        });
+        setIsCameraActiveEvent(!isCameraActive);
+    }, [isCameraActive]);
 
-        if (needToRememberSettings) {
-            WebStorage.save({
-                key: StorageKeysEnum.meetingSettings,
-                data: {
-                    backgroundAudioSetting: isSettingsAudioBackgroundActive,
-                    backgroundAudioVolumeSetting: settingsBackgroundAudioVolume,
-                    auraSetting: isAuraActive,
-                    savedVideoDeviceId: currentVideoDevice,
-                    savedAudioDeviceId: currentAudioDevice,
-                    cameraActiveSetting: isCameraActive,
-                    micActiveSetting: isMicActive,
-                },
-            });
-        }
-
-        const clonedStream = changeStream?.clone();
-
-        const streamWithBackground = await applyBlur(clonedStream, { isAuraActive });
-
-        setActiveStreamEvent(streamWithBackground);
-    }, [
-        isOwner,
-        changeStream,
-        isStreamRequested,
-        isMeetingInstanceExists,
-        isOwnerInMeeting,
-        isAuraActive,
-        isSettingsAudioBackgroundActive,
-        settingsBackgroundAudioVolume,
-        needToRememberSettings,
-        currentVideoDevice,
-        currentAudioDevice,
-        isCameraActive,
-        isMicActive,
-    ]);
+    const handleJoinMeeting = useCallback(async () => {
+        joinMeetingEvent({
+            isSettingsAudioBackgroundActive,
+            settingsBackgroundAudioVolume,
+            needToRememberSettings,
+        });
+    }, [isSettingsAudioBackgroundActive, settingsBackgroundAudioVolume, needToRememberSettings]);
 
     const handleCancelRequest = useCallback(async () => {
         await sendCancelAccessMeetingRequestEvent();
@@ -262,6 +213,14 @@ const Component = () => {
                     className={clsx(styles.settingsContent, { [styles.mobile]: isMobile })}
                 >
                     <MediaPreview
+                        videoError={videoError}
+                        audioError={audioError}
+                        isMicActive={isMicActive}
+                        isCameraActive={isCameraActive}
+                        videoDevices={videoDevices}
+                        audioDevices={audioDevices}
+                        profileAvatar={profile.profileAvatar?.url}
+                        userName={localUser?.username}
                         stream={changeStream}
                         onToggleAudio={handleToggleMic}
                         onToggleVideo={handleToggleCamera}

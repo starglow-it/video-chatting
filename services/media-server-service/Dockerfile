@@ -1,4 +1,4 @@
-FROM node:16.16.0-alpine AS builder
+FROM node:18.7.0-alpine AS builder
 
 RUN apk update
 RUN apk upgrade
@@ -10,15 +10,15 @@ COPY ./shared ./shared
 
 RUN mkdir ./media-server-service
 
-COPY ./media-server-service/package.json ./media-server-service/
+COPY ./media-server-service/package*.json ./media-server-service/
 
-RUN cd ./media-server-service && npm i --legacy-peer-deps
+RUN npm ci --legacy-peer-deps --silent --prefix=/app/media-server-service
 
 COPY ./media-server-service ./media-server-service/
 
-RUN cd ./media-server-service && npm run build
+RUN npm run build --prefix=/app/media-server-service
 
-FROM node:16.16.0-alpine
+FROM node:18.7.0-alpine
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -28,5 +28,4 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-CMD /wait && npm run --prefix=/app/media-server-service start
-
+CMD /wait && npm run start --prefix=/app/media-server-service

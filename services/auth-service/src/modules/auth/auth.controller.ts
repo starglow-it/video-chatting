@@ -66,7 +66,6 @@ export class AuthController {
 
       return user;
     } catch (err) {
-      console.log(err.message);
       throw new RpcException(err);
     }
   }

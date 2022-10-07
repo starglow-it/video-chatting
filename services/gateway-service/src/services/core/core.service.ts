@@ -24,10 +24,12 @@ import {
 } from '@shared/broker-payloads/users';
 import {
   AssignMeetingInstancePayload,
-  DeleteMeetingPayload, GetMeetingInstancePayload,
-  GetMeetingPayload, UpdateMeetingInstancePayload,
+  GetMeetingInstancePayload,
+  GetMeetingPayload,
+  UpdateMeetingInstancePayload,
 } from '@shared/broker-payloads/meetings';
 import { TemplateBrokerPatterns } from '@shared/patterns/templates';
+import { CoreBrokerPatterns } from '@shared/patterns/core';
 
 @Injectable()
 export class CoreService {
@@ -108,7 +110,7 @@ export class CoreService {
   }
 
   async updateMeetingInstance(
-      payload: UpdateMeetingInstancePayload,
+    payload: UpdateMeetingInstancePayload,
   ): Promise<boolean> {
     const pattern = { cmd: MeetingBrokerPatterns.UpdateMeetingInstance };
 
@@ -116,17 +118,9 @@ export class CoreService {
   }
 
   async getMeetingInstances(
-      payload: GetMeetingInstancePayload,
+    payload: GetMeetingInstancePayload,
   ): Promise<ICommonMeetingInstance[]> {
     const pattern = { cmd: MeetingBrokerPatterns.GetMeetingInstance };
-
-    return this.client.send(pattern, payload).toPromise();
-  }
-
-  async deleteMeeting(
-    payload: DeleteMeetingPayload,
-  ): Promise<ICommonMeetingInstance> {
-    const pattern = { cmd: MeetingBrokerPatterns.DeleteMeeting };
 
     return this.client.send(pattern, payload).toPromise();
   }
@@ -175,19 +169,25 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async sendCustom(pattern, payload) {
+  async uploadTemplateFile(payload) {
+    const pattern = { cmd: TemplateBrokerPatterns.UploadTemplateFile };
+
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async uploadTemplateFile(data) {
-    const pattern = { cmd: TemplateBrokerPatterns.UploadTemplateFile };
-
-    return this.client.send(pattern, data).toPromise();
-  }
-
-  async uploadProfileTemplateFile(data) {
+  async uploadProfileTemplateFile(payload) {
     const pattern = { cmd: TemplateBrokerPatterns.UploadProfileTemplateFile };
 
-    return this.client.send(pattern, data).toPromise();
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async getBusinessCategories(payload) {
+    const pattern = { cmd: CoreBrokerPatterns.GetBusinessCategories };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async sendCustom(pattern, payload) {
+    return this.client.send(pattern, payload).toPromise();
   }
 }

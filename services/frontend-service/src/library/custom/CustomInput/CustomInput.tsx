@@ -23,7 +23,7 @@ const Component = (
     const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
 
     return (
-        <CustomGrid container direction="column">
+        <CustomGrid container direction="column" className={styles.inputWrapper}>
             <TextField inputRef={ref} label={label} error={Boolean(error)} {...rest} />
             {error && <ErrorMessage className={styles.errorContainer} error={error} />}
         </CustomGrid>

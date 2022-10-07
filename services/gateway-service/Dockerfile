@@ -1,6 +1,4 @@
-FROM node:16.16.0-alpine AS builder
-
-RUN npm install -g @nestjs/cli
+FROM node:18.7.0-alpine AS builder
 
 WORKDIR /app
 
@@ -10,13 +8,13 @@ RUN mkdir ./gateway-service
 
 COPY ./gateway-service/package*.json ./gateway-service/
 
-RUN cd ./gateway-service && npm ci --legacy-peer-deps
+RUN npm ci --silent --legacy-peer-deps --prefix=/app/gateway-service
 
 COPY ./gateway-service ./gateway-service/
 
-RUN npm run --prefix=/app/gateway-service build
+RUN npm run build --prefix=/app/gateway-service
 
-FROM node:16.16.0-alpine
+FROM node:18.7.0-alpine
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -28,4 +26,4 @@ COPY --from=builder /app ./
 
 EXPOSE 3000
 
-CMD /wait && npm run --prefix=/app/gateway-service start:prod
+CMD /wait && npm run start:prod --prefix=/app/gateway-service

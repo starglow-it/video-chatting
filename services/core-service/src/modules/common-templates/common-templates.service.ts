@@ -174,30 +174,30 @@ export class CommonTemplatesService {
     mimeType: string;
     url: string;
   }) {
-    const files = path.join(__dirname, '../../../../images', id);
-    await mkdirp(files);
+    const outputPath = path.join(__dirname, '../../../../images', id);
+    await mkdirp(outputPath);
 
-    const outputPath = path.join(files, id);
     const fileType = mimeType.split('/')[0];
     await getScreenShots(url, outputPath, fileType);
 
-    const imagesPaths = await fsPromises.readdir(files);
+    const imagesPaths = await fsPromises.readdir(outputPath);
 
     await this.previewImage.deleteMany({
-      key: new RegExp(`^templates/previews/${id}`),
+      key: new RegExp(`^templates/images/${id}`),
     });
 
-    await this.awsService.deleteResource(`templates/previews/${id}`);
+    await this.awsService.deleteResource(`templates/images/${id}`);
 
     const uploadedImagesPromises = imagesPaths.map(async (image) => {
-      const resolution = image.match(/_(\d*)p\./);
-      const file = await fsPromises.readFile(`${files}/${image}`);
-      const uploadKey = `templates/previews/${id}/${image}`;
-      const fileStats = await fsPromises.stat(`${files}/${image}`);
+      const resolution = image.match(/(\d*)p\./);
+
+      const file = await fsPromises.readFile(`${outputPath}/${image}`);
+      const uploadKey = `templates/images/${id}/${image}`;
+      const fileStats = await fsPromises.stat(`${outputPath}/${image}`);
 
       const imageUrl = await this.awsService.uploadFile(file, uploadKey);
 
-      await fsPromises.rm(`${files}/${image}`);
+      await fsPromises.rm(`${outputPath}/${image}`);
 
       return this.previewImage.create({
         url: imageUrl,

@@ -46,6 +46,7 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
   "mandrillApiKey",
   "supportScaling",
   "numberOfActiveServers",
+  "supportEmail",
 ];
 
 export const DefaultConfigValues: Record<
@@ -93,4 +94,5 @@ export const DefaultConfigValues: Record<
   environment: "local",
   supportScaling: false,
   numberOfActiveServers: 0,
+  supportEmail: "foratestqa+liveofficesupport@gmail.com",
 };

@@ -13,7 +13,7 @@ export type CreateMeetingPayload = {
   templateId: ICommonTemplate["id"];
 };
 
-export type CreateServerPayload = { templateId: IUserTemplate["id"]; userId: ICommonUserDTO["id"] };
+export type CreateServerPayload = any;
 export type WaitForAvailableServerPayload = { templateId: IUserTemplate["id"]; userId: ICommonUserDTO["id"]; instanceId: ICommonMeetingInstance["instanceId"] };
 
 export type DeleteMeetingPayload = { templateId: string };

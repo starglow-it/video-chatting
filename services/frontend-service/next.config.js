@@ -22,6 +22,7 @@ module.exports = enhance({
         vultrStorageHostname: process.env.VULTR_STORAGE_HOSTNAME,
         stripePublicKey: process.env.STRIPE_PUBLIC_API_KEY,
         baseEnvDomain: process.env.BASE_ENV_DOMAIN,
+        supportEmail: process.env.SUPPORT_EMAIL,
     },
     reactStrictMode: false,
     typescript: {

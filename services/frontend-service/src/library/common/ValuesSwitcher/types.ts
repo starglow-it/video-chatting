@@ -1,25 +1,27 @@
-export type ValuesSwitcherItem = {
+type ValueType = string | number;
+
+export type ValuesSwitcherItem<T extends ValueType> = {
     id: number;
-    value: string;
+    value: T;
     label: string;
 };
 
 type ValueSwitcherVariant = 'primary' | 'transparent';
 
-export type ValueSwitcherProps = {
-    values: ValuesSwitcherItem[];
+export type ValueSwitcherProps<T extends ValueType> = {
+    values: ValuesSwitcherItem<T>[];
     optionWidth: number;
-    activeValue: ValuesSwitcherItem;
-    onValueChanged: (value: ValuesSwitcherItem) => void;
+    activeValue: ValuesSwitcherItem<T>;
+    onValueChanged: (value: ValuesSwitcherItem<T>) => Promise<void> | void;
     variant?: ValueSwitcherVariant;
 };
 
-export type ValueSwitcherItemProps = {
+export type ValueSwitcherItemProps<T extends ValueType> = {
     index: number;
     optionWidth: number;
-    value: ValuesSwitcherItem;
-    activeValue: ValuesSwitcherItem;
-    onValueChanged: (value: ValuesSwitcherItem) => void;
+    value: ValuesSwitcherItem<T>;
+    activeValue: ValuesSwitcherItem<T>;
+    onValueChanged: (value: ValuesSwitcherItem<T>) => void;
     onUpdateActiveElement: (left: number) => void;
     variant?: ValueSwitcherVariant;
 };

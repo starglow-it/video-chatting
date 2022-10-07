@@ -1,0 +1,64 @@
+@import "src/styles/rem";
+@import "src/styles/variables";
+
+.wrapper {
+  width: 100%;
+  padding: rem(51px 64px);
+}
+
+.title {
+  margin: rem(0 0 8px);
+}
+
+.subtitle {
+  align-self: flex-start;
+  margin: rem(36px 0 12px);
+}
+
+.description {
+  white-space: pre;
+}
+
+.checkbox {
+  margin: rem(36px 0 0);
+}
+
+.loader {
+  margin: rem(36px 0 0);
+}
+
+.submitButton {
+  margin: rem(36px 0 0);
+  max-width: rem(148px);
+}
+
+.success {
+  width: 100%;
+  height: rem(626px);
+
+  .icon {
+    color: $primary-green;
+    margin: rem(0 0 20px);
+  }
+
+
+  .text {
+    max-width: rem(332px);
+    width: 100%;
+    text-align: center;
+    white-space: pre;
+  }
+
+  .title {
+    margin: rem(0 0 8px);
+  }
+
+  .description {
+    margin: rem(0 0 40px);
+  }
+
+  .button {
+    max-width: rem(148px);
+    width: 100%;
+  }
+}

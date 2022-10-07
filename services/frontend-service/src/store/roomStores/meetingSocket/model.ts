@@ -3,6 +3,9 @@ import { attach, combine, Effect, sample, Store } from 'effector-next';
 import { EmitSocketEventPayload, SocketState, UserTemplate } from '../../types';
 import { rootDomain } from '../../domains';
 import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
+import { createSocketEvent } from '../../socket/model';
+import { JoinRoomBeforeMeetingPayload } from '../../socket/types';
+import { DashboardSocketEmitters } from '../../../const/socketEvents/emitters';
 
 export const meetingSocketDomain = rootDomain.createDomain('socketDomain');
 
@@ -50,3 +53,8 @@ sample({
     fn: ({ meetingTemplate }) => ({ serverIp: meetingTemplate.meetingInstance.serverIp }),
     target: initiateMeetingSocketConnectionFx,
 });
+
+export const joinRoomBeforeMeetingSocketEvent = createSocketEvent<
+    JoinRoomBeforeMeetingPayload,
+    void
+>(DashboardSocketEmitters.JoinRoomBeforeMeeting);

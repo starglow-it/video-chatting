@@ -58,9 +58,11 @@ import {
     $isProfessionalSubscription,
     $templateDraft,
     appDialogsApi,
+    clearTemplateDraft,
     createMeetingFx,
     createTemplateFx,
     editTemplateFx,
+    editUserTemplateFileFx,
     getEditingTemplateFx,
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -69,8 +71,6 @@ import {
     removeWindowListeners,
     uploadTemplateFileFx,
     uploadUserTemplateFileFx,
-    editUserTemplateFileFx,
-    clearTemplateDraft,
 } from '../../store';
 
 // utils
@@ -79,12 +79,20 @@ import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 // styles
 import styles from './CreateRoomContainer.module.scss';
 
-const tabsValues: ValuesSwitcherItem[] = [
-    { id: 1, value: 'background', label: 'Background' },
-    { id: 2, value: 'description', label: 'Description' },
-    { id: 3, value: 'attendees', label: 'Attendees' },
-    { id: 4, value: 'privacy', label: 'Privacy' },
-    { id: 5, value: 'preview', label: 'Preview' },
+enum TabsValues {
+    Background = 1,
+    Settings = 2,
+    Attendees = 3,
+    Privacy = 4,
+    Preview = 5,
+}
+
+const tabs: ValuesSwitcherItem<number>[] = [
+    { id: 1, value: TabsValues.Background, label: 'Background' },
+    { id: 2, value: TabsValues.Settings, label: 'Settings' },
+    { id: 3, value: TabsValues.Attendees, label: 'Attendees' },
+    { id: 4, value: TabsValues.Privacy, label: 'Privacy' },
+    { id: 5, value: TabsValues.Preview, label: 'Preview' },
 ];
 
 const defaultValues: IUploadTemplateFormData = {
@@ -126,7 +134,7 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
         mode: 'onBlur',
     });
 
-    const { control, setValue, handleSubmit: onSubmit, reset, watch } = methods;
+    const { control, setValue, trigger, handleSubmit: onSubmit, reset, watch } = methods;
 
     const participantsNumber = useWatch({ control, name: 'participantsNumber' });
     const participantsPositions = useWatch({ control, name: 'participantsPositions' });
@@ -147,8 +155,8 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
 
     const { activeValue, activeItem, onValueChange, onNextValue, onPreviousValue } =
         useValueSwitcher({
-            values: tabsValues,
-            initialValue: tabsValues[0].value,
+            values: tabs,
+            initialValue: tabs[0].value,
         });
 
     useSubscriptionNotification(createRoomRoute);
@@ -159,7 +167,7 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
         }
         const { templateId } = router.query;
         if (templateId && typeof templateId === 'string') {
-            getEditingTemplateFx({ templateId });
+            getEditingTemplateFx({ templateId, withCredentials: true });
         } else {
             createTemplateFx();
         }
@@ -180,14 +188,15 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
             participantsNumber: templateDraft.maxParticipants,
             participantsPositions: templateDraft.usersPosition.length
                 ? templateDraft.usersPosition.map(({ bottom, left }) => ({
-                    top: 100 - bottom,
-                    left,
-                    id: getRandomNumber(10000).toString(),
-                })) : defaultValues.participantsPositions,
+                      top: 100 - bottom,
+                      left,
+                      id: getRandomNumber(10000).toString(),
+                  }))
+                : defaultValues.participantsPositions,
             previewUrls: templateDraft.previewUrls,
             isPublic: templateDraft.isPublic,
         });
-        if (isEditing && (templateDraft.maxParticipants > 1)) {
+        if (isEditing && templateDraft.maxParticipants > 1) {
             onPreventNextParticipantsPositionsUpdate();
         }
         onSetTemplateData();
@@ -218,7 +227,12 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
             });
         }
         setValue('participantsPositions', newPositions);
-    }, [participantsNumber, previousParticipantsNumber, participantsPositions, preventNextParticipantsPositionsUpdate]);
+    }, [
+        participantsNumber,
+        previousParticipantsNumber,
+        participantsPositions,
+        preventNextParticipantsPositionsUpdate,
+    ]);
 
     useEffect(() => {
         (async () => {
@@ -229,16 +243,19 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
             const response = isEditing
                 ? await uploadUserTemplateFileFx({
                       templateId,
-                      data: {
-                          file: background,
-                      },
+                      file: background,
                   })
                 : await uploadTemplateFileFx({ file: background, id: templateDraft.id });
             if (!response) {
                 return;
             }
-            setValue('previewUrls', response.draftPreviewUrls);
-            setValue('url', response.draftUrl);
+            if (response.draftPreviewUrls) {
+                setValue('previewUrls', response.draftPreviewUrls);
+            }
+
+            if (response.draftUrl) {
+                setValue('url', response.draftUrl);
+            }
         })();
     }, [background, isEditing]);
 
@@ -262,6 +279,19 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
         };
     }, []);
 
+    const handleValueChange = useCallback(
+        async (item: ValuesSwitcherItem<number>) => {
+            if (item.value > TabsValues.Settings) {
+                const response = await trigger();
+                onValueChange(response ? item : tabs[1]);
+                return;
+            }
+
+            onValueChange(item);
+        },
+        [onNextValue, trigger],
+    );
+
     const handleCancelRoomCreation = useCallback(() => {
         router.push(dashboardRoute);
     }, []);
@@ -282,8 +312,8 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
                 usersPosition: data.participantsPositions.map(({ top, left }) => ({
-                    bottom: 100 - top,
-                    left,
+                    bottom: (100 - top) / 100,
+                    left: left / 100,
                 })),
                 businessCategories: data.tags,
                 draft: false,
@@ -323,29 +353,29 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
             <FormProvider {...methods}>
                 <form>
                     <TemplateBackgroundPreview>
-                        <ConditionalRender condition={activeValue === 'background'}>
+                        <ConditionalRender condition={activeValue === TabsValues.Background}>
                             <UploadTemplateFile onNextStep={onNextValue} />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === 'description'}>
+                        <ConditionalRender condition={activeValue === TabsValues.Settings}>
                             <EditTemplateDescription
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
                             />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === 'attendees'}>
+                        <ConditionalRender condition={activeValue === TabsValues.Attendees}>
                             <EditAttendeesPosition
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
                             />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === 'preview'}>
+                        <ConditionalRender condition={activeValue === TabsValues.Preview}>
                             <TemplatePreview
                                 onPreviousStep={onPreviousValue}
                                 onSubmit={handleSubmit}
                                 controlPanelRef={controlPanelRef}
                             />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === 'privacy'}>
+                        <ConditionalRender condition={activeValue === TabsValues.Privacy}>
                             <EditPolicy onNextStep={onNextValue} onPreviousStep={onPreviousValue} />
                         </ConditionalRender>
 
@@ -363,6 +393,7 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
                                 item
                                 width="100%"
                                 flexWrap="nowrap"
+                                alignItems="center"
                                 gap={1.5}
                             >
                                 <CustomGrid
@@ -378,12 +409,22 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
                                 <CustomGrid item>
                                     <CustomPaper variant="black-glass" className={styles.mainInfo}>
                                         <CustomGrid container direction="column">
-                                            <CustomTypography
-                                                color="colors.white.primary"
-                                                className={styles.name}
-                                            >
-                                                {name}
-                                            </CustomTypography>
+                                            {name ? (
+                                                <CustomTypography
+                                                    color="colors.white.primary"
+                                                    className={styles.name}
+                                                >
+                                                    {name}
+                                                </CustomTypography>
+                                            ) : (
+                                                <CustomTypography
+                                                    color="colors.white.primary"
+                                                    nameSpace="createRoom"
+                                                    translation="preview.roomName"
+                                                    className={styles.name}
+                                                />
+                                            )}
+
                                             <CustomGrid container alignItems="center" gap={0.5}>
                                                 {isPublic ? (
                                                     <PeopleIcon
@@ -418,11 +459,11 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
                                     variant="black-glass"
                                     className={styles.navigationPaper}
                                 >
-                                    <ValuesSwitcher
-                                        values={tabsValues}
+                                    <ValuesSwitcher<number>
+                                        values={tabs}
                                         optionWidth={115}
                                         activeValue={activeItem}
-                                        onValueChanged={onValueChange}
+                                        onValueChanged={handleValueChange}
                                         variant="transparent"
                                     />
                                 </CustomPaper>

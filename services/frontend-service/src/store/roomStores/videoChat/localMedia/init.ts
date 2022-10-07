@@ -49,13 +49,13 @@ import { handleInitDevices } from './handlers/handleInitDevices';
 import { handleChangeStream } from './handlers/handleChangeStream';
 
 // helpers
-import { clearStreamStore } from '../helpers/clearStreamStore';
-import { setNewStream } from '../helpers/setNewStream';
 
 // other
 import { CustomMediaStream } from '../../../../types';
 import { DeviceInputKindEnum } from '../../../../const/media/DEVICE_KINDS';
 import { resetRoomStores } from '../../../root';
+import { clearStreamStore } from '../../../../helpers/media/clearStreamStore';
+import { setNewStream } from '../../../../helpers/media/setNewStream';
 
 $audioDevicesStore.on(setAudioDevicesEvent, (state, data) => data).reset(resetRoomStores);
 $videoDevicesStore.on(setVideoDevicesEvent, (state, data) => data).reset(resetRoomStores);

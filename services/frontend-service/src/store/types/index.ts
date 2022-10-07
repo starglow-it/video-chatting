@@ -41,7 +41,7 @@ export interface Template {
     usedAt: string;
     templateId: number;
     url: string;
-    draftUrl: string;
+    draftUrl?: string;
     name: string;
     description: string;
     shortDescription: string;
@@ -54,15 +54,15 @@ export interface Template {
     maxParticipants: number;
     priceInCents: number;
     isAudioAvailable: boolean;
-    isPublic: boolean;
+    isPublic?: boolean;
     usersPosition: { bottom: number; left: number }[];
     links?: { id: string; item: string; position: { top: number; left: number } }[];
     businessCategories: BusinessCategory[];
     previewUrls: PreviewImage[];
-    draftPreviewUrls: PreviewImage[];
+    draftPreviewUrls?: PreviewImage[];
     languages: Language[];
     socials: SocialLink[];
-    author: string;
+    author?: string;
 }
 
 export type Profile = {
@@ -373,4 +373,15 @@ export type UploadTemplateFile = {
     id: string;
     businessCategories: string[];
     previewUrls: string[];
+};
+
+export type ContactFormPayload = {
+    name: string;
+    email: string;
+    message: string;
+};
+
+export type ContactFormResponse = {
+    success: boolean;
+    error?: ErrorState | null;
 };

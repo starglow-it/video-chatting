@@ -10,4 +10,5 @@ export const emailTemplates = {
     emailOldUpdated: 'email-old-changed',
     codeVerification: 'code-sent',
     subscriptionSuccessful: 'subscription-successful',
+    contactUs: 'contact-us',
 }

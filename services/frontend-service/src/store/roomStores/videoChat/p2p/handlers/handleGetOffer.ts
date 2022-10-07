@@ -1,9 +1,9 @@
 import { GetOfferPayload } from '../../types';
 
 export const handleGetOffer = async ({ connection, sdp }: GetOfferPayload) => {
-    if (!connection || !sdp) {
+    if (!sdp) {
         return;
     }
 
-    await connection.processOffer(sdp);
+    await connection?.processOffer(sdp);
 };

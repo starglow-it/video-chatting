@@ -1,4 +1,8 @@
-FROM node:16.16.0-alpine
+FROM node:18.7.0-alpine
+
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+
+RUN chmod +x /wait
 
 RUN apk update
 RUN apk upgrade
@@ -6,7 +10,6 @@ RUN apk add --no-cache git
 RUN apk add --no-cache python3 py3-pip
 RUN apk add --no-cache g++ make
 
-RUN mkdir /app
 WORKDIR /app
 
 COPY ./shared ./shared
@@ -15,10 +18,10 @@ RUN mkdir ./notifications-service
 
 COPY ./notifications-service/package*.json ./notifications-service/
 
-RUN cd ./notifications-service && npm i --legacy-peer-deps
+RUN npm ci --silent --legacy-peer-deps --prefix=/app/notifications-service
 
 COPY ./notifications-service ./notifications-service/
 
-RUN cd ./notifications-service && npm run build
+RUN npm run build --prefix=/app/notifications-service
 
-CMD ["npm", "run", "--prefix", "/app/notifications-service", "dev"]
+CMD /wait && npm run dev --prefix=/app/notifications-service

@@ -1,4 +1,4 @@
-FROM node:16.16.0-alpine
+FROM node:18.7.0-alpine
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -10,14 +10,14 @@ COPY ./shared ./shared
 
 RUN mkdir ./gateway-service
 
-ADD ./gateway-service/package*.json ./gateway-service/
+COPY ./gateway-service/package*.json ./gateway-service/
 
-RUN cd ./gateway-service && npm i --legacy-peer-deps
+RUN npm ci --silent --legacy-peer-deps --prefix=/app/gateway-service
 
 COPY ./gateway-service ./gateway-service/
 
-RUN cd ./gateway-service && npm run build
+RUN npm run build --prefix=/app/gateway-service
 
 EXPOSE 3000
 
-CMD /wait && npm run --prefix=/app/gateway-service start:dev
+CMD /wait && npm run start:dev --prefix=/app/gateway-service

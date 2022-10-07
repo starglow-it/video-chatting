@@ -7,7 +7,7 @@ Build Balancer Instance Image:
   interruptible: true
   only:
     variables:
-      - $VULTR_SNAPSHOT_BUILD == "1" && $CI_COMMIT_REF_NAME =~ /^(develop|demo|production)$/
+      - $VULTR_SNAPSHOT_BUILD == "1" && $CI_COMMIT_REF_NAME =~ /^(testing|demo|production)$/
   except:
     variables:
       - $CLIENT_PUSH_ACTIVE == "true"

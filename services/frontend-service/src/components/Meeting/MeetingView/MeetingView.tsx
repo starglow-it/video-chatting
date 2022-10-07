@@ -35,7 +35,7 @@ import styles from './MeetingView.module.scss';
 import { addNotificationEvent, appDialogsApi, checkIsPortraitLayoutEvent } from '../../../store';
 import {
     $isOwner,
-    $isScreenSharingStore,
+    $isScreenSharingActiveStore,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
@@ -57,7 +57,7 @@ import { isMobile } from '../../../utils/browser/detectBrowser';
 
 const Component = () => {
     const meeting = useStore($meetingStore);
-    const isScreenSharing = useStore($isScreenSharingStore);
+    const isScreenSharingActive = useStore($isScreenSharingActiveStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
@@ -139,7 +139,7 @@ const Component = () => {
                         />
                     </ConditionalRender>
                 </CustomBox>
-                <ConditionalRender condition={isScreenSharing}>
+                <ConditionalRender condition={isScreenSharingActive}>
                     <ScreenSharingLayout />
                 </ConditionalRender>
             </MeetingBackgroundVideo>
@@ -151,7 +151,7 @@ const Component = () => {
                 >
                     <MeetingUsersVideos />
                     <ConditionalRender
-                        condition={meetingTemplate.templateId === 20 && !isScreenSharing}
+                        condition={meetingTemplate.templateId === 20 && !isScreenSharingActive}
                     >
                         <MeetingGoodsLinks />
                     </ConditionalRender>
@@ -173,6 +173,4 @@ const Component = () => {
     );
 };
 
-const MeetingView = memo(Component);
-
-export default MeetingView;
+export const MeetingView = memo(Component);

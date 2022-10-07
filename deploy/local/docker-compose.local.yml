@@ -9,7 +9,7 @@ networks:
 
 services:
   mongo:
-    container_name: liveoffice_mongo
+    container_name: mongodb
     image: mongo:5.0
     command: [ "--replSet", "rs0", "--bind_ip_all" ]
     hostname: mongo
@@ -26,7 +26,7 @@ services:
       - '127.0.0.1:56100:27017'
 
   rabbit:
-    container_name: liveoffice_rabbit
+    container_name: rabbitmq
     image: rabbitmq:3.10.7-management
     restart: always
     hostname: rabbitmq
@@ -41,31 +41,32 @@ services:
       - liveoffice_local
 
   livekit-service:
+    container_name: livekit-service
     build:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile.dev
       args:
         - LIVEKIT_IP=127.0.0.1
+    restart: always
     ports:
       - "7880:7880"
       - "7881:7881"
       - "7882:7882/udp"
-    restart: always
     networks:
       - liveoffice_local
 
   frontend-service:
-    container_name: liveoffice_frontend
+    container_name: frontend-service
     build:
       context: ../../services/frontend-service
       dockerfile: Dockerfile.dev
       args:
         - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
-    depends_on:
-      - gateway-service
     ports:
       - '8000:8000'
     environment:
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service
       - FRONTEND_URL=http://localhost:8000
@@ -77,8 +78,9 @@ services:
       - MEETING_SOCKET_URL=ws://localhost:8180
       - DEFAULT_SERVER_IP=localhost
       - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
-      - STRIPE_PUBLIC_API_KEY=pk_test_51L8KoiAe6q1d3oOzzjO5EvRVIqH2I9bZf9ea2HS8WacaUnI7M0C8i1ZQtufjqWdmpnexm5nDQJOIR6JIPCjefYCw00pNjB9Uss
+      - STRIPE_PUBLIC_API_KEY=pk_test_51Lj5RzA8qS7v6KtFb4bkA0G60cMp7LYVPYZzLpv6OiWHptom6UcUJgfYJph5DAhiLCXs6WlxKaWqGWdKv3stMXBY00yZ9J8PjX
       - BASE_ENV_DOMAIN=liveoffice.forasoft.com
+      - SUPPORT_EMAIL
     volumes:
       - ../../services/frontend-service/pages:/app/pages
       - ../../services/frontend-service/src:/app/src
@@ -87,14 +89,14 @@ services:
       - liveoffice_local
 
   gateway-service:
-    container_name: liveoffice_gateway
+    container_name: gateway-service
     build:
       context: ../../services
       dockerfile: ./gateway-service/Dockerfile.dev
     ports:
       - '3000:3000'
     environment:
-      WAIT_HOSTS: config-service:4000
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/gateway-service/src:/app/gateway-service/src
@@ -104,12 +106,13 @@ services:
       - liveoffice_local
 
   core-service:
-    container_name: liveoffice_core
+    container_name: core-service
     build:
       context: ../../services
       dockerfile: ./core-service/Dockerfile.dev
-    depends_on:
-      - config-service
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/core-service/src:/app/core-service/src
       - ../../services/shared:/app/shared
@@ -119,12 +122,13 @@ services:
       - liveoffice_local
 
   auth-service:
-    container_name: liveoffice_auth
+    container_name: auth-service
     build:
       context: ../../services
       dockerfile: ./auth-service/Dockerfile.dev
-    depends_on:
-      - config-service
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/auth-service/src:/app/auth-service/src
       - ../../services/shared:/app/shared
@@ -133,12 +137,13 @@ services:
       - liveoffice_local
 
   notifications-service:
-    container_name: liveoffice_notifications
+    container_name: notifications-service
     build:
       context: ../../services
       dockerfile: ./notifications-service/Dockerfile.dev
-    depends_on:
-      - config-service
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/notifications-service:/app/notifications-service
       - ../../services/shared:/app/shared
@@ -147,16 +152,14 @@ services:
       - liveoffice_local
 
   socket-service:
-    container_name: liveoffice_socket
+    container_name: socket-service
     build:
       context: ../../services
       dockerfile: ./socket-service/Dockerfile.dev
-    depends_on:
-      - config-service
     ports:
       - "8080:8080"
     environment:
-      WAIT_HOSTS: config-service:4000
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/socket-service/src:/app/socket-service/src
@@ -166,16 +169,14 @@ services:
       - liveoffice_local
 
   meeting-socket-service:
-    container_name: liveoffice_meeting-socket-service
+    container_name: meeting-socket-service
     build:
       context: ../../services
       dockerfile: ./meeting-socket-service/Dockerfile.dev
-    depends_on:
-      - config-service
     ports:
       - "8180:8180"
     environment:
-      WAIT_HOSTS: config-service:4000
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/meeting-socket-service/src:/app/meeting-socket-service/src
@@ -185,14 +186,12 @@ services:
       - liveoffice_local
 
   payment-service:
-    container_name: liveoffice_payment
+    container_name: payment-service
     build:
       context: ../../services
       dockerfile: ./payment-service/Dockerfile.dev
-    depends_on:
-      - config-service
     environment:
-      WAIT_HOSTS: config-service:4000
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     ports:
       - "5000:5000"
@@ -204,17 +203,12 @@ services:
       - liveoffice_local
 
   media-server-service:
-    container_name: liveoffice_media-server-service
+    container_name: media-server-service
     build:
       context: ../../services/
       dockerfile: ./media-server-service/Dockerfile.dev
-    depends_on:
-      - config-service
-      - livekit-service
-    links:
-      - livekit-service
     environment:
-      WAIT_HOSTS: config-service:4000
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/media-server-service/src:/app/media-server-service/src
@@ -224,13 +218,12 @@ services:
       - liveoffice_local
 
   scaling-service:
+    container_name: scaling-service
     build:
       context: ../../services
       dockerfile: ./scaling-service/Dockerfile.dev
-    depends_on:
-      - config-service
     environment:
-      WAIT_HOSTS: config-service:4000
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     volumes:
       - ../../services/scaling-service/src:/app/scaling-service/src
@@ -240,7 +233,7 @@ services:
       - liveoffice_local
 
   config-service:
-    container_name: liveoffice_config
+    container_name: config-service
     build:
       context: ../../services
       dockerfile: ./config-service/Dockerfile.dev
@@ -285,6 +278,7 @@ services:
       - EMAIL_SERVICE
       - SUPPORT_SCALING
       - NUMBER_OF_ACTIVE_SERVERS
+      - SUPPORT_EMAIL
     depends_on:
       - mongo
       - rabbit

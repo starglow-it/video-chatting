@@ -54,10 +54,10 @@ const Component = ({
     const messageRef = useRef<HTMLDivElement | null>(null);
     const replaceRef = useRef<HTMLDivElement | null>(null);
 
-    const freeTemplates = useStoreMap<EntityList<UserTemplate>, UserTemplate[], []>({
+    const freeTemplates = useStoreMap<EntityList<UserTemplate>, UserTemplate[], [string]>({
         store: $profileTemplatesStore,
-        keys: [],
-        fn: state => state?.list.filter(template => template.type === 'free'),
+        keys: [profile.id],
+        fn: (state, [profileId]) => state?.list.filter(template => template.type === 'free' && template.author !== profileId),
     });
 
     const {

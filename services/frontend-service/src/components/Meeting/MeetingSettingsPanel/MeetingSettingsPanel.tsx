@@ -33,7 +33,7 @@ import styles from './MeetingSettingsPanel.module.scss';
 // validations
 import { companyNameSchema } from '../../../validation/users/companyName';
 import { emailSchema } from '../../../validation/users/email';
-import { simpleStringSchema } from '../../../validation/common';
+import { simpleStringSchema, simpleStringSchemaWithLength } from '../../../validation/common';
 import { businessCategoriesSchema } from '../../../validation/users/businessCategories';
 import { languagesSchema } from '../../../validation/users/languagesSchema';
 import { fullNameSchema } from '../../../validation/users/fullName';
@@ -68,7 +68,7 @@ const validationSchema = yup.object({
     contactEmail: emailSchema(),
     fullName: fullNameSchema().required('required'),
     position: simpleStringSchema(),
-    description: simpleStringSchema(),
+    description: simpleStringSchemaWithLength(300),
     businessCategories: businessCategoriesSchema(),
     languages: languagesSchema(),
     signBoard: simpleStringSchema(),

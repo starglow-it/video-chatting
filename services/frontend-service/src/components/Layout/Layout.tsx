@@ -17,8 +17,8 @@ import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 
 // components
 import { AuthenticationLink } from '@components/AuthenticationLink/AuthenticationLink';
-import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
-import { TimeLimitWarning } from '@components/TimeLimitWarning/TimeLimitWarning';
+// import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
+// import { TimeLimitWarning } from '@components/TimeLimitWarning/TimeLimitWarning';
 import { Footer } from '@components/Footer/Footer';
 
 // types
@@ -33,7 +33,12 @@ import {
 } from '../../store';
 
 // const
-import { createRoomRoute, dashboardRoute, editRoomRoute, roomRoute } from '../../const/client-routes';
+import {
+    createRoomRoute,
+    dashboardRoute,
+    editRoomRoute,
+    roomRoute,
+} from '../../const/client-routes';
 
 // styles
 import styles from './Layout.module.scss';
@@ -47,6 +52,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const router = useRouter();
 
     const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(router.pathname);
+    const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
 
     const shouldShowFooter = useMemo(
         () => !ROUTES_WITHOUT_FOOTER.find(route => new RegExp(`${route}`).test(router.pathname)),
@@ -55,7 +61,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
     useEffect(() => {
         (async () => {
-            if (isDashboardRoute) {
+            if (isDashboardRoute || isRoomRoute) {
                 initiateSocketConnectionEvent();
             }
         })();
@@ -79,13 +85,13 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                 [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
             })}
         >
-            <ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
-                <TimeLimitNotification />
-            </ConditionalRender>
+            {/* <ConditionalRender condition={isMeetingRoute || isDashboardRoute}> */}
+            {/*    <TimeLimitNotification /> */}
+            {/* </ConditionalRender> */}
 
-            <ConditionalRender condition={isMeetingRoute}>
-                <TimeLimitWarning />
-            </ConditionalRender>
+            {/* <ConditionalRender condition={isMeetingRoute}> */}
+            {/*    <TimeLimitWarning /> */}
+            {/* </ConditionalRender> */}
 
             <CustomGrid
                 container

@@ -5,7 +5,7 @@ import clsx from 'clsx';
 // types
 import { CustomVideoPlayerProps } from '@library/custom/CustomVideoPlayer/types';
 
-const Component = ({ options, className }: CustomVideoPlayerProps) => {
+const Component = ({ isPlaying, isMuted, volume, options, className }: CustomVideoPlayerProps) => {
     const videoRef = React.useRef(null);
     const playerRef = React.useRef(null);
 
@@ -31,7 +31,31 @@ const Component = ({ options, className }: CustomVideoPlayerProps) => {
         }
     }, [options]);
 
-    React.useEffect(() => {
+    useEffect(() => {
+        const player = playerRef.current;
+
+        player.muted(isMuted);
+    }, [isMuted]);
+
+    useEffect(() => {
+        const player = playerRef.current;
+
+        player.volume(volume);
+    }, [volume]);
+
+    useEffect(() => {
+        const player = playerRef.current;
+
+        if (player) {
+            if (isPlaying) {
+                player.play();
+            } else {
+                player.pause();
+            }
+        }
+    }, [isPlaying]);
+
+    useEffect(() => {
         const player = playerRef.current;
 
         return () => {

@@ -1,1 +1,2 @@
 export const MAX_NOTE_CONTENT = 500;
+export const MAX_CONTACT_US_MESSAGE_LENGTH = 1000;

@@ -20,7 +20,6 @@ import { DashboardNotificationTypes } from '@shared/types/dashboard-notification
 import { ResponseSumType } from '@shared/response/common.response';
 
 import { IDashboardNotification } from '@shared/interfaces/dashboard-notification.interface';
-import { ScalingService } from '../../services/scaling/scaling.service';
 
 @WebSocketGateway({ transports: ['websocket'] })
 @Controller('/dashboard')
@@ -30,7 +29,6 @@ export class DashboardGateway extends BaseGateway {
   constructor(
     private coreService: CoreService,
     private dashboardService: DashboardService,
-    private scalingService: ScalingService,
   ) {
     super();
   }
@@ -85,40 +83,6 @@ export class DashboardGateway extends BaseGateway {
 
       socket.join(`waitingRoom:${message.templateId}`);
     }
-  }
-
-  @SubscribeMessage(DashboardSubscribeEvents.OnCreateMeeting)
-  async waitForServer(
-    @MessageBody() message: { templateId: string },
-    @ConnectedSocket() socket: Socket,
-  ) {
-    this.logger.log(`Wait for available server ${message.templateId}`);
-
-    const template = await this.coreService.findMeetingTemplateById({
-      id: message.templateId,
-    });
-
-    this.scalingService
-      .waitForAvailableServer({
-        templateId: template.id,
-        userId: template.user.id,
-        instanceId: template.meetingInstance.instanceId,
-      })
-      .then(() => {
-        console.log(
-          'emit to room',
-          DashboardEmitEvents.SendAvailableMeetingInstance,
-        );
-        this.emitToRoom(
-          `waitingRoom:${message.templateId}`,
-          DashboardEmitEvents.SendAvailableMeetingInstance,
-          message,
-        );
-      });
-
-    return {
-      success: true,
-    };
   }
 
   @SubscribeMessage(DashboardSubscribeEvents.OnMeetingAvailable)

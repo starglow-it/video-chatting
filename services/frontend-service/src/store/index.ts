@@ -15,6 +15,7 @@ export * from './subscriptions/subscription/model';
 
 export * from './other/routeToChange/model';
 export * from './other/profileAvatarSetUp/model';
+export * from './other/contactUs/init';
 
 export * from './meetings/model';
 
@@ -25,6 +26,7 @@ export * from './ui/window/model';
 export * from './ui/goods/model';
 export * from './ui/orientation/model';
 export * from './ui/model';
+export * from './businessCategories/model';
 
 export * from './socket/init';
 
@@ -51,3 +53,4 @@ export * from './ui/window/init';
 export * from './ui/goods/init';
 export * from './ui/orientation/init';
 export * from './ui/init';
+export * from './businessCategories/init';

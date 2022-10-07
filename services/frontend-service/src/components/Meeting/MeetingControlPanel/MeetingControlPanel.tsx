@@ -32,19 +32,16 @@ import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAv
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
-import {
-    $paymentIntent,
-    cancelPaymentIntentWithData,
-    createPaymentIntentWithData,
-    $profileStore,
-    setIsSideUsersOpenEvent,
-} from '../../../store';
+import { $profileStore, setIsSideUsersOpenEvent } from '../../../store';
 import {
     $isMeetingHostStore,
     $isOwner,
-    $isScreenSharingStore,
+    $isScreenSharingActiveStore,
     $meetingTemplateStore,
     $meetingUsersStore,
+    $paymentIntent,
+    cancelPaymentIntentWithData,
+    createPaymentIntentWithData,
 } from '../../../store/roomStores';
 
 // styles
@@ -59,7 +56,7 @@ const Component = () => {
     const paymentIntent = useStore($paymentIntent);
     const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isScreenSharing = useStore($isScreenSharingStore);
+    const isScreenSharing = useStore($isScreenSharingActiveStore);
     const users = useStore($meetingUsersStore);
 
     const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);

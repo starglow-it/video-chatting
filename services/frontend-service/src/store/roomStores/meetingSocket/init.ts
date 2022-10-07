@@ -2,6 +2,7 @@ import {
     $meetingSocketStore,
     disconnectMeetingSocketEvent,
     initiateMeetingSocketConnectionFx,
+    joinRoomBeforeMeetingSocketEvent,
     meetingSocketEventRequest,
 } from './model';
 
@@ -12,8 +13,10 @@ import { UsersSubscribeEvents } from '../../../const/socketEvents/subscribers';
 
 import { getUsersSocketSubscribeHandler } from './socketSubscribeHandlers';
 
-import { SocketState } from '../../types';
+import { AppDialogsEnum, SocketState } from '../../types';
 import { resetRoomStores } from '../../root';
+import { setMeetingErrorEvent } from '../meeting/meetingError/model';
+import { appDialogsApi } from '../../dialogs/init';
 
 meetingSocketEventRequest.use(handleEmitSocketEvent);
 initiateMeetingSocketConnectionFx.use(handleConnectSocket);
@@ -52,4 +55,11 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             getUsersSocketSubscribeHandler(UsersSubscribeEvents.OnKickUser),
         );
     }
+});
+
+joinRoomBeforeMeetingSocketEvent.failData.watch(data => {
+    setMeetingErrorEvent(data);
+    appDialogsApi.openDialog({
+        dialogKey: AppDialogsEnum.meetingErrorDialog,
+    });
 });

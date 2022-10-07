@@ -6,6 +6,7 @@ import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 
 // store
 import {
@@ -29,9 +30,12 @@ const Component = () => {
     const deleteProfileTemplateId = useStore($deleteProfileTemplateId);
     const profileTemplateToDelete = useStore($profileTemplateStore);
     const profile = useStore($profileStore);
+    const isGetProfileTemplatePending = useStore(getProfileTemplateFx.pending);
 
     useEffect(() => {
-        getProfileTemplateFx({ templateId: deleteProfileTemplateId });
+        if (deleteProfileTemplateId) {
+            getProfileTemplateFx({ templateId: deleteProfileTemplateId });
+        }
     }, [deleteProfileTemplateId]);
 
     const handleClose = useCallback(() => {
@@ -48,6 +52,19 @@ const Component = () => {
         await deleteProfileTemplateFx({ templateId: deleteProfileTemplateId });
     }, [deleteProfileTemplateId]);
 
+    if (isGetProfileTemplatePending) {
+        return (
+            <CustomDialog
+                open={deleteTemplateDialog}
+                contentClassName={styles.content}
+                onBackdropClick={handleClose}
+                onClose={handleClose}
+            >
+                <WiggleLoader />
+            </CustomDialog>
+        );
+    }
+
     return (
         <CustomDialog
             open={deleteTemplateDialog}
@@ -62,10 +79,12 @@ const Component = () => {
                     translation="deleteTemplate.title"
                 />
 
-                { (profile.id === profileTemplateToDelete.author) && profileTemplateToDelete.isPublic ? (
+                {profile.id === profileTemplateToDelete?.author &&
+                profileTemplateToDelete.isPublic ? (
                     <CustomTypography
                         nameSpace="templates"
                         translation="deleteTemplate.textPublicTemplate"
+                        variant="body2"
                         className={styles.text}
                     />
                 ) : (
@@ -86,6 +105,7 @@ const Component = () => {
                         onClick={handleDeleteTemplate}
                         nameSpace="common"
                         translation="buttons.delete"
+                        variant="custom-danger"
                     />
                 </CustomGrid>
             </CustomGrid>

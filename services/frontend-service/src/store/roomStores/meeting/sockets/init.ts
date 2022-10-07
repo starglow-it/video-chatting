@@ -13,7 +13,7 @@ import {
     emitEnterWaitingRoom,
     endMeetingSocketEvent,
     enterMeetingRequestSocketEvent,
-    joinMeetingSocketEvent,
+    joinWaitingRoomSocketEvent,
     leaveMeetingSocketEvent,
     startMeetingSocketEvent,
     updateMeetingSocketEvent,
@@ -57,12 +57,12 @@ export const sendEnterWaitingRoomSocketEvent = attach({
     }),
 });
 
-export const sendJoinMeetingEventSocketEvent = attach<
+export const sendJoinWaitingRoomSocketEvent = attach<
     void,
     Store<{ profile: Profile; template: UserTemplate; localUser: MeetingUser }>,
-    typeof joinMeetingSocketEvent
+    typeof joinWaitingRoomSocketEvent
 >({
-    effect: joinMeetingSocketEvent,
+    effect: joinWaitingRoomSocketEvent,
     source: combine({
         profile: $profileStore,
         template: $meetingTemplateStore,
@@ -165,7 +165,7 @@ export const sendUpdateMeetingTemplateSocketEvent = attach<
 });
 
 sample({
-    clock: sendJoinMeetingEventSocketEvent.doneData,
+    clock: sendJoinWaitingRoomSocketEvent.doneData,
     source: combine({ meetingTemplate: $meetingTemplateStore, isOwner: $isOwner }),
     filter: source => source.isOwner,
     fn: source => ({
@@ -206,15 +206,11 @@ const handleMeetingEventsError = (data: string) => {
     });
 };
 
-joinMeetingSocketEvent.failData.watch(handleMeetingEventsError);
+joinWaitingRoomSocketEvent.failData.watch(handleMeetingEventsError);
 enterMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
 answerAccessMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
-joinMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
-startMeetingSocketEvent.doneData.watch((data: JoinMeetingResult) => {
-    if (data?.user) updateLocalUserEvent(data?.user);
-    if (data?.meeting) updateMeetingEvent({ meeting: data?.meeting });
-    if (data?.users) updateMeetingUsersEvent({ users: data?.users });
-});
+joinWaitingRoomSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+startMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 cancelAccessMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);

@@ -28,7 +28,7 @@ import { MicIcon } from '@library/icons/MicIcon';
 import { $isGoodsVisible, appDialogsApi, toggleIsGoodsVisible } from '../../../store';
 import {
     $isMeetingHostStore,
-    $isScreenSharingStore,
+    $isScreenSharingActiveStore,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
@@ -48,7 +48,7 @@ const Component = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
-    const isSharingActive = useStore($isScreenSharingStore);
+    const isSharingActive = useStore($isScreenSharingActiveStore);
     const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
