@@ -12,4 +12,5 @@ export const DEFAULT_TEMPLATE_DATA: Omit<ICommonTemplate, 'templateId'> = {
     isAudioAvailable: true,
     draft: true,
     isPublic: false,
+    templateType: 'video',
 }

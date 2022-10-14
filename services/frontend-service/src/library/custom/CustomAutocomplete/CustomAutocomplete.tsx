@@ -35,7 +35,7 @@ const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) 
         <Controller
             name={name}
             control={control}
-            render={({ field: { value, onChange } }) => (
+            render={({ field: { value, onChange, ...restField } }) => (
                 <Autocomplete
                     classes={{
                         root: styles.root,
@@ -58,6 +58,8 @@ const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) 
                     }}
                     filterOptions={filterOptions}
                     {...props}
+                    value={value}
+                    {...restField}
                 />
             )}
         />

@@ -1,7 +1,7 @@
 import { generateFormData } from '../../../utils/form/generateFormData';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { ErrorState, UserTemplate } from '../../types';
-import { updateTemplateUrl } from '../../../utils/urls';
+import { updateUserTemplateUrl } from '../../../utils/urls';
 import { UploadUserTemplateFilePayload, UploadUserTemplateFileResponse } from '../types';
 
 export const handleUploadUserTemplateFile = async (
@@ -10,7 +10,7 @@ export const handleUploadUserTemplateFile = async (
     const formData = generateFormData(data);
 
     const response = await sendRequestWithCredentials<UserTemplate, ErrorState>({
-        ...updateTemplateUrl,
+        ...updateUserTemplateUrl({ templateId: data.templateId }),
         data: formData,
     });
 

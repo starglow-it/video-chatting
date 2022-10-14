@@ -56,4 +56,8 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   isPublic: boolean;
+
+  @Expose()
+  @ApiProperty()
+  templateType: 'video' | 'image';
 }

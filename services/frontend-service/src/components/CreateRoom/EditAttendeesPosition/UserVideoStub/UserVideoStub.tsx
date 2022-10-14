@@ -72,11 +72,14 @@ const Component = ({
     );
 
     useLayoutEffect(() => {
+        const xPosition = width * position.left - (contentRef.current?.clientWidth ?? 0) / 2;
+        const yPosition = height * position.top - (contentRef.current?.clientHeight ?? 0) / 2;
+
         setDraggablePosition({
-            x: (width / 100) * position.left - (contentRef.current?.clientWidth ?? 0) / 2,
-            y: (height / 100) * position.top - (contentRef.current?.clientHeight ?? 0) / 2,
+            x: xPosition,
+            y: yPosition,
         });
-    }, []);
+    }, [width, height]);
 
     const tooltipTitle = useMemo(
         () => (

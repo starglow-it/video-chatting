@@ -63,6 +63,7 @@ export interface Template {
     languages: Language[];
     socials: SocialLink[];
     author?: string;
+    templateType: 'video' | 'image';
 }
 
 export type Profile = {
@@ -370,7 +371,7 @@ export type EmitSocketEventResponse = {
 
 export type UploadTemplateFile = {
     file?: File;
-    id: string;
+    templateId: string;
     businessCategories: string[];
     previewUrls: string[];
 };

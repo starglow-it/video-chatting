@@ -126,6 +126,13 @@ export class CommonTemplate {
     default: true,
   })
   isPublic: boolean;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true,
+    default: 'video',
+  })
+  templateType: 'image' | 'video';
 }
 
 export type CommonTemplateDocument = CommonTemplate & Document;

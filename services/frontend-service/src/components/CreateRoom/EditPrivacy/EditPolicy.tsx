@@ -1,6 +1,10 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+// hooks
+import { useLocalization } from '@hooks/useTranslation';
+import { useNavigation } from '@hooks/useNavigation';
+
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
@@ -15,9 +19,10 @@ import { OptionItem } from '@components/CreateRoom/EditPrivacy/OptionItem/Option
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { LockIcon } from '@library/icons/LockIcon';
 import { PeopleIcon } from '@library/icons/PeopleIcon';
+import { RoundInfoIcon } from '@library/icons/RoundIcons/RoundInfoIcon';
 
-// hooks
-import { useNavigation } from '@hooks/useNavigation';
+// const
+import frontendConfig from '../../../const/config';
 
 // styles
 import styles from './EditPrivacy.module.scss';
@@ -29,6 +34,8 @@ const options = [
 
 const Component = ({ onNextStep, onPreviousStep }: EditPrivacyProps) => {
     const { setValue, watch } = useFormContext();
+
+    const { translation } = useLocalization('createRoom');
 
     const { activeTab, onChange } = useNavigation({ tabs: options });
 
@@ -61,6 +68,15 @@ const Component = ({ onNextStep, onPreviousStep }: EditPrivacyProps) => {
         [options, activeTab, handleChangeActiveOption],
     );
 
+    const textWithLinks = useMemo(
+        () =>
+            translation(`editPrivacy.link`, {
+                termsLink: `${frontendConfig.frontendUrl}/terms`,
+                privacyLink: `${frontendConfig.frontendUrl}/privacy`,
+            }),
+        [],
+    );
+
     return (
         <CustomGrid container className={styles.wrapper}>
             <CustomPaper variant="black-glass" className={styles.paper}>
@@ -72,6 +88,15 @@ const Component = ({ onNextStep, onPreviousStep }: EditPrivacyProps) => {
                         translation="editPrivacy.title"
                     />
                     {optionItems}
+                </CustomGrid>
+                <CustomGrid container alignItems="center" className={styles.policiesLink}>
+                    <RoundInfoIcon width="24px" height="24px" />
+                    <CustomTypography
+                        variant="body2"
+                        dangerouslySetInnerHTML={{
+                            __html: textWithLinks,
+                        }}
+                    />
                 </CustomGrid>
             </CustomPaper>
 

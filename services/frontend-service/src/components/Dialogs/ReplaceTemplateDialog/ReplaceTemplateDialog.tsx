@@ -57,7 +57,10 @@ const Component = ({
     const freeTemplates = useStoreMap<EntityList<UserTemplate>, UserTemplate[], [string]>({
         store: $profileTemplatesStore,
         keys: [profile.id],
-        fn: (state, [profileId]) => state?.list.filter(template => template.type === 'free' && template.author !== profileId),
+        fn: (state, [profileId]) =>
+            state?.list.filter(
+                template => template.type === 'free' && template.author !== profileId,
+            ),
     });
 
     const {

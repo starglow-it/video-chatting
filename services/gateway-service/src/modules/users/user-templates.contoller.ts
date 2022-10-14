@@ -6,10 +6,19 @@ import {
   Logger,
   Param,
   Post,
+  Put,
   Req,
+  Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 
 // dtos
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
@@ -28,6 +37,9 @@ import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { parseDateObject } from '../../utils/dateHelpers/parseDateObject';
 import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
 import { emailTemplates } from '@shared/const/email-templates.const';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { IUpdateTemplate } from '@shared/interfaces/update-template.interface';
+import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 
 @Controller('users/templates')
 export class UserTemplateController {
@@ -68,6 +80,143 @@ export class UserTemplateController {
       this.logger.error(
         {
           message: `An error occurs, while get profile template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:templateId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update Template' })
+  @ApiOkResponse({
+    description: 'Update Template',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      preservePath: true,
+    }),
+  )
+  async updateUserTemplate(
+    @Request() req,
+    @Param('templateId') templateId: string,
+    @Body() templateData: Partial<IUpdateTemplate>,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      if (!templateId) {
+        return {
+          success: false,
+        };
+      }
+
+      let userTemplate = await this.templatesService.getUserTemplate({
+        id: templateId,
+      });
+
+      if (file) {
+        const { fileName, extension } = getFileNameAndExtension(
+          file.originalname,
+        );
+
+        const uploadKey = `templates/videos/${templateId}/${fileName}.${extension}`;
+
+        await this.uploadService.deleteFolder(`templates/videos/${templateId}`);
+
+        let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
+
+        if (!/^https:\/\/*/.test(url)) {
+          url = `https://${url}`;
+        }
+
+        await this.coreService.uploadTemplateFile({
+          url,
+          id: templateId,
+          mimeType: file.mimetype,
+        });
+      }
+
+      if (Object.keys(templateData).length > 1) {
+        userTemplate = await this.templatesService.updateUserTemplate({
+          templateId,
+          userId: req.user.userId,
+          data: templateData,
+        });
+
+        return {
+          success: true,
+          result: userTemplate,
+        };
+      }
+
+      return {
+        success: true,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while update template`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/add/:templateId')
+  @ApiOperation({ summary: 'Add Template to user' })
+  @ApiOkResponse({
+    description: 'Add template to user',
+  })
+  async addTemplateToUser(@Req() req, @Param('templateId') templateId: string) {
+    try {
+      if (templateId) {
+        const template = await this.templatesService.getCommonTemplateById({
+          id: templateId,
+        });
+
+        if (template) {
+          let userTemplate =
+            await this.templatesService.getUserTemplateByTemplateId({
+              id: template.templateId,
+              userId: req.user.userId,
+            });
+
+          if (!userTemplate) {
+            userTemplate = await this.coreService.addTemplateToUser({
+              templateId: template.id,
+              userId: req.user.userId,
+            });
+          }
+
+          return {
+            success: true,
+            result: userTemplate,
+          };
+        }
+
+        return {
+          success: false,
+          result: null,
+        };
+      }
+
+      return {
+        success: false,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while add template to user`,
         },
         JSON.stringify(err),
       );

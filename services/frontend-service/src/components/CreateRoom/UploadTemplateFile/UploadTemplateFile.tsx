@@ -229,7 +229,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 </CustomGrid>
             </ConditionalRender>
 
-            <ConditionalRender condition={background || url}>
+            <ConditionalRender condition={Boolean(background) || Boolean(url)}>
                 <CustomGrid
                     container
                     gap={1.5}

@@ -41,6 +41,7 @@ import {
     $profileTemplatesStore,
     $skipProfileTemplates,
     $templatesStore,
+    addTemplateToUserFx,
     appDialogsApi,
     createMeetingFx,
     deleteProfileTemplateFx,
@@ -79,7 +80,10 @@ const Component = () => {
     const freeTemplatesCount = useStoreMap({
         store: $profileTemplatesStore,
         keys: [profile.id],
-        fn: (state, [profileId]) => state?.list?.filter(template => template.type === 'free' && template.author !== profileId)?.length || 0,
+        fn: (state, [profileId]) =>
+            state?.list?.filter(
+                template => template.type === 'free' && template.author !== profileId,
+            )?.length || 0,
     });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
@@ -153,7 +157,11 @@ const Component = () => {
                 return;
             }
 
-            await handleCreateMeeting({ templateId });
+            const newTemplate = await addTemplateToUserFx({ templateId });
+
+            if (newTemplate) {
+                await handleCreateMeeting({ templateId: newTemplate.id });
+            }
         },
         [templates, profile.maxTemplatesNumber, freeTemplatesCount, handleCreateMeeting],
     );
@@ -190,7 +198,7 @@ const Component = () => {
         [handleCreateMeeting],
     );
 
-    const handleCreateRoomClick = useCallback(() => {
+    const handleCreateRoom = useCallback(() => {
         if (isBusinessSubscription || isProfessionalSubscription) {
             router.push(createRoomRoute);
             return;
@@ -276,7 +284,7 @@ const Component = () => {
                         nameSpace="templates"
                         translation="createRoom"
                         size="medium"
-                        onClick={handleCreateRoomClick}
+                        onClick={handleCreateRoom}
                         icon={<PlusIcon width="24px" height="24px" />}
                         className={styles.createRoomButton}
                     />
@@ -318,7 +326,7 @@ const Component = () => {
                         nameSpace="templates"
                         translation="createRoom"
                         size="medium"
-                        onClick={handleCreateRoomClick}
+                        onClick={handleCreateRoom}
                         icon={<PlusIcon width="24px" height="24px" />}
                         className={styles.createRoomButton}
                     />

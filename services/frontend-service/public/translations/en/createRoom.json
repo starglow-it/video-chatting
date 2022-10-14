@@ -31,7 +31,7 @@
     "form": {
       "nameAndAttendees": "Name & Attendees",
       "description": "Description",
-      "tags": "Tags (up to 6)",
+      "tags": "Tags (Up to 6)",
       "link": "Custom link"
     }
   },
@@ -53,7 +53,8 @@
       "availability": "the Room will be available for everyone in The Live Office library",
       "editable": "once created, you will not be able to edit the Room",
       "changePrivacyPossibility": "once created, you will not be able to make the Room private"
-    }
+    },
+    "link": "Please be respectful of our <a href=\"{{termsLink}}\" target=\"_blank\">Terms</a>. Public rooms must be <a href=\"{{privacyLink}}\" target=\"_blank\">safe for work</a>"
   },
   "preview": {
     "about": "About this room:",

@@ -10,7 +10,7 @@ export type GetUserTemplatesPayload = {
   limit: number;
 };
 export type GetUserTemplatePayload = { id: IUserTemplate["id"] };
-export type GetCommonTemplatePayload = { id: ICommonTemplate["id"] };
+export type GetCommonTemplatePayload = Partial<ICommonTemplate>;
 export type GetUserTemplateByTemplateIdPayload = {
   id: ICommonTemplate["templateId"];
   userId: ICommonUserDTO["id"];
@@ -21,7 +21,7 @@ export type GetUserTemplateByIdPayload = {
 export type UpdateUserTemplatePayload = {
   templateId: IUserTemplate["id"];
   userId: ICommonUserDTO["id"];
-  data: IUpdateTemplate;
+  data: Partial<IUpdateTemplate>;
 };
 
 export type CreateUserTemplateByIdPayload = {
@@ -37,7 +37,6 @@ export type GetUsersTemplatesPayload = {
 
 export type DeleteUsersTemplatesPayload = { templateId: IUserTemplate["id"], userId: ICommonUserDTO["id"] };
 export type AddTemplateToUserPayload = {
-  productId: string;
-  customerId: string;
-  sessionId: string;
+  templateId: string;
+  userId: string;
 };

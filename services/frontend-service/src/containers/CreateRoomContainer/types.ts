@@ -12,7 +12,6 @@ export interface IUploadTemplateFormData {
     description: string;
     url: string;
     previewUrls: PreviewImage[];
-    templateId: string;
     customLink: string;
     tags: string[];
     participantsNumber: number;

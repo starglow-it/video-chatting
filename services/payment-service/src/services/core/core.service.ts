@@ -5,7 +5,10 @@ import { CORE_PROVIDER } from '@shared/providers';
 import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
 import { TemplateBrokerPatterns } from '@shared/patterns/templates';
 import { UserBrokerPatterns } from '@shared/patterns/users';
-import { AddTemplateToUserPayload } from '@shared/broker-payloads/templates';
+import {
+  AddTemplateToUserPayload,
+  GetCommonTemplatePayload,
+} from '@shared/broker-payloads/templates';
 import {
   FindUserPayload,
   UpdateUserPayload,
@@ -27,6 +30,22 @@ export class CoreService {
 
   async findUser(payload: FindUserPayload): Promise<ICommonUserDTO> {
     const pattern = { cmd: UserBrokerPatterns.FindUser };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async getCommonTemplateById(
+    payload: GetCommonTemplatePayload,
+  ): Promise<ICommonUserDTO> {
+    const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplateById };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async getCommonTemplate(
+    payload: GetCommonTemplatePayload,
+  ): Promise<ICommonUserDTO> {
+    const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
 
     return this.client.send(pattern, payload).toPromise();
   }

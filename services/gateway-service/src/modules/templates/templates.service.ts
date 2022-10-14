@@ -29,10 +29,10 @@ export class TemplatesService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-  async getCommonTemplate(
+  async getCommonTemplateById(
     payload: GetCommonTemplatePayload,
   ): Promise<ICommonTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
+    const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplateById };
 
     return this.coreService.sendCustom(pattern, payload);
   }

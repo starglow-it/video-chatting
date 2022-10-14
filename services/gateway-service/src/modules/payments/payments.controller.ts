@@ -440,7 +440,7 @@ export class PaymentsController {
   ) {
     try {
       if (templateId) {
-        const template = await this.templateService.getCommonTemplate({
+        const template = await this.templateService.getCommonTemplateById({
           id: templateId,
         });
 

@@ -6,6 +6,7 @@ export enum TemplateBrokerPatterns {
   GetUserTemplateById = "get_user_template_by_id",
   GetUserTemplates = "get_user_templates",
   GetCommonTemplate = "get_common_template",
+  GetCommonTemplateById = "get_common_template_by_id",
   UpdateUserTemplate = "update_user_template",
   GetUsersTemplates = "get_users_templates",
   DeleteUsersTemplates = "delete_users_templates",

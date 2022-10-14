@@ -24,12 +24,12 @@ import { ConfigClientService } from '../../services/config/config.service';
 
 // payloads
 import {
-  GetMeetingPayload,
   AssignMeetingInstancePayload,
-  UpdateMeetingInstancePayload,
-  GetMeetingInstancePayload,
   CreateMeetingInstancePayload,
   DeleteMeetingInstancePayload,
+  GetMeetingInstancePayload,
+  GetMeetingPayload,
+  UpdateMeetingInstancePayload,
 } from '@shared/broker-payloads/meetings';
 
 @Controller('meetings')
@@ -76,8 +76,10 @@ export class MeetingsController {
   @MessagePattern({ cmd: MeetingBrokerPatterns.GetMeetingInstance })
   async getMeetingInstances(@Payload() payload: GetMeetingInstancePayload) {
     return withTransaction(this.connection, async (session) => {
+      const query = { ...payload, serverIp: { $ne: this.defaultServerIp } };
+
       const meetingInstances = await this.meetingsService.find({
-        query: payload,
+        query,
         session,
       });
 

@@ -16,14 +16,14 @@ import { MeetingBackgroundVideoProps } from './types';
 import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
-    $isScreenSharingActiveStore,
+    $isScreenSharingStore,
 } from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingBackgroundVideo.module.scss';
 
 const Component = ({ children, src }: MeetingBackgroundVideoProps) => {
-    const isScreenSharing = useStore($isScreenSharingActiveStore);
+    const isScreenSharing = useStore($isScreenSharingStore);
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
 

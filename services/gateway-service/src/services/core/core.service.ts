@@ -30,6 +30,7 @@ import {
 } from '@shared/broker-payloads/meetings';
 import { TemplateBrokerPatterns } from '@shared/patterns/templates';
 import { CoreBrokerPatterns } from '@shared/patterns/core';
+import { AddTemplateToUserPayload } from '@shared/broker-payloads/templates';
 
 @Injectable()
 export class CoreService {
@@ -183,6 +184,14 @@ export class CoreService {
 
   async getBusinessCategories(payload) {
     const pattern = { cmd: CoreBrokerPatterns.GetBusinessCategories };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async addTemplateToUser(
+    payload: AddTemplateToUserPayload,
+  ): Promise<IUserTemplate> {
+    const pattern = { cmd: TemplateBrokerPatterns.AddTemplateToUser };
 
     return this.client.send(pattern, payload).toPromise();
   }

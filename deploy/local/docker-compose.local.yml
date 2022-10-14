@@ -194,7 +194,7 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     ports:
-      - "5000:5000"
+      - "5050:5000"
     volumes:
       - ../../services/payment-service/src:/app/payment-service/src
       - ../../services/shared:/app/shared
@@ -216,21 +216,21 @@ services:
       - /app/media-server-service/dist
     networks:
       - liveoffice_local
-
-  scaling-service:
-    container_name: scaling-service
-    build:
-      context: ../../services
-      dockerfile: ./scaling-service/Dockerfile.dev
-    environment:
-      WAIT_HOSTS: config-service:4000,rabbitmq:5672
-      WAIT_TIMEOUT: 60000
-    volumes:
-      - ../../services/scaling-service/src:/app/scaling-service/src
-      - ../../services/shared:/app/shared
-      - /app/scaling-service/dist
-    networks:
-      - liveoffice_local
+#
+#  scaling-service:
+#    container_name: scaling-service
+#    build:
+#      context: ../../services
+#      dockerfile: ./scaling-service/Dockerfile.dev
+#    environment:
+#      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+#      WAIT_TIMEOUT: 60000
+#    volumes:
+#      - ../../services/scaling-service/src:/app/scaling-service/src
+#      - ../../services/shared:/app/shared
+#      - /app/scaling-service/dist
+#    networks:
+#      - liveoffice_local
 
   config-service:
     container_name: config-service

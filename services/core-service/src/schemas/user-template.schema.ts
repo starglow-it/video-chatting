@@ -216,6 +216,13 @@ export class UserTemplate {
     default: true,
   })
   isPublic: boolean;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true,
+    default: 'video',
+  })
+  templateType: 'video' | 'image';
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

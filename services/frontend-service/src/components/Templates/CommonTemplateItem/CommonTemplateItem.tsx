@@ -37,7 +37,8 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const freeTemplatesCount = useStoreMap({
         store: $profileTemplatesStore,
         keys: [profile.id],
-        fn: (state, [profileId]) => state?.list?.filter(t => t.type === 'free' && t.author !== profileId)?.length || 0,
+        fn: (state, [profileId]) =>
+            state?.list?.filter(t => t.type === 'free' && t.author !== profileId)?.length || 0,
     });
 
     const isTemplatesLimitReached = profile.maxTemplatesNumber <= freeTemplatesCount;

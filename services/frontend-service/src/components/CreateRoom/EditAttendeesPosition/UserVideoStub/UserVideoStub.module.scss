@@ -2,6 +2,10 @@
 @import "../../../../styles/rem";
 
 .wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+
   cursor: pointer;
   width: rem(110px);
   &:hover {

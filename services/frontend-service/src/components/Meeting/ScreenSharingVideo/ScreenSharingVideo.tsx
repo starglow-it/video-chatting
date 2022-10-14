@@ -31,7 +31,12 @@ const Component = ({ videoTrack }: ScreenSharingVideoProps) => {
     }, [videoTrack]);
 
     return (
-        <CustomGrid container justifyContent="center" alignItems="center">
+        <CustomGrid
+            className={styles.videoWrapper}
+            container
+            justifyContent="center"
+            alignItems="center"
+        >
             <video ref={videoContainer} className={styles.video} playsInline muted autoPlay />
         </CustomGrid>
     );

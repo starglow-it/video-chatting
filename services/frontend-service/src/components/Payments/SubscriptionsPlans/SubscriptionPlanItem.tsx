@@ -77,7 +77,7 @@ const Component = (
                     <RoundCheckIcon width="20px" height="20px" />
                 </ListItemIcon>
                 <CustomGrid container direction="column">
-                    <CustomTypography variant="body2">{feature.text}</CustomTypography>
+                    <CustomTypography variant="body1">{feature.text}</CustomTypography>
                     <CustomTypography variant="body2">{feature.subText}</CustomTypography>
                 </CustomGrid>
             </ListItem>

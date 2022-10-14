@@ -11,6 +11,7 @@ import {
     getIceCandidateFx,
     getOfferFx,
     removeConnectionsFx,
+    removePeerConnection,
     startP2PSharingEvent,
     startP2PSharingFx,
     stopP2PSharingEvent,
@@ -74,7 +75,14 @@ $connectionsStore
     .on([removeConnectionsFx.doneData], (state, data) =>
         Object.fromEntries(
             Object.entries(state).filter(
-                ([, connection]) => !data.includes(connection.connection.userId),
+                ([, connection]) => !data.includes(connection.connection.connectionId),
+            ),
+        ),
+    )
+    .on(removePeerConnection, (state, { connectionId }) =>
+        Object.fromEntries(
+            Object.entries(state).filter(
+                ([, connection]) => connectionId !== connection.connection.connectionId,
             ),
         ),
     )
@@ -138,6 +146,7 @@ sample({
             isVideoEnabled: true,
             isAuraActive,
             stream,
+            onDisconnected: removePeerConnection,
         },
     }),
     target: createPeerConnectionFx,
@@ -149,6 +158,7 @@ sample({
     filter: ({ localUser, users, connections, serverType }) =>
         serverType === ServerTypes.P2P &&
         localUser.accessStatus === MeetingAccessStatuses.InMeeting &&
+        !createPeerConnectionFx.pending.getState() &&
         Boolean(
             users.filter(
                 user =>
@@ -190,6 +200,7 @@ sample({
             isVideoEnabled: true,
             isAuraActive,
             stream,
+            onDisconnected: removePeerConnection,
         },
     }),
     target: createPeerConnectionFx,
@@ -244,6 +255,9 @@ sample({
             })),
         options: {
             stream: sharingStream ?? data,
+            onTrackEnded: () => {
+                updateMeetingSocketEvent({ sharingUserId: null })
+            }
         },
     }),
     target: createPeerConnectionFx,
@@ -308,7 +322,8 @@ sample({
 /**
     React to users join meeting during screen sharing
  1. Create publish connections
- 2. Wait for get offer event because peer connections with isInitial set to false. This means that local peer connection will wait for connection trigger
+ 2. Wait for get offer event because peer connections with isInitial set to false.
+    This means that local peer connection will wait for connection trigger
 * */
 sample({
     clock: combine({ isScreenSharing: $isScreenSharingStore, users: $meetingUsersStore }),

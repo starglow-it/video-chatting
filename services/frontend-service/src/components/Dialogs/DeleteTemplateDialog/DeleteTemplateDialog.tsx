@@ -74,7 +74,7 @@ const Component = () => {
         >
             <CustomGrid container direction="column" justifyContent="center" alignItems="center">
                 <CustomTypography
-                    variant="h4"
+                    variant="h4bold"
                     nameSpace="templates"
                     translation="deleteTemplate.title"
                 />
@@ -96,12 +96,14 @@ const Component = () => {
                 )}
                 <CustomGrid container wrap="nowrap" gap={2}>
                     <CustomButton
+                        className={styles.button}
                         variant="custom-cancel"
                         onClick={handleClose}
                         nameSpace="common"
                         translation="buttons.cancel"
                     />
                     <CustomButton
+                        className={styles.button}
                         onClick={handleDeleteTemplate}
                         nameSpace="common"
                         translation="buttons.delete"

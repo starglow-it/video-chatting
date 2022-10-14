@@ -1,3 +1,4 @@
 export const MAX_DESCRIPTION_LENGTH = 200;
 export const MAX_NAME_LENGTH = 60;
 export const MAX_PARTICIPANTS_NUMBER = 10;
+export const MAX_CUSTOM_LINK_LENGTH = 50;

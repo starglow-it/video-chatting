@@ -104,6 +104,81 @@ export class MeetingsGateway
     super();
   }
 
+  async changeUsersPositions({ meetingId, templateId }) {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const users = await this.usersService.findUsers(
+          { meeting: meetingId, accessStatus: AccessStatusEnum.InMeeting },
+          session,
+        );
+
+        const template = await this.coreService.findMeetingTemplateById({
+          id: templateId,
+        });
+
+        const updateUsersPromises = users.map(async (user, index) => {
+          const userPosition = template?.usersPosition?.[index];
+
+          const updateUser = await this.usersService.findOne({
+            query: {
+              _id: user._id,
+            },
+            session,
+          });
+
+          updateUser.userPosition = userPosition;
+
+          return updateUser.save();
+        });
+
+        await Promise.all(updateUsersPromises);
+
+        const meetingUsers = await this.usersService.findUsers(
+          { meeting: meetingId },
+          session,
+        );
+
+        const updatedMeeting = await this.meetingsService.findById(
+          meetingId,
+          session,
+          ['owner', 'users'],
+        );
+
+        if (updatedMeeting) {
+          const plainUsers = plainToInstance(CommonUserDTO, meetingUsers, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          const plainMeeting = plainToClass(CommonMeetingDTO, updatedMeeting, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          this.emitToRoom(
+            `waitingRoom:${templateId}`,
+            MeetingEmitEvents.UpdateMeeting,
+            {
+              meeting: plainMeeting,
+              users: plainUsers,
+            },
+          );
+
+          this.emitToRoom(
+            `meeting:${plainMeeting.id}`,
+            MeetingEmitEvents.UpdateMeeting,
+            {
+              meeting: plainMeeting,
+              users: plainUsers,
+            },
+          );
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async handleDisconnect(client: any) {
     return withTransaction(this.connection, async (session) => {
       this.logger.log(`handleDisconnect event - socketId: ${client.id}`);
@@ -253,68 +328,17 @@ export class MeetingsGateway
           });
         }
 
+        this.taskService.deleteTimeout({
+          name: 'meeting:changeUsersPositions',
+        });
+
         this.taskService.addTimeout({
           name: 'meeting:changeUsersPositions',
           ts: getTimeoutTimestamp({ value: 1, type: TimeoutTypesEnum.Seconds }),
           callback: async () => {
-            return withTransaction(this.connection, async (session) => {
-              const meeting = await this.meetingsService.findById(
-                user?.meeting?._id,
-                session,
-                'users',
-              );
-
-              const updateUsersPromises = meeting.users.map(
-                async (user, index) => {
-                  const userPosition = template?.usersPosition?.[index];
-
-                  const updateUser = await this.usersService.findOne({
-                    query: {
-                      _id: user._id,
-                    },
-                    session,
-                  });
-
-                  updateUser.userPosition = userPosition;
-
-                  return updateUser.save();
-                },
-              );
-
-              await Promise.all(updateUsersPromises);
-
-              const meetingUsers = await this.usersService.findUsers(
-                { meeting: meeting.id },
-                session,
-              );
-
-              const plainUsers = plainToInstance(CommonUserDTO, meetingUsers, {
-                excludeExtraneousValues: true,
-                enableImplicitConversion: true,
-              });
-
-              const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
-                excludeExtraneousValues: true,
-                enableImplicitConversion: true,
-              });
-
-              this.emitToRoom(
-                `waitingRoom:${meeting.templateId}`,
-                MeetingEmitEvents.UpdateMeeting,
-                {
-                  meeting: plainMeeting,
-                  users: plainUsers,
-                },
-              );
-
-              this.emitToRoom(
-                `meeting:${plainMeeting.id}`,
-                MeetingEmitEvents.UpdateMeeting,
-                {
-                  meeting: plainMeeting,
-                  users: plainUsers,
-                },
-              );
+            await this.changeUsersPositions({
+              meetingId: meeting.id,
+              templateId: meeting.templateId,
             });
           },
         });
@@ -1084,64 +1108,25 @@ export class MeetingsGateway
             await meeting.save();
           }
 
-          const updateUsersPromises = meeting.users.map(async (user, index) => {
-            const userPosition = template.usersPosition?.[index];
-
-            return this.usersService.findOneAndUpdate(
-              {
-                _id: user._id,
-              },
-              {
-                userPosition,
-              },
-              session,
-            );
+          this.taskService.addTimeout({
+            name: 'meeting:changeUsersPositions',
+            ts: getTimeoutTimestamp({
+              value: 1,
+              type: TimeoutTypesEnum.Seconds,
+            }),
+            callback: async () => {
+              await this.changeUsersPositions({
+                meetingId: meeting.id,
+                templateId: meeting.templateId,
+              });
+            },
           });
 
-          await Promise.all(updateUsersPromises);
-
-          const meetingUsers = await this.usersService.findUsers(
-            { meeting: meeting.id },
-            session,
-          );
-
-          const plainUsers = plainToInstance(CommonUserDTO, meetingUsers, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
+          this.emitToRoom(`meeting:${meeting.id}`, UserEmitEvents.RemoveUsers, {
+            users: [plainUser.id],
           });
 
-          const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
-
-          this.emitToRoom(
-            `waitingRoom:${meeting.templateId}`,
-            MeetingEmitEvents.UpdateMeeting,
-            {
-              meeting: plainMeeting,
-              users: plainUsers,
-            },
-          );
-
-          this.emitToRoom(
-            `meeting:${plainMeeting.id}`,
-            MeetingEmitEvents.UpdateMeeting,
-            {
-              meeting: plainMeeting,
-              users: plainUsers,
-            },
-          );
-
-          this.emitToRoom(
-            `meeting:${plainMeeting.id}`,
-            UserEmitEvents.RemoveUsers,
-            {
-              users: [plainUser.id],
-            },
-          );
-
-          const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
+          const isMeetingHost = meeting?.hostUserId?._id === plainUser.id;
 
           const profileUser = await this.coreService.findUserById({
             userId: template.user.id,
@@ -1151,7 +1136,7 @@ export class MeetingsGateway
             await this.meetingsCommonService.handleTimeLimit({
               session,
               profileId: profileUser.id,
-              meetingId: plainMeeting.id,
+              meetingId: meeting.id,
               maxProfileTime: profileUser.maxMeetingTime,
               meetingUserId: plainUser.id,
             });
@@ -1186,11 +1171,11 @@ export class MeetingsGateway
               const meetingEndTime = meeting.endsAt - Date.now();
 
               this.taskService.deleteTimeout({
-                name: `meeting:finish:${plainMeeting.id}`,
+                name: `meeting:finish:${meeting.id}`,
               });
 
               this.taskService.addTimeout({
-                name: `meeting:finish:${plainMeeting.id}`,
+                name: `meeting:finish:${meeting.id}`,
                 ts:
                   meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
                 callback: this.endMeeting.bind(this, message, socket),

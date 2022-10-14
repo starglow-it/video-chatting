@@ -21,4 +21,5 @@ export interface ICommonTemplate {
   isAudioAvailable: boolean;
   draft: boolean;
   isPublic: boolean;
+  templateType: 'image' | 'video';
 }

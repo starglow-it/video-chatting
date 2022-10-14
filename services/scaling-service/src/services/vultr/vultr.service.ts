@@ -83,16 +83,17 @@ export class VultrService {
 
   async terminateInstance(instanceId): Promise<void> {
     try {
-      this.logger.debug(`terminate instance with id: ${instanceId}`);
+      if (instanceId) {
+        this.logger.debug(`terminate instance with id: ${instanceId}`);
 
-      await sendHttpRequest({
-        url: getInstanceUrl({ instanceId }),
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-      });
+        await sendHttpRequest({
+          url: getInstanceUrl({ instanceId }),
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+        });
+      }
     } catch (e) {
       this.logger.debug(`error terminating instance with id: ${instanceId}`);
       this.logger.error(e.message);

@@ -29,6 +29,7 @@ import {
   GetCommonTemplatePayload,
   GetCommonTemplatesPayload,
 } from '@shared/broker-payloads/templates';
+import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -82,8 +83,8 @@ export class CommonTemplatesController {
     }
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplate })
-  async getCommonTemplate(
+  @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplateById })
+  async getCommonTemplateById(
     @Payload() { id }: GetCommonTemplatePayload,
   ): Promise<ICommonTemplate> {
     try {
@@ -111,21 +112,47 @@ export class CommonTemplatesController {
     }
   }
 
+  @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplate })
+  async getCommonTemplate(
+    @Payload() payload: GetCommonTemplatePayload,
+  ): Promise<ICommonTemplate> {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const commonTemplate =
+          await this.commonTemplatesService.findCommonTemplate({
+            query: payload,
+            session,
+            populatePaths: [
+              { path: 'businessCategories' },
+              { path: 'previewUrls' },
+            ],
+          });
+
+        return plainToInstance(CommonTemplateDTO, commonTemplate, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
+  }
+
   @MessagePattern({ cmd: TemplateBrokerPatterns.AddTemplateToUser })
   async addTemplateToUser(@Payload() data: AddTemplateToUserPayload) {
     return withTransaction(this.connection, async (session) => {
       const targetTemplate =
         await this.commonTemplatesService.findCommonTemplate({
-          query: { stripeProductId: data.productId },
+          query: { _id: data.templateId },
           session,
         });
 
       const targetUser = await this.usersService.findUser({
         query: {
-          $or: [
-            { stripeSessionId: data.sessionId },
-            { stripeCustomerId: data.customerId },
-          ],
+          userId: data.userId,
         },
         session,
         populatePaths: ['socials', 'languages', 'templates'],
@@ -139,6 +166,7 @@ export class CommonTemplatesController {
         maxParticipants: targetTemplate.maxParticipants,
         previewUrls: targetTemplate.previewUrls,
         type: targetTemplate.type,
+        templateType: targetTemplate.templateType,
         priceInCents: targetTemplate.priceInCents,
         businessCategories: targetTemplate.businessCategories.map(
           (category) => category._id,
@@ -165,6 +193,11 @@ export class CommonTemplatesController {
       targetUser.templates.push(userTemplate);
 
       await targetUser.save();
+
+      return plainToInstance(UserTemplateDTO, userTemplate, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     });
   }
 
@@ -188,6 +221,7 @@ export class CommonTemplatesController {
       },
       data: {
         $set: {
+          templateType: mimeType.includes('image') ? 'image' : 'video',
           draftPreviewUrls: imageIds,
           draftUrl: url,
         },
@@ -215,12 +249,18 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.UpdateTemplate })
   async editTemplate(
     @Payload()
-    templateData: Omit<Partial<ICommonTemplate>, 'businessCategories'> & {
-      businessCategories: string[];
+    {
+      templateId,
+      data,
+    }: {
+      templateId: ICommonTemplate['id'];
+      data: Omit<Partial<ICommonTemplate>, 'businessCategories'> & {
+        businessCategories: string[];
+      };
     },
   ) {
     return withTransaction(this.connection, async (session) => {
-      const { id, businessCategories } = templateData;
+      const { businessCategories, ...restData } = data;
 
       const businessCategoriesPromises = await Promise.all(
         businessCategories?.map(async (category) => {
@@ -243,11 +283,11 @@ export class CommonTemplatesController {
 
       const template = await this.commonTemplatesService.updateCommonTemplate({
         query: {
-          _id: id,
+          _id: templateId,
         },
         data: {
           $set: {
-            ...templateData,
+            ...restData,
             businessCategories: ids,
             draftUrl: '',
             draftPreviewUrls: [],

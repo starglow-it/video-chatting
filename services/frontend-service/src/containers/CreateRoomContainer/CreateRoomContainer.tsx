@@ -6,6 +6,10 @@ import * as yup from 'yup';
 
 // hooks
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
+import { useToggle } from '@hooks/useToggle';
+import { useValueSwitcher } from '@hooks/useValueSwitcher';
+import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import { usePrevious } from '@hooks/usePrevious';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -26,11 +30,6 @@ import { EditAttendeesPosition } from '@components/CreateRoom/EditAttendeesPosit
 import { TemplatePreview } from '@components/CreateRoom/TemplatePreview/TemplatePreview';
 import { EditPolicy } from '@components/CreateRoom/EditPrivacy/EditPolicy';
 
-// hooks
-import { useValueSwitcher } from '@hooks/useValueSwitcher';
-import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
-import { usePrevious } from '@hooks/usePrevious';
-
 // icons
 import { CloseIcon } from '@library/icons/CloseIcon';
 import { ImagePlaceholderIcon } from '@library/icons/ImagePlaceholderIcon';
@@ -39,30 +38,36 @@ import { LockIcon } from '@library/icons/LockIcon';
 
 // const
 import { createRoomRoute, dashboardRoute } from 'src/const/client-routes';
-import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from 'src/const/templates/info';
+import {
+    MAX_CUSTOM_LINK_LENGTH,
+    MAX_DESCRIPTION_LENGTH,
+    MAX_NAME_LENGTH,
+} from 'src/const/templates/info';
 
 // types
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
-import { useToggle } from '@hooks/useToggle';
 import { AppDialogsEnum } from '../../store/types';
 
 // validation
 import { booleanSchema, simpleStringSchemaWithLength } from '../../validation/common';
 import { tagsSchema } from '../../validation/templates/tags';
-import { participantsNumberSchema } from '../../validation/templates/participants';
+import {
+    participantsNumberSchema,
+    participantsPositionsSchema,
+} from '../../validation/templates/participants';
 
 // store
 import {
     $isBusinessSubscription,
     $isProfessionalSubscription,
     $templateDraft,
+    addTemplateToUserFx,
     appDialogsApi,
     clearTemplateDraft,
-    createMeetingFx,
     createTemplateFx,
     editTemplateFx,
-    editUserTemplateFileFx,
+    editUserTemplateFx,
     getEditingTemplateFx,
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -96,7 +101,6 @@ const tabs: ValuesSwitcherItem<number>[] = [
 ];
 
 const defaultValues: IUploadTemplateFormData = {
-    templateId: '',
     name: '',
     url: '',
     previewUrls: [],
@@ -114,9 +118,17 @@ const validationSchema = yup.object({
     participantsNumber: participantsNumberSchema().required('required'),
     tags: tagsSchema(),
     isPublic: booleanSchema().required('required'),
+    customLink: simpleStringSchemaWithLength(MAX_CUSTOM_LINK_LENGTH),
+    participantsPositions: participantsPositionsSchema(),
 });
 
-const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
+const adjustUserPositions = (participantsPositions: { top: number; left: number }[]) =>
+    participantsPositions.map(({ top, left }) => ({
+        bottom: (100 - top) / 100,
+        left: left / 100,
+    }));
+
+const Component = ({ isEditing = false }: { isEditing: boolean }) => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
     const templateDraft = useStore($templateDraft);
@@ -134,7 +146,7 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
         mode: 'onBlur',
     });
 
-    const { control, setValue, trigger, handleSubmit: onSubmit, reset, watch } = methods;
+    const { control, setValue, trigger, handleSubmit: onSubmit, reset } = methods;
 
     const participantsNumber = useWatch({ control, name: 'participantsNumber' });
     const participantsPositions = useWatch({ control, name: 'participantsPositions' });
@@ -179,7 +191,6 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
         }
 
         reset({
-            templateId: templateDraft.id,
             name: templateDraft.name,
             url: templateDraft.url,
             description: templateDraft.description,
@@ -188,8 +199,8 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
             participantsNumber: templateDraft.maxParticipants,
             participantsPositions: templateDraft.usersPosition.length
                 ? templateDraft.usersPosition.map(({ bottom, left }) => ({
-                      top: 100 - bottom,
-                      left,
+                      top: 100 - bottom * 100,
+                      left: left * 100,
                       id: getRandomNumber(10000).toString(),
                   }))
                 : defaultValues.participantsPositions,
@@ -239,16 +250,21 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
             if (!background || !templateDraft?.id) {
                 return;
             }
-            const templateId = watch('templateId');
+
             const response = isEditing
                 ? await uploadUserTemplateFileFx({
-                      templateId,
+                      templateId: templateDraft.id,
                       file: background,
                   })
-                : await uploadTemplateFileFx({ file: background, id: templateDraft.id });
+                : await uploadTemplateFileFx({
+                      file: background,
+                      templateId: templateDraft.id,
+                  });
+
             if (!response) {
                 return;
             }
+
             if (response.draftPreviewUrls) {
                 setValue('previewUrls', response.draftPreviewUrls);
             }
@@ -289,7 +305,7 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
 
             onValueChange(item);
         },
-        [onNextValue, trigger],
+        [onValueChange],
     );
 
     const handleCancelRoomCreation = useCallback(() => {
@@ -305,39 +321,38 @@ const Component = ({ isEditing = false }: { isEditing?: boolean }) => {
     const handleSubmit = useCallback(
         onSubmit(async data => {
             const payload = {
-                id: data.templateId,
                 name: data.name,
                 description: data.description,
                 customLink: data.customLink,
                 isPublic: data.isPublic,
                 maxParticipants: data.participantsNumber,
-                usersPosition: data.participantsPositions.map(({ top, left }) => ({
-                    bottom: (100 - top) / 100,
-                    left: left / 100,
-                })),
+                usersPosition: adjustUserPositions(data.participantsPositions),
                 businessCategories: data.tags,
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls.map(({ id }) => id),
             };
+
             const response = isEditing
-                ? await editUserTemplateFileFx({ templateId: data.templateId, data: payload })
-                : await editTemplateFx(payload);
+                ? await editUserTemplateFx({ templateId: templateDraft?.id!, data: payload })
+                : await editTemplateFx({ templateId: templateDraft?.id!, data: payload });
 
             if (response) {
-                if (isEditing) {
-                    router.push(dashboardRoute);
-                    return;
+                if (!isEditing) {
+                    const userTemplate = await addTemplateToUserFx({
+                        templateId: templateDraft?.id!,
+                    });
+
+                    await editUserTemplateFx({
+                        templateId: userTemplate?.id!,
+                        data: payload,
+                    });
                 }
 
-                const result = await createMeetingFx({ templateId: data.templateId });
-
-                if (result.template) {
-                    router.push(dashboardRoute);
-                }
+                await router.push(dashboardRoute);
             }
         }),
-        [isEditing],
+        [isEditing, templateDraft?.id],
     );
 
     if (isCreateTemplateRequestIsPending) {

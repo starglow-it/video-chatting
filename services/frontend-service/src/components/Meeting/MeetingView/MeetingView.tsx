@@ -35,7 +35,7 @@ import styles from './MeetingView.module.scss';
 import { addNotificationEvent, appDialogsApi, checkIsPortraitLayoutEvent } from '../../../store';
 import {
     $isOwner,
-    $isScreenSharingActiveStore,
+    $isScreenSharingStore,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
@@ -43,6 +43,7 @@ import {
     $meetingUsersStore,
     $serverTypeStore,
     initVideoChatEvent,
+    joinMeetingFx,
     setMeetingConnectedEvent,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
@@ -57,12 +58,13 @@ import { isMobile } from '../../../utils/browser/detectBrowser';
 
 const Component = () => {
     const meeting = useStore($meetingStore);
-    const isScreenSharingActive = useStore($isScreenSharingActiveStore);
+    const isScreenSharingActive = useStore($isScreenSharingStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const serverType = useStore($serverTypeStore);
+    const isJoinMeetingPending = useStore(joinMeetingFx.pending);
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -73,7 +75,11 @@ const Component = () => {
     const prevHostUserId = useRef<string>(meeting.hostUserId);
 
     useEffect(() => {
-        if (hostUser && prevHostUserId.current !== hostUser?.id) {
+        if (
+            hostUser &&
+            prevHostUserId.current !== hostUser?.id &&
+            hostUser?.accessStatus === MeetingAccessStatuses.InMeeting
+        ) {
             prevHostUserId.current = hostUser.id;
 
             addNotificationEvent({
@@ -84,7 +90,7 @@ const Component = () => {
                         : `${hostUser.username} is host now`,
             });
         }
-    }, [hostUser?.id, hostUser?.username, localUser?.id]);
+    }, [hostUser?.id, hostUser?.username, localUser?.id, hostUser?.accessStatus]);
 
     useEffect(() => {
         (async () => {
@@ -92,13 +98,21 @@ const Component = () => {
                 localUser.accessStatus === MeetingAccessStatuses.InMeeting &&
                 meeting.id &&
                 localUser.id &&
-                !isMeetingConnected
+                !isMeetingConnected &&
+                !isJoinMeetingPending
             ) {
                 initVideoChatEvent({ serverType });
                 setMeetingConnectedEvent(true);
             }
         })();
-    }, [localUser.accessStatus, meeting.id, localUser.id, isMeetingConnected, serverType]);
+    }, [
+        localUser.accessStatus,
+        meeting.id,
+        localUser.id,
+        isMeetingConnected,
+        serverType,
+        isJoinMeetingPending,
+    ]);
 
     useEffect(() => {
         if (isMobile()) {
@@ -124,7 +138,9 @@ const Component = () => {
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
-            <MeetingBackgroundVideo src={meetingTemplate.url}>
+            <MeetingBackgroundVideo
+                src={meetingTemplate.url && meetingTemplate.templateType === 'video'}
+            >
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>
                         <Image

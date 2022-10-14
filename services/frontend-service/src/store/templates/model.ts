@@ -1,10 +1,12 @@
 import { EntityList, Template, UserTemplate } from '../types';
 import { templatesDomain } from './domain/model';
-import { IUserTemplate } from '../../../../shared/interfaces/user-template.interface';
 import {
+    AddTemplateToUserEffectPayload,
+    AddTemplateToUserEffectResponse,
     CreateTemplateResponse,
     EditTemplatePayload,
     EditTemplateResponse,
+    EditUserTemplatePayload,
     EditUserTemplateResponse,
     GetEditingTemplatePayload,
     GetEditingTemplateResponse,
@@ -37,7 +39,7 @@ export const $discoveryTemplatesStore =
 export const $scheduleTemplateIdStore = templatesDomain.createStore<UserTemplate['id']>('');
 export const $scheduleEventLinkStore = templatesDomain.createStore<string>('');
 export const $replaceTemplateIdStore = templatesDomain.createStore<Template['id']>('');
-export const $templateDraft = templatesDomain.createStore<Template | IUserTemplate | null>(null);
+export const $templateDraft = templatesDomain.createStore<Template | UserTemplate | null>(null);
 
 // events
 export const setPreviewTemplate = templatesDomain.event<Template | null>('setPreviewTemplate');
@@ -101,11 +103,11 @@ export const uploadUserTemplateFileFx = templatesDomain.effect<
     void
 >('uploadUserTemplateFile');
 
-export const editUserTemplateFileFx = templatesDomain.effect<
-    UploadUserTemplateFilePayload,
+export const editUserTemplateFx = templatesDomain.effect<
+    EditUserTemplatePayload,
     EditUserTemplateResponse,
     void
->('editUserTemplateFile');
+>('editUserTemplateFx');
 
 export const createTemplateFx = templatesDomain.effect<void, CreateTemplateResponse, void>(
     'createTemplate',
@@ -122,5 +124,11 @@ export const getEditingTemplateFx = templatesDomain.effect<
     GetEditingTemplateResponse,
     void
 >('getEditingTemplateFx');
+
+export const addTemplateToUserFx = templatesDomain.effect<
+    AddTemplateToUserEffectPayload,
+    AddTemplateToUserEffectResponse,
+    void
+>('addTemplateToUserFx');
 
 export const clearTemplateDraft = templatesDomain.event('clearTemplateDraft');

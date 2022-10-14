@@ -31,6 +31,7 @@ import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { CoreService } from '../../services/core/core.service';
 import { IUserTemplate } from '@shared/interfaces/user-template.interface';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
+import { IUpdateTemplate } from '@shared/interfaces/update-template.interface';
 
 @Controller('templates')
 export class TemplatesController {
@@ -109,7 +110,7 @@ export class TemplatesController {
     }
   }
 
-  @Put('/')
+  @Put('/:templateId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Template' })
   @ApiOkResponse({
@@ -125,11 +126,12 @@ export class TemplatesController {
   )
   async editTemplate(
     @Request() req,
-    @Body() templateData: Partial<ICommonTemplate>,
+    @Param('templateId') templateId: string,
+    @Body() templateData: Partial<IUpdateTemplate>,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<any>> {
     try {
-      if (!templateData.id) {
+      if (!templateId) {
         return {
           success: false,
         };
@@ -139,11 +141,9 @@ export class TemplatesController {
         const { fileName, extension } = getFileNameAndExtension(
           file.originalname,
         );
-        const uploadKey = `templates/videos/${templateData.id}/${fileName}.${extension}`;
+        const uploadKey = `templates/videos/${templateId}/${fileName}.${extension}`;
 
-        await this.uploadService.deleteFolder(
-          `templates/videos/${templateData.id}`,
-        );
+        await this.uploadService.deleteFolder(`templates/videos/${templateId}`);
 
         let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 
@@ -153,17 +153,20 @@ export class TemplatesController {
 
         await this.coreService.uploadTemplateFile({
           url,
-          id: templateData.id,
+          id: templateId,
           mimeType: file.mimetype,
         });
       }
 
       if (Object.keys(templateData).length > 1) {
-        await this.templatesService.updateTemplate(templateData);
+        await this.templatesService.updateTemplate({
+          templateId,
+          data: templateData,
+        });
       }
 
-      const template = await this.templatesService.getCommonTemplate({
-        id: templateData.id,
+      const template = await this.templatesService.getCommonTemplateById({
+        id: templateId,
       });
 
       return {
@@ -182,7 +185,7 @@ export class TemplatesController {
   }
 
   @Get('/:templateId')
-  @ApiOperation({ summary: 'Get Templates' })
+  @ApiOperation({ summary: 'Get Template' })
   @ApiOkResponse({
     type: CommonTemplateRestDTO,
     description: 'Get Common Template Success',
@@ -193,7 +196,7 @@ export class TemplatesController {
   async getCommonTemplate(@Param('templateId') templateId: string) {
     try {
       if (templateId) {
-        const template = await this.templatesService.getCommonTemplate({
+        const template = await this.templatesService.getCommonTemplateById({
           id: templateId,
         });
 

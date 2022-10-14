@@ -39,20 +39,12 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
     const participantStubs = useMemo(
         () =>
             participantsPositions.map(({ id, top, left }: ParticipantPosition, index: number) => (
-                <CustomGrid
-                    item
-                    position="absolute"
-                    width="100%"
-                    height="100%"
-                    className={styles.stubWrapper}
-                >
-                    <UserVideoStub
-                        isDraggable={false}
-                        stubId={id}
-                        index={index}
-                        position={{ top, left }}
-                    />
-                </CustomGrid>
+                <UserVideoStub
+                    isDraggable={false}
+                    stubId={id}
+                    index={index}
+                    position={{ top: top / 100, left: left / 100 }}
+                />
             )),
         [participantsPositions],
     );

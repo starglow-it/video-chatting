@@ -36,4 +36,5 @@ export interface IUserTemplate {
   draft: boolean;
   isPublic: boolean;
   author?: string;
+  templateType: 'video' | 'image';
 }

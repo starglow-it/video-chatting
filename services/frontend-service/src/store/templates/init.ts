@@ -9,10 +9,11 @@ import {
     $templateDraft,
     $templatePreviewStore,
     $templatesStore,
+    addTemplateToUserFx,
     clearTemplateDraft,
     createTemplateFx,
     editTemplateFx,
-    editUserTemplateFileFx,
+    editUserTemplateFx,
     getEditingTemplateFx,
     getTemplateFx,
     getTemplatesFx,
@@ -44,6 +45,8 @@ import { handleEditTemplate } from './handlers/handleEditTemplate';
 import { handleCreateTemplate } from './handlers/handleCreateTemplate';
 import { handleUploadTemplateFile } from './handlers/handleUploadTemplateFile';
 import { handleUploadUserTemplateFile } from './handlers/handleUploadUserTemplateFile';
+import { handleAddTemplateToUser } from './handlers/handleAddTemplateToUser';
+import { handleEditUserTemplate } from './handlers/handleEditUserTemplate';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -52,11 +55,12 @@ getUserTemplateFx.use(handleFetchUserTemplate);
 purchaseTemplateFx.use(handlePurchaseTemplate);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
 createTemplateFx.use(handleCreateTemplate);
-uploadTemplateFileFx.use(handleUploadTemplateFile);
 editTemplateFx.use(handleEditTemplate);
 getEditingTemplateFx.use(handleFetchUserTemplate);
+uploadTemplateFileFx.use(handleUploadTemplateFile);
 uploadUserTemplateFileFx.use(handleUploadUserTemplateFile);
-editUserTemplateFileFx.use(handleUploadUserTemplateFile);
+editUserTemplateFx.use(handleEditUserTemplate);
+addTemplateToUserFx.use(handleAddTemplateToUser);
 
 $templatesStore.on(getTemplatesFx.doneData, (state, data) => ({
     ...state,
@@ -88,7 +92,7 @@ $templateDraft
             createTemplateFx.doneData,
             editTemplateFx.doneData,
             getEditingTemplateFx.doneData,
-            editUserTemplateFileFx.doneData,
+            editUserTemplateFx.doneData,
         ],
         (state, data) => data,
     )

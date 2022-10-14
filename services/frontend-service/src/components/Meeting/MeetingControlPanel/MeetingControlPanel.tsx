@@ -36,7 +36,7 @@ import { $profileStore, setIsSideUsersOpenEvent } from '../../../store';
 import {
     $isMeetingHostStore,
     $isOwner,
-    $isScreenSharingActiveStore,
+    $isScreenSharingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
     $paymentIntent,
@@ -56,7 +56,7 @@ const Component = () => {
     const paymentIntent = useStore($paymentIntent);
     const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isScreenSharing = useStore($isScreenSharingActiveStore);
+    const isScreenSharing = useStore($isScreenSharingStore);
     const users = useStore($meetingUsersStore);
 
     const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);

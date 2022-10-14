@@ -93,7 +93,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
     }, []);
 
     const handleEditMeeting = useCallback(() => {
-        router.push(`${editRoomRoute}/${template.id}`);
+        router.push(`${editRoomRoute}/${template.customLink || template.id}`);
     }, []);
 
     const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);

@@ -37,6 +37,7 @@ export const handleCreatePeerConnections = async ({
                 isInitial,
                 onGotStream: setConnectionStream,
                 onTrackEnded: options?.onTrackEnded,
+                onIceConnectionStateDisconnected: options?.onDisconnected,
                 onGotOffer: (data: OfferExchangePayload | AnswerExchangePayload) => {
                     if (data.type === 'offer') {
                         sendOfferSocketEvent(data);
@@ -48,8 +49,6 @@ export const handleCreatePeerConnections = async ({
                 onGotCandidate: (data: IceCandidatesExchangePayload) => {
                     sendIceCandidateSocketEvent(data);
                 },
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                onIceConnectionStateDisconnected: () => {},
                 // eslint-disable-next-line @typescript-eslint/no-empty-function
                 onIceConnectionStateFailed: () => {},
             });

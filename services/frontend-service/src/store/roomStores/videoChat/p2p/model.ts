@@ -7,6 +7,7 @@ import {
     GetAnswerPayload,
     GetIceCandidatePayload,
     GetOfferPayload,
+    IWebRtcConnection,
 } from '../types';
 
 // effects
@@ -17,7 +18,7 @@ export const createPeerConnectionFx = videoChatDomain.createEffect<
 >('createPeerConnectionFx');
 export const removeConnectionsFx = videoChatDomain.createEffect<
     ConnectionsStore,
-    MeetingUser['id'][]
+    IWebRtcConnection['connectionId'][]
 >('removeConnectionsFx');
 export const getOfferFx = videoChatDomain.createEffect<GetOfferPayload, void>('getOfferFx');
 export const getAnswerFx = videoChatDomain.createEffect<GetAnswerPayload, void>('getAnswerFx');
@@ -38,6 +39,9 @@ export const changeP2PActiveStreamFx = videoChatDomain.createEffect<
 >('changeP2PActiveStreamFx');
 
 // events
+export const removePeerConnection = videoChatDomain.createEvent<{ connectionId: string }>(
+    'removePeerConnection',
+);
 export const startP2PSharingEvent = videoChatDomain.createEvent('startP2PSharingEvent');
 export const stopP2PSharingEvent = videoChatDomain.createEvent('stopP2PSharingEvent');
 export const disconnectFromP2PEvent = videoChatDomain.createEvent('disconnectFromP2PEvent');

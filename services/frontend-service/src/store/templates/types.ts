@@ -1,16 +1,18 @@
-import { Template, UploadTemplateFile, UserTemplate } from '../types';
+import { Template, UserTemplate } from '../types';
 import { ParsedTimeStamp } from '../../types';
 
 export type EditUserTemplatePayload = {
     templateId: UserTemplate['id'];
-    data: Omit<Partial<UserTemplate>, 'businessCategories'> & UploadTemplateFile;
+    data: Omit<Partial<UserTemplate>, 'id' | 'previewUrls' | 'businessCategories'>;
 };
 export type EditUserTemplateResponse = UserTemplate | null;
-export type EditTemplatePayload = Omit<Partial<Template>, 'businessCategories' | 'previewUrls'> &
-    UploadTemplateFile;
+export type EditTemplatePayload = {
+    templateId: Template['id'];
+    data: Omit<Partial<Template>, 'id' | 'businessCategories' | 'previewUrls'>;
+};
 export type EditTemplateResponse = Template | null;
 export type CreateTemplateResponse = Template | null | undefined;
-export type UploadTemplateFilePayload = { id: string; file: File };
+export type UploadTemplateFilePayload = { templateId: Template['id']; file: File };
 export type UploadUserTemplateFilePayload = { templateId: UserTemplate['id']; file: File };
 export type UploadTemplateFileResponse = Template | null;
 export type UploadUserTemplateFileResponse = UserTemplate | null;
@@ -30,3 +32,7 @@ export type SendScheduleInvitePayload = {
 
 export type PurchaseTemplatePayload = { templateId: Template['id'] };
 export type GetUserTemplatePayload = { templateId: Template['id']; withCredentials: false };
+export type AddTemplateToUserEffectPayload = {
+    templateId: Template['id'];
+};
+export type AddTemplateToUserEffectResponse = UserTemplate | null;

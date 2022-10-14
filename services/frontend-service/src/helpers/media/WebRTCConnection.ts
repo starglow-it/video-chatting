@@ -40,7 +40,7 @@ export class WebRtcConnection implements IWebRtcConnection {
 
     onIceConnectionStateFailed: () => void;
 
-    onIceConnectionStateDisconnected: () => void;
+    onIceConnectionStateDisconnected?: (data: { connectionId: string }) => void;
 
     onDisconnected?: () => void;
 
@@ -93,7 +93,9 @@ export class WebRtcConnection implements IWebRtcConnection {
             const iceConnectionState = this.peerConnection?.iceConnectionState;
 
             if (iceConnectionState === 'disconnected') {
-                this.onIceConnectionStateDisconnected();
+                this.onIceConnectionStateDisconnected?.({
+                    connectionId: this.connectionId,
+                });
             }
 
             if (iceConnectionState === 'failed') {

@@ -64,4 +64,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   isPublic: boolean;
+
+  @Expose()
+  templateType: 'video' | 'image';
 }

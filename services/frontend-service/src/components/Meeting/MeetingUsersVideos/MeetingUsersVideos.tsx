@@ -22,7 +22,7 @@ import {
 } from '../../../store';
 import {
     $activeStreamStore,
-    $isScreenSharingActiveStore,
+    $isScreenSharingStore,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
@@ -42,7 +42,7 @@ const Component = () => {
     const meeting = useStore($meetingStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isScreenSharing = useStore($isScreenSharingActiveStore);
+    const isScreenSharing = useStore($isScreenSharingStore);
     const activeStream = useStore($activeStreamStore);
 
     const profile = useStore($profileStore);

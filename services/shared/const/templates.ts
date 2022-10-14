@@ -14,6 +14,7 @@ interface BaseTemplate
 export const templatesData: BaseTemplate[] = [
   {
     templateId: 1,
+    templateType: 'video',
     videoPath: "/ibiza2",
     imagePath: "/free-ibiza2",
     name: "Ibiza Patio",
@@ -47,6 +48,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 2,
+    templateType: 'video',
     videoPath: "/ibiza3",
     imagePath: "/free-ibiza3",
     name: "Mt Fuji Patio",
@@ -84,6 +86,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 3,
+    templateType: 'video',
     videoPath: "/ibiza4",
     imagePath: "/free-ibiza4",
     name: "Ibiza Patio",
@@ -126,6 +129,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 4,
+    templateType: 'video',
     videoPath: "/lake_harmony",
     imagePath: "/free-lake_harmony",
     name: "Lakeside Office",
@@ -167,6 +171,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 5,
+    templateType: 'video',
     videoPath: "/rustic",
     imagePath: "/free-rustic",
     name: "Countryside Office",
@@ -205,6 +210,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 6,
+    templateType: 'video',
     videoPath: "/retro",
     imagePath: "/free-retro",
     name: "1970's Office",
@@ -241,6 +247,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 7,
+    templateType: 'video',
     videoPath: "/tat",
     imagePath: "/free-tat",
     name: "Modern office",
@@ -272,6 +279,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 8,
+    templateType: 'video',
     videoPath: "/cascadia",
     imagePath: "/cascadia",
     name: "Cascadia",
@@ -324,6 +332,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 9,
+    templateType: 'video',
     videoPath: "/cascadia",
     imagePath: "/free-cascadia",
     name: "Cascadia",
@@ -367,6 +376,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 10,
+    templateType: 'video',
     videoPath: "/therapist-hi",
     imagePath: "/free-therapist-hi",
     name: "Therapy Office (at the desk)",
@@ -392,6 +402,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 11,
+    templateType: 'video',
     videoPath: "/therapist-session",
     imagePath: "/free-therapist-session",
     name: "Therapy Office (on the couch)",
@@ -418,6 +429,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 12,
+    templateType: 'video',
     videoPath: "/executive",
     imagePath: "/free-executive",
     name: "New York Executive",
@@ -454,6 +466,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 13,
+    templateType: 'video',
     videoPath: "/executivebeach",
     imagePath: "/free-executivebeach",
     name: "Tropical Executive",
@@ -489,6 +502,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 14,
+    templateType: 'video',
     videoPath: "/office",
     imagePath: "/free-office",
     name: "Regency Office",
@@ -514,6 +528,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 15,
+    templateType: 'video',
     videoPath: "/graffiti",
     imagePath: "/free-graffiti",
     name: "Apocalypto",
@@ -547,6 +562,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 16,
+    templateType: 'video',
     videoPath: "/graffiti",
     imagePath: "/graffiti",
     name: "Apocalypto",
@@ -589,6 +605,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 17,
+    templateType: 'video',
     videoPath: "/fireandfog",
     imagePath: "/free-fireandfog",
     name: "Modern 1-on-1: Fog",
@@ -613,6 +630,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 18,
+    templateType: 'video',
     videoPath: "/ocean_vista",
     imagePath: "/free-ocean_vista",
     name: "Modern 1-on-1: Ocean",
@@ -637,6 +655,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 19,
+    templateType: 'video',
     videoPath: "/centralpark",
     imagePath: "/free-centralpark",
     name: "Modern 1-on-1: Central Park",
@@ -662,6 +681,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 20,
+    templateType: 'video',
     videoPath: "/ralph_lauren",
     imagePath: "/free-ralph_lauren",
     name: "Virtual Luxury (Store)",
@@ -726,6 +746,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 21,
+    templateType: 'video',
     videoPath: "/paris_final",
     imagePath: "/free-paris_final",
     name: "Paris café",
@@ -767,6 +788,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 22,
+    templateType: 'video',
     videoPath: "/together_clouds",
     imagePath: "/together_clouds",
     name: "Cloud 9 (Together Mode)",
@@ -808,6 +830,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 23,
+    templateType: 'video',
     videoPath: "/together_clouds",
     imagePath: "/free-together_clouds",
     name: "Cloud 9 (Together Mode)",
@@ -840,6 +863,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 24,
+    templateType: 'video',
     videoPath: "/loop_campfire",
     imagePath: "/free-loop_campfire",
     name: "The Firepit (Together Mode)",
@@ -880,6 +904,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 25,
+    templateType: 'video',
     videoPath: "/loop_campfire",
     imagePath: "/loop_campfire",
     name: "The Firepit (Together Mode)",
@@ -929,6 +954,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 26,
+    templateType: 'video',
     videoPath: "/together_beach",
     imagePath: "/together_beach",
     name: "Vista Rica (Together Mode)",
@@ -979,6 +1005,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 28,
+    templateType: 'video',
     videoPath: "/zen2-loop",
     imagePath: "/free-zen2-loop",
     name: "Zen Pond",
@@ -1018,6 +1045,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 29,
+    templateType: 'video',
     videoPath: "/heart",
     imagePath: "/heart4",
     name: "Breating Heart Exercise (Together Mode)",
@@ -1056,6 +1084,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 30,
+    templateType: 'video',
     videoPath: "/heart",
     imagePath: "/heart6",
     name: "Breating Heart Exercise (Together Mode)",
@@ -1102,6 +1131,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 31,
+    templateType: 'video',
     videoPath: "/abstract",
     imagePath: "/free-abstract",
     name: "Abstract Solar (Together Mode)",
@@ -1141,6 +1171,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 32,
+    templateType: 'video',
     videoPath: "/abstract",
     imagePath: "/abstract",
     name: "Abstract Solar (Together Mode)",
@@ -1189,6 +1220,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 33,
+    templateType: 'image',
     imagesUrl: "/free-calm6",
     imagePath: "/free-calm6",
     name: "Simply Nice (Together Mode)",
@@ -1228,6 +1260,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 34,
+    templateType: 'image',
     imagesUrl: "/calm6",
     imagePath: "/calm6",
     name: "Simply Nice (Together Mode)",
@@ -1276,6 +1309,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 36,
+    templateType: 'video',
     videoPath: "/perk_central",
     imagePath: "/perk_central",
     name: "Perk Central",
@@ -1324,6 +1358,7 @@ export const templatesData: BaseTemplate[] = [
   },
   {
     templateId: 37,
+    templateType: 'video',
     videoPath: "/perk_central",
     imagePath: "/free-perk_central",
     name: "Perk Central",

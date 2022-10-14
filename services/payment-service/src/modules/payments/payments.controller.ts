@@ -73,6 +73,7 @@ export class PaymentsController {
 
       switch (event.type) {
         case 'customer.created':
+          this.logger.log('handle "customer.created" event');
           const customer = event.data.object as Stripe.Customer;
 
           await this.coreService.updateUser({
@@ -82,26 +83,32 @@ export class PaymentsController {
 
           break;
         case 'checkout.session.completed':
+          this.logger.log('handle "checkout.session.completed" event');
+
           await this.handleCheckoutSessionCompleted(
             event.data.object as Stripe.Checkout.Session,
           );
           break;
         case 'customer.subscription.deleted':
+          this.logger.log('handle "customer.subscription.deleted" event');
           await this.handleSubscriptionDeleted(
             event.data.object as Stripe.Subscription,
           );
           break;
         case 'customer.subscription.created':
+          this.logger.log('handle "customer.subscription.created" event');
           await this.handleSubscriptionCreated(
             event.data.object as Stripe.Subscription,
           );
           break;
         case 'customer.subscription.updated':
+          this.logger.log('handle "customer.subscription.updated" event');
           await this.handleSubscriptionUpdate(
             event.data.object as Stripe.Subscription,
           );
           break;
         case 'invoice.paid':
+          this.logger.log('handle "invoice.paid" event');
           await this.handleFirstSubscription(
             event.data.object as Stripe.Invoice,
           );
@@ -702,11 +709,20 @@ export class PaymentsController {
 
       const productId = item.price.product;
 
-      await this.coreService.addTemplateToUser({
-        productId: productId as string,
-        customerId: checkout.customer as string,
-        sessionId: session.id as string,
+      const commonTemplate = await this.coreService.getCommonTemplate({
+        stripeProductId: productId as string,
       });
+
+      const targetUser = await this.coreService.findUser({
+        stripeSessionId: session.id,
+      });
+
+      if (commonTemplate?.id && targetUser?.id) {
+        await this.coreService.addTemplateToUser({
+          templateId: commonTemplate.id,
+          userId: targetUser.id,
+        });
+      }
 
       return;
     }

@@ -48,7 +48,7 @@ export interface IWebRtcConnectionData {
     peerConnection?: RTCPeerConnection;
     stream?: MediaStream | null;
     onIceConnectionStateFailed: () => void;
-    onIceConnectionStateDisconnected: () => void;
+    onIceConnectionStateDisconnected?: (data: { connectionId: string }) => void;
     onDisconnected?: () => void;
     streamType: StreamType;
 }
@@ -81,7 +81,7 @@ export interface IWebRtcConnection {
     onGotStream: (args: { connectionId: string; type: TrackKind; track: MediaStreamTrack }) => void;
     onGotCandidate: (args: IceCandidatesExchangePayload) => void;
     onIceConnectionStateFailed: () => void;
-    onIceConnectionStateDisconnected: () => void;
+    onIceConnectionStateDisconnected?: (data: { connectionId: string }) => void;
     onDisconnected?: () => void;
     getStats: () => unknown;
     isPublish: () => boolean;
@@ -124,6 +124,7 @@ export type CreatePeerConnectionsPayload = {
         isAuraActive?: boolean;
         stream?: CustomMediaStream;
         onTrackEnded?: () => void;
+        onDisconnected?: (data: { connectionId: string }) => void;
     };
 };
 

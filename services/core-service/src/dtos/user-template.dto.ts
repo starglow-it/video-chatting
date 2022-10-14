@@ -127,6 +127,9 @@ export class UserTemplateDTO implements IUserTemplate {
   isPublic: IUserTemplate['isPublic'];
 
   @Expose()
+  templateType: IUserTemplate['templateType'];
+
+  @Expose()
   draft: IUserTemplate['draft'];
 
   @Expose()

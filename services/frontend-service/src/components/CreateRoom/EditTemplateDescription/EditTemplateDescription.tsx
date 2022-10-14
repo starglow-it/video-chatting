@@ -143,6 +143,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                     <CustomGrid container flexWrap="nowrap" gap={2} columns={10}>
                         <CustomGrid item xs={8}>
                             <CustomInput
+                                autoComplete="off"
                                 color="secondary"
                                 error={nameErrorMessage}
                                 onChange={handleChangeName}
@@ -173,6 +174,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                     </CustomGrid>
                     <CustomInput
                         color="secondary"
+                        autoComplete="off"
                         onChange={handleChangeDescription}
                         error={descriptionErrorMessage}
                         multiline
@@ -217,6 +219,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         </CustomTypography>
                     </CustomGrid>
                     <CustomInput
+                        autoComplete="off"
                         color="secondary"
                         InputProps={customLinkInputProps}
                         {...customLinkProps}

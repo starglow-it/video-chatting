@@ -1,4 +1,5 @@
 @import "src/styles/rem";
+@import "src/styles/variables";
 
 .wrapper {
   width: 100%;
@@ -13,6 +14,15 @@
   padding: rem(32px);
   max-width: rem(610px);
   width: 100%;
+}
+
+.policiesLink {
+  color: $primary-white;
+  margin: rem(24px 0 0 0);
+
+  a {
+    color: inherit;
+  }
 }
 
 .buttonsGroup {
