@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from '@shared/providers';
-import { MeetingBrokerPatterns } from '@shared/patterns/meetings';
+import { CORE_PROVIDER } from 'shared';
+import { MeetingBrokerPatterns } from 'shared';
 import {
   CreateMeetingInstancePayload,
   DeleteMeetingInstancePayload,
   GetMeetingInstancePayload,
   UpdateMeetingInstancePayload,
-} from '@shared/broker-payloads/meetings';
-import { ICommonMeetingInstance } from '@shared/interfaces/common-instance-meeting.interface';
+} from 'shared';
+import { ICommonMeetingInstance } from 'shared';
 
 @Injectable()
 export class CoreService {

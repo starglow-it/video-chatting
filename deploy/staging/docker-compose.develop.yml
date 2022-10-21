@@ -58,7 +58,11 @@ services:
 
   frontend-service:
     container_name: develop_frontend
-    build: ../../services/frontend-service
+    build:
+      context: ../../
+      dockerfile: services/frontend-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
     restart: unless-stopped
     environment:
       - WAIT_HOSTS=gateway-service:3000
@@ -90,11 +94,41 @@ services:
       - liveoffice_dev
       - traefikpublic
 
+  frontend-admin-service:
+    container_name: develop_frontend-admin
+    build:
+      context: ../../
+      dockerfile: services/frontend-admin-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+    restart: unless-stopped
+    environment:
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
+      - GATEWAY_PORT=3000
+      - GATEWAY_HOST=gateway-service
+      - FRONTEND_URL=http://localhost:9000
+      - DEFAULT_SERVER_IP=localhost
+      - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+      - SUPPORT_EMAIL
+    ports:
+      - '9000:9000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.front_admin_dev.rule=Host(`dev-admin.liveoffice.forasoft.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_admin_dev.entrypoints=https"
+      - "traefik.http.routers.front_admin_dev.tls=true"
+      - "traefik.http.services.front_admin_dev.loadbalancer.server.port=9000"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_dev
+      - traefikpublic
+
   gateway-service:
     container_name: develop_gateway
     build:
-      context: ../../services
-      dockerfile: ./gateway-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/gateway-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -115,8 +149,8 @@ services:
   socket-service:
     container_name: develop_socket
     build:
-      context: ../../services
-      dockerfile: ./socket-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/socket-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -137,8 +171,8 @@ services:
   meeting-socket-service:
     container_name: develop_meeting_socket
     build:
-      context: ../../services
-      dockerfile: ./meeting-socket-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/meeting-socket-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -159,8 +193,8 @@ services:
   payment-service:
     container_name: develop_payment
     build:
-      context: ../../services
-      dockerfile: ./payment-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/payment-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -181,8 +215,8 @@ services:
   core-service:
     container_name: develop_core
     build:
-      context: ../../services
-      dockerfile: ./core-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/core-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -195,8 +229,8 @@ services:
   auth-service:
     container_name: develop_auth
     build:
-      context: ../../services
-      dockerfile: ./auth-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/auth-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -206,11 +240,11 @@ services:
     labels:
       - "io.portainer.accesscontrol.public"
 
-  notifications-service:
-    container_name: develop_notifications
+  notification-service:
+    container_name: develop_notification
     build:
-      context: ../../services
-      dockerfile: ./notifications-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/notification-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -223,8 +257,8 @@ services:
   media-server-service:
     container_name: develop_media-server
     build:
-      context: ../../services
-      dockerfile: ./media-server-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/media-server-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -237,8 +271,8 @@ services:
   scaling-service:
     container_name: develop_scaling
     build:
-      context: ../../services
-      dockerfile: ./scaling-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/scaling-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -252,8 +286,8 @@ services:
   config-service:
     container_name: develop_config
     build:
-      context: ../../services
-      dockerfile: ./config-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/config-service/Dockerfile
     restart: unless-stopped
     depends_on:
       - mongo
@@ -303,6 +337,8 @@ services:
       - SUPPORT_SCALING
       - NUMBER_OF_ACTIVE_SERVERS
       - SUPPORT_EMAIL
+      - ADMIN_EMAIL
+      - ADMIN_PASSWORD
     ports:
       - "4100:4000"
     networks:

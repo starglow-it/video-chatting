@@ -1,0 +1,27 @@
+{
+  "signIn": {
+    "label": "Sign In"
+  },
+  "buttons": {
+    "signIn": "Sign in",
+    "logout": "Logout",
+    "login": "Sign in",
+    "save": "Save",
+    "cancel": "Cancel",
+    "quit": "Quit",
+    "stay": "Stay",
+    "saveAndQuit": "Save and Quit",
+    "continue": "Continue",
+    "delete": "Delete",
+    "schedule": "Schedule",
+    "done": "Done",
+    "copy": "Copy",
+    "back": "Go back",
+    "upgrade": "Upgrade",
+    "update": "Update",
+    "replace": "Replace",
+    "buy": "Buy",
+    "leave": "Leave",
+    "homePage": "Homepage"
+  }
+}

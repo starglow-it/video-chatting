@@ -6,7 +6,7 @@ import { UserDocument } from './user.schema';
 import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { MeetingInstanceDocument } from './meeting-instance.schema';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 import { PreviewImageDocument } from './preview-image.schema';
 
 @Schema()

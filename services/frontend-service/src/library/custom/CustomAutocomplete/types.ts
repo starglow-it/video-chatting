@@ -2,8 +2,8 @@ import { AutocompleteProps } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { Control } from 'react-hook-form';
 
-export type CustomAutocompleteProps = Omit<
-    AutocompleteProps<string, true, true, true>,
+export type CustomAutocompleteProps<ValueType extends { key: string; value: string }> = Omit<
+    AutocompleteProps<ValueType, true, true, true>,
     'renderInput' | 'renderTags'
 > &
     PropsWithChildren & {
@@ -11,3 +11,5 @@ export type CustomAutocompleteProps = Omit<
         name: string;
         error?: string;
     };
+
+export type AutocompleteType<ValueType> = ValueType & { key: string; value: string; label: string };

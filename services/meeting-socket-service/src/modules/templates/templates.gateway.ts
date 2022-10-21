@@ -12,7 +12,7 @@ import { BaseGateway } from '../../gateway/base.gateway';
 
 import { UsersService } from '../users/users.service';
 
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
+import { IUserTemplate } from 'shared';
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { MeetingsService } from '../meetings/meetings.service';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';

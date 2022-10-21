@@ -1,10 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ScalingBrokerPatterns } from '@shared/patterns/scaling';
-import {
-  CreateServerPayload,
-  WaitForAvailableServerPayload,
-} from '@shared/broker-payloads/meetings';
+import { ScalingBrokerPatterns } from 'shared';
+import { CreateServerPayload, WaitForAvailableServerPayload } from 'shared';
 import { ScalingService } from './scaling.service';
 import { CoreService } from '../../services/core/core.service';
 import { ConfigClientService } from '../../services/config/config.service';

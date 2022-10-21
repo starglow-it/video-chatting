@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
@@ -15,6 +15,9 @@ import { MoneyIcon } from '@library/icons/MoneyIcon';
 // components
 import { BusinessCategoriesSelect } from '@components/BusinessCategoriesSelect/BusinessCategoriesSelect';
 
+// store
+import { getBusinessCategoriesFx } from '../../../store';
+
 // styles
 import styles from './EditCompanyInfo.module.scss';
 
@@ -27,6 +30,10 @@ const EditCompanyInfo = memo(() => {
     const currentEmailErrorMessage: string = errors?.contactEmail?.[0]?.message || '';
     const currentCompanyNameErrorMessage: string = errors?.companyName?.[0]?.message || '';
     const currentDescriptionErrorMessage: string = errors?.description?.[0]?.message || '';
+
+    useEffect(() => {
+        getBusinessCategoriesFx({});
+    }, []);
 
     return (
         <CustomPaper className={styles.paperWrapper}>

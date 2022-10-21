@@ -16,7 +16,7 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 
 // icons
 import { ArrowUp } from '@library/icons/ArrowUp';
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
 
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
@@ -252,7 +252,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     </ConditionalRender>
                     <ActionButton
                         variant="accept"
-                        Icon={<ArrowLeftIcon width="24px" height="24px" className={styles.icon} />}
+                        Icon={<ArrowRightIcon width="32px" height="32px" />}
                         className={styles.actionButton}
                         onAction={onNextStep}
                     />

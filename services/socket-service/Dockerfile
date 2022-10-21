@@ -1,20 +1,28 @@
-FROM node:18.7.0-alpine AS builder
+FROM node:18.9.1-alpine AS builder
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 WORKDIR /app
 
+RUN mkdir -p services/socket-service
+
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
 COPY ./shared ./shared
 
-RUN mkdir ./socket-service
+RUN pnpm add nx -D -w
 
-COPY ./socket-service/package*.json ./socket-service/
+COPY ./services/socket-service/package.json ./services/socket-service
 
-RUN npm ci --silent --legacy-peer-deps --prefix=/app/socket-service
+RUN pnpm install
 
-COPY ./socket-service ./socket-service/
+COPY ./services/socket-service ./services/socket-service
 
-RUN npm run build --prefix=/app/socket-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,socket-service
 
-FROM node:18.7.0-alpine
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -26,4 +34,4 @@ COPY --from=builder /app ./
 
 EXPOSE 8080
 
-CMD /wait && npm run start:prod --prefix=/app/socket-service
+CMD /wait && pnpm --filter socket-service start:prod

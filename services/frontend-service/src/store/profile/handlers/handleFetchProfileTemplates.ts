@@ -16,6 +16,7 @@ export const handleFetchProfileTemplates = async ({
     );
 
     if (response.success) {
+        console.log(response.result);
         return response.result;
     }
 

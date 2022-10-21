@@ -25,7 +25,7 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
 // stores
-import { appDialogsApi } from 'src/store';
+import { $businessCategoriesStore, appDialogsApi, getBusinessCategoriesFx } from 'src/store';
 
 // styles
 import styles from './MeetingSettingsPanel.module.scss';
@@ -79,6 +79,7 @@ const validationSchema = yup.object({
 const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPanelProps) => {
     const isEditTemplateOpened = useStore($isEditTemplateOpenStore);
     const isMeetingInfoOpened = useStore($isMeetingInfoOpenStore);
+    const businessCategories = useStore($businessCategoriesStore);
 
     const isOwner = useStore($isOwner);
 
@@ -122,6 +123,10 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
         control,
         name: 'socials',
     });
+
+    useEffect(() => {
+        getBusinessCategoriesFx({});
+    }, []);
 
     useEffect(() => {
         (async () => {
@@ -232,10 +237,18 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                     ?.filter((social: SocialLink) => social.value)
                     ?.reduce((acc, b) => ({ ...acc, [b.key]: b.value }), {});
 
+                let filteredBusinessCategories;
+                if (Array.isArray(filteredData.businessCategories)) {
+                    filteredBusinessCategories = filteredData.businessCategories?.map(category =>
+                        businessCategories.list.find(({ key }) => category === key),
+                    );
+                }
+
                 onTemplateUpdate({
                     data: {
                         ...filteredData,
                         socials: filteredSocials || {},
+                        businessCategories: filteredBusinessCategories,
                     },
                     templateId: template.id,
                 });
@@ -247,7 +260,7 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             }
             setEditTemplateOpenEvent(false);
         }),
-        [dirtyFieldsCount, template.id, template.customLink, errors],
+        [dirtyFieldsCount, template.id, template.customLink, errors, businessCategories.list],
     );
 
     const handleCancelEditTemplate = useCallback(() => {

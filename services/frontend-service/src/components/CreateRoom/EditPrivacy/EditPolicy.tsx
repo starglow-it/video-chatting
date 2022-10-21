@@ -20,6 +20,7 @@ import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { LockIcon } from '@library/icons/LockIcon';
 import { PeopleIcon } from '@library/icons/PeopleIcon';
 import { RoundInfoIcon } from '@library/icons/RoundIcons/RoundInfoIcon';
+import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
 
 // const
 import frontendConfig from '../../../const/config';
@@ -109,13 +110,13 @@ const Component = ({ onNextStep, onPreviousStep }: EditPrivacyProps) => {
             >
                 <ActionButton
                     variant="gray"
-                    Icon={<ArrowLeftIcon width="24px" height="24px" />}
+                    Icon={<ArrowLeftIcon width="32px" height="32px" />}
                     className={styles.actionButton}
                     onAction={onPreviousStep}
                 />
                 <ActionButton
                     variant="accept"
-                    Icon={<ArrowLeftIcon width="24px" height="24px" className={styles.icon} />}
+                    Icon={<ArrowRightIcon width="32px" height="32px" />}
                     className={styles.actionButton}
                     onAction={onNextStep}
                 />

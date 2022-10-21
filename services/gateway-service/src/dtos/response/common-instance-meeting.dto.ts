@@ -1,7 +1,7 @@
-import { ICommonMeetingInstance } from '@shared/interfaces/common-instance-meeting.interface';
+import { ICommonMeetingInstance } from 'shared';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 
 export class CommonInstanceMeetingRestDTO implements ICommonMeetingInstance {
   @Expose()

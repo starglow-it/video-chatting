@@ -106,7 +106,7 @@ const Component = <TemplateType extends { id: string }>({
         }
 
         return [];
-    }, [list, skip, count, is1100Media, onChooseTemplate]);
+    }, [list, skip, count, is1100Media, onChooseTemplate, TemplateComponent]);
 
     const handleLoadTemplates = useCallback((data: number) => {
         setSkip(prev => {

@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { IConfig } from '@shared/interfaces/config.interface';
+import { IConfig } from 'shared';
 
 // modules
 import { AppModule } from './app.module';

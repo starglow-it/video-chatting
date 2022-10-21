@@ -3,10 +3,7 @@ import { ConfirmTokenService } from './confirm-token/confirm-token.service';
 import { AccessTokenService } from './access-token/access-token.service';
 import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { ResetPasswordTokenService } from './reset-password-token/reset-password-token.service';
-import { TokenTypes } from '@shared/const/tokens.const';
-import { TokenPayloadType } from '@shared/types/token-payload.type';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { IToken } from '@shared/interfaces/token.interface';
+import { TokenTypes, TokenPayloadType, ICommonUserDTO, IToken } from 'shared';
 
 @Injectable()
 export class TokensService {

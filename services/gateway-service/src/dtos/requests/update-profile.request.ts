@@ -1,4 +1,4 @@
-import { IUpdateProfile } from '@shared/interfaces/update-profile.interface';
+import { IUpdateProfile } from 'shared';
 import {
   IsEmail,
   IsObject,

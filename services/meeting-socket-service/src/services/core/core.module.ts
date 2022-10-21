@@ -4,12 +4,12 @@ import {
   ClientsModule,
   ClientProvider,
 } from '@nestjs/microservices';
-import { ConfigModule } from '@nestjs/config';
 
 import { CoreService } from './core.service';
 import { ConfigClientService } from '../config/config.service';
 
-import { CORE_PROVIDER } from '@shared/providers';
+import { CORE_PROVIDER } from 'shared';
+import {ConfigModule} from "../config/config.module";
 
 @Module({
   imports: [
@@ -21,15 +21,21 @@ import { CORE_PROVIDER } from '@shared/providers';
         useFactory: async (
           config: ConfigClientService,
         ): Promise<ClientProvider> => {
-          const allConfig = await config.getAll();
+          const {
+            rabbitMqUser,
+            rabbitMqPass,
+            rabbitMqCoreHost,
+            rabbitMqCorePort,
+            rabbitMqCoreQueue,
+          } = await config.getAll();
 
           return {
             transport: Transport.RMQ,
             options: {
               urls: [
-                `amqp://${allConfig.rabbitMqUser}:${allConfig.rabbitMqPass}@${allConfig.rabbitMqCoreHost}:${allConfig.rabbitMqCorePort}`,
+                `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqCoreHost}:${rabbitMqCorePort}`,
               ],
-              queue: allConfig.rabbitMqCoreQueue,
+              queue: rabbitMqCoreQueue,
               queueOptions: {
                 durable: false,
               },

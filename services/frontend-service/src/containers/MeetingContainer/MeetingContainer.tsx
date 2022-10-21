@@ -66,6 +66,7 @@ import styles from './MeetingContainer.module.scss';
 // utils
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
+import { BackgroundManager } from '../../helpers/media/applyBlur';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -135,6 +136,8 @@ const MeetingContainer = memo(() => {
         return () => {
             resetRoomStores();
 
+            BackgroundManager.destroy();
+
             appDialogsApi.resetDialogs();
         };
     }, []);
@@ -182,6 +185,7 @@ const MeetingContainer = memo(() => {
 
                 if (Object.keys(savedSettings)?.length && isOwner) {
                     updateLocalUserEvent({
+                        isAuraActive: savedSettings.auraSetting,
                         accessStatus: MeetingAccessStatuses.InMeeting,
                     });
 

@@ -18,8 +18,8 @@ import { ValidationExceptionFilter } from './filters/validation-exception.filter
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 
 // shared
-import { ROOT_SCOPE } from '@shared/const/api-scopes.const';
-import { IConfig } from '@shared/interfaces/config.interface';
+import { ROOT_SCOPE } from 'shared';
+import { IConfig } from 'shared';
 import { ConfigClientService } from './services/config/config.service';
 
 async function bootstrap() {

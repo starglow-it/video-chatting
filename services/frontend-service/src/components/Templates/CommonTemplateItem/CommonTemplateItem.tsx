@@ -18,6 +18,7 @@ import {
     $profileStore,
     $profileTemplatesStore,
     addNotificationEvent,
+    addTemplateToUserFx,
     appDialogsApi,
     getProfileTemplateByTemplateIdFx,
     setPreviewTemplate,
@@ -33,6 +34,7 @@ import styles from './CommonTemplateItem.module.scss';
 const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
+    const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
 
     const freeTemplatesCount = useStoreMap({
         store: $profileTemplatesStore,
@@ -138,6 +140,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                                 (isFree && isTimeLimitReached) || (!isFree && isDisabled),
                         })}
                         disableRipple={(isFree && isTimeLimitReached) || (!isFree && isDisabled)}
+                        disable={isAddTemplateInProgress}
                         nameSpace="templates"
                         translation={isFree ? freeTemplateTranslation : 'buttons.buy'}
                     />

@@ -4,23 +4,24 @@ import {
   ClientsModule,
   Transport,
 } from '@nestjs/microservices';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 
 // modules
 import { ConfigModule } from '../../services/config/config.module';
 import { CoreModule } from '../../services/core/core.module';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
 
 // controllers
 import { AuthController } from './auth.controller';
+import { AdminAuthController } from './admin-auth.controller';
 
 // services
 import { AuthService } from './auth.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
 // shared
-import { AUTH_PROVIDER } from '@shared/providers';
-import { JWT_ACCESS_EXPIRE } from '@shared/const/jwt.const';
+import { AUTH_PROVIDER } from 'shared';
+import { JWT_ACCESS_EXPIRE } from 'shared';
 
 // strategy
 import { LocalStrategy } from '../../strategy/local.strategy';
@@ -65,7 +66,7 @@ import { LocalStrategy } from '../../strategy/local.strategy';
       },
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AdminAuthController],
   providers: [AuthService, LocalStrategy],
   exports: [AuthService],
 })

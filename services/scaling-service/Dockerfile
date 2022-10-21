@@ -1,20 +1,28 @@
-FROM node:18.7.0-alpine AS builder
+FROM node:18.9.1-alpine AS builder
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 WORKDIR /app
 
+RUN mkdir -p services/scaling-service
+
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
 COPY ./shared ./shared
 
-RUN mkdir ./scaling-service
+RUN pnpm add nx -D -w
 
-COPY ./scaling-service/package*.json ./scaling-service/
+COPY ./services/scaling-service/package.json ./services/scaling-service
 
-RUN npm ci --legacy-peer-deps --silnt --force --prefix=/app/scaling-service
+RUN pnpm install
 
-COPY ./scaling-service ./scaling-service/
+COPY ./services/scaling-service ./services/scaling-service
 
-RUN npm run build --prefix=/app/scaling-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,scaling-service
 
-FROM node:18.7.0-alpine
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -26,5 +34,5 @@ COPY --from=builder /app ./
 
 EXPOSE 6000
 
-CMD /wait && npm run start:prod --prefix=/app/scaling-service
+CMD /wait && pnpm --filter scaling-service start:prod
 

@@ -1,20 +1,29 @@
-FROM node:18.7.0-alpine AS builder
+FROM node:18.9.1-alpine AS builder
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
+
 
 WORKDIR /app
 
+RUN mkdir -p services/core-service
+
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
 COPY ./shared ./shared
 
-RUN mkdir ./core-service
+RUN pnpm add nx -D -w
 
-COPY ./core-service/package*.json ./core-service/
+COPY ./services/core-service/package.json ./services/core-service
 
-RUN npm ci --silent --legacy-peer-deps --prefix=/app/core-service
+RUN pnpm install
 
-COPY ./core-service ./core-service/
+COPY ./services/core-service ./services/core-service
 
-RUN npm run build --prefix=/app/core-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,core-service
 
-FROM node:18.7.0-alpine
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -27,4 +36,4 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-CMD /wait && npm run start:prod --prefix=/app/core-service
+CMD /wait && pnpm --filter core-service start:prod

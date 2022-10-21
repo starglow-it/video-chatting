@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IGetMeetingTokenDTO } from '@shared/interfaces/get-meeting-token.interface';
+import { IGetMeetingTokenDTO } from 'shared';
 
 export class GetMeetingTokenRequest implements IGetMeetingTokenDTO {
   @IsNotEmpty({

@@ -16,8 +16,8 @@ import {
 } from '../../schemas/social-link.schema';
 
 // types
-import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
+import { ICommonTemplate } from 'shared';
+import { IUserTemplate } from 'shared';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types/custom';
 import { getScreenShots } from '../../utils/images/getScreenShots';
@@ -110,13 +110,15 @@ export class UserTemplatesService {
   async deleteUserTemplate(
     query: FilterQuery<UserTemplateDocument>,
     { session }: ITransactionSession,
-  ) {
-    return this.userTemplate.deleteOne(query, { session });
+  ): Promise<void> {
+    await this.userTemplate.deleteOne(query, { session });
+
+    return;
   }
 
   async findUserTemplates({
     query,
-    options: { sort, limit, skip },
+    options,
     session,
     populatePaths,
   }: {
@@ -130,9 +132,9 @@ export class UserTemplatesService {
         query,
         {},
         {
-          sort,
-          skip,
-          limit,
+          sort: options?.sort,
+          skip: options?.skip,
+          limit: options?.limit,
           session: session?.session,
           populate: populatePaths,
         },
@@ -165,14 +167,14 @@ export class UserTemplatesService {
     data: UpdateQuery<UserTemplateDocument>;
     session?: ITransactionSession;
     populatePaths?: QueryOptions['populate'];
-  }) {
+  }): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,
       new: true,
     };
 
-    return this.userTemplate.updateOne(query, data, options);
+    return this.userTemplate.findOneAndUpdate(query, data, options);
   }
 
   async generatePreviews({
@@ -196,7 +198,7 @@ export class UserTemplatesService {
       key: new RegExp(`^templates/images/${id}`),
     });
 
-    await this.awsService.deleteResource(`templates/images/${id}`);
+    await this.awsService.deleteFolder(`templates/images/${id}`);
 
     const uploadedImagesPromises = imagesPaths.map(async (image) => {
       const resolution = image.match(/(\d*)p\./);

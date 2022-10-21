@@ -5,8 +5,10 @@ import {
   Get,
   Logger,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   Request,
   UploadedFile,
@@ -36,9 +38,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { parseDateObject } from '../../utils/dateHelpers/parseDateObject';
 import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
-import { emailTemplates } from '@shared/const/email-templates.const';
+import { emailTemplates } from 'shared';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { IUpdateTemplate } from '@shared/interfaces/update-template.interface';
+import { IUpdateTemplate } from 'shared';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 
 @Controller('users/templates')
@@ -52,6 +54,43 @@ export class UserTemplateController {
     private uploadService: UploadService,
     private templatesService: TemplatesService,
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Users Templates' })
+  @ApiOkResponse({
+    description: 'Fetch users templates succeeded',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getUsersTemplates(
+    @Req() req,
+    @Query('skip', ParseIntPipe) skip: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    try {
+      const templatesData = await this.templatesService.getUsersTemplates({
+        userId: req.user.userId,
+        skip,
+        limit,
+      });
+
+      return {
+        success: true,
+        result: templatesData,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get common templates`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
 
   @Get('/:templateId')
   @ApiOperation({ summary: 'Get Template' })
@@ -116,16 +155,14 @@ export class UserTemplateController {
         };
       }
 
-      let userTemplate = await this.templatesService.getUserTemplate({
+      let userTemplate = await this.templatesService.getUserTemplateById({
         id: templateId,
       });
 
       if (file) {
-        const { fileName, extension } = getFileNameAndExtension(
-          file.originalname,
-        );
+        const { extension } = getFileNameAndExtension(file.originalname);
 
-        const uploadKey = `templates/videos/${templateId}/${fileName}.${extension}`;
+        const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
 
         await this.uploadService.deleteFolder(`templates/videos/${templateId}`);
 
@@ -135,7 +172,7 @@ export class UserTemplateController {
           url = `https://${url}`;
         }
 
-        await this.coreService.uploadTemplateFile({
+        userTemplate = await this.coreService.uploadUserTemplateFile({
           url,
           id: templateId,
           mimeType: file.mimetype,
@@ -148,16 +185,11 @@ export class UserTemplateController {
           userId: req.user.userId,
           data: templateData,
         });
-
-        return {
-          success: true,
-          result: userTemplate,
-        };
       }
 
       return {
         success: true,
-        result: null,
+        result: userTemplate,
       };
     } catch (err) {
       this.logger.error(

@@ -13,26 +13,27 @@
     "watch": [
       "src"
     ],
-    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/index.ts",
+    "exec": "ts-node",
     "ext": "ts, js"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.server.json",
-    "start": "node -r tsconfig-paths/register -r ts-node/register ./dist/media-server-service/src/index.js",
+    "build": "tsc",
+    "start": "node ./dist/index.js",
     "dev": "nodemon src/index.ts",
-    "lint": "eslint ./src/ --fix",
-    "lint:fix": "eslint ./src/ --fix",
-    "lint:watch": "npm run lint --watch",
     "format": "prettier --write \"src/**/*.ts\"",
-    "package:update": "ncu -u"
+    "lint": "eslint ./src/ --fix",
+    "lint:watch": "npm run lint --watch",
+    "package:update": "ncu -u",
+    "deps:check": "depcheck"
   },
   "dependencies": {
     "amqplib": "0.10.3",
     "axios": "0.27.2",
+    "shared-const": "workspace:*",
     "dotenv": "16.0.2",
     "livekit-server-sdk": "1.0.2",
-    "tsconfig-paths": "4.1.0",
-    "npm-check": "6.0.1",
+    "npm-check-updates": "16.3.4",
+    "shared": "workspace:*",
     "uuid": "9.0.0",
     "winston": "3.8.2"
   },

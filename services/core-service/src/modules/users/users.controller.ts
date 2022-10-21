@@ -8,17 +8,17 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { CommonUserDTO } from '../../dtos/common-user.dto';
 
 // shared
-import { UserBrokerPatterns } from '@shared/patterns/users';
+import { UserBrokerPatterns } from 'shared';
 import {
   INVALID_CREDENTIALS,
   INVALID_PASSWORD,
   NOT_MATCH_PASSWORD,
   SAME_RESET_PASSWORD,
   USER_NOT_FOUND,
-} from '@shared/const/errors/users';
-import { USER_TOKEN_NOT_FOUND } from '@shared/const/errors/tokens';
+} from 'shared';
+import { USER_TOKEN_NOT_FOUND } from 'shared';
 // const
-import { USERS_SERVICE } from '@shared/const/services.const';
+import { USERS_SERVICE } from 'shared';
 // mongo
 import {
   ITransactionSession,
@@ -35,12 +35,12 @@ import { UsersService } from './users.service';
 import { UserTokenService } from '../user-token/user-token.service';
 
 // types
-import { TokenTypes } from '@shared/const/tokens.const';
+import { TokenTypes } from 'shared';
 import { addMonthsCustom } from '../../utils/dates/addMonths';
 import { TasksService } from '../tasks/tasks.service';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
-import { plans } from '@shared/const/subscriptions.const';
+import { plans } from 'shared';
 import { addDaysCustom } from '../../utils/dates/addDaysCustom';
 import {
   ComparePasswordsPayload,
@@ -60,12 +60,9 @@ import {
   UserExistsPayload,
   ValidateVerificationCodePayload,
   VerifyPasswordPayload,
-} from '@shared/broker-payloads/users';
-import { AuthBrokerPatterns } from '@shared/patterns/auth';
-import {
-  LoginUserByEmailPayload,
-  SetResetPasswordTokenPayload,
-} from '@shared/broker-payloads/auth';
+} from 'shared';
+import { AuthBrokerPatterns } from 'shared';
+import { LoginUserByEmailPayload, SetResetPasswordTokenPayload } from 'shared';
 
 @Controller('users')
 export class UsersController {

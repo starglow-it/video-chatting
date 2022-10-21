@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { UserDocument } from './user.schema';
-import { ICommonMeetingInstance } from '@shared/interfaces/common-instance-meeting.interface';
+import { ICommonMeetingInstance } from 'shared';
 
 @Schema()
 export class MeetingInstance {

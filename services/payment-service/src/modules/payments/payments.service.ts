@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 
 @Injectable()
 export class PaymentsService {

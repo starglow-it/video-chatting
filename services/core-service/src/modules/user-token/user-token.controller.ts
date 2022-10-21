@@ -1,21 +1,18 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { UserTokenService } from './user-token.service';
-import { UserBrokerPatterns } from '@shared/patterns/users';
-import { TokenTypes } from '@shared/const/tokens.const';
+import { UserBrokerPatterns } from 'shared';
+import { TokenTypes } from 'shared';
 import { UsersService } from '../users/users.service';
 import { plainToInstance } from 'class-transformer';
 import { CommonUserDTO } from '../../dtos/common-user.dto';
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { USERS_SERVICE } from '@shared/const/services.const';
-import { AuthBrokerPatterns } from '@shared/patterns/auth';
-import {
-  AssignTokensToUserPayload,
-  LogOutUserPayload,
-} from '@shared/broker-payloads/auth';
-import { UserTokenExistsPayload } from '@shared/broker-payloads/users';
+import { USERS_SERVICE } from 'shared';
+import { AuthBrokerPatterns } from 'shared';
+import { AssignTokensToUserPayload, LogOutUserPayload } from 'shared';
+import { UserTokenExistsPayload } from 'shared';
 
 @Controller('user-token')
 export class UserTokenController {

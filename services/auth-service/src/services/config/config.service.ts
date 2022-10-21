@@ -1,4 +1,4 @@
-import { ConfigKeysType, IConfig } from '@shared/interfaces/config.interface';
+import { ConfigKeysType, IConfig } from 'shared';
 import { sendHttpRequest } from '../../utils/http/sendHttpRequest';
 
 export class ConfigClientService {

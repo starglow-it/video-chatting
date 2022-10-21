@@ -3,7 +3,6 @@
 
 .radioGroup {
   gap: rem(24px);
-  padding: rem(0 5px);
 }
 
 .icon {
@@ -12,6 +11,32 @@
 
 .label {
   margin: 0;
+  text-transform: capitalize;
+
+  &.active {
+    color: $primary-orange;
+  }
+}
+
+.variantItem {
+  position: relative;
+  cursor: pointer;
+  width: rem(45px);
+  height: rem(27px);
+
+  &.active {
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: rem(12px);
+      height: rem(12px);
+      background: $primary-orange;
+      border: 2px solid $primary-white;
+      border-radius: 50%;
+    }
+  }
 }
 
 .signBoardWrapper {
@@ -40,4 +65,18 @@
 
 .defaultSignWrapper {
   background: rgba($primary-black, 0.6);
+}
+
+.chooseVariant {
+  position: relative;
+  width: rem(36px);
+  height: rem(24px);
+  padding: rem(2px 8px);
+  background: rgba($normal-gray-scale, 0.6);
+  border-radius: rem(40px);
+  cursor: pointer;
+}
+
+.signBoardVariants {
+  padding: rem(12px 20px);
 }

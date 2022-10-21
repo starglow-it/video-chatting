@@ -40,7 +40,7 @@
   &.blocked {
     &:hover {
       &:after {
-        background: rgba(189, 200, 211, 0.25);
+        background: rgba($normal-gray-scale, 0.25);
       }
     }
   }

@@ -1,5 +1,17 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "moduleResolution": "node",
     "target": "es6",
     "module": "commonjs",
     "noImplicitAny": true,
@@ -11,15 +23,10 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": false,
     "esModuleInterop": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "typeRoots": ["./node_modules/@types", "./types"],
-    "outDir": "dist",
-    "paths": {
-      "@shared/*": ["../shared/*"]
-    }
   },
   "exclude": ["node_modules", "dist", "doc"],
-  "include": ["**/*.ts", "../shared/*/**.ts"]
+  "include": ["**/*.ts", "./src/index.ts"],
 }

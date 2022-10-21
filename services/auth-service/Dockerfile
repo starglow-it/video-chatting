@@ -1,20 +1,28 @@
-FROM node:18.7.0-alpine AS builder
+FROM node:18.9.1-alpine AS builder
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 WORKDIR /app
 
+RUN mkdir -p services/auth-service
+
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
 COPY ./shared ./shared
 
-RUN mkdir ./auth-service
+RUN pnpm add nx -D -w
 
-COPY ./auth-service/package*.json ./auth-service/
+COPY ./services/auth-service/package.json ./services/auth-service
 
-RUN npm ci --legacy-peer-deps --silent --prefix=/app/auth-service
+RUN pnpm install
 
-COPY ./auth-service ./auth-service/
+COPY ./services/auth-service ./services/auth-service
 
-RUN npm run build --prefix=/app/auth-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,auth-service
 
-FROM node:18.7.0-alpine
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -24,4 +32,4 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-CMD /wait && npm run start:prod --prefix=/app/auth-service
+CMD /wait && pnpm --filter auth-service start:prod

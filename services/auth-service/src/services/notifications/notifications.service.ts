@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { NOTIFICATIONS_PROVIDER } from '@shared/providers';
-import { NotificationsBrokerPatterns } from '@shared/broker-payloads/email';
+import { NOTIFICATIONS_PROVIDER, NotificationsBrokerPatterns } from 'shared';
 
 @Injectable()
 export class NotificationsService {

@@ -1,24 +1,34 @@
-FROM node:18.7.0-alpine AS builder
+FROM node:18.9.1-alpine AS builder
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 RUN apk update
 RUN apk upgrade
 RUN apk add --no-cache git
+RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache g++ make
 
 WORKDIR /app
 
+RUN mkdir -p services/media-server-service
+
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
 COPY ./shared ./shared
 
-RUN mkdir ./media-server-service
+RUN pnpm add nx -D -w
 
-COPY ./media-server-service/package*.json ./media-server-service/
+COPY ./services/media-server-service/package.json ./services/media-server-service
 
-RUN npm ci --legacy-peer-deps --silent --prefix=/app/media-server-service
+RUN pnpm install
 
-COPY ./media-server-service ./media-server-service/
+COPY ./services/media-server-service ./services/media-server-service
 
-RUN npm run build --prefix=/app/media-server-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,media-server-service
 
-FROM node:18.7.0-alpine
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -28,4 +38,4 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-CMD /wait && npm run start --prefix=/app/media-server-service
+CMD /wait && pnpm --filter media-server-service start

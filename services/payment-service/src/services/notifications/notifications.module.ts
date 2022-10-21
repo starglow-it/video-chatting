@@ -5,7 +5,7 @@ import {
   ClientProvider,
 } from '@nestjs/microservices';
 
-import { NOTIFICATIONS_PROVIDER } from '@shared/providers';
+import { NOTIFICATIONS_PROVIDER } from 'shared';
 
 // modules
 import { ConfigModule } from '../config/config.module';

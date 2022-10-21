@@ -256,8 +256,8 @@ sample({
         options: {
             stream: sharingStream ?? data,
             onTrackEnded: () => {
-                updateMeetingSocketEvent({ sharingUserId: null })
-            }
+                updateMeetingSocketEvent({ sharingUserId: null });
+            },
         },
     }),
     target: createPeerConnectionFx,

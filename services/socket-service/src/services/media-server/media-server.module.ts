@@ -5,7 +5,7 @@ import {
   ClientsModule,
   Transport,
 } from '@nestjs/microservices';
-import { MEDIA_SERVER_PROVIDER } from '@shared/providers';
+import { MEDIA_SERVER_PROVIDER } from 'shared';
 import { ConfigModule } from '../config/config.module';
 import { ConfigClientService } from '../config/config.service';
 

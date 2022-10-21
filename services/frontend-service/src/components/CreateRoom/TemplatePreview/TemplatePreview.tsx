@@ -50,7 +50,7 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
     );
 
     const tagsChips = useMemo(
-        () => tags.map((tag: string) => <TagItem className={styles.tag}>{tag}</TagItem>),
+        () => tags.map(tag => <TagItem color={tag.color}>{tag.label}</TagItem>),
         [tags],
     );
 
@@ -63,7 +63,9 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
                     translation="preview.about"
                     className={styles.title}
                 />
-                <CustomTypography variant="body2">{description}</CustomTypography>
+                <CustomTypography className={styles.description} variant="body2">
+                    {description}
+                </CustomTypography>
                 <CustomDivider className={styles.divider} />
                 <CustomTypography variant="body2" className={styles.link}>
                     {`${frontendConfig.frontendUrl}/.../${customLink || templateId}`}
@@ -109,7 +111,7 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
             >
                 <ActionButton
                     variant="gray"
-                    Icon={<ArrowLeftIcon width="24px" height="24px" />}
+                    Icon={<ArrowLeftIcon width="32px" height="32px" />}
                     className={styles.actionButton}
                     onAction={onPreviousStep}
                 />

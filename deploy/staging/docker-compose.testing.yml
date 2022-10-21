@@ -206,11 +206,11 @@ services:
     networks:
       - liveoffice_test
 
-  notifications-service:
-    container_name: testing_notifications
+  notification-service:
+    container_name: testing_notification
     build:
       context: ../../services
-      dockerfile: ./notifications-service/Dockerfile
+      dockerfile: ./notification-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -304,6 +304,8 @@ services:
       - SUPPORT_SCALING
       - NUMBER_OF_ACTIVE_SERVERS
       - SUPPORT_EMAIL
+      - ADMIN_EMAIL
+      - ADMIN_PASSWORD
     ports:
       - "4200:4000"
     networks:

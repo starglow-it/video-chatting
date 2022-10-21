@@ -4,12 +4,12 @@ import {
   ClientsModule,
   ClientProvider,
 } from '@nestjs/microservices';
-import { ConfigModule } from '@nestjs/config';
 
 import { ScalingService } from './scaling.service';
 import { ConfigClientService } from '../config/config.service';
 
-import { SCALING_PROVIDER } from '@shared/providers';
+import { SCALING_PROVIDER } from 'shared';
+import {ConfigModule} from "../config/config.module";
 
 @Module({
   imports: [

@@ -1,4 +1,5 @@
 import * as ffmpeg from 'fluent-ffmpeg';
+import { v4 as uuidv4 } from 'uuid';
 
 const resolutions = [
   { key: '1080p', value: '1920x1080' },
@@ -29,13 +30,13 @@ export const getScreenShots = async (
 
       ffmpeg(inputPath)
         .on('end', function () {
-          resolve(`${outputPath}/${resolution.key}.png`);
+          resolve(`${outputPath}/${uuidv4()}_${resolution.key}.png`);
         })
         .on('error', function (err) {
           reject(err);
         })
         .outputOptions(options)
-        .output(`${outputPath}/${resolution.key}.png`)
+        .output(`${outputPath}/${uuidv4()}_${resolution.key}.png`)
         .run();
     });
   });

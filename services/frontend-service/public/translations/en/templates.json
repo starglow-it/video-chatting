@@ -32,6 +32,11 @@
     "text": "You will lose all related data and custom settings \n (default settings are available any time)",
     "textPublicTemplate": "The Room will be deleted from your Rooms and from The Live Office library. However, it will stay available for people who added it to their Rooms"
   },
+  "signBoards": {
+    "chooseVariant": {
+      "title": "Select color"
+    }
+  },
   "noSignBoard": "No Sign",
   "scheduleMeeting": {
     "noEmails": "You have not added users",

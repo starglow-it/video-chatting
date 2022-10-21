@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, {memo, useCallback, useEffect, useMemo, useRef} from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
@@ -39,6 +39,7 @@ import {
     toggleMeetingInfoOpen,
     $meetingTemplateStore,
 } from '../../../store/roomStores';
+import {SIGN_BOARDS} from "../../../const/signBoards";
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -64,9 +65,9 @@ const Component = () => {
 
     const { isMobile } = useBrowserDetect();
 
-    const targetSignBoard = isOwner ? signBoard : meetingTemplate.signBoard;
+    const targetSignBoardKey = isOwner ? signBoard : meetingTemplate.signBoard;
 
-    const isThereSignBoard = !isMobile && targetSignBoard && targetSignBoard !== 'default';
+    const isThereSignBoard = !isMobile && targetSignBoardKey && targetSignBoardKey !== 'default';
 
     const companyName = useWatch({
         control,
@@ -95,6 +96,9 @@ const Component = () => {
         }
     }, []);
 
+    const targetSignBoard = useMemo(() => SIGN_BOARDS
+            .find(signs => signs.find(board => board.value === targetSignBoardKey))?.find(board => board.value === targetSignBoardKey), [targetSignBoardKey]);
+
     return (
         <CustomGrid
             container
@@ -102,7 +106,7 @@ const Component = () => {
             className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
         >
             <ConditionalRender condition={isThereSignBoard}>
-                <Image src={`/images/boards/${targetSignBoard}.png`} width="360px" height="244px" />
+                <Image src={`/images/boards/${targetSignBoard?.type}/${targetSignBoard?.value}.png`} width="225px" height="133px" />
             </ConditionalRender>
             <CustomGrid
                 gap={1}

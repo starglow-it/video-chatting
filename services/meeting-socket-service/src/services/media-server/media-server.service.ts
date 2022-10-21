@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MEDIA_SERVER_PROVIDER } from '@shared/providers';
+import { MEDIA_SERVER_PROVIDER } from 'shared';
 import { ClientProxy } from '@nestjs/microservices';
-import { MeetingBrokerPatterns } from '@shared/patterns/meetings';
-import { GetMediaServerTokenPayload } from '@shared/broker-payloads/meetings';
+import { MeetingBrokerPatterns } from 'shared';
+import { GetMediaServerTokenPayload } from 'shared';
 
 @Injectable()
 export class MediaServerService {

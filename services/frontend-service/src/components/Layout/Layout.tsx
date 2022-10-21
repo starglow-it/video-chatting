@@ -2,6 +2,7 @@ import React, { memo, PropsWithChildren, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
+import dynamic from "next/dynamic";
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -17,8 +18,7 @@ import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 
 // components
 import { AuthenticationLink } from '@components/AuthenticationLink/AuthenticationLink';
-// import { TimeLimitNotification } from '@components/TimeLimitNotification/TimeLimitNotification';
-// import { TimeLimitWarning } from '@components/TimeLimitWarning/TimeLimitWarning';
+
 import { Footer } from '@components/Footer/Footer';
 
 // types
@@ -42,6 +42,14 @@ import {
 
 // styles
 import styles from './Layout.module.scss';
+
+const TimeLimitNotification = dynamic(() => import('@components/TimeLimitNotification/TimeLimitNotification'), {
+    ssr: false,
+});
+
+const TimeLimitWarning = dynamic(() => import('@components/TimeLimitWarning/TimeLimitWarning'), {
+    ssr: false,
+});
 
 const ROUTES_WITHOUT_FOOTER: string[] = [roomRoute, createRoomRoute, editRoomRoute];
 
@@ -85,13 +93,13 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                 [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
             })}
         >
-            {/* <ConditionalRender condition={isMeetingRoute || isDashboardRoute}> */}
-            {/*    <TimeLimitNotification /> */}
-            {/* </ConditionalRender> */}
+             <ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
+                <TimeLimitNotification />
+             </ConditionalRender>
 
-            {/* <ConditionalRender condition={isMeetingRoute}> */}
-            {/*    <TimeLimitWarning /> */}
-            {/* </ConditionalRender> */}
+             <ConditionalRender condition={isMeetingRoute}>
+                <TimeLimitWarning />
+             </ConditionalRender>
 
             <CustomGrid
                 container

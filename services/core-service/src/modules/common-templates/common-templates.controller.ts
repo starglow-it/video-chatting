@@ -1,16 +1,16 @@
 import { Controller } from '@nestjs/common';
-import { Connection } from 'mongoose';
+import { Connection, UpdateQuery } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import { TemplateBrokerPatterns } from '@shared/patterns/templates';
-import { TEMPLATES_SERVICE } from '@shared/const/services.const';
+import { TemplateBrokerPatterns } from 'shared';
+import { TEMPLATES_SERVICE } from 'shared';
 
 // types
-import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
-import { EntityList } from '@shared/types/utils/http/list.type';
+import { ICommonTemplate } from 'shared';
+import { EntityList } from 'shared';
 
 // dtos
 import { CommonTemplateDTO } from '../../dtos/common-template.dto';
@@ -28,8 +28,12 @@ import {
   AddTemplateToUserPayload,
   GetCommonTemplatePayload,
   GetCommonTemplatesPayload,
-} from '@shared/broker-payloads/templates';
+  CreateTemplatePayload,
+  EditTemplatePayload,
+  UploadTemplateFilePayload,
+} from 'shared';
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
+import { CommonTemplateDocument } from '../../schemas/common-template.schema';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -148,11 +152,12 @@ export class CommonTemplatesController {
         await this.commonTemplatesService.findCommonTemplate({
           query: { _id: data.templateId },
           session,
+          populatePaths: ['businessCategories'],
         });
 
       const targetUser = await this.usersService.findUser({
         query: {
-          userId: data.userId,
+          _id: data.userId,
         },
         session,
         populatePaths: ['socials', 'languages', 'templates'],
@@ -183,6 +188,7 @@ export class CommonTemplatesController {
         isAudioAvailable: targetTemplate.isAudioAvailable,
         links: targetTemplate.links,
         signBoard: targetUser.signBoard,
+        author: targetTemplate.author,
       };
 
       const [userTemplate] = await this.userTemplatesService.createUserTemplate(
@@ -203,8 +209,8 @@ export class CommonTemplatesController {
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.UploadTemplateFile })
   async uploadTemplateFile(
-    @Payload() data: { url: string; id: string; mimeType: string },
-  ) {
+    @Payload() data: UploadTemplateFilePayload,
+  ): Promise<void> {
     const { url, id, mimeType } = data;
 
     const previewImages = await this.commonTemplatesService.generatePreviews({
@@ -215,22 +221,22 @@ export class CommonTemplatesController {
 
     const imageIds = previewImages.map((image) => image._id);
 
-    return this.commonTemplatesService.updateCommonTemplate({
+    await this.commonTemplatesService.updateCommonTemplate({
       query: {
         _id: id,
       },
       data: {
-        $set: {
-          templateType: mimeType.includes('image') ? 'image' : 'video',
-          draftPreviewUrls: imageIds,
-          draftUrl: url,
-        },
+        templateType: mimeType.includes('image') ? 'image' : 'video',
+        draftPreviewUrls: imageIds,
+        draftUrl: url,
       },
     });
+
+    return;
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.CreateTemplate })
-  async createTemplate(@Payload() data: { userId: string }) {
+  async createTemplate(@Payload() data: CreateTemplatePayload) {
     return withTransaction(this.connection, async (session) => {
       const template = await this.commonTemplatesService.createCommonTemplate({
         data: {
@@ -247,52 +253,47 @@ export class CommonTemplatesController {
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.UpdateTemplate })
-  async editTemplate(
-    @Payload()
-    {
-      templateId,
-      data,
-    }: {
-      templateId: ICommonTemplate['id'];
-      data: Omit<Partial<ICommonTemplate>, 'businessCategories'> & {
-        businessCategories: string[];
-      };
-    },
-  ) {
+  async editTemplate(@Payload() { templateId, data }: EditTemplatePayload) {
     return withTransaction(this.connection, async (session) => {
       const { businessCategories, ...restData } = data;
 
-      const businessCategoriesPromises = await Promise.all(
-        businessCategories?.map(async (category) => {
-          const [existingCategory] = await this.businessCategoriesService.find({
-            query: { key: category },
-            session,
-          });
-          return (
-            existingCategory ??
-            this.businessCategoriesService.create({
-              key: category,
-              value: category,
-              color: '#000000',
-            })
-          );
-        }) ?? [],
-      );
+      const updateData: UpdateQuery<CommonTemplateDocument> = {
+        ...restData,
+        draftUrl: '',
+        draftPreviewUrls: [],
+      };
 
-      const ids = businessCategoriesPromises.map(({ _id }) => _id);
+      if ('businessCategories' in data) {
+        const businessCategoriesPromises = await Promise.all(
+          businessCategories?.map(async (category) => {
+            const [existingCategory] =
+              await this.businessCategoriesService.find({
+                query: { key: category.key },
+                session,
+              });
+
+            if (existingCategory) {
+              return existingCategory;
+            }
+
+            return this.businessCategoriesService.create({
+              key: category.key,
+              value: category.value,
+              color: category.color,
+            });
+          }) ?? [],
+        );
+
+        updateData.businessCategories = businessCategoriesPromises.map(
+          ({ _id }) => _id,
+        );
+      }
 
       const template = await this.commonTemplatesService.updateCommonTemplate({
         query: {
           _id: templateId,
         },
-        data: {
-          $set: {
-            ...restData,
-            businessCategories: ids,
-            draftUrl: '',
-            draftPreviewUrls: [],
-          },
-        },
+        data: updateData,
         session,
       });
 

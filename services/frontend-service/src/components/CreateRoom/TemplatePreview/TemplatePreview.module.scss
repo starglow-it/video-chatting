@@ -20,6 +20,10 @@
   margin: rem(0 0 4px);
 }
 
+.description {
+  word-break: break-all;
+}
+
 .divider {
   margin: rem(16px 0);
 }
@@ -27,10 +31,6 @@
 .link {
   width: 100%;
   margin: rem(0 0 8px);
-}
-
-.tag {
-  color: $primary-black;
 }
 
 .participants {
@@ -57,8 +57,6 @@
     width: rem(50px);
     height: rem(50px);
     border-radius: rem(12px);
-    .icon {
-      transform: scaleX(-1);
-    }
+    padding: rem(6px);
   }
 }

@@ -20,7 +20,7 @@ import { AwsConnectorService } from '../../services/aws-connector/aws-connector.
 import { CountersService } from '../counters/counters.service';
 
 // const
-import { Counters } from '@shared/const/counters.const';
+import { Counters } from 'shared';
 
 // helpers
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
@@ -29,7 +29,7 @@ import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types/custom';
 
 // const
-import { DEFAULT_TEMPLATE_DATA } from '@shared/const/template-draft-data';
+import { DEFAULT_TEMPLATE_DATA } from 'shared';
 
 // utils
 import { getScreenShots } from '../../utils/images/getScreenShots';
@@ -155,14 +155,14 @@ export class CommonTemplatesService {
     data: UpdateQuery<CommonTemplateDocument>;
     session?: ITransactionSession;
     populatePaths?: QueryOptions['populate'];
-  }) {
+  }): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,
       new: true,
     };
 
-    return this.commonTemplate.updateOne(query, data, options);
+    return this.commonTemplate.updateOne(query, data, options).exec();
   }
 
   async generatePreviews({
@@ -186,7 +186,7 @@ export class CommonTemplatesService {
       key: new RegExp(`^templates/images/${id}`),
     });
 
-    await this.awsService.deleteResource(`templates/images/${id}`);
+    await this.awsService.deleteFolder(`templates/images/${id}`);
 
     const uploadedImagesPromises = imagesPaths.map(async (image) => {
       const resolution = image.match(/(\d*)p\./);

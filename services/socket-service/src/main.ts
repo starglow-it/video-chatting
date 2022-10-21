@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { ValidationExceptionFilter } from './filters/validation-exception.filter';
 import { ValidationException } from './exceptions/validation.exception';
-import { IConfig } from '@shared/interfaces/config.interface';
+import { IConfig } from 'shared';
 import { ConfigClientService } from './services/config/config.service';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 

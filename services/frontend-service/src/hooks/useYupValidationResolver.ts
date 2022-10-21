@@ -51,7 +51,7 @@ export const useYupValidationResolver = <Values>(
                                 options?.reduceArrayErrors
                             ) {
                                 errorKey = (errorKey as string).replace(
-                                    /\[\d*]/,
+                                    /\[\d*].*/,
                                     '',
                                 ) as keyof Values;
                             }

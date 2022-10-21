@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
-import { ILanguage } from '@shared/interfaces/common-language.interface';
-import { ISocialLink } from '@shared/interfaces/common-social-link.interface';
-import { IProfileAvatar } from '@shared/interfaces/profile-avatar.interface';
+import { ICommonUserDTO } from 'shared';
+import { IBusinessCategory } from 'shared';
+import { ILanguage } from 'shared';
+import { ISocialLink } from 'shared';
+import { IProfileAvatar } from 'shared';
 
 export class CommonUserRestDTO implements ICommonUserDTO {
   @Expose()
@@ -16,6 +16,7 @@ export class CommonUserRestDTO implements ICommonUserDTO {
   email: string;
 
   password: string;
+  role: string;
 
   @Expose()
   @ApiProperty()

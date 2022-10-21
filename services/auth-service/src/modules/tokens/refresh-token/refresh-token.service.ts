@@ -1,14 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { JWT_REFRESH_EXPIRE_IN_TIMESTAMP } from '@shared/const/jwt.const';
-import { TokenPayloadType } from '@shared/types/token-payload.type';
-import { TokenTypes } from '@shared/const/tokens.const';
-import { IToken } from '@shared/interfaces/token.interface';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import {
+  AUTH_SERVICE,
+  JWT_REFRESH_EXPIRE_IN_TIMESTAMP,
+  TokenPayloadType,
+  TokenTypes,
+  IToken,
+  ICommonUserDTO,
+  NOT_VALID_TOKEN,
+} from 'shared';
 import { RpcException } from '@nestjs/microservices';
-import { NOT_VALID_TOKEN } from '@shared/const/errors/tokens';
-import { AUTH_SERVICE } from '@shared/const/services.const';
 
 @Injectable()
 export class RefreshTokenService {

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
-import { TokenPairWithUserType } from '@shared/types/token-pair-with-user.type';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import {
+  TokenPairWithUserType,
+  ICommonUserDTO,
+  TokenTypes,
+  TokenPayloadType,
+  IToken,
+} from 'shared';
 import { TokensService } from '../tokens/tokens.service';
-import { TokenTypes } from '@shared/const/tokens.const';
-import { TokenPayloadType } from '@shared/types/token-payload.type';
-import { IToken } from '@shared/interfaces/token.interface';
 
 @Injectable()
 export class AuthService {

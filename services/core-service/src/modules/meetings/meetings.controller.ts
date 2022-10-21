@@ -5,8 +5,8 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToClass, plainToInstance } from 'class-transformer';
 
 // const
-import { MeetingBrokerPatterns } from '@shared/patterns/meetings';
-import { CORE_SERVICE } from '@shared/const/services.const';
+import { MeetingBrokerPatterns } from 'shared';
+import { CORE_SERVICE } from 'shared';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
@@ -30,7 +30,7 @@ import {
   GetMeetingInstancePayload,
   GetMeetingPayload,
   UpdateMeetingInstancePayload,
-} from '@shared/broker-payloads/meetings';
+} from 'shared';
 
 @Controller('meetings')
 export class MeetingsController {

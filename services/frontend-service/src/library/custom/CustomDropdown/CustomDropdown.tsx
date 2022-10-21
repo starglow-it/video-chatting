@@ -50,6 +50,9 @@ const Component: React.FunctionComponent<CustomDropdownProps> = (
                     placeholder,
                 }}
                 MenuProps={{
+                    classes: {
+                        paper: styles.paper,
+                    },
                     PopoverClasses: {
                         root: styles.popover,
                     },

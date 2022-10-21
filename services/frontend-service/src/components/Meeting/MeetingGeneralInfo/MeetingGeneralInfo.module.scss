@@ -4,13 +4,13 @@
 
 .profileInfo {
   position: absolute;
-  width: rem(360px);
+  width: rem(225px);
   top: rem(20px);
   left: rem(20px);
   z-index: 1;
 
   &.withBoard {
-    height: rem(244px);
+    height: rem(133px);
     top: 0;
     left: 0;
 

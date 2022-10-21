@@ -1,0 +1,5 @@
+# Ignore artifacts:
+coverage
+tsconfig.json
+node_modules
+.next

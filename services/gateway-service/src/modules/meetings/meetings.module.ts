@@ -15,7 +15,7 @@ import { TemplatesModule } from '../templates/templates.module';
 import { MediaServerModule } from '../../services/media-server/media-server.module';
 
 // const
-import { JWT_ACCESS_EXPIRE } from '@shared/const/jwt.const';
+import { JWT_ACCESS_EXPIRE } from 'shared';
 import { ScalingModule } from '../../services/scaling/scaling.module';
 
 @Module({

@@ -3,12 +3,12 @@ import { ParsedTimeStamp } from '../../types';
 
 export type EditUserTemplatePayload = {
     templateId: UserTemplate['id'];
-    data: Omit<Partial<UserTemplate>, 'id' | 'previewUrls' | 'businessCategories'>;
+    data: Omit<Partial<UserTemplate>, 'id' | 'previewUrls'>;
 };
 export type EditUserTemplateResponse = UserTemplate | null;
 export type EditTemplatePayload = {
     templateId: Template['id'];
-    data: Omit<Partial<Template>, 'id' | 'businessCategories' | 'previewUrls'>;
+    data: Omit<Partial<Template>, 'id' | 'previewUrls'>;
 };
 export type EditTemplateResponse = Template | null;
 export type CreateTemplateResponse = Template | null | undefined;

@@ -10,7 +10,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IUpdateTemplate } from '@shared/interfaces/update-template.interface';
+import { IUpdateTemplate, IBusinessCategory } from 'shared';
 
 class SocialsDTO {
   @IsOptional()
@@ -42,6 +42,21 @@ class SocialsDTO {
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
   custom: string;
+}
+
+class BusinessCategoryDTO {
+  @IsOptional()
+  @IsString({ message: 'Id must be string ' })
+  id?: string;
+
+  @IsString({ message: 'Key must be string ' })
+  key: string;
+
+  @IsString({ message: 'Value must be string ' })
+  value: string;
+
+  @IsString({ message: 'Color must be string ' })
+  color: string;
 }
 
 export class UpdateTemplateRequest implements IUpdateTemplate {
@@ -88,8 +103,10 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   templateCurrency: string;
 
   @IsOptional()
-  @IsString({ message: 'Business category must be string', each: true })
-  businessCategories: string[];
+  @IsObject({ message: 'Business category must be object', each: true })
+  @Type(() => BusinessCategoryDTO)
+  @ValidateNested()
+  businessCategories: IBusinessCategory[];
 
   @IsOptional()
   @IsString({ message: 'Language must be string', each: true })

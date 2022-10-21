@@ -3,7 +3,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { MenuItem } from '@mui/material';
 
-// stores
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -17,9 +16,14 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
 import { ArrowDownIcon } from '@library/icons/ArrowDownIcon';
+import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
 
 // types
 import { EditTemplateDescriptionProps } from '@components/CreateRoom/EditTemplateDescription/types';
+import { AutocompleteType } from '@library/custom/CustomAutocomplete/types';
+import { BusinessCategory } from '../../../store/types';
+
+// stores
 import { $businessCategoriesStore, getBusinessCategoriesFx } from '../../../store';
 
 // const
@@ -32,6 +36,10 @@ import frontendConfig from '../../../const/config';
 
 // styles
 import styles from './EditTemplateDescription.module.scss';
+
+// utils
+import { getRandomHexColor } from '../../../utils/colors/getRandomHexColor';
+import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
 
 const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER }, (_, i) => ({
     id: `${i + 1}`,
@@ -46,12 +54,14 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
         control,
         trigger,
         setError,
+        setValue,
         formState: { errors },
     } = useFormContext();
 
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
     const templateId = useWatch({ control, name: 'templateId' });
+    const tags = useWatch({ control, name: 'tags' });
 
     const participantsNumber = useWatch({
         control,
@@ -63,6 +73,30 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
             getBusinessCategoriesFx({});
         })();
     }, []);
+
+    useEffect(() => {
+        if (
+            !tags.find(
+                (value: AutocompleteType<BusinessCategory> | string) => typeof value === 'string',
+            )
+        ) {
+            return;
+        }
+        setValue(
+            'tags',
+            tags.map((item: AutocompleteType<BusinessCategory> | string) =>
+                typeof item === 'string'
+                    ? {
+                          label: item,
+                          key: generateKeyByLabel(item),
+                          value: item,
+                          color: getRandomHexColor(50, 220),
+                      }
+                    : item,
+            ),
+        );
+        trigger('tags');
+    }, [tags]);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger(['name', 'description', 'tags', 'customLink']);
@@ -118,6 +152,11 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
             startAdornment: <CustomLinkIcon width="24px" height="24px" />,
         }),
         [],
+    );
+
+    const businessCategoriesOptions = useMemo(
+        () => businessCategories.list.map(item => ({ ...item, label: item.key })),
+        [businessCategories.list],
     );
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
@@ -188,13 +227,13 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         translation="editDescription.form.tags"
                         className={styles.label}
                     />
-                    <CustomAutocomplete
+                    <CustomAutocomplete<AutocompleteType<BusinessCategory>>
                         multiple
                         freeSolo
                         includeInputInList
                         disableClearable
                         autoHighlight
-                        options={businessCategories.list.map(tag => tag.value)}
+                        options={businessCategoriesOptions}
                         control={control}
                         name="tags"
                         autoComplete
@@ -236,13 +275,13 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
             >
                 <ActionButton
                     variant="gray"
-                    Icon={<ArrowLeftIcon width="24px" height="24px" />}
+                    Icon={<ArrowLeftIcon width="32px" height="32px" />}
                     className={styles.actionButton}
                     onAction={onPreviousStep}
                 />
                 <ActionButton
                     variant="accept"
-                    Icon={<ArrowLeftIcon width="24px" height="24px" className={styles.icon} />}
+                    Icon={<ArrowRightIcon width="32px" height="32px" />}
                     className={styles.actionButton}
                     onAction={handleClickNextStep}
                 />

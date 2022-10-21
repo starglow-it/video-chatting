@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { SCALING_PROVIDER } from '@shared/providers';
-import { ScalingBrokerPatterns } from '@shared/patterns/scaling';
-import { WaitForAvailableServerPayload } from '@shared/broker-payloads/meetings';
+import { SCALING_PROVIDER } from 'shared';
+import { ScalingBrokerPatterns } from 'shared';
+import { WaitForAvailableServerPayload } from 'shared';
 
 @Injectable()
 export class ScalingService {

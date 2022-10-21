@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { TemplateBrokerPatterns } from '@shared/patterns/templates';
+import { TemplateBrokerPatterns } from 'shared';
 import { CoreService } from '../../services/core/core.service';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
-import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
-import { EntityList } from '@shared/types/utils/http/list.type';
+import { IUserTemplate } from 'shared';
+import { ICommonTemplate } from 'shared';
+import { EntityList } from 'shared';
 import {
   CreateUserTemplateByIdPayload,
   DeleteUsersTemplatesPayload,
@@ -15,7 +15,7 @@ import {
   GetUserTemplatePayload,
   GetUserTemplatesPayload,
   UpdateUserTemplatePayload,
-} from '@shared/broker-payloads/templates';
+} from 'shared';
 
 @Injectable()
 export class TemplatesService {

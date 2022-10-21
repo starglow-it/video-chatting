@@ -12,6 +12,7 @@ import { UserVideoStub } from '@components/CreateRoom/EditAttendeesPosition/User
 
 // icons
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
 
 // types
 import { EditAttendeesPositionProps } from '@components/CreateRoom/EditAttendeesPosition/types';
@@ -88,13 +89,13 @@ const Component = ({ onNextStep, onPreviousStep }: EditAttendeesPositionProps) =
             >
                 <ActionButton
                     variant="gray"
-                    Icon={<ArrowLeftIcon width="24px" height="24px" />}
+                    Icon={<ArrowLeftIcon width="32px" height="32px" />}
                     className={styles.actionButton}
                     onAction={onPreviousStep}
                 />
                 <ActionButton
                     variant="accept"
-                    Icon={<ArrowLeftIcon width="24px" height="24px" className={styles.icon} />}
+                    Icon={<ArrowRightIcon width="32px" height="32px" />}
                     className={styles.actionButton}
                     onAction={onNextStep}
                 />

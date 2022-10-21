@@ -21,17 +21,17 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { ResponseSumType } from '@shared/response/common.response';
-import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
-import { EntityList } from '@shared/types/utils/http/list.type';
+import { ResponseSumType } from 'shared';
+import { ICommonTemplate } from 'shared';
+import { EntityList } from 'shared';
 import { TemplatesService } from './templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '../upload/upload.service';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { CoreService } from '../../services/core/core.service';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
+import { IUserTemplate, IUpdateTemplate } from 'shared';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-import { IUpdateTemplate } from '@shared/interfaces/update-template.interface';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('templates')
 export class TemplatesController {
@@ -138,10 +138,8 @@ export class TemplatesController {
       }
 
       if (file) {
-        const { fileName, extension } = getFileNameAndExtension(
-          file.originalname,
-        );
-        const uploadKey = `templates/videos/${templateId}/${fileName}.${extension}`;
+        const { extension } = getFileNameAndExtension(file.originalname);
+        const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
 
         await this.uploadService.deleteFolder(`templates/videos/${templateId}`);
 

@@ -20,14 +20,14 @@ import {
 import { generateVerificationCode } from '../../utils/generateVerificationCode';
 
 // shared
-import { ResponseSumType } from '@shared/response/common.response';
+import { ResponseSumType } from 'shared';
 
 // const
-import { emailTemplates } from '@shared/const/email-templates.const';
-import { SAME_PASSWORD, USER_EXISTS } from '@shared/const/errors/users';
+import { emailTemplates } from 'shared';
+import { SAME_PASSWORD, USER_EXISTS } from 'shared';
 
 // interfaces
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';

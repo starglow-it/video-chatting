@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { ILanguage } from '@shared/interfaces/common-language.interface';
+import { ILanguage } from 'shared';
 
 export class CommonLanguageDTO implements ILanguage {
   @Expose()

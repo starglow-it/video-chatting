@@ -2,9 +2,9 @@ import { Expose, Transform, Type } from 'class-transformer';
 
 import { ProfileAvatarDTO } from './profile-avatar.dto';
 
-import { IProfileAvatar } from '@shared/interfaces/profile-avatar.interface';
-import { ITemplateUser } from '@shared/interfaces/template-user.interface';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { IProfileAvatar } from 'shared';
+import { ITemplateUser } from 'shared';
+import { ICommonUserDTO } from 'shared';
 
 export class TemplateUserDTO implements ITemplateUser {
   @Expose()

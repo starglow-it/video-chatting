@@ -1,17 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from '@shared/providers';
-import { UserBrokerPatterns } from '@shared/patterns/users';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
+import { CORE_PROVIDER } from 'shared';
+import { UserBrokerPatterns } from 'shared';
+import { ICommonUserDTO } from 'shared';
+import { IUserTemplate } from 'shared';
 import {
   FindUserByIdPayload,
   FindUsersByIdPayload,
   UpdateUserPayload,
-} from '@shared/broker-payloads/users';
-import { TemplateBrokerPatterns } from '@shared/patterns/templates';
-import { GetUserTemplateByIdPayload } from '@shared/broker-payloads/templates';
+} from 'shared';
+import { TemplateBrokerPatterns } from 'shared';
+import { GetUserTemplateByIdPayload } from 'shared';
 
 @Injectable()
 export class CoreService {

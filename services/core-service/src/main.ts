@@ -5,7 +5,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 
 // interfaces
-import { IConfig } from '@shared/interfaces/config.interface';
+import { IConfig } from 'shared';
 
 // service
 import { ConfigClientService } from './services/config/config.service';
@@ -28,7 +28,7 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: [
-          `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`,
+          `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqCoreHost}:${config.rabbitMqCorePort}`,
         ],
         queue: config.rabbitMqCoreQueue,
         queueOptions: {
@@ -44,6 +44,7 @@ async function bootstrap() {
   await seeder.seedLanguages();
   await seeder.createCounter();
   await seeder.seedCommonTemplates();
+  await seeder.seedAdminUser();
 
   usersController.startCheckSubscriptions();
   return;

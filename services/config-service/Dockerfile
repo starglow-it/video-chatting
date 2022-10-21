@@ -1,27 +1,31 @@
-FROM node:18.7.0-alpine AS builder
+FROM node:18.9.1-alpine AS builder
 
-RUN apk update
-RUN apk upgrade
-RUN apk add --no-cache git
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 WORKDIR /app
 
+RUN mkdir -p services/config-service
+
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
 COPY ./shared ./shared
 
-RUN mkdir ./config-service
+RUN pnpm add nx -D -w
 
-COPY ./config-service/package*.json ./config-service/
+COPY ./services/config-service/package.json ./services/config-service
 
-RUN npm ci --legacy-peer-deps --silent --prefix=/app/config-service
+RUN pnpm install
 
-COPY ./config-service ./config-service/
+COPY ./services/config-service ./services/config-service
 
-RUN npm run build --prefix=/app/config-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,config-service
 
-FROM node:18.7.0-alpine
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 WORKDIR /app
 
 COPY --from=builder /app ./
 
-CMD ["npm", "run", "--prefix", "/app/config-service", "start"]
+CMD ["pnpm", "--filter", "config-service", "start"]

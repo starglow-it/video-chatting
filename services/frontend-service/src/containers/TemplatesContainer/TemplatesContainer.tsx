@@ -71,6 +71,7 @@ const Component = () => {
     const router = useRouter();
 
     const profileTemplates = useStore($profileTemplatesStore);
+
     const templates = useStore($templatesStore);
     const skipProfileTemplates = useStore($skipProfileTemplates);
     const profile = useStore($profileStore);

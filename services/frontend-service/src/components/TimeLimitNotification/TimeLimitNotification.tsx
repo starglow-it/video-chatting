@@ -133,4 +133,6 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     );
 };
 
-export const TimeLimitNotification = memo(Component);
+const TimeLimitNotification = memo(Component);
+
+export default TimeLimitNotification;

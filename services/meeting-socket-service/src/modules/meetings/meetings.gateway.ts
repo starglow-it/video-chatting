@@ -18,7 +18,7 @@ import { UsersService } from '../users/users.service';
 import { TasksService } from '../tasks/tasks.service';
 import { CoreService } from '../../services/core/core.service';
 
-import { ResponseSumType } from '@shared/response/common.response';
+import { ResponseSumType } from 'shared';
 
 import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
 import { JoinMeetingRequestDTO } from '../../dtos/requests/join-meeting.dto';
@@ -32,7 +32,7 @@ import { UpdateMeetingRequestDTO } from '../../dtos/requests/update-meeting.dto'
 
 import { AccessStatusEnum } from '../../types/accessStatus.enum';
 import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
-import { MeetingSoundsEnum } from '@shared/types/meeting-sounds.enum';
+import { MeetingSoundsEnum } from 'shared';
 
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import {
@@ -255,93 +255,98 @@ export class MeetingsGateway
         enableImplicitConversion: true,
       });
 
-      const profileUser = await this.coreService.findUserById({
-        userId: template.user.id,
-      });
-
-      if (user?.accessStatus === AccessStatusEnum.InMeeting) {
-        this.emitToRoom(
-          `meeting:${user.meeting._id}`,
-          UserEmitEvents.RemoveUsers,
-          {
-            users: [plainUser.id],
-          },
-        );
-      }
-
-      const isOwner = plainMeeting.owner === plainUser.id;
-      const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
-
-      if (
-        !isOwner &&
-        meeting?.owner?.socketId &&
-        plainUser?.accessStatus === AccessStatusEnum.RequestSent
-      ) {
-        this.emitToSocketId(
-          meeting?.owner?.socketId,
-          UserEmitEvents.RemoveUsers,
-          {
-            users: [plainUser.id],
-          },
-        );
-      }
-
-      if (profileUser.subscriptionPlanKey !== 'Business') {
-        await this.meetingsCommonService.handleTimeLimit({
-          profileId: template.user.id,
-          meetingId: plainMeeting.id,
-          meetingUserId: plainUser.id,
-          maxProfileTime: profileUser.maxMeetingTime,
-          session,
+      if (template) {
+        const profileUser = await this.coreService.findUserById({
+          userId: template.user.id,
         });
-      }
 
-      if (activeParticipants === 0) {
-        await this.meetingsCommonService.handleClearMeetingData({
-          instanceId: template.meetingInstance.instanceId,
-          meetingId: meeting.id,
-          session,
-        });
-      } else {
+        if (user?.accessStatus === AccessStatusEnum.InMeeting) {
+          this.emitToRoom(
+            `meeting:${user.meeting._id}`,
+            UserEmitEvents.RemoveUsers,
+            {
+              users: [plainUser.id],
+            },
+          );
+        }
+
+        const isOwner = plainMeeting.owner === plainUser.id;
+        const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
+
         if (
-          isMeetingHost &&
-          plainUser?.accessStatus !== AccessStatusEnum.Waiting
+          !isOwner &&
+          meeting?.owner?.socketId &&
+          plainUser?.accessStatus === AccessStatusEnum.RequestSent
         ) {
-          const endTimestamp = getTimeoutTimestamp({
-            type: TimeoutTypesEnum.Minutes,
-            value: 15,
-          });
+          this.emitToSocketId(
+            meeting?.owner?.socketId,
+            UserEmitEvents.RemoveUsers,
+            {
+              users: [plainUser.id],
+            },
+          );
+        }
 
-          const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
-
-          this.taskService.deleteTimeout({
-            name: `meeting:finish:${plainMeeting.id}`,
-          });
-
-          this.taskService.addTimeout({
-            name: `meeting:finish:${plainMeeting.id}`,
-            ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-            callback: this.endMeeting.bind(this, {
-              meetingId: meeting._id,
-              client,
-            }),
+        if (profileUser.subscriptionPlanKey !== 'Business') {
+          await this.meetingsCommonService.handleTimeLimit({
+            profileId: template.user.id,
+            meetingId: plainMeeting.id,
+            meetingUserId: plainUser.id,
+            maxProfileTime: profileUser.maxMeetingTime,
+            session,
           });
         }
 
-        this.taskService.deleteTimeout({
-          name: 'meeting:changeUsersPositions',
-        });
-
-        this.taskService.addTimeout({
-          name: 'meeting:changeUsersPositions',
-          ts: getTimeoutTimestamp({ value: 1, type: TimeoutTypesEnum.Seconds }),
-          callback: async () => {
-            await this.changeUsersPositions({
-              meetingId: meeting.id,
-              templateId: meeting.templateId,
+        if (activeParticipants === 0) {
+          await this.meetingsCommonService.handleClearMeetingData({
+            instanceId: template.meetingInstance.instanceId,
+            meetingId: meeting.id,
+            session,
+          });
+        } else {
+          if (
+            isMeetingHost &&
+            plainUser?.accessStatus !== AccessStatusEnum.Waiting
+          ) {
+            const endTimestamp = getTimeoutTimestamp({
+              type: TimeoutTypesEnum.Minutes,
+              value: 15,
             });
-          },
-        });
+
+            const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
+
+            this.taskService.deleteTimeout({
+              name: `meeting:finish:${plainMeeting.id}`,
+            });
+
+            this.taskService.addTimeout({
+              name: `meeting:finish:${plainMeeting.id}`,
+              ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+              callback: this.endMeeting.bind(this, {
+                meetingId: meeting._id,
+                client,
+              }),
+            });
+          }
+
+          this.taskService.deleteTimeout({
+            name: 'meeting:changeUsersPositions',
+          });
+
+          this.taskService.addTimeout({
+            name: 'meeting:changeUsersPositions',
+            ts: getTimeoutTimestamp({
+              value: 1,
+              type: TimeoutTypesEnum.Seconds,
+            }),
+            callback: async () => {
+              await this.changeUsersPositions({
+                meetingId: meeting.id,
+                templateId: meeting.templateId,
+              });
+            },
+          });
+        }
       }
     });
   }

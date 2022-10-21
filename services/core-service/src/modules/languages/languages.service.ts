@@ -6,7 +6,7 @@ import { Language, LanguageDocument } from '../../schemas/language.schema';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
-import { ILanguage } from '@shared/interfaces/common-language.interface';
+import { ILanguage } from 'shared';
 
 @Injectable()
 export class LanguagesService {
@@ -26,7 +26,7 @@ export class LanguagesService {
     query: FilterQuery<LanguageDocument>;
     session: ITransactionSession;
   }) {
-    return this.language.find(query, {}, { session: session?.session });
+    return this.language.find(query, {}, { session: session?.session }).exec();
   }
 
   async exists(query: FilterQuery<LanguageDocument>) {

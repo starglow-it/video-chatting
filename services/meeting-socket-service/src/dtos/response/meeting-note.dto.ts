@@ -1,6 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { CommonUserDTO } from './common-user.dto';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 import { IMeetingNote } from '../../interfaces/meeting-note.interface';
 
 export class MeetingNoteDTO implements IMeetingNote {

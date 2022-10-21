@@ -1,8 +1,18 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
-import { AuthBrokerPatterns } from '@shared/patterns/auth';
-import { TokenPairWithUserType } from '@shared/types/token-pair-with-user.type';
+import {
+  AuthBrokerPatterns,
+  TokenPairWithUserType,
+  ICommonUserDTO,
+  TokenTypes,
+  ConfirmUserRegistrationPayload,
+  RegisterUserPayload,
+  LoginUserByEmailPayload,
+  RefreshTokenPayload,
+  LogOutUserPayload,
+  SendResetPasswordLinkEmailPayload,
+} from 'shared';
 
 // services
 import { NotificationsService } from '../../services/notifications/notifications.service';
@@ -11,19 +21,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { AuthService } from './auth.service';
 
 // helpers
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { emailTemplates } from '@shared/const/email-templates.const';
-import { TokenTypes } from '@shared/const/tokens.const';
-
-// payloads
-import {
-  ConfirmUserRegistrationPayload,
-  RegisterUserPayload,
-  LoginUserByEmailPayload,
-  RefreshTokenPayload,
-  LogOutUserPayload,
-  SendResetPasswordLinkEmailPayload,
-} from '@shared/broker-payloads/auth';
+import { emailTemplates } from 'shared';
 
 @Controller('auth')
 export class AuthController {

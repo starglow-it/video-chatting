@@ -4,16 +4,16 @@ import * as uuid from 'uuid';
 import { RpcException } from '@nestjs/microservices';
 
 // shared
-import { JWT_CONFIRM_EXPIRES_IN_TIMESTAMP } from '@shared/const/jwt.const';
-import { TokenPayloadType } from '@shared/types/token-payload.type';
-import { TokenTypes } from '@shared/const/tokens.const';
 import {
+  JWT_CONFIRM_EXPIRES_IN_TIMESTAMP,
+  TokenPayloadType,
+  ICommonUserDTO,
+  IToken,
+  TokenTypes,
   CONFIRM_TOKEN_HAS_EXPIRED,
   NOT_VALID_TOKEN,
-} from '@shared/const/errors/tokens';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { AUTH_SERVICE } from '@shared/const/services.const';
-import { IToken } from '@shared/interfaces/token.interface';
+  AUTH_SERVICE,
+} from 'shared';
 
 @Injectable()
 export class ConfirmTokenService {

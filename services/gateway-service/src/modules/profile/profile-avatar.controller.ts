@@ -14,10 +14,10 @@ import {
 } from '@nestjs/swagger';
 
 // shared
-import { ResponseSumType } from '@shared/response/common.response';
+import { ResponseSumType } from 'shared';
 
 // interfaces
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';

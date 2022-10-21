@@ -17,10 +17,15 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@shared/*": ["../shared/*"]
-    }
+//    "moduleResolution": "node",
+//    "noImplicitThis": true,
+//    "allowJs": true,
+//    "strict": true,
+//    "noEmit": false,
+//    "esModuleInterop": true,
+//    "resolveJsonModule": true,
+//    "isolatedModules": true,
   },
-  "exclude": ["node_modules", "dist", "doc"],
-  "include": ["**/*.ts", "../shared/*/**.ts"]
+  "exclude": ["node_modules", "dist"],
+  "include": ["**/*.ts"]
 }

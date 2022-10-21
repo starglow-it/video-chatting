@@ -1,0 +1,17 @@
+{
+	"devDependencies": {
+		"nx": "14.8.2"
+	},
+	"dependencies": {
+		"@nestjs/core": "9.0.11",
+		"@nestjs/microservices": "9.0.11",
+		"axios": "0.27.2",
+		"bowser": "2.11.0",
+		"clsx": "1.2.1",
+		"effector": "22.3.0",
+		"react-i18next": "11.18.6",
+		"source-map-support": "^0.5.21",
+		"xregexp": "5.1.1",
+		"yup": "0.32.11"
+	}
+}

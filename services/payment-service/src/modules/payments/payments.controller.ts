@@ -11,7 +11,7 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Stripe } from 'stripe';
 
 // patterns
-import { PaymentsBrokerPatterns } from '@shared/patterns/payments';
+import { PaymentsBrokerPatterns } from 'shared';
 
 // services
 import { ConfigClientService } from '../../services/config/config.service';
@@ -20,10 +20,10 @@ import { CoreService } from '../../services/core/core.service';
 import { NotificationsService } from '../../services/notifications/notifications.service';
 
 // const
-import { emailTemplates } from '@shared/const/email-templates.const';
-import { plans } from '@shared/const/subscriptions.const';
-import { PAYMENTS_SERVICE } from '@shared/const/services.const';
-import { PAYMENTS_SCOPE } from '@shared/const/api-scopes.const';
+import { emailTemplates } from 'shared';
+import { plans } from 'shared';
+import { PAYMENTS_SERVICE } from 'shared';
+import { PAYMENTS_SCOPE } from 'shared';
 
 // utils
 import { addMonthsCustom } from '../../utils/dates/addMonths';
@@ -44,7 +44,7 @@ import {
   GetStripeSubscriptionPayload,
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
-} from '@shared/broker-payloads/payments';
+} from 'shared';
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {

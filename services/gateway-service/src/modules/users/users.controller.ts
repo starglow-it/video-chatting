@@ -2,12 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
   Logger,
-  ParseIntPipe,
   Post,
-  Query,
-  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -23,8 +19,7 @@ import {
 import { ConfigClientService } from '../../services/config/config.service';
 import { InviteAttendeeEmailRequest } from '../../dtos/requests/invite-attendee-email.request';
 import { SendContactsInfoRequest } from '../../dtos/requests/send-contacts-info.request';
-import { TemplatesService } from '../templates/templates.service';
-import { emailTemplates } from '@shared/const/email-templates.const';
+import { emailTemplates } from 'shared';
 
 @Controller('users')
 export class UsersController {
@@ -34,7 +29,6 @@ export class UsersController {
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
     private coreService: CoreService,
-    private templatesService: TemplatesService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -82,52 +76,12 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('templates/')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get Users Templates' })
-  @ApiOkResponse({
-    description: 'Fetch users templates succeeded',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  async getUsersTemplates(
-    @Req() req,
-    @Query('skip', ParseIntPipe) skip: number,
-    @Query('limit', ParseIntPipe) limit: number,
-  ) {
-    try {
-      const templatesData = await this.templatesService.getUsersTemplates({
-        userId: req.user.userId,
-        skip,
-        limit,
-      });
-
-      return {
-        success: true,
-        result: templatesData,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while get common templates`,
-        },
-        JSON.stringify(err),
-      );
-      throw new BadRequestException(err);
-    }
-  }
-
   @Post('contacts')
   @ApiOperation({ summary: 'Send contacts info' })
   @ApiOkResponse({
     description: 'Contacts info sent',
   })
-  async sendContactsInfo(
-    @Body() data: SendContactsInfoRequest,
-    @Request() req,
-  ): Promise<void> {
+  async sendContactsInfo(@Body() data: SendContactsInfoRequest): Promise<void> {
     try {
       const supportEmail = await this.configService.get('supportEmail');
       await this.notificationService.sendEmail({

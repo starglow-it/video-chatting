@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { PAYMENTS_PROVIDER } from '@shared/providers';
-import { PaymentsBrokerPatterns } from '@shared/patterns/payments';
-import { CreateStripeTemplateProductPayload } from '@shared/broker-payloads/payments';
+import { PAYMENTS_PROVIDER } from 'shared';
+import { PaymentsBrokerPatterns } from 'shared';
+import { CreateStripeTemplateProductPayload } from 'shared';
 
 @Injectable()
 export class PaymentsService {

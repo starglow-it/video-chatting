@@ -8,12 +8,12 @@ import { CommonMeetingDTO } from './common-meeting.dto';
 import { TemplateUserDTO } from './template-user.dto';
 
 // interfaces
-import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
-import { ILanguage } from '@shared/interfaces/common-language.interface';
-import { ISocialLink } from '@shared/interfaces/common-social-link.interface';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
-import { ITemplateUser } from '@shared/interfaces/template-user.interface';
-import { ICommonMeetingInstance } from '@shared/interfaces/common-instance-meeting.interface';
+import { IBusinessCategory } from 'shared';
+import { ILanguage } from 'shared';
+import { ISocialLink } from 'shared';
+import { IUserTemplate } from 'shared';
+import { ITemplateUser } from 'shared';
+import { ICommonMeetingInstance } from 'shared';
 import { PreviewImageDTO } from './preview-image.dto';
 
 export class UserTemplateDTO implements IUserTemplate {

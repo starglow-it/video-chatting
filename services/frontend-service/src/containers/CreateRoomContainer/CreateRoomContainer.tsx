@@ -47,7 +47,7 @@ import {
 // types
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
-import { AppDialogsEnum } from '../../store/types';
+import { AppDialogsEnum, UserTemplate } from '../../store/types';
 
 // validation
 import { booleanSchema, simpleStringSchemaWithLength } from '../../validation/common';
@@ -155,6 +155,7 @@ const Component = ({ isEditing = false }: { isEditing: boolean }) => {
     const background = useWatch({ control, name: 'background' });
 
     const previousParticipantsNumber = usePrevious(participantsNumber);
+    const prevTemplateDataRef = useRef<UserTemplate | null>(null);
 
     const controlPanelRef = useRef<HTMLDivElement | null>(null);
 
@@ -174,15 +175,21 @@ const Component = ({ isEditing = false }: { isEditing: boolean }) => {
     useSubscriptionNotification(createRoomRoute);
 
     useEffect(() => {
-        if (!router.isReady) {
-            return;
-        }
-        const { templateId } = router.query;
-        if (templateId && typeof templateId === 'string') {
-            getEditingTemplateFx({ templateId, withCredentials: true });
-        } else {
-            createTemplateFx();
-        }
+        (async () => {
+            if (!router.isReady) {
+                return;
+            }
+            const { templateId } = router.query;
+            if (templateId && typeof templateId === 'string') {
+                const response = await getEditingTemplateFx({ templateId, withCredentials: true });
+
+                if (response) {
+                    prevTemplateDataRef.current = response;
+                }
+            } else {
+                createTemplateFx();
+            }
+        })();
     }, [router.isReady]);
 
     useEffect(() => {
@@ -195,7 +202,7 @@ const Component = ({ isEditing = false }: { isEditing: boolean }) => {
             url: templateDraft.url,
             description: templateDraft.description,
             customLink: templateDraft.customLink ?? '',
-            tags: templateDraft.businessCategories.map(({ value }) => value),
+            tags: templateDraft.businessCategories.map(item => ({ ...item, label: item.value })),
             participantsNumber: templateDraft.maxParticipants,
             participantsPositions: templateDraft.usersPosition.length
                 ? templateDraft.usersPosition.map(({ bottom, left }) => ({
@@ -308,9 +315,18 @@ const Component = ({ isEditing = false }: { isEditing: boolean }) => {
         [onValueChange],
     );
 
-    const handleCancelRoomCreation = useCallback(() => {
+    const handleCancelRoomCreation = useCallback(async () => {
+        if (isEditing) {
+            if (prevTemplateDataRef.current && templateDraft?.id) {
+                await editUserTemplateFx({
+                    templateId: templateDraft.id,
+                    data: prevTemplateDataRef.current,
+                });
+            }
+        }
+        // TODO: delete common template if canceled and other data associated with it
         router.push(dashboardRoute);
-    }, []);
+    }, [templateDraft]);
 
     const handleOpenCancelConfirmationDialog = useCallback(() => {
         appDialogsApi.openDialog({
@@ -333,20 +349,30 @@ const Component = ({ isEditing = false }: { isEditing: boolean }) => {
                 previewUrls: data.previewUrls.map(({ id }) => id),
             };
 
-            const response = isEditing
-                ? await editUserTemplateFx({ templateId: templateDraft?.id!, data: payload })
-                : await editTemplateFx({ templateId: templateDraft?.id!, data: payload });
-
-            if (response) {
-                if (!isEditing) {
-                    const userTemplate = await addTemplateToUserFx({
-                        templateId: templateDraft?.id!,
-                    });
-
+            if (templateDraft?.id) {
+                if (isEditing) {
                     await editUserTemplateFx({
-                        templateId: userTemplate?.id!,
+                        templateId: templateDraft.id,
                         data: payload,
                     });
+                } else {
+                    await editTemplateFx({
+                        templateId: templateDraft.id,
+                        data: payload,
+                    });
+
+                    const userTemplate = await addTemplateToUserFx({
+                        templateId: templateDraft.id,
+                    });
+
+                    const { businessCategories, ...newPayload } = payload;
+
+                    if (userTemplate?.id) {
+                        await editUserTemplateFx({
+                            templateId: userTemplate.id,
+                            data: newPayload,
+                        });
+                    }
                 }
 
                 await router.push(dashboardRoute);

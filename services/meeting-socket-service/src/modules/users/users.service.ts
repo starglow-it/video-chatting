@@ -84,8 +84,10 @@ export class UsersService {
     return this.meetingUser.findOneAndDelete(query, { session });
   }
 
-  async deleteMany(query, { session }: ITransactionSession) {
-    return this.meetingUser.deleteMany(query, { session });
+  async deleteMany(query, { session }: ITransactionSession): Promise<void> {
+    await this.meetingUser.deleteMany(query, { session });
+
+    return;
   }
 
   async findUsers(query, { session }: ITransactionSession) {

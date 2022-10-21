@@ -1,11 +1,10 @@
-import React, { memo, useMemo } from 'react';
+import React, {memo, useCallback, useMemo, useState} from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomRadioGroup } from '@library/custom/CustomRadioGroup/CustomRadioGroup';
 
 // components
-import { ChooseSignBoardProps } from '@components/Templates/ChooseSignBoard/types';
 import { SignBoardOption } from './SignBoardOption';
 
 // styles
@@ -15,6 +14,7 @@ import styles from './ChooseSignBoard.module.scss';
 import { SIGN_BOARDS } from '../../../const/signBoards';
 
 // types
+import { ChooseSignBoardProps } from './types';
 
 const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
     optionWidth,
@@ -23,18 +23,26 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
 }) => {
     const { control } = useFormContext();
 
+    const [openBoardsType, setOpenBoardsType] = useState('');
+
+    const handleSetOpenBoardsType = useCallback((value: string) => {
+        setOpenBoardsType(value);
+    }, []);
+
     const renderSignOptions = useMemo(
         () =>
-            SIGN_BOARDS.map(signOption => (
+            SIGN_BOARDS.map((signBoardSet, index) => (
                 <SignBoardOption
-                    key={signOption.id}
+                    key={index}
                     formKey={formKey}
-                    data={signOption}
+                    data={signBoardSet}
                     width={optionWidth}
                     height={optionHeight}
+                    openBoardsType={openBoardsType}
+                    onOpenBoardsType={handleSetOpenBoardsType}
                 />
             )),
-        [],
+        [openBoardsType],
     );
 
     return (
@@ -46,14 +54,14 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
                     }}
                     row
                     {...field}
-                    defaultValue={SIGN_BOARDS[0].value}
+                    defaultValue={SIGN_BOARDS[0][0].value}
                 >
                     {renderSignOptions}
                 </CustomRadioGroup>
             )}
             name={formKey}
             control={control}
-            defaultValue={SIGN_BOARDS[0].value}
+            defaultValue={SIGN_BOARDS[0][0].value}
         />
     );
 };

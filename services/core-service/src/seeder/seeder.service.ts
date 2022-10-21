@@ -14,12 +14,13 @@ import { UserTemplatesService } from '../modules/user-templates/user-templates.s
 import { AwsConnectorService } from '../services/aws-connector/aws-connector.service';
 import { PaymentsService } from '../services/payments/payments.service';
 import { CountersService } from '../modules/counters/counters.service';
+import { ConfigClientService } from '../services/config/config.service';
 
 // const
-import { BUSINESS_CATEGORIES } from '@shared/const/business-categories.const';
-import { LANGUAGES_TAGS } from '@shared/const/languages';
-import { templatesData } from '@shared/const/templates';
-import { COUNTER_TYPES, Counters } from '@shared/const/counters.const';
+import { BUSINESS_CATEGORIES } from 'shared';
+import { LANGUAGES_TAGS } from 'shared';
+import { templatesData } from 'shared';
+import { COUNTER_TYPES, Counters } from 'shared';
 
 // schemas
 import {
@@ -42,6 +43,7 @@ export class SeederService {
     private paymentsService: PaymentsService,
     private awsService: AwsConnectorService,
     private countersService: CountersService,
+    private configService: ConfigClientService,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
   ) {}
@@ -81,7 +83,7 @@ export class SeederService {
   async seedCommonTemplates(): Promise<void> {
     try {
       const promises = templatesData.map(
-        ({ imagesUrl, videoPath, imagePath, ...templateData }) =>
+        ({ videoPath, imagePath, ...templateData }) =>
           async () => {
             const isExists = await this.commonTemplatesService.exists({
               query: {
@@ -272,5 +274,27 @@ export class SeederService {
     await Promise.all(promises);
 
     return;
+  }
+
+  async seedAdminUser() {
+    const adminEmail = await this.configService.get<string>('adminEmail');
+    const adminPassword = await this.configService.get<string>('adminPassword');
+
+    const admin = await this.usersService.findUser({
+      query: { email: adminEmail },
+    });
+
+    if (!admin) {
+      await this.usersService.createUser({
+        email: adminEmail,
+        password: adminPassword,
+        role: 'admin',
+        isConfirmed: true,
+        fullName: 'LiveOffice Admin',
+        companyName: 'The LiveOffice',
+        position: 'Administrator',
+        contactEmail: adminEmail,
+      });
+    }
   }
 }

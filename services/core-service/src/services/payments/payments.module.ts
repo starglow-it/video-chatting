@@ -5,7 +5,7 @@ import {
   Transport,
 } from '@nestjs/microservices';
 
-import { PAYMENTS_PROVIDER } from '@shared/providers';
+import { PAYMENTS_PROVIDER } from 'shared';
 
 import { PaymentsService } from './payments.service';
 import { ConfigClientService } from '../config/config.service';

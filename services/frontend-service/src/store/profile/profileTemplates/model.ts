@@ -16,7 +16,7 @@ import { templatesDomain } from '../../templates/domain/model';
 export const $profileTemplatesStore = profileDomain.createStore<EntityList<UserTemplate>>(
     initialProfileTemplatesStore,
 );
-export const $skipProfileTemplates = profileDomain.createStore<number>(0);
+export const $skipProfileTemplates = profileDomain.createStore<number>(6);
 export const $deleteProfileTemplateId = profileDomain.createStore<UserTemplate['id']>('');
 
 export const setSkipProfileTemplates = profileDomain.createEvent<number>('setSkipProfileTemplates');

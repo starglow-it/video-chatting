@@ -31,7 +31,7 @@ type TagLineType = {
     id: number;
 };
 
-const ProfileBusinessTags = memo(() => {
+const Component = () => {
     const profileState = useStore($profileStore);
 
     const [isNeedToRenderSeeAllTags, setIsNeedToRenderSeeAllTags] = useState<boolean>(false);
@@ -120,7 +120,7 @@ const ProfileBusinessTags = memo(() => {
                         <BusinessCategoryItem
                             className={clsx({
                                 [styles.businessTag]:
-                                    index === 1 && profileState?.businessCategories.length < 3,
+                                index === 1 && profileState?.businessCategories.length < 3,
                             })}
                             key={category.key}
                             category={category}
@@ -199,6 +199,6 @@ const ProfileBusinessTags = memo(() => {
             </CustomPopper>
         </CustomBox>
     );
-});
+}
 
-export { ProfileBusinessTags };
+export const ProfileBusinessTags = memo(Component);

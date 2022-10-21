@@ -1,16 +1,31 @@
-FROM node:18.7.0-alpine as builder
+FROM node:18.9.1-alpine as builder
+
+ARG VULTR_STORAGE_HOSTNAME
+ENV VULTR_STORAGE_HOSTNAME=$VULTR_STORAGE_HOSTNAME
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 WORKDIR /app
 
-COPY package*.json ./
+RUN mkdir -p services/frontend-service
 
-RUN npm ci --legacy-peer-deps --force
+COPY ./pnpm-workspace.yaml ./
+COPY ./.npmrc ./
+COPY ./shared ./shared
 
-COPY . ./
+RUN pnpm add nx -D -w
 
-RUN npm run build
+COPY ./services/frontend-service/package.json ./services/frontend-service
 
-FROM node:18.7.0-alpine
+RUN pnpm install
+
+COPY ./services/frontend-service ./services/frontend-service
+
+RUN npx nx run-many --target=build --projects=shared,shared-const,shared-utils,shared-types,frontend-service
+
+FROM node:18.9.1-alpine
+
+RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
@@ -20,6 +35,6 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-EXPOSE 8000
+EXPOSE 9000
 
-CMD /wait && npm run start
+CMD /wait && pnpm --filter frontend-service start

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { PAYMENTS_PROVIDER } from '@shared/providers';
-import { PaymentsBrokerPatterns } from '@shared/patterns/payments';
+import { PAYMENTS_PROVIDER } from 'shared';
+import { PaymentsBrokerPatterns } from 'shared';
 import {
   CancelPaymentIntentPayload,
   CreatePaymentIntentPayload,
@@ -14,7 +14,7 @@ import {
   GetStripePortalSessionPayload,
   GetStripeSubscriptionPayload,
   LoginStripeExpressAccountPayload,
-} from '@shared/broker-payloads/payments';
+} from 'shared';
 
 @Injectable()
 export class PaymentsService {

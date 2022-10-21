@@ -2,14 +2,16 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 // shared
-import { JWT_ACCESS_EXPIRE_IN_TIMESTAMP } from '@shared/const/jwt.const';
-import { TokenTypes } from '@shared/const/tokens.const';
-import { TokenPayloadType } from '@shared/types/token-payload.type';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import {
+  IToken,
+  AUTH_SERVICE,
+  NOT_VALID_TOKEN,
+  JWT_ACCESS_EXPIRE_IN_TIMESTAMP,
+  TokenTypes,
+  TokenPayloadType,
+  ICommonUserDTO,
+} from 'shared';
 import { RpcException } from '@nestjs/microservices';
-import { NOT_VALID_TOKEN } from '@shared/const/errors/tokens';
-import { AUTH_SERVICE } from '@shared/const/services.const';
-import { IToken } from '@shared/interfaces/token.interface';
 
 @Injectable()
 export class AccessTokenService {
@@ -23,6 +25,7 @@ export class AccessTokenService {
     const token = await this.jwtService.signAsync({
       userId: user.id,
       email: user.email,
+      role: user.role,
     });
 
     const expiresAt = Date.now() + JWT_ACCESS_EXPIRE_IN_TIMESTAMP;

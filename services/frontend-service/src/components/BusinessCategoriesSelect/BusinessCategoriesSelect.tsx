@@ -2,6 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import { MenuItem } from '@mui/material';
+import { useStore } from 'effector-react';
 
 // components
 import { PlusAddIcon } from '@library/icons/PlusAddIcon';
@@ -18,13 +19,15 @@ import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessC
 // styles
 import styles from './BusinessCategoriesSelect.module.scss';
 
-// const
-import { BUSINESS_CATEGORIES } from '../../const/businessCategories';
+// store
+import { $businessCategoriesStore } from '../../store';
 
 // types
 import { BusinessCategoriesSelectProps } from './types';
 
 const Component = ({ nameSpace, translation, formKey }: BusinessCategoriesSelectProps) => {
+    const businessCategories = useStore($businessCategoriesStore);
+
     const { setValue, control, register } = useFormContext();
 
     const categoriesValue = useWatch({
@@ -43,12 +46,12 @@ const Component = ({ nameSpace, translation, formKey }: BusinessCategoriesSelect
 
     const renderBusinessCategoriesList = useMemo(
         () =>
-            BUSINESS_CATEGORIES.map(name => (
+            businessCategories.list.map(name => (
                 <MenuItem key={name.key} value={name.key}>
                     <CustomTypography transform="capitalize">{name.value}</CustomTypography>
                 </MenuItem>
             )),
-        [],
+        [businessCategories.list],
     );
 
     const renderValues = useCallback(
@@ -56,7 +59,7 @@ const Component = ({ nameSpace, translation, formKey }: BusinessCategoriesSelect
             <CustomScroll className={styles.tagsWrapper}>
                 <CustomGrid container gap={1}>
                     {selected.map(selectedKey => {
-                        const selectedCategory = BUSINESS_CATEGORIES.find(
+                        const selectedCategory = businessCategories.list.find(
                             tag => tag.key === selectedKey,
                         );
 
@@ -74,7 +77,7 @@ const Component = ({ nameSpace, translation, formKey }: BusinessCategoriesSelect
                 </CustomGrid>
             </CustomScroll>
         ),
-        [],
+        [businessCategories.list],
     );
 
     return (

@@ -1,17 +1,17 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 
-import { ISocialLink } from '@shared/interfaces/common-social-link.interface';
-import { ILanguage } from '@shared/interfaces/common-language.interface';
-import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
+import { ISocialLink } from 'shared';
+import { ILanguage } from 'shared';
+import { IBusinessCategory } from 'shared';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { CommonLanguageDTO } from './common-language.dto';
 import { CommonSocialLinkDTO } from './common-social-link.dto';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
+import { IUserTemplate } from 'shared';
 import { UserTemplateDTO } from './user-template.dto';
 import { ProfileAvatarDTO } from './profile-avatar.dto';
-import { IProfileAvatar } from '@shared/interfaces/profile-avatar.interface';
+import { IProfileAvatar } from 'shared';
 
 export class CommonUserDTO implements ICommonUserDTO {
   @Expose()
@@ -26,6 +26,8 @@ export class CommonUserDTO implements ICommonUserDTO {
 
   @Expose()
   email: ICommonUserDTO['email'];
+
+  role: ICommonUserDTO['email'];
 
   @Expose()
   isConfirmed: ICommonUserDTO['isConfirmed'];

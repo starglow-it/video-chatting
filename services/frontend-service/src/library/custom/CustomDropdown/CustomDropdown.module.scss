@@ -15,6 +15,52 @@
   max-height: rem(400px);
 }
 
+.paper {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translate3d(0, 0, 0);
+  border-radius : 16px;
+
+  /* the scrollbar */
+  &::-webkit-scrollbar {
+    width: 7px;
+    border-radius: 16px;
+  }
+
+  // the buttons on the scrollbar (arrows pointing upwards and downwards).
+  &::-webkit-scrollbar-button {
+    border-radius: 16px;
+  }
+
+  // the draggable scrolling handle.
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba($dark-gray-scale, 0.5);
+    transition: background linear 200ms;
+    border-radius: 16px;
+  }
+
+  // the track (progress bar) of the scrollbar.
+  &::-webkit-scrollbar-track {
+    border-radius: 16px;
+    background: transparent;
+  }
+
+  // the track (progress bar) NOT covered by the handle.
+  ::-webkit-scrollbar-track-piece {
+    border-radius: 16px;
+  }
+
+  // the bottom corner of the scrollbar, where both horizontal and vertical scrollbars meet.
+  ::-webkit-scrollbar-corner {
+    border-radius: 16px;
+  }
+
+  // the draggable resizing handle that appears at the bottom corner of some elements.
+  ::-webkit-resizer {
+    border-radius: 16px;
+  }
+}
+
 .errorContainer {
   margin: rem(6px 0 0 0);
 }

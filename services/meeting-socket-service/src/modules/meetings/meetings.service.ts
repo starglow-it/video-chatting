@@ -74,8 +74,13 @@ export class MeetingsService {
       .session(session);
   }
 
-  async deleteById({ meetingId }, { session }: ITransactionSession) {
-    return this.meeting.deleteOne({ _id: meetingId }).session(session);
+  async deleteById(
+    { meetingId },
+    { session }: ITransactionSession,
+  ): Promise<void> {
+    await this.meeting.deleteOne({ _id: meetingId }).session(session);
+
+    return;
   }
 
   async updateMeetingById(

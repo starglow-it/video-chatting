@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from '@shared/providers';
-import { UserBrokerPatterns } from '@shared/patterns/users';
-import { MeetingBrokerPatterns } from '@shared/patterns/meetings';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-import { ICommonMeetingInstance } from '@shared/interfaces/common-instance-meeting.interface';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
+import { CORE_PROVIDER } from 'shared';
+import { UserBrokerPatterns } from 'shared';
+import { MeetingBrokerPatterns } from 'shared';
+import { ICommonUserDTO } from 'shared';
+import { ICommonMeetingInstance } from 'shared';
+import { IUserTemplate } from 'shared';
 import {
   ComparePasswordsPayload,
   DeleteProfileAvatarPayload,
@@ -21,16 +21,16 @@ import {
   UserTokenExistsPayload,
   ValidateVerificationCodePayload,
   VerifyPasswordPayload,
-} from '@shared/broker-payloads/users';
+} from 'shared';
 import {
   AssignMeetingInstancePayload,
   GetMeetingInstancePayload,
   GetMeetingPayload,
   UpdateMeetingInstancePayload,
-} from '@shared/broker-payloads/meetings';
-import { TemplateBrokerPatterns } from '@shared/patterns/templates';
-import { CoreBrokerPatterns } from '@shared/patterns/core';
-import { AddTemplateToUserPayload } from '@shared/broker-payloads/templates';
+} from 'shared';
+import { TemplateBrokerPatterns } from 'shared';
+import { CoreBrokerPatterns } from 'shared';
+import { AddTemplateToUserPayload } from 'shared';
 
 @Injectable()
 export class CoreService {
@@ -170,13 +170,19 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async uploadTemplateFile(payload) {
+  async uploadTemplateFile(payload): Promise<void> {
     const pattern = { cmd: TemplateBrokerPatterns.UploadTemplateFile };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async uploadProfileTemplateFile(payload) {
+  async uploadUserTemplateFile(payload) {
+    const pattern = { cmd: TemplateBrokerPatterns.UploadUserTemplateFile };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async uploadProfileTemplateFile(payload): Promise<void> {
     const pattern = { cmd: TemplateBrokerPatterns.UploadProfileTemplateFile };
 
     return this.client.send(pattern, payload).toPromise();

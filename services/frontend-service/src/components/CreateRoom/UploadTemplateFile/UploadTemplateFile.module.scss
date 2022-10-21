@@ -68,11 +68,9 @@
   }
 
   .actionButton {
-    width: rem(50px);
-    height: rem(50px);
+    width: rem(46px);
+    height: rem(46px);
     border-radius: rem(12px);
-    .icon {
-      transform: scaleX(-1);
-    }
+    padding: rem(6px);
   }
 }

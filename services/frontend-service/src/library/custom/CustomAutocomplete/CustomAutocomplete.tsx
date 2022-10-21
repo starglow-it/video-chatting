@@ -15,7 +15,12 @@ import { CustomAutocompleteProps } from './types';
 
 import styles from './CustomAutocomplete.module.scss';
 
-const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) => {
+const Component = <ValueType extends { label: string; key: string; value: string }>({
+    name,
+    control,
+    error,
+    ...props
+}: CustomAutocompleteProps<ValueType>) => {
     const renderInput = useCallback(
         (inputProps: AutocompleteRenderInputParams, value: string) => (
             <CustomInput value={value} color="secondary" error={error} {...inputProps} />
@@ -24,8 +29,9 @@ const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) 
     );
 
     const filterOptions = useCallback(
-        (options: string[], { inputValue }: FilterOptionsState<string>) =>
-            matchSorter<string>(options, inputValue, {
+        (options: ValueType[], { inputValue }: FilterOptionsState<ValueType>) =>
+            matchSorter<ValueType>(options, inputValue, {
+                keys: ['label'],
                 threshold: matchSorter.rankings.STARTS_WITH,
             }),
         [],
@@ -36,7 +42,7 @@ const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) 
             name={name}
             control={control}
             render={({ field: { value, onChange, ...restField } }) => (
-                <Autocomplete
+                <Autocomplete<ValueType>
                     classes={{
                         root: styles.root,
                         input: styles.input,
@@ -46,7 +52,7 @@ const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) 
                         tagValue.map((option, index) => (
                             <CustomChip
                                 variant="custom-squared"
-                                label={option}
+                                label={option.label}
                                 deleteIcon={<RoundCloseIcon width="22px" height="22px" />}
                                 size="small"
                                 {...getTagProps({ index })}
@@ -66,4 +72,4 @@ const Component = ({ name, control, error, ...props }: CustomAutocompleteProps) 
     );
 };
 
-export const CustomAutocomplete = memo<CustomAutocompleteProps>(Component);
+export const CustomAutocomplete = memo(Component) as typeof Component;

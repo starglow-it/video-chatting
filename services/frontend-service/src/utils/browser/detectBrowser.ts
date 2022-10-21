@@ -1,6 +1,6 @@
 import { parse } from 'bowser';
 
-export const getBrowserData = () => parse(window.navigator.userAgent);
+export const getBrowserData = (): Parser.ParsedResult => parse(window.navigator.userAgent);
 
 export const isSafari = () => parse(window.navigator.userAgent).browser.name === 'Safari';
 

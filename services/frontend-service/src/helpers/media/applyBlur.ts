@@ -9,9 +9,9 @@ class BackgroundManagerInstance {
 
     supportedBrowsers: string[];
 
-    browserData: any;
+    browserData: ReturnType<typeof getBrowserData> | undefined;
 
-    isBackgroundSupported: any;
+    isBackgroundSupported: boolean;
 
     effectBackground: EffectBackground | null;
 
@@ -21,6 +21,7 @@ class BackgroundManagerInstance {
         this.image = image;
         this.effectBackground = null;
         this.videoEffects = null;
+        this.isBackgroundSupported = false;
         this.supportedBrowsers = [BROWSER_NAMES.chrome, BROWSER_NAMES.chromium, BROWSER_NAMES.edge];
     }
 
@@ -28,19 +29,22 @@ class BackgroundManagerInstance {
         try {
             if ('navigator' in window) {
                 this.browserData = getBrowserData();
-                this.isBackgroundSupported =
-                    this.supportedBrowsers.includes(this.browserData?.browser?.name || '') &&
-                    this.browserData.platform.type === 'desktop';
 
-                if (this.isBackgroundSupported) {
-                    if (!this.effectBackground) {
-                        this.effectBackground = new EffectBackground();
+                if (this.browserData) {
+                    this.isBackgroundSupported =
+                        this.supportedBrowsers.includes(this.browserData.browser.name || '') &&
+                        this.browserData.platform.type === 'desktop';
 
-                        await this.effectBackground.setBackgroundImage(this.image);
-                    }
+                    if (this.isBackgroundSupported) {
+                        if (!this.effectBackground) {
+                            this.effectBackground = new EffectBackground();
 
-                    if (!this.videoEffects) {
-                        this.videoEffects = new VideoEffects();
+                            await this.effectBackground.setBackgroundImage(this.image);
+                        }
+
+                        if (!this.videoEffects) {
+                            this.videoEffects = new VideoEffects();
+                        }
                     }
                 }
             }
@@ -49,31 +53,20 @@ class BackgroundManagerInstance {
         }
     }
 
-    async applyBlur(stream: CustomMediaStream, isCameraActive, isAuraActive: boolean) {
+    async applyBlur(stream: CustomMediaStream, isCameraActive: boolean, isAuraActive: boolean) {
         if (stream) {
-            let videoTrack = stream?.getVideoTracks()[0];
+            const videoTrack = stream?.getVideoTracks()[0];
+            let blurTrack;
 
-            if (videoTrack) {
-                const temEnabled = isCameraActive;
+            if (videoTrack && isAuraActive && this.videoEffects) {
+                if (!isCameraActive) videoTrack.enabled = true;
 
-                videoTrack.enabled = true;
+                blurTrack = await this.videoEffects.setEffect(this.effectBackground, videoTrack);
 
-                if (isAuraActive && this.videoEffects) {
-                    videoTrack = await this.videoEffects.setEffect(
-                        this.effectBackground,
-                        videoTrack,
-                    );
-                } else {
-                    this.destroy();
-                }
-
-                const track = stream.getVideoTracks()[0];
-
-                stream.removeTrack(track);
-                stream.addTrack(videoTrack);
-                stream.addTrack(track);
-
-                videoTrack.enabled = temEnabled;
+                stream.removeTrack(videoTrack);
+                stream.addTrack(blurTrack);
+            } else {
+                this.destroy();
             }
 
             return stream;

@@ -1,9 +1,9 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { ICommonMeetingInstance } from '@shared/interfaces/common-instance-meeting.interface';
+import { ICommonMeetingInstance } from 'shared';
 
 import { CommonUserDTO } from './common-user.dto';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 
 export class CommonMeetingDTO implements ICommonMeetingInstance {
   @Expose()

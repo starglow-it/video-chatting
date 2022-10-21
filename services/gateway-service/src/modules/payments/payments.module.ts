@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import {
   ClientProvider,
@@ -7,8 +6,8 @@ import {
   Transport,
 } from '@nestjs/microservices';
 
-import { PAYMENTS_PROVIDER } from '@shared/providers';
-import { JWT_ACCESS_EXPIRE } from '@shared/const/jwt.const';
+import { PAYMENTS_PROVIDER } from 'shared';
+import { JWT_ACCESS_EXPIRE } from 'shared';
 
 import { PaymentsController } from './payments.controller';
 
@@ -17,6 +16,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 
 import { CoreModule } from '../../services/core/core.module';
 import { TemplatesModule } from '../templates/templates.module';
+import {ConfigModule} from "../../services/config/config.module";
 
 @Module({
   imports: [

@@ -1,11 +1,21 @@
-/** @type {import('next').NextConfig} */
 const { withEffectorReactAliases } = require('effector-next/tools');
 const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
 const path = require('path');
 
+const withTM = require('next-transpile-modules')([
+    'shared',
+    'shared-frontend',
+    'shared-const',
+    'shared-utils',
+    'shared-types',
+]);
+
 const enhance = withEffectorReactAliases();
 
-module.exports = enhance({
+/**
+ * @type {import('next').NextConfig}
+ */
+module.exports = withTM(enhance({
     publicRuntimeConfig: {
         applicationName: 'The LiveOffice',
         frontendUrl: process.env.FRONTEND_URL,
@@ -31,7 +41,11 @@ module.exports = enhance({
     eslint: {
         ignoreDuringBuilds: true,
     },
+    compiler: {
+        removeConsole: ['demo', 'production'].includes(process.env.ENVIRONMENT),
+    },
     images: {
+        unoptimized: true,
         domains: [process.env.VULTR_STORAGE_HOSTNAME || ''],
     },
     webpack(config, options) {
@@ -43,6 +57,7 @@ module.exports = enhance({
             );
         }
 
-        return config;
-    },
-});
+            return config;
+        },
+    }),
+);

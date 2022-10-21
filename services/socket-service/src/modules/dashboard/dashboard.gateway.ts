@@ -15,11 +15,11 @@ import { BaseGateway } from '../../gateway/base.gateway';
 import { DashboardService } from './dashboard.service';
 import { CoreService } from '../../services/core/core.service';
 
-import { DashboardNotificationTypes } from '@shared/types/dashboard-notification.type';
+import { DashboardNotificationTypes } from 'shared';
 
-import { ResponseSumType } from '@shared/response/common.response';
+import { ResponseSumType } from 'shared';
 
-import { IDashboardNotification } from '@shared/interfaces/dashboard-notification.interface';
+import { IDashboardNotification } from 'shared';
 
 @WebSocketGateway({ transports: ['websocket'] })
 @Controller('/dashboard')

@@ -1,5 +1,4 @@
 import { ClientSession, Connection } from 'mongoose';
-import { ReadPreference } from 'mongodb';
 
 export interface IWithTransactionOptions {
   onRollback?: CallableFunction;
@@ -14,13 +13,7 @@ export const withTransaction = async (
   func: CallableFunction,
   { onRollback }: IWithTransactionOptions = {},
 ) => {
-  const session = await connection.startSession({
-    defaultTransactionOptions: {
-      readPreference: ReadPreference.primary,
-      readConcern: { level: 'local' },
-      writeConcern: { w: 'majority' },
-    },
-  });
+  const session = await connection.startSession();
 
   session.startTransaction();
   try {

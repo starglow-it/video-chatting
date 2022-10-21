@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { UploadService } from './upload.service';
-import { ResponseSumType } from '@shared/response/common.response';
+import { ResponseSumType } from 'shared';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { CoreService } from '../../services/core/core.service';

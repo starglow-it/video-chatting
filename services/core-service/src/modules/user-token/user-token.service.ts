@@ -7,7 +7,7 @@ import { UserToken, UserTokenDocument } from '../../schemas/user-token.schema';
 import { UserDocument } from '../../schemas/user.schema';
 
 // shared
-import { TokenPayloadType } from '@shared/types/token-payload.type';
+import { TokenPayloadType } from 'shared';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types/custom';
@@ -58,15 +58,22 @@ export class UserTokenService {
       .exec();
   }
 
-  async deleteToken(data: { token: string }, { session }: ITransactionSession) {
-    return this.userToken.deleteOne({ token: data.token }, { session });
+  async deleteToken(
+    data: { token: string },
+    { session }: ITransactionSession,
+  ): Promise<void> {
+    await this.userToken.deleteOne({ token: data.token }, { session });
+
+    return;
   }
 
   async deleteManyTokens(
     query: FilterQuery<UserTokenDocument>,
     { session }: ITransactionSession,
-  ) {
-    return this.userToken.deleteMany(query, { session });
+  ): Promise<void> {
+    await this.userToken.deleteMany(query, { session });
+
+    return;
   }
 
   async exists(token: string) {
@@ -76,7 +83,9 @@ export class UserTokenService {
   async deleteUserTokens(
     { userId }: { userId: UserDocument['_id'] },
     { session }: ITransactionSession,
-  ) {
-    return this.userToken.deleteMany({ user: userId }, { session });
+  ): Promise<void> {
+    await this.userToken.deleteMany({ user: userId }, { session });
+
+    return;
   }
 }

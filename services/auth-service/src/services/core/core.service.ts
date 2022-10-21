@@ -1,30 +1,22 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from '@shared/providers';
-import { USER_NOT_FOUND } from '@shared/const/errors/users';
-import { AUTH_SERVICE } from '@shared/const/services.const';
-
-// patterns
-import { AuthBrokerPatterns } from '@shared/patterns/auth';
-import { UserBrokerPatterns } from '@shared/patterns/users';
-
-// interfaces
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
-
-// payloads
 import {
+  CORE_PROVIDER,
+  USER_NOT_FOUND,
+  AUTH_SERVICE,
+  AuthBrokerPatterns,
+  UserBrokerPatterns,
+  ICommonUserDTO,
   CreateUserPayload,
   FindUserByEmailAndUpdatePayload,
   FindUserByEmailPayload,
   FindUserByIdPayload,
-} from '@shared/broker-payloads/users';
-import {
   AssignTokensToUserPayload,
   LoginUserByEmailPayload,
   LogOutUserPayload,
   SetResetPasswordTokenPayload,
-} from '@shared/broker-payloads/auth';
+} from 'shared';
 
 @Injectable()
 export class CoreService {

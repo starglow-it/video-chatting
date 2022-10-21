@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 // const
-import { JWT_ACCESS_EXPIRE } from '@shared/const/jwt.const';
+import { JWT_ACCESS_EXPIRE } from 'shared';
 
 // modules
 import { TemplatesModule } from '../templates/templates.module';

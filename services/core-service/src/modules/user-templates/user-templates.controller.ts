@@ -11,14 +11,8 @@ import { CommonTemplatesService } from '../common-templates/common-templates.ser
 
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
-
-import { EntityList } from '@shared/types/utils/http/list.type';
-
-import { TemplateBrokerPatterns } from '@shared/patterns/templates';
-
 import { withTransaction } from '../../helpers/mongo/withTransaction';
-import { TEMPLATES_SERVICE } from '@shared/const/services.const';
+import { TEMPLATES_SERVICE } from 'shared';
 import { LanguagesService } from '../languages/languages.service';
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import {
@@ -30,7 +24,10 @@ import {
   GetUserTemplatePayload,
   GetUserTemplatesPayload,
   UpdateUserTemplatePayload,
-} from '@shared/broker-payloads/templates';
+  IUserTemplate,
+  EntityList,
+  TemplateBrokerPatterns,
+} from 'shared';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -230,7 +227,12 @@ export class UserTemplatesController {
           {
             query: { user: user._id },
             options: { sort: '-usedAt', skip, limit },
-            populatePaths: ['businessCategories', 'user', 'previewUrls'],
+            populatePaths: [
+              'businessCategories',
+              'user',
+              'previewUrls',
+              'author',
+            ],
           },
         );
 
@@ -285,24 +287,37 @@ export class UserTemplatesController {
           isMonetizationEnabled: data.isMonetizationEnabled,
           templatePrice: data.templatePrice,
           templateCurrency: data.templateCurrency,
-          customLink: data.customLink,
+          customLink: data.customLink ?? '',
           name: data.name,
           isPublic: data.isPublic,
           maxParticipants: data.maxParticipants,
           url: data.url,
           previewUrls: data.previewUrls,
+          draftUrl: data.draftUrl,
         } as UpdateQuery<UserTemplateDocument>;
 
         if ('businessCategories' in data) {
-          const newBusinessCategories =
-            await this.businessCategoriesService.find({
-              query: { key: { $in: data.businessCategories || [] } },
-              session,
-            });
+          const promises = data.businessCategories.map(async (category) => {
+            const [existingCategory] =
+              await this.businessCategoriesService.find({
+                query: { key: category.key },
+                session,
+              });
 
-          updateTemplateData.businessCategories = newBusinessCategories.map(
-            (category) => category._id,
-          );
+            if (existingCategory) {
+              return existingCategory;
+            }
+
+            return this.businessCategoriesService.create({
+              key: category.key,
+              value: category.value,
+              color: category.color,
+            });
+          });
+
+          updateTemplateData.businessCategories = (
+            await Promise.all(promises)
+          ).map((category) => category._id);
         }
 
         if ('languages' in data) {
@@ -325,10 +340,16 @@ export class UserTemplatesController {
           updateTemplateData.socials = newSocials.map((social) => social._id);
         }
 
+        const filteredData = Object.fromEntries(
+          Object.entries(updateTemplateData).filter(
+            (entry) => entry[1] !== undefined,
+          ),
+        );
+
         const userTemplate =
           await this.userTemplatesService.findUserTemplateByIdAndUpdate(
             templateId,
-            updateTemplateData,
+            filteredData,
             session,
             [
               { path: 'socials' },
@@ -349,12 +370,11 @@ export class UserTemplatesController {
             query: {
               templateId: userTemplate.templateId,
             },
-            data: {
-              $set: updateCommonTemplateData,
-            },
+            data: updateCommonTemplateData,
             session,
           });
         }
+
         return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
@@ -365,6 +385,65 @@ export class UserTemplatesController {
           ctx: TEMPLATES_SERVICE,
         });
       }
+    });
+  }
+
+  @MessagePattern({ cmd: TemplateBrokerPatterns.UploadUserTemplateFile })
+  async uploadUserTemplateFile(
+    @Payload()
+    data: {
+      url: IUserTemplate['url'];
+      id: IUserTemplate['id'];
+      mimeType: string;
+    },
+  ): Promise<void> {
+    return withTransaction(this.connection, async (session) => {
+      const { url, id, mimeType } = data;
+
+      const previewImages = await this.userTemplatesService.generatePreviews({
+        url,
+        id,
+        mimeType,
+      });
+
+      const imageIds = previewImages.map((image) => image._id);
+
+      const userTemplate = await this.userTemplatesService.findUserTemplateById(
+        {
+          id,
+          session,
+        },
+      );
+
+      await this.commonTemplatesService.updateCommonTemplate({
+        query: {
+          templateId: userTemplate.templateId,
+        },
+        data: {
+          templateType: mimeType.includes('image') ? 'image' : 'video',
+          draftPreviewUrls: imageIds,
+          draftUrl: url,
+        },
+        session,
+      });
+
+      const template = await this.userTemplatesService.updateUserTemplate({
+        query: {
+          _id: id,
+        },
+        data: {
+          templateType: mimeType.includes('image') ? 'image' : 'video',
+          draftPreviewUrls: imageIds,
+          draftUrl: url,
+        },
+        session,
+        populatePaths: ['draftPreviewUrls'],
+      });
+
+      return plainToClass(UserTemplateDTO, template, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     });
   }
 
@@ -463,27 +542,29 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.UploadProfileTemplateFile })
   async uploadProfileTemplateFile(
     @Payload() data: { url: string; id: string; mimeType: string },
-  ) {
-    const { url, id, mimeType } = data;
+  ): Promise<void> {
+    return withTransaction(this.connection, async (session) => {
+      const { url, id, mimeType } = data;
 
-    const previewImages = await this.userTemplatesService.generatePreviews({
-      url,
-      id,
-      mimeType,
-    });
+      const previewImages = await this.userTemplatesService.generatePreviews({
+        url,
+        id,
+        mimeType,
+      });
 
-    const imageIds = previewImages.map((image) => image._id);
+      const imageIds = previewImages.map((image) => image._id);
 
-    return this.userTemplatesService.updateUserTemplate({
-      query: {
-        _id: id,
-      },
-      data: {
-        $set: {
+      return this.userTemplatesService.updateUserTemplate({
+        query: {
+          _id: id,
+        },
+        data: {
+          templateType: mimeType.includes('image') ? 'image' : 'video',
           draftPreviewUrls: imageIds,
           draftUrl: url,
         },
-      },
+        session,
+      });
     });
   }
 }

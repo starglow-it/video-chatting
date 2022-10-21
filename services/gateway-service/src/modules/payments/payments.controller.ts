@@ -11,8 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { PAYMENTS_SCOPE } from '@shared/const/api-scopes.const';
-import { ResponseSumType } from '@shared/response/common.response';
+import { PAYMENTS_SCOPE } from 'shared';
+import { ResponseSumType } from 'shared';
 
 import { PaymentsService } from './payments.service';
 import { CoreService } from '../../services/core/core.service';

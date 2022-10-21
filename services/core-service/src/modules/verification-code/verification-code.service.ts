@@ -33,8 +33,10 @@ export class VerificationCodeService {
   async deleteUserCode(
     { userId }: FilterQuery<VerificationCodeDocument>,
     { session }: ITransactionSession,
-  ) {
-    return this.verificationCode.deleteMany({ user: userId }, { session });
+  ): Promise<void> {
+    await this.verificationCode.deleteMany({ user: userId }, { session });
+
+    return;
   }
 
   async exists({ userId, value }: FilterQuery<VerificationCodeDocument>) {

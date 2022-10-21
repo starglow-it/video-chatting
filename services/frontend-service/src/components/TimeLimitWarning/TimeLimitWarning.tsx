@@ -124,4 +124,6 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     );
 };
 
-export const TimeLimitWarning = memo(Component);
+const TimeLimitWarning = memo(Component);
+
+export default TimeLimitWarning;

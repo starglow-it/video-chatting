@@ -7,9 +7,9 @@ import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from '../../schemas/user.schema';
 
 // shared
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { IUpdateProfile } from '@shared/interfaces/update-profile.interface';
+import { IUpdateProfile } from 'shared';
 
 import {
   SocialLink,
@@ -38,11 +38,13 @@ export class UsersService {
 
   async createUser(
     data: UpdateQuery<UserDocument>,
-    { session }: ITransactionSession,
+    session?: ITransactionSession,
   ): Promise<UserDocument> {
     data.password = await this.hashPassword(data.password);
 
-    const [user] = await this.user.create([data], { session });
+    const [user] = await this.user.create([data], {
+      session: session?.session,
+    });
 
     return user;
   }
@@ -84,7 +86,7 @@ export class UsersService {
     data: UpdateQuery<UserDocument>;
     session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
-  }) {
+  }): Promise<any> {
     return this.user
       .updateMany(query, data, {
         session: session?.session,
@@ -171,8 +173,13 @@ export class UsersService {
     return this.profileAvatar.create([newProfileAvatar], { session });
   }
 
-  async deleteProfileAvatar(profileAvatarId, { session }: ITransactionSession) {
-    return this.profileAvatar.deleteOne({ _id: profileAvatarId }, { session });
+  async deleteProfileAvatar(
+    profileAvatarId,
+    { session }: ITransactionSession,
+  ): Promise<void> {
+    await this.profileAvatar.deleteOne({ _id: profileAvatarId }, { session });
+
+    return;
   }
 
   prepareUserUpdateData(

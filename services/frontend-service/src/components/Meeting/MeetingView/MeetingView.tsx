@@ -139,13 +139,16 @@ const Component = () => {
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo
-                src={meetingTemplate.url && meetingTemplate.templateType === 'video'}
+                templateType={meetingTemplate.templateType}
+                src={meetingTemplate.url}
             >
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>
                         <Image
                             className={clsx(styles.image, {
-                                [styles.blured]: Boolean(meetingTemplate.url),
+                                [styles.blured]:
+                                    Boolean(meetingTemplate.url) &&
+                                    meetingTemplate.templateType === 'video',
                             })}
                             src={previewImage?.url || ''}
                             width="100%"

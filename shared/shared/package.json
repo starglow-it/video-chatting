@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "shared",
+  "description": "Shared types and const",
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "main": "dist/index.js",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "4.8.3"
+  },
+  "dependencies": {
+    "@types/node": "^18.7.23",
+    "ts-node": "10.9.1"
+  }
+}

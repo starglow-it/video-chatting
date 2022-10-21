@@ -1,8 +1,8 @@
-import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
-import { IBusinessCategory } from '@shared/interfaces/business-category.interface';
+import { ICommonTemplate } from 'shared';
+import { IBusinessCategory } from 'shared';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IPreviewImage } from '@shared/interfaces/preview-image.interface';
+import { IPreviewImage } from 'shared';
 
 export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
@@ -56,6 +56,10 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   isPublic: boolean;
+
+  @Expose()
+  @ApiProperty()
+  author: string;
 
   @Expose()
   @ApiProperty()

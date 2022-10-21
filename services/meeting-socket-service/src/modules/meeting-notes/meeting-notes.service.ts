@@ -19,8 +19,10 @@ export class MeetingNotesService {
     return this.meetingNote.create([data], { session });
   }
 
-  async deleteOne(query, { session }: ITransactionSession) {
-    return this.meetingNote.deleteOne(query, { session });
+  async deleteOne(query, { session }: ITransactionSession): Promise<void> {
+    await this.meetingNote.deleteOne(query, { session });
+
+    return;
   }
 
   async findMany(query, { session }: ITransactionSession, populate) {

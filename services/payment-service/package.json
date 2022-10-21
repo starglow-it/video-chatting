@@ -30,12 +30,15 @@
     "amqp-connection-manager": "4.1.6",
     "amqplib": "0.10.3",
     "axios": "0.27.2",
+    "shared-const": "workspace:*",
     "date-fns": "2.29.3",
     "nestjs-stripe": "1.0.0",
     "npm-check": "6.0.1",
+    "npm-check-updates": "16.3.4",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "7.5.6",
+    "shared": "workspace:*",
     "stripe": "10.10.0"
   },
   "devDependencies": {

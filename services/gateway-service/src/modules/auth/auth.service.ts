@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 // shared
-import { AUTH_PROVIDER } from '@shared/providers';
-import { AuthBrokerPatterns } from '@shared/patterns/auth';
+import { AUTH_PROVIDER } from 'shared';
+import { AuthBrokerPatterns } from 'shared';
 import {
   ConfirmUserRegistrationPayload,
   LoginUserByEmailPayload,
@@ -11,7 +11,7 @@ import {
   RefreshTokenPayload,
   RegisterUserPayload,
   SendResetPasswordLinkEmailPayload,
-} from '@shared/broker-payloads/auth';
+} from 'shared';
 
 @Injectable()
 export class AuthService {

@@ -1,8 +1,8 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { IDashboardNotificationUser } from '@shared/interfaces/dashboard-notification-user.interface';
+import { IDashboardNotificationUser } from 'shared';
 
 import { ProfileAvatarDTO } from './profile-avatar.dto';
-import { IProfileAvatar } from '@shared/interfaces/profile-avatar.interface';
+import { IProfileAvatar } from 'shared';
 
 export class DashboardNotificationUserDTO
   implements IDashboardNotificationUser

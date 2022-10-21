@@ -20,7 +20,7 @@ import { isVideoFile } from '../../../utils/files/isVideoFile';
 // styles
 import styles from './TemplateBackgroundPreview.module.scss';
 
-const Component = ({ children }) => {
+const Component = ({ children }: React.PropsWithChildren<unknown>) => {
     const isTemplatePreviewPending = useStore(uploadTemplateFileFx.pending);
     const isUpdateMeetingTemplateFilePending = useStore(uploadUserTemplateFileFx.pending);
 

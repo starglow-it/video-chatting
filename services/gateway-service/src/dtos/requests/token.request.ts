@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IToken } from '@shared/interfaces/token.interface';
+import { IToken } from 'shared';
 
 export class TokenRequest implements IToken {
   @IsNotEmpty({

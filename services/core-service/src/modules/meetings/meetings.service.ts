@@ -8,7 +8,7 @@ import {
 } from '../../schemas/meeting-instance.schema';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { ICommonMeetingInstance } from '@shared/interfaces/common-instance-meeting.interface';
+import { ICommonMeetingInstance } from 'shared';
 
 @Injectable()
 export class MeetingsService {
@@ -34,8 +34,10 @@ export class MeetingsService {
   }: {
     query: FilterQuery<MeetingInstanceDocument>;
     session: ITransactionSession;
-  }) {
-    return this.meetingInstance.deleteOne(query, { session: session.session });
+  }): Promise<void> {
+    await this.meetingInstance.deleteOne(query, { session: session?.session });
+
+    return;
   }
 
   async findById(

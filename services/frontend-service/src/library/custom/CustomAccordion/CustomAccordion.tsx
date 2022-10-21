@@ -8,7 +8,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // icons
-import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
+import { RoundArrowIcon } from 'shared-frontend';
 import { CustomAccordionProps } from './types';
 
 import styles from './CustomAccordion.module.scss';

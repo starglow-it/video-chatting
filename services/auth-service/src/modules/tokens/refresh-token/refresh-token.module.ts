@@ -6,7 +6,7 @@ import { ConfigModule } from '../../../services/config/config.module';
 import { RefreshTokenService } from './refresh-token.service';
 import { ConfigClientService } from '../../../services/config/config.service';
 
-import { JWT_REFRESH_EXPIRE } from '@shared/const/jwt.const';
+import { JWT_REFRESH_EXPIRE } from 'shared';
 
 @Module({
   imports: [

@@ -1,9 +1,7 @@
 import { HttpMethods, Template } from '../../store/types';
 import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
 
-export const PROFILE_URL = `${profileScope}`;
-
-export const baseProfileUrl = `${serverUrl}/${PROFILE_URL}`;
+export const baseProfileUrl = `${serverUrl}/${profileScope}`;
 
 export const postProfileUrl = {
     url: baseProfileUrl,

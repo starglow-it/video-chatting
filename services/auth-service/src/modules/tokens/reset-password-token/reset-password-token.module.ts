@@ -5,7 +5,7 @@ import { ResetPasswordTokenService } from './reset-password-token.service';
 import { ConfigModule } from '../../../services/config/config.module';
 import { ConfigClientService } from '../../../services/config/config.service';
 
-import { JWT_RESET_EXPIRE } from '@shared/const/jwt.const';
+import { JWT_RESET_EXPIRE } from 'shared';
 
 @Module({
   imports: [

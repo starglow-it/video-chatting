@@ -1,22 +1,2 @@
-npm run lint --prefix=services/auth-service
-npm run format --prefix=services/auth-service
-npm run lint --prefix=services/config-service
-npm run format --prefix=services/config-service
-npm run lint --prefix=services/core-service
-npm run format --prefix=services/core-service
-npm run lint --prefix=services/frontend-service
-npm run format --prefix=services/frontend-service
-npm run lint --prefix=services/gateway-service
-npm run format --prefix=services/gateway-service
-npm run lint --prefix=services/notifications-service
-npm run format --prefix=services/notifications-service
-npm run lint --prefix=services/socket-service
-npm run format --prefix=services/socket-service
-npm run lint --prefix=services/meeting-socket-service
-npm run format --prefix=services/meeting-socket-service
-npm run lint --prefix=services/payment-service
-npm run format --prefix=services/payment-service
-npm run lint --prefix=services/media-server-service
-npm run format --prefix=services/media-server-service
-npm run lint --prefix=services/scaling-service
-npm run format --prefix=services/scaling-service
+pnpm --filter auth-service --filter core-service --filter config-service --filter frontend-admin-service --filter frontend-service --filter gateway-service --filter media-server-service --filter meeting-socket-service --filter notification-service --filter payment-service --filter scaling-service --filter socket-service format
+pnpm --filter auth-service --filter core-service --filter config-service --filter gateway-service --filter media-server-service --filter meeting-socket-service --filter notification-service --filter payment-service --filter scaling-service --filter socket-service lint

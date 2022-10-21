@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { IConfig } from '@shared/interfaces/config.interface';
+import { IConfig } from 'shared';
 
 import { AppModule } from './app.module';
 import { ConfigClientService } from './services/config/config.service';
@@ -43,13 +43,13 @@ async function bootstrap() {
 
     tasksService.addInterval({
       name: 'terminateInstances',
-      ts: getTimeoutTimestamp({ value: 5, type: TimeoutTypesEnum.Minutes }),
+      ts: getTimeoutTimestamp({ value: 10, type: TimeoutTypesEnum.Minutes }),
       callback: scalingService.terminateStoppedInstances.bind(scalingService),
     });
 
     tasksService.addInterval({
       name: 'checkNumberOfVacantServers',
-      ts: getTimeoutTimestamp({ value: 2, type: TimeoutTypesEnum.Minutes }),
+      ts: getTimeoutTimestamp({ value: 30, type: TimeoutTypesEnum.Seconds }),
       callback: scalingService.checkNumberOfVacantServers.bind(scalingService),
     });
   }

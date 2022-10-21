@@ -17,16 +17,17 @@ import {
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { IUserTemplate } from '@shared/interfaces/user-template.interface';
-import { ResponseSumType } from '@shared/response/common.response';
+import { IUserTemplate } from 'shared';
+import { ResponseSumType } from 'shared';
 import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
-import { ICommonTemplate } from '@shared/interfaces/common-template.interface';
-import { EntityList } from '@shared/types/utils/http/list.type';
+import { ICommonTemplate } from 'shared';
+import { EntityList } from 'shared';
 import { TemplatesService } from '../templates/templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { UploadService } from '../upload/upload.service';
 import { CoreService } from '../../services/core/core.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('profile/templates')
 export class ProfileTemplatesController {
@@ -94,10 +95,8 @@ export class ProfileTemplatesController {
     try {
       if (templateId) {
         if (file) {
-          const { fileName, extension } = getFileNameAndExtension(
-            file.originalname,
-          );
-          const uploadKey = `templates/videos/${templateId}/${fileName}.${extension}`;
+          const { extension } = getFileNameAndExtension(file.originalname);
+          const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
 
           await this.uploadService.deleteFolder(
             `templates/videos/${templateId}`,

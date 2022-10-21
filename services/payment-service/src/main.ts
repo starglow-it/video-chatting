@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import * as express from 'express';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { IConfig } from '@shared/interfaces/config.interface';
+import { IConfig } from 'shared';
 
 import { AppModule } from './app.module';
 import { ConfigClientService } from './services/config/config.service';

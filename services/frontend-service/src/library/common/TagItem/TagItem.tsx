@@ -12,10 +12,11 @@ import { PropsWithClassName } from '../../../types';
 
 type TagItemProps = PropsWithClassName<{
     children: React.ReactNode;
+    color?: string;
 }>;
 
-const Component: React.FunctionComponent<TagItemProps> = ({ className, children }) => (
-    <CustomGrid item alignItems="center" className={clsx(styles.wrapper, className)}>
+const Component: React.FunctionComponent<TagItemProps> = ({ className, color, children }) => (
+    <CustomGrid item alignItems="center" sx={{ color }} className={clsx(styles.wrapper, className)}>
         {children}
     </CustomGrid>
 );

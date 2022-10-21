@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IInviteAttendeeEmail } from '@shared/interfaces/inviteAttendeeEmail.interface';
+import { IInviteAttendeeEmail } from 'shared';
 
 export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
   @ApiProperty()

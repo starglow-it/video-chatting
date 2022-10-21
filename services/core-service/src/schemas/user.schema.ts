@@ -7,7 +7,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
-import { ICommonUserDTO } from '@shared/interfaces/common-user.interface';
+import { ICommonUserDTO } from 'shared';
 
 @Schema({
   timestamps: true,
@@ -22,6 +22,13 @@ export class User {
     required: true,
   })
   email: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true,
+    default: 'user',
+  })
+  role: 'admin' | 'user';
 
   @Prop({
     type: mongoose.Schema.Types.String,
