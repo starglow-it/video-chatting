@@ -1,6 +1,5 @@
 import React, { forwardRef, memo, useCallback, useMemo } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
 
 import { ClickAwayListener } from '@mui/material';
 
@@ -16,6 +15,9 @@ import { DashboardNotificationItem } from '@components/Dashboard/DashboardNotifi
 
 // types
 import { DashboardNotificationsProps } from './types';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import {
@@ -57,7 +59,7 @@ const Component: React.FunctionComponent<ComponentPropsType> = ({ onClickAway },
                         alignItems="center"
                         className={styles.noNotificationsWrapper}
                     >
-                        <Image src="/images/eyes.png" width={40} height={40} />
+                        <CustomImage src="/images/eyes.png" width={40} height={40} />
                         <CustomTypography
                             nameSpace="dashboard"
                             translation="notifications.noNotifications"

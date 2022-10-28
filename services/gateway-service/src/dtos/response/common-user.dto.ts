@@ -20,6 +20,10 @@ export class CommonUserRestDTO implements ICommonUserDTO {
 
   @Expose()
   @ApiProperty()
+  country: string;
+
+  @Expose()
+  @ApiProperty()
   isConfirmed: boolean;
 
   @Expose()
@@ -93,6 +97,10 @@ export class CommonUserRestDTO implements ICommonUserDTO {
   @Expose()
   @ApiProperty()
   maxMeetingTime: number;
+
+  @Expose()
+  @ApiProperty()
+  isProfessionalTrialAvailable: boolean;
 
   createdAt: Date;
   updatedAt: Date;

@@ -32,6 +32,7 @@
     "noTimeLeft": "You've run out of meeting minutes",
     "subscriptionBusinessSuccess": "Thank you for subscribing to Live Office Business!",
     "subscriptionProfessionalSuccess": "Thank you for subscribing to Live Office Professional!",
+    "subscriptionProfessionalTrialSuccess": "Thank you for subscribing to Live Office Professional! Enjoy 7 days Free Trial",
     "subscriptionFail": "An error occurred during the subscription. Please try again",
     "templateSuccess": "The purchase was successful. New room added to My Rooms",
     "templateFail": "Something happened during the payment. You can repeat the purchase.",

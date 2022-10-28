@@ -11,7 +11,7 @@ export const currencies: Record<string, string> = {
     usd: '$',
 };
 
-export const currencyValues: ValuesSwitcherItem[] = [
+export const currencyValues: ValuesSwitcherItem<'USD' | 'CAD'>[] = [
     { id: 1, value: 'USD', label: 'USD' },
     { id: 2, value: 'CAD', label: 'CAD' },
 ];

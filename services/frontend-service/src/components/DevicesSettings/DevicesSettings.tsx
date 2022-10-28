@@ -51,6 +51,7 @@ import {
     toggleIsAuraActive,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
+    updateUserSocketEvent,
 } from '../../store/roomStores';
 
 // types
@@ -194,6 +195,7 @@ const Component = () => {
         updateLocalUserEvent({
             accessStatus: MeetingAccessStatuses.EnterName,
         });
+        updateUserSocketEvent({ accessStatus: MeetingAccessStatuses.EnterName });
     }, [isUserSentEnterRequest]);
 
     const isAudioError = Boolean(audioError);

@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -12,6 +11,9 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 
 // components
 import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { $appDialogsStore, appDialogsApi } from '../../../store';
@@ -55,7 +57,7 @@ const Component = () => {
         >
             <CustomGrid container justifyContent="center">
                 <CustomGrid container justifyContent="center" alignItems="center" gap={1}>
-                    <Image src="/images/winking-face.png" width="30px" height="30px" />
+                    <CustomImage src="/images/winking-face.png" width="30px" height="30px" />
                     <CustomTypography
                         variant="h4bold"
                         nameSpace="meeting"

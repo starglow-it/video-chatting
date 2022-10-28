@@ -73,6 +73,7 @@ export type Profile = {
     profileAvatar: ProfileAvatarT;
     companyName: string;
     email: string;
+    country: string;
     contactEmail: string;
     signBoard: string;
     stripeAccountId: string;
@@ -90,6 +91,7 @@ export type Profile = {
     languages: Language[];
     businessCategories: BusinessCategory[];
     templates: Template[];
+    isProfessionalTrialAvailable: boolean;
 };
 
 export enum MeetingAccessStatuses {

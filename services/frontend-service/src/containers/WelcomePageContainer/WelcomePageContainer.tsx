@@ -1,9 +1,6 @@
 import React, { memo, useCallback, useEffect } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
-
-// controllers
 
 // custom
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
@@ -15,6 +12,9 @@ import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplate
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './WelcomePageContainer.module.scss';
@@ -53,7 +53,7 @@ const WelcomePageContainer = memo(() => {
                     justifyContent="center"
                 >
                     <CustomBox className={styles.image}>
-                        <Image
+                        <CustomImage
                             src="/images/winking-face.png"
                             width="40px"
                             height="40px"

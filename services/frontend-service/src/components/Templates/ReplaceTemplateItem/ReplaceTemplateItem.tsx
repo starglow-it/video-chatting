@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import Image from 'next/image';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import { Fade } from '@mui/material';
@@ -11,6 +10,9 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CheckIcon } from '@library/icons/CheckIcon';
 import styles from './ReplaceTemplateItem.module.scss';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { $deleteProfileTemplateId } from '../../../store';
@@ -38,7 +40,7 @@ const Component = ({ template, onChooseTemplate }: ReplaceTemplateItemProps) => 
             onClick={handleChooseTemplate}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <Image src={previewImage?.url || ''} width="334px" height="190px" />
+                <CustomImage src={previewImage?.url || ''} width="334px" height="190px" />
             </ConditionalRender>
             <Fade in={isChosenForReplace}>
                 <CustomGrid

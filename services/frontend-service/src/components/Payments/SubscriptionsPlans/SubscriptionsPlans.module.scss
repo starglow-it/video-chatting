@@ -66,7 +66,26 @@
 
 .button {
   margin: auto 0 0 0;
-  height: 56px;
+  height: rem(56px);
+}
+
+.popper {
+  z-index: 2000;
+
+  .trialText {
+    font-size: rem(12px);
+    line-height: rem(18px);
+  }
+}
+
+.trialButton {
+  height: rem(56px);
+  margin: rem(0 0 12px);
+
+  .icon {
+    margin: rem(0 4px 0 0);
+    height: rem(20px);
+  }
 }
 
 .active {

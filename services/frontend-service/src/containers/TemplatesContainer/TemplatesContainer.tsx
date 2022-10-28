@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useEffect } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
@@ -33,17 +32,24 @@ import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExp
 // icons
 import { PlusIcon } from '@library/icons/PlusIcon';
 
+// shared
+import { CustomImage } from 'shared-frontend/library';
+
 // stores
 import {
     $isBusinessSubscription,
     $isProfessionalSubscription,
+    $isTrial,
     $profileStore,
     $profileTemplatesStore,
     $skipProfileTemplates,
+    $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
     appDialogsApi,
+    clearTemplateDraft,
     createMeetingFx,
+    createTemplateFx,
     deleteProfileTemplateFx,
     getCustomerPortalSessionUrlFx,
     getProfileTemplatesFx,
@@ -58,14 +64,15 @@ import {
 import styles from './TemplatesContainer.module.scss';
 
 // const
-import { createRoomRoute, dashboardRoute } from '../../const/client-routes';
+import { dashboardRoute } from '../../const/client-routes';
 
 // types
 import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
 
 // utils
-import { getClientMeetingUrl } from '../../utils/urls';
+import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
 import { formatCountDown } from '../../utils/time/formatCountdown';
+import { useLocalization } from "@hooks/useTranslation";
 
 const Component = () => {
     const router = useRouter();
@@ -78,6 +85,9 @@ const Component = () => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
 
+    const templateDraft = useStore($templateDraft);
+    const isTrial = useStore($isTrial);
+
     const freeTemplatesCount = useStoreMap({
         store: $profileTemplatesStore,
         keys: [profile.id],
@@ -88,6 +98,8 @@ const Component = () => {
     });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
+
+    const { translation } = useLocalization('subscriptions');
 
     const {
         value: isSubscriptionsOpen,
@@ -110,6 +122,8 @@ const Component = () => {
             }
         })();
     }, [isTemplateDeleting]);
+
+    useEffect(() => () => clearTemplateDraft(), []);
 
     const isThereProfileTemplates = Boolean(profileTemplates?.list?.length);
 
@@ -199,21 +213,27 @@ const Component = () => {
         [handleCreateMeeting],
     );
 
-    const handleCreateRoom = useCallback(() => {
+    const handleCreateRoom = useCallback(async () => {
+        let response;
+        if (!templateDraft?.id) {
+            response = await createTemplateFx();
+        }
+
         if (isBusinessSubscription || isProfessionalSubscription) {
-            router.push(createRoomRoute);
+            router.push(getCreateRoomUrl(templateDraft?.id ?? response?.id ?? ''));
             return;
         }
 
         handleOpenSubscriptionPlans();
-    }, [isBusinessSubscription, isProfessionalSubscription, handleOpenSubscriptionPlans]);
+    }, [isBusinessSubscription, isProfessionalSubscription, handleOpenSubscriptionPlans, templateDraft?.id]);
 
     const handleChooseSubscription = useCallback(
-        async (productId: string, isPaid: boolean) => {
-            if (isPaid && !profile.stripeSubscriptionId) {
+        async (productId: string, isPaid: boolean, trial: boolean) => {
+            if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
                 const response = await startCheckoutSessionForSubscriptionFx({
                     productId,
-                    baseUrl: createRoomRoute,
+                    baseUrl: getCreateRoomUrl(templateDraft?.id ?? ''),
+                    withTrial: trial,
                 });
 
                 if (response?.url) {
@@ -229,7 +249,7 @@ const Component = () => {
                 }
             }
         },
-        [profile.stripeSubscriptionId],
+        [profile.stripeSubscriptionId, templateDraft?.id, isTrial],
     );
 
     const timeLimit = formatCountDown(profile.maxMeetingTime, {
@@ -246,7 +266,7 @@ const Component = () => {
                 <CustomGrid container direction="column" justifyContent="center">
                     <CustomGrid container alignItems="center" justifyContent="center">
                         <CustomBox className={styles.image}>
-                            <Image
+                            <CustomImage
                                 src="/images/ok-hand.png"
                                 width="40px"
                                 height="40px"
@@ -263,9 +283,9 @@ const Component = () => {
                         <ConditionalRender condition={!isBusinessSubscription}>
                             <CustomTypography
                                 color="colors.grayscale.semidark"
-                                nameSpace="subscriptions"
-                                translation="limits.time"
-                                options={{ timeLimit }}
+                                dangerouslySetInnerHTML={{
+                                    __html: translation('limits.time', { timeLimit })
+                                }}
                             />
                             &nbsp;
                             <CustomTypography color="colors.grayscale.semidark">
@@ -275,9 +295,9 @@ const Component = () => {
                         &nbsp;
                         <CustomTypography
                             color="colors.grayscale.semidark"
-                            nameSpace="subscriptions"
-                            translation="limits.templates"
-                            options={{ templatesLimit }}
+                            dangerouslySetInnerHTML={{
+                                __html: translation('limits.templates', { templatesLimit })
+                            }}
                         />
                     </CustomGrid>
                     <CustomChip
@@ -308,7 +328,7 @@ const Component = () => {
             >
                 <CustomGrid container alignItems="center" justifyContent="center">
                     <CustomBox className={styles.image}>
-                        <Image
+                        <CustomImage
                             src="/images/blush-face.png"
                             width="40px"
                             height="40px"

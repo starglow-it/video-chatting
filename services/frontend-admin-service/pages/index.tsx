@@ -10,7 +10,7 @@ const enhance = withStart(pageLoaded);
 const AdminLogin: NextPage = (): JSX.Element => <AdminLoginContainer />;
 
 AdminLogin.getInitialProps = async () => ({
-    namespacesRequired: ['common', 'forms'],
+    namespacesRequired: ['common', 'forms', 'errors'],
 });
 
 export default enhance(AdminLogin);

@@ -19,6 +19,8 @@ export type FindUserByIdPayload = {
   userId: ICommonUserDTO["id"];
 };
 
+export type FindUsersPayload = any;
+
 export type FindUsersByIdPayload = {
   userIds: ICommonUserDTO["id"][];
 };
@@ -59,3 +61,4 @@ export type ResetPasswordPayload = {
   newPassword: string;
   newPasswordRepeat: string;
 };
+export type CountUsersPayload = Partial<ICommonUserDTO>

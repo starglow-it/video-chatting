@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useEffect } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
@@ -21,6 +20,9 @@ import {
     appDialogsApi,
     setScheduleTemplateIdEvent,
 } from '../../store';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './DiscoveryContainer.module.scss';
@@ -66,7 +68,7 @@ const DiscoveryContainer = memo(() => {
                     justifyContent="center"
                 >
                     <CustomBox className={styles.image}>
-                        <Image
+                        <CustomImage
                             src="/images/blush-face.png"
                             width="40px"
                             height="40px"

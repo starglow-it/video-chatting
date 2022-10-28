@@ -123,7 +123,7 @@ const Component = ({
             contentClassName={styles.wrapper}
         >
             <CustomGrid container className={styles.content} style={style}>
-                <Fade in={!isReplaceStep}>
+                <Fade in={!isReplaceStep} unmountOnExit>
                     <CustomGrid
                         className={styles.info}
                         container
@@ -159,7 +159,7 @@ const Component = ({
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>
-                <Fade in={isReplaceStep} timeout={200}>
+                <Fade in={isReplaceStep} timeout={200} unmountOnExit>
                     <CustomGrid
                         className={styles.templates}
                         container

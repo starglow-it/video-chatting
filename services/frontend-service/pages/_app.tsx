@@ -8,7 +8,6 @@ import { hydrate } from 'effector';
 import { Provider } from 'effector-react/ssr';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { Layout } from '@components/Layout/Layout';
-import 'video.js/dist/video-js.css';
 
 // hooks
 import { useScope } from '@hooks/useScope';

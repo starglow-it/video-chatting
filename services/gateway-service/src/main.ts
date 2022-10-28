@@ -67,4 +67,6 @@ async function bootstrap() {
   await app.listen(config.gatewayPort);
 }
 
-bootstrap();
+bootstrap().then(() => {
+    console.log('Gateway Server is Ready')
+});

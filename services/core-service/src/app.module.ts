@@ -19,6 +19,7 @@ import { SeederModule } from './seeder/seeder.module';
 import { ConfigModule } from './services/config/config.module';
 import { AwsConnectorModule } from './services/aws-connector/aws-connector.module';
 import { PaymentsModule } from './services/payments/payments.module';
+import {CountryStatisticsModule} from "./modules/country-statistics/country-statistics.module";
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { PaymentsModule } from './services/payments/payments.module';
     VerificationCodeModule,
     DashboardNotificationsModule,
     PaymentsModule,
+    CountryStatisticsModule,
   ],
   controllers: [],
   providers: [],

@@ -1,4 +1,4 @@
-import {ErrorState} from "shared-types";
+import { ErrorState } from 'shared-types';
 
 import { sendRequest } from '../../../helpers/http/sendRequest';
 import { setAuthCookies } from '../../../helpers/http/setAuthCookies';

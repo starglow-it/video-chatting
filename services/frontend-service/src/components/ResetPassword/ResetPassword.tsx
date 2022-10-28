@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
-import Image from 'next/image';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -17,6 +16,9 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 // components
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ResetPassword.module.scss';
@@ -106,7 +108,7 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
     return (
         <CustomGrid container direction="column" alignItems="center">
             <CustomGrid container alignItems="center" gap={1} justifyContent="center">
-                <Image src="/images/lock.png" width="28px" height="28px" />
+                <CustomImage src="/images/lock.png" width="28px" height="28px" />
                 <CustomTypography
                     variant="h2bold"
                     nameSpace="common"

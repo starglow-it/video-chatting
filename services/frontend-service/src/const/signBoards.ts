@@ -5,7 +5,7 @@ export const SIGN_BOARDS = [
             type: 'default',
             label: 'Default',
             value: 'default',
-        }
+        },
     ],
     [
         {
@@ -25,7 +25,7 @@ export const SIGN_BOARDS = [
             type: 'wooden',
             label: 'Wooden 3',
             value: 'wooden_3',
-        }
+        },
     ],
     [
         {
@@ -39,7 +39,7 @@ export const SIGN_BOARDS = [
             type: 'tropical',
             label: 'Tropical 2',
             value: 'tropical_2',
-        }
+        },
     ],
     [
         {
@@ -71,7 +71,7 @@ export const SIGN_BOARDS = [
             type: 'ink',
             label: 'Ink 5',
             value: 'ink_5',
-        }
+        },
     ],
     [
         {
@@ -82,28 +82,28 @@ export const SIGN_BOARDS = [
         },
         {
             id: 14,
-            type:'glossy',
+            type: 'glossy',
             label: 'Glossy 2',
             value: 'glossy_2',
         },
         {
             id: 15,
-            type:'glossy',
+            type: 'glossy',
             label: 'Glossy 3',
             value: 'glossy_3',
         },
         {
             id: 16,
-            type:'glossy',
+            type: 'glossy',
             label: 'Glossy 4',
             value: 'glossy_4',
         },
         {
             id: 17,
-            type:'glossy',
+            type: 'glossy',
             label: 'Glossy 5',
             value: 'glossy_5',
-        }
+        },
     ],
     [
         {
@@ -114,27 +114,27 @@ export const SIGN_BOARDS = [
         },
         {
             id: 19,
-            type:'softbox',
+            type: 'softbox',
             label: 'Softbox 2',
             value: 'softbox_2',
         },
         {
             id: 20,
-            type:'softbox',
+            type: 'softbox',
             label: 'Softbox 3',
             value: 'softbox_3',
         },
         {
             id: 21,
-            type:'softbox',
+            type: 'softbox',
             label: 'Softbox 4',
             value: 'softbox_4',
         },
         {
             id: 22,
-            type:'softbox',
+            type: 'softbox',
             label: 'Softbox 5',
             value: 'softbox_5',
-        }
+        },
     ],
 ];

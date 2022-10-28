@@ -8,7 +8,7 @@ RUN chmod +x /wait
 
 WORKDIR /app
 
-RUN mkdir -p services/socket-service
+RUN mkdir -p services/payment-service
 
 COPY ./pnpm-workspace.yaml ./
 COPY ./.npmrc ./
@@ -16,15 +16,15 @@ COPY ./shared ./shared
 
 RUN pnpm add nx -D -w
 
-COPY ./services/socket-service/package.json ./services/socket-service
+COPY ./services/payment-service/package.json ./services/payment-service
 
 RUN pnpm install
 
-COPY ./services/socket-service ./services/socket-service
+COPY ./services/payment-service ./services/payment-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,socket-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,payment-service
 
-EXPOSE 8080
+EXPOSE 5000
 
-CMD /wait && pnpm --filter socket-service start:dev
+CMD /wait && pnpm --filter payment-service start:dev
 

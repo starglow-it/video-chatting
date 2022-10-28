@@ -130,7 +130,7 @@ export class UsersService {
       id,
       { $set: data },
       { session: session?.session, new: true },
-    );
+    ).exec();
   }
 
   async findById(
@@ -182,6 +182,18 @@ export class UsersService {
     return;
   }
 
+  async count({
+    query,
+    session,
+  }: {
+    query: FilterQuery<UserDocument>;
+    session: ITransactionSession;
+  }): Promise<number> {
+    return this.user
+      .countDocuments(query, { session: session?.session })
+      .exec();
+  }
+
   prepareUserUpdateData(
     data: Partial<IUpdateProfile>,
   ): Partial<ICommonUserDTO> {
@@ -204,6 +216,7 @@ export class UsersService {
       stripeEmail: data.stripeEmail,
       isStripeEnabled: data.isStripeEnabled,
       wasSuccessNotificationShown: data.wasSuccessNotificationShown,
+      country: data.country,
     };
   }
 }

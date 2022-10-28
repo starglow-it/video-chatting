@@ -1,9 +1,9 @@
 import React, { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
-import { VideoJsPlayerOptions } from 'video.js';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomVideoPlayerOptions } from '@library/custom/CustomVideoPlayer/types';
 
 // styles
 import { CustomVideoPlayer } from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
@@ -28,18 +28,9 @@ const Component = ({ children, src, templateType }: MeetingBackgroundVideoProps)
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
     const videoJsOptions = useMemo(
-        (): VideoJsPlayerOptions => ({
-            autoplay: true,
-            controls: false,
-            responsive: false,
-            fill: true,
-            loop: true,
-            sources: [
-                {
-                    src,
-                    type: 'video/mp4',
-                },
-            ],
+        (): CustomVideoPlayerOptions => ({
+            src,
+            type: 'video/mp4',
         }),
         [src],
     );

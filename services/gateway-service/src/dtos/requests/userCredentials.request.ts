@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEmail, MinLength } from 'class-validator';
+import {IsNotEmpty, IsString, IsEmail, MinLength, IsOptional} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IUserCredentials } from 'shared';
 
@@ -24,4 +24,11 @@ export class UserCredentialsRequest implements IUserCredentials {
   })
   @ApiProperty()
   readonly password: string;
+
+  @IsString({
+    message: 'user.country.invalid',
+  })
+  @IsOptional()
+  @ApiProperty()
+  readonly country: string;
 }

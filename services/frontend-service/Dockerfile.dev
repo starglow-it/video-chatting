@@ -7,20 +7,19 @@ RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer |
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 
+RUN chmod +x /wait
+
 RUN apk update
 RUN apk upgrade
 RUN apk add --no-cache git
 RUN apk add --no-cache python3 py3-pip
 RUN apk add --no-cache g++ make
 
-RUN chmod +x /wait
-
 WORKDIR /app
 
 RUN mkdir -p services/frontend-service
 
 COPY ./pnpm-workspace.yaml ./
-COPY ./pnpm-lock.yaml ./
 COPY ./.npmrc ./
 COPY ./shared ./shared
 
@@ -28,11 +27,11 @@ RUN pnpm add nx -D -w
 
 COPY ./services/frontend-service/package.json ./services/frontend-service
 
-RUN pnpm install
+RUN pnpm install --force
 
 COPY ./services/frontend-service ./services/frontend-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,shared-frontend,shared-utils,frontend-service
+RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared,shared-utils,frontend-service
 
 EXPOSE 8000
 

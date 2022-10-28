@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 // hooks
@@ -17,6 +16,9 @@ import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 // components
 import { FAQ } from '@components/Support/Faq/Faq';
 import { ContactUsForm } from '@components/Support/ContactUsForm/ContactUsForm';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './Support.module.scss';
@@ -62,7 +64,7 @@ const Component = () => {
     return (
         <CustomGrid className={styles.wrapper} container justifyContent="center">
             <CustomGrid container alignItems="center" justifyContent="center" gap={1.5}>
-                <Image src="/images/handshake.png" width="40px" height="40px" />
+                <CustomImage src="/images/handshake.png" width="40px" height="40px" />
                 <CustomTypography variant="h1" nameSpace="static" translation="support.title" />
             </CustomGrid>
             <CustomGrid container justifyContent="space-between" className={styles.chipsContainer}>

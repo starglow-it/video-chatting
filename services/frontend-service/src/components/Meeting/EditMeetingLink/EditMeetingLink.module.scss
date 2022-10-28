@@ -17,6 +17,7 @@
       inset: 0;
       border: 2px solid $primary-red;
       border-radius: rem(10px);
+      pointer-events: none;
     }
   }
 }

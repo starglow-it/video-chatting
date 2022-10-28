@@ -214,6 +214,7 @@ sample({
 sample({
     clock: chooseSharingStreamFx.doneData,
     source: $localUserStore,
+    filter: (source, data) => Booelan(data?.id),
     fn: localUser => ({ sharingUserId: localUser.id }),
     target: updateMeetingSocketEvent,
 });
@@ -231,6 +232,7 @@ sample({
 sample({
     clock: chooseSharingStreamFx.doneData,
     source: sharingCommonStore,
+    filter: (source, data) => Booelan(data?.id),
     fn: ({ users, connections, localUser, sharingStream }, data) => ({
         connectionsData: users
             .filter(

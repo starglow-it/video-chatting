@@ -1,75 +1,50 @@
-import React, { memo, useEffect } from 'react';
-import videojs from 'video.js';
+import React, { useRef, memo, useEffect } from 'react';
 import clsx from 'clsx';
 
 // types
-import { CustomVideoPlayerProps } from '@library/custom/CustomVideoPlayer/types';
+import { CustomVideoPlayerProps } from './types';
+
+import styles from './CustomVideoPlayer.module.scss';
 
 const Component = ({ isPlaying, isMuted, volume, options, className }: CustomVideoPlayerProps) => {
-    const videoRef = React.useRef(null);
-    const playerRef = React.useRef(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
-        if (!options.sources) {
-            return;
+        const video = videoRef.current;
+
+        if (video) {
+            video.muted = isMuted;
         }
-
-        if (!playerRef.current) {
-            const videoElement = videoRef.current;
-            if (!videoElement) return;
-
-            // eslint-disable-next-line no-multi-assign
-            playerRef.current = videojs(videoElement, options, () => {
-                videojs.log('player is ready');
-            });
-        } else {
-            const player = playerRef.current;
-            player.autoplay(options.autoplay);
-            player.src(options.sources);
-            player.load();
-            player.play();
-        }
-    }, [options]);
-
-    useEffect(() => {
-        const player = playerRef.current;
-
-        player.muted(isMuted);
     }, [isMuted]);
 
     useEffect(() => {
-        const player = playerRef.current;
+        const video = videoRef.current;
 
-        player.volume(volume);
+        if (video) {
+            video.volume = volume / 100;
+        }
     }, [volume]);
 
     useEffect(() => {
-        const player = playerRef.current;
+        const video = videoRef.current;
 
-        if (player) {
+        if (video) {
             if (isPlaying) {
-                player.play();
+                video.play();
             } else {
-                player.pause();
+                video.pause();
             }
         }
     }, [isPlaying]);
 
-    useEffect(() => {
-        const player = playerRef.current;
-
-        return () => {
-            if (player) {
-                player.dispose();
-                playerRef.current = null;
-            }
-        };
-    }, [playerRef]);
+    useEffect(() => () => {
+        videoRef.current = null;
+    }, []);
 
     return (
-        <div data-vjs-player className={className}>
-            <video ref={videoRef} className={clsx('video-js', className)}>
-                <source src={options.sources?.[0]?.src} type={options.sources?.[0]?.type} />
+        <div className={className}>
+            <video ref={videoRef} className={clsx(styles.video, className)} autoPlay loop playsInline>
+                <source src={options?.src} type={options?.type} />
             </video>
         </div>
     );

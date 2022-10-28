@@ -25,9 +25,13 @@ export const wrapMsgPayloadWithCatch =
                         const r = await h({ payload });
 
                         if (r) {
+                            const string = JSON.stringify(r);
+
+                            const buffer = Buffer.from(string);
+
                             channel.sendToQueue(
                                 message.properties.replyTo,
-                                Buffer.from(r?.result?.toString?.() || '{}'),
+                                buffer,
                                 {
                                     correlationId: message.properties.correlationId,
                                 },

@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { Trans } from 'react-i18next';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
@@ -21,6 +21,9 @@ import { RoundCheckIcon } from '@library/icons/RoundIcons/RoundCheckIcon';
 // const
 import { currencies, planColors } from '../../../const/profile/subscriptions';
 
+// shared
+import { CustomImage } from 'shared-frontend/library';
+
 // styles
 import styles from './SubscriptionPlanCard.module.scss';
 
@@ -34,6 +37,7 @@ const Component = ({
     onOpenPlans,
     onChooseSubscription,
     isDisabled,
+    withTrial = false,
 }: SubscriptionPlanCardProps) => {
     const isFree = price.unit_amount === 0;
     const isActive = activePlanKey === product.name;
@@ -71,9 +75,13 @@ const Component = ({
         ));
     }, []);
 
-    const handleChooseSubscription = () => {
-        onChooseSubscription?.(product.id, !isFree);
-    };
+    const handleChooseSubscription = useCallback(() => {
+        onChooseSubscription?.(product.id, !isFree, false);
+    }, [onChooseSubscription, product.id, isFree]);
+
+    const handleChooseTrial = useCallback(() => {
+        onChooseSubscription?.(product.id, !isFree, true);
+    }, [onChooseSubscription, product.id, isFree]);
 
     return (
         <CustomGrid
@@ -118,6 +126,34 @@ const Component = ({
             </CustomGrid>
 
             <List className={styles.listWrapper}>{renderFeaturesListItems}</List>
+
+            <ConditionalRender condition={translation(`subscriptions.${product.name}`).trial}>
+                <CustomTypography
+                    dangerouslySetInnerHTML={{
+                        __html: translation(`subscriptions.${product.name}.trial`),
+                    }}
+                    className={styles.trialText}
+                />
+            </ConditionalRender>
+            <ConditionalRender condition={withTrial}>
+                <CustomButton
+                    variant="custom-black"
+                    nameSpace="subscriptions"
+                    translation="buttons.tryForFree"
+                    onClick={handleChooseTrial}
+                    className={styles.trialButton}
+                    Icon={
+                        <CustomBox className={styles.icon}>
+                            <CustomImage
+                                src="/images/ok-hand.png"
+                                width="18px"
+                                height="18px"
+                                alt="ok-hand"
+                            />
+                        </CustomBox>
+                    }
+                />
+            </ConditionalRender>
         </CustomGrid>
     );
 };

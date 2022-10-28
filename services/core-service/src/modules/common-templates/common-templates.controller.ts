@@ -55,7 +55,7 @@ export class CommonTemplatesController {
         const commonTemplates =
           await this.commonTemplatesService.findCommonTemplates({
             query: { draft: false, isPublic: true },
-            options: { skip, limit },
+            options: { skip, limit, sort: 'maxParticipants' },
             populatePaths: ['businessCategories', 'previewUrls'],
             session,
           });

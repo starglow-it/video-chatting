@@ -1,8 +1,4 @@
-import { IUserTemplate } from "../../interfaces/user-template.interface";
-import { ICommonTemplate } from "../../interfaces/common-template.interface";
-import { ICommonUserDTO } from "../../interfaces/common-user.interface";
-import { IUpdateTemplate } from "../../interfaces/update-template.interface";
-import { IBusinessCategory } from '../../interfaces/business-category.interface';
+import { IBusinessCategory, IUserTemplate, ICommonTemplate, ICommonUserDTO, IUpdateTemplate } from '../../interfaces';
 
 export type GetCommonTemplatesPayload = { skip: number; limit: number };
 export type GetUserTemplatesPayload = {

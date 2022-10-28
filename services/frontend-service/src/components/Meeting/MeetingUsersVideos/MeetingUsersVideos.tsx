@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
-import ClickAwayListener from '@mui/base/ClickAwayListener/ClickAwayListener';
+import { ClickAwayListener } from "@mui/base";
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';

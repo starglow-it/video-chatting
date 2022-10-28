@@ -13,7 +13,8 @@
     "joinMeeting": "Join room",
     "schedule": "Schedule",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "buy": "Buy"
   },
   "noTemplates": "You dont have any rooms yet :(",
   "setUpSpace": {

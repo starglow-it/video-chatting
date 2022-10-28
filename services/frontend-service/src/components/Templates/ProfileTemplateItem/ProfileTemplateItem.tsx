@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import { Fade, Menu, MenuItem } from '@mui/material';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
@@ -37,6 +36,9 @@ import {
 
 // const
 import { editRoomRoute } from '../../../const/client-routes';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';
@@ -115,7 +117,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <Image src={previewImage?.url || ''} width="334px" height="190px" />
+                <CustomImage src={previewImage?.url || ''} width="334px" height="190px" />
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}
@@ -123,7 +125,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                 description={template.description}
                 maxParticipants={template.maxParticipants}
                 isNeedToShowBusinessInfo
-                isPublic={template.isPublic}
+                isPublic={template.author === profile.id ? template.isPublic : undefined}
             />
             <Fade in={showPreview}>
                 <CustomGrid
@@ -136,7 +138,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                         className={styles.avatar}
                         name={template.name}
                         description={template.description}
-                        isPublic={template.isPublic}
+                        isPublic={template.author === profile.id ? template.isPublic : undefined}
                     />
                     <CustomGrid container wrap="nowrap" gap={1.5}>
                         <CustomButton

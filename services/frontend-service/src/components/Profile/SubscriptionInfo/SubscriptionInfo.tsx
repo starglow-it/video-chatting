@@ -22,6 +22,7 @@ import { SubscriptionPlanCard } from '@components/Profile/SubscriptionPlanCard/S
 
 // store
 import {
+    $isTrial,
     $productsStore,
     $profileStore,
     $subscriptionStore,
@@ -39,6 +40,7 @@ import styles from './SubscriptionInfo.module.scss';
 
 // const
 import { profileRoute } from '../../../const/client-routes';
+import {useLocalization} from "@hooks/useTranslation";
 
 const Component = () => {
     const router = useRouter();
@@ -48,12 +50,15 @@ const Component = () => {
 
     const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
     const isGetProductsPending = useStore(getStripeProductsFx.pending);
+    const isTrial = useStore($isTrial);
 
     const {
         value: isSubscriptionsOpen,
         onSwitchOn: handleOpenSubscriptionPlans,
         onSwitchOff: handleCloseSubscriptionPlans,
     } = useToggle(false);
+
+    const { translation } = useLocalization('subscriptions')
 
     useEffect(() => {
         getStripeProductsFx();
@@ -62,11 +67,12 @@ const Component = () => {
 
     useSubscriptionNotification(profileRoute);
 
-    const handleChooseSubscription = async (productId: string, isPaid: boolean) => {
-        if (isPaid && !profile.stripeSubscriptionId) {
+    const handleChooseSubscription = async (productId: string, isPaid: boolean, trial: boolean) => {
+        if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
             const response = await startCheckoutSessionForSubscriptionFx({
                 productId,
                 baseUrl: profileRoute,
+                withTrial: trial,
             });
 
             if (response?.url) {
@@ -108,9 +114,15 @@ const Component = () => {
                     onOpenPlans={handleOpenSubscriptionPlans}
                     onChooseSubscription={handleChooseSubscription}
                     isDisabled={isSubscriptionPurchasePending}
+                    withTrial={product?.product?.name === 'Professional' && profile.isProfessionalTrialAvailable}
                 />
             )),
-        [products, profile.subscriptionPlanKey, isSubscriptionPurchasePending],
+        [
+            products,
+            profile.subscriptionPlanKey,
+            profile.isProfessionalTrialAvailable,
+            isSubscriptionPurchasePending,
+        ],
     );
 
     return (
@@ -119,10 +131,10 @@ const Component = () => {
                 <CustomGrid container alignItems="center" gap={1}>
                     <ShopIcon width="25px" height="24px" className={styles.icon} />
                     <CustomTypography
-                        nameSpace="subscriptions"
-                        translation="subscriptions.current"
-                        options={{
-                            currentSub: profile.subscriptionPlanKey || 'House',
+                        dangerouslySetInnerHTML={{
+                            __html: translation('subscriptions.current', {
+                                currentSub: profile.subscriptionPlanKey || 'House',
+                            })
                         }}
                     />
                     <ConditionalRender condition={Boolean(profile.stripeSubscriptionId)}>

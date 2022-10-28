@@ -62,7 +62,7 @@ export class CommonTemplatesService {
     session,
   }: {
     query: FilterQuery<CommonTemplateDocument>;
-    options?: { skip?: number; limit?: number };
+    options?: { skip?: number; limit?: number; sort?: string; };
     populatePaths?: CustomPopulateOptions;
     session?: ITransactionSession;
   }) {
@@ -74,6 +74,7 @@ export class CommonTemplatesService {
           populate: populatePaths,
           limit: options?.limit,
           skip: options?.skip,
+          sort: options?.sort,
           session: session?.session,
         },
       )

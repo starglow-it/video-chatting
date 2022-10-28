@@ -6,12 +6,7 @@ export type UpdateProfilePasswordPayload = {
     newPassword: string;
     newPasswordRepeat: string;
 };
-export type UpdateProfilePayload = {
-    companyName?: Profile['companyName'];
-    fullName?: Profile['fullName'];
-    signBoard?: Profile['signBoard'];
-    wasSuccessNotificationShown?: Profile['wasSuccessNotificationShown'];
-};
+export type UpdateProfilePayload = Partial<Profile>;
 export type SendResetPasswordLinkEmailPayload = { email: string };
 export type ResetPasswordPayload = {
     newPassword: string;

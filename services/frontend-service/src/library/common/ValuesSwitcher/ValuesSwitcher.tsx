@@ -1,9 +1,10 @@
-import React, { memo, useMemo, useCallback, useState } from 'react';
+import React, { memo, useMemo, useState, useRef, useLayoutEffect } from 'react';
+import { useStore } from 'effector-react';
+
 import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
 import { ValueSwitcherItem } from './ValueSwitcherItem';
@@ -11,66 +12,64 @@ import { ValueSwitcherItem } from './ValueSwitcherItem';
 // styles
 import styles from './ValuesSwitcher.module.scss';
 
+// store
+import { $windowSizeStore } from '../../../store';
+
 // types
 import { ValueSwitcherProps } from './types';
 
 const Component = <ValueType extends string | number>({
-    optionWidth,
     values,
     activeValue,
     onValueChanged,
     variant = 'primary',
+    className,
 }: ValueSwitcherProps<ValueType>) => {
-    const [left, setLeft] = useState(0);
+    const [activeElementIndex, setActiveElementIndex] = useState<number | null>(null);
+    const activeElementRef = useRef<HTMLDivElement | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const { width } = useStore($windowSizeStore);
 
-    const handleUpdateActiveElement = useCallback(
-        (newLeft: number) => {
-            const shift = variant === 'transparent' ? 6 : 0;
-            setLeft(newLeft + shift);
-        },
-        [variant],
-    );
+    useLayoutEffect(() => {
+        setActiveElementIndex(values.indexOf(activeValue));
+    }, [activeValue, values]);
 
     const renderValues = useMemo(
         () =>
             values.map((value, index) => (
                 <ValueSwitcherItem
                     key={value.id}
+                    ref={value.id === activeValue.id ? activeElementRef : null}
                     index={index}
                     value={value}
                     variant={variant}
-                    optionWidth={optionWidth}
                     activeValue={activeValue}
                     onValueChanged={onValueChanged}
-                    onUpdateActiveElement={handleUpdateActiveElement}
                 />
             )),
         [values, activeValue, onValueChanged, variant],
     );
 
-    const style = useMemo(
-        () => ({ '--left': `${left}px`, '--width': `${optionWidth}px` } as React.CSSProperties),
-        [left],
-    );
+    const style = useMemo(() => {
+        const left = activeElementRef.current?.offsetLeft ?? 0;
+        return {
+            '--width': `${activeElementRef.current?.clientWidth ?? 0}px`,
+            left: left,
+        } as React.CSSProperties;
+    }, [activeElementIndex, width]);
 
     return (
         <CustomGrid
             container
             wrap="nowrap"
-            className={clsx(styles.wrapper, {
+            justifyContent="space-evenly"
+            ref={containerRef}
+            className={clsx(styles.wrapper, className, {
                 [styles.primary]: variant === 'primary',
                 [styles.transparent]: variant === 'transparent',
             })}
         >
-            <CustomGrid
-                className={styles.activeItem}
-                style={style}
-                container
-                alignItems="center"
-                justifyContent="center"
-            >
-                <CustomTypography variant="body2">{activeValue.label}</CustomTypography>
-            </CustomGrid>
+            <CustomGrid className={clsx(styles.transition)} style={style} container />
             {renderValues}
         </CustomGrid>
     );

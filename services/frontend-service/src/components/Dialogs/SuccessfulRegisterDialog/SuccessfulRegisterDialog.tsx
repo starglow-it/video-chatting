@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
 
 // library
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -12,6 +11,9 @@ import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './SuccessfulRegisterDialog.module.scss';
@@ -38,7 +40,7 @@ const Component = () => {
                 alignItems="center"
                 className={styles.container}
             >
-                <Image src="/images/email2.png" width="52px" height="52px" />
+                <CustomImage src="/images/email2.png" width="52px" height="52px" />
                 <CustomTypography
                     variant="h2bold"
                     nameSpace="register"

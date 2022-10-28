@@ -8,7 +8,7 @@ networks:
 
 services:
   mongo:
-    container_name: develop_mongodb
+    container_name: liveoffice_develop_mongodb
     ports:
       - '127.0.0.1:56100:27017'
     volumes:
@@ -19,7 +19,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   rabbit:
-    container_name: develop_rabbitmq
+    container_name: liveoffice_develop_rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
@@ -31,7 +31,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   livekit-service:
-    container_name: develop_livekit
+    container_name: liveoffice_develop_livekit
     build:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
@@ -57,7 +57,7 @@ services:
       - traefikpublic
 
   frontend-service:
-    container_name: develop_frontend
+    container_name: liveoffice_develop_frontend
     build:
       context: ../../
       dockerfile: services/frontend-service/Dockerfile
@@ -95,7 +95,7 @@ services:
       - traefikpublic
 
   frontend-admin-service:
-    container_name: develop_frontend-admin
+    container_name: liveoffice_develop_frontend-admin
     build:
       context: ../../
       dockerfile: services/frontend-admin-service/Dockerfile
@@ -105,12 +105,11 @@ services:
     environment:
       - WAIT_HOSTS=gateway-service:3000
       - WAIT_TIMEOUT=60000
+      - FRONTEND_URL=https://dev-admin.liveoffice.forasoft.com
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service
-      - FRONTEND_URL=http://localhost:9000
-      - DEFAULT_SERVER_IP=localhost
-      - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
-      - SUPPORT_EMAIL
+      - DEFAULT_SERVER_IP
+      - VULTR_STORAGE_HOSTNAME
     ports:
       - '9000:9000'
     labels:
@@ -125,7 +124,7 @@ services:
       - traefikpublic
 
   gateway-service:
-    container_name: develop_gateway
+    container_name: liveoffice_develop_gateway
     build:
       context: ../../
       dockerfile: ./services/gateway-service/Dockerfile
@@ -147,7 +146,7 @@ services:
       - traefikpublic
 
   socket-service:
-    container_name: develop_socket
+    container_name: liveoffice_develop_socket
     build:
       context: ../../
       dockerfile: ./services/socket-service/Dockerfile
@@ -169,7 +168,7 @@ services:
       - traefikpublic
 
   meeting-socket-service:
-    container_name: develop_meeting_socket
+    container_name: liveoffice_develop_meeting_socket
     build:
       context: ../../
       dockerfile: ./services/meeting-socket-service/Dockerfile
@@ -191,7 +190,7 @@ services:
       - traefikpublic
 
   payment-service:
-    container_name: develop_payment
+    container_name: liveoffice_develop_payment
     build:
       context: ../../
       dockerfile: ./services/payment-service/Dockerfile
@@ -213,7 +212,7 @@ services:
       - traefikpublic
 
   core-service:
-    container_name: develop_core
+    container_name: liveoffice_develop_core
     build:
       context: ../../
       dockerfile: ./services/core-service/Dockerfile
@@ -227,7 +226,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   auth-service:
-    container_name: develop_auth
+    container_name: liveoffice_develop_auth
     build:
       context: ../../
       dockerfile: ./services/auth-service/Dockerfile
@@ -241,7 +240,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   notification-service:
-    container_name: develop_notification
+    container_name: liveoffice_develop_notification
     build:
       context: ../../
       dockerfile: ./services/notification-service/Dockerfile
@@ -255,7 +254,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   media-server-service:
-    container_name: develop_media-server
+    container_name: liveoffice_develop_media-server
     build:
       context: ../../
       dockerfile: ./services/media-server-service/Dockerfile
@@ -269,7 +268,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   scaling-service:
-    container_name: develop_scaling
+    container_name: liveoffice_develop_scaling
     build:
       context: ../../
       dockerfile: ./services/scaling-service/Dockerfile
@@ -284,7 +283,7 @@ services:
       - traefikpublic
 
   config-service:
-    container_name: develop_config
+    container_name: liveoffice_develop_config
     build:
       context: ../../
       dockerfile: ./services/config-service/Dockerfile

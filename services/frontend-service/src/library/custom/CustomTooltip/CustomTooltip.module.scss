@@ -14,3 +14,19 @@
     border-radius: rem(12px);
   }
 }
+
+.white {
+  .tooltip {
+    background: $primary-white;
+    height: unset;
+    padding: rem(12px);
+    border-radius: rem(12px);
+    box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.24);
+    color: $primary-black;
+    text-align: center;
+  }
+
+  .arrow {
+    color: $primary-white;
+  }
+}

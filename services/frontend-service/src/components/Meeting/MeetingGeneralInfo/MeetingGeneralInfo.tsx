@@ -1,8 +1,7 @@
-import React, {memo, useCallback, useEffect, useMemo, useRef} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
-import Image from 'next/image';
 import { Fade } from '@mui/material';
 
 // hooks
@@ -29,6 +28,9 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 // components
 import { MeetingTimer } from '@components/Meeting/MeetingTimer/MeetingTimer';
 
+// shared
+import { CustomImage } from 'shared-frontend/library';
+
 // styles
 import styles from './MeetingGeneralInfo.module.scss';
 
@@ -39,7 +41,7 @@ import {
     toggleMeetingInfoOpen,
     $meetingTemplateStore,
 } from '../../../store/roomStores';
-import {SIGN_BOARDS} from "../../../const/signBoards";
+import { SIGN_BOARDS } from '../../../const/signBoards';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -96,8 +98,13 @@ const Component = () => {
         }
     }, []);
 
-    const targetSignBoard = useMemo(() => SIGN_BOARDS
-            .find(signs => signs.find(board => board.value === targetSignBoardKey))?.find(board => board.value === targetSignBoardKey), [targetSignBoardKey]);
+    const targetSignBoard = useMemo(
+        () =>
+            SIGN_BOARDS.find(signs =>
+                signs.find(board => board.value === targetSignBoardKey),
+            )?.find(board => board.value === targetSignBoardKey),
+        [targetSignBoardKey],
+    );
 
     return (
         <CustomGrid
@@ -106,7 +113,11 @@ const Component = () => {
             className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
         >
             <ConditionalRender condition={isThereSignBoard}>
-                <Image src={`/images/boards/${targetSignBoard?.type}/${targetSignBoard?.value}.png`} width="225px" height="133px" />
+                <CustomImage
+                    src={`/images/boards/${targetSignBoard?.type}/${targetSignBoard?.value}.png`}
+                    width="360px"
+                    height="244px"
+                />
             </ConditionalRender>
             <CustomGrid
                 gap={1}

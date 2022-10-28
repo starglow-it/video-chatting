@@ -1,5 +1,4 @@
 import React, {memo, useMemo} from 'react';
-import Image from 'next/image';
 import clsx from 'clsx';
 
 // custom
@@ -14,9 +13,12 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 // types
 import { TemplateGeneralInfoProps } from './types';
 
+// shared
+import { CustomImage } from 'shared-frontend/library';
+
 // styles
 import styles from './TemplateGeneralInfo.module.scss';
-import {SIGN_BOARDS} from "../../../const/signBoards";
+import { SIGN_BOARDS } from '../../../const/signBoards';
 
 const TemplateGeneralInfo = memo(
     ({
@@ -27,8 +29,13 @@ const TemplateGeneralInfo = memo(
     }: TemplateGeneralInfoProps) => {
         const isThereSignBoard = Boolean(signBoard) && signBoard !== 'default';
 
-        const targetSignBoard = useMemo(() => SIGN_BOARDS
-                .find(signs => signs.find(board => board.value === signBoard))?.find(board => board.value === signBoard), [signBoard]);
+        const targetSignBoard = useMemo(
+            () =>
+                SIGN_BOARDS.find(signs => signs.find(board => board.value === signBoard))?.find(
+                    board => board.value === signBoard,
+                ),
+            [signBoard],
+        );
 
         return (
             <CustomGrid
@@ -36,7 +43,11 @@ const TemplateGeneralInfo = memo(
                 className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
             >
                 <ConditionalRender condition={isThereSignBoard}>
-                    <Image src={`/images/boards/${targetSignBoard?.type}/${targetSignBoard?.value}.png`} width="225px" height="133px" />
+                    <CustomImage
+                        src={`/images/boards/${targetSignBoard?.type}/${targetSignBoard?.value}.png`}
+                        width="360px"
+                        height="244px"
+                    />
                 </ConditionalRender>
                 <CustomGrid
                     gap={1}

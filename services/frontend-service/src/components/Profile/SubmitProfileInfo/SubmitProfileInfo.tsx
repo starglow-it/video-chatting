@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
@@ -14,6 +13,9 @@ import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 // helper
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './SubmitProfileInfo.module.scss';
@@ -125,7 +127,12 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
         <CustomPaper className={styles.submitProfile}>
             <CustomGrid container alignItems="center" wrap="nowrap">
                 <CustomBox className={styles.image}>
-                    <Image src="/images/edit-hand.png" width="24px" height="24px" alt="edit-hand" />
+                    <CustomImage
+                        src="/images/edit-hand.png"
+                        width="24px"
+                        height="24px"
+                        alt="edit-hand"
+                    />
                 </CustomBox>
                 <CustomTypography
                     nameSpace="profile"

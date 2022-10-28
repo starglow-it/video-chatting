@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
 import Backdrop from '@mui/material/Backdrop';
 import { Slide } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
@@ -19,8 +18,11 @@ import { SubscriptionPlanItem } from '@components/Payments/SubscriptionsPlans/Su
 // types
 import { SubscriptionsPlansProps } from '@components/Payments/SubscriptionsPlans/types';
 
+// shared
+import { CustomImage } from 'shared-frontend/library';
+
 // stores
-import { $productsStore, getStripeProductsFx } from '../../../store';
+import { $productsStore, $profileStore, getStripeProductsFx } from '../../../store';
 
 const Component = ({
     isSubscriptionStep,
@@ -32,8 +34,10 @@ const Component = ({
     withActivePlan = true,
     onClose,
     buttonTranslation,
+    onlyPaidPlans = false,
 }: SubscriptionsPlansProps) => {
     const products = useStore($productsStore);
+    const profile = useStore($profileStore);
     const isProductsLoading = useStore(getStripeProductsFx.pending);
 
     useEffect(() => {
@@ -45,8 +49,8 @@ const Component = ({
     }, [isSubscriptionStep, products.length]);
 
     const handleChosenSubscription = useCallback(
-        async (productId: string, isPaid: boolean) => {
-            onChooseSubscription(productId, isPaid);
+        async (productId: string, isPaid: boolean, trial: boolean) => {
+            onChooseSubscription(productId, isPaid, trial);
         },
         [onChooseSubscription],
     );
@@ -54,8 +58,10 @@ const Component = ({
     const renderSubscriptionPlans = useMemo(
         () =>
             products
-                .filter(product => withActivePlan || product?.product?.name !== activePlanKey)
-                .map((product, i) => (
+                .filter(product =>
+                    (withActivePlan || product?.product?.name !== activePlanKey)
+                    && (!onlyPaidPlans || onlyPaidPlans && product?.price?.unit_amount)
+                ).map((product, i) => (
                     <Slide key={product?.product?.name} in timeout={i * 200}>
                         <SubscriptionPlanItem
                             activePlanKey={activePlanKey}
@@ -64,6 +70,7 @@ const Component = ({
                             onChooseSubscription={handleChosenSubscription}
                             isDisabled={isDisabled}
                             buttonTranslation={buttonTranslation}
+                            withTrial={product?.product?.name === 'Professional' && profile.isProfessionalTrialAvailable}
                         />
                     </Slide>
                 )),
@@ -71,9 +78,11 @@ const Component = ({
             products,
             isDisabled,
             activePlanKey,
+            onlyPaidPlans,
             withActivePlan,
             buttonTranslation,
             handleChosenSubscription,
+            profile.isProfessionalTrialAvailable,
         ],
     );
 
@@ -99,7 +108,7 @@ const Component = ({
                         <CustomGrid container justifyContent="center" alignItems="center" gap={1}>
                             {title ?? (
                                 <>
-                                    <Image
+                                    <CustomImage
                                         src="/images/winking-face.png"
                                         width="30px"
                                         height="30px"

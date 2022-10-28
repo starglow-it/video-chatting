@@ -18,4 +18,6 @@ export enum UserBrokerPatterns {
   SetVerificationCode = "set_verification_code",
   ValidateVerificationCode = "validate_verification_code",
   ResetPassword = "reset_password",
+  CountUsers = "count_users",
+  FindUsers = "find_users",
 }

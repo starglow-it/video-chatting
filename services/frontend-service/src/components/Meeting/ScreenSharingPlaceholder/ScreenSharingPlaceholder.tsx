@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import Image from 'next/image';
 
 // utils
 
@@ -7,6 +6,9 @@ import Image from 'next/image';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { getRandomNumber } from '../../../utils/functions/getRandomNumber';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ScreenSharingPlaceholder.module.scss';
@@ -26,7 +28,7 @@ const Component = () => (
         alignItems="center"
         className={styles.placeholder}
     >
-        <Image src={images[getRandomNumber(3)]} width="40px" height="40px" />
+        <CustomImage src={images[getRandomNumber(3)]} width="40px" height="40px" />
         <CustomTypography
             variant="body2"
             color="colors.white.primary"

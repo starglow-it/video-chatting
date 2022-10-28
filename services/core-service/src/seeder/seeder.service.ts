@@ -102,17 +102,13 @@ export class SeederService {
 
             let videoFile;
 
-            const outputPath = path.join(
-              __dirname,
-              '../../../../images',
-              imagePath,
-            );
+            const outputPath = path.join(__dirname, '../../images', imagePath);
 
             if (!isExists) {
               if (videoPath) {
                 videoFile = path.join(
                   __dirname,
-                  '../../../../files',
+                  '../../files',
                   `${videoPath}.mp4`,
                 );
 

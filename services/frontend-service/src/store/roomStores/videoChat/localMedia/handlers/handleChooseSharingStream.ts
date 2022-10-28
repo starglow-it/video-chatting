@@ -18,5 +18,6 @@ export const handleChooseSharingStream = async () => {
         return sharingStream;
     } catch (e) {
         console.log(e);
+        return null;
     }
 };

@@ -25,6 +25,11 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.String,
+  })
+  country: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
     required: true,
     default: 'user',
   })
@@ -178,6 +183,12 @@ export class User {
     type: mongoose.Schema.Types.Number,
   })
   renewSubscriptionTimestampInSeconds: ICommonUserDTO['renewSubscriptionTimestampInSeconds'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: true,
+  })
+  isProfessionalTrialAvailable: ICommonUserDTO['isProfessionalTrialAvailable'];
 }
 
 export type UserDocument = User & Document;

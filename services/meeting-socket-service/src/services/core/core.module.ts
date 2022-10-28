@@ -9,7 +9,7 @@ import { CoreService } from './core.service';
 import { ConfigClientService } from '../config/config.service';
 
 import { CORE_PROVIDER } from 'shared';
-import {ConfigModule} from "../config/config.module";
+import { ConfigModule } from '../config/config.module';
 
 @Module({
   imports: [

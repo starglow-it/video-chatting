@@ -1,7 +1,7 @@
 export type SignOptionProps = {
     data: {
         id: number;
-        type: string
+        type: string;
         label: string;
         value: string;
     }[];

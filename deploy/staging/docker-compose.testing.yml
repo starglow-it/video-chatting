@@ -8,7 +8,7 @@ networks:
 
 services:
   mongo:
-    container_name: testing_mongodb
+    container_name: liveoffice_testing_mongodb
     ports:
       - '127.0.0.1:56200:27017'
     volumes:
@@ -19,7 +19,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   rabbit:
-    container_name: testing_rabbitmq
+    container_name: liveoffice_testing_rabbitmq
     ports:
       - '5673:5672'
       - '15673:15672'
@@ -31,7 +31,7 @@ services:
       - "io.portainer.accesscontrol.public"
 
   livekit-service:
-    container_name: testing_livekit
+    container_name: liveoffice_testing_livekit
     build:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
@@ -57,8 +57,12 @@ services:
       - traefikpublic
 
   frontend-service:
-    container_name: testing_frontend
-    build: ../../services/frontend-service
+    container_name: liveoffice_testing_frontend
+    build:
+      context: ../../
+      dockerfile: services/frontend-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
     restart: unless-stopped
     environment:
       - WAIT_HOSTS=gateway-service:3000
@@ -91,10 +95,10 @@ services:
       - traefikpublic
 
   gateway-service:
-    container_name: testing_gateway
+    container_name: liveoffice_testing_gateway
     build:
-      context: ../../services
-      dockerfile: ./gateway-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/gateway-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -113,10 +117,10 @@ services:
       - traefikpublic
 
   socket-service:
-    container_name: testing_socket
+    container_name: liveoffice_testing_socket
     build:
-      context: ../../services
-      dockerfile: ./socket-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/socket-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -135,10 +139,10 @@ services:
       - traefikpublic
 
   meeting-socket-service:
-    container_name: testing_meeting-socket
+    container_name: liveoffice_testing_meeting-socket
     build:
-      context: ../../services
-      dockerfile: ./meeting-socket-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/meeting-socket-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -157,10 +161,10 @@ services:
       - traefikpublic
 
   payment-service:
-    container_name: testing_payment
+    container_name: liveoffice_testing_payment
     build:
-      context: ../../services
-      dockerfile: ./payment-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/payment-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -179,10 +183,10 @@ services:
       - traefikpublic
 
   core-service:
-    container_name: testing_core
+    container_name: liveoffice_testing_core
     build:
-      context: ../../services
-      dockerfile: ./core-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/core-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -193,10 +197,10 @@ services:
       - "io.portainer.accesscontrol.public"
 
   auth-service:
-    container_name: testing_auth
+    container_name: liveoffice_testing_auth
     build:
-      context: ../../services
-      dockerfile: ./auth-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/auth-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -207,10 +211,10 @@ services:
       - liveoffice_test
 
   notification-service:
-    container_name: testing_notification
+    container_name: liveoffice_testing_notification
     build:
-      context: ../../services
-      dockerfile: ./notification-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/notification-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -223,10 +227,10 @@ services:
       - "io.portainer.accesscontrol.public"
 
   media-server-service:
-    container_name: testing_media-server
+    container_name: liveoffice_testing_media-server
     build:
-      context: ../../services
-      dockerfile: ./media-server-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/media-server-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -237,10 +241,10 @@ services:
       - liveoffice_test
 
   scaling-service:
-    container_name: testing_scaling
+    container_name: liveoffice_testing_scaling
     build:
-      context: ../../services
-      dockerfile: ./scaling-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/scaling-service/Dockerfile
     restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
@@ -251,10 +255,10 @@ services:
       - liveoffice_test
 
   config-service:
-    container_name: testing_config
+    container_name: liveoffice_testing_config
     build:
-      context: ../../services
-      dockerfile: ./config-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/config-service/Dockerfile
     restart: unless-stopped
     depends_on:
       - mongo

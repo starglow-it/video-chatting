@@ -14,19 +14,19 @@ async function bootstrap() {
   const config: IConfig = await configService.getAll();
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.RMQ,
-      options: {
-        urls: [
-          `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`,
-        ],
-        queue: config.rabbitMqAuthQueue,
-        queueOptions: {
-          durable: false,
+      AppModule,
+      {
+        transport: Transport.RMQ,
+        options: {
+          urls: [
+            `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`,
+          ],
+          queue: config.rabbitMqAuthQueue,
+          queueOptions: {
+            durable: false,
+          },
         },
       },
-    },
   );
 
   return app.listen();

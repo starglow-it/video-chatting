@@ -449,6 +449,7 @@ export class PaymentsController {
         payload.productId,
       );
 
+      const plan = plans[product.name ?? 'House'];
       return this.paymentService.getStripeCheckoutSession({
         paymentMode: 'subscription',
         priceId: product.default_price as string,
@@ -456,6 +457,7 @@ export class PaymentsController {
         meetingToken: payload.meetingToken,
         customerEmail: payload.customerEmail,
         customer: payload.customer,
+        trialPeriodDays: payload.withTrial ? plan.trialPeriodDays : undefined,
       });
     } catch (err) {
       throw new RpcException({
@@ -596,14 +598,14 @@ export class PaymentsController {
     await this.coreService.updateUser({
       query: { stripeSubscriptionId: subscription.id },
       data: {
-        isSubscriptionActive: subscription.status === 'active',
+        isSubscriptionActive: ['active', 'trialing'].includes(subscription.status),
         renewSubscriptionTimestampInSeconds: subscription.current_period_end,
       },
     });
 
     if (
       Boolean(user.isSubscriptionActive) === false &&
-      subscription.status === 'active'
+        (['active', 'trialing'].includes(subscription.status))
     ) {
       this.notificationsService.sendEmail({
         template: {
@@ -677,27 +679,16 @@ export class PaymentsController {
 
     if (!subscriptions?.length) {
       const plansPromises = Object.values(plans).map(
-        (planData) => async () =>
-          this.paymentService.createProduct({
-            name: planData.name,
-            priceInCents: planData.priceInCents,
-            description: planData.description,
-            type: 'subscription',
-          }),
+          (planData) => async () =>
+              this.paymentService.createProduct({
+                name: planData.name,
+                priceInCents: planData.priceInCents,
+                description: planData.description,
+                type: 'subscription',
+              }),
       );
 
       await executePromiseQueue(plansPromises);
-    } else {
-      const updateProducts = subscriptions.map(async (product) => {
-        const planData = plans[product.name || 'House'];
-
-        return this.paymentService.updateProduct(product.id, {
-          name: planData.name,
-          description: planData.description,
-        });
-      });
-
-      await Promise.all(updateProducts);
     }
   }
 
@@ -745,6 +736,7 @@ export class PaymentsController {
         subscriptionPlanKey: product.name,
         maxTemplatesNumber: plan.features.templatesLimit,
         maxMeetingTime: plan.features.timeLimit,
+        isProfessionalTrialAvailable: false,
       },
     });
   }

@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { InputAdornment } from '@mui/material';
-import Image from 'next/image';
 import clsx from 'clsx';
 
 // hooks
@@ -19,6 +18,9 @@ import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
 // types
 import { PropsWithClassName } from '../../../types';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
@@ -136,7 +138,7 @@ const Component = ({
                     </CustomScroll>
                 ) : (
                     <>
-                        <Image src="/images/sad-face.png" width="40px" height="40px" />
+                        <CustomImage src="/images/sad-face.png" width="40px" height="40px" />
                         <CustomTypography
                             nameSpace="templates"
                             translation="scheduleMeeting.noEmails"

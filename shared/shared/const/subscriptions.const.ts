@@ -20,6 +20,7 @@ const professionalSubscription = {
     timeLimit: 1200 * 60 * 1000,
     comissionFee: 0,
   },
+  trialPeriodDays: 7,
 };
 
 const businessSubscription = {

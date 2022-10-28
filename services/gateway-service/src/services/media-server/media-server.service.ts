@@ -1,8 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MEDIA_SERVER_PROVIDER } from 'shared';
 import { ClientProxy } from '@nestjs/microservices';
-import { MeetingBrokerPatterns } from 'shared';
-import { GetMediaServerTokenPayload } from 'shared';
+import { MEDIA_SERVER_PROVIDER, MeetingBrokerPatterns, GetMediaServerTokenPayload } from 'shared';
 
 @Injectable()
 export class MediaServerService {
@@ -16,7 +14,7 @@ export class MediaServerService {
     result: string;
   }> {
     return this.client
-      .send(MeetingBrokerPatterns.GetMediaServerToken, payload)
-      .toPromise();
+        .send(MeetingBrokerPatterns.GetMediaServerToken, payload)
+        .toPromise();
   }
 }

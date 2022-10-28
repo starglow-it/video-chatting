@@ -5,3 +5,4 @@ export const templatesScope = 'templates';
 export const uploadScope = 'upload';
 export const profileScope = 'profile';
 export const paymentsScope = 'payments';
+export const statisticsScope = 'statistics';

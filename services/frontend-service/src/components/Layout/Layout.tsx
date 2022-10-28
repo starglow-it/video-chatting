@@ -2,7 +2,7 @@ import React, { memo, PropsWithChildren, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -43,9 +43,12 @@ import {
 // styles
 import styles from './Layout.module.scss';
 
-const TimeLimitNotification = dynamic(() => import('@components/TimeLimitNotification/TimeLimitNotification'), {
-    ssr: false,
-});
+const TimeLimitNotification = dynamic(
+    () => import('@components/TimeLimitNotification/TimeLimitNotification'),
+    {
+        ssr: false,
+    },
+);
 
 const TimeLimitWarning = dynamic(() => import('@components/TimeLimitWarning/TimeLimitWarning'), {
     ssr: false,
@@ -93,13 +96,13 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                 [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
             })}
         >
-             <ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
+            <ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
                 <TimeLimitNotification />
-             </ConditionalRender>
+            </ConditionalRender>
 
-             <ConditionalRender condition={isMeetingRoute}>
+            <ConditionalRender condition={isMeetingRoute}>
                 <TimeLimitWarning />
-             </ConditionalRender>
+            </ConditionalRender>
 
             <CustomGrid
                 container

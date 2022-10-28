@@ -1,4 +1,4 @@
-import { forward } from 'effector-next';
+import {forward, sample} from 'effector-next';
 
 import {
     $authStore,
@@ -6,22 +6,33 @@ import {
     loginUserFx,
     logoutUserFx,
     resetAuthErrorEvent,
-    resetAuthStateEvent,
+    resetAuthStateEvent, setUserCountryFx,
 } from './model';
 import { clearProfileEvent, setProfileEvent } from '../profile/profile/model';
 
 import { handleLoginUser } from './handlers/handleLoginUser';
 import { handleCheckUserAuthentication } from './handlers/handleCheckUserAuthentication';
 import { handleLogoutUser } from './handlers/handleLogoutUser';
+import { handleSetUserCountry } from './handlers/handleSetUserCountry';
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
 logoutUserFx.use(handleLogoutUser);
+// setUserCountryFx.use(handleSetUserCountry);
 
 forward({
     from: loginUserFx.doneData,
     to: setProfileEvent,
 });
+
+// sample({
+//     clock: loginUserFx.doneData,
+//     filter: (...data) => {
+//         console.log(data);
+//         return true;
+//     },
+//     target: setUserCountryFx
+// });
 
 forward({
     from: checkAuthFx.doneData,

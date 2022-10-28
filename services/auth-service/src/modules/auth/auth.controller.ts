@@ -80,7 +80,7 @@ export class AuthController {
 
       await this.coreService.deleteToken(payload);
 
-      await this.notificationService.sendEmail({
+      this.notificationService.sendEmail({
         template: {
           key: emailTemplates.welcomeEmail,
           data: [

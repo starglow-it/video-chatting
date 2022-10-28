@@ -1,0 +1,11 @@
+@import "../../styles/rem";
+
+.colorIndicator {
+  width: rem(20px);
+  height: rem(20px);
+  border-radius: 50%;
+}
+
+.text {
+  margin: rem(8px 0 3px 0);
+}

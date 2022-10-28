@@ -1,5 +1,6 @@
 export interface IUpdateProfile {
     email?: string;
+    country?: string;
     companyName: string;
     contactEmail: string;
     businessCategories?: string[];

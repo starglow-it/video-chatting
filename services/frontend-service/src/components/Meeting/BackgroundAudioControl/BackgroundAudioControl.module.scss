@@ -27,8 +27,10 @@
 .audioControl {
   width: rem(46px);
   height: rem(196px);
-  padding: rem(20px 10px);
+  padding: rem(20px 0);
   margin: rem(0 0 8px 0);
+  display: flex;
+  justify-content: center;
 
   .range {
     height: 100%;

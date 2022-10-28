@@ -15,6 +15,11 @@
     margin: rem(0 0 20px 0);
   }
 
+  .switcher {
+    max-width: rem(112px);
+    width: 100%;
+  }
+
   &.active {
     height: rem(100px);
   }

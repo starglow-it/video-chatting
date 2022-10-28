@@ -228,10 +228,10 @@ const Component = () => {
                             alignItems="center"
                         >
                             <ValuesSwitcher
-                                optionWidth={134}
                                 values={schedulePages}
                                 activeValue={activeSchedulePage}
                                 onValueChanged={handleChangeSchedulePage}
+                                className={styles.switcher}
                             />
                             <CustomGrid className={styles.optionsWrapper}>
                                 <CustomFade open={isSettingsOpen} className={styles.optionItem}>

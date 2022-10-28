@@ -2,7 +2,6 @@ FROM node:18.9.1-alpine AS builder
 
 RUN apk add --no-cache curl && curl -sL https://unpkg.com/@pnpm/self-installer | node
 
-
 WORKDIR /app
 
 RUN mkdir -p services/core-service
@@ -19,7 +18,7 @@ RUN pnpm install
 
 COPY ./services/core-service ./services/core-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,core-service
+RUN npx nx run-many --target=build --projects=shared-const,shared,shared-utils,core-service
 
 FROM node:18.9.1-alpine
 

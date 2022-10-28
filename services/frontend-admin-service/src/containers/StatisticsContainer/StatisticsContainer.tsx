@@ -1,14 +1,8 @@
-import { memo } from "react";
-import {
-    CenteredPaper,
-} from 'shared-frontend/library';
+import { memo } from 'react';
+import { CenteredPaper } from 'shared-frontend/library';
 
 const Component = () => {
-    return (
-        <CenteredPaper>Statistics</CenteredPaper>
-    );
-}
+    return <CenteredPaper>Statistics</CenteredPaper>;
+};
 
-const StatisticsContainer = memo(Component);
-
-export default StatisticsContainer;
+export const StatisticsContainer = memo(Component);

@@ -99,6 +99,7 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                             translation="templates.signBoard"
                         >
                             <ChooseSignBoard
+                                key={currentAccordionId}
                                 formKey="signBoard"
                                 optionWidth={145}
                                 optionHeight={98}

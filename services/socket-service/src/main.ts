@@ -18,39 +18,39 @@ async function bootstrap() {
   const config: IConfig = await configService.getAll();
 
   const socketMicroservice =
-    await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-      transport: Transport.RMQ,
-      options: {
-        urls: [
-          `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`,
-        ],
-        queue: config.rabbitMqSocketQueue,
-        queueOptions: {
-          durable: false,
+      await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+        transport: Transport.RMQ,
+        options: {
+          urls: [
+            `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`,
+          ],
+          queue: config.rabbitMqSocketQueue,
+          queueOptions: {
+            durable: false,
+          },
         },
-      },
-    });
+      });
 
   await socketMicroservice.listen();
 
   app.connectMicroservice(socketMicroservice);
 
   app.useGlobalFilters(
-    new AllExceptionsFilter(),
-    new ValidationExceptionFilter(),
+      new AllExceptionsFilter(),
+      new ValidationExceptionFilter(),
   );
 
   app.useGlobalPipes(
-    new ValidationPipe({
-      skipMissingProperties: false,
-      forbidUnknownValues: true,
-      dismissDefaultMessages: true,
-      transform: true,
-      disableErrorMessages: true,
-      stopAtFirstError: true,
-      exceptionFactory: (errors: ValidationError[]) =>
-        new ValidationException(errors),
-    }),
+      new ValidationPipe({
+        skipMissingProperties: false,
+        forbidUnknownValues: true,
+        dismissDefaultMessages: true,
+        transform: true,
+        disableErrorMessages: true,
+        stopAtFirstError: true,
+        exceptionFactory: (errors: ValidationError[]) =>
+            new ValidationException(errors),
+      }),
   );
 
   await app.listen(8080);

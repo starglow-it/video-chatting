@@ -69,16 +69,16 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.41,
-        left: 0.19,
-      },
-      {
         bottom: 0.46,
         left: 0.44,
       },
       {
         bottom: 0.41,
         left: 0.69,
+      },
+      {
+        bottom: 0.41,
+        left: 0.19,
       },
     ],
     draft: false,
@@ -108,20 +108,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.41,
-        left: 0.17,
+        bottom: 0.47,
+        left: 0.37,
       },
       {
-        bottom: 0.46,
-        left: 0.39,
-      },
-      {
-        bottom: 0.46,
-        left: 0.59,
+        bottom: 0.47,
+        left: 0.60,
       },
       {
         bottom: 0.41,
         left: 0.74,
+      },
+      {
+        bottom: 0.41,
+        left: 0.17,
       },
     ],
     draft: false,
@@ -197,11 +197,11 @@ export const templatesData: BaseTemplate[] = [
         left: 0.19,
       },
       {
-        bottom: 0.46,
+        bottom: 0.50,
         left: 0.49,
       },
       {
-        bottom: 0.49,
+        bottom: 0.50,
         left: 0.76,
       },
     ],
@@ -231,15 +231,15 @@ export const templatesData: BaseTemplate[] = [
     usersPosition: [
       {
         bottom: 0.5,
-        left: 0.15,
-      },
-      {
-        bottom: 0.5,
         left: 0.49,
       },
       {
         bottom: 0.5,
         left: 0.83,
+      },
+      {
+        bottom: 0.5,
+        left: 0.15,
       },
     ],
     draft: false,
@@ -267,11 +267,11 @@ export const templatesData: BaseTemplate[] = [
     usersPosition: [
       {
         bottom: 0.44,
-        left: 0.15,
+        left: 0.8,
       },
       {
         bottom: 0.44,
-        left: 0.8,
+        left: 0.15,
       },
     ],
     draft: false,
@@ -303,28 +303,28 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.21,
-        left: 0.17,
-      },
-      {
         bottom: 0.25,
-        left: 0.3,
+        left: 0.62,
       },
       {
         bottom: 0.25,
         left: 0.44,
       },
       {
-        bottom: 0.25,
-        left: 0.62,
-      },
-      {
         bottom: 0.23,
         left: 0.78,
       },
       {
+        bottom: 0.25,
+        left: 0.3,
+      },
+      {
         bottom: 0.22,
         left: 0.91,
+      },
+      {
+        bottom: 0.21,
+        left: 0.17,
       },
     ],
     draft: false,
@@ -355,20 +355,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.21,
-        left: 0.17,
-      },
-      {
         bottom: 0.25,
-        left: 0.3,
+        left: 0.62,
       },
       {
         bottom: 0.25,
         left: 0.44,
       },
       {
+        bottom: 0.23,
+        left: 0.78,
+      },
+      {
         bottom: 0.25,
-        left: 0.62,
+        left: 0.3,
       },
     ],
     draft: false,
@@ -393,8 +393,8 @@ export const templatesData: BaseTemplate[] = [
         left: 0.56,
       },
       {
-        bottom: 0.35,
-        left: 0.22,
+        bottom: 0.38,
+        left: 0.36,
       },
     ],
     draft: false,
@@ -417,7 +417,7 @@ export const templatesData: BaseTemplate[] = [
     usersPosition: [
       {
         bottom: 0.45,
-        left: 0.4,
+        left: 0.36,
       },
       {
         bottom: 0.3,
@@ -453,12 +453,12 @@ export const templatesData: BaseTemplate[] = [
         left: 0.73,
       },
       {
-        bottom: 0.56,
-        left: 0.34,
-      },
-      {
         bottom: 0.35,
         left: 0.45,
+      },
+      {
+        bottom: 0.56,
+        left: 0.34,
       },
     ],
     draft: false,
@@ -490,11 +490,11 @@ export const templatesData: BaseTemplate[] = [
       },
       {
         bottom: 0.33,
-        left: 0.32,
+        left: 0.82,
       },
       {
         bottom: 0.33,
-        left: 0.82,
+        left: 0.32,
       },
     ],
     draft: false,
@@ -515,12 +515,12 @@ export const templatesData: BaseTemplate[] = [
     businessCategories: ["Legal", "Consulting", "Private", "Calming"],
     usersPosition: [
       {
-        bottom: 0.51,
-        left: 0.14,
+        bottom: 0.48,
+        left: 0.8,
       },
       {
-        bottom: 0.46,
-        left: 0.79,
+        bottom: 0.51,
+        left: 0.14,
       },
     ],
     draft: false,
@@ -541,20 +541,20 @@ export const templatesData: BaseTemplate[] = [
     businessCategories: ["Team meeting", "Calming", "Private", "ASMR"],
     usersPosition: [
       {
-        bottom: 0.19,
-        left: 0.1,
-      },
-      {
-        bottom: 0.26,
+        bottom: 0.29,
         left: 0.3,
       },
       {
-        bottom: 0.13,
-        left: 0.64,
+        bottom: 0.30,
+        left: 0.52,
       },
       {
-        bottom: 0.13,
-        left: 0.39,
+        bottom: 0.23,
+        left: 0.09,
+      },
+      {
+        bottom: 0.25,
+        left: 0.82,
       },
     ],
     draft: false,
@@ -576,28 +576,28 @@ export const templatesData: BaseTemplate[] = [
     businessCategories: ["Team meeting", "Calming", "Private", "ASMR"],
     usersPosition: [
       {
-        bottom: 0.19,
-        left: 0.1,
-      },
-      {
-        bottom: 0.26,
+        bottom: 0.29,
         left: 0.3,
       },
       {
-        bottom: 0.13,
-        left: 0.64,
+        bottom: 0.30,
+        left: 0.52,
+      },
+      {
+        bottom: 0.23,
+        left: 0.09,
       },
       {
         bottom: 0.13,
-        left: 0.39,
+        left: 0.63,
       },
       {
-        bottom: 0.21,
+        bottom: 0.25,
         left: 0.82,
       },
       {
-        bottom: 0.34,
-        left: 0.52,
+        bottom: 0.5,
+        left: 0.47,
       },
     ],
     draft: false,
@@ -618,11 +618,11 @@ export const templatesData: BaseTemplate[] = [
     usersPosition: [
       {
         bottom: 0.22,
-        left: 0.33,
+        left: 0.67,
       },
       {
         bottom: 0.22,
-        left: 0.67,
+        left: 0.33,
       },
     ],
     draft: false,
@@ -643,11 +643,11 @@ export const templatesData: BaseTemplate[] = [
     usersPosition: [
       {
         bottom: 0.31,
-        left: 0.31,
+        left: 0.65,
       },
       {
         bottom: 0.31,
-        left: 0.65,
+        left: 0.31,
       },
     ],
     draft: false,
@@ -669,11 +669,11 @@ export const templatesData: BaseTemplate[] = [
     usersPosition: [
       {
         bottom: 0.22,
-        left: 0.33,
+        left: 0.67,
       },
       {
         bottom: 0.22,
-        left: 0.67,
+        left: 0.33,
       },
     ],
     draft: false,
@@ -699,20 +699,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.36,
-        left: 0.05,
+        bottom: 0.64,
+        left: 0.56,
       },
       {
         bottom: 0.31,
-        left: 0.34,
+        left: 0.32,
       },
       {
-        bottom: 0.31,
-        left: 0.82,
+        bottom: 0.29,
+        left: 0.84,
       },
       {
-        bottom: 0.43,
-        left: 0.91,
+        bottom: 0.34,
+        left: 0.07,
       },
     ],
     links: [
@@ -767,20 +767,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.2,
-        left: 0.15,
+        bottom: 0.42,
+        left: 0.4,
       },
       {
-        bottom: 0.24,
-        left: 0.48,
+        bottom: 0.44,
+        left: 0.55,
       },
       {
-        bottom: 0.29,
-        left: 0.72,
+        bottom: 0.45,
+        left: 0.65,
       },
       {
-        bottom: 0.33,
-        left: 0.93,
+        bottom: 0.38,
+        left: 0.13,
       },
     ],
     draft: false,
@@ -795,11 +795,19 @@ export const templatesData: BaseTemplate[] = [
     maxParticipants: 6,
     shortDescription: "Enjoy our Together mode while floating in the clouds",
     description: "Floating in the clouds Together",
-    type: "paid",
+    type: "free",
     priceInCents: 1000,
     isAudioAvailable: true,
     businessCategories: ["Team meeting", "Calming", "Private", "ASMR"],
     usersPosition: [
+      {
+        bottom: 0.5,
+        left: 0.35,
+      },
+      {
+        bottom: 0.75,
+        left: 0.425,
+      },
       {
         bottom: 0.75,
         left: 0.575,
@@ -814,14 +822,6 @@ export const templatesData: BaseTemplate[] = [
       },
       {
         bottom: 0.25,
-        left: 0.425,
-      },
-      {
-        bottom: 0.5,
-        left: 0.35,
-      },
-      {
-        bottom: 0.75,
         left: 0.425,
       },
     ],
@@ -842,20 +842,20 @@ export const templatesData: BaseTemplate[] = [
     businessCategories: ["Team meeting", "Calming", "Private", "ASMR"],
     usersPosition: [
       {
-        bottom: 0.6,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.35,
       },
       {
-        bottom: 0.3,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.65,
       },
       {
-        bottom: 0.3,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.65,
       },
       {
-        bottom: 0.6,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.35,
       },
     ],
     draft: false,
@@ -883,20 +883,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.6,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.35,
       },
       {
-        bottom: 0.3,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.65,
       },
       {
-        bottom: 0.3,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.65,
       },
       {
-        bottom: 0.6,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.35,
       },
     ],
     draft: false,
@@ -925,6 +925,14 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
+        bottom: 0.5,
+        left: 0.35,
+      },
+      {
+        bottom: 0.75,
+        left: 0.425,
+      },
+      {
         bottom: 0.75,
         left: 0.575,
       },
@@ -938,14 +946,6 @@ export const templatesData: BaseTemplate[] = [
       },
       {
         bottom: 0.25,
-        left: 0.425,
-      },
-      {
-        bottom: 0.5,
-        left: 0.35,
-      },
-      {
-        bottom: 0.75,
         left: 0.425,
       },
     ],
@@ -976,6 +976,14 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
+        bottom: 0.5,
+        left: 0.35,
+      },
+      {
+        bottom: 0.75,
+        left: 0.425,
+      },
+      {
         bottom: 0.75,
         left: 0.575,
       },
@@ -989,14 +997,6 @@ export const templatesData: BaseTemplate[] = [
       },
       {
         bottom: 0.25,
-        left: 0.425,
-      },
-      {
-        bottom: 0.5,
-        left: 0.35,
-      },
-      {
-        bottom: 0.75,
         left: 0.425,
       },
     ],
@@ -1024,20 +1024,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.28,
-        left: 0.2,
-      },
-      {
-        bottom: 0.24,
+        bottom: 0.34,
         left: 0.385,
       },
       {
-        bottom: 0.24,
+        bottom: 0.34,
         left: 0.595,
       },
       {
-        bottom: 0.28,
+        bottom: 0.36,
         left: 0.795,
+      },
+      {
+        bottom: 0.36,
+        left: 0.2,
       },
     ],
     draft: false,
@@ -1048,7 +1048,7 @@ export const templatesData: BaseTemplate[] = [
     templateType: 'video',
     videoPath: "/heart",
     imagePath: "/heart4",
-    name: "Breating Heart Exercise (Together Mode)",
+    name: "Breathing Heart Exercise (Together Mode)",
     maxParticipants: 4,
     shortDescription: "Box Breathing method for anxiety and calm",
     description: "Box Breathing method for anxiety and calm",
@@ -1063,20 +1063,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.6,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.35,
       },
       {
-        bottom: 0.3,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.65,
       },
       {
-        bottom: 0.3,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.65,
       },
       {
-        bottom: 0.6,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.35,
       },
     ],
     draft: false,
@@ -1087,7 +1087,7 @@ export const templatesData: BaseTemplate[] = [
     templateType: 'video',
     videoPath: "/heart",
     imagePath: "/heart6",
-    name: "Breating Heart Exercise (Together Mode)",
+    name: "Breathing Heart Exercise (Together Mode)",
     shortDescription: "Box Breathing method for anxiety and calm",
     description: "Box Breathing method for anxiety and calm",
     maxParticipants: 6,
@@ -1102,6 +1102,14 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
+        bottom: 0.5,
+        left: 0.35,
+      },
+      {
+        bottom: 0.75,
+        left: 0.425,
+      },
+      {
         bottom: 0.75,
         left: 0.575,
       },
@@ -1115,14 +1123,6 @@ export const templatesData: BaseTemplate[] = [
       },
       {
         bottom: 0.25,
-        left: 0.425,
-      },
-      {
-        bottom: 0.5,
-        left: 0.35,
-      },
-      {
-        bottom: 0.75,
         left: 0.425,
       },
     ],
@@ -1150,20 +1150,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.6,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.35,
       },
       {
-        bottom: 0.3,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.65,
       },
       {
-        bottom: 0.3,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.65,
       },
       {
-        bottom: 0.6,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.35,
       },
     ],
     draft: false,
@@ -1191,6 +1191,14 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
+        bottom: 0.5,
+        left: 0.35,
+      },
+      {
+        bottom: 0.75,
+        left: 0.425,
+      },
+      {
         bottom: 0.75,
         left: 0.575,
       },
@@ -1204,14 +1212,6 @@ export const templatesData: BaseTemplate[] = [
       },
       {
         bottom: 0.25,
-        left: 0.425,
-      },
-      {
-        bottom: 0.5,
-        left: 0.35,
-      },
-      {
-        bottom: 0.75,
         left: 0.425,
       },
     ],
@@ -1239,20 +1239,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.6,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.35,
       },
       {
-        bottom: 0.3,
-        left: 0.6,
+        bottom: 0.65,
+        left: 0.65,
       },
       {
-        bottom: 0.3,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.65,
       },
       {
-        bottom: 0.6,
-        left: 0.3,
+        bottom: 0.25,
+        left: 0.35,
       },
     ],
     draft: false,
@@ -1280,6 +1280,14 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
+        bottom: 0.5,
+        left: 0.35,
+      },
+      {
+        bottom: 0.75,
+        left: 0.425,
+      },
+      {
         bottom: 0.75,
         left: 0.575,
       },
@@ -1293,14 +1301,6 @@ export const templatesData: BaseTemplate[] = [
       },
       {
         bottom: 0.25,
-        left: 0.425,
-      },
-      {
-        bottom: 0.5,
-        left: 0.35,
-      },
-      {
-        bottom: 0.75,
         left: 0.425,
       },
     ],
@@ -1329,28 +1329,28 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.78,
-        left: 0.21,
+        bottom: 0.58,
+        left: 0.43,
       },
       {
         bottom: 0.58,
-        left: 0.06,
+        left: 0.51,
+      },
+      {
+        bottom: 0.58,
+        left: 0.63,
+      },
+      {
+        bottom: 0.46,
+        left: 0.92,
       },
       {
         bottom: 0.58,
         left: 0.22,
       },
       {
-        bottom: 0.58,
-        left: 0.43,
-      },
-      {
-        bottom: 0.58,
-        left: 0.59,
-      },
-      {
-        bottom: 0.46,
-        left: 0.92,
+        bottom: 0.60,
+        left: 0.06,
       },
     ],
     draft: false,
@@ -1377,20 +1377,20 @@ export const templatesData: BaseTemplate[] = [
     ],
     usersPosition: [
       {
-        bottom: 0.78,
+        bottom: 0.58,
+        left: 0.43,
+      },
+      {
+        bottom: 0.58,
+        left: 0.59,
+      },
+      {
+        bottom: 0.74,
         left: 0.21,
       },
       {
-        bottom: 0.58,
-        left: 0.06,
-      },
-      {
-        bottom: 0.58,
-        left: 0.22,
-      },
-      {
-        bottom: 0.58,
-        left: 0.43,
+        bottom: 0.46,
+        left: 0.92,
       },
     ],
     draft: false,

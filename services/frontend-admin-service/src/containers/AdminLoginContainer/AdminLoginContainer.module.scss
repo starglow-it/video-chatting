@@ -17,17 +17,6 @@
   max-height: rem(40px);
 }
 
-.socialsWrapper {
-  margin: rem(38px) 0 0 0;
-  .googleLogin {
-    margin: 0 0 rem(12px) 0;
-  }
-}
-
-.signInSeparator {
-  margin: rem(36px) 0;
-}
-
 .input {
   width: 100%;
 
@@ -39,6 +28,13 @@
 .signInBtn {
   margin: rem(50px) 0 0 0;
   padding: rem(16px) 0;
+}
+
+.socialsWrapper {
+  margin: rem(38px) 0 0 0;
+  .googleLogin {
+    margin: 0 0 rem(12px) 0;
+  }
 }
 
 .forgotPass {

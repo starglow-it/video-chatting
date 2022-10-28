@@ -1,6 +1,7 @@
 export * from './business-category.interface';
 export * from './common-counter.interface';
 export * from './common-instance-meeting.interface';
+export * from './common-country-statisitc.interface';
 export * from './keys';
 export * from './common-language.interface';
 export * from './common-social-link.interface';

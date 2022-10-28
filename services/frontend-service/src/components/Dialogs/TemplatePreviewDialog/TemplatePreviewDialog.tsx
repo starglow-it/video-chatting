@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
 import clsx from 'clsx';
 
 // custom
@@ -23,6 +22,9 @@ import { BusinessCategoryTagsClip } from '@components/BusinessCategoryTagsClip/B
 // icons
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { ScheduleIcon } from '@library/icons/ScheduleIcon';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import {
@@ -101,7 +103,7 @@ const Component = ({
                         userName={previewTemplate?.name}
                     />
                     <ConditionalRender condition={Boolean(previewImage?.id)}>
-                        <Image
+                        <CustomImage
                             src={previewImage?.url || ''}
                             layout="fill"
                             objectFit="cover"

@@ -1,4 +1,4 @@
-import React, { useMemo, ForwardedRef, memo, forwardRef } from 'react';
+import React, { useMemo, ForwardedRef, memo, forwardRef, useCallback } from 'react';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
 
@@ -13,12 +13,16 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
 import { RoundCheckIcon } from '@library/icons/RoundIcons/RoundCheckIcon';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import { currencies, planColors } from 'src/const/profile/subscriptions';
@@ -37,6 +41,7 @@ const Component = (
         isDisabled,
         activePlanKey,
         buttonTranslation = 'buttons.start',
+        withTrial = false,
     }: SubscriptionPlanItemProps,
     ref: ForwardedRef<HTMLDivElement>,
 ) => {
@@ -44,11 +49,26 @@ const Component = (
 
     const { value: isShowMore, onToggleSwitch: handleToggleShowMore } = useToggle(false);
 
-    const handleChooseSubscription = () => {
+    const handleChooseSubscription = useCallback(() => {
         if (product.name !== activePlanKey) {
-            onChooseSubscription(product.id, !isFree);
+            onChooseSubscription(product.id, !isFree, false);
         }
-    };
+    }, [
+        isFree,
+        product.id,
+        product.name,
+        activePlanKey,
+        onChooseSubscription,
+    ]);
+
+    const handleChooseTrial = useCallback(() => {
+        onChooseSubscription(product.id, !isFree, true);
+    }, [
+        isFree,
+        product.id,
+        product.name,
+        onChooseSubscription,
+    ]);
 
     const { translation } = useLocalization('subscriptions');
 
@@ -59,6 +79,7 @@ const Component = (
     const templateFeaturesText = translation(`subscriptions.${product.name}`) as unknown as {
         more: { key: string; text: string; subText: string }[];
         features: { key: string; text: string; subText: string }[];
+        trialHint?: string;
     };
 
     const renderFeaturesListItems = useMemo(() => {
@@ -120,6 +141,40 @@ const Component = (
                     />
                 </ConditionalRender>
 
+                <ConditionalRender condition={withTrial}>
+                    <CustomTooltip
+                        arrow
+                        title={
+                            <CustomTypography
+                                dangerouslySetInnerHTML={{
+                                    __html: translation(templateFeaturesText.trialHint ?? '')
+                                }}
+                                className={styles.trialText}
+                            />
+                        }
+                        placement="top"
+                        variant="white"
+                        popperClassName={styles.popper}
+                    >
+                        <CustomButton
+                            variant="custom-black"
+                            nameSpace="subscriptions"
+                            translation="buttons.tryForFree"
+                            onClick={handleChooseTrial}
+                            className={styles.trialButton}
+                            Icon={
+                                <CustomBox className={styles.icon}>
+                                    <CustomImage
+                                        src="/images/ok-hand.png"
+                                        width="20px"
+                                        height="20px"
+                                        alt="ok-hand"
+                                    />
+                                </CustomBox>
+                            }
+                        />
+                    </CustomTooltip>
+                </ConditionalRender>
                 <CustomButton
                     nameSpace="subscriptions"
                     disabled={isDisabled}

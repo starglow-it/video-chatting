@@ -2,13 +2,14 @@ import { useStore } from 'effector-react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NotificationType } from '../store/types';
-import { $profileStore, $subscriptionStore, addNotificationEvent } from '../store';
+import { $isTrial, $profileStore, $subscriptionStore, addNotificationEvent } from '../store';
 
 export const useSubscriptionNotification = (updateUrl: string) => {
     const router = useRouter();
 
     const subscription = useStore($subscriptionStore);
     const profile = useStore($profileStore);
+    const isTrial = useStore($isTrial);
 
     useEffect(() => {
         if (subscription?.id) {
@@ -19,7 +20,7 @@ export const useSubscriptionNotification = (updateUrl: string) => {
 
                 addNotificationEvent({
                     type: NotificationType.SubscriptionSuccess,
-                    message: `subscriptions.subscription${planName}Success`,
+                    message: `subscriptions.subscription${planName}${isTrial ? 'Trial' : ''}Success`,
                     withSuccessIcon: true,
                 });
             }

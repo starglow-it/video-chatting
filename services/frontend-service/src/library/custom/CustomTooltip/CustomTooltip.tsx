@@ -20,6 +20,7 @@ const CustomTooltip = memo(
         popperClassName,
         title,
         variant = 'primary',
+        options,
         ...rest
     }: TranslationProps & CustomTooltipProps & Omit<TooltipProps, 'title'>) => {
         const { translation: t } = useLocalization(nameSpace);
@@ -29,10 +30,12 @@ const CustomTooltip = memo(
                 classes={{
                     popper: clsx(styles.popper, popperClassName, {
                         [styles.blackGlass]: variant === 'black-glass',
+                        [styles.white]: variant === 'white',
                     }),
                     tooltip: styles.tooltip,
+                    arrow: styles.arrow,
                 }}
-                title={title ?? t(translation)}
+                title={title ?? t(translation, options)}
                 {...rest}
             >
                 {children}

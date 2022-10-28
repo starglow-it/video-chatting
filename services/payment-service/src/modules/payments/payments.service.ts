@@ -122,6 +122,7 @@ export class PaymentsService {
     meetingToken,
     customerEmail,
     customer,
+    trialPeriodDays,
   }: {
     paymentMode: Stripe.Checkout.SessionCreateParams.Mode;
     priceId: string;
@@ -129,12 +130,19 @@ export class PaymentsService {
     meetingToken?: string;
     customerEmail: string;
     customer?: string;
+    trialPeriodDays?: number,
   }) {
     const frontendUrl = await this.configService.get('frontendUrl');
 
     const meetingPath = `/room/${meetingToken}`;
 
     const baseUrl = `${frontendUrl}/${meetingToken ? meetingPath : basePath}`;
+    const cancelUrl = new URL(baseUrl);
+    const successUrl = new URL(baseUrl);
+
+    cancelUrl.searchParams.set('canceled', 'true');
+    successUrl.searchParams.set('success', 'true');
+    successUrl.searchParams.set('session_id', '{CHECKOUT_SESSION_ID}');
 
     return this.stripeClient.checkout.sessions.create({
       billing_address_collection: 'auto',
@@ -147,8 +155,12 @@ export class PaymentsService {
       ...(customer ? { customer } : { customer_email: customerEmail }),
       mode: paymentMode,
       allow_promotion_codes: true,
-      success_url: `${baseUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}?canceled=true`,
+      success_url: successUrl.href,
+      cancel_url: cancelUrl.href,
+      subscription_data: {
+        trial_period_days: trialPeriodDays,
+      },
+      payment_method_collection: 'if_required',
     });
   }
 

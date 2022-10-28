@@ -1,6 +1,5 @@
 import React, { useEffect, memo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
-import Image from 'next/image';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -15,6 +14,9 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
@@ -49,8 +51,8 @@ const MainInfo = memo(() => {
                 <SocialLinks />
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>
-                        <Image
-                            src={previewImage?.url}
+                        <CustomImage
+                            src={previewImage?.url ?? ''}
                             width="100%"
                             height="100%"
                             layout="fill"

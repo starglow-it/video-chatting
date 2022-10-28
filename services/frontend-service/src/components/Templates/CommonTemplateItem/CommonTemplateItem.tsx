@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
 import { useStoreMap, useStore } from 'effector-react';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
@@ -11,6 +10,9 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import {
@@ -114,7 +116,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <Image src={previewImage?.url || ''} width="334px" height="190px" />
+                <CustomImage src={previewImage?.url || ''} width="334px" height="190px" />
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}
@@ -140,7 +142,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                                 (isFree && isTimeLimitReached) || (!isFree && isDisabled),
                         })}
                         disableRipple={(isFree && isTimeLimitReached) || (!isFree && isDisabled)}
-                        disable={isAddTemplateInProgress}
+                        disabled={isAddTemplateInProgress}
                         nameSpace="templates"
                         translation={isFree ? freeTemplateTranslation : 'buttons.buy'}
                     />

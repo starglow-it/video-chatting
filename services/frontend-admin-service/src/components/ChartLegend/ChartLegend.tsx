@@ -1,0 +1,54 @@
+import { memo, useMemo } from 'react';
+
+import { CustomGrid, CustomBox, CustomTypography } from 'shared-frontend/library';
+
+import styles from './ChartLegend.module.scss';
+
+type ChartLegendProps = {
+    totalNumber: number;
+    dataSets: {
+        label: string;
+        parts: number;
+        color: string;
+    }[];
+};
+
+type ChartLegendItemProps = {
+    totalNumber: number;
+    data: {
+        label: string;
+        parts: number;
+        color: string;
+    };
+};
+
+const ChartLegendItem = ({ data, totalNumber }: ChartLegendItemProps) => (
+    <CustomGrid container direction="column" flex="0 0 50%" width="auto">
+        <CustomBox className={styles.colorIndicator} sx={{ backgroundColor: data.color }} />
+        <CustomTypography color="colors.black.light" className={styles.text}>
+            {data.label}
+        </CustomTypography>
+        <CustomGrid container alignItems="center" gap={1}>
+            <CustomTypography variant="h4bold">
+                {`${((data.parts / totalNumber) * 100).toFixed(2)}%`}
+            </CustomTypography>
+            &#8226;
+            <CustomTypography color="colors.black.light">{data.parts}</CustomTypography>
+        </CustomGrid>
+    </CustomGrid>
+);
+
+const Component = ({ totalNumber, dataSets }: ChartLegendProps) => {
+    const renderData = useMemo(
+        () => dataSets.map(set => <ChartLegendItem data={set} totalNumber={totalNumber} />),
+        [dataSets, totalNumber],
+    );
+
+    return (
+        <CustomGrid container rowGap={3}>
+            {renderData}
+        </CustomGrid>
+    );
+};
+
+export const ChartLegend = memo(Component);

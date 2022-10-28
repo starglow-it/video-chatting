@@ -291,7 +291,7 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                     />
 
                     <ConditionalRender condition={isOwner}>
-                        <Fade in={isEditTemplateOpened}>
+                        <Fade in={isEditTemplateOpened} unmountOnExit>
                             <CustomBox className={styles.fadeContentWrapper}>
                                 <form onSubmit={onSubmit} className={styles.form}>
                                     <EditTemplateForm onCancel={handleCancelEditTemplate} />

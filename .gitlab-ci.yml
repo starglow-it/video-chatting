@@ -1,10 +1,11 @@
 stages:
   - sonarqube_scan
   - update_traefik
-  - update_staging_dev_services
-  - update_staging_dev_config
-  - build_scaling_instance_image
+  - update_test
+  - update_staging_services
+  - update_staging_config
   - update
+  - build_scaling_instance_image
   - update_jira_issues
   - update_demo_traefik
   - update_demo
@@ -23,9 +24,11 @@ variables:
 
 include:
   - 'pipelines/demo.yml'
-  - 'pipelines/staging.yml'
+  - 'pipelines/develop.yml'
+  - 'pipelines/testing.yml'
   - 'pipelines/autopush_code.yml'
   - 'pipelines/production.yml'
   - 'pipelines/build_instance.yml'
   - 'pipelines/sonarqbue.yml'
+  - 'pipelines/jira.yml'
 

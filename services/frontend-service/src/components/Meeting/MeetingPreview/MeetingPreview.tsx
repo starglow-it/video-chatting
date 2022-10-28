@@ -6,9 +6,6 @@ import clsx from 'clsx';
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
-// image
-import Image from 'next/image';
-
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -19,6 +16,9 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import {
@@ -110,7 +110,7 @@ const Component = () => {
             >
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>
-                        <Image
+                        <CustomImage
                             src={previewImage?.url || ''}
                             layout="fill"
                             objectFit="cover"

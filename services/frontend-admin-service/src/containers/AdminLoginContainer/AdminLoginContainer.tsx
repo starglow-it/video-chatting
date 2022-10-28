@@ -4,7 +4,6 @@ import { useMediaQuery } from '@mui/material';
 import { ValidationError } from 'yup';
 import * as yup from 'yup';
 import { useForm, useWatch, FormProvider } from 'react-hook-form';
-import Image from 'next/image';
 
 // shared
 import { emailSchema, passwordLoginSchema } from 'shared-frontend/validation';
@@ -14,6 +13,7 @@ import {
     CenteredPaper,
     CustomGrid,
     CustomBox,
+    CustomImage,
     CustomTypography,
     PasswordInput,
     CustomButton,
@@ -114,13 +114,11 @@ const Component = () => {
     const registerEmailData = useMemo(() => register('email'), []);
     const registerPasswordData = useMemo(() => register('password'), []);
 
-    console.log(authStateError?.message);
-
     return (
         <CenteredPaper className={styles.wrapper}>
             <CustomGrid container alignItems="center" justifyContent="center">
                 <CustomBox className={styles.image}>
-                    <Image
+                    <CustomImage
                         width="28"
                         height="28"
                         src="/images/winking-face.png"
@@ -167,17 +165,17 @@ const Component = () => {
                             )}
                         </CustomGrid>
 
-                        {/*<ConditionalRender condition={Boolean(authStateError?.message)}>*/}
-                        {/*    <ErrorMessage*/}
-                        {/*        className={styles.errorContainer}*/}
-                        {/*        error={Boolean(authStateError?.message)}*/}
-                        {/*    >*/}
-                        {/*        <Translation*/}
-                        {/*            nameSpace="errors"*/}
-                        {/*            translation={authStateError?.message}*/}
-                        {/*        />*/}
-                        {/*    </ErrorMessage>*/}
-                        {/*</ConditionalRender>*/}
+                        <ConditionalRender condition={Boolean(authStateError?.message)}>
+                            <ErrorMessage
+                                className={styles.errorContainer}
+                                error={Boolean(authStateError?.message)}
+                            >
+                                <Translation
+                                    nameSpace="errors"
+                                    translation={authStateError?.message}
+                                />
+                            </ErrorMessage>
+                        </ConditionalRender>
                     </CustomGrid>
 
                     <CustomButton

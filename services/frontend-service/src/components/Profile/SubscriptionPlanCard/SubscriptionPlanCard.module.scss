@@ -10,8 +10,6 @@
   border: 1px solid rgba($normal-gray-scale, 0.4);
   border-radius: rem(16px);
 
-  max-height: rem(238px);
-
   &.active {
     border: 2px solid $light-orange;
   }
@@ -67,4 +65,18 @@
   border-radius: 50%;
   display: flex;
   margin: rem(4px 0 0 0);
+}
+
+.trialButton {
+  max-width: rem(142px);
+  margin: rem(20px 0 0);
+
+  .icon {
+    margin: rem(0 4px 0 0);
+    height: rem(20px);
+  }
+}
+
+.trialText {
+  margin: rem(20px 0 0);
 }

@@ -37,3 +37,5 @@
     * `EMAIL_SERVICE` - email service that will be used to send messages
     * `SUPPORT_SCALING` - this variable responsible for monitoring vultr instances
     * `SUPPORT_EMAIL`
+    * `ADMIN_EMAIL`
+    * `ADMIN_PASSWORD`

@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 
 import { ErrorIcon } from '../../../icons';
 
-import { CustomTypography, CustomGrid } from '../../custom';
-
+import CustomTypography from '../../custom/CustomTypography/CustomTypography';
+import CustomGrid from '../../custom/CustomGrid/CustomGrid';
 import ConditionalRender from "../ConditionalRender/ConditionalRender";
 
 import { ErrorMessageProps } from './ErrorMessage.types';

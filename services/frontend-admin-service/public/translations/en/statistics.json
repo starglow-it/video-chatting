@@ -1,0 +1,22 @@
+{
+  "users": {
+    "location": {
+      "title": "By location"
+    },
+    "subscription": {
+      "title": "Subscriptions",
+      "noData": "No subscriptions yet"
+    }
+  },
+  "common": {
+    "title": "Statistics"
+  },
+  "pages": {
+    "users": {
+      "title": "Users"
+    },
+    "rooms": {
+      "title": "Rooms"
+    }
+  }
+}

@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
@@ -18,6 +17,9 @@ import { TemplateGeneralInfo } from '@components/Templates/TemplateGeneralInfo/T
 import { LocalVideoPreview } from '@components/Meeting/LocalVideoPreview/LocalVideoPreview';
 import { ConfirmQuitOnboardingDialog } from '@components/Dialogs/ConfirmQuitOnboardingDialog/ConfirmQuitOnboardingDialog';
 import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // store
 import {
@@ -181,7 +183,7 @@ const Component = () => {
         };
     }, [confirmQuitOnboardingDialog]);
 
-    const handleChooseSubscription = async (productId: string, isPaid: boolean) => {
+    const handleChooseSubscription = async (productId: string, isPaid: boolean, trial: boolean) => {
         if (setUpTemplate?.id) {
             const result = await createMeetingFx({ templateId: setUpTemplate.id });
 
@@ -189,6 +191,7 @@ const Component = () => {
                 const response = await startCheckoutSessionForSubscriptionFx({
                     productId,
                     meetingToken: result.template.id,
+                    withTrial: trial,
                 });
 
                 if (response?.url) {
@@ -208,7 +211,7 @@ const Component = () => {
         <CustomGrid container justifyContent="flex-end" className={styles.wrapper}>
             {previewImage?.url && (
                 <CustomGrid container className={styles.imageWrapper}>
-                    <Image
+                    <CustomImage
                         src={previewImage?.url}
                         layout="fill"
                         objectFit="cover"

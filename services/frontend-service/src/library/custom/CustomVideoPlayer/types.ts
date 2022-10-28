@@ -1,9 +1,12 @@
-import { VideoJsPlayerOptions } from 'video.js';
+export type CustomVideoPlayerOptions = {
+    src: string;
+    type: string;
+}
 
 export type CustomVideoPlayerProps = {
-    options: VideoJsPlayerOptions;
+    options: CustomVideoPlayerOptions;
     className?: string;
-    isPlaying?: boolean;
-    isMuted?: boolean;
-    volume?: number;
+    isPlaying: boolean;
+    isMuted: boolean;
+    volume: number;
 };

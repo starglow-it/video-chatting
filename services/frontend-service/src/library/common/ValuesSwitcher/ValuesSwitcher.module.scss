@@ -2,30 +2,25 @@
 @import "../../../styles/rem";
 
 .wrapper {
-  width: min-content;
   position: relative;
+  --animation-duration: 150ms;
 
   .item {
-    width: var(--width);
+    z-index: 2;
     padding: rem(5px 12px);
     height: rem(30px);
     cursor: pointer;
+    transition: color var(--animation-duration) ease-in-out;
+    width: 100%;
   }
 
-  .activeItem {
+  .transition {
     position: absolute;
-    left: var(--left);
-
+    z-index: 1;
     width: var(--width);
-    height: 32px;
-
-    background: #FFFFFF;
-    border: 1px solid rgba($normal-gray-scale, 0.4);
-    box-sizing: border-box;
-    box-shadow: 0 4px 10px -2px rgba($primary-black, 0.1);
-    border-radius: rem(6px);
-
-    transition: left 200ms ease-in;
+    height: rem(30px);
+    transition: left var(--animation-duration) linear, width var(--animation-duration) linear;
+    background-color: $primary-white;
   }
 }
 
@@ -33,9 +28,19 @@
   background: rgba($normal-gray-scale, 0.25);
   border-radius: rem(6px);
   color: $primary-black;
+  padding: rem(1px);
 
-  .activeItem {
-    top: 0;
+  .item {
+    border-radius: rem(6px);
+    color: $normal-gray-scale;
+    &.active {
+      color: $primary-black;
+    }
+  }
+
+  .transition {
+    border-radius: rem(6px);
+    box-shadow: rem(0 4px 10px -2px) rgb($primary-black, 0.1);
   }
 }
 
@@ -46,7 +51,14 @@
   padding: rem(6px);
   color: $primary-white;
 
-  .activeItem {
-    color: $primary-black;
+  .item {
+    border-radius: rem(8px);
+    &.active {
+      color: $primary-black;
+    }
+  }
+
+  .transition {
+    border-radius: rem(8px);
   }
 }

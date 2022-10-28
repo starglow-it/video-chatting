@@ -2,6 +2,7 @@ export type GetCheckoutSessionUrlPayload = {
     productId: string;
     meetingToken?: string;
     baseUrl?: string;
+    withTrial?: boolean;
 };
 
 export type GetPortalSessionUrlPayload = { subscriptionId: string };

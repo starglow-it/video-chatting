@@ -1,6 +1,5 @@
 import { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { ValidationError } from 'yup';
@@ -21,6 +20,9 @@ import { sendResetPasswordLinkFx, $appDialogsStore, appDialogsApi } from '../../
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './EmailResetPasswordDialog.module.scss';
@@ -91,7 +93,7 @@ const Component = () => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <Image src="/images/email2.png" width="52px" height="52px" />
+                    <CustomImage src="/images/email2.png" width="52px" height="52px" />
                     <CustomTypography
                         className={styles.title}
                         variant="h2bold"
@@ -140,7 +142,7 @@ const Component = () => {
                             gap={1.25}
                             justifyContent="center"
                         >
-                            <Image src="/images/lock.png" width="28px" height="28px" />
+                            <CustomImage src="/images/lock.png" width="28px" height="28px" />
                             <CustomTypography
                                 variant="h2bold"
                                 nameSpace="common"

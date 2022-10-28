@@ -8,7 +8,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { CommonUserDTO } from '../../dtos/common-user.dto';
 
 // shared
-import { UserBrokerPatterns } from 'shared';
+import {FindUsersPayload, UserBrokerPatterns} from 'shared';
 import {
   INVALID_CREDENTIALS,
   INVALID_PASSWORD,
@@ -55,6 +55,7 @@ import {
   SetVerificationCodePayload,
   UpdatePasswordPayload,
   UpdateProfileAvatarPayload,
+  CountUsersPayload,
   UpdateProfilePayload,
   UpdateUserPayload,
   UserExistsPayload,
@@ -63,6 +64,7 @@ import {
 } from 'shared';
 import { AuthBrokerPatterns } from 'shared';
 import { LoginUserByEmailPayload, SetResetPasswordTokenPayload } from 'shared';
+import {CountryStatisticsService} from "../country-statistics/country-statistics.service";
 
 @Controller('users')
 export class UsersController {
@@ -75,6 +77,7 @@ export class UsersController {
     private awsService: AwsConnectorService,
     private configService: ConfigClientService,
     private verificationCodeService: VerificationCodeService,
+    private countryStatisticsService: CountryStatisticsService,
     @InjectConnection() private connection: Connection,
   ) {}
 
@@ -168,6 +171,31 @@ export class UsersController {
           newUser.tokens.push(token);
 
           await newUser.save();
+
+          // const isCountryExists = await this.countryStatisticsService.exists({
+          //   key: createUserPayload.user.country
+          // });
+          //
+          // if (isCountryExists) {
+          //   await this.countryStatisticsService.updateOne({
+          //     query: {
+          //       key: createUserPayload.user.country
+          //     },
+          //     data: {
+          //       $inc: { value: 1 },
+          //     },
+          //     session
+          //   });
+          // } else {
+          //   await this.countryStatisticsService.create({
+          //     data: {
+          //       key: createUserPayload.user.country,
+          //       value: 1,
+          //       color: getRandomHexColor(75, 200)
+          //     },
+          //     session,
+          //   })
+          // }
 
           return plainToClass(CommonUserDTO, newUser, {
             excludeExtraneousValues: true,
@@ -283,6 +311,27 @@ export class UsersController {
       }
 
       return plainToInstance(CommonUserDTO, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+    });
+  }
+
+  @MessagePattern({ cmd: UserBrokerPatterns.FindUsers })
+  async findUsers(@Payload() payload: FindUsersPayload) {
+    return withTransaction(this.connection, async (session) => {
+      const users = await this.usersService.findUsers({
+        query: payload,
+        session,
+        populatePaths: [
+          'businessCategories',
+          'socials',
+          'languages',
+          'profileAvatar',
+        ],
+      });
+
+      return plainToInstance(CommonUserDTO, users, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -504,6 +553,31 @@ export class UsersController {
           )) || [];
       }
 
+      // const isCountryExists = await this.countryStatisticsService.exists({
+      //   key: user.country
+      // });
+      //
+      // if (isCountryExists) {
+      //   await this.countryStatisticsService.updateOne({
+      //     query: {
+      //       key: user.country
+      //     },
+      //     data: {
+      //       $inc: { value: 1 },
+      //     },
+      //     session
+      //   });
+      // } else {
+      //   await this.countryStatisticsService.create({
+      //     data: {
+      //       key: user.country,
+      //       value: 1,
+      //       color: getRandomHexColor(75, 200)
+      //     },
+      //     session,
+      //   })
+      // }
+
       await user.save();
 
       await user.populate([
@@ -694,6 +768,13 @@ export class UsersController {
       );
 
       await this.userTokenService.deleteToken({ token: token.token }, session);
+    });
+  }
+
+  @MessagePattern({ cmd: UserBrokerPatterns.CountUsers })
+  async countUsers(@Payload() payload: CountUsersPayload): Promise<number> {
+    return withTransaction(this.connection, async (session) => {
+      return this.usersService.count({ query: payload, session });
     });
   }
 }

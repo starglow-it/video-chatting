@@ -6,7 +6,6 @@ import { TextFieldProps } from '@mui/material/TextField/TextField';
 import { useToggle } from '../../../hooks';
 
 // components
-import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { EyeVisibilityIcon } from '../../../icons';
 
 // types

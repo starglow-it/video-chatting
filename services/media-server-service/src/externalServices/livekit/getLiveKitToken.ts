@@ -8,14 +8,19 @@ export const getLiveKitToken = async ({
     templateId: string;
     userId: string;
 }) => {
-    const apiKey = await getConfigVar('livekitApiKey');
-    const apiSecret = await getConfigVar('livekitApiSecret');
+    try {
+        const apiKey = await getConfigVar('livekitApiKey');
+        const apiSecret = await getConfigVar('livekitApiSecret');
 
-    const at = new AccessToken(apiKey, apiSecret, {
-        identity: userId,
-    });
+        const at = new AccessToken(apiKey, apiSecret, {
+            identity: userId,
+        });
 
-    at.addGrant({ roomJoin: true, room: templateId });
+        at.addGrant({ roomJoin: true, room: templateId });
 
-    return at.toJwt();
+        return at.toJwt();
+    } catch (e) {
+        console.log(e);
+        return '';
+    }
 };

@@ -2,7 +2,7 @@ import React, { memo, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
-import ClickAwayListener from '@mui/base/ClickAwayListener/ClickAwayListener';
+import { ClickAwayListener } from "@mui/base";
 
 // hooks
 import { useMultipleToggle } from '@hooks/useMultipleToggle';

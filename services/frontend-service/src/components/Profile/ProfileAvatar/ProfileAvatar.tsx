@@ -1,12 +1,12 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
-import Image from 'next/image';
 
 // helpers
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
-// custom
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ProfileAvatar.module.scss';
@@ -45,7 +45,7 @@ const Component = (
             {...rest}
         >
             {src ? (
-                <Image
+                <CustomImage
                     loading="lazy"
                     layout="fill"
                     objectFit="cover"

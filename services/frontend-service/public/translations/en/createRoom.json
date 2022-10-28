@@ -54,7 +54,11 @@
       "editable": "once created, you will not be able to edit the Room",
       "changePrivacyPossibility": "once created, you will not be able to make the Room private"
     },
-    "link": "Please be respectful of our <a href=\"{{termsLink}}\" target=\"_blank\">Terms</a>. Public rooms must be <a href=\"{{privacyLink}}\" target=\"_blank\">safe for work</a>"
+    "actions": {
+      "upgrade": "Upgrade"
+    },
+    "link": "Please be respectful of our <a href=\"{{termsLink}}\" target=\"_blank\">Terms</a>. Public rooms must be <a href=\"{{privacyLink}}\" target=\"_blank\">safe for work</a>",
+    "upgradePlan": "To create public rooms, you should upgrade to Professional plan or Business plan. Upgrade now or create a private room, upgrade your plan later and then change your private room into a public one."
   },
   "preview": {
     "about": "About this room:",

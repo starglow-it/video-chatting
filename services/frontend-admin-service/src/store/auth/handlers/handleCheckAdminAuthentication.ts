@@ -1,5 +1,5 @@
 import { NextPageContext } from 'next';
-import {ErrorState} from "shared-types";
+import { ErrorState } from 'shared-types';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { AuthAdminState, CheckAdminResponse } from '../../types';

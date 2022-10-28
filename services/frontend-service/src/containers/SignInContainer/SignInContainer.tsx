@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
@@ -25,6 +24,9 @@ import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
 // components
 import { ForgotPassword } from '@components/ForgotPassword/ForgotPassword';
 import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPasswordDialog/EmailResetPasswordDialog';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './SignInContainer.module.scss';
@@ -133,7 +135,7 @@ const Component = () => {
             <CenteredPaper className={styles.wrapper}>
                 <CustomGrid container alignItems="center" justifyContent="center">
                     <CustomBox className={styles.image}>
-                        <Image
+                        <CustomImage
                             width="28"
                             height="28"
                             src="/images/winking-face.png"

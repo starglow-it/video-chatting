@@ -2,12 +2,13 @@
   "buttons": {
     "showMore": "Show more",
     "upgrade": "Upgrade",
-    "startHouse": "Get My House Account",
-    "startProfessional": "Get My Professional Account",
-    "startBusiness": "Get My Business Account",
+    "startHouse": "Get started Free",
+    "startProfessional": "Get Professional",
+    "startBusiness": "Get Business",
     "upgradeToProfessional": "Upgrade to Professional",
     "upgradeToBusiness": "Upgrade to Business",
-    "currentPlan": "Current plan"
+    "currentPlan": "Current plan",
+    "tryForFree": "Try for Free"
   },
   "limits": {
     "time": "Remaining meeting time: <strong>{{timeLimit}}</strong>",
@@ -127,7 +128,9 @@
           "text": "0% comission",
           "subText": "from each transaction"
         }
-      ]
+      ],
+      "trial": "With <strong>7 Days Free Trial</strong> you can create own Rooms for private usage only",
+      "trialHint": "Try all Professional features <strong>with 7 days free trial</strong>, except for creating public rooms."
     },
     "Business": {
       "features": [

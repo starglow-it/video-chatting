@@ -3,8 +3,9 @@ export type SubscriptionPlanItemProps = {
     isDisabled: boolean;
     product: any;
     price: any;
-    onChooseSubscription: (productId: string, isPaid: boolean) => void;
+    onChooseSubscription: SubscriptionsPlansProps['onChooseSubscription'];
     buttonTranslation?: string;
+    withTrial?: boolean;
 };
 
 export type SubscriptionsPlansProps = {
@@ -15,6 +16,7 @@ export type SubscriptionsPlansProps = {
     isSubscriptionStep: boolean;
     withBackgroundBlur?: boolean;
     withActivePlan?: boolean;
-    onChooseSubscription: (productId: string, isPaid: boolean) => void;
+    onChooseSubscription: (productId: string, isPaid: boolean, trial: boolean) => void;
     buttonTranslation?: string;
+    onlyPaidPlans?: boolean;
 };

@@ -321,7 +321,7 @@ export class PaymentsController {
   })
   async buyProduct(
     @Request() req,
-    @Body() body: { baseUrl: string; meetingToken: string },
+    @Body() body: { baseUrl: string; meetingToken: string; withTrial?: boolean },
     @Param('productId') productId: string,
   ): Promise<ResponseSumType<any>> {
     try {
@@ -329,6 +329,7 @@ export class PaymentsController {
         productId,
         meetingToken: body.meetingToken,
         baseUrl: body.baseUrl,
+        withTrial: body.withTrial,
       });
 
       await this.coreService.findUserAndUpdate({

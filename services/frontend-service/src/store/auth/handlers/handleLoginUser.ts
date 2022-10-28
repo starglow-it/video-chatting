@@ -1,5 +1,5 @@
 import { sendRequest } from '../../../helpers/http/sendRequest';
-import { ErrorState, LoginUserPayload, LoginUserResponse } from '../../types';
+import {ErrorState, LoginUserPayload, LoginUserResponse} from '../../types';
 import { loginUserUrl } from '../../../utils/urls';
 import setAuthCookies from '../../../helpers/http/setAuthCookies';
 
@@ -16,12 +16,14 @@ export const handleLoginUser = async (params: LoginUserPayload) => {
             user: response?.result?.user,
         };
     }
+
     if (!response.success) {
         return {
             isAuthenticated: false,
             error: response?.error,
         };
     }
+
     return {
         isAuthenticated: false,
     };

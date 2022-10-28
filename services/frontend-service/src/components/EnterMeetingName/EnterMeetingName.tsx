@@ -23,8 +23,10 @@ import { $profileStore, $authStore } from '../../store';
 import {
     $isMeetingSocketConnected,
     $isOwner,
+    $localUserStore,
     $meetingTemplateStore,
     updateLocalUserEvent,
+    updateUserSocketEvent,
 } from '../../store/roomStores';
 
 // types
@@ -40,6 +42,7 @@ const validationSchema = yup.object({
 const Component = () => {
     const { isAuthenticated } = useStore($authStore);
     const profile = useStore($profileStore);
+    const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isSocketConnected = useStore($isMeetingSocketConnected);
 
@@ -59,7 +62,9 @@ const Component = () => {
         criteriaMode: 'all',
         resolver,
         defaultValues: {
-            fullName: isOwner ? meetingTemplate.fullName : profile.fullName,
+            fullName: isOwner
+                ? meetingTemplate.fullName
+                : localUser.username || profile.fullName,
         },
     });
 
@@ -69,6 +74,9 @@ const Component = () => {
         handleSubmit(data => {
             updateLocalUserEvent({
                 username: data.fullName,
+                accessStatus: MeetingAccessStatuses.Settings,
+            });
+            updateUserSocketEvent({
                 accessStatus: MeetingAccessStatuses.Settings,
             });
         }),

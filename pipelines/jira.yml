@@ -19,4 +19,4 @@ Update Jira Issues:
         "token": "'"${JIRA_ISSUE_UPDATER_TOKEN}"'"
         }'
   only: [testing]
-  needs: ["Update_Test"]
+  needs: ["update:test"]

@@ -144,10 +144,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                         {...registerData}
                                     />
                                     <ValuesSwitcher
-                                        optionWidth={56}
                                         values={currencyValues}
                                         activeValue={targetCurrency}
                                         onValueChanged={handleValueChanged}
+                                        className={styles.switcher}
                                     />
                                 </CustomGrid>
                             </CustomBox>

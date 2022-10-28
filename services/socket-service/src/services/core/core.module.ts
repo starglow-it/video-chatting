@@ -8,7 +8,7 @@ import {
 import { CoreService } from './core.service';
 import { CoreController } from './core.controller';
 import { ConfigClientService } from '../config/config.service';
-import {ConfigModule} from "../config/config.module";
+import { ConfigModule } from '../config/config.module';
 
 import { CORE_PROVIDER } from 'shared';
 

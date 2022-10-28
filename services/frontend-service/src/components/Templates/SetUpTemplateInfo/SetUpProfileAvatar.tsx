@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import clsx from 'clsx';
-import Image from 'next/image';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
 
@@ -26,6 +25,9 @@ import { ACCEPT_MIMES, ACCEPT_MIMES_NAMES } from '../../../const/profile/profile
 
 // types
 import { FileSizeTypesEnum } from '../../../types/fileSize';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './SetUpTemplateInfo.module.scss';
@@ -90,7 +92,7 @@ const SetUpProfileAvatar = memo(() => {
                 {profileAvatar.dataUrl ? (
                     <Fade in>
                         <CustomBox className={styles.image}>
-                            <Image src={profileAvatar.dataUrl} layout="fill" />
+                            <CustomImage src={profileAvatar.dataUrl} layout="fill" />
                             <RoundCloseIcon
                                 onClick={handleResetProfileAvatar}
                                 className={styles.deleteImage}

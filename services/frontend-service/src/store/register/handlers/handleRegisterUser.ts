@@ -1,8 +1,8 @@
 import { sendRequest } from '../../../helpers/http/sendRequest';
-import { ErrorState } from '../../types';
+import {ErrorState, RegisterUserParams} from '../../types';
 import { registerUserUrl } from '../../../utils/urls';
 
-export const handleRegisterUser = async params => {
+export const handleRegisterUser = async (params: RegisterUserParams) => {
     const response = await sendRequest<void, ErrorState>({
         ...registerUserUrl,
         data: params,

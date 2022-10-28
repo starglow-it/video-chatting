@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
-import Image from 'next/image';
 import clsx from 'clsx';
 
 // custom
@@ -27,6 +26,9 @@ import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/Scr
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { MobilePortraitStub } from '@library/common/MobilePortraitStub/MobilePortraitStub';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './MeetingView.module.scss';
@@ -144,7 +146,7 @@ const Component = () => {
             >
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>
-                        <Image
+                        <CustomImage
                             className={clsx(styles.image, {
                                 [styles.blured]:
                                     Boolean(meetingTemplate.url) &&

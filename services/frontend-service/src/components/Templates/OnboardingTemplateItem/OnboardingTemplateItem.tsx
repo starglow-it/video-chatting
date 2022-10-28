@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useState } from 'react';
-import Image from 'next/image';
 import { Fade } from '@mui/material';
 import { useRouter } from 'next/router';
 
@@ -13,6 +12,9 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 
 // types
 import { AppDialogsEnum, Template } from '../../../store/types';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { setPreviewTemplate, appDialogsApi } from '../../../store';
@@ -49,7 +51,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
         router.push(clientRoutes.registerRoute);
     }, []);
 
-    const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 1080);
+    const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);
 
     return (
         <CustomGrid
@@ -61,7 +63,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <Image src={previewImage?.url} layout="fill" />
+                <CustomImage src={previewImage?.url ?? ''} layout="fill" />
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}

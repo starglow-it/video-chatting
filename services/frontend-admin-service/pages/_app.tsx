@@ -46,9 +46,8 @@ const clientSideEmotionCache = createEmotionCache();
 const enhance = withHydrate();
 
 const REDIRECT_ROUTES: string[] = ['/'];
+const LOGIN_REDIRECT_ROUTES: string[] = ['/statistics'];
 
-// import '../src/validation';
-//
 const CustomApp = ({
     Component,
     pageProps,
@@ -92,16 +91,20 @@ CustomApp.getInitialProps = async (context: AppContext) => {
 
     const pathName = context?.ctx?.pathname || '';
 
-    const isRedirectRoute = REDIRECT_ROUTES.some(route =>
+    const isLoginRedirectRoute = LOGIN_REDIRECT_ROUTES.some(route =>
         new RegExp(route).test(pathName),
     );
 
-    if (data.state.isAuthenticated && isRedirectRoute) {
-        redirectTo(context?.ctx ?? null, 'statistics');
+    const isAdminRedirectRoute = REDIRECT_ROUTES.some(route => route === pathName);
+
+    if (data.state.isAuthenticated && isAdminRedirectRoute) {
+        redirectTo(context?.ctx ?? null, '/statistics');
+    } else if (!data.state.isAuthenticated && isLoginRedirectRoute) {
+        redirectTo(context?.ctx ?? null, '/');
     }
 
     props.pageProps.initialState = {
-        [`${$authStore.sid}`]: { state: data.state, error: data.error },
+        [`${$authStore.sid}`]: { state: data.state, error: null },
     };
 
     return props;

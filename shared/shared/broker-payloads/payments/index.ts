@@ -26,6 +26,7 @@ export type GetStripeCheckoutSessionPayload = {
   baseUrl: string;
   customerEmail?: string;
   customer?: string;
+  withTrial?: boolean;
 };
 export type CreateStripeTemplateProductPayload = {
   name: string;

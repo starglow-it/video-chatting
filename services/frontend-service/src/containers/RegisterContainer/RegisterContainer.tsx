@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import * as yup from 'yup';
-import Image from 'next/image';
 import { useStore } from 'effector-react';
 import { useForm, useWatch, FormProvider } from 'react-hook-form';
 import { useMediaQuery } from '@mui/material';
@@ -25,6 +24,9 @@ import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
 
 // dialogs
 import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { RegisterUserParams } from 'src/store/types';
@@ -109,7 +111,12 @@ const Component = () => {
             <CenteredPaper className={styles.wrapper}>
                 <CustomGrid container alignItems="center" justifyContent="center">
                     <CustomBox className={styles.image}>
-                        <Image width="28" height="28" src="/images/hi-hand.png" alt="hi-hand" />
+                        <CustomImage
+                            width="28"
+                            height="28"
+                            src="/images/hi-hand.png"
+                            alt="hi-hand"
+                        />
                     </CustomBox>
                     <CustomTypography
                         variant="h2bold"

@@ -19,6 +19,7 @@ const Component = <ValueType extends { label: string; key: string; value: string
     name,
     control,
     error,
+    options,
     ...props
 }: CustomAutocompleteProps<ValueType>) => {
     const renderInput = useCallback(
@@ -60,9 +61,10 @@ const Component = <ValueType extends { label: string; key: string; value: string
                         ))
                     }
                     onChange={(_, data) => {
-                        onChange(data);
+                        onChange(data?.filter(tag => typeof tag !== 'string'));
                     }}
                     filterOptions={filterOptions}
+                    options={options}
                     {...props}
                     value={value}
                     {...restField}

@@ -11,4 +11,6 @@ const Component = (
     </Paper>
 );
 
-export const CustomPaper = memo(forwardRef(Component));
+const CustomPaper = memo(forwardRef(Component));
+
+export default CustomPaper;

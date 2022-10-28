@@ -6,6 +6,7 @@ import {IProfileAvatar} from "./profile-avatar.interface";
 export interface ICommonUserDTO {
     id: string;
     email: string;
+    country: string;
     role: string;
     password: string;
     isConfirmed: boolean;
@@ -34,4 +35,5 @@ export interface ICommonUserDTO {
     maxTemplatesNumber: number;
     maxMeetingTime: number;
     renewSubscriptionTimestampInSeconds: number;
+    isProfessionalTrialAvailable: boolean;
 }

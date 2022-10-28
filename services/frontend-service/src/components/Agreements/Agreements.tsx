@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import Image from 'next/image';
 import linkify from 'linkify-string';
 import { useRouter } from 'next/router';
 
@@ -18,6 +17,9 @@ import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
 // const
 import frontendConfig from '../../const/config';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './Agreements.module.scss';
@@ -75,7 +77,7 @@ const Component = () => {
     return (
         <CustomGrid className={styles.agreementsWrapper} container justifyContent="center">
             <CustomGrid container alignItems="center" justifyContent="center" gap={1.5}>
-                <Image src="/images/agreements.png" width="40px" height="40px" />
+                <CustomImage src="/images/agreements.png" width="40px" height="40px" />
                 <CustomTypography variant="h1" nameSpace="static" translation="agreements.title" />
             </CustomGrid>
             <CustomGrid container justifyContent="space-between" className={styles.chipsContainer}>

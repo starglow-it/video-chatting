@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
 
@@ -11,6 +10,9 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { setPreviewTemplate, appDialogsApi } from '../../../store';
@@ -58,7 +60,7 @@ const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => 
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <Image src={previewImage?.url} layout="fill" />
+                <CustomImage src={previewImage?.url ?? ''} layout="fill" />
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}

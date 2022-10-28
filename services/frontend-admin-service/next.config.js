@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const { withEffectorReactAliases } = require('effector-next/tools');
-// const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
-// const path = require('path');
+const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
+const path = require('path');
 
 const withTM = require('next-transpile-modules')([
     'shared',
@@ -36,16 +36,16 @@ module.exports = withTM(
         images: {
             domains: [process.env.VULTR_STORAGE_HOSTNAME || ''],
         },
-        // webpack(config, options) {
-        //   if (!options.isServer) {
-        //     config.plugins.push(
-        //         new I18NextHMRPlugin({
-        //           localesDir: path.resolve(__dirname, 'public/translations'),
-        //         }),
-        //     );
-        //   }
-        //
-        //   return config;
-        // },
+        webpack(config, options) {
+          if (!options.isServer) {
+            config.plugins.push(
+                new I18NextHMRPlugin({
+                  localesDir: path.resolve(__dirname, 'public/translations'),
+                }),
+            );
+          }
+
+          return config;
+        },
     }),
 );

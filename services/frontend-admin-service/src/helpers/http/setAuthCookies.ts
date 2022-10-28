@@ -1,7 +1,7 @@
 import { NextPageContext, GetServerSidePropsContext } from 'next';
 import { setCookie } from 'nookies';
 import { CookieSerializeOptions, parse, serialize } from 'cookie';
-import { AuthToken } from 'types';
+import { AuthToken } from 'shared-types';
 
 function updateAppContextCookie(
     ctx: NextPageContext | GetServerSidePropsContext | undefined,

@@ -1,0 +1,11 @@
+@import "../../styles/rem";
+
+.wrapper {
+  margin: rem(85px auto 0);
+}
+
+.statisticBlock {
+  padding: rem(40px 34px);
+  width: rem(472px);
+  height: rem(550px);
+}

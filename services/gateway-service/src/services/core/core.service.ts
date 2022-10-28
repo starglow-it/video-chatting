@@ -4,7 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { CORE_PROVIDER } from 'shared';
 import { UserBrokerPatterns } from 'shared';
 import { MeetingBrokerPatterns } from 'shared';
-import { ICommonUserDTO } from 'shared';
+import { ICommonUserDTO, ICountryStatistic } from 'shared';
 import { ICommonMeetingInstance } from 'shared';
 import { IUserTemplate } from 'shared';
 import {
@@ -21,16 +21,15 @@ import {
   UserTokenExistsPayload,
   ValidateVerificationCodePayload,
   VerifyPasswordPayload,
-} from 'shared';
-import {
   AssignMeetingInstancePayload,
   GetMeetingInstancePayload,
   GetMeetingPayload,
   UpdateMeetingInstancePayload,
+  AddTemplateToUserPayload,
+  CountUsersPayload,
+  FindUsersPayload,
 } from 'shared';
-import { TemplateBrokerPatterns } from 'shared';
-import { CoreBrokerPatterns } from 'shared';
-import { AddTemplateToUserPayload } from 'shared';
+import { TemplateBrokerPatterns, CoreBrokerPatterns } from 'shared';
 
 @Injectable()
 export class CoreService {
@@ -198,6 +197,24 @@ export class CoreService {
     payload: AddTemplateToUserPayload,
   ): Promise<IUserTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.AddTemplateToUser };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async countUsers(payload: CountUsersPayload): Promise<number> {
+    const pattern = { cmd: UserBrokerPatterns.CountUsers };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async findUsers(payload: FindUsersPayload): Promise<ICommonUserDTO[]> {
+    const pattern = { cmd: UserBrokerPatterns.FindUsers };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async getCountryStatistics(payload: any): Promise<ICountryStatistic[]> {
+    const pattern = { cmd: CoreBrokerPatterns.GetCountryStatistics };
 
     return this.client.send(pattern, payload).toPromise();
   }

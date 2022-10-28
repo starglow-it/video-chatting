@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { ApiParams, FailedResult, SuccessResult } from 'types';
+import { ApiParams, FailedResult, SuccessResult } from 'shared-types';
 
 export async function sendRequest<Result, Error>(
     options: ApiParams & AxiosRequestConfig = {},

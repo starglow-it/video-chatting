@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm } from 'react-hook-form';
-import Image from 'next/image';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 
@@ -22,6 +21,9 @@ import { SubmitProfileInfo } from '@components/Profile/SubmitProfileInfo/SubmitP
 import { ConfirmChangeRouteDialog } from '@components/Dialogs/ConfirmChangeRouteDialog/ConfirmChangeRouteDialog';
 import { DeleteProfileDialog } from '@components/Dialogs/DeleteProfileDialog/DeleteProfileDialog';
 import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
+
+// shared
+import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { $profileStore, $routeToChangeStore, appDialogsApi, updateProfileFx } from '../../store';
@@ -169,7 +171,12 @@ const EditProfileContainer = memo(() => {
                 className={styles.containerWrapper}
             >
                 <CustomGrid container alignItems="center" justifyContent="center">
-                    <Image src="/images/edit-hand.png" width="40px" height="40px" alt="edit-hand" />
+                    <CustomImage
+                        src="/images/edit-hand.png"
+                        width="40px"
+                        height="40px"
+                        alt="edit-hand"
+                    />
                     <CustomTypography
                         variant="h1"
                         nameSpace="profile"

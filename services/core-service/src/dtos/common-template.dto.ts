@@ -6,6 +6,14 @@ import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { ICommonTemplate } from 'shared';
 import { PreviewImageDTO } from './preview-image.dto';
 
+class UserPositionDTO {
+  @Expose()
+  bottom: number;
+
+  @Expose()
+  left: number;
+}
+
 export class CommonTemplateDTO implements ICommonTemplate {
   @Expose()
   @Transform((data) => data.obj['_id'])
@@ -57,6 +65,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
   stripeProductId: string;
 
   @Expose()
+  @Type(() => UserPositionDTO)
   usersPosition: { bottom: number; left: number }[];
 
   @Expose()

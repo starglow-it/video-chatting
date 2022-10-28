@@ -9,6 +9,12 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait
 
 RUN chmod +x /wait
 
+RUN apk update
+RUN apk upgrade
+RUN apk add --no-cache git
+RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache g++ make
+
 WORKDIR /app
 
 RUN mkdir -p services/frontend-admin-service
@@ -21,11 +27,11 @@ RUN pnpm add nx -D -w
 
 COPY ./services/frontend-admin-service/package.json ./services/frontend-admin-service
 
-RUN pnpm install
+RUN pnpm install --force
 
 COPY ./services/frontend-admin-service ./services/frontend-admin-service
 
-RUN npx nx run-many --target=build --projects=shared,shared-const,shared-utils,shared-types,frontend-admin-service
+RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared,shared-utils,frontend-admin-service
 
 EXPOSE 9000
 

@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
 import { LockIcon } from '@library/icons/LockIcon';
@@ -19,7 +20,7 @@ const Component = ({
     className,
     description,
     name,
-    isPublic = true,
+    isPublic,
 }: PropsWithClassName<{
     name: Template['name'];
     description: Template['description'];
@@ -28,11 +29,12 @@ const Component = ({
     <CustomGrid container wrap="nowrap" className={className}>
         <CustomGrid container direction="column" className={styles.textWrapper}>
             <CustomGrid container flexWrap="nowrap" alignItems="center" gap={0.25}>
-                {isPublic ? (
+                <ConditionalRender condition={isPublic === true}>
                     <PeopleIcon width="20px" height="20px" className={styles.icon} />
-                ) : (
+                </ConditionalRender>
+                <ConditionalRender condition={isPublic === false}>
                     <LockIcon width="20px" height="20px" className={styles.icon} />
-                )}
+                </ConditionalRender>
                 <CustomTypography
                     variant="body1"
                     fontWeight={600}
