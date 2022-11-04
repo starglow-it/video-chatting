@@ -1,12 +1,12 @@
-import { Template } from '../../../store/types';
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
+import { ICommonTemplate } from 'shared-types';
 
 export type TemplateMainInfoProps = PropsWithClassName<{
-    name: Template['name'];
-    description: Template['description'];
-    maxParticipants: Template['maxParticipants'];
-    type?: Template['type'];
-    priceInCents?: Template['priceInCents'];
+    name: ICommonTemplate['name'];
+    description: ICommonTemplate['description'];
+    maxParticipants: ICommonTemplate['maxParticipants'];
+    type?: ICommonTemplate['type'];
+    priceInCents?: ICommonTemplate['priceInCents'];
     isNeedToShowBusinessInfo?: boolean;
     show: boolean;
     isPublic?: boolean;

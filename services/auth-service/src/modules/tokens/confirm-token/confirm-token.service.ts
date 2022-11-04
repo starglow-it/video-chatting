@@ -6,14 +6,17 @@ import { RpcException } from '@nestjs/microservices';
 // shared
 import {
   JWT_CONFIRM_EXPIRES_IN_TIMESTAMP,
-  TokenPayloadType,
-  ICommonUserDTO,
-  IToken,
-  TokenTypes,
   CONFIRM_TOKEN_HAS_EXPIRED,
   NOT_VALID_TOKEN,
   AUTH_SERVICE,
-} from 'shared';
+} from 'shared-const';
+
+import {
+  TokenTypes,
+  TokenPayloadType,
+  ICommonUser,
+  IToken,
+} from 'shared-types';
 
 @Injectable()
 export class ConfirmTokenService {
@@ -22,7 +25,7 @@ export class ConfirmTokenService {
   async generateToken({
     email,
   }: {
-    email: ICommonUserDTO['email'];
+    email: ICommonUser['email'];
   }): Promise<TokenPayloadType> {
     const jwtId = uuid.v4();
     const confirmTokenPayload = { jwtId, email };

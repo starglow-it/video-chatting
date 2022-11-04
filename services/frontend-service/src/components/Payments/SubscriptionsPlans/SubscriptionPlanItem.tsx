@@ -53,22 +53,11 @@ const Component = (
         if (product.name !== activePlanKey) {
             onChooseSubscription(product.id, !isFree, false);
         }
-    }, [
-        isFree,
-        product.id,
-        product.name,
-        activePlanKey,
-        onChooseSubscription,
-    ]);
+    }, [isFree, product.id, product.name, activePlanKey, onChooseSubscription]);
 
     const handleChooseTrial = useCallback(() => {
         onChooseSubscription(product.id, !isFree, true);
-    }, [
-        isFree,
-        product.id,
-        product.name,
-        onChooseSubscription,
-    ]);
+    }, [isFree, product.id, product.name, onChooseSubscription]);
 
     const { translation } = useLocalization('subscriptions');
 
@@ -147,7 +136,7 @@ const Component = (
                         title={
                             <CustomTypography
                                 dangerouslySetInnerHTML={{
-                                    __html: translation(templateFeaturesText.trialHint ?? '')
+                                    __html: translation(templateFeaturesText.trialHint ?? ''),
                                 }}
                                 className={styles.trialText}
                             />
@@ -161,6 +150,7 @@ const Component = (
                             nameSpace="subscriptions"
                             translation="buttons.tryForFree"
                             onClick={handleChooseTrial}
+                            disabled={isDisabled}
                             className={styles.trialButton}
                             Icon={
                                 <CustomBox className={styles.icon}>

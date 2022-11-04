@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 
-import { IPreviewImage } from 'shared';
+import { IPreviewImage } from 'shared-types';
 
 export class PreviewImageDTO implements IPreviewImage {
   @Expose()

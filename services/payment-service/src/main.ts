@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import * as express from 'express';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { IConfig } from 'shared';
+import { IConfig } from 'shared-types';
 
 import { AppModule } from './app.module';
 import { ConfigClientService } from './services/config/config.service';
@@ -16,23 +16,23 @@ async function bootstrap() {
 
   app.use('/payments/webhook', express.raw({ type: 'application/json' }));
   app.use(
-      '/payments/express-webhook',
-      express.raw({ type: 'application/json' }),
+    '/payments/express-webhook',
+    express.raw({ type: 'application/json' }),
   );
 
   const paymentMicroservice =
-      await NestFactory.createMicroservice<MicroserviceOptions>(PaymentsModule, {
-        transport: Transport.RMQ,
-        options: {
-          urls: [
-            `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`,
-          ],
-          queue: config.rabbitMqPaymentQueue,
-          queueOptions: {
-            durable: false,
-          },
+    await NestFactory.createMicroservice<MicroserviceOptions>(PaymentsModule, {
+      transport: Transport.RMQ,
+      options: {
+        urls: [
+          `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`,
+        ],
+        queue: config.rabbitMqPaymentQueue,
+        queueOptions: {
+          durable: false,
         },
-      });
+      },
+    });
 
   const paymentsController = paymentMicroservice.get(PaymentsController);
 

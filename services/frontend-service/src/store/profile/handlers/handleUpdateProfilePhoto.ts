@@ -1,8 +1,10 @@
+import { ErrorState } from 'shared-types';
+
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { postProfileAvatarUrl, uploadProfileAvatarUrl } from '../../../utils/urls';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 
-import { ErrorState, Profile, UpdateProfileAvatar } from '../../types';
+import { Profile, UpdateProfileAvatar } from '../../types';
 import { CommonProfileResponse } from '../types';
 
 export const handleUpdateProfilePhoto = async ({

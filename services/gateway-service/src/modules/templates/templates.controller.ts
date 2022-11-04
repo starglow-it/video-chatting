@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Logger,
   Param,
@@ -21,15 +22,13 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { ResponseSumType } from 'shared';
-import { ICommonTemplate } from 'shared';
-import { EntityList } from 'shared';
+import { EntityList, ResponseSumType, ICommonTemplate } from 'shared-types';
 import { TemplatesService } from './templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '../upload/upload.service';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { CoreService } from '../../services/core/core.service';
-import { IUserTemplate, IUpdateTemplate } from 'shared';
+import { IUserTemplate, IUpdateTemplate } from 'shared-types';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -211,6 +210,45 @@ export class TemplatesController {
       this.logger.error(
         {
           message: `An error occurs, while get common template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:templateId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete Template' })
+  @ApiOkResponse({
+    description: 'Delete Common Template Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async deleteCommonTemplate(
+    @Request() req,
+    @Param('templateId') templateId: string,
+  ) {
+    try {
+      if (templateId) {
+        await this.templatesService.deleteCommonTemplate({
+          templateId,
+        });
+
+        return {
+          success: true,
+        };
+      }
+      return {
+        success: false,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while delete common template`,
         },
         JSON.stringify(err),
       );

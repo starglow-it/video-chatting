@@ -14,8 +14,8 @@ import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/Subs
 import { dashboardRoute } from 'src/const/client-routes';
 
 // types
-import { EditTemplatePayload } from '../../store/templates/types';
 import { Template } from '../../store/types';
+import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
@@ -26,10 +26,12 @@ import {
     $profileStore,
     addTemplateToUserFx,
     clearTemplateDraft,
+    deleteCommonTemplateFx,
     editTemplateFx,
     editUserTemplateFx,
     getEditingTemplateFx,
-    getSubscriptionWithDataFx, getTemplateFx,
+    getSubscriptionWithDataFx,
+    getTemplateFx,
     initWindowListeners,
     removeWindowListeners,
     startCheckoutSessionForSubscriptionFx,
@@ -38,6 +40,7 @@ import {
 
 // utils
 import { getCreateRoomUrl } from '../../utils/urls';
+import { adjustUserPositions } from '../../utils/positions/adjustUserPositions';
 
 // styles
 import styles from './CreateRoomContainer.module.scss';
@@ -87,79 +90,119 @@ const Component = () => {
     useEffect(() => () => clearTemplateDraft(), []);
 
     const handleCancel = useCallback(async () => {
-        // TODO: delete common template if canceled and other data associated with it
+        if (template?.id) {
+            await deleteCommonTemplateFx({ templateId: template.id });
+        }
+
         router.push(dashboardRoute);
-    }, []);
-
-    const handleSubmit = useCallback(async (data: EditTemplatePayload['data']) => {
-        if (!template?.templateId) {
-            return;
-        }
-
-        await editTemplateFx({
-            templateId: template.id,
-            data,
-        });
-
-        const userTemplate = await addTemplateToUserFx({
-            templateId: template.id,
-        });
-
-        const { businessCategories, ...newPayload } = data;
-
-        if (userTemplate?.id) {
-            await editUserTemplateFx({
-                templateId: userTemplate.id,
-                data: newPayload,
-            });
-        }
-
-        await router.push(dashboardRoute);
-    },
-    [template?.id],
-    );
-
-    const handleUploadFile = useCallback((file: File) => {
-        if (!template?.id) {
-            return;
-        }
-
-        return uploadTemplateFileFx({
-            file,
-            templateId: template.id,
-        });
     }, [template?.id]);
 
-    const handleUpgradePlan = useCallback(async (data: EditTemplatePayload['data']) => {
-        if (!template?.templateId) {
-            return;
-        }
+    const handleSubmit = useCallback(
+        async (data: IUploadTemplateFormData) => {
+            if (!template?.templateId) {
+                return;
+            }
 
-        await editTemplateFx({
-            templateId: template.id,
-            data,
-        });
+            const payload = {
+                name: data.name,
+                description: data.description,
+                customLink: data.customLink,
+                isPublic: data.isPublic,
+                maxParticipants: data.participantsNumber,
+                usersPosition: adjustUserPositions(data.participantsPositions),
+                businessCategories: data.tags,
+                draft: false,
+                url: data.url,
+                previewUrls: data.previewUrls,
+            };
 
-        onShowSubscriptions();
-    }, [onShowSubscriptions, template?.templateId]);
+            await editTemplateFx({
+                templateId: template.id,
+                data: payload,
+            });
 
-    const handleChooseSubscription = useCallback(async (productId: string, isPaid: boolean) => {
-        if (!template?.id) {
-            return;
-        }
+            const userTemplate = await addTemplateToUserFx({
+                templateId: template.id,
+            });
 
-        if (isPaid) {
+            const { businessCategories, ...newPayload } = payload;
+
+            if (userTemplate?.id) {
+                await editUserTemplateFx({
+                    templateId: userTemplate.id,
+                    data: newPayload,
+                });
+            }
+
+            await router.push(dashboardRoute);
+        },
+        [template?.id],
+    );
+
+    const handleUploadFile = useCallback(
+        (file: File) => {
+            if (!template?.id) {
+                return;
+            }
+
+            return uploadTemplateFileFx({
+                file,
+                templateId: template.id,
+            });
+        },
+        [template?.id],
+    );
+
+    const handleUpgradePlan = useCallback(
+        async (data: IUploadTemplateFormData) => {
+            if (!template?.templateId) {
+                return;
+            }
+
+            const payload = {
+                name: data.name,
+                description: data.description,
+                customLink: data.customLink,
+                isPublic: data.isPublic,
+                maxParticipants: data.participantsNumber,
+                usersPosition: adjustUserPositions(data.participantsPositions),
+                businessCategories: data.tags,
+                draft: false,
+                url: data.url,
+                previewUrls: data.previewUrls,
+            };
+
+            await editTemplateFx({
+                templateId: template.id,
+                data: payload,
+            });
+
+            onShowSubscriptions();
+        },
+        [onShowSubscriptions, template?.templateId],
+    );
+
+    const handleChooseSubscription = useCallback(
+        async (productId: string, isPaid: boolean) => {
+            if (!template?.id) {
+                return;
+            }
+
+            if (!isPaid) {
+                return;
+            }
+
             const response = await startCheckoutSessionForSubscriptionFx({
                 productId,
-                subscriptionId: profile.stripeSubscriptionId,
                 baseUrl: `${getCreateRoomUrl(template.id)}?step=privacy`,
             });
 
             if (response?.url) {
                 return router.push(response.url);
             }
-        }
-    }, [profile.stripeSubscriptionId, template?.id]);
+        },
+        [profile.stripeSubscriptionId, template?.id],
+    );
 
     if (isGetTemplateRequestIsPending) {
         return (
@@ -167,6 +210,10 @@ const Component = () => {
                 <WiggleLoader className={styles.loader} />
             </CustomGrid>
         );
+    }
+
+    if (!template) {
+        return null;
     }
 
     return (
@@ -191,4 +238,3 @@ const Component = () => {
 };
 
 export const CreateRoomContainer = memo(Component);
-

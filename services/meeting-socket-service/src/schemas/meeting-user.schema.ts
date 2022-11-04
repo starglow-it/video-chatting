@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { MeetingDocument } from './meeting.schema';
-import { AccessStatusEnum } from '../types/accessStatus.enum';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 @Schema()
 export class MeetingUser {
@@ -24,18 +24,16 @@ export class MeetingUser {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: AccessStatusEnum.Initial,
-    enum: [
-      AccessStatusEnum.Initial,
-      AccessStatusEnum.InMeeting,
-      AccessStatusEnum.Waiting,
-      AccessStatusEnum.Rejected,
-      AccessStatusEnum.RequestSent,
-      AccessStatusEnum.EnterName,
-      AccessStatusEnum.Settings,
-    ],
+    default: MeetingAccessStatusEnum.Initial,
+    enum: Object.values(MeetingAccessStatusEnum),
   })
   accessStatus: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: Date.now,
+  })
+  joinedAt: number;
 
   @Prop({
     type: mongoose.Schema.Types.String,

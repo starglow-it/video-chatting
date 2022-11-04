@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { ICommonUser } from 'shared-types';
+
 import { BusinessCategoryDocument } from './business-category.schema';
 import { UserDocument } from './user.schema';
 import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { MeetingInstanceDocument } from './meeting-instance.schema';
-import { ICommonUserDTO } from 'shared';
 import { PreviewImageDocument } from './preview-image.schema';
 
 @Schema()
@@ -141,7 +142,7 @@ export class UserTemplate {
     required: true,
     default: 'default',
   })
-  signBoard: ICommonUserDTO['signBoard'];
+  signBoard: ICommonUser['signBoard'];
 
   @Prop({
     type: mongoose.Schema.Types.String,

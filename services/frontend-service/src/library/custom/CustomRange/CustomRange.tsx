@@ -1,6 +1,6 @@
 import { Slider, SliderProps, Stack } from '@mui/material';
 import { ReactElement, memo } from 'react';
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 const Component = ({
     Icon,

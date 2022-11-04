@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // types
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend';
 
 // styles
 import styles from './HiddenPaper.module.scss';

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import {Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomRadioGroup } from '@library/custom/CustomRadioGroup/CustomRadioGroup';

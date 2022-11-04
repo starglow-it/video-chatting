@@ -12,6 +12,7 @@ import {
     addTemplateToUserFx,
     clearTemplateDraft,
     createTemplateFx,
+    deleteCommonTemplateFx,
     editTemplateFx,
     editUserTemplateFx,
     getEditingTemplateFx,
@@ -47,6 +48,7 @@ import { handleUploadTemplateFile } from './handlers/handleUploadTemplateFile';
 import { handleUploadUserTemplateFile } from './handlers/handleUploadUserTemplateFile';
 import { handleAddTemplateToUser } from './handlers/handleAddTemplateToUser';
 import { handleEditUserTemplate } from './handlers/handleEditUserTemplate';
+import { handleDeleteCommonTemplate } from './handlers/handleDeleteCommonTemplate';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -61,6 +63,7 @@ uploadTemplateFileFx.use(handleUploadTemplateFile);
 uploadUserTemplateFileFx.use(handleUploadUserTemplateFile);
 editUserTemplateFx.use(handleEditUserTemplate);
 addTemplateToUserFx.use(handleAddTemplateToUser);
+deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 
 $templatesStore.on(getTemplatesFx.doneData, (state, data) => ({
     ...state,

@@ -4,17 +4,9 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Types, Connection, UpdateQuery } from 'mongoose';
 import { plainToClass, plainToInstance } from 'class-transformer';
 
-import { UserTemplatesService } from './user-templates.service';
-import { BusinessCategoriesService } from '../business-categories/business-categories.service';
-import { UsersService } from '../users/users.service';
-import { CommonTemplatesService } from '../common-templates/common-templates.service';
+// shared
+import { TEMPLATES_SERVICE } from 'shared-const';
 
-import { UserTemplateDTO } from '../../dtos/user-template.dto';
-
-import { withTransaction } from '../../helpers/mongo/withTransaction';
-import { TEMPLATES_SERVICE } from 'shared';
-import { LanguagesService } from '../languages/languages.service';
-import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import {
   CreateUserTemplateByIdPayload,
   DeleteUsersTemplatesPayload,
@@ -26,8 +18,26 @@ import {
   UpdateUserTemplatePayload,
   IUserTemplate,
   EntityList,
-  TemplateBrokerPatterns,
-} from 'shared';
+} from 'shared-types';
+
+import { TemplateBrokerPatterns } from 'shared-const';
+
+// helpers
+import { withTransaction } from '../../helpers/mongo/withTransaction';
+
+// services
+import { UserTemplatesService } from './user-templates.service';
+import { BusinessCategoriesService } from '../business-categories/business-categories.service';
+import { UsersService } from '../users/users.service';
+import { CommonTemplatesService } from '../common-templates/common-templates.service';
+import { LanguagesService } from '../languages/languages.service';
+import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
+
+// dtos
+import { UserTemplateDTO } from '../../dtos/user-template.dto';
+
+// schemas
+import { UserTemplateDocument } from '../../schemas/user-template.schema';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -38,6 +48,7 @@ export class UserTemplatesController {
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
     private languageService: LanguagesService,
+    private roomStatisticService: RoomsStatisticsService,
   ) {}
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetUserTemplate })
@@ -169,6 +180,36 @@ export class UserTemplatesController {
 
         await user.save({ session: session.session });
 
+        const isRoomStatisticsExists = await this.roomStatisticService.exists({
+          query: {
+            _id: targetTemplate._id,
+          },
+        });
+
+        if (!isRoomStatisticsExists) {
+          await this.roomStatisticService.create({
+            data: {
+              template: targetTemplate._id,
+              transactions: 0,
+              minutes: 0,
+              calls: 0,
+              money: 0,
+              uniqueUsers: 1,
+            },
+            session,
+          });
+        } else {
+          await this.roomStatisticService.updateOne({
+            query: {
+              template: targetTemplate._id,
+            },
+            data: {
+              $inc: { uniqueUsers: 1 },
+            },
+            session,
+          });
+        }
+
         return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
@@ -287,7 +328,7 @@ export class UserTemplatesController {
           isMonetizationEnabled: data.isMonetizationEnabled,
           templatePrice: data.templatePrice,
           templateCurrency: data.templateCurrency,
-          customLink: data.customLink ?? '',
+          customLink: data.customLink,
           name: data.name,
           isPublic: data.isPublic,
           maxParticipants: data.maxParticipants,

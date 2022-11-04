@@ -8,7 +8,7 @@ import {
 } from '../../schemas/meeting-instance.schema';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { ICommonMeetingInstance } from 'shared';
+import { IMeetingInstance } from 'shared-types';
 
 @Injectable()
 export class MeetingsService {
@@ -41,7 +41,7 @@ export class MeetingsService {
   }
 
   async findById(
-    getMeetingData: { meetingId: ICommonMeetingInstance['id'] },
+    getMeetingData: { meetingId: IMeetingInstance['id'] },
     { session }: ITransactionSession,
   ): Promise<MeetingInstanceDocument> {
     return this.meetingInstance

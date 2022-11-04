@@ -22,6 +22,6 @@ RUN pnpm install
 
 COPY ./services/auth-service ./services/auth-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,auth-service
+RUN npx nx run-many --target=build --projects=shared-types,shared-utils,shared-const,auth-service
 
 CMD /wait && pnpm --filter auth-service start:dev

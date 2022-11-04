@@ -2,11 +2,12 @@ version: "3.8"
 
 services:
   traefik:
-    build:
-      context: ./traefik
-      dockerfile: Dockerfile
+    build: ./traefik
     container_name: traefik
     restart: always
+    environment:
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
+      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}
     ports:
       - "80:80"
       - "443:443"
@@ -14,6 +15,27 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/letsencrypt:/letsencrypt
+    networks:
+      - traefik
+
+  instance-proxy:
+    container_name: instance_proxy
+    build:
+      context: ../../services/instance-proxy
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "7000:7000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=liveoffice_traefik"
+      - "traefik.http.routers.proxy.rule=HostRegexp(`{subdomain:.+}.scaling.app.theliveoffice.com`)"
+      - "traefik.http.routers.proxy.entrypoints=https"
+      - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
+      - "traefik.http.routers.whoami.tls.domains[0].main=scaling.app.theliveoffice.com"
+      - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.app.theliveoffice.com"
+      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
+      - "io.portainer.accesscontrol.public"
     networks:
       - traefik
 
@@ -32,5 +54,3 @@ services:
 
 networks:
   traefik:
-    external:
-      name: traefik

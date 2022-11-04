@@ -11,8 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { PAYMENTS_SCOPE } from 'shared';
-import { ResponseSumType } from 'shared';
+import { PAYMENTS_SCOPE } from 'shared-const';
+import { ResponseSumType } from 'shared-types';
 
 import { PaymentsService } from './payments.service';
 import { CoreService } from '../../services/core/core.service';
@@ -225,7 +225,7 @@ export class PaymentsController {
         templatePrice: userTemplate.templatePrice,
         templateCurrency: userTemplate.templateCurrency?.toLowerCase(),
         stripeAccountId: user.stripeAccountId,
-        stripeSubscriptionId: user.stripeSubscriptionId,
+        templateId: userTemplate.id,
       });
 
       return {
@@ -321,7 +321,13 @@ export class PaymentsController {
   })
   async buyProduct(
     @Request() req,
-    @Body() body: { baseUrl: string; meetingToken: string; withTrial?: boolean },
+    @Body()
+    body: {
+      baseUrl: string;
+      meetingToken: string;
+      withTrial?: boolean;
+      cancelUrl?: string;
+    },
     @Param('productId') productId: string,
   ): Promise<ResponseSumType<any>> {
     try {
@@ -330,6 +336,8 @@ export class PaymentsController {
         meetingToken: body.meetingToken,
         baseUrl: body.baseUrl,
         withTrial: body.withTrial,
+        customerEmail: req.user.email,
+        cancelUrl: body.cancelUrl,
       });
 
       await this.coreService.findUserAndUpdate({

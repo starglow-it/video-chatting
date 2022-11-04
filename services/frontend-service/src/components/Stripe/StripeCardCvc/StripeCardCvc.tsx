@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import { CardCvcElement, CardCvcElementProps } from '@stripe/react-stripe-js';
 
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 import styles from '../StripeCommon.module.scss';
 

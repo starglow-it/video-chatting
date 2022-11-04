@@ -1,0 +1,17 @@
+@import "../../../styles/rem";
+
+.chartClass {
+  flex: 0 0 50%;
+  margin: rem(0 0 0 73px);
+}
+.legend {
+  flex: 0 0 50%;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  padding: rem(40px);
+  width: 100%;
+  min-height: rem(260px);
+}

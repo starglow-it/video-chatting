@@ -1,77 +1,71 @@
-import React, {memo, useEffect} from "react";
-import {useStore} from "effector-react";
+import React, { memo } from 'react';
+import { useStore } from 'effector-react';
 import Image from 'next/image';
+import clsx from 'clsx';
 
 // shared
 import { planColors } from 'shared-const';
 import { PropsWithClassName } from 'shared-frontend/types';
-import {CustomGrid, CustomPaper, CustomTypography} from 'shared-frontend/library';
+import { CustomGrid, CustomPaper, CustomTypography, WiggleLoader } from 'shared-frontend/library';
 
 // components
-import {Translation} from "@components/Translation/Translation";
-import {CustomDoughnutChart} from "@components/CustomDoughnutChart/CustomDoughnutChart";
+import { Translation } from '@components/Translation/Translation';
+import { CustomDoughnutChart } from '@components/CustomDoughnutChart/CustomDoughnutChart';
+import { ChartLegend } from '@components/ChartLegend/ChartLegend';
 
 // styles
-import styles from "./SubscriptionsStatistics.module.scss";
+import styles from './SubscriptionsStatistics.module.scss';
 
 // stores
-import {$subscriptionsStatistics, getSubscriptionsStatisticsFx} from "../../../store";
+import { getSubscriptionsStatisticsFx } from '../../../store';
 
-const Component = ({ className }: PropsWithClassName<any>) => {
-    const { state: subscriptionsStatistics } = useStore($subscriptionsStatistics);
+// types
+import { SubscriptionsStatisticsType } from 'shared-types';
 
-    console.log(subscriptionsStatistics);
-
-    useEffect(() => {
-        (async () => {
-            getSubscriptionsStatisticsFx();
-        })();
-    }, []);
+const Component = ({
+    className,
+    statistic,
+}: PropsWithClassName<{ statistic: SubscriptionsStatisticsType }>) => {
+    const isGetSubscriptionsStatisticsPending = useStore(getSubscriptionsStatisticsFx.pending);
 
     const data = {
-        totalNumber: subscriptionsStatistics.totalNumber,
-        dataSets: [
-            {
-                label: 'House',
-                parts: subscriptionsStatistics.subscriptions['house'],
-                color: planColors["House"],
-            },
-            {
-                label: 'Professional',
-                parts: subscriptionsStatistics.subscriptions['professional'],
-                color: planColors["Professional"],
-            },
-            {
-                label: 'Business',
-                parts: subscriptionsStatistics.subscriptions['business'],
-                color: planColors["Business"],
-            }
-        ],
+        totalNumber: statistic.totalNumber ?? 0,
+        dataSets:
+            statistic?.data?.map(data => ({
+                label: data.label,
+                parts: data.value,
+                color: planColors[data.label],
+            })) ?? [],
     };
 
     return (
-        <CustomPaper className={className}>
+        <CustomPaper className={clsx(styles.wrapper, className)}>
             <CustomTypography variant="h4bold">
                 <Translation nameSpace="statistics" translation="users.subscription.title" />
             </CustomTypography>
-            {subscriptionsStatistics.totalNumber === 0
-                ? (
-                    <CustomGrid
-                        container
-                        direction="column"
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                        <Image src="/images/eyes.png" width={40} height={40} />
-                        <CustomTypography>
-                            <Translation
-                                nameSpace="statistics"
-                                translation="users.subscription.noData"
-                            />
-                        </CustomTypography>
-                    </CustomGrid>
-                )
-                : (
+            {statistic.totalNumber === 0 ? (
+                <>
+                    {isGetSubscriptionsStatisticsPending ? (
+                        <WiggleLoader className={styles.loader} />
+                    ) : (
+                        <CustomGrid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Image src="/images/eyes.png" width={40} height={40} />
+                            <CustomTypography>
+                                <Translation
+                                    nameSpace="statistics"
+                                    translation="users.subscription.noData"
+                                />
+                            </CustomTypography>
+                        </CustomGrid>
+                    )}
+                </>
+            ) : (
+                <CustomGrid container direction="column">
                     <CustomDoughnutChart
                         className={styles.chartClass}
                         width="180px"
@@ -79,10 +73,11 @@ const Component = ({ className }: PropsWithClassName<any>) => {
                         label="Subscriptions"
                         data={data}
                     />
-                )
-            }
+                    <ChartLegend dataSets={data.dataSets} totalNumber={data.totalNumber} />
+                </CustomGrid>
+            )}
         </CustomPaper>
-    )
-}
+    );
+};
 
 export const SubscriptionsStatistics = memo(Component);

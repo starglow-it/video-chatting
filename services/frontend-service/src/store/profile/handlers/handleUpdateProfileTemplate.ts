@@ -1,4 +1,6 @@
-import { ErrorState, UserTemplate } from '../../types';
+import { ErrorState } from 'shared-types';
+
+import { UserTemplate } from '../../types';
 import { postProfileTemplatesUrl } from '../../../utils/urls';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';

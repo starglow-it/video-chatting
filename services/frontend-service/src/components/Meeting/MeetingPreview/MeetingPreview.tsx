@@ -32,10 +32,11 @@ import {
 import styles from './MeetingPreview.module.scss';
 
 // types
-import { MeetingAccessStatuses, MeetingUser } from '../../../store/types';
+import { MeetingUser } from '../../../store/types';
 
 // const
 import { clientRoutes, dashboardRoute } from '../../../const/client-routes';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const router = useRouter();
@@ -53,7 +54,7 @@ const Component = () => {
             state.filter(
                 user =>
                     user.id !== localUserId &&
-                    user.accessStatus === MeetingAccessStatuses.InMeeting,
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting,
             ),
     });
 
@@ -155,7 +156,7 @@ const Component = () => {
                         color="colors.white.primary"
                         className={styles.description}
                     >
-                        {meetingTemplate.shortDescription}
+                        {meetingTemplate.shortDescription || meetingTemplate.description}
                     </CustomTypography>
                 </CustomGrid>
                 <UsersAvatarsCounter<MeetingUser>

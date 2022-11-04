@@ -1,4 +1,4 @@
-import { ConfigKeysType } from 'shared';
+import { ConfigKeysType } from 'shared-types';
 import { sendHttpRequest } from '../../utils/http/sendHttpRequest';
 
 export const getConfigVar = async (key: ConfigKeysType): Promise<any> => {

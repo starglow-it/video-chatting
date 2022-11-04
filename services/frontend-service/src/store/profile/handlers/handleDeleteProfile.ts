@@ -1,4 +1,4 @@
-import { ErrorState } from '../../types';
+import { ErrorState } from 'shared-types';
 import { deleteProfileUrl } from '../../../utils/urls';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';

@@ -8,12 +8,15 @@ import { CommonMeetingDTO } from './common-meeting.dto';
 import { TemplateUserDTO } from './template-user.dto';
 
 // interfaces
-import { IBusinessCategory } from 'shared';
-import { ILanguage } from 'shared';
-import { ISocialLink } from 'shared';
-import { IUserTemplate } from 'shared';
-import { ITemplateUser } from 'shared';
-import { ICommonMeetingInstance } from 'shared';
+import {
+  IMeetingInstance,
+  ITemplateUser,
+  IUserTemplate,
+  ISocialLink,
+  ILanguage,
+  IBusinessCategory,
+} from 'shared-types';
+
 import { PreviewImageDTO } from './preview-image.dto';
 
 export class UserTemplateDTO implements IUserTemplate {
@@ -36,7 +39,7 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   @Type(() => CommonMeetingDTO)
-  meetingInstance: ICommonMeetingInstance;
+  meetingInstance: IMeetingInstance;
 
   @Expose()
   templateId: IUserTemplate['templateId'];

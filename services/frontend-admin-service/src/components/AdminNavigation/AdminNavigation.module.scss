@@ -1,0 +1,30 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.adminNavigation {
+  position: fixed;
+  width: rem(68px);
+  z-index: 100;
+  left: rem(20px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: rem(20px);
+}
+
+.iconsWrapper {
+  .icon {
+    cursor: pointer;
+  }
+
+  .divider {
+    align-self: stretch;
+  }
+}
+
+.activeIcon {
+  color: $primary-orange;
+}
+
+.linkIcon {
+  cursor: pointer;
+}

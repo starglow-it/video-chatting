@@ -1,7 +1,7 @@
 export type CustomVideoPlayerOptions = {
     src: string;
     type: string;
-}
+};
 
 export type CustomVideoPlayerProps = {
     options: CustomVideoPlayerOptions;

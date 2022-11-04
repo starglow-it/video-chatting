@@ -54,6 +54,13 @@ const TimeLimitWarning = dynamic(() => import('@components/TimeLimitWarning/Time
     ssr: false,
 });
 
+const SubscriptionExpiredNotification = dynamic(
+    () => import('@components/SubscriptionExpiredNotification/SubscriptionExpiredNotification'),
+    {
+        ssr: false,
+    },
+);
+
 const ROUTES_WITHOUT_FOOTER: string[] = [roomRoute, createRoomRoute, editRoomRoute];
 
 const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
@@ -102,6 +109,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
             <ConditionalRender condition={isMeetingRoute}>
                 <TimeLimitWarning />
+            </ConditionalRender>
+
+            <ConditionalRender condition={isDashboardRoute}>
+                <SubscriptionExpiredNotification />
             </ConditionalRender>
 
             <CustomGrid

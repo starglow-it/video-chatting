@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 
 import { CardExpiryElement, CardExpiryElementProps } from '@stripe/react-stripe-js';
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 import styles from '../StripeCommon.module.scss';
 

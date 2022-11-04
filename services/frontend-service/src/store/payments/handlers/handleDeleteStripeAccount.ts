@@ -1,5 +1,5 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { ErrorState } from '../../types';
+import { ErrorState } from 'shared-types';
 import { deleteStripeAccountUrl } from '../../../utils/urls';
 
 export const handleDeleteStripeAccount = async (): Promise<void> => {

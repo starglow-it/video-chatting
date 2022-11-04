@@ -15,7 +15,7 @@ import { dashboardRoute } from '../../const/client-routes';
 
 // types
 import { UserTemplate } from '../../store/types';
-import { EditUserTemplatePayload } from '../../store/templates/types';
+import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
@@ -23,7 +23,6 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 
 // store
 import {
-    $profileStore,
     clearTemplateDraft,
     editUserTemplateFx,
     getEditingTemplateFx,
@@ -36,6 +35,8 @@ import {
 
 // utils
 import { getEditRoomUrl } from '../../utils/urls';
+import { adjustUserPositions } from '../../utils/positions/adjustUserPositions';
+import { convertToBase64 } from '../../utils/string/convertToBase64';
 
 // styles
 import styles from './EditRoomContainer.module.scss';
@@ -44,9 +45,10 @@ const Component = () => {
     const prevTemplateDataRef = useRef<UserTemplate | null>(null);
     const isGetTemplateRequestIsPending = useStore(getEditingTemplateFx.pending);
     const isUpdateMeetingTemplateFilePending = useStore(uploadUserTemplateFileFx.pending);
-    const profile = useStore($profileStore);
 
     const [template, setTemplate] = useState<UserTemplate | null>(null);
+
+    const savedTemplateProgress = useRef<IUploadTemplateFormData | null>(null);
 
     const {
         value: isSubscriptionStep,
@@ -56,7 +58,9 @@ const Component = () => {
 
     const router = useRouter();
 
-    useSubscriptionNotification(`${getEditRoomUrl(template?.id ?? '')}?step=privacy`);
+    useSubscriptionNotification(
+        `${getEditRoomUrl((template?.customLink || template?.id) ?? '')}?step=privacy`,
+    );
 
     useEffect(() => {
         (async () => {
@@ -86,16 +90,34 @@ const Component = () => {
 
     useEffect(() => () => clearTemplateDraft(), []);
 
-    const handleSubmit = useCallback(async (data: EditUserTemplatePayload['data']) => {
-        if (!template?.id) {
-            return;
-        }
-        await editUserTemplateFx({
-            templateId: template.id,
-            data,
-        });
-        await router.push(dashboardRoute);
-    }, [template?.id]);
+    const handleSubmit = useCallback(
+        async (data: IUploadTemplateFormData) => {
+            if (!template?.id) {
+                return;
+            }
+
+            const payload = {
+                name: data.name,
+                description: data.description,
+                customLink: data.customLink,
+                isPublic: data.isPublic,
+                maxParticipants: data.participantsNumber,
+                usersPosition: adjustUserPositions(data.participantsPositions),
+                businessCategories: data.tags,
+                draft: false,
+                url: data.url,
+                previewUrls: data.previewUrls,
+            };
+
+            await editUserTemplateFx({
+                templateId: template.id,
+                data: payload,
+            });
+
+            await router.push(dashboardRoute);
+        },
+        [template?.id],
+    );
 
     const handleCancelRoomCreation = useCallback(async () => {
         if (prevTemplateDataRef.current) {
@@ -104,51 +126,60 @@ const Component = () => {
                 data: prevTemplateDataRef.current,
             });
         }
-        // TODO: delete common template if canceled and other data associated with it
         router.push(dashboardRoute);
     }, []);
 
-    const handleUploadFile = useCallback((file: File) => {
-        if (!template?.id) {
-            return;
-        }
+    const handleUploadFile = useCallback(
+        (file: File) => {
+            if (!template?.id) {
+                return;
+            }
 
-        return uploadUserTemplateFileFx({
-            file,
-            templateId: template.id,
-        });
-    }, [template?.id]);
+            return uploadUserTemplateFileFx({
+                file,
+                templateId: template.id,
+            });
+        },
+        [template?.id],
+    );
 
-    const handleUpgradePlan = useCallback(async (data: EditUserTemplatePayload['data']) => {
-        if (!template?.templateId) {
-            return;
-        }
+    const handleUpgradePlan = useCallback(
+        async (data: IUploadTemplateFormData) => {
+            savedTemplateProgress.current = data;
+            onShowSubscriptions();
+        },
+        [onShowSubscriptions, template?.templateId],
+    );
 
-        await editUserTemplateFx({
-            templateId: template.id,
-            data,
-        });
+    const handleChooseSubscription = useCallback(
+        async (productId: string, isPaid: boolean) => {
+            if (!template?.id) {
+                return;
+            }
 
-        onShowSubscriptions();
-    }, [onShowSubscriptions, template?.templateId]);
+            if (!isPaid) {
+                return;
+            }
 
-    const handleChooseSubscription = useCallback(async (productId: string, isPaid: boolean) => {
-        if (!template?.id) {
-            return;
-        }
-
-        if (isPaid) {
+            let data = '';
+            if (savedTemplateProgress.current) {
+                const { background, ...dataToSave } = savedTemplateProgress.current;
+                data = convertToBase64(dataToSave);
+            }
+            const dataParam = data ? `&data=${data}` : '';
             const response = await startCheckoutSessionForSubscriptionFx({
                 productId,
-                subscriptionId: profile.stripeSubscriptionId,
-                baseUrl: `${getEditRoomUrl(template.id)}?step=privacy`,
+                baseUrl: `${getEditRoomUrl(
+                    template.customLink || template.id,
+                )}?step=privacy${dataParam}`,
             });
 
             if (response?.url) {
                 return router.push(response.url);
             }
-        }
-    }, [profile.stripeSubscriptionId, template?.id]);
+        },
+        [template?.id, template?.customLink],
+    );
 
     if (isGetTemplateRequestIsPending) {
         return (
@@ -156,6 +187,10 @@ const Component = () => {
                 <WiggleLoader className={styles.loader} />
             </CustomGrid>
         );
+    }
+
+    if (!template) {
+        return null;
     }
 
     return (
@@ -176,7 +211,7 @@ const Component = () => {
                 onlyPaidPlans={true}
             />
         </>
-    )
+    );
 };
 
 export const EditRoomContainer = memo(Component);

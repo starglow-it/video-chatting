@@ -2,30 +2,30 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { UserDocument } from './user.schema';
-import { ICommonMeetingInstance } from 'shared';
+import { IMeetingInstance } from 'shared-types';
 
 @Schema()
 export class MeetingInstance {
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  serverIp: ICommonMeetingInstance['serverIp'];
+  serverIp: IMeetingInstance['serverIp'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  instanceId: ICommonMeetingInstance['instanceId'];
+  instanceId: IMeetingInstance['instanceId'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  snapshotId: ICommonMeetingInstance['snapshotId'];
+  snapshotId: IMeetingInstance['snapshotId'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
     default: 'inactive',
   })
-  serverStatus: ICommonMeetingInstance['serverStatus'];
+  serverStatus: IMeetingInstance['serverStatus'];
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

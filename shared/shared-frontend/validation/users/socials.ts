@@ -1,6 +1,6 @@
 import { string, object } from 'yup';
 import { simpleStringSchema } from '../common';
-import { SocialLink, SocialLinkKeysEnum } from 'shared-types';
+import {ISocialLink, SocialLinkKeysEnum} from 'shared-types';
 
 export const baseUrlSchema = () =>
     string().matches(
@@ -58,42 +58,42 @@ export const twitterLinkSchema = () =>
 export const validateSocialLink = () =>
     object()
         .when({
-            is: (data: SocialLink) => data.key === SocialLinkKeysEnum.Youtube,
+            is: (data: ISocialLink) => data.key === SocialLinkKeysEnum.Youtube,
             then: object({
                 key: simpleStringSchema(),
                 value: baseUrlSchema(),
             }),
         })
         .when({
-            is: (data: SocialLink) => data.key === SocialLinkKeysEnum.Facebook,
+            is: (data: ISocialLink) => data.key === SocialLinkKeysEnum.Facebook,
             then: object({
                 key: simpleStringSchema(),
                 value: baseUrlSchema(),
             }),
         })
         .when({
-            is: (data: SocialLink) => data.key === SocialLinkKeysEnum.Instagram,
+            is: (data: ISocialLink) => data.key === SocialLinkKeysEnum.Instagram,
             then: object({
                 key: simpleStringSchema(),
                 value: baseUrlSchema(),
             }),
         })
         .when({
-            is: (data: SocialLink) => data.key === SocialLinkKeysEnum.LinkedIn,
+            is: (data: ISocialLink) => data.key === SocialLinkKeysEnum.LinkedIn,
             then: object({
                 key: simpleStringSchema(),
                 value: baseUrlSchema(),
             }),
         })
         .when({
-            is: (data: SocialLink) => data.key === SocialLinkKeysEnum.Twitter,
+            is: (data: ISocialLink) => data.key === SocialLinkKeysEnum.Twitter,
             then: object({
                 key: simpleStringSchema(),
                 value: baseUrlSchema(),
             }),
         })
         .when({
-            is: (data: SocialLink) => data.key === SocialLinkKeysEnum.Custom,
+            is: (data: ISocialLink) => data.key === SocialLinkKeysEnum.Custom,
             then: object({
                 key: simpleStringSchema(),
                 value: baseUrlSchema(),

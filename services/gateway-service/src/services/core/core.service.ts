@@ -1,13 +1,26 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared';
-import { UserBrokerPatterns } from 'shared';
-import { MeetingBrokerPatterns } from 'shared';
-import { ICommonUserDTO, ICountryStatistic } from 'shared';
-import { ICommonMeetingInstance } from 'shared';
-import { IUserTemplate } from 'shared';
+import { CORE_PROVIDER } from 'shared-const';
 import {
+  RoomStatisticBrokerPatterns,
+  TemplateBrokerPatterns,
+  UserBrokerPatterns,
+  MeetingBrokerPatterns,
+  CoreBrokerPatterns,
+} from 'shared-const';
+import {
+  ICommonUser,
+  ICountryStatistic,
+  IRoomsRatingStatistic,
+  IMeetingInstance,
+  IUserTemplate,
+  GetMeetingPayload,
+  GetRoomRatingStatisticPayload,
+  UpdateRoomRatingStatisticPayload,
+  UpdateMeetingInstancePayload,
+  GetMeetingInstancePayload,
+  AssignMeetingInstancePayload,
   ComparePasswordsPayload,
   DeleteProfileAvatarPayload,
   FindUserByEmailPayload,
@@ -21,15 +34,11 @@ import {
   UserTokenExistsPayload,
   ValidateVerificationCodePayload,
   VerifyPasswordPayload,
-  AssignMeetingInstancePayload,
-  GetMeetingInstancePayload,
-  GetMeetingPayload,
-  UpdateMeetingInstancePayload,
   AddTemplateToUserPayload,
   CountUsersPayload,
   FindUsersPayload,
-} from 'shared';
-import { TemplateBrokerPatterns, CoreBrokerPatterns } from 'shared';
+  ResetTrialNotificationPayload,
+} from 'shared-types';
 
 @Injectable()
 export class CoreService {
@@ -65,21 +74,19 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUserByEmail(
-    payload: FindUserByEmailPayload,
-  ): Promise<ICommonUserDTO> {
+  async findUserByEmail(payload: FindUserByEmailPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserByEmail };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUserDTO> {
+  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserById };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async validateUser(payload: VerifyPasswordPayload): Promise<ICommonUserDTO> {
+  async validateUser(payload: VerifyPasswordPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.VerifyPassword };
 
     return this.client.send(pattern, payload).toPromise();
@@ -87,7 +94,7 @@ export class CoreService {
 
   async comparePasswords(
     payload: ComparePasswordsPayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.ComparePasswords };
 
     return this.client.send(pattern, payload).toPromise();
@@ -95,7 +102,7 @@ export class CoreService {
 
   async updateUserPassword(
     payload: UpdatePasswordPayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdatePassword };
 
     return this.client.send(pattern, payload).toPromise();
@@ -119,23 +126,19 @@ export class CoreService {
 
   async getMeetingInstances(
     payload: GetMeetingInstancePayload,
-  ): Promise<ICommonMeetingInstance[]> {
+  ): Promise<IMeetingInstance[]> {
     const pattern = { cmd: MeetingBrokerPatterns.GetMeetingInstance };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findMeetingById(
-    payload: GetMeetingPayload,
-  ): Promise<ICommonMeetingInstance> {
+  async findMeetingById(payload: GetMeetingPayload): Promise<IMeetingInstance> {
     const pattern = { cmd: MeetingBrokerPatterns.GetMeeting };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUserAndUpdate(
-    payload: UpdateProfilePayload,
-  ): Promise<ICommonUserDTO> {
+  async findUserAndUpdate(payload: UpdateProfilePayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdateProfile };
 
     return this.client.send(pattern, payload).toPromise();
@@ -143,7 +146,7 @@ export class CoreService {
 
   async findUserAndUpdateAvatar(
     payload: UpdateProfileAvatarPayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdateProfileAvatar };
 
     return this.client.send(pattern, payload).toPromise();
@@ -151,7 +154,7 @@ export class CoreService {
 
   async deleteProfileAvatar(
     payload: DeleteProfileAvatarPayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.DeleteProfileAvatar };
 
     return this.client.send(pattern, payload).toPromise();
@@ -207,7 +210,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUsers(payload: FindUsersPayload): Promise<ICommonUserDTO[]> {
+  async findUsers(payload: FindUsersPayload): Promise<ICommonUser[]> {
     const pattern = { cmd: UserBrokerPatterns.FindUsers };
 
     return this.client.send(pattern, payload).toPromise();
@@ -219,7 +222,33 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
+  async getRoomRatingStatistic(
+    payload: GetRoomRatingStatisticPayload,
+  ): Promise<IRoomsRatingStatistic[]> {
+    const pattern = { cmd: RoomStatisticBrokerPatterns.GetRoomRatingStatistic };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async updateRoomRatingStatistic(
+    payload: UpdateRoomRatingStatisticPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: RoomStatisticBrokerPatterns.UpdateRoomRatingStatistic,
+    };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
   async sendCustom(pattern, payload) {
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async resetTrialNotification(
+    payload: ResetTrialNotificationPayload,
+  ): Promise<any> {
+    const pattern = { cmd: UserBrokerPatterns.ResetTrialNotification };
+
     return this.client.send(pattern, payload).toPromise();
   }
 }

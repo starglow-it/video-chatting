@@ -11,19 +11,22 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Stripe } from 'stripe';
 
 // patterns
-import { PaymentsBrokerPatterns } from 'shared';
+import { PaymentsBrokerPatterns } from 'shared-const';
 
 // services
 import { ConfigClientService } from '../../services/config/config.service';
 import { PaymentsService } from './payments.service';
 import { CoreService } from '../../services/core/core.service';
 import { NotificationsService } from '../../services/notifications/notifications.service';
+import { SocketService } from '../../services/socket/socket.service';
 
 // const
-import { emailTemplates } from 'shared';
-import { plans } from 'shared';
-import { PAYMENTS_SERVICE } from 'shared';
-import { PAYMENTS_SCOPE } from 'shared';
+import {
+  PAYMENTS_SCOPE,
+  PAYMENTS_SERVICE,
+  plans,
+  emailTemplates,
+} from 'shared-const';
 
 // utils
 import { addMonthsCustom } from '../../utils/dates/addMonths';
@@ -44,7 +47,7 @@ import {
   GetStripeSubscriptionPayload,
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
-} from 'shared';
+} from 'shared-types';
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
@@ -55,6 +58,7 @@ export class PaymentsController {
     private notificationsService: NotificationsService,
     private paymentService: PaymentsService,
     private coreService: CoreService,
+    private socketService: SocketService,
   ) {}
 
   @Post('/webhook')
@@ -111,6 +115,12 @@ export class PaymentsController {
           this.logger.log('handle "invoice.paid" event');
           await this.handleFirstSubscription(
             event.data.object as Stripe.Invoice,
+          );
+          break;
+        case 'payment_intent.succeeded':
+          this.logger.log('handle "payment_intent.succeeded" event');
+          await this.handleRoomsTransactions(
+            event.data.object as Stripe.PaymentIntent,
           );
           break;
         default:
@@ -332,8 +342,10 @@ export class PaymentsController {
       const paymentIntent = await this.paymentService.createPaymentIntent({
         templatePrice: payload.templatePrice,
         templateCurrency: payload.templateCurrency,
+        stripeSubscriptionId: payload.stripeSubscriptionId,
         stripeAccountId: payload.stripeAccountId,
         platformFee: plan.features.comissionFee,
+        templateId: payload.templateId,
       });
 
       return {
@@ -454,6 +466,7 @@ export class PaymentsController {
         paymentMode: 'subscription',
         priceId: product.default_price as string,
         basePath: payload.baseUrl,
+        cancelPath: payload.cancelUrl,
         meetingToken: payload.meetingToken,
         customerEmail: payload.customerEmail,
         customer: payload.customer,
@@ -598,14 +611,16 @@ export class PaymentsController {
     await this.coreService.updateUser({
       query: { stripeSubscriptionId: subscription.id },
       data: {
-        isSubscriptionActive: ['active', 'trialing'].includes(subscription.status),
+        isSubscriptionActive: ['active', 'trialing'].includes(
+          subscription.status,
+        ),
         renewSubscriptionTimestampInSeconds: subscription.current_period_end,
       },
     });
 
     if (
       Boolean(user.isSubscriptionActive) === false &&
-        (['active', 'trialing'].includes(subscription.status))
+      ['active', 'trialing'].includes(subscription.status)
     ) {
       this.notificationsService.sendEmail({
         template: {
@@ -650,6 +665,13 @@ export class PaymentsController {
 
     const planData = plans['House'];
 
+    const trialExpired =
+      subscription.trial_end === subscription.current_period_end;
+
+    const user = await this.coreService.findUser({
+      stripeSubscriptionId: subscription.id,
+    });
+
     await this.coreService.updateUser({
       query: { stripeSubscriptionId: subscription.id },
       data: {
@@ -663,8 +685,15 @@ export class PaymentsController {
             ? addMonthsCustom(Date.now(), 1)
             : addDaysCustom(Date.now(), 1)
           ).getTime() / 1000,
+        ...(trialExpired ? { shouldShowTrialExpiredNotification: true } : {}),
       },
     });
+
+    if (trialExpired) {
+      await this.socketService.sendTrialExpiredNotification({
+        userId: user.id,
+      });
+    }
   }
 
   async handleSubscriptionCreated(subscription: Stripe.Subscription) {
@@ -679,13 +708,13 @@ export class PaymentsController {
 
     if (!subscriptions?.length) {
       const plansPromises = Object.values(plans).map(
-          (planData) => async () =>
-              this.paymentService.createProduct({
-                name: planData.name,
-                priceInCents: planData.priceInCents,
-                description: planData.description,
-                type: 'subscription',
-              }),
+        (planData) => async () =>
+          this.paymentService.createProduct({
+            name: planData.name,
+            priceInCents: planData.priceInCents,
+            description: planData.description,
+            type: 'subscription',
+          }),
       );
 
       await executePromiseQueue(plansPromises);
@@ -739,5 +768,33 @@ export class PaymentsController {
         isProfessionalTrialAvailable: false,
       },
     });
+
+    if (
+      subscription.status === 'trialing' &&
+      !subscription.cancel_at_period_end
+    ) {
+      await this.paymentService.updateSubscription({
+        subscriptionId: subscription.id,
+        options: { cancelAtPeriodEnd: true },
+      });
+    }
+  }
+
+  async handleRoomsTransactions(paymentIntent: Stripe.PaymentIntent) {
+    if (paymentIntent.status === 'succeeded') {
+      const templateId = paymentIntent.metadata.templateId;
+
+      if (templateId) {
+        await this.coreService.updateRoomRatingStatistic({
+          templateId,
+          ratingKey: 'money',
+          value: paymentIntent.amount,
+        });
+
+        await this.coreService.increaseRoomTransactionStatistic({
+          templateId,
+        });
+      }
+    }
   }
 }

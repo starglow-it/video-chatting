@@ -19,7 +19,8 @@ import { SeederModule } from './seeder/seeder.module';
 import { ConfigModule } from './services/config/config.module';
 import { AwsConnectorModule } from './services/aws-connector/aws-connector.module';
 import { PaymentsModule } from './services/payments/payments.module';
-import {CountryStatisticsModule} from "./modules/country-statistics/country-statistics.module";
+import { CountryStatisticsModule } from './modules/country-statistics/country-statistics.module';
+import { RoomsStatisticsModule } from './modules/rooms-statistics/rooms-statistics.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import {CountryStatisticsModule} from "./modules/country-statistics/country-stat
     DashboardNotificationsModule,
     PaymentsModule,
     CountryStatisticsModule,
+    RoomsStatisticsModule,
   ],
   controllers: [],
   providers: [],

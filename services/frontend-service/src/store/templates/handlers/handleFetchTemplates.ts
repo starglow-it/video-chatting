@@ -1,6 +1,8 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { getTemplatesUrl } from '../../../utils/urls';
-import { EntityList, Template, ErrorState } from '../../types';
+import { EntityList } from '../../types';
+
+import { ErrorState, ICommonTemplate } from 'shared-types';
 
 const handleFetchTemplates = async ({
     limit,
@@ -8,8 +10,8 @@ const handleFetchTemplates = async ({
 }: {
     limit: number;
     skip: number;
-}): Promise<EntityList<Template> | undefined | null> => {
-    const response = await sendRequestWithCredentials<EntityList<Template>, ErrorState>(
+}): Promise<EntityList<ICommonTemplate> | undefined | null> => {
+    const response = await sendRequestWithCredentials<EntityList<ICommonTemplate>, ErrorState>(
         getTemplatesUrl({
             limit,
             skip,

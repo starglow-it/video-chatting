@@ -7,7 +7,7 @@ import {
   BusinessCategoryDocument,
 } from '../../schemas/business-category.schema';
 
-import { IBusinessCategory } from 'shared';
+import { IBusinessCategory } from 'shared-types';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 

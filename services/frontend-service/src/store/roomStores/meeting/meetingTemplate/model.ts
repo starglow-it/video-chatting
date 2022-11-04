@@ -4,8 +4,9 @@ import { meetingDomain } from '../../../domains';
 import { $profileStore } from '../../../profile/profile/model';
 import { $meetingUsersStore } from '../../users/meetingUsers/model';
 
-import { ErrorState, MeetingUser, Profile, UserTemplate } from '../../../types';
+import { MeetingUser, Profile, UserTemplate } from '../../../types';
 import { UpdateTemplatePayload } from '../../../profile/types';
+import { ErrorState } from 'shared-types';
 
 export const initialTemplateState: UserTemplate = {
     id: '',

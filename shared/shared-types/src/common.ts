@@ -1,16 +1,23 @@
+import {ICommonUser} from "./api-interfaces";
+
 export type SuccessResult<Result> = {
-    result: Result;
+    result?: Result;
     success: true;
 };
 
 export type AuthToken = {
     token: string;
-    expiresAt: Date;
+    expiresAt?: Date;
 };
 
-export type FailedResult<Error> = {
+export type ErrorState = {
+    message?: string;
+    code?: number;
+};
+
+export type FailedResult<Error extends ErrorState> = {
     success: false;
-    result: undefined;
+    result?: undefined;
     error?: Error;
     statusCode?: number;
 };
@@ -19,10 +26,27 @@ export type ApiParams = {
     token?: string;
 };
 
+export interface IToken {
+    token: string;
+    expiresAt?: number;
+}
+
 export type TokenPair = {
-    accessToken: AuthToken;
-    refreshToken: AuthToken;
+    accessToken: IToken;
+    refreshToken: IToken;
 };
+
+export type TokenPairWithUserType = TokenPair & {
+    user: ICommonUser;
+}
+
+export enum TokenTypes {
+    Confirm = "confirm",
+    Access = "access",
+    Refresh = "refresh",
+    Reset = "reset",
+    ResetPassword = "reset_password",
+}
 
 export enum HttpMethods {
     Post = 'POST',
@@ -31,11 +55,6 @@ export enum HttpMethods {
     Put = 'PUT',
 }
 
-export type ErrorState = {
-    message?: string;
-    code?: number;
-};
-
 export type ApiError = {
     statusCode: number;
     errorJsonObject: unknown;
@@ -43,3 +62,21 @@ export type ApiError = {
     message: string;
     errorCode: number;
 };
+
+export type ResponseSumType<Result, Error = ErrorState> = SuccessResult<Result> | FailedResult<Error>;
+
+export type StateWithError<State> = {
+    error: ErrorState | null | undefined;
+    state: State;
+};
+
+export type TokenPayloadType = {
+    token: string;
+    type: TokenTypes;
+    expiresAt?: number;
+};
+
+export type EntityList<Entity> = {
+    list: Entity[],
+    count: number;
+}

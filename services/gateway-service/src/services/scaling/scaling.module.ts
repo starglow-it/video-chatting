@@ -5,7 +5,7 @@ import {
   ClientsModule,
   Transport,
 } from '@nestjs/microservices';
-import { SCALING_PROVIDER } from 'shared';
+import { SCALING_PROVIDER } from 'shared-const';
 import { ConfigModule } from '../config/config.module';
 import { ConfigClientService } from '../config/config.service';
 

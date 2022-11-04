@@ -1,5 +1,7 @@
+import { ErrorState } from 'shared-types';
+
 import { meetingUsersDomain } from './domain/model';
-import { AppDialogsEnum, ErrorState, MeetingUser } from '../../types';
+import { AppDialogsEnum, MeetingUser } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { sendInviteEmailUrl } from '../../../utils/urls';
 import { UsersSocketEmitters } from '../../../const/socketEvents/emitters';

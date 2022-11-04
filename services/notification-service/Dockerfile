@@ -18,7 +18,7 @@ RUN pnpm install
 
 COPY ./services/notification-service ./services/notification-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,notification-service
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types,notification-service
 
 FROM node:18.9.1-alpine
 

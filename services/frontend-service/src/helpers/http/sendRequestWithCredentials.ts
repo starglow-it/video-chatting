@@ -4,7 +4,7 @@ import { AxiosRequestConfig } from 'axios';
 import setAuthCookies from './setAuthCookies';
 import { sendRequest } from './sendRequest';
 import { refreshUrl } from '../../utils/urls';
-import { TokenPair, ApiError, SuccessResult, FailedResult } from '../../store/types';
+import { TokenPair, ApiError, SuccessResult, FailedResult } from 'shared-types';
 
 export interface IsomorphicRequestOptions extends AxiosRequestConfig {
     authRequest?: boolean;

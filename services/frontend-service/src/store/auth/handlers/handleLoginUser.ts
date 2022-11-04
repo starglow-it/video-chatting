@@ -1,5 +1,7 @@
+import { ErrorState } from 'shared-types';
+
 import { sendRequest } from '../../../helpers/http/sendRequest';
-import {ErrorState, LoginUserPayload, LoginUserResponse} from '../../types';
+import { LoginUserPayload, LoginUserResponse } from '../../types';
 import { loginUserUrl } from '../../../utils/urls';
 import setAuthCookies from '../../../helpers/http/setAuthCookies';
 

@@ -1,6 +1,6 @@
 import { connectStripeAccountUrl } from 'src/utils/urls/payments';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { ErrorState } from '../../types';
+import { ErrorState } from 'shared-types';
 
 export const handleConnectStripeAccount = async (): Promise<{ url: string } | undefined> => {
     const response = await sendRequestWithCredentials<{ url: string }, ErrorState>(

@@ -5,3 +5,7 @@ export { default as CustomButton } from './CustomButton/CustomButton';
 export { default as CustomImage } from './CustomImage/CustomImage';
 export { default as CustomPaper } from './CustomPaper/CustomPaper';
 export { default as CustomChip } from './CustomChip/CustomChip';
+export { default as CustomDivider } from './CustomDivider/CustomDivider';
+export { default as CustomTooltip } from './CustomTooltip/CustomTooltip';
+export { default as CustomTable } from './CustomTable/CustomTable';
+export { default as CustomDropdown } from './CustomDropdown/CustomDropdown';

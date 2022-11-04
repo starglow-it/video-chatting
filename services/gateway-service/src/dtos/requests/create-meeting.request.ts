@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ICreateMeetingDTO } from 'shared';
+import { ICreateMeeting } from 'shared-types';
 
-export class CreateMeetingRequest implements ICreateMeetingDTO {
+export class CreateMeetingRequest implements ICreateMeeting {
   @IsNotEmpty({
     message: 'TemplateId must be present',
   })
@@ -10,5 +10,5 @@ export class CreateMeetingRequest implements ICreateMeetingDTO {
     message: 'Invalid templateId value',
   })
   @ApiProperty()
-  readonly templateId: ICreateMeetingDTO['templateId'];
+  readonly templateId: ICreateMeeting['templateId'];
 }

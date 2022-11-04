@@ -1,6 +1,6 @@
 import { updateLocalUserEvent } from '../../users/localUser/model';
-import { MeetingAccessStatuses } from '../../../types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 export const handleKickUser = () => {
-    updateLocalUserEvent({ accessStatus: MeetingAccessStatuses.Kicked });
+    updateLocalUserEvent({ accessStatus: MeetingAccessStatusEnum.Kicked });
 };

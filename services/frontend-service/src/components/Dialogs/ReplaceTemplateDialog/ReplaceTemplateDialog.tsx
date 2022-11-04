@@ -34,14 +34,15 @@ import {
 import styles from './ReplaceTemplateDialog.module.scss';
 
 // types
-import { AppDialogsEnum, EntityList, Template, UserTemplate } from '../../../store/types';
+import { AppDialogsEnum, EntityList, UserTemplate } from '../../../store/types';
+import { ICommonTemplate, IUserTemplate } from 'shared-types';
 
 const Component = ({
     onReplaceTemplate,
 }: {
     onReplaceTemplate: (data: {
-        deleteTemplateId: UserTemplate['id'];
-        templateId: Template['id'];
+        deleteTemplateId: IUserTemplate['id'];
+        templateId: ICommonTemplate['id'];
     }) => void;
 }) => {
     const { replaceTemplateConfirmDialog } = useStore($appDialogsStore);

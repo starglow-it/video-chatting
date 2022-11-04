@@ -1,5 +1,6 @@
-import { HttpMethods, Template } from '../../store/types';
+import { HttpMethods } from '../../store/types';
 import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
+import { ICommonTemplate } from 'shared-types';
 
 export const baseProfileUrl = `${serverUrl}/${profileScope}`;
 
@@ -41,7 +42,7 @@ export const profileTemplatesUrl = ({ skip, limit }: { skip?: number; limit?: nu
 export const profileTemplateByTemplateIdUrl = ({
     templateId,
 }: {
-    templateId: Template['templateId'];
+    templateId: ICommonTemplate['templateId'];
 }) => ({
     url: `${baseProfileUrl}/templates/id/${templateId}`,
     method: HttpMethods.Get,
@@ -109,5 +110,10 @@ export const resetPasswordUrl = {
 
 export const checkResetPasswordLinkUrl = {
     url: `${serverUrl}/${authScope}/verify-reset-link`,
+    method: HttpMethods.Post,
+};
+
+export const resetTrialNotificationUrl = {
+    url: `${baseProfileUrl}/reset-trial-notification`,
     method: HttpMethods.Post,
 };

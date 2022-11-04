@@ -24,7 +24,7 @@ RUN pnpm install
 
 COPY ./services/media-server-service ./services/media-server-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,media-server-service
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types,media-server-service
 
 FROM node:18.9.1-alpine
 

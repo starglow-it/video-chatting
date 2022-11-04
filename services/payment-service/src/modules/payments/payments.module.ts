@@ -13,11 +13,13 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { ConfigModule } from '../../services/config/config.module';
 import { CoreModule } from '../../services/core/core.module';
 import { NotificationsModule } from '../../services/notifications/notifications.module';
+import { SocketModule } from '../../services/socket/socket.module';
 
 @Module({
   imports: [
     CoreModule,
     NotificationsModule,
+    SocketModule,
     StripeModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],

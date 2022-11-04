@@ -21,7 +21,7 @@ RUN pnpm install
 
 COPY ./services/frontend-service ./services/frontend-service
 
-RUN npx nx run-many --target=build --projects=shared,shared-const,shared-utils,shared-types,frontend-service
+RUN npx nx run-many --target=build --projects=shared-const,shared-utils,shared-types,frontend-service
 
 FROM node:18.9.1-alpine
 

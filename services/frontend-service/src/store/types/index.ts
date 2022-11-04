@@ -1,40 +1,15 @@
 import { Socket } from 'socket.io-client';
-
-export type ErrorState = {
-    message?: string;
-    code?: number;
-};
-
-export type ProfileAvatarT = {
-    id?: string;
-    url: string;
-    size: number;
-    mimeType: string;
-};
-
-export type SocialLink = {
-    value: string;
-    key: string;
-};
-
-export type Language = {
-    value: string;
-    key: string;
-};
-
-export type BusinessCategory = {
-    key: string;
-    value: string;
-    color: string;
-};
-
-export type PreviewImage = {
-    id: string;
-    url: string;
-    size: number;
-    mimeType: string;
-    resolution: number;
-};
+import {
+    ErrorState,
+    IBusinessCategory,
+    ILanguage,
+    IPreviewImage,
+    IProfileAvatar,
+    ISocialLink,
+    IUserTemplate,
+    MeetingAccessStatusEnum,
+    TokenPair,
+} from 'shared-types';
 
 export interface Template {
     id: string;
@@ -57,11 +32,11 @@ export interface Template {
     isPublic?: boolean;
     usersPosition: { bottom: number; left: number }[];
     links?: { id: string; item: string; position: { top: number; left: number } }[];
-    businessCategories: BusinessCategory[];
-    previewUrls: PreviewImage[];
-    draftPreviewUrls?: PreviewImage[];
-    languages: Language[];
-    socials: SocialLink[];
+    businessCategories: IBusinessCategory[];
+    previewUrls: IPreviewImage[];
+    draftPreviewUrls?: IPreviewImage[];
+    languages: ILanguage[];
+    socials: ISocialLink[];
     author?: string;
     templateType: 'video' | 'image';
 }
@@ -70,7 +45,7 @@ export type Profile = {
     id: string;
     fullName: string;
     position: string;
-    profileAvatar: ProfileAvatarT;
+    profileAvatar: IProfileAvatar;
     companyName: string;
     email: string;
     country: string;
@@ -87,30 +62,20 @@ export type Profile = {
     maxTemplatesNumber: number;
     renewSubscriptionTimestampInSeconds: number;
     maxMeetingTime: number;
-    socials: SocialLink[];
-    languages: Language[];
-    businessCategories: BusinessCategory[];
-    templates: Template[];
+    socials: ISocialLink[];
+    languages: ILanguage[];
+    businessCategories: IBusinessCategory[];
+    templates: IUserTemplate[];
     isProfessionalTrialAvailable: boolean;
+    shouldShowTrialExpiredNotification: boolean;
 };
-
-export enum MeetingAccessStatuses {
-    Initial = 'initial',
-    EnterName = 'enterName',
-    Settings = 'settings',
-    Waiting = 'waiting',
-    RequestSent = 'requestSent',
-    InMeeting = 'inMeeting',
-    Rejected = 'rejected',
-    Kicked = 'Kicked',
-}
 
 export type MeetingUser = {
     id: string;
     profileId: string;
     socketId: string;
     username: string;
-    accessStatus: MeetingAccessStatuses;
+    accessStatus: MeetingAccessStatusEnum;
     cameraStatus: string;
     micStatus: string;
     profileAvatar: string;
@@ -148,19 +113,9 @@ export interface UserTemplate extends Template {
         serverStatus: string;
     };
     user?: {
-        profileAvatar: ProfileAvatarT;
+        profileAvatar: IProfileAvatar;
     };
 }
-
-export type AuthToken = {
-    token: string;
-    expiresAt: Date;
-};
-
-export type TokenPair = {
-    accessToken: AuthToken;
-    refreshToken: AuthToken;
-};
 
 export type AuthUserState = {
     isAuthenticated: boolean;

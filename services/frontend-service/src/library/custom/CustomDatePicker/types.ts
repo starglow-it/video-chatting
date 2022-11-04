@@ -1,4 +1,4 @@
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 export type CustomDatePickerProps = PropsWithClassName<{
     onDateSelected: (date: Date) => void;

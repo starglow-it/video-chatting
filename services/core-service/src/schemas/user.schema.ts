@@ -7,7 +7,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
-import { ICommonUserDTO } from 'shared';
+import { ICommonUser } from 'shared-types';
 
 @Schema({
   timestamps: true,
@@ -111,84 +111,90 @@ export class User {
     type: mongoose.Schema.Types.String,
     default: 'default',
   })
-  signBoard: ICommonUserDTO['signBoard'];
+  signBoard: ICommonUser['signBoard'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  stripeAccountId: ICommonUserDTO['stripeAccountId'];
+  stripeAccountId: ICommonUser['stripeAccountId'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  stripeSessionId: ICommonUserDTO['stripeSessionId'];
+  stripeSessionId: ICommonUser['stripeSessionId'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  stripeCustomerId: ICommonUserDTO['stripeCustomerId'];
+  stripeCustomerId: ICommonUser['stripeCustomerId'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  stripeSubscriptionId: ICommonUserDTO['stripeSubscriptionId'];
+  stripeSubscriptionId: ICommonUser['stripeSubscriptionId'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
   })
-  isSubscriptionActive: ICommonUserDTO['isSubscriptionActive'];
+  isSubscriptionActive: ICommonUser['isSubscriptionActive'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
   })
-  stripeEmail: ICommonUserDTO['stripeEmail'];
+  stripeEmail: ICommonUser['stripeEmail'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
     default: 'House',
   })
-  subscriptionPlanKey: ICommonUserDTO['subscriptionPlanKey'];
+  subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })
-  isStripeEnabled: ICommonUserDTO['isStripeEnabled'];
+  isStripeEnabled: ICommonUser['isStripeEnabled'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })
-  wasSuccessNotificationShown: ICommonUserDTO['wasSuccessNotificationShown'];
+  wasSuccessNotificationShown: ICommonUser['wasSuccessNotificationShown'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })
-  isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];
+  shouldShowTrialExpiredNotification: ICommonUser['shouldShowTrialExpiredNotification'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isResetPasswordActive: ICommonUser['isResetPasswordActive'];
 
   @Prop({
     type: mongoose.Schema.Types.Number,
     default: 1,
   })
-  maxTemplatesNumber: ICommonUserDTO['maxTemplatesNumber'];
+  maxTemplatesNumber: ICommonUser['maxTemplatesNumber'];
 
   @Prop({
     type: mongoose.Schema.Types.Number,
     default: 120 * 60 * 1000,
   })
-  maxMeetingTime: ICommonUserDTO['maxMeetingTime'];
+  maxMeetingTime: ICommonUser['maxMeetingTime'];
 
   @Prop({
     type: mongoose.Schema.Types.Number,
   })
-  renewSubscriptionTimestampInSeconds: ICommonUserDTO['renewSubscriptionTimestampInSeconds'];
+  renewSubscriptionTimestampInSeconds: ICommonUser['renewSubscriptionTimestampInSeconds'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: true,
   })
-  isProfessionalTrialAvailable: ICommonUserDTO['isProfessionalTrialAvailable'];
+  isProfessionalTrialAvailable: ICommonUser['isProfessionalTrialAvailable'];
 }
 
 export type UserDocument = User & Document;

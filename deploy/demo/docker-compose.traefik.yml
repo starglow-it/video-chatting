@@ -1,43 +1,58 @@
-version: "3.7"
-
-x-logging: &default-logging
-  driver: json-file
-  options:
-    max-size: '10m'
-    max-file: '5'
-
-networks:
-  traefikpublic:
+version: "3.8"
 
 services:
   traefik:
-    image: traefik:v2.4
-    logging: *default-logging
-    container_name: "traefik"
+    build: ./traefik
+    container_name: traefik
     restart: always
-    command:
-      - "--providers.docker=true"
-      - "--providers.docker.network=liveoffice_traefikpublic"
-      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.http.address=:80"
-      - "--providers.file=true"
-      - "--providers.file.directory=/etc/traefik.d"
-      - "--providers.file.watch=true"
-      - "--accesslog=true"
-    labels:
-      - "traefik.enable=true"
+    environment:
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
+      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/letsencrypt:/letsencrypt
+      - /data/letsencrypt:/letsencrypt
     ports:
-      - mode: host
-        protocol: tcp
-        published: 80
-        target: 80
-      - mode: host
-        protocol: tcp
-        published: 443
-        target: 443
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:9090:9090"
     networks:
       - traefikpublic
+
+  instance-proxy:
+    container_name: instance_proxy
+    build:
+      context: ../../services/instance-proxy
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "7000:7000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=liveoffice_traefikpublic"
+      - "traefik.http.routers.proxy.rule=HostRegexp(`{subdomain:.+}.scaling.demo.theliveoffice.com`)"
+      - "traefik.http.routers.proxy.entrypoints=https"
+      - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
+      - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.theliveoffice.com"
+      - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.theliveoffice.com"
+      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - traefikpublic
+
+#  whoami:
+#    image: "traefik/whoami"
+#    restart: always
+#    labels:
+#      - traefik.enable=true
+#      - traefik.docker.network=liveoffice_traefikpublic
+#      - traefik.http.routers.whoami.rule="HostRegexp(`{subdomain:.+}.demo.theliveoffice.com`) && PathPrefix(`/whoami`)"
+#      - traefik.http.routers.whoami.entrypoints=https
+#      - traefik.http.routers.whoami.tls.certresolver=wildcard-resolver
+#      - traefik.http.routers.whoami.tls.domains[1].main=demo.theliveoffice.com
+#      - traefik.http.routers.whoami.tls.domains[1].sans=*.demo.theliveoffice.com
+#      - traefik.http.services.whoami.loadbalancer.server.port=80
+#    networks:
+#      - traefikpublic
+
+networks:
+  traefikpublic:

@@ -1,9 +1,10 @@
+import { ErrorState, ICommonTemplate } from 'shared-types';
+
 // utils
 import { updateTemplateUrl } from 'src/utils/urls';
 import { generateFormData } from 'src/utils/form/generateFormData';
 
 // types
-import { ErrorState, Template } from '../../types';
 import { EditTemplatePayload, EditTemplateResponse } from '../types';
 
 // helpers
@@ -15,7 +16,7 @@ export const handleEditTemplate = async ({
 }: EditTemplatePayload): Promise<EditTemplateResponse> => {
     const formData = generateFormData(data);
 
-    const response = await sendRequestWithCredentials<Template | null, ErrorState>({
+    const response = await sendRequestWithCredentials<ICommonTemplate | null, ErrorState>({
         ...updateTemplateUrl({ templateId }),
         data: formData,
     });

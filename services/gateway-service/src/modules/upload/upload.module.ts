@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { S3Module, S3ModuleOptions } from 'nestjs-s3';
 
-import { JWT_ACCESS_EXPIRE } from 'shared';
+import { JWT_ACCESS_EXPIRE } from 'shared-const';
 
 import { UploadController } from './upload.controller';
 

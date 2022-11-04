@@ -1,4 +1,4 @@
-import { BusinessCategory, PreviewImage } from '../../store/types';
+import { BusinessCategory } from '../../store/types';
 
 export type ParticipantPosition = {
     id: string;
@@ -11,7 +11,7 @@ export interface IUploadTemplateFormData {
     name: string;
     description: string;
     url: string;
-    previewUrls: PreviewImage[];
+    previewUrls: string[];
     customLink: string;
     tags: Omit<BusinessCategory, 'id'>[];
     participantsNumber: number;

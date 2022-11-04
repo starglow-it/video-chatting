@@ -1,6 +1,7 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { BusinessCategory, EntityList, ErrorState } from '../../types';
+import { EntityList, ErrorState } from '../../types';
 import { getBusinessCategoriesUrl } from '../../../utils/urls';
+import { IBusinessCategory } from 'shared-types';
 
 export const handleGetBusinessCategories = async ({
     limit,
@@ -8,8 +9,8 @@ export const handleGetBusinessCategories = async ({
 }: {
     limit: number;
     skip: number;
-}): Promise<EntityList<BusinessCategory> | undefined | null> => {
-    const response = await sendRequestWithCredentials<EntityList<BusinessCategory>, ErrorState>(
+}): Promise<EntityList<IBusinessCategory> | undefined | null> => {
+    const response = await sendRequestWithCredentials<EntityList<IBusinessCategory>, ErrorState>(
         getBusinessCategoriesUrl({
             limit,
             skip,

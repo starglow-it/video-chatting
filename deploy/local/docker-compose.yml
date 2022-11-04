@@ -40,82 +40,83 @@ services:
     networks:
       - liveoffice_local
 
-  livekit-service:
-    container_name: livekit-service
-    build:
-      context: ../../services/
-      dockerfile: ./livekit-service/Dockerfile.dev
-      args:
-        - LIVEKIT_IP=127.0.0.1
-    restart: always
-    ports:
-      - "7880:7880"
-      - "7881:7881"
-      - "7882:7882/udp"
-    networks:
-      - liveoffice_local
+#  livekit-service:
+#    container_name: livekit-service
+#    build:
+#      context: ../../services/
+#      dockerfile: ./livekit-service/Dockerfile.dev
+#      args:
+#        - LIVEKIT_IP=127.0.0.1
+#    restart: always
+#    ports:
+#      - "7880:7880"
+#      - "7881:7881"
+#      - "7882:7882/udp"
+#    networks:
+#      - liveoffice_local
 
-  frontend-service:
-    container_name: frontend-service
-    build:
-      context: ../../
-      dockerfile: ./services/frontend-service/Dockerfile.dev
-      args:
-        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
-    ports:
-      - '8000:8000'
-    environment:
-      - NODE_OPTIONS=--max-old-space-size=8192
-      - GATEWAY_PORT=3000
-      - GATEWAY_HOST=gateway-service
-      - FRONTEND_URL=http://localhost:8000
-      - TURN_URL=turn.theliveoffice.com
-      - TURN_PASSWORD=liveofficeturnpassword
-      - TURN_USERNAME=liveofficeturn
-      - TURN_PORT=443
-      - LIVEKIT_WSS=ws://localhost:7880
-      - MEETING_SOCKET_URL=ws://localhost:8180
-      - DEFAULT_SERVER_IP=localhost
-      - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
-      - STRIPE_PUBLIC_API_KEY=pk_test_51Lj5RzA8qS7v6KtFb4bkA0G60cMp7LYVPYZzLpv6OiWHptom6UcUJgfYJph5DAhiLCXs6WlxKaWqGWdKv3stMXBY00yZ9J8PjX
-      - BASE_ENV_DOMAIN=liveoffice.forasoft.com
-      - SUPPORT_EMAIL
-    volumes:
-      - ../../services/frontend-service/pages:/app/services/frontend-service/pages
-      - ../../services/frontend-service/src:/app/services/frontend-service/src
-      - ../../services/frontend-service/public:/app/services/frontend-service/public
-      - /app/services/frontend-service/node_modules
-      - /app/services/frontend-service/.next
-    networks:
-      - liveoffice_local
-
-#  frontend-admin-service:
-#    container_name: frontend-admin-service
+#  frontend-service:
+#    container_name: frontend-service
 #    build:
 #      context: ../../
-#      dockerfile: ./services/frontend-admin-service/Dockerfile.dev
+#      dockerfile: ./services/frontend-service/Dockerfile.dev
 #      args:
 #        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
 #    ports:
-#      - '9000:9000'
+#      - '8000:8000'
 #    environment:
 #      - NODE_OPTIONS=--max-old-space-size=8192
-#      - WAIT_HOSTS=gateway-service:3000
-#      - WAIT_TIMEOUT=60000
 #      - GATEWAY_PORT=3000
 #      - GATEWAY_HOST=gateway-service
-#      - FRONTEND_URL=http://localhost:9000
+#      - FRONTEND_URL=http://localhost:8000
+#      - TURN_URL=turn.theliveoffice.com
+#      - TURN_PASSWORD=liveofficeturnpassword
+#      - TURN_USERNAME=liveofficeturn
+#      - TURN_PORT=443
+#      - LIVEKIT_WSS=ws://localhost:7880
+#      - MEETING_SOCKET_URL=ws://localhost:8180
 #      - DEFAULT_SERVER_IP=localhost
 #      - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+#      - STRIPE_PUBLIC_API_KEY=pk_test_51Lj5RzA8qS7v6KtFb4bkA0G60cMp7LYVPYZzLpv6OiWHptom6UcUJgfYJph5DAhiLCXs6WlxKaWqGWdKv3stMXBY00yZ9J8PjX
+#      - BASE_ENV_DOMAIN=liveoffice.forasoft.com
 #      - SUPPORT_EMAIL
+#      - GEOLOCATION_API_KEY=8938b4b594c74e39bd845d380ffe99fd
 #    volumes:
-#      - ../../services/frontend-admin-service/pages:/app/services/frontend-admin-service/pages
-#      - ../../services/frontend-admin-service/src:/app/services/frontend-admin-service/src
-#      - ../../services/frontend-admin-service/public:/app/services/frontend-admin-service/public
-#      - /app/services/frontend-admin-service/node_modules
-#      - /app/services/frontend-admin-service/.next
+#      - ../../services/frontend-service/pages:/app/services/frontend-service/pages
+#      - ../../services/frontend-service/src:/app/services/frontend-service/src
+#      - ../../services/frontend-service/public:/app/services/frontend-service/public
+#      - /app/services/frontend-service/node_modules
+#      - /app/services/frontend-service/.next
 #    networks:
 #      - liveoffice_local
+
+  frontend-admin-service:
+    container_name: frontend-admin-service
+    build:
+      context: ../../
+      dockerfile: ./services/frontend-admin-service/Dockerfile.dev
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+    ports:
+      - '9000:9000'
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=8192
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
+      - GATEWAY_PORT=3000
+      - GATEWAY_HOST=gateway-service
+      - FRONTEND_URL=http://localhost:9000
+      - DEFAULT_SERVER_IP=localhost
+      - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+      - SUPPORT_EMAIL
+    volumes:
+      - ../../services/frontend-admin-service/pages:/app/services/frontend-admin-service/pages
+      - ../../services/frontend-admin-service/src:/app/services/frontend-admin-service/src
+      - ../../services/frontend-admin-service/public:/app/services/frontend-admin-service/public
+      - /app/services/frontend-admin-service/node_modules
+      - /app/services/frontend-admin-service/.next
+    networks:
+      - liveoffice_local
 
   gateway-service:
     container_name: gateway-service
@@ -165,54 +166,54 @@ services:
     networks:
       - liveoffice_local
 
-  notification-service:
-    container_name: notification-service
-    build:
-      context: ../../
-      dockerfile: ./services/notification-service/Dockerfile.dev
-    environment:
-      WAIT_HOSTS: config-service:4000,rabbitmq:5672
-      WAIT_TIMEOUT: 60000
-    volumes:
-      - ../../services/notification-service/src:/app/services/notification-service/src
-      - /app/services/notification-service/dist
-      - /app/services/notification-service/node_modules
-    networks:
-      - liveoffice_local
+#  notification-service:
+#    container_name: notification-service
+#    build:
+#      context: ../../
+#      dockerfile: ./services/notification-service/Dockerfile.dev
+#    environment:
+#      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+#      WAIT_TIMEOUT: 60000
+#    volumes:
+#      - ../../services/notification-service/src:/app/services/notification-service/src
+#      - /app/services/notification-service/dist
+#      - /app/services/notification-service/node_modules
+#    networks:
+#      - liveoffice_local
 
-  socket-service:
-    container_name: socket-service
-    build:
-      context: ../../
-      dockerfile: ./services/socket-service/Dockerfile.dev
-    ports:
-      - "8080:8080"
-    environment:
-      WAIT_HOSTS: config-service:4000,rabbitmq:5672
-      WAIT_TIMEOUT: 60000
-    volumes:
-      - ../../services/socket-service:/app/services/socket-service
-      - /app/services/socket-service/dist
-      - /app/services/socket-service/node_modules
-    networks:
-      - liveoffice_local
+#  socket-service:
+#    container_name: socket-service
+#    build:
+#      context: ../../
+#      dockerfile: ./services/socket-service/Dockerfile.dev
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+#      WAIT_TIMEOUT: 60000
+#    volumes:
+#      - ../../services/socket-service:/app/services/socket-service
+#      - /app/services/socket-service/dist
+#      - /app/services/socket-service/node_modules
+#    networks:
+#      - liveoffice_local
 
-  meeting-socket-service:
-    container_name: meeting-socket-service
-    build:
-      context: ../../
-      dockerfile: ./services/meeting-socket-service/Dockerfile.dev
-    ports:
-      - "8180:8180"
-    environment:
-      WAIT_HOSTS: config-service:4000,rabbitmq:5672
-      WAIT_TIMEOUT: 60000
-    volumes:
-      - ../../services/meeting-socket-service/src:/app/services/meeting-socket-service/src
-      - /app/services/meeting-socket-service/dist
-      - /app/services/meeting-socket-service/node_modules
-    networks:
-      - liveoffice_local
+#  meeting-socket-service:
+#    container_name: meeting-socket-service
+#    build:
+#      context: ../../
+#      dockerfile: ./services/meeting-socket-service/Dockerfile.dev
+#    ports:
+#      - "8180:8180"
+#    environment:
+#      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+#      WAIT_TIMEOUT: 60000
+#    volumes:
+#      - ../../services/meeting-socket-service/src:/app/services/meeting-socket-service/src
+#      - /app/services/meeting-socket-service/dist
+#      - /app/services/meeting-socket-service/node_modules
+#    networks:
+#      - liveoffice_local
 
   payment-service:
     container_name: payment-service
@@ -231,35 +232,35 @@ services:
     networks:
       - liveoffice_local
 
-  media-server-service:
-    container_name: media-server-service
-    build:
-      context: ../../
-      dockerfile: ./services/media-server-service/Dockerfile.dev
-    environment:
-      WAIT_HOSTS: config-service:4000,rabbitmq:5672
-      WAIT_TIMEOUT: 60000
-    volumes:
-      - ../../services/media-server-service/src:/app/services/media-server-service/src
-      - /app/services/media-server-service/dist
-      - /app/services/media-server-service/node_modules
-    networks:
-      - liveoffice_local
+#  media-server-service:
+#    container_name: media-server-service
+#    build:
+#      context: ../../
+#      dockerfile: ./services/media-server-service/Dockerfile.dev
+#    environment:
+#      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+#      WAIT_TIMEOUT: 60000
+#    volumes:
+#      - ../../services/media-server-service/src:/app/services/media-server-service/src
+#      - /app/services/media-server-service/dist
+#      - /app/services/media-server-service/node_modules
+#    networks:
+#      - liveoffice_local
 
-  scaling-service:
-    container_name: scaling-service
-    build:
-      context: ../../
-      dockerfile: ./services/scaling-service/Dockerfile.dev
-    environment:
-      WAIT_HOSTS: config-service:4000,rabbitmq:5672
-      WAIT_TIMEOUT: 60000
-    volumes:
-      - ../../services/scaling-service/src:/app/services/scaling-service/src
-      - /app/services/scaling-service/dist
-      - /app/services/scaling-service/node_modules
-    networks:
-      - liveoffice_local
+#  scaling-service:
+#    container_name: scaling-service
+#    build:
+#      context: ../../
+#      dockerfile: ./services/scaling-service/Dockerfile.dev
+#    environment:
+#      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+#      WAIT_TIMEOUT: 60000
+#    volumes:
+#      - ../../services/scaling-service/src:/app/services/scaling-service/src
+#      - /app/services/scaling-service/dist
+#      - /app/services/scaling-service/node_modules
+#    networks:
+#      - liveoffice_local
 
   config-service:
     container_name: config-service

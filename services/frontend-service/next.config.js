@@ -3,7 +3,6 @@ const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
 const path = require('path');
 
 const withTM = require('next-transpile-modules')([
-    'shared',
     'shared-frontend',
     'shared-const',
     'shared-utils',
@@ -34,6 +33,7 @@ module.exports = withTM(
             stripePublicKey: process.env.STRIPE_PUBLIC_API_KEY,
             baseEnvDomain: process.env.BASE_ENV_DOMAIN,
             supportEmail: process.env.SUPPORT_EMAIL,
+            geolocationApiKey: process.env.GEOLOCATION_API_KEY,
         },
         reactStrictMode: false,
         typescript: {

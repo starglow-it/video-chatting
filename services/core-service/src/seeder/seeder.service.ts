@@ -17,10 +17,12 @@ import { CountersService } from '../modules/counters/counters.service';
 import { ConfigClientService } from '../services/config/config.service';
 
 // const
-import { BUSINESS_CATEGORIES } from 'shared';
-import { LANGUAGES_TAGS } from 'shared';
-import { templatesData } from 'shared';
-import { COUNTER_TYPES, Counters } from 'shared';
+import {
+  templatesData,
+  LANGUAGES_TAGS,
+  BUSINESS_CATEGORIES,
+} from 'shared-const';
+import { Counters } from 'shared-types';
 
 // schemas
 import {
@@ -245,7 +247,7 @@ export class SeederService {
   }
 
   async createCounter() {
-    const promises = COUNTER_TYPES.map(async (counterType) => {
+    const promises = Object.values(Counters).map(async (counterType) => {
       const isExists = await this.countersService.exists({
         key: counterType,
       });

@@ -1,22 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 
+import { CORE_PROVIDER, USER_NOT_FOUND, AUTH_SERVICE } from 'shared-const';
+
+import { AuthBrokerPatterns, UserBrokerPatterns } from 'shared-const';
+
 import {
-  CORE_PROVIDER,
-  USER_NOT_FOUND,
-  AUTH_SERVICE,
-  AuthBrokerPatterns,
-  UserBrokerPatterns,
-  ICommonUserDTO,
+  ICommonUser,
   CreateUserPayload,
   FindUserByEmailAndUpdatePayload,
   FindUserByEmailPayload,
   FindUserByIdPayload,
+  LogOutUserPayload,
   AssignTokensToUserPayload,
   LoginUserByEmailPayload,
-  LogOutUserPayload,
   SetResetPasswordTokenPayload,
-} from 'shared';
+} from 'shared-types';
 
 @Injectable()
 export class CoreService {
@@ -26,15 +25,13 @@ export class CoreService {
     await this.client.connect();
   }
 
-  async createUser(payload: CreateUserPayload): Promise<ICommonUserDTO> {
+  async createUser(payload: CreateUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.CreateUser };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUserByEmail(
-    payload: FindUserByEmailPayload,
-  ): Promise<ICommonUserDTO> {
+  async findUserByEmail(payload: FindUserByEmailPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserByEmail };
 
     const user = await this.client.send(pattern, payload).toPromise();
@@ -48,7 +45,7 @@ export class CoreService {
 
   async findUserByEmailAndUpdate(
     payload: FindUserByEmailAndUpdatePayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserByEmailAndUpdate };
 
     const user = await this.client.send(pattern, payload).toPromise();
@@ -68,7 +65,7 @@ export class CoreService {
 
   async loginUserByEmail(
     payload: LoginUserByEmailPayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: AuthBrokerPatterns.LoginUserByEmail };
 
     return this.client.send(pattern, payload).toPromise();
@@ -80,7 +77,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUserDTO> {
+  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserById };
 
     return this.client.send(pattern, payload).toPromise();

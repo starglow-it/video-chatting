@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '../../services/config/config.module';
 import { ConfigClientService } from '../../services/config/config.service';
-import { JWT_ACCESS_EXPIRE } from 'shared';
+import { JWT_ACCESS_EXPIRE } from 'shared-const';
 import { NotificationsModule } from '../../services/notifications/notifications.module';
 import { CoreModule } from '../../services/core/core.module';
 import { UserTemplateController } from './user-templates.contoller';

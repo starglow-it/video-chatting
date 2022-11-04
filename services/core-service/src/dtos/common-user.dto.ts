@@ -1,5 +1,12 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { IProfileAvatar, IUserTemplate, IBusinessCategory, ILanguage, ICommonUserDTO, ISocialLink } from 'shared';
+import {
+  IProfileAvatar,
+  IUserTemplate,
+  IBusinessCategory,
+  ILanguage,
+  ICommonUser,
+  ISocialLink,
+} from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { CommonLanguageDTO } from './common-language.dto';
@@ -7,7 +14,7 @@ import { CommonSocialLinkDTO } from './common-social-link.dto';
 import { UserTemplateDTO } from './user-template.dto';
 import { ProfileAvatarDTO } from './profile-avatar.dto';
 
-export class CommonUserDTO implements ICommonUserDTO {
+export class CommonUserDTO implements ICommonUser {
   @Expose()
   @Transform((data) => data.obj['_id'])
   id: string;
@@ -19,31 +26,31 @@ export class CommonUserDTO implements ICommonUserDTO {
   updatedAt: Date;
 
   @Expose()
-  email: ICommonUserDTO['email'];
+  email: ICommonUser['email'];
 
   @Expose()
-  country: ICommonUserDTO['country'];
+  country: ICommonUser['country'];
 
   @Expose()
-  role: ICommonUserDTO['email'];
+  role: ICommonUser['email'];
 
   @Expose()
-  isConfirmed: ICommonUserDTO['isConfirmed'];
+  isConfirmed: ICommonUser['isConfirmed'];
 
   @Expose()
-  fullName: ICommonUserDTO['fullName'];
+  fullName: ICommonUser['fullName'];
 
   @Expose()
-  position: ICommonUserDTO['position'];
+  position: ICommonUser['position'];
 
   @Expose()
-  companyName: ICommonUserDTO['companyName'];
+  companyName: ICommonUser['companyName'];
 
   @Expose()
-  contactEmail: ICommonUserDTO['contactEmail'];
+  contactEmail: ICommonUser['contactEmail'];
 
   @Expose()
-  description: ICommonUserDTO['description'];
+  description: ICommonUser['description'];
 
   @Expose()
   @Type(() => CommonBusinessCategoryDTO)
@@ -66,50 +73,53 @@ export class CommonUserDTO implements ICommonUserDTO {
   profileAvatar: IProfileAvatar;
 
   @Expose()
-  signBoard: ICommonUserDTO['signBoard'];
+  signBoard: ICommonUser['signBoard'];
 
   @Expose()
-  stripeAccountId: ICommonUserDTO['stripeAccountId'];
+  stripeAccountId: ICommonUser['stripeAccountId'];
 
   @Expose()
-  stripeSessionId: ICommonUserDTO['stripeSessionId'];
+  stripeSessionId: ICommonUser['stripeSessionId'];
 
   @Expose()
-  stripeCustomerId: ICommonUserDTO['stripeCustomerId'];
+  stripeCustomerId: ICommonUser['stripeCustomerId'];
 
   @Expose()
-  stripeSubscriptionId: ICommonUserDTO['stripeSubscriptionId'];
+  stripeSubscriptionId: ICommonUser['stripeSubscriptionId'];
 
   @Expose()
-  isSubscriptionActive: ICommonUserDTO['isSubscriptionActive'];
+  isSubscriptionActive: ICommonUser['isSubscriptionActive'];
 
   @Expose()
-  stripeEmail: ICommonUserDTO['stripeEmail'];
+  stripeEmail: ICommonUser['stripeEmail'];
 
   @Expose()
-  isStripeEnabled: ICommonUserDTO['isStripeEnabled'];
+  isStripeEnabled: ICommonUser['isStripeEnabled'];
 
   @Expose()
-  wasSuccessNotificationShown: ICommonUserDTO['wasSuccessNotificationShown'];
+  wasSuccessNotificationShown: ICommonUser['wasSuccessNotificationShown'];
 
   @Expose()
-  subscriptionPlanKey: ICommonUserDTO['subscriptionPlanKey'];
+  shouldShowTrialExpiredNotification: ICommonUser['shouldShowTrialExpiredNotification'];
+
+  @Expose()
+  subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   tokens: string[];
-  password: ICommonUserDTO['password'];
+  password: ICommonUser['password'];
 
   @Expose()
-  renewSubscriptionTimestampInSeconds: ICommonUserDTO['renewSubscriptionTimestampInSeconds'];
+  renewSubscriptionTimestampInSeconds: ICommonUser['renewSubscriptionTimestampInSeconds'];
 
   @Expose()
-  maxTemplatesNumber: ICommonUserDTO['maxTemplatesNumber'];
+  maxTemplatesNumber: ICommonUser['maxTemplatesNumber'];
 
   @Expose()
-  maxMeetingTime: ICommonUserDTO['maxMeetingTime'];
+  maxMeetingTime: ICommonUser['maxMeetingTime'];
 
   @Expose()
-  isResetPasswordActive: ICommonUserDTO['isResetPasswordActive'];
+  isResetPasswordActive: ICommonUser['isResetPasswordActive'];
 
   @Expose()
-  isProfessionalTrialAvailable: ICommonUserDTO['isProfessionalTrialAvailable'];
+  isProfessionalTrialAvailable: ICommonUser['isProfessionalTrialAvailable'];
 }

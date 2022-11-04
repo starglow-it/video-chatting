@@ -1,5 +1,7 @@
+import { ErrorState } from 'shared-types';
+
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { ErrorState, Profile } from '../../types';
+import { Profile } from '../../types';
 import { profileEmailUrl } from '../../../utils/urls';
 import { CommonProfileResponse, UpdateProfileEmailPayload } from '../types';
 

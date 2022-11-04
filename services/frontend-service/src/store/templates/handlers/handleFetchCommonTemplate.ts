@@ -1,13 +1,14 @@
-import { ErrorState, Template } from '../../types';
+import { ErrorState, ICommonTemplate } from 'shared-types';
+
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { getCommonTemplateUrl } from '../../../utils/urls';
 
 export const handleFetchCommonTemplate = async ({
     templateId,
 }: {
-    templateId: Template['id'];
-}): Promise<Template | undefined> => {
-    const response = await sendRequestWithCredentials<Template, ErrorState>(
+    templateId: ICommonTemplate['id'];
+}): Promise<ICommonTemplate | undefined> => {
+    const response = await sendRequestWithCredentials<ICommonTemplate, ErrorState>(
         getCommonTemplateUrl({ templateId }),
     );
 

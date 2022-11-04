@@ -2,17 +2,18 @@
   extends:
     - .docker-base
   tags: [LiveOfficeProd-deploy]
-  rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(production)$/'
+  only:
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /^(production)$/
 
 Update Production Traefik:
+  stage: update_production_traefik
   extends:
     .production
-  stage: update_production_traefik
   script:
     - cd deploy/production
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml up -d --build
+    - docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml up -d --build --force-recreate --remove-orphans
   interruptible: true
 
 Update Production:

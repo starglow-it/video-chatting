@@ -6,7 +6,7 @@ import { Language, LanguageDocument } from '../../schemas/language.schema';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
-import { ILanguage } from 'shared';
+import { ILanguage } from 'shared-types';
 
 @Injectable()
 export class LanguagesService {

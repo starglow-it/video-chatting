@@ -9,7 +9,7 @@ import { ConfirmTokenService } from './confirm-token.service';
 import { ConfigClientService } from '../../../services/config/config.service';
 
 // const
-import { JWT_CONFIRM_EXPIRE } from 'shared';
+import { JWT_CONFIRM_EXPIRE } from 'shared-const';
 
 @Module({
   imports: [

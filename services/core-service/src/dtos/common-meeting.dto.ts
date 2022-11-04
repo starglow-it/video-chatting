@@ -1,29 +1,28 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { ICommonMeetingInstance } from 'shared';
+import { IMeetingInstance, ICommonUser } from 'shared-types';
 
 import { CommonUserDTO } from './common-user.dto';
-import { ICommonUserDTO } from 'shared';
 
-export class CommonMeetingDTO implements ICommonMeetingInstance {
+export class CommonMeetingDTO implements IMeetingInstance {
   @Expose()
   @Transform((data) => data.obj['_id'])
   id: string;
 
   @Expose()
-  serverIp: ICommonMeetingInstance['serverIp'];
+  serverIp: IMeetingInstance['serverIp'];
 
   @Expose()
   @Type(() => CommonUserDTO)
   @Transform((data) => data?.obj?.owner?.['_id']?.toString())
-  owner: ICommonUserDTO['id'];
+  owner: ICommonUser['id'];
 
   @Expose()
-  serverStatus: ICommonMeetingInstance['serverStatus'];
+  serverStatus: IMeetingInstance['serverStatus'];
 
   @Expose()
-  instanceId: ICommonMeetingInstance['instanceId'];
+  instanceId: IMeetingInstance['instanceId'];
 
   @Expose()
-  snapshotId: ICommonMeetingInstance['snapshotId'];
+  snapshotId: IMeetingInstance['snapshotId'];
 }

@@ -55,7 +55,8 @@ import {
 } from '../../store/roomStores';
 
 // types
-import { MeetingAccessStatuses, NotificationType, UserTemplate } from '../../store/types';
+import { NotificationType, UserTemplate } from '../../store/types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
@@ -193,9 +194,9 @@ const Component = () => {
         }
 
         updateLocalUserEvent({
-            accessStatus: MeetingAccessStatuses.EnterName,
+            accessStatus: MeetingAccessStatusEnum.EnterName,
         });
-        updateUserSocketEvent({ accessStatus: MeetingAccessStatuses.EnterName });
+        updateUserSocketEvent({ accessStatus: MeetingAccessStatusEnum.EnterName });
     }, [isUserSentEnterRequest]);
 
     const isAudioError = Boolean(audioError);

@@ -5,6 +5,7 @@ export interface ICommonMeetingUserDTO {
   profileId: string;
   socketId: string;
   username: string;
+  joinedAt: number;
   accessStatus: string;
   cameraStatus: string;
   micStatus: string;

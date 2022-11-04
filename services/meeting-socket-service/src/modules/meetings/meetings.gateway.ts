@@ -18,7 +18,12 @@ import { UsersService } from '../users/users.service';
 import { TasksService } from '../tasks/tasks.service';
 import { CoreService } from '../../services/core/core.service';
 
-import { ResponseSumType } from 'shared';
+import {
+  ResponseSumType,
+  MeetingSoundsEnum,
+  MeetingAccessStatusEnum,
+  TimeoutTypesEnum,
+} from 'shared-types';
 
 import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
 import { JoinMeetingRequestDTO } from '../../dtos/requests/join-meeting.dto';
@@ -29,10 +34,6 @@ import { MeetingAccessAnswerRequestDTO } from '../../dtos/requests/answer-access
 import { LeaveMeetingRequestDTO } from '../../dtos/requests/leave-meeting.dto';
 import { EndMeetingRequestDTO } from '../../dtos/requests/end-meeting.dto';
 import { UpdateMeetingRequestDTO } from '../../dtos/requests/update-meeting.dto';
-
-import { AccessStatusEnum } from '../../types/accessStatus.enum';
-import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
-import { MeetingSoundsEnum } from 'shared';
 
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import {
@@ -108,7 +109,10 @@ export class MeetingsGateway
     try {
       return withTransaction(this.connection, async (session) => {
         const users = await this.usersService.findUsers(
-          { meeting: meetingId, accessStatus: AccessStatusEnum.InMeeting },
+          {
+            meeting: meetingId,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          },
           session,
         );
 
@@ -205,8 +209,6 @@ export class MeetingsGateway
         enableImplicitConversion: true,
       });
 
-      await user.delete({ session: session.session });
-
       const meeting = await this.meetingsService.findById(
         user?.meeting?._id,
         session,
@@ -224,6 +226,13 @@ export class MeetingsGateway
         return;
       }
 
+      await this.coreService.updateRoomRatingStatistic({
+        templateId: meeting.templateId,
+        userId: meeting?.owner?.profileId,
+        ratingKey: 'minutes',
+        value: Date.now() - user.joinedAt,
+      });
+
       if (meeting?.sharingUserId === user?.id) {
         meeting.sharingUserId = null;
       }
@@ -238,6 +247,8 @@ export class MeetingsGateway
       ) {
         await meeting.save({ session: session.session });
       }
+
+      await user.delete({ session: session.session });
 
       const template = await this.coreService.findMeetingTemplateById({
         id: meeting.templateId,
@@ -260,7 +271,7 @@ export class MeetingsGateway
           userId: template.user.id,
         });
 
-        if (user?.accessStatus === AccessStatusEnum.InMeeting) {
+        if (user?.accessStatus === MeetingAccessStatusEnum.InMeeting) {
           this.emitToRoom(
             `meeting:${user.meeting._id}`,
             UserEmitEvents.RemoveUsers,
@@ -276,7 +287,7 @@ export class MeetingsGateway
         if (
           !isOwner &&
           meeting?.owner?.socketId &&
-          plainUser?.accessStatus === AccessStatusEnum.RequestSent
+          plainUser?.accessStatus === MeetingAccessStatusEnum.RequestSent
         ) {
           this.emitToSocketId(
             meeting?.owner?.socketId,
@@ -306,7 +317,7 @@ export class MeetingsGateway
         } else {
           if (
             isMeetingHost &&
-            plainUser?.accessStatus !== AccessStatusEnum.Waiting
+            plainUser?.accessStatus !== MeetingAccessStatusEnum.Waiting
           ) {
             const endTimestamp = getTimeoutTimestamp({
               type: TimeoutTypesEnum.Minutes,
@@ -422,7 +433,7 @@ export class MeetingsGateway
 
       const activeParticipants = await this.usersService.countMany({
         meeting: meeting._id,
-        accessStatus: AccessStatusEnum.InMeeting,
+        accessStatus: MeetingAccessStatusEnum.InMeeting,
       });
 
       if (activeParticipants === meeting.maxParticipants) {
@@ -547,17 +558,18 @@ export class MeetingsGateway
 
       const activeParticipants = await this.usersService.countMany({
         meeting: meeting._id,
-        accessStatus: AccessStatusEnum.InMeeting,
+        accessStatus: MeetingAccessStatusEnum.InMeeting,
       });
 
       const user = await this.usersService.findOneAndUpdate(
         { socketId: socket.id },
         {
-          accessStatus: AccessStatusEnum.InMeeting,
+          accessStatus: MeetingAccessStatusEnum.InMeeting,
           micStatus: message.user.micStatus,
           cameraStatus: message.user.cameraStatus,
           username: message.user.username,
           isAuraActive: message.user.isAuraActive,
+          joinedAt: Date.now(),
           userPosition: template?.usersPosition?.[activeParticipants],
         },
         session,
@@ -682,7 +694,7 @@ export class MeetingsGateway
         const user = await this.usersService.findOneAndUpdate(
           { socketId: socket.id },
           {
-            accessStatus: AccessStatusEnum.RequestSent,
+            accessStatus: MeetingAccessStatusEnum.RequestSent,
             username: message.user.username,
             isAuraActive: message.user.isAuraActive,
             micStatus: message.user.micStatus,
@@ -700,7 +712,7 @@ export class MeetingsGateway
 
         const activeParticipants = await this.usersService.countMany({
           meeting: meeting._id,
-          accessStatus: AccessStatusEnum.InMeeting,
+          accessStatus: MeetingAccessStatusEnum.InMeeting,
         });
 
         if (activeParticipants === meeting.maxParticipants) {
@@ -727,7 +739,8 @@ export class MeetingsGateway
 
         if (
           meeting?.hostUserId?.socketId &&
-          meeting?.hostUserId?.accessStatus === AccessStatusEnum.InMeeting
+          meeting?.hostUserId?.accessStatus ===
+            MeetingAccessStatusEnum.InMeeting
         ) {
           this.emitToSocketId(
             meeting?.hostUserId?.socketId,
@@ -784,7 +797,7 @@ export class MeetingsGateway
 
       const user = await this.usersService.findOneAndUpdate(
         { socketId: socket.id },
-        { accessStatus: AccessStatusEnum.Waiting },
+        { accessStatus: MeetingAccessStatusEnum.Waiting },
         session,
       );
 
@@ -856,7 +869,7 @@ export class MeetingsGateway
 
         const activeParticipants = await this.usersService.countMany({
           meeting: meeting._id,
-          accessStatus: AccessStatusEnum.InMeeting,
+          accessStatus: MeetingAccessStatusEnum.InMeeting,
         });
 
         if (activeParticipants === meeting.maxParticipants) {
@@ -877,10 +890,11 @@ export class MeetingsGateway
         const updatedUser = await this.usersService.findOneAndUpdate(
           {
             _id: message.userId,
-            accessStatus: { $eq: AccessStatusEnum.RequestSent },
+            accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
           },
           {
-            accessStatus: AccessStatusEnum.InMeeting,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+            joinedAt: Date.now(),
             userPosition: template?.usersPosition?.[activeParticipants],
           },
           session,
@@ -890,7 +904,7 @@ export class MeetingsGateway
           const requestUsers = await this.usersService.findUsers(
             {
               meeting: meeting._id,
-              accessStatus: AccessStatusEnum.RequestSent,
+              accessStatus: MeetingAccessStatusEnum.RequestSent,
             },
             session,
           );
@@ -927,7 +941,7 @@ export class MeetingsGateway
         const user = await this.usersService.findByIdAndUpdate(
           message.userId,
           {
-            accessStatus: AccessStatusEnum.Rejected,
+            accessStatus: MeetingAccessStatusEnum.Rejected,
           },
           session,
         );
@@ -1010,7 +1024,10 @@ export class MeetingsGateway
         }
 
         const meetingUsers = await this.usersService.findUsers(
-          { meeting: meeting.id, accessStatus: AccessStatusEnum.InMeeting },
+          {
+            meeting: meeting.id,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          },
           session,
         );
 
@@ -1040,6 +1057,24 @@ export class MeetingsGateway
 
         await Promise.all(meetingTimeAccounting);
 
+        const overallMinutesSpent = meetingUsers.reduce(
+          (acc, user) => acc + (Date.now() - user.joinedAt),
+          0,
+        );
+
+        this.coreService.updateRoomRatingStatistic({
+          templateId: meeting.templateId,
+          userId: meeting.owner.profileId,
+          ratingKey: 'minutes',
+          value: overallMinutesSpent,
+        });
+
+        await this.meetingsCommonService.handleClearMeetingData({
+          instanceId: template.meetingInstance.instanceId,
+          meetingId: message.meetingId,
+          session,
+        });
+
         this.emitToRoom(
           `meeting:${message.meetingId}`,
           MeetingEmitEvents.FinishMeeting,
@@ -1047,12 +1082,6 @@ export class MeetingsGateway
             reason: message.reason,
           },
         );
-
-        await this.meetingsCommonService.handleClearMeetingData({
-          instanceId: template.meetingInstance.instanceId,
-          meetingId: message.meetingId,
-          session,
-        });
 
         return {
           success: true,
@@ -1149,7 +1178,13 @@ export class MeetingsGateway
 
           const activeParticipants = await this.usersService.countMany({
             meeting: meeting._id,
-            accessStatus: AccessStatusEnum.InMeeting,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          });
+
+          await this.coreService.updateRoomRatingStatistic({
+            templateId: meeting.templateId,
+            ratingKey: 'minutes',
+            value: Date.now() - user.joinedAt,
           });
 
           if (activeParticipants === 1) {

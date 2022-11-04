@@ -13,7 +13,7 @@ import { Socket } from 'socket.io';
 import { BaseGateway } from '../../gateway/base.gateway';
 
 // types
-import { ResponseSumType } from 'shared';
+import { ResponseSumType } from 'shared-types';
 
 // services
 import { MeetingsService } from '../meetings/meetings.service';

@@ -5,8 +5,8 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToClass, plainToInstance } from 'class-transformer';
 
 // const
-import { MeetingBrokerPatterns } from 'shared';
-import { CORE_SERVICE } from 'shared';
+import { MeetingBrokerPatterns } from 'shared-const';
+import { CORE_SERVICE } from 'shared-const';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
@@ -28,9 +28,10 @@ import {
   CreateMeetingInstancePayload,
   DeleteMeetingInstancePayload,
   GetMeetingInstancePayload,
-  GetMeetingPayload,
   UpdateMeetingInstancePayload,
-} from 'shared';
+  GetMeetingPayload,
+  MeetingInstanceServerStatus,
+} from 'shared-types';
 
 @Controller('meetings')
 export class MeetingsController {
@@ -141,7 +142,7 @@ export class MeetingsController {
       if (this.supportScaling && userTemplate.maxParticipants > 4) {
         [meeting] = await this.meetingsService.find({
           query: {
-            serverStatus: 'active',
+            serverStatus: MeetingInstanceServerStatus.Active,
             owner: null,
           },
           session,
@@ -159,7 +160,7 @@ export class MeetingsController {
       } else {
         meeting = await this.meetingsService.create(
           {
-            serverStatus: 'active',
+            serverStatus: MeetingInstanceServerStatus.Active,
             serverIp: this.defaultServerIp,
             owner: payload.userId,
           },

@@ -37,13 +37,29 @@ const Component = ({ isPlaying, isMuted, volume, options, className }: CustomVid
         }
     }, [isPlaying]);
 
-    useEffect(() => () => {
-        videoRef.current = null;
-    }, []);
+    useEffect(
+        () => () => {
+            videoRef.current = null;
+        },
+        [],
+    );
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (video) {
+            video.src = options.src;
+        }
+    }, [options.src]);
 
     return (
         <div className={className}>
-            <video ref={videoRef} className={clsx(styles.video, className)} autoPlay loop playsInline>
+            <video
+                ref={videoRef}
+                className={clsx(styles.video, className)}
+                autoPlay
+                loop
+                playsInline
+            >
                 <source src={options?.src} type={options?.type} />
             </video>
         </div>

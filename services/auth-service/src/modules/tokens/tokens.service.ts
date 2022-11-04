@@ -3,7 +3,12 @@ import { ConfirmTokenService } from './confirm-token/confirm-token.service';
 import { AccessTokenService } from './access-token/access-token.service';
 import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { ResetPasswordTokenService } from './reset-password-token/reset-password-token.service';
-import { TokenTypes, TokenPayloadType, ICommonUserDTO, IToken } from 'shared';
+import {
+  TokenTypes,
+  TokenPayloadType,
+  ICommonUser,
+  IToken,
+} from 'shared-types';
 
 @Injectable()
 export class TokensService {
@@ -16,8 +21,8 @@ export class TokensService {
 
   async generateToken(data: {
     type: TokenTypes;
-    user?: ICommonUserDTO;
-    email?: ICommonUserDTO['email'];
+    user?: ICommonUser;
+    email?: ICommonUser['email'];
   }): Promise<TokenPayloadType> {
     if (data.type === TokenTypes.Access)
       return this.accessTokenService.generateToken({ user: data.user });

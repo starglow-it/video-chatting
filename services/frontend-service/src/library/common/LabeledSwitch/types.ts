@@ -1,5 +1,5 @@
 import { TranslationProps } from '@library/common/Translation/types';
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 export type LabeledSwitchProps = TranslationProps &
     PropsWithClassName<{

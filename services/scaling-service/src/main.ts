@@ -1,14 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { IConfig } from 'shared';
+import { IConfig, TimeoutTypesEnum } from 'shared-types';
 
 import { AppModule } from './app.module';
 import { ConfigClientService } from './services/config/config.service';
 import { TasksService } from './modules/tasks/tasks.service';
 import { ScalingService } from './modules/scaling/scaling.service';
 import { getTimeoutTimestamp } from './utils/getTimeoutTimestamp';
-import { TimeoutTypesEnum } from './types/timeoutTypes.enum';
 
 async function bootstrap() {
   const appContext = await NestFactory.createApplicationContext(AppModule);

@@ -25,6 +25,7 @@ import { UsersModule } from '../users/users.module';
 import { BusinessCategoriesModule } from '../business-categories/business-categories.module';
 import { UserTemplatesModule } from '../user-templates/user-templates.module';
 import { MeetingsModule } from '../meetings/meetings.module';
+import { RoomsStatisticsModule } from '../rooms-statistics/rooms-statistics.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MeetingsModule } from '../meetings/meetings.module';
     BusinessCategoriesModule,
     AwsConnectorModule,
     CountersModule,
+    RoomsStatisticsModule,
     forwardRef(() => UserTemplatesModule),
     forwardRef(() => MeetingsModule),
     MongooseModule.forFeature([

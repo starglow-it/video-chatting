@@ -5,9 +5,7 @@ import { $profileStore } from '../../profile/profile/model';
 import { GetSubscriptionPayload } from './types';
 
 export const $subscriptionStore = subscriptionsDomain.createStore<unknown>({});
-export const $isTrial = $subscriptionStore.map(
-    subscription => subscription.status === 'trialing',
-);
+export const $isTrial = $subscriptionStore.map(subscription => subscription.status === 'trialing');
 
 export const getSubscriptionFx = subscriptionsDomain.createEffect<
     GetSubscriptionPayload,

@@ -1,5 +1,4 @@
-import { ErrorState, Template, UserTemplate } from '../types';
+import { UserTemplate } from '../types';
+import { ErrorState } from 'shared-types';
 
-export type CreateMeetingPayload = { templateId: Template['id'] };
-export type DeleteMeetingPayload = { templateId: Template['id'] };
 export type CreateMeetingResponse = { template?: UserTemplate; error?: ErrorState };

@@ -20,8 +20,7 @@ import { AuthService } from './auth.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
 // shared
-import { AUTH_PROVIDER } from 'shared';
-import { JWT_ACCESS_EXPIRE } from 'shared';
+import { JWT_ACCESS_EXPIRE, AUTH_PROVIDER } from 'shared-const';
 
 // strategy
 import { LocalStrategy } from '../../strategy/local.strategy';

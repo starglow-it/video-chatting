@@ -5,12 +5,21 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import { TemplateBrokerPatterns } from 'shared';
-import { TEMPLATES_SERVICE } from 'shared';
+import { TEMPLATES_SERVICE } from 'shared-const';
 
+import { TemplateBrokerPatterns } from 'shared-const';
 // types
-import { ICommonTemplate } from 'shared';
-import { EntityList } from 'shared';
+import {
+  ICommonTemplate,
+  EntityList,
+  AddTemplateToUserPayload,
+  GetCommonTemplatePayload,
+  GetCommonTemplatesPayload,
+  CreateTemplatePayload,
+  EditTemplatePayload,
+  UploadTemplateFilePayload,
+  DeleteCommonTemplatePayload,
+} from 'shared-types';
 
 // dtos
 import { CommonTemplateDTO } from '../../dtos/common-template.dto';
@@ -24,16 +33,9 @@ import { BusinessCategoriesService } from '../business-categories/business-categ
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
-import {
-  AddTemplateToUserPayload,
-  GetCommonTemplatePayload,
-  GetCommonTemplatesPayload,
-  CreateTemplatePayload,
-  EditTemplatePayload,
-  UploadTemplateFilePayload,
-} from 'shared';
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
 import { CommonTemplateDocument } from '../../schemas/common-template.schema';
+import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -44,6 +46,7 @@ export class CommonTemplatesController {
     private meetingsService: MeetingsService,
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
+    private roomStatisticService: RoomsStatisticsService,
   ) {}
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
@@ -200,6 +203,36 @@ export class CommonTemplatesController {
 
       await targetUser.save();
 
+      const isRoomStatisticsExists = await this.roomStatisticService.exists({
+        query: {
+          _id: targetTemplate._id,
+        },
+      });
+
+      if (!isRoomStatisticsExists) {
+        await this.roomStatisticService.create({
+          data: {
+            template: targetTemplate._id,
+            transactions: 0,
+            minutes: 0,
+            calls: 0,
+            money: 0,
+            uniqueUsers: 1,
+          },
+          session,
+        });
+      } else {
+        await this.roomStatisticService.updateOne({
+          query: {
+            template: targetTemplate._id,
+          },
+          data: {
+            $inc: { uniqueUsers: 1 },
+          },
+          session,
+        });
+      }
+
       return plainToInstance(UserTemplateDTO, userTemplate, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
@@ -302,5 +335,37 @@ export class CommonTemplatesController {
         enableImplicitConversion: true,
       });
     });
+  }
+
+  @MessagePattern({ cmd: TemplateBrokerPatterns.DeleteCommonTemplate })
+  async deleteCommonTemplate(
+    @Payload() { templateId }: DeleteCommonTemplatePayload,
+  ): Promise<undefined> {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const template =
+          await this.commonTemplatesService.findCommonTemplateById({
+            templateId,
+            session,
+            populatePaths: 'author',
+          });
+
+        if (!template) {
+          return;
+        }
+
+        await this.commonTemplatesService.deleteCommonTemplate({
+          query: {
+            _id: template._id,
+          },
+          session,
+        });
+      });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
   }
 }

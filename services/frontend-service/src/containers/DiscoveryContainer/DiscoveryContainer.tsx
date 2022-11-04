@@ -28,8 +28,9 @@ import { CustomImage } from 'shared-frontend/library';
 import styles from './DiscoveryContainer.module.scss';
 
 // types
-import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
+import { AppDialogsEnum, UserTemplate } from '../../store/types';
 import { getClientMeetingUrl } from '../../utils/urls';
+import { ICommonTemplate } from 'shared-types';
 
 const DiscoveryContainer = memo(() => {
     const router = useRouter();
@@ -42,7 +43,7 @@ const DiscoveryContainer = memo(() => {
         })();
     }, []);
 
-    const handleEnterWaitingRoom = useCallback((templateId: Template['id']) => {
+    const handleEnterWaitingRoom = useCallback((templateId: ICommonTemplate['id']) => {
         router.push(getClientMeetingUrl(templateId));
     }, []);
 
@@ -50,13 +51,16 @@ const DiscoveryContainer = memo(() => {
         await getUsersTemplatesFx({ limit: 6 * newPage, skip: 0 });
     }, []);
 
-    const handleScheduleMeeting = useCallback(({ templateId }: { templateId: Template['id'] }) => {
-        setScheduleTemplateIdEvent(templateId);
+    const handleScheduleMeeting = useCallback(
+        ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
+            setScheduleTemplateIdEvent(templateId);
 
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.scheduleMeetingDialog,
-        });
-    }, []);
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.scheduleMeetingDialog,
+            });
+        },
+        [],
+    );
 
     return (
         <MainProfileWrapper>

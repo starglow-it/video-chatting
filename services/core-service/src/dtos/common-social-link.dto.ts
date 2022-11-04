@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { ISocialLink } from 'shared';
+import { ISocialLink } from 'shared-types';
 
 export class CommonSocialLinkDTO implements ISocialLink {
   @Expose()

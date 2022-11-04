@@ -26,7 +26,9 @@ import {
 import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
-import { MeetingAccessStatuses } from '../../../types';
+
+// types
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -65,6 +67,6 @@ sample({
     filter: ({ localUser }, data) =>
         Boolean(data?.meetingInstance?.serverIp) &&
         data.meetingInstance.serverStatus === 'active' &&
-        localUser.accessStatus === MeetingAccessStatuses.RequestSent,
+        localUser.accessStatus === MeetingAccessStatusEnum.RequestSent,
     target: joinMeetingInWaitingRoomFx,
 });

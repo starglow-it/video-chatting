@@ -29,8 +29,8 @@ import {
     updateUserSocketEvent,
 } from '../../store/roomStores';
 
-// types
-import { MeetingAccessStatuses } from '../../store/types';
+//types
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './EnterMeetingName.module.scss';
@@ -62,9 +62,7 @@ const Component = () => {
         criteriaMode: 'all',
         resolver,
         defaultValues: {
-            fullName: isOwner
-                ? meetingTemplate.fullName
-                : localUser.username || profile.fullName,
+            fullName: isOwner ? meetingTemplate.fullName : localUser.username || profile.fullName,
         },
     });
 
@@ -74,10 +72,10 @@ const Component = () => {
         handleSubmit(data => {
             updateLocalUserEvent({
                 username: data.fullName,
-                accessStatus: MeetingAccessStatuses.Settings,
+                accessStatus: MeetingAccessStatusEnum.Settings,
             });
             updateUserSocketEvent({
-                accessStatus: MeetingAccessStatuses.Settings,
+                accessStatus: MeetingAccessStatusEnum.Settings,
             });
         }),
         [],

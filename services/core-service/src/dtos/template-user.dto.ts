@@ -2,9 +2,7 @@ import { Expose, Transform, Type } from 'class-transformer';
 
 import { ProfileAvatarDTO } from './profile-avatar.dto';
 
-import { IProfileAvatar } from 'shared';
-import { ITemplateUser } from 'shared';
-import { ICommonUserDTO } from 'shared';
+import { ICommonUser, ITemplateUser, IProfileAvatar } from 'shared-types';
 
 export class TemplateUserDTO implements ITemplateUser {
   @Expose()
@@ -16,5 +14,5 @@ export class TemplateUserDTO implements ITemplateUser {
   profileAvatar: IProfileAvatar;
 
   @Expose()
-  maxMeetingTime: ICommonUserDTO['maxMeetingTime'];
+  maxMeetingTime: ICommonUser['maxMeetingTime'];
 }

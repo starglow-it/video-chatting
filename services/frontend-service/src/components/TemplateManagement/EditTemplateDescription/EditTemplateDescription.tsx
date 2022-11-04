@@ -21,7 +21,6 @@ import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
 // types
 import { EditTemplateDescriptionProps } from '@components/TemplateManagement/EditTemplateDescription/types';
 import { AutocompleteType } from '@library/custom/CustomAutocomplete/types';
-import { BusinessCategory } from '../../../store/types';
 
 // stores
 import { $businessCategoriesStore, getBusinessCategoriesFx } from '../../../store';
@@ -38,7 +37,7 @@ import frontendConfig from '../../../const/config';
 import styles from './EditTemplateDescription.module.scss';
 
 // utils
-import { getRandomHexColor } from '../../../utils/colors/getRandomHexColor';
+import { getRandomHexColor } from 'shared-utils';
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
 
 const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER }, (_, i) => ({
@@ -76,14 +75,14 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
     useEffect(() => {
         if (
             !tags.find(
-                (value: AutocompleteType<BusinessCategory> | string) => typeof value === 'string',
+                (value: AutocompleteType<IBusinessCategory> | string) => typeof value === 'string',
             )
         ) {
             return;
         }
         setValue(
             'tags',
-            tags.map((item: AutocompleteType<BusinessCategory> | string) =>
+            tags.map((item: AutocompleteType<IBusinessCategory> | string) =>
                 typeof item === 'string'
                     ? {
                           label: item,
@@ -226,7 +225,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         translation="editDescription.form.tags"
                         className={styles.label}
                     />
-                    <CustomAutocomplete<AutocompleteType<BusinessCategory>>
+                    <CustomAutocomplete<AutocompleteType<IBusinessCategory>>
                         multiple
                         freeSolo
                         includeInputInList

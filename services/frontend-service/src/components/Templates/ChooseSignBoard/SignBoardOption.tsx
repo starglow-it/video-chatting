@@ -74,24 +74,35 @@ const Component: React.FunctionComponent<SignOptionProps> = ({
         onOpenBoardsType('');
     }, [defaultSetData?.value]);
 
-    const renderAllVariants = useMemo(() => data.map(variant => {
-            const handleChooseCertainBoard = () => {
-                setValue(formKey, variant?.value, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                });
-                onOpenBoardsType('');
-            }
-            return (
-                <CustomGrid key={variant.value} item onClick={handleChooseCertainBoard} className={clsx(styles.variantItem, {[styles.active]: activeSignBoard === variant.value})}>
-                    <CustomImage
-                        src={`/images/boards/${variant.type}/${variant.value}.png`}
-                        width="45px"
-                        height="27px"
-                    />
-                </CustomGrid>
-            )
-        }), [data, formKey, activeSignBoard]);
+    const renderAllVariants = useMemo(
+        () =>
+            data.map(variant => {
+                const handleChooseCertainBoard = () => {
+                    setValue(formKey, variant?.value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                    });
+                    onOpenBoardsType('');
+                };
+                return (
+                    <CustomGrid
+                        key={variant.value}
+                        item
+                        onClick={handleChooseCertainBoard}
+                        className={clsx(styles.variantItem, {
+                            [styles.active]: activeSignBoard === variant.value,
+                        })}
+                    >
+                        <CustomImage
+                            src={`/images/boards/${variant.type}/${variant.value}.png`}
+                            width="45px"
+                            height="27px"
+                        />
+                    </CustomGrid>
+                );
+            }),
+        [data, formKey, activeSignBoard],
+    );
 
     const imageType = activeBoardData?.type ?? prevBoardData?.type ?? defaultSetData.type;
     const imageValue = activeBoardData?.value ?? prevBoardData?.value ?? defaultSetData?.value;

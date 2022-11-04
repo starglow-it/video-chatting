@@ -1,15 +1,15 @@
 import React, { memo, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { useStore } from 'effector-react';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { TagItem } from '@library/common/TagItem/TagItem';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // components
 import { UserVideoStub } from '@components/TemplateManagement/EditAttendeesPosition/UserVideoStub/UserVideoStub';
@@ -21,19 +21,24 @@ import { TemplatePreviewProps } from '@components/TemplateManagement/TemplatePre
 // icons
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
+// store
+import { $windowSizeStore } from '../../../store';
+
 // const
 import frontendConfig from '../../../const/config';
 
 // styles
 import styles from './TemplatePreview.module.scss';
 
-const Component = ({ onPreviousStep, onSubmit, controlPanelRef, templateId }: TemplatePreviewProps) => {
+const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePreviewProps) => {
     const { control } = useFormContext();
 
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
     const tags = useWatch({ control, name: 'tags' });
     const participantsPositions = useWatch({ control, name: 'participantsPositions' });
+
+    const { width } = useStore($windowSizeStore);
 
     const participantStubs = useMemo(
         () =>
@@ -82,25 +87,18 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef, templateId }: Te
             return {};
         }
         const { clientHeight, clientTop } = controlPanelRef.current;
-        const top = clientHeight + clientTop - 20;
+        const top = clientHeight + clientTop - 14;
         return { top };
-    }, []);
+    }, [width]);
 
     return (
         <CustomGrid container className={styles.wrapper}>
             <CustomGrid container className={styles.participants}>
                 {participantStubs}
             </CustomGrid>
-            <CustomTooltip
-                open
-                variant="black-glass"
-                placement="bottom-start"
-                title={tooltipTitle}
-                popperClassName={styles.popper}
-            >
-                <CustomBox className={styles.tooltipPosition} style={tooltipStyle} />
-            </CustomTooltip>
-
+            <CustomPaper variant="black-glass" style={tooltipStyle} className={styles.paper}>
+                {tooltipTitle}
+            </CustomPaper>
             <CustomGrid
                 container
                 gap={1.5}

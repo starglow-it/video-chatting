@@ -7,7 +7,8 @@ import { YoutubeIcon } from '@library/icons/YoutubeIcon';
 import { FacebookIcon } from '@library/icons/FacebookIcon';
 import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
 
-import { SocialLink, SocialLinkKeysEnum } from '../../store/types';
+import { SocialLinkKeysEnum } from '../../store/types';
+import { ISocialLink } from 'shared-types';
 
 export const SOCIALS_ICONS: { [key: string]: React.ElementType } = {
     [SocialLinkKeysEnum.Instagram]: InstagramIcon,
@@ -18,7 +19,7 @@ export const SOCIALS_ICONS: { [key: string]: React.ElementType } = {
     [SocialLinkKeysEnum.Custom]: CustomLinkIcon,
 };
 
-export const SOCIAL_LINKS: SocialLink[] = [
+export const SOCIAL_LINKS: ISocialLink[] = [
     { key: SocialLinkKeysEnum.Youtube, value: 'https://youtube.com/' },
     { key: SocialLinkKeysEnum.Facebook, value: 'https://facebook.com/' },
     { key: SocialLinkKeysEnum.Instagram, value: 'https://www.instagram.com/' },

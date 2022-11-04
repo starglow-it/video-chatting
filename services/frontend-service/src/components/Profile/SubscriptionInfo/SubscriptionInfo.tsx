@@ -40,7 +40,7 @@ import styles from './SubscriptionInfo.module.scss';
 
 // const
 import { profileRoute } from '../../../const/client-routes';
-import {useLocalization} from "@hooks/useTranslation";
+import { useLocalization } from '@hooks/useTranslation';
 
 const Component = () => {
     const router = useRouter();
@@ -58,7 +58,7 @@ const Component = () => {
         onSwitchOff: handleCloseSubscriptionPlans,
     } = useToggle(false);
 
-    const { translation } = useLocalization('subscriptions')
+    const { translation } = useLocalization('subscriptions');
 
     useEffect(() => {
         getStripeProductsFx();
@@ -114,7 +114,10 @@ const Component = () => {
                     onOpenPlans={handleOpenSubscriptionPlans}
                     onChooseSubscription={handleChooseSubscription}
                     isDisabled={isSubscriptionPurchasePending}
-                    withTrial={product?.product?.name === 'Professional' && profile.isProfessionalTrialAvailable}
+                    withTrial={
+                        product?.product?.name === 'Professional' &&
+                        profile.isProfessionalTrialAvailable
+                    }
                 />
             )),
         [
@@ -134,7 +137,7 @@ const Component = () => {
                         dangerouslySetInnerHTML={{
                             __html: translation('subscriptions.current', {
                                 currentSub: profile.subscriptionPlanKey || 'House',
-                            })
+                            }),
                         }}
                     />
                     <ConditionalRender condition={Boolean(profile.stripeSubscriptionId)}>

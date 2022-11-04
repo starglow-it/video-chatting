@@ -4,16 +4,16 @@ import {
     ChartData,
     ChartOptions,
     TooltipModel,
-    TooltipItem,
     DoughnutController,
     ArcElement,
+    Tooltip,
 } from 'chart.js';
 import { deepmerge } from 'deepmerge-ts';
 
 import { CustomGrid } from 'shared-frontend/library';
-import { ChartLegend } from '@components/ChartLegend/ChartLegend';
+import { PropsWithClassName } from 'shared-frontend/types';
 
-Chart.register([DoughnutController, ArcElement]);
+Chart.register([DoughnutController, ArcElement, Tooltip]);
 
 type RenderTextPayload = {
     ctx: CanvasRenderingContext2D;
@@ -69,7 +69,6 @@ const totalText = {
 
 type CustomDoughnutChartProps = {
     label: string;
-    className: string;
     width: string;
     height: string;
     data: {
@@ -140,7 +139,7 @@ const Component = ({
     height,
     label,
     data: { totalNumber, dataSets },
-}: CustomDoughnutChartProps) => {
+}: PropsWithClassName<CustomDoughnutChartProps>) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const chartRef = useRef<Chart | null>(null);
 
@@ -159,26 +158,26 @@ const Component = ({
                 ],
             };
 
-            const options = deepmerge<ChartOptions<'doughnut'>[]>(defaultOptionsSettings, {
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            title: (model: TooltipModel<'doughnut'>) => model[0]?.label,
-                            label: (model: TooltipModel<'doughnut'>, item: TooltipItem<'doughnut'>): string | string[] => {
-                                return `${Math.ceil((item.raw / totalNumber) * 100)}% - ${
-                                    item.raw
-                                }`;
+            const options: ChartOptions<'doughnut'> = deepmerge<ChartOptions<'doughnut'>[]>(
+                defaultOptionsSettings,
+                {
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: (model: TooltipModel<'doughnut'>) => model[0]?.label,
+                                label: (model: TooltipModel<'doughnut'>): string | string[] =>
+                                    `${Math.ceil((model.raw / totalNumber) * 100)}% - ${model.raw}`,
                             },
                         },
-                    },
-                    chartUsersTextPlugin: {
-                        text: label,
-                    },
-                    chartTotalTextPlugin: {
-                        text: totalNumber.toString(10),
+                        chartUsersTextPlugin: {
+                            text: label,
+                        },
+                        chartTotalTextPlugin: {
+                            text: totalNumber.toString(10),
+                        },
                     },
                 },
-            });
+            );
 
             chartRef.current = new Chart(canvas, {
                 type: 'doughnut',
@@ -199,11 +198,8 @@ const Component = ({
     }, []);
 
     return (
-        <CustomGrid container direction="column">
-            <CustomGrid className={className}>
-                <canvas ref={canvasRef} />
-            </CustomGrid>
-            <ChartLegend dataSets={dataSets} totalNumber={totalNumber} />
+        <CustomGrid className={className}>
+            <canvas ref={canvasRef} />
         </CustomGrid>
     );
 };

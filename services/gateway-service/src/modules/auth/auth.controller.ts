@@ -21,11 +21,18 @@ import {
 } from '@nestjs/swagger';
 
 // shared
-import { ResponseSumType } from 'shared';
-import { USER_TOKEN_NOT_FOUND } from 'shared';
-import { USER_EXISTS, USER_NOT_CONFIRMED, USER_NOT_FOUND } from 'shared';
-import { AUTH_SCOPE } from 'shared';
-import { ICommonUserDTO } from 'shared';
+import {
+  USER_TOKEN_NOT_FOUND,
+  AUTH_SCOPE,
+  USER_EXISTS,
+  USER_NOT_CONFIRMED,
+  USER_NOT_FOUND,
+} from 'shared-const';
+import {
+  TokenPairWithUserType,
+  ResponseSumType,
+  ICommonUser,
+} from 'shared-types';
 
 // dtos
 import { CommonResponseDto } from '../../dtos/response/common-response.dto';
@@ -34,7 +41,6 @@ import { CommonUserRestDTO } from '../../dtos/response/common-user.dto';
 // requests
 import { TokenRequest } from '../../dtos/requests/token.request';
 import { UserCredentialsRequest } from '../../dtos/requests/userCredentials.request';
-import { TokenPairWithUserType } from 'shared';
 
 // guards
 import { LocalAuthGuard } from '../../guards/local.guard';
@@ -273,7 +279,7 @@ export class AuthController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async getProfile(@Request() req): Promise<ResponseSumType<ICommonUserDTO>> {
+  async getProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
     try {
       const user = await this.coreService.findUserById({
         userId: req.user.userId,

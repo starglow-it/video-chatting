@@ -6,8 +6,7 @@ import {
   Transport,
 } from '@nestjs/microservices';
 
-import { PAYMENTS_PROVIDER } from 'shared';
-import { JWT_ACCESS_EXPIRE } from 'shared';
+import { JWT_ACCESS_EXPIRE, PAYMENTS_PROVIDER } from 'shared-const';
 
 import { PaymentsController } from './payments.controller';
 

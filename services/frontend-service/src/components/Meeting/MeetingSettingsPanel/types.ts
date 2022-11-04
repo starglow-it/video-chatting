@@ -1,5 +1,6 @@
 import React from 'react';
-import { BusinessCategory, Language, SocialLink, UserTemplate } from '../../../store/types';
+import { UserTemplate } from '../../../store/types';
+import { IBusinessCategory, ILanguage, ISocialLink } from 'shared-types';
 
 export type SettingsData = {
     companyName: string;
@@ -8,9 +9,9 @@ export type SettingsData = {
     fullName: string;
     position: string;
     signBoard: string;
-    languages: Language['key'][];
-    businessCategories: BusinessCategory['key'][];
-    socials: SocialLink[];
+    languages: ILanguage['key'][];
+    businessCategories: IBusinessCategory['key'][];
+    socials: ISocialLink[];
     customLink: string;
 };
 

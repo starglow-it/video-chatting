@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { TemplateBrokerPatterns } from 'shared';
+import { TemplateBrokerPatterns } from 'shared-const';
 import { CoreService } from '../../services/core/core.service';
-import { IUserTemplate } from 'shared';
-import { ICommonTemplate } from 'shared';
-import { EntityList } from 'shared';
 import {
+  EntityList,
+  ICommonTemplate,
+  IUserTemplate,
   CreateUserTemplateByIdPayload,
   DeleteUsersTemplatesPayload,
   GetCommonTemplatePayload,
@@ -15,7 +15,8 @@ import {
   GetUserTemplatePayload,
   GetUserTemplatesPayload,
   UpdateUserTemplatePayload,
-} from 'shared';
+  DeleteCommonTemplatePayload,
+} from 'shared-types';
 
 @Injectable()
 export class TemplatesService {
@@ -111,5 +112,13 @@ export class TemplatesService {
     const pattern = { cmd: TemplateBrokerPatterns.UpdateTemplate };
 
     return this.coreService.sendCustom(pattern, data);
+  }
+
+  async deleteCommonTemplate(
+    payload: DeleteCommonTemplatePayload,
+  ): Promise<void> {
+    const pattern = { cmd: TemplateBrokerPatterns.DeleteCommonTemplate };
+
+    return this.coreService.sendCustom(pattern, payload);
   }
 }

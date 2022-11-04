@@ -10,7 +10,7 @@ const enhance = withStart(pageLoaded);
 const StatisticsPage: NextPage = (): JSX.Element => <StatisticsContainer />;
 
 StatisticsPage.getInitialProps = async () => ({
-    namespacesRequired: ['common'],
+    namespacesRequired: ['common', 'statistics', 'errors'],
 });
 
 export default enhance(StatisticsPage);

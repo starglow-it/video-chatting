@@ -23,7 +23,7 @@ export async function sendRequest<Result, Error>(
         }>({ url, ...restOptions });
 
         return {
-            result: response?.data?.result,
+            result: response?.data?.result ?? response.data,
             success: true,
         };
     } catch (err) {

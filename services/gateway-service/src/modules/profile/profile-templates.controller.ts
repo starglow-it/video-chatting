@@ -17,11 +17,13 @@ import {
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { IUserTemplate } from 'shared';
-import { ResponseSumType } from 'shared';
 import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
-import { ICommonTemplate } from 'shared';
-import { EntityList } from 'shared';
+import {
+  IUserTemplate,
+  ResponseSumType,
+  ICommonTemplate,
+  EntityList,
+} from 'shared-types';
 import { TemplatesService } from '../templates/templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
@@ -97,10 +99,6 @@ export class ProfileTemplatesController {
         if (file) {
           const { extension } = getFileNameAndExtension(file.originalname);
           const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
-
-          await this.uploadService.deleteFolder(
-            `templates/videos/${templateId}`,
-          );
 
           const url = await this.uploadService.uploadFile(
             file.buffer,

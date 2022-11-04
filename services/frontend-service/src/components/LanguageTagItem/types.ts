@@ -1,6 +1,6 @@
-import { Language } from '../../store/types';
-import { PropsWithClassName } from '../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
+import { ILanguage } from 'shared-types';
 
 export type LanguageTagItemProps = PropsWithClassName<{
-    language: Language;
+    language: ILanguage;
 }>;

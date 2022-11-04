@@ -18,7 +18,7 @@ RUN pnpm install
 
 COPY ./services/payment-service ./services/payment-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,payment-service
+RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils,payment-service
 
 FROM node:18.9.1-alpine
 

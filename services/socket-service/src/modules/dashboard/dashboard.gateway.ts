@@ -4,7 +4,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import { Controller, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 
 import { DashboardSubscribeEvents } from '../../const/socket-events/subscribers/dashboard';
@@ -15,14 +15,13 @@ import { BaseGateway } from '../../gateway/base.gateway';
 import { DashboardService } from './dashboard.service';
 import { CoreService } from '../../services/core/core.service';
 
-import { DashboardNotificationTypes } from 'shared';
-
-import { ResponseSumType } from 'shared';
-
-import { IDashboardNotification } from 'shared';
+import {
+  DashboardNotificationTypes,
+  ResponseSumType,
+  IDashboardNotification,
+} from 'shared-types';
 
 @WebSocketGateway({ transports: ['websocket'] })
-@Controller('/dashboard')
 export class DashboardGateway extends BaseGateway {
   private readonly logger = new Logger(DashboardGateway.name);
 

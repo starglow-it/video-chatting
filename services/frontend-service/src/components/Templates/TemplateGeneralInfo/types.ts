@@ -1,8 +1,9 @@
-import { Profile, ProfileAvatarT, Template } from '../../../store/types';
+import { Profile } from '../../../store/types';
+import { ICommonTemplate, IProfileAvatar } from 'shared-types';
 
 export type TemplateGeneralInfoProps = {
-    profileAvatar?: ProfileAvatarT['url'] | string;
+    profileAvatar?: IProfileAvatar['url'] | string;
     userName?: Profile['fullName'] | undefined;
-    companyName?: Template['companyName'] | undefined;
+    companyName?: ICommonTemplate['companyName'] | undefined;
     signBoard?: Profile['signBoard'];
 };

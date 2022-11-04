@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ISendContactsInfo } from 'shared';
+import { ISendContactsInfo } from 'shared-types';
 
 export class SendContactsInfoRequest implements ISendContactsInfo {
   @IsNotEmpty({

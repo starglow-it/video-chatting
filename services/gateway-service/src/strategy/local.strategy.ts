@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CoreService } from '../services/core/core.service';
-import { INVALID_CREDENTIALS, USER_NOT_FOUND } from 'shared';
+import { INVALID_CREDENTIALS, USER_NOT_FOUND } from 'shared-const';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

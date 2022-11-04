@@ -1,7 +1,8 @@
 import { NextPageContext } from 'next';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { ErrorState, Profile } from '../../types';
+import { Profile } from '../../types';
 import { meUrl } from '../../../utils/urls';
+import { ErrorState } from 'shared-types';
 
 export const handleCheckUserAuthentication = async (ctx: NextPageContext) => {
     const response = await sendRequestWithCredentials<Profile, ErrorState>({

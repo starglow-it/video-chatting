@@ -1,6 +1,7 @@
-import { ErrorState, UserTemplate } from '../../../../types';
+import { UserTemplate } from '../../../../types';
 import sendRequestWithCredentials from '../../../../../helpers/http/sendRequestWithCredentials';
 import { createIntentUrl } from '../../../../../utils/urls';
+import { ErrorState } from 'shared-types';
 
 export const handleCreatePaymentIntent = async (data: { templateId: UserTemplate['id'] }) => {
     const response = await sendRequestWithCredentials<

@@ -27,6 +27,8 @@ import { appDialogsApi } from '../../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
 
+import { isMobile } from 'shared-utils';
+
 import {
     AppDialogsEnum,
     Meeting,
@@ -34,11 +36,11 @@ import {
     UserTemplate,
     Profile,
     JoinMeetingResult,
-    MeetingAccessStatuses,
 } from '../../../types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { SendAnswerMeetingRequestParams } from './types';
+
 import { MeetingSubscribeEvents } from '../../../../const/socketEvents/subscribers';
-import { isMobile } from '../../../../utils/browser/detectBrowser';
 import { getMeetingSocketSubscribeHandler } from './handlers';
 import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
 
@@ -181,7 +183,7 @@ sample({
         localUser: $localUserStore,
     }),
     filter: ({ isUserSendEnterRequest, localUser }) =>
-        isUserSendEnterRequest && localUser.accessStatus === MeetingAccessStatuses.Waiting,
+        isUserSendEnterRequest && localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
     target: sendEnterMeetingRequestSocketEvent,
 });
 
@@ -223,7 +225,7 @@ sample({
 
 sample({
     clock: sendEnterWaitingRoomSocketEvent.doneData,
-    fn: () => ({ accessStatus: MeetingAccessStatuses.Waiting }),
+    fn: () => ({ accessStatus: MeetingAccessStatusEnum.Waiting }),
     target: updateLocalUserEvent,
 });
 

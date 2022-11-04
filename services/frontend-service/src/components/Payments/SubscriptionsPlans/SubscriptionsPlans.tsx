@@ -58,10 +58,12 @@ const Component = ({
     const renderSubscriptionPlans = useMemo(
         () =>
             products
-                .filter(product =>
-                    (withActivePlan || product?.product?.name !== activePlanKey)
-                    && (!onlyPaidPlans || onlyPaidPlans && product?.price?.unit_amount)
-                ).map((product, i) => (
+                .filter(
+                    product =>
+                        (withActivePlan || product?.product?.name !== activePlanKey) &&
+                        (!onlyPaidPlans || (onlyPaidPlans && product?.price?.unit_amount)),
+                )
+                .map((product, i) => (
                     <Slide key={product?.product?.name} in timeout={i * 200}>
                         <SubscriptionPlanItem
                             activePlanKey={activePlanKey}
@@ -70,7 +72,10 @@ const Component = ({
                             onChooseSubscription={handleChosenSubscription}
                             isDisabled={isDisabled}
                             buttonTranslation={buttonTranslation}
-                            withTrial={product?.product?.name === 'Professional' && profile.isProfessionalTrialAvailable}
+                            withTrial={
+                                product?.product?.name === 'Professional' &&
+                                profile.isProfessionalTrialAvailable
+                            }
                         />
                     </Slide>
                 )),

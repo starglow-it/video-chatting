@@ -5,13 +5,15 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import { BUSINESS_CATEGORIES_SERVICE } from 'shared';
-import { CoreBrokerPatterns } from 'shared';
+import { BUSINESS_CATEGORIES_SERVICE } from 'shared-const';
+import { CoreBrokerPatterns } from 'shared-const';
 
 // types
-import { EntityList } from 'shared';
-import { IBusinessCategory } from 'shared';
-import { GetBusinessCategoriesPayload } from 'shared';
+import {
+  EntityList,
+  GetBusinessCategoriesPayload,
+  IBusinessCategory,
+} from 'shared-types';
 
 // dtos
 import { CommonBusinessCategoryDTO } from '../../dtos/common-business-category.dto';

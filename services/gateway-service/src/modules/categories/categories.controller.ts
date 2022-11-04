@@ -12,9 +12,7 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { ResponseSumType } from 'shared';
-import { EntityList } from 'shared';
-import { IBusinessCategory } from 'shared';
+import { EntityList, ResponseSumType, IBusinessCategory } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 import { CategoryRestDTO } from '../../dtos/response/common-category.dto';
 

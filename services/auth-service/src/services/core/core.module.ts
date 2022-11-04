@@ -5,7 +5,7 @@ import {
   ClientProvider,
 } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared';
+import { CORE_PROVIDER } from 'shared-const';
 
 import { CoreService } from './core.service';
 import { ConfigModule } from '../config/config.module';

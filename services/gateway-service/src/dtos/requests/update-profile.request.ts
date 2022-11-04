@@ -1,4 +1,4 @@
-import { IUpdateProfile } from 'shared';
+import { IUpdateProfile } from 'shared-types';
 import {
   IsEmail,
   IsObject,

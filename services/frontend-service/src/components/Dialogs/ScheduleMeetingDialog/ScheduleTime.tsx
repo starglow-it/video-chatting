@@ -26,7 +26,7 @@ import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
 import { isBefore } from '../../../utils/time/isBefore';
 
 // types
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';

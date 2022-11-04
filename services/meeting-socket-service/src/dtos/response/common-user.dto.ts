@@ -1,7 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
-import { ICommonMeetingDTO } from '../../interfaces/common-meeting.interface';
 
 export class CommonUserDTO implements ICommonMeetingUserDTO {
   @Expose()
@@ -9,32 +8,35 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
   id: string;
 
   @Expose()
-  profileId: string;
+  profileId: ICommonMeetingUserDTO['profileId'];
 
   @Expose()
-  socketId: string;
+  socketId: ICommonMeetingUserDTO['socketId'];
 
   @Expose()
-  username: string;
+  username: ICommonMeetingUserDTO['username'];
 
   @Expose()
-  accessStatus: string;
+  joinedAt: ICommonMeetingUserDTO['joinedAt'];
 
   @Expose()
-  cameraStatus: string;
+  accessStatus: ICommonMeetingUserDTO['accessStatus'];
 
   @Expose()
-  micStatus: string;
+  cameraStatus: ICommonMeetingUserDTO['cameraStatus'];
 
   @Expose()
-  isGenerated: boolean;
+  micStatus: ICommonMeetingUserDTO['micStatus'];
 
   @Expose()
-  isAuraActive: boolean;
+  isGenerated: ICommonMeetingUserDTO['isGenerated'];
+
+  @Expose()
+  isAuraActive: ICommonMeetingUserDTO['isAuraActive'];
 
   @Type(() => CommonMeetingDTO)
   @Transform((data) => data.obj?.meeting?.['_id']?.toString())
-  meeting: ICommonMeetingDTO['id'];
+  meeting: ICommonMeetingUserDTO['meeting'];
 
   @Expose()
   profileAvatar: ICommonMeetingUserDTO['profileAvatar'];

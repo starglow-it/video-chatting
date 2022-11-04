@@ -13,7 +13,7 @@ import { $meetingNotesStore, getMeetingNotesSocketEvent } from '../../../store/r
 import styles from './MeetingNotes.module.scss';
 
 // utils
-import { isMobile } from '../../../utils/browser/detectBrowser';
+import { isMobile } from 'shared-utils';
 
 const Component = () => {
     const meetingNotes = useStore($meetingNotesStore);

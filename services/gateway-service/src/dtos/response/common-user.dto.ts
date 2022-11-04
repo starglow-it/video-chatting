@@ -1,12 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { ICommonUserDTO } from 'shared';
-import { IBusinessCategory } from 'shared';
-import { ILanguage } from 'shared';
-import { ISocialLink } from 'shared';
-import { IProfileAvatar } from 'shared';
+import {
+  ICommonUser,
+  IBusinessCategory,
+  ILanguage,
+  IProfileAvatar,
+  ISocialLink,
+} from 'shared-types';
 
-export class CommonUserRestDTO implements ICommonUserDTO {
+export class CommonUserRestDTO implements ICommonUser {
   @Expose()
   @ApiProperty()
   id: string;
@@ -68,19 +70,23 @@ export class CommonUserRestDTO implements ICommonUserDTO {
 
   @Expose()
   @ApiProperty()
-  stripeAccountId: ICommonUserDTO['stripeAccountId'];
+  stripeAccountId: ICommonUser['stripeAccountId'];
 
   @Expose()
   @ApiProperty()
-  stripeEmail: ICommonUserDTO['stripeEmail'];
+  stripeEmail: ICommonUser['stripeEmail'];
 
   @Expose()
   @ApiProperty()
-  isStripeEnabled: ICommonUserDTO['isStripeEnabled'];
+  isStripeEnabled: ICommonUser['isStripeEnabled'];
 
   @Expose()
   @ApiProperty()
-  wasSuccessNotificationShown: ICommonUserDTO['wasSuccessNotificationShown'];
+  wasSuccessNotificationShown: ICommonUser['wasSuccessNotificationShown'];
+
+  @Expose()
+  @ApiProperty()
+  shouldShowTrialExpiredNotification: ICommonUser['shouldShowTrialExpiredNotification'];
 
   @Expose()
   @ApiProperty()

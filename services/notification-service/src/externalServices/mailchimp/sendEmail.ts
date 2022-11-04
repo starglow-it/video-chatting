@@ -2,7 +2,7 @@ import Mailchimp, {
     MessageRecipient,
 } from '@mailchimp/mailchimp_transactional';
 
-import { SendEmailRequest } from 'shared';
+import { SendEmailRequest } from 'shared-types';
 import { getConfigVar } from '../../services/config';
 import { Readable } from 'stream';
 

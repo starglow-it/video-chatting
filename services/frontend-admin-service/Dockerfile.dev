@@ -31,7 +31,7 @@ RUN pnpm install --force
 
 COPY ./services/frontend-admin-service ./services/frontend-admin-service
 
-RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared,shared-utils,frontend-admin-service
+RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils,frontend-admin-service
 
 EXPOSE 9000
 

@@ -16,7 +16,7 @@ import { AwsConnectorModule } from '../../services/aws-connector/aws-connector.m
 import { LanguagesModule } from '../languages/languages.module';
 import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { TasksModule } from '../tasks/tasks.module';
-import {CountryStatisticsModule} from "../country-statistics/country-statistics.module";
+import { CountryStatisticsModule } from '../country-statistics/country-statistics.module';
 
 @Module({
   imports: [

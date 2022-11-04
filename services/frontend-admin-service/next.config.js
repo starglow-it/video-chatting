@@ -4,7 +4,6 @@ const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
 const path = require('path');
 
 const withTM = require('next-transpile-modules')([
-    'shared',
     'shared-frontend',
     'shared-const',
     'shared-utils',
@@ -37,15 +36,15 @@ module.exports = withTM(
             domains: [process.env.VULTR_STORAGE_HOSTNAME || ''],
         },
         webpack(config, options) {
-          if (!options.isServer) {
-            config.plugins.push(
-                new I18NextHMRPlugin({
-                  localesDir: path.resolve(__dirname, 'public/translations'),
-                }),
-            );
-          }
+            if (!options.isServer) {
+                config.plugins.push(
+                    new I18NextHMRPlugin({
+                        localesDir: path.resolve(__dirname, 'public/translations'),
+                    }),
+                );
+            }
 
-          return config;
+            return config;
         },
     }),
 );

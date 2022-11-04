@@ -6,8 +6,3 @@ export enum SocialLinkKeysEnum {
     Twitter = 'twitter',
     Custom = 'custom',
 }
-
-export type SocialLink = {
-    value: string;
-    key: string;
-};

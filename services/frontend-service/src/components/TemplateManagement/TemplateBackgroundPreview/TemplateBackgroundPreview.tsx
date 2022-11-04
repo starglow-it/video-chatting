@@ -15,10 +15,8 @@ import { isVideoFile } from '../../../utils/files/isVideoFile';
 import { CustomImage } from 'shared-frontend/library';
 
 // types
-import {
-    TemplateBackgroundPreviewProps
-} from '@components/TemplateManagement/TemplateBackgroundPreview/TemplateBackgroundPreview.types';
-import { CustomVideoPlayerOptions } from "@library/custom/CustomVideoPlayer/types";
+import { TemplateBackgroundPreviewProps } from '@components/TemplateManagement/TemplateBackgroundPreview/TemplateBackgroundPreview.types';
+import { CustomVideoPlayerOptions } from '@library/custom/CustomVideoPlayer/types';
 
 // styles
 import styles from './TemplateBackgroundPreview.module.scss';
@@ -39,7 +37,13 @@ const Component = ({ children, isFileUploading }: TemplateBackgroundPreviewProps
     return (
         <CustomGrid className={styles.background}>
             <ConditionalRender condition={Boolean(url) && isVideoFile(url)}>
-                <CustomVideoPlayer options={videoJsOptions} className={styles.player} volume={0} isPlaying isMuted={false} />
+                <CustomVideoPlayer
+                    options={videoJsOptions}
+                    className={styles.player}
+                    volume={0}
+                    isPlaying
+                    isMuted={false}
+                />
             </ConditionalRender>
             <ConditionalRender condition={Boolean(url) && !isVideoFile(url)}>
                 <CustomImage
@@ -50,9 +54,7 @@ const Component = ({ children, isFileUploading }: TemplateBackgroundPreviewProps
                     objectPosition="center"
                 />
             </ConditionalRender>
-            <ConditionalRender
-                condition={isFileUploading}
-            >
+            <ConditionalRender condition={isFileUploading}>
                 <CustomPaper variant="black-glass" className={styles.loader}>
                     <WiggleLoader />
                 </CustomPaper>

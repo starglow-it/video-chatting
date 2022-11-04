@@ -1,18 +1,19 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
+import { AuthBrokerPatterns } from 'shared-const';
+
 import {
-  AuthBrokerPatterns,
-  TokenPairWithUserType,
-  ICommonUserDTO,
-  TokenTypes,
-  ConfirmUserRegistrationPayload,
+  SendResetPasswordLinkEmailPayload,
+  LogOutUserPayload,
   RegisterUserPayload,
   LoginUserByEmailPayload,
   RefreshTokenPayload,
-  LogOutUserPayload,
-  SendResetPasswordLinkEmailPayload,
-} from 'shared';
+  ConfirmUserRegistrationPayload,
+  TokenTypes,
+  TokenPairWithUserType,
+  ICommonUser,
+} from 'shared-types';
 
 // services
 import { NotificationsService } from '../../services/notifications/notifications.service';
@@ -21,7 +22,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { AuthService } from './auth.service';
 
 // helpers
-import { emailTemplates } from 'shared';
+import { emailTemplates } from 'shared-const';
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +36,7 @@ export class AuthController {
   @MessagePattern({ cmd: AuthBrokerPatterns.RegisterUserPattern })
   async register(
     @Payload() payload: RegisterUserPayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     try {
       const frontendUrl = await this.configService.get('frontendUrl');
 
@@ -71,7 +72,7 @@ export class AuthController {
   @MessagePattern({ cmd: AuthBrokerPatterns.ConfirmRegistration })
   async confirmRegistration(
     @Payload() payload: ConfirmUserRegistrationPayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     try {
       const confirmToken = await this.authService.validateToken({
         token: payload.token,

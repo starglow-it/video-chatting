@@ -5,7 +5,7 @@ import { CardNumberElement, CardNumberElementProps } from '@stripe/react-stripe-
 
 import styles from '../StripeCommon.module.scss';
 
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 const Component = ({ className, ...rest }: PropsWithClassName<CardNumberElementProps>) => (
     <CardNumberElement

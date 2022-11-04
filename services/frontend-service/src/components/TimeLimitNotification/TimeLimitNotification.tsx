@@ -24,7 +24,7 @@ import { $authStore, $isBusinessSubscription, $profileStore } from '../../store'
 import { $isOwner, $localUserStore } from '../../store/roomStores';
 
 // types
-import { MeetingAccessStatuses } from '../../store/types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // const
 import { dashboardRoute, profileRoute } from '../../const/client-routes';
@@ -69,7 +69,7 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     }, [minutesLeft, isBusinessSubscription, isOwner, isDashboardRoute, isAuthenticated]);
 
     useEffect(() => {
-        if (localUser.accessStatus === MeetingAccessStatuses.InMeeting) {
+        if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
             setOpenState(false);
         }
     }, [localUser.accessStatus]);

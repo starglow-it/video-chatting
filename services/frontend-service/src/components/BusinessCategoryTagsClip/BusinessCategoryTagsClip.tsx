@@ -19,7 +19,7 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 import styles from './BusinessCategoryTagsClip.module.scss';
 
 // types
-import { BusinessCategory } from '../../store/types';
+import { IBusinessCategory } from 'shared-types';
 
 const Component = ({
     lines,
@@ -27,7 +27,7 @@ const Component = ({
     maxWidth,
 }: {
     lines: number;
-    tags: BusinessCategory[];
+    tags: IBusinessCategory[];
     maxWidth: number;
 }) => {
     const [isNeedToRenderSeeAllTags, setIsNeedToRenderSeeAllTags] = useState<boolean>(false);
@@ -92,7 +92,7 @@ const Component = ({
 
     const renderInitialTags = useMemo(
         () =>
-            tags?.map((category: BusinessCategory) => (
+            tags?.map((category: IBusinessCategory) => (
                 <BusinessCategoryItem
                     typographyVariant="body2"
                     key={category.key}
@@ -106,7 +106,7 @@ const Component = ({
         () =>
             hideData.slice(0, lines).map((elementsData, index) => (
                 <CustomGrid container gap={1.25}>
-                    {elementsData.elements.map((category: BusinessCategory) => (
+                    {elementsData.elements.map((category: IBusinessCategory) => (
                         <BusinessCategoryItem
                             className={clsx({ [styles.businessTag]: index === 0 })}
                             key={category.key}
@@ -136,7 +136,7 @@ const Component = ({
 
         return hiddenArray.map(elementsData => (
             <CustomGrid container gap={1.25} className={styles.moreTags}>
-                {elementsData?.elements?.map((category: BusinessCategory) => (
+                {elementsData?.elements?.map((category: IBusinessCategory) => (
                     <BusinessCategoryItem
                         typographyVariant="body2"
                         key={category.key}

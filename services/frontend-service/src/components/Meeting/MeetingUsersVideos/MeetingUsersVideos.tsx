@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
-import { ClickAwayListener } from "@mui/base";
+import { ClickAwayListener } from '@mui/base';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -33,7 +33,7 @@ import {
 } from '../../../store/roomStores';
 
 // types
-import { MeetingAccessStatuses } from '../../../store/types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 import styles from './MeetingUsersVideos.module.scss';
 
@@ -57,7 +57,7 @@ const Component = () => {
         fn: state =>
             state.filter(
                 user =>
-                    user.accessStatus === MeetingAccessStatuses.InMeeting &&
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                     localUser.id !== user.id,
             ),
     });

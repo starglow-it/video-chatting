@@ -14,10 +14,7 @@ import {
 } from '@nestjs/swagger';
 
 // shared
-import { ResponseSumType } from 'shared';
-
-// interfaces
-import { ICommonUserDTO } from 'shared';
+import { ResponseSumType, ICommonUser } from 'shared-types';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';
@@ -51,7 +48,7 @@ export class ProfileAvatarController {
   async updateProfileAvatar(
     @Body() data: UpdateProfileAvatarRequest,
     @Request() req,
-  ): Promise<ResponseSumType<ICommonUserDTO>> {
+  ): Promise<ResponseSumType<ICommonUser>> {
     const user = await this.coreService.findUserAndUpdateAvatar({
       userId: req.user.userId,
       data,
@@ -75,7 +72,7 @@ export class ProfileAvatarController {
   })
   async deleteProfileAvatar(
     @Request() req,
-  ): Promise<ResponseSumType<ICommonUserDTO>> {
+  ): Promise<ResponseSumType<ICommonUser>> {
     const user = await this.coreService.deleteProfileAvatar({
       userId: req.user.userId,
     });

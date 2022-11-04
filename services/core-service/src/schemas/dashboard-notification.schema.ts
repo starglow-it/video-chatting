@@ -5,7 +5,7 @@ import { UserDocument } from './user.schema';
 import {
   DashboardNotificationReadStatus,
   DashboardNotificationTypes,
-} from 'shared';
+} from 'shared-types';
 import { UserTemplateDocument } from './user-template.schema';
 
 @Schema()

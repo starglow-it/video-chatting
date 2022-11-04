@@ -1,7 +1,9 @@
+import { ErrorState } from 'shared-types';
+
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { getProfileTemplateUrl } from '../../../utils/urls';
 
-import { ErrorState, Profile, UserTemplate } from '../../types';
+import { Profile, UserTemplate } from '../../types';
 
 import { initialProfileTemplateState } from '../profileTemplate/const';
 

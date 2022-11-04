@@ -141,6 +141,7 @@ const Component = ({
                     nameSpace="subscriptions"
                     translation="buttons.tryForFree"
                     onClick={handleChooseTrial}
+                    disabled={isDisabled}
                     className={styles.trialButton}
                     Icon={
                         <CustomBox className={styles.icon}>

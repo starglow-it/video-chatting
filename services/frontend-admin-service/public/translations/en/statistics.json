@@ -6,10 +6,25 @@
     "subscription": {
       "title": "Subscriptions",
       "noData": "No subscriptions yet"
+    },
+    "usersMonetization": {
+      "title": "Users earned",
+      "noData": "Nothing earned yet"
+    },
+    "platformMonetization": {
+      "title": "Platform earned",
+      "noData": "Nothing earned yet"
     }
   },
   "common": {
     "title": "Statistics"
+  },
+  "rooms": {
+    "rating": {
+      "title": "Rooms rating",
+      "based": "Based on",
+      "roomType": "Room Type"
+    }
   },
   "pages": {
     "users": {
@@ -17,6 +32,9 @@
     },
     "rooms": {
       "title": "Rooms"
+    },
+    "monetization": {
+      "title": "Monetization"
     }
   }
 }

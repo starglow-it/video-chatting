@@ -7,6 +7,7 @@ export const handleStartCheckoutSessionForSubscription = async ({
     productId,
     meetingToken,
     baseUrl,
+    cancelUrl,
     withTrial,
 }: GetCheckoutSessionUrlPayload): Promise<GetCheckoutSessionUrlResponse> => {
     const response = await sendRequestWithCredentials<GetCheckoutSessionUrlResponse, ErrorState>({
@@ -14,6 +15,7 @@ export const handleStartCheckoutSessionForSubscription = async ({
         data: {
             meetingToken,
             baseUrl,
+            cancelUrl,
             withTrial,
         },
     });

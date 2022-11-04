@@ -2,7 +2,7 @@ import React, { memo, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
-import { ClickAwayListener } from "@mui/base";
+import { ClickAwayListener } from '@mui/base';
 
 // hooks
 import { useMultipleToggle } from '@hooks/useMultipleToggle';
@@ -48,7 +48,8 @@ import {
 import styles from './MeetingControlPanel.module.scss';
 
 // types
-import { MeetingAccessStatuses, MeetingUser } from '../../../store/types';
+import { MeetingUser } from '../../../store/types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -66,7 +67,7 @@ const Component = () => {
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
-        fn: state => state.some(user => user.accessStatus === MeetingAccessStatuses.RequestSent),
+        fn: state => state.some(user => user.accessStatus === MeetingAccessStatusEnum.RequestSent),
     });
 
     const {

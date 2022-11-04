@@ -3,8 +3,8 @@ import { VultrService } from '../../services/vultr/vultr.service';
 import { CoreService } from '../../services/core/core.service';
 import { sleep } from '../../utils/sleep';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
 import { ConfigClientService } from '../../services/config/config.service';
+import { TimeoutTypesEnum, MeetingInstanceServerStatus } from 'shared-types';
 
 const IP_ADDRESS_RECONNECT_TIMEOUT = getTimeoutTimestamp({
   type: TimeoutTypesEnum.Seconds,
@@ -123,7 +123,7 @@ export class ScalingService {
       this.logger.debug('Start terminating stopped instances');
 
       const meetingInstances = await this.coreService.getMeetingInstances({
-        serverStatus: 'stopped',
+        serverStatus: MeetingInstanceServerStatus.Stopped,
       });
 
       this.logger.debug(`Servers to terminate: ${meetingInstances?.length}`);
@@ -147,14 +147,14 @@ export class ScalingService {
   async checkNumberOfVacantServers() {
     try {
       const freeServers = await this.coreService.getMeetingInstances({
-        serverStatus: 'active',
+        serverStatus: MeetingInstanceServerStatus.Active,
         owner: null,
       });
 
       console.log(freeServers.map((server) => server.serverIp));
 
       const freePendingServers = await this.coreService.getMeetingInstances({
-        serverStatus: 'pending',
+        serverStatus: MeetingInstanceServerStatus.Pending,
         owner: null,
       });
 
@@ -192,7 +192,7 @@ export class ScalingService {
               return this.coreService.updateMeetingInstance({
                 instanceId: instance.instanceId,
                 data: {
-                  serverStatus: 'stopped',
+                  serverStatus: MeetingInstanceServerStatus.Stopped,
                 },
               });
             }
@@ -208,7 +208,7 @@ export class ScalingService {
               await this.coreService.updateMeetingInstance({
                 instanceId: instance.instanceId,
                 data: {
-                  serverStatus: 'active',
+                  serverStatus: MeetingInstanceServerStatus.Active,
                 },
               });
             }
@@ -240,7 +240,7 @@ export class ScalingService {
 
             await this.coreService.createMeetingInstance({
               instanceId: newInstance.id,
-              serverStatus: 'inactive',
+              serverStatus: MeetingInstanceServerStatus.Inactive,
               snapshotId: this.vultrSnapshotId,
             });
 
@@ -254,7 +254,7 @@ export class ScalingService {
               instanceId: newInstance.id,
               data: {
                 serverIp: ipAddress,
-                serverStatus: 'pending',
+                serverStatus: MeetingInstanceServerStatus.Pending,
               },
             });
 
@@ -265,7 +265,7 @@ export class ScalingService {
             await this.coreService.updateMeetingInstance({
               instanceId: newInstance.id,
               data: {
-                serverStatus: 'active',
+                serverStatus: MeetingInstanceServerStatus.Active,
               },
             });
           });
@@ -293,7 +293,7 @@ export class ScalingService {
             return this.coreService.updateMeetingInstance({
               instanceId: instance.instanceId,
               data: {
-                serverStatus: 'stopped',
+                serverStatus: MeetingInstanceServerStatus.Stopped,
               },
             });
           });
@@ -339,7 +339,7 @@ export class ScalingService {
         await this.coreService.updateMeetingInstance({
           instanceId: instance.instanceId,
           data: {
-            serverStatus: 'stopped',
+            serverStatus: MeetingInstanceServerStatus.Stopped,
           },
         });
       }

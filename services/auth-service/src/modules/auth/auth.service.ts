@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 
 import {
   TokenPairWithUserType,
-  ICommonUserDTO,
+  ICommonUser,
   TokenTypes,
   TokenPayloadType,
   IToken,
-} from 'shared';
+} from 'shared-types';
 import { TokensService } from '../tokens/tokens.service';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthService {
   async generateAuthenticationTokens({
     user,
   }: {
-    user: ICommonUserDTO;
+    user: ICommonUser;
   }): Promise<TokenPairWithUserType> {
     const accessToken = await this.tokensService.generateToken({
       user,
@@ -37,8 +37,8 @@ export class AuthService {
 
   async generateToken(data: {
     type: TokenTypes;
-    user?: ICommonUserDTO;
-    email?: ICommonUserDTO['email'];
+    user?: ICommonUser;
+    email?: ICommonUser['email'];
   }): Promise<TokenPayloadType> {
     return this.tokensService.generateToken(data);
   }

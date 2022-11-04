@@ -4,18 +4,21 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
-import { USERS_SERVICE } from 'shared';
-import { DashboardBrokerPatterns } from 'shared';
+import { USERS_SERVICE } from 'shared-const';
+import { DashboardBrokerPatterns } from 'shared-const';
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { DashboardNotificationsService } from './dashboard-notifications.service';
 import { UsersService } from '../users/users.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { DashboardNotificationDTO } from '../../dtos/dashboard-notification.dto';
-import { DashboardNotificationReadStatus } from 'shared';
 import { TasksService } from '../tasks/tasks.service';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
-import { CreateNotificationPayload, ReadNotificationsPayload } from 'shared';
+import {
+  CreateNotificationPayload,
+  ReadNotificationsPayload,
+  DashboardNotificationReadStatus,
+  TimeoutTypesEnum,
+} from 'shared-types';
 
 @Controller('dashboard-notifications')
 export class DashboardNotificationsController {

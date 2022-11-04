@@ -1,13 +1,14 @@
 import { meetingUsersDomain } from '../domain/model';
 
-import { MeetingAccessStatuses, MeetingUser } from '../../../types';
+import { MeetingUser } from '../../../types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 const initialMeetingUserState: MeetingUser = {
     id: '',
     profileId: '',
     socketId: '',
     username: '',
-    accessStatus: MeetingAccessStatuses.Initial,
+    accessStatus: MeetingAccessStatusEnum.Initial,
     cameraStatus: 'active',
     micStatus: 'active',
     profileAvatar: '',

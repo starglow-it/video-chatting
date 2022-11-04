@@ -1,0 +1,12 @@
+@import "../../../styles/rem";
+
+.wrapper {
+  display: flex;
+  padding: rem(40px);
+  width: 100%;
+  min-height: rem(260px);
+}
+
+.title {
+  margin: rem(0 0 10px 0);
+}

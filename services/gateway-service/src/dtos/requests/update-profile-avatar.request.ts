@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IUpdateProfileAvatar } from 'shared';
+import { IUpdateProfileAvatar } from 'shared-types';
 
 export class UpdateProfileAvatarRequest implements IUpdateProfileAvatar {
   @IsNotEmpty({

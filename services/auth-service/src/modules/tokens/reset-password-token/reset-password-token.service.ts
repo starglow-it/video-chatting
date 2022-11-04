@@ -1,14 +1,18 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
-  ICommonUserDTO,
-  TokenPayloadType,
   JWT_RESET_EXPIRE_IN_TIMESTAMP,
-  TokenTypes,
-  IToken,
   NOT_VALID_TOKEN,
   AUTH_SERVICE,
-} from 'shared';
+} from 'shared-const';
+
+import {
+  ICommonUser,
+  TokenPayloadType,
+  TokenTypes,
+  IToken,
+} from 'shared-types';
+
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
@@ -18,7 +22,7 @@ export class ResetPasswordTokenService {
   async generateToken({
     user,
   }: {
-    user: ICommonUserDTO;
+    user: ICommonUser;
   }): Promise<TokenPayloadType> {
     const token = await this.jwtService.signAsync({ userId: user.id });
 

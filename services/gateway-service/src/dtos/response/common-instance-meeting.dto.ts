@@ -1,16 +1,15 @@
-import { ICommonMeetingInstance } from 'shared';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { ICommonUserDTO } from 'shared';
+import { IMeetingInstance, ICommonUser } from 'shared-types';
 
-export class CommonInstanceMeetingRestDTO implements ICommonMeetingInstance {
+export class CommonInstanceMeetingRestDTO implements IMeetingInstance {
   @Expose()
   @ApiProperty()
   id: string;
 
   @Expose()
   @ApiProperty()
-  serverIp: ICommonMeetingInstance['serverIp'];
+  serverIp: IMeetingInstance['serverIp'];
 
   @Expose()
   @ApiProperty()
@@ -18,15 +17,15 @@ export class CommonInstanceMeetingRestDTO implements ICommonMeetingInstance {
 
   @Expose()
   @ApiProperty()
-  owner: ICommonUserDTO['id'];
+  owner: ICommonUser['id'];
 
   @Expose()
   @ApiProperty()
-  serverStatus: ICommonMeetingInstance['serverStatus'];
+  serverStatus: IMeetingInstance['serverStatus'];
 
   @Expose()
   @ApiProperty()
-  instanceId: ICommonMeetingInstance['instanceId'];
+  instanceId: IMeetingInstance['instanceId'];
 
-  snapshotId: ICommonMeetingInstance['snapshotId'];
+  snapshotId: IMeetingInstance['snapshotId'];
 }

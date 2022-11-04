@@ -1,7 +1,7 @@
 .demo:
   extends:
     - .docker-base
-  tags: [liveoffice-demo]
+  tags: [LiveOfficeDemo-deploy]
   only:
     variables:
       - $CI_COMMIT_REF_NAME =~ /^(demo)$/
@@ -13,7 +13,7 @@ Update Demo Traefik:
   script:
     - cd deploy/demo
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml up -d --build
+    - docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml up -d --build --force-recreate --remove-orphans
   interruptible: true
 
 Update Demo:
@@ -23,5 +23,5 @@ Update Demo:
   script:
     - cd deploy/demo
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
+    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --remove-orphans
   interruptible: true

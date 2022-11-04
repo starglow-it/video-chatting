@@ -2,6 +2,7 @@
   "buttons": {
     "showMore": "Show more",
     "upgrade": "Upgrade",
+    "manage": "Manage",
     "startHouse": "Get started Free",
     "startProfessional": "Get Professional",
     "startBusiness": "Get Business",
@@ -27,6 +28,9 @@
   "timeLimit": {
     "text": "You have {{minutesLeft}} of meeting time left before {{renewTime}}. To increase the limit - update",
     "warning": "Meeting time is running out. Update to increase the limit"
+  },
+  "trialExpired": {
+    "text": "<strong>Your Free Trial has expired.</strong> You are subscribed to free House plan now. Upgrade to continue creating your own rooms and using other extended LiveOffice features."
   },
   "subscriptions": {
     "selectPlan": "Select plan",

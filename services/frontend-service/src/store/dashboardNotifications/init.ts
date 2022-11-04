@@ -2,9 +2,9 @@ import { attach, combine, Store } from 'effector-next';
 
 import {
     $dashboardNotificationsStore,
-    setDashboardNotifications,
     getDashboardNotificationsSocketEvent,
     readDashboardNotificationsSocketEvent,
+    setDashboardNotifications,
 } from './model';
 import { $profileStore } from '../profile/profile/model';
 import { DashboardNotification, DashboardNotificationReadStatus, Profile } from '../types';

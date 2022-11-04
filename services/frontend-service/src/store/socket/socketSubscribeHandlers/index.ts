@@ -4,6 +4,7 @@ import { DashboardSubscribeEvents } from '../../../const/socketEvents/subscriber
 // handlers
 import { handleMeetingAvailable } from './handleMeetingAvailable';
 import { handleDashboardNotification } from './handleDashboardNotification';
+import { handleTrialExpired } from './handleTrialExpired';
 
 // utils
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
@@ -20,6 +21,7 @@ const DASHBOARD_SUBSCRIBE_HANDLERS_REGISTRY: DashboardSocketHandlerDataMap = new
         { handler: handleDashboardNotification },
     ],
     [DashboardSubscribeEvents.OnMeetingAvailable, { handler: handleMeetingAvailable }],
+    [DashboardSubscribeEvents.OnTrialExpired, { handler: handleTrialExpired }],
 ]);
 
 export const getDashboardSocketSubscribeHandler = (

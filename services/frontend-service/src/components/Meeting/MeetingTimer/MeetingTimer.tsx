@@ -24,7 +24,7 @@ import { formatCountDown } from '../../../utils/time/formatCountdown';
 import { ONE_MINUTE } from '../../../const/time/common';
 
 // types
-import { MeetingAccessStatuses } from '../../../store/types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const meeting = useStore($meetingStore);
@@ -49,7 +49,7 @@ const Component = () => {
         if (
             (profile.maxMeetingTime - currentTime) / (1000 * 60) < 20 &&
             !timeLimitWarning &&
-            localUser?.accessStatus === MeetingAccessStatuses.InMeeting &&
+            localUser?.accessStatus === MeetingAccessStatusEnum.InMeeting &&
             !isBusinessSubscription &&
             isMeetingHost
         ) {

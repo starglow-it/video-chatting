@@ -8,41 +8,10 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { CommonUserDTO } from '../../dtos/common-user.dto';
 
 // shared
-import {FindUsersPayload, UserBrokerPatterns} from 'shared';
+import { UserBrokerPatterns, AuthBrokerPatterns } from 'shared-const';
 import {
-  INVALID_CREDENTIALS,
-  INVALID_PASSWORD,
-  NOT_MATCH_PASSWORD,
-  SAME_RESET_PASSWORD,
-  USER_NOT_FOUND,
-} from 'shared';
-import { USER_TOKEN_NOT_FOUND } from 'shared';
-// const
-import { USERS_SERVICE } from 'shared';
-// mongo
-import {
-  ITransactionSession,
-  withTransaction,
-} from '../../helpers/mongo/withTransaction';
-
-// services
-import { BusinessCategoriesService } from '../business-categories/business-categories.service';
-import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
-import { ConfigClientService } from '../../services/config/config.service';
-import { LanguagesService } from '../languages/languages.service';
-import { VerificationCodeService } from '../verification-code/verification-code.service';
-import { UsersService } from './users.service';
-import { UserTokenService } from '../user-token/user-token.service';
-
-// types
-import { TokenTypes } from 'shared';
-import { addMonthsCustom } from '../../utils/dates/addMonths';
-import { TasksService } from '../tasks/tasks.service';
-import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
-import { plans } from 'shared';
-import { addDaysCustom } from '../../utils/dates/addDaysCustom';
-import {
+  TokenTypes,
+  FindUsersPayload,
   ComparePasswordsPayload,
   CreateUserPayload,
   DeleteProfileAvatarPayload,
@@ -61,10 +30,46 @@ import {
   UserExistsPayload,
   ValidateVerificationCodePayload,
   VerifyPasswordPayload,
-} from 'shared';
-import { AuthBrokerPatterns } from 'shared';
-import { LoginUserByEmailPayload, SetResetPasswordTokenPayload } from 'shared';
-import {CountryStatisticsService} from "../country-statistics/country-statistics.service";
+  LoginUserByEmailPayload,
+  SetResetPasswordTokenPayload,
+  ResetTrialNotificationPayload,
+} from 'shared-types';
+
+import {
+  INVALID_CREDENTIALS,
+  INVALID_PASSWORD,
+  NOT_MATCH_PASSWORD,
+  SAME_RESET_PASSWORD,
+  USER_NOT_FOUND,
+  USER_TOKEN_NOT_FOUND,
+  USERS_SERVICE,
+  plans,
+} from 'shared-const';
+
+import { getRandomHexColor } from 'shared-utils';
+
+// mongo
+import {
+  ITransactionSession,
+  withTransaction,
+} from '../../helpers/mongo/withTransaction';
+
+// services
+import { BusinessCategoriesService } from '../business-categories/business-categories.service';
+import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
+import { ConfigClientService } from '../../services/config/config.service';
+import { LanguagesService } from '../languages/languages.service';
+import { VerificationCodeService } from '../verification-code/verification-code.service';
+import { UsersService } from './users.service';
+import { UserTokenService } from '../user-token/user-token.service';
+
+// types
+import { addMonthsCustom } from '../../utils/dates/addMonths';
+import { TasksService } from '../tasks/tasks.service';
+import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
+import { TimeoutTypesEnum } from 'shared-types';
+import { addDaysCustom } from '../../utils/dates/addDaysCustom';
+import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
 
 @Controller('users')
 export class UsersController {
@@ -172,30 +177,32 @@ export class UsersController {
 
           await newUser.save();
 
-          // const isCountryExists = await this.countryStatisticsService.exists({
-          //   key: createUserPayload.user.country
-          // });
-          //
-          // if (isCountryExists) {
-          //   await this.countryStatisticsService.updateOne({
-          //     query: {
-          //       key: createUserPayload.user.country
-          //     },
-          //     data: {
-          //       $inc: { value: 1 },
-          //     },
-          //     session
-          //   });
-          // } else {
-          //   await this.countryStatisticsService.create({
-          //     data: {
-          //       key: createUserPayload.user.country,
-          //       value: 1,
-          //       color: getRandomHexColor(75, 200)
-          //     },
-          //     session,
-          //   })
-          // }
+          if (createUserPayload?.user?.country) {
+            const isCountryExists = await this.countryStatisticsService.exists({
+              key: createUserPayload.user.country,
+            });
+
+            if (isCountryExists) {
+              await this.countryStatisticsService.updateOne({
+                query: {
+                  key: createUserPayload.user.country,
+                },
+                data: {
+                  $inc: { value: 1 },
+                },
+                session,
+              });
+            } else {
+              await this.countryStatisticsService.create({
+                data: {
+                  key: createUserPayload.user.country,
+                  value: 1,
+                  color: getRandomHexColor(75, 200),
+                },
+                session,
+              });
+            }
+          }
 
           return plainToClass(CommonUserDTO, newUser, {
             excludeExtraneousValues: true,
@@ -553,30 +560,32 @@ export class UsersController {
           )) || [];
       }
 
-      // const isCountryExists = await this.countryStatisticsService.exists({
-      //   key: user.country
-      // });
-      //
-      // if (isCountryExists) {
-      //   await this.countryStatisticsService.updateOne({
-      //     query: {
-      //       key: user.country
-      //     },
-      //     data: {
-      //       $inc: { value: 1 },
-      //     },
-      //     session
-      //   });
-      // } else {
-      //   await this.countryStatisticsService.create({
-      //     data: {
-      //       key: user.country,
-      //       value: 1,
-      //       color: getRandomHexColor(75, 200)
-      //     },
-      //     session,
-      //   })
-      // }
+      if (data?.country) {
+        const isCountryExists = await this.countryStatisticsService.exists({
+          key: data.country,
+        });
+
+        if (isCountryExists) {
+          await this.countryStatisticsService.updateOne({
+            query: {
+              key: data.country,
+            },
+            data: {
+              $inc: { value: 1 },
+            },
+            session,
+          });
+        } else {
+          await this.countryStatisticsService.create({
+            data: {
+              key: data.country,
+              value: 1,
+              color: getRandomHexColor(75, 200),
+            },
+            session,
+          });
+        }
+      }
 
       await user.save();
 
@@ -775,6 +784,23 @@ export class UsersController {
   async countUsers(@Payload() payload: CountUsersPayload): Promise<number> {
     return withTransaction(this.connection, async (session) => {
       return this.usersService.count({ query: payload, session });
+    });
+  }
+
+  @MessagePattern({ cmd: UserBrokerPatterns.ResetTrialNotification })
+  async resetTrialNotification(
+    @Payload() payload: ResetTrialNotificationPayload,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.findByIdAndUpdate(
+        payload.userId,
+        { shouldShowTrialExpiredNotification: false },
+        session,
+      );
+      return plainToInstance(CommonUserDTO, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     });
   }
 }

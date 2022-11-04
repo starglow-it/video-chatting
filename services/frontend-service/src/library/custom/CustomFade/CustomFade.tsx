@@ -4,7 +4,7 @@ import { Fade } from '@mui/material';
 
 import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 const Component = ({
     open,

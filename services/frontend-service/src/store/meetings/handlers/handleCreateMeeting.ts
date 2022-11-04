@@ -1,6 +1,8 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { createMeetingUrl } from '../../../utils/urls';
-import { CreateMeetingPayload, CreateMeetingResponse } from '../types';
+import { CreateMeetingResponse } from '../types';
+
+import { CreateMeetingPayload } from 'shared-types';
 
 export const handleCreateMeeting = async (
     data: CreateMeetingPayload,

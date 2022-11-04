@@ -1,8 +1,8 @@
-import { Template } from '../../../store/types';
+import { ICommonTemplate } from 'shared-types';
 
 export type TemplatePreviewDialogProps = {
-    onChooseTemplate: (templateId: Template['id']) => void;
+    onChooseTemplate: (templateId: ICommonTemplate['id']) => void;
     chooseButtonKey: string;
     isNeedToRenderTemplateInfo: boolean;
-    onSchedule?: ((data: { templateId: Template['id'] }) => void) | undefined;
+    onSchedule?: ((data: { templateId: ICommonTemplate['id'] }) => void) | undefined;
 };

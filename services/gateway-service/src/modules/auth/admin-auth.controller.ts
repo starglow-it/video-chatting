@@ -21,10 +21,12 @@ import {
 } from '@nestjs/swagger';
 
 // shared
-import { ResponseSumType } from 'shared';
-import { USER_NOT_CONFIRMED, USER_NOT_FOUND } from 'shared';
-import { ICommonUserDTO } from 'shared';
-import { TokenPairWithUserType } from 'shared';
+import { USER_NOT_CONFIRMED, USER_NOT_FOUND } from 'shared-const';
+import {
+  TokenPairWithUserType,
+  ICommonUser,
+  ResponseSumType,
+} from 'shared-types';
 
 // dtos
 import { CommonResponseDto } from '../../dtos/response/common-response.dto';
@@ -100,9 +102,7 @@ export class AdminAuthController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async getAdminProfile(
-    @Request() req,
-  ): Promise<ResponseSumType<ICommonUserDTO>> {
+  async getAdminProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
     try {
       const user = await this.coreService.findUserById({
         userId: req.user.userId,

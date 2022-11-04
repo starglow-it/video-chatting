@@ -1,4 +1,4 @@
-import { TimeoutTypesEnum } from '../types/timeoutTypes.enum';
+import { TimeoutTypesEnum } from 'shared-types';
 
 const ONE_MILLISECOND = 1;
 const ONE_SECOND = ONE_MILLISECOND * 1000;

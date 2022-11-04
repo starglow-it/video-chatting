@@ -18,7 +18,7 @@ RUN pnpm install
 
 COPY ./services/socket-service ./services/socket-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,socket-service
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types,socket-service
 
 FROM node:18.9.1-alpine
 

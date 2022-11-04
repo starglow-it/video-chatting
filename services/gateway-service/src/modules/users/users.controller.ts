@@ -19,7 +19,7 @@ import {
 import { ConfigClientService } from '../../services/config/config.service';
 import { InviteAttendeeEmailRequest } from '../../dtos/requests/invite-attendee-email.request';
 import { SendContactsInfoRequest } from '../../dtos/requests/send-contacts-info.request';
-import { emailTemplates } from 'shared';
+import { emailTemplates } from 'shared-const';
 
 @Controller('users')
 export class UsersController {

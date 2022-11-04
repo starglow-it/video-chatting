@@ -38,9 +38,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { parseDateObject } from '../../utils/dateHelpers/parseDateObject';
 import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
-import { emailTemplates } from 'shared';
+import { emailTemplates } from 'shared-const';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { IUpdateTemplate } from 'shared';
+import { IUpdateTemplate } from 'shared-types';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 
 @Controller('users/templates')
@@ -163,8 +163,6 @@ export class UserTemplateController {
         const { extension } = getFileNameAndExtension(file.originalname);
 
         const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
-
-        await this.uploadService.deleteFolder(`templates/videos/${templateId}`);
 
         let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 

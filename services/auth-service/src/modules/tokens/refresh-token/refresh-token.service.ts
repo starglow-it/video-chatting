@@ -4,12 +4,15 @@ import { JwtService } from '@nestjs/jwt';
 import {
   AUTH_SERVICE,
   JWT_REFRESH_EXPIRE_IN_TIMESTAMP,
+  NOT_VALID_TOKEN,
+} from 'shared-const';
+import {
   TokenPayloadType,
   TokenTypes,
   IToken,
-  ICommonUserDTO,
-  NOT_VALID_TOKEN,
-} from 'shared';
+  ICommonUser,
+} from 'shared-types';
+
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
@@ -19,7 +22,7 @@ export class RefreshTokenService {
   async generateToken({
     user,
   }: {
-    user: ICommonUserDTO;
+    user: ICommonUser;
   }): Promise<TokenPayloadType> {
     const token = await this.jwtService.signAsync({ userId: user.id });
 

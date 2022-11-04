@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 
-import { IProfileAvatar } from 'shared';
+import { IProfileAvatar } from 'shared-types';
 
 export class ProfileAvatarDTO implements IProfileAvatar {
   @Expose()

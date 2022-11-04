@@ -32,7 +32,6 @@
     "amqp-connection-manager": "4.1.6",
     "amqplib": "0.10.3",
     "axios": "0.27.2",
-    "shared-const": "workspace:*",
     "mongoose": "6.6.1",
     "npm-check": "6.0.1",
     "npm-check-updates": "16.3.4",
@@ -41,7 +40,9 @@
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "7.5.6",
-    "shared": "workspace:*",
+    "shared-const": "workspace:*",
+    "shared-types": "workspace:*",
+    "shared-utils": "workspace:*",
     "source-map-support": "^0.5.21",
     "uuid": "9.0.0"
   },

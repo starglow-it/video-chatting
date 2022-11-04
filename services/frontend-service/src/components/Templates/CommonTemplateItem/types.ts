@@ -1,6 +1,6 @@
-import { Template } from '../../../store/types';
+import { ICommonTemplate } from 'shared-types';
 
 export type CommonTemplateItemProps = {
-    template: Template;
-    onChooseTemplate?: (templateId: Template['id']) => Promise<void> | void;
+    template: ICommonTemplate;
+    onChooseTemplate?: (templateId: ICommonTemplate['id']) => Promise<void> | void;
 };

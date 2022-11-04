@@ -20,13 +20,13 @@ import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
 import { $profileStore } from '../../../store';
 
 // types
-import { BusinessCategory } from '../../../store/types';
 
 // styles
 import styles from './ProfileBusinessTags.module.scss';
+import { IBusinessCategory } from 'shared-types';
 
 type TagLineType = {
-    elements: BusinessCategory[];
+    elements: IBusinessCategory[];
     overallWidth: number;
     id: number;
 };
@@ -99,7 +99,7 @@ const Component = () => {
 
     const renderInitialProfileTags = useMemo(
         () =>
-            profileState?.businessCategories.map((category: BusinessCategory) => (
+            profileState?.businessCategories.map((category: IBusinessCategory) => (
                 <BusinessCategoryItem key={category.key} category={category} />
             )),
         [profileState?.businessCategories],
@@ -116,7 +116,7 @@ const Component = () => {
                     alignContent="flex-start"
                     gap={1.25}
                 >
-                    {elementsData.elements.map((category: BusinessCategory) => (
+                    {elementsData.elements.map((category: IBusinessCategory) => (
                         <BusinessCategoryItem
                             className={clsx({
                                 [styles.businessTag]:
@@ -155,7 +155,7 @@ const Component = () => {
                     gap={1.25}
                     className={styles.moreTags}
                 >
-                    {elementsData?.elements?.map((category: BusinessCategory) => (
+                    {elementsData?.elements?.map((category: IBusinessCategory) => (
                         <BusinessCategoryItem
                             className={styles.hiddenBusinessTag}
                             key={category.key}

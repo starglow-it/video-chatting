@@ -19,15 +19,14 @@ import {
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { CommonInstanceMeetingRestDTO } from '../../dtos/response/common-instance-meeting.dto';
 
-import { MEETINGS_SCOPE } from 'shared';
-import { ResponseSumType } from 'shared';
+import { MEETINGS_SCOPE } from 'shared-const';
+import { ResponseSumType, IUserTemplate } from 'shared-types';
 
 import { CoreService } from '../../services/core/core.service';
 import { MediaServerService } from '../../services/media-server/media-server.service';
 import { TemplatesService } from '../templates/templates.service';
 
 import { CreateMeetingRequest } from '../../dtos/requests/create-meeting.request';
-import { IUserTemplate } from 'shared';
 import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.request';
 
 @Controller(MEETINGS_SCOPE)
@@ -70,6 +69,13 @@ export class MeetingsController {
       const updatedUserTemplate = await this.coreService.assignMeetingInstance({
         userId: req.user.userId,
         templateId: userTemplate.id,
+      });
+
+      this.coreService.updateRoomRatingStatistic({
+        templateId: updatedUserTemplate.id,
+        userId: userTemplate.author,
+        ratingKey: 'calls',
+        value: 1,
       });
 
       return {

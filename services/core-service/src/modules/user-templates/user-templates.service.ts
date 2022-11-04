@@ -16,8 +16,7 @@ import {
 } from '../../schemas/social-link.schema';
 
 // types
-import { ICommonTemplate } from 'shared';
-import { IUserTemplate } from 'shared';
+import { IUserTemplate, ICommonTemplate } from 'shared-types';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types/custom';
 import { getScreenShots } from '../../utils/images/getScreenShots';

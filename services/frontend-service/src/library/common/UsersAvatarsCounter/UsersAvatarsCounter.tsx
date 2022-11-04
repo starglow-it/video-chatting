@@ -9,7 +9,7 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import styles from './UsersAvatarsCounter.module.scss';
 
 // types
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 const Component = <ItemType,>({
     className,

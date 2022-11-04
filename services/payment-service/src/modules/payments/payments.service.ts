@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
-import { ICommonUserDTO } from 'shared';
+import { CreatePaymentIntentPayload } from 'shared-types';
 
 @Injectable()
 export class PaymentsService {
@@ -54,12 +54,8 @@ export class PaymentsService {
     templateCurrency,
     stripeAccountId,
     platformFee,
-  }: {
-    platformFee: number;
-    templatePrice: number;
-    templateCurrency: string;
-    stripeAccountId: ICommonUserDTO['stripeAccountId'];
-  }) {
+    templateId,
+  }: CreatePaymentIntentPayload) {
     const amount = templatePrice * 100;
 
     return this.stripeClient.paymentIntents.create({
@@ -68,6 +64,9 @@ export class PaymentsService {
       transfer_data: {
         amount: Math.floor(amount - amount * platformFee),
         destination: stripeAccountId,
+      },
+      metadata: {
+        templateId,
       },
     });
   }
@@ -119,6 +118,7 @@ export class PaymentsService {
     paymentMode,
     priceId,
     basePath,
+    cancelPath,
     meetingToken,
     customerEmail,
     customer,
@@ -127,18 +127,22 @@ export class PaymentsService {
     paymentMode: Stripe.Checkout.SessionCreateParams.Mode;
     priceId: string;
     basePath: string;
+    cancelPath?: string;
     meetingToken?: string;
     customerEmail: string;
     customer?: string;
-    trialPeriodDays?: number,
+    trialPeriodDays?: number;
   }) {
     const frontendUrl = await this.configService.get('frontendUrl');
 
     const meetingPath = `/room/${meetingToken}`;
 
-    const baseUrl = `${frontendUrl}/${meetingToken ? meetingPath : basePath}`;
-    const cancelUrl = new URL(baseUrl);
-    const successUrl = new URL(baseUrl);
+    const cancelUrl = new URL(
+      `${frontendUrl}/${meetingToken ? meetingPath : cancelPath ?? basePath}`,
+    );
+    const successUrl = new URL(
+      `${frontendUrl}/${meetingToken ? meetingPath : basePath}`,
+    );
 
     cancelUrl.searchParams.set('canceled', 'true');
     successUrl.searchParams.set('success', 'true');
@@ -250,5 +254,31 @@ export class PaymentsService {
     return allProducts.data.filter(
       (product) => product.metadata.type === 'template',
     );
+  }
+
+  async getStripeTrans(): Promise<Stripe.Product[]> {
+    const allProducts = await this.stripeClient.products.list({
+      active: true,
+    });
+
+    return allProducts.data.filter(
+      (product) => product.metadata.type === 'template',
+    );
+  }
+
+  async updateSubscription({
+    subscriptionId,
+    options,
+  }: {
+    subscriptionId: string;
+    options: {
+      trialEnd?: Stripe.SubscriptionUpdateParams['trial_end'];
+      cancelAtPeriodEnd?: Stripe.SubscriptionUpdateParams['cancel_at_period_end'];
+    };
+  }) {
+    return this.stripeClient.subscriptions.update(subscriptionId, {
+      trial_end: options.trialEnd,
+      cancel_at_period_end: options.cancelAtPeriodEnd,
+    });
   }
 }

@@ -19,7 +19,8 @@ import {
 } from '../../../store/roomStores';
 
 // types
-import { MeetingAccessStatuses, AppDialogsEnum, MeetingUser } from '../../../store/types';
+import { AppDialogsEnum, MeetingUser } from '../../../store/types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './MeetingUsersList.module.scss';
@@ -32,7 +33,7 @@ const Component = () => {
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
-        fn: state => state.filter(user => user.accessStatus === MeetingAccessStatuses.InMeeting),
+        fn: state => state.filter(user => user.accessStatus === MeetingAccessStatusEnum.InMeeting),
     });
 
     const handleKickUser = useCallback(({ userId }) => {

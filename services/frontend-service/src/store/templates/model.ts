@@ -1,9 +1,10 @@
-import { EntityList, Template, UserTemplate } from '../types';
+import { EntityList, UserTemplate } from '../types';
 import { templatesDomain } from './domain/model';
 import {
     AddTemplateToUserEffectPayload,
     AddTemplateToUserEffectResponse,
     CreateTemplateResponse,
+    DeleteCommonTemplatePayload,
     EditTemplatePayload,
     EditTemplateResponse,
     EditUserTemplatePayload,
@@ -18,8 +19,9 @@ import {
     UploadUserTemplateFilePayload,
     UploadUserTemplateFileResponse,
 } from './types';
+import { ICommonTemplate } from 'shared-types';
 
-const initialTemplatesStore: EntityList<Template> = {
+const initialTemplatesStore: EntityList<ICommonTemplate> = {
     list: [],
     count: 0,
 };
@@ -31,18 +33,22 @@ const initialUserTemplatesStore: EntityList<UserTemplate> = {
 
 // stores
 export const $templatesStore =
-    templatesDomain.createStore<EntityList<Template>>(initialTemplatesStore);
-export const $setUpTemplateStore = templatesDomain.createStore<Template | null>(null);
-export const $templatePreviewStore = templatesDomain.createStore<Template | null>(null);
+    templatesDomain.createStore<EntityList<ICommonTemplate>>(initialTemplatesStore);
+export const $setUpTemplateStore = templatesDomain.createStore<ICommonTemplate | null>(null);
+export const $templatePreviewStore = templatesDomain.createStore<ICommonTemplate | null>(null);
 export const $discoveryTemplatesStore =
     templatesDomain.createStore<EntityList<UserTemplate>>(initialUserTemplatesStore);
 export const $scheduleTemplateIdStore = templatesDomain.createStore<UserTemplate['id']>('');
 export const $scheduleEventLinkStore = templatesDomain.createStore<string>('');
-export const $replaceTemplateIdStore = templatesDomain.createStore<Template['id']>('');
-export const $templateDraft = templatesDomain.createStore<Template | UserTemplate | null>(null);
+export const $replaceTemplateIdStore = templatesDomain.createStore<ICommonTemplate['id']>('');
+export const $templateDraft = templatesDomain.createStore<ICommonTemplate | UserTemplate | null>(
+    null,
+);
 
 // events
-export const setPreviewTemplate = templatesDomain.event<Template | null>('setPreviewTemplate');
+export const setPreviewTemplate = templatesDomain.event<ICommonTemplate | null>(
+    'setPreviewTemplate',
+);
 export const setScheduleTemplateIdEvent = templatesDomain.event<string>(
     'setScheduleTemplateIdEvent',
 );
@@ -57,13 +63,13 @@ export const setReplaceTemplateIdEvent = templatesDomain.event<string | undefine
 // effect
 export const getTemplatesFx = templatesDomain.effect<
     { limit: number; skip: number },
-    EntityList<Template> | null | undefined,
+    EntityList<ICommonTemplate> | null | undefined,
     void
 >('getTemplatesFx');
 
 export const getTemplateFx = templatesDomain.effect<
-    { templateId: Template['id'] },
-    Template | undefined,
+    { templateId: ICommonTemplate['id'] },
+    ICommonTemplate | undefined,
     void
 >('getTemplateFx');
 
@@ -132,3 +138,9 @@ export const addTemplateToUserFx = templatesDomain.effect<
 >('addTemplateToUserFx');
 
 export const clearTemplateDraft = templatesDomain.event('clearTemplateDraft');
+
+export const deleteCommonTemplateFx = templatesDomain.effect<
+    DeleteCommonTemplatePayload,
+    boolean,
+    void
+>('deleteCommonTemplateFx');

@@ -2,16 +2,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 // shared
-import { AUTH_PROVIDER } from 'shared';
-import { AuthBrokerPatterns } from 'shared';
+import { AUTH_PROVIDER } from 'shared-const';
+import { AuthBrokerPatterns } from 'shared-const';
+
 import {
-  ConfirmUserRegistrationPayload,
-  LoginUserByEmailPayload,
-  LogOutUserPayload,
-  RefreshTokenPayload,
-  RegisterUserPayload,
   SendResetPasswordLinkEmailPayload,
-} from 'shared';
+  LogOutUserPayload,
+  RegisterUserPayload,
+  LoginUserByEmailPayload,
+  RefreshTokenPayload,
+  IToken,
+} from 'shared-types';
 
 @Injectable()
 export class AuthService {
@@ -27,9 +28,7 @@ export class AuthService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async confirmRegister(
-    payload: ConfirmUserRegistrationPayload,
-  ): Promise<void> {
+  async confirmRegister(payload: IToken): Promise<void> {
     const pattern = { cmd: AuthBrokerPatterns.ConfirmRegistration };
 
     return this.client.send(pattern, payload).toPromise();

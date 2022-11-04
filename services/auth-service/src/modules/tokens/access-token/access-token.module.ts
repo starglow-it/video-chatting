@@ -9,7 +9,7 @@ import { AccessTokenService } from './access-token.service';
 import { ConfigClientService } from '../../../services/config/config.service';
 
 // const
-import { JWT_ACCESS_EXPIRE } from 'shared';
+import { JWT_ACCESS_EXPIRE } from 'shared-const';
 
 @Module({
   imports: [

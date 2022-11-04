@@ -1,4 +1,4 @@
-import { ErrorState, Profile, UpdateProfileAvatar } from '../../types';
+import { Profile, UpdateProfileAvatar } from '../../types';
 import { initialProfileState } from './const';
 import { profileDomain } from '../../domains';
 import {
@@ -11,6 +11,7 @@ import {
     UpdateProfilePasswordPayload,
     UpdateProfilePayload,
 } from '../types';
+import { ErrorState } from 'shared-types';
 
 export const $profileStore = profileDomain.createStore<Profile>(initialProfileState);
 
@@ -75,3 +76,9 @@ export const resetPasswordFx = profileDomain.createEffect<
     ErrorState | null | undefined,
     void
 >('resetPasswordFx');
+
+export const resetTrialExpiredNotificationFx = profileDomain.createEffect<
+    void,
+    CommonProfileResponse,
+    void
+>('resetTrialExpiredNotificationFx');

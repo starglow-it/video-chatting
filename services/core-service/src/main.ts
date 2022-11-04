@@ -5,7 +5,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 
 // interfaces
-import { IConfig } from 'shared';
+import { IConfig } from 'shared-types';
 
 // service
 import { ConfigClientService } from './services/config/config.service';

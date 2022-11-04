@@ -18,7 +18,7 @@ RUN pnpm install
 
 COPY ./services/gateway-service ./services/gateway-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,gateway-service
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types,gateway-service
 
 FROM node:18.9.1-alpine
 

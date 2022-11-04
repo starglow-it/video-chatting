@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Bowser from 'bowser';
-import { getBrowserData } from '../utils/browser/detectBrowser';
+import { getBrowserData } from 'shared-utils';
 
 export const useBrowserDetect = () => {
     const [browserData, setBrowserData] = useState<Bowser.Parser.ParsedResult | null>(null);

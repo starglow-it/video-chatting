@@ -17,7 +17,7 @@ import { PlusAddIcon } from '@library/icons/PlusAddIcon';
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
 // types
-import { PropsWithClassName } from '../../../types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';

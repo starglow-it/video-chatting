@@ -1,12 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared';
-import { ICommonUserDTO } from 'shared';
-import { TemplateBrokerPatterns } from 'shared';
-import { UserBrokerPatterns } from 'shared';
-import { AddTemplateToUserPayload, GetCommonTemplatePayload } from 'shared';
-import { FindUserPayload, UpdateUserPayload } from 'shared';
+import { CORE_PROVIDER } from 'shared-const';
+import {
+  RoomStatisticBrokerPatterns,
+  UserBrokerPatterns,
+  TemplateBrokerPatterns,
+} from 'shared-const';
+import {
+  ICommonUser,
+  IncreaseRoomTransactionStatisticPayload,
+  UpdateUserPayload,
+  FindUserPayload,
+  AddTemplateToUserPayload,
+  GetCommonTemplatePayload,
+  UpdateRoomRatingStatisticPayload,
+} from 'shared-types';
 
 @Injectable()
 export class CoreService {
@@ -16,13 +25,13 @@ export class CoreService {
     await this.client.connect();
   }
 
-  async updateUser(payload: UpdateUserPayload): Promise<ICommonUserDTO> {
+  async updateUser(payload: UpdateUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdateUser };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUser(payload: FindUserPayload): Promise<ICommonUserDTO> {
+  async findUser(payload: FindUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUser };
 
     return this.client.send(pattern, payload).toPromise();
@@ -30,7 +39,7 @@ export class CoreService {
 
   async getCommonTemplateById(
     payload: GetCommonTemplatePayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplateById };
 
     return this.client.send(pattern, payload).toPromise();
@@ -38,7 +47,7 @@ export class CoreService {
 
   async getCommonTemplate(
     payload: GetCommonTemplatePayload,
-  ): Promise<ICommonUserDTO> {
+  ): Promise<ICommonUser> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
 
     return this.client.send(pattern, payload).toPromise();
@@ -46,6 +55,26 @@ export class CoreService {
 
   async addTemplateToUser(payload: AddTemplateToUserPayload): Promise<void> {
     const pattern = { cmd: TemplateBrokerPatterns.AddTemplateToUser };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async increaseRoomTransactionStatistic(
+    payload: IncreaseRoomTransactionStatisticPayload,
+  ): Promise<void> {
+    const pattern = {
+      cmd: RoomStatisticBrokerPatterns.IncreaseRoomTransactionStatistic,
+    };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async updateRoomRatingStatistic(
+    payload: UpdateRoomRatingStatisticPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: RoomStatisticBrokerPatterns.UpdateRoomRatingStatistic,
+    };
 
     return this.client.send(pattern, payload).toPromise();
   }

@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IBusinessCategory } from 'shared';
+import { IBusinessCategory } from 'shared-types';
 
 export class CategoryRestDTO implements IBusinessCategory {
   @Expose()

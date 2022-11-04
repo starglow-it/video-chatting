@@ -1,17 +1,17 @@
 import { Expose, Transform } from 'class-transformer';
-import { ICountryStatistic } from 'shared';
+import { ICountryStatistic } from 'shared-types';
 
 export class CommonCountryStatisticDTO implements ICountryStatistic {
-    @Expose()
-    @Transform((data) => data.obj['_id'])
-    id: string;
+  @Expose()
+  @Transform((data) => data.obj['_id'])
+  id: string;
 
-    @Expose()
-    key: string;
+  @Expose()
+  key: string;
 
-    @Expose()
-    value: number;
+  @Expose()
+  value: number;
 
-    @Expose()
-    color: string;
+  @Expose()
+  color: string;
 }

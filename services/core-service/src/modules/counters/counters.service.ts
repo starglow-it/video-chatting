@@ -6,7 +6,7 @@ import { Counter, CounterDocument } from '../../schemas/counter.schema';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
-import { ICounter } from 'shared';
+import { ICounter } from 'shared-types';
 
 @Injectable()
 export class CountersService {

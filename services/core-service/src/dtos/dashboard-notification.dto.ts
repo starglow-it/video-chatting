@@ -3,12 +3,10 @@ import { Expose, Transform, Type } from 'class-transformer';
 import {
   DashboardNotificationReadStatus,
   DashboardNotificationTypes,
-} from 'shared';
-
-// interfaces
-import { IDashboardNotification } from 'shared';
-import { IUserTemplate } from 'shared';
-import { IDashboardNotificationUser } from 'shared';
+  IDashboardNotificationUser,
+  IDashboardNotification,
+  IUserTemplate,
+} from 'shared-types';
 
 // dtos
 import { UserTemplateDTO } from './user-template.dto';

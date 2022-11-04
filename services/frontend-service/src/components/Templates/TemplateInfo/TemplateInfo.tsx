@@ -10,11 +10,11 @@ import { LockIcon } from '@library/icons/LockIcon';
 import { PeopleIcon } from '@library/icons/PeopleIcon';
 
 // types
-import { PropsWithClassName } from '../../../types';
-import { Template } from '../../../store/types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 // styles
 import styles from './TemplateInfo.module.scss';
+import { ICommonTemplate } from 'shared-types';
 
 const Component = ({
     className,
@@ -22,9 +22,9 @@ const Component = ({
     name,
     isPublic,
 }: PropsWithClassName<{
-    name: Template['name'];
-    description: Template['description'];
-    isPublic?: Template['isPublic'];
+    name: ICommonTemplate['name'];
+    description: ICommonTemplate['description'];
+    isPublic?: ICommonTemplate['isPublic'];
 }>) => (
     <CustomGrid container wrap="nowrap" className={className}>
         <CustomGrid container direction="column" className={styles.textWrapper}>

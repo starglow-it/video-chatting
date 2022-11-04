@@ -41,7 +41,8 @@ import { validateSocialLink } from '../../validation/users/socials';
 import styles from './EditProfileContainer.module.scss';
 
 // types
-import { AppDialogsEnum, BusinessCategory, Language, SocialLink } from '../../store/types';
+import { AppDialogsEnum } from '../../store/types';
+import { ILanguage, ISocialLink } from 'shared-types';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -66,8 +67,8 @@ const EditProfileContainer = memo(() => {
         companyName: string;
         contactEmail: string;
         description: string;
-        businessCategories: BusinessCategory['key'][];
-        languages: Language['key'][];
+        businessCategories: IBusinessCategory['key'][];
+        languages: ILanguage['key'][];
         fullName: string;
         position: string;
         socials: { key: string; value: string }[];
@@ -100,7 +101,7 @@ const EditProfileContainer = memo(() => {
             const { socials, ...dataWithoutSocials } = data;
 
             const filteredSocials = socials
-                ?.filter((social: SocialLink) => social.value)
+                ?.filter((social: ISocialLink) => social.value)
                 .reduce((acc, b) => ({ ...acc, [b.key]: b.value }), {});
 
             const newProfile = await updateProfileFx({

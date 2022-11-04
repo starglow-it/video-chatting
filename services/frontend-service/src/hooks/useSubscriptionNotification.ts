@@ -20,7 +20,9 @@ export const useSubscriptionNotification = (updateUrl: string) => {
 
                 addNotificationEvent({
                     type: NotificationType.SubscriptionSuccess,
-                    message: `subscriptions.subscription${planName}${isTrial ? 'Trial' : ''}Success`,
+                    message: `subscriptions.subscription${planName}${
+                        isTrial ? 'Trial' : ''
+                    }Success`,
                     withSuccessIcon: true,
                 });
             }

@@ -18,8 +18,8 @@ import { ValidationExceptionFilter } from './filters/validation-exception.filter
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 
 // shared
-import { ROOT_SCOPE } from 'shared';
-import { IConfig } from 'shared';
+import { ROOT_SCOPE } from 'shared-const';
+import { IConfig } from 'shared-types';
 import { ConfigClientService } from './services/config/config.service';
 
 async function bootstrap() {
@@ -68,5 +68,5 @@ async function bootstrap() {
 }
 
 bootstrap().then(() => {
-    console.log('Gateway Server is Ready')
+  console.log('Gateway Server is Ready');
 });

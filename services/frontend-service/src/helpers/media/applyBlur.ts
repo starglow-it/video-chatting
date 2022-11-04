@@ -1,6 +1,6 @@
 import { EffectBackground, VideoEffects } from '@vkontakte/calls-video-effects';
 
-import { getBrowserData } from '../../utils/browser/detectBrowser';
+import { getBrowserData } from 'shared-utils';
 import { CustomMediaStream } from '../../types';
 import { BROWSER_NAMES } from '../../types/browsers';
 

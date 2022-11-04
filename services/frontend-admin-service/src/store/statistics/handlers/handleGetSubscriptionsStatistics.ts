@@ -5,7 +5,9 @@ import { sendRequest } from '../../../helpers/http/sendRequest';
 import { subscriptionsStatisticsUrl } from '../../../const/urls/statistics';
 
 export const handleGetSubscriptionsStatistics = async (): Promise<SubscriptionsStatisticsState> => {
-    const response = await sendRequest<SubscriptionsStatisticsResponse, ErrorState>(subscriptionsStatisticsUrl);
+    const response = await sendRequest<SubscriptionsStatisticsResponse, ErrorState>(
+        subscriptionsStatisticsUrl,
+    );
 
     if (response.success) {
         return {

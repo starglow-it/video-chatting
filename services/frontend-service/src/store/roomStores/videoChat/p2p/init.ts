@@ -47,7 +47,8 @@ import {
     IceCandidatesExchangePayload,
     OfferExchangePayload,
 } from '../types';
-import { Meeting, MeetingAccessStatuses, MeetingUser } from '../../../types';
+import { Meeting, MeetingUser } from '../../../types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { ConnectionType, ServerTypes, StreamType } from '../../../../const/webrtc';
 import { CustomMediaStream } from '../../../../types';
 
@@ -131,7 +132,7 @@ sample({
             .filter(
                 user =>
                     localUser.id !== user.id &&
-                    user.accessStatus === MeetingAccessStatuses.InMeeting,
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting,
             )
             .map(userData => ({
                 userId: userData.id,
@@ -157,13 +158,13 @@ sample({
     source: connectionsCommonStore,
     filter: ({ localUser, users, connections, serverType }) =>
         serverType === ServerTypes.P2P &&
-        localUser.accessStatus === MeetingAccessStatuses.InMeeting &&
+        localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
         !createPeerConnectionFx.pending.getState() &&
         Boolean(
             users.filter(
                 user =>
                     localUser.id !== user.id &&
-                    user.accessStatus === MeetingAccessStatuses.InMeeting &&
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                     !connections[
                         getConnectionKey({
                             userId: user.id,
@@ -178,7 +179,7 @@ sample({
             .filter(
                 user =>
                     localUser.id !== user.id &&
-                    user.accessStatus === MeetingAccessStatuses.InMeeting &&
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                     !connections[
                         getConnectionKey({
                             userId: user.id,
@@ -214,7 +215,7 @@ sample({
 sample({
     clock: chooseSharingStreamFx.doneData,
     source: $localUserStore,
-    filter: (source, data) => Booelan(data?.id),
+    filter: (source, data) => Boolean(data?.id),
     fn: localUser => ({ sharingUserId: localUser.id }),
     target: updateMeetingSocketEvent,
 });
@@ -232,13 +233,13 @@ sample({
 sample({
     clock: chooseSharingStreamFx.doneData,
     source: sharingCommonStore,
-    filter: (source, data) => Booelan(data?.id),
+    filter: (source, data) => Boolean(data?.id),
     fn: ({ users, connections, localUser, sharingStream }, data) => ({
         connectionsData: users
             .filter(
                 user =>
                     localUser.id !== user.id &&
-                    user.accessStatus === MeetingAccessStatuses.InMeeting &&
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                     !connections[
                         getConnectionKey({
                             userId: user.id,
@@ -275,7 +276,7 @@ const mapViewSharingConnections = ({
         .filter(
             user =>
                 meeting.sharingUserId === user.id &&
-                user.accessStatus === MeetingAccessStatuses.InMeeting &&
+                user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                 !connections[
                     getConnectionKey({
                         userId: user.id,
@@ -303,7 +304,7 @@ sample({
     clock: $isScreenSharingStore,
     source: sharingCommonStore,
     filter: ({ localUser }, isScreenSharingActive) =>
-        localUser.accessStatus === MeetingAccessStatuses.InMeeting && isScreenSharingActive,
+        localUser.accessStatus === MeetingAccessStatusEnum.InMeeting && isScreenSharingActive,
     fn: mapViewSharingConnections,
     target: createPeerConnectionFx,
 });
@@ -331,7 +332,7 @@ sample({
     clock: combine({ isScreenSharing: $isScreenSharingStore, users: $meetingUsersStore }),
     source: sharingCommonStore,
     filter: ({ localUser, meeting }, { isScreenSharing }) =>
-        localUser.accessStatus === MeetingAccessStatuses.InMeeting &&
+        localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
         isScreenSharing &&
         meeting.sharingUserId === localUser.id,
     fn: ({ users, connections, localUser, sharingStream }) => ({
@@ -339,7 +340,7 @@ sample({
             .filter(
                 user =>
                     localUser.id !== user.id &&
-                    user.accessStatus === MeetingAccessStatuses.InMeeting &&
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                     !connections[
                         getConnectionKey({
                             userId: user.id,

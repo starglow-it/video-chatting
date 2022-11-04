@@ -1,6 +1,5 @@
 import React, { memo, PropsWithChildren } from 'react';
 import { useStore } from 'effector-react';
-import clsx from 'clsx';
 
 // hooks
 import { useBrowserDetect } from 'shared-frontend/hooks';
@@ -8,6 +7,7 @@ import { useBrowserDetect } from 'shared-frontend/hooks';
 // custom
 import { CustomBox, CustomGrid, ConditionalRender } from 'shared-frontend/library';
 import { LiveOfficeLogo } from 'shared-frontend/icons';
+import { AdminNavigation } from '@components/AdminNavigation/AdminNavigation';
 
 // types
 import { AdminLayoutProps } from './AdminLayout.types';
@@ -15,7 +15,10 @@ import { AdminLayoutProps } from './AdminLayout.types';
 // styles
 import styles from './AdminLayout.module.scss';
 
+import { $authStore } from '../../store';
+
 const Component = ({ children }: PropsWithChildren<AdminLayoutProps>) => {
+    const { state: authState } = useStore($authStore);
     const { isMobile } = useBrowserDetect();
 
     return (
@@ -44,6 +47,9 @@ const Component = ({ children }: PropsWithChildren<AdminLayoutProps>) => {
                                 {/* </CustomLink> */}
                             </CustomGrid>
                         </CustomBox>
+                    </ConditionalRender>
+                    <ConditionalRender condition={authState.isAuthenticated}>
+                        <AdminNavigation />
                     </ConditionalRender>
                     {children}
                 </CustomGrid>

@@ -29,11 +29,12 @@
   "dependencies": {
     "amqplib": "0.10.3",
     "axios": "0.27.2",
-    "shared-const": "workspace:*",
     "dotenv": "16.0.2",
     "livekit-server-sdk": "1.0.2",
     "npm-check-updates": "16.3.4",
-    "shared": "workspace:*",
+    "shared-const": "workspace:*",
+    "shared-types": "workspace:*",
+    "shared-utils": "workspace:*",
     "uuid": "9.0.0",
     "winston": "3.8.2"
   },

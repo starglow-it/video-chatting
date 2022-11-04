@@ -67,12 +67,13 @@ import styles from './TemplatesContainer.module.scss';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
-import { AppDialogsEnum, Template, UserTemplate } from '../../store/types';
+import { AppDialogsEnum, UserTemplate } from '../../store/types';
 
 // utils
 import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
 import { formatCountDown } from '../../utils/time/formatCountdown';
-import { useLocalization } from "@hooks/useTranslation";
+import { useLocalization } from '@hooks/useTranslation';
+import { ICommonTemplate } from 'shared-types';
 
 const Component = () => {
     const router = useRouter();
@@ -98,6 +99,7 @@ const Component = () => {
     });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
+    const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
 
     const { translation } = useLocalization('subscriptions');
 
@@ -138,7 +140,7 @@ const Component = () => {
     }, []);
 
     const handleCreateMeeting = useCallback(
-        async ({ templateId }: { templateId: Template['id'] }) => {
+        async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
             const result = await createMeetingFx({ templateId });
 
             if (result.template) {
@@ -151,7 +153,7 @@ const Component = () => {
     );
 
     const handleChooseCommonTemplate = useCallback(
-        async (templateId: Template['id']) => {
+        async (templateId: ICommonTemplate['id']) => {
             const targetTemplate = templates?.list?.find(template => template.id === templateId);
 
             if (targetTemplate?.type === 'paid') {
@@ -187,7 +189,7 @@ const Component = () => {
             deleteTemplateId,
         }: {
             deleteTemplateId: UserTemplate['id'];
-            templateId: Template['id'];
+            templateId: ICommonTemplate['id'];
         }) => {
             const targetTemplate = templates?.list?.find(template => template.id === templateId);
 
@@ -225,7 +227,12 @@ const Component = () => {
         }
 
         handleOpenSubscriptionPlans();
-    }, [isBusinessSubscription, isProfessionalSubscription, handleOpenSubscriptionPlans, templateDraft?.id]);
+    }, [
+        isBusinessSubscription,
+        isProfessionalSubscription,
+        handleOpenSubscriptionPlans,
+        templateDraft?.id,
+    ]);
 
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean, trial: boolean) => {
@@ -233,6 +240,7 @@ const Component = () => {
                 const response = await startCheckoutSessionForSubscriptionFx({
                     productId,
                     baseUrl: getCreateRoomUrl(templateDraft?.id ?? ''),
+                    cancelUrl: dashboardRoute,
                     withTrial: trial,
                 });
 
@@ -284,7 +292,7 @@ const Component = () => {
                             <CustomTypography
                                 color="colors.grayscale.semidark"
                                 dangerouslySetInnerHTML={{
-                                    __html: translation('limits.time', { timeLimit })
+                                    __html: translation('limits.time', { timeLimit }),
                                 }}
                             />
                             &nbsp;
@@ -296,7 +304,7 @@ const Component = () => {
                         <CustomTypography
                             color="colors.grayscale.semidark"
                             dangerouslySetInnerHTML={{
-                                __html: translation('limits.templates', { templatesLimit })
+                                __html: translation('limits.templates', { templatesLimit }),
                             }}
                         />
                     </CustomGrid>
@@ -352,7 +360,7 @@ const Component = () => {
                         className={styles.createRoomButton}
                     />
                 </ConditionalRender>
-                <TemplatesGrid<Template>
+                <TemplatesGrid<ICommonTemplate>
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleCommonTemplatesPageChange}
@@ -363,7 +371,7 @@ const Component = () => {
             <SubscriptionsPlans
                 withBackgroundBlur
                 isSubscriptionStep={isSubscriptionsOpen}
-                isDisabled={false}
+                isDisabled={isSubscriptionPurchasePending}
                 withActivePlan={false}
                 activePlanKey={profile.subscriptionPlanKey}
                 onChooseSubscription={handleChooseSubscription}

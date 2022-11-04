@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { PAYMENTS_PROVIDER } from 'shared';
-import { PaymentsBrokerPatterns } from 'shared';
+import { PAYMENTS_PROVIDER } from 'shared-const';
+import { PaymentsBrokerPatterns } from 'shared-const';
 import {
   CancelPaymentIntentPayload,
   CreatePaymentIntentPayload,
@@ -14,7 +14,7 @@ import {
   GetStripePortalSessionPayload,
   GetStripeSubscriptionPayload,
   LoginStripeExpressAccountPayload,
-} from 'shared';
+} from 'shared-types';
 
 @Injectable()
 export class PaymentsService {
@@ -44,7 +44,12 @@ export class PaymentsService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async createPaymentIntent(payload: CreatePaymentIntentPayload) {
+  async createPaymentIntent(
+    payload: Omit<
+      CreatePaymentIntentPayload,
+      'stripeSubscriptionId' | 'platformFee'
+    >,
+  ) {
     const pattern = { cmd: PaymentsBrokerPatterns.CreatePaymentIntent };
 
     return this.client.send(pattern, payload).toPromise();

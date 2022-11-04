@@ -1,6 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { CommonUserDTO } from './common-user.dto';
-import { ICommonUserDTO } from 'shared';
+import { ICommonUser } from 'shared-types';
 import { IMeetingNote } from '../../interfaces/meeting-note.interface';
 
 export class MeetingNoteDTO implements IMeetingNote {
@@ -14,7 +14,7 @@ export class MeetingNoteDTO implements IMeetingNote {
   @Expose()
   @Type(() => CommonUserDTO)
   @Transform((data) => data.obj.user?.['_id']?.toString())
-  user: ICommonUserDTO['id'];
+  user: ICommonUser['id'];
 
   @Expose()
   createdAt: string;

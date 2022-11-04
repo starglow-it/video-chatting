@@ -1,4 +1,3 @@
-export type PropsWithClassName<T> = T & { className?: string };
 export type CustomMediaStream = MediaStream | null | undefined;
 
 export type ParsedTimeStamp = {

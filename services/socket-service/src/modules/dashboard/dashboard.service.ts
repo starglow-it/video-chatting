@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CoreService } from '../../services/core/core.service';
-import { DashboardBrokerPatterns } from 'shared';
+import { DashboardBrokerPatterns } from 'shared-const';
 import {
   CreateNotificationPayload,
   GetNotificationsPayload,
   ReadNotificationsPayload,
-} from 'shared';
+} from 'shared-types';
 
 @Injectable()
 export class DashboardService {

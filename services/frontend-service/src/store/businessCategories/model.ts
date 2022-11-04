@@ -1,14 +1,15 @@
 import { rootDomain } from '../domains';
-import { BusinessCategory, EntityList } from '../types';
+import { EntityList } from '../types';
+import { IBusinessCategory } from 'shared-types';
 
-const initialCategoriesStore: EntityList<BusinessCategory> = {
+const initialCategoriesStore: EntityList<IBusinessCategory> = {
     list: [],
     count: 0,
 };
 
 export const $businessCategoriesStore =
-    rootDomain.createStore<EntityList<BusinessCategory>>(initialCategoriesStore);
+    rootDomain.createStore<EntityList<IBusinessCategory>>(initialCategoriesStore);
 export const getBusinessCategoriesFx = rootDomain.createEffect<
     { skip: number; limit: number },
-    EntityList<BusinessCategory> | undefined | null
+    EntityList<IBusinessCategory> | undefined | null
 >('getBusinessCategoriesFx');

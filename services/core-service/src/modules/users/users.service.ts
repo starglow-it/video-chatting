@@ -7,9 +7,8 @@ import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from '../../schemas/user.schema';
 
 // shared
-import { ICommonUserDTO } from 'shared';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { IUpdateProfile } from 'shared';
+import { ICommonUser, IUpdateProfile } from 'shared-types';
 
 import {
   SocialLink,
@@ -122,19 +121,21 @@ export class UsersService {
   }
 
   async findByIdAndUpdate(
-    id: ICommonUserDTO['id'],
-    data: Partial<ICommonUserDTO>,
+    id: ICommonUser['id'],
+    data: Partial<ICommonUser>,
     session?: ITransactionSession,
   ) {
-    return this.user.findByIdAndUpdate(
-      id,
-      { $set: data },
-      { session: session?.session, new: true },
-    ).exec();
+    return this.user
+      .findByIdAndUpdate(
+        id,
+        { $set: data },
+        { session: session?.session, new: true },
+      )
+      .exec();
   }
 
   async findById(
-    id: ICommonUserDTO['id'],
+    id: ICommonUser['id'],
     { session }: ITransactionSession,
     populatePaths?: CustomPopulateOptions,
   ) {
@@ -194,9 +195,7 @@ export class UsersService {
       .exec();
   }
 
-  prepareUserUpdateData(
-    data: Partial<IUpdateProfile>,
-  ): Partial<ICommonUserDTO> {
+  prepareUserUpdateData(data: Partial<IUpdateProfile>): Partial<ICommonUser> {
     return {
       email: data.email,
       fullName: data.fullName,

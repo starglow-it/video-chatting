@@ -45,7 +45,7 @@ import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
 
 // types
-import { AppDialogsEnum, SocialLink } from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 import { MeetingSettingsPanelProps, SettingsData } from './types';
 
 // const
@@ -62,6 +62,7 @@ import {
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
 } from '../../../store/roomStores';
+import { ISocialLink } from 'shared-types';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -145,11 +146,11 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
 
         const newDirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
 
-        const paddedNextSocials = padArray<SocialLink>(
-            (nextSocials || []) as SocialLink[],
+        const paddedNextSocials = padArray<ISocialLink>(
+            (nextSocials || []) as ISocialLink[],
             Object.keys(SOCIAL_LINKS).length,
         );
-        const paddedCurrentSocials = padArray<SocialLink>(
+        const paddedCurrentSocials = padArray<ISocialLink>(
             template?.socials || [],
             Object.keys(SOCIAL_LINKS).length,
         );
@@ -234,7 +235,7 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                 }
 
                 const filteredSocials = socials
-                    ?.filter((social: SocialLink) => social.value)
+                    ?.filter((social: ISocialLink) => social.value)
                     ?.reduce((acc, b) => ({ ...acc, [b.key]: b.value }), {});
 
                 let filteredBusinessCategories;

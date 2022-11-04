@@ -1,4 +1,5 @@
-import { EntityList, ErrorState, Profile, UserTemplate } from '../types';
+import { EntityList, Profile, UserTemplate } from '../types';
+import { ErrorState } from 'shared-types';
 
 export type UpdateProfileEmailPayload = { email: string };
 export type UpdateProfilePasswordPayload = {

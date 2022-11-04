@@ -21,7 +21,7 @@ import styles from './WelcomePageContainer.module.scss';
 
 // stores
 import { $templatesStore, getTemplatesFx } from '../../store';
-import { Template } from '../../store/types';
+import { ICommonTemplate } from 'shared-types';
 
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
@@ -33,7 +33,7 @@ const WelcomePageContainer = memo(() => {
         })();
     }, []);
 
-    const handleStartOnboarding = useCallback((templateId: Template['id']) => {
+    const handleStartOnboarding = useCallback((templateId: ICommonTemplate['id']) => {
         WebStorage.save({ key: StorageKeysEnum.templateId, data: { templateId } });
 
         router.push(`/register`);
@@ -63,7 +63,7 @@ const WelcomePageContainer = memo(() => {
                     <CustomTypography variant="h1" nameSpace="welcome" translation="title" />
                 </CustomGrid>
                 <CustomTypography variant="h4" nameSpace="welcome" translation="text" />
-                <TemplatesGrid<Template>
+                <TemplatesGrid<ICommonTemplate>
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleCommonTemplatesPageChange}

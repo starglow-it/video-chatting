@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 import { CustomGrid, CustomBox, CustomTypography } from 'shared-frontend/library';
 
@@ -38,14 +39,17 @@ const ChartLegendItem = ({ data, totalNumber }: ChartLegendItemProps) => (
     </CustomGrid>
 );
 
-const Component = ({ totalNumber, dataSets }: ChartLegendProps) => {
+const Component = ({ totalNumber, dataSets, className }: PropsWithClassName<ChartLegendProps>) => {
     const renderData = useMemo(
-        () => dataSets.map(set => <ChartLegendItem data={set} totalNumber={totalNumber} />),
+        () =>
+            dataSets.map(set => (
+                <ChartLegendItem key={set.label} data={set} totalNumber={totalNumber} />
+            )),
         [dataSets, totalNumber],
     );
 
     return (
-        <CustomGrid container rowGap={3}>
+        <CustomGrid container rowGap={3} className={className}>
             {renderData}
         </CustomGrid>
     );

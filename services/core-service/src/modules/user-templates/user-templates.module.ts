@@ -18,6 +18,7 @@ import { BusinessCategoriesModule } from '../business-categories/business-catego
 import { UsersModule } from '../users/users.module';
 import { AwsConnectorModule } from '../../services/aws-connector/aws-connector.module';
 import { CommonTemplatesModule } from '../common-templates/common-templates.module';
+import { RoomsStatisticsModule } from '../rooms-statistics/rooms-statistics.module';
 
 // services
 import { UserTemplatesService } from './user-templates.service';
@@ -32,6 +33,7 @@ import { UserTemplatesController } from './user-templates.controller';
     LanguagesModule,
     CommonTemplatesModule,
     AwsConnectorModule,
+    RoomsStatisticsModule,
     MongooseModule.forFeature([
       { name: UserTemplate.name, schema: UserTemplateSchema },
       { name: SocialLink.name, schema: SocialLinkSchema },

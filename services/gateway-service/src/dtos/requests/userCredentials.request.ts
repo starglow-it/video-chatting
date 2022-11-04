@@ -1,6 +1,12 @@
-import {IsNotEmpty, IsString, IsEmail, MinLength, IsOptional} from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsEmail,
+  MinLength,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IUserCredentials } from 'shared';
+import { IUserCredentials } from 'shared-types';
 
 export class UserCredentialsRequest implements IUserCredentials {
   @IsEmail({}, { message: 'Invalid email' })

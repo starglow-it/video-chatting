@@ -12,8 +12,12 @@
   left: rem(94px);
 }
 
-.popper {
-  cursor: auto;
+.paper {
+  width: rem(298px);
+  height: fit-content;
+  padding: rem(16px);
+  color: $primary-white;
+  left: rem(96px);
 }
 
 .title {

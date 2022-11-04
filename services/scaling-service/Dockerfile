@@ -18,7 +18,7 @@ RUN pnpm install
 
 COPY ./services/scaling-service ./services/scaling-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,scaling-service
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types,scaling-service
 
 FROM node:18.9.1-alpine
 

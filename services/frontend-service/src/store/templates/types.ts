@@ -1,5 +1,6 @@
-import { Template, UserTemplate } from '../types';
+import { UserTemplate } from '../types';
 import { ParsedTimeStamp } from '../../types';
+import { ICommonTemplate } from 'shared-types';
 
 export type EditUserTemplatePayload = {
     templateId: UserTemplate['id'];
@@ -7,14 +8,14 @@ export type EditUserTemplatePayload = {
 };
 export type EditUserTemplateResponse = UserTemplate | null;
 export type EditTemplatePayload = {
-    templateId: Template['id'];
-    data: Omit<Partial<Template>, 'id' | 'previewUrls'>;
+    templateId: ICommonTemplate['id'];
+    data: Omit<Partial<ICommonTemplate>, 'id' | 'previewUrls'>;
 };
-export type EditTemplateResponse = Template | null;
-export type CreateTemplateResponse = Template | null | undefined;
-export type UploadTemplateFilePayload = { templateId: Template['id']; file: File };
+export type EditTemplateResponse = ICommonTemplate | null;
+export type CreateTemplateResponse = ICommonTemplate | null | undefined;
+export type UploadTemplateFilePayload = { templateId: ICommonTemplate['id']; file: File };
 export type UploadUserTemplateFilePayload = { templateId: UserTemplate['id']; file: File };
-export type UploadTemplateFileResponse = Template | null;
+export type UploadTemplateFileResponse = ICommonTemplate | null;
 export type UploadUserTemplateFileResponse = UserTemplate | null;
 export type GetEditingTemplatePayload = {
     templateId: UserTemplate['id'];
@@ -30,9 +31,11 @@ export type SendScheduleInvitePayload = {
     userEmails: string[];
 };
 
-export type PurchaseTemplatePayload = { templateId: Template['id'] };
-export type GetUserTemplatePayload = { templateId: Template['id']; withCredentials: false };
+export type PurchaseTemplatePayload = { templateId: ICommonTemplate['id'] };
+export type GetUserTemplatePayload = { templateId: ICommonTemplate['id']; withCredentials: false };
 export type AddTemplateToUserEffectPayload = {
-    templateId: Template['id'];
+    templateId: ICommonTemplate['id'];
 };
 export type AddTemplateToUserEffectResponse = UserTemplate | null;
+
+export type DeleteCommonTemplatePayload = { templateId: Template['id'] };

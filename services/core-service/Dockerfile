@@ -18,7 +18,7 @@ RUN pnpm install
 
 COPY ./services/core-service ./services/core-service
 
-RUN npx nx run-many --target=build --projects=shared-const,shared,shared-utils,core-service
+RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils,core-service
 
 FROM node:18.9.1-alpine
 

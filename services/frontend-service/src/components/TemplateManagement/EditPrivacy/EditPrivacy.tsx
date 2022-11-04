@@ -77,29 +77,35 @@ const Component = ({ onNextStep, onPreviousStep, onUpgradePlan }: EditPrivacyPro
 
     const optionItems = useMemo(
         () =>
-            options.map(({ id, value, translationKey, Icon, availableWithTrial, withUpgradeButton }) => (
-                <OptionItem
-                    key={id}
-                    onClick={() => handleChangeActiveOption(value)}
-                    isActive={activeTab.value === value}
-                    nameSpace="createRoom"
-                    translationKey={translationKey}
-                    Icon={Icon}
-                    disabled={!availableWithTrial && isTrial}
-                    onUpgradeClick={
-                        withUpgradeButton && !availableWithTrial && isTrial ? onUpgradePlan : undefined
-                    }
-                />
-            )),
+            options.map(
+                ({ id, value, translationKey, Icon, availableWithTrial, withUpgradeButton }) => (
+                    <OptionItem
+                        key={id}
+                        onClick={() => handleChangeActiveOption(value)}
+                        isActive={activeTab.value === value}
+                        nameSpace="createRoom"
+                        translationKey={translationKey}
+                        Icon={Icon}
+                        disabled={!availableWithTrial && isTrial}
+                        onUpgradeClick={
+                            withUpgradeButton && !availableWithTrial && isTrial
+                                ? onUpgradePlan
+                                : undefined
+                        }
+                    />
+                ),
+            ),
         [options, activeTab, handleChangeActiveOption, isTrial, onUpgradePlan],
     );
 
     const textWithLinks = useMemo(
         () =>
-            !isTrial ? translation(`editPrivacy.link`, {
-                termsLink: `${frontendConfig.frontendUrl}/agreements`,
-                privacyLink: `https://en.wikipedia.org/wiki/Not_safe_for_work`,
-            }) : translation('editPrivacy.upgradePlan'),
+            !isTrial
+                ? translation(`editPrivacy.link`, {
+                      termsLink: `${frontendConfig.frontendUrl}/agreements`,
+                      privacyLink: `https://en.wikipedia.org/wiki/Not_safe_for_work`,
+                  })
+                : translation('editPrivacy.upgradePlan'),
         [isTrial],
     );
 

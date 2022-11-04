@@ -10,7 +10,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IUpdateTemplate, IBusinessCategory } from 'shared';
+import { IUpdateTemplate, IBusinessCategory } from 'shared-types';
 
 class SocialsDTO {
   @IsOptional()

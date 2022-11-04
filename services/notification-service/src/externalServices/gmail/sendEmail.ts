@@ -1,6 +1,6 @@
 import nodemailer, { Transporter } from 'nodemailer';
 
-import { SendEmailRequest } from 'shared';
+import { SendEmailRequest } from 'shared-types';
 import { getAllConfigVars, getConfigVar } from '../../services/config';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 

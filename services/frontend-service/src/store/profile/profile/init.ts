@@ -13,6 +13,7 @@ import {
     checkResetPasswordLinkFx,
     resetPasswordFx,
     deleteProfileFx,
+    resetTrialExpiredNotificationFx,
 } from './model';
 import { initialProfileState } from './const';
 import { resetAuthStateEvent } from '../../auth/model';
@@ -29,6 +30,7 @@ import { handleSendResetPasswordLink } from '../handlers/handleSendResetPassword
 import { handleCheckResetPasswordLink } from '../handlers/handleCheckResetPasswordLink';
 import { handleResetPassword } from '../handlers/handleResetPassword';
 import { handleDeleteProfile } from '../handlers/handleDeleteProfile';
+import { handleResetTrialExpiredNotification } from '../handlers/handleResetTrialExpiredNotification';
 
 getProfileFx.use(handleGetProfile);
 updateProfileFx.use(handleUpdateProfileInfo);
@@ -40,6 +42,7 @@ sendResetPasswordLinkFx.use(handleSendResetPasswordLink);
 checkResetPasswordLinkFx.use(handleCheckResetPasswordLink);
 resetPasswordFx.use(handleResetPassword);
 deleteProfileFx.use(handleDeleteProfile);
+resetTrialExpiredNotificationFx.use(handleResetTrialExpiredNotification);
 
 $profileStore.reset(clearProfileEvent);
 

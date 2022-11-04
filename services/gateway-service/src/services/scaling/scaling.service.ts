@@ -1,9 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { SCALING_PROVIDER } from 'shared';
+import { SCALING_PROVIDER } from 'shared-const';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateServerPayload } from 'shared';
-import { ScalingBrokerPatterns } from 'shared';
-import { ICommonMeetingInstance } from 'shared';
 
 @Injectable()
 export class ScalingService {
@@ -11,14 +8,5 @@ export class ScalingService {
 
   async onApplicationBootstrap() {
     await this.client.connect();
-  }
-
-  async createServerInstance(payload?: CreateServerPayload): Promise<{
-    instanceId: ICommonMeetingInstance['instanceId'];
-    serverIp: ICommonMeetingInstance['serverIp'];
-  }> {
-    const pattern = { cmd: ScalingBrokerPatterns.CreateServer };
-
-    return this.client.send(pattern, payload).toPromise();
   }
 }

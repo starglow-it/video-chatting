@@ -20,14 +20,8 @@ import {
 import { generateVerificationCode } from '../../utils/generateVerificationCode';
 
 // shared
-import { ResponseSumType } from 'shared';
-
-// const
-import { emailTemplates } from 'shared';
-import { SAME_PASSWORD, USER_EXISTS } from 'shared';
-
-// interfaces
-import { ICommonUserDTO } from 'shared';
+import { emailTemplates, SAME_PASSWORD, USER_EXISTS } from 'shared-const';
+import { ResponseSumType, ICommonUser } from 'shared-types';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';
@@ -60,7 +54,7 @@ export class ProfileController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async getProfile(@Request() req): Promise<ResponseSumType<ICommonUserDTO>> {
+  async getProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
     const user = await this.coreService.findUserById({
       userId: req.user.userId,
     });
@@ -84,7 +78,7 @@ export class ProfileController {
   async updateProfile(
     @Body() data: UpdateProfileRequest,
     @Request() req,
-  ): Promise<ResponseSumType<ICommonUserDTO>> {
+  ): Promise<ResponseSumType<ICommonUser>> {
     const user = await this.coreService.findUserAndUpdate({
       userId: req.user.userId,
       data,
@@ -146,7 +140,7 @@ export class ProfileController {
   async updateProfileEmail(
     @Body() updateEmail: { email: string },
     @Request() req,
-  ): Promise<ResponseSumType<ICommonUserDTO>> {
+  ): Promise<ResponseSumType<ICommonUser>> {
     try {
       const frontendUrl = await this.configService.get('frontendUrl');
 
@@ -364,6 +358,38 @@ export class ProfileController {
       this.logger.error(
         {
           message: `An error occurs, while update password`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/reset-trial-notification')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Reset trial notification' })
+  @ApiOkResponse({
+    description: 'Notification reset successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async resetTrialNotification(@Request() req) {
+    try {
+      const user = await this.coreService.resetTrialNotification({
+        userId: req.user.userId,
+      });
+
+      return {
+        success: true,
+        result: user,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while reset trial notification`,
         },
         JSON.stringify(err),
       );

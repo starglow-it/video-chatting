@@ -20,7 +20,7 @@ import { AwsConnectorService } from '../../services/aws-connector/aws-connector.
 import { CountersService } from '../counters/counters.service';
 
 // const
-import { Counters } from 'shared';
+import { Counters } from 'shared-types';
 
 // helpers
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
@@ -29,7 +29,7 @@ import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types/custom';
 
 // const
-import { DEFAULT_TEMPLATE_DATA } from 'shared';
+import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
 
 // utils
 import { getScreenShots } from '../../utils/images/getScreenShots';
@@ -62,7 +62,7 @@ export class CommonTemplatesService {
     session,
   }: {
     query: FilterQuery<CommonTemplateDocument>;
-    options?: { skip?: number; limit?: number; sort?: string; };
+    options?: { skip?: number; limit?: number; sort?: string };
     populatePaths?: CustomPopulateOptions;
     session?: ITransactionSession;
   }) {
@@ -210,5 +210,19 @@ export class CommonTemplatesService {
     });
 
     return Promise.all(uploadedImagesPromises);
+  }
+
+  async deleteCommonTemplate({
+    query,
+    session,
+  }: {
+    query: FilterQuery<CommonTemplateDocument>;
+    session?: ITransactionSession;
+  }): Promise<any> {
+    const options: QueryOptions = {
+      session: session?.session,
+    };
+
+    return this.commonTemplate.deleteOne(query, options).exec();
   }
 }

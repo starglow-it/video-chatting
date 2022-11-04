@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { IBusinessCategory } from 'shared';
+import { IBusinessCategory } from 'shared-types';
 
 export class CommonBusinessCategoryDTO implements IBusinessCategory {
   @Expose()

@@ -57,8 +57,8 @@ import {
 } from '../../store/roomStores';
 
 // types
-import { MeetingAccessStatuses } from '../../store/types';
 import { SavedSettings } from '../../types';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './MeetingContainer.module.scss';
@@ -72,10 +72,10 @@ const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
 
     const ChildComponent = useMemo(() => {
-        if (localUser.accessStatus === MeetingAccessStatuses.EnterName) {
+        if (localUser.accessStatus === MeetingAccessStatusEnum.EnterName) {
             return EnterMeetingName;
         }
-        if (localUser.accessStatus === MeetingAccessStatuses.Kicked) {
+        if (localUser.accessStatus === MeetingAccessStatusEnum.Kicked) {
             return KickedUser;
         }
 
@@ -129,7 +129,7 @@ const MeetingContainer = memo(() => {
             });
 
             updateLocalUserEvent({
-                accessStatus: MeetingAccessStatuses.EnterName,
+                accessStatus: MeetingAccessStatusEnum.EnterName,
             });
         })();
 
@@ -186,7 +186,7 @@ const MeetingContainer = memo(() => {
                 if (Object.keys(savedSettings)?.length && isOwner) {
                     updateLocalUserEvent({
                         isAuraActive: savedSettings.auraSetting,
-                        accessStatus: MeetingAccessStatuses.InMeeting,
+                        accessStatus: MeetingAccessStatusEnum.InMeeting,
                     });
 
                     joinMeetingEvent({
@@ -206,7 +206,7 @@ const MeetingContainer = memo(() => {
             {Boolean(meetingTemplate?.id) && (
                 <ConditionalRender condition={isSettingsChecked}>
                     <ConditionalRender
-                        condition={MeetingAccessStatuses.InMeeting !== localUser.accessStatus}
+                        condition={MeetingAccessStatusEnum.InMeeting !== localUser.accessStatus}
                     >
                         <CustomBox
                             className={clsx(styles.waitingRoomWrapper, {
@@ -218,7 +218,7 @@ const MeetingContainer = memo(() => {
                         </CustomBox>
                     </ConditionalRender>
                     <ConditionalRender
-                        condition={localUser.accessStatus === MeetingAccessStatuses.InMeeting}
+                        condition={localUser.accessStatus === MeetingAccessStatusEnum.InMeeting}
                     >
                         <MeetingView />
                     </ConditionalRender>

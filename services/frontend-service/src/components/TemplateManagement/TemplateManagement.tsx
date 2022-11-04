@@ -5,15 +5,15 @@ import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 // store
-import {
-    $isBusinessSubscription,
-    $isProfessionalSubscription,
-    appDialogsApi,
-} from '../../store';
+import { $isBusinessSubscription, $isProfessionalSubscription, appDialogsApi } from '../../store';
 
 // const
 import { dashboardRoute } from '../../const/client-routes';
-import { MAX_CUSTOM_LINK_LENGTH, MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from '../../const/templates/info';
+import {
+    MAX_CUSTOM_LINK_LENGTH,
+    MAX_DESCRIPTION_LENGTH,
+    MAX_NAME_LENGTH,
+} from '../../const/templates/info';
 
 // custom
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
@@ -26,16 +26,10 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // components
-import {
-    ConfirmCancelRoomCreationDialog
-} from '@components/Dialogs/ConfirmCancelRoomCreationDialog/ConfirmCancelRoomCreationDialog';
-import {
-    TemplateBackgroundPreview
-} from '@components/TemplateManagement/TemplateBackgroundPreview/TemplateBackgroundPreview';
+import { ConfirmCancelRoomCreationDialog } from '@components/Dialogs/ConfirmCancelRoomCreationDialog/ConfirmCancelRoomCreationDialog';
+import { TemplateBackgroundPreview } from '@components/TemplateManagement/TemplateBackgroundPreview/TemplateBackgroundPreview';
 import { UploadTemplateFile } from '@components/TemplateManagement/UploadTemplateFile/UploadTemplateFile';
-import {
-    EditTemplateDescription
-} from '@components/TemplateManagement/EditTemplateDescription/EditTemplateDescription';
+import { EditTemplateDescription } from '@components/TemplateManagement/EditTemplateDescription/EditTemplateDescription';
 import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttendeesPosition/EditAttendeesPosition';
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
@@ -59,7 +53,10 @@ import { AppDialogsEnum } from '../../store/types';
 
 // validation
 import { booleanSchema, simpleStringSchemaWithLength } from '../../validation/common';
-import { participantsNumberSchema, participantsPositionsSchema } from '../../validation/templates/participants';
+import {
+    participantsNumberSchema,
+    participantsPositionsSchema,
+} from '../../validation/templates/participants';
 import { tagsSchema } from '../../validation/templates/tags';
 
 // styles
@@ -67,6 +64,7 @@ import styles from './TemplateManagement.module.scss';
 
 // utils
 import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
+import { parseBase64 } from '../../utils/string/parseBase64';
 
 enum TabsValues {
     Background = 1,
@@ -106,13 +104,14 @@ const validationSchema = yup.object({
     participantsPositions: participantsPositionsSchema(),
 });
 
-const adjustUserPositions = (participantsPositions: { top: number; left: number }[]) =>
-    participantsPositions.map(({ top, left }) => ({
-        bottom: (100 - top) / 100,
-        left: left / 100,
-    }));
-
-const Component = ({ template, onCancel, onSubmit, onUploadFile, onUpgradePlan, isFileUploading }: TemplateManagementProps) => {
+const Component = ({
+    template,
+    onCancel,
+    onSubmit,
+    onUploadFile,
+    onUpgradePlan,
+    isFileUploading,
+}: TemplateManagementProps) => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
 
@@ -139,7 +138,7 @@ const Component = ({ template, onCancel, onSubmit, onUploadFile, onUpgradePlan, 
     const previousParticipantsNumber = usePrevious(participantsNumber);
 
     const controlPanelRef = useRef<HTMLDivElement | null>(null);
-
+    const savedTemplateProgress = useRef<IUploadTemplateFormData | null>(null);
 
     const { activeValue, activeItem, onValueChange, onNextValue, onPreviousValue } =
         useValueSwitcher({
@@ -193,19 +192,17 @@ const Component = ({ template, onCancel, onSubmit, onUploadFile, onUpgradePlan, 
             }
 
             if (response.draftPreviewUrls) {
-                setValue('previewUrls', response.draftPreviewUrls);
+                setValue(
+                    'previewUrls',
+                    response.draftPreviewUrls.map(({ id }) => id),
+                );
             }
 
             if (response.draftUrl) {
                 setValue('url', response.draftUrl);
             }
         })();
-    }, [
-        background,
-        onUploadFile,
-        isFileUploadRequested,
-        onResetRequestFileUpload,
-    ]);
+    }, [background, onUploadFile, isFileUploadRequested, onResetRequestFileUpload]);
 
     useEffect(() => {
         if (isTemplateDataWasSet || !template) {
@@ -221,12 +218,12 @@ const Component = ({ template, onCancel, onSubmit, onUploadFile, onUpgradePlan, 
             participantsNumber: template.maxParticipants,
             participantsPositions: template.usersPosition.length
                 ? template.usersPosition.map(({ bottom, left }) => ({
-                    top: 100 - bottom * 100,
-                    left: left * 100,
-                    id: getRandomNumber(10000).toString(),
-                }))
+                      top: 100 - bottom * 100,
+                      left: left * 100,
+                      id: getRandomNumber(10000).toString(),
+                  }))
                 : defaultValues.participantsPositions,
-            previewUrls: template.previewUrls,
+            previewUrls: template.previewUrls.map(({ id }) => id),
             isPublic: template.isPublic,
         });
         if (template.maxParticipants > 1) {
@@ -269,48 +266,54 @@ const Component = ({ template, onCancel, onSubmit, onUploadFile, onUpgradePlan, 
         if (!router.isReady) {
             return;
         }
-        if (typeof router.query.step === 'string' && activeItem.label.toLowerCase() !== router.query.step) {
+        if (
+            typeof router.query.step === 'string' &&
+            activeItem.label.toLowerCase() !== router.query.step
+        ) {
             const tab = tabs.find(({ label }) => label.toLowerCase() === router.query.step);
             if (tab) {
                 onValueChange(tab);
             }
         }
+        if (typeof router.query.data === 'string') {
+            savedTemplateProgress.current = parseBase64(
+                router.query.data,
+            ) as IUploadTemplateFormData;
+        }
     }, [router.isReady, onValueChange]);
+
+    useEffect(() => {
+        if (!savedTemplateProgress.current) {
+            return;
+        }
+
+        const savedProgress = savedTemplateProgress.current;
+        reset({
+            name: savedProgress.name,
+            url: savedProgress.url,
+            description: savedProgress.description,
+            customLink: savedProgress.customLink,
+            tags: savedProgress.tags,
+            participantsNumber: savedProgress.participantsNumber,
+            participantsPositions: savedProgress.participantsPositions,
+            previewUrls: savedProgress.previewUrls,
+            isPublic: savedProgress.isPublic,
+        });
+        if (savedProgress.participantsNumber > 1) {
+            onPreventNextParticipantsPositionsUpdate();
+        }
+    }, [isTemplateDataWasSet]);
 
     const handleSubmit = useCallback(
         onSubmitForm(async data => {
-            const payload = {
-                name: data.name,
-                description: data.description,
-                customLink: data.customLink,
-                isPublic: data.isPublic,
-                maxParticipants: data.participantsNumber,
-                usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
-                draft: false,
-                url: data.url,
-                previewUrls: data.previewUrls.map(({ id }) => id),
-            };
-            onSubmit(payload);
+            onSubmit(data);
         }),
         [onSubmit],
     );
 
     const handleUpgradePlanClick = useCallback(
         onSubmitForm(async data => {
-            const payload = {
-                name: data.name,
-                description: data.description,
-                customLink: data.customLink,
-                isPublic: data.isPublic,
-                maxParticipants: data.participantsNumber,
-                usersPosition: adjustUserPositions(data.participantsPositions),
-                businessCategories: data.tags,
-                draft: false,
-                url: data.url,
-                previewUrls: data.previewUrls.map(({ id }) => id),
-            };
-            onUpgradePlan(payload);
+            onUpgradePlan(data);
         }),
         [onSubmit],
     );
@@ -487,6 +490,6 @@ const Component = ({ template, onCancel, onSubmit, onUploadFile, onUpgradePlan, 
             <ConfirmCancelRoomCreationDialog onConfirm={onCancel} />
         </CustomGrid>
     );
-}
+};
 
 export const TemplateManagement = memo(Component);

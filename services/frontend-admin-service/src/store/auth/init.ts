@@ -17,10 +17,8 @@ checkAdminAuthFx.use(handleCheckAdminAuthentication);
 logoutAdminFx.use(handleLogoutAdmin);
 
 $authStore
-    .on(
-        [loginAdminFx.doneData, checkAdminAuthFx.doneData, logoutAdminFx.doneData],
-        (state, data) => data,
-    )
+    .on([loginAdminFx.doneData, logoutAdminFx.doneData], (state, data) => data)
+    .on(checkAdminAuthFx.doneData, (state, data) => ({ state: data.state, error: null }))
     .on(resetAuthStateEvent, () => ({
         error: null,
         state: {

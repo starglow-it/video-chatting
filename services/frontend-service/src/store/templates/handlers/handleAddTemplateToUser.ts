@@ -1,7 +1,8 @@
-import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
+import { ErrorState } from 'shared-types';
 
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { AddTemplateToUserEffectPayload, AddTemplateToUserEffectResponse } from '../types';
-import { ErrorState, UserTemplate } from '../../types';
+import { UserTemplate } from '../../types';
 import { addTemplateToUserUrl } from '../../../utils/urls';
 
 export const handleAddTemplateToUser = async ({

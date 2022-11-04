@@ -1,15 +1,29 @@
-import {BadRequestException, Controller, Get, Logger} from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { ResponseSumType } from "shared";
+import {
+  ResponseSumType,
+  RoomsStatistics,
+  RoomRatingStatistics,
+  SubscriptionsStatisticsType,
+  UserStatistics,
+} from 'shared-types';
 
 // services
 import { ConfigClientService } from '../../services/config/config.service';
 import { CoreService } from '../../services/core/core.service';
+import { TemplatesService } from '../templates/templates.service';
 
 @Controller('statistics')
 export class StatisticsController {
@@ -18,6 +32,7 @@ export class StatisticsController {
   constructor(
     private configService: ConfigClientService,
     private coreService: CoreService,
+    private templatesService: TemplatesService,
   ) {}
 
   @Get('/users')
@@ -29,23 +44,30 @@ export class StatisticsController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async getUsersStatistics(): Promise<ResponseSumType<{
-    totalNumber: number,
-    users: any
-  }>> {
-    const usersCount = await this.coreService.countUsers({
-      isConfirmed: true,
-    });
+  async getUsersStatistics(): Promise<ResponseSumType<UserStatistics>> {
+    try {
+      const usersCount = await this.coreService.countUsers({
+        isConfirmed: true,
+      });
 
-    const countryStatistics = await this.coreService.getCountryStatistics({});
+      const countryStatistics = await this.coreService.getCountryStatistics({});
 
-    return {
-      result: {
-        totalNumber: usersCount,
-        users: countryStatistics,
-      },
-      success: true,
-    };
+      return {
+        result: {
+          totalNumber: usersCount,
+          data: countryStatistics,
+        },
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get users statistics`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
   }
 
   @Get('/subscriptions')
@@ -57,46 +79,167 @@ export class StatisticsController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async getSubscriptionsStatistics(): Promise<ResponseSumType<{
-    totalNumber: number;
-    subscriptions: {
-      house: number,
-      business: number,
-      professional: number
-    }
-  }>> {
+  async getSubscriptionsStatistics(): Promise<
+    ResponseSumType<SubscriptionsStatisticsType>
+  > {
     try {
-      const startData = {
-        house: 0,
-        business: 0,
-        professional: 0
-      };
+      const startData = [
+        { label: 'House', value: 0, color: '#FF884E' },
+        { label: 'Professional', value: 0, color: '#69E071' },
+        { label: 'Business', value: 0, color: '#2E6DF2' },
+      ];
 
       const usersWithSubscriptions = await this.coreService.findUsers({
         isConfirmed: true,
       });
 
       const subscriptionsData = usersWithSubscriptions.reduce((acc, b) => {
-        const planKey = b?.subscriptionPlanKey?.toLowerCase();
+        const planKey = b?.subscriptionPlanKey;
 
-        return {...acc, [planKey]: acc[planKey] + 1 }
+        return acc.map((data) =>
+          data.label === planKey ? { ...data, value: data.value + 1 } : data,
+        );
       }, startData);
 
-      const totalNumber = Object.values(subscriptionsData).reduce((acc, b) => acc + b, 0);
+      const totalNumber = Object.values(subscriptionsData).reduce(
+        (acc, b) => acc + b.value,
+        0,
+      );
 
       return {
         result: {
           totalNumber,
-          subscriptions: subscriptionsData,
+          data: subscriptionsData,
         },
         success: true,
       };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get admin profile`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get subscriptions statistics`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/rooms')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Rooms Statistics' })
+  @ApiOkResponse({
+    description: 'Rooms statistics retrieved successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getRoomsStatistics(): Promise<ResponseSumType<RoomsStatistics>> {
+    try {
+      const commonTemplates = await this.templatesService.getCommonTemplates({
+        skip: 0,
+        limit: 0,
+      });
+
+      const totalNumber = commonTemplates?.list?.reduce((acc) => acc + 1, 0);
+
+      const customTemplates = commonTemplates?.list
+        ?.filter((template) => template.author)
+        .reduce((acc) => ({ ...acc, value: acc.value + 1 }), {
+          label: 'Custom Rooms',
+          value: 0,
+          color: '#FF884E',
+        });
+
+      const platformTemplates = commonTemplates?.list
+        ?.filter((template) => !template.author)
+        .reduce((acc) => ({ ...acc, value: acc.value + 1 }), {
+          label: 'Common Rooms',
+          value: 0,
+          color: '#2E6DF2',
+        });
+
+      return {
+        result: {
+          totalNumber,
+          data: [customTemplates, platformTemplates],
+        },
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get rooms statistics`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/rating')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Rooms Rating Statistic' })
+  @ApiOkResponse({
+    description: 'Rooms rating statistic retrieved successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getRoomsRatingStatistic(
+    @Query('basedOn') basedOn: string,
+    @Query('roomType') roomType: string,
+  ): Promise<ResponseSumType<RoomRatingStatistics>> {
+    try {
+      const roomsStatistics = await this.coreService.getRoomRatingStatistic({
+        ratingKey: basedOn,
+        roomKey: roomType,
+      });
+
+      return {
+        result: {
+          totalNumber: 0,
+          data: roomsStatistics,
+        },
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get rooms rating statistic`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/monetization')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get Monetization Statistic' })
+  @ApiOkResponse({
+    description: 'Monetization statistic retrieved successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getMonetizationStatistic(
+    @Param('period') period: string,
+    @Param('type') type: string,
+  ): Promise<ResponseSumType<any>> {
+    try {
+      return {
+        result: {
+          data: [],
+          totalNumber: 0,
+        },
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get monetization statistic`,
+        },
+        JSON.stringify(err),
       );
       throw new BadRequestException(err);
     }

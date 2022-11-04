@@ -1,17 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared';
-import { UserBrokerPatterns } from 'shared';
-import { ICommonUserDTO } from 'shared';
-import { IUserTemplate } from 'shared';
+import { CORE_PROVIDER } from 'shared-const';
+import { TemplateBrokerPatterns, UserBrokerPatterns } from 'shared-const';
 import {
+  IUserTemplate,
+  ICommonUser,
+  GetUserTemplateByIdPayload,
   FindUserByIdPayload,
   FindUsersByIdPayload,
   UpdateUserPayload,
-} from 'shared';
-import { TemplateBrokerPatterns } from 'shared';
-import { GetUserTemplateByIdPayload } from 'shared';
+} from 'shared-types';
 
 @Injectable()
 export class CoreService {
@@ -21,15 +20,13 @@ export class CoreService {
     await this.client.connect();
   }
 
-  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUserDTO> {
+  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserById };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUsersById(
-    payload: FindUsersByIdPayload,
-  ): Promise<ICommonUserDTO[]> {
+  async findUsersById(payload: FindUsersByIdPayload): Promise<ICommonUser[]> {
     const pattern = { cmd: UserBrokerPatterns.FindUsersById };
 
     return this.client.send(pattern, payload).toPromise();
@@ -51,7 +48,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async updateUser(payload: UpdateUserPayload): Promise<ICommonUserDTO> {
+  async updateUser(payload: UpdateUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdateUser };
 
     return this.client.send(pattern, payload).toPromise();

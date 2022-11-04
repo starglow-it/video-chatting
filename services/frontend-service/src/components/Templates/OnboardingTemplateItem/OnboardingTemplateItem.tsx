@@ -11,7 +11,7 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
 // types
-import { AppDialogsEnum, Template } from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
@@ -24,8 +24,9 @@ import styles from './OnboardingTemplateItem.module.scss';
 
 import { StorageKeysEnum, WebStorage } from '../../../controllers/WebStorageController';
 import { clientRoutes } from '../../../const/client-routes';
+import { ICommonTemplate } from 'shared-types';
 
-const OnboardingTemplateItem = memo(({ template }: { template: Template }) => {
+const OnboardingTemplateItem = memo(({ template }: { template: ICommonTemplate }) => {
     const router = useRouter();
 
     const [showPreview, setShowPreview] = useState(false);

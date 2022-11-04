@@ -1,8 +1,12 @@
 import * as dotenv from 'dotenv';
 import camelCase from 'camelcase';
 
-import { ConfigKeys, DefaultConfigValues } from 'shared';
-import { ConfigKeysType, IConfig } from 'shared';
+import {
+    IConfig,
+    ConfigKeysType,
+    ConfigKeys,
+    DefaultConfigValues,
+} from 'shared-types';
 import { isBoolean, parseBoolean } from '../utils/parsers/parseBoolean';
 import { isNumber, parseNumber } from '../utils/parsers/parseNumber';
 

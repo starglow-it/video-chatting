@@ -1,9 +1,8 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { IBusinessCategory } from 'shared';
+import { IBusinessCategory, ICommonTemplate } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
-import { ICommonTemplate } from 'shared';
 import { PreviewImageDTO } from './preview-image.dto';
 
 class UserPositionDTO {

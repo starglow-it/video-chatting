@@ -22,7 +22,15 @@ const statementsKeys = [
     { id: '3', key: 'changePrivacyPossibility' },
 ];
 
-const Component = ({ isActive, nameSpace, translationKey, Icon, onClick, disabled = false, onUpgradeClick }: OptionItemProps) => {
+const Component = ({
+    isActive,
+    nameSpace,
+    translationKey,
+    Icon,
+    onClick,
+    disabled = false,
+    onUpgradeClick,
+}: OptionItemProps) => {
     const statements = useMemo(
         () =>
             statementsKeys.map(({ id, key }) => (
@@ -30,7 +38,7 @@ const Component = ({ isActive, nameSpace, translationKey, Icon, onClick, disable
                     <SuccessIcon
                         width="16px"
                         height="16px"
-                        className={clsx(styles.successIcon, {[styles.disabled]: disabled })}
+                        className={clsx(styles.successIcon, { [styles.disabled]: disabled })}
                     />
                     <CustomTypography
                         variant="body2"
@@ -49,7 +57,10 @@ const Component = ({ isActive, nameSpace, translationKey, Icon, onClick, disable
             direction="column"
             gap={2}
             onClick={!disabled ? onClick : undefined}
-            className={clsx(styles.container, { [styles.active]: isActive, [styles.disabled]: disabled })}
+            className={clsx(styles.container, {
+                [styles.active]: isActive,
+                [styles.disabled]: disabled,
+            })}
         >
             <CustomGrid container gap={1}>
                 <CustomGrid

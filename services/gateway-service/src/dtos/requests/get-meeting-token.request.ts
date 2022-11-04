@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IGetMeetingTokenDTO } from 'shared';
+import { IGetMeetingToken } from 'shared-types';
 
-export class GetMeetingTokenRequest implements IGetMeetingTokenDTO {
+export class GetMeetingTokenRequest implements IGetMeetingToken {
   @IsNotEmpty({
     message: 'TemplateId must be present',
   })
@@ -10,7 +10,7 @@ export class GetMeetingTokenRequest implements IGetMeetingTokenDTO {
     message: 'Invalid templateId value',
   })
   @ApiProperty()
-  readonly templateId: IGetMeetingTokenDTO['templateId'];
+  readonly templateId: IGetMeetingToken['templateId'];
 
   @IsNotEmpty({
     message: 'UserId must be present',
@@ -19,5 +19,5 @@ export class GetMeetingTokenRequest implements IGetMeetingTokenDTO {
     message: 'Invalid userId value',
   })
   @ApiProperty()
-  readonly userId: IGetMeetingTokenDTO['userId'];
+  readonly userId: IGetMeetingToken['userId'];
 }

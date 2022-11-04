@@ -1,5 +1,5 @@
-import { Template } from '../../../store/types';
+import { ICommonTemplate } from 'shared-types';
 
 export type TemplateParticipantsProps = {
-    number: Template['maxParticipants'];
+    number: ICommonTemplate['maxParticipants'];
 };

@@ -29,11 +29,12 @@ import {
 } from '../../../store';
 
 // types
-import { AppDialogsEnum, SocialLink } from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 import { SubmitProfileInfoProps } from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
+import { ISocialLink } from 'shared-types';
 
 const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
     const router = useRouter();
@@ -61,11 +62,11 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
 
         const fieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(reduceValuesNumber, 0);
 
-        const paddedNextSocials = padArray<SocialLink>(
+        const paddedNextSocials = padArray<ISocialLink>(
             nextSocials,
             Object.keys(SOCIAL_LINKS).length,
         );
-        const paddedCurrentSocials = padArray<SocialLink>(
+        const paddedCurrentSocials = padArray<ISocialLink>(
             profile?.socials,
             Object.keys(SOCIAL_LINKS).length,
         );

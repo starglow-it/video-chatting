@@ -1,19 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared';
-import { UserBrokerPatterns } from 'shared';
-import { ICommonUserDTO } from 'shared';
-import { IUserTemplate } from 'shared';
+import { CORE_PROVIDER } from 'shared-const';
+
 import {
+  ICommonUser,
+  IUserTemplate,
+  UpdateRoomRatingStatisticPayload,
+  UpdateMeetingInstancePayload,
+  GetUserTemplateByIdPayload,
   FindUserByIdPayload,
   FindUsersByIdPayload,
   UpdateUserPayload,
-} from 'shared';
-import { TemplateBrokerPatterns } from 'shared';
-import { GetUserTemplateByIdPayload } from 'shared';
-import { UpdateMeetingInstancePayload } from 'shared';
-import { MeetingBrokerPatterns } from 'shared';
+} from 'shared-types';
+import {
+  RoomStatisticBrokerPatterns,
+  TemplateBrokerPatterns,
+  MeetingBrokerPatterns,
+  UserBrokerPatterns,
+} from 'shared-const';
 
 @Injectable()
 export class CoreService {
@@ -23,15 +28,13 @@ export class CoreService {
     await this.client.connect();
   }
 
-  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUserDTO> {
+  async findUserById(payload: FindUserByIdPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserById };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findUsersById(
-    payload: FindUsersByIdPayload,
-  ): Promise<ICommonUserDTO[]> {
+  async findUsersById(payload: FindUsersByIdPayload): Promise<ICommonUser[]> {
     const pattern = { cmd: UserBrokerPatterns.FindUsersById };
 
     return this.client.send(pattern, payload).toPromise();
@@ -53,7 +56,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async updateUser(payload: UpdateUserPayload): Promise<ICommonUserDTO> {
+  async updateUser(payload: UpdateUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdateUser };
 
     return this.client.send(pattern, payload).toPromise();
@@ -67,6 +70,16 @@ export class CoreService {
     payload: UpdateMeetingInstancePayload,
   ): Promise<boolean> {
     const pattern = { cmd: MeetingBrokerPatterns.UpdateMeetingInstance };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async updateRoomRatingStatistic(
+    payload: UpdateRoomRatingStatisticPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: RoomStatisticBrokerPatterns.UpdateRoomRatingStatistic,
+    };
 
     return this.client.send(pattern, payload).toPromise();
   }

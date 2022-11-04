@@ -12,16 +12,18 @@ import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/Meeti
 import { $meetingUsersStore, sendAnswerAccessMeetingRequestEvent } from '../../../store/roomStores';
 
 // types
-import { MeetingAccessStatuses, MeetingUser } from '../../../store/types';
+import { MeetingUser } from '../../../store/types';
 
 // styles
 import styles from './MeetingAccessRequests.module.scss';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const requestUsers = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
-        fn: state => state.filter(user => user.accessStatus === MeetingAccessStatuses.RequestSent),
+        fn: state =>
+            state.filter(user => user.accessStatus === MeetingAccessStatusEnum.RequestSent),
     });
 
     const renderRequestUsers = useMemo(() => {

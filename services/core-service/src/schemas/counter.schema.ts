@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Counters } from 'shared';
+import { Counters } from 'shared-types';
 
 @Schema()
 export class Counter {

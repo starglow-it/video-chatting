@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { UserDocument } from './user.schema';
-import { TokenTypes } from 'shared';
+import { TokenTypes } from 'shared-types';
 
 @Schema()
 export class UserToken {

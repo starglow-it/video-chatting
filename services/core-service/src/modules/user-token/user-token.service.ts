@@ -7,7 +7,7 @@ import { UserToken, UserTokenDocument } from '../../schemas/user-token.schema';
 import { UserDocument } from '../../schemas/user.schema';
 
 // shared
-import { TokenPayloadType } from 'shared';
+import { TokenPayloadType } from 'shared-types';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types/custom';

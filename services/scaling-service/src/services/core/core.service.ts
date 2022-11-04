@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared';
-import { MeetingBrokerPatterns } from 'shared';
+import { CORE_PROVIDER } from 'shared-const';
+import { MeetingBrokerPatterns } from 'shared-const';
 import {
   CreateMeetingInstancePayload,
   DeleteMeetingInstancePayload,
   GetMeetingInstancePayload,
   UpdateMeetingInstancePayload,
-} from 'shared';
-import { ICommonMeetingInstance } from 'shared';
+  IMeetingInstance,
+} from 'shared-types';
 
 @Injectable()
 export class CoreService {
@@ -29,7 +29,7 @@ export class CoreService {
 
   async getMeetingInstances(
     payload: GetMeetingInstancePayload,
-  ): Promise<ICommonMeetingInstance[]> {
+  ): Promise<IMeetingInstance[]> {
     const pattern = { cmd: MeetingBrokerPatterns.GetMeetingInstance };
 
     return this.client.send(pattern, payload).toPromise();
@@ -37,7 +37,7 @@ export class CoreService {
 
   async deleteMeetingInstance(
     payload: DeleteMeetingInstancePayload,
-  ): Promise<ICommonMeetingInstance[]> {
+  ): Promise<IMeetingInstance[]> {
     const pattern = { cmd: MeetingBrokerPatterns.DeleteMeetingInstance };
 
     return this.client.send(pattern, payload).toPromise();
@@ -45,7 +45,7 @@ export class CoreService {
 
   async createMeetingInstance(
     payload: CreateMeetingInstancePayload,
-  ): Promise<ICommonMeetingInstance[]> {
+  ): Promise<IMeetingInstance[]> {
     const pattern = { cmd: MeetingBrokerPatterns.CreateMeetingInstance };
 
     return this.client.send(pattern, payload).toPromise();

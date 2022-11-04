@@ -1,8 +1,10 @@
-import { ICommonTemplate } from 'shared';
-import { IBusinessCategory } from 'shared';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IPreviewImage } from 'shared';
+import {
+  ICommonTemplate,
+  IBusinessCategory,
+  IPreviewImage,
+} from 'shared-types';
 
 export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()

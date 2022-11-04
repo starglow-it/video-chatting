@@ -53,10 +53,11 @@ import {
 } from '../../../store/roomStores';
 
 // types
-import { AppDialogsEnum, MeetingAccessStatuses, NotificationType } from '../../../store/types';
+import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 // helpers
-import { isMobile } from '../../../utils/browser/detectBrowser';
+import { isMobile } from 'shared-utils';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const meeting = useStore($meetingStore);
@@ -80,7 +81,7 @@ const Component = () => {
         if (
             hostUser &&
             prevHostUserId.current !== hostUser?.id &&
-            hostUser?.accessStatus === MeetingAccessStatuses.InMeeting
+            hostUser?.accessStatus === MeetingAccessStatusEnum.InMeeting
         ) {
             prevHostUserId.current = hostUser.id;
 
@@ -97,7 +98,7 @@ const Component = () => {
     useEffect(() => {
         (async () => {
             if (
-                localUser.accessStatus === MeetingAccessStatuses.InMeeting &&
+                localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                 meeting.id &&
                 localUser.id &&
                 !isMeetingConnected &&

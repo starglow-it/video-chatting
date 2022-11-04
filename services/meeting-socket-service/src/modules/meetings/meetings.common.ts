@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import { TimeoutTypesEnum } from '../../types/timeoutTypes.enum';
+import { TimeoutTypesEnum } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 import { MeetingTimeService } from '../meeting-time/meeting-time.service';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
