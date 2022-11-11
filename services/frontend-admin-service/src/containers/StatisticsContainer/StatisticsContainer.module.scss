@@ -8,6 +8,8 @@
   padding: rem(40px 34px);
   width: rem(472px);
   min-height: rem(550px);
+  display: flex;
+  flex-direction: column;
 }
 
 .tabs {
@@ -17,4 +19,23 @@
 .roomsStatistics {
   width: 100%;
   max-width: rem(960px);
+}
+
+.noEarningBlock {
+  margin: 250px 0 0 0;
+}
+
+.fadeWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.fadeContainer {
+  position: absolute;
+}
+
+.chip {
+  padding: rem(10px 22px);
 }

@@ -5,15 +5,8 @@ import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 // store
-import { $isBusinessSubscription, $isProfessionalSubscription, appDialogsApi } from '../../store';
 
 // const
-import { dashboardRoute } from '../../const/client-routes';
-import {
-    MAX_CUSTOM_LINK_LENGTH,
-    MAX_DESCRIPTION_LENGTH,
-    MAX_NAME_LENGTH,
-} from '../../const/templates/info';
 
 // custom
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
@@ -49,7 +42,18 @@ import { useToggle } from '@hooks/useToggle';
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { TemplateManagementProps } from '@components/TemplateManagement/TemplateManagement.types';
-import { AppDialogsEnum } from '../../store/types';
+import {
+    MAX_DESCRIPTION_LENGTH,
+    MAX_NAME_LENGTH,
+} from '../../const/templates/info';
+import { dashboardRoute } from '../../const/client-routes';
+import {
+    $isBusinessSubscription,
+    $isProfessionalSubscription,
+    addNotificationEvent,
+    appDialogsApi,
+} from '../../store';
+import { AppDialogsEnum, NotificationType } from '../../store/types';
 
 // validation
 import { booleanSchema, simpleStringSchemaWithLength } from '../../validation/common';
@@ -65,6 +69,7 @@ import styles from './TemplateManagement.module.scss';
 // utils
 import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 import { parseBase64 } from '../../utils/string/parseBase64';
+import {customTemplateLinkSchema} from "shared-frontend";
 
 enum TabsValues {
     Background = 1,
@@ -100,7 +105,7 @@ const validationSchema = yup.object({
     participantsNumber: participantsNumberSchema().required('required'),
     tags: tagsSchema(),
     isPublic: booleanSchema().required('required'),
-    customLink: simpleStringSchemaWithLength(MAX_CUSTOM_LINK_LENGTH),
+    customLink: customTemplateLinkSchema(),
     participantsPositions: participantsPositionsSchema(),
 });
 
@@ -134,6 +139,7 @@ const Component = ({
     const name = useWatch({ control, name: 'name' });
     const isPublic = useWatch({ control, name: 'isPublic' });
     const background = useWatch({ control, name: 'background' });
+    const previewUrl = useWatch({ control, name: 'url' });
 
     const previousParticipantsNumber = usePrevious(participantsNumber);
 
@@ -306,20 +312,42 @@ const Component = ({
 
     const handleSubmit = useCallback(
         onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
             onSubmit(data);
         }),
-        [onSubmit],
+        [onSubmit, isFileUploading],
     );
 
     const handleUpgradePlanClick = useCallback(
         onSubmitForm(async data => {
+            if (isFileUploading) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileIsNotUploadedYet,
+                    message: 'createRoom.uploadBackground.isPending',
+                });
+                return;
+            }
             onUpgradePlan(data);
         }),
-        [onSubmit],
+        [onSubmit, isFileUploading],
     );
 
     const handleValueChange = useCallback(
         async (item: ValuesSwitcherItem<number>) => {
+            if (item.value > TabsValues.Background && !(background || previewUrl)) {
+                addNotificationEvent({
+                    type: NotificationType.BackgroundFileShouldBeUploaded,
+                    message: 'createRoom.uploadBackground.shouldBeUploaded',
+                    withErrorIcon: true,
+                });
+                return;
+            }
             if (item.value > TabsValues.Settings) {
                 const response = await trigger();
                 onValueChange(response ? item : tabs[1]);
@@ -328,7 +356,7 @@ const Component = ({
 
             onValueChange(item);
         },
-        [onValueChange],
+        [onValueChange, background, previewUrl],
     );
 
     const handleOpenCancelConfirmationDialog = useCallback(() => {

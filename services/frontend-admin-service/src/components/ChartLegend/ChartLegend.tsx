@@ -23,21 +23,25 @@ type ChartLegendItemProps = {
     };
 };
 
-const ChartLegendItem = ({ data, totalNumber }: ChartLegendItemProps) => (
-    <CustomGrid container direction="column" flex="0 0 50%" width="auto">
-        <CustomBox className={styles.colorIndicator} sx={{ backgroundColor: data.color }} />
-        <CustomTypography color="colors.black.light" className={styles.text}>
-            {data.label}
-        </CustomTypography>
-        <CustomGrid container alignItems="center" gap={1}>
-            <CustomTypography variant="h4bold">
-                {`${((data.parts / totalNumber) * 100).toFixed(2)}%`}
+const ChartLegendItem = ({ data, totalNumber }: ChartLegendItemProps) => {
+    const partsValue = useMemo(() => Array.isArray(data.parts) ? data.parts.reduce((acc, b) => acc + b, 0) : data.parts, [data.parts]);
+
+    return (
+        <CustomGrid container direction="column" flex="0 0 50%" width="auto">
+            <CustomBox className={styles.colorIndicator} sx={{ backgroundColor: data.color }} />
+            <CustomTypography color="colors.black.light" className={styles.text}>
+                {data.label}
             </CustomTypography>
-            &#8226;
-            <CustomTypography color="colors.black.light">{data.parts}</CustomTypography>
+            <CustomGrid container alignItems="center" gap={1}>
+                <CustomTypography variant="h4bold">
+                    {`${((partsValue / totalNumber) * 100).toFixed(2)}%`}
+                </CustomTypography>
+                &#8226;
+                <CustomTypography color="colors.black.light">{partsValue}</CustomTypography>
+            </CustomGrid>
         </CustomGrid>
-    </CustomGrid>
-);
+    );
+};
 
 const Component = ({ totalNumber, dataSets, className }: PropsWithClassName<ChartLegendProps>) => {
     const renderData = useMemo(

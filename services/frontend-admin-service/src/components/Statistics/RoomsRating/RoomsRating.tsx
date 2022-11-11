@@ -24,11 +24,11 @@ type RoomsTableDataType = {
     position: number;
     roomName: string;
     creator: string;
-    transactions: number;
-    minutes: number;
-    calls: number;
-    money: number;
-    uniqueUsers: number;
+    transactions?: number;
+    minutes?: number;
+    calls?: number;
+    money?: number;
+    uniqueUsers?: number;
 };
 
 type RoomsTableHeadType = {
@@ -101,9 +101,21 @@ const roomTypes = [
     },
     {
         key: 'common',
-        label: 'Common Rooms',
+        label: 'Platform Rooms',
     },
 ];
+
+const formatTableValue = (key, value) => {
+    if (key === 'minutes') {
+        return Math.round(value / 1000);
+    }
+
+    if (key === 'money') {
+        return `$${Math.round(value / 100)}`;
+    }
+
+    return value;
+};
 
 const Component = () => {
     const { state: roomsRating } = useStore($roomsRatingStatistics);
@@ -148,12 +160,12 @@ const Component = () => {
 
     const tableData = useMemo(
         () =>
-            roomsRating.data.map(roomRating => ({
+            roomsRating.data.map((roomRating, index) => ({
                 id: roomRating.id,
-                position: roomRating.position,
-                roomName: roomRating?.template?.[0]?.name,
-                creator: roomRating?.user?.[0]?.fullName ?? 'Creator',
-                [basedOnKey]: roomRating[basedOnKey],
+                position: index + 1,
+                roomName: roomRating?.template?.[0]?.name ?? '-',
+                creator: roomRating?.author?.[0]?.fullName ?? '-',
+                [basedOnKey]: formatTableValue(basedOnKey, roomRating[basedOnKey]),
             })),
         [roomsRating],
     );
@@ -197,7 +209,14 @@ const Component = () => {
                         onChange={handleChangeRoomTypeKey}
                     />
                 </CustomGrid>
-                <CustomTable<RoomsTableDataType> columns={tableHeadData} data={tableData} />
+                <CustomTable<RoomsTableDataType>
+                    columns={tableHeadData}
+                    data={tableData}
+                    bodyCellClassName={styles.cell}
+                    headCellClassName={styles.headCell}
+                    count={10}
+                    rowsPerPage={10}
+                />
             </CustomGrid>
         </CustomPaper>
     );

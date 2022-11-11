@@ -26,13 +26,19 @@ export class CommonUserDTO implements ICommonUser {
   updatedAt: Date;
 
   @Expose()
+  stripePlanKey: ICommonUser['stripePlanKey'];
+
+  @Expose()
   email: ICommonUser['email'];
 
   @Expose()
   country: ICommonUser['country'];
 
   @Expose()
-  role: ICommonUser['email'];
+  registerTemplate: ICommonUser['registerTemplate'];
+
+  @Expose()
+  role: ICommonUser['role'];
 
   @Expose()
   isConfirmed: ICommonUser['isConfirmed'];

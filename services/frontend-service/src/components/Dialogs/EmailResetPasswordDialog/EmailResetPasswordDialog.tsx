@@ -16,13 +16,13 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // stores
+import { CustomImage } from 'shared-frontend/library';
 import { sendResetPasswordLinkFx, $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './EmailResetPasswordDialog.module.scss';

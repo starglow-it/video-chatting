@@ -14,6 +14,7 @@ import { WarningIcon } from '@library/icons/WarningIcon';
 import { CloseIcon } from '@library/icons/CloseIcon';
 
 // styles
+import { MeetingAccessStatusEnum } from 'shared-types';
 import styles from './TimeLimitNotification.module.scss';
 
 // utils
@@ -24,7 +25,6 @@ import { $authStore, $isBusinessSubscription, $profileStore } from '../../store'
 import { $isOwner, $localUserStore } from '../../store/roomStores';
 
 // types
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 // const
 import { dashboardRoute, profileRoute } from '../../const/client-routes';

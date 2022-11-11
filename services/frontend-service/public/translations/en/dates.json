@@ -1,0 +1,14 @@
+{
+  "day": "{{count}} day",
+  "day_plural": "{{count}} days",
+  "month": "{{count}} month",
+  "month_plural": "{{count}} months",
+  "fromNow": {
+    "now": "now",
+    "minutes": "{{minutes}} min ago",
+    "hours": "{{hours}} h ago",
+    "hoursAndMinutes": "{{hours}} h {{minutes}} min ago",
+    "days": "$t(day, {\"count\": {{days}} }) ago",
+    "months": "$t(month, {\"count\": {{months}} }) ago"
+  }
+}

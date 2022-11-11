@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, {memo, useCallback, useEffect, useMemo} from 'react';
 import linkify from 'linkify-string';
 import { useRouter } from 'next/router';
 
@@ -15,11 +15,11 @@ import { CustomChip } from '@library/custom/CustomChip/CustomChip';
 // icons
 import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
 
-// const
-import frontendConfig from '../../const/config';
-
 // shared
 import { CustomImage } from 'shared-frontend/library';
+
+// const
+import frontendConfig from '../../const/config';
 
 // styles
 import styles from './Agreements.module.scss';
@@ -49,7 +49,13 @@ const Component = () => {
 
     const handleGoBack = useCallback(() => {
         router.back();
-    }, [router.back]);
+    }, [router]);
+
+    useEffect(() => {
+        if (router.query.section === 'privacy') {
+            onChangeTab(Tabs.PrivacyPolicy);
+        }
+    }, [router.query]);
 
     const textWithLinks = useMemo(() => {
         const { translationKey } = activeTab;
@@ -68,6 +74,7 @@ const Component = () => {
                     active={value === activeTab.value}
                     nameSpace="static"
                     translation={`${translationKey}.title`}
+                    className={styles.chip}
                     onClick={() => onChangeTab(value)}
                 />
             )),

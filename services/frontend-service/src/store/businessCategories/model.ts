@@ -1,6 +1,6 @@
+import { IBusinessCategory, QueryParams } from 'shared-types';
 import { rootDomain } from '../domains';
 import { EntityList } from '../types';
-import { IBusinessCategory } from 'shared-types';
 
 const initialCategoriesStore: EntityList<IBusinessCategory> = {
     list: [],
@@ -10,6 +10,6 @@ const initialCategoriesStore: EntityList<IBusinessCategory> = {
 export const $businessCategoriesStore =
     rootDomain.createStore<EntityList<IBusinessCategory>>(initialCategoriesStore);
 export const getBusinessCategoriesFx = rootDomain.createEffect<
-    { skip: number; limit: number },
+    QueryParams,
     EntityList<IBusinessCategory> | undefined | null
 >('getBusinessCategoriesFx');

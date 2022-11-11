@@ -1,12 +1,17 @@
 import React, { memo } from 'react';
 import { useStore } from 'effector-react';
-import Image from 'next/image';
-import clsx from 'clsx';
 
 // shared
 import { planColors } from 'shared-const';
+import { SubscriptionsStatisticsType } from 'shared-types';
 import { PropsWithClassName } from 'shared-frontend/types';
-import { CustomGrid, CustomPaper, CustomTypography, WiggleLoader } from 'shared-frontend/library';
+import {
+    CustomImage,
+    CustomGrid,
+    CustomPaper,
+    CustomTypography,
+    WiggleLoader,
+} from 'shared-frontend/library';
 
 // components
 import { Translation } from '@components/Translation/Translation';
@@ -19,9 +24,6 @@ import styles from './SubscriptionsStatistics.module.scss';
 // stores
 import { getSubscriptionsStatisticsFx } from '../../../store';
 
-// types
-import { SubscriptionsStatisticsType } from 'shared-types';
-
 const Component = ({
     className,
     statistic,
@@ -33,13 +35,14 @@ const Component = ({
         dataSets:
             statistic?.data?.map(data => ({
                 label: data.label,
-                parts: data.value,
+                parts: Array.isArray(data.value) ? data.value : [data.value],
                 color: planColors[data.label],
+                labels: [data.label],
             })) ?? [],
     };
 
     return (
-        <CustomPaper className={clsx(styles.wrapper, className)}>
+        <CustomPaper className={className}>
             <CustomTypography variant="h4bold">
                 <Translation nameSpace="statistics" translation="users.subscription.title" />
             </CustomTypography>
@@ -54,7 +57,7 @@ const Component = ({
                             justifyContent="center"
                             alignItems="center"
                         >
-                            <Image src="/images/eyes.png" width={40} height={40} />
+                            <CustomImage src="/images/eyes.png" width={40} height={40} />
                             <CustomTypography>
                                 <Translation
                                     nameSpace="statistics"

@@ -1,10 +1,10 @@
-import { ConfigKeysType } from 'shared-types';
-import { sendHttpRequest } from '../../utils/http/sendHttpRequest';
+import { ConfigKeysType } from "shared-types";
+import { sendHttpRequest } from "../../utils/http/sendHttpRequest";
 
 export const getConfigVar = async (key: ConfigKeysType): Promise<any> => {
     const response = await sendHttpRequest({
         url: `http://config-service:4000/v1/config/${key}`,
-        method: 'GET',
+        method: "GET",
     });
 
     return response.data.success;
@@ -12,8 +12,8 @@ export const getConfigVar = async (key: ConfigKeysType): Promise<any> => {
 
 export const getAllConfigVars = async (): Promise<any> => {
     const response = await sendHttpRequest({
-        url: 'http://config-service:4000/v1/config',
-        method: 'GET',
+        url: "http://config-service:4000/v1/config",
+        method: "GET",
     });
 
     return response.data.success;

@@ -14,10 +14,10 @@ import { BellIcon } from '@library/icons/BellIcon';
 import { DashboardNotificationItem } from '@components/Dashboard/DashboardNotificationItem/DashboardNotificationItem';
 
 // types
+import { CustomImage } from 'shared-frontend/library';
 import { DashboardNotificationsProps } from './types';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import {

@@ -13,6 +13,7 @@ import { SeederService } from './seeder/seeder.service';
 
 // controllers
 import { UsersController } from './modules/users/users.controller';
+import { MonetizationStatisticController } from './modules/monetization-statistic/monetization-statistic.controller';
 
 async function bootstrap() {
   const appContext = await NestFactory.createApplicationContext(AppModule);
@@ -21,6 +22,9 @@ async function bootstrap() {
 
   const seeder = appContext.get(SeederService);
   const usersController = appContext.get(UsersController);
+  const monetizationController = appContext.get(
+    MonetizationStatisticController,
+  );
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
@@ -45,8 +49,11 @@ async function bootstrap() {
   await seeder.createCounter();
   await seeder.seedCommonTemplates();
   await seeder.seedAdminUser();
+  await seeder.seedMonetizationStatistic();
+  await seeder.seedRoomStatistic();
 
   usersController.startCheckSubscriptions();
+  monetizationController.startCheckLastMonthMonetization();
   return;
 }
 

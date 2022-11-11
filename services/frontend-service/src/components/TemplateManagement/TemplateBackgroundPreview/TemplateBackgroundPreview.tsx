@@ -9,7 +9,6 @@ import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // utils
-import { isVideoFile } from '../../../utils/files/isVideoFile';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
@@ -17,6 +16,7 @@ import { CustomImage } from 'shared-frontend/library';
 // types
 import { TemplateBackgroundPreviewProps } from '@components/TemplateManagement/TemplateBackgroundPreview/TemplateBackgroundPreview.types';
 import { CustomVideoPlayerOptions } from '@library/custom/CustomVideoPlayer/types';
+import { isVideoFile } from '../../../utils/files/isVideoFile';
 
 // styles
 import styles from './TemplateBackgroundPreview.module.scss';

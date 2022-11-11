@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import { Snackbar } from '@mui/material';
+import { Snackbar, SnackbarContent } from '@mui/material';
 import { useStore } from 'effector-react';
 
 // hooks
@@ -59,7 +59,6 @@ const Component = () => {
 
     return (
         <Snackbar
-            className={styles.snackbar}
             onClose={handleClose}
             key={messageInfo ? messageInfo.type : undefined}
             TransitionProps={{ onExited: handleExited }}
@@ -69,18 +68,22 @@ const Component = () => {
             }}
             open={open}
             {...(messageInfo?.withManualClose ? {} : { autoHideDuration: AUTO_HIDE_DURATION })}
-            message={
-                <CustomGrid container alignItems="center" gap={1}>
-                    <ConditionalRender condition={messageInfo?.withSuccessIcon || false}>
-                        <RoundSuccessIcon width="16px" height="16px" />
-                    </ConditionalRender>
-                    <ConditionalRender condition={messageInfo?.withErrorIcon || false}>
-                        <RoundErrorIcon width="16px" height="16px" />
-                    </ConditionalRender>
-                    {translation(messageInfo?.message || '', messageInfo?.messageOptions ?? {})}
-                </CustomGrid>
-            }
-        />
+        >
+            <SnackbarContent
+                className={styles.content}
+                message={
+                    <CustomGrid container alignItems="center" gap={1}>
+                        <ConditionalRender condition={messageInfo?.withSuccessIcon || false}>
+                            <RoundSuccessIcon width="16px" height="16px" />
+                        </ConditionalRender>
+                        <ConditionalRender condition={messageInfo?.withErrorIcon || false}>
+                            <RoundErrorIcon width="16px" height="16px" />
+                        </ConditionalRender>
+                        {translation(messageInfo?.message || '', messageInfo?.messageOptions ?? {})}
+                    </CustomGrid>
+                }
+            />
+        </Snackbar>
     );
 };
 

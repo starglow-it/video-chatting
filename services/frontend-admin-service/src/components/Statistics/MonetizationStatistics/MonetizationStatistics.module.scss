@@ -1,10 +1,15 @@
 @import "../../../styles/rem";
 
 .chartClass {
-  margin: 40px auto;
+  margin: rem(40px auto);
 }
 
 .switcher {
-  max-width: rem(112px);
+  max-width: rem(200px);
   width: 100%;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
 }

@@ -15,38 +15,46 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty()
-  email: string;
+  email: ICommonUser['email'];
 
   password: string;
-  role: string;
+  role: ICommonUser['role'];
 
   @Expose()
   @ApiProperty()
-  country: string;
+  stripePlanKey: ICommonUser['stripePlanKey'];
 
   @Expose()
   @ApiProperty()
-  isConfirmed: boolean;
+  country: ICommonUser['country'];
 
   @Expose()
   @ApiProperty()
-  fullName: string;
+  registerTemplate: ICommonUser['registerTemplate'];
 
   @Expose()
   @ApiProperty()
-  position: string;
+  isConfirmed: ICommonUser['isConfirmed'];
 
   @Expose()
   @ApiProperty()
-  companyName: string;
+  fullName: ICommonUser['fullName'];
 
   @Expose()
   @ApiProperty()
-  contactEmail: string;
+  position: ICommonUser['position'];
 
   @Expose()
   @ApiProperty()
-  description: string;
+  companyName: ICommonUser['companyName'];
+
+  @Expose()
+  @ApiProperty()
+  contactEmail: ICommonUser['contactEmail'];
+
+  @Expose()
+  @ApiProperty()
+  description: ICommonUser['description'];
 
   @Expose()
   @ApiProperty()
@@ -66,7 +74,7 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty()
-  signBoard: string;
+  signBoard: ICommonUser['signBoard'];
 
   @Expose()
   @ApiProperty()
@@ -90,23 +98,23 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty()
-  isResetPasswordActive: boolean;
+  isResetPasswordActive: ICommonUser['isResetPasswordActive'];
 
   @Expose()
   @ApiProperty()
-  maxTemplatesNumber: number;
+  maxTemplatesNumber: ICommonUser['maxTemplatesNumber'];
 
   @Expose()
   @ApiProperty()
-  renewSubscriptionTimestampInSeconds: number;
+  renewSubscriptionTimestampInSeconds: ICommonUser['renewSubscriptionTimestampInSeconds'];
 
   @Expose()
   @ApiProperty()
-  maxMeetingTime: number;
+  maxMeetingTime: ICommonUser['maxMeetingTime'];
 
   @Expose()
   @ApiProperty()
-  isProfessionalTrialAvailable: boolean;
+  isProfessionalTrialAvailable: ICommonUser['isProfessionalTrialAvailable'];
 
   createdAt: Date;
   updatedAt: Date;

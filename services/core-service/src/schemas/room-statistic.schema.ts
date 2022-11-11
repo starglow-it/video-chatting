@@ -18,7 +18,6 @@ export class RoomStatistic {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   })
   user: UserDocument;
 

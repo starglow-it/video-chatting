@@ -1,9 +1,9 @@
+import { ErrorState } from 'shared-types';
 import { generateFormData } from '../../../utils/form/generateFormData';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { UserTemplate } from '../../types';
 import { updateUserTemplateUrl } from '../../../utils/urls';
 import { UploadUserTemplateFilePayload, UploadUserTemplateFileResponse } from '../types';
-import { ErrorState } from 'shared-types';
 
 export const handleUploadUserTemplateFile = async (
     data: UploadUserTemplateFilePayload,

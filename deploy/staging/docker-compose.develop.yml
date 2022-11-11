@@ -81,6 +81,7 @@ services:
       - STRIPE_PUBLIC_API_KEY
       - BASE_ENV_DOMAIN
       - SUPPORT_EMAIL
+      - GEOLOCATION_API_KEY
     ports:
       - '8000:8000'
     labels:

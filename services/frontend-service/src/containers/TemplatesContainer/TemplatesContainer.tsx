@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { useStore, useStoreMap } from 'effector-react';
+import { useStore } from 'effector-react';
 
 // hooks
 import { useTemplateNotification } from '@hooks/useTemplateNotification';
@@ -36,11 +36,14 @@ import { PlusIcon } from '@library/icons/PlusIcon';
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
+import { useLocalization } from '@hooks/useTranslation';
+import { ICommonTemplate } from 'shared-types';
 import {
     $isBusinessSubscription,
     $isProfessionalSubscription,
     $isTrial,
     $profileStore,
+    $profileTemplatesCountStore,
     $profileTemplatesStore,
     $skipProfileTemplates,
     $templateDraft,
@@ -52,6 +55,7 @@ import {
     createTemplateFx,
     deleteProfileTemplateFx,
     getCustomerPortalSessionUrlFx,
+    getProfileTemplatesCountFx,
     getProfileTemplatesFx,
     getTemplatesFx,
     purchaseTemplateFx,
@@ -72,8 +76,6 @@ import { AppDialogsEnum, UserTemplate } from '../../store/types';
 // utils
 import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
 import { formatCountDown } from '../../utils/time/formatCountdown';
-import { useLocalization } from '@hooks/useTranslation';
-import { ICommonTemplate } from 'shared-types';
 
 const Component = () => {
     const router = useRouter();
@@ -85,18 +87,10 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
+    const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
 
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
-
-    const freeTemplatesCount = useStoreMap({
-        store: $profileTemplatesStore,
-        keys: [profile.id],
-        fn: (state, [profileId]) =>
-            state?.list?.filter(
-                template => template.type === 'free' && template.author !== profileId,
-            )?.length || 0,
-    });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
     const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
@@ -113,7 +107,7 @@ const Component = () => {
 
     useEffect(() => {
         (async () => {
-            await getTemplatesFx({ limit: 6, skip: 0 });
+            await getTemplatesFx({ limit: 6, skip: 0, userId: profile.id });
         })();
     }, []);
 
@@ -121,6 +115,7 @@ const Component = () => {
         (async () => {
             if (!isTemplateDeleting) {
                 await getProfileTemplatesFx({ limit: skipProfileTemplates, skip: 0 });
+                await getProfileTemplatesCountFx({ limit: 0, skip: 0, templateType: 'free' });
             }
         })();
     }, [isTemplateDeleting]);
@@ -164,7 +159,7 @@ const Component = () => {
                 return;
             }
 
-            if (profile.maxTemplatesNumber === freeTemplatesCount) {
+            if (profile.maxTemplatesNumber === profileTemplatesCount.count) {
                 setReplaceTemplateIdEvent(templateId);
 
                 appDialogsApi.openDialog({
@@ -180,7 +175,7 @@ const Component = () => {
                 await handleCreateMeeting({ templateId: newTemplate.id });
             }
         },
-        [templates, profile.maxTemplatesNumber, freeTemplatesCount, handleCreateMeeting],
+        [templates, profile.maxTemplatesNumber, profileTemplatesCount.count, handleCreateMeeting],
     );
 
     const handleReplaceTemplate = useCallback(
@@ -266,7 +261,7 @@ const Component = () => {
         numeric: false,
     });
 
-    const templatesLimit = `${freeTemplatesCount}/${profile.maxTemplatesNumber}`;
+    const templatesLimit = `${profileTemplatesCount.count}/${profile.maxTemplatesNumber}`;
 
     return (
         <MainProfileWrapper>

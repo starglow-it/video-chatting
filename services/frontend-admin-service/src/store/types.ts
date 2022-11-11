@@ -6,6 +6,9 @@ import {
     RoomsStatistics,
     RoomRatingStatistics,
     MonetizationStatistics,
+    UsersList,
+    ICommonUser,
+    MonetizationStatisticPeriods,
 } from 'shared-types';
 
 /**
@@ -13,13 +16,14 @@ import {
  */
 export type AuthAdminState = StateWithError<{
     isAuthenticated: boolean;
-    admin: unknown;
+    admin: ICommonUser<'admin'> | null;
 }>;
 export type UsersStatisticsState = StateWithError<UserStatistics>;
 export type RoomsRatingStatisticState = StateWithError<RoomRatingStatistics>;
 export type SubscriptionsStatisticsState = StateWithError<SubscriptionsStatisticsType>;
 export type RoomsStatisticsState = StateWithError<RoomsStatistics>;
 export type MonetizationStatisticState = StateWithError<MonetizationStatistics>;
+export type UsersListState = StateWithError<UsersList>;
 
 /**
  * Http requests payload types
@@ -35,7 +39,7 @@ export type GetRoomRatingStatisticParams = {
 };
 
 export type GetMonetizationStatisticParams = {
-    period: 'month' | 'allTime';
+    period: MonetizationStatisticPeriods;
     type: 'users' | 'platform';
 };
 
@@ -48,3 +52,4 @@ export type RoomsStatisticsResponse = RoomsStatisticsState['state'];
 export type UsersStatisticsResponse = UsersStatisticsState['state'];
 export type CheckAdminResponse = AuthAdminState['state']['admin'];
 export type RoomsRatingStatisticResponse = RoomsRatingStatisticState['state'];
+export type MonetizationStatisticResponse = MonetizationStatisticState['state'];

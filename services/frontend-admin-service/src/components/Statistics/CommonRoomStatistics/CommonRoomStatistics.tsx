@@ -12,12 +12,14 @@ import styles from './CommonRoomStatistics.module.scss';
 
 const Component = ({ statistic }: { statistic: RoomsStatistics }) => {
     const data = {
-        dataSets: statistic.data.map(dataSet => ({
-            label: dataSet.label,
-            parts: dataSet.value,
-            color: dataSet.color ?? getRandomHexColor(100, 255),
-        })),
-        totalNumber: statistic.totalNumber,
+        totalNumber: statistic.totalNumber ?? 0,
+        dataSets:
+            statistic?.data?.map(data => ({
+                label: data.label,
+                parts: Array.isArray(data.value) ? data.value : [data.value],
+                color: data.color ?? getRandomHexColor(100, 255),
+                labels: [data.label],
+            })) ?? [],
     };
 
     return (

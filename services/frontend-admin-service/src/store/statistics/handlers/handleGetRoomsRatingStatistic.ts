@@ -1,5 +1,5 @@
-import { sendRequest } from '../../../helpers/http/sendRequest';
 import { ErrorState } from 'shared-types';
+import { sendRequest } from '../../../helpers/http/sendRequest';
 import {
     RoomsRatingStatisticState,
     RoomsRatingStatisticResponse,

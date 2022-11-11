@@ -55,6 +55,7 @@ const Component = () => {
                     active={value === activeTab.value}
                     nameSpace="static"
                     translation={`${translationKey}.title`}
+                    className={styles.chip}
                     onClick={() => onChangeTab(value)}
                 />
             )),

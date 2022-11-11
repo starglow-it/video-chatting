@@ -16,10 +16,10 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // styles
+import { IBusinessCategory } from 'shared-types';
 import styles from './BusinessCategoryTagsClip.module.scss';
 
 // types
-import { IBusinessCategory } from 'shared-types';
 
 const Component = ({
     lines,

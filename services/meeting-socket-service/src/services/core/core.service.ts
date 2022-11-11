@@ -12,9 +12,10 @@ import {
   FindUserByIdPayload,
   FindUsersByIdPayload,
   UpdateUserPayload,
+  ICommonTemplate,
 } from 'shared-types';
 import {
-  RoomStatisticBrokerPatterns,
+  StatisticBrokerPatterns,
   TemplateBrokerPatterns,
   MeetingBrokerPatterns,
   UserBrokerPatterns,
@@ -56,6 +57,14 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
+  async findCommonTemplateByTemplateId(payload: {
+    templateId: ICommonTemplate['templateId'];
+  }): Promise<ICommonTemplate> {
+    const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
   async updateUser(payload: UpdateUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdateUser };
 
@@ -78,7 +87,7 @@ export class CoreService {
     payload: UpdateRoomRatingStatisticPayload,
   ): Promise<any> {
     const pattern = {
-      cmd: RoomStatisticBrokerPatterns.UpdateRoomRatingStatistic,
+      cmd: StatisticBrokerPatterns.UpdateRoomRatingStatistic,
     };
 
     return this.client.send(pattern, payload).toPromise();

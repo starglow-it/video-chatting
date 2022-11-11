@@ -1,6 +1,6 @@
+import { ICommonTemplate } from 'shared-types';
 import { serverUrl, templatesScope, usersScope } from './baseData';
 import { HttpMethods, UserTemplate } from '../../store/types';
-import { ICommonTemplate } from 'shared-types';
 
 export const templatesUrl = `${serverUrl}/${templatesScope}`;
 export const userTemplatesUrl = `${serverUrl}/${usersScope}`;
@@ -48,4 +48,9 @@ export const addTemplateToUserUrl = ({ templateId }: { templateId: UserTemplate[
 export const deleteTemplateUrl = ({ templateId }: { templateId: Template['id'] }) => ({
     url: `${templatesUrl}/${templateId}`,
     method: HttpMethods.Delete,
+});
+
+export const getUserTemplateUrl = ({ templateId }: { templateId: string }) => ({
+    url: `${serverUrl}/user-templates/${templateId}`,
+    method: HttpMethods.Get,
 });

@@ -5,17 +5,17 @@ import {
   ICommonUser,
 } from 'shared-types';
 
-import { UserTemplateDTO } from './user-template.dto';
 import { CommonUserDTO } from './common-user.dto';
+import { CommonTemplateDTO } from './common-template.dto';
 
 export class RoomRatingStatisticDTO implements IRoomsRatingStatistic {
   @Expose()
-  @Type(() => UserTemplateDTO)
+  @Type(() => CommonTemplateDTO)
   template: ICommonTemplate;
 
   @Expose()
   @Type(() => CommonUserDTO)
-  user: ICommonUser;
+  author: ICommonUser;
 
   @Expose()
   transactions: number;

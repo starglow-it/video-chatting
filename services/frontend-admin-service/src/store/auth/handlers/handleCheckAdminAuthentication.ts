@@ -8,7 +8,6 @@ import { adminUrl } from '../../../const/urls/admin';
 export const handleCheckAdminAuthentication = async (
     ctx: NextPageContext,
 ): Promise<AuthAdminState> => {
-    // TODO: type admin profile AdminProfile
     const response = await sendRequestWithCredentials<CheckAdminResponse, ErrorState>({
         ...adminUrl,
         ctx,

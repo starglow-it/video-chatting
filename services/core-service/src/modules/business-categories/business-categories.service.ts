@@ -7,7 +7,7 @@ import {
   BusinessCategoryDocument,
 } from '../../schemas/business-category.schema';
 
-import { IBusinessCategory } from 'shared-types';
+import { IBusinessCategory, QueryParams } from 'shared-types';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
@@ -29,7 +29,7 @@ export class BusinessCategoriesService {
   }: {
     query: FilterQuery<BusinessCategoryDocument>;
     session?: ITransactionSession;
-    options?: { skip: number; limit: number };
+    options?: QueryParams;
   }) {
     return this.businessCategory
       .find(

@@ -5,24 +5,21 @@ import {
     getMeetingTemplateFx,
     updateMeetingTemplateFx,
     updateMeetingTemplateFxWithData,
-    checkCustomLinkFx,
     resetMeetingTemplateStoreEvent,
 } from './model';
 import { resetRoomStores } from '../../../root';
 
 import { handleUpdateMeetingTemplate } from './handlers/handleUpdateMeetingTemplate';
 import { handleGetMeetingTemplate } from './handlers/handleGetMeetingTemplate';
-import { handleCheckCustomLink } from './handlers/handleCheckCustomLink';
 import { sendUpdateMeetingTemplateSocketEvent } from '../sockets/init';
-import { getUserTemplateFx } from '../../../templates/model';
+import {getUserTemplateByIdFx, getUserTemplateFx} from '../../../templates/model';
 
 getMeetingTemplateFx.use(handleGetMeetingTemplate);
 updateMeetingTemplateFx.use(handleUpdateMeetingTemplate);
-checkCustomLinkFx.use(handleCheckCustomLink);
 
 $meetingTemplateStore
     .on(getMeetingTemplateFx.doneData, (state, data) => data)
-    .on(getUserTemplateFx.doneData, (state, data) => data || state)
+    .on([getUserTemplateByIdFx.doneData, getUserTemplateFx.doneData], (state, data) => data || state)
     .on(updateMeetingTemplateFx.doneData, (state, data) => data)
     .reset([resetRoomStores, resetMeetingTemplateStoreEvent]);
 

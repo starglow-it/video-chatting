@@ -13,6 +13,8 @@ import {
 } from '../schemas/preview-image.schema';
 import { PaymentsModule } from '../services/payments/payments.module';
 import { CountersModule } from '../modules/counters/counters.module';
+import { MonetizationStatisticModule } from '../modules/monetization-statistic/monetization-statistic.module';
+import { RoomsStatisticsModule } from '../modules/rooms-statistics/rooms-statistics.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { CountersModule } from '../modules/counters/counters.module';
     PaymentsModule,
     AwsConnectorModule,
     CountersModule,
+    MonetizationStatisticModule,
+    RoomsStatisticsModule,
     MongooseModule.forFeature([
       { name: PreviewImage.name, schema: PreviewImageSchema },
     ]),

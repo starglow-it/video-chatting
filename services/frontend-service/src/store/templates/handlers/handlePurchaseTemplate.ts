@@ -1,5 +1,5 @@
-import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { ErrorState } from 'shared-types';
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { purchaseTemplateUrl } from '../../../utils/urls';
 
 export const handlePurchaseTemplate = async ({

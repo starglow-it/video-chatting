@@ -3,7 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 
 import { CORE_PROVIDER } from 'shared-const';
 import {
-  RoomStatisticBrokerPatterns,
+  StatisticBrokerPatterns,
   TemplateBrokerPatterns,
   UserBrokerPatterns,
   MeetingBrokerPatterns,
@@ -37,6 +37,7 @@ import {
   AddTemplateToUserPayload,
   CountUsersPayload,
   FindUsersPayload,
+  GetMonetizationStatisticPayload,
   ResetTrialNotificationPayload,
 } from 'shared-types';
 
@@ -225,7 +226,15 @@ export class CoreService {
   async getRoomRatingStatistic(
     payload: GetRoomRatingStatisticPayload,
   ): Promise<IRoomsRatingStatistic[]> {
-    const pattern = { cmd: RoomStatisticBrokerPatterns.GetRoomRatingStatistic };
+    const pattern = { cmd: StatisticBrokerPatterns.GetRoomRatingStatistic };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async getMonetizationStatistic(
+    payload: GetMonetizationStatisticPayload,
+  ): Promise<IRoomsRatingStatistic[]> {
+    const pattern = { cmd: StatisticBrokerPatterns.GetMonetizationStatistic };
 
     return this.client.send(pattern, payload).toPromise();
   }
@@ -234,7 +243,7 @@ export class CoreService {
     payload: UpdateRoomRatingStatisticPayload,
   ): Promise<any> {
     const pattern = {
-      cmd: RoomStatisticBrokerPatterns.UpdateRoomRatingStatistic,
+      cmd: StatisticBrokerPatterns.UpdateRoomRatingStatistic,
     };
 
     return this.client.send(pattern, payload).toPromise();

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, UpdateQuery } from 'mongoose';
-import { ICountryStatistic } from 'shared-types';
+import { ICountryStatistic, QueryParams } from 'shared-types';
 
 import {
   CountryStatistic,
@@ -33,7 +33,7 @@ export class CountryStatisticsService {
   }: {
     query: FilterQuery<CountryStatisticDocument>;
     session?: ITransactionSession;
-    options?: { skip?: number; limit?: number };
+    options?: QueryParams;
   }) {
     return this.countryStatistic
       .find(
@@ -43,6 +43,7 @@ export class CountryStatisticsService {
           skip: options?.skip,
           limit: options?.limit,
           session: session?.session,
+          sort: options?.sort,
         },
       )
       .exec();

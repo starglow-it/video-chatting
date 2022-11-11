@@ -25,6 +25,7 @@ import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 import { useToggle } from '@hooks/useToggle';
 
 // stores
+import { CustomImage } from 'shared-frontend/library';
 import {
     $isBusinessSubscription,
     $profileStore,
@@ -38,7 +39,6 @@ import {
 import { editRoomRoute } from '../../../const/client-routes';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';
@@ -125,7 +125,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                 description={template.description}
                 maxParticipants={template.maxParticipants}
                 isNeedToShowBusinessInfo
-                isPublic={template.author === profile.id ? template.isPublic : undefined}
+                isPublic={template.author === profile.id ? template.isPublic : false}
             />
             <Fade in={showPreview}>
                 <CustomGrid

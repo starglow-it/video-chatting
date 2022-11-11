@@ -1,9 +1,10 @@
-import { sendRequest } from '../../../helpers/http/sendRequest';
 import { ErrorState } from 'shared-types';
+import { sendRequest } from '../../../helpers/http/sendRequest';
 import { monetizationStatisticUrl } from '../../../const/urls/statistics';
+import { MonetizationStatisticResponse } from '../../types';
 
 export const handleGetUsersMonetizationStatistic = async payload => {
-    const response = await sendRequest<PlatformMonetizationResponse, ErrorState>(
+    const response = await sendRequest<MonetizationStatisticResponse, ErrorState>(
         monetizationStatisticUrl(payload),
     );
 

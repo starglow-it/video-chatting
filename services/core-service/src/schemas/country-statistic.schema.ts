@@ -11,10 +11,10 @@ export class CountryStatistic {
   key: string;
 
   @Prop({
-    type: mongoose.Schema.Types.String,
+    type: mongoose.Schema.Types.Number,
     required: true,
   })
-  value: string;
+  value: number;
 
   @Prop({
     type: mongoose.Schema.Types.String,

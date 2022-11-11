@@ -1,12 +1,14 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import Backdrop from '@mui/material/Backdrop';
-import { Slide } from '@mui/material';
+import { ListItemIcon, Slide } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
+import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // common
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
@@ -16,13 +18,25 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { SubscriptionPlanItem } from '@components/Payments/SubscriptionsPlans/SubscriptionPlanItem';
 
 // types
-import { SubscriptionsPlansProps } from '@components/Payments/SubscriptionsPlans/types';
+import {
+    SubscriptionsPlansProps,
+    TranslationFeatureItem,
+} from '@components/Payments/SubscriptionsPlans/types';
+
+// hooks
+import { useLocalization } from '@hooks/useTranslation';
+
+// icons
+import { RoundCheckIcon } from '@library/icons/RoundIcons/RoundCheckIcon';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { $productsStore, $profileStore, getStripeProductsFx } from '../../../store';
+
+// styles
+import styles from './SubscriptionsPlans.module.scss';
 
 const Component = ({
     isSubscriptionStep,
@@ -39,6 +53,8 @@ const Component = ({
     const products = useStore($productsStore);
     const profile = useStore($profileStore);
     const isProductsLoading = useStore(getStripeProductsFx.pending);
+
+    const { translation } = useLocalization('subscriptions');
 
     useEffect(() => {
         (async () => {
@@ -91,9 +107,64 @@ const Component = ({
         ],
     );
 
-    const handleClose = () => {
+    const commonFeatures = useMemo(() => {
+        const translationsObject = translation('subscriptions.AllPlans') as unknown as {
+            featuresPlans: TranslationFeatureItem[][];
+        };
+
+        const renderFeature = featuresChunk => (
+            <CustomGrid
+                item
+                container
+                flexWrap="nowrap"
+                flex="28%"
+                direction="column"
+                className={styles.column}
+            >
+                {featuresChunk.map(({ text }) => (
+                    <CustomGrid item container gap={1} flexWrap="nowrap">
+                        <ListItemIcon classes={{ root: styles.listIcon }}>
+                            <RoundCheckIcon width="16px" height="16px" />
+                        </ListItemIcon>
+                        <CustomTypography color="colors.white.primary">{text}</CustomTypography>
+                    </CustomGrid>
+                ))}
+            </CustomGrid>
+        );
+
+        return (
+            <CustomGrid
+                container
+                direction="column"
+                className={clsx(styles.allFeaturesCard, {
+                    [styles.fullWidth]: renderSubscriptionPlans.length >= 3,
+                })}
+            >
+                <CustomBox className={styles.productName}>
+                    <CustomTypography
+                        variant="body2bold"
+                        color="colors.white.primary"
+                        nameSpace="subscriptions"
+                        translation="subscriptions.AllPlans.plan"
+                    />
+                </CustomBox>
+                <CustomTypography
+                    variant="body2bold"
+                    color="colors.white.primary"
+                    nameSpace="subscriptions"
+                    translation="subscriptions.AllPlans.label"
+                    className={styles.price}
+                />
+                <CustomGrid container direction="column" gap={1.75} className={styles.listWrapper}>
+                    {translationsObject.featuresPlans.map(renderFeature)}
+                </CustomGrid>
+            </CustomGrid>
+        );
+    }, [renderSubscriptionPlans.length, translation]);
+
+    const handleClose = useCallback(() => {
         onClose?.();
-    };
+    }, []);
 
     return (
         <Backdrop
@@ -127,9 +198,20 @@ const Component = ({
                                 </>
                             )}
                         </CustomGrid>
-                        <CustomGrid container gap={2} justifyContent="center" alignItems="stretch">
+                        <CustomGrid
+                            container
+                            gap={3.5}
+                            justifyContent="center"
+                            alignItems="stretch"
+                        >
+                            <ConditionalRender condition={renderSubscriptionPlans.length < 3}>
+                                {commonFeatures}
+                            </ConditionalRender>
                             {renderSubscriptionPlans}
                         </CustomGrid>
+                        <ConditionalRender condition={renderSubscriptionPlans.length >= 3}>
+                            {commonFeatures}
+                        </ConditionalRender>
                     </CustomGrid>
                 </ClickAwayListener>
             </ConditionalRender>

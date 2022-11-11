@@ -2,7 +2,7 @@
 @import '../../../styles/variables';
 
 .wrapper {
-  padding: rem(40px);
+  padding: rem(28px 40px);
   width: rem(420px);
   display: flex;
   pointer-events: all;
@@ -10,44 +10,54 @@
 
 .productName {
   width: min-content;
-  padding: rem(6px 10px);
-  border-radius: rem(12px);
+  padding: rem(4px 10px);
+  border-radius: rem(6px);
+  white-space: pre;
 }
 
 .price {
   font-style: normal;
   font-weight: 700;
-  font-size: rem(42px);
-  line-height: rem(58px);
+  font-size: rem(28px);
+  line-height: rem(42px);
 }
 
 .priceWrapper {
-  margin: rem(16px 0);
+  margin: rem(4px 0 0);
+}
+
+.description {
+  color: rgb($primary-black, 0.25);
 }
 
 .listWrapper {
-  margin: rem(44px 0 16px 0);
+  margin: rem(12px 0 24px 0);
   max-height: rem(248px);
+  padding: 0;
 }
 
 .listItem {
-  gap: rem(12px);
+  gap: rem(8px);
 
-  padding: rem(10px 0);
+  padding: rem(4px 0);
 
   &:first-child {
-    padding: rem(0 0 10px 0);
+    padding: rem(0 0 4px 0);
   }
 
   &:last-child {
-    padding: rem(10px 0 0px 0);
+    padding: rem(4px 0 0px 0);
+  }
+
+  .subText {
+    color: rgb($primary-black, 0.25);
   }
 }
 
 .listIcon {
-  width: rem(20px);
-  height: rem(20px);
-  min-width: rem(20px);
+  width: rem(16px);
+  height: rem(16px);
+  min-width: rem(16px);
   color: $primary-white;
   background: $primary-black;
   border-radius: 50%;
@@ -64,8 +74,11 @@
   white-space: nowrap;
 }
 
-.button {
+.buttons {
   margin: auto 0 0 0;
+}
+
+.button {
   height: rem(56px);
 }
 
@@ -96,5 +109,66 @@
   &:hover {
     background: rgba($primary-orange, 0.1);
     color: $primary-orange;
+  }
+}
+
+.allFeaturesCard {
+  width: rem(420px);
+  display: flex;
+  padding: rem(28px 40px);
+  background-color: rgba($primary-black, 0.6);
+  border: rem(1px) solid rgba($primary-black, 0.6);
+  border-radius: rem(16px);
+
+  .productName {
+    background-color: $primary-black;
+  }
+
+  .listIcon {
+    color: $primary-white;
+    background: $primary-orange;
+  }
+
+  .listWrapper {
+    margin: rem(12px 0 0);
+    max-height: unset;
+    flex-wrap: nowrap;
+  }
+
+  .column {
+    row-gap: rem(14px);
+  }
+
+  &.fullWidth {
+    max-width: rem(1316px);
+    width: 100%;
+    min-height: rem(184px);
+    margin: rem(0) auto;
+    position: relative;
+    padding: rem(20px 40px);
+
+    .productName {
+      position: absolute;
+      top: rem(-13px);
+      left: rem(40px);
+    }
+
+    .listWrapper {
+      column-gap: rem(30px);
+      margin: rem(8px 0 0);
+      flex-direction: row;
+      display: grid;
+      grid-template-columns: 1fr 0.91fr 0.86fr;
+
+      .column {
+        row-gap: rem(10px);
+      }
+
+      .column {
+        flex-direction: column;
+        flex-basis: 31.7%;
+        row-gap: rem(10px);
+      }
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { ErrorState } from 'shared-types';
 import { Profile, UpdateProfileAvatar } from '../../types';
 import { initialProfileState } from './const';
 import { profileDomain } from '../../domains';
@@ -11,7 +12,6 @@ import {
     UpdateProfilePasswordPayload,
     UpdateProfilePayload,
 } from '../types';
-import { ErrorState } from 'shared-types';
 
 export const $profileStore = profileDomain.createStore<Profile>(initialProfileState);
 

@@ -1,11 +1,13 @@
 import React, { useCallback, memo, useEffect, useMemo, useState } from 'react';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
+import clsx from 'clsx';
 
 // shared
 import { CustomGrid, CustomTypography, CustomChip } from 'shared-frontend/library';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { useNavigation } from 'shared-frontend/hooks';
+import { ValuesSwitcherItem } from 'shared-frontend';
+import { MonetizationStatisticPeriods } from 'shared-types';
 
 // components
 import { Translation } from '@components/Translation/Translation';
@@ -31,30 +33,7 @@ import {
 
 import styles from './StatisticsContainer.module.scss';
 
-const tabs: { value: string; translationKey: string }[] = [
-    {
-        value: 'users',
-        translationKey: 'users',
-    },
-    {
-        value: 'monetization',
-        translationKey: 'monetization',
-    },
-    {
-        value: 'rooms',
-        translationKey: 'rooms',
-    },
-];
-
-enum MonetizationStatisticPeriods {
-    Month = 'month',
-    AllTime = 'allTime',
-}
-
-const schedulePages: ValuesSwitcherItem<string>[] = [
-    { id: 1, value: 'month', label: 'Last month' },
-    { id: 2, value: 'allTime', label: 'All time' },
-];
+import { schedulePages, StatisticsTabsValues, statisticTabs } from '../../const/statistics';
 
 const Component = () => {
     const { state: usersStatistics } = useStore($usersStatisticsStore);
@@ -63,10 +42,12 @@ const Component = () => {
     const { state: usersMonetization } = useStore($usersMonetizationStatistics);
     const { state: platformMonetization } = useStore($platformMonetizationStatistics);
 
-    const [usersPeriodType, setUsersPeriodType] = useState(MonetizationStatisticPeriods.AllTime);
-    const [platformPeriodType, setPlatformPeriodType] = useState(
-        MonetizationStatisticPeriods.AllTime,
-    );
+    const [usersPeriodType, setUsersPeriodType] = useState<
+        ValuesSwitcherItem<MonetizationStatisticPeriods>
+    >(schedulePages[0]);
+    const [platformPeriodType, setPlatformPeriodType] = useState<
+        ValuesSwitcherItem<MonetizationStatisticPeriods>
+    >(schedulePages[0]);
 
     useEffect(() => {
         (async () => {
@@ -77,28 +58,28 @@ const Component = () => {
     }, []);
 
     useEffect(() => {
-        console.log(usersPeriodType);
         getUsersMonetizationStatisticsFx({
-            period: usersPeriodType,
+            period: usersPeriodType.value,
             type: 'users',
         });
-    }, [usersPeriodType]);
+    }, [usersPeriodType.value]);
 
     useEffect(() => {
         getPlatformMonetizationStatisticsFx({
-            period: platformPeriodType,
+            period: platformPeriodType.value,
             type: 'platform',
         });
-    }, [platformPeriodType]);
+    }, [platformPeriodType.value]);
 
-    const { activeTab, onChange: onChangeTab } = useNavigation({ tabs });
+    const { activeTab, onChange: onChangeTab } = useNavigation({ tabs: statisticTabs });
 
     const renderTabs = useMemo(
         () =>
-            tabs.map(({ value, translationKey }) => (
+            statisticTabs.map(({ value, translationKey }) => (
                 <CustomChip
                     key={value}
                     active={value === activeTab.value}
+                    className={styles.chip}
                     label={
                         <CustomTypography>
                             <Translation
@@ -110,16 +91,22 @@ const Component = () => {
                     onClick={() => onChangeTab(value)}
                 />
             )),
-        [activeTab, onChangeTab],
+        [activeTab],
     );
 
-    const handleChangeUsersPeriod = useCallback((value: MonetizationStatisticPeriods) => {
-        setUsersPeriodType(value);
-    }, []);
+    const handleChangeUsersPeriod = useCallback(
+        (value: ValuesSwitcherItem<MonetizationStatisticPeriods>) => {
+            setUsersPeriodType(value);
+        },
+        [],
+    );
 
-    const handleChangePlatformPeriod = useCallback((value: MonetizationStatisticPeriods) => {
-        setPlatformPeriodType(value);
-    }, []);
+    const handleChangePlatformPeriod = useCallback(
+        (value: ValuesSwitcherItem<MonetizationStatisticPeriods>) => {
+            setPlatformPeriodType(value);
+        },
+        [],
+    );
 
     return (
         <CustomGrid container className={styles.wrapper} justifyContent="center">
@@ -136,56 +123,68 @@ const Component = () => {
                 {renderTabs}
             </CustomGrid>
 
-            <Fade in={activeTab.value === 'users'} unmountOnExit>
-                <CustomGrid container justifyContent="center" gap={2}>
-                    <UsersStatistics
-                        statistic={usersStatistics}
-                        className={styles.statisticBlock}
-                    />
-                    <SubscriptionsStatistics
-                        statistic={subscriptionsStatistics}
-                        className={styles.statisticBlock}
-                    />
-                </CustomGrid>
-            </Fade>
+            <CustomGrid className={styles.fadeWrapper}>
+                <Fade in={activeTab.value === StatisticsTabsValues.Users} unmountOnExit>
+                    <CustomGrid
+                        className={styles.fadeContainer}
+                        container
+                        justifyContent="center"
+                        gap={2}
+                    >
+                        <UsersStatistics
+                            statistic={usersStatistics}
+                            className={styles.statisticBlock}
+                        />
+                        <SubscriptionsStatistics
+                            statistic={subscriptionsStatistics}
+                            className={styles.statisticBlock}
+                        />
+                    </CustomGrid>
+                </Fade>
 
-            <Fade in={activeTab.value === 'monetization'} unmountOnExit>
-                <CustomGrid container justifyContent="center" gap={2}>
-                    <MonetizationStatistics
-                        key="usersMonetization"
-                        titleKey="usersMonetization"
-                        statistic={usersMonetization}
-                        className={styles.statisticBlock}
-                        periods={schedulePages}
-                        currentPeriod={usersPeriodType}
-                        onChangePeriod={handleChangeUsersPeriod}
-                    />
+                <Fade in={activeTab.value === StatisticsTabsValues.Rooms} unmountOnExit>
+                    <CustomGrid
+                        container
+                        className={clsx(styles.fadeContainer, styles.roomsStatistics)}
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        gap={2}
+                    >
+                        <CommonRoomStatistics statistic={rooms} />
+                        <RoomsRating />
+                    </CustomGrid>
+                </Fade>
 
-                    <MonetizationStatistics
-                        key="platformMonetization"
-                        titleKey="platformMonetization"
-                        statistic={platformMonetization}
-                        className={styles.statisticBlock}
-                        periods={schedulePages}
-                        currentPeriod={platformPeriodType}
-                        onChangePeriod={handleChangePlatformPeriod}
-                    />
-                </CustomGrid>
-            </Fade>
+                <Fade in={activeTab.value === StatisticsTabsValues.Monetization} unmountOnExit>
+                    <CustomGrid
+                        className={styles.fadeContainer}
+                        container
+                        justifyContent="center"
+                        gap={2}
+                    >
+                        <MonetizationStatistics
+                            key="usersMonetization"
+                            titleKey="usersMonetization"
+                            statistic={usersMonetization}
+                            className={styles.statisticBlock}
+                            periods={schedulePages}
+                            currentPeriod={usersPeriodType}
+                            onChangePeriod={handleChangeUsersPeriod}
+                        />
 
-            <Fade in={activeTab.value === 'rooms'} unmountOnExit>
-                <CustomGrid
-                    container
-                    className={styles.roomsStatistics}
-                    direction="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    gap={2}
-                >
-                    <CommonRoomStatistics statistic={rooms} />
-                    <RoomsRating />
-                </CustomGrid>
-            </Fade>
+                        <MonetizationStatistics
+                            key="platformMonetization"
+                            titleKey="platformMonetization"
+                            statistic={platformMonetization}
+                            className={styles.statisticBlock}
+                            periods={schedulePages}
+                            currentPeriod={platformPeriodType}
+                            onChangePeriod={handleChangePlatformPeriod}
+                        />
+                    </CustomGrid>
+                </Fade>
+            </CustomGrid>
         </CustomGrid>
     );
 };

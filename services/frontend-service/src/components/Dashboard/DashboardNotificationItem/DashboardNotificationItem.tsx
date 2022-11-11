@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
@@ -7,17 +7,17 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
-// utils
-import { getTimeString } from '../../../utils/functions/getTimeString';
-
 // styles
+import { useFormatDistanceDate } from '@hooks/useFormatDistanceDate';
 import styles from './DashboardNotificationItem.module.scss';
+
+// hooks
 
 // types
 import { DashboardNotification } from '../../../store/types';
 
 const Component = ({ notification }: { notification: DashboardNotification }) => {
-    const timeString = useMemo(() => getTimeString(notification.sentAt), [notification.sentAt]);
+    const formattedString = useFormatDistanceDate(notification.sentAt);
 
     return (
         <CustomGrid
@@ -39,12 +39,9 @@ const Component = ({ notification }: { notification: DashboardNotification }) =>
                     {notification?.sender?.fullName || notification.senderFullName}
                 </CustomTypography>
                 <CustomGrid container alignItems="center">
-                    <CustomTypography
-                        color="colors.grayscale.normal"
-                        nameSpace="dashboard"
-                        translation={`notifications.${timeString ? 'timeAgo' : 'justNow'}`}
-                        options={{ time: timeString }}
-                    />
+                    <CustomTypography color="colors.grayscale.normal">
+                        {formattedString}
+                    </CustomTypography>
                     &nbsp;
                     <CustomTypography color="colors.grayscale.normal">&#8226;</CustomTypography>
                     &nbsp;

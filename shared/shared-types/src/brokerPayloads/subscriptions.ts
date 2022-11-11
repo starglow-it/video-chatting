@@ -1,3 +1,3 @@
 export type SendTrialExpiredNotificationPayload = {
-    userId: string;
+  userId: string;
 };

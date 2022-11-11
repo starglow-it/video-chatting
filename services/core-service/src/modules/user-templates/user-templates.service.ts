@@ -16,7 +16,7 @@ import {
 } from '../../schemas/social-link.schema';
 
 // types
-import { IUserTemplate, ICommonTemplate } from 'shared-types';
+import { IUserTemplate, ICommonTemplate, QueryParams } from 'shared-types';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types/custom';
 import { getScreenShots } from '../../utils/images/getScreenShots';
@@ -38,7 +38,7 @@ export class UserTemplatesService {
     private previewImage: Model<PreviewImageDocument>,
   ) {}
 
-  async countUserTemplates(query): Promise<number> {
+  async countUserTemplates(query: FilterQuery<UserTemplateDocument>): Promise<number> {
     return this.userTemplate.count(query).exec();
   }
 
@@ -122,7 +122,7 @@ export class UserTemplatesService {
     populatePaths,
   }: {
     query: FilterQuery<UserTemplateDocument>;
-    options?: { sort?: string; skip?: number; limit?: number };
+    options?: QueryParams;
     session?: ITransactionSession;
     populatePaths?: CustomPopulateOptions;
   }): Promise<UserTemplateDocument[]> {

@@ -8,6 +8,7 @@ import { useTimer } from '@hooks/useTimer';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // stores
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { $isBusinessSubscription, $profileStore } from '../../../store';
 import {
     $isMeetingHostStore,
@@ -24,7 +25,6 @@ import { formatCountDown } from '../../../utils/time/formatCountdown';
 import { ONE_MINUTE } from '../../../const/time/common';
 
 // types
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const meeting = useStore($meetingStore);

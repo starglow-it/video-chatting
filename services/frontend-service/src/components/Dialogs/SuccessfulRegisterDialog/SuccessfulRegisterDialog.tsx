@@ -7,13 +7,13 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
 
 // store
+import { CustomImage } from 'shared-frontend/library';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
 import { AppDialogsEnum } from '../../../store/types';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './SuccessfulRegisterDialog.module.scss';

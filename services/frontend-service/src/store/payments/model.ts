@@ -1,6 +1,6 @@
+import { ErrorState } from 'shared-types';
 import { paymentsDomain } from '../domains';
 
-import { ErrorState } from 'shared-types';
 import { ConnectStripeAccountResponse, LoginStripeAccountResponse } from './types';
 
 export const connectStripeAccountFx = paymentsDomain.createEffect<

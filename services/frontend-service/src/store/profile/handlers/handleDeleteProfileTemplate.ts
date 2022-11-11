@@ -1,9 +1,9 @@
+import { ErrorState } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 
 import { UserTemplate } from '../../types';
 import { deleteProfileTemplatesUrl } from '../../../utils/urls';
 
-import { ErrorState } from 'shared-types';
 
 export const handleDeleteProfileTemplate = async ({
     templateId,

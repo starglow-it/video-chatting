@@ -1,5 +1,5 @@
-import { Profile } from '../../../store/types';
 import { ICommonTemplate, IProfileAvatar } from 'shared-types';
+import { Profile } from '../../../store/types';
 
 export type TemplateGeneralInfoProps = {
     profileAvatar?: IProfileAvatar['url'] | string;

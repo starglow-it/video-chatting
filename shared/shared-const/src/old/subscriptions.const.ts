@@ -1,8 +1,8 @@
 const houseSubscription = {
-  name: "House",
-  key: "house",
+  name: 'House',
+  key: 'house',
   priceInCents: 0,
-  description: "Best for trying and occasional use",
+  description: 'Best for trying and occasional use',
   features: {
     templatesLimit: 1,
     timeLimit: 120 * 60 * 1000,
@@ -11,10 +11,10 @@ const houseSubscription = {
 };
 
 const professionalSubscription = {
-  name: "Professional",
-  key: "professional",
+  name: 'Professional',
+  key: 'professional',
   priceInCents: 2900,
-  description: "Best for standard use and monetization",
+  description: 'Best for standard use and monetization',
   features: {
     templatesLimit: 2,
     timeLimit: 1200 * 60 * 1000,
@@ -24,10 +24,10 @@ const professionalSubscription = {
 };
 
 const businessSubscription = {
-  name: "Business",
-  key: "business",
+  name: 'Business',
+  key: 'business',
   priceInCents: 7900,
-  description: "Best for monetization and frequent use",
+  description: 'Best for monetization and frequent use',
   features: {
     templatesLimit: 10,
     timeLimit: null,

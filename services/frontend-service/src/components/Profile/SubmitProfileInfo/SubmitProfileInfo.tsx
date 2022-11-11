@@ -11,11 +11,12 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // helper
+import { CustomImage } from 'shared-frontend/library';
+import { ISocialLink } from 'shared-types';
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './SubmitProfileInfo.module.scss';
@@ -34,7 +35,6 @@ import { SubmitProfileInfoProps } from './types';
 
 // const
 import { SOCIAL_LINKS } from '../../../const/profile/socials';
-import { ISocialLink } from 'shared-types';
 
 const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
     const router = useRouter();

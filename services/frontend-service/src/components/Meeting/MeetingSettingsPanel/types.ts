@@ -1,6 +1,6 @@
 import React from 'react';
-import { UserTemplate } from '../../../store/types';
 import { IBusinessCategory, ILanguage, ISocialLink } from 'shared-types';
+import { UserTemplate } from '../../../store/types';
 
 export type SettingsData = {
     companyName: string;

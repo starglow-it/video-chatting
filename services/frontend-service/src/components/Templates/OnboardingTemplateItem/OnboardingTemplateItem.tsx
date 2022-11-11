@@ -11,10 +11,11 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
 // types
+import { CustomImage } from 'shared-frontend/library';
+import { ICommonTemplate } from 'shared-types';
 import { AppDialogsEnum } from '../../../store/types';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { setPreviewTemplate, appDialogsApi } from '../../../store';
@@ -24,7 +25,6 @@ import styles from './OnboardingTemplateItem.module.scss';
 
 import { StorageKeysEnum, WebStorage } from '../../../controllers/WebStorageController';
 import { clientRoutes } from '../../../const/client-routes';
-import { ICommonTemplate } from 'shared-types';
 
 const OnboardingTemplateItem = memo(({ template }: { template: ICommonTemplate }) => {
     const router = useRouter();
@@ -73,6 +73,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: ICommonTemplate }
                 maxParticipants={template.maxParticipants}
                 type={template.type}
                 isNeedToShowBusinessInfo
+                isCommonTemplate
             />
             <Fade in={showPreview}>
                 <CustomGrid

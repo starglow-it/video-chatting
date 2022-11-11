@@ -14,7 +14,8 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // store
-import { $meetingTemplateStore, checkCustomLinkFxWithData } from '../../../store/roomStores';
+import { $meetingTemplateStore } from '../../../store/roomStores';
+import {checkCustomLinkFx} from "../../../store";
 
 // styles
 import styles from './EditMeetingLink.module.scss';
@@ -36,7 +37,7 @@ const Component = () => {
     });
 
     const handleCheckFreeLinkTail = async (data: { templateId: string }) => {
-        const isBusy = await checkCustomLinkFxWithData(data);
+        const isBusy = await checkCustomLinkFx(data);
 
         if (isBusy) {
             setError('customLink', [

@@ -4,4 +4,4 @@ export const customTemplateLinkSchema = () =>
     yup
         .string()
         .max(60, 'meeting.settings.customLink.maxLength')
-        .matches(/^[A-Za-z0-9_.~-]*$/gim, 'meeting.settings.customLink.characters');
+        .matches(/^[A-Za-z0-9]*$/gim, 'meeting.settings.customLink.characters');

@@ -9,10 +9,10 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CheckIcon } from '@library/icons/CheckIcon';
+import { CustomImage } from 'shared-frontend/library';
 import styles from './ReplaceTemplateItem.module.scss';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { $deleteProfileTemplateId } from '../../../store';

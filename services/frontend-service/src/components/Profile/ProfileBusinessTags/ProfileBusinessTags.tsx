@@ -17,13 +17,13 @@ import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessC
 import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
 
 // stores
+import { IBusinessCategory } from 'shared-types';
 import { $profileStore } from '../../../store';
 
 // types
 
 // styles
 import styles from './ProfileBusinessTags.module.scss';
-import { IBusinessCategory } from 'shared-types';
 
 type TagLineType = {
     elements: IBusinessCategory[];

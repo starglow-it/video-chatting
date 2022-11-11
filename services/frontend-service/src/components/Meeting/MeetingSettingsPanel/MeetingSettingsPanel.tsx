@@ -25,9 +25,10 @@ import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
 // stores
-import { $businessCategoriesStore, appDialogsApi, getBusinessCategoriesFx } from 'src/store';
+import {$businessCategoriesStore, appDialogsApi, checkCustomLinkFx, getBusinessCategoriesFx} from 'src/store';
 
 // styles
+import { ISocialLink } from 'shared-types';
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations
@@ -38,7 +39,7 @@ import { businessCategoriesSchema } from '../../../validation/users/businessCate
 import { languagesSchema } from '../../../validation/users/languagesSchema';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { validateSocialLink } from '../../../validation/users/socials';
-import { customTemplateLinkSchema } from '../../../validation/templates/customLink';
+import { customTemplateLinkSchema } from "shared-frontend";
 
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
@@ -58,11 +59,9 @@ import {
     $isEditTemplateOpenStore,
     $isMeetingInfoOpenStore,
     $isOwner,
-    checkCustomLinkFxWithData,
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
 } from '../../../store/roomStores';
-import { ISocialLink } from 'shared-types';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -221,7 +220,7 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                 );
 
                 if (filteredData.customLink && template.customLink !== filteredData.customLink) {
-                    const isBusy = await checkCustomLinkFxWithData({
+                    const isBusy = await checkCustomLinkFx({
                         templateId: filteredData.customLink,
                     });
 

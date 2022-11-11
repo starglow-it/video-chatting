@@ -18,6 +18,7 @@ import { UploadArrowIcon } from '@library/icons/UploadArrow';
 import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
 
 // helpers
+import { CustomImage } from 'shared-frontend/library';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
 
 // const
@@ -27,7 +28,6 @@ import { ACCEPT_MIMES, ACCEPT_MIMES_NAMES } from '../../../const/profile/profile
 import { FileSizeTypesEnum } from '../../../types/fileSize';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './SetUpTemplateInfo.module.scss';
@@ -92,7 +92,15 @@ const SetUpProfileAvatar = memo(() => {
                 {profileAvatar.dataUrl ? (
                     <Fade in>
                         <CustomBox className={styles.image}>
-                            <CustomImage src={profileAvatar.dataUrl} layout="fill" />
+                            <CustomGrid className={styles.preview}>
+                                <CustomImage
+                                    src={profileAvatar.dataUrl}
+                                    width="220px"
+                                    height="220px"
+                                    objectFit="cover"
+                                    className={styles.img}
+                                />
+                            </CustomGrid>
                             <RoundCloseIcon
                                 onClick={handleResetProfileAvatar}
                                 className={styles.deleteImage}

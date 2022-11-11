@@ -14,6 +14,8 @@ import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfi
 import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
 
 // stores
+import { CustomImage } from 'shared-frontend/library';
+import { ICommonTemplate } from 'shared-types';
 import {
     $discoveryTemplatesStore,
     getUsersTemplatesFx,
@@ -22,7 +24,6 @@ import {
 } from '../../store';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './DiscoveryContainer.module.scss';
@@ -30,7 +31,6 @@ import styles from './DiscoveryContainer.module.scss';
 // types
 import { AppDialogsEnum, UserTemplate } from '../../store/types';
 import { getClientMeetingUrl } from '../../utils/urls';
-import { ICommonTemplate } from 'shared-types';
 
 const DiscoveryContainer = memo(() => {
     const router = useRouter();

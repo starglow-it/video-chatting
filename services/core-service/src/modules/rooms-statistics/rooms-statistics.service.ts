@@ -7,6 +7,7 @@ import {
   RoomStatistic,
   RoomStatisticDocument,
 } from '../../schemas/room-statistic.schema';
+import { QueryParams } from 'shared-types';
 
 @Injectable()
 export class RoomsStatisticsService {
@@ -15,7 +16,13 @@ export class RoomsStatisticsService {
     private roomStatistic: Model<RoomStatisticDocument>,
   ) {}
 
-  async create({ data, session }: { data: any; session: ITransactionSession }) {
+  async create({
+    data,
+    session,
+  }: {
+    data: any;
+    session?: ITransactionSession;
+  }) {
     return this.roomStatistic.create([data], { session: session?.session });
   }
 
@@ -26,7 +33,7 @@ export class RoomsStatisticsService {
   }: {
     query: FilterQuery<RoomStatisticDocument>;
     session?: ITransactionSession;
-    options?: { sort?: string; skip?: number; limit?: number };
+    options?: QueryParams;
   }) {
     return this.roomStatistic
       .find(

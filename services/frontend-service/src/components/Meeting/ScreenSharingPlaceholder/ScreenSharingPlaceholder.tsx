@@ -5,10 +5,10 @@ import React, { memo } from 'react';
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomImage } from 'shared-frontend/library';
 import { getRandomNumber } from '../../../utils/functions/getRandomNumber';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ScreenSharingPlaceholder.module.scss';

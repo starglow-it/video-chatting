@@ -1,4 +1,6 @@
 import { attach, combine, sample, Store } from 'effector-next';
+import { isMobile } from 'shared-utils';
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
     $isOwner,
@@ -27,7 +29,6 @@ import { appDialogsApi } from '../../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
 
-import { isMobile } from 'shared-utils';
 
 import {
     AppDialogsEnum,
@@ -37,7 +38,6 @@ import {
     Profile,
     JoinMeetingResult,
 } from '../../../types';
-import { MeetingAccessStatusEnum } from 'shared-types';
 import { SendAnswerMeetingRequestParams } from './types';
 
 import { MeetingSubscribeEvents } from '../../../../const/socketEvents/subscribers';
@@ -178,12 +178,8 @@ sample({
 
 sample({
     clock: emitEnterMeetingEvent,
-    source: combine({
-        isUserSendEnterRequest: $isUserSendEnterRequest,
-        localUser: $localUserStore,
-    }),
-    filter: ({ isUserSendEnterRequest, localUser }) =>
-        isUserSendEnterRequest && localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
+    source: $localUserStore,
+    filter: (localUser) => localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
     target: sendEnterMeetingRequestSocketEvent,
 });
 
@@ -201,11 +197,13 @@ const handleUpdateMeetingEntities = (data: JoinMeetingResult) => {
 };
 
 const handleMeetingEventsError = (data: string) => {
-    setMeetingErrorEvent(data);
-    setIsUserSendEnterRequest(false);
-    appDialogsApi.openDialog({
-        dialogKey: AppDialogsEnum.meetingErrorDialog,
-    });
+    if (data) {
+        setMeetingErrorEvent(data);
+        setIsUserSendEnterRequest(false);
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.meetingErrorDialog,
+        });
+    }
 };
 
 joinWaitingRoomSocketEvent.failData.watch(handleMeetingEventsError);
@@ -218,7 +216,7 @@ cancelAccessMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 
 sample({
-    clock: [sendEnterMeetingRequestSocketEvent.doneData, sendEnterWaitingRoomSocketEvent.doneData],
+    clock: sendEnterMeetingRequestSocketEvent.doneData,
     fn: () => true,
     target: setIsUserSendEnterRequest,
 });

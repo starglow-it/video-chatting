@@ -1,6 +1,6 @@
+import { ErrorState } from 'shared-types';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 import { RoomsStatisticsState, RoomsStatisticsResponse } from '../../types';
-import { ErrorState } from 'shared-types';
 import { roomsStatisticsUrl } from '../../../const/urls/statistics';
 
 export const handleGetRoomsStatistics = async (): Promise<RoomsStatisticsState> => {

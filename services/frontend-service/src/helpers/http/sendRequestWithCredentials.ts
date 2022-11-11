@@ -1,10 +1,10 @@
 import { parseCookies } from 'nookies';
 import { NextPageContext } from 'next';
 import { AxiosRequestConfig } from 'axios';
+import { TokenPair, ApiError, SuccessResult, FailedResult } from 'shared-types';
 import setAuthCookies from './setAuthCookies';
 import { sendRequest } from './sendRequest';
 import { refreshUrl } from '../../utils/urls';
-import { TokenPair, ApiError, SuccessResult, FailedResult } from 'shared-types';
 
 export interface IsomorphicRequestOptions extends AxiosRequestConfig {
     authRequest?: boolean;

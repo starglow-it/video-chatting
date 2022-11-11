@@ -1,6 +1,6 @@
+import { ICommonTemplate } from 'shared-types';
 import { UserTemplate } from '../types';
 import { ParsedTimeStamp } from '../../types';
-import { ICommonTemplate } from 'shared-types';
 
 export type EditUserTemplatePayload = {
     templateId: UserTemplate['id'];
@@ -33,9 +33,10 @@ export type SendScheduleInvitePayload = {
 
 export type PurchaseTemplatePayload = { templateId: ICommonTemplate['id'] };
 export type GetUserTemplatePayload = { templateId: ICommonTemplate['id']; withCredentials: false };
+export type GetUserTemplateByIdPayload = { templateId: ICommonTemplate['id'] };
 export type AddTemplateToUserEffectPayload = {
     templateId: ICommonTemplate['id'];
 };
 export type AddTemplateToUserEffectResponse = UserTemplate | null;
 
-export type DeleteCommonTemplatePayload = { templateId: Template['id'] };
+export type DeleteCommonTemplatePayload = { templateId: ICommonTemplate['id'] };

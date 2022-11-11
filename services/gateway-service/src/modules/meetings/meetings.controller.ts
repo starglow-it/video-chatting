@@ -66,14 +66,18 @@ export class MeetingsController {
         });
       }
 
+      const commonTemplate = await this.templatesService.getCommonTemplate({
+        templateId: userTemplate.templateId,
+      });
+
       const updatedUserTemplate = await this.coreService.assignMeetingInstance({
         userId: req.user.userId,
         templateId: userTemplate.id,
       });
 
       this.coreService.updateRoomRatingStatistic({
-        templateId: updatedUserTemplate.id,
-        userId: userTemplate.author,
+        templateId: commonTemplate.id,
+        userId: commonTemplate.author,
         ratingKey: 'calls',
         value: 1,
       });

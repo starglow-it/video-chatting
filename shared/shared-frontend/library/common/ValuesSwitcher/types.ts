@@ -20,6 +20,6 @@ export type ValueSwitcherItemProps<T extends ValueType> = {
     index: number;
     value: ValuesSwitcherItem<T>;
     activeValue: ValuesSwitcherItem<T>;
-    onValueChanged: (value: ValuesSwitcherItem<T>) => void;
+    onValueChanged: (value: ValuesSwitcherItem<T>) => Promise<void> | void
     variant?: ValueSwitcherVariant;
 };

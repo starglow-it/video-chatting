@@ -6,6 +6,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { MeetingNoteItem } from '@components/Meeting/MeetingNoteItem/MeetingNoteItem';
 
 // stores
+import { isMobile } from 'shared-utils';
 import { $windowSizeStore } from '../../../store';
 import { $meetingNotesStore, getMeetingNotesSocketEvent } from '../../../store/roomStores';
 
@@ -13,7 +14,6 @@ import { $meetingNotesStore, getMeetingNotesSocketEvent } from '../../../store/r
 import styles from './MeetingNotes.module.scss';
 
 // utils
-import { isMobile } from 'shared-utils';
 
 const Component = () => {
     const meetingNotes = useStore($meetingNotesStore);

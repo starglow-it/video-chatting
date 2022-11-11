@@ -21,6 +21,7 @@ import {
   templatesData,
   LANGUAGES_TAGS,
   BUSINESS_CATEGORIES,
+  monetizationStatisticsData,
 } from 'shared-const';
 import { Counters } from 'shared-types';
 
@@ -33,6 +34,8 @@ import {
 // utils
 import { getScreenShots } from '../utils/images/getScreenShots';
 import { executePromiseQueue } from '../utils/executePromiseQueue';
+import { MonetizationStatisticService } from '../modules/monetization-statistic/monetization-statistic.service';
+import { RoomsStatisticsService } from '../modules/rooms-statistics/rooms-statistics.service';
 
 @Injectable()
 export class SeederService {
@@ -46,6 +49,8 @@ export class SeederService {
     private awsService: AwsConnectorService,
     private countersService: CountersService,
     private configService: ConfigClientService,
+    private monetizationStatisticService: MonetizationStatisticService,
+    private roomsStatisticService: RoomsStatisticsService,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
   ) {}
@@ -294,5 +299,60 @@ export class SeederService {
         contactEmail: adminEmail,
       });
     }
+  }
+
+  async seedRoomStatistic() {
+    try {
+      const commonTemplates =
+        await this.commonTemplatesService.findCommonTemplates({
+          query: {},
+          populatePaths: ['author'],
+        });
+
+      const statisticPromise = commonTemplates.map(async (template) => {
+        const isStatisticExists = await this.roomsStatisticService.exists({
+          query: { template: template._id },
+        });
+
+        if (isStatisticExists) return;
+
+        return this.roomsStatisticService.create({
+          data: {
+            template: template._id,
+            user: template?.author?._id,
+            transactions: 0,
+            minutes: 0,
+            calls: 0,
+            money: 0,
+            uniqueUsers: 0,
+          },
+        });
+      });
+
+      await Promise.all(statisticPromise);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async seedMonetizationStatistic() {
+    return Promise.all(
+      monetizationStatisticsData.map(async (statistic) => {
+        const isStatisticExists =
+          await this.monetizationStatisticService.exists({
+            query: { key: statistic.key },
+          });
+
+        if (!isStatisticExists) {
+          await this.monetizationStatisticService.create({
+            data: {
+              key: statistic.key,
+              type: statistic.type,
+              value: 0,
+            },
+          });
+        }
+      }),
+    );
   }
 }

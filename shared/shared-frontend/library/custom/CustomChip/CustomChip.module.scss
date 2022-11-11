@@ -1,11 +1,28 @@
 @import "../../../styles/variables";
+@import "../../../styles/rem";
 
-.active {
-  background-color: $primary-orange;
-  color: $primary-white;
+.chip {
+  min-width: rem(50px);
 
-  &:hover {
+  &.active {
+    background-color: $primary-orange;
     color: $primary-white;
-    background-color: $dark-orange;
+
+    &:hover:not(.withoutAction) {
+      color: $primary-white;
+      background-color: $dark-orange;
+    }
+  }
+
+  &.withoutAction {
+    cursor: default;
   }
 }
+
+.label {
+  margin: 0;
+}
+
+
+
+

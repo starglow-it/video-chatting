@@ -11,17 +11,17 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
+import { CustomImage } from 'shared-frontend/library';
+import { ICommonTemplate } from 'shared-types';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './WelcomePageContainer.module.scss';
 
 // stores
 import { $templatesStore, getTemplatesFx } from '../../store';
-import { ICommonTemplate } from 'shared-types';
 
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
@@ -45,7 +45,14 @@ const WelcomePageContainer = memo(() => {
 
     return (
         <>
-            <CustomGrid container direction="column" alignItems="center">
+            <CustomGrid
+                container
+                direction="column"
+                alignItems="center"
+                sx={{
+                    padding: '94px 20px 100px 20px',
+                }}
+            >
                 <CustomGrid
                     className={styles.wrapper}
                     container

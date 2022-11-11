@@ -77,6 +77,45 @@ export class ProfileTemplatesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/count')
+  @ApiOperation({ summary: 'Get Profile Rooms Count' })
+  @ApiOkResponse({
+    type: CommonTemplateRestDTO,
+    description: 'Get Profile Rooms Success',
+  })
+  async getProfileTemplatesCount(
+    @Request() req,
+    @Query('skip', ParseIntPipe) skip: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('templateType') templateType: string,
+  ): Promise<ResponseSumType<{ count: number }>> {
+    try {
+      const count = await this.templatesService.countUserTemplates({
+        userId: req.user.userId,
+        options: {
+          skip,
+          limit,
+          templateType,
+        },
+      });
+
+      return {
+        success: true,
+        result: count,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get profile templates count`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('/:templateId')
   @ApiOperation({ summary: 'Update Profile Template' })
   @ApiOkResponse({

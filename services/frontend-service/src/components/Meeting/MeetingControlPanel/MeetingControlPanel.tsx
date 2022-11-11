@@ -32,6 +32,7 @@ import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAv
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { $profileStore, setIsSideUsersOpenEvent } from '../../../store';
 import {
     $isMeetingHostStore,
@@ -49,7 +50,6 @@ import styles from './MeetingControlPanel.module.scss';
 
 // types
 import { MeetingUser } from '../../../store/types';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const isOwner = useStore($isOwner);

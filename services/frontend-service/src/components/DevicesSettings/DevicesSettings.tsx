@@ -23,6 +23,7 @@ import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsConte
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // stores
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { $profileStore, addNotificationEvent } from '../../store';
 import {
     $audioDevicesStore,
@@ -40,13 +41,11 @@ import {
     $meetingTemplateStore,
     $videoDevicesStore,
     $videoErrorStore,
-    initDevicesEventFxWithStore,
     joinMeetingEvent,
     sendCancelAccessMeetingRequestEvent,
     sendEnterMeetingRequestSocketEvent,
     sendEnterWaitingRoomSocketEvent,
     setIsAudioActiveEvent,
-    setIsAuraActive,
     setIsCameraActiveEvent,
     toggleIsAuraActive,
     updateLocalUserEvent,
@@ -56,17 +55,12 @@ import {
 
 // types
 import { NotificationType, UserTemplate } from '../../store/types';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
 
 import { booleanSchema, simpleStringSchema } from '../../validation/common';
 import { templatePriceSchema } from '../../validation/payments/templatePrice';
-
-// controllers
-import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
-import { SavedSettings } from '../../types';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -127,16 +121,6 @@ const Component = () => {
         useToggle(isBackgroundAudioActive);
 
     const { isMobile } = useBrowserDetect();
-
-    useEffect(() => {
-        initDevicesEventFxWithStore();
-
-        const savedSettings = WebStorage.get<SavedSettings>({
-            key: StorageKeysEnum.meetingSettings,
-        });
-
-        setIsAuraActive(savedSettings?.auraSetting ?? !isMobile);
-    }, []);
 
     useEffect(() => {
         updateLocalUserEvent({
@@ -202,7 +186,10 @@ const Component = () => {
     const isAudioError = Boolean(audioError);
 
     const isEnterMeetingDisabled =
-        isAudioError || isEnterMeetingRequestPending || isEnterWaitingRoomRequestPending;
+        isAudioError
+        || isEnterMeetingRequestPending
+        || isEnterWaitingRoomRequestPending
+        || localUser.accessStatus === MeetingAccessStatuses.Waiting;
 
     const joinHandler = isOwner ? onSubmit : handleJoinMeeting;
 
@@ -235,36 +222,44 @@ const Component = () => {
                         direction={isMobile && isUserSentEnterRequest ? 'column-reverse' : 'column'}
                         wrap="nowrap"
                     >
-                        {isUserSentEnterRequest ? (
+                        {isUserSentEnterRequest || !isUserSentEnterRequest && localUser.accessStatus === MeetingAccessStatuses.Waiting ? (
                             <>
                                 <CustomGrid container direction="column">
                                     <CustomTypography
                                         className={styles.title}
                                         variant="h3bold"
                                         nameSpace="meeting"
-                                        translation="requestSent"
+                                        translation={localUser.accessStatus === MeetingAccessStatuses.Waiting
+                                            ? "meetingNotStarted.title"
+                                            : "requestSent"
+                                        }
                                     />
                                     <CustomTypography
                                         variant="body1"
                                         color="text.secondary"
                                         nameSpace="meeting"
-                                        translation="enterPermission"
+                                        translation={localUser.accessStatus === MeetingAccessStatuses.Waiting
+                                            ? "meetingNotStarted.text"
+                                            : "enterPermission"
+                                        }
                                     />
                                 </CustomGrid>
-                                <CustomGrid
-                                    container
-                                    alignItems="center"
-                                    direction={isMobile ? 'row' : 'column-reverse'}
-                                    className={clsx(styles.loader, { [styles.mobile]: isMobile })}
-                                    gap={1}
-                                >
-                                    <WiggleLoader />
-                                    <CustomTypography
-                                        color="colors.orange.primary"
-                                        nameSpace="meeting"
-                                        translation="waitForHost"
-                                    />
-                                </CustomGrid>
+                                <ConditionalRender condition={isUserSentEnterRequest}>
+                                    <CustomGrid
+                                        container
+                                        alignItems="center"
+                                        direction={isMobile ? 'row' : 'column-reverse'}
+                                        className={clsx(styles.loader, {[styles.mobile]: isMobile})}
+                                        gap={1}
+                                    >
+                                        <WiggleLoader />
+                                        <CustomTypography
+                                            color="colors.orange.primary"
+                                            nameSpace="meeting"
+                                            translation="waitForHost"
+                                        />
+                                    </CustomGrid>
+                                </ConditionalRender>
                             </>
                         ) : (
                             <MeetingSettingsContent

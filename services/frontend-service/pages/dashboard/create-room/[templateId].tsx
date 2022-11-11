@@ -1,7 +1,10 @@
 import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
+import dynamic from "next/dynamic";
 
-import { CreateRoomContainer } from '@containers/CreateRoomContainer/CreateRoomContainer';
+const CreateRoomContainer = dynamic(() => import('@containers/CreateRoomContainer/CreateRoomContainer'), {
+    ssr: false,
+});
 
 import { pageLoaded } from 'src/store';
 

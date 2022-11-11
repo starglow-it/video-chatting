@@ -1,7 +1,7 @@
 import { string, object } from 'yup';
+import { ISocialLink } from 'shared-types';
 import { simpleStringSchema } from '../common';
 import { SocialLinkKeysEnum } from '../../store/types';
-import { ISocialLink } from 'shared-types';
 
 export const baseUrlSchema = () =>
     string().matches(

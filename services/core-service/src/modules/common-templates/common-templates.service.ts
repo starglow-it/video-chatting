@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, QueryOptions, UpdateQuery } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
@@ -20,7 +20,7 @@ import { AwsConnectorService } from '../../services/aws-connector/aws-connector.
 import { CountersService } from '../counters/counters.service';
 
 // const
-import { Counters } from 'shared-types';
+import { Counters, QueryParams } from 'shared-types';
 
 // helpers
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
@@ -62,7 +62,7 @@ export class CommonTemplatesService {
     session,
   }: {
     query: FilterQuery<CommonTemplateDocument>;
-    options?: { skip?: number; limit?: number; sort?: string };
+    options?: QueryParams;
     populatePaths?: CustomPopulateOptions;
     session?: ITransactionSession;
   }) {
@@ -224,5 +224,9 @@ export class CommonTemplatesService {
     };
 
     return this.commonTemplate.deleteOne(query, options).exec();
+  }
+
+  async aggregate(aggregationPipeline: PipelineStage[]) {
+    return this.commonTemplate.aggregate(aggregationPipeline).exec();
   }
 }

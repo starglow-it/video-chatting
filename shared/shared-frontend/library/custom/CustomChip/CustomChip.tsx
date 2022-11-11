@@ -10,13 +10,17 @@ import { CustomChipProps } from './types';
 import styles from './CustomChip.module.scss';
 
 const Component = (
-    { active = false, className, label, ...rest }: CustomChipProps,
+    { active = false, className, withoutAction, label, ...rest }: CustomChipProps,
     ref: ForwardedRef<HTMLInputElement>,
 ) => (
     <Chip
         ref={ref}
-        className={clsx(className, {
+        classes={{
+            label: styles.label
+        }}
+        className={clsx(styles.chip, className, {
             [styles.active]: active,
+            [styles.withoutAction]: withoutAction
         })}
         label={label}
         {...rest}

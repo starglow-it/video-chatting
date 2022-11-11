@@ -30,6 +30,7 @@
   },
   "subscriptions": {
     "noTimeLeft": "You've run out of meeting minutes",
+    "subscriptionHouseSuccess": "Thank you for subscribing to TheLiveOffice House! You can manage subscription in your Profile",
     "subscriptionBusinessSuccess": "Thank you for subscribing to Live Office Business!",
     "subscriptionProfessionalSuccess": "Thank you for subscribing to Live Office Professional!",
     "subscriptionProfessionalTrialSuccess": "Thank you for subscribing to Live Office Professional! Enjoy 7 days Free Trial",
@@ -50,7 +51,9 @@
         "invalidFormat": "Please upload image of .jp(e)g, .heic or .png format",
         "general": "Please upload image of .jp(e)g, .heic or .png format - Up to {{max}} MB"
       },
-      "manyFiles": "Please upload 1 file"
+      "manyFiles": "Please upload 1 file",
+      "shouldBeUploaded": "Background file should be uploaded at first",
+      "isPending": "Please wait until file is uploaded"
     }
   }
 }

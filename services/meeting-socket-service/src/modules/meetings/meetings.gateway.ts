@@ -195,7 +195,7 @@ export class MeetingsGateway
 
       if (!user) {
         this.logger.error({
-          message: 'no user found',
+          message: '[handleDisconnect] no user found',
           ctx: {
             socketId: client.id,
           },
@@ -217,7 +217,7 @@ export class MeetingsGateway
 
       if (!meeting) {
         this.logger.error({
-          message: 'no meeting found',
+          message: '[handleDisconnect] no meeting found',
           ctx: {
             meetingId: user?.meeting?._id,
           },
@@ -226,9 +226,17 @@ export class MeetingsGateway
         return;
       }
 
+      const userTemplate = await this.coreService.findMeetingTemplateById({
+        id: meeting.templateId,
+      });
+      const commonTemplate =
+        await this.coreService.findCommonTemplateByTemplateId({
+          templateId: userTemplate.templateId,
+        });
+
       await this.coreService.updateRoomRatingStatistic({
-        templateId: meeting.templateId,
-        userId: meeting?.owner?.profileId,
+        templateId: commonTemplate.id,
+        userId: commonTemplate?.author,
         ratingKey: 'minutes',
         value: Date.now() - user.joinedAt,
       });
@@ -374,13 +382,13 @@ export class MeetingsGateway
     }>
   > {
     return withTransaction(this.connection, async (session) => {
-      this.logger.log({
+      this.logger.debug({
         message: 'handleJoinWaitingRoom event',
         ctx: message,
       });
 
       // TODO: fetch main instance
-      this.logger.log(`User joined meeting ${message.templateId}`);
+      this.logger.debug(`User joined meeting ${message.templateId}`);
 
       socket.join(`waitingRoom:${message.templateId}`);
 
@@ -406,11 +414,11 @@ export class MeetingsGateway
 
       if (!meeting) {
         this.logger.error({
-          message: 'no meeting found',
+          message: '[handleJoinWaitingRoom] no meeting found',
           ctx: message,
         });
 
-        return;
+        return {};
       }
 
       const template = await this.coreService.findMeetingTemplateById({
@@ -1138,9 +1146,13 @@ export class MeetingsGateway
 
           if (meeting.hostUserId === user.id) {
             meeting.hostUserId = null;
-
-            await meeting.save();
           }
+
+          if (meeting?.sharingUserId === user?.id) {
+            meeting.sharingUserId = null;
+          }
+
+          await meeting.save();
 
           this.taskService.addTimeout({
             name: 'meeting:changeUsersPositions',
@@ -1181,8 +1193,13 @@ export class MeetingsGateway
             accessStatus: MeetingAccessStatusEnum.InMeeting,
           });
 
+          const commonTemplate =
+            await this.coreService.findCommonTemplateByTemplateId({
+              templateId: template.templateId,
+            });
+
           await this.coreService.updateRoomRatingStatistic({
-            templateId: meeting.templateId,
+            templateId: commonTemplate.id,
             ratingKey: 'minutes',
             value: Date.now() - user.joinedAt,
           });

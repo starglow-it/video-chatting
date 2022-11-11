@@ -14,6 +14,7 @@ import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // stores
+import { MeetingAccessStatusEnum } from 'shared-types';
 import {
     $profileStore,
     $windowSizeStore,
@@ -33,7 +34,6 @@ import {
 } from '../../../store/roomStores';
 
 // types
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 import styles from './MeetingUsersVideos.module.scss';
 

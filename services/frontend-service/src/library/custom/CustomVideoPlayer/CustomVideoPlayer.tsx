@@ -20,7 +20,7 @@ const Component = ({ isPlaying, isMuted, volume, options, className }: CustomVid
     useEffect(() => {
         const video = videoRef.current;
 
-        if (video) {
+        if (video && !isNaN(volume)) {
             video.volume = volume / 100;
         }
     }, [volume]);

@@ -39,6 +39,7 @@ import {
     dashboardRoute,
     loginRoute,
     registerRoute,
+    setUpTemplateRoute,
     welcomeRoute,
 } from '../src/const/client-routes';
 
@@ -104,6 +105,10 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
         new RegExp(route).test(pathName),
     );
+
+    if (data.user.registerTemplate) {
+        redirectTo(context?.ctx ?? null, `${setUpTemplateRoute}/${initialTemplateId.templateId}`);
+    }
 
     if (data.isAuthenticated && isRegisterRedirectRoute) {
         redirectTo(context?.ctx ?? null, dashboardRoute);

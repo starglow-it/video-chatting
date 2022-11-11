@@ -1,4 +1,5 @@
 import { combine, sample } from 'effector-next';
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { resetRoomStores } from '../../../root';
 import {
     $meetingStore,
@@ -26,9 +27,6 @@ import {
 import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
-
-// types
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -59,6 +57,11 @@ sample({
     target: joinMeetingFx,
 });
 
+
+/**
+ * This logic will handle case
+ * when user waiting host
+ */
 sample({
     clock: $meetingTemplateStore,
     source: combine({
@@ -67,6 +70,6 @@ sample({
     filter: ({ localUser }, data) =>
         Boolean(data?.meetingInstance?.serverIp) &&
         data.meetingInstance.serverStatus === 'active' &&
-        localUser.accessStatus === MeetingAccessStatusEnum.RequestSent,
+        localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
     target: joinMeetingInWaitingRoomFx,
 });

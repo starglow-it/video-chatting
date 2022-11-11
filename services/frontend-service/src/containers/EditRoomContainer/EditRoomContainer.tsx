@@ -2,6 +2,10 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
+// hooks
+import { useToggle } from '@hooks/useToggle';
+import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
+
 // components
 import { TemplateManagement } from '@components/TemplateManagement/TemplateManagement';
 import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
@@ -14,12 +18,8 @@ import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
-import { UserTemplate } from '../../store/types';
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
-
-// hooks
-import { useToggle } from '@hooks/useToggle';
-import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
+import { UserTemplate } from '../../store/types';
 
 // store
 import {
@@ -208,7 +208,7 @@ const Component = () => {
                 isSubscriptionStep={isSubscriptionStep}
                 onChooseSubscription={handleChooseSubscription}
                 onClose={onHideSubscriptions}
-                onlyPaidPlans={true}
+                onlyPaidPlans
             />
         </>
     );

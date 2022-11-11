@@ -14,7 +14,6 @@ const CustomTooltip = memo(
         popperClassName,
         title,
         variant = 'primary',
-        options,
         ...rest
     }: CustomTooltipProps & Omit<TooltipProps, 'title'>) => (
         <Tooltip

@@ -1,5 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
+import React, { memo, useCallback, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
@@ -40,8 +39,6 @@ import { LoginUserParams } from '../../store/types';
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
-import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
-import { dashboardRoute, setUpTemplateRoute } from '../../const/client-routes';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -49,7 +46,6 @@ const validationSchema = yup.object({
 });
 
 const Component = () => {
-    const router = useRouter();
     const authState = useStore($authStore);
 
     const resolver = useYupValidationResolver<{ email: string; password: string }>(
@@ -78,20 +74,6 @@ const Component = () => {
     });
 
     const isCredentialsEntered = password && email;
-
-    useEffect(() => {
-        if (authState.isAuthenticated) {
-            const initialTemplateId = WebStorage.get<{ templateId: string }>({
-                key: StorageKeysEnum.templateId,
-            });
-
-            const routeToChange = initialTemplateId?.templateId
-                ? `${setUpTemplateRoute}/${initialTemplateId.templateId}`
-                : dashboardRoute;
-
-            router.push(routeToChange);
-        }
-    }, [authState.isAuthenticated]);
 
     const onSubmit = useCallback(
         handleSubmit((data: LoginUserParams) => {

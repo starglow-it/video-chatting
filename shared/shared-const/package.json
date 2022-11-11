@@ -4,7 +4,9 @@
   "description": "Shared constants",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "start:dev": "nodemon index.ts"
+    "start:dev": "nodemon index.ts",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [],
   "author": "",
@@ -15,7 +17,13 @@
     "typescript": "4.8.3"
   },
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.2.1",
     "nodemon": "2.0.20",
+    "prettier": "2.7.1",
     "shared-types": "workspace:*",
     "ts-node": "10.9.1"
   }

@@ -5,6 +5,7 @@ import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // components
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { MeetingUsersListItem } from './MeetingUsersListItem';
 
 // stores
@@ -20,7 +21,6 @@ import {
 
 // types
 import { AppDialogsEnum, MeetingUser } from '../../../store/types';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './MeetingUsersList.module.scss';

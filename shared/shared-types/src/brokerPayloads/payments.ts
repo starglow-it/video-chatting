@@ -1,4 +1,4 @@
-import {ICommonTemplate, ICommonUser} from "../api-interfaces";
+import { ICommonTemplate, ICommonUser } from '../api-interfaces';
 
 export type LoginStripeExpressAccountPayload = { accountId: string };
 export type DeleteStripeExpressAccountPayload = { accountId: string };
@@ -8,19 +8,19 @@ export type GetStripeSubscriptionPayload = { subscriptionId: string };
 export type GetStripeTemplateProductPayload = { productId: string };
 
 export type CreateStripeExpressAccountPayload = {
-    accountId: ICommonUser["stripeAccountId"];
-    email: ICommonUser["email"] | ICommonUser["contactEmail"];
+  accountId: ICommonUser['stripeAccountId'];
+  email: ICommonUser['email'] | ICommonUser['contactEmail'];
 };
 export type CreateStripeAccountLinkPayload = {
-    accountId: ICommonUser["stripeAccountId"];
+  accountId: ICommonUser['stripeAccountId'];
 };
 export type CreatePaymentIntentPayload = {
-    stripeSubscriptionId: string;
-    templatePrice: number;
-    templateCurrency: string;
-    platformFee: number;
-    stripeAccountId: ICommonUser["stripeAccountId"];
-    templateId: ICommonTemplate["id"];
+  stripeSubscriptionId: string;
+  templatePrice: number;
+  templateCurrency: string;
+  platformFee: number;
+  stripeAccountId: ICommonUser['stripeAccountId'];
+  templateId: ICommonTemplate['id'];
 };
 
 export type GetStripeCheckoutSessionPayload = {
@@ -33,12 +33,18 @@ export type GetStripeCheckoutSessionPayload = {
   withTrial?: boolean;
 };
 export type CreateStripeTemplateProductPayload = {
-    name: string;
-    priceInCents: number;
-    description: string;
+  name: string;
+  priceInCents: number;
+  description: string;
 };
 export type GetProductCheckoutSessionPayload = {
-    productId: string;
-    customerEmail: string;
-    customer: string;
+  productId: string;
+  templateId: string;
+  userId: string;
+  customerEmail: string;
+  customer: string;
+};
+
+export type GetStripeChargesPayload = {
+  time: number;
 };

@@ -3,7 +3,10 @@ import { ClientProxy } from '@nestjs/microservices';
 
 import { PAYMENTS_PROVIDER } from 'shared-const';
 import { PaymentsBrokerPatterns } from 'shared-const';
-import { CreateStripeTemplateProductPayload } from 'shared-types';
+import {
+  CreateStripeTemplateProductPayload,
+  GetStripeChargesPayload,
+} from 'shared-types';
 
 @Injectable()
 export class PaymentsService {
@@ -20,6 +23,14 @@ export class PaymentsService {
   async getStripeTemplateProductByName(payload: { name: string }) {
     const pattern = {
       cmd: PaymentsBrokerPatterns.GetStripeTemplateProductByName,
+    };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async getStripeCharges(payload: GetStripeChargesPayload) {
+    const pattern = {
+      cmd: PaymentsBrokerPatterns.GetStripeCharges,
     };
 
     return this.client.send(pattern, payload).toPromise();

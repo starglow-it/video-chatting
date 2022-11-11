@@ -1,9 +1,9 @@
+import { ErrorState } from 'shared-types';
 import { UserTemplate } from '../../types';
 import { postProfileTemplatesUrl } from '../../../utils/urls';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { generateFormData } from '../../../utils/form/generateFormData';
 import { EditUserTemplatePayload, EditUserTemplateResponse } from '../types';
-import { ErrorState } from 'shared-types';
 
 export const handleEditUserTemplate = async ({
     templateId,

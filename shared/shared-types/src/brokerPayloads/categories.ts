@@ -1,4 +1,3 @@
-export type GetBusinessCategoriesPayload = {
-    skip: number;
-    limit: number;
-}
+import { QueryParams } from '../common';
+
+export type GetBusinessCategoriesPayload = QueryParams;

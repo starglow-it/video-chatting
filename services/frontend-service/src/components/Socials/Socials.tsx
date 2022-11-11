@@ -45,10 +45,7 @@ const SocialInput = ({ social, index, onRemove }) => {
         const { value } = event.target;
 
         if (value) {
-            event.target.value =
-                /https?/g.test(value) && /https?/g.test(inputValue.value)
-                    ? value.replace(/https:\/\//, '')
-                    : value;
+            event.target.value = value;
 
             await onChange(event);
         } else {
@@ -57,6 +54,22 @@ const SocialInput = ({ social, index, onRemove }) => {
             await onChange(event);
         }
     };
+
+    const handlePasteLink = async (event) => {
+        const { value } = event.target;
+
+        if (value) {
+            event.target.value = /https?/.test(value)
+                ? value
+                : `https://${value}`;
+
+            await onChange(event);
+        } else {
+            event.target.value = 'https://';
+
+            await onChange(event);
+        }
+    }
 
     return (
         <CustomInput
@@ -78,6 +91,7 @@ const SocialInput = ({ social, index, onRemove }) => {
                     </InputAdornment>
                 ),
             }}
+            onPaste={handlePasteLink}
             onChange={handleChange}
             {...registerData}
         />

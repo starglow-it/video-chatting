@@ -14,12 +14,12 @@ import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/Subs
 import { dashboardRoute } from 'src/const/client-routes';
 
 // types
-import { Template } from '../../store/types';
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
+import { Template } from '../../store/types';
 
 // store
 import {
@@ -231,7 +231,7 @@ const Component = () => {
                 isSubscriptionStep={isSubscriptionStep}
                 onChooseSubscription={handleChooseSubscription}
                 onClose={onHideSubscriptions}
-                onlyPaidPlans={true}
+                onlyPaidPlans
             />
         </>
     );

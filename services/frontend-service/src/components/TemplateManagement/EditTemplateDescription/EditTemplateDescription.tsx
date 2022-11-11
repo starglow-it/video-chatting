@@ -23,7 +23,8 @@ import { EditTemplateDescriptionProps } from '@components/TemplateManagement/Edi
 import { AutocompleteType } from '@library/custom/CustomAutocomplete/types';
 
 // stores
-import { $businessCategoriesStore, getBusinessCategoriesFx } from '../../../store';
+import { getRandomHexColor } from 'shared-utils';
+import {$businessCategoriesStore, checkCustomLinkFx, getBusinessCategoriesFx} from '../../../store';
 
 // const
 import {
@@ -37,7 +38,6 @@ import frontendConfig from '../../../const/config';
 import styles from './EditTemplateDescription.module.scss';
 
 // utils
-import { getRandomHexColor } from 'shared-utils';
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
 
 const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER }, (_, i) => ({
@@ -54,6 +54,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
         trigger,
         setError,
         setValue,
+        clearErrors,
         formState: { errors },
     } = useFormContext();
 
@@ -98,10 +99,24 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger(['name', 'description', 'tags', 'customLink']);
+
+        const isBusy = await checkCustomLinkFx({
+            templateId: customLink,
+        });
+
+        if (isBusy) {
+            setError('customLink', [
+                { type: 'focus', message: 'meeting.settings.customLink.busy' },
+            ]);
+            return;
+        } else {
+            clearErrors('customLink');
+        }
+
         if (response) {
             onNextStep();
         }
-    }, [onNextStep]);
+    }, [onNextStep, customLink]);
 
     const { onChange: onChangeName, ...nameProps } = useMemo(() => register('name'), []);
     const customLinkProps = useMemo(() => register('customLink'), []);
@@ -160,6 +175,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string = errors?.description?.[0]?.message || '';
     const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
+    const customLinkErrorMessage: string = errors?.customLink?.[0]?.message || '';
 
     return (
         <CustomGrid
@@ -259,6 +275,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         autoComplete="off"
                         color="secondary"
                         InputProps={customLinkInputProps}
+                        error={customLinkErrorMessage}
                         {...customLinkProps}
                     />
                 </CustomGrid>

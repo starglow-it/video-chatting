@@ -1,0 +1,37 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.wrapper {
+  width: rem(960px);
+  max-width: 100%;
+  margin: rem(85px auto 0);
+}
+
+.paper {
+  width: 100%;
+  padding: rem(16px 34px 40px 34px);
+}
+
+.headCell {
+  width: min-content;
+  &:first-child {
+    padding-left: rem(20px);
+  }
+}
+
+.cell {
+  color: $primary-black;
+  text-align: left;
+  &:first-child {
+    padding-left: rem(20px);
+  }
+}
+.chip {
+  padding: rem(4px 10px);
+  height: rem(32px);
+}
+.search {
+  max-width: rem(580px);
+  margin: rem(20px 0 28px 0);
+  padding: rem(8px);
+}

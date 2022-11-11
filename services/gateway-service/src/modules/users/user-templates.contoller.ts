@@ -280,7 +280,7 @@ export class UserTemplateController {
         userId: req.user.userId,
       });
 
-      const template = await this.templatesService.getUserTemplate({
+      const template = await this.templatesService.getUserTemplateById({
         id: data.templateId,
       });
 
@@ -306,7 +306,7 @@ export class UserTemplateController {
 
       const startAtDate = formatDate(startAt, data.timeZone);
 
-      await this.notificationService.sendEmail({
+      this.notificationService.sendEmail({
         template: {
           key: emailTemplates.meetingInviteIcs,
           data: [

@@ -1,13 +1,5 @@
 import { memo, useEffect, useRef } from 'react';
-import {
-    Chart,
-    ChartData,
-    ChartOptions,
-    TooltipModel,
-    DoughnutController,
-    ArcElement,
-    Tooltip,
-} from 'chart.js';
+import { Chart, ChartData, DoughnutController, ArcElement, Tooltip, TooltipItem } from 'chart.js';
 import { deepmerge } from 'deepmerge-ts';
 
 import { CustomGrid } from 'shared-frontend/library';
@@ -133,12 +125,58 @@ const defaultOptionsSettings = {
     },
 };
 
+const getChartData = (
+    label: string,
+    dataSets: CustomDoughnutChartProps['data']['dataSets'],
+): ChartData<'doughnut'> => ({
+        labels: dataSets.map(dataSet => dataSet.labels),
+        datasets: [
+            deepmerge(defaultDataSetsSettings, {
+                label,
+                backgroundColor: dataSets.map(dataSet => dataSet.color),
+                data: dataSets.map(dataSet => dataSet.parts.reduce((acc, b) => acc + b, 0)),
+            }),
+        ],
+    });
+
+const getChartOptions = (
+    label: string,
+    totalLabel: string,
+    totalNumber: number,
+    dataSets: CustomDoughnutChartProps['data']['dataSets'],
+) => deepmerge(defaultOptionsSettings, {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: (model: TooltipItem<'doughnut'>) =>
+                        model[0].label?.length === 1 ? model[0].label : 'Other',
+                    label: (model: TooltipItem<'doughnut'>): string | string[] => {
+                        if (model.label?.length === 1) {
+                            return `${Math.ceil((model.raw / totalNumber) * 100)}% - ${model.raw}`;
+                        } 
+                            return model.label.map((label, index) => {
+                                const part = dataSets[model.dataIndex].parts[index];
+                                return `${Math.ceil((part / totalNumber) * 100)}% - ${part}`;
+                            });
+                        
+                    },
+                },
+            },
+            chartUsersTextPlugin: {
+                text: label,
+            },
+            chartTotalTextPlugin: {
+                text: totalLabel ?? totalNumber,
+            },
+        },
+    });
+
 const Component = ({
     className,
     width,
     height,
     label,
-    data: { totalNumber, dataSets },
+    data: { totalLabel, totalNumber, dataSets },
 }: PropsWithClassName<CustomDoughnutChartProps>) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const chartRef = useRef<Chart | null>(null);
@@ -147,42 +185,10 @@ const Component = ({
         const canvas = canvasRef.current;
 
         if (canvas) {
-            const data: ChartData<'doughnut'> = {
-                labels: dataSets.map(dataSet => dataSet.label),
-                datasets: [
-                    deepmerge(defaultDataSetsSettings, {
-                        label: label,
-                        backgroundColor: dataSets.map(dataSet => dataSet.color),
-                        data: dataSets.map(dataSet => dataSet.parts),
-                    }),
-                ],
-            };
-
-            const options: ChartOptions<'doughnut'> = deepmerge<ChartOptions<'doughnut'>[]>(
-                defaultOptionsSettings,
-                {
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                title: (model: TooltipModel<'doughnut'>) => model[0]?.label,
-                                label: (model: TooltipModel<'doughnut'>): string | string[] =>
-                                    `${Math.ceil((model.raw / totalNumber) * 100)}% - ${model.raw}`,
-                            },
-                        },
-                        chartUsersTextPlugin: {
-                            text: label,
-                        },
-                        chartTotalTextPlugin: {
-                            text: totalNumber.toString(10),
-                        },
-                    },
-                },
-            );
-
             chartRef.current = new Chart(canvas, {
                 type: 'doughnut',
-                data,
-                options,
+                data: getChartData(label, dataSets),
+                options: getChartOptions(label, totalLabel, totalNumber, dataSets),
                 plugins: [usersText, totalText],
             });
 
@@ -196,6 +202,15 @@ const Component = ({
             }
         };
     }, []);
+
+    useEffect(() => {
+        if (chartRef.current) {
+            chartRef.current.data = getChartData(label, dataSets);
+            chartRef.current.options = getChartOptions(label, totalLabel, totalNumber, dataSets);
+
+            chartRef.current.update();
+        }
+    }, [dataSets]);
 
     return (
         <CustomGrid className={className}>

@@ -26,6 +26,7 @@ import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
+import { ILanguage, ISocialLink } from 'shared-types';
 import { $profileStore, $routeToChangeStore, appDialogsApi, updateProfileFx } from '../../store';
 
 // validations
@@ -42,7 +43,6 @@ import styles from './EditProfileContainer.module.scss';
 
 // types
 import { AppDialogsEnum } from '../../store/types';
-import { ILanguage, ISocialLink } from 'shared-types';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),

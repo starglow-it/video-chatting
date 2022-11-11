@@ -16,6 +16,7 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // validation
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { fullNameSchema } from '../../validation/users/fullName';
 
 // stores
@@ -26,11 +27,9 @@ import {
     $localUserStore,
     $meetingTemplateStore,
     updateLocalUserEvent,
-    updateUserSocketEvent,
 } from '../../store/roomStores';
 
-//types
-import { MeetingAccessStatusEnum } from 'shared-types';
+// types
 
 // styles
 import styles from './EnterMeetingName.module.scss';
@@ -72,9 +71,6 @@ const Component = () => {
         handleSubmit(data => {
             updateLocalUserEvent({
                 username: data.fullName,
-                accessStatus: MeetingAccessStatusEnum.Settings,
-            });
-            updateUserSocketEvent({
                 accessStatus: MeetingAccessStatusEnum.Settings,
             });
         }),

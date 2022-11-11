@@ -1,4 +1,5 @@
 import { attach, combine, Store } from 'effector-next';
+import { ErrorState } from 'shared-types';
 import { meetingDomain } from '../../../domains';
 
 import { $profileStore } from '../../../profile/profile/model';
@@ -6,7 +7,6 @@ import { $meetingUsersStore } from '../../users/meetingUsers/model';
 
 import { MeetingUser, Profile, UserTemplate } from '../../../types';
 import { UpdateTemplatePayload } from '../../../profile/types';
-import { ErrorState } from 'shared-types';
 
 export const initialTemplateState: UserTemplate = {
     id: '',
@@ -84,12 +84,6 @@ export const updateMeetingTemplateFx = meetingDomain.createEffect<
     ErrorState
 >('updateMeetingTemplateFx');
 
-export const checkCustomLinkFx = meetingDomain.createEffect<
-    { templateId: UserTemplate['customLink'] },
-    boolean,
-    ErrorState
->('checkCustomLinkFx');
-
 export const updateMeetingTemplateFxWithData = attach<
     Partial<UserTemplate>,
     Store<{
@@ -108,11 +102,4 @@ export const updateMeetingTemplateFxWithData = attach<
         meetingTemplate: $meetingTemplateStore,
         profile: $profileStore,
     }),
-});
-
-export const checkCustomLinkFxWithData = attach({
-    mapParams: params => ({
-        templateId: params?.templateId,
-    }),
-    effect: checkCustomLinkFx,
 });

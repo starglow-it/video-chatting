@@ -25,7 +25,7 @@ const Component = <ValueType extends string | number>({
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     useLayoutEffect(() => {
-        setActiveElementIndex(values.indexOf(activeValue));
+        setActiveElementIndex(values.findIndex(value => value.value === activeValue.value));
     }, [activeValue, values]);
 
     const renderValues = useMemo(

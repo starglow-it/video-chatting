@@ -1,9 +1,9 @@
+import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import {
     GetEditingTemplateResponse,
     UploadTemplateFileResponse,
 } from '../../store/templates/types';
 import { Template, UserTemplate } from '../../store/types';
-import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 
 export type TemplateManagementProps = {
     template: Template | UserTemplate | null;

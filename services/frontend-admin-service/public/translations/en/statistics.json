@@ -3,7 +3,14 @@
     "location": {
       "title": "By location"
     },
+    "monetization": {
+      "noData": "Nothing earned yet"
+    },
     "subscription": {
+      "title": "Subscriptions",
+      "noData": "No subscriptions yet"
+    },
+    "users": {
       "title": "Subscriptions",
       "noData": "No subscriptions yet"
     },
@@ -36,5 +43,11 @@
     "monetization": {
       "title": "Monetization"
     }
+  },
+  "monetization": {
+    "rooms": "Purchased rooms",
+    "subscriptions": "Subscriptions",
+    "sellRooms": "Selling custom rooms",
+    "roomCalls": "Room calls"
   }
 }

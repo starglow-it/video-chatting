@@ -26,7 +26,9 @@ export class CountryStatisticsController {
       return withTransaction(this.connection, async (session) => {
         const countryStatistics = await this.countryStatisticsService.find({
           query: {},
-          options: {},
+          options: {
+            sort: '-value',
+          },
           session,
         });
 

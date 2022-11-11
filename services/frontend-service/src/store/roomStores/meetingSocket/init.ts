@@ -58,8 +58,10 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
 });
 
 joinRoomBeforeMeetingSocketEvent.failData.watch(data => {
-    setMeetingErrorEvent(data);
-    appDialogsApi.openDialog({
-        dialogKey: AppDialogsEnum.meetingErrorDialog,
-    });
+    if (data) {
+        setMeetingErrorEvent(data);
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.meetingErrorDialog,
+        });
+    }
 });

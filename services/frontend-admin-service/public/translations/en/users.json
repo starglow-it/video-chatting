@@ -1,0 +1,12 @@
+{
+  "common": {
+    "title": "Users"
+  },
+  "table": {
+    "companyName": "Company name",
+    "email": "Email",
+    "fullName": "Personal name",
+    "stripePlanKey": "Subscription",
+    "status": "Status"
+  }
+}

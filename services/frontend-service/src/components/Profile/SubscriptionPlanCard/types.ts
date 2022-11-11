@@ -1,9 +1,16 @@
 export type SubscriptionPlanCardProps = {
-    activePlanKey: string;
     product: unknown;
     price: unknown;
     onChooseSubscription: (productId: string, isPaid: boolean, trial: boolean) => void;
-    onOpenPlans: () => void;
     isDisabled: boolean;
+    isActive?: boolean;
+    isHighlighted?: boolean;
     withTrial?: boolean;
+    priceLabel?: string;
+};
+
+export type TranslationFeatureItem = {
+    key: string;
+    text: string;
+    subText: string;
 };

@@ -4,11 +4,13 @@ import { appDialogsApi } from '../../../../dialogs/init';
 import { AppDialogsEnum } from '../../../../types';
 
 export const handleMeetingError = ({ message }: { message: string }) => {
-    setMeetingErrorEvent(message);
+    if (message) {
+        setMeetingErrorEvent(message);
+
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.meetingErrorDialog,
+        });
+    }
 
     setIsUserSendEnterRequest(false);
-
-    appDialogsApi.openDialog({
-        dialogKey: AppDialogsEnum.meetingErrorDialog,
-    });
 };

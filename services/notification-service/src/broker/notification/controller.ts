@@ -5,4 +5,6 @@ export const consumeEmailSend: IBrokerHandler = async ({
     payload,
 }: IBrokerHandlerArgs) => {
     await sendEmail(payload.data);
+
+    return {};
 };

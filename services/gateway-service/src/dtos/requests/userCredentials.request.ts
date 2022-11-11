@@ -3,7 +3,7 @@ import {
   IsString,
   IsEmail,
   MinLength,
-  IsOptional,
+  IsOptional, IsMongoId,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IUserCredentials } from 'shared-types';
@@ -30,6 +30,14 @@ export class UserCredentialsRequest implements IUserCredentials {
   })
   @ApiProperty()
   readonly password: string;
+
+  @IsMongoId()
+  @IsString()
+  @IsNotEmpty({
+    message: 'user.templateId.empty',
+  })
+  @ApiProperty()
+  readonly templateId: string;
 
   @IsString({
     message: 'user.country.invalid',

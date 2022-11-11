@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { Types, Connection, UpdateQuery } from 'mongoose';
+import { Connection, UpdateQuery } from 'mongoose';
 import { plainToClass, plainToInstance } from 'class-transformer';
 
 // shared
@@ -18,6 +18,7 @@ import {
   UpdateUserTemplatePayload,
   IUserTemplate,
   EntityList,
+  CountUserTemplatesPayload,
 } from 'shared-types';
 
 import { TemplateBrokerPatterns } from 'shared-const';
@@ -38,6 +39,7 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 // schemas
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
+import {isValidObjectId} from "../../utils/mongo/isValidObjectId";
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -58,12 +60,10 @@ export class UserTemplatesController {
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
-        const customLinkRegexp = new RegExp(`^${id}$`);
-
         const userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: Types.ObjectId.isValid(id)
-            ? { _id: id }
-            : { customLink: customLinkRegexp },
+          query: isValidObjectId(id)
+              ? { _id: id }
+              : { customLink: id },
           session,
           populatePaths: [
             { path: 'socials' },
@@ -76,7 +76,7 @@ export class UserTemplatesController {
           ],
         });
 
-        if (userTemplate?.customLink && Types.ObjectId.isValid(id)) {
+        if (userTemplate?.customLink && isValidObjectId(id)) {
           return null;
         }
 
@@ -572,6 +572,29 @@ export class UserTemplatesController {
 
         return;
       });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
+  }
+
+  @MessagePattern({ cmd: TemplateBrokerPatterns.CountUserTemplates })
+  async countUserTemplates(
+    @Payload() { options, userId }: CountUserTemplatesPayload,
+  ): Promise<{ count: number }> {
+    try {
+      const userTemplatesCount =
+          await this.userTemplatesService.countUserTemplates({
+            user: userId,
+            type: options.templateType,
+            author: { $ne: userId }
+          });
+
+      return {
+        count: userTemplatesCount,
+      }
     } catch (err) {
       throw new RpcException({
         message: err.message,

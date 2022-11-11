@@ -25,6 +25,7 @@ TemplatesPage.getInitialProps = () => ({
         'profile',
         'forms',
         'errors',
+        'dates',
     ],
 });
 

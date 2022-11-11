@@ -31,8 +31,10 @@ export const changeHostSocketEvent = createMeetingSocketEvent<
 >(UsersSocketEmitters.ChangeHost);
 
 changeHostSocketEvent.failData.watch(data => {
-    setMeetingErrorEvent(data);
-    appDialogsApi.openDialog({
-        dialogKey: AppDialogsEnum.meetingErrorDialog,
-    });
+    if (data) {
+        setMeetingErrorEvent(data);
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.meetingErrorDialog,
+        });
+    }
 });

@@ -3,9 +3,9 @@ import clsx from 'clsx';
 
 import { CardNumberElement, CardNumberElementProps } from '@stripe/react-stripe-js';
 
+import { PropsWithClassName } from 'shared-frontend/types';
 import styles from '../StripeCommon.module.scss';
 
-import { PropsWithClassName } from 'shared-frontend/types';
 
 const Component = ({ className, ...rest }: PropsWithClassName<CardNumberElementProps>) => (
     <CardNumberElement

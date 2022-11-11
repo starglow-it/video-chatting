@@ -1,6 +1,6 @@
-import { Channel } from 'amqplib';
-import { IExchange } from '../../../types/broker';
-import { createQueue } from './createQueue';
+import { Channel } from "amqplib";
+import { IExchange } from "../../../types/broker";
+import { createQueue } from "./createQueue";
 
 export interface IArgs {
     exchange: IExchange;
@@ -14,7 +14,7 @@ export const createExchange = async ({
     await channel.assertExchange(
         exchange.name,
         exchange.type,
-        exchange.options,
+        exchange.options
     );
     const queues = Object.values(exchange.queues);
 
@@ -24,7 +24,7 @@ export const createExchange = async ({
                 channel,
                 queue,
                 exchangeName: exchange.name,
-            }),
-        ),
+            })
+        )
     );
 };

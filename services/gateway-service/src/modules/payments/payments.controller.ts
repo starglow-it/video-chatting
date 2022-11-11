@@ -461,7 +461,9 @@ export class PaymentsController {
           await this.paymentsService.getProductCheckoutSession({
             productId: template.stripeProductId,
             customerEmail: user.email,
+            userId: user.id,
             customer: user.stripeCustomerId,
+            templateId: template.id,
           });
 
         await this.coreService.findUserAndUpdate({

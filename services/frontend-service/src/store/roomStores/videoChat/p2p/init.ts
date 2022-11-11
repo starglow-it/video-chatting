@@ -1,6 +1,7 @@
 import { attach, combine, sample } from 'effector-next';
 
 // stores
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { $meetingUsersStore, removeMeetingUsersEvent } from '../../users/meetingUsers/model';
 import {
     changeP2PActiveStreamEvent,
@@ -48,7 +49,6 @@ import {
     OfferExchangePayload,
 } from '../types';
 import { Meeting, MeetingUser } from '../../../types';
-import { MeetingAccessStatusEnum } from 'shared-types';
 import { ConnectionType, ServerTypes, StreamType } from '../../../../const/webrtc';
 import { CustomMediaStream } from '../../../../types';
 

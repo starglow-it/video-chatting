@@ -26,6 +26,7 @@ const Component = ({
     priceInCents,
     isNeedToShowBusinessInfo = true,
     isPublic,
+    isCommonTemplate
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">
@@ -34,6 +35,7 @@ const Component = ({
                 name={name}
                 description={description}
                 isPublic={isPublic}
+                isCommonTemplate={isCommonTemplate}
             />
             <CustomBox className={styles.emptySpace} />
             {isNeedToShowBusinessInfo && (

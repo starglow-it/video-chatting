@@ -11,10 +11,10 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // types
+import { CustomImage } from 'shared-frontend/library';
 import { TemplateGeneralInfoProps } from './types';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './TemplateGeneralInfo.module.scss';

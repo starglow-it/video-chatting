@@ -31,6 +31,8 @@ import { MobilePortraitStub } from '@library/common/MobilePortraitStub/MobilePor
 import { CustomImage } from 'shared-frontend/library';
 
 // styles
+import { isMobile } from 'shared-utils';
+import { MeetingAccessStatusEnum } from 'shared-types';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -56,8 +58,6 @@ import {
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 // helpers
-import { isMobile } from 'shared-utils';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const meeting = useStore($meetingStore);

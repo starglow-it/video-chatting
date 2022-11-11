@@ -9,6 +9,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // const
+import { PropsWithClassName } from 'shared-frontend/types';
 import { TIMEZONES } from '../../../const/time/timezones';
 import { ONE_MINUTE } from '../../../const/time/common';
 
@@ -26,7 +27,6 @@ import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
 import { isBefore } from '../../../utils/time/isBefore';
 
 // types
-import { PropsWithClassName } from 'shared-frontend/types';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';

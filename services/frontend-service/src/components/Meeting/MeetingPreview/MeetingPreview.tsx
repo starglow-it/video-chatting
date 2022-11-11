@@ -21,6 +21,7 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
+import { MeetingAccessStatusEnum } from 'shared-types';
 import {
     $isOwner,
     $localUserStore,
@@ -36,7 +37,6 @@ import { MeetingUser } from '../../../store/types';
 
 // const
 import { clientRoutes, dashboardRoute } from '../../../const/client-routes';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const router = useRouter();

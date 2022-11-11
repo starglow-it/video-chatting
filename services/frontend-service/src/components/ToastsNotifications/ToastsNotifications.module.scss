@@ -1,8 +1,5 @@
 @import "../../styles/rem";
 
-.meetingNotifications {
-  position: absolute;
-  bottom: rem(20px);
-  left: 50%;
-  transform: translateX(-50%);
+.content {
+  backdrop-filter: blur(rem(14px));
 }

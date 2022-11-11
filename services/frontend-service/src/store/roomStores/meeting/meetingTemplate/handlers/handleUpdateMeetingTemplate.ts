@@ -1,9 +1,9 @@
+import { ErrorState } from 'shared-types';
 import { UserTemplate } from '../../../../types';
 import { sendRequest } from '../../../../../helpers/http/sendRequest';
 import { postProfileTemplatesUrl } from '../../../../../utils/urls';
 import { initialTemplateState } from '../model';
 import { UpdateTemplatePayload } from '../../../../profile/types';
-import { ErrorState } from 'shared-types';
 
 export const handleUpdateMeetingTemplate = async ({
     templateId,

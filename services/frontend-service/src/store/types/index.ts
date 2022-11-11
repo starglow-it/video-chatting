@@ -1,13 +1,15 @@
 import { Socket } from 'socket.io-client';
 import {
     ErrorState,
-    IBusinessCategory,
+    IBusinessCategory, ICommonTemplate,
     ILanguage,
     IPreviewImage,
     IProfileAvatar,
     ISocialLink,
     IUserTemplate,
     MeetingAccessStatusEnum,
+    ProfileTemplatesCount,
+    StateWithError,
     TokenPair,
 } from 'shared-types';
 
@@ -137,6 +139,7 @@ export type RegisteredUserState = {
 export type RegisterUserParams = {
     email: string;
     password: string;
+    templateId: ICommonTemplate["id"];
 };
 
 export type LoginUserResponse = { user: Profile } & TokenPair;
@@ -284,6 +287,8 @@ export enum NotificationType {
     HostChanged = 'host_changed',
     SubscriptionEndDate = 'subscription_end_date',
     UploadFileFail = 'upload_file_fail',
+    BackgroundFileShouldBeUploaded = 'background_file_should_be_uploaded',
+    BackgroundFileIsNotUploadedYet = 'background_file_is_not_uploaded_yet',
 }
 
 export type Notification = {
@@ -343,3 +348,6 @@ export type ContactFormResponse = {
     success: boolean;
     error?: ErrorState | null;
 };
+
+
+export type ProfileTemplatesCountState = StateWithError<ProfileTemplatesCount>

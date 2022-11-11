@@ -60,7 +60,7 @@ const Component = (
     );
 
     return (
-        <CustomGrid container direction="column">
+        <CustomGrid className={styles.wrapper} container direction="column">
             <TextField
                 inputRef={ref}
                 type={showPass ? 'text' : 'password'}

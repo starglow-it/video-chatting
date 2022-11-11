@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Connection, UpdateQuery } from 'mongoose';
+import {Connection, PipelineStage, UpdateQuery} from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -51,17 +51,54 @@ export class CommonTemplatesController {
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
   async getCommonTemplates(
-    @Payload() { skip = 0, limit = 6 }: GetCommonTemplatesPayload,
+    @Payload()
+    { query, options = { skip: 6, limit: 0 } }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
     try {
-      return withTransaction(this.connection, async (session) => {
+      return withTransaction(this.connection, async () => {
+        const aggregationPipeline: PipelineStage[] = [
+          { $match: query },
+          {
+            $lookup: {
+              from: 'businesscategories',
+              localField: 'businessCategories',
+              foreignField: '_id',
+              as: 'businessCategories',
+            },
+          },
+          {
+            $lookup: {
+              from: 'previewimages',
+              localField: 'previewUrls',
+              foreignField: '_id',
+              as: 'previewUrls',
+            },
+          },
+          {
+            $lookup: {
+              from: 'usertemplates',
+              localField: 'templateId',
+              foreignField: 'templateId',
+              pipeline: [
+                { $match: { user: options.userId }}
+              ],
+              as: 'userTemplate',
+            },
+          },
+          { $unionWith: { coll: "usertemplates", pipeline: [] } },
+          { $sort: { "maxParticipants": 1 } },
+        ];
+
+        if (options.limit) {
+          aggregationPipeline.push({$limit: options.limit})
+        }
+
+        if (options.skip) {
+          aggregationPipeline.push({$skip: options.skip})
+        }
+
         const commonTemplates =
-          await this.commonTemplatesService.findCommonTemplates({
-            query: { draft: false, isPublic: true },
-            options: { skip, limit, sort: 'maxParticipants' },
-            populatePaths: ['businessCategories', 'previewUrls'],
-            session,
-          });
+          await this.commonTemplatesService.aggregate(aggregationPipeline);
 
         const commonTemplatesCount =
           await this.commonTemplatesService.countCommonTemplates({
@@ -132,6 +169,7 @@ export class CommonTemplatesController {
             populatePaths: [
               { path: 'businessCategories' },
               { path: 'previewUrls' },
+              { path: 'author' },
             ],
           });
 
@@ -205,7 +243,7 @@ export class CommonTemplatesController {
 
       const isRoomStatisticsExists = await this.roomStatisticService.exists({
         query: {
-          _id: targetTemplate._id,
+          template: targetTemplate._id,
         },
       });
 

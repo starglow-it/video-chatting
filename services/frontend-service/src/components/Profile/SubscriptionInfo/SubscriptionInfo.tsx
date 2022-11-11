@@ -3,19 +3,19 @@ import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
 // hooks
-import { useToggle } from '@hooks/useToggle';
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
+import { useLocalization } from '@hooks/useTranslation';
 
 // custom
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
-import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
 import { ShopIcon } from '@library/icons/ShopIcon';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { SubscriptionPlanCard } from '@components/Profile/SubscriptionPlanCard/SubscriptionPlanCard';
@@ -40,7 +40,9 @@ import styles from './SubscriptionInfo.module.scss';
 
 // const
 import { profileRoute } from '../../../const/client-routes';
-import { useLocalization } from '@hooks/useTranslation';
+
+// utils
+import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 const Component = () => {
     const router = useRouter();
@@ -51,12 +53,6 @@ const Component = () => {
     const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
     const isGetProductsPending = useStore(getStripeProductsFx.pending);
     const isTrial = useStore($isTrial);
-
-    const {
-        value: isSubscriptionsOpen,
-        onSwitchOn: handleOpenSubscriptionPlans,
-        onSwitchOff: handleCloseSubscriptionPlans,
-    } = useToggle(false);
 
     const { translation } = useLocalization('subscriptions');
 
@@ -108,10 +104,9 @@ const Component = () => {
             products.map(product => (
                 <SubscriptionPlanCard
                     key={product?.product?.id}
-                    activePlanKey={profile.subscriptionPlanKey}
+                    isActive={profile.subscriptionPlanKey === product?.product?.name}
                     product={product?.product}
                     price={product?.price}
-                    onOpenPlans={handleOpenSubscriptionPlans}
                     onChooseSubscription={handleChooseSubscription}
                     isDisabled={isSubscriptionPurchasePending}
                     withTrial={
@@ -128,28 +123,29 @@ const Component = () => {
         ],
     );
 
+    const shouldShowManageButton = Boolean(profile.stripeSubscriptionId) && !isTrial;
+    const shouldShowNextRenewalDate = Boolean(nextPaymentDate) && !isTrial && !isGetProductsPending;
+    const planTranslation = `${profile.subscriptionPlanKey || 'House'}${isTrial ? ' (Trial)': ''}`;
+
     return (
         <CustomPaper className={styles.paperWrapper}>
-            <CustomGrid container direction="column" gap={3.5}>
-                <CustomGrid container alignItems="center" gap={1}>
-                    <ShopIcon width="25px" height="24px" className={styles.icon} />
-                    <CustomTypography
-                        dangerouslySetInnerHTML={{
-                            __html: translation('subscriptions.current', {
-                                currentSub: profile.subscriptionPlanKey || 'House',
-                            }),
-                        }}
-                    />
-                    <ConditionalRender condition={Boolean(profile.stripeSubscriptionId)}>
+            <CustomGrid container direction="column">
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent={shouldShowNextRenewalDate ? 'space-between' : 'flex-start'}
+                >
+                    <CustomGrid item container alignItems="center" gap={1} width="fit-content">
+                        <ShopIcon width="25px" height="24px" className={styles.icon} />
                         <CustomTypography
-                            className={styles.manage}
-                            nameSpace="subscriptions"
-                            color="colors.blue.primary"
-                            translation="subscriptions.manage"
-                            onClick={handleOpenSubscriptionPortal}
+                            dangerouslySetInnerHTML={{
+                                __html: translation('subscriptions.current', {
+                                    currentSub: planTranslation,
+                                }),
+                            }}
                         />
-                    </ConditionalRender>
-                    <ConditionalRender condition={Boolean(nextPaymentDate)}>
+                    </CustomGrid>
+                    <ConditionalRender condition={shouldShowNextRenewalDate}>
                         <CustomTypography
                             className={styles.nextPayment}
                             color="colors.grayscale.normal"
@@ -159,17 +155,44 @@ const Component = () => {
                         />
                     </ConditionalRender>
                 </CustomGrid>
-                <CustomGrid container alignItems="center" justifyContent="center" gap={2.5}>
-                    {isGetProductsPending ? <WiggleLoader /> : renderSubscriptionPlans}
+
+                <ConditionalRender condition={shouldShowManageButton}>
+                    <CustomButton
+                        className={styles.manage}
+                        nameSpace="subscriptions"
+                        translation="subscriptions.manage"
+                        onClick={handleOpenSubscriptionPortal}
+                    />
+                </ConditionalRender>
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                    gap={2.5}
+                    className={styles.plans}
+                >
+                    {isGetProductsPending ? (
+                        <WiggleLoader />
+                    ) : (
+                        <>
+                            {renderSubscriptionPlans}
+                            <SubscriptionPlanCard
+                                key="AllPlans"
+                                isHighlighted
+                                product={{
+                                    name: 'All Plans',
+                                }}
+                                price={{
+                                    unit_amount: 0,
+                                }}
+                                onChooseSubscription={emptyFunction}
+                                isDisabled={isSubscriptionPurchasePending}
+                                priceLabel="subscriptions.AllPlans.label"
+                            />
+                        </>
+                    )}
                 </CustomGrid>
             </CustomGrid>
-            <SubscriptionsPlans
-                activePlanKey={profile.subscriptionPlanKey}
-                isSubscriptionStep={isSubscriptionsOpen}
-                onChooseSubscription={handleChooseSubscription}
-                onClose={handleCloseSubscriptionPlans}
-                isDisabled={isSubscriptionPurchasePending}
-            />
         </CustomPaper>
     );
 };

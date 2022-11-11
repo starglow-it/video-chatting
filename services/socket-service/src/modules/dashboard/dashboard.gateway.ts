@@ -108,6 +108,7 @@ export class DashboardGateway extends BaseGateway {
       meetingUserId: string;
       username: string;
     },
+    @ConnectedSocket() socket: Socket,
   ) {
     const notification = await this.dashboardService.createNotification({
       templateId: message.templateId,
@@ -116,6 +117,8 @@ export class DashboardGateway extends BaseGateway {
       notificationType: DashboardNotificationTypes.enterWaitingRoom,
     });
 
+    socket.join(`waitingRoom:${message.templateId}`);
+
     this.emitToRoom(
       `dashboard:${notification.receiver.id}`,
       'dashboard:sendNotification',
@@ -123,6 +126,11 @@ export class DashboardGateway extends BaseGateway {
         notification,
       },
     );
+
+    return {
+      success: true,
+      result: {},
+    }
   }
 
   @SubscribeMessage(DashboardSubscribeEvents.OnGetDashboardNotifications)

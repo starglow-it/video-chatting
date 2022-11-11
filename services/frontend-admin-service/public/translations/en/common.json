@@ -23,5 +23,12 @@
     "buy": "Buy",
     "leave": "Leave",
     "homePage": "Homepage"
+  },
+  "tooltips": {
+    "logout": "Log out",
+    "pages": {
+      "statistics": "Statistics",
+      "users": "Users"
+    }
   }
 }

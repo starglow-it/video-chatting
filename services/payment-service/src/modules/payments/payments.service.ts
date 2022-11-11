@@ -67,6 +67,7 @@ export class PaymentsService {
       },
       metadata: {
         templateId,
+        isTransactionCharge: 1,
       },
     });
   }
@@ -123,15 +124,19 @@ export class PaymentsService {
     customerEmail,
     customer,
     trialPeriodDays,
+    templateId,
+    userId,
   }: {
     paymentMode: Stripe.Checkout.SessionCreateParams.Mode;
     priceId: string;
     basePath: string;
     cancelPath?: string;
+    templateId?: string;
     meetingToken?: string;
     customerEmail: string;
     customer?: string;
     trialPeriodDays?: number;
+    userId?: string;
   }) {
     const frontendUrl = await this.configService.get('frontendUrl');
 
@@ -147,6 +152,13 @@ export class PaymentsService {
     cancelUrl.searchParams.set('canceled', 'true');
     successUrl.searchParams.set('success', 'true');
     successUrl.searchParams.set('session_id', '{CHECKOUT_SESSION_ID}');
+
+    const metadata = {
+      templateId,
+      userId,
+      isRoomPurchase: templateId ? 1 : 0,
+      isSubscriptionPurchase: paymentMode === 'subscription' ? 1 : 0,
+    };
 
     return this.stripeClient.checkout.sessions.create({
       billing_address_collection: 'auto',
@@ -164,7 +176,15 @@ export class PaymentsService {
       subscription_data: {
         trial_period_days: trialPeriodDays,
       },
-      payment_method_collection: 'if_required',
+      ...(paymentMode === 'subscription' ? {} : {
+        payment_intent_data: {
+          metadata,
+        }
+      }),
+      metadata,
+      ...(paymentMode === 'subscription'
+        ? { payment_method_collection: 'if_required' }
+        : {}),
     });
   }
 
@@ -256,16 +276,6 @@ export class PaymentsService {
     );
   }
 
-  async getStripeTrans(): Promise<Stripe.Product[]> {
-    const allProducts = await this.stripeClient.products.list({
-      active: true,
-    });
-
-    return allProducts.data.filter(
-      (product) => product.metadata.type === 'template',
-    );
-  }
-
   async updateSubscription({
     subscriptionId,
     options,
@@ -280,5 +290,22 @@ export class PaymentsService {
       trial_end: options.trialEnd,
       cancel_at_period_end: options.cancelAtPeriodEnd,
     });
+  }
+
+  async getCharges({ time }: { time: number }) {
+    const options = {
+      limit: 100,
+      created: {
+        gt: Math.floor(time / 1000),
+      },
+    };
+
+    let charges = [];
+
+    for await (const charge of this.stripeClient.charges.list(options)) {
+      charges.push(charge);
+    }
+
+    return charges;
   }
 }

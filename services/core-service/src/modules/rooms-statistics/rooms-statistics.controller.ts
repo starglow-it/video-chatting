@@ -5,11 +5,9 @@ import { Connection } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
 // shared
-import { RoomStatisticBrokerPatterns } from 'shared-const';
+import { StatisticBrokerPatterns } from 'shared-const';
 import {
   GetRoomRatingStatisticPayload,
-  IncreaseRoomTransactionStatisticPayload,
-  IRoomsRatingStatistic,
   UpdateRoomRatingStatisticPayload,
 } from 'shared-types';
 
@@ -29,7 +27,7 @@ export class RoomsStatisticsController {
     private roomsStatisticService: RoomsStatisticsService,
   ) {}
 
-  @MessagePattern({ cmd: RoomStatisticBrokerPatterns.GetRoomRatingStatistic })
+  @MessagePattern({ cmd: StatisticBrokerPatterns.GetRoomRatingStatistic })
   async getRoomRatingStatistics(
     @Payload() payload: GetRoomRatingStatisticPayload,
   ) {
@@ -37,7 +35,7 @@ export class RoomsStatisticsController {
       const roomStatistics = await this.roomsStatisticService.aggregate([
         {
           $lookup: {
-            from: 'usertemplates',
+            from: 'commontemplates',
             localField: 'template',
             foreignField: '_id',
             as: 'template',
@@ -46,9 +44,9 @@ export class RoomsStatisticsController {
         {
           $lookup: {
             from: 'users',
-            localField: 'user',
+            localField: 'author',
             foreignField: '_id',
-            as: 'user',
+            as: 'author',
           },
         },
         {
@@ -78,7 +76,7 @@ export class RoomsStatisticsController {
   }
 
   @MessagePattern({
-    cmd: RoomStatisticBrokerPatterns.UpdateRoomRatingStatistic,
+    cmd: StatisticBrokerPatterns.UpdateRoomRatingStatistic,
   })
   async updateRoomRatingStatistic(
     @Payload() payload: UpdateRoomRatingStatisticPayload,
@@ -116,37 +114,6 @@ export class RoomsStatisticsController {
             session,
           });
         }
-
-        return plainToInstance(RoomRatingStatisticDTO, roomStatistic, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-      });
-    } catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: 'ROOMS_STATISTICS_SERVICE',
-      });
-    }
-  }
-
-  @MessagePattern({
-    cmd: RoomStatisticBrokerPatterns.IncreaseRoomTransactionStatistic,
-  })
-  async increaseRoomTransactionStatistic(
-    @Payload() payload: IncreaseRoomTransactionStatisticPayload,
-  ): Promise<IRoomsRatingStatistic> {
-    try {
-      return withTransaction(this.connection, async (session) => {
-        const roomStatistic = await this.roomsStatisticService.updateOne({
-          query: {
-            template: payload.templateId,
-          },
-          data: {
-            $inc: { transactions: 1 },
-          },
-          session,
-        });
 
         return plainToInstance(RoomRatingStatisticDTO, roomStatistic, {
           excludeExtraneousValues: true,

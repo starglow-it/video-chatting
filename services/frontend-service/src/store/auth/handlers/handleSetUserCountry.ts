@@ -13,5 +13,5 @@ export const handleSetUserCountry = async (): Promise<void> => {
         country: userData.result?.country_name,
     });
 
-    return;
+    
 };

@@ -7,9 +7,9 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // types
+import { PropsWithClassName } from 'shared-frontend/types';
 import { TranslationProps } from '../Translation/types';
 import { SocialLoginProps } from './types';
-import { PropsWithClassName } from 'shared-frontend/types';
 
 // styles
 import styles from './SocialLogin.module.scss';

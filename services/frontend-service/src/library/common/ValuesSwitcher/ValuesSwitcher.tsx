@@ -54,7 +54,7 @@ const Component = <ValueType extends string | number>({
         const left = activeElementRef.current?.offsetLeft ?? 0;
         return {
             '--width': `${activeElementRef.current?.clientWidth ?? 0}px`,
-            left: left,
+            left,
         } as React.CSSProperties;
     }, [activeElementIndex, width]);
 

@@ -1,7 +1,7 @@
+import { ErrorState } from 'shared-types';
 import { UsersStatisticsResponse, UsersStatisticsState } from '../../types';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 import { usersStatisticsUrl } from '../../../const/urls/statistics';
-import { ErrorState } from 'shared-types';
 
 export const handleGetUsersStatistics = async (): Promise<UsersStatisticsState> => {
     const response = await sendRequest<UsersStatisticsResponse, ErrorState>(usersStatisticsUrl);

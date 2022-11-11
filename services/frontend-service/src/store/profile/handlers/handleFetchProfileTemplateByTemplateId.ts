@@ -1,7 +1,7 @@
+import { ErrorState, ICommonTemplate } from 'shared-types';
 import { UserTemplate } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { profileTemplateByTemplateIdUrl } from '../../../utils/urls';
-import { ErrorState, ICommonTemplate } from 'shared-types';
 
 export const handleFetchProfileTemplateByTemplateId = async ({
     templateId,

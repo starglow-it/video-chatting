@@ -42,11 +42,14 @@ import {
   CreateStripeTemplateProductPayload,
   DeleteStripeExpressAccountPayload,
   GetProductCheckoutSessionPayload,
+  GetStripeChargesPayload,
   GetStripeCheckoutSessionPayload,
   GetStripePortalSessionPayload,
   GetStripeSubscriptionPayload,
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
+  MonetizationStatisticPeriods,
+  MonetizationStatisticTypes,
 } from 'shared-types';
 
 @Controller(PAYMENTS_SCOPE)
@@ -117,10 +120,22 @@ export class PaymentsController {
             event.data.object as Stripe.Invoice,
           );
           break;
-        case 'payment_intent.succeeded':
-          this.logger.log('handle "payment_intent.succeeded" event');
-          await this.handleRoomsTransactions(
-            event.data.object as Stripe.PaymentIntent,
+        // case 'payment_intent.succeeded':
+        //   this.logger.log('handle "payment_intent.succeeded" event');
+        //   await this.handleRoomsTransactions(
+        //     event.data.object as Stripe.PaymentIntent,
+        //   );
+        //   break;
+        case 'charge.succeeded':
+          this.logger.log('handle "charge.succeeded" event');
+          await this.handleChargeSuccess(event.data.object as Stripe.Charge);
+          break;
+        case 'customer.subscription.trial_will_end':
+          this.logger.log(
+            'handle "customer.subscription.trial_will_end" event',
+          );
+          await this.handleTrialWillEnd(
+            event.data.object as Stripe.Subscription,
           );
           break;
         default:
@@ -585,10 +600,29 @@ export class PaymentsController {
           basePath: 'dashboard',
           customerEmail: payload.customerEmail,
           customer: payload.customer,
+          userId: payload.userId,
+          templateId: payload.templateId,
         });
       }
 
       return {};
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: PAYMENTS_SERVICE,
+      });
+    }
+  }
+
+  @MessagePattern({
+    cmd: PaymentsBrokerPatterns.GetStripeCharges,
+  })
+  async getStripeCharges(
+    @Payload()
+    payload: GetStripeChargesPayload,
+  ) {
+    try {
+      return this.paymentService.getCharges(payload);
     } catch (err) {
       throw new RpcException({
         message: err.message,
@@ -722,31 +756,6 @@ export class PaymentsController {
   }
 
   async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-    if (!session.subscription) {
-      const checkout = await this.paymentService.getCheckoutSession(session.id);
-
-      const item = checkout.line_items.data[0];
-
-      const productId = item.price.product;
-
-      const commonTemplate = await this.coreService.getCommonTemplate({
-        stripeProductId: productId as string,
-      });
-
-      const targetUser = await this.coreService.findUser({
-        stripeSessionId: session.id,
-      });
-
-      if (commonTemplate?.id && targetUser?.id) {
-        await this.coreService.addTemplateToUser({
-          templateId: commonTemplate.id,
-          userId: targetUser.id,
-        });
-      }
-
-      return;
-    }
-
     const subscription = await this.paymentService.getSubscription(
       session.subscription,
     );
@@ -778,23 +787,89 @@ export class PaymentsController {
         options: { cancelAtPeriodEnd: true },
       });
     }
+
+    await this.coreService.updateMonetizationStatistic({
+      period: MonetizationStatisticPeriods.AllTime,
+      type: MonetizationStatisticTypes.Subscriptions,
+      value: session.amount_total,
+    });
   }
 
-  async handleRoomsTransactions(paymentIntent: Stripe.PaymentIntent) {
-    if (paymentIntent.status === 'succeeded') {
-      const templateId = paymentIntent.metadata.templateId;
+  async handleChargeSuccess(charge: Stripe.Charge) {
+    const isSubscriptionCharge = Boolean(
+      parseInt(charge.metadata.isSubscriptionPurchase, 10),
+    );
 
-      if (templateId) {
-        await this.coreService.updateRoomRatingStatistic({
-          templateId,
-          ratingKey: 'money',
-          value: paymentIntent.amount,
-        });
+    const isTransactionCharge = Boolean(
+      parseInt(charge.metadata.isTransactionCharge, 10),
+    );
 
-        await this.coreService.increaseRoomTransactionStatistic({
-          templateId,
-        });
-      }
+    const isTemplateCharge =
+      charge?.metadata?.templateId &&
+      Boolean(parseInt(charge.metadata.isRoomPurchase, 10));
+
+    if (isTemplateCharge) {
+      await this.coreService.addTemplateToUser({
+        templateId: charge.metadata.templateId,
+        userId: charge.metadata.userId,
+      });
+
+      await this.coreService.updateMonetizationStatistic({
+        period: MonetizationStatisticPeriods.AllTime,
+        type: MonetizationStatisticTypes.PurchaseRooms,
+        value: charge.amount,
+      });
+    } else if (isSubscriptionCharge) {
+      await this.coreService.updateMonetizationStatistic({
+        period: MonetizationStatisticPeriods.AllTime,
+        type: MonetizationStatisticTypes.Subscriptions,
+        value: charge.amount,
+      });
+    } else if (isTransactionCharge) {
+      const userTemplate = await this.coreService.getUserTemplateById({
+        id: charge.metadata.templateId,
+      });
+
+      const commonTemplate = await this.coreService.getCommonTemplate({
+        templateId: userTemplate.templateId,
+      });
+
+      await this.coreService.updateRoomRatingStatistic({
+        templateId: commonTemplate.id,
+        ratingKey: 'money',
+        value: charge.amount,
+      });
+
+      await this.coreService.updateRoomRatingStatistic({
+        templateId: commonTemplate.id,
+        ratingKey: 'transactions',
+        value: 1,
+      });
+
+      await this.coreService.updateMonetizationStatistic({
+        period: MonetizationStatisticPeriods.AllTime,
+        type: MonetizationStatisticTypes.RoomTransactions,
+        value: charge.amount,
+      });
     }
+  }
+
+  async handleTrialWillEnd(subscription: Stripe.Subscription) {
+    const user = await this.coreService.findUser({
+      stripeSubscriptionId: subscription.id,
+    });
+
+    this.notificationsService.sendEmail({
+      template: {
+        key: emailTemplates.trialExpires,
+        data: [
+          {
+            name: 'USERNAME',
+            content: user.fullName,
+          },
+        ],
+      },
+      to: [{ email: user.email, name: user.fullName }],
+    });
   }
 }

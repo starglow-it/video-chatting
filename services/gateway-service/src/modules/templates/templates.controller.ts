@@ -54,11 +54,17 @@ export class TemplatesController {
     @Request() req,
     @Query('skip', ParseIntPipe) skip: number,
     @Query('limit', ParseIntPipe) limit: number,
+    @Query('userId') userId: string,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
+      console.log(userId);
       const templatesData = await this.templatesService.getCommonTemplates({
-        skip,
-        limit,
+        query: { draft: false, isPublic: true },
+        options: {
+          skip,
+          limit,
+          userId,
+        },
       });
 
       return {

@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Logger,
-  Param,
   Query,
 } from '@nestjs/common';
 import {
@@ -48,6 +47,7 @@ export class StatisticsController {
     try {
       const usersCount = await this.coreService.countUsers({
         isConfirmed: true,
+        role: 'user',
       });
 
       const countryStatistics = await this.coreService.getCountryStatistics({});
@@ -90,16 +90,20 @@ export class StatisticsController {
       ];
 
       const usersWithSubscriptions = await this.coreService.findUsers({
-        isConfirmed: true,
+        query: {
+          isConfirmed: true,
+        },
       });
 
-      const subscriptionsData = usersWithSubscriptions.reduce((acc, b) => {
-        const planKey = b?.subscriptionPlanKey;
-
-        return acc.map((data) =>
-          data.label === planKey ? { ...data, value: data.value + 1 } : data,
-        );
-      }, startData);
+      const subscriptionsData = usersWithSubscriptions.reduce(
+        (acc, b) =>
+          acc.map((data) =>
+            data.label === b?.subscriptionPlanKey
+              ? { ...data, value: data.value + 1 }
+              : data,
+          ),
+        startData,
+      );
 
       const totalNumber = Object.values(subscriptionsData).reduce(
         (acc, b) => acc + b.value,
@@ -136,8 +140,11 @@ export class StatisticsController {
   async getRoomsStatistics(): Promise<ResponseSumType<RoomsStatistics>> {
     try {
       const commonTemplates = await this.templatesService.getCommonTemplates({
-        skip: 0,
-        limit: 0,
+        query: { draft: false },
+        options: {
+          skip: 0,
+          limit: 0,
+        },
       });
 
       const totalNumber = commonTemplates?.list?.reduce((acc) => acc + 1, 0);
@@ -147,21 +154,21 @@ export class StatisticsController {
         .reduce((acc) => ({ ...acc, value: acc.value + 1 }), {
           label: 'Custom Rooms',
           value: 0,
-          color: '#FF884E',
+          color: '#2E6DF2',
         });
 
       const platformTemplates = commonTemplates?.list
         ?.filter((template) => !template.author)
         .reduce((acc) => ({ ...acc, value: acc.value + 1 }), {
-          label: 'Common Rooms',
+          label: 'Platform Rooms',
           value: 0,
-          color: '#2E6DF2',
+          color: '#FF884E',
         });
 
       return {
         result: {
           totalNumber,
-          data: [customTemplates, platformTemplates],
+          data: [platformTemplates, customTemplates],
         },
         success: true,
       };
@@ -197,7 +204,7 @@ export class StatisticsController {
 
       return {
         result: {
-          totalNumber: 0,
+          totalNumber: roomsStatistics?.length,
           data: roomsStatistics,
         },
         success: true,
@@ -223,15 +230,18 @@ export class StatisticsController {
     description: 'Forbidden',
   })
   async getMonetizationStatistic(
-    @Param('period') period: string,
-    @Param('type') type: string,
+    @Query('period') period: string,
+    @Query('type') type: string,
   ): Promise<ResponseSumType<any>> {
     try {
+      const monetizationStatistic =
+        await this.coreService.getMonetizationStatistic({
+          type,
+          period,
+        });
+
       return {
-        result: {
-          data: [],
-          totalNumber: 0,
-        },
+        result: monetizationStatistic,
         success: true,
       };
     } catch (err) {

@@ -25,6 +25,7 @@ import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 
 // stores
 import { useToggle } from '@hooks/useToggle';
+import { MeetingAccessStatusEnum } from 'shared-types';
 import {
     appDialogsApi,
     getSubscriptionWithDataFx,
@@ -58,7 +59,6 @@ import {
 
 // types
 import { SavedSettings } from '../../types';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 // styles
 import styles from './MeetingContainer.module.scss';
@@ -102,13 +102,12 @@ const MeetingContainer = memo(() => {
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
 
-    useEffect(() => {
-        getSubscriptionWithDataFx();
-    }, []);
-
     const { isMobile } = useBrowserDetect();
 
-    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
+    const { value:
+        isSettingsChecked,
+        onSwitchOn: handleSetSettingsChecked
+    } = useToggle(false);
 
     useEffect(() => {
         initWindowListeners();
@@ -124,6 +123,8 @@ const MeetingContainer = memo(() => {
 
     useEffect(() => {
         (async () => {
+            getSubscriptionWithDataFx();
+
             await getMeetingTemplateFx({
                 templateId: router.query.token as string,
             });

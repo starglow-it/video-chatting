@@ -9,3 +9,5 @@ export { default as CustomDivider } from './CustomDivider/CustomDivider';
 export { default as CustomTooltip } from './CustomTooltip/CustomTooltip';
 export { default as CustomTable } from './CustomTable/CustomTable';
 export { default as CustomDropdown } from './CustomDropdown/CustomDropdown';
+export { default as CustomPagination } from './CustomPagination/CustomPagination';
+export { default as CustomSearch } from './CustomSearch/CustomSearch';

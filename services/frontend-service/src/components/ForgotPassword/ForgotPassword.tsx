@@ -5,12 +5,12 @@ import clsx from 'clsx';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // stores
+import { PropsWithClassName } from 'shared-frontend/types';
 import { appDialogsApi } from '../../store';
 
 // types
 import { AppDialogsEnum } from '../../store/types';
 import { ForgotPasswordProps } from './types';
-import { PropsWithClassName } from 'shared-frontend/types';
 
 // styles
 import styles from './ForgotPassword.module.scss';

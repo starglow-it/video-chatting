@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
-import { useStoreMap, useStore } from 'effector-react';
+import React, { memo, useCallback, useState } from 'react';
+import { useStore } from 'effector-react';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
 
@@ -18,11 +18,10 @@ import { CustomImage } from 'shared-frontend/library';
 import {
     $isBusinessSubscription,
     $profileStore,
-    $profileTemplatesStore,
+    $profileTemplatesCountStore,
     addNotificationEvent,
     addTemplateToUserFx,
     appDialogsApi,
-    getProfileTemplateByTemplateIdFx,
     setPreviewTemplate,
 } from '../../../store';
 
@@ -35,21 +34,15 @@ import styles from './CommonTemplateItem.module.scss';
 
 const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const profile = useStore($profileStore);
+    const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
+
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
 
-    const freeTemplatesCount = useStoreMap({
-        store: $profileTemplatesStore,
-        keys: [profile.id],
-        fn: (state, [profileId]) =>
-            state?.list?.filter(t => t.type === 'free' && t.author !== profileId)?.length || 0,
-    });
-
-    const isTemplatesLimitReached = profile.maxTemplatesNumber <= freeTemplatesCount;
+    const isTemplatesLimitReached = profile.maxTemplatesNumber <= profileTemplatesCount.count;
     const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
-    const [isDisabled, setIsDisabled] = useState(false);
 
     const handleShowPreview = useCallback(() => {
         setShowPreview(true);
@@ -64,18 +57,6 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.templatePreviewDialog,
         });
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            const userTemplate = await getProfileTemplateByTemplateIdFx({
-                templateId: template.templateId,
-            });
-
-            if (userTemplate?.id) {
-                setIsDisabled(true);
-            }
-        })();
     }, []);
 
     const handleStartMeeting = useCallback(async () => {
@@ -102,7 +83,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         : 'buttons.startMeeting';
 
     const freeTemplateHandler = !isTimeLimitReached ? handleStartMeeting : undefined;
-    const paidTemplateHandler = !(!isFree && isDisabled) ? handleBuyTemplate : undefined;
+    const paidTemplateHandler = !(!isFree) ? handleBuyTemplate : undefined;
 
     const freeTemplateHover = isTimeLimitReached ? handleShowToast : undefined;
 
@@ -126,6 +107,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                 type={template.type}
                 priceInCents={template.priceInCents}
                 isNeedToShowBusinessInfo
+                isCommonTemplate
             />
             <Fade in={showPreview}>
                 <CustomGrid
@@ -139,9 +121,9 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                         onClick={isFree ? freeTemplateHandler : paidTemplateHandler}
                         className={clsx(styles.button, {
                             [styles.disabled]:
-                                (isFree && isTimeLimitReached) || (!isFree && isDisabled),
+                                (isFree && isTimeLimitReached) || (!isFree),
                         })}
-                        disableRipple={(isFree && isTimeLimitReached) || (!isFree && isDisabled)}
+                        disableRipple={(isFree && isTimeLimitReached) || (!isFree)}
                         disabled={isAddTemplateInProgress}
                         nameSpace="templates"
                         translation={isFree ? freeTemplateTranslation : 'buttons.buy'}

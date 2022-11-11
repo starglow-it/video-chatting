@@ -9,6 +9,7 @@ import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/MeetingUsersListItem';
 
 // stores
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { $meetingUsersStore, sendAnswerAccessMeetingRequestEvent } from '../../../store/roomStores';
 
 // types
@@ -16,7 +17,6 @@ import { MeetingUser } from '../../../store/types';
 
 // styles
 import styles from './MeetingAccessRequests.module.scss';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 const Component = () => {
     const requestUsers = useStoreMap({

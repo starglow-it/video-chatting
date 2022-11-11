@@ -99,7 +99,7 @@ const Component = () => {
         defaultValues: {
             companyName: '',
             fullName: '',
-            signBoard: '',
+            signBoard: 'default',
         },
     });
 
@@ -185,6 +185,9 @@ const Component = () => {
 
     const handleChooseSubscription = async (productId: string, isPaid: boolean, trial: boolean) => {
         if (setUpTemplate?.id) {
+            updateProfileFx({
+                registerTemplate: null,
+            });
             const result = await createMeetingFx({ templateId: setUpTemplate.id });
 
             if (result.template && isPaid) {
@@ -198,7 +201,8 @@ const Component = () => {
                     return router.push(response.url);
                 }
             } else if (result.template) {
-                await router.push(getClientMeetingUrl(result.template.id));
+                const meetingUrl = getClientMeetingUrl(result.template.id);
+                await router.push(`${meetingUrl}?success_house=true`);
             }
         }
     };

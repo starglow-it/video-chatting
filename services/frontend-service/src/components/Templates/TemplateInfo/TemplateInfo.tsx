@@ -11,28 +11,25 @@ import { PeopleIcon } from '@library/icons/PeopleIcon';
 
 // types
 import { PropsWithClassName } from 'shared-frontend/types';
+import {TemplateInfoProps} from "@components/Templates/TemplateInfo/types";
 
 // styles
 import styles from './TemplateInfo.module.scss';
-import { ICommonTemplate } from 'shared-types';
 
 const Component = ({
     className,
     description,
     name,
     isPublic,
-}: PropsWithClassName<{
-    name: ICommonTemplate['name'];
-    description: ICommonTemplate['description'];
-    isPublic?: ICommonTemplate['isPublic'];
-}>) => (
+    isCommonTemplate,
+}: PropsWithClassName<TemplateInfoProps>) => (
     <CustomGrid container wrap="nowrap" className={className}>
         <CustomGrid container direction="column" className={styles.textWrapper}>
             <CustomGrid container flexWrap="nowrap" alignItems="center" gap={0.25}>
-                <ConditionalRender condition={isPublic === true}>
+                <ConditionalRender condition={Boolean(isPublic)}>
                     <PeopleIcon width="20px" height="20px" className={styles.icon} />
                 </ConditionalRender>
-                <ConditionalRender condition={isPublic === false}>
+                <ConditionalRender condition={!Boolean(isPublic) && !isCommonTemplate}>
                     <LockIcon width="20px" height="20px" className={styles.icon} />
                 </ConditionalRender>
                 <CustomTypography

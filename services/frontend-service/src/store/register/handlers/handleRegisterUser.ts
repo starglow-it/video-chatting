@@ -1,7 +1,7 @@
+import { ErrorState, HttpMethods } from 'shared-types';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 import { RegisterUserParams } from '../../types';
 import { registerUserUrl } from '../../../utils/urls';
-import { ErrorState, HttpMethods } from 'shared-types';
 import frontendConfig from '../../../const/config';
 
 export const handleRegisterUser = async (params: RegisterUserParams) => {

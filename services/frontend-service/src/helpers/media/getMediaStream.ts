@@ -1,8 +1,8 @@
+import { isMobile } from 'shared-utils';
 import { VIDEO_CONSTRAINTS } from '../../const/media/VIDEO_CONSTRAINTS';
 
 import { MediaStreamOptions } from './types';
 import { CustomMediaStream } from '../../types';
-import { isMobile } from 'shared-utils';
 
 const MEDIA_STREAMS_ERROR = new Map([['NotAllowedError', 'media.notAllowed']]);
 

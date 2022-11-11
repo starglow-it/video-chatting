@@ -17,6 +17,7 @@ import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid
 import { ReplaceTemplateItem } from '@components/Templates/ReplaceTemplateItem/ReplaceTemplateItem';
 
 // stores
+import { ICommonTemplate, IUserTemplate } from 'shared-types';
 import {
     $appDialogsStore,
     $deleteProfileTemplateId,
@@ -35,7 +36,6 @@ import styles from './ReplaceTemplateDialog.module.scss';
 
 // types
 import { AppDialogsEnum, EntityList, UserTemplate } from '../../../store/types';
-import { ICommonTemplate, IUserTemplate } from 'shared-types';
 
 const Component = ({
     onReplaceTemplate,

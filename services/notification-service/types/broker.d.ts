@@ -7,7 +7,9 @@ interface IBrokerHandlerArgs {
     };
 }
 
-export type IBrokerHandler = (args: IBrokerHandlerArgs) => Promise<{ result: any; acked?: boolean } | void>;
+export type IBrokerHandler = (
+    args: IBrokerHandlerArgs
+) => Promise<{ result?: string; acked?: boolean }>;
 
 export interface IQueue {
     name: string;

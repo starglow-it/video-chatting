@@ -1,5 +1,5 @@
-import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { ErrorState } from 'shared-types';
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { sendScheduleInviteUrl } from '../../../utils/urls';
 import { ParsedTimeStamp } from '../../../types';
 

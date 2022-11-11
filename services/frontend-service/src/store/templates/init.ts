@@ -18,7 +18,7 @@ import {
     getEditingTemplateFx,
     getTemplateFx,
     getTemplatesFx,
-    getUsersTemplatesFx,
+    getUsersTemplatesFx, getUserTemplateByIdFx,
     getUserTemplateFx,
     purchaseTemplateFx,
     sendScheduleInviteFx,
@@ -49,11 +49,13 @@ import { handleUploadUserTemplateFile } from './handlers/handleUploadUserTemplat
 import { handleAddTemplateToUser } from './handlers/handleAddTemplateToUser';
 import { handleEditUserTemplate } from './handlers/handleEditUserTemplate';
 import { handleDeleteCommonTemplate } from './handlers/handleDeleteCommonTemplate';
+import { handleGetUserTemplate } from './handlers/handleGetUserTemplate';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
 getUsersTemplatesFx.use(handleFetchUsersTemplates);
 getUserTemplateFx.use(handleFetchUserTemplate);
+getUserTemplateByIdFx.use(handleGetUserTemplate);
 purchaseTemplateFx.use(handlePurchaseTemplate);
 sendScheduleInviteFx.use(handleSendScheduleInvite);
 createTemplateFx.use(handleCreateTemplate);

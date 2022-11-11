@@ -38,6 +38,7 @@ import styles from './RegisterContainer.module.scss';
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordSchema } from '../../validation/users/password';
+import {StorageKeysEnum, WebStorage} from "../../controllers/WebStorageController";
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -72,8 +73,18 @@ const Component = () => {
     const isTermsAccepted = useWatch({ control, name: 'terms' });
 
     const onSubmit = handleSubmit(async (data: RegisterUserParams) => {
+        const initialTemplateId = WebStorage.get<{ templateId: string }>({
+            key: StorageKeysEnum.templateId,
+        });
+
         resetRegisterErrorEvent();
-        await registerUserFx({ email: data.email.trim().toLowerCase(), password: data.password });
+        await registerUserFx({
+            email: data.email.trim().toLowerCase(),
+            password: data.password,
+            templateId: initialTemplateId,
+        });
+
+        WebStorage.delete({ key: StorageKeysEnum.templateId });
     });
 
     useEffect(() => {
@@ -168,7 +179,7 @@ const Component = () => {
                                         )}
                                         <CustomLink
                                             className={clsx(styles.termsText, styles.termsLink)}
-                                            href="/terms"
+                                            href="/agreements"
                                             variant="body2"
                                             nameSpace="common"
                                             translation="terms"
@@ -183,7 +194,7 @@ const Component = () => {
                                         )}
                                         <CustomLink
                                             className={clsx(styles.termsText, styles.termsLink)}
-                                            href="/privacy"
+                                            href="/agreements?section=privacy"
                                             variant="body2"
                                             nameSpace="common"
                                             translation="privacy"

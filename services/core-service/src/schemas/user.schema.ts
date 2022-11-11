@@ -42,6 +42,11 @@ export class User {
   password: string;
 
   @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+  })
+  registerTemplate: string;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
   })
   fullName: string;

@@ -5,10 +5,10 @@ import clsx from 'clsx';
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
 
 // styles
+import { PropsWithClassName } from 'shared-frontend/types';
 import styles from './TagItem.module.scss';
 
 // types
-import { PropsWithClassName } from 'shared-frontend/types';
 
 type TagItemProps = PropsWithClassName<{
     children: React.ReactNode;

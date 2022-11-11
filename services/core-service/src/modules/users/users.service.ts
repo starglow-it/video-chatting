@@ -8,7 +8,14 @@ import { User, UserDocument } from '../../schemas/user.schema';
 
 // shared
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { ICommonUser, IUpdateProfile } from 'shared-types';
+import { ICommonUser, IUpdateProfile, QueryParams } from 'shared-types';
+
+type GetUserQuery = {
+  query: FilterQuery<UserDocument>;
+  session?: ITransactionSession;
+  populatePaths?: CustomPopulateOptions;
+  options?: QueryParams;
+};
 
 import {
   SocialLink,
@@ -57,15 +64,7 @@ export class UsersService {
     return;
   }
 
-  async findUser({
-    query,
-    session,
-    populatePaths,
-  }: {
-    query: FilterQuery<UserDocument>;
-    session?: ITransactionSession;
-    populatePaths?: CustomPopulateOptions;
-  }) {
+  async findUser({ query, session, populatePaths }: GetUserQuery) {
     return this.user
       .findOne(
         query,
@@ -94,17 +93,19 @@ export class UsersService {
       .exec();
   }
 
-  async findUsers({
-    query,
-    populatePaths,
-    session,
-  }: {
-    query: FilterQuery<UserDocument>;
-    session?: ITransactionSession;
-    populatePaths?: CustomPopulateOptions;
-  }) {
+  async findUsers({ query, options, populatePaths, session }: GetUserQuery) {
     return this.user
-      .find(query, {}, { populate: populatePaths, session: session?.session })
+      .find(
+        query,
+        {},
+        {
+          skip: options?.skip,
+          limit: options?.limit,
+          sort: options?.sort,
+          populate: populatePaths,
+          session: session?.session,
+        },
+      )
       .exec();
   }
 
@@ -183,13 +184,7 @@ export class UsersService {
     return;
   }
 
-  async count({
-    query,
-    session,
-  }: {
-    query: FilterQuery<UserDocument>;
-    session: ITransactionSession;
-  }): Promise<number> {
+  async count({ query, session }: GetUserQuery): Promise<number> {
     return this.user
       .countDocuments(query, { session: session?.session })
       .exec();

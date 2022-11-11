@@ -20,3 +20,9 @@ export type SubscriptionsPlansProps = {
     buttonTranslation?: string;
     onlyPaidPlans?: boolean;
 };
+
+export type TranslationFeatureItem = {
+    key: string;
+    text: string;
+    subText: string;
+};

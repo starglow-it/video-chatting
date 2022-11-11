@@ -3,10 +3,10 @@ import clsx from 'clsx';
 
 // helpers
 import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomImage } from 'shared-frontend/library';
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ProfileAvatar.module.scss';

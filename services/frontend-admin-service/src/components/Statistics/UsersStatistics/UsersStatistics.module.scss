@@ -1,5 +1,9 @@
 @import "../../../styles/rem";
 
 .chartClass {
-  margin: 40px auto;
+  margin: rem(40px auto);
+}
+
+.loader {
+  margin: auto;
 }

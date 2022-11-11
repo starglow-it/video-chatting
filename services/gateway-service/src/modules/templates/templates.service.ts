@@ -16,6 +16,7 @@ import {
   GetUserTemplatesPayload,
   UpdateUserTemplatePayload,
   DeleteCommonTemplatePayload,
+  CountUserTemplatesPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -26,6 +27,14 @@ export class TemplatesService {
     payload: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplates };
+
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async getCommonTemplate(
+    payload: GetCommonTemplatePayload,
+  ): Promise<ICommonTemplate> {
+    const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
 
     return this.coreService.sendCustom(pattern, payload);
   }
@@ -98,6 +107,14 @@ export class TemplatesService {
     payload: DeleteUsersTemplatesPayload,
   ): Promise<void> {
     const pattern = { cmd: TemplateBrokerPatterns.DeleteUsersTemplates };
+
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async countUserTemplates(
+    payload: CountUserTemplatesPayload,
+  ): Promise<{ count: number }> {
+    const pattern = { cmd: TemplateBrokerPatterns.CountUserTemplates };
 
     return this.coreService.sendCustom(pattern, payload);
   }

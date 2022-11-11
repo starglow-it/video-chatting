@@ -43,13 +43,19 @@ export const $roomsRatingStatistics = statisticsDomain.createStore<RoomsRatingSt
 
 export const $usersMonetizationStatistics =
     statisticsDomain.createStore<MonetizationStatisticState>({
-        state: {},
+        state: {
+            totalNumber: 0,
+            data: [],
+        },
         error: null,
     });
 
 export const $platformMonetizationStatistics =
     statisticsDomain.createStore<MonetizationStatisticState>({
-        state: {},
+        state: {
+            totalNumber: 0,
+            data: [],
+        },
         error: null,
     });
 

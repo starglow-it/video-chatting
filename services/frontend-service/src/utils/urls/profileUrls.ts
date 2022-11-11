@@ -1,6 +1,6 @@
+import { ICommonTemplate, QueryParams } from 'shared-types';
 import { HttpMethods } from '../../store/types';
 import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
-import { ICommonTemplate } from 'shared-types';
 
 export const baseProfileUrl = `${serverUrl}/${profileScope}`;
 
@@ -34,8 +34,13 @@ export const postProfileAvatarUrl = {
     method: HttpMethods.Post,
 };
 
-export const profileTemplatesUrl = ({ skip, limit }: { skip?: number; limit?: number }) => ({
+export const profileTemplatesUrl = ({ skip, limit }: QueryParams) => ({
     url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}`,
+    method: HttpMethods.Get,
+});
+
+export const profileTemplatesCountUrl = ({ skip, limit, templateType }: QueryParams) => ({
+    url: `${baseProfileUrl}/templates/count?skip=${skip}&limit=${limit}&templateType=${templateType}`,
     method: HttpMethods.Get,
 });
 

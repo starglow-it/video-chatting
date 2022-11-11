@@ -1,3 +1,4 @@
+import {ICommonTemplate, ICommonUser, QueryParams} from 'shared-types';
 import { EntityList, UserTemplate } from '../types';
 import { templatesDomain } from './domain/model';
 import {
@@ -10,7 +11,7 @@ import {
     EditUserTemplatePayload,
     EditUserTemplateResponse,
     GetEditingTemplatePayload,
-    GetEditingTemplateResponse,
+    GetEditingTemplateResponse, GetUserTemplateByIdPayload,
     GetUserTemplatePayload,
     PurchaseTemplatePayload,
     SendScheduleInvitePayload,
@@ -19,7 +20,6 @@ import {
     UploadUserTemplateFilePayload,
     UploadUserTemplateFileResponse,
 } from './types';
-import { ICommonTemplate } from 'shared-types';
 
 const initialTemplatesStore: EntityList<ICommonTemplate> = {
     list: [],
@@ -62,7 +62,7 @@ export const setReplaceTemplateIdEvent = templatesDomain.event<string | undefine
 
 // effect
 export const getTemplatesFx = templatesDomain.effect<
-    { limit: number; skip: number },
+    QueryParams & { userId: ICommonUser["id"] },
     EntityList<ICommonTemplate> | null | undefined,
     void
 >('getTemplatesFx');
@@ -74,7 +74,7 @@ export const getTemplateFx = templatesDomain.effect<
 >('getTemplateFx');
 
 export const getUsersTemplatesFx = templatesDomain.effect<
-    { limit: number; skip: number },
+    QueryParams,
     EntityList<UserTemplate> | null | undefined,
     void
 >('getUsersTemplatesFx');
@@ -84,6 +84,12 @@ export const getUserTemplateFx = templatesDomain.effect<
     UserTemplate | null | undefined,
     void
 >('getUserTemplateFx');
+
+export const getUserTemplateByIdFx = templatesDomain.effect<
+    GetUserTemplateByIdPayload,
+    UserTemplate | null | undefined,
+    void
+>('getUserTemplateByIdFx');
 
 export const purchaseTemplateFx = templatesDomain.effect<
     PurchaseTemplatePayload,

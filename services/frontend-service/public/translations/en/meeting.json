@@ -11,6 +11,10 @@
   "preview": {
     "invitedText": "invited you to this special scene"
   },
+  "meetingNotStarted": {
+    "title": "Meeting has not \nstarted yet",
+    "text": "Please wait for the host arrival"
+  },
   "enterPermission": "You need a permission from the participant to join",
   "mic": "Microphone",
   "cam": "Camera",

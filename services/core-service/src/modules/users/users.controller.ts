@@ -160,6 +160,7 @@ export class UsersController {
           const newUser = await this.usersService.createUser(
             {
               ...createUserPayload.user,
+              registerTemplate: createUserPayload.user.templateId,
               renewSubscriptionTimestampInSeconds,
             },
             session,
@@ -325,10 +326,26 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: UserBrokerPatterns.FindUsers })
-  async findUsers(@Payload() payload: FindUsersPayload) {
+  async findUsers(@Payload() { query, options }: FindUsersPayload) {
     return withTransaction(this.connection, async (session) => {
       const users = await this.usersService.findUsers({
-        query: payload,
+        query: {
+          ...(options?.search
+            ? {
+                ...query,
+                $or: [
+                  { companyName: { $regex: options?.search, $options: 'i' } },
+                  { fullName: { $regex: options?.search, $options: 'i' } },
+                  { email: { $regex: options?.search, $options: 'i' } },
+                ],
+              }
+            : query),
+        },
+        options: {
+          skip: options?.skip,
+          limit: options?.limit,
+          sort: options?.sort,
+        },
         session,
         populatePaths: [
           'businessCategories',
@@ -596,7 +613,7 @@ export class UsersController {
         'profileAvatar',
       ]);
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });

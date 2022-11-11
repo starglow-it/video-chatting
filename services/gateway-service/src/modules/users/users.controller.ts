@@ -2,8 +2,11 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Logger,
+  ParseIntPipe,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +23,11 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { InviteAttendeeEmailRequest } from '../../dtos/requests/invite-attendee-email.request';
 import { SendContactsInfoRequest } from '../../dtos/requests/send-contacts-info.request';
 import { emailTemplates } from 'shared-const';
+import {
+  EntityList,
+  ICommonUser,
+  ResponseSumType,
+} from 'shared-types';
 
 @Controller('users')
 export class UsersController {
@@ -30,6 +38,45 @@ export class UsersController {
     private notificationService: NotificationsService,
     private coreService: CoreService,
   ) {}
+
+  @Get('/')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'List Users' })
+  @ApiOkResponse({
+    description: 'Get List Users success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async listUsers(
+    @Query('skip', ParseIntPipe) skip: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('search') search: string,
+    @Query('sort') sort: string,
+  ): Promise<ResponseSumType<EntityList<ICommonUser>>> {
+    const users = await this.coreService.findUsers({
+      query: { isConfirmed: true, role: 'user' },
+      options: {
+        skip,
+        limit,
+        search,
+        sort: 'fullName',
+      },
+    });
+
+    const usersCount = await this.coreService.countUsers({
+      isConfirmed: true,
+      role: 'user',
+    });
+
+    return {
+      success: true,
+      result: {
+        count: usersCount,
+        list: users,
+      },
+    };
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('invite/email')
@@ -52,7 +99,7 @@ export class UsersController {
 
       const frontendUrl = await this.configService.get('frontendUrl');
 
-      await this.notificationService.sendEmail({
+      this.notificationService.sendEmail({
         to: data.userEmails.map((email) => ({ email, name: email })),
         template: {
           key: emailTemplates.meetingInvite,

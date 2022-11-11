@@ -14,6 +14,7 @@ import { WarningIcon } from '@library/icons/WarningIcon';
 import { CloseIcon } from '@library/icons/CloseIcon';
 
 // styles
+import { useLocalization } from '@hooks/useTranslation';
 import styles from './SubscriptionExpiredNotification.module.scss';
 
 // stores
@@ -21,7 +22,6 @@ import { $profileStore, resetTrialExpiredNotificationFx } from '../../store';
 
 // const
 import { dashboardRoute, profileRoute } from '../../const/client-routes';
-import { useLocalization } from '@hooks/useTranslation';
 
 type ComponentProps = unknown;
 

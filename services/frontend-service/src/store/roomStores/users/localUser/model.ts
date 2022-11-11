@@ -1,7 +1,7 @@
+import { MeetingAccessStatusEnum } from 'shared-types';
 import { meetingUsersDomain } from '../domain/model';
 
 import { MeetingUser } from '../../../types';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 const initialMeetingUserState: MeetingUser = {
     id: '',

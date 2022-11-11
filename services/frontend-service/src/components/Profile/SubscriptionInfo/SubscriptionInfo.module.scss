@@ -24,5 +24,10 @@
 }
 
 .manage {
-  cursor: pointer;
+  max-width: rem(208px);
+  margin: rem(12px 0 0);
+}
+
+.plans {
+  margin: rem(28px 0 0);
 }

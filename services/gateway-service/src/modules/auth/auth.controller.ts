@@ -281,6 +281,7 @@ export class AuthController {
   })
   async getProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
     try {
+      console.log(req.headers);
       const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });

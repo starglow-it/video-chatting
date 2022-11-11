@@ -6,10 +6,10 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // styles
+import { PropsWithClassName } from 'shared-frontend/types';
 import styles from './UsersAvatarsCounter.module.scss';
 
 // types
-import { PropsWithClassName } from 'shared-frontend/types';
 
 const Component = <ItemType,>({
     className,

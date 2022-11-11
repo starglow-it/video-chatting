@@ -10,4 +10,5 @@ export type TemplateMainInfoProps = PropsWithClassName<{
     isNeedToShowBusinessInfo?: boolean;
     show: boolean;
     isPublic?: boolean;
+    isCommonTemplate?: boolean;
 }>;
