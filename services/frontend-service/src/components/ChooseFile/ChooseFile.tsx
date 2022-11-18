@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 import { ChooseFileProps } from './types';
 

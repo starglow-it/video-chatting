@@ -1,5 +1,6 @@
+import { NextPageContext } from 'next';
 import { subscriptionsDomain } from '../domain/model';
-import { ErrorState } from '../../types';
+import { ErrorState, INextPageContext } from '../../types';
 import {
     GetCheckoutSessionUrlPayload,
     GetCheckoutSessionUrlResponse,
@@ -11,10 +12,16 @@ import {
 export const $productsStore = subscriptionsDomain.createStore<ProductsStore>([]);
 
 export const getStripeProductsFx = subscriptionsDomain.createEffect<
-    void,
+    Partial<INextPageContext>,
     ProductsStore,
     ErrorState
 >('getStripeProductsFx');
+
+export const getStripeProductsWithContextFx = subscriptionsDomain.createEffect<
+    NextPageContext,
+    ProductsStore,
+    ErrorState
+>('getStripeProductsWithContextFx');
 
 export const startCheckoutSessionForSubscriptionFx = subscriptionsDomain.createEffect<
     GetCheckoutSessionUrlPayload,

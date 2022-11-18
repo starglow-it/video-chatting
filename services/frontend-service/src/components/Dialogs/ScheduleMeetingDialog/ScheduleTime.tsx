@@ -4,7 +4,7 @@ import { MenuItem } from '@mui/material';
 
 // custom
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
@@ -73,7 +73,7 @@ const Component = ({
             shouldValidate: true,
             shouldDirty: true,
         });
-    }, []);
+    }, [currentDate]);
 
     const handleChange = useCallback(event => {
         setValue('timeZone', event.target.value, {
@@ -94,7 +94,7 @@ const Component = ({
                 message: 'subscriptions.endDate',
             });
         }
-    }, []);
+    }, [currentDate]);
 
     const handleChangeEndAt = useCallback(event => {
         setValue('endAt', event.target.value, {

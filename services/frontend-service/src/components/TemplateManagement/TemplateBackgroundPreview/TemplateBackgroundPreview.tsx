@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomVideoPlayer } from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';

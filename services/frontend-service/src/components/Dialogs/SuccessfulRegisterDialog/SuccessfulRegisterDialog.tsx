@@ -3,8 +3,7 @@ import { useStore } from 'effector-react';
 
 // library
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
+import { CustomGrid , CustomDialog } from 'shared-frontend/library';
 
 // store
 import { CustomImage } from 'shared-frontend/library';

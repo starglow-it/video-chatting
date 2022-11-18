@@ -7,9 +7,9 @@ import clsx from 'clsx';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
@@ -18,6 +18,7 @@ import { ReplaceTemplateItem } from '@components/Templates/ReplaceTemplateItem/R
 
 // stores
 import { ICommonTemplate, IUserTemplate } from 'shared-types';
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $appDialogsStore,
     $deleteProfileTemplateId,
@@ -149,13 +150,18 @@ const Component = ({
                             <CustomButton
                                 onClick={handleClose}
                                 variant="custom-cancel"
-                                nameSpace="common"
-                                translation="buttons.cancel"
+                                label={
+                                    <Translation nameSpace="common" translation="buttons.cancel" />
+                                }
                             />
                             <CustomButton
                                 onClick={handleStartReplace}
-                                nameSpace="common"
-                                translation="buttons.continue"
+                                label={
+                                    <Translation
+                                        nameSpace="common"
+                                        translation="buttons.continue"
+                                    />
+                                }
                             />
                         </CustomGrid>
                     </CustomGrid>
@@ -198,14 +204,16 @@ const Component = ({
                             <CustomButton
                                 onClick={handleClose}
                                 variant="custom-cancel"
-                                nameSpace="common"
-                                translation="buttons.cancel"
+                                label={
+                                    <Translation nameSpace="common" translation="buttons.cancel" />
+                                }
                             />
                             <CustomButton
                                 onClick={handleReplaceTemplate}
-                                nameSpace="common"
+                                label={
+                                    <Translation nameSpace="common" translation="buttons.replace" />
+                                }
                                 disabled={!deleteProfileTemplateId}
-                                translation="buttons.replace"
                             />
                         </CustomGrid>
                     </CustomGrid>

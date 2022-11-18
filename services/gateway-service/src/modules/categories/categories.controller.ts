@@ -49,7 +49,7 @@ export class CategoriesController {
     } catch (err) {
       this.logger.error(
         {
-          message: `An error occurs, while get common templates`,
+          message: `An error occurs, while get business categories`,
         },
         JSON.stringify(err),
       );

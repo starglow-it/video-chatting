@@ -4,8 +4,4 @@ export default {
         display: 'flex',
         background: '#E6F2FA',
     },
-    '#__next': {
-        display: 'flex',
-        flex: 1,
-    },
 };

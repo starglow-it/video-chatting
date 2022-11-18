@@ -7,15 +7,16 @@ import { useToggle } from '@hooks/useToggle';
 import { useCountDown } from '@hooks/useCountDown';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import { SuccessIcon } from '@library/icons/SuccessIcon';
+import { SuccessIcon } from 'shared-frontend/icons';
 
 // styles
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './EnterCodeForm.module.scss';
 
 const EnterCodeForm = memo(
@@ -119,16 +120,14 @@ const EnterCodeForm = memo(
                 />
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
-                        nameSpace="common"
+                        label={<Translation nameSpace="common" translation="buttons.cancel" />}
                         variant="custom-cancel"
-                        translation="buttons.cancel"
                         onClick={onCancel}
                     />
                     <CustomButton
+                        label={<Translation nameSpace="common" translation="buttons.save" />}
                         disabled={!isCodeEntered}
                         type="submit"
-                        nameSpace="common"
-                        translation="buttons.save"
                     />
                 </CustomGrid>
             </CustomGrid>

@@ -9,9 +9,9 @@ import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessC
 import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 

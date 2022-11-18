@@ -1,6 +1,6 @@
-import {ErrorState, IUserTemplate} from "shared-types";
-import {sendRequest} from "../../../helpers/http/sendRequest";
-import {getUserTemplatesUrl} from "../../../utils/urls";
+import { ErrorState, IUserTemplate } from 'shared-types';
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { getUserTemplateUrl } from '../../../utils/urls';
 
 export const handleCheckCustomLink = async ({
     templateId,
@@ -8,7 +8,7 @@ export const handleCheckCustomLink = async ({
     templateId: IUserTemplate['id'] | IUserTemplate['customLink'];
 }): Promise<boolean> => {
     const response = await sendRequest<IUserTemplate, ErrorState>(
-        getUserTemplatesUrl({ templateId }),
+        getUserTemplateUrl({ templateId }),
     );
 
     if (response.success) {

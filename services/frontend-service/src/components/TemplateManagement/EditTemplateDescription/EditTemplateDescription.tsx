@@ -3,28 +3,35 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { MenuItem } from '@mui/material';
 
+import { IBusinessCategory } from 'shared-types';
+import { AutocompleteType } from 'shared-frontend/types';
+
+import { CustomAutocomplete } from 'shared-frontend';
+
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomAutocomplete } from '@library/custom/CustomAutocomplete/CustomAutocomplete';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // icons
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
-import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
-import { ArrowDownIcon } from '@library/icons/ArrowDownIcon';
-import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons';
+import { CustomLinkIcon } from 'shared-frontend/icons';
+import { ArrowDownIcon } from 'shared-frontend/icons';
+import { ArrowRightIcon } from 'shared-frontend/icons';
 
 // types
 import { EditTemplateDescriptionProps } from '@components/TemplateManagement/EditTemplateDescription/types';
-import { AutocompleteType } from '@library/custom/CustomAutocomplete/types';
 
 // stores
 import { getRandomHexColor } from 'shared-utils';
-import {$businessCategoriesStore, checkCustomLinkFx, getBusinessCategoriesFx} from '../../../store';
+import {
+    $businessCategoriesStore,
+    checkCustomLinkFx,
+    getBusinessCategoriesFx,
+} from '../../../store';
 
 // const
 import {
@@ -109,9 +116,9 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                 { type: 'focus', message: 'meeting.settings.customLink.busy' },
             ]);
             return;
-        } else {
+        } 
             clearErrors('customLink');
-        }
+        
 
         if (response) {
             onNextStep();

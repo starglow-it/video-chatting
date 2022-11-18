@@ -1,7 +1,8 @@
 import { Socket } from 'socket.io-client';
 import {
     ErrorState,
-    IBusinessCategory, ICommonTemplate,
+    IBusinessCategory,
+    ICommonTemplate,
     ILanguage,
     IPreviewImage,
     IProfileAvatar,
@@ -12,6 +13,7 @@ import {
     StateWithError,
     TokenPair,
 } from 'shared-types';
+import { NextPageContext } from 'next';
 
 export interface Template {
     id: string;
@@ -139,7 +141,7 @@ export type RegisteredUserState = {
 export type RegisterUserParams = {
     email: string;
     password: string;
-    templateId: ICommonTemplate["id"];
+    templateId: ICommonTemplate['id'];
 };
 
 export type LoginUserResponse = { user: Profile } & TokenPair;
@@ -349,5 +351,8 @@ export type ContactFormResponse = {
     error?: ErrorState | null;
 };
 
+export type ProfileTemplatesCountState = StateWithError<ProfileTemplatesCount>;
 
-export type ProfileTemplatesCountState = StateWithError<ProfileTemplatesCount>
+export interface INextPageContext {
+    ctx: NextPageContext,
+}

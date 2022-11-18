@@ -2,12 +2,13 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 
 // stores
+import { Typography } from '@mui/material';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
@@ -54,13 +55,11 @@ const Component = ({ onClose }: ConfirmCancelChangesDialogProps) => {
                 <CustomGrid container wrap="nowrap" gap={2}>
                     <CustomButton
                         variant="custom-cancel"
-                        nameSpace="meeting"
-                        translation="buttons.cancel"
+                        label={<Typography nameSpace="meeting" translation="buttons.cancel" />}
                         onClick={handleConfirmCancel}
                     />
                     <CustomButton
-                        nameSpace="meeting"
-                        translation="buttons.stay"
+                        label={<Typography nameSpace="meeting" translation="buttons.stay" />}
                         onClick={handleClose}
                     />
                 </CustomGrid>

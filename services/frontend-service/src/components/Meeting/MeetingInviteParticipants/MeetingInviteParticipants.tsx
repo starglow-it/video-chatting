@@ -4,16 +4,15 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomDivider } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { EmailIcon } from '@library/icons/EmailIcon';
-import { CopyLinkIcon } from '@library/icons/CopyLinkIcon';
+import { EmailIcon , CopyLinkIcon } from 'shared-frontend/icons';
 
 // stores
 import { appDialogsApi, addNotificationEvent } from '../../../store';

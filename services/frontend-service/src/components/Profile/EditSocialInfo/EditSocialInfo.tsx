@@ -1,8 +1,8 @@
 import React, { memo, useMemo } from 'react';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomBox } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
@@ -10,7 +10,7 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { Socials } from '@components/Socials/Socials';
 
 // icons
-import { SocialIcon } from '@library/icons/SocialIcon';
+import { SocialIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './EditSocialInfo.module.scss';

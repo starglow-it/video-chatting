@@ -38,7 +38,11 @@ import {
   CountUsersPayload,
   FindUsersPayload,
   GetMonetizationStatisticPayload,
+  GetUserProfileStatisticPayload,
+  ICommonUserStatistic,
   ResetTrialNotificationPayload,
+  SearchUsersPayload,
+  ManageUserRightsPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -173,6 +177,12 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
+  async manageUserRights(payload: ManageUserRightsPayload) {
+    const pattern = { cmd: UserBrokerPatterns.ManageUserRights };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
   async uploadTemplateFile(payload): Promise<void> {
     const pattern = { cmd: TemplateBrokerPatterns.UploadTemplateFile };
 
@@ -217,6 +227,12 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
+  async searchUsers(payload: SearchUsersPayload): Promise<ICommonUser[]> {
+    const pattern = { cmd: UserBrokerPatterns.SearchUsers };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
   async getCountryStatistics(payload: any): Promise<ICountryStatistic[]> {
     const pattern = { cmd: CoreBrokerPatterns.GetCountryStatistics };
 
@@ -235,6 +251,14 @@ export class CoreService {
     payload: GetMonetizationStatisticPayload,
   ): Promise<IRoomsRatingStatistic[]> {
     const pattern = { cmd: StatisticBrokerPatterns.GetMonetizationStatistic };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async getUserProfileStatistic(
+    payload: GetUserProfileStatisticPayload,
+  ): Promise<ICommonUserStatistic> {
+    const pattern = { cmd: StatisticBrokerPatterns.GetUserProfileStatistic };
 
     return this.client.send(pattern, payload).toPromise();
   }

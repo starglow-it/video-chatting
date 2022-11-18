@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
 // helpers
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomImage } from 'shared-frontend/library';
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 

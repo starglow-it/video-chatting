@@ -4,14 +4,14 @@ import Router, { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomDivider } from 'shared-frontend/library';
 
 // icons
-import { TemplatesIcon } from '@library/icons/TemplatesIcon';
-import { ExitIcon } from '@library/icons/ExitIcon';
+import { TemplatesIcon } from 'shared-frontend/icons';
+import { ExitIcon } from 'shared-frontend/icons';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores

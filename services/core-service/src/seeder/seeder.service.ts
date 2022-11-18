@@ -23,7 +23,7 @@ import {
   BUSINESS_CATEGORIES,
   monetizationStatisticsData,
 } from 'shared-const';
-import { Counters } from 'shared-types';
+import { Counters, UserRoles } from 'shared-types';
 
 // schemas
 import {
@@ -291,7 +291,7 @@ export class SeederService {
       await this.usersService.createUser({
         email: adminEmail,
         password: adminPassword,
-        role: 'admin',
+        role: UserRoles.Admin,
         isConfirmed: true,
         fullName: 'LiveOffice Admin',
         companyName: 'The LiveOffice',
@@ -319,7 +319,7 @@ export class SeederService {
         return this.roomsStatisticService.create({
           data: {
             template: template._id,
-            user: template?.author?._id,
+            author: template?.author?._id,
             transactions: 0,
             minutes: 0,
             calls: 0,

@@ -3,11 +3,10 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomBox, CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
@@ -20,13 +19,14 @@ import { TemplateGeneralInfo } from '@components/Templates/TemplateGeneralInfo/T
 import { BusinessCategoryTagsClip } from '@components/BusinessCategoryTagsClip/BusinessCategoryTagsClip';
 
 // icons
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
-import { ScheduleIcon } from '@library/icons/ScheduleIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons';
+import { ScheduleIcon } from 'shared-frontend/icons';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $appDialogsStore,
     $profileStore,
@@ -164,6 +164,12 @@ const Component = ({
                                 variant="custom-common"
                                 className={styles.scheduleButton}
                                 onClick={handleScheduleMeeting}
+                                label={
+                                    <Translation
+                                        nameSpace="common"
+                                        translation="buttons.schedule"
+                                    />
+                                }
                                 Icon={
                                     <ScheduleIcon
                                         className={styles.scheduleIcon}
@@ -171,8 +177,6 @@ const Component = ({
                                         height="36px"
                                     />
                                 }
-                                nameSpace="common"
-                                translation="buttons.schedule"
                             />
                         )}
 
@@ -182,9 +186,13 @@ const Component = ({
                             className={clsx(styles.chooseBtn, {
                                 [styles.disabled]: isTimeLimitReached,
                             })}
+                            label={
+                                <Translation
+                                    nameSpace="templates"
+                                    translation={`buttons.${chooseButtonKey}`}
+                                />
+                            }
                             disableRipple={isTimeLimitReached}
-                            nameSpace="templates"
-                            translation={`buttons.${chooseButtonKey}`}
                         />
                     </CustomGrid>
                 </CustomBox>

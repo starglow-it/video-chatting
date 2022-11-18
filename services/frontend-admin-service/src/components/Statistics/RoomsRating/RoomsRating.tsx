@@ -107,7 +107,7 @@ const roomTypes = [
 
 const formatTableValue = (key, value) => {
     if (key === 'minutes') {
-        return Math.round(value / 1000);
+        return Math.round(value / 1000 / 60);
     }
 
     if (key === 'money') {
@@ -161,11 +161,11 @@ const Component = () => {
     const tableData = useMemo(
         () =>
             roomsRating.data.map((roomRating, index) => ({
-                id: roomRating.id,
-                position: index + 1,
-                roomName: roomRating?.template?.[0]?.name ?? '-',
-                creator: roomRating?.author?.[0]?.fullName ?? '-',
-                [basedOnKey]: formatTableValue(basedOnKey, roomRating[basedOnKey]),
+                id: { label: roomRating.id},
+                position: { label: index +1},
+                roomName: { label: roomRating?.template?.[0]?.name ?? '-' },
+                creator: { label: roomRating?.author?.[0]?.fullName ?? '-' },
+                [basedOnKey]: { label: formatTableValue(basedOnKey, roomRating[basedOnKey]) },
             })),
         [roomsRating],
     );

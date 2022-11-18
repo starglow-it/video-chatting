@@ -4,13 +4,13 @@ import { useStore } from 'effector-react';
 import { ClickAwayListener } from '@mui/material';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // components
-import { BellIcon } from '@library/icons/BellIcon';
+import { BellIcon } from 'shared-frontend/icons';
 import { DashboardNotificationItem } from '@components/Dashboard/DashboardNotificationItem/DashboardNotificationItem';
 
 // types

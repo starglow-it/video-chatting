@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // const

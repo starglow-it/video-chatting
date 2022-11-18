@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
 
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { DoubleArrowIcon } from '@library/icons/DoubleArrowIcon';
+import { DoubleArrowIcon } from 'shared-frontend/icons';
 
 import styles from './Footer.module.scss';
 

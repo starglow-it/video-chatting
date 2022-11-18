@@ -25,6 +25,11 @@ export type FindUsersPayload = {
   options?: QueryParams;
 };
 
+export type SearchUsersPayload = {
+  query: Partial<ICommonUser>;
+  options?: QueryParams;
+};
+
 export type FindUsersByIdPayload = {
   userIds: ICommonUser['id'][];
 };
@@ -66,5 +71,6 @@ export type ResetPasswordPayload = {
   newPasswordRepeat: string;
 };
 export type CountUsersPayload = Partial<ICommonUser>;
+export type ManageUserRightsPayload = { userId: ICommonUser["id"]; key: string; value: boolean };
 
 export type ResetTrialNotificationPayload = { userId: string };

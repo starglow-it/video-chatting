@@ -5,13 +5,13 @@ import { useRouter } from 'next/router';
 import { useNavigation } from '@hooks/useNavigation';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomChip } from '@library/custom/CustomChip/CustomChip';
+import { CustomChip } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons';
 
 // components
 import { FAQ } from '@components/Support/Faq/Faq';
@@ -21,6 +21,7 @@ import { ContactUsForm } from '@components/Support/ContactUsForm/ContactUsForm';
 import { CustomImage } from 'shared-frontend/library';
 
 // styles
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './Support.module.scss';
 
 enum Tabs {
@@ -53,8 +54,14 @@ const Component = () => {
             tabs.map(({ value, translationKey }) => (
                 <CustomChip
                     active={value === activeTab.value}
-                    nameSpace="static"
-                    translation={`${translationKey}.title`}
+                    label={
+                        <CustomTypography>
+                            <Translation
+                                nameSpace="static"
+                                translation={`${translationKey}.title`}
+                            />
+                        </CustomTypography>
+                    }
                     className={styles.chip}
                     onClick={() => onChangeTab(value)}
                 />

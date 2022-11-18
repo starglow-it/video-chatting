@@ -9,15 +9,15 @@ import Linkify from 'linkify-react';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
-import { CopyIcon } from '@library/icons/CopyIcon';
+import { RoundCloseIcon } from 'shared-frontend/icons';
+import { CopyIcon } from 'shared-frontend/icons';
 
 // types
 import { MeetingNote, NotificationType } from '../../../store/types';

@@ -2,15 +2,16 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
+import { CustomDialog } from 'shared-frontend/library';
 
 // components
-import { DownloadIcon } from '@library/icons/DownloadIcon';
+import { DownloadIcon } from 'shared-frontend/icons';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $appDialogsStore,
     appDialogsApi,
@@ -57,16 +58,19 @@ const Component = () => {
                 />
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
-                        nameSpace="common"
-                        translation="buttons.done"
+                        label={<Translation nameSpace="common" translation="buttons.done" />}
                         variant="custom-cancel"
                         onClick={handleClose}
                     />
                     <CustomButton
                         onClick={handleDownloadIcsLink}
                         Icon={<DownloadIcon width="22px" height="22px" />}
-                        nameSpace="templates"
-                        translation="scheduleMeeting.downloadIcs"
+                        label={
+                            <Translation
+                                nameSpace="templates"
+                                translation="scheduleMeeting.downloadIcs"
+                            />
+                        }
                     />
                 </CustomGrid>
             </CustomGrid>

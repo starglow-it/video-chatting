@@ -21,4 +21,6 @@ export enum UserBrokerPatterns {
   CountUsers = 'count_users',
   FindUsers = 'find_users',
   ResetTrialNotification = 'reset_trial_notification',
+  SearchUsers = 'search_users',
+  ManageUserRights = 'manage_user_rights',
 }

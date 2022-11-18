@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 // custom
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // types

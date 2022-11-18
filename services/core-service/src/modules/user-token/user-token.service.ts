@@ -81,10 +81,9 @@ export class UserTokenService {
   }
 
   async deleteUserTokens(
-    { userId }: { userId: UserDocument['_id'] },
-    { session }: ITransactionSession,
+    { userId, session }: { userId: UserDocument['_id']; session: ITransactionSession },
   ): Promise<void> {
-    await this.userToken.deleteMany({ user: userId }, { session });
+    await this.userToken.deleteMany({ user: userId }, { session: session?.session });
 
     return;
   }

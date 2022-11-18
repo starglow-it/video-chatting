@@ -19,16 +19,22 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 // icons
-import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
+import { RoundCloseIcon } from 'shared-frontend/icons';
 
 // stores
-import {$businessCategoriesStore, appDialogsApi, checkCustomLinkFx, getBusinessCategoriesFx} from 'src/store';
+import {
+    $businessCategoriesStore,
+    appDialogsApi,
+    checkCustomLinkFx,
+    getBusinessCategoriesFx,
+} from 'src/store';
 
 // styles
 import { ISocialLink } from 'shared-types';
+import { customTemplateLinkSchema } from 'shared-frontend';
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations
@@ -39,7 +45,6 @@ import { businessCategoriesSchema } from '../../../validation/users/businessCate
 import { languagesSchema } from '../../../validation/users/languagesSchema';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { validateSocialLink } from '../../../validation/users/socials';
-import { customTemplateLinkSchema } from "shared-frontend";
 
 // helpers
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';

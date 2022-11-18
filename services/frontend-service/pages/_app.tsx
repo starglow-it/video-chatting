@@ -18,7 +18,15 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 
 import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
 
-import { $profileStore, $authStore, checkAuthFx } from '../src/store';
+import {
+    $profileStore,
+    $authStore,
+    checkAuthFx,
+    $productsStore,
+    $subscriptionStore,
+    getStripeProductsFx,
+    getSubscriptionFx,
+} from '../src/store';
 
 import { redirectTo } from '../src/helpers/http/redirectTo';
 import createEmotionCache from '../src/createEmotionCache';
@@ -38,14 +46,13 @@ import { rootDomain } from '../src/store/domains';
 import {
     dashboardRoute,
     loginRoute,
+    profileRoute,
     registerRoute,
     setUpTemplateRoute,
     welcomeRoute,
 } from '../src/const/client-routes';
 
 const { publicRuntimeConfig } = getConfig();
-
-const globalStylesComponent = <GlobalStyles styles={globalStyles} />;
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -77,7 +84,7 @@ const CustomApp = ({
                         <ThemeProvider theme={uiTheme}>
                             <ThemeProvider theme={componentsTheme}>
                                 <CssBaseline />
-                                {globalStylesComponent}
+                                <GlobalStyles styles={globalStyles} />
                                 <Layout>
                                     <Component {...pageProps} />
                                 </Layout>
@@ -106,8 +113,8 @@ CustomApp.getInitialProps = async (context: AppContext) => {
         new RegExp(route).test(pathName),
     );
 
-    if (data.user.registerTemplate) {
-        redirectTo(context?.ctx ?? null, `${setUpTemplateRoute}/${initialTemplateId.templateId}`);
+    if (data?.user?.registerTemplate && !pathName.includes(setUpTemplateRoute)) {
+        redirectTo(context?.ctx ?? null, `${setUpTemplateRoute}/${data?.user?.registerTemplate}`);
     }
 
     if (data.isAuthenticated && isRegisterRedirectRoute) {
@@ -116,9 +123,21 @@ CustomApp.getInitialProps = async (context: AppContext) => {
         redirectTo(context?.ctx ?? null, loginRoute);
     }
 
+    let products = [];
+    let subscription = {};
+    if (pathName === profileRoute) {
+        products = await getStripeProductsFx({ ctx: context?.ctx });
+        subscription = await getSubscriptionFx({
+            subscriptionId: data?.user?.stripeSubscriptionId,
+            ctx: context?.ctx,
+        });
+    }
+
     props.pageProps.initialState = {
         [`${$profileStore.sid}`]: { ...initialProfileState, ...data.user },
         [`${$authStore.sid}`]: { isAuthenticated: data.isAuthenticated },
+        [`${$productsStore.sid}`]: products,
+        [`${$subscriptionStore.sid}`]: subscription,
     };
 
     return props;

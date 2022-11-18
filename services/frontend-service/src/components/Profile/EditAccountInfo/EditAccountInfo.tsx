@@ -5,11 +5,11 @@ import { useStore } from 'effector-react';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { EditProfileAvatar } from '@components/Profile/EditProfileAvatar/EditProfileAvatar';
@@ -17,9 +17,10 @@ import { EditProfileEmailInfo } from '@components/Profile/EditProfileEmailInfo/E
 import { EditProfilePasswordInfo } from '@components/Profile/EditProfilePasswordInfo/EditProfilePasswordInfo';
 
 // icons
-import { LockIcon } from '@library/icons/LockIcon';
+import { LockIcon } from 'shared-frontend/icons';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import { $profileStore } from '../../../store';
 
 // styles
@@ -48,19 +49,27 @@ const EditAccountInfo = memo(() => {
                     <CustomButton
                         onClick={handleToggleEditEmail}
                         className={styles.button}
+                        label={
+                            <Translation
+                                nameSpace="profile"
+                                translation="editProfile.changeEmail"
+                            />
+                        }
                         variant="custom-cancel"
-                        nameSpace="profile"
-                        translation="editProfile.changeEmail"
                         typographyProps={{
                             variant: 'body2',
                         }}
                     />
                     <CustomButton
+                        label={
+                            <Translation
+                                nameSpace="profile"
+                                translation="editProfile.changePassword"
+                            />
+                        }
                         onClick={handleStartEditPassword}
                         className={styles.button}
                         variant="custom-cancel"
-                        nameSpace="profile"
-                        translation="editProfile.changePassword"
                         typographyProps={{
                             variant: 'body2',
                         }}

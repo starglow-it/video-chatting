@@ -1,7 +1,7 @@
-import {$meetingsStore, checkCustomLinkFx, createMeetingFx, deleteMeetingFx} from './model';
+import { $meetingsStore, checkCustomLinkFx, createMeetingFx, deleteMeetingFx } from './model';
 import { handleCreateMeeting } from './handlers/handleCreateMeeting';
 import { handleDeleteMeeting } from './handlers/handleDeleteMeeting';
-import {handleCheckCustomLink} from "./handlers/handleCheckCustomLink";
+import { handleCheckCustomLink } from './handlers/handleCheckCustomLink';
 
 createMeetingFx.use(handleCreateMeeting);
 deleteMeetingFx.use(handleDeleteMeeting);

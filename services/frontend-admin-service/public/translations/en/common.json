@@ -1,6 +1,6 @@
 {
   "signIn": {
-    "label": "Sign In"
+    "label": "Sign in"
   },
   "buttons": {
     "signIn": "Sign in",
@@ -22,13 +22,20 @@
     "replace": "Replace",
     "buy": "Buy",
     "leave": "Leave",
-    "homePage": "Homepage"
+    "homePage": "Homepage",
+    "block": "Block",
+    "unblock": "Unblock"
   },
   "tooltips": {
     "logout": "Log out",
     "pages": {
       "statistics": "Statistics",
       "users": "Users"
+    },
+    "users": {
+      "delete": "Delete",
+      "block": "Block",
+      "unblock": "Unblock"
     }
   }
 }

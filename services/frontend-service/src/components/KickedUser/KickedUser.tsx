@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
 
 // icon
-import { WarningIcon } from '@library/icons/WarningIcon';
+import { WarningIcon } from 'shared-frontend/icons';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // styles

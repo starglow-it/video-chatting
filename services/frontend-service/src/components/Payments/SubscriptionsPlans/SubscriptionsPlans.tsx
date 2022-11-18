@@ -6,9 +6,9 @@ import { ClickAwayListener } from '@mui/base';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 // common
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
@@ -27,7 +27,7 @@ import {
 import { useLocalization } from '@hooks/useTranslation';
 
 // icons
-import { RoundCheckIcon } from '@library/icons/RoundIcons/RoundCheckIcon';
+import { RoundCheckIcon } from 'shared-frontend/icons';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';

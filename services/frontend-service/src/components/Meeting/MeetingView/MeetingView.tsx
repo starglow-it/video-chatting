@@ -3,8 +3,8 @@ import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';

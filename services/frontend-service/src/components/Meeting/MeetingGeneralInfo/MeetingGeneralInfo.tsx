@@ -15,14 +15,14 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { EditIcon } from '@library/icons/EditIcon';
-import { InfoIcon } from '@library/icons/InfoIcon';
-import { RoundErrorIcon } from '@library/icons/RoundIcons/RoundErrorIcon';
+import { EditIcon } from 'shared-frontend/icons';
+import { InfoIcon } from 'shared-frontend/icons';
+import { RoundErrorIcon } from 'shared-frontend/icons';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components

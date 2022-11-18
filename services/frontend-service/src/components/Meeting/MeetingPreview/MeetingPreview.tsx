@@ -7,13 +7,13 @@ import clsx from 'clsx';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 

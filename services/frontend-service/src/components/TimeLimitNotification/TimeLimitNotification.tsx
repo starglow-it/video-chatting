@@ -4,17 +4,18 @@ import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomIconButton } from '@library/custom/CustomIconButton/CustomIconButton';
 
 // icons
-import { WarningIcon } from '@library/icons/WarningIcon';
-import { CloseIcon } from '@library/icons/CloseIcon';
+import { WarningIcon } from 'shared-frontend/icons';
+import { CloseIcon } from 'shared-frontend/icons';
 
 // styles
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './TimeLimitNotification.module.scss';
 
 // utils
@@ -114,9 +115,8 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                     <CustomButton
                         variant="custom-common"
                         onClick={handleOpenProfile}
-                        nameSpace="common"
-                        translation="buttons.update"
                         className={styles.button}
+                        label={<Translation nameSpace="common" translation="buttons.update" />}
                         typographyProps={{
                             variant: 'body2',
                         }}

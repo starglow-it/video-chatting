@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
@@ -26,7 +26,7 @@ import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
-import { ILanguage, ISocialLink } from 'shared-types';
+import {IBusinessCategory, ILanguage, ISocialLink} from 'shared-types';
 import { $profileStore, $routeToChangeStore, appDialogsApi, updateProfileFx } from '../../store';
 
 // validations

@@ -12,14 +12,14 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { $profileStore, $profileTemplatesStore, getProfileTemplatesFx } from '../../../store';
 
 // styles

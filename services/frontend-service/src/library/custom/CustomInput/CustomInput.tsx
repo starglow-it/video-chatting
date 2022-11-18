@@ -5,7 +5,7 @@ import { TextField } from '@mui/material';
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // types

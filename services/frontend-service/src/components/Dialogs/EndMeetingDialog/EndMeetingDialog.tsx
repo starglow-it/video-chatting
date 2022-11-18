@@ -6,12 +6,13 @@ import { useRouter } from 'next/router';
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import { appDialogsApi, $appDialogsStore } from '../../../store';
 import {
     $isMeetingHostStore,
@@ -88,15 +89,15 @@ const Component = () => {
                         <CustomButton
                             onClick={handleLeave}
                             className={styles.baseBtn}
-                            nameSpace="meeting"
-                            translation="buttons.leave"
                             variant="custom-cancel"
+                            label={
+                                <Translation nameSpace="meeting" translation="buttons.leave"  />
+                            }
                         />
                         <CustomButton
                             onClick={handleEndMeeting}
                             className={styles.baseBtn}
-                            nameSpace="meeting"
-                            translation="buttons.end"
+                            label={<Translation nameSpace="meeting" translation="buttons.end" />}
                             variant="custom-error"
                         />
                     </>
@@ -105,15 +106,13 @@ const Component = () => {
                         <CustomButton
                             onClick={handleClose}
                             className={styles.baseBtn}
-                            nameSpace="meeting"
-                            translation="buttons.cancel"
+                            label={<Translation nameSpace="meeting" translation="buttons.cancel" />}
                             variant="custom-cancel"
                         />
                         <CustomButton
                             onClick={handleLeave}
                             className={styles.baseBtn}
-                            nameSpace="common"
-                            translation="buttons.leave"
+                            label={<Translation nameSpace="common" translation="buttons.leave" />}
                             variant="custom-error"
                         />
                     </>

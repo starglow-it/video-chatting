@@ -7,8 +7,8 @@ import { Fade } from '@mui/material';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CheckIcon } from '@library/icons/CheckIcon';
+import { CustomGrid } from 'shared-frontend/library';
+import { CheckIcon } from 'shared-frontend/icons';
 import { CustomImage } from 'shared-frontend/library';
 import styles from './ReplaceTemplateItem.module.scss';
 

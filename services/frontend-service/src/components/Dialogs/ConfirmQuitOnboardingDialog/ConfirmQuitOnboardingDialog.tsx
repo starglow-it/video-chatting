@@ -2,12 +2,13 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 
 // store
+import { Translation } from '@library/common/Translation/Translation';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // styles
@@ -57,13 +58,11 @@ const Component = ({ onConfirm, onCancel }: ConfirmQuitOnboardingDialogProps) =>
                     <CustomButton
                         onClick={handleConfirm}
                         variant="custom-cancel"
-                        nameSpace="common"
-                        translation="buttons.quit"
+                        label={<Translation nameSpace="common" translation="buttons.quit" />}
                     />
                     <CustomButton
                         onClick={handleCancel}
-                        nameSpace="common"
-                        translation="buttons.stay"
+                        label={<Translation nameSpace="common" translation="buttons.stay" />}
                     />
                 </CustomGrid>
             </CustomGrid>

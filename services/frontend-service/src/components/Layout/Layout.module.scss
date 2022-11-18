@@ -9,13 +9,14 @@
 }
 
 .main {
-  flex: 1;
   border: rem(0px) solid transparent;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 
   &.relativeLayout {
     display: flex;
     flex-direction: column;
-    position: relative;
   }
 
   &.meetingLayout {

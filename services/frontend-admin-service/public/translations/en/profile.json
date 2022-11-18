@@ -1,0 +1,18 @@
+{
+  "personalInfo": {
+    "title": "Personal",
+    "name": "Name",
+    "status": "Monetization status",
+    "subscription": "Current subscription"
+  },
+  "statistics": {
+    "title": "Profile statistics",
+    "minutesSpent": "Minutes spent, total",
+    "roomsUsed": "Rooms used, total",
+    "moneyEarned": "Money earned, total"
+  },
+  "room": {
+    "title": "Favourite room",
+    "text": "Based on time"
+  }
+}

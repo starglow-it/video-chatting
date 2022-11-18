@@ -15,7 +15,7 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // icons
-import { SpeakerIcon } from '@library/icons/SpeakerIcon/SpeakerIcon';
+import { SpeakerIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './BackgroundAudioControl.module.scss';

@@ -7,12 +7,12 @@ import { useLocalization } from '@hooks/useTranslation';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { RoundSuccessIcon } from '@library/icons/RoundIcons/RoundSuccessIcon';
-import { RoundErrorIcon } from '@library/icons/RoundIcons/RoundErrorIcon';
+import { RoundSuccessIcon } from 'shared-frontend/icons';
+import { RoundErrorIcon } from 'shared-frontend/icons';
 
 // const
 import { ONE_SECOND } from '../../const/time/common';

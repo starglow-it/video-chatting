@@ -2,10 +2,12 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
+
+import { Translation } from '@library/common/Translation/Translation';
 
 // store
 import { $appDialogsStore, appDialogsApi } from '../../../store';
@@ -46,14 +48,12 @@ const Component = ({ onConfirm, onCancel }: ConfirmChangeRouteDialogProps) => {
                 <CustomGrid container gap={1.5} className={styles.buttons} wrap="nowrap">
                     <CustomButton
                         onClick={handleConfirm}
-                        nameSpace="common"
-                        translation="buttons.saveAndQuit"
+                        label={<Translation nameSpace="common" translation="buttons.saveAndQuit" />}
                     />
                     <CustomButton
                         variant="custom-cancel"
                         onClick={handleCancel}
-                        nameSpace="common"
-                        translation="buttons.quit"
+                        label={<Translation nameSpace="common" translation="buttons.quit" />}
                     />
                 </CustomGrid>
             </CustomGrid>

@@ -3,7 +3,7 @@ import { useStore } from 'effector-react';
 
 // custom
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 // stores
 import { $isGoodsVisible } from '../../../store';

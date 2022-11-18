@@ -57,7 +57,6 @@ sample({
     target: joinMeetingFx,
 });
 
-
 /**
  * This logic will handle case
  * when user waiting host

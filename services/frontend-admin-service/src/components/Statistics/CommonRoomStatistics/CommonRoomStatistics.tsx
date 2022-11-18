@@ -25,7 +25,7 @@ const Component = ({ statistic }: { statistic: RoomsStatistics }) => {
     return (
         <CustomPaper className={styles.wrapper}>
             <CustomGrid container className={styles.chartClass}>
-                <CustomDoughnutChart width="180px" height="180px" label="Total rooms" data={data} />
+                <CustomDoughnutChart width="180px" height="180px" label="Total Rooms" data={data} />
             </CustomGrid>
             <ChartLegend
                 className={styles.legend}

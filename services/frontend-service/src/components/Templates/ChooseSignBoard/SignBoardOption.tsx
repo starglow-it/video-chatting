@@ -3,7 +3,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomRadio } from '@library/custom/CustomRadio/CustomRadio';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
@@ -14,8 +14,7 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 // icon
-import { RadioIcon } from '@library/icons/RadioIcon';
-import { ColorPickerIcon } from '@library/icons/ColorPickerIcon';
+import { RadioIcon, ColorPickerIcon } from 'shared-frontend/icons';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';

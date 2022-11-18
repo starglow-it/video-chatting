@@ -53,14 +53,11 @@ export class MonetizationStatisticController {
 
     return withTransaction(this.connection, async (session) => {
       const subscriptionsChargesAmount = charges
-        .filter((charge) => {
-          console.log(charge.metadata);
-          console.log(charge.amount);
-          return (
+        .filter(
+          (charge) =>
             parseBoolean(charge.metadata.isSubscriptionPurchase, false) &&
-            charge.status === 'succeeded'
-          );
-        })
+            charge.status === 'succeeded',
+        )
         .reduce((acc, charge) => acc + charge.amount, 0);
 
       const roomsChargesAmount = charges

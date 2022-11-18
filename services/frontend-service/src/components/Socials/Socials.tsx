@@ -1,17 +1,17 @@
 import React, { useRef, memo, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 
-import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // components
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { InputAdornment } from '@mui/material';
-import { TrashIcon } from '@library/icons/TrashIcon';
+import { TrashIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './Socials.module.scss';
@@ -23,13 +23,7 @@ const SocialInput = ({ social, index, onRemove }) => {
     const {
         register,
         formState: { errors },
-        control,
     } = useFormContext();
-
-    const inputValue = useWatch({
-        control,
-        name: `socials[${index}]`,
-    });
 
     const Icon = SOCIALS_ICONS[social.key];
     const inputKey = `socials[${index}].value`;
@@ -55,13 +49,11 @@ const SocialInput = ({ social, index, onRemove }) => {
         }
     };
 
-    const handlePasteLink = async (event) => {
+    const handlePasteLink = async event => {
         const { value } = event.target;
 
         if (value) {
-            event.target.value = /https?/.test(value)
-                ? value
-                : `https://${value}`;
+            event.target.value = /https?/.test(value) ? value : `https://${value}`;
 
             await onChange(event);
         } else {
@@ -69,7 +61,7 @@ const SocialInput = ({ social, index, onRemove }) => {
 
             await onChange(event);
         }
-    }
+    };
 
     return (
         <CustomInput

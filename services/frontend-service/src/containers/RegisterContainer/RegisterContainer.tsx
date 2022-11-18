@@ -9,12 +9,9 @@ import { useMediaQuery } from '@mui/material';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton, CustomBox, CustomCheckbox , CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 
 // common
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
@@ -30,6 +27,7 @@ import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { RegisterUserParams } from 'src/store/types';
+import { Translation } from '@library/common/Translation/Translation';
 import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store';
 
 // styles
@@ -38,7 +36,7 @@ import styles from './RegisterContainer.module.scss';
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordSchema } from '../../validation/users/password';
-import {StorageKeysEnum, WebStorage} from "../../controllers/WebStorageController";
+import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -73,18 +71,23 @@ const Component = () => {
     const isTermsAccepted = useWatch({ control, name: 'terms' });
 
     const onSubmit = handleSubmit(async (data: RegisterUserParams) => {
-        const initialTemplateId = WebStorage.get<{ templateId: string }>({
+        const initialTemplateData = WebStorage.get<{ templateId: string }>({
             key: StorageKeysEnum.templateId,
         });
 
         resetRegisterErrorEvent();
-        await registerUserFx({
-            email: data.email.trim().toLowerCase(),
-            password: data.password,
-            templateId: initialTemplateId,
-        });
 
-        WebStorage.delete({ key: StorageKeysEnum.templateId });
+        try {
+            await registerUserFx({
+                email: data.email.trim().toLowerCase(),
+                password: data.password,
+                templateId: initialTemplateData.templateId,
+            });
+
+            WebStorage.delete({ key: StorageKeysEnum.templateId });
+        } catch (e) {
+            console.log(e);
+        }
     });
 
     useEffect(() => {
@@ -208,9 +211,10 @@ const Component = () => {
                         <CustomButton
                             className={styles.registerButton}
                             disabled={!isTermsAccepted}
+                            label={
+                                <Translation nameSpace="register" translation="getStarted.button" />
+                            }
                             type="submit"
-                            nameSpace="register"
-                            translation="getStarted.button"
                         />
                     </form>
                 </FormProvider>

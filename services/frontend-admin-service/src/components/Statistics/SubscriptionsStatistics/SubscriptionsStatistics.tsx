@@ -56,6 +56,7 @@ const Component = ({
                             direction="column"
                             justifyContent="center"
                             alignItems="center"
+                            className={styles.noData}
                         >
                             <CustomImage src="/images/eyes.png" width={40} height={40} />
                             <CustomTypography>

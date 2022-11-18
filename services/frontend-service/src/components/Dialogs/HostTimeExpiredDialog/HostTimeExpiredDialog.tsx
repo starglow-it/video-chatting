@@ -4,12 +4,11 @@ import { useRouter } from 'next/router';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { WarningIcon } from '@library/icons/WarningIcon';
+import { CustomGrid , CustomButton , CustomDialog } from 'shared-frontend/library';
+import { WarningIcon } from 'shared-frontend/icons';
 
 // styles
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './HostTimeExpiredDialog.module.scss';
 
 // stores
@@ -56,9 +55,8 @@ const Component = () => {
                 />
 
                 <CustomButton
-                    nameSpace="meeting"
-                    translation="expired.button"
                     onClick={handleClose}
+                    label={<Translation nameSpace="meeting" translation="expired.button" />}
                     className={styles.button}
                     variant="custom-cancel"
                 />

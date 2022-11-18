@@ -14,6 +14,16 @@ type GetMonetizationStatisticPayload = {
   type: string;
 };
 
+type GetUserProfileStatisticPayload = {
+  userId: ICommonUser['id'];
+};
+
+type UpdateUserProfileStatisticPayload = {
+  userId: ICommonUser['id'];
+  statisticKey: string;
+  value: number;
+};
+
 type UpdateRoomRatingStatisticPayload = {
   ratingKey: 'minutes' | 'calls' | 'transactions' | 'uniqueUsers' | 'money';
   templateId: IUserTemplate['id'];
@@ -33,4 +43,6 @@ export type {
   UpdateRoomRatingStatisticPayload,
   UpdateMonetizationStatisticPayload,
   GetMonetizationStatisticPayload,
+  GetUserProfileStatisticPayload,
+  UpdateUserProfileStatisticPayload,
 };

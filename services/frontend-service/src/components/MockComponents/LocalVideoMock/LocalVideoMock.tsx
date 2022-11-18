@@ -1,16 +1,16 @@
 import React, { memo } from 'react';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
 
 // icons
-import { MicIcon } from '@library/icons/MicIcon';
+import { MicIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './LocalVideoMock.module.scss';

@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
   Request,
   UploadedFile,
   UseGuards,
@@ -283,6 +284,64 @@ export class ProfileTemplatesController {
       this.logger.error(
         {
           message: `An error occurs, while get profile template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/add/:templateId')
+  @ApiOperation({ summary: 'Add Template to profile' })
+  @ApiOkResponse({
+    description: 'Add template to profile',
+  })
+  async addTemplateToProfile(
+    @Req() req,
+    @Param('templateId') templateId: string,
+  ) {
+    try {
+      if (templateId) {
+        const template = await this.templatesService.getCommonTemplateById({
+          id: templateId,
+        });
+
+        if (template) {
+          let userTemplate =
+            await this.templatesService.getUserTemplateByTemplateId({
+              id: template.templateId,
+              userId: req.user.userId,
+            });
+
+          if (!userTemplate) {
+            userTemplate = await this.coreService.addTemplateToUser({
+              templateId: template.id,
+              userId: req.user.userId,
+            });
+          }
+
+          return {
+            success: true,
+            result: userTemplate,
+          };
+        }
+
+        return {
+          success: false,
+          result: null,
+        };
+      }
+
+      return {
+        success: false,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while add template to user`,
         },
         JSON.stringify(err),
       );

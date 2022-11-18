@@ -8,17 +8,18 @@ import { useToggle } from '@hooks/useToggle';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom components
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton } from 'shared-frontend/library';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomDivider } from 'shared-frontend/library';
 
 // components
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
 
 // store
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $appDialogsStore,
     $profileStore,
@@ -302,8 +303,9 @@ const Component = () => {
                     <CustomButton
                         onClick={onSubmit}
                         className={styles.saveSettings}
-                        nameSpace="meeting"
-                        translation="buttons.saveSettings"
+                        label={
+                            <Translation nameSpace="meeting" translation="buttons.saveSettings" />
+                        }
                     />
                 </form>
             </FormProvider>

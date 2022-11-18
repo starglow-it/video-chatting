@@ -9,11 +9,9 @@ import { useToggle } from '@hooks/useToggle';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid, CustomFade, CustomDivider } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomFade } from '@library/custom/CustomFade/CustomFade';
 import { CustomRange } from '@library/custom/CustomRange/CustomRange';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
@@ -25,13 +23,13 @@ import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // icons
-import { NewArrowIcon } from '@library/icons/NewArrowIcon';
-import { SpeakerIcon } from '@library/icons/SpeakerIcon/SpeakerIcon';
-import { MusicIcon } from '@library/icons/MusicIcon';
-import { ArrowIcon } from '@library/icons/ArrowIcon';
-import { BackgroundBlurIcon } from '@library/icons/BackgroundBlurIcon';
-
-// stores
+import {
+    ArrowIcon,
+    SpeakerIcon,
+    NewArrowIcon,
+    BackgroundBlurIcon,
+    MusicIcon,
+} from 'shared-frontend/icons';
 
 // styles
 import styles from './MeetingSettingsContent.module.scss';

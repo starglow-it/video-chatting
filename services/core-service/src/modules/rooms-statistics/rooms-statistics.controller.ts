@@ -51,8 +51,7 @@ export class RoomsStatisticsController {
         },
         {
           $match: {
-            'template.author':
-              payload.roomKey === 'custom' ? { $ne: null } : null,
+            author: payload.roomKey === 'custom' ? { $ne: null } : null,
           },
         },
         {
@@ -103,7 +102,7 @@ export class RoomsStatisticsController {
           roomStatistic = await this.roomsStatisticService.create({
             data: {
               template: payload.templateId,
-              user: payload.userId,
+              author: payload.userId,
               transactions: 0,
               minutes: 0,
               calls: 0,

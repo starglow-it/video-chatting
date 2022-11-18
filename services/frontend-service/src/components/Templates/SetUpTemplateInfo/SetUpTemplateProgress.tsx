@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 // styles
 import styles from './SetUpTemplateInfo.module.scss';

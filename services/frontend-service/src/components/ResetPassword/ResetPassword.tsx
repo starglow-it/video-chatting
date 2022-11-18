@@ -9,8 +9,8 @@ import { useToggle } from '@hooks/useToggle';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
@@ -21,6 +21,7 @@ import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 import { CustomImage } from 'shared-frontend/library';
 
 // styles
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './ResetPassword.module.scss';
 
 // validation
@@ -132,6 +133,7 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
                             error={newPasswordErrorMessage}
                             {...register('newPassword')}
                             onCustomBlur={handleBlurInput}
+                            errorClassName={styles.error}
                         />
                         <PasswordHints fieldKey="newPassword" show={showHints} />
                     </CustomGrid>
@@ -144,8 +146,7 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
                     />
                     <CustomButton
                         type="submit"
-                        nameSpace="common"
-                        translation="reset.save"
+                        label={<Translation nameSpace="common" translation="reset.save" />}
                         disabled={isResetInProgress}
                         className={styles.button}
                     />

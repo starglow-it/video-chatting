@@ -3,6 +3,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Connection, UpdateQuery } from 'mongoose';
 import { plainToClass, plainToInstance } from 'class-transformer';
+import * as mongoose from "mongoose";
 
 // shared
 import { TEMPLATES_SERVICE } from 'shared-const';
@@ -39,7 +40,7 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 // schemas
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
-import {isValidObjectId} from "../../utils/mongo/isValidObjectId";
+import { isValidObjectId } from '../../utils/mongo/isValidObjectId';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -61,9 +62,7 @@ export class UserTemplatesController {
     return withTransaction(this.connection, async (session) => {
       try {
         const userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: isValidObjectId(id)
-              ? { _id: id }
-              : { customLink: id },
+          query: isValidObjectId(id) ? { _id: id } : { customLink: id },
           session,
           populatePaths: [
             { path: 'socials' },
@@ -190,6 +189,7 @@ export class UserTemplatesController {
           await this.roomStatisticService.create({
             data: {
               template: targetTemplate._id,
+              author: targetTemplate.author,
               transactions: 0,
               minutes: 0,
               calls: 0,
@@ -258,28 +258,31 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetUserTemplates })
   async getUserTemplates(
     @Payload()
-    { userId, skip, limit }: GetUserTemplatesPayload,
+    { userId, skip, limit, sort, direction }: GetUserTemplatesPayload,
   ): Promise<EntityList<IUserTemplate>> {
     try {
       return withTransaction(this.connection, async (session) => {
-        const user = await this.usersService.findById(userId, session);
-
         const userTemplates = await this.userTemplatesService.findUserTemplates(
           {
-            query: { user: user._id },
-            options: { sort: '-usedAt', skip, limit },
+            query: { user: new mongoose.Types.ObjectId(userId) },
+            options: {
+              ...(sort ? { sort: { [sort]: direction ?? 1 } } : {}),
+              skip,
+              limit
+            },
             populatePaths: [
               'businessCategories',
               'user',
               'previewUrls',
               'author',
             ],
+            session,
           },
         );
 
         const userTemplatesCount =
           await this.userTemplatesService.countUserTemplates({
-            user: user._id,
+            user: new mongoose.Types.ObjectId(userId),
           });
 
         const parsedTemplates = plainToInstance(
@@ -481,7 +484,7 @@ export class UserTemplatesController {
         populatePaths: ['draftPreviewUrls'],
       });
 
-      return plainToClass(UserTemplateDTO, template, {
+      return plainToInstance(UserTemplateDTO, template, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -491,7 +494,7 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetUsersTemplates })
   async getUsersTemplates(
     @Payload()
-    { userId, skip, limit }: GetUsersTemplatesPayload,
+    { userId, skip, limit, direction, sort }: GetUsersTemplatesPayload,
   ): Promise<EntityList<IUserTemplate>> {
     try {
       return withTransaction(this.connection, async (session) => {
@@ -500,7 +503,7 @@ export class UserTemplatesController {
         const userTemplates = await this.userTemplatesService.findUserTemplates(
           {
             query: { user: { $ne: user } },
-            options: { sort: '-usedAt', skip, limit },
+            options: { sort: { [sort]: direction }, skip, limit },
             populatePaths: [
               { path: 'businessCategories' },
               { path: 'previewUrls' },
@@ -555,12 +558,19 @@ export class UserTemplatesController {
         }
 
         if (userTemplate?.author?._id?.toString?.() === userId) {
-          await this.commonTemplatesService.updateCommonTemplate({
+          const commonTemplate = await this.commonTemplatesService.updateCommonTemplate({
             query: {
               templateId: userTemplate.templateId,
             },
             data: {
               isPublic: false,
+            },
+            session,
+          });
+
+          await this.roomStatisticService.delete({
+            query: {
+              template: commonTemplate._id,
             },
             session,
           });
@@ -586,15 +596,15 @@ export class UserTemplatesController {
   ): Promise<{ count: number }> {
     try {
       const userTemplatesCount =
-          await this.userTemplatesService.countUserTemplates({
-            user: userId,
-            type: options.templateType,
-            author: { $ne: userId }
-          });
+        await this.userTemplatesService.countUserTemplates({
+          user: userId,
+          type: options.templateType,
+          author: { $ne: userId },
+        });
 
       return {
         count: userTemplatesCount,
-      }
+      };
     } catch (err) {
       throw new RpcException({
         message: err.message,

@@ -3,7 +3,7 @@ import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 
 // components
@@ -15,11 +15,11 @@ import { dashboardRoute } from 'src/const/client-routes';
 
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
+import { ICommonTemplate } from 'shared-types';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
-import { Template } from '../../store/types';
 
 // store
 import {
@@ -52,7 +52,7 @@ const Component = () => {
 
     const router = useRouter();
 
-    const [template, setTemplate] = useState<Template | null>(null);
+    const [template, setTemplate] = useState<ICommonTemplate | null>(null);
 
     const {
         value: isSubscriptionStep,
@@ -60,7 +60,7 @@ const Component = () => {
         onSwitchOff: onHideSubscriptions,
     } = useToggle(false);
 
-    useSubscriptionNotification(`${getCreateRoomUrl(template?.id ?? '')}?step=privacy`);
+    const { onSetUpdateUrl } = useSubscriptionNotification();
 
     useEffect(() => {
         (async () => {
@@ -72,6 +72,8 @@ const Component = () => {
             if (templateId && typeof templateId === 'string') {
                 const response = await getTemplateFx({ templateId });
                 if (response) {
+                    onSetUpdateUrl(`${getCreateRoomUrl(template?.id)}?step=privacy`);
+
                     setTemplate(response);
                 }
             }

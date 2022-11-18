@@ -5,15 +5,16 @@ import { useRouter } from 'next/router';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { WarningIcon } from '@library/icons/WarningIcon';
+import { WarningIcon } from 'shared-frontend/icons';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
+import { CustomDialog } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
@@ -68,8 +69,7 @@ const Component = () => {
                 />
 
                 <CustomButton
-                    nameSpace="errors"
-                    translation={`${error}.button`}
+                    label={<Translation nameSpace="errors" translation={`${error}.button`} />}
                     onClick={handleClose}
                     className={styles.button}
                     variant="custom-cancel"

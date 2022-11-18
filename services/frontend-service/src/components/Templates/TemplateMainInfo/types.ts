@@ -5,7 +5,7 @@ export type TemplateMainInfoProps = PropsWithClassName<{
     name: ICommonTemplate['name'];
     description: ICommonTemplate['description'];
     maxParticipants: ICommonTemplate['maxParticipants'];
-    type?: ICommonTemplate['type'];
+    type: ICommonTemplate['type'];
     priceInCents?: ICommonTemplate['priceInCents'];
     isNeedToShowBusinessInfo?: boolean;
     show: boolean;

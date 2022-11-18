@@ -6,7 +6,6 @@ import { CardNumberElement, CardNumberElementProps } from '@stripe/react-stripe-
 import { PropsWithClassName } from 'shared-frontend/types';
 import styles from '../StripeCommon.module.scss';
 
-
 const Component = ({ className, ...rest }: PropsWithClassName<CardNumberElementProps>) => (
     <CardNumberElement
         className={clsx(styles.cardField, className)}

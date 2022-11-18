@@ -1,0 +1,77 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.wrapper {
+  position: absolute;
+  padding: rem(34px);
+  width: rem(960px);
+  max-width: 100%;
+  margin: rem(85px auto 0);
+}
+
+.backButton {
+  position: absolute;
+  top: 0;
+  left: rem(-60px);
+  width: rem(44px);
+  height: rem(44px);
+  background: $primary-white;
+  border: 1px solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.profileImage {
+  border: rem(2px) solid #FFFFFF;
+}
+
+.descriptionWrapper {
+  max-width: rem(427px);
+  overflow: hidden;
+
+  .companyName {
+    @include multiline-clip(2);
+  }
+
+  .profileEmail {
+    margin: rem(4px 0 16px 0);
+    @extend %text-ellips
+  }
+}
+
+.buttons {
+  width: auto;
+  margin: 0 0 0 auto;
+}
+
+.divider {
+  width: 100%;
+  margin: rem(30px 0);
+}
+
+.icon {
+  margin: rem(0 4px 0 0);
+}
+
+.title {
+  padding: 0 0 8px 0;
+}
+
+.personIcon {
+  color: $primary-black;
+  margin: rem(0 6px 0 0);
+}
+
+.button {
+  width: rem(114px);
+  border: 1px solid rgba($normal-gray-scale, 0.4);
+  box-shadow: 0 12px 24px -4px rgba($primary-black, 0.1);
+  border-radius: 10px;
+}
+
+.profileInfo {
+  margin: rem(0 0 28px 0);
+}

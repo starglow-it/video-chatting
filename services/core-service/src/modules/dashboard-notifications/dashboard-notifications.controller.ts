@@ -6,6 +6,14 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
 import { USERS_SERVICE } from 'shared-const';
 import { DashboardBrokerPatterns } from 'shared-const';
+import {
+  CreateNotificationPayload,
+  ReadNotificationsPayload,
+  DashboardNotificationReadStatus,
+  TimeoutTypesEnum,
+} from 'shared-types';
+import { subtractDays } from 'shared-utils';
+
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { DashboardNotificationsService } from './dashboard-notifications.service';
 import { UsersService } from '../users/users.service';
@@ -13,12 +21,6 @@ import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { DashboardNotificationDTO } from '../../dtos/dashboard-notification.dto';
 import { TasksService } from '../tasks/tasks.service';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import {
-  CreateNotificationPayload,
-  ReadNotificationsPayload,
-  DashboardNotificationReadStatus,
-  TimeoutTypesEnum,
-} from 'shared-types';
 
 @Controller('dashboard-notifications')
 export class DashboardNotificationsController {
@@ -190,5 +192,16 @@ export class DashboardNotificationsController {
         throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
       }
     });
+  }
+
+  @MessagePattern({ cmd: DashboardBrokerPatterns.DeleteNotifications })
+  async deleteDashboardNotifications() {
+    try {
+      return this.dashboardNotificationService.deleteManyNotifications({
+        sentAt: { $lt: subtractDays(Date.now(), 1) },
+      });
+    } catch (err) {
+      throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
+    }
   }
 }

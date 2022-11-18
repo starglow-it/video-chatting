@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useMemo} from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import linkify from 'linkify-string';
 import { useRouter } from 'next/router';
 
@@ -7,18 +7,18 @@ import { useLocalization } from '@hooks/useTranslation';
 import { useNavigation } from '@hooks/useNavigation';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid, CustomChip } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomChip } from '@library/custom/CustomChip/CustomChip';
 
 // icons
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
 
 // const
+import { Translation } from '@library/common/Translation/Translation';
 import frontendConfig from '../../const/config';
 
 // styles
@@ -72,8 +72,14 @@ const Component = () => {
             tabs.map(({ value, translationKey }) => (
                 <CustomChip
                     active={value === activeTab.value}
-                    nameSpace="static"
-                    translation={`${translationKey}.title`}
+                    label={
+                        <CustomTypography>
+                            <Translation
+                                nameSpace="static"
+                                translation={`${translationKey}.title`}
+                            />
+                        </CustomTypography>
+                    }
                     className={styles.chip}
                     onClick={() => onChangeTab(value)}
                 />

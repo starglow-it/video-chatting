@@ -8,9 +8,7 @@ import { useLocalization } from '@hooks/useTranslation';
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid , CustomBox, CustomButton } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
@@ -18,7 +16,7 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { RoundCheckIcon } from '@library/icons/RoundIcons/RoundCheckIcon';
+import { RoundCheckIcon } from 'shared-frontend/icons';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
@@ -27,6 +25,7 @@ import { CustomImage } from 'shared-frontend/library';
 import { currencies, planColors } from 'src/const/profile/subscriptions';
 
 // types
+import { Translation } from '@library/common/Translation/Translation';
 import { SubscriptionPlanItemProps, TranslationFeatureItem } from './types';
 
 // styles
@@ -140,8 +139,12 @@ const Component = (
                         >
                             <CustomButton
                                 variant="custom-black"
-                                nameSpace="subscriptions"
-                                translation="buttons.tryForFree"
+                                label={
+                                    <Translation
+                                        nameSpace="subscriptions"
+                                        translation="buttons.tryForFree"
+                                    />
+                                }
                                 onClick={handleChooseTrial}
                                 disabled={isDisabled}
                                 className={styles.trialButton}
@@ -159,11 +162,17 @@ const Component = (
                         </CustomTooltip>
                     </ConditionalRender>
                     <CustomButton
-                        nameSpace="subscriptions"
-                        disabled={isDisabled}
-                        translation={
-                            isActive ? 'buttons.currentPlan' : `${buttonTranslation}${product.name}`
+                        label={
+                            <Translation
+                                nameSpace="subscriptions"
+                                translation={
+                                    isActive
+                                        ? 'buttons.currentPlan'
+                                        : `${buttonTranslation}${product.name}`
+                                }
+                            />
                         }
+                        disabled={isDisabled}
                         onClick={handleChooseSubscription}
                         className={clsx(styles.button, { [styles.active]: isActive })}
                     />

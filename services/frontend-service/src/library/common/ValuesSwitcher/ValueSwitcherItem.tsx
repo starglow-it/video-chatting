@@ -1,7 +1,7 @@
 import { ForwardedRef, forwardRef, memo, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 import styles from './ValuesSwitcher.module.scss';

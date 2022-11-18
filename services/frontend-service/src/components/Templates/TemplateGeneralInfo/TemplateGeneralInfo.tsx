@@ -2,9 +2,9 @@ import React, { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components

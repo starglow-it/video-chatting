@@ -7,10 +7,10 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 
 // custom
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // icons
-import { EditIcon } from '@library/icons/EditIcon';
+import { EditIcon } from 'shared-frontend/icons';
 
 // stores
 import { $profileStore } from '../../store';

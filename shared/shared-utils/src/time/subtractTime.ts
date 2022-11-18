@@ -1,7 +1,7 @@
 import { subDays, subMonths } from 'date-fns';
 
-export const subtractDay = (timestamp, number) => {
-  return subDays(timestamp, number);
+export const subtractDays = (timestamp, number): number => {
+  return subDays(timestamp, number).getTime();
 };
 
 export const subtractMonths = (timestamp, number): number => {

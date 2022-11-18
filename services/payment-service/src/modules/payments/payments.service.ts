@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
@@ -6,6 +6,8 @@ import { CreatePaymentIntentPayload } from 'shared-types';
 
 @Injectable()
 export class PaymentsService {
+  private readonly logger = new Logger(PaymentsService.name);
+
   constructor(
     private configService: ConfigClientService,
     @InjectStripe() private readonly stripeClient: Stripe,
@@ -175,12 +177,15 @@ export class PaymentsService {
       cancel_url: cancelUrl.href,
       subscription_data: {
         trial_period_days: trialPeriodDays,
+        metadata,
       },
-      ...(paymentMode === 'subscription' ? {} : {
-        payment_intent_data: {
-          metadata,
-        }
-      }),
+      ...(paymentMode === 'subscription'
+          ? {}
+          : {
+            payment_intent_data: {
+              metadata,
+            },
+          }),
       metadata,
       ...(paymentMode === 'subscription'
         ? { payment_method_collection: 'if_required' }
@@ -274,6 +279,16 @@ export class PaymentsService {
     return allProducts.data.filter(
       (product) => product.metadata.type === 'template',
     );
+  }
+
+  async cancelStripeSubscription({ subscriptionId }): Promise<void> {
+    if (subscriptionId) {
+      await this.stripeClient.subscriptions.cancel(subscriptionId);
+    } else {
+      this.logger.log('[cancelStripeSubscription]: no subscription id was provided')
+    }
+
+    return;
   }
 
   async updateSubscription({

@@ -8,12 +8,12 @@ import dynamic from 'next/dynamic';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // library
-import { LiveOfficeLogo } from '@library/icons/LiveOfficeLogo';
+import { LiveOfficeLogo } from 'shared-frontend/icons';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomBox } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 
 // components

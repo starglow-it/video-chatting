@@ -2,8 +2,8 @@
   "user": {
     "exits": "This email is already used",
     "invalid": "Email is Invalid",
-    "notFound": "Email or Password is incorrect",
-    "notConfirmed": "Email or Password is incorrect",
+    "notFound": "Invalid email or password",
+    "notConfirmed": "Invalid email or password",
     "tokenNotFound": "Invalid confirmation link",
     "code": {
       "incorrect": "Code is incorrect"
@@ -13,7 +13,7 @@
       "incorrect": "Password is incorrect",
       "length": "Min length 8 characters",
       "empty": "Please enter the password",
-      "notVerified": "Email or Password is incorrect",
+      "notVerified": "Invalid email or password",
       "characters": "should contain at least one letter and numerical digit",
       "minLength": "should be at least 8 characters in length",
       "newPassword": {
@@ -23,11 +23,11 @@
         "samePassword": "Please enter different password"
       },
       "newResetPassword": {
-        "samePassword": "Your old and new password are the same. Try another one"
+        "samePassword": "New password must be different from previously used one"
       }
     },
     "credentials": {
-      "invalid": "Email or Password is incorrect"
+      "invalid": "Invalid email or password"
     }
   },
   "media": {

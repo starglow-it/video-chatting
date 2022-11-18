@@ -3,7 +3,6 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { createMeetingUrl } from '../../../utils/urls';
 import { CreateMeetingResponse } from '../types';
 
-
 export const handleCreateMeeting = async (
     data: CreateMeetingPayload,
 ): Promise<CreateMeetingResponse> => {

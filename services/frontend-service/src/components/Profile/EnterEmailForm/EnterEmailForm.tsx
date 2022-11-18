@@ -3,8 +3,8 @@ import { useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid , CustomButton } from 'shared-frontend/library';
+import { Translation } from '@library/common/Translation/Translation';
 
 const EnterEmailForm = memo(
     ({ onEmailEntered, onCancel }: { onEmailEntered: () => void; onCancel: () => void }) => {
@@ -32,14 +32,12 @@ const EnterEmailForm = memo(
                 />
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
-                        nameSpace="common"
                         variant="custom-cancel"
-                        translation="buttons.cancel"
+                        label={<Translation nameSpace="common" translation="buttons.cancel" />}
                         onClick={onCancel}
                     />
                     <CustomButton
-                        nameSpace="common"
-                        translation="buttons.continue"
+                        label={<Translation nameSpace="common" translation="buttons.continue" />}
                         onClick={handleContinue}
                     />
                 </CustomGrid>

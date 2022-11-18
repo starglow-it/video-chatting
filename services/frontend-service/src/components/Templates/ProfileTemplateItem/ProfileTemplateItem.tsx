@@ -5,13 +5,13 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // icon
-import { EllipsisIcon } from '@library/icons/EllipsisIcon';
-import { DeleteIcon } from '@library/icons/DeleteIcon';
+import { EllipsisIcon } from 'shared-frontend/icons';
+import { DeleteIcon } from 'shared-frontend/icons';
 
 // common
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
@@ -26,6 +26,7 @@ import { useToggle } from '@hooks/useToggle';
 
 // stores
 import { CustomImage } from 'shared-frontend/library';
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $isBusinessSubscription,
     $profileStore,
@@ -100,12 +101,12 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
 
     const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);
 
-    const handleShowToast = () => {
+    const handleShowToast = useCallback( () => {
         addNotificationEvent({
             type: NotificationType.NoTimeLeft,
             message: `subscriptions.noTimeLeft`,
         });
-    };
+    }, []);
 
     return (
         <CustomGrid
@@ -125,7 +126,8 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                 description={template.description}
                 maxParticipants={template.maxParticipants}
                 isNeedToShowBusinessInfo
-                isPublic={template.author === profile.id ? template.isPublic : false}
+                isPublic={template.isPublic}
+                isCommonTemplate={false}
             />
             <Fade in={showPreview}>
                 <CustomGrid
@@ -138,7 +140,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                         className={styles.avatar}
                         name={template.name}
                         description={template.description}
-                        isPublic={template.author === profile.id ? template.isPublic : undefined}
+                        isPublic={template.isPublic}
                     />
                     <CustomGrid container wrap="nowrap" gap={1.5}>
                         <CustomButton
@@ -147,9 +149,13 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                             className={clsx(styles.startMeetingBtn, {
                                 [styles.disabled]: isDisabled,
                             })}
-                            nameSpace="templates"
                             disableRipple={isDisabled}
-                            translation="buttons.startMeeting"
+                            label={
+                                <Translation
+                                    nameSpace="templates"
+                                    translation="buttons.startMeeting"
+                                />
+                            }
                             typographyProps={{
                                 variant: 'body2',
                             }}
@@ -158,8 +164,9 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                             variant="custom-transparent"
                             onClick={handleScheduleMeeting}
                             className={styles.startMeetingBtn}
-                            nameSpace="templates"
-                            translation="buttons.schedule"
+                            label={
+                                <Translation nameSpace="templates" translation="buttons.schedule" />
+                            }
                             typographyProps={{
                                 variant: 'body2',
                             }}

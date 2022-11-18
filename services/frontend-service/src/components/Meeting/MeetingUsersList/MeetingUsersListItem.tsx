@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
@@ -11,9 +11,9 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { CloseIcon } from '@library/icons/CloseIcon';
-import { AcceptIcon } from '@library/icons/AcceptIcon';
-import { HostIcon } from '@library/icons/HostIcon';
+import { CloseIcon } from 'shared-frontend/icons';
+import { AcceptIcon } from 'shared-frontend/icons';
+import { HostIcon } from 'shared-frontend/icons';
 
 // stores
 import { $isMeetingHostStore } from '../../../store/roomStores';

@@ -5,3 +5,5 @@ export type ValuesSwitcherItem<T extends ValueType> = {
     value: T;
     label: string;
 };
+
+export type AutocompleteType<ValueType> = ValueType & { key: string; value: string; label: string };

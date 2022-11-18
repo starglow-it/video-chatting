@@ -26,15 +26,13 @@ export class CommonUserDTO implements ICommonUser {
   updatedAt: Date;
 
   @Expose()
-  stripePlanKey: ICommonUser['stripePlanKey'];
-
-  @Expose()
   email: ICommonUser['email'];
 
   @Expose()
   country: ICommonUser['country'];
 
   @Expose()
+  @Transform((data) => data.obj?.registerTemplate?.['_id'])
   registerTemplate: ICommonUser['registerTemplate'];
 
   @Expose()
@@ -128,4 +126,7 @@ export class CommonUserDTO implements ICommonUser {
 
   @Expose()
   isProfessionalTrialAvailable: ICommonUser['isProfessionalTrialAvailable'];
+
+  @Expose()
+  isBlocked: ICommonUser['isBlocked'];
 }

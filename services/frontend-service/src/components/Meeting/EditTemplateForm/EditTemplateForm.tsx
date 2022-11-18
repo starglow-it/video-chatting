@@ -1,19 +1,18 @@
 import React, { memo, useCallback, useState } from 'react';
 
 // custom
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // icons
-import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
-import { EditIcon } from '@library/icons/EditIcon';
-import { PersonIcon } from '@library/icons/PersonIcon';
-import { MoneyIcon } from '@library/icons/MoneyIcon';
+import { CustomLinkIcon } from 'shared-frontend/icons';
+import { EditIcon } from 'shared-frontend/icons';
+import { PersonIcon } from 'shared-frontend/icons';
+import { MoneyIcon } from 'shared-frontend/icons';
 import { Socials } from '@components/Socials/Socials';
-import { SignBoardIcon } from '@library/icons/SignBoardIcon';
+import { SignBoardIcon } from 'shared-frontend/icons';
 
 // components
 import { EditTemplatePersonalInfo } from '@components/Meeting/EditTemplatePersonalInfo/EditTemplatePersonalInfo';
@@ -22,6 +21,8 @@ import { EditMeetingLink } from '@components/Meeting/EditMeetingLink/EditMeeting
 import { ChooseSignBoard } from '@components/Templates/ChooseSignBoard/ChooseSignBoard';
 
 // styles
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomAccordion } from 'shared-frontend';
 import styles from './EditTemplateForm.module.scss';
 
 const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
@@ -65,8 +66,9 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                             currentAccordionId={currentAccordionId}
                             accordionId="personal"
                             onChange={handleChangeAccordion}
-                            nameSpace="meeting"
-                            translation="templates.personal"
+                            label={
+                                <Translation nameSpace="meeting" translation="templates.personal" />
+                            }
                         >
                             <EditTemplatePersonalInfo />
                         </CustomAccordion>
@@ -75,8 +77,9 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                             currentAccordionId={currentAccordionId}
                             accordionId="company"
                             onChange={handleChangeAccordion}
-                            nameSpace="meeting"
-                            translation="templates.company"
+                            label={
+                                <Translation nameSpace="meeting" translation="templates.company" />
+                            }
                         >
                             <EditTemplateCompanyInfo />
                         </CustomAccordion>
@@ -85,8 +88,9 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                             currentAccordionId={currentAccordionId}
                             accordionId="links"
                             onChange={handleChangeAccordion}
-                            nameSpace="meeting"
-                            translation="templates.links"
+                            label={
+                                <Translation nameSpace="meeting" translation="templates.links" />
+                            }
                         >
                             <Socials buttonClassName={styles.socialBtn} />
                         </CustomAccordion>
@@ -95,8 +99,12 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                             currentAccordionId={currentAccordionId}
                             accordionId="signboard"
                             onChange={handleChangeAccordion}
-                            nameSpace="meeting"
-                            translation="templates.signBoard"
+                            label={
+                                <Translation
+                                    nameSpace="meeting"
+                                    translation="templates.signBoard"
+                                />
+                            }
                         >
                             <ChooseSignBoard
                                 key={currentAccordionId}
@@ -111,8 +119,9 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
             <CustomButton
                 className={styles.saveBtn}
                 type="submit"
-                nameSpace="meeting"
-                translation="templates.buttons.saveChanges"
+                label={
+                    <Translation nameSpace="meeting" translation="templates.buttons.saveChanges" />
+                }
             />
         </CustomGrid>
     );

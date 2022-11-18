@@ -16,7 +16,8 @@ const Component = (
     <Chip
         ref={ref}
         classes={{
-            label: styles.label
+            label: styles.label,
+            icon: styles.icon
         }}
         className={clsx(styles.chip, className, {
             [styles.active]: active,

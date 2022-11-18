@@ -7,15 +7,15 @@ import Snackbar from '@mui/material/Snackbar';
 import { useTimer } from '@hooks/useTimer';
 
 // icons
-import { WarningIcon } from '@library/icons/WarningIcon';
-import { ClockIcon } from '@library/icons/ClockIcon';
+import { WarningIcon } from 'shared-frontend/icons';
+import { ClockIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton , CustomGrid } from 'shared-frontend/library';
 
 // utils
+import { Translation } from '@library/common/Translation/Translation';
 import { formatDate } from '../../utils/time/formatDate';
 
 // stores
@@ -110,8 +110,7 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                     <CustomButton
                         variant="custom-common"
                         onClick={handleOpenProfile}
-                        nameSpace="common"
-                        translation="buttons.update"
+                        label={<Translation nameSpace="common" translation="buttons.update" />}
                         className={styles.button}
                         typographyProps={{
                             variant: 'body2',

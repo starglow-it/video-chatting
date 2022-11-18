@@ -74,6 +74,9 @@ export class UpdateProfileRequest implements IUpdateProfile {
   languages: string[];
 
   @IsOptional()
+  registerTemplate: string | null;
+
+  @IsOptional()
   @IsObject()
   @Type(() => SocialsDTO)
   @ValidateNested()

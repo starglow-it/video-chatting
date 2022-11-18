@@ -7,20 +7,20 @@ import { List, ListItem, ListItemIcon } from '@mui/material';
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton, CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { RoundCheckIcon } from '@library/icons/RoundIcons/RoundCheckIcon';
+import { RoundCheckIcon } from 'shared-frontend/icons';
 
 // const
 import { CustomImage } from 'shared-frontend/library';
+import { Translation } from '@library/common/Translation/Translation';
 import { currencies, planColors } from '../../../const/profile/subscriptions';
 
 // shared
@@ -142,9 +142,13 @@ const Component = ({
                         <CustomButton
                             disabled={isDisabled}
                             onClick={handleChooseSubscription}
+                            label={
+                                <Translation
+                                    nameSpace="subscriptions"
+                                    translation={`buttons.upgradeTo${product.name}`}
+                                />
+                            }
                             className={styles.button}
-                            nameSpace="subscriptions"
-                            translation={`buttons.upgradeTo${product.name}`}
                         />
                     </ConditionalRender>
                     <ConditionalRender condition={withTrial}>
@@ -167,8 +171,12 @@ const Component = ({
                         >
                             <CustomButton
                                 variant="custom-black"
-                                nameSpace="subscriptions"
-                                translation="buttons.tryForFree"
+                                label={
+                                    <Translation
+                                        nameSpace="subscriptions"
+                                        translation="buttons.tryForFree"
+                                    />
+                                }
                                 onClick={handleChooseTrial}
                                 disabled={isDisabled}
                                 className={styles.trialButton}

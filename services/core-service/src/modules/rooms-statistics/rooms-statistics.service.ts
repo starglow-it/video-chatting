@@ -77,4 +77,10 @@ export class RoomsStatisticsService {
   async aggregate(aggregate) {
     return this.roomStatistic.aggregate(aggregate).exec();
   }
+
+  async delete({ query, session }): Promise<void> {
+    await this.roomStatistic.deleteOne(query, { session: session?.session }).exec();
+
+    return
+  }
 }

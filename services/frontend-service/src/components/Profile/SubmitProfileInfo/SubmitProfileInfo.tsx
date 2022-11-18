@@ -5,14 +5,13 @@ import { useStore } from 'effector-react';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid , CustomBox, CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 
 // helper
 import { CustomImage } from 'shared-frontend/library';
 import { ISocialLink } from 'shared-types';
+import { Translation } from '@library/common/Translation/Translation';
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
 
@@ -144,8 +143,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
                 <CustomButton
                     className={styles.confirmButton}
                     type="submit"
-                    nameSpace="common"
-                    translation="buttons.save"
+                    label={<Translation nameSpace="common" translation="buttons.save" />}
                     typographyProps={{
                         variant: 'body2',
                     }}
@@ -153,9 +151,8 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
                 <CustomButton
                     className={styles.cancelButton}
                     onClick={handleResetForm}
+                    label={<Translation nameSpace="common" translation="buttons.cancel" />}
                     variant="custom-cancel"
-                    nameSpace="common"
-                    translation="buttons.cancel"
                     typographyProps={{
                         variant: 'body2',
                     }}

@@ -7,7 +7,7 @@ import { useLocalization } from '@hooks/useTranslation';
 import { useNavigation } from '@hooks/useNavigation';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -17,11 +17,11 @@ import { EditPrivacyProps } from '@components/TemplateManagement/EditPrivacy/typ
 import { OptionItem } from '@components/TemplateManagement/EditPrivacy/OptionItem/OptionItem';
 
 // icons
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
-import { LockIcon } from '@library/icons/LockIcon';
-import { PeopleIcon } from '@library/icons/PeopleIcon';
-import { RoundInfoIcon } from '@library/icons/RoundIcons/RoundInfoIcon';
-import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons';
+import { LockIcon } from 'shared-frontend/icons';
+import { PeopleIcon } from 'shared-frontend/icons';
+import { RoundInfoIcon } from 'shared-frontend/icons';
+import { ArrowRightIcon } from 'shared-frontend/icons';
 
 // const
 import frontendConfig from '../../../const/config';

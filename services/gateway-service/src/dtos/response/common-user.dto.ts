@@ -22,7 +22,7 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty()
-  stripePlanKey: ICommonUser['stripePlanKey'];
+  subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Expose()
   @ApiProperty()
@@ -115,6 +115,10 @@ export class CommonUserRestDTO implements ICommonUser {
   @Expose()
   @ApiProperty()
   isProfessionalTrialAvailable: ICommonUser['isProfessionalTrialAvailable'];
+
+  @Expose()
+  @ApiProperty()
+  isBlocked: ICommonUser['isBlocked'];
 
   createdAt: Date;
   updatedAt: Date;

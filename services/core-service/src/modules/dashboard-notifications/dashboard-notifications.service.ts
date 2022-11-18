@@ -76,4 +76,8 @@ export class DashboardNotificationsService {
   async deleteNotification(id): Promise<any> {
     return this.dashboardNotification.deleteOne({ _id: id });
   }
+
+  async deleteManyNotifications(query): Promise<any> {
+    return this.dashboardNotification.deleteMany(query);
+  }
 }

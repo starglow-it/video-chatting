@@ -1,23 +1,25 @@
 import React, { memo, useMemo } from 'react';
+import clsx from "clsx";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+
 import {CustomPagination} from "../../custom";
+import {ConditionalRender} from "../../common";
 
 import styles from './CustomTable.module.scss';
 import {CustomTableProps} from "./CustomTable.types";
-import {ConditionalRender} from "../../common";
-import clsx from "clsx";
 
 function Component<Data extends { id: number | string }>(props: CustomTableProps<Data>): JSX.Element {
     const {
         data,
         columns,
-        count,
-        page,
-        rowsPerPage,
+        count = 0,
+        page = 1,
+        rowsPerPage = 20,
         onPageChange,
-        isTableUpdating,
+        isTableUpdating = false,
         bodyCellClassName,
-        headCellClassName
+        headCellClassName,
+        ActionsComponent,
     } = props;
 
     const renderHeadColumns = useMemo(
@@ -35,10 +37,22 @@ function Component<Data extends { id: number | string }>(props: CustomTableProps
             data?.map(item => (
                 <TableRow className={styles.tableBodyRow} hover key={item.id}>
                     {columns?.map(column => (
-                        <TableCell className={clsx(styles.tableBodyCell, bodyCellClassName)} key={`${item.id}_${column.key}` as string}>
-                            {item[column.key]}
+                        <TableCell
+                            key={`${item.id}_${column.key}` as string}
+                            onClick={item[column.key]?.action}
+                            className={clsx(styles.tableBodyCell, bodyCellClassName, item[column.key]?.style, {[styles.withAction]: Boolean(item[column.key]?.action) })}
+                        >
+                            {item[column.key].label}
                         </TableCell>
                     ))}
+                    <ConditionalRender condition={Boolean(ActionsComponent)}>
+                        <TableCell
+                            key='actions'
+                            className={clsx(styles.tableBodyCell, bodyCellClassName, item[column.key]?.style)}
+                        >
+                            <ActionsComponent actionId={item.id} />
+                        </TableCell>
+                    </ConditionalRender>
                 </TableRow>
             )),
         [data],
@@ -48,9 +62,18 @@ function Component<Data extends { id: number | string }>(props: CustomTableProps
         <TableContainer>
             <Table className={styles.table}>
                 <TableHead>
-                    <TableRow>{renderHeadColumns}</TableRow>
+                    <TableRow>
+                        {renderHeadColumns}
+                        <ConditionalRender condition={Boolean(ActionsComponent)}>
+                            <TableCell className={clsx(styles.tableHeadCell, headCellClassName)} key='actions'>
+                                {''}
+                            </TableCell>
+                        </ConditionalRender>
+                    </TableRow>
                 </TableHead>
-                <TableBody>{renderBody}</TableBody>
+                <TableBody>
+                    {renderBody}
+                </TableBody>
             </Table>
             <ConditionalRender condition={count > rowsPerPage}>
                 <CustomPagination

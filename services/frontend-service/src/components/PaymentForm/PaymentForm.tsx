@@ -2,9 +2,9 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomDivider } from 'shared-frontend/library';
 
 // components
 import { StripeElement } from '@components/Stripe/StripeElement/StripeElement';

@@ -66,4 +66,8 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   templateType: 'video' | 'image';
+
+  @Expose()
+  @ApiProperty()
+  userTemplate: string;
 }

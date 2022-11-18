@@ -3,8 +3,8 @@ import { Fade } from '@mui/material';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
@@ -13,6 +13,7 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 // types
 import { CustomImage } from 'shared-frontend/library';
 import { ICommonTemplate } from 'shared-types';
+import { Translation } from '@library/common/Translation/Translation';
 import { AppDialogsEnum } from '../../../store/types';
 
 // shared
@@ -88,15 +89,17 @@ const OnboardingTemplateItem = memo(({ template }: { template: ICommonTemplate }
                         onClick={handleSetUpTemplate}
                         className={styles.button}
                         disaabled={template.type === 'paid'}
-                        nameSpace="templates"
-                        translation="buttons.getStarted"
+                        label={
+                            <Translation nameSpace="templates" translation="buttons.getStarted" />
+                        }
                     />
                     <CustomButton
                         onClick={handlePreviewTemplate}
                         className={styles.button}
                         variant="custom-transparent"
-                        nameSpace="templates"
-                        translation="buttons.previewSpace"
+                        label={
+                            <Translation nameSpace="templates" translation="buttons.previewSpace" />
+                        }
                     />
                 </CustomGrid>
             </Fade>

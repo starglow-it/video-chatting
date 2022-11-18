@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 // utils
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomImage } from 'shared-frontend/library';
 import { getRandomNumber } from '../../../utils/functions/getRandomNumber';

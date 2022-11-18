@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { Model } from 'mongoose';
 
 import {
   MonetizationStatistic,
   MonetizationStatisticDocument,
 } from '../../schemas/monetization-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { QueryParams } from 'shared-types';
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 
 @Injectable()
 export class MonetizationStatisticService {
@@ -32,12 +32,7 @@ export class MonetizationStatisticService {
     query,
     data,
     session,
-  }: {
-    query: FilterQuery<MonetizationStatisticDocument>;
-    data: UpdateQuery<MonetizationStatistic>;
-    session: ITransactionSession;
-    new?: boolean;
-  }) {
+  }: UpdateModelQuery<MonetizationStatisticDocument, MonetizationStatistic>) {
     return this.monetizationStatistic
       .findOneAndUpdate(query, data, {
         new: true,
@@ -50,11 +45,7 @@ export class MonetizationStatisticService {
     query,
     options,
     session,
-  }: {
-    query: FilterQuery<MonetizationStatisticDocument>;
-    session?: ITransactionSession;
-    options?: QueryParams;
-  }) {
+  }: GetModelQuery<MonetizationStatisticDocument>) {
     return this.monetizationStatistic
       .find(
         query,
@@ -68,16 +59,12 @@ export class MonetizationStatisticService {
       .exec();
   }
 
-  async exists({
-    query,
-  }: {
-    query: FilterQuery<MonetizationStatisticDocument>;
-  }) {
-    return this.monetizationStatistic.exists(query);
+  async exists({ query }: GetModelQuery<MonetizationStatisticDocument>) {
+    return this.monetizationStatistic.exists(query).exec();
   }
 
   async count(
-    query: FilterQuery<MonetizationStatisticDocument>,
+    query: GetModelQuery<MonetizationStatisticDocument>['query'],
   ): Promise<number> {
     return this.monetizationStatistic.count(query).exec();
   }

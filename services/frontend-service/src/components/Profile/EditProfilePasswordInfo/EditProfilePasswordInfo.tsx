@@ -7,14 +7,15 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 
 // common
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 
 // validations
+import { Translation } from '@library/common/Translation/Translation';
 import { passwordLoginSchema, passwordSchema } from '../../../validation/users/password';
 import { simpleStringSchema } from '../../../validation/common';
 
@@ -24,6 +25,9 @@ import { addNotificationEvent, updateProfilePasswordFx } from '../../../store';
 // types
 import { NotificationType } from '../../../store/types';
 import { EditProfilePasswordInfoProps } from './types';
+
+// styles
+import styles from './EditProfilePasswordInfo.module.scss';
 
 const validationSchema = yup.object({
     currentPassword: passwordLoginSchema().required('required'),
@@ -129,6 +133,7 @@ const EditProfilePasswordInfo = memo(({ onCancel, onChanged }: EditProfilePasswo
                             error={newPasswordErrorMessage}
                             {...register('newPassword')}
                             onCustomBlur={handleBlurInput}
+                            errorClassName={styles.error}
                         />
                         <PasswordHints fieldKey="newPassword" show={showHints} />
                     </CustomGrid>
@@ -142,11 +147,13 @@ const EditProfilePasswordInfo = memo(({ onCancel, onChanged }: EditProfilePasswo
                     <CustomGrid container gap={2} wrap="nowrap">
                         <CustomButton
                             onClick={onCancel}
+                            label={<Translation nameSpace="common" translation="buttons.cancel" />}
                             variant="custom-cancel"
-                            nameSpace="common"
-                            translation="buttons.cancel"
                         />
-                        <CustomButton type="submit" nameSpace="common" translation="buttons.save" />
+                        <CustomButton
+                            label={<Translation nameSpace="common" translation="buttons.save" />}
+                            type="submit"
+                        />
                     </CustomGrid>
                 </CustomGrid>
             </form>

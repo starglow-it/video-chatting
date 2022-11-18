@@ -10,8 +10,6 @@ export const handleRegisterUser = async (params: RegisterUserParams) => {
         method: HttpMethods.Get,
     });
 
-    console.log(userData);
-
     const response = await sendRequest<void, ErrorState>({
         ...registerUserUrl,
         data: {

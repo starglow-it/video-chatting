@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 import { TranslationProps } from '../Translation/types';
 import { BlockSeparatorProps } from './types';

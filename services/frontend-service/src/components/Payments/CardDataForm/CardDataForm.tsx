@@ -2,12 +2,12 @@ import React, { memo, useCallback } from 'react';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
 // custom
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // stripe
-import { StripeIcon } from '@library/icons/StripeIcon';
+import { StripeIcon } from 'shared-frontend/icons';
 import { StripeCardNumber } from '@components/Stripe/StripeCardNumber/StripeCardNumber';
 import { StripeCardExpiry } from '@components/Stripe/StripeCardExpiry/StripeCardExpiry';
 import { StripeCardCvc } from '@components/Stripe/StripeCardCvc/StripeCardCvc';

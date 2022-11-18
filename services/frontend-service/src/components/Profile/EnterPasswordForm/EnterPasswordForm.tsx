@@ -2,11 +2,12 @@ import React, { memo, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 
 // library
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
+import { Translation } from '@library/common/Translation/Translation';
 
 const EnterPasswordForm = memo(
     ({ onPasswordEntered, onCancel }: { onPasswordEntered: () => void; onCancel: () => void }) => {
@@ -34,15 +35,13 @@ const EnterPasswordForm = memo(
                 />
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
-                        nameSpace="common"
                         variant="custom-cancel"
-                        translation="buttons.cancel"
+                        label={<Translation nameSpace="common" translation="buttons.cancel" />}
                         onClick={onCancel}
                     />
                     <CustomButton
+                        label={<Translation nameSpace="common" translation="buttons.continue" />}
                         onClick={handleContinueStep}
-                        nameSpace="common"
-                        translation="buttons.continue"
                     />
                 </CustomGrid>
             </CustomGrid>

@@ -6,7 +6,7 @@ export const templatesUrl = `${serverUrl}/${templatesScope}`;
 export const userTemplatesUrl = `${serverUrl}/${usersScope}`;
 
 export const usersTemplatesUrl = ({ skip = 0, limit = 0 }) => ({
-    url: `${serverUrl}/${usersScope}/templates?skip=${skip}&limit=${limit}`,
+    url: `${serverUrl}/user-templates?skip=${skip}&limit=${limit}`,
     method: HttpMethods.Get,
 });
 
@@ -38,11 +38,6 @@ export const createTemplateUrl = {
 export const updateTemplateUrl = ({ templateId }: { templateId: ICommonTemplate['id'] }) => ({
     url: `${templatesUrl}/${templateId}`,
     method: HttpMethods.Put,
-});
-
-export const addTemplateToUserUrl = ({ templateId }: { templateId: UserTemplate['id'] }) => ({
-    url: `${userTemplatesUrl}/templates/add/${templateId}`,
-    method: HttpMethods.Post,
 });
 
 export const deleteTemplateUrl = ({ templateId }: { templateId: Template['id'] }) => ({

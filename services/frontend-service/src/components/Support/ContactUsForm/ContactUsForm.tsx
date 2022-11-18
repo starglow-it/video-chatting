@@ -5,17 +5,18 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
+// shared
+import { CustomButton, CustomCheckbox } from 'shared-frontend/library';
+
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
-import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
@@ -23,11 +24,12 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 import { useToggle } from '@hooks/useToggle';
 
 // icons
-import { DoneIcon } from '@library/icons/DoneIcon';
+import { DoneIcon } from 'shared-frontend/icons';
 
 // validations
 import frontendConfig from 'src/const/config';
 import { MAX_CONTACT_US_MESSAGE_LENGTH } from 'src/const/general';
+import { Translation } from '@library/common/Translation/Translation';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { simpleStringSchemaWithLength } from '../../../validation/common';
 import { emailSchema } from '../../../validation/users/email';
@@ -196,10 +198,12 @@ const Component = () => {
                         </CustomGrid>
                         <CustomCheckbox
                             onChange={onToggleSubmitButtonEnabled}
-                            translationProps={{
-                                nameSpace: 'static',
-                                translation: 'contacts.form.checkbox',
-                            }}
+                            label={
+                                <Translation
+                                    nameSpace="static"
+                                    translation="contacts.form.checkbox"
+                                />
+                            }
                             labelClassName={styles.checkbox}
                         />
                         {isSendContactFormPending ? (
@@ -207,8 +211,12 @@ const Component = () => {
                         ) : (
                             <CustomButton
                                 disabled={!isSubmitButtonEnabled}
-                                nameSpace="static"
-                                translation="contacts.form.actions.submit"
+                                label={
+                                    <Translation
+                                        nameSpace="static"
+                                        translation="contacts.form.actions.submit"
+                                    />
+                                }
                                 type="submit"
                                 className={styles.submitButton}
                             />
@@ -236,8 +244,12 @@ const Component = () => {
                             className={clsx(styles.text, styles.description)}
                         />
                         <CustomButton
-                            nameSpace="static"
-                            translation="contacts.success.button"
+                            label={
+                                <Translation
+                                    nameSpace="static"
+                                    translation="contacts.success.button"
+                                />
+                            }
                             className={styles.button}
                             onClick={handleClickHomepage}
                         />

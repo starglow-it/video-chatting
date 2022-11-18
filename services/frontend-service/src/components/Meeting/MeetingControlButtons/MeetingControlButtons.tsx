@@ -6,7 +6,7 @@ import { useStore } from 'effector-react';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
@@ -18,11 +18,11 @@ import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
 
 // icons
-import { HangUpIcon } from '@library/icons/HangUpIcon';
-import { SettingsIcon } from '@library/icons/SettingsIcon';
-import { SharingIcon } from '@library/icons/SharingIcon';
-import { GoodsIcon } from '@library/icons/GoodsIcon';
-import { MicIcon } from '@library/icons/MicIcon';
+import { HangUpIcon } from 'shared-frontend/icons';
+import { SettingsIcon } from 'shared-frontend/icons';
+import { SharingIcon } from 'shared-frontend/icons';
+import { GoodsIcon } from 'shared-frontend/icons';
+import { MicIcon } from 'shared-frontend/icons';
 
 // stores
 import { $isGoodsVisible, appDialogsApi, toggleIsGoodsVisible } from '../../../store';

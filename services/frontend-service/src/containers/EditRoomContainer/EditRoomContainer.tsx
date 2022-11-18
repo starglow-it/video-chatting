@@ -11,14 +11,14 @@ import { TemplateManagement } from '@components/TemplateManagement/TemplateManag
 import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 
 // const
+import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
-import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { UserTemplate } from '../../store/types';
 
 // store

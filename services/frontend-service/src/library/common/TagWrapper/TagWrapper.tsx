@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // types
 import { GridProps } from '@mui/material';

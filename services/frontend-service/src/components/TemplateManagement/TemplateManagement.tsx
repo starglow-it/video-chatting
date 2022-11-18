@@ -11,7 +11,7 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 // custom
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
@@ -28,10 +28,10 @@ import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
 
 // icons
-import { ImagePlaceholderIcon } from '@library/icons/ImagePlaceholderIcon';
-import { PeopleIcon } from '@library/icons/PeopleIcon';
-import { LockIcon } from '@library/icons/LockIcon';
-import { CloseIcon } from '@library/icons/CloseIcon';
+import { ImagePlaceholderIcon } from 'shared-frontend/icons';
+import { PeopleIcon } from 'shared-frontend/icons';
+import { LockIcon } from 'shared-frontend/icons';
+import { CloseIcon } from 'shared-frontend/icons';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -42,10 +42,8 @@ import { useToggle } from '@hooks/useToggle';
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { TemplateManagementProps } from '@components/TemplateManagement/TemplateManagement.types';
-import {
-    MAX_DESCRIPTION_LENGTH,
-    MAX_NAME_LENGTH,
-} from '../../const/templates/info';
+import { customTemplateLinkSchema } from 'shared-frontend';
+import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from '../../const/templates/info';
 import { dashboardRoute } from '../../const/client-routes';
 import {
     $isBusinessSubscription,
@@ -69,7 +67,6 @@ import styles from './TemplateManagement.module.scss';
 // utils
 import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 import { parseBase64 } from '../../utils/string/parseBase64';
-import {customTemplateLinkSchema} from "shared-frontend";
 
 enum TabsValues {
     Background = 1,

@@ -6,16 +6,16 @@ import clsx from 'clsx';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
+import { CustomLinkIcon } from 'shared-frontend/icons';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // store
 import { $meetingTemplateStore } from '../../../store/roomStores';
-import {checkCustomLinkFx} from "../../../store";
+import { checkCustomLinkFx } from '../../../store';
 
 // styles
 import styles from './EditMeetingLink.module.scss';

@@ -9,19 +9,18 @@ import { useStore } from 'effector-react';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // icons
-import { MonetizationIcon } from '@library/icons/MonetizationIcon';
+import { MonetizationIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomBox, CustomButton , CustomGrid } from 'shared-frontend/library';
 
 // common
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
 
 // validation
+import { Translation } from '@library/common/Translation/Translation';
 import { templatePriceSchema } from '../../../validation/payments/templatePrice';
 import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 
@@ -155,9 +154,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                     </CustomGrid>
                     <CustomButton
                         type="submit"
-                        nameSpace="common"
-                        translation="buttons.save"
                         className={styles.button}
+                        label={<Translation nameSpace="common" translation="buttons.save" />}
                     />
                 </CustomGrid>
             </form>

@@ -3,14 +3,13 @@ import { useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomBox , CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // library
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
-import { MoneyIcon } from '@library/icons/MoneyIcon';
+import { MoneyIcon } from 'shared-frontend/icons';
 
 // components
 import { BusinessCategoriesSelect } from '@components/BusinessCategoriesSelect/BusinessCategoriesSelect';

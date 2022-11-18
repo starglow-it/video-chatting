@@ -5,9 +5,9 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
@@ -15,12 +15,13 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { ArrowUp } from '@library/icons/ArrowUp';
-import { ArrowRightIcon } from '@library/icons/ArrowRightIcon';
+import { ArrowUp } from 'shared-frontend/icons';
+import { ArrowRightIcon } from 'shared-frontend/icons';
 
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { UploadTemplateFileProps } from '@components/TemplateManagement/UploadTemplateFile/types';
+import { Translation } from '@library/common/Translation/Translation';
 import { Notification, NotificationType } from '../../../store/types';
 
 // const
@@ -220,8 +221,12 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                         popperClassName={styles.popper}
                     >
                         <CustomButton
-                            nameSpace="createRoom"
-                            translation="uploadBackground.actions.upload"
+                            label={
+                                <Translation
+                                    nameSpace="createRoom"
+                                    translation="uploadBackground.actions.upload"
+                                />
+                            }
                             className={styles.button}
                             onClick={onClick}
                         />
@@ -244,8 +249,12 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     >
                         <CustomButton
                             variant="custom-gray"
-                            nameSpace="createRoom"
-                            translation="uploadBackground.actions.change"
+                            label={
+                                <Translation
+                                    nameSpace="createRoom"
+                                    translation="uploadBackground.actions.change"
+                                />
+                            }
                             className={styles.button}
                             onClick={onClick}
                         />

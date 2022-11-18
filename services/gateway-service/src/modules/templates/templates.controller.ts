@@ -57,7 +57,6 @@ export class TemplatesController {
     @Query('userId') userId: string,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
-      console.log(userId);
       const templatesData = await this.templatesService.getCommonTemplates({
         query: { draft: false, isPublic: true },
         options: {

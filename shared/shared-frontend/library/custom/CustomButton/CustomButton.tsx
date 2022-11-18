@@ -1,5 +1,7 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 import { Button, ButtonProps } from '@mui/material';
+import {CustomTypography} from "../../custom";
+
 import { CustomButtonProps } from './CustomButton.types';
 
 type ComponentType = CustomButtonProps & ButtonProps;
@@ -12,13 +14,18 @@ const Component = (
         label,
         variant = 'custom-primary',
         children,
+        typographyProps,
         ...rest
     }: ComponentType,
     ref: ForwardedRef<HTMLButtonElement>,
 ) => (
     <Button disabled={disabled} variant={variant} type={type} ref={ref} {...rest}>
         {Icon}
-        {children ? children : label}
+        {children || (
+            <CustomTypography {...typographyProps}>
+                {label}
+            </CustomTypography>
+        )}
     </Button>
 );
 

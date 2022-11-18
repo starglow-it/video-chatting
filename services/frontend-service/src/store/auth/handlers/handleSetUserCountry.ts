@@ -12,6 +12,4 @@ export const handleSetUserCountry = async (): Promise<void> => {
     updateProfileFx({
         country: userData.result?.country_name,
     });
-
-    
 };

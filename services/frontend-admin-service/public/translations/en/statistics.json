@@ -12,7 +12,7 @@
     },
     "users": {
       "title": "Subscriptions",
-      "noData": "No subscriptions yet"
+      "noData": "No users yet"
     },
     "usersMonetization": {
       "title": "Users earned",
@@ -21,6 +21,9 @@
     "platformMonetization": {
       "title": "Platform earned",
       "noData": "Nothing earned yet"
+    },
+    "search": {
+      "noData":"Nothing found"
     }
   },
   "common": {

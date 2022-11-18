@@ -9,17 +9,20 @@ import { useMultipleToggle } from '@hooks/useMultipleToggle';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
 import { CustomDatePicker } from '@library/custom/CustomDatePicker/CustomDatePicker';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
-import { CustomFade } from '@library/custom/CustomFade/CustomFade';
+import {
+    CustomDialog,
+    CustomGrid,
+    CustomDivider,
+    CustomFade,
+    CustomButton,
+} from 'shared-frontend/library';
 
 // components
 import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
 import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 import { ScheduleTime } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
+import { Translation } from '@library/common/Translation/Translation';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
@@ -257,23 +260,35 @@ const Component = () => {
                             </CustomGrid>
                             <CustomGrid container wrap="nowrap" gap={2} className={styles.buttons}>
                                 <CustomButton
-                                    nameSpace="common"
-                                    translation="buttons.cancel"
+                                    label={
+                                        <Translation
+                                            nameSpace="common"
+                                            translation="buttons.cancel"
+                                        />
+                                    }
                                     variant="custom-cancel"
                                     onClick={handleClose}
                                 />
                                 <CustomButton
                                     className={clsx({ [styles.hide]: isInviteOpen })}
-                                    nameSpace="common"
-                                    translation="buttons.continue"
+                                    label={
+                                        <Translation
+                                            nameSpace="common"
+                                            translation="buttons.continue"
+                                        />
+                                    }
                                     onClick={handleShowEnterEmails}
                                 />
                                 <CustomButton
                                     className={clsx({ [styles.hide]: !isInviteOpen })}
                                     disabled={isScheduleMeetingInProgress || !userEmails?.length}
-                                    nameSpace="common"
-                                    translation="buttons.schedule"
                                     onClick={onSubmit}
+                                    label={
+                                        <Translation
+                                            nameSpace="common"
+                                            translation="buttons.schedule"
+                                        />
+                                    }
                                 />
                             </CustomGrid>
                         </CustomGrid>

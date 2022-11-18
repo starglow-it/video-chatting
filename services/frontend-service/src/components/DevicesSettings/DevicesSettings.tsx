@@ -10,17 +10,17 @@ import { useToggle } from '@hooks/useToggle';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
-import { CustomCheckbox } from '@library/custom/CustomCheckbox/CustomCheckbox';
+import { CustomButton, CustomCheckbox } from 'shared-frontend/library';
+import { CustomDivider } from 'shared-frontend/library';
 
 // components
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { MediaPreview } from '@components/Media/MediaPreview/MediaPreview';
 import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { Translation } from '@library/common/Translation/Translation';
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
@@ -186,10 +186,10 @@ const Component = () => {
     const isAudioError = Boolean(audioError);
 
     const isEnterMeetingDisabled =
-        isAudioError
-        || isEnterMeetingRequestPending
-        || isEnterWaitingRoomRequestPending
-        || localUser.accessStatus === MeetingAccessStatuses.Waiting;
+        isAudioError ||
+        isEnterMeetingRequestPending ||
+        isEnterWaitingRoomRequestPending ||
+        localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
 
     const joinHandler = isOwner ? onSubmit : handleJoinMeeting;
 
@@ -222,25 +222,31 @@ const Component = () => {
                         direction={isMobile && isUserSentEnterRequest ? 'column-reverse' : 'column'}
                         wrap="nowrap"
                     >
-                        {isUserSentEnterRequest || !isUserSentEnterRequest && localUser.accessStatus === MeetingAccessStatuses.Waiting ? (
+                        {isUserSentEnterRequest ||
+                        (!isUserSentEnterRequest &&
+                            localUser.accessStatus === MeetingAccessStatusEnum.Waiting) ? (
                             <>
                                 <CustomGrid container direction="column">
                                     <CustomTypography
                                         className={styles.title}
                                         variant="h3bold"
                                         nameSpace="meeting"
-                                        translation={localUser.accessStatus === MeetingAccessStatuses.Waiting
-                                            ? "meetingNotStarted.title"
-                                            : "requestSent"
+                                        translation={
+                                            localUser.accessStatus ===
+                                            MeetingAccessStatusEnum.Waiting
+                                                ? 'meetingNotStarted.title'
+                                                : 'requestSent'
                                         }
                                     />
                                     <CustomTypography
                                         variant="body1"
                                         color="text.secondary"
                                         nameSpace="meeting"
-                                        translation={localUser.accessStatus === MeetingAccessStatuses.Waiting
-                                            ? "meetingNotStarted.text"
-                                            : "enterPermission"
+                                        translation={
+                                            localUser.accessStatus ===
+                                            MeetingAccessStatusEnum.Waiting
+                                                ? 'meetingNotStarted.text'
+                                                : 'enterPermission'
                                         }
                                     />
                                 </CustomGrid>
@@ -249,7 +255,9 @@ const Component = () => {
                                         container
                                         alignItems="center"
                                         direction={isMobile ? 'row' : 'column-reverse'}
-                                        className={clsx(styles.loader, {[styles.mobile]: isMobile})}
+                                        className={clsx(styles.loader, {
+                                            [styles.mobile]: isMobile,
+                                        })}
                                         gap={1}
                                     >
                                         <WiggleLoader />
@@ -287,11 +295,13 @@ const Component = () => {
                             <CustomCheckbox
                                 labelClassName={styles.label}
                                 checked={needToRememberSettings}
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="settings.remember"
+                                    />
+                                }
                                 onChange={handleToggleRememberSettings}
-                                translationProps={{
-                                    nameSpace: 'meeting',
-                                    translation: 'settings.remember',
-                                }}
                             />
                         </ConditionalRender>
                     </CustomGrid>
@@ -316,16 +326,19 @@ const Component = () => {
                     <CustomButton
                         onClick={handleBack}
                         variant="custom-cancel"
-                        nameSpace="common"
-                        translation="buttons.back"
+                        label={<Translation nameSpace="common" translation="buttons.back" />}
                     />
                 </ConditionalRender>
                 <CustomButton
                     onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
                     disabled={isEnterMeetingDisabled || isStreamRequested}
-                    nameSpace="meeting"
+                    label={
+                        <Translation
+                            nameSpace="meeting"
+                            translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
+                        />
+                    }
                     variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
-                    translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
                 />
             </CustomGrid>
         </FormProvider>

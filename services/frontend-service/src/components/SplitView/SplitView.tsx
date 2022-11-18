@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { SplitViewProps } from './types';
 
 import styles from './SplitView.module.scss';

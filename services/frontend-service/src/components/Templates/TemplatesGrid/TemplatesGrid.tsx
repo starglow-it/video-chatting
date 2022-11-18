@@ -3,16 +3,16 @@ import clsx from 'clsx';
 import { useMediaQuery } from '@mui/material';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomSlider } from '@library/custom/CustomSlider/CustomSlider';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { SkeletonTemplate } from '@components/Templates/SkeletonTemplate/SkeletonTemplate';
 
 // icons
-import { PrevSliderArrow } from '@library/icons/PrevSliderArrow';
-import { NextSliderArrow } from '@library/icons/NextSliderArrow';
+import { PrevSliderArrow } from 'shared-frontend/icons';
+import { NextSliderArrow } from 'shared-frontend/icons';
 
 // helpers
 import { unflatArray } from '../../../utils/arrays/unflatArray';

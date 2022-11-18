@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 // custom
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // styles
 import styles from './AuthenticationLink.module.scss';

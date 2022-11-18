@@ -455,7 +455,7 @@ export const componentsTheme = (theme: Theme) =>
                         margin: '0 20px 0 20px',
                     },
                     icon: {
-                        margin: '0 -20px 0 12px',
+                        margin: '0',
                         color: 'inherit',
                     },
                 },

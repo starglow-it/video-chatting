@@ -24,7 +24,10 @@ type ChartLegendItemProps = {
 };
 
 const ChartLegendItem = ({ data, totalNumber }: ChartLegendItemProps) => {
-    const partsValue = useMemo(() => Array.isArray(data.parts) ? data.parts.reduce((acc, b) => acc + b, 0) : data.parts, [data.parts]);
+    const partsValue = useMemo(
+        () => (Array.isArray(data.parts) ? data.parts.reduce((acc, b) => acc + b, 0) : data.parts),
+        [data.parts],
+    );
 
     return (
         <CustomGrid container direction="column" flex="0 0 50%" width="auto">

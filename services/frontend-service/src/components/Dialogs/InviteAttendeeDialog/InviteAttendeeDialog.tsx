@@ -8,14 +8,15 @@ import { useRouter } from 'next/router';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 
 // components
 import { ScheduleAttendees } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleAttendees';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import { $appDialogsStore, addNotificationEvent, appDialogsApi } from '../../../store';
 import { sendInviteEmailFx } from '../../../store/roomStores';
 
@@ -101,15 +102,20 @@ const Component = () => {
                         />
                         <CustomGrid container wrap="nowrap" gap={2}>
                             <CustomButton
-                                nameSpace="common"
-                                translation="buttons.cancel"
+                                label={
+                                    <Translation nameSpace="common" translation="buttons.cancel" />
+                                }
                                 variant="custom-cancel"
                                 onClick={handleClose}
                             />
                             <CustomButton
                                 onClick={onSubmit}
-                                nameSpace="meeting"
-                                translation="invite.sendInvitation"
+                                label={
+                                    <Translation
+                                        nameSpace="meeting"
+                                        translation="invite.sendInvitation"
+                                    />
+                                }
                                 disabled={!userEmails?.length || isInviteEmailsSent}
                             />
                         </CustomGrid>

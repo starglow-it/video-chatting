@@ -8,7 +8,6 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { CommonUserDTO } from '../../dtos/common-user.dto';
 
 // shared
-import { UserBrokerPatterns, AuthBrokerPatterns } from 'shared-const';
 import {
   TokenTypes,
   FindUsersPayload,
@@ -33,9 +32,15 @@ import {
   LoginUserByEmailPayload,
   SetResetPasswordTokenPayload,
   ResetTrialNotificationPayload,
+  SearchUsersPayload,
+  UserRoles, ManageUserRightsPayload,
 } from 'shared-types';
 
+import { escapeRegexString } from 'shared-utils';
+
 import {
+  UserBrokerPatterns,
+  AuthBrokerPatterns,
   INVALID_CREDENTIALS,
   INVALID_PASSWORD,
   NOT_MATCH_PASSWORD,
@@ -62,14 +67,17 @@ import { LanguagesService } from '../languages/languages.service';
 import { VerificationCodeService } from '../verification-code/verification-code.service';
 import { UsersService } from './users.service';
 import { UserTokenService } from '../user-token/user-token.service';
+import { TasksService } from '../tasks/tasks.service';
+import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
+import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
 
 // types
-import { addMonthsCustom } from '../../utils/dates/addMonths';
-import { TasksService } from '../tasks/tasks.service';
-import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import { TimeoutTypesEnum } from 'shared-types';
+
+// utils
+import { addMonthsCustom } from '../../utils/dates/addMonths';
 import { addDaysCustom } from '../../utils/dates/addDaysCustom';
-import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
+import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 
 @Controller('users')
 export class UsersController {
@@ -83,6 +91,7 @@ export class UsersController {
     private configService: ConfigClientService,
     private verificationCodeService: VerificationCodeService,
     private countryStatisticsService: CountryStatisticsService,
+    private userProfileStatisticService: UserProfileStatisticService,
     @InjectConnection() private connection: Connection,
   ) {}
 
@@ -178,7 +187,10 @@ export class UsersController {
 
           await newUser.save();
 
-          if (createUserPayload?.user?.country) {
+          if (
+            createUserPayload?.user?.country &&
+            newUser.role === UserRoles.User
+          ) {
             const isCountryExists = await this.countryStatisticsService.exists({
               key: createUserPayload.user.country,
             });
@@ -204,6 +216,13 @@ export class UsersController {
               });
             }
           }
+
+          this.userProfileStatisticService.create({
+            data: {
+              user: newUser._id,
+            },
+            session,
+          });
 
           return plainToClass(CommonUserDTO, newUser, {
             excludeExtraneousValues: true,
@@ -329,18 +348,7 @@ export class UsersController {
   async findUsers(@Payload() { query, options }: FindUsersPayload) {
     return withTransaction(this.connection, async (session) => {
       const users = await this.usersService.findUsers({
-        query: {
-          ...(options?.search
-            ? {
-                ...query,
-                $or: [
-                  { companyName: { $regex: options?.search, $options: 'i' } },
-                  { fullName: { $regex: options?.search, $options: 'i' } },
-                  { email: { $regex: options?.search, $options: 'i' } },
-                ],
-              }
-            : query),
-        },
+        query,
         options: {
           skip: options?.skip,
           limit: options?.limit,
@@ -353,6 +361,39 @@ export class UsersController {
           'languages',
           'profileAvatar',
         ],
+      });
+
+      return plainToInstance(CommonUserDTO, users, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+    });
+  }
+
+  @MessagePattern({ cmd: UserBrokerPatterns.SearchUsers })
+  async searchUsers(@Payload() { query, options }: SearchUsersPayload) {
+    return withTransaction(this.connection, async (session) => {
+      const searchRegexStr = options?.search
+        ? escapeRegexString(options?.search)
+        : '';
+
+      const users = await this.usersService.findUsers({
+        query: {
+          ...query,
+          $or: [
+            { companyName: { $regex: searchRegexStr, $options: 'i' } },
+            { fullName: { $regex: searchRegexStr, $options: 'i' } },
+            { email: { $regex: searchRegexStr, $options: 'i' } },
+          ],
+        },
+        options: {
+          skip: options?.skip,
+          limit: options?.limit,
+          sort: options?.sort
+            ? { [options?.sort]: options?.direction }
+            : undefined,
+        },
+        session,
       });
 
       return plainToInstance(CommonUserDTO, users, {
@@ -531,6 +572,22 @@ export class UsersController {
   async deleteProfile(@Payload() { userId }: { userId: string }) {
     return withTransaction(this.connection, async (session) => {
       return this.usersService.deleteUser(userId, session);
+    });
+  }
+
+  @MessagePattern({ cmd: UserBrokerPatterns.ManageUserRights })
+  async manageUserRights(@Payload() { userId, key, value }: ManageUserRightsPayload) {
+    return withTransaction(this.connection, async (session) => {
+      if (key === 'block') {
+        const user = await this.usersService.findByIdAndUpdate(userId, { isBlocked: value }, session);
+
+        await this.userTokenService.deleteUserTokens({ userId, session });
+
+        return plainToInstance(CommonUserDTO, user, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      }
     });
   }
 

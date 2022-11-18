@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
@@ -11,10 +11,10 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { InfoIcon } from '@library/icons/InfoIcon';
-import { PeopleIcon } from '@library/icons/PeopleIcon';
-import { EmailIcon } from '@library/icons/EmailIcon';
-import { LanguageIcon } from '@library/icons/LanguageIcon';
+import { InfoIcon } from 'shared-frontend/icons';
+import { PeopleIcon } from 'shared-frontend/icons';
+import { EmailIcon } from 'shared-frontend/icons';
+import { LanguageIcon } from 'shared-frontend/icons';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';

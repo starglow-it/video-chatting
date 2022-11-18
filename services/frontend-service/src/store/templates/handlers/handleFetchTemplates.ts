@@ -3,7 +3,6 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { getTemplatesUrl } from '../../../utils/urls';
 import { EntityList } from '../../types';
 
-
 const handleFetchTemplates = async ({
     limit,
     skip,

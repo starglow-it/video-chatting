@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 import { LanguagesSelect } from '@components/LanguagesSelect/LanguagesSelect';
 

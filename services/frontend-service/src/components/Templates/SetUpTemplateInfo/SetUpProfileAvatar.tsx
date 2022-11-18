@@ -8,14 +8,14 @@ import { useStore } from 'effector-react';
 import { useFileReader } from '@hooks/useFileReader';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // icons
-import { ImagePlaceholderIcon } from '@library/icons/ImagePlaceholderIcon';
-import { UploadArrowIcon } from '@library/icons/UploadArrow';
-import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
+import { ImagePlaceholderIcon } from 'shared-frontend/icons';
+import { UploadArrowIcon } from 'shared-frontend/icons';
+import { RoundCloseIcon } from 'shared-frontend/icons';
 
 // helpers
 import { CustomImage } from 'shared-frontend/library';

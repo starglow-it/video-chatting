@@ -28,6 +28,7 @@
     inset: 0;
     border: 1px solid rgba($normal-gray-scale, 0.4);
     border-radius: rem(16px);
+    pointer-events: none;
   }
   &:hover {
     &:after {
@@ -36,6 +37,10 @@
     }
     .tableBodyCell {
       background: #FFFFFF;
+
+      &.withAction {
+        cursor: pointer;
+      }
     }
   }
 }

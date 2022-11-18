@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import { Fade } from '@mui/material';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
@@ -26,7 +26,7 @@ const Component = ({
     priceInCents,
     isNeedToShowBusinessInfo = true,
     isPublic,
-    isCommonTemplate
+    isCommonTemplate,
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">

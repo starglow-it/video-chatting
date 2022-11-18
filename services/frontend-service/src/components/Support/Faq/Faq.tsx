@@ -1,14 +1,15 @@
 import React, { memo, useCallback, useState } from 'react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // icons
-import { ArrowIcon } from '@library/icons/ArrowIcon';
+import { ArrowIcon } from 'shared-frontend/icons';
 
 // styles
+import { CustomAccordion } from 'shared-frontend';
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './Faq.module.scss';
 
 enum Accordion {
@@ -31,8 +32,7 @@ const Component = () => {
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.IsItFree}
                 onChange={handleChangeAccordion}
-                nameSpace="static"
-                translation="faq.isItFree.title"
+                label={<Translation nameSpace="static" translation="faq.isItFree.title" />}
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={
@@ -45,8 +45,9 @@ const Component = () => {
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.WillThereBeMoreScenes}
                 onChange={handleChangeAccordion}
-                nameSpace="static"
-                translation="faq.willThereBeMoreScenes.title"
+                label={
+                    <Translation nameSpace="static" translation="faq.willThereBeMoreScenes.title" />
+                }
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={
@@ -62,8 +63,7 @@ const Component = () => {
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.FuturePlans}
                 onChange={handleChangeAccordion}
-                nameSpace="static"
-                translation="faq.futurePlans.title"
+                label={<Translation nameSpace="static" translation="faq.futurePlans.title" />}
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={
@@ -76,8 +76,7 @@ const Component = () => {
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.CanICreateScene}
                 onChange={handleChangeAccordion}
-                nameSpace="static"
-                translation="faq.canICreateScene.title"
+                label={<Translation nameSpace="static" translation="faq.canICreateScene.title" />}
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={

@@ -2,8 +2,8 @@ import React, { memo, useMemo } from 'react';
 import { useStoreMap } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomDivider } from 'shared-frontend/library';
 
 // components
 import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/MeetingUsersListItem';

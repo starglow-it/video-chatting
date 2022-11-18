@@ -109,7 +109,7 @@ const Component = () => {
     );
 
     return (
-        <CustomGrid container className={styles.wrapper} justifyContent="center">
+        <CustomGrid container direction="column" alignItems="center" className={styles.wrapper}>
             <CustomTypography variant="h1">
                 <Translation nameSpace="statistics" translation="common.title" />
             </CustomTypography>

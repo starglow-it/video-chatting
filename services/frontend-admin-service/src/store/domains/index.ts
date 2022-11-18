@@ -5,3 +5,5 @@ export const authDomain = rootDomain.createDomain('authDomain');
 export const statisticsDomain = rootDomain.createDomain('statisticsDomain');
 export const usersDomain = rootDomain.createDomain('usersDomain');
 export const roomsDomain = rootDomain.createDomain('roomsDomain');
+export const dialogsDomain = rootDomain.createDomain('dialogsDomain');
+export const notificationsDomain = rootDomain.createDomain('notificationsDomain');

@@ -19,7 +19,7 @@ export class RoomStatistic {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   })
-  user: UserDocument;
+  author: UserDocument;
 
   @Prop({
     type: mongoose.Schema.Types.Number,

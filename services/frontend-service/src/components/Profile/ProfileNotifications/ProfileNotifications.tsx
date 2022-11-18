@@ -6,11 +6,11 @@ import clsx from 'clsx';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
-import { BellIcon } from '@library/icons/BellIcon';
+import { BellIcon } from 'shared-frontend/icons';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { DashboardNotifications } from '@components/Dashboard/DashboardNotifications/DashboardNotifications';
 

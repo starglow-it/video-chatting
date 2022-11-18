@@ -4,11 +4,10 @@ import { useRouter } from 'next/router';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
+import { CustomGrid , CustomButton , CustomDialog } from 'shared-frontend/library';
 
 // utils
+import { Translation } from '@library/common/Translation/Translation';
 import { formatDate } from '../../../utils/time/formatDate';
 
 // styles
@@ -68,10 +67,9 @@ const Component = () => {
                     options={{ renewTime }}
                 />
                 <CustomButton
+                    label={<Translation nameSpace="common" translation="buttons.upgrade" />}
                     className={styles.button}
                     onClick={handleUpgradeSubscription}
-                    nameSpace="common"
-                    translation="buttons.upgrade"
                 />
             </CustomGrid>
         </CustomDialog>

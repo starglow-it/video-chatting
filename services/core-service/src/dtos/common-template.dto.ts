@@ -79,4 +79,8 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   templateType: 'video' | 'image';
+
+  @Expose()
+  @Transform((data) => data.obj?.userTemplate?.['_id'])
+  userTemplate: string;
 }

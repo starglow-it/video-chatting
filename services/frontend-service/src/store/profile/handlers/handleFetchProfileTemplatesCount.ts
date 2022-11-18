@@ -1,11 +1,15 @@
-import { ErrorState } from "shared-types";
+import { ErrorState } from 'shared-types';
 
-import sendRequestWithCredentials from "../../../helpers/http/sendRequestWithCredentials";
-import { GetProfileTemplatesCountPayload, GetProfileTemplatesCountResponse } from "../types";
-import { profileTemplatesCountUrl } from "../../../utils/urls";
-import {ProfileTemplatesCountState} from "../../types";
+import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
+import { GetProfileTemplatesCountPayload, GetProfileTemplatesCountResponse } from '../types';
+import { profileTemplatesCountUrl } from '../../../utils/urls';
+import { ProfileTemplatesCountState } from '../../types';
 
-export const handleFetchProfileTemplatesCount = async ({ limit, skip, templateType }: GetProfileTemplatesCountPayload): Promise<ProfileTemplatesCountState> => {
+export const handleFetchProfileTemplatesCount = async ({
+    limit,
+    skip,
+    templateType,
+}: GetProfileTemplatesCountPayload): Promise<ProfileTemplatesCountState> => {
     const response = await sendRequestWithCredentials<GetProfileTemplatesCountResponse, ErrorState>(
         profileTemplatesCountUrl({ limit, skip, templateType }),
     );
@@ -13,8 +17,8 @@ export const handleFetchProfileTemplatesCount = async ({ limit, skip, templateTy
     if (response.success) {
         return {
             state: response.result,
-            error: null
-        }
+            error: null,
+        };
     }
 
     if (!response.success) {
@@ -23,13 +27,13 @@ export const handleFetchProfileTemplatesCount = async ({ limit, skip, templateTy
                 count: 0,
             },
             error: response.error,
-        }
+        };
     }
 
     return {
         state: {
             count: 0,
         },
-        error: null
-    }
-}
+        error: null,
+    };
+};

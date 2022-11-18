@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
@@ -16,8 +16,8 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { UserVideoStubProps } from '@components/TemplateManagement/EditAttendeesPosition/UserVideoStub/types';
 
 // icons
-import { PersonIcon } from '@library/icons/PersonIcon';
-import { MicIcon } from '@library/icons/MicIcon';
+import { PersonIcon } from 'shared-frontend/icons';
+import { MicIcon } from 'shared-frontend/icons';
 
 // store
 import { $windowSizeStore } from '../../../../store';

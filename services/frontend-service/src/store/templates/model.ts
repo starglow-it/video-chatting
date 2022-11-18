@@ -1,4 +1,4 @@
-import {ICommonTemplate, ICommonUser, QueryParams} from 'shared-types';
+import { ICommonTemplate, ICommonUser, QueryParams } from 'shared-types';
 import { EntityList, UserTemplate } from '../types';
 import { templatesDomain } from './domain/model';
 import {
@@ -11,7 +11,8 @@ import {
     EditUserTemplatePayload,
     EditUserTemplateResponse,
     GetEditingTemplatePayload,
-    GetEditingTemplateResponse, GetUserTemplateByIdPayload,
+    GetEditingTemplateResponse,
+    GetUserTemplateByIdPayload,
     GetUserTemplatePayload,
     PurchaseTemplatePayload,
     SendScheduleInvitePayload,
@@ -62,7 +63,7 @@ export const setReplaceTemplateIdEvent = templatesDomain.event<string | undefine
 
 // effect
 export const getTemplatesFx = templatesDomain.effect<
-    QueryParams & { userId: ICommonUser["id"] },
+    QueryParams & { userId: ICommonUser['id'] },
     EntityList<ICommonTemplate> | null | undefined,
     void
 >('getTemplatesFx');

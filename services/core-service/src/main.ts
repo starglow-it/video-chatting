@@ -14,6 +14,7 @@ import { SeederService } from './seeder/seeder.service';
 // controllers
 import { UsersController } from './modules/users/users.controller';
 import { MonetizationStatisticController } from './modules/monetization-statistic/monetization-statistic.controller';
+import { DashboardNotificationsController } from './modules/dashboard-notifications/dashboard-notifications.controller';
 
 async function bootstrap() {
   const appContext = await NestFactory.createApplicationContext(AppModule);
@@ -22,6 +23,9 @@ async function bootstrap() {
 
   const seeder = appContext.get(SeederService);
   const usersController = appContext.get(UsersController);
+  const dashboardNotificationsController = appContext.get(
+    DashboardNotificationsController,
+  );
   const monetizationController = appContext.get(
     MonetizationStatisticController,
   );
@@ -54,6 +58,7 @@ async function bootstrap() {
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
+  dashboardNotificationsController.deleteDashboardNotifications();
   return;
 }
 

@@ -2,11 +2,11 @@ import React, { memo } from 'react';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // icons
-import { DeleteIcon } from '@library/icons/DeleteIcon';
+import { DeleteIcon } from 'shared-frontend/icons';
 
 // store
 import { appDialogsApi } from '../../../store';

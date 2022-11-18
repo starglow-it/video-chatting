@@ -3,12 +3,12 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomDivider } from 'shared-frontend/library';
 import { TagItem } from '@library/common/TagItem/TagItem';
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // components
@@ -19,9 +19,10 @@ import { ParticipantPosition } from '@containers/CreateRoomContainer/types';
 import { TemplatePreviewProps } from '@components/TemplateManagement/TemplatePreview/types';
 
 // icons
-import { ArrowLeftIcon } from '@library/icons/ArrowLeftIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons';
 
 // store
+import { Translation } from '@library/common/Translation/Translation';
 import { $windowSizeStore } from '../../../store';
 
 // const
@@ -113,8 +114,7 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
                     onAction={onPreviousStep}
                 />
                 <CustomButton
-                    nameSpace="createRoom"
-                    translation="actions.submit"
+                    label={<Translation nameSpace="createRoom" translation="actions.submit" />}
                     onClick={onSubmit}
                     className={styles.button}
                 />

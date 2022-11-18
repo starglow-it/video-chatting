@@ -8,10 +8,9 @@ import { useTemplateNotification } from '@hooks/useTemplateNotification';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomChip } from '@library/custom/CustomChip/CustomChip';
+import { CustomBox, CustomChip } from 'shared-frontend/library';
 
 // components
 import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
@@ -30,7 +29,7 @@ import { ReplaceTemplateDialog } from '@components/Dialogs/ReplaceTemplateDialog
 import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExpiredDialog';
 
 // icons
-import { PlusIcon } from '@library/icons/PlusIcon';
+import { PlusIcon } from 'shared-frontend/icons';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
@@ -38,6 +37,7 @@ import { CustomImage } from 'shared-frontend/library';
 // stores
 import { useLocalization } from '@hooks/useTranslation';
 import { ICommonTemplate } from 'shared-types';
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $isBusinessSubscription,
     $isProfessionalSubscription,
@@ -305,8 +305,11 @@ const Component = () => {
                     </CustomGrid>
                     <CustomChip
                         active
-                        nameSpace="templates"
-                        translation="createRoom"
+                        label={
+                            <CustomTypography>
+                                <Translation nameSpace="templates" translation="createRoom" />
+                            </CustomTypography>
+                        }
                         size="medium"
                         onClick={handleCreateRoom}
                         icon={<PlusIcon width="24px" height="24px" />}
@@ -347,8 +350,11 @@ const Component = () => {
                 <ConditionalRender condition={!isThereProfileTemplates}>
                     <CustomChip
                         active
-                        nameSpace="templates"
-                        translation="createRoom"
+                        label={
+                            <CustomTypography>
+                                <Translation nameSpace="templates" translation="createRoom" />
+                            </CustomTypography>
+                        }
                         size="medium"
                         onClick={handleCreateRoom}
                         icon={<PlusIcon width="24px" height="24px" />}

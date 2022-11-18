@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Fade } from '@mui/material';
+import { Fade, Typography } from '@mui/material';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
@@ -81,15 +81,17 @@ const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => 
                     <CustomButton
                         onClick={handleEnterWaitingRoomTemplate}
                         className={styles.button}
-                        nameSpace="templates"
-                        translation="buttons.startMeeting"
+                        label={
+                            <Typography nameSpace="templates" translation="buttons.startMeeting" />
+                        }
                     />
                     <CustomButton
                         onClick={handlePreviewTemplate}
                         className={styles.button}
                         variant="custom-transparent"
-                        nameSpace="templates"
-                        translation="buttons.previewSpace"
+                        label={
+                            <Typography nameSpace="templates" translation="buttons.previewSpace" />
+                        }
                     />
                 </CustomGrid>
             </Fade>

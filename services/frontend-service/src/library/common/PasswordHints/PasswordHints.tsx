@@ -4,12 +4,12 @@ import React, { memo, useMemo } from 'react';
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 
 // components
-import { ErrorIcon } from '@library/icons/ErrorIcon';
-import { SmallCheckIcon } from '@library/icons/SmallCheckIcon';
+import { ErrorIcon } from 'shared-frontend/icons';
+import { SmallCheckIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // styles
 import styles from './PasswordHints.module.scss';

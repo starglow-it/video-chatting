@@ -22,7 +22,10 @@ export type UpdateTemplatePayload = {
     data: Partial<UserTemplate>;
 };
 export type GetProfileTemplatesPayload = QueryParams & { userId: string };
-export type GetProfileTemplatesCountPayload = QueryParams & { userId: string; templateType?: string; };
+export type GetProfileTemplatesCountPayload = QueryParams & {
+    userId: string;
+    templateType?: string;
+};
 export type DeleteProfileTemplatesPayload = { templateId: UserTemplate['id'] };
 
 export type CheckResetPasswordLinkResponse = { isUserConfirmed: boolean; error?: ErrorState };

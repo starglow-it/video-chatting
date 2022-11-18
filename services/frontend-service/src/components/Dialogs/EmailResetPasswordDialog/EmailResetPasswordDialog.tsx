@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -9,14 +9,15 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useCountDown } from '@hooks/useCountDown';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
+import { CustomDialog } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 
 // stores
 import { CustomImage } from 'shared-frontend/library';
+import { Translation } from '@library/common/Translation/Translation';
 import { sendResetPasswordLinkFx, $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
@@ -167,8 +168,12 @@ const Component = () => {
                                 />
                                 <CustomButton
                                     type="submit"
-                                    nameSpace="common"
-                                    translation="reset.sendLink"
+                                    label={
+                                        <Translation
+                                            nameSpace="common"
+                                            translation="reset.sendLink"
+                                        />
+                                    }
                                 />
                             </CustomGrid>
                         </form>

@@ -8,13 +8,14 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { JWT_ACCESS_EXPIRE } from 'shared-const';
 import { NotificationsModule } from '../../services/notifications/notifications.module';
 import { CoreModule } from '../../services/core/core.module';
-import { UserTemplateController } from './user-templates.contoller';
 import { TemplatesModule } from '../templates/templates.module';
 import { UploadModule } from '../upload/upload.module';
+import {PaymentsModule} from "../payments/payments.module";
 
 @Module({
   imports: [
     PassportModule,
+    PaymentsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],
@@ -30,7 +31,7 @@ import { UploadModule } from '../upload/upload.module';
     TemplatesModule,
     UploadModule,
   ],
-  controllers: [UsersController, UserTemplateController],
+  controllers: [UsersController],
   providers: [UsersService],
 })
 export class UsersModule {}

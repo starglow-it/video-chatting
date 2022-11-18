@@ -1,10 +1,11 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {forwardRef, memo, useCallback, useEffect, useMemo, useState} from 'react';
 import clsx from 'clsx';
 
 // icons
-import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
+import { RoundArrowIcon } from 'shared-frontend/icons';
 
 // time utils
+import { CustomGrid } from 'shared-frontend/library';
 import { formatDate } from '../../../utils/time/formatDate';
 import { getNextMonth } from '../../../utils/time/getNextMonth';
 import { getCalendarMonthData } from '../../../utils/time/getCalendarMonthData';
@@ -17,7 +18,6 @@ import { getPreviousMonth } from '../../../utils/time/getPreviousMonth';
 import { getDaysOfWeek } from '../../../utils/time/getDaysOfWeek';
 
 // custom
-import { CustomGrid } from '../CustomGrid/CustomGrid';
 import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 // stores
@@ -36,7 +36,7 @@ const Component = ({
     className,
     onDateSelected,
     blockedDate,
-}: CustomDatePickerProps) => {
+}: CustomDatePickerProps, ref) => {
     const [selectedDate, setSelectedDate] = useState<Date>(selected || new Date());
     const [currentMonthDate, setCurrentMonth] = useState<Date>(new Date());
 
@@ -162,6 +162,7 @@ const Component = ({
 
     return (
         <CustomGrid
+            ref={ref}
             container
             gap={4.75}
             alignContent="flex-start"
@@ -196,4 +197,4 @@ const Component = ({
     );
 };
 
-export const CustomDatePicker = memo<CustomDatePickerProps>(Component);
+export const CustomDatePicker = memo<CustomDatePickerProps>(forwardRef(Component));

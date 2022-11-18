@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import {Expose, Transform, Type} from 'class-transformer';
 import {
   IRoomsRatingStatistic,
   ICommonTemplate,
@@ -9,6 +9,10 @@ import { CommonUserDTO } from './common-user.dto';
 import { CommonTemplateDTO } from './common-template.dto';
 
 export class RoomRatingStatisticDTO implements IRoomsRatingStatistic {
+  @Expose()
+  @Transform((data) => data.obj['_id'])
+  id: string;
+
   @Expose()
   @Type(() => CommonTemplateDTO)
   template: ICommonTemplate;

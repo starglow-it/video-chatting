@@ -1,11 +1,10 @@
 import React, { memo } from 'react';
 import { useStore } from 'effector-react';
 
-import { PersonIcon } from '@library/icons/PersonIcon';
+import { PersonIcon } from 'shared-frontend/icons';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid , CustomBox } from 'shared-frontend/library';
 
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
 import styles from './PersonalInfo.module.scss';
 
 // stores

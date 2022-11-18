@@ -6,16 +6,16 @@ import { useStore } from 'effector-react';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { RoundArrowIcon } from '@library/icons/RoundIcons/RoundArrowIcon';
-import { CameraIcon } from '@library/icons/CameraIcon';
-import { MicIcon } from '@library/icons/MicIcon';
+import { RoundArrowIcon } from 'shared-frontend/icons';
+import { CameraIcon } from 'shared-frontend/icons';
+import { MicIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './SelectDevices.module.scss';

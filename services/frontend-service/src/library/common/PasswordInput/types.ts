@@ -3,4 +3,5 @@ export type PasswordInputProps = {
     onCustomBlur?: () => void;
     fieldKey?: string;
     error?: string;
+    errorClassName?: string;
 };

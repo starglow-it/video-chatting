@@ -38,7 +38,9 @@ export class UserTemplatesService {
     private previewImage: Model<PreviewImageDocument>,
   ) {}
 
-  async countUserTemplates(query: FilterQuery<UserTemplateDocument>): Promise<number> {
+  async countUserTemplates(
+    query: FilterQuery<UserTemplateDocument>,
+  ): Promise<number> {
     return this.userTemplate.count(query).exec();
   }
 

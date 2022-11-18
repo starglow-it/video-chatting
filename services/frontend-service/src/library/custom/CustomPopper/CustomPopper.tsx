@@ -3,10 +3,10 @@ import Fade from '@mui/material/Fade';
 import { Popper } from '@mui/material';
 import clsx from 'clsx';
 
+import { CustomBox } from 'shared-frontend/library';
 import styles from './CustomPopper.module.scss';
 
 import { CustomPopperProps } from './types';
-import { CustomBox } from '../CustomBox/CustomBox';
 
 const CustomPopper = memo(
     ({ id, open, anchorEl, children, className, ...rest }: CustomPopperProps) => (

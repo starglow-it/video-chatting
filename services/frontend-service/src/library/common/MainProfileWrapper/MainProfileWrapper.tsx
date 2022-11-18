@@ -1,6 +1,6 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 import { MainContentWrapperProps } from './types';
 

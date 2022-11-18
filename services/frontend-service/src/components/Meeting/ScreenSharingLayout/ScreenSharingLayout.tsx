@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { ScreenSharingVideo } from '@components/Meeting/ScreenSharingVideo/ScreenSharingVideo';

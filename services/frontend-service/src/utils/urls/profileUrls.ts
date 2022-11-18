@@ -1,5 +1,5 @@
 import { ICommonTemplate, QueryParams } from 'shared-types';
-import { HttpMethods } from '../../store/types';
+import { HttpMethods, UserTemplate } from '../../store/types';
 import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
 
 export const baseProfileUrl = `${serverUrl}/${profileScope}`;
@@ -66,6 +66,11 @@ export const postProfileTemplatesUrl = ({ templateId }: { templateId?: string })
 export const deleteProfileTemplatesUrl = ({ templateId }: { templateId?: string }) => ({
     url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Delete,
+});
+
+export const addTemplateToUserUrl = ({ templateId }: { templateId: UserTemplate['id'] }) => ({
+    url: `${baseProfileUrl}/templates/add/${templateId}`,
+    method: HttpMethods.Post,
 });
 
 export const profileEmailUrl = {

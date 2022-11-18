@@ -17,8 +17,9 @@ import {
   UpdateMonetizationStatisticPayload,
   ICommonTemplate,
   GetUserTemplateByIdPayload,
-  IUserTemplate,
+  IUserTemplate, UpdateUserProfileStatisticPayload,
 } from 'shared-types';
+import {firstValueFrom} from "rxjs";
 
 @Injectable()
 export class CoreService {
@@ -88,5 +89,15 @@ export class CoreService {
     };
 
     return this.client.send(pattern, payload).toPromise();
+  }
+
+  async updateUserProfileStatistic(
+      payload: UpdateUserProfileStatisticPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: StatisticBrokerPatterns.UpdateUserProfileStatistic,
+    };
+
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 }

@@ -229,17 +229,28 @@ export class MeetingsGateway
       const userTemplate = await this.coreService.findMeetingTemplateById({
         id: meeting.templateId,
       });
+
       const commonTemplate =
         await this.coreService.findCommonTemplateByTemplateId({
           templateId: userTemplate.templateId,
         });
 
+      const timeToAdd = Date.now() - user.joinedAt;
+
       await this.coreService.updateRoomRatingStatistic({
         templateId: commonTemplate.id,
         userId: commonTemplate?.author,
         ratingKey: 'minutes',
-        value: Date.now() - user.joinedAt,
+        value: timeToAdd,
       });
+
+      if (user.profileId) {
+        await this.coreService.updateUserProfileStatistic({
+          userId: user.profileId,
+          statisticKey: 'minutesSpent',
+          value: timeToAdd,
+        });
+      }
 
       if (meeting?.sharingUserId === user?.id) {
         meeting.sharingUserId = null;
@@ -1070,9 +1081,14 @@ export class MeetingsGateway
           0,
         );
 
+        const commonTemplate =
+            await this.coreService.findCommonTemplateByTemplateId({
+              templateId: template.templateId,
+            });
+
         this.coreService.updateRoomRatingStatistic({
-          templateId: meeting.templateId,
-          userId: meeting.owner.profileId,
+          templateId: commonTemplate.id,
+          userId: commonTemplate.author,
           ratingKey: 'minutes',
           value: overallMinutesSpent,
         });
@@ -1174,16 +1190,16 @@ export class MeetingsGateway
 
           const isMeetingHost = meeting?.hostUserId?._id === plainUser.id;
 
-          const profileUser = await this.coreService.findUserById({
+          const hostProfileUser = await this.coreService.findUserById({
             userId: template.user.id,
           });
 
-          if (profileUser.subscriptionPlanKey !== 'Business') {
+          if (hostProfileUser.subscriptionPlanKey !== 'Business') {
             await this.meetingsCommonService.handleTimeLimit({
               session,
-              profileId: profileUser.id,
+              profileId: hostProfileUser.id,
               meetingId: meeting.id,
-              maxProfileTime: profileUser.maxMeetingTime,
+              maxProfileTime: hostProfileUser.maxMeetingTime,
               meetingUserId: plainUser.id,
             });
           }
@@ -1198,11 +1214,21 @@ export class MeetingsGateway
               templateId: template.templateId,
             });
 
+          const timeToAdd = Date.now() - user.joinedAt;
+
           await this.coreService.updateRoomRatingStatistic({
             templateId: commonTemplate.id,
             ratingKey: 'minutes',
-            value: Date.now() - user.joinedAt,
+            value: timeToAdd,
           });
+
+          if (user.profileId) {
+            await this.coreService.updateUserProfileStatistic({
+              userId: user.profileId,
+              statisticKey: 'minutesSpent',
+              value: timeToAdd,
+            });
+          }
 
           if (activeParticipants === 1) {
             await this.meetingsCommonService.handleClearMeetingData({

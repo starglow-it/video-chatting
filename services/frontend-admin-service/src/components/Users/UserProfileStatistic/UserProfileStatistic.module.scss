@@ -1,0 +1,16 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.title {
+  padding: 0 0 8px 0;
+}
+
+.personIcon {
+  color: $primary-black;
+  margin: rem(0 6px 0 0);
+}
+
+.loader {
+  margin: rem(20px);
+}
+

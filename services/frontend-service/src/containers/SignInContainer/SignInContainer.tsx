@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
@@ -9,10 +9,10 @@ import { useMediaQuery } from '@mui/material';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 // common
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
@@ -28,6 +28,8 @@ import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPassword
 import { CustomImage } from 'shared-frontend/library';
 
 // styles
+import { Translation } from '@library/common/Translation/Translation';
+import { useRouter } from 'next/router';
 import styles from './SignInContainer.module.scss';
 
 // stores
@@ -35,6 +37,8 @@ import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store';
 
 // types
 import { LoginUserParams } from '../../store/types';
+
+import {dashboardRoute} from "../../const/client-routes";
 
 // validations
 import { emailSchema } from '../../validation/users/email';
@@ -46,6 +50,8 @@ const validationSchema = yup.object({
 });
 
 const Component = () => {
+    const router = useRouter();
+
     const authState = useStore($authStore);
 
     const resolver = useYupValidationResolver<{ email: string; password: string }>(
@@ -74,6 +80,12 @@ const Component = () => {
     });
 
     const isCredentialsEntered = password && email;
+
+    useEffect(() => {
+        if (authState.isAuthenticated) {
+            router.push(dashboardRoute);
+        }
+    }, [authState.isAuthenticated]);
 
     const onSubmit = useCallback(
         handleSubmit((data: LoginUserParams) => {
@@ -172,9 +184,8 @@ const Component = () => {
                         <CustomButton
                             className={styles.signInBtn}
                             disabled={!isCredentialsEntered}
+                            label={<Translation nameSpace="common" translation="buttons.login" />}
                             type="submit"
-                            nameSpace="common"
-                            translation="buttons.login"
                         />
                     </form>
                 </FormProvider>

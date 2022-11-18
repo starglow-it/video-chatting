@@ -125,6 +125,34 @@ export class MeetingsController {
     }
   }
 
+  @Get('templates/:templateId')
+  @ApiOperation({ summary: 'Get Meeting Template' })
+  @ApiOkResponse({
+    type: CommonInstanceMeetingRestDTO,
+    description: 'Get Meeting Template Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getMeetingTemplate(@Param('templateId') templateId: string) {
+    try {
+      const meeting = await this.templatesService.getUserTemplate({ id: templateId });
+
+      return {
+        success: true,
+        result: meeting,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get meeting`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
   @Post('/token')
   @ApiOperation({ summary: 'Get media server token' })
   @ApiOkResponse({

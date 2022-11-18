@@ -11,7 +11,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
-import {UserTemplatesModule} from "./modules/user-templates/user-templates.module";
+import { UserTemplatesModule } from './modules/user-templates/user-templates.module';
 
 @Module({
   imports: [

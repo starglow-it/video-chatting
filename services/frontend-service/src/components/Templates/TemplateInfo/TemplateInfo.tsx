@@ -2,16 +2,16 @@ import React, { memo } from 'react';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { LockIcon } from '@library/icons/LockIcon';
-import { PeopleIcon } from '@library/icons/PeopleIcon';
+import { LockIcon } from 'shared-frontend/icons';
+import { PeopleIcon } from 'shared-frontend/icons';
 
 // types
 import { PropsWithClassName } from 'shared-frontend/types';
-import {TemplateInfoProps} from "@components/Templates/TemplateInfo/types";
+import { TemplateInfoProps } from '@components/Templates/TemplateInfo/types';
 
 // styles
 import styles from './TemplateInfo.module.scss';
@@ -29,7 +29,7 @@ const Component = ({
                 <ConditionalRender condition={Boolean(isPublic)}>
                     <PeopleIcon width="20px" height="20px" className={styles.icon} />
                 </ConditionalRender>
-                <ConditionalRender condition={!Boolean(isPublic) && !isCommonTemplate}>
+                <ConditionalRender condition={!isPublic && !isCommonTemplate}>
                     <LockIcon width="20px" height="20px" className={styles.icon} />
                 </ConditionalRender>
                 <CustomTypography

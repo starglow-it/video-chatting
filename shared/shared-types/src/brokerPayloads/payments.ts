@@ -48,3 +48,7 @@ export type GetProductCheckoutSessionPayload = {
 export type GetStripeChargesPayload = {
   time: number;
 };
+
+export type CancelUserSubscriptionPayload = {
+  subscriptionId: ICommonUser["id"];
+};

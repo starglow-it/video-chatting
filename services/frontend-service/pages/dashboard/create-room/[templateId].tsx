@@ -1,12 +1,9 @@
 import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
-import dynamic from "next/dynamic";
-
-const CreateRoomContainer = dynamic(() => import('@containers/CreateRoomContainer/CreateRoomContainer'), {
-    ssr: false,
-});
 
 import { pageLoaded } from 'src/store';
+
+import { CreateRoomContainer } from '@containers/CreateRoomContainer/CreateRoomContainer';
 
 const CreateRoomPage: NextPage = (): JSX.Element => <CreateRoomContainer />;
 

@@ -36,6 +36,7 @@ import { executePromiseQueue } from '../../utils/executePromiseQueue';
 // payloads
 import {
   CancelPaymentIntentPayload,
+  CancelUserSubscriptionPayload,
   CreatePaymentIntentPayload,
   CreateStripeAccountLinkPayload,
   CreateStripeExpressAccountPayload,
@@ -472,6 +473,8 @@ export class PaymentsController {
         ctx: payload,
       });
 
+      const environment = await this.configService.get('environment');
+
       const product = await this.paymentService.getStripeProduct(
         payload.productId,
       );
@@ -485,7 +488,11 @@ export class PaymentsController {
         meetingToken: payload.meetingToken,
         customerEmail: payload.customerEmail,
         customer: payload.customer,
-        trialPeriodDays: payload.withTrial ? plan.trialPeriodDays : undefined,
+        trialPeriodDays: payload.withTrial
+          ? ['production'].includes(environment)
+            ? plan.trialPeriodDays
+            : plan.testTrialPeriodDays
+          : undefined,
       });
     } catch (err) {
       throw new RpcException({
@@ -581,6 +588,13 @@ export class PaymentsController {
     const templatesList = await this.paymentService.getStripeTemplates();
 
     return templatesList.filter((template) => template.name === data.name)[0];
+  }
+
+  @MessagePattern({
+    cmd: PaymentsBrokerPatterns.CancelUserSubscription,
+  })
+  async cancelUserSubscription(@Payload() payload: CancelUserSubscriptionPayload) {
+    return this.paymentService.cancelStripeSubscription(payload);
   }
 
   @MessagePattern({
@@ -756,43 +770,45 @@ export class PaymentsController {
   }
 
   async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-    const subscription = await this.paymentService.getSubscription(
-      session.subscription,
-    );
+    if (session.subscription) {
+      const subscription = await this.paymentService.getSubscription(
+          session.subscription,
+      );
 
-    const product = await this.paymentService.getStripeProduct(
-      // @ts-ignore
-      subscription.plan.product,
-    );
+      const product = await this.paymentService.getStripeProduct(
+          // @ts-ignore
+          subscription.plan.product,
+      );
 
-    const plan = plans[product.name || 'House'];
+      const plan = plans[product.name || 'House'];
 
-    await this.coreService.updateUser({
-      query: { stripeSessionId: session.id },
-      data: {
-        stripeSubscriptionId: session.subscription as string,
-        subscriptionPlanKey: product.name,
-        maxTemplatesNumber: plan.features.templatesLimit,
-        maxMeetingTime: plan.features.timeLimit,
-        isProfessionalTrialAvailable: false,
-      },
-    });
+      await this.coreService.updateUser({
+        query: { stripeSessionId: session.id },
+        data: {
+          stripeSubscriptionId: session.subscription as string,
+          subscriptionPlanKey: product.name,
+          maxTemplatesNumber: plan.features.templatesLimit,
+          maxMeetingTime: plan.features.timeLimit,
+          isProfessionalTrialAvailable: false,
+        },
+      });
 
-    if (
-      subscription.status === 'trialing' &&
-      !subscription.cancel_at_period_end
-    ) {
-      await this.paymentService.updateSubscription({
-        subscriptionId: subscription.id,
-        options: { cancelAtPeriodEnd: true },
+      if (
+          subscription.status === 'trialing' &&
+          !subscription.cancel_at_period_end
+      ) {
+        await this.paymentService.updateSubscription({
+          subscriptionId: subscription.id,
+          options: { cancelAtPeriodEnd: true },
+        });
+      }
+
+      await this.coreService.updateMonetizationStatistic({
+        period: MonetizationStatisticPeriods.AllTime,
+        type: MonetizationStatisticTypes.Subscriptions,
+        value: session.amount_total,
       });
     }
-
-    await this.coreService.updateMonetizationStatistic({
-      period: MonetizationStatisticPeriods.AllTime,
-      type: MonetizationStatisticTypes.Subscriptions,
-      value: session.amount_total,
-    });
   }
 
   async handleChargeSuccess(charge: Stripe.Charge) {
@@ -851,6 +867,12 @@ export class PaymentsController {
         type: MonetizationStatisticTypes.RoomTransactions,
         value: charge.amount,
       });
+
+      await this.coreService.updateUserProfileStatistic({
+        userId: charge.transfer_data.destination as string,
+        statisticKey: "moneyEarned",
+        value: charge.amount,
+      });
     }
   }
 
@@ -858,6 +880,7 @@ export class PaymentsController {
     const user = await this.coreService.findUser({
       stripeSubscriptionId: subscription.id,
     });
+    const frontendUrl = await this.configService.get('frontendUrl');
 
     this.notificationsService.sendEmail({
       template: {
@@ -866,6 +889,10 @@ export class PaymentsController {
           {
             name: 'USERNAME',
             content: user.fullName,
+          },
+          {
+            name: 'PROFILELINK',
+            content: `${frontendUrl}/dashboard/profile#subscriptions`,
           },
         ],
       },

@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
+import { UserRoles } from 'shared-types';
 
-type TokenDataDto = { userId: string; exp: number; role: 'admin' | 'user' };
+type TokenDataDto = { userId: string; exp: number; role: UserRoles };
 
 @Injectable()
 export class JwtAdminAuthGuard implements CanActivate {
@@ -48,7 +49,7 @@ export class JwtAdminAuthGuard implements CanActivate {
       throw new UnauthorizedException('Token has expired');
     }
 
-    if (tokenData.role !== 'admin') {
+    if (tokenData.role !== UserRoles.Admin) {
       throw new UnauthorizedException();
     }
 

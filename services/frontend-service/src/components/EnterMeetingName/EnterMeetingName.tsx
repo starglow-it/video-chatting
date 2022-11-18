@@ -9,14 +9,15 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 
 // validation
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { Translation } from '@library/common/Translation/Translation';
 import { fullNameSchema } from '../../validation/users/fullName';
 
 // stores
@@ -135,8 +136,7 @@ const Component = () => {
                         disabled={!isSocketConnected}
                         className={clsx(styles.button, { [styles.mobile]: isMobile })}
                         type="submit"
-                        nameSpace="meeting"
-                        translation="buttons.continue"
+                        label={<Translation nameSpace="meeting" translation="buttons.continue" />}
                     />
                 </form>
             </CustomGrid>

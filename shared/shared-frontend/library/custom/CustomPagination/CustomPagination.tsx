@@ -30,7 +30,7 @@ const Component = ({
         const indexArray = new Array(maxPages).fill(0).map((number, index) => index + 1);
 
         const slicedIndexArray = [
-            (page > 5 ? indexArray.slice(0, 2) : []),
+            (page > 5 ? indexArray.slice(0, 2) : indexArray),
             (page >= maxPages - 5 ? [] : page <= 5 ? indexArray.slice(0, 7) : indexArray.slice(page - 3, page)),
             (page <= 5 ? [] : page >= maxPages - 5 ? indexArray.slice(maxPages - 7, maxPages) : indexArray.slice(page, page + 2)),
             (page < maxPages - 5 ? indexArray.slice(maxPages - 2, maxPages) : []),
@@ -42,7 +42,7 @@ const Component = ({
 
         return arrayWithSeparator.map(number => {
             const handleChangePage = () => {
-                onPageChange(number);
+                onPageChange?.(number);
             }
 
             const isPageActive = page === number;

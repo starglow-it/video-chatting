@@ -5,12 +5,12 @@ import { MenuItem } from '@mui/material';
 import { useStore } from 'effector-react';
 
 // components
-import { PlusAddIcon } from '@library/icons/PlusAddIcon';
+import { PlusAddIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // components

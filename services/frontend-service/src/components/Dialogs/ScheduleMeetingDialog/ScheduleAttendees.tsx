@@ -7,14 +7,14 @@ import clsx from 'clsx';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // icons
-import { PlusAddIcon } from '@library/icons/PlusAddIcon';
-import { RoundCloseIcon } from '@library/icons/RoundIcons/RoundCloseIcon';
+import { PlusAddIcon } from 'shared-frontend/icons';
+import { RoundCloseIcon } from 'shared-frontend/icons';
 
 // types
 import { PropsWithClassName } from 'shared-frontend/types';

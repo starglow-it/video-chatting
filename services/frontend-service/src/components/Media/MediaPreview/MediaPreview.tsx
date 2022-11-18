@@ -6,7 +6,7 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
@@ -14,8 +14,7 @@ import { VolumeAnalyzer } from '@components/Media/VolumeAnalyzer/VolumeAnalyzer'
 
 // library
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { MicIcon } from '@library/icons/MicIcon';
-import { CameraIcon } from '@library/icons/CameraIcon';
+import { MicIcon , CameraIcon } from 'shared-frontend/icons';
 
 // types
 import { MediaPreviewProps } from './types';

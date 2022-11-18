@@ -6,7 +6,18 @@
     "companyName": "Company name",
     "email": "Email",
     "fullName": "Personal name",
-    "stripePlanKey": "Subscription",
+    "subscriptionPlanKey": "Subscription",
     "status": "Status"
+  },
+  "dialogs": {
+    "blockUser": {
+      "title": "Block"
+    },
+    "unblockUser": {
+      "title": "Unblock"
+    },
+    "deleteUser": {
+      "title": "Delete"
+    }
   }
 }

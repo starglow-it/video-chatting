@@ -2,12 +2,13 @@ import React, { memo, useCallback } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 import { $meetingUsersStore, $userToKick, removeUserSocketEvent } from '../../../store/roomStores';
 
@@ -59,14 +60,12 @@ const Component = () => {
                         variant="custom-cancel"
                         className={styles.button}
                         onClick={handleClose}
-                        nameSpace="meeting"
-                        translation="buttons.cancel"
+                        label={<Translation nameSpace="meeting" translation="buttons.cancel" />}
                     />
                     <CustomButton
                         className={styles.button}
                         onClick={handleKickUser}
-                        nameSpace="meeting"
-                        translation="buttons.kick"
+                        label={<Translation nameSpace="meeting" translation="buttons.kick" />}
                     />
                 </CustomGrid>
             </CustomGrid>

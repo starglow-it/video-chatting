@@ -5,12 +5,17 @@ import {
   IProfileAvatar,
 } from './common';
 
-export interface ICommonUser<Role = 'user'> {
+export enum UserRoles {
+  Admin = 'admin',
+  User = 'user',
+}
+
+export interface ICommonUser {
   id: string;
   email: string;
   country: string;
   registerTemplate: string;
-  role: Role;
+  role: UserRoles;
   password: string;
   isConfirmed: boolean;
   fullName: string;
@@ -40,7 +45,7 @@ export interface ICommonUser<Role = 'user'> {
   maxMeetingTime: number;
   renewSubscriptionTimestampInSeconds: number;
   isProfessionalTrialAvailable: boolean;
-  stripePlanKey: string;
+  isBlocked: boolean;
 }
 
 export interface IUpdateProfile {
@@ -67,6 +72,7 @@ export interface IUpdateProfile {
   wasSuccessNotificationShown?: boolean;
   renewSubscriptionTimestampInSeconds?: number;
   isResetPasswordActive?: boolean;
+  registerTemplate?: string;
   socials: {
     youtube?: string;
     facebook?: string;
@@ -87,4 +93,11 @@ export interface ITemplateUser {
   id: string;
   profileAvatar: IProfileAvatar;
   maxMeetingTime: ICommonUser['maxMeetingTime'];
+}
+
+export interface ICommonUserStatistic {
+  user: ICommonUser;
+  minutesSpent: number;
+  roomsUsed: number;
+  moneyEarned: number;
 }

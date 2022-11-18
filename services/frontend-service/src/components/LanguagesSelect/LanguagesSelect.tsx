@@ -4,11 +4,11 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { MenuItem } from '@mui/material';
 
 // library
-import { PlusAddIcon } from '@library/icons/PlusAddIcon';
+import { PlusAddIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // components

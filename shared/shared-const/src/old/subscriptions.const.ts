@@ -21,6 +21,7 @@ const professionalSubscription = {
     comissionFee: 0,
   },
   trialPeriodDays: 7,
+  testTrialPeriodDays: 1,
 };
 
 const businessSubscription = {

@@ -6,12 +6,11 @@ import { useFormContext } from 'react-hook-form';
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomButton, CustomBox , CustomGrid } from 'shared-frontend/library';
 
 // components
 import { useStore } from 'effector-react';
+import { Translation } from '@library/common/Translation/Translation';
 import { SetUpCompanyName } from './SetUpCompanyName';
 import { SetUpFullName } from './SetUpFullName';
 import { SetUpProfileAvatar } from './SetUpProfileAvatar';
@@ -97,15 +96,13 @@ const SetUpTemplateInfo = memo(() => {
                 <CustomButton
                     className={clsx(styles.button, { [styles.hide]: isTheLastStep })}
                     onClick={handleNextStep}
-                    nameSpace="templates"
-                    translation="buttons.continue"
+                    label={<Translation nameSpace="templates" translation="buttons.continue" />}
                 />
                 <CustomButton
                     type="submit"
                     disabled={isUpdatePending}
                     className={clsx(styles.button, { [styles.hide]: !isTheLastStep })}
-                    nameSpace="templates"
-                    translation="buttons.done"
+                    label={<Translation nameSpace="templates" translation="buttons.done" />}
                 />
             </CustomBox>
         </CustomPaper>

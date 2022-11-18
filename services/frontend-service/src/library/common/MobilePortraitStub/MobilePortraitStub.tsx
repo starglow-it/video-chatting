@@ -6,11 +6,11 @@ import { Portal } from '@mui/base';
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { PortraitIcon } from '@library/icons/PortraitIcon';
+import { PortraitIcon } from 'shared-frontend/icons';
 
 // stores
 import { $isPortraitLayout } from '../../../store';

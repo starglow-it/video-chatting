@@ -24,18 +24,18 @@ export const wrapMsgPayloadWithCatch =
                     // eslint-disable-next-line no-await-in-loop
                     const r = await h({ payload });
 
-                        if (r) {
-                            const string = JSON.stringify(r);
+                    if (r) {
+                        const string = JSON.stringify(r);
 
-                            const buffer = Buffer.from(string);
+                        const buffer = Buffer.from(string);
 
-                            channel.sendToQueue(
-                                message.properties.replyTo,
-                                buffer,
-                                {
-                                    correlationId: message.properties.correlationId,
-                                },
-                            );
+                        channel.sendToQueue(
+                            message.properties.replyTo,
+                            buffer,
+                            {
+                                correlationId: message.properties.correlationId,
+                            }
+                        );
 
                         if (r?.acked) {
                             return;

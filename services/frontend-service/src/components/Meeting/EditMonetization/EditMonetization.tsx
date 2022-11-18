@@ -5,13 +5,13 @@ import { Fade, InputBase } from '@mui/material';
 
 // components
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
-import { MonetizationIcon } from '@library/icons/MonetizationIcon';
+import { MonetizationIcon } from 'shared-frontend/icons';
 import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomDivider } from '@library/custom/CustomDivider/CustomDivider';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library';
+import { CustomDivider } from 'shared-frontend/library';
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
 
 // styles

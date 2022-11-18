@@ -131,11 +131,11 @@ export class ScalingService {
       const stopPromises = meetingInstances.map(async (instance) => {
         this.logger.debug(`terminate instance - ${instance?.serverIp}`);
 
+        await this.vultrService.terminateInstance(instance.instanceId);
+
         await this.coreService.deleteMeetingInstance({
           id: instance.id,
         });
-
-        await this.vultrService.terminateInstance(instance.instanceId);
       });
 
       await Promise.all(stopPromises);
@@ -151,14 +151,10 @@ export class ScalingService {
         owner: null,
       });
 
-      console.log(freeServers.map((server) => server.serverIp));
-
       const freePendingServers = await this.coreService.getMeetingInstances({
         serverStatus: MeetingInstanceServerStatus.Pending,
         owner: null,
       });
-
-      console.log(freePendingServers.map((server) => server.serverIp));
 
       this.logger.debug(
         `Max number of free instances: ${this.numberOfActiveServers}`,

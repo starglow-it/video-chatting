@@ -10,14 +10,14 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // icons
-import { PeopleIcon } from '@library/icons/PeopleIcon';
-import { NotesIcon } from '@library/icons/NotesIcon';
-import { MonetizationIcon } from '@library/icons/MonetizationIcon';
-import { CloseIcon } from '@library/icons/CloseIcon';
+import { PeopleIcon } from 'shared-frontend/icons';
+import { NotesIcon } from 'shared-frontend/icons';
+import { MonetizationIcon } from 'shared-frontend/icons';
+import { CloseIcon } from 'shared-frontend/icons';
 
 // components
 import { ActionButton } from '@library/common/ActionButton/ActionButton';

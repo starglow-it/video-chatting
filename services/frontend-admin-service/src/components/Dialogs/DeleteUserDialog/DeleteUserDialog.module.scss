@@ -1,0 +1,14 @@
+@import "../../../styles/rem";
+
+.content {
+  width: rem(473px);
+  height: rem(202px);
+  padding: rem(45px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.buttons {
+  margin: rem(40px 0 0 0);
+}

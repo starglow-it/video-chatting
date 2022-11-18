@@ -19,10 +19,12 @@ importers:
       eslint-config-prettier: 8.5.0
       eslint-plugin-prettier: 4.2.1
       express: 4.18.1
+      match-sorter: 6.3.1
       next: 12.3.1
       next-transpile-modules: 9.0.0
       nx: 14.8.2
       prettier: 2.7.1
+      react-hook-form: 7.37.0
       source-map-support: ^0.5.21
       xregexp: 5.1.1
       yup: 0.32.11
@@ -42,9 +44,11 @@ importers:
       eslint-config-prettier: 8.5.0_eslint@8.25.0
       eslint-plugin-prettier: 4.2.1_hvbqyfstm4urdpm6ffpwfka4e4
       express: 4.18.1
+      match-sorter: 6.3.1
       next: 12.3.1
       next-transpile-modules: 9.0.0
       prettier: 2.7.1
+      react-hook-form: 7.37.0
       source-map-support: 0.5.21
       xregexp: 5.1.1
       yup: 0.32.11
@@ -1292,7 +1296,9 @@ importers:
       bowser: 2.11.0
       clsx: 1.2.1
       effector: 22.3.0
+      match-sorter: 6.3.1
       react: 18.2.0
+      react-hook-form: 7.37.0
       sass: 1.54.9
       shared-const: workspace:*
       shared-types: workspace:*
@@ -1307,7 +1313,9 @@ importers:
       bowser: 2.11.0
       clsx: 1.2.1
       effector: 22.3.0
+      match-sorter: 6.3.1
       react: 18.2.0
+      react-hook-form: 7.37.0_react@18.2.0
       sass: 1.54.9
       shared-const: link:../shared-const
       shared-types: link:../shared-types
@@ -11658,6 +11666,13 @@ packages:
       file-selector: 0.6.0
       prop-types: 15.8.1
       react: 18.2.0
+    dev: false
+
+  /react-hook-form/7.37.0:
+    resolution: {integrity: sha512-6NFTxsnw+EXSpNNvLr5nFMjPdYKRryQcelTHg7zwBB6vAzfPIcZq4AExP4heVlwdzntepQgwiOQW4z7Mr99Lsg==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
     dev: false
 
   /react-hook-form/7.37.0_react@18.2.0:

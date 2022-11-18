@@ -1,7 +1,23 @@
-import { PopulateOptions } from 'mongoose';
+import { FilterQuery, PopulateOptions, UpdateQuery } from 'mongoose';
+import { ITransactionSession } from '../helpers/mongo/withTransaction';
+import { QueryParams } from 'shared-types';
 
 export type CustomPopulateOptions =
   | string
   | string[]
   | PopulateOptions
   | PopulateOptions[];
+
+export type GetModelQuery<Document> = {
+  query: FilterQuery<Document>;
+  session?: ITransactionSession;
+  populatePaths?: CustomPopulateOptions;
+  options?: QueryParams;
+};
+
+export type UpdateModelQuery<Document, Interface> = {
+  query: FilterQuery<Document>;
+  data: UpdateQuery<Interface>;
+  session?: ITransactionSession;
+  options?: QueryParams;
+};

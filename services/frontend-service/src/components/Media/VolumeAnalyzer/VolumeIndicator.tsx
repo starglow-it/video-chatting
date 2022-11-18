@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
 import { alpha } from '@mui/material';
 
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomGrid , CustomBox } from 'shared-frontend/library';
 import styles from './VolumeAnalyzer.module.scss';
 
 const VolumeIndicator = memo(({ opacity }: { opacity: number }) => (

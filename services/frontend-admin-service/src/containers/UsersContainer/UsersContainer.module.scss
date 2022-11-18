@@ -2,9 +2,11 @@
 @import "../../styles/variables";
 
 .wrapper {
+  position: absolute;
   width: rem(960px);
   max-width: 100%;
   margin: rem(85px auto 0);
+  inset: 0;
 }
 
 .paper {
@@ -13,7 +15,6 @@
 }
 
 .headCell {
-  width: min-content;
   &:first-child {
     padding-left: rem(20px);
   }
@@ -22,6 +23,12 @@
 .cell {
   color: $primary-black;
   text-align: left;
+
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
   &:first-child {
     padding-left: rem(20px);
   }
@@ -30,8 +37,21 @@
   padding: rem(4px 10px);
   height: rem(32px);
 }
+
 .search {
   max-width: rem(580px);
   margin: rem(20px 0 28px 0);
   padding: rem(8px);
+}
+
+.noData {
+  margin: auto;
+}
+
+.active {
+  color: $dark-green;
+
+  &.blocked {
+    color: $primary-red;
+  }
 }

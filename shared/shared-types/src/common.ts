@@ -30,7 +30,8 @@ export type QueryParams = {
   skip?: number;
   limit?: number;
   search?: string;
-  sort?: string;
+  sort?: any;
+  direction?: number;
   templateType?: string;
 };
 

@@ -2,13 +2,13 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { useStore } from 'effector-react';
 
 // icons
-import { MonetizationIcon } from '@library/icons/MonetizationIcon';
-import { StripeIcon } from '@library/icons/StripeIcon';
-import { ArrowIcon } from '@library/icons/ArrowIcon';
+import { MonetizationIcon } from 'shared-frontend/icons';
+import { StripeIcon } from 'shared-frontend/icons';
+import { ArrowIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';

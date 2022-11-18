@@ -1,14 +1,15 @@
-import { memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 import Router from 'next/router';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // types
+import { Translation } from '@library/common/Translation/Translation';
 import { AppDialogsEnum } from '../../../store/types';
 
 // stores
@@ -52,15 +53,13 @@ const Component = () => {
                     variant="custom-cancel"
                     className={styles.button}
                     onClick={handleClose}
-                    nameSpace="common"
-                    translation="buttons.cancel"
+                    label={<Translation nameSpace="common" translation="buttons.cancel" />}
                 />
                 <CustomButton
                     variant="custom-danger"
                     className={styles.button}
                     onClick={handleDeleteProfile}
-                    nameSpace="common"
-                    translation="buttons.delete"
+                    label={<Translation nameSpace="common" translation="buttons.delete" />}
                 />
             </CustomGrid>
         </CustomDialog>

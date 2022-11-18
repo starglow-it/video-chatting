@@ -1,4 +1,4 @@
-import React, { useMemo, memo, useEffect } from 'react';
+import React, { useMemo, memo } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -7,20 +7,21 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
-import { ShopIcon } from '@library/icons/ShopIcon';
+import { ShopIcon } from 'shared-frontend/icons';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { SubscriptionPlanCard } from '@components/Profile/SubscriptionPlanCard/SubscriptionPlanCard';
 
 // store
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $isTrial,
     $productsStore,
@@ -28,7 +29,6 @@ import {
     $subscriptionStore,
     getCustomerPortalSessionUrlFx,
     getStripeProductsFx,
-    getSubscriptionWithDataFx,
     startCheckoutSessionForSubscriptionFx,
 } from '../../../store';
 
@@ -55,11 +55,6 @@ const Component = () => {
     const isTrial = useStore($isTrial);
 
     const { translation } = useLocalization('subscriptions');
-
-    useEffect(() => {
-        getStripeProductsFx();
-        getSubscriptionWithDataFx();
-    }, []);
 
     useSubscriptionNotification(profileRoute);
 
@@ -125,10 +120,11 @@ const Component = () => {
 
     const shouldShowManageButton = Boolean(profile.stripeSubscriptionId) && !isTrial;
     const shouldShowNextRenewalDate = Boolean(nextPaymentDate) && !isTrial && !isGetProductsPending;
-    const planTranslation = `${profile.subscriptionPlanKey || 'House'}${isTrial ? ' (Trial)': ''}`;
+    const planTranslation = `${profile.subscriptionPlanKey || 'House'}${isTrial ? ' (Trial)' : ''}`;
 
     return (
         <CustomPaper className={styles.paperWrapper}>
+            <a id="subscriptions"/>
             <CustomGrid container direction="column">
                 <CustomGrid
                     container
@@ -155,12 +151,15 @@ const Component = () => {
                         />
                     </ConditionalRender>
                 </CustomGrid>
-
                 <ConditionalRender condition={shouldShowManageButton}>
                     <CustomButton
                         className={styles.manage}
-                        nameSpace="subscriptions"
-                        translation="subscriptions.manage"
+                        label={
+                            <Translation
+                                nameSpace="subscriptions"
+                                translation="subscriptions.manage"
+                            />
+                        }
                         onClick={handleOpenSubscriptionPortal}
                     />
                 </ConditionalRender>

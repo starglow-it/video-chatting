@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Logger,
+  Param,
   Query,
 } from '@nestjs/common';
 import {
@@ -17,6 +18,8 @@ import {
   RoomRatingStatistics,
   SubscriptionsStatisticsType,
   UserStatistics,
+  ICommonUserStatistic,
+  UserRoles,
 } from 'shared-types';
 
 // services
@@ -47,7 +50,7 @@ export class StatisticsController {
     try {
       const usersCount = await this.coreService.countUsers({
         isConfirmed: true,
-        role: 'user',
+        role: UserRoles.User,
       });
 
       const countryStatistics = await this.coreService.getCountryStatistics({});
@@ -242,6 +245,39 @@ export class StatisticsController {
 
       return {
         result: monetizationStatistic,
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get monetization statistic`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/user/:userId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get User Profile Statistic' })
+  @ApiOkResponse({
+    description: 'User profile statistic retrieved successfully',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getUserProfileStatistic(
+    @Param('userId') userId: string,
+  ): Promise<ResponseSumType<ICommonUserStatistic>> {
+    try {
+      const userProfileStatistic =
+        await this.coreService.getUserProfileStatistic({
+          userId,
+        });
+
+      return {
+        result: userProfileStatistic,
         success: true,
       };
     } catch (err) {

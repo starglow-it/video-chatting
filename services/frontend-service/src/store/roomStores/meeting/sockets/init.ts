@@ -29,7 +29,6 @@ import { appDialogsApi } from '../../../dialogs/init';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { setMeetingErrorEvent } from '../meetingError/model';
 
-
 import {
     AppDialogsEnum,
     Meeting,
@@ -179,7 +178,7 @@ sample({
 sample({
     clock: emitEnterMeetingEvent,
     source: $localUserStore,
-    filter: (localUser) => localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
+    filter: localUser => localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
     target: sendEnterMeetingRequestSocketEvent,
 });
 

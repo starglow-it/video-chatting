@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
@@ -12,7 +12,7 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // styles
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { VideoEyeIcon } from '@library/icons/VideoEyeIcon';
+import { VideoEyeIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './RoundedVideo.module.scss';

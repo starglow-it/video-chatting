@@ -1,5 +1,5 @@
-import { ICommonTemplate } from './templates';
-import { ICommonUser } from './users';
+import { ICommonTemplate, IUserTemplate } from './templates';
+import { ICommonUser, ICommonUserStatistic } from './users';
 import { EntityList } from '../common';
 
 export type StatisticBase<Type> = {
@@ -49,4 +49,8 @@ export type RoomsStatistics = StatisticBase<IRoomsStatistics[]>;
 export type RoomRatingStatistics = StatisticBase<IRoomsRatingStatistic[]>;
 export type MonetizationStatistics = StatisticBase<IMonetizationStatistic[]>;
 export type UsersList = EntityList<ICommonUser>;
+export type UserProfileId = ICommonUser['id'] | null;
+export type UserProfile = ICommonUser | null;
+export type UserProfileStatistic = ICommonUserStatistic | null;
+export type UserProfileTemplate = IUserTemplate | null | undefined;
 export type ProfileTemplatesCount = { count: number };

@@ -130,7 +130,7 @@ export class DashboardGateway extends BaseGateway {
     return {
       success: true,
       result: {},
-    }
+    };
   }
 
   @SubscribeMessage(DashboardSubscribeEvents.OnGetDashboardNotifications)

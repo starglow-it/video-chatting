@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomVideoPlayerOptions } from '@library/custom/CustomVideoPlayer/types';
 
 // styles

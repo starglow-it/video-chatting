@@ -211,6 +211,7 @@ export class UsersService {
       isStripeEnabled: data.isStripeEnabled,
       wasSuccessNotificationShown: data.wasSuccessNotificationShown,
       country: data.country,
+      registerTemplate: data.registerTemplate,
     };
   }
 }

@@ -17,6 +17,7 @@ import { LanguagesModule } from '../languages/languages.module';
 import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { TasksModule } from '../tasks/tasks.module';
 import { CountryStatisticsModule } from '../country-statistics/country-statistics.module';
+import {UserProfileStatisticModule} from "../user-profile-statistic/user-profile-statistic.module";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CountryStatisticsModule } from '../country-statistics/country-statistic
     VerificationCodeModule,
     TasksModule,
     CountryStatisticsModule,
+    UserProfileStatisticModule,
     MongooseModule.forFeature([
       { name: Language.name, schema: LanguageSchema },
       { name: User.name, schema: UserSchema },

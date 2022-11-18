@@ -4,7 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { PAYMENTS_PROVIDER } from 'shared-const';
 import { PaymentsBrokerPatterns } from 'shared-const';
 import {
-  CancelPaymentIntentPayload,
+  CancelPaymentIntentPayload, CancelUserSubscriptionPayload,
   CreatePaymentIntentPayload,
   CreateStripeAccountLinkPayload,
   CreateStripeExpressAccountPayload,
@@ -90,6 +90,14 @@ export class PaymentsService {
   async getProductCheckoutSession(payload: GetProductCheckoutSessionPayload) {
     const pattern = {
       cmd: PaymentsBrokerPatterns.GetStripeProductCheckoutSession,
+    };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async cancelUserSubscription(payload: CancelUserSubscriptionPayload) {
+    const pattern = {
+      cmd: PaymentsBrokerPatterns.CancelUserSubscription,
     };
 
     return this.client.send(pattern, payload).toPromise();

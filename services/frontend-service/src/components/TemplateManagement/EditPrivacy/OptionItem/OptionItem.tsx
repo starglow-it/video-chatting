@@ -2,18 +2,19 @@ import React, { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomButton } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // types
 import { OptionItemProps } from '@components/TemplateManagement/EditPrivacy/OptionItem/types';
 
 // icons
-import { SuccessIcon } from '@library/icons/SuccessIcon';
+import { SuccessIcon } from 'shared-frontend/icons';
 
 // styles
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './OptionItem.module.scss';
 
 const statementsKeys = [
@@ -84,8 +85,12 @@ const Component = ({
             </CustomGrid>
             <ConditionalRender condition={Boolean(onUpgradeClick)}>
                 <CustomButton
-                    nameSpace={nameSpace}
-                    translation="editPrivacy.actions.upgrade"
+                    label={
+                        <Translation
+                            nameSpace={nameSpace}
+                            translation="editPrivacy.actions.upgrade"
+                        />
+                    }
                     onClick={onUpgradeClick}
                     className={styles.upgradeButton}
                 />

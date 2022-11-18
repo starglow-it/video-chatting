@@ -21,4 +21,4 @@ const Component = ({ className, height, width, ...rest }: CommonIconProps) => (
     </SvgIconWrapper>
 )
 
-const ArrowIcon = memo(Component);
+export const ArrowIcon = memo(Component);

@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // styles
 import { PropsWithClassName } from 'shared-frontend/types';

@@ -1,6 +1,7 @@
 import React, { ForwardedRef, forwardRef, memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
+import clsx from 'clsx';
 
 // hooks
 import { useLocalization } from '@hooks/useTranslation';
@@ -8,10 +9,10 @@ import { useToggle } from '@hooks/useToggle';
 
 // components
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
-import { EyeVisibilityIcon } from '@library/icons/EyeVisibilityIcon';
+import { EyeVisibilityIcon } from 'shared-frontend/icons';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // styles
 import styles from '@library/custom/CustomInput/CustomInput.module.scss';
@@ -35,6 +36,7 @@ const Component = (
         error,
         fieldKey = 'password',
         InputProps,
+        errorClassName,
         ...rest
     }: ComponentProps,
     ref: ForwardedRef<HTMLInputElement>,
@@ -60,7 +62,7 @@ const Component = (
     );
 
     return (
-        <CustomGrid className={styles.wrapper} container direction="column">
+        <CustomGrid container direction="column">
             <TextField
                 inputRef={ref}
                 type={showPass ? 'text' : 'password'}
@@ -88,7 +90,12 @@ const Component = (
                 }}
                 {...rest}
             />
-            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
+            {error && (
+                <ErrorMessage
+                    className={clsx(styles.errorContainer, errorClassName)}
+                    error={error}
+                />
+            )}
         </CustomGrid>
     );
 };

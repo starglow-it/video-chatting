@@ -7,8 +7,8 @@ import { ClickAwayListener } from '@mui/material';
 import { useToggle } from '@hooks/useToggle';
 
 // library
-import { EditRoundIcon } from '@library/icons/EditRoundIcon';
-import { UploadRoundIcon } from '@library/icons/UploadRoundIcon';
+import { EditRoundIcon } from 'shared-frontend/icons';
+import { UploadRoundIcon } from 'shared-frontend/icons';
 import { HiddenPaper } from '@library/common/HiddenPaper/HiddenPaper';
 
 // components
@@ -16,8 +16,8 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ChooseFile } from '@components/ChooseFile/ChooseFile';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomList } from '@library/custom/CustomList/CustomList';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';

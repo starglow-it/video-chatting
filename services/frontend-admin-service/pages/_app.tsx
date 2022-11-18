@@ -12,7 +12,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
 
 // components
-import { AdminLayout } from '@components/AdminLayout.tsx/AdminLayout';
+import { AdminLayout } from '@components/AdminLayout/AdminLayout';
+import {ToastsNotifications} from "@components/ToastsNotifications/ToastsNotifications";
 
 // hooks
 import { useScope } from 'shared-frontend';
@@ -75,6 +76,7 @@ const CustomApp = ({
                                 <AdminLayout>
                                     <Component {...pageProps} />
                                 </AdminLayout>
+                                <ToastsNotifications />
                             </ThemeProvider>
                         </ThemeProvider>
                     </ThemeProvider>

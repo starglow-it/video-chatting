@@ -12,5 +12,6 @@ export type CustomTableProps<Data> = {
     isTableUpdating?: boolean;
     bodyCellClassName: string;
     headCellClassName: string;
+    ActionsComponent?: any;
     onPageChange?: (pageValue: number) => void;
 };

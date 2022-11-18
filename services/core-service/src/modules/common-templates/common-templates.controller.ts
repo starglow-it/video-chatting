@@ -1,13 +1,12 @@
 import { Controller } from '@nestjs/common';
-import {Connection, PipelineStage, UpdateQuery} from 'mongoose';
+import { Connection, PipelineStage, UpdateQuery } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import { TEMPLATES_SERVICE } from 'shared-const';
+import { TEMPLATES_SERVICE, TemplateBrokerPatterns } from 'shared-const';
 
-import { TemplateBrokerPatterns } from 'shared-const';
 // types
 import {
   ICommonTemplate,
@@ -23,6 +22,7 @@ import {
 
 // dtos
 import { CommonTemplateDTO } from '../../dtos/common-template.dto';
+import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 // services
 import { CommonTemplatesService } from './common-templates.service';
@@ -30,12 +30,13 @@ import { UsersService } from '../users/users.service';
 import { MeetingsService } from '../meetings/meetings.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { BusinessCategoriesService } from '../business-categories/business-categories.service';
+import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
+import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
-import { UserTemplateDTO } from '../../dtos/user-template.dto';
+
 import { CommonTemplateDocument } from '../../schemas/common-template.schema';
-import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -47,6 +48,7 @@ export class CommonTemplatesController {
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
     private roomStatisticService: RoomsStatisticsService,
+    private userProfileStatisticService: UserProfileStatisticService,
   ) {}
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
@@ -79,30 +81,28 @@ export class CommonTemplatesController {
               from: 'usertemplates',
               localField: 'templateId',
               foreignField: 'templateId',
-              pipeline: [
-                { $match: { user: options.userId }}
-              ],
+              pipeline: [{ $match: { user: options.userId } }],
               as: 'userTemplate',
             },
           },
-          { $unionWith: { coll: "usertemplates", pipeline: [] } },
-          { $sort: { "maxParticipants": 1 } },
+          { $sort: { maxParticipants: 1 } },
         ];
 
         if (options.limit) {
-          aggregationPipeline.push({$limit: options.limit})
+          aggregationPipeline.push({ $limit: options.limit });
         }
 
         if (options.skip) {
-          aggregationPipeline.push({$skip: options.skip})
+          aggregationPipeline.push({ $skip: options.skip });
         }
 
-        const commonTemplates =
-          await this.commonTemplatesService.aggregate(aggregationPipeline);
+        const commonTemplates = await this.commonTemplatesService.aggregate(
+          aggregationPipeline,
+        );
 
         const commonTemplatesCount =
           await this.commonTemplatesService.countCommonTemplates({
-            query: { draft: false, isPublic: true },
+            query: query,
           });
 
         const parsedTemplates = plainToInstance(
@@ -251,6 +251,7 @@ export class CommonTemplatesController {
         await this.roomStatisticService.create({
           data: {
             template: targetTemplate._id,
+            author: targetTemplate.author,
             transactions: 0,
             minutes: 0,
             calls: 0,
@@ -270,6 +271,13 @@ export class CommonTemplatesController {
           session,
         });
       }
+
+      await this.userProfileStatisticService.updateOne({
+        query: { user: targetUser.id },
+        data: {
+          $inc: { roomsUsed: 1 },
+        },
+      });
 
       return plainToInstance(UserTemplateDTO, userTemplate, {
         excludeExtraneousValues: true,
@@ -395,6 +403,13 @@ export class CommonTemplatesController {
         await this.commonTemplatesService.deleteCommonTemplate({
           query: {
             _id: template._id,
+          },
+          session,
+        });
+
+        await this.roomStatisticService.delete({
+          query: {
+            template: template._id,
           },
           session,
         });

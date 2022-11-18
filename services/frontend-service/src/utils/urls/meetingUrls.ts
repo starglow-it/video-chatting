@@ -1,4 +1,4 @@
-import { meetingScope, serverUrl, usersScope } from './baseData';
+import { meetingScope, serverUrl } from './baseData';
 import { HttpMethods } from '../../store/types';
 
 export const CREATE_MEETING_URL = `${meetingScope}`;
@@ -9,14 +9,9 @@ export const getMeetingUrl = (templateId: string) => ({
     method: HttpMethods.Get,
 });
 
-export const getUserTemplatesUrl = ({ templateId }: { templateId: string }) => ({
-    url: `${serverUrl}/${usersScope}/templates/${templateId || ''}`,
+export const getMeetingTemplateUrl = ({ templateId }: { templateId: string }) => ({
+    url: `${serverUrl}/meetings/templates/${templateId}`,
     method: HttpMethods.Get,
-});
-
-export const postUserTemplatesUrl = ({ templateId }: { templateId: string }) => ({
-    url: `${serverUrl}/${usersScope}/templates/${templateId || ''}`,
-    method: HttpMethods.Post,
 });
 
 export const createMeetingUrl = {

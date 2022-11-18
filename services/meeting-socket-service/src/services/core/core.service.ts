@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-
-import { CORE_PROVIDER } from 'shared-const';
+import { firstValueFrom } from 'rxjs';
 
 import {
   ICommonUser,
@@ -13,12 +12,14 @@ import {
   FindUsersByIdPayload,
   UpdateUserPayload,
   ICommonTemplate,
+  UpdateUserProfileStatisticPayload,
 } from 'shared-types';
 import {
   StatisticBrokerPatterns,
   TemplateBrokerPatterns,
   MeetingBrokerPatterns,
   UserBrokerPatterns,
+  CORE_PROVIDER,
 } from 'shared-const';
 
 @Injectable()
@@ -32,13 +33,13 @@ export class CoreService {
   async findUserById(payload: FindUserByIdPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.FindUserById };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async findUsersById(payload: FindUsersByIdPayload): Promise<ICommonUser[]> {
     const pattern = { cmd: UserBrokerPatterns.FindUsersById };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async findMeetingTemplate(
@@ -46,7 +47,7 @@ export class CoreService {
   ): Promise<IUserTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplate };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async findMeetingTemplateById(payload: {
@@ -54,7 +55,7 @@ export class CoreService {
   }): Promise<IUserTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplateById };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async findCommonTemplateByTemplateId(payload: {
@@ -62,17 +63,17 @@ export class CoreService {
   }): Promise<ICommonTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async updateUser(payload: UpdateUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.UpdateUser };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async sendCustom(pattern, payload) {
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async updateMeetingInstance(
@@ -80,7 +81,7 @@ export class CoreService {
   ): Promise<boolean> {
     const pattern = { cmd: MeetingBrokerPatterns.UpdateMeetingInstance };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async updateRoomRatingStatistic(
@@ -90,6 +91,16 @@ export class CoreService {
       cmd: StatisticBrokerPatterns.UpdateRoomRatingStatistic,
     };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async updateUserProfileStatistic(
+    payload: UpdateUserProfileStatisticPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: StatisticBrokerPatterns.UpdateUserProfileStatistic,
+    };
+
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 }

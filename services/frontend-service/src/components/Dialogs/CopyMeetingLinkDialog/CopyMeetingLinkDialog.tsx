@@ -4,18 +4,19 @@ import { useRouter } from 'next/router';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomDialog } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import { CustomLinkIcon } from '@library/icons/CustomLinkIcon';
+import { CustomLinkIcon } from 'shared-frontend/icons';
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // styles
@@ -82,15 +83,13 @@ const Component = () => {
                         <CustomButton
                             variant="custom-cancel"
                             className={styles.copyButton}
-                            nameSpace="common"
-                            translation="buttons.copy"
+                            label={<Translation nameSpace="common" translation="buttons.copy" />}
                         />
                     </CopyToClipboard>
                 </CustomGrid>
 
                 <CustomButton
-                    nameSpace="meeting"
-                    translation="invite.inviteButton"
+                    label={<Translation nameSpace="meeting" translation="invite.inviteButton" />}
                     onClick={handleOpenEmailInvite}
                 />
             </CustomGrid>

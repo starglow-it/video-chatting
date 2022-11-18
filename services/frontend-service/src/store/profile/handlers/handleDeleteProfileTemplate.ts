@@ -4,7 +4,6 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { UserTemplate } from '../../types';
 import { deleteProfileTemplatesUrl } from '../../../utils/urls';
 
-
 export const handleDeleteProfileTemplate = async ({
     templateId,
 }: {

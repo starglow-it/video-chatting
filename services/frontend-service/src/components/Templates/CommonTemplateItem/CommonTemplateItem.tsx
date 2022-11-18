@@ -4,8 +4,8 @@ import { Fade } from '@mui/material';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
@@ -15,6 +15,7 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $isBusinessSubscription,
     $profileStore,
@@ -43,6 +44,8 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
+
+    const isDisabled = Boolean(template.userTemplate);
 
     const handleShowPreview = useCallback(() => {
         setShowPreview(true);
@@ -83,7 +86,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         : 'buttons.startMeeting';
 
     const freeTemplateHandler = !isTimeLimitReached ? handleStartMeeting : undefined;
-    const paidTemplateHandler = !(!isFree) ? handleBuyTemplate : undefined;
+    const paidTemplateHandler = !(!isFree && isDisabled) ? handleBuyTemplate : undefined;
 
     const freeTemplateHover = isTimeLimitReached ? handleShowToast : undefined;
 
@@ -121,18 +124,21 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                         onClick={isFree ? freeTemplateHandler : paidTemplateHandler}
                         className={clsx(styles.button, {
                             [styles.disabled]:
-                                (isFree && isTimeLimitReached) || (!isFree),
+                                (isFree && isTimeLimitReached) || (!isFree && isDisabled),
                         })}
-                        disableRipple={(isFree && isTimeLimitReached) || (!isFree)}
+                        disableRipple={(isFree && isTimeLimitReached) || (!isFree && isDisabled)}
                         disabled={isAddTemplateInProgress}
-                        nameSpace="templates"
-                        translation={isFree ? freeTemplateTranslation : 'buttons.buy'}
+                        label={
+                            <Translation
+                                nameSpace="templates"
+                                translation={isFree ? freeTemplateTranslation : 'buttons.buy'}
+                            />
+                        }
                     />
                     <CustomButton
+                        label={<Translation nameSpace="templates" translation="buttons.preview" />}
                         className={styles.button}
                         variant="custom-transparent"
-                        nameSpace="templates"
-                        translation="buttons.preview"
                         onClick={handlePreviewTemplate}
                     />
                 </CustomGrid>

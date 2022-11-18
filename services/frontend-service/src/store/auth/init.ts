@@ -28,10 +28,7 @@ forward({
 
 sample({
     clock: loginUserFx.doneData,
-    filter: (...data) => {
-        console.log(data);
-        return true;
-    },
+    filter: (state, payload) => !payload?.user?.country,
     target: setUserCountryFx,
 });
 

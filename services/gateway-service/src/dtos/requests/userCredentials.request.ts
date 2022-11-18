@@ -3,7 +3,8 @@ import {
   IsString,
   IsEmail,
   MinLength,
-  IsOptional, IsMongoId,
+  IsOptional,
+  IsMongoId,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IUserCredentials } from 'shared-types';
@@ -33,9 +34,7 @@ export class UserCredentialsRequest implements IUserCredentials {
 
   @IsMongoId()
   @IsString()
-  @IsNotEmpty({
-    message: 'user.templateId.empty',
-  })
+  @IsOptional()
   @ApiProperty()
   readonly templateId: string;
 

@@ -2,13 +2,14 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomDialog } from '@library/custom/CustomDialog/CustomDialog';
+import { CustomDialog } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
-import { CustomButton } from '@library/custom/CustomButton/CustomButton';
+import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library';
 import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 
 // store
+import { Translation } from '@library/common/Translation/Translation';
 import {
     $appDialogsStore,
     appDialogsApi,
@@ -99,14 +100,12 @@ const Component = () => {
                         className={styles.button}
                         variant="custom-cancel"
                         onClick={handleClose}
-                        nameSpace="common"
-                        translation="buttons.cancel"
+                        label={<Translation nameSpace="common" translation="buttons.cancel" />}
                     />
                     <CustomButton
                         className={styles.button}
                         onClick={handleDeleteTemplate}
-                        nameSpace="common"
-                        translation="buttons.delete"
+                        label={<Translation nameSpace="common" translation="buttons.delete" />}
                         variant="custom-danger"
                     />
                 </CustomGrid>

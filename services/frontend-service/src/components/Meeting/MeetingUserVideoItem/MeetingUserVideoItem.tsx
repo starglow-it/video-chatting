@@ -3,19 +3,19 @@ import clsx from 'clsx';
 import { useStoreMap } from 'effector-react';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 
 // common
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
-import { MicIcon } from '@library/icons/MicIcon';
+import { MicIcon } from 'shared-frontend/icons';
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
 import { MeetingUserAudioItem } from '@components/Meeting/MeetingUserAudioItem/MeetingUserAudioItem';
-import { SharingArrowIcon } from '@library/icons/SharingArrowIcon';
+import { SharingArrowIcon } from 'shared-frontend/icons';
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores

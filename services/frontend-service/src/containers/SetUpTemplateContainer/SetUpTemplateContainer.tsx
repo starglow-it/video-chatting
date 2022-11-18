@@ -9,7 +9,7 @@ import { useToggle } from '@hooks/useToggle';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { SetUpTemplateInfo } from '@components/Templates/SetUpTemplateInfo/SetUpTemplateInfo';

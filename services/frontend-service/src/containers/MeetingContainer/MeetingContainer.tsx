@@ -8,9 +8,9 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // common
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
+import { CustomBox } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
@@ -104,10 +104,7 @@ const MeetingContainer = memo(() => {
 
     const { isMobile } = useBrowserDetect();
 
-    const { value:
-        isSettingsChecked,
-        onSwitchOn: handleSetSettingsChecked
-    } = useToggle(false);
+    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
 
     useEffect(() => {
         initWindowListeners();
@@ -196,7 +193,8 @@ const MeetingContainer = memo(() => {
                         needToRememberSettings: false,
                     });
                 }
-
+                handleSetSettingsChecked();
+            } else {
                 handleSetSettingsChecked();
             }
         })();

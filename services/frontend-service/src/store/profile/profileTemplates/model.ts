@@ -6,12 +6,7 @@ import { $profileStore } from '../profile/model';
 
 import { initialProfileTemplatesStore } from './const';
 
-import {
-    EntityList,
-    Profile,
-    ProfileTemplatesCountState,
-    UserTemplate
-} from '../../types';
+import { EntityList, Profile, ProfileTemplatesCountState, UserTemplate } from '../../types';
 
 import {
     DeleteProfileTemplatesPayload,
@@ -31,7 +26,7 @@ export const $profileTemplatesCountStore = profileDomain.createStore<ProfileTemp
     state: {
         count: 0,
     },
-    error: null
+    error: null,
 });
 
 export const setSkipProfileTemplates = profileDomain.createEvent<number>('setSkipProfileTemplates');
@@ -72,5 +67,10 @@ export const getProfileTemplatesFx = attach({
 export const getProfileTemplatesCountFx = attach({
     effect: getProfileTemplatesCountBase,
     source: $profileStore,
-    mapParams: ({ limit, skip, templateType }, profile: Profile) => ({ userId: profile.id, limit, skip, templateType }),
+    mapParams: ({ limit, skip, templateType }, profile: Profile) => ({
+        userId: profile.id,
+        limit,
+        skip,
+        templateType,
+    }),
 });

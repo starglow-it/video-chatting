@@ -129,22 +129,23 @@ const getChartData = (
     label: string,
     dataSets: CustomDoughnutChartProps['data']['dataSets'],
 ): ChartData<'doughnut'> => ({
-        labels: dataSets.map(dataSet => dataSet.labels),
-        datasets: [
-            deepmerge(defaultDataSetsSettings, {
-                label,
-                backgroundColor: dataSets.map(dataSet => dataSet.color),
-                data: dataSets.map(dataSet => dataSet.parts.reduce((acc, b) => acc + b, 0)),
-            }),
-        ],
-    });
+    labels: dataSets.map(dataSet => dataSet.labels),
+    datasets: [
+        deepmerge(defaultDataSetsSettings, {
+            label,
+            backgroundColor: dataSets.map(dataSet => dataSet.color),
+            data: dataSets.map(dataSet => dataSet.parts.reduce((acc, b) => acc + b, 0)),
+        }),
+    ],
+});
 
 const getChartOptions = (
     label: string,
     totalLabel: string,
     totalNumber: number,
     dataSets: CustomDoughnutChartProps['data']['dataSets'],
-) => deepmerge(defaultOptionsSettings, {
+) =>
+    deepmerge(defaultOptionsSettings, {
         plugins: {
             tooltip: {
                 callbacks: {
@@ -152,13 +153,14 @@ const getChartOptions = (
                         model[0].label?.length === 1 ? model[0].label : 'Other',
                     label: (model: TooltipItem<'doughnut'>): string | string[] => {
                         if (model.label?.length === 1) {
-                            return `${Math.ceil((model.raw / totalNumber) * 100)}% - ${model.raw}`;
-                        } 
-                            return model.label.map((label, index) => {
-                                const part = dataSets[model.dataIndex].parts[index];
-                                return `${Math.ceil((part / totalNumber) * 100)}% - ${part}`;
-                            });
-                        
+                            return `${((model.raw / totalNumber) * 100).toFixed(2)}% - ${
+                                model.raw
+                            }`;
+                        }
+                        return model.label.map((label, index) => {
+                            const part = dataSets[model.dataIndex].parts[index];
+                            return `${((part / totalNumber) * 100).toFixed(2)}% - ${part}`;
+                        });
                     },
                 },
             },

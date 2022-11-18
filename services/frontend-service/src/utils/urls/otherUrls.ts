@@ -7,7 +7,7 @@ export const sendInviteEmailUrl = {
 };
 
 export const sendScheduleInviteUrl = {
-    url: `${serverUrl}/${usersScope}/templates/schedule`,
+    url: `${serverUrl}/${usersScope}/schedule`,
     method: HttpMethods.Post,
 };
 

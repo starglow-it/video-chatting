@@ -2,15 +2,15 @@ import React, { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
-import { CustomBox } from '@library/custom/CustomBox/CustomBox';
-import { CustomGrid } from '@library/custom/CustomGrid/CustomGrid';
+import { CustomBox } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // components
 import { LanguagesSelect } from '@components/LanguagesSelect/LanguagesSelect';
-import { PersonIcon } from '@library/icons/PersonIcon';
+import { PersonIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './EditPersonalInfo.module.scss';

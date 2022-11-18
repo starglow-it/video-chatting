@@ -1,7 +1,7 @@
-import {CreateMeetingPayload, DeleteMeetingPayload, ErrorState} from 'shared-types';
-import {MeetingStore, UserTemplate} from '../types';
+import { CreateMeetingPayload, DeleteMeetingPayload, ErrorState } from 'shared-types';
+import { MeetingStore, UserTemplate } from '../types';
 import { CreateMeetingResponse } from './types';
-import { meetingsDomain} from '../domains';
+import { meetingsDomain } from '../domains';
 
 export const $meetingsStore = meetingsDomain.createStore<MeetingStore>({});
 
@@ -18,4 +18,4 @@ export const checkCustomLinkFx = meetingsDomain.createEffect<
     { templateId: UserTemplate['customLink'] },
     boolean,
     ErrorState
-    >('checkCustomLinkFx');
+>('checkCustomLinkFx');
