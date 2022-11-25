@@ -114,6 +114,7 @@ export class TemplatesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put('/:templateId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Template' })

@@ -11,7 +11,7 @@ export const generateIcsEventData = async ({
   endAt,
   comment,
   attendees,
-}): Promise<Buffer> => {
+}): Promise<string> => {
   const duration = endAt - startAt;
 
   const hours = Math.floor(duration / ONE_HOUR);
@@ -45,7 +45,7 @@ export const generateIcsEventData = async ({
   return new Promise((resolve, reject) => {
     ics.createEvent(eventData, (err, value) => {
       if (err) reject(err);
-      resolve(Buffer.from(value, 'utf8'));
+      resolve(value);
     });
   });
 };

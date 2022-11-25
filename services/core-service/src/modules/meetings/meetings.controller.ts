@@ -168,18 +168,6 @@ export class MeetingsController {
         );
       }
 
-      if (userTemplate?.meetingInstance?._id) {
-        await this.meetingsService.update({
-          query: {
-            _id: userTemplate.meetingInstance._id,
-          },
-          data: {
-            owner: null,
-          },
-          session,
-        });
-      }
-
       userTemplate.usedAt = Date.now();
       userTemplate.meetingInstance = meeting;
 

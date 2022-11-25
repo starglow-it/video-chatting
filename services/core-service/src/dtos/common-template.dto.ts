@@ -81,6 +81,6 @@ export class CommonTemplateDTO implements ICommonTemplate {
   templateType: 'video' | 'image';
 
   @Expose()
-  @Transform((data) => data.obj?.userTemplate?.['_id'])
-  userTemplate: string;
+  @Transform((data) => Boolean(data.obj?.userTemplate?.[0]?.['_id']))
+  isTemplatePurchased: boolean;
 }

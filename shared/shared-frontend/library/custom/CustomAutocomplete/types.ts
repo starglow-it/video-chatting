@@ -1,5 +1,5 @@
 import { AutocompleteProps } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Control } from 'react-hook-form';
 
 export type CustomAutocompleteProps<ValueType extends { key: string; value: string }> = Omit<
@@ -10,5 +10,6 @@ export type CustomAutocompleteProps<ValueType extends { key: string; value: stri
         control: Control;
         name: string;
         error?: string;
+        errorComponent?: React.ReactNode;
     };
 

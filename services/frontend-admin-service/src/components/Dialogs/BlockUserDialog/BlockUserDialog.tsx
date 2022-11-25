@@ -54,7 +54,7 @@ const Component = () => {
                 </CustomTypography>
                 &nbsp;
                 <CustomTypography variant="h4bold">
-                    {userData?.fullName ?? userData?.email}
+                    {userData?.fullName || userData?.email}
                 </CustomTypography>
             </CustomGrid>
             <CustomGrid className={styles.buttons} container alignItems="center" wrap="nowrap" gap={2}>

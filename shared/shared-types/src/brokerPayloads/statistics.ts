@@ -31,6 +31,11 @@ type UpdateRoomRatingStatisticPayload = {
   value: number;
 };
 
+type UpdateUserTemplateUsageNumberPayload = {
+  templateId: IUserTemplate['id'];
+  value: number;
+};
+
 type UpdateMonetizationStatisticPayload = {
   period: 'lastMonth' | 'allTime';
   type: string;
@@ -45,4 +50,5 @@ export type {
   GetMonetizationStatisticPayload,
   GetUserProfileStatisticPayload,
   UpdateUserProfileStatisticPayload,
+  UpdateUserTemplateUsageNumberPayload,
 };

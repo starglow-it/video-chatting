@@ -151,7 +151,7 @@ export class SeederService {
                 return this.previewImage.create({
                   url: imageLink,
                   size: fileStats.size,
-                  mimeType: 'image/png',
+                  mimeType: 'image/webp',
                   key: uploadKey,
                   resolution: resolution?.[1],
                 });

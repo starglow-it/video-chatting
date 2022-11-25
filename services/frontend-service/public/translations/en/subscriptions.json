@@ -23,12 +23,13 @@
     "warning": "Meeting time is running out. Update to increase the limit"
   },
   "trialExpired": {
-    "text": "<strong>Your Free Trial has expired.</strong> You are subscribed to free House plan now. Upgrade to continue creating your own rooms and using other extended LiveOffice features."
+    "text": "Your subscription for Professional Free Trial plan has expired. You are subscribed to free House plan now.\nYou can upgrade your subscription any time in Profile to continue creating own rooms and using other extended LiveOffice features"
   },
   "subscriptions": {
     "selectPlan": "Select plan",
     "title": "Subscriptions",
     "nextPayment": "Next payment: {{nextPaymentDate}}",
+    "expirationDate": "Expiration date: {{nextPaymentDate}}",
     "current": "Subscription: <strong>{{currentSub}}</strong>",
     "manage": "Manage Subscription",
     "AllPlans": {

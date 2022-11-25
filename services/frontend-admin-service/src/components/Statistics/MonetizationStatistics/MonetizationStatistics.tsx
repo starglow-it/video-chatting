@@ -14,7 +14,7 @@ import {
     CustomPaper,
     CustomTypography,
     CustomGrid,
-    CustomImage,
+    CustomImage, WiggleLoader,
 } from 'shared-frontend/library';
 import { Translation } from '@components/Translation/Translation';
 import { CustomDoughnutChart } from '@components/CustomDoughnutChart/CustomDoughnutChart';
@@ -33,6 +33,7 @@ const Component = ({
     periods,
     currentPeriod,
     onChangePeriod,
+    isDataLoading,
 }: PropsWithClassName<MonetizationStatisticsProps>) => {
     const { translation } = useLocalization('statistics');
 
@@ -65,21 +66,27 @@ const Component = ({
             </CustomGrid>
 
             {statistic.totalNumber === 0 ? (
-                <CustomGrid
-                    container
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    flex="1 1"
-                >
-                    <CustomImage src="/images/eyes.png" width={40} height={40} />
-                    <CustomTypography>
-                        <Translation
-                            nameSpace="statistics"
-                            translation="users.monetization.noData"
-                        />
-                    </CustomTypography>
-                </CustomGrid>
+                    <>
+                        {isDataLoading ? (
+                            <WiggleLoader className={styles.loader} />
+                        ) : (
+                            <CustomGrid
+                                container
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
+                                flex="1 1"
+                            >
+                                <CustomImage src="/images/eyes.png" width={40} height={40} />
+                                <CustomTypography>
+                                    <Translation
+                                        nameSpace="statistics"
+                                        translation="users.monetization.noData"
+                                    />
+                                </CustomTypography>
+                            </CustomGrid>
+                        )}
+                    </>
             ) : (
                 <CustomGrid container direction="column">
                     <CustomDoughnutChart

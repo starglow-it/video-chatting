@@ -12,4 +12,6 @@ export const emailTemplates = {
   subscriptionSuccessful: 'subscription-successful',
   contactUs: 'contact-us',
   trialExpires: 'trial-expires',
+  blockedAccount: 'account-was-blocked',
+  deletedAccountByAdmin: 'account-was-deleted',
 };

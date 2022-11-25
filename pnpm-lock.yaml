@@ -511,7 +511,7 @@ importers:
       bowser: 2.11.0
       clsx: 1.2.1
       compression: 1.7.4
-      cookie: ^0.5.0
+      cookie: 0.5.0
       cross-env: 7.0.3
       date-fns: 2.29.3
       date-fns-tz: 1.3.7
@@ -1245,19 +1245,6 @@ importers:
       ts-loader: 9.3.1_typescript@4.8.3
       ts-node: 10.9.1_bidgzm5cq2du6gnjtweqqjrrn4
       tsconfig-paths: 4.1.0
-      typescript: 4.8.3
-
-  shared/shared:
-    specifiers:
-      '@types/node': ^18.7.23
-      shared-types: workspace:*
-      ts-node: 10.9.1
-      typescript: 4.8.3
-    dependencies:
-      '@types/node': 18.7.23
-      shared-types: link:../shared-types
-      ts-node: 10.9.1_i7crlymf22c7hnawxb4tbubvdq
-    devDependencies:
       typescript: 4.8.3
 
   shared/shared-const:
@@ -2908,7 +2895,7 @@ packages:
       reflect-metadata: ^0.1.13
       rxjs: ^6.0.0 || ^7.2.0
     dependencies:
-      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       dotenv: 16.0.1
       dotenv-expand: 8.0.3
       lodash: 4.17.21
@@ -3020,7 +3007,7 @@ packages:
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0
     dependencies:
-      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
+      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
       '@types/jsonwebtoken': 8.5.8
       jsonwebtoken: 8.5.1
     dev: false
@@ -3199,7 +3186,7 @@ packages:
       '@nestjs/common': ^8.0.0 || ^9.0.0
       passport: ^0.4.0 || ^0.5.0 || ^0.6.0
     dependencies:
-      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
+      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
       passport: 0.6.0
     dev: false
 
@@ -6835,7 +6822,7 @@ packages:
     dependencies:
       confusing-browser-globals: 1.0.11
       eslint: 8.24.0
-      eslint-plugin-import: 2.26.0_s4vppe3rjapx4e2z54qvzpm5hu
+      eslint-plugin-import: 2.26.0_gofx6msuqd4luqedfouzks2s4u
       object.assign: 4.1.4
       object.entries: 1.1.5
       semver: 6.3.0
@@ -10326,7 +10313,7 @@ packages:
       '@nestjs/core': '>=6.7.0'
       aws-sdk: '>=2.0.0'
     dependencies:
-      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
+      '@nestjs/common': 9.0.11_aniaiezvefq2fqnommj6u5l4zi
       '@nestjs/core': 9.0.11_kj7rymkcr5lkprk6tswpsa5dxa
       aws-sdk: 2.1218.0
     dev: false

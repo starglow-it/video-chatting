@@ -83,7 +83,7 @@
 }
 
 .popper {
-  z-index: 2000;
+  z-index: 2000 !important;
 
   .trialText {
     font-size: rem(12px);

@@ -38,7 +38,7 @@ const Component = ({
         setIsVideoActive(true);
     }, []);
 
-    const style = useMemo(() => ({ '--sizeCoef': size / 120 } as React.CSSProperties), [size]);
+    const style = useMemo(() => ({ '--sizeCoef': size / 150 } as React.CSSProperties), [size]);
 
     return (
         <CustomGrid

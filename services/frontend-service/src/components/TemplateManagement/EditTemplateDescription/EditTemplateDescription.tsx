@@ -6,7 +6,7 @@ import { MenuItem } from '@mui/material';
 import { IBusinessCategory } from 'shared-types';
 import { AutocompleteType } from 'shared-frontend/types';
 
-import { CustomAutocomplete } from 'shared-frontend';
+import {ConditionalRender, CustomAutocomplete, ErrorMessage} from 'shared-frontend';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -46,6 +46,7 @@ import styles from './EditTemplateDescription.module.scss';
 
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
+import { Translation } from '@library/common/Translation/Translation';
 
 const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER }, (_, i) => ({
     id: `${i + 1}`,
@@ -259,6 +260,16 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                         name="tags"
                         autoComplete
                         error={tagsErrorMessage}
+                        errorComponent={
+                            <ConditionalRender condition={Boolean(tagsErrorMessage)}>
+                                <ErrorMessage error={Boolean(tagsErrorMessage)}>
+                                    <Translation
+                                        nameSpace="errors"
+                                        translation={tagsErrorMessage}
+                                    />
+                                </ErrorMessage>
+                            </ConditionalRender>
+                        }
                     />
                     <CustomGrid
                         container

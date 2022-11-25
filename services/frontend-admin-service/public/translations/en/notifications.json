@@ -1,7 +1,7 @@
 {
   "users": {
-    "userBlocked": "User <strong>{{Username}}</strong> is blocked",
-    "userUnBlocked": "User <strong>{{Username}}</strong> is unblocked",
-    "userDeleted": "User <strong>{{Username}}</strong> is deleted"
+    "userBlocked": "User <strong>{{username}}</strong> is blocked",
+    "userUnBlocked": "User <strong>{{username}}</strong> is unblocked",
+    "userDeleted": "User <strong>{{username}}</strong> is deleted"
   }
 }

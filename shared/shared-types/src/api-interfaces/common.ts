@@ -91,3 +91,8 @@ export enum MonetizationStatisticTypes {
   SellRooms = 'sellRooms',
   RoomTransactions = 'roomCalls',
 }
+
+export enum KickUserReasons {
+  Blocked = 'kicked',
+  Deleted = 'blocked',
+}

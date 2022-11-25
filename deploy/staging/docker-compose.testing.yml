@@ -95,6 +95,35 @@ services:
       - liveoffice_test
       - traefikpublic
 
+  frontend-admin-service:
+    container_name: liveoffice_testing_frontend-admin
+    build:
+      context: ../../
+      dockerfile: services/frontend-admin-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+    restart: unless-stopped
+    environment:
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
+      - FRONTEND_URL=https://test-admin.liveoffice.forasoft.com
+      - GATEWAY_PORT=3000
+      - GATEWAY_HOST=gateway-service
+      - DEFAULT_SERVER_IP
+      - VULTR_STORAGE_HOSTNAME
+    ports:
+      - '9010:9000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.front_admin_test.rule=Host(`test-admin.liveoffice.forasoft.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_admin_test.entrypoints=https"
+      - "traefik.http.routers.front_admin_test.tls=true"
+      - "traefik.http.services.front_admin_test.loadbalancer.server.port=9000"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - liveoffice_test
+      - traefikpublic
+
   gateway-service:
     container_name: liveoffice_testing_gateway
     build:

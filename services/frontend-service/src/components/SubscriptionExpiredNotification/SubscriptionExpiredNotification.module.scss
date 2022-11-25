@@ -7,13 +7,12 @@
   left: 0;
   bottom: unset;
   width: 100%;
-  height: rem(52px);
 }
 
 .snackBarContent {
   width: 100%;
   background: $light-orange;
-  padding: rem(11px 0);
+  padding: rem(16px 0);
   border-radius: 0;
 }
 
@@ -33,8 +32,10 @@
 
 .wrapper {
   color: $primary-black;
+  white-space: break-spaces;
 }
 
 .text {
   margin: rem(0 24px 0 4px);
+  text-align: center;
 }

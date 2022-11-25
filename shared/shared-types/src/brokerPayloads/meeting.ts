@@ -2,7 +2,7 @@ import {
   IMeetingInstance,
   ICommonTemplate,
   ICommonUser,
-  IUserTemplate,
+  IUserTemplate, KickUserReasons,
 } from '../api-interfaces';
 
 export type GetMediaServerTokenPayload = {
@@ -39,4 +39,9 @@ export type CreateMeetingInstancePayload = {
 export type AssignMeetingInstancePayload = {
   templateId: IUserTemplate['id'];
   userId: ICommonUser['id'];
+};
+
+export type KickUserFromMeetingPayload = {
+  userId: ICommonUser['id'];
+  reason: KickUserReasons;
 };

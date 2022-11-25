@@ -63,7 +63,7 @@ export const setReplaceTemplateIdEvent = templatesDomain.event<string | undefine
 
 // effect
 export const getTemplatesFx = templatesDomain.effect<
-    QueryParams & { userId: ICommonUser['id'] },
+    QueryParams & { userId?: ICommonUser['id'] },
     EntityList<ICommonTemplate> | null | undefined,
     void
 >('getTemplatesFx');

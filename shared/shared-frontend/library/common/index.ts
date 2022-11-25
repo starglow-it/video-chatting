@@ -7,3 +7,4 @@ export { default as WiggleLoader } from './WiggleLoader/WiggleLoader';
 export { default as ValuesSwitcher } from './ValuesSwitcher/ValuesSwitcher';
 export { default as ActionButton } from './ActionButton/ActionButton';
 export { default as ProfileAvatar } from './ProfileAvatar/ProfileAvatar';
+export { default as TagItem } from './TagItem/TagItem';

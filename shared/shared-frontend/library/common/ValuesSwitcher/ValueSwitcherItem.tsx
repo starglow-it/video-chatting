@@ -18,8 +18,10 @@ const Component = <ValueType extends number | string>(
     ref: ForwardedRef<HTMLDivElement>,
 ) => {
     const handleChooseValue = useCallback(() => {
-        onValueChanged(value);
-    }, [onValueChanged]);
+        if (activeValue !== value) {
+            onValueChanged(value);
+        }
+    }, [onValueChanged, activeValue, value]);
 
     return (
         <CustomGrid

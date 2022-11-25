@@ -83,7 +83,7 @@ export class UserTemplatesService {
     id: IUserTemplate['id'],
     data: UpdateQuery<UserTemplateDocument>,
     { session }: ITransactionSession,
-    populatePaths: CustomPopulateOptions,
+    populatePaths?: CustomPopulateOptions,
   ): Promise<UserTemplateDocument> {
     return this.userTemplate
       .findByIdAndUpdate(id, data, {
@@ -216,7 +216,7 @@ export class UserTemplatesService {
         url: imageUrl,
         resolution: resolution?.[1],
         size: fileStats.size,
-        mimeType: 'image/png',
+        mimeType: 'image/webp',
         key: uploadKey,
       });
     });

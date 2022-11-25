@@ -1,4 +1,8 @@
-.staging:
+# I split update of whole job to by-service job because of errors that might
+# happen during the build and it would fail whole pipeline
+# so in this case those containers that have some unexpected errors would fail only of that container
+
+.staging-test:
   stage: update
   timeout: 3 hours
   extends:
@@ -14,7 +18,7 @@
 Update Test Traefik:
   stage: update_traefik
   extends:
-    - .staging
+    - .staging-test
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
@@ -23,7 +27,7 @@ Update Test Traefik:
 
 update:test:
   extends:
-    - .staging
+    - .staging-test
   only: [testing]
   stage: update_test
   when: manual
@@ -31,9 +35,9 @@ update:test:
   script:
     - echo "Start update test"
 
-update:staging:test:other:
+update:other:test:
   extends:
-    - .staging
+    - .staging-test
   stage: update_staging_services
   only: [ testing ]
   needs: [ "update:test" ]
@@ -42,121 +46,121 @@ update:staging:test:other:
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps rabbit mongo livekit-service --force-recreate --remove-orphans
 
-update:staging:test:config:
+update:config:test:
   extends:
-    - .staging
+    - .staging-test
   stage: update_staging_config
   only: [ testing ]
-  needs: [ "update:staging:test:other" ]
+  needs: [ "update:other:test" ]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps config-service --force-recreate --remove-orphans
 
-update:staging:test:core:
+update:core:test:
   extends:
-    - .staging
+    - .staging-test
   only: [ testing ]
-  needs: ["update:staging:test:config"]
+  needs: ["update:config:test"]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps core-service --force-recreate --remove-orphans
 
-update:staging:test:gateway:
+update:gateway:test:
   extends:
-    - .staging
+    - .staging-test
   only: [testing]
-  needs: [ "update:staging:test:config" ]
+  needs: [ "update:config:test" ]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps gateway-service --force-recreate --remove-orphans
 
-update:staging:test:auth:
+update:auth:test:
   extends:
-    - .staging
+    - .staging-test
   only: [testing]
-  needs: [ "update:staging:test:config" ]
+  needs: [ "update:config:test" ]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps auth-service --force-recreate --remove-orphans
 
-update:staging:test:notification:
+update:notification:test:
   extends:
-    - .staging
+    - .staging-test
   only: [testing]
-  needs: [ "update:staging:test:config" ]
+  needs: [ "update:config:test" ]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps notification-service --force-recreate --remove-orphans
-#
-#update:staging:test:frontend-admin:
-#  extends:
-#    - .staging
-#  needs: [ "update:staging:test:config" ]
-#  only: [testing]
-#  script:
-#    - cd deploy/staging
-#    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-#    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps frontend-admin-service --force-recreate --remove-orphans
 
-update:staging:test:frontend:
+update:frontend-admin:test:
   extends:
-    - .staging
-  needs: [ "update:staging:test:config" ]
+    - .staging-test
+  needs: [ "update:config:test" ]
+  only: [testing]
+  script:
+    - cd deploy/staging
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps frontend-admin-service --force-recreate --remove-orphans
+
+update:frontend:test:
+  extends:
+    - .staging-test
+  needs: [ "update:config:test" ]
   only: [testing]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps frontend-service --force-recreate --remove-orphans
 
-update:staging:test:media-server:
+update:media-server:test:
   extends:
-    - .staging
-  needs: [ "update:staging:test:config" ]
+    - .staging-test
+  needs: [ "update:config:test" ]
   only: [testing]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps media-server-service --force-recreate --remove-orphans
 
-update:staging:test:meeting-socket:
+update:meeting-socket:test:
   extends:
-    - .staging
-  needs: [ "update:staging:test:config" ]
+    - .staging-test
+  needs: [ "update:config:test" ]
   only: [testing]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps meeting-socket-service --force-recreate --remove-orphans
 
-update:staging:test:payment:
+update:payment:test:
   extends:
-    - .staging
-  needs: [ "update:staging:test:config" ]
+    - .staging-test
+  needs: [ "update:config:test" ]
   only: [testing]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps payment-service --force-recreate --remove-orphans
 
-update:staging:test:scaling:
+update:scaling:test:
   extends:
-    - .staging
-  needs: [ "update:staging:test:config" ]
+    - .staging-test
+  needs: [ "update:config:test" ]
   only: [testing]
   script:
     - cd deploy/staging
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.yml -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --no-deps scaling-service --force-recreate --remove-orphans
 
-update:staging:test:socket:
+update:socket:test:
   extends:
-    - .staging
-  needs: [ "update:staging:test:config" ]
+    - .staging-test
+  needs: [ "update:config:test" ]
   only: [testing]
   script:
     - cd deploy/staging

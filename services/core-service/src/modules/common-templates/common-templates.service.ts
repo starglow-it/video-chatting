@@ -210,7 +210,7 @@ export class CommonTemplatesService {
         url: imageUrl,
         resolution: resolution?.[1],
         size: fileStats.size,
-        mimeType: 'image/png',
+        mimeType: 'image/webp',
         key: uploadKey,
       });
     });

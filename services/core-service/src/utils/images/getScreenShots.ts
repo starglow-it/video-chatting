@@ -21,7 +21,7 @@ export const getScreenShots = async (
           ? [
               '-f image2',
               '-vframes 1',
-              '-vcodec png',
+              '-vcodec libwebp',
               '-f rawvideo',
               `-s ${resolution.value}`,
               '-ss 00:00:01',
@@ -36,7 +36,7 @@ export const getScreenShots = async (
           reject(err);
         })
         .outputOptions(options)
-        .output(`${outputPath}/${uuidv4()}_${resolution.key}.png`)
+        .output(`${outputPath}/${uuidv4()}_${resolution.key}.webp`)
         .run();
     });
   });

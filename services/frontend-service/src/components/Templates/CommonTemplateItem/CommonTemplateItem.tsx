@@ -45,7 +45,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
 
     const [showPreview, setShowPreview] = useState(false);
 
-    const isDisabled = Boolean(template.userTemplate);
+    const isDisabled = template.isTemplatePurchased;
 
     const handleShowPreview = useCallback(() => {
         setShowPreview(true);

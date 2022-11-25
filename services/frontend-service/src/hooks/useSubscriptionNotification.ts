@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { NotificationType } from '../store/types';
 import { $isTrial, $profileStore, $subscriptionStore, addNotificationEvent } from '../store';
 
-export const useSubscriptionNotification = (url: string) => {
+export const useSubscriptionNotification = (url?: string) => {
     const router = useRouter();
 
     const subscription = useStore($subscriptionStore);

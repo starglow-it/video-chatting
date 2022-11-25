@@ -25,6 +25,7 @@ import { UserTemplatesService } from './user-templates.service';
 
 // controllers
 import { UserTemplatesController } from './user-templates.controller';
+import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UserTemplatesController } from './user-templates.controller';
     CommonTemplatesModule,
     AwsConnectorModule,
     RoomsStatisticsModule,
+    UserProfileStatisticModule,
     MongooseModule.forFeature([
       { name: UserTemplate.name, schema: UserTemplateSchema },
       { name: SocialLink.name, schema: SocialLinkSchema },

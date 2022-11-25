@@ -23,6 +23,7 @@ import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
 // components
 import { ForgotPassword } from '@components/ForgotPassword/ForgotPassword';
 import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPasswordDialog/EmailResetPasswordDialog';
+import { UserBlockedDialog } from "@components/Dialogs/UserBlockedDialog/UserBlockedDialog";
 
 // shared
 import { CustomImage } from 'shared-frontend/library';
@@ -43,6 +44,7 @@ import {dashboardRoute} from "../../const/client-routes";
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
+import {USER_IS_BLOCKED} from "shared-const";
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -53,6 +55,7 @@ const Component = () => {
     const router = useRouter();
 
     const authState = useStore($authStore);
+    const isLoginPending = useStore(loginUserFx.pending);
 
     const resolver = useYupValidationResolver<{ email: string; password: string }>(
         validationSchema,
@@ -173,7 +176,7 @@ const Component = () => {
                                 <ForgotPassword className={styles.forgotPass} />
                             </CustomGrid>
 
-                            {authState?.error?.message && (
+                            {(authState?.error?.message && authState?.error?.message !== USER_IS_BLOCKED.message) && (
                                 <ErrorMessage
                                     className={styles.errorContainer}
                                     error={authState?.error?.message}
@@ -183,7 +186,7 @@ const Component = () => {
 
                         <CustomButton
                             className={styles.signInBtn}
-                            disabled={!isCredentialsEntered}
+                            disabled={!isCredentialsEntered || isLoginPending}
                             label={<Translation nameSpace="common" translation="buttons.login" />}
                             type="submit"
                         />
@@ -191,6 +194,7 @@ const Component = () => {
                 </FormProvider>
             </CenteredPaper>
             <EmailResetPasswordDialog />
+            <UserBlockedDialog />
         </>
     );
 };

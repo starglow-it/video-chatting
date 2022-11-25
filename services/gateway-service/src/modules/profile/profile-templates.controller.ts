@@ -59,6 +59,8 @@ export class ProfileTemplatesController {
         userId: req.user.userId,
         skip,
         limit,
+        sort: 'usedAt',
+        direction: -1,
       });
 
       return {

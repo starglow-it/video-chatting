@@ -34,7 +34,8 @@ import {
 import { appDialogsApi } from '../dialogs/init';
 
 // types
-import { AppDialogsEnum, Template } from '../types';
+import { AppDialogsEnum } from '../types';
+import {ICommonTemplate} from "shared-types";
 
 // handlers
 import { handleFetchUsersTemplates } from './handlers/handleFetchUsersTemplates';
@@ -72,7 +73,7 @@ $templatesStore.on(getTemplatesFx.doneData, (state, data) => ({
     ...state,
     ...data,
 }));
-$templatePreviewStore.on(setPreviewTemplate, (_state, data: Template | null) => data);
+$templatePreviewStore.on(setPreviewTemplate, (_state, data: ICommonTemplate | null) => data);
 $setUpTemplateStore.on(getTemplateFx.doneData, (state, data) => data);
 $discoveryTemplatesStore.on(getUsersTemplatesFx.doneData, (state, data) => ({
     ...state,

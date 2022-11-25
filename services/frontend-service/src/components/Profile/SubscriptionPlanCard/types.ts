@@ -7,6 +7,7 @@ export type SubscriptionPlanCardProps = {
     isHighlighted?: boolean;
     withTrial?: boolean;
     priceLabel?: string;
+    isTrial?: boolean;
 };
 
 export type TranslationFeatureItem = {

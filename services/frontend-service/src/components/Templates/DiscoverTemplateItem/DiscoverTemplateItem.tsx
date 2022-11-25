@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Fade, Typography } from '@mui/material';
+import { Fade } from '@mui/material';
 import clsx from 'clsx';
 
 // custom
@@ -23,6 +23,7 @@ import styles from './DiscoverTemplateItem.module.scss';
 // types
 import { AppDialogsEnum, UserTemplate } from '../../../store/types';
 import { getClientMeetingUrl } from '../../../utils/urls';
+import {Translation} from "@library/common/Translation/Translation";
 
 const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => {
     const router = useRouter();
@@ -82,7 +83,7 @@ const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => 
                         onClick={handleEnterWaitingRoomTemplate}
                         className={styles.button}
                         label={
-                            <Typography nameSpace="templates" translation="buttons.startMeeting" />
+                            <Translation nameSpace="templates" translation="buttons.startMeeting" />
                         }
                     />
                     <CustomButton
@@ -90,7 +91,7 @@ const DiscoverTemplateItem = memo(({ template }: { template: UserTemplate }) => 
                         className={styles.button}
                         variant="custom-transparent"
                         label={
-                            <Typography nameSpace="templates" translation="buttons.previewSpace" />
+                            <Translation nameSpace="templates" translation="buttons.previewSpace" />
                         }
                     />
                 </CustomGrid>

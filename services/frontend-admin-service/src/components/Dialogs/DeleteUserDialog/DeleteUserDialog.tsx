@@ -10,13 +10,13 @@ import { Translation } from "@components/Translation/Translation";
 import {
     $deleteUserDialogStore,
     $deleteUserIdStore,
-    $usersStore,
+    $usersStore, addNotificationEvent,
     closeAdminDialogEvent,
     deleteUserFx,
     setDeleteUserId
 } from "../../../store";
 
-import {AdminDialogsEnum} from "../../../store/types";
+import { AdminDialogsEnum, NotificationType } from "../../../store/types";
 
 import styles from './DeleteUserDialog.module.scss';
 
@@ -35,11 +35,19 @@ const Component = () => {
         setDeleteUserId(null);
     }, []);
 
-    const handleDeleteUser = useCallback(() => {
+    const handleDeleteUser = useCallback(async () => {
         closeAdminDialogEvent(AdminDialogsEnum.deleteUserDialog);
         setDeleteUserId(null);
-        deleteUserFx({ userId: deleteUserId });
-    }, [deleteUserId]);
+        await deleteUserFx({ userId: deleteUserId });
+        addNotificationEvent({
+            type: NotificationType.userDeleted,
+            message: "users.userDeleted",
+            messageOptions: {
+                username: userData?.fullName || userData?.email,
+            },
+            iconType: "DeleteIcon",
+        })
+    }, [deleteUserId, userData?.fullName]);
 
     return (
         <CustomDialog
@@ -52,7 +60,7 @@ const Component = () => {
                 </CustomTypography>
                 &nbsp;
                 <CustomTypography variant="h4bold">
-                    {userData?.fullName ?? userData?.email}
+                    {userData?.fullName || userData?.email}
                 </CustomTypography>
             </CustomGrid>
             <CustomGrid className={styles.buttons} container alignItems="center" wrap="nowrap" gap={2}>

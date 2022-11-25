@@ -11,6 +11,8 @@ import {
     getSubscriptionsStatisticsFx,
     getPlatformMonetizationStatisticsFx,
     getUsersMonetizationStatisticsFx,
+    resetUsersMonetization,
+    resetPlatformMonetization,
 } from './model';
 
 import { handleGetUsersStatistics } from './handlers/handleGetUsersStatistics';
@@ -31,8 +33,10 @@ $usersStatisticsStore.on(getUsersStatisticsFx.doneData, (sate, data) => data);
 $subscriptionsStatistics.on(getSubscriptionsStatisticsFx.doneData, (sate, data) => data);
 $roomsStatistics.on(getRoomsStatisticsFx.doneData, (sate, data) => data);
 $roomsRatingStatistics.on(getRoomRatingStatisticsFx.doneData, (sate, data) => data);
-$usersMonetizationStatistics.on(getUsersMonetizationStatisticsFx.doneData, (sate, data) => data);
+$usersMonetizationStatistics
+    .on(getUsersMonetizationStatisticsFx.doneData, (sate, data) => data)
+    .reset(resetUsersMonetization);
 $platformMonetizationStatistics.on(
     getPlatformMonetizationStatisticsFx.doneData,
     (sate, data) => data,
-);
+).reset(resetPlatformMonetization);

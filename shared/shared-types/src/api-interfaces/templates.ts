@@ -27,7 +27,9 @@ export interface ICommonTemplate {
   isAudioAvailable: boolean;
   draft: boolean;
   isPublic: boolean;
+  isDeleted?: boolean;
   templateType: 'image' | 'video';
+  isTemplatePurchased?: boolean;
 }
 
 export interface IUserTemplate {

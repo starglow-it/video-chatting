@@ -112,7 +112,7 @@ const Component = () => {
 
     const handleSearchUsers = useCallback(
         async ({ search }: { search: string }) => {
-            searchUsersFx({ skip: (page - 1) * 6, limit: 20, search });
+            searchUsersFx({ skip: (page - 1) * 20, limit: 20, search });
         },
         [page],
     );
@@ -124,7 +124,7 @@ const Component = () => {
 
     useEffect(() => {
         if (page !== prevPage) {
-            getUsersListFx({ skip: (page - 1) * 6, limit: 20, search: userSearch });
+            getUsersListFx({ skip: (page - 1) * 20, limit: 20, search: userSearch });
         } else if (userSearch !== prevSearch) {
             usersSearchRequest({ search: userSearch });
         }

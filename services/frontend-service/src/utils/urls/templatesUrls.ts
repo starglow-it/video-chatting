@@ -1,6 +1,8 @@
-import { ICommonTemplate } from 'shared-types';
+import {ICommonTemplate, QueryParams} from 'shared-types';
 import { serverUrl, templatesScope, usersScope } from './baseData';
 import { HttpMethods, UserTemplate } from '../../store/types';
+
+import frontendConfig from '../../const/config';
 
 export const templatesUrl = `${serverUrl}/${templatesScope}`;
 export const userTemplatesUrl = `${serverUrl}/${usersScope}`;
@@ -25,10 +27,18 @@ export const getCommonTemplateUrl = ({ templateId }: { templateId: ICommonTempla
     method: HttpMethods.Get,
 });
 
-export const getTemplatesUrl = ({ skip = 0, limit = 0 }) => ({
-    url: `${templatesUrl}?skip=${skip}&limit=${limit}`,
-    method: HttpMethods.Get,
-});
+export const getTemplatesUrl = (data: QueryParams) => {
+    const urlHref = new URL(`${frontendConfig.frontendUrl}${templatesUrl}`);
+
+    Object.entries(data).forEach(entry => {
+        urlHref.searchParams.append(entry[0], entry[1])
+    });
+
+    return {
+        url: urlHref.href,
+        method: HttpMethods.Get,
+    }
+};
 
 export const createTemplateUrl = {
     url: `${templatesUrl}`,
@@ -40,7 +50,7 @@ export const updateTemplateUrl = ({ templateId }: { templateId: ICommonTemplate[
     method: HttpMethods.Put,
 });
 
-export const deleteTemplateUrl = ({ templateId }: { templateId: Template['id'] }) => ({
+export const deleteTemplateUrl = ({ templateId }: { templateId: ICommonTemplate['id'] }) => ({
     url: `${templatesUrl}/${templateId}`,
     method: HttpMethods.Delete,
 });

@@ -27,6 +27,7 @@ import {
   USER_EXISTS,
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
+  USER_IS_BLOCKED,
 } from 'shared-const';
 import {
   TokenPairWithUserType,
@@ -258,6 +259,10 @@ export class AuthController {
 
     if (!user.isConfirmed || user.isResetPasswordActive) {
       throw new DataValidationException(USER_NOT_CONFIRMED);
+    }
+
+    if (user.isBlocked) {
+      throw new DataValidationException(USER_IS_BLOCKED);
     }
 
     const result = await this.authService.loginUser(loginUserData);

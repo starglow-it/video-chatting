@@ -15,6 +15,9 @@ import { handleLoginUser } from './handlers/handleLoginUser';
 import { handleCheckUserAuthentication } from './handlers/handleCheckUserAuthentication';
 import { handleLogoutUser } from './handlers/handleLogoutUser';
 import { handleSetUserCountry } from './handlers/handleSetUserCountry';
+import {appDialogsApi} from "../dialogs/init";
+import {AppDialogsEnum, DialogActionPayload} from "../types";
+import {USER_IS_BLOCKED} from "shared-const";
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
@@ -30,6 +33,15 @@ sample({
     clock: loginUserFx.doneData,
     filter: (state, payload) => !payload?.user?.country,
     target: setUserCountryFx,
+});
+
+sample({
+    clock: loginUserFx.fail,
+    filter: (state, payload) => payload.error?.message === USER_IS_BLOCKED.message,
+    fn: (): DialogActionPayload => ({
+        dialogKey: AppDialogsEnum.userBlockedDialog,
+    }),
+    target: appDialogsApi.openDialog,
 });
 
 forward({

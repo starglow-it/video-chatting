@@ -163,11 +163,11 @@ const Component = () => {
             roomsRating.data.map((roomRating, index) => ({
                 id: { label: roomRating.id},
                 position: { label: index +1},
-                roomName: { label: roomRating?.template?.[0]?.name ?? '-' },
-                creator: { label: roomRating?.author?.[0]?.fullName ?? '-' },
+                roomName: { label: roomRating?.template?.[0]?.name || '-' },
+                creator: { label: roomRating?.author?.[0]?.fullName || roomTypeKey === 'custom' ? 'Deleted user' : "The LiveOffice Admin" },
                 [basedOnKey]: { label: formatTableValue(basedOnKey, roomRating[basedOnKey]) },
             })),
-        [roomsRating],
+        [roomsRating, roomTypeKey],
     );
 
     const tableHeadData = useMemo(

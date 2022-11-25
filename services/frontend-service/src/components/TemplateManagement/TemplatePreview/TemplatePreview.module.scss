@@ -1,5 +1,6 @@
 @import "src/styles/rem";
 @import "src/styles/variables";
+@import "src/styles/mixins";
 
 .wrapper {
   position: absolute;
@@ -35,6 +36,7 @@
 .link {
   width: 100%;
   margin: rem(0 0 8px);
+  @extend %text-ellips;
 }
 
 .participants {

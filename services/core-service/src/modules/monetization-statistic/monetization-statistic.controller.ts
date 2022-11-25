@@ -11,7 +11,7 @@ import {
   MonetizationStatisticPeriods,
   MonetizationStatisticTypes,
 } from 'shared-types';
-import { parseBoolean, subtractMonths } from 'shared-utils';
+import { subtractMonths } from 'shared-utils';
 import { StatisticBrokerPatterns } from 'shared-const';
 
 import { withTransaction } from '../../helpers/mongo/withTransaction';
@@ -47,35 +47,22 @@ export class MonetizationStatisticController {
   async checkLastMonthMonetization() {
     this.logger.debug('Start check last month monetization');
 
-    const charges = await this.paymentService.getStripeCharges({
+    const transactionChargesAmount = await this.paymentService.getStripeCharges({
       time: subtractMonths(Date.now(), 1),
+      type: 'transactions',
+    });
+
+    const roomsPurchaseChargesAmount = await this.paymentService.getStripeCharges({
+      time: subtractMonths(Date.now(), 1),
+      type: 'roomsPurchase',
+    });
+
+    const subscriptionsChargesAmount = await this.paymentService.getStripeCharges({
+      time: subtractMonths(Date.now(), 1),
+      type: 'subscription',
     });
 
     return withTransaction(this.connection, async (session) => {
-      const subscriptionsChargesAmount = charges
-        .filter(
-          (charge) =>
-            parseBoolean(charge.metadata.isSubscriptionPurchase, false) &&
-            charge.status === 'succeeded',
-        )
-        .reduce((acc, charge) => acc + charge.amount, 0);
-
-      const roomsChargesAmount = charges
-        .filter(
-          (charge) =>
-            parseBoolean(charge?.metadata?.isRoomPurchase, false) &&
-            charge.status === 'succeeded',
-        )
-        .reduce((acc, charge) => acc + charge.amount, 0);
-
-      const transactionChargesAmount = charges
-        .filter(
-          (charge) =>
-            parseBoolean(charge?.metadata?.isTransactionCharge, false) &&
-            charge.status === 'succeeded',
-        )
-        .reduce((acc, charge) => acc + charge.amount, 0);
-
       await this.monetizationStatisticService.updateOne({
         query: {
           key: MonetizationStatisticPeriods.Month,
@@ -90,7 +77,7 @@ export class MonetizationStatisticController {
           key: MonetizationStatisticPeriods.Month,
           type: MonetizationStatisticTypes.PurchaseRooms,
         },
-        data: { value: roomsChargesAmount },
+        data: { value: roomsPurchaseChargesAmount },
         session,
       });
 

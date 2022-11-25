@@ -25,8 +25,7 @@ import { ConfigModule } from '../config/config.module';
           const {
             rabbitMqUser,
             rabbitMqPass,
-            rabbitMqCoreHost,
-            rabbitMqCorePort,
+            rabbitMqHost,
             rabbitMqSocketQueue,
           } = await config.getAll();
 
@@ -34,7 +33,7 @@ import { ConfigModule } from '../config/config.module';
             transport: Transport.RMQ,
             options: {
               urls: [
-                `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqCoreHost}:${rabbitMqCorePort}`,
+                `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`,
               ],
               queue: rabbitMqSocketQueue,
               queueOptions: {

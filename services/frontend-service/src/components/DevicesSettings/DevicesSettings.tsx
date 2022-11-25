@@ -45,6 +45,7 @@ import {
     sendCancelAccessMeetingRequestEvent,
     sendEnterMeetingRequestSocketEvent,
     sendEnterWaitingRoomSocketEvent,
+    setActiveStreamEvent,
     setIsAudioActiveEvent,
     setIsCameraActiveEvent,
     toggleIsAuraActive,
@@ -61,6 +62,7 @@ import styles from './DevicesSettings.module.scss';
 
 import { booleanSchema, simpleStringSchema } from '../../validation/common';
 import { templatePriceSchema } from '../../validation/payments/templatePrice';
+import {BackgroundManager} from "../../helpers/media/applyBlur";
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -152,12 +154,24 @@ const Component = () => {
     }, [isCameraActive]);
 
     const handleJoinMeeting = useCallback(async () => {
+        const clonedStream = changeStream?.clone();
+
+        await BackgroundManager.init();
+
+        const streamWithBackground = await BackgroundManager.applyBlur(
+            clonedStream,
+            isCameraActive,
+            isAuraActive,
+        );
+
+        setActiveStreamEvent(streamWithBackground);
+
         joinMeetingEvent({
             isSettingsAudioBackgroundActive,
             settingsBackgroundAudioVolume,
             needToRememberSettings,
         });
-    }, [isSettingsAudioBackgroundActive, settingsBackgroundAudioVolume, needToRememberSettings]);
+    }, [isCameraActive, isAuraActive, isSettingsAudioBackgroundActive, settingsBackgroundAudioVolume, needToRememberSettings, changeStream]);
 
     const handleCancelRequest = useCallback(async () => {
         await sendCancelAccessMeetingRequestEvent();

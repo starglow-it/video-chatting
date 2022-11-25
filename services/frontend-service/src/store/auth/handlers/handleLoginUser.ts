@@ -20,6 +20,8 @@ export const handleLoginUser = async (params: LoginUserPayload) => {
     }
 
     if (!response.success) {
+        // TODO: dont forget handle other errors
+        // throw new Error(response?.error?.message);
         return {
             isAuthenticated: false,
             error: response?.error,

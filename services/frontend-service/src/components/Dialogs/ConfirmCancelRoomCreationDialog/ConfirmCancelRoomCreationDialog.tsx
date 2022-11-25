@@ -8,7 +8,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomButton } from 'shared-frontend/library';
 
 // stores
-import { Typography } from '@mui/material';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
@@ -17,6 +16,7 @@ import { AppDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './ConfirmCancelRoomCreationDialog.module.scss';
+import { Translation } from '@library/common/Translation/Translation';
 
 const Component = ({ onConfirm }: ConfirmCancelRoomCreationDialogProps) => {
     const { confirmCancelRoomCreationDialog } = useStore($appDialogsStore);
@@ -56,14 +56,14 @@ const Component = ({ onConfirm }: ConfirmCancelRoomCreationDialogProps) => {
                     <CustomButton
                         variant="custom-cancel"
                         label={
-                            <Typography nameSpace="createRoom" translation="cancel.buttons.stay" />
+                            <Translation nameSpace="createRoom" translation="cancel.buttons.stay" />
                         }
                         onClick={handleClose}
                     />
                     <CustomButton
                         variant="custom-danger"
                         label={
-                            <Typography
+                            <Translation
                                 nameSpace="createRoom"
                                 translation="cancel.buttons.cancel"
                             />

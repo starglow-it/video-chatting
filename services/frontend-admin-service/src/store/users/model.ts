@@ -1,4 +1,4 @@
-import {ErrorState, ICommonUser, QueryParams, UserProfile, UserProfileId} from 'shared-types';
+import {ErrorState, ICommonUser, QueryParams, UserProfileId} from 'shared-types';
 import { usersDomain } from '../domains';
 import {
     BlockUserParams, DeleteUserParams,

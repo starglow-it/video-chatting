@@ -59,12 +59,15 @@ class BackgroundManagerInstance {
             let blurTrack;
 
             if (videoTrack && isAuraActive && this.videoEffects) {
-                if (!isCameraActive) videoTrack.enabled = true;
+                videoTrack.enabled = true;
 
                 blurTrack = await this.videoEffects.setEffect(this.effectBackground, videoTrack);
 
                 stream.removeTrack(videoTrack);
                 stream.addTrack(blurTrack);
+
+                videoTrack.enabled = isCameraActive;
+                blurTrack.enabled = isCameraActive;
             } else {
                 this.destroy();
             }

@@ -28,7 +28,7 @@ const CustomTooltip = memo(
         return (
             <Tooltip
                 classes={{
-                    popper: clsx(styles.popper, popperClassName, {
+                    popper: clsx(popperClassName, styles.popper, {
                         [styles.blackGlass]: variant === 'black-glass',
                         [styles.white]: variant === 'white',
                     }),

@@ -71,8 +71,9 @@ const Component = () => {
 
             if (templateId && typeof templateId === 'string') {
                 const response = await getTemplateFx({ templateId });
+
                 if (response) {
-                    onSetUpdateUrl(`${getCreateRoomUrl(template?.id)}?step=privacy`);
+                    onSetUpdateUrl(`${getCreateRoomUrl(response?.id)}?step=privacy`);
 
                     setTemplate(response);
                 }

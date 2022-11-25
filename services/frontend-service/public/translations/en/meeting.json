@@ -130,5 +130,10 @@
     "title": "Meeting was canceled",
     "text": "Host run out of meeting minutes. Contact them\nto resolve the issues.",
     "button": "Homepage"
+  },
+  "hostDeleted": {
+    "title": "Meeting was finished",
+    "text": "The meeting has been finished as the host's account was deleted by TheLiveOffice admin. Sorry for inconvenience",
+    "button": "Homepage"
   }
 }

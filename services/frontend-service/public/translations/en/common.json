@@ -39,6 +39,7 @@
     "login": "Sign in",
     "save": "Save",
     "cancel": "Cancel",
+    "close": "Close",
     "quit": "Quit",
     "stay": "Stay",
     "saveAndQuit": "Save and Quit",
@@ -63,6 +64,9 @@
       "googleMobile": "Google",
       "linkedIn": "Sign in with LinkedIn",
       "linkedInMobile": "LinkedIn"
+    },
+    "blocked": {
+      "text": "Your account has been blocked by The Live Office Admin.\nFor details please contact us via email {{supportEmail}}"
     }
   },
   "forgotPassword": "Forgot password?",
@@ -80,6 +84,8 @@
   "footer": {
     "company": "© TheLiveOffice, 2021",
     "agreements": "Agreements",
-    "support": "Support"
+    "support": "Support",
+    "howTo": "How To",
+    "faq": "FAQ"
   }
 }

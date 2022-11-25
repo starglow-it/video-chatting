@@ -2,12 +2,13 @@ import React, { memo, useCallback } from 'react';
 import { Controller } from 'react-hook-form';
 import { Autocomplete, AutocompleteRenderInputParams, FilterOptionsState } from '@mui/material';
 import { matchSorter } from 'match-sorter';
+import clsx from "clsx";
 
 // icons
 import { RoundCloseIcon } from '../../../icons';
 
 // custom
-import { CustomChip, CustomInput } from '../../custom';
+import {CustomChip, CustomGrid, CustomInput} from '../../custom';
 
 // types
 import { CustomAutocompleteProps } from './types';
@@ -19,13 +20,17 @@ const Component = <ValueType extends { label: string; key: string; value: string
     control,
     error,
     options,
+    errorComponent,
     ...props
 }: CustomAutocompleteProps<ValueType>) => {
     const renderInput = useCallback(
         (inputProps: AutocompleteRenderInputParams, value: string) => (
-            <CustomInput value={value} color="secondary" error={error} {...inputProps} />
+            <CustomGrid container direction="column">
+                <CustomInput value={value} color="secondary" error={error} {...inputProps} />
+                {errorComponent}
+            </CustomGrid>
         ),
-        [error],
+        [error, errorComponent],
     );
 
     const filterOptions = useCallback(
@@ -49,15 +54,20 @@ const Component = <ValueType extends { label: string; key: string; value: string
                     }}
                     renderInput={inputProps => renderInput(inputProps, value)}
                     renderTags={(tagValue, getTagProps) =>
-                        tagValue.map((option, index) => (
-                            <CustomChip
-                                variant="custom-squared"
-                                label={option.label}
-                                deleteIcon={<RoundCloseIcon width="22px" height="22px" />}
-                                size="small"
-                                {...getTagProps({ index })}
-                            />
-                        ))
+                        tagValue.map((option, index) => {
+                            const tagProps = getTagProps({ index })
+
+                            return (
+                                <CustomChip
+                                    variant="custom-squared"
+                                    label={option.label}
+                                    deleteIcon={<RoundCloseIcon width="22px" height="22px" />}
+                                    size="small"
+                                    {...tagProps}
+                                    className={clsx(styles.tag, tagProps.className)}
+                                />
+                            )
+                        })
                     }
                     onChange={(_, data) => {
                         onChange(data?.filter(tag => typeof tag !== 'string'));

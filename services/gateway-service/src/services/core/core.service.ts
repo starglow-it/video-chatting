@@ -42,7 +42,7 @@ import {
   ICommonUserStatistic,
   ResetTrialNotificationPayload,
   SearchUsersPayload,
-  ManageUserRightsPayload,
+  ManageUserRightsPayload, EntityList, UpdateUserTemplateUsageNumberPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -177,7 +177,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async manageUserRights(payload: ManageUserRightsPayload) {
+  async manageUserRights(payload: ManageUserRightsPayload): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.ManageUserRights };
 
     return this.client.send(pattern, payload).toPromise();
@@ -227,7 +227,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async searchUsers(payload: SearchUsersPayload): Promise<ICommonUser[]> {
+  async searchUsers(payload: SearchUsersPayload): Promise<EntityList<ICommonUser>> {
     const pattern = { cmd: UserBrokerPatterns.SearchUsers };
 
     return this.client.send(pattern, payload).toPromise();
@@ -235,6 +235,12 @@ export class CoreService {
 
   async getCountryStatistics(payload: any): Promise<ICountryStatistic[]> {
     const pattern = { cmd: CoreBrokerPatterns.GetCountryStatistics };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async updateCountryStatistics(payload: any): Promise<ICountryStatistic> {
+    const pattern = { cmd: CoreBrokerPatterns.UpdateCountryStatistics };
 
     return this.client.send(pattern, payload).toPromise();
   }
@@ -273,15 +279,25 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async sendCustom(pattern, payload) {
+  async updateUserTemplateUsageNumber(
+    payload: UpdateUserTemplateUsageNumberPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: TemplateBrokerPatterns.UpdateUserTemplateUsageNumber,
+    };
+
     return this.client.send(pattern, payload).toPromise();
   }
 
   async resetTrialNotification(
-    payload: ResetTrialNotificationPayload,
+      payload: ResetTrialNotificationPayload,
   ): Promise<any> {
     const pattern = { cmd: UserBrokerPatterns.ResetTrialNotification };
 
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async sendCustom(pattern, payload) {
     return this.client.send(pattern, payload).toPromise();
   }
 }

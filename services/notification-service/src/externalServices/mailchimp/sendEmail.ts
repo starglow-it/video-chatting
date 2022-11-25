@@ -1,10 +1,9 @@
 import Mailchimp, {
-    MessageRecipient,
+    MessageRecipient, MessagesSendTemplateRequest,
 } from '@mailchimp/mailchimp_transactional';
 
 import { SendEmailRequest } from 'shared-types';
 import { getConfigVar } from '../../services/config';
-import { Readable } from 'stream';
 
 let client: Mailchimp.ApiClient | null;
 
@@ -47,11 +46,12 @@ export const sendEmail = async ({
 
         if (!targetTemplate) return;
 
-        await emailClient.messages.sendTemplate({
-            key: apiKey,
+        let buff = Buffer.from(icalEventContent ?? '');
+        let content = buff.toString('base64');
+
+        const sendTemplateData: MessagesSendTemplateRequest = {
             template_name: targetTemplate.slug,
             template_content: [],
-            inline_css: true,
             message: {
                 subject: targetTemplate.name,
                 from_email: smtpUser,
@@ -73,19 +73,20 @@ export const sendEmail = async ({
                         content: 'Video conference platform',
                     },
                 ],
-                // @ts-ignore
                 attachments: icalEventContent
                     ? [
-                          {
-                              type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
-                              name: 'invite.ics',
-                              // @ts-ignore
-                              content: Readable.from(icalEventContent.data),
-                          },
-                      ]
+                        {
+                            type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
+                            name: 'invite.ics',
+                            // @ts-ignore
+                            content,
+                        },
+                    ]
                     : [],
             },
-        });
+        }
+
+        await emailClient.messages.sendTemplate(sendTemplateData);
 
         return;
     }

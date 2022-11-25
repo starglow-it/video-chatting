@@ -75,10 +75,15 @@ export class MeetingsController {
         templateId: userTemplate.id,
       });
 
-      this.coreService.updateRoomRatingStatistic({
+      await this.coreService.updateRoomRatingStatistic({
         templateId: commonTemplate.id,
         userId: commonTemplate.author,
         ratingKey: 'calls',
+        value: 1,
+      });
+
+      await this.coreService.updateUserTemplateUsageNumber({
+        templateId: updatedUserTemplate.id,
         value: 1,
       });
 

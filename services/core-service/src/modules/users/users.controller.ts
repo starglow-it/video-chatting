@@ -217,7 +217,7 @@ export class UsersController {
             }
           }
 
-          this.userProfileStatisticService.create({
+          await this.userProfileStatisticService.create({
             data: {
               user: newUser._id,
             },
@@ -377,15 +377,19 @@ export class UsersController {
         ? escapeRegexString(options?.search)
         : '';
 
+      const queryRegex = { $regex: searchRegexStr, $options: 'i' };
+
+      const finalQuery = {
+        ...query,
+        $or: [
+          { companyName: queryRegex },
+          { fullName: queryRegex },
+          { email: queryRegex },
+        ],
+      };
+
       const users = await this.usersService.findUsers({
-        query: {
-          ...query,
-          $or: [
-            { companyName: { $regex: searchRegexStr, $options: 'i' } },
-            { fullName: { $regex: searchRegexStr, $options: 'i' } },
-            { email: { $regex: searchRegexStr, $options: 'i' } },
-          ],
-        },
+        query: finalQuery,
         options: {
           skip: options?.skip,
           limit: options?.limit,
@@ -396,10 +400,20 @@ export class UsersController {
         session,
       });
 
-      return plainToInstance(CommonUserDTO, users, {
+      const count = await this.usersService.count({
+        query: finalQuery,
+        session
+      });
+
+      const parsedUsers = plainToInstance(CommonUserDTO, users, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
+
+      return {
+        list: parsedUsers,
+        count,
+      }
     });
   }
 

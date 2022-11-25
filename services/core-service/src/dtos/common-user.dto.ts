@@ -1,7 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import {
   IProfileAvatar,
-  IUserTemplate,
   IBusinessCategory,
   ILanguage,
   ICommonUser,
@@ -11,7 +10,6 @@ import {
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { CommonLanguageDTO } from './common-language.dto';
 import { CommonSocialLinkDTO } from './common-social-link.dto';
-import { UserTemplateDTO } from './user-template.dto';
 import { ProfileAvatarDTO } from './profile-avatar.dto';
 
 export class CommonUserDTO implements ICommonUser {
@@ -67,10 +65,6 @@ export class CommonUserDTO implements ICommonUser {
   @Expose()
   @Type(() => CommonSocialLinkDTO)
   socials: ISocialLink[];
-
-  @Expose()
-  @Type(() => UserTemplateDTO)
-  templates: IUserTemplate[];
 
   @Expose()
   @Type(() => ProfileAvatarDTO)

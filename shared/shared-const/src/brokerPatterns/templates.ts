@@ -18,4 +18,5 @@ export enum TemplateBrokerPatterns {
   UpdateTemplate = 'update_template',
   UploadUserTemplateFile = 'upload_user_template_file',
   CountUserTemplates = 'count_user_templates',
+  UpdateUserTemplateUsageNumber = 'update_user_template_usage_number',
 }

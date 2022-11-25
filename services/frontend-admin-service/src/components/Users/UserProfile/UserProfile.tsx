@@ -51,7 +51,7 @@ const Component = ({}, ref) => {
             });
             getUserProfileTemplateFx({
                 userId: activeUserId,
-                sort: 'usedAt',
+                sort: 'timesUsed',
                 direction: -1,
                 limit: 1,
             });

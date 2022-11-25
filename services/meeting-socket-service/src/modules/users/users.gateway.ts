@@ -68,6 +68,8 @@ export class UsersGateway extends BaseGateway {
         session,
       );
 
+      if (!user) return;
+
       const meeting = await this.meetingsService.findById(
         user.meeting._id,
         session,

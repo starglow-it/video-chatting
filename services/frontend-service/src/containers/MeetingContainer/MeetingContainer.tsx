@@ -22,6 +22,7 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
+import {HostUserDeletedDialog} from "@components/Dialogs/HostUserDeletedDialog/HostUserDeletedDialog";
 
 // stores
 import { useToggle } from '@hooks/useToggle';
@@ -36,6 +37,7 @@ import {
     resetRoomStores,
 } from '../../store';
 import {
+    $changeStreamStore,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -46,7 +48,7 @@ import {
     initiateMeetingSocketConnectionEvent,
     joinMeetingEvent,
     joinRoomBeforeMeetingSocketEvent,
-    sendJoinWaitingRoomSocketEvent,
+    sendJoinWaitingRoomSocketEvent, setActiveStreamEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
     setCurrentAudioDeviceEvent,
@@ -101,6 +103,7 @@ const MeetingContainer = memo(() => {
     const isOwner = useStore($isOwner);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
+    const changeStream = useStore($changeStreamStore);
 
     const { isMobile } = useBrowserDetect();
 
@@ -187,6 +190,18 @@ const MeetingContainer = memo(() => {
                         accessStatus: MeetingAccessStatusEnum.InMeeting,
                     });
 
+                    const clonedStream = changeStream?.clone();
+
+                    await BackgroundManager.init();
+
+                    const streamWithBackground = await BackgroundManager.applyBlur(
+                        clonedStream,
+                        savedSettings.cameraActiveSetting,
+                        savedSettings.auraSetting,
+                    );
+
+                    setActiveStreamEvent(streamWithBackground);
+
                     joinMeetingEvent({
                         isSettingsAudioBackgroundActive: savedSettings.backgroundAudioSetting,
                         settingsBackgroundAudioVolume: savedSettings.backgroundAudioVolumeSetting,
@@ -224,6 +239,7 @@ const MeetingContainer = memo(() => {
                 </ConditionalRender>
             )}
             <HostTimeExpiredDialog />
+            <HostUserDeletedDialog />
             <MeetingErrorDialog />
         </>
     );

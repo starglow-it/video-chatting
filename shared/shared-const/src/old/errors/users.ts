@@ -24,3 +24,8 @@ export const USER_NOT_CONFIRMED = {
   message: 'user.notConfirmed',
   errorCode: 107,
 };
+
+export const USER_IS_BLOCKED = {
+  message: 'user.isBlocked',
+  errorCode: 108,
+};

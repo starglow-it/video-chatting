@@ -25,11 +25,11 @@ import { ArrowLeftIcon } from 'shared-frontend/icons';
 import { Translation } from '@library/common/Translation/Translation';
 import { $windowSizeStore } from '../../../store';
 
-// const
-import frontendConfig from '../../../const/config';
-
 // styles
 import styles from './TemplatePreview.module.scss';
+
+// const
+import frontendConfig from '../../../const/config';
 
 const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePreviewProps) => {
     const { control } = useFormContext();

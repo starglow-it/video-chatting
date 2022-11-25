@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { memo, useCallback, useMemo } from 'react';
+import {FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -53,29 +53,25 @@ const validationSchema = yup.object({
     message: simpleStringSchemaWithLength(MAX_CONTACT_US_MESSAGE_LENGTH).required('required'),
 });
 
-const defaultValues: ContactFormPayload = {
-    email: '',
-    name: '',
-    message: '',
-};
-
 const Component = () => {
     const router = useRouter();
+    const profile = useStore($profileStore);
 
     const resolver = useYupValidationResolver<ContactFormPayload>(validationSchema);
 
     const methods = useForm<ContactFormPayload>({
         resolver,
-        defaultValues,
+        defaultValues: {
+            email: profile.email,
+            name: profile.fullName,
+            message: '',
+        },
     });
-
-    const profile = useStore($profileStore);
 
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
         formState: { errors },
     } = methods;
 
@@ -92,18 +88,6 @@ const Component = () => {
     const { value: isAppealSent, onSwitchOn: onAppealSent } = useToggle(false);
 
     const isSendContactFormPending = useStore(sendContactFormFx.pending);
-
-    useEffect(() => {
-        if (profile.email) {
-            setValue('email', profile.email);
-        }
-    }, [profile.email]);
-
-    useEffect(() => {
-        if (profile.fullName) {
-            setValue('name', profile.fullName);
-        }
-    }, [profile.fullName]);
 
     const handleChangeMessage = useCallback(async event => {
         if (event.target.value.length > MAX_CONTACT_US_MESSAGE_LENGTH) {
@@ -140,122 +124,151 @@ const Component = () => {
 
     return (
         <CustomPaper className={styles.wrapper}>
-            <form onSubmit={onSubmit}>
-                <ConditionalRender condition={!isAppealSent}>
-                    <CustomGrid container direction="column" alignItems="center">
-                        <CustomTypography
-                            nameSpace="static"
-                            translation="contacts.form.title"
-                            variant="h3bold"
-                            className={styles.title}
-                        />
-                        <CustomGrid item container justifyContent="center">
+            <FormProvider {...methods}>
+                <form onSubmit={onSubmit}>
+                    <ConditionalRender condition={!isAppealSent}>
+                        <CustomGrid container direction="column" alignItems="center">
                             <CustomTypography
                                 nameSpace="static"
-                                translation="contacts.form.description"
-                                className={styles.description}
+                                translation="contacts.form.title"
+                                variant="h3bold"
+                                className={styles.title}
                             />
-                            <CustomLink href={`mailto:${frontendConfig.supportEmail}`}>
-                                {frontendConfig.supportEmail}
-                            </CustomLink>
-                        </CustomGrid>
-                        <CustomTypography
-                            nameSpace="static"
-                            translation="contacts.form.yourDetails"
-                            variant="body1bold"
-                            className={styles.subtitle}
-                        />
-                        <CustomGrid container flexWrap="nowrap" gap={3}>
-                            <CustomInput
-                                nameSpace="static"
-                                translation="contacts.form.inputs.name.placeholder"
-                                error={errorName}
-                                {...nameProps}
-                            />
-                            <CustomInput
-                                nameSpace="static"
-                                translation="contacts.form.inputs.email.placeholder"
-                                error={errorEmail}
-                                {...emailProps}
-                            />
-                        </CustomGrid>
-                        <CustomTypography
-                            nameSpace="static"
-                            translation="contacts.form.message"
-                            variant="body1bold"
-                            className={styles.subtitle}
-                        />
-                        <CustomGrid container>
-                            <CustomInput
-                                multiline
-                                rows={3}
-                                nameSpace="static"
-                                translation="contacts.form.inputs.message.placeholder"
-                                error={errorMessage}
-                                onChange={handleChangeMessage}
-                                {...restMessageProps}
-                            />
-                        </CustomGrid>
-                        <CustomCheckbox
-                            onChange={onToggleSubmitButtonEnabled}
-                            label={
-                                <Translation
+                            <CustomGrid item container justifyContent="center">
+                                <CustomTypography
                                     nameSpace="static"
-                                    translation="contacts.form.checkbox"
+                                    translation="contacts.form.description"
+                                    className={styles.description}
                                 />
-                            }
-                            labelClassName={styles.checkbox}
-                        />
-                        {isSendContactFormPending ? (
-                            <WiggleLoader className={styles.loader} />
-                        ) : (
+                                <CustomLink href={`mailto:${frontendConfig.supportEmail}`}>
+                                    {frontendConfig.supportEmail}
+                                </CustomLink>
+                            </CustomGrid>
+                            <CustomTypography
+                                nameSpace="static"
+                                translation="contacts.form.yourDetails"
+                                variant="body1bold"
+                                className={styles.subtitle}
+                            />
+                            <CustomGrid container flexWrap="nowrap" gap={3}>
+                                <CustomInput
+                                    nameSpace="static"
+                                    translation="contacts.form.inputs.name.placeholder"
+                                    error={errorName}
+                                    {...nameProps}
+                                />
+                                <CustomInput
+                                    nameSpace="static"
+                                    translation="contacts.form.inputs.email.placeholder"
+                                    error={errorEmail}
+                                    {...emailProps}
+                                />
+                            </CustomGrid>
+                            <CustomTypography
+                                nameSpace="static"
+                                translation="contacts.form.message"
+                                variant="body1bold"
+                                className={styles.subtitle}
+                            />
+                            <CustomGrid container>
+                                <CustomInput
+                                    multiline
+                                    rows={3}
+                                    nameSpace="static"
+                                    translation="contacts.form.inputs.message.placeholder"
+                                    error={errorMessage}
+                                    onChange={handleChangeMessage}
+                                    {...restMessageProps}
+                                />
+                            </CustomGrid>
+                            <CustomCheckbox
+                                onChange={onToggleSubmitButtonEnabled}
+                                label={
+                                    <CustomGrid>
+                                        <CustomTypography
+                                            className={styles.termsText}
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="iAgree"
+                                        />
+                                        &nbsp;
+                                        <CustomLink
+                                            className={clsx(styles.termsText, styles.termsLink)}
+                                            href="/agreements"
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="terms"
+                                        />
+                                        &nbsp;
+                                        <CustomTypography
+                                            className={styles.termsText}
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="and"
+                                        />
+                                        &nbsp;
+                                        <CustomLink
+                                            className={clsx(styles.termsText, styles.termsLink)}
+                                            href="/agreements?section=privacy"
+                                            variant="body2"
+                                            nameSpace="common"
+                                            translation="privacy"
+                                        />
+                                    </CustomGrid>
+                                }
+                                labelClassName={styles.checkbox}
+                            />
+                            {isSendContactFormPending ? (
+                                <WiggleLoader className={styles.loader} />
+                            ) : (
+                                <CustomButton
+                                    disabled={!isSubmitButtonEnabled}
+                                    label={
+                                        <Translation
+                                            nameSpace="static"
+                                            translation="contacts.form.actions.submit"
+                                        />
+                                    }
+                                    type="submit"
+                                    className={styles.submitButton}
+                                />
+                            )}
+                        </CustomGrid>
+                    </ConditionalRender>
+                    <ConditionalRender condition={isAppealSent}>
+                        <CustomGrid
+                            container
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            className={styles.success}
+                        >
+                            <DoneIcon width="48px" height="48px" className={styles.icon} />
+                            <CustomTypography
+                                nameSpace="static"
+                                translation="contacts.success.title"
+                                variant="h3bold"
+                                className={clsx(styles.text, styles.title)}
+                            />
+                            <CustomTypography
+                                nameSpace="static"
+                                translation="contacts.success.description"
+                                className={clsx(styles.text, styles.description)}
+                            />
                             <CustomButton
-                                disabled={!isSubmitButtonEnabled}
                                 label={
                                     <Translation
                                         nameSpace="static"
-                                        translation="contacts.form.actions.submit"
+                                        translation="contacts.success.button"
                                     />
                                 }
-                                type="submit"
-                                className={styles.submitButton}
+                                className={styles.button}
+                                onClick={handleClickHomepage}
                             />
-                        )}
-                    </CustomGrid>
-                </ConditionalRender>
-                <ConditionalRender condition={isAppealSent}>
-                    <CustomGrid
-                        container
-                        direction="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        className={styles.success}
-                    >
-                        <DoneIcon width="48px" height="48px" className={styles.icon} />
-                        <CustomTypography
-                            nameSpace="static"
-                            translation="contacts.success.title"
-                            variant="h3bold"
-                            className={clsx(styles.text, styles.title)}
-                        />
-                        <CustomTypography
-                            nameSpace="static"
-                            translation="contacts.success.description"
-                            className={clsx(styles.text, styles.description)}
-                        />
-                        <CustomButton
-                            label={
-                                <Translation
-                                    nameSpace="static"
-                                    translation="contacts.success.button"
-                                />
-                            }
-                            className={styles.button}
-                            onClick={handleClickHomepage}
-                        />
-                    </CustomGrid>
-                </ConditionalRender>
-            </form>
+                        </CustomGrid>
+                    </ConditionalRender>
+                </form>
+            </FormProvider>
         </CustomPaper>
     );
 };

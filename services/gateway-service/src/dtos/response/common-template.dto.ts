@@ -69,5 +69,5 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
 
   @Expose()
   @ApiProperty()
-  userTemplate: string;
+  isTemplatePurchased: boolean;
 }

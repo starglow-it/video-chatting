@@ -8,7 +8,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomButton } from 'shared-frontend/library';
 
 // stores
-import { Typography } from '@mui/material';
 import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
@@ -17,6 +16,7 @@ import { AppDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './ConfirmCancelChangesDialog.module.scss';
+import { Translation } from '@library/common/Translation/Translation';
 
 const Component = ({ onClose }: ConfirmCancelChangesDialogProps) => {
     const { editMeetingTemplateDialog } = useStore($appDialogsStore);
@@ -55,11 +55,11 @@ const Component = ({ onClose }: ConfirmCancelChangesDialogProps) => {
                 <CustomGrid container wrap="nowrap" gap={2}>
                     <CustomButton
                         variant="custom-cancel"
-                        label={<Typography nameSpace="meeting" translation="buttons.cancel" />}
+                        label={<Translation nameSpace="meeting" translation="buttons.cancel" />}
                         onClick={handleConfirmCancel}
                     />
                     <CustomButton
-                        label={<Typography nameSpace="meeting" translation="buttons.stay" />}
+                        label={<Translation nameSpace="meeting" translation="buttons.stay" />}
                         onClick={handleClose}
                     />
                 </CustomGrid>

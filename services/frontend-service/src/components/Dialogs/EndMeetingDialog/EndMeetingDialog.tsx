@@ -57,9 +57,9 @@ const Component = () => {
 
     const handleEndMeeting = useCallback(async () => {
         handleClose();
-        disconnectFromVideoChatEvent();
-
         sendEndMeetingSocketEvent();
+
+        disconnectFromVideoChatEvent();
 
         await router.push(dashboardRoute);
     }, [meetingTemplate.id]);

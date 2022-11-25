@@ -1,31 +1,19 @@
+import {BadRequestException, Controller, Get, Logger, Param, Query,} from '@nestjs/common';
+import {ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation,} from '@nestjs/swagger';
 import {
-  BadRequestException,
-  Controller,
-  Get,
-  Logger,
-  Param,
-  Query,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiForbiddenResponse,
-  ApiOkResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
-import {
-  ResponseSumType,
-  RoomsStatistics,
-  RoomRatingStatistics,
-  SubscriptionsStatisticsType,
-  UserStatistics,
   ICommonUserStatistic,
+  ResponseSumType,
+  RoomRatingStatistics,
+  RoomsStatistics,
+  SubscriptionsStatisticsType,
   UserRoles,
+  UserStatistics,
 } from 'shared-types';
 
 // services
-import { ConfigClientService } from '../../services/config/config.service';
-import { CoreService } from '../../services/core/core.service';
-import { TemplatesService } from '../templates/templates.service';
+import {ConfigClientService} from '../../services/config/config.service';
+import {CoreService} from '../../services/core/core.service';
+import {TemplatesService} from '../templates/templates.service';
 
 @Controller('statistics')
 export class StatisticsController {
@@ -95,6 +83,7 @@ export class StatisticsController {
       const usersWithSubscriptions = await this.coreService.findUsers({
         query: {
           isConfirmed: true,
+          role: UserRoles.User,
         },
       });
 
@@ -143,7 +132,7 @@ export class StatisticsController {
   async getRoomsStatistics(): Promise<ResponseSumType<RoomsStatistics>> {
     try {
       const commonTemplates = await this.templatesService.getCommonTemplates({
-        query: { draft: false },
+        query: { draft: false, isDeleted: false },
         options: {
           skip: 0,
           limit: 0,

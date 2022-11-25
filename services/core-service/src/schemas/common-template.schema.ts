@@ -128,6 +128,12 @@ export class CommonTemplate {
   isPublic: boolean;
 
   @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  })
+  isDeleted: boolean;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
     required: true,
     default: 'video',

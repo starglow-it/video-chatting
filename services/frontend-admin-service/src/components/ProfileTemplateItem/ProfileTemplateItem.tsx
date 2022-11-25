@@ -73,7 +73,7 @@ const ProfileTemplateItem = memo(({ template }: ProfileTemplateProps) => {
                             <CustomTypography
                                 variant="body2"
                                 color={
-                                    priceInCents ? 'colors.blue.primary' : 'colors.green.primary'
+                                    template.priceInCents ? 'colors.blue.primary' : 'colors.green.primary'
                                 }
                             >
                                 {template.priceInCents

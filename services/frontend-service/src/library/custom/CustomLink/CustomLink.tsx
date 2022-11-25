@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import Link from 'next/link';
-import clsx from 'clsx';
 import { LinkProps } from 'next/dist/client/link';
 import { TypographyProps } from '@mui/material';
 
@@ -9,6 +8,7 @@ import { CustomLinkProps } from '@library/custom/CustomLink/types';
 import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 import styles from './CustomLink.module.scss';
+import {PropsWithClassName} from "shared-frontend";
 
 const CustomLink = memo(
     ({
@@ -17,20 +17,23 @@ const CustomLink = memo(
         translation,
         className,
         children,
+        isExternal,
         ...rest
-    }: CustomLinkProps &
+    }: PropsWithClassName<CustomLinkProps> &
         TypographyProps &
         Partial<TranslationProps> &
         React.PropsWithChildren<LinkProps>) => (
-        <Link href={href}>
+        <Link href={href} {...(isExternal ? { legacyBehavior: true, target: "_blank" } : {})}>
             {nameSpace && translation ? (
-                <CustomTypography
-                    nameSpace={nameSpace}
-                    translation={translation}
-                    color="colors.blue.primary"
-                    className={clsx(styles.link, className)}
-                    {...rest}
-                />
+                <a className={styles.link}>
+                    <CustomTypography
+                        nameSpace={nameSpace}
+                        translation={translation}
+                        color="colors.blue.primary"
+                        className={className}
+                        {...rest}
+                    />
+                </a>
             ) : (
                 children
             )}

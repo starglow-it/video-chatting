@@ -7,7 +7,6 @@ import {
     IPreviewImage,
     IProfileAvatar,
     ISocialLink,
-    IUserTemplate,
     MeetingAccessStatusEnum,
     ProfileTemplatesCount,
     StateWithError,
@@ -69,7 +68,6 @@ export type Profile = {
     socials: ISocialLink[];
     languages: ILanguage[];
     businessCategories: IBusinessCategory[];
-    templates: IUserTemplate[];
     isProfessionalTrialAvailable: boolean;
     shouldShowTrialExpiredNotification: boolean;
 };
@@ -194,6 +192,8 @@ export type AppDialogsState = {
     timeExpiredDialog: boolean;
     hostTimeExpiredDialog: boolean;
     confirmCancelRoomCreationDialog: boolean;
+    userBlockedDialog: boolean;
+    hostUserDeletedDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -217,6 +217,8 @@ export enum AppDialogsEnum {
     timeExpiredDialog = 'timeExpiredDialog',
     confirmCancelRoomCreationDialog = 'confirmCancelRoomCreationDialog',
     hostTimeExpiredDialog = 'hostTimeExpiredDialog',
+    hostUserDeletedDialog = 'hostUserDeletedDialog',
+    userBlockedDialog = 'userBlockedDialog',
 }
 
 export type DialogActionPayload = {

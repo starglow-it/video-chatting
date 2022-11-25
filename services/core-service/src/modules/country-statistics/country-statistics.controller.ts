@@ -44,4 +44,33 @@ export class CountryStatisticsController {
       });
     }
   }
+
+  @MessagePattern({ cmd: CoreBrokerPatterns.UpdateCountryStatistics })
+  async updateCountryStatistics(
+    @Payload() payload: any,
+  ): Promise<ICountryStatistic> {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const countryStatistic = await this.countryStatisticsService.updateOne({
+          query: {
+            key: payload.key,
+          },
+          data: {
+            $inc: { value: payload.value }
+          },
+          session,
+        });
+
+        return plainToInstance(CommonCountryStatisticDTO, countryStatistic, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: 'COUNTRY_STATISTICS_SERVICE',
+      });
+    }
+  }
 }

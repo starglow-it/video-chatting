@@ -3,15 +3,9 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { getTemplatesUrl } from '../../../utils/urls';
 import { EntityList } from '../../types';
 
-const handleFetchTemplates = async ({
-    limit,
-    skip,
-}: QueryParams): Promise<EntityList<ICommonTemplate> | undefined | null> => {
+const handleFetchTemplates = async (payload: QueryParams): Promise<EntityList<ICommonTemplate> | undefined | null> => {
     const response = await sendRequestWithCredentials<EntityList<ICommonTemplate>, ErrorState>(
-        getTemplatesUrl({
-            limit,
-            skip,
-        }),
+        getTemplatesUrl(payload),
     );
 
     if (response.success) {

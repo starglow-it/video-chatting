@@ -48,7 +48,7 @@ function Component<Data extends { id: number | string }>(props: CustomTableProps
                     <ConditionalRender condition={Boolean(ActionsComponent)}>
                         <TableCell
                             key='actions'
-                            className={clsx(styles.tableBodyCell, bodyCellClassName, item[column.key]?.style)}
+                            className={clsx(styles.tableBodyCell, bodyCellClassName)}
                         >
                             <ActionsComponent actionId={item.id} />
                         </TableCell>

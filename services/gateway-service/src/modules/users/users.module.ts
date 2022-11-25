@@ -11,11 +11,17 @@ import { CoreModule } from '../../services/core/core.module';
 import { TemplatesModule } from '../templates/templates.module';
 import { UploadModule } from '../upload/upload.module';
 import {PaymentsModule} from "../payments/payments.module";
+import {SocketModule} from "../../services/socket/socket.module";
 
 @Module({
   imports: [
     PassportModule,
     PaymentsModule,
+    CoreModule,
+    NotificationsModule,
+    TemplatesModule,
+    UploadModule,
+    SocketModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],
@@ -26,10 +32,6 @@ import {PaymentsModule} from "../payments/payments.module";
         };
       },
     }),
-    CoreModule,
-    NotificationsModule,
-    TemplatesModule,
-    UploadModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

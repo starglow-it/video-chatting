@@ -25,6 +25,7 @@ import { emailTemplates } from 'shared-const';
 import {
   EntityList,
   ICommonUser,
+  KickUserReasons,
   ResponseSumType,
   UserRoles,
 } from 'shared-types';
@@ -36,6 +37,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { UploadService } from '../upload/upload.service';
 import { TemplatesService } from '../templates/templates.service';
 import {PaymentsService} from "../payments/payments.service";
+import {SocketService} from "../../services/socket/socket.service";
 
 // dtos
 import {CommonTemplateRestDTO} from "../../dtos/response/common-template.dto";
@@ -58,6 +60,8 @@ import { formatDate } from '../../utils/dateHelpers/formatDate';
 export class UsersController {
   private readonly logger = new Logger();
 
+  frontendUrl: string;
+
   constructor(
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
@@ -65,7 +69,12 @@ export class UsersController {
     private uploadService: UploadService,
     private templatesService: TemplatesService,
     private paymentsService: PaymentsService,
+    private socketService: SocketService,
   ) {}
+
+  async onModuleInit() {
+    this.frontendUrl = await this.configService.get<string>('frontendUrl');
+  }
 
   @Get('/')
   @ApiOperation({ summary: 'List Users' })
@@ -133,7 +142,7 @@ export class UsersController {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };
 
-      const users = await this.coreService.searchUsers({
+      const { list, count } = await this.coreService.searchUsers({
         query,
         options: {
           skip,
@@ -144,13 +153,11 @@ export class UsersController {
         },
       });
 
-      const usersCount = await this.coreService.countUsers(query);
-
       return {
         success: true,
         result: {
-          count: usersCount,
-          list: users,
+          count,
+          list,
         },
       };
     } catch (err) {
@@ -287,9 +294,35 @@ export class UsersController {
     @Param('userId') userId: string,
   ): Promise<ResponseSumType<void>> {
     try {
+      const user = await this.coreService.findUserById({ userId });
+
       await this.coreService.deleteUser({
         userId,
       });
+
+      await this.coreService.updateCountryStatistics({
+        key: user.country,
+        value: -1,
+      });
+
+      if (user.stripeSubscriptionId) {
+        await this.paymentsService.cancelUserSubscription({
+          subscriptionId: user.stripeSubscriptionId,
+        });
+      }
+
+      this.notificationService.sendEmail({
+        to: [{ email: user.email, name: user.fullName ?? user.email }],
+        template: {
+          key: emailTemplates.deletedAccountByAdmin,
+          data: [
+            { name: 'USERNAME', content: `${user.fullName ?? user.email}` },
+            { name: 'SUPPORT_URL', content: `${this.frontendUrl}/support` },
+          ],
+        },
+      });
+
+      this.socketService.kickUserFromMeeting({ userId, reason: KickUserReasons.Deleted });
 
       return {
         success: true,
@@ -327,10 +360,25 @@ export class UsersController {
         value
       });
 
-      if (user.subscriptionId) {
-        await this.paymentsService.cancelUserSubscription({
-          subscriptionId: user.subscriptionId,
-        });
+      if (user.stripeSubscriptionId) {
+        if (user.isBlocked) {
+          await this.paymentsService.cancelUserSubscription({
+            subscriptionId: user.stripeSubscriptionId,
+          });
+
+          this.notificationService.sendEmail({
+            to: [{ email: user.email, name: user.fullName ?? user.email }],
+            template: {
+              key: emailTemplates.blockedAccount,
+              data: [
+                { name: 'USERNAME', content: `${user.fullName ?? user.email}` },
+                { name: 'SUPPORT_URL', content: `${this.frontendUrl}/support` },
+              ],
+            },
+          });
+
+          this.socketService.kickUserFromMeeting({ userId, reason: KickUserReasons.Blocked });
+        }
       }
 
       return {
@@ -367,8 +415,6 @@ export class UsersController {
         userId: req.user.userId,
       });
 
-      const frontendUrl = await this.configService.get('frontendUrl');
-
       this.notificationService.sendEmail({
         to: data.userEmails.map((email) => ({ email, name: email })),
         template: {
@@ -376,7 +422,7 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${frontendUrl}/room/${data.meetingId}`,
+              content: `${this.frontendUrl}/room/${data.meetingId}`,
             },
             { name: 'SENDER', content: `${user.fullName} (${user.email})` },
           ],
@@ -442,8 +488,6 @@ export class UsersController {
     },
   ) {
     try {
-      const frontendUrl = await this.configService.get('frontendUrl');
-
       const senderUser = await this.coreService.findUserById({
         userId: req.user.userId,
       });
@@ -470,7 +514,7 @@ export class UsersController {
 
       const key = `uploads/calendarEvents/${template.id}/${uploadId}/invite.ics`;
 
-      const icsLink = await this.uploadService.uploadFile(content, key);
+      const icsLink = await this.uploadService.uploadFile(Buffer.from(content), key);
 
       const startAtDate = formatDate(startAt, data.timeZone);
 
@@ -480,14 +524,16 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${frontendUrl}/room/${
+              content: `${this.frontendUrl}/room/${
                 template.customLink || template.id
               }`,
             },
             { name: 'DATE', content: startAtDate },
             {
               name: 'SENDER',
-              content: `${senderUser.fullName} (${senderUser.email})`,
+              content: senderUser.fullName
+                  ? `${senderUser.fullName} (${senderUser.email})`
+                  : senderUser.email,
             },
           ],
         },

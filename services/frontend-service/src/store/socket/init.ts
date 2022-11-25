@@ -47,5 +47,10 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             DashboardSubscribeEvents.OnTrialExpired,
             getDashboardSocketSubscribeHandler(DashboardSubscribeEvents.OnTrialExpired),
         );
+
+        socketInstance.on(
+            DashboardSubscribeEvents.KickUser,
+            getDashboardSocketSubscribeHandler(DashboardSubscribeEvents.KickUser),
+        );
     }
 });

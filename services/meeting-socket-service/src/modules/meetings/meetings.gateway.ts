@@ -1086,7 +1086,7 @@ export class MeetingsGateway
               templateId: template.templateId,
             });
 
-        this.coreService.updateRoomRatingStatistic({
+        await this.coreService.updateRoomRatingStatistic({
           templateId: commonTemplate.id,
           userId: commonTemplate.author,
           ratingKey: 'minutes',

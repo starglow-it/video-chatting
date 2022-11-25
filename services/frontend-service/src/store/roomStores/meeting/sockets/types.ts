@@ -12,7 +12,7 @@ export type JoinWaitingRoomPayload = {
     maxParticipants: number;
 };
 
-export type EndMeetingPayload = { meetingId: Meeting['id'] };
+export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
 export type LeaveMeetingPayload = { meetingId: Meeting['id'] };
 export type StartMeetingPayload = { meetingId: Meeting['id']; user: MeetingUser };
 export type EnterMeetingRequestPayload = { meetingId: Meeting['id']; user: MeetingUser };

@@ -1,11 +1,14 @@
 @import "../../../styles/variables";
 @import "../../../styles/rem";
 
-@mixin withHoverAction($activeColor, $hoverColor) {
+@mixin withHoverAction($activeColor, $hoverColor, $textColor) {
   cursor: pointer;
 
   @if $hoverColor != '' {
     &:hover {
+      @if ($textColor != '') {
+        color: $textColor;
+      }
       background: $hoverColor;
       @content
     }
@@ -28,7 +31,7 @@
   cursor: default;
 
   &.withAction {
-    @include withHoverAction('', '');
+    @include withHoverAction('', '', '');
   }
 }
 
@@ -39,7 +42,7 @@
   cursor: default;
 
   &.withAction {
-    @include withHoverAction($dark-red, $light-red);
+    @include withHoverAction($dark-red, $light-red, '');
   }
 }
 
@@ -49,7 +52,7 @@
   backdrop-filter: blur(rem(28px));
 
   &.withAction {
-    @include withHoverAction($dark-white, rgba($normal-gray-scale, 0.4));
+    @include withHoverAction($dark-white, rgba($normal-gray-scale, 0.4), '');
   }
 }
 
@@ -58,7 +61,7 @@
   color: $primary-white;
 
   &.withAction {
-    @include withHoverAction($light-orange, $dark-orange);
+    @include withHoverAction($light-orange, $dark-orange, '');
   }
 }
 
@@ -74,9 +77,7 @@
   transition: color 200ms ease-in-out, background 200ms ease-in-out;
 
   &.withAction {
-    @include withHoverAction("", $primary-white) {
-      color: $primary-black;
-    };
+    @include withHoverAction("", $primary-white, $primary-black);
   }
 }
 
@@ -87,7 +88,7 @@
   transition: color 200ms ease-in-out, background 200ms ease-in-out;
 
   &.withAction {
-    @include withHoverAction("", rgba($primary-black, 0.75));
+    @include withHoverAction("", rgba($primary-black, 0.75), '');
   }
 }
 
@@ -99,8 +100,7 @@
   transition: color 200ms ease-in-out, background 200ms ease-in-out;
 
   &.withAction {
-    color: $primary-white;
-    @include withHoverAction("", rgba($primary-black, 0.5));
+    @include withHoverAction("", rgba($primary-black, 0.5), $primary-white);
   }
 }
 
@@ -115,7 +115,7 @@
   }
 
   &.withAction {
-    @include withHoverAction("", rgba($primary-black, 0.75));
+    @include withHoverAction("", rgba($primary-black, 0.75), '');
   }
 }
 
@@ -129,6 +129,6 @@
   }
 
   &.withAction {
-    @include withHoverAction("", rgba($primary-black, 0.75));
+    @include withHoverAction("", rgba($primary-black, 0.75), '');
   }
 }

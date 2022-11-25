@@ -84,34 +84,15 @@ sample({
         type: result?.isBlocked ? NotificationType.userBlocked : NotificationType.userUnBlocked,
         message: result?.isBlocked ? "users.userBlocked" : "users.userUnBlocked",
         messageOptions: {
-            username: result?.fullName ?? result?.email,
+            username: result?.fullName || result?.email,
         },
         iconType: "LockIcon",
     }),
     target: addNotificationEvent
-})
-
-
-sample({
-    clock: deleteUserFx.done,
-    source: $usersStore,
-    fn: (users, { params }) => {
-        const user = users.find(user => user.id === params.userId);
-
-        return {
-            type: NotificationType.userDeleted,
-            message: "users.userDeleted",
-            messageOptions: {
-                username: user?.fullName ?? user?.email,
-            },
-            iconType: "DeleteIcon",
-        }
-    },
-    target: addNotificationEvent
 });
 
 sample({
-    clock: [blockUserFx, deleteUserFx.done],
+    clock: [blockUserFx.doneData, deleteUserFx.doneData],
     fn: () => "",
     target: setUserProfileIdEvent
 });

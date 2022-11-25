@@ -193,10 +193,12 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             return;
         }
 
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.editMeetingTemplateDialog,
-        });
-    }, [dirtyFieldsCount]);
+        if (isOwner) {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.editMeetingTemplateDialog,
+            });
+        }
+    }, [dirtyFieldsCount, isOwner, isMeetingInfoOpened]);
 
     const handleConfirmClose = useCallback(() => {
         setEditTemplateOpenEvent(false);

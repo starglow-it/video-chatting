@@ -19,7 +19,7 @@ import {
   UpdateUserTemplatePayload,
   IUserTemplate,
   EntityList,
-  CountUserTemplatesPayload,
+  CountUserTemplatesPayload, UpdateUserTemplateUsageNumberPayload,
 } from 'shared-types';
 
 import { TemplateBrokerPatterns } from 'shared-const';
@@ -34,6 +34,7 @@ import { UsersService } from '../users/users.service';
 import { CommonTemplatesService } from '../common-templates/common-templates.service';
 import { LanguagesService } from '../languages/languages.service';
 import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
+import {UserProfileStatisticService} from "../user-profile-statistic/user-profile-statistic.service";
 
 // dtos
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
@@ -52,6 +53,7 @@ export class UserTemplatesController {
     private businessCategoriesService: BusinessCategoriesService,
     private languageService: LanguagesService,
     private roomStatisticService: RoomsStatisticsService,
+    private userProfileStatisticService: UserProfileStatisticService,
   ) {}
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetUserTemplate })
@@ -209,6 +211,13 @@ export class UserTemplatesController {
             session,
           });
         }
+
+        await this.userProfileStatisticService.updateOne({
+          query: { user: user._id },
+          data: {
+            $inc: { roomsUsed: 1 },
+          },
+        });
 
         return plainToClass(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
@@ -563,6 +572,7 @@ export class UserTemplatesController {
               templateId: userTemplate.templateId,
             },
             data: {
+              isDeleted: true,
               isPublic: false,
             },
             session,
@@ -639,6 +649,21 @@ export class UserTemplatesController {
         },
         session,
       });
+    });
+  }
+
+  @MessagePattern({ cmd: TemplateBrokerPatterns.UpdateUserTemplateUsageNumber })
+  async updateUserTemplateUsageNumber(
+    @Payload() payload: UpdateUserTemplateUsageNumberPayload,
+  ): Promise<void> {
+    return withTransaction(this.connection, async (session) => {
+        await this.userTemplatesService.findUserTemplateByIdAndUpdate(
+            payload.templateId,
+            {
+              $inc: { timesUsed: payload.value },
+            },
+            session
+        );
     });
   }
 }

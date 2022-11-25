@@ -8,9 +8,6 @@
   overflow: hidden;
   max-width: rem(334px);
 
-  align-self: center;
-  justify-self: center;
-
   z-index: 10;
 
   &:after {
@@ -125,5 +122,36 @@
   }
 }
 
+.templateParticipant {
+  padding: rem(5px 8px 5px 4px);
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  background: $primary-white;
+  border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  border-radius: rem(6px);
+  text-transform: capitalize;
+  box-shadow: rem(0 4px 10px -2px) rgba($primary-black, 0.1);
+}
+
+.templatePayment {
+  width: min-content;
+  padding: rem(5px 8px 5px 4px);
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  border-radius: rem(6px);
+  text-transform: capitalize;
+  box-shadow: rem(0 4px 10px -2px) rgba($primary-black, 0.1);
+  color: $dark-green;
+
+  &.paid {
+    color: $primary-blue;
+  }
+}
 
 

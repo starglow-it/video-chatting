@@ -100,6 +100,7 @@ const Component = () => {
                 <SubscriptionPlanCard
                     key={product?.product?.id}
                     isActive={profile.subscriptionPlanKey === product?.product?.name}
+                    isTrial={profile.subscriptionPlanKey === product?.product?.name && isTrial}
                     product={product?.product}
                     price={product?.price}
                     onChooseSubscription={handleChooseSubscription}
@@ -111,6 +112,7 @@ const Component = () => {
                 />
             )),
         [
+            isTrial,
             products,
             profile.subscriptionPlanKey,
             profile.isProfessionalTrialAvailable,
@@ -119,7 +121,7 @@ const Component = () => {
     );
 
     const shouldShowManageButton = Boolean(profile.stripeSubscriptionId) && !isTrial;
-    const shouldShowNextRenewalDate = Boolean(nextPaymentDate) && !isTrial && !isGetProductsPending;
+    const shouldShowNextRenewalDate = Boolean(nextPaymentDate) && !isGetProductsPending;
     const planTranslation = `${profile.subscriptionPlanKey || 'House'}${isTrial ? ' (Trial)' : ''}`;
 
     return (
@@ -146,7 +148,7 @@ const Component = () => {
                             className={styles.nextPayment}
                             color="colors.grayscale.normal"
                             nameSpace="subscriptions"
-                            translation="subscriptions.nextPayment"
+                            translation={`subscriptions.${isTrial ? 'expirationDate' : 'nextPayment'}`}
                             options={{ nextPaymentDate }}
                         />
                     </ConditionalRender>

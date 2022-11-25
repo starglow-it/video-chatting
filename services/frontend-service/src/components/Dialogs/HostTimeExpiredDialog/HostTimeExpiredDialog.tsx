@@ -27,7 +27,7 @@ const Component = () => {
 
     const handleClose = () => {
         appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.timeExpiredDialog,
+            dialogKey: AppDialogsEnum.hostTimeExpiredDialog,
         });
         router.push(dashboardRoute);
     };

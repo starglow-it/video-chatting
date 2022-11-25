@@ -54,7 +54,7 @@ const Component = ({
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
 
-    const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
+    const isTimeLimitReached = Boolean(profile?.id) && profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -64,6 +64,9 @@ const Component = ({
 
     const handleChooseTemplate = useCallback(async () => {
         if (previewTemplate?.id) {
+            appDialogsApi.closeDialog({
+                dialogKey: AppDialogsEnum.templatePreviewDialog,
+            });
             onChooseTemplate?.(previewTemplate.id);
         }
     }, [previewTemplate?.id]);

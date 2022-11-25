@@ -29,6 +29,8 @@ import {
     getSubscriptionsStatisticsFx,
     getUsersMonetizationStatisticsFx,
     getUsersStatisticsFx,
+    resetPlatformMonetization,
+    resetUsersMonetization,
 } from '../../store';
 
 import styles from './StatisticsContainer.module.scss';
@@ -41,6 +43,9 @@ const Component = () => {
     const { state: rooms } = useStore($roomsStatistics);
     const { state: usersMonetization } = useStore($usersMonetizationStatistics);
     const { state: platformMonetization } = useStore($platformMonetizationStatistics);
+
+    const isUsersMonetizationStatisticLoading = useStore(getUsersMonetizationStatisticsFx.pending);
+    const isPlatformMonetizationStatisticLoading = useStore(getPlatformMonetizationStatisticsFx.pending);
 
     const [usersPeriodType, setUsersPeriodType] = useState<
         ValuesSwitcherItem<MonetizationStatisticPeriods>
@@ -96,6 +101,7 @@ const Component = () => {
 
     const handleChangeUsersPeriod = useCallback(
         (value: ValuesSwitcherItem<MonetizationStatisticPeriods>) => {
+            resetUsersMonetization();
             setUsersPeriodType(value);
         },
         [],
@@ -103,6 +109,7 @@ const Component = () => {
 
     const handleChangePlatformPeriod = useCallback(
         (value: ValuesSwitcherItem<MonetizationStatisticPeriods>) => {
+            resetPlatformMonetization();
             setPlatformPeriodType(value);
         },
         [],
@@ -171,6 +178,7 @@ const Component = () => {
                             periods={schedulePages}
                             currentPeriod={usersPeriodType}
                             onChangePeriod={handleChangeUsersPeriod}
+                            isDataLoading={isUsersMonetizationStatisticLoading}
                         />
 
                         <MonetizationStatistics
@@ -181,6 +189,7 @@ const Component = () => {
                             periods={schedulePages}
                             currentPeriod={platformPeriodType}
                             onChangePeriod={handleChangePlatformPeriod}
+                            isDataLoading={isPlatformMonetizationStatisticLoading}
                         />
                     </CustomGrid>
                 </Fade>

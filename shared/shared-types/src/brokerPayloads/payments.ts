@@ -47,6 +47,7 @@ export type GetProductCheckoutSessionPayload = {
 
 export type GetStripeChargesPayload = {
   time: number;
+  type?: string;
 };
 
 export type CancelUserSubscriptionPayload = {

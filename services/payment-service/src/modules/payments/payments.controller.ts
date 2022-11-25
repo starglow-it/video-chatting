@@ -488,7 +488,7 @@ export class PaymentsController {
         meetingToken: payload.meetingToken,
         customerEmail: payload.customerEmail,
         customer: payload.customer,
-        trialPeriodDays: payload.withTrial
+        trialPeriodEndTimestamp: payload.withTrial
           ? ['production'].includes(environment)
             ? plan.trialPeriodDays
             : plan.testTrialPeriodDays
@@ -636,6 +636,18 @@ export class PaymentsController {
     payload: GetStripeChargesPayload,
   ) {
     try {
+      if (payload.type === 'subscription') {
+          return this.paymentService.getSubscriptionCharges(payload);
+      }
+
+      if (payload.type === 'transactions') {
+        return this.paymentService.getTransactionsCharges(payload);
+      }
+
+      if (payload.type === 'roomsPurchase') {
+        return this.paymentService.getRoomsPurchaseCharges(payload);
+      }
+
       return this.paymentService.getCharges(payload);
     } catch (err) {
       throw new RpcException({
@@ -646,47 +658,47 @@ export class PaymentsController {
   }
 
   async handleFirstSubscription(invoice: Stripe.Invoice) {
-    const subscription = await this.paymentService.getSubscription(
-      invoice.subscription,
-    );
+      const subscription = await this.paymentService.getSubscription(
+          invoice.subscription,
+      );
 
-    const frontendUrl = await this.configService.get('frontendUrl');
+      const frontendUrl = await this.configService.get('frontendUrl');
 
-    const user = await this.coreService.findUser({
-      stripeSubscriptionId: subscription.id,
-    });
-
-    await this.coreService.updateUser({
-      query: { stripeSubscriptionId: subscription.id },
-      data: {
-        isSubscriptionActive: ['active', 'trialing'].includes(
-          subscription.status,
-        ),
-        renewSubscriptionTimestampInSeconds: subscription.current_period_end,
-      },
-    });
-
-    if (
-      Boolean(user.isSubscriptionActive) === false &&
-      ['active', 'trialing'].includes(subscription.status)
-    ) {
-      this.notificationsService.sendEmail({
-        template: {
-          key: emailTemplates.subscriptionSuccessful,
-          data: [
-            {
-              name: 'BACKURL',
-              content: `${frontendUrl}/dashboard/profile`,
-            },
-            {
-              name: 'USERNAME',
-              content: user.fullName,
-            },
-          ],
-        },
-        to: [{ email: user.email, name: user.fullName }],
+      const user = await this.coreService.findUser({
+        stripeSubscriptionId: subscription.id,
       });
-    }
+
+      await this.coreService.updateUser({
+        query: { stripeSubscriptionId: subscription.id },
+        data: {
+          isSubscriptionActive: ['active', 'trialing'].includes(
+              subscription.status,
+          ),
+          renewSubscriptionTimestampInSeconds: subscription.current_period_end,
+        },
+      });
+
+      if (
+          Boolean(user.isSubscriptionActive) === false &&
+          ['active', 'trialing'].includes(subscription.status)
+      ) {
+        this.notificationsService.sendEmail({
+          template: {
+            key: emailTemplates.subscriptionSuccessful,
+            data: [
+              {
+                name: 'BACKURL',
+                content: `${frontendUrl}/dashboard/profile`,
+              },
+              {
+                name: 'USERNAME',
+                content: user.fullName,
+              },
+            ],
+          },
+          to: [{ email: user.email, name: user.fullName }],
+        });
+      }
   }
 
   async handleSubscriptionUpdate(subscription: Stripe.Subscription) {
@@ -812,10 +824,6 @@ export class PaymentsController {
   }
 
   async handleChargeSuccess(charge: Stripe.Charge) {
-    const isSubscriptionCharge = Boolean(
-      parseInt(charge.metadata.isSubscriptionPurchase, 10),
-    );
-
     const isTransactionCharge = Boolean(
       parseInt(charge.metadata.isTransactionCharge, 10),
     );
@@ -833,12 +841,6 @@ export class PaymentsController {
       await this.coreService.updateMonetizationStatistic({
         period: MonetizationStatisticPeriods.AllTime,
         type: MonetizationStatisticTypes.PurchaseRooms,
-        value: charge.amount,
-      });
-    } else if (isSubscriptionCharge) {
-      await this.coreService.updateMonetizationStatistic({
-        period: MonetizationStatisticPeriods.AllTime,
-        type: MonetizationStatisticTypes.Subscriptions,
         value: charge.amount,
       });
     } else if (isTransactionCharge) {
@@ -869,7 +871,7 @@ export class PaymentsController {
       });
 
       await this.coreService.updateUserProfileStatistic({
-        userId: charge.transfer_data.destination as string,
+        userId: charge?.transfer_data?.destination as string,
         statisticKey: "moneyEarned",
         value: charge.amount,
       });

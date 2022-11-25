@@ -34,7 +34,7 @@ export class UserProfileStatisticService {
     session,
   }: GetModelQuery<UserProfileStatisticDocument>) {
     return this.userProfileStatistic
-      .find(
+      .findOne(
         query,
         {},
         {

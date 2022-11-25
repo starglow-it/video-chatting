@@ -25,6 +25,12 @@ export class UserTemplate {
   usedAt: number;
 
   @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 0,
+  })
+  timesUsed: number;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
   })
   url: string;

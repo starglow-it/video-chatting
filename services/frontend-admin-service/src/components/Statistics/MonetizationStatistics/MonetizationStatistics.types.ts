@@ -3,6 +3,7 @@ import { MonetizationStatisticPeriods } from 'shared-types';
 
 export type MonetizationStatisticsProps = {
     titleKey: string;
+    isDataLoading: boolean;
     statistic: {
         totalNumber: number;
         data: Record<string, any>[];

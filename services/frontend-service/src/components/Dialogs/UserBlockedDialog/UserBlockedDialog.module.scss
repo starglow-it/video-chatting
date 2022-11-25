@@ -1,0 +1,11 @@
+@import "../../../styles/rem";
+
+.dialog {
+  max-width: rem(531px);
+  padding: rem(34px);
+}
+
+.text {
+  word-break: break-all;
+  white-space: pre-wrap;
+}

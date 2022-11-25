@@ -43,6 +43,24 @@ const Component = () => {
                     translation="footer.support"
                     href="/support"
                 />
+
+                <CustomLink
+                    variant="body3"
+                    nameSpace="common"
+                    color="colors.grayscale.semidark"
+                    translation="footer.howTo"
+                    href="https://theliveoffice.com/howto"
+                    isExternal
+                />
+
+                <CustomLink
+                    variant="body3"
+                    nameSpace="common"
+                    color="colors.grayscale.semidark"
+                    translation="footer.faq"
+                    href="https://theliveoffice.com/faq"
+                    isExternal
+                />
             </CustomGrid>
 
             <ActionButton

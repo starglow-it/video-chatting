@@ -107,7 +107,11 @@ const Component = () => {
 
     useEffect(() => {
         (async () => {
-            await getTemplatesFx({ limit: 6, skip: 0, userId: profile.id });
+            await getTemplatesFx({
+                limit: 6,
+                skip: 0,
+                userId: profile.id
+            });
         })();
     }, []);
 

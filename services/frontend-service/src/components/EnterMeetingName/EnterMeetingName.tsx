@@ -21,9 +21,8 @@ import { Translation } from '@library/common/Translation/Translation';
 import { fullNameSchema } from '../../validation/users/fullName';
 
 // stores
-import { $profileStore, $authStore } from '../../store';
+import {$profileStore, $authStore, $isSocketConnected} from '../../store';
 import {
-    $isMeetingSocketConnected,
     $isOwner,
     $localUserStore,
     $meetingTemplateStore,
@@ -44,7 +43,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isSocketConnected = useStore($isMeetingSocketConnected);
+    const isSocketConnected = useStore($isSocketConnected);
 
     const isOwner = useStore($isOwner);
 

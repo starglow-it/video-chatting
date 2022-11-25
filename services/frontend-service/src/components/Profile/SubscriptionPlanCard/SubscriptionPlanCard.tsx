@@ -40,6 +40,7 @@ const Component = ({
     isDisabled,
     withTrial = false,
     priceLabel,
+    isTrial = false,
 }: SubscriptionPlanCardProps) => {
     const isFree = price.unit_amount === 0;
 
@@ -136,9 +137,9 @@ const Component = ({
             </CustomGrid>
 
             {renderFeaturesListItems}
-            <ConditionalRender condition={(!isFree && !isActive) || withTrial}>
+            <ConditionalRender condition={!isFree && !isActive || isTrial}>
                 <CustomGrid container gap={1.5} className={styles.buttons}>
-                    <ConditionalRender condition={!isFree && !isActive}>
+                    <ConditionalRender condition={!isFree && !isActive || isTrial}>
                         <CustomButton
                             disabled={isDisabled}
                             onClick={handleChooseSubscription}

@@ -1,5 +1,5 @@
 type CustomLinkProps = {
-    className?: string;
+    isExternal?: boolean;
 };
 
 export type { CustomLinkProps };

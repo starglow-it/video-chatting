@@ -3,6 +3,7 @@ import Router from 'next/router';
 
 import {
     $localUserStore,
+    leaveDeletedUserMeetingEvent,
     leaveExpiredMeetingEvent,
     leaveMeetingAsGuest,
     leaveMeetingAsHost,
@@ -39,6 +40,11 @@ $localUserStore
     })
     .on(leaveMeetingAsGuest, state => {
         appDialogsApi.openDialog({ dialogKey: AppDialogsEnum.hostTimeExpiredDialog });
+
+        return state;
+    })
+    .on(leaveDeletedUserMeetingEvent, state => {
+        appDialogsApi.openDialog({ dialogKey: AppDialogsEnum.hostUserDeletedDialog });
 
         return state;
     })

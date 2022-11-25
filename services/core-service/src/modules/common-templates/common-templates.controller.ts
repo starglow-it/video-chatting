@@ -3,6 +3,7 @@ import { Connection, PipelineStage, UpdateQuery } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
+const ObjectId = require('mongoose').Types.ObjectId;
 
 //  const
 import { TEMPLATES_SERVICE, TemplateBrokerPatterns } from 'shared-const';
@@ -58,6 +59,7 @@ export class CommonTemplatesController {
   ): Promise<EntityList<ICommonTemplate>> {
     try {
       return withTransaction(this.connection, async () => {
+        console.log(options);
         const aggregationPipeline: PipelineStage[] = [
           { $match: query },
           {
@@ -81,7 +83,7 @@ export class CommonTemplatesController {
               from: 'usertemplates',
               localField: 'templateId',
               foreignField: 'templateId',
-              pipeline: [{ $match: { user: options.userId } }],
+              pipeline: [{ $match: { user: new ObjectId(options.userId) } }],
               as: 'userTemplate',
             },
           },
@@ -273,7 +275,7 @@ export class CommonTemplatesController {
       }
 
       await this.userProfileStatisticService.updateOne({
-        query: { user: targetUser.id },
+        query: { user: targetUser._id },
         data: {
           $inc: { roomsUsed: 1 },
         },

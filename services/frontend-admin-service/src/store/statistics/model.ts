@@ -86,3 +86,6 @@ export const getPlatformMonetizationStatisticsFx = statisticsDomain.createEffect
     GetMonetizationStatisticParams,
     MonetizationStatisticState
 >('getPlatformMonetizationStatisticsFx');
+
+export const resetUsersMonetization = statisticsDomain.createEvent('resetUsersMonetization');
+export const resetPlatformMonetization = statisticsDomain.createEvent('resetPlatformMonetization');

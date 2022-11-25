@@ -67,13 +67,13 @@ const Component = () => {
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
 
-    const baseSize = isMobile ? 90 : 120;
+    const baseSize = isMobile ? 90 : 150;
 
     const coefValue = baseSize * resizeCoeff;
 
     const videoSizeForBigScreen = coefValue > baseSize ? baseSize : coefValue;
 
-    const videoSizeForMeeting = coefValue < 60 ? 60 : videoSizeForBigScreen;
+    const videoSizeForMeeting = coefValue < 75 ? 75 : videoSizeForBigScreen;
 
     const videoSize = isScreenSharing ? 56 : videoSizeForMeeting;
 

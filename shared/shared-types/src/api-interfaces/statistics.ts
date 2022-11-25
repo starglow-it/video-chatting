@@ -26,6 +26,7 @@ export interface IRoomsStatistics {
 }
 
 export interface IRoomsRatingStatistic {
+  id: string;
   template: ICommonTemplate;
   author: ICommonUser;
   transactions: number;

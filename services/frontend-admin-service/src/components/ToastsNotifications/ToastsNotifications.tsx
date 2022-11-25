@@ -1,14 +1,13 @@
 import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
 import { Snackbar, SnackbarContent } from '@mui/material';
 import { useStore } from 'effector-react';
-import {Trans} from "react-i18next";
 
 // hooks
 import { useLocalization } from '@hooks/useTranslation';
 import { useBrowserDetect } from 'shared-frontend/hooks';
 
 // custom
-import { CustomGrid, ConditionalRender } from 'shared-frontend/library';
+import { CustomGrid, ConditionalRender, CustomTypography } from 'shared-frontend/library';
 
 // icons
 import {LockIcon, RoundSuccessIcon, TrashIcon} from 'shared-frontend/icons';
@@ -91,9 +90,11 @@ const Component = () => {
                         <ConditionalRender condition={Boolean(Icon)}>
                             <Icon width="16px" height="16px" />
                         </ConditionalRender>
-                        <Trans>
-                            {translation(messageInfo?.message || '', messageInfo?.messageOptions ?? {})}
-                        </Trans>
+                        <CustomTypography
+                            dangerouslySetInnerHTML={{
+                                __html: translation(messageInfo?.message || '', messageInfo?.messageOptions ?? {})
+                            }}
+                        />
                     </CustomGrid>
                 }
             />

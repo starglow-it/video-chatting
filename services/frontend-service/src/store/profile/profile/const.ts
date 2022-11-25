@@ -5,6 +5,7 @@ export const initialProfileState = {
     fullName: '',
     position: '',
     profileAvatar: {
+        id: '',
         url: '',
         size: 0,
         mimeType: '',
@@ -16,7 +17,6 @@ export const initialProfileState = {
     languages: [],
     socials: [],
     businessCategories: [],
-    templates: [],
     signBoard: 'default',
     subscriptionPlanKey: 'House',
     stripeAccountId: '',
@@ -28,4 +28,7 @@ export const initialProfileState = {
     maxTemplatesNumber: 0,
     maxMeetingTime: 0,
     wasSuccessNotificationShown: false,
+    country: '',
+    isProfessionalTrialAvailable: false,
+    shouldShowTrialExpiredNotification: false,
 } as Profile;
