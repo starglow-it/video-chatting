@@ -13,13 +13,14 @@ import styles from './ValuesSwitcher.module.scss';
 // types
 import { ValueSwitcherProps } from './types';
 
-const Component = <ValueType extends string | number>({
+const Component = <ValueType extends string | number, Label extends string>({
     values,
     activeValue,
     onValueChanged,
+    itemClassName,
     variant = 'primary',
     className,
-}: ValueSwitcherProps<ValueType>) => {
+}: ValueSwitcherProps<ValueType, Label>) => {
     const [activeElementIndex, setActiveElementIndex] = useState<number | null>(null);
     const activeElementRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -31,7 +32,7 @@ const Component = <ValueType extends string | number>({
     const renderValues = useMemo(
         () =>
             values.map((value, index) => (
-                <ValueSwitcherItem
+                <ValueSwitcherItem<ValueType, Label>
                     key={value.id}
                     ref={value.id === activeValue.id ? activeElementRef : null}
                     index={index}
@@ -39,6 +40,7 @@ const Component = <ValueType extends string | number>({
                     variant={variant}
                     activeValue={activeValue}
                     onValueChanged={onValueChanged}
+                    className={itemClassName}
                 />
             )),
         [values, activeValue, onValueChanged, variant],

@@ -3,5 +3,24 @@
     "userBlocked": "User <strong>{{username}}</strong> is blocked",
     "userUnBlocked": "User <strong>{{username}}</strong> is unblocked",
     "userDeleted": "User <strong>{{username}}</strong> is deleted"
+  },
+  "uploadBackground": {
+    "actions": {
+      "upload": "Upload",
+      "change": "Change"
+    },
+    "video": {
+      "maxSize": "The maximum video size is {{max}} MB.",
+      "invalidFormat": "Please upload video of .mp4 format",
+      "general": "Please upload video of .mp4 format - Up to {{max}} MB"
+    },
+    "image": {
+      "maxSize": "The maximum image size is {{max}} MB.",
+      "invalidFormat": "Please upload image of .jp(e)g, .heic or .png format",
+      "general": "Please upload image of .jp(e)g, .heic or .png format - Up to {{max}} MB"
+    },
+    "manyFiles": "Please upload 1 file",
+    "shouldBeUploaded": "Background file should be uploaded at first",
+    "isPending": "Please wait until file is uploaded"
   }
 }

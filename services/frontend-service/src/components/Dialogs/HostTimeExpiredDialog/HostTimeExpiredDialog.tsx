@@ -1,68 +1,109 @@
-import React, { memo } from 'react';
-import { useStore } from 'effector-react';
-import { useRouter } from 'next/router';
+import React, {
+	memo 
+} from 'react';
+import {
+	useStore 
+} from 'effector-react';
+import {
+	useRouter 
+} from 'next/router';
 
 // custom
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid , CustomButton , CustomDialog } from 'shared-frontend/library';
-import { WarningIcon } from 'shared-frontend/icons';
+import {
+	CustomTypography 
+} from '@library/custom/CustomTypography/CustomTypography';
+import {
+	CustomGrid,
+	CustomButton,
+	CustomDialog,
+} from 'shared-frontend/library';
+import {
+	WarningIcon 
+} from 'shared-frontend/icons';
 
 // styles
-import { Translation } from '@library/common/Translation/Translation';
+import {
+	Translation 
+} from '@library/common/Translation/Translation';
 import styles from './HostTimeExpiredDialog.module.scss';
 
 // stores
-import { $appDialogsStore, appDialogsApi } from '../../../store';
+import {
+	$appDialogsStore, appDialogsApi 
+} from '../../../store';
 
 // types
-import { AppDialogsEnum } from '../../../store/types';
+import {
+	AppDialogsEnum 
+} from '../../../store/types';
 
 // const
-import { dashboardRoute } from '../../../const/client-routes';
+import {
+	dashboardRoute 
+} from '../../../const/client-routes';
 
 const Component = () => {
-    const router = useRouter();
+	const router = useRouter();
 
-    const { hostTimeExpiredDialog } = useStore($appDialogsStore);
+	const {
+		hostTimeExpiredDialog 
+	} = useStore($appDialogsStore);
 
-    const handleClose = () => {
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.hostTimeExpiredDialog,
-        });
-        router.push(dashboardRoute);
-    };
+	const handleClose = () => {
+		appDialogsApi.closeDialog({
+			dialogKey: AppDialogsEnum.hostTimeExpiredDialog,
+		});
+		router.push(dashboardRoute);
+	};
 
-    return (
-        <CustomDialog
-            contentClassName={styles.content}
-            open={hostTimeExpiredDialog}
-            onClose={handleClose}
-        >
-            <CustomGrid container alignItems="center" direction="column">
-                <CustomGrid container alignItems="center" justifyContent="center">
-                    <WarningIcon className={styles.icon} width="36px" height="36px" />
-                    <CustomTypography
-                        variant="h3bold"
-                        nameSpace="meeting"
-                        translation="expired.title"
-                    />
-                </CustomGrid>
+	return (
+		<CustomDialog
+			contentClassName={styles.content}
+			open={hostTimeExpiredDialog}
+			onClose={handleClose}
+		>
+			<CustomGrid
+				container
+				alignItems="center"
+				direction="column"
+			>
+				<CustomGrid
+					container
+					alignItems="center"
+					justifyContent="center"
+				>
+					<WarningIcon
+						className={styles.icon}
+						width="36px"
+						height="36px"
+					/>
+					<CustomTypography
+						variant="h3bold"
+						nameSpace="meeting"
+						translation="expired.title"
+					/>
+				</CustomGrid>
 
-                <CustomTypography
-                    textAlign="center"
-                    nameSpace="meeting"
-                    translation="expired.text"
-                />
+				<CustomTypography
+					textAlign="center"
+					nameSpace="meeting"
+					translation="expired.text"
+				/>
 
-                <CustomButton
-                    onClick={handleClose}
-                    label={<Translation nameSpace="meeting" translation="expired.button" />}
-                    className={styles.button}
-                    variant="custom-cancel"
-                />
-            </CustomGrid>
-        </CustomDialog>
-    );
+				<CustomButton
+					onClick={handleClose}
+					label={
+						<Translation
+							nameSpace="meeting"
+							translation="expired.button"
+						/>
+					}
+					className={styles.button}
+					variant="custom-cancel"
+				/>
+			</CustomGrid>
+		</CustomDialog>
+	);
 };
 
 export const HostTimeExpiredDialog = memo(Component);

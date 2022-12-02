@@ -2,11 +2,11 @@ import { Controller } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Connection, UpdateQuery } from 'mongoose';
-import { plainToClass, plainToInstance } from 'class-transformer';
-import * as mongoose from "mongoose";
+import { plainToInstance } from 'class-transformer';
+import * as mongoose from 'mongoose';
 
 // shared
-import { TEMPLATES_SERVICE } from 'shared-const';
+import { TEMPLATES_SERVICE, UserTemplatesBrokerPatterns } from 'shared-const';
 
 import {
   CreateUserTemplateByIdPayload,
@@ -19,10 +19,10 @@ import {
   UpdateUserTemplatePayload,
   IUserTemplate,
   EntityList,
-  CountUserTemplatesPayload, UpdateUserTemplateUsageNumberPayload,
+  CountUserTemplatesPayload,
+  UpdateUserTemplateUsageNumberPayload,
+  DeleteLeastUsedTemplatesPayload,
 } from 'shared-types';
-
-import { TemplateBrokerPatterns } from 'shared-const';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
@@ -34,7 +34,7 @@ import { UsersService } from '../users/users.service';
 import { CommonTemplatesService } from '../common-templates/common-templates.service';
 import { LanguagesService } from '../languages/languages.service';
 import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
-import {UserProfileStatisticService} from "../user-profile-statistic/user-profile-statistic.service";
+import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
 
 // dtos
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
@@ -56,7 +56,7 @@ export class UserTemplatesController {
     private userProfileStatisticService: UserProfileStatisticService,
   ) {}
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.GetUserTemplate })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
   async getUserTemplate(
     @Payload()
     { id }: GetUserTemplatePayload,
@@ -81,7 +81,7 @@ export class UserTemplatesController {
           return null;
         }
 
-        return plainToClass(UserTemplateDTO, userTemplate, {
+        return plainToInstance(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -94,7 +94,9 @@ export class UserTemplatesController {
     });
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.GetUserTemplateByTemplateId })
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.GetUserTemplateByTemplateId,
+  })
   async getUserTemplateByTemplateId(
     @Payload()
     { id, userId }: GetUserTemplateByTemplateIdPayload,
@@ -114,7 +116,7 @@ export class UserTemplatesController {
           ],
         });
 
-        return plainToClass(UserTemplateDTO, userTemplate, {
+        return plainToInstance(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -127,7 +129,7 @@ export class UserTemplatesController {
     });
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.CreateUserTemplate })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.CreateUserTemplate })
   async createMeetingTemplate(
     @Payload() { id, userId }: CreateUserTemplateByIdPayload,
   ) {
@@ -219,7 +221,7 @@ export class UserTemplatesController {
           },
         });
 
-        return plainToClass(UserTemplateDTO, userTemplate, {
+        return plainToInstance(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -232,7 +234,7 @@ export class UserTemplatesController {
     });
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.GetUserTemplateById })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplateById })
   async getUserTemplateById(
     @Payload() { id }: GetUserTemplateByIdPayload,
   ): Promise<IUserTemplate> {
@@ -251,7 +253,7 @@ export class UserTemplatesController {
           ],
         });
 
-        return plainToClass(UserTemplateDTO, userTemplate, {
+        return plainToInstance(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -264,7 +266,7 @@ export class UserTemplatesController {
     });
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.GetUserTemplates })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplates })
   async getUserTemplates(
     @Payload()
     { userId, skip, limit, sort, direction }: GetUserTemplatesPayload,
@@ -277,7 +279,7 @@ export class UserTemplatesController {
             options: {
               ...(sort ? { sort: { [sort]: direction ?? 1 } } : {}),
               skip,
-              limit
+              limit,
             },
             populatePaths: [
               'businessCategories',
@@ -316,7 +318,7 @@ export class UserTemplatesController {
     }
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.UpdateUserTemplate })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.UpdateUserTemplate })
   async updateUserTemplate(
     @Payload()
     { templateId, userId, data }: UpdateUserTemplatePayload,
@@ -428,7 +430,7 @@ export class UserTemplatesController {
           });
         }
 
-        return plainToClass(UserTemplateDTO, userTemplate, {
+        return plainToInstance(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -441,7 +443,7 @@ export class UserTemplatesController {
     });
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.UploadUserTemplateFile })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.UploadUserTemplateFile })
   async uploadUserTemplateFile(
     @Payload()
     data: {
@@ -500,7 +502,7 @@ export class UserTemplatesController {
     });
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.GetUsersTemplates })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUsersTemplates })
   async getUsersTemplates(
     @Payload()
     { userId, skip, limit, direction, sort }: GetUsersTemplatesPayload,
@@ -549,7 +551,7 @@ export class UserTemplatesController {
     }
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.DeleteUsersTemplates })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.DeleteUsersTemplates })
   async deleteUserTemplate(
     @Payload() { templateId, userId }: DeleteUsersTemplatesPayload,
   ): Promise<undefined> {
@@ -567,16 +569,17 @@ export class UserTemplatesController {
         }
 
         if (userTemplate?.author?._id?.toString?.() === userId) {
-          const commonTemplate = await this.commonTemplatesService.updateCommonTemplate({
-            query: {
-              templateId: userTemplate.templateId,
-            },
-            data: {
-              isDeleted: true,
-              isPublic: false,
-            },
-            session,
-          });
+          const commonTemplate =
+            await this.commonTemplatesService.updateCommonTemplate({
+              query: {
+                templateId: userTemplate.templateId,
+              },
+              data: {
+                isDeleted: true,
+                isPublic: false,
+              },
+              session,
+            });
 
           await this.roomStatisticService.delete({
             query: {
@@ -600,7 +603,7 @@ export class UserTemplatesController {
     }
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.CountUserTemplates })
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.CountUserTemplates })
   async countUserTemplates(
     @Payload() { options, userId }: CountUserTemplatesPayload,
   ): Promise<{ count: number }> {
@@ -623,7 +626,9 @@ export class UserTemplatesController {
     }
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.UploadProfileTemplateFile })
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.UploadProfileTemplateFile,
+  })
   async uploadProfileTemplateFile(
     @Payload() data: { url: string; id: string; mimeType: string },
   ): Promise<void> {
@@ -652,18 +657,67 @@ export class UserTemplatesController {
     });
   }
 
-  @MessagePattern({ cmd: TemplateBrokerPatterns.UpdateUserTemplateUsageNumber })
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.UpdateUserTemplateUsageNumber,
+  })
   async updateUserTemplateUsageNumber(
     @Payload() payload: UpdateUserTemplateUsageNumberPayload,
   ): Promise<void> {
     return withTransaction(this.connection, async (session) => {
-        await this.userTemplatesService.findUserTemplateByIdAndUpdate(
-            payload.templateId,
-            {
-              $inc: { timesUsed: payload.value },
-            },
-            session
-        );
+      await this.userTemplatesService.findUserTemplateByIdAndUpdate(
+        payload.templateId,
+        {
+          $inc: { timesUsed: payload.value },
+        },
+        session,
+      );
+    });
+  }
+
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.DeleteLeastUsedTemplates })
+  async deleteLeastUsedTemplates(
+    @Payload() payload: DeleteLeastUsedTemplatesPayload,
+  ): Promise<void> {
+    return withTransaction(this.connection, async (session) => {
+      const leastUsedFreeTemplates =
+        await this.userTemplatesService.findUserTemplates({
+          query: {
+            type: 'free',
+            user: payload.userId,
+            isPublic: true,
+            draft: false,
+          },
+          options: { sort: { usedAt: -1 }, limit: payload.templatesLimit },
+          session,
+        });
+
+      const customTemplates = await this.userTemplatesService.findUserTemplates({
+        query: {
+          author: payload.userId,
+        },
+        session,
+      });
+
+      const paidTemplates = await this.userTemplatesService.findUserTemplates({
+        query: {
+          type: 'paid',
+        },
+        session,
+      });
+
+      const templatesIds = [
+          ...paidTemplates,
+        ...customTemplates,
+        ...leastUsedFreeTemplates
+      ].map((template) => template.id);
+
+      await this.userTemplatesService.deleteUserTemplates({
+        query: {
+          _id: { $nin: templatesIds },
+          user: payload.userId,
+        },
+        session,
+      });
     });
   }
 }

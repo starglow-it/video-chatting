@@ -20,6 +20,7 @@ const Component = <ValueType extends { label: string; key: string; value: string
     control,
     error,
     options,
+    withInputValue,
     errorComponent,
     ...props
 }: CustomAutocompleteProps<ValueType>) => {
@@ -70,7 +71,7 @@ const Component = <ValueType extends { label: string; key: string; value: string
                         })
                     }
                     onChange={(_, data) => {
-                        onChange(data?.filter(tag => typeof tag !== 'string'));
+                        onChange(withInputValue ? data : data?.filter(tag => typeof tag !== 'string'));
                     }}
                     filterOptions={filterOptions}
                     options={options}

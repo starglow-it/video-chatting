@@ -26,6 +26,10 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty()
+  previousSubscriptionPlanKey: ICommonUser['previousSubscriptionPlanKey'];
+
+  @Expose()
+  @ApiProperty()
   country: ICommonUser['country'];
 
   @Expose()
@@ -119,6 +123,10 @@ export class CommonUserRestDTO implements ICommonUser {
   @Expose()
   @ApiProperty()
   isBlocked: ICommonUser['isBlocked'];
+
+  @Expose()
+  @ApiProperty()
+  isDowngradeMessageShown: ICommonUser['isBlocked'];
 
   createdAt: Date;
   updatedAt: Date;

@@ -155,6 +155,12 @@ export class User {
   subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+    default: 'House',
+  })
+  previousSubscriptionPlanKey: ICommonUser['previousSubscriptionPlanKey'];
+
+  @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })
@@ -206,6 +212,12 @@ export class User {
     default: false,
   })
   isBlocked: ICommonUser['isBlocked'];
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: true,
+  })
+  isDowngradeMessageShown: ICommonUser['isDowngradeMessageShown'];
 }
 
 export type UserDocument = User & Document;

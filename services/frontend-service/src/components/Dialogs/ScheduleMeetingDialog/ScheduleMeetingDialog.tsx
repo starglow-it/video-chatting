@@ -1,67 +1,110 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
-import { useStore } from 'effector-react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import React, {
+	memo, useCallback, useEffect, useState 
+} from 'react';
+import {
+	useStore 
+} from 'effector-react';
+import {
+	FormProvider, useForm, useWatch 
+} from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
 // hooks
-import { useMultipleToggle } from '@hooks/useMultipleToggle';
-import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
+import {
+	useMultipleToggle 
+} from '@hooks/useMultipleToggle';
+import {
+	useYupValidationResolver 
+} from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomDatePicker } from '@library/custom/CustomDatePicker/CustomDatePicker';
 import {
-    CustomDialog,
-    CustomGrid,
-    CustomDivider,
-    CustomFade,
-    CustomButton,
+	CustomDatePicker 
+} from '@library/custom/CustomDatePicker/CustomDatePicker';
+import {
+	CustomDialog,
+	CustomGrid,
+	CustomDivider,
+	CustomFade,
+	CustomButton,
 } from 'shared-frontend/library';
 
 // components
-import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
-import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
-import { ScheduleTime } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
-import { Translation } from '@library/common/Translation/Translation';
-import { ScheduleAttendees } from './ScheduleAttendees';
+import {
+	ValuesSwitcher 
+} from '@library/common/ValuesSwitcher/ValuesSwitcher';
+import {
+	ValuesSwitcherItem 
+} from '@library/common/ValuesSwitcher/types';
+import {
+	ScheduleTime 
+} from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
+import {
+	Translation 
+} from '@library/common/Translation/Translation';
+import {
+	ScheduleAttendees 
+} from './ScheduleAttendees';
 
 // helpers
-import { getDateTimestamp } from '../../../utils/time/getDateTimestamp';
-import { parseTimestamp } from '../../../utils/time/parseTimestamp';
-import { getTimeZone } from '../../../utils/time/getTimeZone';
+import {
+	getDateTimestamp 
+} from '../../../utils/time/getDateTimestamp';
+import {
+	parseTimestamp 
+} from '../../../utils/time/parseTimestamp';
+import {
+	getTimeZone 
+} from '../../../utils/time/getTimeZone';
 
 // stores
 import {
-    appDialogsApi,
-    $appDialogsStore,
-    $scheduleTemplateIdStore,
-    sendScheduleInviteFx,
-    setScheduleTemplateIdEvent,
-    $profileStore,
+	appDialogsApi,
+	$appDialogsStore,
+	$scheduleTemplateIdStore,
+	sendScheduleInviteFx,
+	setScheduleTemplateIdEvent,
+	$profileStore,
 } from '../../../store';
 
 // types
-import { AppDialogsEnum } from '../../../store/types';
+import {
+	AppDialogsEnum 
+} from '../../../store/types';
 
 // validations
-import { simpleStringSchema, simpleStringSchemaWithLength } from '../../../validation/common';
-import { emailSchema } from '../../../validation/users/email';
+import {
+	simpleStringSchema,
+	simpleStringSchemaWithLength,
+} from '../../../validation/common';
+import {
+	emailSchema 
+} from '../../../validation/users/email';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
 
 const validationSchema = yup.object({
-    timeZone: simpleStringSchema().required('required'),
-    startAt: simpleStringSchema().required('required'),
-    endAt: simpleStringSchema().required('required'),
-    comment: simpleStringSchemaWithLength(500),
-    currentUserEmail: emailSchema(),
-    date: yup.date().required('required'),
+	timeZone: simpleStringSchema().required('required'),
+	startAt: simpleStringSchema().required('required'),
+	endAt: simpleStringSchema().required('required'),
+	comment: simpleStringSchemaWithLength(500),
+	currentUserEmail: emailSchema(),
+	date: yup.date().required('required'),
 });
 
 const schedulePages: ValuesSwitcherItem[] = [
-    { id: 1, value: 'settings', label: 'Settings' },
-    { id: 2, value: 'invite', label: 'Invite others' },
+	{
+		id: 1,
+		value: 'settings',
+		label: 'Settings',
+	},
+	{
+		id: 2,
+		value: 'invite',
+		label: 'Invite others',
+	},
 ];
 
 type FormType = {
@@ -74,229 +117,284 @@ type FormType = {
 };
 
 const Component = () => {
-    const { scheduleMeetingDialog } = useStore($appDialogsStore);
-    const scheduleTemplateId = useStore($scheduleTemplateIdStore);
-    const profile = useStore($profileStore);
+	const {
+		scheduleMeetingDialog 
+	} = useStore($appDialogsStore);
+	const scheduleTemplateId = useStore($scheduleTemplateIdStore);
+	const profile = useStore($profileStore);
 
-    const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
+	const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
 
-    const [activeSchedulePage, setActiveSchedulePage] = useState(schedulePages[0]);
-    const [userEmails, setUserEmails] = useState<string[]>([]);
+	const [activeSchedulePage, setActiveSchedulePage] = useState(
+		schedulePages[0],
+	);
+	const [userEmails, setUserEmails] = useState<string[]>([]);
 
-    const {
-        values: { isSettingsOpen, isInviteOpen },
-        onSwitchOn: handleOpenOption,
-    } = useMultipleToggle(['isSettingsOpen', 'isInviteOpen'], 'isSettingsOpen');
+	const {
+		values: {
+ isSettingsOpen, 
+isInviteOpen 
+},
+		onSwitchOn: handleOpenOption,
+	} = useMultipleToggle(['isSettingsOpen', 'isInviteOpen'], 'isSettingsOpen');
 
-    const resolver = useYupValidationResolver<FormType>(validationSchema);
+	const resolver = useYupValidationResolver<FormType>(validationSchema);
 
-    const methods = useForm({
-        criteriaMode: 'all',
-        resolver,
-        defaultValues: {
-            timeZone: getTimeZone(),
-            startAt: '',
-            endAt: '',
-            comment: '',
-            currentUserEmail: '',
-            date:
-                profile.renewSubscriptionTimestampInSeconds && profile.maxMeetingTime === 0
-                    ? new Date(profile.renewSubscriptionTimestampInSeconds * 1000)
-                    : new Date(),
-        },
-    });
+	const methods = useForm({
+		criteriaMode: 'all',
+		resolver,
+		defaultValues: {
+			timeZone: getTimeZone(),
+			startAt: '',
+			endAt: '',
+			comment: '',
+			currentUserEmail: '',
+			date:
+                profile.renewSubscriptionTimestampInSeconds &&
+                profile.maxMeetingTime === 0
+                	? new Date(
+                		profile.renewSubscriptionTimestampInSeconds * 1000,
+                	)
+                	: new Date(),
+		},
+	});
 
-    const { handleSubmit, control, setValue, register, trigger, reset } = methods;
+	const {
+		handleSubmit, 
+		control, 
+		setValue, 
+		register, 
+		trigger, 
+		reset 
+	} =
+        methods;
 
-    const selectedDate = useWatch({
-        control,
-        name: 'date',
-    });
+	const selectedDate = useWatch({
+		control,
+		name: 'date',
+	});
 
-    const restDateRegisterData = register('date');
+	const restDateRegisterData = register('date');
 
-    useEffect(() => {
-        if (scheduleMeetingDialog) {
-            handleOpenOption('isSettingsOpen');
-            setActiveSchedulePage(schedulePages[0]);
-            setUserEmails([]);
-        }
-    }, [scheduleMeetingDialog]);
+	useEffect(() => {
+		if (scheduleMeetingDialog) {
+			handleOpenOption('isSettingsOpen');
+			setActiveSchedulePage(schedulePages[0]);
+			setUserEmails([]);
+		}
+	}, [scheduleMeetingDialog]);
 
-    const handleClose = useCallback(() => {
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.scheduleMeetingDialog,
-        });
+	const handleClose = useCallback(() => {
+		appDialogsApi.closeDialog({
+			dialogKey: AppDialogsEnum.scheduleMeetingDialog,
+		});
 
-        reset();
-        setScheduleTemplateIdEvent('');
-    }, []);
+		reset();
+		setScheduleTemplateIdEvent('');
+	}, []);
 
-    const onSubmit = useCallback(
-        handleSubmit(async data => {
-            try {
-                const startAtTime = getDateTimestamp(data.date, data.startAt);
-                const endAtTime = getDateTimestamp(data.date, data.endAt);
+	const onSubmit = useCallback(
+		handleSubmit(async data => {
+			try {
+				const startAtTime = getDateTimestamp(data.date, data.startAt);
+				const endAtTime = getDateTimestamp(data.date, data.endAt);
 
-                const parsedStartAt = parseTimestamp(startAtTime);
-                const parsedEndAt = parseTimestamp(endAtTime);
+				const parsedStartAt = parseTimestamp(startAtTime);
+				const parsedEndAt = parseTimestamp(endAtTime);
 
-                await sendScheduleInviteFx({
-                    templateId: scheduleTemplateId,
-                    startAt: parsedStartAt,
-                    endAt: parsedEndAt,
-                    comment: data.comment,
-                    timeZone: data.timeZone,
-                    userEmails,
-                });
+				await sendScheduleInviteFx({
+					templateId: scheduleTemplateId,
+					startAt: parsedStartAt,
+					endAt: parsedEndAt,
+					comment: data.comment,
+					timeZone: data.timeZone,
+					userEmails,
+				});
 
-                handleClose();
-            } catch (e) {
-                console.log(e);
-            }
-        }),
-        [scheduleTemplateId, userEmails],
-    );
+				handleClose();
+			} catch (e) {
+				console.log(e);
+			}
+		}),
+		[scheduleTemplateId, userEmails],
+	);
 
-    const handleSelectDate = useCallback((date: Date) => {
-        setValue('date', date, {
-            shouldValidate: true,
-            shouldDirty: true,
-        });
-    }, []);
+	const handleSelectDate = useCallback((date: Date) => {
+		setValue('date', date, {
+			shouldValidate: true,
+			shouldDirty: true,
+		});
+	}, []);
 
-    const handleShowEnterEmails = useCallback(async () => {
-        const isThereNoErrors = await trigger(['startAt', 'endAt']);
+	const handleShowEnterEmails = useCallback(async () => {
+		const isThereNoErrors = await trigger(['startAt', 'endAt']);
 
-        if (isThereNoErrors) {
-            handleOpenOption('isInviteOpen');
-            setActiveSchedulePage(schedulePages[1]);
-        }
-    }, []);
+		if (isThereNoErrors) {
+			handleOpenOption('isInviteOpen');
+			setActiveSchedulePage(schedulePages[1]);
+		}
+	}, []);
 
-    const handleChangeSchedulePage = useCallback(async (newValue: ValuesSwitcherItem) => {
-        const isThereNoErrors = await trigger(['startAt', 'endAt']);
+	const handleChangeSchedulePage = useCallback(
+		async (newValue: ValuesSwitcherItem) => {
+			const isThereNoErrors = await trigger(['startAt', 'endAt']);
 
-        if (isThereNoErrors) {
-            setActiveSchedulePage(newValue);
-            handleOpenOption(newValue.value === 'settings' ? 'isSettingsOpen' : 'isInviteOpen');
-        }
-    }, []);
+			if (isThereNoErrors) {
+				setActiveSchedulePage(newValue);
+				handleOpenOption(
+					newValue.value === 'settings'
+						? 'isSettingsOpen'
+						: 'isInviteOpen',
+				);
+			}
+		},
+		[],
+	);
 
-    const handleAddUserEmail = useCallback((newEmail: string) => {
-        setUserEmails(prev => {
-            if (!prev.some(email => email === newEmail)) {
-                return [...prev, newEmail];
-            }
+	const handleAddUserEmail = useCallback((newEmail: string) => {
+		setUserEmails(prev => {
+			if (!prev.some(email => email === newEmail)) {
+				return [...prev, newEmail];
+			}
 
-            return prev;
-        });
-    }, []);
+			return prev;
+		});
+	}, []);
 
-    const handleDeleteUserEmail = useCallback((oldEmail: string) => {
-        setUserEmails(prev => prev.filter(email => email !== oldEmail));
-    }, []);
+	const handleDeleteUserEmail = useCallback((oldEmail: string) => {
+		setUserEmails(prev => prev.filter(email => email !== oldEmail));
+	}, []);
 
-    return (
-        <CustomDialog
-            open={scheduleMeetingDialog}
-            onBackdropClick={handleClose}
-            contentClassName={styles.content}
-            maxWidth="lg"
-        >
-            <FormProvider {...methods}>
-                <form onSubmit={onSubmit} className={styles.form}>
-                    <CustomGrid container wrap="nowrap">
-                        <CustomGrid className={styles.leftSide}>
-                            <CustomDatePicker
-                                className={styles.datePicker}
-                                selected={selectedDate}
-                                startDate={new Date()}
-                                blockedDate={
-                                    profile.maxMeetingTime === 0
-                                        ? new Date(
-                                              profile.renewSubscriptionTimestampInSeconds * 1000,
-                                          )
-                                        : new Date()
-                                }
-                                onDateSelected={handleSelectDate}
-                                {...restDateRegisterData}
-                            />
-                        </CustomGrid>
-                        <CustomDivider orientation="vertical" flexItem />
-                        <CustomGrid
-                            className={styles.rightSide}
-                            container
-                            direction="column"
-                            alignItems="center"
-                        >
-                            <ValuesSwitcher
-                                values={schedulePages}
-                                activeValue={activeSchedulePage}
-                                onValueChanged={handleChangeSchedulePage}
-                                className={styles.switcher}
-                            />
-                            <CustomGrid className={styles.optionsWrapper}>
-                                <CustomFade open={isSettingsOpen} className={styles.optionItem}>
-                                    <ScheduleTime
-                                        currentDate={selectedDate}
-                                        blockedDate={
-                                            profile.maxMeetingTime === 0
-                                                ? new Date(
-                                                      profile.renewSubscriptionTimestampInSeconds *
+	return (
+		<CustomDialog
+			open={scheduleMeetingDialog}
+			onBackdropClick={handleClose}
+			contentClassName={styles.content}
+			maxWidth="lg"
+		>
+			<FormProvider {...methods}>
+				<form
+					onSubmit={onSubmit}
+					className={styles.form}
+				>
+					<CustomGrid
+						container
+						wrap="nowrap"
+					>
+						<CustomGrid className={styles.leftSide}>
+							<CustomDatePicker
+								className={styles.datePicker}
+								selected={selectedDate}
+								startDate={new Date()}
+								blockedDate={
+									profile.maxMeetingTime === 0
+										? new Date(
+											profile.renewSubscriptionTimestampInSeconds *
+                                                  1000,
+										)
+										: new Date()
+								}
+								onDateSelected={handleSelectDate}
+								{...restDateRegisterData}
+							/>
+						</CustomGrid>
+						<CustomDivider
+							orientation="vertical"
+							flexItem
+						/>
+						<CustomGrid
+							className={styles.rightSide}
+							container
+							direction="column"
+							alignItems="center"
+						>
+							<ValuesSwitcher
+								values={schedulePages}
+								activeValue={activeSchedulePage}
+								onValueChanged={handleChangeSchedulePage}
+								className={styles.switcher}
+							/>
+							<CustomGrid className={styles.optionsWrapper}>
+								<CustomFade
+									open={isSettingsOpen}
+									className={styles.optionItem}
+								>
+									<ScheduleTime
+										currentDate={selectedDate}
+										blockedDate={
+											profile.maxMeetingTime === 0
+												? new Date(
+													profile.renewSubscriptionTimestampInSeconds *
                                                           1000,
-                                                  )
-                                                : new Date()
-                                        }
-                                    />
-                                </CustomFade>
-                                <CustomFade open={isInviteOpen} className={styles.optionItem}>
-                                    <ScheduleAttendees
-                                        onAddUserEmail={handleAddUserEmail}
-                                        onDeleteUserEmail={handleDeleteUserEmail}
-                                        userEmails={userEmails}
-                                    />
-                                </CustomFade>
-                            </CustomGrid>
-                            <CustomGrid container wrap="nowrap" gap={2} className={styles.buttons}>
-                                <CustomButton
-                                    label={
-                                        <Translation
-                                            nameSpace="common"
-                                            translation="buttons.cancel"
-                                        />
-                                    }
-                                    variant="custom-cancel"
-                                    onClick={handleClose}
-                                />
-                                <CustomButton
-                                    className={clsx({ [styles.hide]: isInviteOpen })}
-                                    label={
-                                        <Translation
-                                            nameSpace="common"
-                                            translation="buttons.continue"
-                                        />
-                                    }
-                                    onClick={handleShowEnterEmails}
-                                />
-                                <CustomButton
-                                    className={clsx({ [styles.hide]: !isInviteOpen })}
-                                    disabled={isScheduleMeetingInProgress || !userEmails?.length}
-                                    onClick={onSubmit}
-                                    label={
-                                        <Translation
-                                            nameSpace="common"
-                                            translation="buttons.schedule"
-                                        />
-                                    }
-                                />
-                            </CustomGrid>
-                        </CustomGrid>
-                    </CustomGrid>
-                </form>
-            </FormProvider>
-        </CustomDialog>
-    );
+												)
+												: new Date()
+										}
+									/>
+								</CustomFade>
+								<CustomFade
+									open={isInviteOpen}
+									className={styles.optionItem}
+								>
+									<ScheduleAttendees
+										onAddUserEmail={handleAddUserEmail}
+										onDeleteUserEmail={
+											handleDeleteUserEmail
+										}
+										userEmails={userEmails}
+									/>
+								</CustomFade>
+							</CustomGrid>
+							<CustomGrid
+								container
+								wrap="nowrap"
+								gap={2}
+								className={styles.buttons}
+							>
+								<CustomButton
+									label={
+										<Translation
+											nameSpace="common"
+											translation="buttons.cancel"
+										/>
+									}
+									variant="custom-cancel"
+									onClick={handleClose}
+								/>
+								<CustomButton
+									className={clsx({
+										[styles.hide]: isInviteOpen,
+									})}
+									label={
+										<Translation
+											nameSpace="common"
+											translation="buttons.continue"
+										/>
+									}
+									onClick={handleShowEnterEmails}
+								/>
+								<CustomButton
+									className={clsx({
+										[styles.hide]: !isInviteOpen,
+									})}
+									disabled={
+										isScheduleMeetingInProgress ||
+                                        !userEmails?.length
+									}
+									onClick={onSubmit}
+									label={
+										<Translation
+											nameSpace="common"
+											translation="buttons.schedule"
+										/>
+									}
+								/>
+							</CustomGrid>
+						</CustomGrid>
+					</CustomGrid>
+				</form>
+			</FormProvider>
+		</CustomDialog>
+	);
 };
 
 export const ScheduleMeetingDialog = memo(Component);

@@ -432,7 +432,7 @@ export const componentsTheme = (theme: Theme) =>
 
                             '& .MuiChip-deleteIcon': {
                                 color: theme.designSystemColors.black.primary,
-                                margin: '0 0 0 5px'
+                                margin: '0 0 0 5px',
                             },
                         },
                     },

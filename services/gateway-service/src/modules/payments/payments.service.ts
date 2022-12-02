@@ -4,7 +4,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { PAYMENTS_PROVIDER } from 'shared-const';
 import { PaymentsBrokerPatterns } from 'shared-const';
 import {
-  CancelPaymentIntentPayload, CancelUserSubscriptionPayload,
+  CancelPaymentIntentPayload,
+  CancelUserSubscriptionPayload,
   CreatePaymentIntentPayload,
   CreateStripeAccountLinkPayload,
   CreateStripeExpressAccountPayload,

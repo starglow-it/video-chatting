@@ -13,10 +13,11 @@ import { CoreModule } from '../../services/core/core.module';
 import { ConfigModule } from '../../services/config/config.module';
 import { TemplatesModule } from '../templates/templates.module';
 import { MediaServerModule } from '../../services/media-server/media-server.module';
+import { ScalingModule } from '../../services/scaling/scaling.module';
+import { UserTemplatesModule } from '../user-templates/user-templates.module';
 
 // const
 import { JWT_ACCESS_EXPIRE } from 'shared-const';
-import { ScalingModule } from '../../services/scaling/scaling.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ScalingModule } from '../../services/scaling/scaling.module';
     MediaServerModule,
     ScalingModule,
     TemplatesModule,
+    UserTemplatesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],

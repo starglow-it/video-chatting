@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { Model, UpdateQuery } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 
@@ -8,14 +8,7 @@ import { User, UserDocument } from '../../schemas/user.schema';
 
 // shared
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { ICommonUser, IUpdateProfile, QueryParams } from 'shared-types';
-
-type GetUserQuery = {
-  query: FilterQuery<UserDocument>;
-  session?: ITransactionSession;
-  populatePaths?: CustomPopulateOptions;
-  options?: QueryParams;
-};
+import { ICommonUser, IUpdateProfile } from 'shared-types';
 
 import {
   SocialLink,
@@ -25,7 +18,7 @@ import {
   ProfileAvatar,
   ProfileAvatarDocument,
 } from '../../schemas/profile-avatar.schema';
-import { CustomPopulateOptions } from '../../types/custom';
+import {CustomPopulateOptions, GetModelQuery, UpdateModelQuery} from '../../types/custom';
 
 @Injectable()
 export class UsersService {
@@ -64,7 +57,7 @@ export class UsersService {
     return;
   }
 
-  async findUser({ query, session, populatePaths }: GetUserQuery) {
+  async findUser({ query, session, populatePaths }: GetModelQuery<UserDocument>) {
     return this.user
       .findOne(
         query,
@@ -79,12 +72,7 @@ export class UsersService {
     data,
     populatePaths,
     session,
-  }: {
-    query: FilterQuery<UserDocument>;
-    data: UpdateQuery<UserDocument>;
-    session?: ITransactionSession;
-    populatePaths?: CustomPopulateOptions;
-  }): Promise<any> {
+  }: UpdateModelQuery<UserDocument, User>): Promise<any> {
     return this.user
       .updateMany(query, data, {
         session: session?.session,
@@ -93,7 +81,7 @@ export class UsersService {
       .exec();
   }
 
-  async findUsers({ query, options, populatePaths, session }: GetUserQuery) {
+  async findUsers({ query, options, populatePaths, session }: GetModelQuery<UserDocument>) {
     return this.user
       .find(
         query,
@@ -109,15 +97,15 @@ export class UsersService {
       .exec();
   }
 
-  async findUserAndUpdate(
-    query: FilterQuery<UserDocument>,
-    data: UpdateQuery<UserDocument>,
-    { session }: ITransactionSession,
-  ) {
+  async findUserAndUpdate({
+    query,
+    data,
+    session
+  }: UpdateModelQuery<UserDocument, User>) {
     return this.user.findOneAndUpdate(
       query,
       { $set: data },
-      { session, new: true },
+      { session: session?.session, new: true },
     );
   }
 
@@ -184,7 +172,7 @@ export class UsersService {
     return;
   }
 
-  async count({ query, session }: GetUserQuery): Promise<number> {
+  async count({ query, session }: GetModelQuery<UserDocument>): Promise<number> {
     return this.user
       .countDocuments(query, { session: session?.session })
       .exec();
@@ -204,12 +192,16 @@ export class UsersService {
       stripeCustomerId: data.stripeCustomerId,
       stripeSubscriptionId: data.stripeSubscriptionId,
       subscriptionPlanKey: data.subscriptionPlanKey,
+      previousSubscriptionPlanKey: data.previousSubscriptionPlanKey,
       maxTemplatesNumber: data.maxTemplatesNumber,
       maxMeetingTime: data.maxMeetingTime,
       isSubscriptionActive: data.isSubscriptionActive,
       stripeEmail: data.stripeEmail,
       isStripeEnabled: data.isStripeEnabled,
       wasSuccessNotificationShown: data.wasSuccessNotificationShown,
+      shouldShowTrialExpiredNotification:
+        data.shouldShowTrialExpiredNotification,
+      isDowngradeMessageShown: data.isDowngradeMessageShown,
       country: data.country,
       registerTemplate: data.registerTemplate,
     };

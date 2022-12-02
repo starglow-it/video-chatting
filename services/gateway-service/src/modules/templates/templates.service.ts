@@ -5,18 +5,11 @@ import {
   EntityList,
   ICommonTemplate,
   IUserTemplate,
-  CreateUserTemplateByIdPayload,
-  DeleteUsersTemplatesPayload,
   GetCommonTemplatePayload,
   GetCommonTemplatesPayload,
-  GetUsersTemplatesPayload,
-  GetUserTemplateByIdPayload,
-  GetUserTemplateByTemplateIdPayload,
-  GetUserTemplatePayload,
-  GetUserTemplatesPayload,
-  UpdateUserTemplatePayload,
   DeleteCommonTemplatePayload,
-  CountUserTemplatesPayload,
+  EditTemplatePayload,
+  CreateTemplatePayload,
 } from 'shared-types';
 
 @Injectable()
@@ -47,88 +40,16 @@ export class TemplatesService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-  async getUserTemplate(
-    payload: GetUserTemplatePayload,
-  ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplate };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async getUserTemplateById(
-    payload: GetUserTemplateByIdPayload,
-  ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplateById };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async createUserTemplate(
-    payload: CreateUserTemplateByIdPayload,
-  ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.CreateUserTemplate };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async getUserTemplateByTemplateId(
-    payload: GetUserTemplateByTemplateIdPayload,
-  ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplateByTemplateId };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async getUserTemplates(
-    payload: GetUserTemplatesPayload,
-  ): Promise<EntityList<IUserTemplate>> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplates };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async updateUserTemplate(
-    payload: UpdateUserTemplatePayload,
-  ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.UpdateUserTemplate };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async getUsersTemplates(
-    payload: GetUsersTemplatesPayload,
-  ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUsersTemplates };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async deleteUserTemplate(
-    payload: DeleteUsersTemplatesPayload,
-  ): Promise<void> {
-    const pattern = { cmd: TemplateBrokerPatterns.DeleteUsersTemplates };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async countUserTemplates(
-    payload: CountUserTemplatesPayload,
-  ): Promise<{ count: number }> {
-    const pattern = { cmd: TemplateBrokerPatterns.CountUserTemplates };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async createTemplate(data): Promise<IUserTemplate> {
+  async createTemplate(payload: CreateTemplatePayload): Promise<IUserTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.CreateTemplate };
 
-    return this.coreService.sendCustom(pattern, data);
+    return this.coreService.sendCustom(pattern, payload);
   }
 
-  async updateTemplate(data): Promise<IUserTemplate> {
+  async updateTemplate(payload: EditTemplatePayload): Promise<IUserTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.UpdateTemplate };
 
-    return this.coreService.sendCustom(pattern, data);
+    return this.coreService.sendCustom(pattern, payload);
   }
 
   async deleteCommonTemplate(

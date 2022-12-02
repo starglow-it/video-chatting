@@ -103,6 +103,9 @@ export class CommonUserDTO implements ICommonUser {
   @Expose()
   subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
+  @Expose()
+  previousSubscriptionPlanKey: ICommonUser['previousSubscriptionPlanKey'];
+
   tokens: string[];
   password: ICommonUser['password'];
 
@@ -123,4 +126,7 @@ export class CommonUserDTO implements ICommonUser {
 
   @Expose()
   isBlocked: ICommonUser['isBlocked'];
+
+  @Expose()
+  isDowngradeMessageShown: ICommonUser['isDowngradeMessageShown'];
 }

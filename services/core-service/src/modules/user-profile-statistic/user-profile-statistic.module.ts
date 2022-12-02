@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UserProfileStatisticController } from './user-profile-statistic.controller';
 import { UserProfileStatisticService } from './user-profile-statistic.service';
-import {MongooseModule} from "@nestjs/mongoose";
-import {UserProfileStatistic, UserProfileStatisticSchema} from "../../schemas/user-profile-statistic.schema";
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  UserProfileStatistic,
+  UserProfileStatisticSchema,
+} from '../../schemas/user-profile-statistic.schema';
 
 @Module({
   imports: [
@@ -12,6 +15,6 @@ import {UserProfileStatistic, UserProfileStatisticSchema} from "../../schemas/us
   ],
   controllers: [UserProfileStatisticController],
   providers: [UserProfileStatisticService],
-  exports: [UserProfileStatisticService]
+  exports: [UserProfileStatisticService],
 })
 export class UserProfileStatisticModule {}

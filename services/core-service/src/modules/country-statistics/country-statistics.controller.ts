@@ -4,12 +4,21 @@ import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 
-import { CoreBrokerPatterns } from 'shared-const';
-import { ICountryStatistic } from 'shared-types';
+// shared
+import { CoreBrokerPatterns, COUNTRY_STATISTICS_SERVICE } from 'shared-const';
+import {
+  ICountryStatistic,
+  UpdateCountryStatisticsPayload,
+} from 'shared-types';
 
-import { withTransaction } from '../../helpers/mongo/withTransaction';
-import { CommonCountryStatisticDTO } from '../../dtos/common-user-statistic.dto';
+// services
 import { CountryStatisticsService } from './country-statistics.service';
+
+// dtos
+import { CommonCountryStatisticDTO } from '../../dtos/common-user-statistic.dto';
+
+// helpers
+import { withTransaction } from '../../helpers/mongo/withTransaction';
 
 @Controller('country-statistics')
 export class CountryStatisticsController {
@@ -19,9 +28,7 @@ export class CountryStatisticsController {
   ) {}
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetCountryStatistics })
-  async getCountryStatistics(
-    @Payload() payload: any,
-  ): Promise<ICountryStatistic[]> {
+  async getCountryStatistics(): Promise<ICountryStatistic[]> {
     try {
       return withTransaction(this.connection, async (session) => {
         const countryStatistics = await this.countryStatisticsService.find({
@@ -40,14 +47,14 @@ export class CountryStatisticsController {
     } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: 'COUNTRY_STATISTICS_SERVICE',
+        ctx: COUNTRY_STATISTICS_SERVICE,
       });
     }
   }
 
   @MessagePattern({ cmd: CoreBrokerPatterns.UpdateCountryStatistics })
   async updateCountryStatistics(
-    @Payload() payload: any,
+    @Payload() payload: UpdateCountryStatisticsPayload,
   ): Promise<ICountryStatistic> {
     try {
       return withTransaction(this.connection, async (session) => {
@@ -56,7 +63,7 @@ export class CountryStatisticsController {
             key: payload.key,
           },
           data: {
-            $inc: { value: payload.value }
+            $inc: { value: payload.value },
           },
           session,
         });
@@ -69,7 +76,7 @@ export class CountryStatisticsController {
     } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: 'COUNTRY_STATISTICS_SERVICE',
+        ctx: COUNTRY_STATISTICS_SERVICE,
       });
     }
   }

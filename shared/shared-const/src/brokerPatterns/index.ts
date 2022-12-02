@@ -9,3 +9,4 @@ export * from './scaling';
 export * from './templates';
 export * from './users';
 export * from './socket';
+export * from './user-templates';

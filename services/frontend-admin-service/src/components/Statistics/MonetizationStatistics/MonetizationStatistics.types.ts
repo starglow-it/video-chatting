@@ -1,5 +1,9 @@
-import { ValuesSwitcherItem } from 'shared-frontend';
-import { MonetizationStatisticPeriods } from 'shared-types';
+import {
+	ValuesSwitcherItem 
+} from 'shared-frontend';
+import {
+	MonetizationStatisticPeriods 
+} from 'shared-types';
 
 export type MonetizationStatisticsProps = {
     titleKey: string;
@@ -10,5 +14,7 @@ export type MonetizationStatisticsProps = {
     };
     periods: ValuesSwitcherItem<MonetizationStatisticPeriods>[];
     currentPeriod: ValuesSwitcherItem<MonetizationStatisticPeriods>;
-    onChangePeriod: (value: ValuesSwitcherItem<MonetizationStatisticPeriods>) => void;
+    onChangePeriod: (
+        value: ValuesSwitcherItem<MonetizationStatisticPeriods>,
+    ) => void;
 };

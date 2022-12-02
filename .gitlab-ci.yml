@@ -1,11 +1,12 @@
 stages:
   - sonarqube_scan
   - update_traefik
+  - build_scaling_instance_image
   - update_test
+  - update_dev_staging
   - update_staging_services
   - update_staging_config
   - update
-  - build_scaling_instance_image
   - update_jira_issues
   - update_demo_traefik
   - update_demo

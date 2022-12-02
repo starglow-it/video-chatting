@@ -1,5 +1,9 @@
-import { TypographyVariant } from '@mui/material';
-import { IBusinessCategory } from 'shared-types';
+import {
+	TypographyVariant 
+} from '@mui/material';
+import {
+	IBusinessCategory 
+} from 'shared-types';
 
 export type BusinessCategoryItemProps = {
     category: IBusinessCategory;

@@ -1,4 +1,6 @@
-import React, { ForwardedRef, ReactElement, RefAttributes } from 'react';
+import React, {
+	ForwardedRef, ReactElement, RefAttributes 
+} from 'react';
 
 declare module 'react' {
     function forwardRef<T, P = unknown>(

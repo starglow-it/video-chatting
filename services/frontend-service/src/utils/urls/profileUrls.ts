@@ -122,8 +122,3 @@ export const checkResetPasswordLinkUrl = {
     url: `${serverUrl}/${authScope}/verify-reset-link`,
     method: HttpMethods.Post,
 };
-
-export const resetTrialNotificationUrl = {
-    url: `${baseProfileUrl}/reset-trial-notification`,
-    method: HttpMethods.Post,
-};

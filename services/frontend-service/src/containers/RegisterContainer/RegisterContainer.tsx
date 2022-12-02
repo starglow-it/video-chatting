@@ -10,7 +10,7 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
-import { CustomButton, CustomBox, CustomCheckbox , CustomGrid } from 'shared-frontend/library';
+import { CustomButton, CustomBox, CustomCheckbox, CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // common

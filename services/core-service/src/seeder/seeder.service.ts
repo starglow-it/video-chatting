@@ -5,6 +5,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as mkdirp from 'mkdirp';
 import * as fsPromises from 'fs/promises';
 
+// shared
+import {
+  templatesData,
+  LANGUAGES_TAGS,
+  BUSINESS_CATEGORIES,
+  monetizationStatisticsData,
+} from 'shared-const';
+import { Counters, UserRoles } from 'shared-types';
+import {executePromiseQueue} from "shared-utils";
+
 // services
 import { UsersService } from '../modules/users/users.service';
 import { BusinessCategoriesService } from '../modules/business-categories/business-categories.service';
@@ -15,15 +25,8 @@ import { AwsConnectorService } from '../services/aws-connector/aws-connector.ser
 import { PaymentsService } from '../services/payments/payments.service';
 import { CountersService } from '../modules/counters/counters.service';
 import { ConfigClientService } from '../services/config/config.service';
-
-// const
-import {
-  templatesData,
-  LANGUAGES_TAGS,
-  BUSINESS_CATEGORIES,
-  monetizationStatisticsData,
-} from 'shared-const';
-import { Counters, UserRoles } from 'shared-types';
+import { MonetizationStatisticService } from '../modules/monetization-statistic/monetization-statistic.service';
+import { RoomsStatisticsService } from '../modules/rooms-statistics/rooms-statistics.service';
 
 // schemas
 import {
@@ -33,9 +36,6 @@ import {
 
 // utils
 import { getScreenShots } from '../utils/images/getScreenShots';
-import { executePromiseQueue } from '../utils/executePromiseQueue';
-import { MonetizationStatisticService } from '../modules/monetization-statistic/monetization-statistic.service';
-import { RoomsStatisticsService } from '../modules/rooms-statistics/rooms-statistics.service';
 
 @Injectable()
 export class SeederService {
@@ -264,7 +264,9 @@ export class SeederService {
       if (counterType === Counters.Templates) {
         const template = await this.commonTemplatesService.findCommonTemplate({
           query: {},
-          sort: '-templateId',
+          options: {
+            sort: '-templateId',
+          },
         });
 
         await this.countersService.create({

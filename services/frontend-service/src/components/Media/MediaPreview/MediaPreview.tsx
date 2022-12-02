@@ -14,7 +14,7 @@ import { VolumeAnalyzer } from '@components/Media/VolumeAnalyzer/VolumeAnalyzer'
 
 // library
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { MicIcon , CameraIcon } from 'shared-frontend/icons';
+import { MicIcon, CameraIcon } from 'shared-frontend/icons';
 
 // types
 import { MediaPreviewProps } from './types';

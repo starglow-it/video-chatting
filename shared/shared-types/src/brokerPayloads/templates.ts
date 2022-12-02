@@ -1,5 +1,4 @@
 import {
-  IBusinessCategory,
   ICommonTemplate,
   ICommonUser,
   IUpdateTemplate,
@@ -56,6 +55,11 @@ export type CountUserTemplatesPayload = {
   options: QueryParams;
 };
 
+export type DeleteLeastUsedTemplatesPayload = {
+  userId: ICommonUser['id'];
+  templatesLimit: number;
+};
+
 export type AddTemplateToUserPayload = {
   templateId: string;
   userId: string;
@@ -67,14 +71,21 @@ export type UploadTemplateFilePayload = {
   mimeType: string;
 };
 
+export type UploadCommonTemplateFilePayload = {
+  file: File;
+  templateId: ICommonTemplate['id'];
+};
+
+export type GetCommonTemlatePayload = {
+  templateId: ICommonTemplate['id'];
+};
+
 export type CreateTemplatePayload = {
   userId: IUserTemplate['id'];
 };
 
 export type EditTemplatePayload = {
   templateId: ICommonTemplate['id'];
-  data: Omit<Partial<ICommonTemplate>, 'businessCategories'> & {
-    businessCategories: IBusinessCategory[];
-  };
+  data: Partial<IUpdateTemplate>;
 };
 export type DeleteCommonTemplatePayload = { templateId: ICommonTemplate['id'] };

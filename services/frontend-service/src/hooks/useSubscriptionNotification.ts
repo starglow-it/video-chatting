@@ -17,7 +17,7 @@ export const useSubscriptionNotification = (url?: string) => {
         if (updateUrl) {
             const isHouseSubscriptionSuccess = router.query.success_house === 'true';
 
-            if (!subscription?.id && !isHouseSubscriptionSuccess || router.asPath === updateUrl) {
+            if ((!subscription?.id && !isHouseSubscriptionSuccess) || router.asPath === updateUrl) {
                 return;
             }
 

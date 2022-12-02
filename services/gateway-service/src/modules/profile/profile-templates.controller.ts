@@ -31,6 +31,7 @@ import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { UploadService } from '../upload/upload.service';
 import { CoreService } from '../../services/core/core.service';
 import { v4 as uuidv4 } from 'uuid';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 @Controller('profile/templates')
 export class ProfileTemplatesController {
@@ -38,6 +39,7 @@ export class ProfileTemplatesController {
 
   constructor(
     private templatesService: TemplatesService,
+    private userTemplatesService: UserTemplatesService,
     private uploadService: UploadService,
     private coreService: CoreService,
   ) {}
@@ -55,7 +57,7 @@ export class ProfileTemplatesController {
     @Query('limit', ParseIntPipe) limit: number,
   ): Promise<ResponseSumType<EntityList<IUserTemplate>>> {
     try {
-      const template = await this.templatesService.getUserTemplates({
+      const template = await this.userTemplatesService.getUserTemplates({
         userId: req.user.userId,
         skip,
         limit,
@@ -93,7 +95,7 @@ export class ProfileTemplatesController {
     @Query('templateType') templateType: string,
   ): Promise<ResponseSumType<{ count: number }>> {
     try {
-      const count = await this.templatesService.countUserTemplates({
+      const count = await this.userTemplatesService.countUserTemplates({
         userId: req.user.userId,
         options: {
           skip,
@@ -154,7 +156,7 @@ export class ProfileTemplatesController {
           });
         }
 
-        const template = await this.templatesService.updateUserTemplate({
+        const template = await this.userTemplatesService.updateUserTemplate({
           templateId,
           userId: req.user.userId,
           data: updateTemplateData,
@@ -193,7 +195,7 @@ export class ProfileTemplatesController {
   ): Promise<ResponseSumType<void>> {
     try {
       if (templateId) {
-        await this.templatesService.deleteUserTemplate({
+        await this.userTemplatesService.deleteUserTemplate({
           templateId,
           userId: req.user.userId,
         });
@@ -228,7 +230,7 @@ export class ProfileTemplatesController {
   async getUserTemplate(@Param('templateId') templateId: string) {
     try {
       if (templateId) {
-        const template = await this.templatesService.getUserTemplate({
+        const template = await this.userTemplatesService.getUserTemplate({
           id: templateId,
         });
 
@@ -268,7 +270,7 @@ export class ProfileTemplatesController {
     try {
       if (templateId) {
         const template =
-          await this.templatesService.getUserTemplateByTemplateId({
+          await this.userTemplatesService.getUserTemplateByTemplateId({
             id: templateId,
             userId: req.user.userId,
           });
@@ -312,7 +314,7 @@ export class ProfileTemplatesController {
 
         if (template) {
           let userTemplate =
-            await this.templatesService.getUserTemplateByTemplateId({
+            await this.userTemplatesService.getUserTemplateByTemplateId({
               id: template.templateId,
               userId: req.user.userId,
             });

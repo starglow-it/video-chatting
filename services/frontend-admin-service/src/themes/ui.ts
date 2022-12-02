@@ -1,4 +1,9 @@
-import { alpha, Theme, createTheme } from '@mui/material';
+import {
+    Theme
+} from '@mui/material/styles';
+
+import createTheme from '@mui/material/styles/createTheme';
+import {alpha} from "@mui/system";
 
 export const uiTheme = (theme: Theme) =>
     createTheme({

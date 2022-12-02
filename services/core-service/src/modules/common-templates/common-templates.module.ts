@@ -26,7 +26,7 @@ import { BusinessCategoriesModule } from '../business-categories/business-catego
 import { UserTemplatesModule } from '../user-templates/user-templates.module';
 import { MeetingsModule } from '../meetings/meetings.module';
 import { RoomsStatisticsModule } from '../rooms-statistics/rooms-statistics.module';
-import {UserProfileStatisticModule} from "../user-profile-statistic/user-profile-statistic.module";
+import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
 
 @Module({
   imports: [

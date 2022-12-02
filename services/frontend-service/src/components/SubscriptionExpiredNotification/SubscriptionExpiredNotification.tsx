@@ -16,7 +16,7 @@ import { useLocalization } from '@hooks/useTranslation';
 import styles from './SubscriptionExpiredNotification.module.scss';
 
 // stores
-import { $profileStore, resetTrialExpiredNotificationFx } from '../../store';
+import { $profileStore, updateProfileFx } from '../../store';
 
 // const
 import { dashboardRoute } from '../../const/client-routes';
@@ -46,7 +46,7 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
 
     useEffect(() => {
         if (open) {
-            resetTrialExpiredNotificationFx();
+            updateProfileFx({ shouldShowTrialExpiredNotification: false });
         }
     }, [open]);
 

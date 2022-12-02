@@ -8,19 +8,24 @@ import {
 
 import { JWT_ACCESS_EXPIRE, PAYMENTS_PROVIDER } from 'shared-const';
 
+// controllers
 import { PaymentsController } from './payments.controller';
 
+// services
 import { PaymentsService } from './payments.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
+// nodules
 import { CoreModule } from '../../services/core/core.module';
 import { TemplatesModule } from '../templates/templates.module';
 import { ConfigModule } from '../../services/config/config.module';
+import { UserTemplatesModule } from '../user-templates/user-templates.module';
 
 @Module({
   imports: [
     CoreModule,
     TemplatesModule,
+    UserTemplatesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],

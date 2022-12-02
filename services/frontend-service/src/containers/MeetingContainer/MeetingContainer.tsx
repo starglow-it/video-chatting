@@ -22,7 +22,7 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
-import {HostUserDeletedDialog} from "@components/Dialogs/HostUserDeletedDialog/HostUserDeletedDialog";
+import { HostUserDeletedDialog } from '@components/Dialogs/HostUserDeletedDialog/HostUserDeletedDialog';
 
 // stores
 import { useToggle } from '@hooks/useToggle';
@@ -37,7 +37,6 @@ import {
     resetRoomStores,
 } from '../../store';
 import {
-    $changeStreamStore,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -47,8 +46,9 @@ import {
     initDevicesEventFxWithStore,
     initiateMeetingSocketConnectionEvent,
     joinMeetingEvent,
+    joinMeetingFx,
     joinRoomBeforeMeetingSocketEvent,
-    sendJoinWaitingRoomSocketEvent, setActiveStreamEvent,
+    sendJoinWaitingRoomSocketEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
     setCurrentAudioDeviceEvent,
@@ -103,7 +103,7 @@ const MeetingContainer = memo(() => {
     const isOwner = useStore($isOwner);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
-    const changeStream = useStore($changeStreamStore);
+    const isJoinMeetingPending = useStore(joinMeetingFx.pending);
 
     const { isMobile } = useBrowserDetect();
 
@@ -123,6 +123,8 @@ const MeetingContainer = memo(() => {
 
     useEffect(() => {
         (async () => {
+            BackgroundManager.init();
+
             getSubscriptionWithDataFx();
 
             await getMeetingTemplateFx({
@@ -190,35 +192,24 @@ const MeetingContainer = memo(() => {
                         accessStatus: MeetingAccessStatusEnum.InMeeting,
                     });
 
-                    const clonedStream = changeStream?.clone();
-
-                    await BackgroundManager.init();
-
-                    const streamWithBackground = await BackgroundManager.applyBlur(
-                        clonedStream,
-                        savedSettings.cameraActiveSetting,
-                        savedSettings.auraSetting,
-                    );
-
-                    setActiveStreamEvent(streamWithBackground);
-
                     joinMeetingEvent({
                         isSettingsAudioBackgroundActive: savedSettings.backgroundAudioSetting,
                         settingsBackgroundAudioVolume: savedSettings.backgroundAudioVolumeSetting,
                         needToRememberSettings: false,
                     });
+
+                    handleSetSettingsChecked();
                 }
-                handleSetSettingsChecked();
-            } else {
-                handleSetSettingsChecked();
             }
+
+            handleSetSettingsChecked();
         })();
     }, [isMeetingSocketConnected, isOwner]);
 
     return (
         <>
             {Boolean(meetingTemplate?.id) && (
-                <ConditionalRender condition={isSettingsChecked}>
+                <ConditionalRender condition={isSettingsChecked && !isJoinMeetingPending}>
                     <ConditionalRender
                         condition={MeetingAccessStatusEnum.InMeeting !== localUser.accessStatus}
                     >

@@ -28,6 +28,7 @@ import { TemplatesService } from '../templates/templates.service';
 
 import { CreateMeetingRequest } from '../../dtos/requests/create-meeting.request';
 import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.request';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
@@ -36,6 +37,7 @@ export class MeetingsController {
   constructor(
     private coreService: CoreService,
     private templatesService: TemplatesService,
+    private userTemplatesService: UserTemplatesService,
     private mediaServerService: MediaServerService,
   ) {}
 
@@ -55,12 +57,12 @@ export class MeetingsController {
     @Body() body: CreateMeetingRequest,
   ): Promise<ResponseSumType<IUserTemplate>> {
     try {
-      let userTemplate = await this.templatesService.getUserTemplateById({
+      let userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: body.templateId,
       });
 
       if (!userTemplate) {
-        userTemplate = await this.templatesService.createUserTemplate({
+        userTemplate = await this.userTemplatesService.createUserTemplate({
           id: body.templateId,
           userId: req.user.userId,
         });
@@ -141,7 +143,9 @@ export class MeetingsController {
   })
   async getMeetingTemplate(@Param('templateId') templateId: string) {
     try {
-      const meeting = await this.templatesService.getUserTemplate({ id: templateId });
+      const meeting = await this.userTemplatesService.getUserTemplate({
+        id: templateId,
+      });
 
       return {
         success: true,

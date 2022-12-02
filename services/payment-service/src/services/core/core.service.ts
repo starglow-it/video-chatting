@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared-const';
+import { CORE_PROVIDER, UserTemplatesBrokerPatterns } from 'shared-const';
 import {
   StatisticBrokerPatterns,
   UserBrokerPatterns,
@@ -17,9 +17,11 @@ import {
   UpdateMonetizationStatisticPayload,
   ICommonTemplate,
   GetUserTemplateByIdPayload,
-  IUserTemplate, UpdateUserProfileStatisticPayload,
+  IUserTemplate,
+  UpdateUserProfileStatisticPayload,
+  DeleteLeastUsedTemplatesPayload,
 } from 'shared-types';
-import {firstValueFrom} from "rxjs";
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class CoreService {
@@ -60,7 +62,7 @@ export class CoreService {
   async getUserTemplateById(
     payload: GetUserTemplateByIdPayload,
   ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplateById };
+    const pattern = { cmd: UserTemplatesBrokerPatterns.GetUserTemplateById };
 
     return this.client.send(pattern, payload).toPromise();
   }
@@ -92,12 +94,22 @@ export class CoreService {
   }
 
   async updateUserProfileStatistic(
-      payload: UpdateUserProfileStatisticPayload,
+    payload: UpdateUserProfileStatisticPayload,
   ): Promise<any> {
     const pattern = {
       cmd: StatisticBrokerPatterns.UpdateUserProfileStatistic,
     };
 
     return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async deleteLeastUsedUserTemplates(
+    payload: DeleteLeastUsedTemplatesPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.DeleteLeastUsedTemplates,
+    };
+
+    return this.client.send(pattern, payload).toPromise();
   }
 }

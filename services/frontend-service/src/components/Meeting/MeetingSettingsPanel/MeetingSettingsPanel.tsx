@@ -14,9 +14,6 @@ import { ConfirmCancelChangesDialog } from '@components/Dialogs/ConfirmCancelCha
 import { EditTemplateForm } from '@components/Meeting/EditTemplateForm/EditTemplateForm';
 import { MeetingInfo } from '@components/Meeting/MeetingInfo/MeetingInfo';
 
-// common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomBox } from 'shared-frontend/library';
@@ -106,7 +103,7 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             fullName: template.fullName,
             position: template.position,
             signBoard: template.signBoard,
-            businessCategories: template.businessCategories.map(category => category.key),
+            businessCategories: template?.businessCategories?.map(category => category.key),
             languages: template.languages.map(category => category.key),
             socials: templateSocialLinks,
             customLink: template.customLink,
@@ -228,7 +225,8 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
 
                 if (filteredData.customLink && template.customLink !== filteredData.customLink) {
                     const isBusy = await checkCustomLinkFx({
-                        templateId: filteredData.customLink,
+                        templateId: template.id,
+                        customLink: filteredData.customLink as string,
                     });
 
                     if (isBusy) {
@@ -296,8 +294,7 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                         width="24px"
                         height="24px"
                     />
-
-                    <ConditionalRender condition={isOwner}>
+                    {isOwner ? (
                         <Fade in={isEditTemplateOpened} unmountOnExit>
                             <CustomBox className={styles.fadeContentWrapper}>
                                 <form onSubmit={onSubmit} className={styles.form}>
@@ -305,13 +302,13 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                                 </form>
                             </CustomBox>
                         </Fade>
-                    </ConditionalRender>
-
-                    <Fade in={isMeetingInfoOpened}>
-                        <CustomBox className={styles.fadeContentWrapper}>
-                            <MeetingInfo />
-                        </CustomBox>
-                    </Fade>
+                    ) : (
+                        <Fade in={isMeetingInfoOpened} unmountOnExit>
+                            <CustomBox className={styles.fadeContentWrapper}>
+                                <MeetingInfo />
+                            </CustomBox>
+                        </Fade>
+                    )}
                 </CustomPaper>
                 <ConfirmCancelChangesDialog onClose={handleConfirmClose} />
             </FormProvider>

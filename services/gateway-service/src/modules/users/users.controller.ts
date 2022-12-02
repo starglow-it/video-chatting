@@ -1,10 +1,12 @@
 import {
   BadRequestException,
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Logger,
-  Param, ParseBoolPipe,
+  Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Query,
@@ -36,12 +38,13 @@ import { CoreService } from '../../services/core/core.service';
 import { ConfigClientService } from '../../services/config/config.service';
 import { UploadService } from '../upload/upload.service';
 import { TemplatesService } from '../templates/templates.service';
-import {PaymentsService} from "../payments/payments.service";
-import {SocketService} from "../../services/socket/socket.service";
+import { PaymentsService } from '../payments/payments.service';
+import { SocketService } from '../../services/socket/socket.service';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 // dtos
-import {CommonTemplateRestDTO} from "../../dtos/response/common-template.dto";
-import {CommonUserRestDTO} from "../../dtos/response/common-user.dto";
+import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
+import { CommonUserRestDTO } from '../../dtos/response/common-user.dto';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';
@@ -68,6 +71,7 @@ export class UsersController {
     private coreService: CoreService,
     private uploadService: UploadService,
     private templatesService: TemplatesService,
+    private userTemplatesService: UserTemplatesService,
     private paymentsService: PaymentsService,
     private socketService: SocketService,
   ) {}
@@ -134,10 +138,10 @@ export class UsersController {
     description: 'Forbidden',
   })
   async searchUsers(
-      @Query('skip', ParseIntPipe) skip: number,
-      @Query('limit', ParseIntPipe) limit: number,
-      @Query('search') search: string,
-      @Query('sort') sort: string,
+    @Query('skip', ParseIntPipe) skip: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('search') search: string,
+    @Query('sort') sort: string,
   ): Promise<ResponseSumType<EntityList<ICommonUser>>> {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };
@@ -162,10 +166,10 @@ export class UsersController {
       };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get search users`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get search users`,
+        },
+        JSON.stringify(err),
       );
       throw new BadRequestException(err);
     }
@@ -181,14 +185,14 @@ export class UsersController {
     description: 'Forbidden',
   })
   async getUsersTemplates(
-      @Param('userId') userId: string,
-      @Query('skip', ParseIntPipe) skip: number,
-      @Query('limit', ParseIntPipe) limit: number,
-      @Query('sort') sort: string,
-      @Query('dir', ParseIntPipe) direction: number,
+    @Param('userId') userId: string,
+    @Query('skip', ParseIntPipe) skip: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('sort') sort: string,
+    @Query('dir', ParseIntPipe) direction: number,
   ) {
     try {
-      const templatesData = await this.templatesService.getUserTemplates({
+      const templatesData = await this.userTemplatesService.getUserTemplates({
         userId,
         skip,
         limit,
@@ -202,10 +206,10 @@ export class UsersController {
       };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get user templates`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get user templates`,
+        },
+        JSON.stringify(err),
       );
       throw new BadRequestException(err);
     }
@@ -219,12 +223,10 @@ export class UsersController {
     type: CommonTemplateRestDTO,
     description: 'Get User Template Success',
   })
-  async getUserTemplate(
-      @Param('templateId') templateId: string
-  ) {
+  async getUserTemplate(@Param('templateId') templateId: string) {
     try {
       if (templateId) {
-        const template = await this.templatesService.getUserTemplate({
+        const template = await this.userTemplatesService.getUserTemplate({
           id: templateId,
         });
 
@@ -240,10 +242,10 @@ export class UsersController {
       };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get user template`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get user template`,
+        },
+        JSON.stringify(err),
       );
 
       throw new BadRequestException(err);
@@ -322,7 +324,10 @@ export class UsersController {
         },
       });
 
-      this.socketService.kickUserFromMeeting({ userId, reason: KickUserReasons.Deleted });
+      this.socketService.kickUserFromMeeting({
+        userId,
+        reason: KickUserReasons.Deleted,
+      });
 
       return {
         success: true,
@@ -357,7 +362,7 @@ export class UsersController {
       const user = await this.coreService.manageUserRights({
         userId,
         key,
-        value
+        value,
       });
 
       if (user.stripeSubscriptionId) {
@@ -377,7 +382,10 @@ export class UsersController {
             },
           });
 
-          this.socketService.kickUserFromMeeting({ userId, reason: KickUserReasons.Blocked });
+          this.socketService.kickUserFromMeeting({
+            userId,
+            reason: KickUserReasons.Blocked,
+          });
         }
       }
 
@@ -492,7 +500,7 @@ export class UsersController {
         userId: req.user.userId,
       });
 
-      const template = await this.templatesService.getUserTemplateById({
+      const template = await this.userTemplatesService.getUserTemplateById({
         id: data.templateId,
       });
 
@@ -514,7 +522,10 @@ export class UsersController {
 
       const key = `uploads/calendarEvents/${template.id}/${uploadId}/invite.ics`;
 
-      const icsLink = await this.uploadService.uploadFile(Buffer.from(content), key);
+      const icsLink = await this.uploadService.uploadFile(
+        Buffer.from(content),
+        key,
+      );
 
       const startAtDate = formatDate(startAt, data.timeZone);
 
@@ -532,8 +543,8 @@ export class UsersController {
             {
               name: 'SENDER',
               content: senderUser.fullName
-                  ? `${senderUser.fullName} (${senderUser.email})`
-                  : senderUser.email,
+                ? `${senderUser.fullName} (${senderUser.email})`
+                : senderUser.email,
             },
           ],
         },

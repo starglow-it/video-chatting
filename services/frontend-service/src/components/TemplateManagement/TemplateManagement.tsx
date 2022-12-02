@@ -217,7 +217,7 @@ const Component = ({
             url: template.url,
             description: template.description,
             customLink: template.customLink ?? '',
-            tags: template.businessCategories.map(item => ({ ...item, label: item.value })),
+            tags: template?.businessCategories?.map(item => ({ ...item, label: item.value })),
             participantsNumber: template.maxParticipants,
             participantsPositions: template.usersPosition.length
                 ? template.usersPosition.map(({ bottom, left }) => ({
@@ -340,7 +340,7 @@ const Component = ({
             if (item.value > TabsValues.Background && !(background || previewUrl)) {
                 addNotificationEvent({
                     type: NotificationType.BackgroundFileShouldBeUploaded,
-                    message: 'createRoom.uploadBackground.shouldBeUploaded',
+                    message: 'uploadBackground.shouldBeUploaded',
                     withErrorIcon: true,
                 });
                 return;
@@ -372,6 +372,7 @@ const Component = ({
                         </ConditionalRender>
                         <ConditionalRender condition={activeValue === TabsValues.Settings}>
                             <EditTemplateDescription
+                                template={template}
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
                             />

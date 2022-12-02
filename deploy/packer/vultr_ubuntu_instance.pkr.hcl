@@ -89,13 +89,8 @@ build {
   }
 
   provisioner "file" {
-    source      = "../../services"
-    destination = "/tmp/services"
-  }
-
-  provisioner "file" {
-    source      = "../../deploy"
-    destination = "/tmp/deploy"
+    source      = "../../"
+    destination = "/tmp/"
   }
 
   provisioner "shell" {

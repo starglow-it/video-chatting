@@ -76,9 +76,3 @@ export const resetPasswordFx = profileDomain.createEffect<
     ErrorState | null | undefined,
     void
 >('resetPasswordFx');
-
-export const resetTrialExpiredNotificationFx = profileDomain.createEffect<
-    void,
-    CommonProfileResponse,
-    void
->('resetTrialExpiredNotificationFx');

@@ -1,5 +1,3 @@
-import { EffectBackground, VideoEffects } from '@vkontakte/calls-video-effects';
-
 import { getBrowserData } from 'shared-utils';
 import { CustomMediaStream } from '../../types';
 import { BROWSER_NAMES } from '../../types/browsers';
@@ -13,9 +11,9 @@ class BackgroundManagerInstance {
 
     isBackgroundSupported: boolean;
 
-    effectBackground: EffectBackground | null;
+    effectBackground: unknown;
 
-    videoEffects: VideoEffects | null;
+    videoEffects: unknown;
 
     constructor(image: string) {
         this.image = image;
@@ -28,6 +26,8 @@ class BackgroundManagerInstance {
     async init() {
         try {
             if ('navigator' in window) {
+                const Module = await import('@vkontakte/calls-video-effects');
+
                 this.browserData = getBrowserData();
 
                 if (this.browserData) {
@@ -37,13 +37,13 @@ class BackgroundManagerInstance {
 
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
-                            this.effectBackground = new EffectBackground();
+                            this.effectBackground = new Module.EffectBackground();
 
                             await this.effectBackground.setBackgroundImage(this.image);
                         }
 
                         if (!this.videoEffects) {
-                            this.videoEffects = new VideoEffects();
+                            this.videoEffects = new Module.VideoEffects();
                         }
                     }
                 }
@@ -65,11 +65,6 @@ class BackgroundManagerInstance {
 
                 stream.removeTrack(videoTrack);
                 stream.addTrack(blurTrack);
-
-                videoTrack.enabled = isCameraActive;
-                blurTrack.enabled = isCameraActive;
-            } else {
-                this.destroy();
             }
 
             return stream;

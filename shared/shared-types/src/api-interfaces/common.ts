@@ -96,3 +96,5 @@ export enum KickUserReasons {
   Blocked = 'kicked',
   Deleted = 'blocked',
 }
+
+export type PlanKeys = 'House' | 'Professional' | 'Business';

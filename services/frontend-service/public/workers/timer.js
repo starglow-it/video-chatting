@@ -16,7 +16,8 @@ class TimerProcessor extends AudioWorkletProcessor {
             const samples = input[0];
             let sum = 0;
 
-            for (let i = 0; i < samples.length; ++i) sum += samples[i] * samples[i];
+            for (let i = 0; i < samples.length; ++i)
+                sum += samples[i] * samples[i];
 
             this._nextUpdateFrame -= samples.length;
 

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-type Tab = {
+export type Tab = {
     value: string;
     translationKey: string;
 };

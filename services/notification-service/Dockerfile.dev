@@ -28,6 +28,6 @@ RUN pnpm install
 
 COPY ./services/notification-service ./services/notification-service
 
-RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types,notification-service
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 
 CMD /wait && pnpm --filter notification-service dev

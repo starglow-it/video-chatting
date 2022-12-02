@@ -12,7 +12,7 @@ import {
   DashboardNotificationReadStatus,
   TimeoutTypesEnum,
 } from 'shared-types';
-import { subtractDays } from 'shared-utils';
+import {getTimeoutTimestamp, subtractDays} from 'shared-utils';
 
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { DashboardNotificationsService } from './dashboard-notifications.service';
@@ -20,7 +20,6 @@ import { UsersService } from '../users/users.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { DashboardNotificationDTO } from '../../dtos/dashboard-notification.dto';
 import { TasksService } from '../tasks/tasks.service';
-import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 
 @Controller('dashboard-notifications')
 export class DashboardNotificationsController {
@@ -81,7 +80,7 @@ export class DashboardNotificationsController {
                 template,
               },
               session,
-              populatePath: [
+                populatePaths: [
                 { path: 'sender', populate: { path: 'profileAvatar' } },
                 { path: 'template' },
               ],
@@ -143,7 +142,7 @@ export class DashboardNotificationsController {
           await this.dashboardNotificationService.findNotifications({
             query: { receiver },
             session,
-            populatePath: [
+              populatePaths: [
               { path: 'sender', populate: { path: 'profileAvatar' } },
               { path: 'template' },
             ],
@@ -178,7 +177,7 @@ export class DashboardNotificationsController {
           await this.dashboardNotificationService.findNotifications({
             query: { receiver },
             session,
-            populatePath: [
+              populatePaths: [
               { path: 'sender', populate: { path: 'profileAvatar' } },
               { path: 'template' },
             ],

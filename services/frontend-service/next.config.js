@@ -50,7 +50,10 @@ module.exports = withTM(
             if (!options.isServer) {
                 config.plugins.push(
                     new I18NextHMRPlugin({
-                        localesDir: path.resolve(__dirname, 'public/translations'),
+                        localesDir: path.resolve(
+                            __dirname,
+                            'public/translations',
+                        ),
                     }),
                 );
             }

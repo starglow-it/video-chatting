@@ -1,9 +1,9 @@
-import {Injectable, Logger} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
 import { CreatePaymentIntentPayload } from 'shared-types';
-import {parseBoolean} from "shared-utils";
+import { parseBoolean } from 'shared-utils';
 
 @Injectable()
 export class PaymentsService {
@@ -177,19 +177,21 @@ export class PaymentsService {
       allow_promotion_codes: true,
       success_url: successUrl.href,
       cancel_url: cancelUrl.href,
-      ...(paymentMode === 'subscription' ? {
-        subscription_data: {
-          trial_period_days: trialPeriodEndTimestamp,
-          metadata,
-        }
-      }: {}),
+      ...(paymentMode === 'subscription'
+        ? {
+            subscription_data: {
+              trial_period_days: trialPeriodEndTimestamp,
+              metadata,
+            },
+          }
+        : {}),
       ...(paymentMode === 'subscription'
         ? {}
         : {
-          payment_intent_data: {
-            metadata,
-          },
-        }),
+            payment_intent_data: {
+              metadata,
+            },
+          }),
       metadata,
       ...(paymentMode === 'subscription'
         ? { payment_method_collection: 'if_required' }
@@ -289,7 +291,9 @@ export class PaymentsService {
     if (subscriptionId) {
       await this.stripeClient.subscriptions.cancel(subscriptionId);
     } else {
-      this.logger.log('[cancelStripeSubscription]: no subscription id was provided')
+      this.logger.log(
+        '[cancelStripeSubscription]: no subscription id was provided',
+      );
     }
 
     return;
@@ -359,16 +363,18 @@ export class PaymentsService {
 
     for await (const charge of this.stripeClient.charges.list(options)) {
       if (
-          (Boolean(charge?.transfer_data?.destination)
-              || parseBoolean(charge?.metadata?.isTransactionCharge, false)
-          )
-          && charge.status === 'succeeded'
+        (Boolean(charge?.transfer_data?.destination) ||
+          parseBoolean(charge?.metadata?.isTransactionCharge, false)) &&
+        charge.status === 'succeeded'
       ) {
         transactionCharges.push(charge.amount);
       }
     }
 
-    return transactionCharges.reduce((acc, chargeAmount) => acc + chargeAmount, 0);
+    return transactionCharges.reduce(
+      (acc, chargeAmount) => acc + chargeAmount,
+      0,
+    );
   }
 
   async getRoomsPurchaseCharges({ time }: { time: number }) {
@@ -382,11 +388,17 @@ export class PaymentsService {
     let roomPurchaseCharges = [];
 
     for await (const charge of this.stripeClient.charges.list(options)) {
-      if (parseBoolean(charge?.metadata?.isRoomPurchase, false) && charge.status === 'succeeded') {
+      if (
+        parseBoolean(charge?.metadata?.isRoomPurchase, false) &&
+        charge.status === 'succeeded'
+      ) {
         roomPurchaseCharges.push(charge.amount);
       }
     }
 
-    return roomPurchaseCharges.reduce((acc, chargeAmount) => acc + chargeAmount, 0);
+    return roomPurchaseCharges.reduce(
+      (acc, chargeAmount) => acc + chargeAmount,
+      0,
+    );
   }
 }

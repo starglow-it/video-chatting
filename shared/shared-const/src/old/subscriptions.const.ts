@@ -1,4 +1,20 @@
-const houseSubscription = {
+import { PlanKeys } from 'shared-types';
+
+type PlanData = {
+  name: PlanKeys;
+  key: string;
+  priceInCents: number;
+  description: string;
+  features: {
+    templatesLimit: number;
+    timeLimit: number;
+    comissionFee: number;
+  };
+  trialPeriodDays?: number;
+  testTrialPeriodDays?: number;
+};
+
+const houseSubscription: PlanData = {
   name: 'House',
   key: 'house',
   priceInCents: 0,
@@ -10,7 +26,7 @@ const houseSubscription = {
   },
 };
 
-const professionalSubscription = {
+const professionalSubscription: PlanData = {
   name: 'Professional',
   key: 'professional',
   priceInCents: 2900,
@@ -24,7 +40,7 @@ const professionalSubscription = {
   testTrialPeriodDays: 1,
 };
 
-const businessSubscription = {
+const businessSubscription: PlanData = {
   name: 'Business',
   key: 'business',
   priceInCents: 7900,
@@ -36,7 +52,7 @@ const businessSubscription = {
   },
 };
 
-export const plans = {
+export const plans: Record<PlanKeys, PlanData> = {
   Business: businessSubscription,
   Professional: professionalSubscription,
   House: houseSubscription,

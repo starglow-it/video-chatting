@@ -26,7 +26,13 @@ const Component = () => {
 
     return (
         <CustomGrid className={styles.wrapper} container justifyContent="center">
-            <CustomGrid container justifyContent="space-between" alignItems="center" wrap="nowrap" className={styles.chipsContainer}>
+            <CustomGrid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+                wrap="nowrap"
+                className={styles.chipsContainer}
+            >
                 <CustomGrid
                     container
                     justifyContent="center"

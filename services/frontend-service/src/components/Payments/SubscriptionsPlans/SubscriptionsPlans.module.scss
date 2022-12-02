@@ -3,7 +3,7 @@
 
 .wrapper {
   padding: rem(28px 40px);
-  width: rem(420px);
+  width: rem(425px);
   display: flex;
   pointer-events: all;
 }
@@ -80,6 +80,17 @@
 
 .button {
   height: rem(56px);
+
+  .active {
+    background: rgba($primary-orange, 0.1);
+    border-radius: rem(10px);
+    color: $primary-orange;
+
+    &:hover {
+      background: rgba($primary-orange, 0.1);
+      color: $primary-orange;
+    }
+  }
 }
 
 .popper {
@@ -101,19 +112,9 @@
   }
 }
 
-.active {
-  background: rgba($primary-orange, 0.1);
-  border-radius: rem(10px);
-  color: $primary-orange;
-
-  &:hover {
-    background: rgba($primary-orange, 0.1);
-    color: $primary-orange;
-  }
-}
-
 .allFeaturesCard {
-  width: rem(420px);
+  max-width: rem(420px);
+  width: max-content;
   display: flex;
   padding: rem(28px 40px);
   background-color: rgba($primary-black, 0.6);
@@ -171,4 +172,41 @@
       }
     }
   }
+}
+
+.tabsWrapper {
+  max-width: rem(425px);
+  pointer-events: all;
+  background: $primary-white;
+  border-radius: rem(16px);
+  height: 575px;
+  overflow: hidden;
+}
+
+.tabs {
+  padding: rem(28px 40px 20px 40px);
+}
+
+.tabItem {
+  cursor: pointer;
+  padding: rem(4px 10px);
+  border-radius: rem(6px);
+  background: var(--bg-color);
+  opacity: 0.3;
+  flex: 0 0;
+  transition: flex 300ms linear, opacity 300ms linear;
+
+  &.active {
+    opacity: 1;
+    flex: 1 1;
+  }
+}
+.subscriptionWrapper {
+  position: relative;
+  height: 100%;
+}
+
+.subscriptionItem {
+  position: absolute;
+  inset: 0;
 }

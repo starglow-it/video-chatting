@@ -63,7 +63,7 @@ export class MeetingsCommonService {
     });
   }
 
-  async handleClearMeetingData({ instanceId, meetingId, session }) {
+  async handleClearMeetingData({ templateId, userId, instanceId, meetingId, session }) {
     this.taskService.deleteTimeout({
       name: `meeting:finish:${meetingId}`,
     });
@@ -77,6 +77,12 @@ export class MeetingsCommonService {
       data: {
         owner: null,
       },
+    });
+
+    this.coreService.updateUserTemplate({
+      templateId,
+      userId,
+      data: { meetingInstance: null }
     });
   }
 }

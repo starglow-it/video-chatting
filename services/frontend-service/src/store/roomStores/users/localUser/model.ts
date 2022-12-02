@@ -24,6 +24,8 @@ export const updateLocalUserEvent =
 
 export const leaveMeetingEvent = meetingUsersDomain.event('leaveMeetingEvent');
 export const leaveExpiredMeetingEvent = meetingUsersDomain.event('leaveExpiredMeetingEvent');
-export const leaveDeletedUserMeetingEvent = meetingUsersDomain.event('leaveDeletedUserMeetingEvent');
+export const leaveDeletedUserMeetingEvent = meetingUsersDomain.event(
+    'leaveDeletedUserMeetingEvent',
+);
 export const leaveMeetingAsHost = meetingUsersDomain.event('leaveMeetingAsHost');
 export const leaveMeetingAsGuest = meetingUsersDomain.event('leaveMeetingAsGuest');

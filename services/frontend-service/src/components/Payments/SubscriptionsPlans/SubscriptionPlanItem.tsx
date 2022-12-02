@@ -8,7 +8,7 @@ import { useLocalization } from '@hooks/useTranslation';
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid , CustomBox, CustomButton } from 'shared-frontend/library';
+import { CustomGrid, CustomBox, CustomButton } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
@@ -22,7 +22,8 @@ import { RoundCheckIcon } from 'shared-frontend/icons';
 import { CustomImage } from 'shared-frontend/library';
 
 // styles
-import { currencies, planColors } from 'src/const/profile/subscriptions';
+import { currencies } from 'src/const/profile/subscriptions';
+import { planColors } from "shared-const";
 
 // types
 import { Translation } from '@library/common/Translation/Translation';
@@ -38,6 +39,7 @@ const Component = (
         onChooseSubscription,
         isDisabled,
         activePlanKey,
+        withoutTitle = false,
         buttonTranslation = 'buttons.start',
         withTrial = false,
     }: SubscriptionPlanItemProps,
@@ -68,8 +70,8 @@ const Component = (
 
     const renderFeaturesListItems = useMemo(
         () =>
-            templateFeaturesText?.features?.map(features => (
-                <CustomGrid container direction="column">
+            templateFeaturesText?.features?.map((features, index) => (
+                <CustomGrid key={index} container direction="column">
                     {features.map(feature => (
                         <ListItem
                             key={feature.key}
@@ -98,14 +100,16 @@ const Component = (
     return (
         <CustomPaper ref={ref} className={styles.wrapper}>
             <CustomGrid container direction="column" wrap="nowrap">
-                <CustomBox
-                    className={styles.productName}
-                    sx={{ backgroundColor: planColors[product.name as string] }}
-                >
-                    <CustomTypography variant="body2bold" color="colors.white.primary">
-                        {product.name}
-                    </CustomTypography>
-                </CustomBox>
+                {!withoutTitle && (
+                    <CustomBox
+                        className={styles.productName}
+                        sx={{backgroundColor: planColors[product.name as string]}}
+                    >
+                        <CustomTypography variant="body2bold" color="colors.white.primary">
+                            {product.name}
+                        </CustomTypography>
+                    </CustomBox>
+                )}
                 <CustomGrid className={styles.priceWrapper}>
                     <CustomTypography className={styles.price}>{priceString}</CustomTypography>
                     <ConditionalRender condition={!isFree}>

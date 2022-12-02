@@ -110,7 +110,7 @@ const Component = () => {
             await getTemplatesFx({
                 limit: 6,
                 skip: 0,
-                userId: profile.id
+                userId: profile.id,
             });
         })();
     }, []);
@@ -135,8 +135,8 @@ const Component = () => {
     }, []);
 
     const handleCommonTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getTemplatesFx({ limit: 6 * newPage, skip: 0 });
-    }, []);
+        await getTemplatesFx({ limit: 6 * newPage, skip: 0, userId: profile.id });
+    }, [profile.id]);
 
     const handleCreateMeeting = useCallback(
         async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {

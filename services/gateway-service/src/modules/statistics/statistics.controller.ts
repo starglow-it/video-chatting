@@ -1,5 +1,17 @@
-import {BadRequestException, Controller, Get, Logger, Param, Query,} from '@nestjs/common';
-import {ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation,} from '@nestjs/swagger';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import {
   ICommonUserStatistic,
   ResponseSumType,
@@ -11,9 +23,9 @@ import {
 } from 'shared-types';
 
 // services
-import {ConfigClientService} from '../../services/config/config.service';
-import {CoreService} from '../../services/core/core.service';
-import {TemplatesService} from '../templates/templates.service';
+import { ConfigClientService } from '../../services/config/config.service';
+import { CoreService } from '../../services/core/core.service';
+import { TemplatesService } from '../templates/templates.service';
 
 @Controller('statistics')
 export class StatisticsController {
@@ -41,7 +53,7 @@ export class StatisticsController {
         role: UserRoles.User,
       });
 
-      const countryStatistics = await this.coreService.getCountryStatistics({});
+      const countryStatistics = await this.coreService.getCountryStatistics();
 
       return {
         result: {

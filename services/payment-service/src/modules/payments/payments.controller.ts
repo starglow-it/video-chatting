@@ -50,7 +50,7 @@ import {
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
   MonetizationStatisticPeriods,
-  MonetizationStatisticTypes,
+  MonetizationStatisticTypes, PlanKeys,
 } from 'shared-types';
 
 @Controller(PAYMENTS_SCOPE)
@@ -593,7 +593,9 @@ export class PaymentsController {
   @MessagePattern({
     cmd: PaymentsBrokerPatterns.CancelUserSubscription,
   })
-  async cancelUserSubscription(@Payload() payload: CancelUserSubscriptionPayload) {
+  async cancelUserSubscription(
+    @Payload() payload: CancelUserSubscriptionPayload,
+  ) {
     return this.paymentService.cancelStripeSubscription(payload);
   }
 
@@ -637,7 +639,7 @@ export class PaymentsController {
   ) {
     try {
       if (payload.type === 'subscription') {
-          return this.paymentService.getSubscriptionCharges(payload);
+        return this.paymentService.getSubscriptionCharges(payload);
       }
 
       if (payload.type === 'transactions') {
@@ -658,72 +660,100 @@ export class PaymentsController {
   }
 
   async handleFirstSubscription(invoice: Stripe.Invoice) {
-      const subscription = await this.paymentService.getSubscription(
-          invoice.subscription,
-      );
+    const subscription = await this.paymentService.getSubscription(
+      invoice.subscription,
+    );
 
-      const frontendUrl = await this.configService.get('frontendUrl');
+    const frontendUrl = await this.configService.get('frontendUrl');
 
-      const user = await this.coreService.findUser({
-        stripeSubscriptionId: subscription.id,
-      });
+    const user = await this.coreService.findUser({
+      stripeSubscriptionId: subscription.id,
+    });
 
-      await this.coreService.updateUser({
-        query: { stripeSubscriptionId: subscription.id },
-        data: {
-          isSubscriptionActive: ['active', 'trialing'].includes(
-              subscription.status,
-          ),
-          renewSubscriptionTimestampInSeconds: subscription.current_period_end,
+    await this.coreService.updateUser({
+      query: { stripeSubscriptionId: subscription.id },
+      data: {
+        isSubscriptionActive: ['active', 'trialing'].includes(
+          subscription.status,
+        ),
+        renewSubscriptionTimestampInSeconds: subscription.current_period_end,
+      },
+    });
+
+    if (
+      Boolean(user.isSubscriptionActive) === false &&
+      ['active', 'trialing'].includes(subscription.status)
+    ) {
+      this.notificationsService.sendEmail({
+        template: {
+          key: emailTemplates.subscriptionSuccessful,
+          data: [
+            {
+              name: 'BACKURL',
+              content: `${frontendUrl}/dashboard/profile`,
+            },
+            {
+              name: 'USERNAME',
+              content: user.fullName,
+            },
+          ],
         },
+        to: [{ email: user.email, name: user.fullName }],
       });
-
-      if (
-          Boolean(user.isSubscriptionActive) === false &&
-          ['active', 'trialing'].includes(subscription.status)
-      ) {
-        this.notificationsService.sendEmail({
-          template: {
-            key: emailTemplates.subscriptionSuccessful,
-            data: [
-              {
-                name: 'BACKURL',
-                content: `${frontendUrl}/dashboard/profile`,
-              },
-              {
-                name: 'USERNAME',
-                content: user.fullName,
-              },
-            ],
-          },
-          to: [{ email: user.email, name: user.fullName }],
-        });
-      }
+    }
   }
 
   async handleSubscriptionUpdate(subscription: Stripe.Subscription) {
+    const user = await this.coreService.findUser({
+      stripeSubscriptionId: subscription.id,
+    });
+
     const productData = await this.paymentService.getStripeProduct(
       // @ts-ignore
       subscription.plan.product,
     );
 
+    const prevPlan = plans[user.subscriptionPlanKey || 'House'];
     const currentPlan = plans[productData.name || 'House'];
+
+    const isPlanHasChanged = prevPlan.name !== currentPlan.name;
+    const isPlanDowngraded = currentPlan.priceInCents < prevPlan.priceInCents;
+    const isPrevSubscriptionIsActive =
+      subscription.current_period_end * 1000 > Date.now();
 
     await this.coreService.updateUser({
       query: { stripeSubscriptionId: subscription.id },
       data: {
-        subscriptionPlanKey: productData.name,
-        maxTemplatesNumber: currentPlan.features.templatesLimit,
-        maxMeetingTime: currentPlan.features.timeLimit,
+        subscriptionPlanKey: isPrevSubscriptionIsActive
+            ? prevPlan.name
+            : currentPlan.name,
+        maxTemplatesNumber: isPrevSubscriptionIsActive
+            ? prevPlan.features.templatesLimit
+            : currentPlan.features.templatesLimit,
+        maxMeetingTime: isPrevSubscriptionIsActive
+            ? prevPlan.features.timeLimit
+            : currentPlan.features.timeLimit,
         renewSubscriptionTimestampInSeconds: subscription.current_period_end,
+        previousSubscriptionPlanKey: prevPlan.name,
+        isDowngradeMessageShown: !(
+          isPlanHasChanged &&
+          isPlanDowngraded &&
+          isPrevSubscriptionIsActive
+        ),
       },
     });
   }
 
   async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+    const product = await this.paymentService.getStripeProduct(
+      // @ts-ignore
+      subscription.plan.product,
+    );
+
     const environment = await this.configService.get('environment');
 
     const planData = plans['House'];
+    const prevPlanData = plans[product.name];
 
     const trialExpired =
       subscription.trial_end === subscription.current_period_end;
@@ -740,12 +770,14 @@ export class PaymentsController {
         subscriptionPlanKey: 'House',
         maxTemplatesNumber: planData.features.templatesLimit,
         maxMeetingTime: planData.features.timeLimit,
+        previousSubscriptionPlanKey: prevPlanData.name,
+        isDowngradeMessageShown: trialExpired,
+        shouldShowTrialExpiredNotification: trialExpired,
         renewSubscriptionTimestampInSeconds:
           (environment === 'demo'
             ? addMonthsCustom(Date.now(), 1)
             : addDaysCustom(Date.now(), 1)
           ).getTime() / 1000,
-        ...(trialExpired ? { shouldShowTrialExpiredNotification: true } : {}),
       },
     });
 
@@ -754,6 +786,11 @@ export class PaymentsController {
         userId: user.id,
       });
     }
+
+    await this.coreService.deleteLeastUsedUserTemplates({
+      userId: user.id,
+      templatesLimit: planData.features.templatesLimit,
+    });
   }
 
   async handleSubscriptionCreated(subscription: Stripe.Subscription) {
@@ -784,12 +821,12 @@ export class PaymentsController {
   async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
     if (session.subscription) {
       const subscription = await this.paymentService.getSubscription(
-          session.subscription,
+        session.subscription,
       );
 
       const product = await this.paymentService.getStripeProduct(
-          // @ts-ignore
-          subscription.plan.product,
+        // @ts-ignore
+        subscription.plan.product,
       );
 
       const plan = plans[product.name || 'House'];
@@ -798,7 +835,7 @@ export class PaymentsController {
         query: { stripeSessionId: session.id },
         data: {
           stripeSubscriptionId: session.subscription as string,
-          subscriptionPlanKey: product.name,
+          subscriptionPlanKey: plan.name,
           maxTemplatesNumber: plan.features.templatesLimit,
           maxMeetingTime: plan.features.timeLimit,
           isProfessionalTrialAvailable: false,
@@ -806,8 +843,8 @@ export class PaymentsController {
       });
 
       if (
-          subscription.status === 'trialing' &&
-          !subscription.cancel_at_period_end
+        subscription.status === 'trialing' &&
+        !subscription.cancel_at_period_end
       ) {
         await this.paymentService.updateSubscription({
           subscriptionId: subscription.id,
@@ -872,7 +909,7 @@ export class PaymentsController {
 
       await this.coreService.updateUserProfileStatistic({
         userId: charge?.transfer_data?.destination as string,
-        statisticKey: "moneyEarned",
+        statisticKey: 'moneyEarned',
         value: charge.amount,
       });
     }

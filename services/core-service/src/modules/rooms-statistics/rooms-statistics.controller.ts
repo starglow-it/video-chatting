@@ -51,8 +51,11 @@ export class RoomsStatisticsController {
         },
         {
           $match: {
-            "template.isDeleted": false,
-            author: payload.roomKey === 'custom' ? { $not: { $size: 0 } } : { $size: 0 },
+            'template.isDeleted': false,
+            author:
+              payload.roomKey === 'custom'
+                ? { $not: { $size: 0 } }
+                : { $size: 0 },
           },
         },
         {

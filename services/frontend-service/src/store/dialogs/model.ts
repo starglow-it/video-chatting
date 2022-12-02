@@ -24,6 +24,7 @@ export const initialDialogsState: AppDialogsState = {
     confirmCancelRoomCreationDialog: false,
     userBlockedDialog: false,
     hostUserDeletedDialog: false,
+    downgradedSubscriptionDialog: false,
 };
 
 export const $appDialogsStore = dialogsDomain.createStore<AppDialogsState>(initialDialogsState);

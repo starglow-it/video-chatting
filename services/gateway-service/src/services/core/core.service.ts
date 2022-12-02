@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER } from 'shared-const';
+import { CORE_PROVIDER, UserTemplatesBrokerPatterns } from 'shared-const';
 import {
   StatisticBrokerPatterns,
   TemplateBrokerPatterns,
@@ -40,9 +40,10 @@ import {
   GetMonetizationStatisticPayload,
   GetUserProfileStatisticPayload,
   ICommonUserStatistic,
-  ResetTrialNotificationPayload,
   SearchUsersPayload,
-  ManageUserRightsPayload, EntityList, UpdateUserTemplateUsageNumberPayload,
+  ManageUserRightsPayload,
+  EntityList,
+  UpdateUserTemplateUsageNumberPayload, UpdateCountryStatisticsPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -177,7 +178,9 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async manageUserRights(payload: ManageUserRightsPayload): Promise<ICommonUser> {
+  async manageUserRights(
+    payload: ManageUserRightsPayload,
+  ): Promise<ICommonUser> {
     const pattern = { cmd: UserBrokerPatterns.ManageUserRights };
 
     return this.client.send(pattern, payload).toPromise();
@@ -190,13 +193,15 @@ export class CoreService {
   }
 
   async uploadUserTemplateFile(payload) {
-    const pattern = { cmd: TemplateBrokerPatterns.UploadUserTemplateFile };
+    const pattern = { cmd: UserTemplatesBrokerPatterns.UploadUserTemplateFile };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
   async uploadProfileTemplateFile(payload): Promise<void> {
-    const pattern = { cmd: TemplateBrokerPatterns.UploadProfileTemplateFile };
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.UploadProfileTemplateFile,
+    };
 
     return this.client.send(pattern, payload).toPromise();
   }
@@ -227,19 +232,21 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async searchUsers(payload: SearchUsersPayload): Promise<EntityList<ICommonUser>> {
+  async searchUsers(
+    payload: SearchUsersPayload,
+  ): Promise<EntityList<ICommonUser>> {
     const pattern = { cmd: UserBrokerPatterns.SearchUsers };
 
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async getCountryStatistics(payload: any): Promise<ICountryStatistic[]> {
+  async getCountryStatistics(): Promise<ICountryStatistic[]> {
     const pattern = { cmd: CoreBrokerPatterns.GetCountryStatistics };
 
-    return this.client.send(pattern, payload).toPromise();
+    return this.client.send(pattern, {}).toPromise();
   }
 
-  async updateCountryStatistics(payload: any): Promise<ICountryStatistic> {
+  async updateCountryStatistics(payload: UpdateCountryStatisticsPayload): Promise<ICountryStatistic> {
     const pattern = { cmd: CoreBrokerPatterns.UpdateCountryStatistics };
 
     return this.client.send(pattern, payload).toPromise();
@@ -283,16 +290,8 @@ export class CoreService {
     payload: UpdateUserTemplateUsageNumberPayload,
   ): Promise<any> {
     const pattern = {
-      cmd: TemplateBrokerPatterns.UpdateUserTemplateUsageNumber,
+      cmd: UserTemplatesBrokerPatterns.UpdateUserTemplateUsageNumber,
     };
-
-    return this.client.send(pattern, payload).toPromise();
-  }
-
-  async resetTrialNotification(
-      payload: ResetTrialNotificationPayload,
-  ): Promise<any> {
-    const pattern = { cmd: UserBrokerPatterns.ResetTrialNotification };
 
     return this.client.send(pattern, payload).toPromise();
   }

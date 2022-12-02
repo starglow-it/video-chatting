@@ -3,6 +3,7 @@ import {
   ILanguage,
   ISocialLink,
   IProfileAvatar,
+  PlanKeys,
 } from './common';
 
 export enum UserRoles {
@@ -17,7 +18,6 @@ export interface ICommonUser {
   registerTemplate: string;
   role: UserRoles;
   password: string;
-  isConfirmed: boolean;
   fullName: string;
   createdAt: Date;
   updatedAt: Date;
@@ -25,7 +25,6 @@ export interface ICommonUser {
   companyName: string;
   contactEmail: string;
   description: string;
-  isResetPasswordActive: boolean;
   businessCategories: IBusinessCategory[];
   languages: ILanguage[];
   socials: ISocialLink[];
@@ -35,17 +34,21 @@ export interface ICommonUser {
   stripeSessionId?: string;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
-  subscriptionPlanKey?: string;
-  isSubscriptionActive?: boolean;
+  subscriptionPlanKey?: PlanKeys;
+  previousSubscriptionPlanKey?: PlanKeys;
   stripeEmail: string;
-  isStripeEnabled: boolean;
-  wasSuccessNotificationShown: boolean;
-  shouldShowTrialExpiredNotification: boolean;
   maxTemplatesNumber: number;
   maxMeetingTime: number;
+  isConfirmed: boolean;
   renewSubscriptionTimestampInSeconds: number;
-  isProfessionalTrialAvailable: boolean;
+  wasSuccessNotificationShown: boolean;
+  shouldShowTrialExpiredNotification: boolean;
+  isResetPasswordActive: boolean;
+  isStripeEnabled: boolean;
   isBlocked: boolean;
+  isProfessionalTrialAvailable: boolean;
+  isSubscriptionActive?: boolean;
+  isDowngradeMessageShown: boolean;
 }
 
 export interface IUpdateProfile {
@@ -64,7 +67,8 @@ export interface IUpdateProfile {
   stripeSessionId?: string;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
-  subscriptionPlanKey?: string;
+  subscriptionPlanKey?: PlanKeys;
+  previousSubscriptionPlanKey?: PlanKeys;
   isSubscriptionActive?: boolean;
   maxTemplatesNumber?: number;
   maxMeetingTime?: number;
@@ -72,6 +76,8 @@ export interface IUpdateProfile {
   wasSuccessNotificationShown?: boolean;
   renewSubscriptionTimestampInSeconds?: number;
   isResetPasswordActive?: boolean;
+  shouldShowTrialExpiredNotification?: boolean;
+  isDowngradeMessageShown?: boolean;
   registerTemplate?: string;
   socials: {
     youtube?: string;

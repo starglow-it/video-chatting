@@ -12,7 +12,7 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 
 // components
 import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { EmailIcon , CopyLinkIcon } from 'shared-frontend/icons';
+import { EmailIcon, CopyLinkIcon } from 'shared-frontend/icons';
 
 // stores
 import { appDialogsApi, addNotificationEvent } from '../../../store';

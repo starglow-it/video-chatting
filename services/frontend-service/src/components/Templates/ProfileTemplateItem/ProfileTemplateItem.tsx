@@ -101,7 +101,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
 
     const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);
 
-    const handleShowToast = useCallback( () => {
+    const handleShowToast = useCallback(() => {
         addNotificationEvent({
             type: NotificationType.NoTimeLeft,
             message: `subscriptions.noTimeLeft`,

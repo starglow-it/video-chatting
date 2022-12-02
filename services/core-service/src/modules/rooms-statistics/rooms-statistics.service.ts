@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   RoomStatistic,
   RoomStatisticDocument,
 } from '../../schemas/room-statistic.schema';
-import { QueryParams } from 'shared-types';
+import {GetModelQuery, UpdateModelQuery} from "../../types/custom";
 
 @Injectable()
 export class RoomsStatisticsService {
@@ -30,11 +30,7 @@ export class RoomsStatisticsService {
     query,
     options,
     session,
-  }: {
-    query: FilterQuery<RoomStatisticDocument>;
-    session?: ITransactionSession;
-    options?: QueryParams;
-  }) {
+  }: GetModelQuery<RoomStatisticDocument>) {
     return this.roomStatistic
       .find(
         query,
@@ -52,12 +48,7 @@ export class RoomsStatisticsService {
     query,
     data,
     session,
-  }: {
-    query: FilterQuery<RoomStatisticDocument>;
-    data: UpdateQuery<RoomStatistic>;
-    session: ITransactionSession;
-    new?: boolean;
-  }) {
+  }: UpdateModelQuery<RoomStatisticDocument, RoomStatistic>) {
     return this.roomStatistic
       .findOneAndUpdate(query, data, {
         new: true,
@@ -79,8 +70,10 @@ export class RoomsStatisticsService {
   }
 
   async delete({ query, session }): Promise<void> {
-    await this.roomStatistic.deleteOne(query, { session: session?.session }).exec();
+    await this.roomStatistic
+      .deleteOne(query, { session: session?.session })
+      .exec();
 
-    return
+    return;
   }
 }

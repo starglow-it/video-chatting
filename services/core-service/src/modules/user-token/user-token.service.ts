@@ -10,7 +10,7 @@ import { UserDocument } from '../../schemas/user.schema';
 import { TokenPayloadType } from 'shared-types';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from '../../types/custom';
+import { GetModelQuery} from '../../types/custom';
 
 @Injectable()
 export class UserTokenService {
@@ -40,21 +40,17 @@ export class UserTokenService {
     return newToken;
   }
 
-  async find(query: FilterQuery<UserTokenDocument>) {
+  async find(query: GetModelQuery<UserTokenDocument>) {
     return this.userToken.find(query);
   }
 
   async findOne({
     query,
     session,
-    populatePath,
-  }: {
-    query: FilterQuery<UserTokenDocument>;
-    session: ITransactionSession;
-    populatePath?: CustomPopulateOptions;
-  }) {
+                  populatePaths,
+  }: GetModelQuery<UserTokenDocument>) {
     return this.userToken
-      .findOne(query, {}, { populate: populatePath, session: session?.session })
+      .findOne(query, {}, { populate: populatePaths, session: session?.session })
       .exec();
   }
 
@@ -80,10 +76,17 @@ export class UserTokenService {
     return this.userToken.exists({ token });
   }
 
-  async deleteUserTokens(
-    { userId, session }: { userId: UserDocument['_id']; session: ITransactionSession },
-  ): Promise<void> {
-    await this.userToken.deleteMany({ user: userId }, { session: session?.session });
+  async deleteUserTokens({
+    userId,
+    session,
+  }: {
+    userId: UserDocument['_id'];
+    session: ITransactionSession;
+  }): Promise<void> {
+    await this.userToken.deleteMany(
+      { user: userId },
+      { session: session?.session },
+    );
 
     return;
   }

@@ -1,9 +1,11 @@
 export type PropsWithClassName<T> = T & { className?: string };
 
-export type ValuesSwitcherItem<T extends ValueType> = {
+type ValueType = string | number;
+
+export type ValuesSwitcherItem<Value extends ValueType, Label = string> = {
     id: number;
-    value: T;
-    label: string;
+    value: Value;
+    label: Label;
 };
 
 export type AutocompleteType<ValueType> = ValueType & { key: string; value: string; label: string };

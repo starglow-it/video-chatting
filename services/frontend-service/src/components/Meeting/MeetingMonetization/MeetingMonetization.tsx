@@ -13,7 +13,7 @@ import { MonetizationIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
-import { CustomBox, CustomButton , CustomGrid } from 'shared-frontend/library';
+import { CustomBox, CustomButton, CustomGrid } from 'shared-frontend/library';
 
 // common
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';

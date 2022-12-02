@@ -56,7 +56,12 @@ app.prepare()
         const proxyMiddleware = require('http-proxy-middleware');
 
         Object.entries(proxy).map(contextEntry => {
-            server.use(proxyMiddleware.createProxyMiddleware(contextEntry[0], contextEntry[1]));
+            server.use(
+                proxyMiddleware.createProxyMiddleware(
+                    contextEntry[0],
+                    contextEntry[1],
+                ),
+            );
         });
 
         // Default catch-all handler to allow Next.js to handle all other routes

@@ -5,7 +5,7 @@ import { useStore } from 'effector-react';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid , CustomBox, CustomButton } from 'shared-frontend/library';
+import { CustomGrid, CustomBox, CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // helper

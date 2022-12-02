@@ -69,10 +69,19 @@ editUserTemplateFx.use(handleEditUserTemplate);
 addTemplateToUserFx.use(handleAddTemplateToUser);
 deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 
-$templatesStore.on(getTemplatesFx.doneData, (state, data) => ({
-    ...state,
-    ...data,
-}));
+$templatesStore
+    .on(getTemplatesFx.doneData, (state, data) => ({
+        ...state,
+        ...data,
+    }))
+    .on(editUserTemplateFx.doneData, (state, data) => ({
+        ...state,
+        state: {
+            ...state,
+            list: state.list.map(template => template.id === data?.id ? data : template)
+        },
+    }));
+
 $templatePreviewStore.on(setPreviewTemplate, (_state, data: ICommonTemplate | null) => data);
 $setUpTemplateStore.on(getTemplateFx.doneData, (state, data) => data);
 $discoveryTemplatesStore.on(getUsersTemplatesFx.doneData, (state, data) => ({

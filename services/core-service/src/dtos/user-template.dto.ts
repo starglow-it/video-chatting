@@ -48,7 +48,7 @@ export class UserTemplateDTO implements IUserTemplate {
   url: IUserTemplate['url'];
 
   @Expose()
-  draftUrl: IUserTemplate['url'];
+  draftUrl: IUserTemplate['draftUrl'];
 
   @Expose()
   name: IUserTemplate['name'];

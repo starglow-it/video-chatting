@@ -16,9 +16,9 @@ import {
 } from '../../schemas/social-link.schema';
 
 // types
-import { IUserTemplate, ICommonTemplate, QueryParams } from 'shared-types';
+import { IUserTemplate, ICommonTemplate } from 'shared-types';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from '../../types/custom';
+import {CustomPopulateOptions, GetModelQuery, UpdateModelQuery} from '../../types/custom';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import {
   PreviewImage,
@@ -98,11 +98,7 @@ export class UserTemplatesService {
     query,
     session,
     populatePaths,
-  }: {
-    query: FilterQuery<UserTemplateDocument>;
-    session: ITransactionSession;
-    populatePaths?: CustomPopulateOptions;
-  }): Promise<UserTemplateDocument> {
+  }: GetModelQuery<UserTemplateDocument>): Promise<UserTemplateDocument> {
     return this.userTemplate
       .findOne(query, {}, { session: session.session, populate: populatePaths })
       .exec();
@@ -122,12 +118,7 @@ export class UserTemplatesService {
     options,
     session,
     populatePaths,
-  }: {
-    query: FilterQuery<UserTemplateDocument>;
-    options?: QueryParams;
-    session?: ITransactionSession;
-    populatePaths?: CustomPopulateOptions;
-  }): Promise<UserTemplateDocument[]> {
+  }: GetModelQuery<UserTemplateDocument>): Promise<UserTemplateDocument[]> {
     return this.userTemplate
       .find(
         query,
@@ -163,12 +154,7 @@ export class UserTemplatesService {
     data,
     session,
     populatePaths,
-  }: {
-    query: FilterQuery<UserTemplateDocument>;
-    data: UpdateQuery<UserTemplateDocument>;
-    session?: ITransactionSession;
-    populatePaths?: QueryOptions['populate'];
-  }): Promise<any> {
+  }: UpdateModelQuery<UserTemplateDocument, UserTemplateDocument>): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,
@@ -176,6 +162,20 @@ export class UserTemplatesService {
     };
 
     return this.userTemplate.findOneAndUpdate(query, data, options);
+  }
+
+  async deleteUserTemplates({
+    query,
+    session,
+  }: {
+    query: FilterQuery<UserTemplateDocument>;
+    session?: ITransactionSession;
+  }): Promise<any> {
+    const options: QueryOptions = {
+      session: session?.session,
+    };
+
+    return this.userTemplate.deleteMany(query, options);
   }
 
   async generatePreviews({

@@ -26,15 +26,13 @@ import { ConfigModule } from '../config/config.module';
             rabbitMqUser,
             rabbitMqPass,
             rabbitMqSocketQueue,
-            rabbitMqHost
+            rabbitMqHost,
           } = await config.getAll();
 
           return {
             transport: Transport.RMQ,
             options: {
-              urls: [
-                `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`,
-              ],
+              urls: [`amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`],
               queue: rabbitMqSocketQueue,
               queueOptions: {
                 durable: false,

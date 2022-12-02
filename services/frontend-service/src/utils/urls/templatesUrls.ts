@@ -1,4 +1,4 @@
-import {ICommonTemplate, QueryParams} from 'shared-types';
+import { ICommonTemplate, QueryParams } from 'shared-types';
 import { serverUrl, templatesScope, usersScope } from './baseData';
 import { HttpMethods, UserTemplate } from '../../store/types';
 
@@ -31,13 +31,13 @@ export const getTemplatesUrl = (data: QueryParams) => {
     const urlHref = new URL(`${frontendConfig.frontendUrl}${templatesUrl}`);
 
     Object.entries(data).forEach(entry => {
-        urlHref.searchParams.append(entry[0], entry[1])
+        urlHref.searchParams.append(entry[0], entry[1]);
     });
 
     return {
         url: urlHref.href,
         method: HttpMethods.Get,
-    }
+    };
 };
 
 export const createTemplateUrl = {

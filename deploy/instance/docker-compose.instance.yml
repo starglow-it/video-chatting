@@ -48,8 +48,8 @@ services:
 
   meeting-socket-service:
     build:
-      context: ../../services
-      dockerfile: ./meeting-socket-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/meeting-socket-service/Dockerfile
     restart: unless-stopped
     ports:
       - '8180:8180'
@@ -61,8 +61,8 @@ services:
 
   config-service:
     build:
-      context: ../../services
-      dockerfile: ./config-service/Dockerfile
+      context: ../../
+      dockerfile: ./services/config-service/Dockerfile
     restart: unless-stopped
     ports:
       - "4000:4000"

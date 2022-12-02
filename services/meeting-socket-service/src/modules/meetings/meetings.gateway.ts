@@ -9,7 +9,7 @@ import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { Socket } from 'socket.io';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 import { BaseGateway } from '../../gateway/base.gateway';
 
@@ -154,7 +154,7 @@ export class MeetingsGateway
             enableImplicitConversion: true,
           });
 
-          const plainMeeting = plainToClass(CommonMeetingDTO, updatedMeeting, {
+          const plainMeeting = plainToInstance(CommonMeetingDTO, updatedMeeting, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });
@@ -204,7 +204,7 @@ export class MeetingsGateway
         return;
       }
 
-      const plainUser = plainToClass(CommonUserDTO, user, {
+      const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -280,7 +280,7 @@ export class MeetingsGateway
 
       const activeParticipants = meetingUsers.length;
 
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -329,6 +329,8 @@ export class MeetingsGateway
 
         if (activeParticipants === 0) {
           await this.meetingsCommonService.handleClearMeetingData({
+            userId: profileUser.id,
+            templateId: template.id,
             instanceId: template.meetingInstance.instanceId,
             meetingId: meeting.id,
             session,
@@ -497,12 +499,12 @@ export class MeetingsGateway
 
       await meeting.populate('users');
 
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
 
-      const plainUser = plainToClass(CommonUserDTO, user, {
+      const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -655,12 +657,12 @@ export class MeetingsGateway
         }
       }
 
-      const plainUser = plainToClass(CommonUserDTO, user, {
+      const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
 
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -741,12 +743,12 @@ export class MeetingsGateway
           };
         }
 
-        const plainUser = plainToClass(CommonUserDTO, user, {
+        const plainUser = plainToInstance(CommonUserDTO, user, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
 
-        const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+        const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -822,7 +824,7 @@ export class MeetingsGateway
 
       await meeting.populate(['owner', 'users']);
 
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -842,7 +844,7 @@ export class MeetingsGateway
       );
 
       if (user?.socketId) {
-        const plainUser = plainToClass(CommonUserDTO, user, {
+        const plainUser = plainToInstance(CommonUserDTO, user, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -946,7 +948,7 @@ export class MeetingsGateway
           user.socketId,
         );
 
-        const plainUser = plainToClass(CommonUserDTO, updatedUser, {
+        const plainUser = plainToInstance(CommonUserDTO, updatedUser, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -967,7 +969,7 @@ export class MeetingsGateway
 
         if (!user) return;
 
-        const plainUser = plainToClass(CommonUserDTO, user, {
+        const plainUser = plainToInstance(CommonUserDTO, user, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -987,7 +989,7 @@ export class MeetingsGateway
 
       await meeting.populate(['owner', 'users']);
 
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -1082,9 +1084,9 @@ export class MeetingsGateway
         );
 
         const commonTemplate =
-            await this.coreService.findCommonTemplateByTemplateId({
-              templateId: template.templateId,
-            });
+          await this.coreService.findCommonTemplateByTemplateId({
+            templateId: template.templateId,
+          });
 
         await this.coreService.updateRoomRatingStatistic({
           templateId: commonTemplate.id,
@@ -1094,6 +1096,8 @@ export class MeetingsGateway
         });
 
         await this.meetingsCommonService.handleClearMeetingData({
+          userId: template?.user?.id,
+          templateId: template.id,
           instanceId: template.meetingInstance.instanceId,
           meetingId: message.meetingId,
           session,
@@ -1143,7 +1147,7 @@ export class MeetingsGateway
       });
 
       if (user) {
-        const plainUser = plainToClass(CommonUserDTO, user, {
+        const plainUser = plainToInstance(CommonUserDTO, user, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -1232,6 +1236,8 @@ export class MeetingsGateway
 
           if (activeParticipants === 1) {
             await this.meetingsCommonService.handleClearMeetingData({
+              userId: template.user.id,
+              templateId: template.id,
               instanceId: template.meetingInstance.instanceId,
               meetingId: message.meetingId,
               session,
@@ -1438,7 +1444,7 @@ export class MeetingsGateway
           });
         }
 
-        const plainMeeting = plainToClass(CommonMeetingDTO, newMeeting, {
+        const plainMeeting = plainToInstance(CommonMeetingDTO, newMeeting, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
@@ -1486,7 +1492,7 @@ export class MeetingsGateway
         session,
       );
 
-      const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -1610,7 +1616,7 @@ export class MeetingsGateway
 
       await user.populate('meeting');
 
-      const plainUser = plainToClass(CommonUserDTO, user, {
+      const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });

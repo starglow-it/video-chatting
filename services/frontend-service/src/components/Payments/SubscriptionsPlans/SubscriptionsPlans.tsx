@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import Backdrop from '@mui/material/Backdrop';
-import { ListItemIcon, Slide } from '@mui/material';
+import { ListItemIcon, Slide, useMediaQuery} from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
 import clsx from 'clsx';
 
@@ -16,6 +16,7 @@ import { ConditionalRender } from '@library/common/ConditionalRender/Conditional
 
 // components
 import { SubscriptionPlanItem } from '@components/Payments/SubscriptionsPlans/SubscriptionPlanItem';
+import {SubscriptionPlansWrapper} from "@components/Payments/SubscriptionsPlans/SubscritionPlansWrapper";
 
 // types
 import {
@@ -56,6 +57,8 @@ const Component = ({
 
     const { translation } = useLocalization('subscriptions');
 
+    const is1320Media = useMediaQuery('(max-width:1320px)');
+
     useEffect(() => {
         (async () => {
             if (isSubscriptionStep && !products.length) {
@@ -71,32 +74,53 @@ const Component = ({
         [onChooseSubscription],
     );
 
+    const productsToRender = useMemo(() => products.filter(
+        product =>
+            (withActivePlan || product?.product?.name !== activePlanKey) &&
+            (!onlyPaidPlans || (onlyPaidPlans && product?.price?.unit_amount)),
+    ), [products]);
+
     const renderSubscriptionPlans = useMemo(
-        () =>
-            products
-                .filter(
-                    product =>
-                        (withActivePlan || product?.product?.name !== activePlanKey) &&
-                        (!onlyPaidPlans || (onlyPaidPlans && product?.price?.unit_amount)),
-                )
-                .map((product, i) => (
-                    <Slide key={product?.product?.name} in timeout={i * 200}>
-                        <SubscriptionPlanItem
-                            activePlanKey={activePlanKey}
-                            product={product?.product}
-                            price={product?.price}
-                            onChooseSubscription={handleChosenSubscription}
-                            isDisabled={isDisabled}
-                            buttonTranslation={buttonTranslation}
-                            withTrial={
-                                product?.product?.name === 'Professional' &&
-                                profile.isProfessionalTrialAvailable
-                            }
-                        />
-                    </Slide>
-                )),
+        () => {
+            return productsToRender
+                .map((product, i) => {
+                    return (
+                        !is1320Media ? (
+                                <Slide key={product?.product?.name} in timeout={i * 200}>
+                                    <SubscriptionPlanItem
+                                        activePlanKey={activePlanKey}
+                                        product={product?.product}
+                                        price={product?.price}
+                                        onChooseSubscription={handleChosenSubscription}
+                                        isDisabled={isDisabled}
+                                        buttonTranslation={buttonTranslation}
+                                        withTrial={
+                                            product?.product?.name === 'Professional' &&
+                                            profile.isProfessionalTrialAvailable
+                                        }
+                                    />
+                                </Slide>
+                            )
+                            : <SubscriptionPlanItem
+                                withoutTitle
+                                key={product?.product?.name}
+                                activePlanKey={activePlanKey}
+                                product={product?.product}
+                                price={product?.price}
+                                onChooseSubscription={handleChosenSubscription}
+                                isDisabled={isDisabled}
+                                buttonTranslation={buttonTranslation}
+                                withTrial={
+                                    product?.product?.name === 'Professional' &&
+                                    profile.isProfessionalTrialAvailable
+                                }
+                            />
+                    )
+                })
+        },
         [
-            products,
+            productsToRender,
+            is1320Media,
             isDisabled,
             activePlanKey,
             onlyPaidPlans,
@@ -121,8 +145,8 @@ const Component = ({
                 direction="column"
                 className={styles.column}
             >
-                {featuresChunk.map(({ text }) => (
-                    <CustomGrid item container gap={1} flexWrap="nowrap">
+                {featuresChunk.map(({ text }, index) => (
+                    <CustomGrid key={index} item container gap={1} flexWrap="nowrap">
                         <ListItemIcon classes={{ root: styles.listIcon }}>
                             <RoundCheckIcon width="16px" height="16px" />
                         </ListItemIcon>
@@ -137,7 +161,7 @@ const Component = ({
                 container
                 direction="column"
                 className={clsx(styles.allFeaturesCard, {
-                    [styles.fullWidth]: renderSubscriptionPlans.length >= 3,
+                    [styles.fullWidth]: renderSubscriptionPlans.length >= 3 && !is1320Media,
                 })}
             >
                 <CustomBox className={styles.productName}>
@@ -160,7 +184,7 @@ const Component = ({
                 </CustomGrid>
             </CustomGrid>
         );
-    }, [renderSubscriptionPlans.length, translation]);
+    }, [renderSubscriptionPlans.length, translation, is1320Media]);
 
     const handleClose = useCallback(() => {
         onClose?.();
@@ -202,14 +226,22 @@ const Component = ({
                             container
                             gap={3.5}
                             justifyContent="center"
+                            wrap="nowrap"
                             alignItems="stretch"
                         >
-                            <ConditionalRender condition={renderSubscriptionPlans.length < 3}>
+                            <ConditionalRender condition={renderSubscriptionPlans.length < 3 || is1320Media}>
                                 {commonFeatures}
                             </ConditionalRender>
-                            {renderSubscriptionPlans}
+                            {is1320Media
+                                ? (
+                                    <SubscriptionPlansWrapper products={productsToRender}>
+                                        {renderSubscriptionPlans}
+                                    </SubscriptionPlansWrapper>
+                                )
+                                : renderSubscriptionPlans
+                            }
                         </CustomGrid>
-                        <ConditionalRender condition={renderSubscriptionPlans.length >= 3}>
+                        <ConditionalRender condition={renderSubscriptionPlans.length >= 3 && !is1320Media}>
                             {commonFeatures}
                         </ConditionalRender>
                     </CustomGrid>

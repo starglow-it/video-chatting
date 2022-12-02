@@ -1,0 +1,34 @@
+{
+  "common": {
+    "title": "Rooms"
+  },
+  "createRoom": "Create Room",
+  "noRooms": "No rooms so far",
+  "uploadBackground": {
+    "title": "Upload your Room background",
+    "description": "Drag & Drop file here or click button",
+    "tip": {
+      "title": "Image/Video",
+      "resolution": "16:9 (ex. 1920 x 1080)",
+      "imageRestricts": ".jpg, .heic or .png / Up to {{maxSize}} MB",
+      "videoRestricts": ".mp4 / Up to {{maxSize}} MB"
+    },
+    "actions": {
+      "upload": "Upload",
+      "change": "Change"
+    }
+  },
+  "editDescription": {
+    "form": {
+      "nameAndAttendees": "Name & Attendees",
+      "description": "Description",
+      "tags": "Tags (Up to 6)",
+      "link": "Custom link"
+    }
+  },
+  "editPositions": {
+    "attendees": "Attendees: {{number}}",
+    "tooltip": "Drag & Drop users to the right places",
+    "user": "User {{index}}"
+  }
+}

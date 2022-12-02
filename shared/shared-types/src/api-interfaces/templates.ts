@@ -12,12 +12,15 @@ export interface ICommonTemplate {
   usedAt?: string;
   templateId: number;
   author?: string;
-  url: string;
+  customLink?: string;
   name: string;
   maxParticipants: number;
   description: string;
   shortDescription: string;
+  url: string;
+  draftUrl?: string;
   previewUrls: IPreviewImage[];
+  draftPreviewUrls?: IPreviewImage[];
   type: string;
   priceInCents?: number;
   businessCategories?: IBusinessCategory[];
@@ -37,6 +40,7 @@ export interface IUserTemplate {
   usedAt?: string;
   templateId: number;
   url: string;
+  draftUrl?: string;
   name: string;
   maxParticipants: number;
   description: string;
@@ -86,6 +90,7 @@ export interface IUpdateTemplate {
   isPublic?: boolean;
   templatePrice?: number;
   templateCurrency?: string;
+  meetingInstance?: IMeetingInstance;
   socials: {
     youtube?: string;
     facebook?: string;

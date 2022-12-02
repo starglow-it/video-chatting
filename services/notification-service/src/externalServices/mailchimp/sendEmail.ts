@@ -1,5 +1,6 @@
 import Mailchimp, {
-    MessageRecipient, MessagesSendTemplateRequest,
+    MessageRecipient,
+    MessagesSendTemplateRequest,
 } from '@mailchimp/mailchimp_transactional';
 
 import { SendEmailRequest } from 'shared-types';
@@ -75,16 +76,16 @@ export const sendEmail = async ({
                 ],
                 attachments: icalEventContent
                     ? [
-                        {
-                            type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
-                            name: 'invite.ics',
-                            // @ts-ignore
-                            content,
-                        },
-                    ]
+                          {
+                              type: 'text/calendar; charset=utf-8; method=REQUEST; name="invite.ics";',
+                              name: 'invite.ics',
+                              // @ts-ignore
+                              content,
+                          },
+                      ]
                     : [],
             },
-        }
+        };
 
         await emailClient.messages.sendTemplate(sendTemplateData);
 

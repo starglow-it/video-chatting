@@ -1,0 +1,10 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.wrapper {
+  padding: rem(40px);
+}
+
+.button {
+  margin: rem(40px 0 0 0);
+}

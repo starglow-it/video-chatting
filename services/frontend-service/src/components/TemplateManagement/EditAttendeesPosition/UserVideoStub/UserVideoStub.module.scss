@@ -7,7 +7,7 @@
   left: 0;
 
   cursor: pointer;
-  width: rem(110px);
+  width: rem(150px);
   &:hover {
     .avatarStub {
       border: rem(1px) solid $primary-orange;
@@ -26,8 +26,8 @@
 .avatarStub {
   background-color: $dark-gray-scale;
   border-radius: 50%;
-  width: rem(110px);
-  height: rem(110px);
+  width: rem(150px);
+  height: rem(150px);
   border: rem(1px) solid $primary-white;
   box-shadow: rem(0 12px 24px -4px) color($primary-black, 0.24);
 

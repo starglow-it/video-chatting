@@ -12,7 +12,7 @@ import { ClockIcon } from 'shared-frontend/icons';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton , CustomGrid } from 'shared-frontend/library';
+import { CustomButton, CustomGrid } from 'shared-frontend/library';
 
 // utils
 import { Translation } from '@library/common/Translation/Translation';

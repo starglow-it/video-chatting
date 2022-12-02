@@ -4,9 +4,8 @@ import { FilterQuery, Model } from 'mongoose';
 
 import { Language, LanguageDocument } from '../../schemas/language.schema';
 
-import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-
 import { ILanguage } from 'shared-types';
+import {GetModelQuery} from "../../types/custom";
 
 @Injectable()
 export class LanguagesService {
@@ -22,10 +21,7 @@ export class LanguagesService {
   async find({
     query,
     session,
-  }: {
-    query: FilterQuery<LanguageDocument>;
-    session: ITransactionSession;
-  }) {
+  }: GetModelQuery<LanguageDocument>) {
     return this.language.find(query, {}, { session: session?.session }).exec();
   }
 

@@ -6,7 +6,9 @@ import {
 import { emitEnterWaitingRoom } from '../../sockets/model';
 import { setBackgroundAudioActive, setBackgroundAudioVolume } from '../../../audio/model';
 import { StorageKeysEnum, WebStorage } from '../../../../../controllers/WebStorageController';
+import { setActiveStreamEvent } from '../../../videoChat/localMedia/model';
 import { JoinMeetingFxPayload } from '../types';
+import { BackgroundManager } from '../../../../../helpers/media/applyBlur';
 
 export const handleJoinMeting = async ({
     needToRememberSettings,
@@ -20,6 +22,7 @@ export const handleJoinMeting = async ({
     isOwner,
     isOwnerInMeeting,
     isMeetingInstanceExists,
+    changeStream,
 }: JoinMeetingFxPayload): Promise<void> => {
     updateLocalUserEvent({
         micStatus: isMicActive ? 'active' : 'inactive',
@@ -51,4 +54,14 @@ export const handleJoinMeting = async ({
             },
         });
     }
+
+    const clonedStream = changeStream?.clone();
+
+    const streamWithBackground = await BackgroundManager.applyBlur(
+        clonedStream,
+        isCameraActive,
+        isAuraActive,
+    );
+
+    setActiveStreamEvent(streamWithBackground);
 };

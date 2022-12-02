@@ -1,0 +1,16 @@
+@import "../../styles/rem";
+
+.wrapper {
+  margin: rem(85px auto 0);
+}
+
+.createRoomButton {
+  max-width: rem(162px);
+  width: 100%;
+  align-self: center;
+  margin: rem(20px 0 0);
+}
+
+.noRoomWrapper {
+  margin: auto;
+}

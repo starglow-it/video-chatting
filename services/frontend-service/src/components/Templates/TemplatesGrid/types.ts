@@ -4,7 +4,9 @@ export type TemplateGridProps<TemplateType extends { id: string }> = {
     TemplateComponent: React.MemoExoticComponent<
         (props: {
             template: TemplateType;
-            onChooseTemplate?: (templateId: TemplateType['id']) => void | Promise<void>;
+            onChooseTemplate?: (
+                templateId: TemplateType['id'],
+            ) => void | Promise<void>;
         }) => JSX.Element
     >;
     list: TemplateType[];

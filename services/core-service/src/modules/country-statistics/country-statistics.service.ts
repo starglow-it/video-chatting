@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
-import { ICountryStatistic, QueryParams } from 'shared-types';
+import { FilterQuery, Model } from 'mongoose';
+import { ICountryStatistic } from 'shared-types';
 
 import {
   CountryStatistic,
   CountryStatisticDocument,
 } from '../../schemas/country-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import {GetModelQuery, UpdateModelQuery} from "../../types/custom";
 
 @Injectable()
 export class CountryStatisticsService {
@@ -30,11 +31,7 @@ export class CountryStatisticsService {
     query,
     options,
     session,
-  }: {
-    query: FilterQuery<CountryStatisticDocument>;
-    session?: ITransactionSession;
-    options?: QueryParams;
-  }) {
+  }: GetModelQuery<CountryStatisticDocument>) {
     return this.countryStatistic
       .find(
         query,
@@ -53,12 +50,7 @@ export class CountryStatisticsService {
     query,
     data,
     session,
-  }: {
-    query: FilterQuery<CountryStatisticDocument>;
-    data: UpdateQuery<CountryStatistic>;
-    session: ITransactionSession;
-    new?: boolean;
-  }) {
+  }: UpdateModelQuery<CountryStatisticDocument, CountryStatistic>) {
     return this.countryStatistic
       .findOneAndUpdate(query, data, {
         new: true,

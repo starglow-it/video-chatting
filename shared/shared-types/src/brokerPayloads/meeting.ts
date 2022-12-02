@@ -2,7 +2,8 @@ import {
   IMeetingInstance,
   ICommonTemplate,
   ICommonUser,
-  IUserTemplate, KickUserReasons,
+  IUserTemplate,
+  KickUserReasons,
 } from '../api-interfaces';
 
 export type GetMediaServerTokenPayload = {

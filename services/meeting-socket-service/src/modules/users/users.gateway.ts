@@ -1,4 +1,4 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import {
   ConnectedSocket,
   MessageBody,
@@ -77,7 +77,7 @@ export class UsersGateway extends BaseGateway {
 
       await meeting.populate('users');
 
-      const plainUser = plainToClass(CommonUserDTO, user, {
+      const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -130,7 +130,7 @@ export class UsersGateway extends BaseGateway {
             session,
           );
 
-          const plainMeeting = plainToClass(CommonMeetingDTO, meeting, {
+          const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });

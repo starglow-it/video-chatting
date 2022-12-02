@@ -3,10 +3,10 @@ import {
     GetEditingTemplateResponse,
     UploadTemplateFileResponse,
 } from '../../store/templates/types';
-import { Template, UserTemplate } from '../../store/types';
+import {ICommonTemplate, IUserTemplate} from "shared-types";
 
 export type TemplateManagementProps = {
-    template: Template | UserTemplate | null;
+    template: ICommonTemplate | IUserTemplate | null;
     onCancel: () => void;
     onSubmit: (data: IUploadTemplateFormData) => void;
     onUploadFile: (

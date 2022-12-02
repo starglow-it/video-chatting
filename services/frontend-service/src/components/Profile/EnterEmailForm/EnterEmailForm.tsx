@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomGrid , CustomButton } from 'shared-frontend/library';
+import { CustomGrid, CustomButton } from 'shared-frontend/library';
 import { Translation } from '@library/common/Translation/Translation';
 
 const EnterEmailForm = memo(

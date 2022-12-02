@@ -1,5 +1,6 @@
+import {ErrorState} from "shared-types";
+
 import { UploadTemplateFilePayload, UploadTemplateFileResponse } from '../types';
-import { ErrorState } from '../../types';
 import { generateFormData } from '../../../utils/form/generateFormData';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { updateTemplateUrl } from '../../../utils/urls';

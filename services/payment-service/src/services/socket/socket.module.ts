@@ -32,9 +32,7 @@ import { ConfigModule } from '../config/config.module';
           return {
             transport: Transport.RMQ,
             options: {
-              urls: [
-                `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`,
-              ],
+              urls: [`amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`],
               queue: rabbitMqSocketQueue,
               queueOptions: {
                 durable: false,

@@ -7,9 +7,9 @@ import {
   BusinessCategoryDocument,
 } from '../../schemas/business-category.schema';
 
-import { IBusinessCategory, QueryParams } from 'shared-types';
+import { IBusinessCategory } from 'shared-types';
 
-import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import {GetModelQuery} from "../../types/custom";
 
 @Injectable()
 export class BusinessCategoriesService {
@@ -26,11 +26,7 @@ export class BusinessCategoriesService {
     query,
     options,
     session,
-  }: {
-    query: FilterQuery<BusinessCategoryDocument>;
-    session?: ITransactionSession;
-    options?: QueryParams;
-  }) {
+  }: GetModelQuery<BusinessCategoryDocument>) {
     return this.businessCategory
       .find(
         query,

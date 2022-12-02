@@ -4,15 +4,17 @@ import { userTemplateUrl } from '../../../utils/urls';
 
 export const handleCheckCustomLink = async ({
     templateId,
+    customLink,
 }: {
-    templateId: IUserTemplate['id'] | IUserTemplate['customLink'];
+    templateId: IUserTemplate['id'];
+    customLink: IUserTemplate['customLink'];
 }): Promise<boolean> => {
     const response = await sendRequest<IUserTemplate, ErrorState>(
-        userTemplateUrl({ templateId }),
+        userTemplateUrl({ templateId: customLink }),
     );
 
     if (response.success) {
-        return Boolean(response.result?.id);
+        return Boolean(response.result?.id) && response?.result?.id !== templateId;
     }
 
     return false;

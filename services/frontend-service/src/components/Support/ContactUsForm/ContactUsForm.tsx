@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import {FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';

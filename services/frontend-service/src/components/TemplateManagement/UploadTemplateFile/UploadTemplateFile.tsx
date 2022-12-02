@@ -107,7 +107,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     }, []);
 
     const handleSetFileData = useCallback(
-        async (acceptedFiles: File[], rejectedFiles: File[]) => {
+        async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
             const totalFiles = acceptedFiles.length + rejectedFiles.length;
 
             if (rejectedFiles.length || totalFiles > 1) {

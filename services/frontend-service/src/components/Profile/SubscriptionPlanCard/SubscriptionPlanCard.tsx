@@ -21,7 +21,8 @@ import { RoundCheckIcon } from 'shared-frontend/icons';
 // const
 import { CustomImage } from 'shared-frontend/library';
 import { Translation } from '@library/common/Translation/Translation';
-import { currencies, planColors } from '../../../const/profile/subscriptions';
+import { currencies } from '../../../const/profile/subscriptions';
+import {planColors} from "shared-const";
 
 // shared
 
@@ -137,9 +138,9 @@ const Component = ({
             </CustomGrid>
 
             {renderFeaturesListItems}
-            <ConditionalRender condition={!isFree && !isActive || isTrial}>
+            <ConditionalRender condition={(!isFree && !isActive) || isTrial}>
                 <CustomGrid container gap={1.5} className={styles.buttons}>
-                    <ConditionalRender condition={!isFree && !isActive || isTrial}>
+                    <ConditionalRender condition={(!isFree && !isActive) || isTrial}>
                         <CustomButton
                             disabled={isDisabled}
                             onClick={handleChooseSubscription}

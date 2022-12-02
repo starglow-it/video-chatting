@@ -44,9 +44,6 @@ import { companyNameSchema } from '../../validation/users/companyName';
 import { fullNameSchema } from '../../validation/users/fullName';
 import { simpleStringSchema } from '../../validation/common';
 
-// utils
-import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
-
 // types
 import { AppDialogsEnum } from '../../store/types';
 
@@ -136,8 +133,6 @@ const Component = () => {
 
             await updateProfileFx(data);
 
-            WebStorage.delete({ key: StorageKeysEnum.templateId });
-
             handleSetProfileUpdated();
         }),
         [profileAvatar.file, setUpTemplate?.id],
@@ -161,8 +156,6 @@ const Component = () => {
     const handleQuit = useCallback(async () => {
         forceRef.current = true;
         await router.push(routeToChange);
-
-        WebStorage.delete({ key: StorageKeysEnum.templateId });
 
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.confirmQuitOnboardingDialog,

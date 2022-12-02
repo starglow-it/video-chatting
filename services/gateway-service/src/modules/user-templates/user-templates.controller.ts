@@ -9,13 +9,14 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { TemplatesService } from '../templates/templates.service';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+
+import { UserTemplatesService } from './user-templates.service';
 
 // dtos
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
@@ -26,7 +27,7 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 @Controller('user-templates')
 export class UserTemplatesController {
   private readonly logger = new Logger();
-  constructor(private templatesService: TemplatesService) {}
+  constructor(private userTemplatesService: UserTemplatesService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
@@ -46,7 +47,7 @@ export class UserTemplatesController {
     @Query('dir') direction: number,
   ) {
     try {
-      const templatesData = await this.templatesService.getUsersTemplates({
+      const templatesData = await this.userTemplatesService.getUsersTemplates({
         userId: req.user.userId,
         skip,
         limit,
@@ -81,7 +82,7 @@ export class UserTemplatesController {
   async getUserTemplateById(@Param('templateId') templateId: string) {
     try {
       if (templateId) {
-        const template = await this.templatesService.getUserTemplateById({
+        const template = await this.userTemplatesService.getUserTemplateById({
           id: templateId,
         });
 

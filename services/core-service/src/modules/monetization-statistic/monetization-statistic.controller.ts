@@ -11,13 +11,12 @@ import {
   MonetizationStatisticPeriods,
   MonetizationStatisticTypes,
 } from 'shared-types';
-import { subtractMonths } from 'shared-utils';
+import {getTimeoutTimestamp, subtractMonths} from 'shared-utils';
 import { StatisticBrokerPatterns } from 'shared-const';
 
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { MonetizationStatisticService } from './monetization-statistic.service';
 import { MonetizationStatisticDTO } from '../../dtos/monetization-statistic.dto';
-import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import { TasksService } from '../tasks/tasks.service';
 import { PaymentsService } from '../../services/payments/payments.service';
 
@@ -47,20 +46,24 @@ export class MonetizationStatisticController {
   async checkLastMonthMonetization() {
     this.logger.debug('Start check last month monetization');
 
-    const transactionChargesAmount = await this.paymentService.getStripeCharges({
-      time: subtractMonths(Date.now(), 1),
-      type: 'transactions',
-    });
+    const transactionChargesAmount = await this.paymentService.getStripeCharges(
+      {
+        time: subtractMonths(Date.now(), 1),
+        type: 'transactions',
+      },
+    );
 
-    const roomsPurchaseChargesAmount = await this.paymentService.getStripeCharges({
-      time: subtractMonths(Date.now(), 1),
-      type: 'roomsPurchase',
-    });
+    const roomsPurchaseChargesAmount =
+      await this.paymentService.getStripeCharges({
+        time: subtractMonths(Date.now(), 1),
+        type: 'roomsPurchase',
+      });
 
-    const subscriptionsChargesAmount = await this.paymentService.getStripeCharges({
-      time: subtractMonths(Date.now(), 1),
-      type: 'subscription',
-    });
+    const subscriptionsChargesAmount =
+      await this.paymentService.getStripeCharges({
+        time: subtractMonths(Date.now(), 1),
+        type: 'subscription',
+      });
 
     return withTransaction(this.connection, async (session) => {
       await this.monetizationStatisticService.updateOne({

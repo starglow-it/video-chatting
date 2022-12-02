@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 
 import {
   DashboardNotification,
   DashboardNotificationDocument,
 } from '../../schemas/dashboard-notification.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from '../../types/custom';
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 
 @Injectable()
 export class DashboardNotificationsService {
@@ -26,14 +26,10 @@ export class DashboardNotificationsService {
   async findNotifications({
     query,
     session,
-    populatePath,
-  }: {
-    query: FilterQuery<DashboardNotificationDocument>;
-    session: ITransactionSession;
-    populatePath: CustomPopulateOptions;
-  }): Promise<DashboardNotificationDocument[]> {
+                      populatePaths,
+  }: GetModelQuery<DashboardNotificationDocument>): Promise<DashboardNotificationDocument[]> {
     return this.dashboardNotification
-      .find(query, {}, { session: session.session, populate: populatePath })
+      .find(query, {}, { session: session.session, populate: populatePaths })
       .exec();
   }
 
@@ -41,11 +37,7 @@ export class DashboardNotificationsService {
     query,
     data,
     session,
-  }: {
-    query: FilterQuery<DashboardNotificationDocument>;
-    data: any;
-    session: ITransactionSession;
-  }): Promise<any> {
+  }: UpdateModelQuery<DashboardNotificationDocument, DashboardNotification>): Promise<any> {
     return this.dashboardNotification.updateMany(query, data, {
       session: session.session,
     });
@@ -55,16 +47,11 @@ export class DashboardNotificationsService {
     query,
     data,
     session,
-    populatePath,
-  }: {
-    query: FilterQuery<DashboardNotificationDocument>;
-    data: any;
-    session: ITransactionSession;
-    populatePath?: CustomPopulateOptions;
-  }): Promise<any> {
+                                    populatePaths,
+  }: UpdateModelQuery<DashboardNotificationDocument, DashboardNotification>): Promise<any> {
     return this.dashboardNotification.findOneAndUpdate(query, data, {
       session: session.session,
-      populate: populatePath,
+      populate: populatePaths,
       new: true,
     });
   }

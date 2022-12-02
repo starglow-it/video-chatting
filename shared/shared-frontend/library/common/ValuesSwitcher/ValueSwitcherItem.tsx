@@ -7,14 +7,15 @@ import styles from './ValuesSwitcher.module.scss';
 
 import { ValueSwitcherItemProps } from './types';
 
-const Component = <ValueType extends number | string>(
+const Component = <ValueType extends number | string, Label extends string>(
     {
         activeValue,
+        className,
         value,
         index,
         onValueChanged,
         variant = 'primary',
-    }: ValueSwitcherItemProps<ValueType>,
+    }: ValueSwitcherItemProps<ValueType, Label>,
     ref: ForwardedRef<HTMLDivElement>,
 ) => {
     const handleChooseValue = useCallback(() => {
@@ -30,11 +31,11 @@ const Component = <ValueType extends number | string>(
             alignItems="center"
             justifyContent="center"
             onClick={handleChooseValue}
-            className={clsx(styles.item, { [styles.active]: activeValue === value })}
+            className={clsx(styles.item, className, { [styles.active]: activeValue === value })}
         >
             <CustomTypography variant="body2">{value.label}</CustomTypography>
         </CustomGrid>
     );
 };
 
-export const ValueSwitcherItem = memo(forwardRef(Component));
+export const ValueSwitcherItem = memo(forwardRef(Component)) as typeof Component;

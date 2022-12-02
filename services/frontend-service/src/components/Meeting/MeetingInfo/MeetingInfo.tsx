@@ -40,7 +40,7 @@ const Component = (_: unknown, ref: ForwardedRef<HTMLDivElement>) => {
 
     const renderBusinessCategories = useMemo(
         () =>
-            meetingTemplate.businessCategories.map(category => (
+            meetingTemplate?.businessCategories?.map(category => (
                 <BusinessCategoryItem key={category.key} category={category} />
             )),
         [meetingTemplate.businessCategories],

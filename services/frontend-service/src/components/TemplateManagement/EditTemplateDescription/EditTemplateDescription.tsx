@@ -53,7 +53,7 @@ const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER },
     value: i + 1,
 }));
 
-const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps) => {
+const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescriptionProps) => {
     const businessCategories = useStore($businessCategoriesStore);
 
     const {
@@ -82,6 +82,8 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
     }, []);
 
     useEffect(() => {
+        trigger('tags');
+
         if (
             !tags.find(
                 (value: AutocompleteType<IBusinessCategory> | string) => typeof value === 'string',
@@ -102,14 +104,14 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                     : item,
             ),
         );
-        trigger('tags');
     }, [tags]);
 
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger(['name', 'description', 'tags', 'customLink']);
 
         const isBusy = await checkCustomLinkFx({
-            templateId: customLink,
+            templateId: template?.id!,
+            customLink,
         });
 
         if (isBusy) {
@@ -117,14 +119,14 @@ const Component = ({ onNextStep, onPreviousStep }: EditTemplateDescriptionProps)
                 { type: 'focus', message: 'meeting.settings.customLink.busy' },
             ]);
             return;
-        } 
-            clearErrors('customLink');
-        
+        }
+
+        clearErrors('customLink');
 
         if (response) {
             onNextStep();
         }
-    }, [onNextStep, customLink]);
+    }, [onNextStep, customLink, template?.id]);
 
     const { onChange: onChangeName, ...nameProps } = useMemo(() => register('name'), []);
     const customLinkProps = useMemo(() => register('customLink'), []);

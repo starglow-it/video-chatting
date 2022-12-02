@@ -9,9 +9,7 @@ export const handleCreateTemplate = async (): Promise<CreateTemplateResponse> =>
     });
 
     if (response.success) {
-        return {
-            ...response.result,
-        };
+        return response.result;
     }
 
     return null;

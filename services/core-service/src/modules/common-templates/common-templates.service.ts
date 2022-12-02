@@ -26,13 +26,13 @@ import { AwsConnectorService } from '../../services/aws-connector/aws-connector.
 import { CountersService } from '../counters/counters.service';
 
 // const
-import { Counters, QueryParams } from 'shared-types';
+import { Counters } from 'shared-types';
 
 // helpers
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
 // types
-import { CustomPopulateOptions } from '../../types/custom';
+import {CustomPopulateOptions, GetModelQuery, UpdateModelQuery} from '../../types/custom';
 
 // const
 import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
@@ -66,12 +66,7 @@ export class CommonTemplatesService {
     options,
     populatePaths,
     session,
-  }: {
-    query: FilterQuery<CommonTemplateDocument>;
-    options?: QueryParams;
-    populatePaths?: CustomPopulateOptions;
-    session?: ITransactionSession;
-  }) {
+  }: GetModelQuery<CommonTemplateDocument>) {
     return this.commonTemplate
       .find(
         query,
@@ -109,18 +104,13 @@ export class CommonTemplatesService {
     query,
     session,
     populatePaths,
-    sort,
-  }: {
-    query: FilterQuery<CommonTemplateDocument>;
-    session?: ITransactionSession;
-    populatePaths?: CustomPopulateOptions;
-    sort?: string;
-  }) {
+    options,
+  }: GetModelQuery<CommonTemplateDocument>) {
     return this.commonTemplate
       .findOne(
         query,
         {},
-        { session: session?.session, populate: populatePaths, sort },
+        { session: session?.session, populate: populatePaths, sort: options?.sort },
       )
       .exec();
   }
@@ -157,12 +147,7 @@ export class CommonTemplatesService {
     data,
     session,
     populatePaths,
-  }: {
-    query: FilterQuery<CommonTemplateDocument>;
-    data: UpdateQuery<CommonTemplateDocument>;
-    session?: ITransactionSession;
-    populatePaths?: QueryOptions['populate'];
-  }): Promise<any> {
+  }: UpdateModelQuery<CommonTemplateDocument, CommonTemplateDocument>): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,

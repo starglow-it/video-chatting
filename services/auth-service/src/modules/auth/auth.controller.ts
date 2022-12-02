@@ -26,6 +26,8 @@ import { emailTemplates } from 'shared-const';
 
 @Controller('auth')
 export class AuthController {
+  frontendUrl: string;
+
   constructor(
     private authService: AuthService,
     private coreService: CoreService,
@@ -33,13 +35,15 @@ export class AuthController {
     private configService: ConfigClientService,
   ) {}
 
+  async onModuleInit() {
+    this.frontendUrl = await this.configService.get<string>('frontendUrl');
+  }
+
   @MessagePattern({ cmd: AuthBrokerPatterns.RegisterUserPattern })
   async register(
     @Payload() payload: RegisterUserPayload,
   ): Promise<ICommonUser> {
     try {
-      const frontendUrl = await this.configService.get('frontendUrl');
-
       const token = await this.authService.generateToken({
         email: payload.email,
         type: TokenTypes.Confirm,
@@ -56,7 +60,7 @@ export class AuthController {
           data: [
             {
               name: 'CONFIRMLINK',
-              content: `${frontendUrl}/confirm-registration?token=${token.token}`,
+              content: `${this.frontendUrl}/confirm-registration?token=${token.token}`,
             },
           ],
         },
@@ -181,8 +185,6 @@ export class AuthController {
     @Payload() payload: SendResetPasswordLinkEmailPayload,
   ): Promise<void> {
     try {
-      const frontendUrl = await this.configService.get('frontendUrl');
-
       const user = await this.coreService.findUserByEmail({
         email: payload.email,
       });
@@ -203,7 +205,7 @@ export class AuthController {
           data: [
             {
               name: 'RESETURL',
-              content: `${frontendUrl}/reset-password?token=${token.token}`,
+              content: `${this.frontendUrl}/reset-password?token=${token.token}`,
             },
           ],
         },

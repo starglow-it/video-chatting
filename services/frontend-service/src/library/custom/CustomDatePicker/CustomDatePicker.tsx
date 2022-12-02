@@ -1,4 +1,4 @@
-import React, {forwardRef, memo, useCallback, useEffect, useMemo, useState} from 'react';
+import React, { forwardRef, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
 // icons
@@ -30,13 +30,10 @@ import { NotificationType } from '../../../store/types';
 // styles
 import styles from './CustomDatePicker.module.scss';
 
-const Component = ({
-    selected,
-    startDate,
-    className,
-    onDateSelected,
-    blockedDate,
-}: CustomDatePickerProps, ref) => {
+const Component = (
+    { selected, startDate, className, onDateSelected, blockedDate }: CustomDatePickerProps,
+    ref,
+) => {
     const [selectedDate, setSelectedDate] = useState<Date>(selected || new Date());
     const [currentMonthDate, setCurrentMonth] = useState<Date>(new Date());
 

@@ -1,6 +1,6 @@
 import React, { ForwardedRef, forwardRef, memo, PropsWithChildren } from 'react';
 
-import { Grid, GridProps } from '@mui/material';
+import { Grid, GridProps } from '@mui/material/Grid';
 
 type CustomGripProps = Omit<GridProps, 'children'> & PropsWithChildren;
 

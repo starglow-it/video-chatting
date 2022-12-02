@@ -16,6 +16,8 @@ import { ResponseSumType } from 'shared-types';
 
 import { PaymentsService } from './payments.service';
 import { CoreService } from '../../services/core/core.service';
+import { TemplatesService } from '../templates/templates.service';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import {
@@ -24,7 +26,6 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { TemplatesService } from '../templates/templates.service';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 
 @Controller(PAYMENTS_SCOPE)
@@ -35,6 +36,7 @@ export class PaymentsController {
     private paymentsService: PaymentsService,
     private coreService: CoreService,
     private templateService: TemplatesService,
+    private userTemplatesService: UserTemplatesService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -207,7 +209,7 @@ export class PaymentsController {
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
     try {
-      const userTemplate = await this.templateService.getUserTemplateById({
+      const userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: body.templateId,
       });
 

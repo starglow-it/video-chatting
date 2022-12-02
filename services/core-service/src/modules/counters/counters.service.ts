@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 
 import { Counter, CounterDocument } from '../../schemas/counter.schema';
 
-import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-
 import { ICounter } from 'shared-types';
+import {GetModelQuery, UpdateModelQuery} from "../../types/custom";
 
 @Injectable()
 export class CountersService {
@@ -22,10 +21,7 @@ export class CountersService {
   async find({
     query,
     session,
-  }: {
-    query: FilterQuery<CounterDocument>;
-    session: ITransactionSession;
-  }) {
+  }: GetModelQuery<CounterDocument>) {
     return this.counter.find(query, {}, { session: session?.session }).exec();
   }
 
@@ -33,12 +29,7 @@ export class CountersService {
     query,
     data,
     session,
-  }: {
-    query: FilterQuery<CounterDocument>;
-    data: UpdateQuery<Counter>;
-    session: ITransactionSession;
-    new?: boolean;
-  }) {
+  }: UpdateModelQuery<CounterDocument, Counter>) {
     return this.counter
       .findOneAndUpdate(query, data, {
         new: true,

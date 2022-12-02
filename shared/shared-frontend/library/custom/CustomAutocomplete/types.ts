@@ -9,6 +9,7 @@ export type CustomAutocompleteProps<ValueType extends { key: string; value: stri
     PropsWithChildren & {
         control: Control;
         name: string;
+        withInputValue: boolean;
         error?: string;
         errorComponent?: React.ReactNode;
     };

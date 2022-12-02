@@ -14,11 +14,17 @@ import { CustomGrid } from 'shared-frontend/library';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // store
+import { IUserTemplate } from 'shared-types';
 import { $meetingTemplateStore } from '../../../store/roomStores';
 import { checkCustomLinkFx } from '../../../store';
 
 // styles
 import styles from './EditMeetingLink.module.scss';
+
+type UpdateMeetingLink = {
+    templateId: IUserTemplate['id'];
+    customLink: IUserTemplate['customLink'];
+};
 
 const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -36,7 +42,7 @@ const Component = () => {
         name: 'customLink',
     });
 
-    const handleCheckFreeLinkTail = async (data: { templateId: string }) => {
+    const handleCheckFreeLinkTail = async (data: UpdateMeetingLink) => {
         const isBusy = await checkCustomLinkFx(data);
 
         if (isBusy) {
@@ -49,18 +55,17 @@ const Component = () => {
     };
 
     const checkCustomLinkRequest = useMemo(
-        () =>
-            debounce<(data: { templateId: string }) => Promise<void>>(
-                handleCheckFreeLinkTail,
-                1000,
-            ),
+        () => debounce<(data: UpdateMeetingLink) => Promise<void>>(handleCheckFreeLinkTail, 1000),
         [],
     );
 
     useEffect(() => {
         (async () => {
             if (meetingLink && meetingLink !== meetingTemplate.customLink) {
-                checkCustomLinkRequest({ templateId: meetingLink });
+                checkCustomLinkRequest({
+                    templateId: meetingTemplate.id,
+                    customLink: meetingLink as string,
+                });
             }
         })();
     }, [meetingLink, meetingTemplate.customLink]);

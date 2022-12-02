@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 // const
 import { MeetingBrokerPatterns } from 'shared-const';
@@ -173,7 +173,7 @@ export class MeetingsController {
 
       await userTemplate.save({ session: session.session });
 
-      return plainToClass(UserTemplateDTO, userTemplate, {
+      return plainToInstance(UserTemplateDTO, userTemplate, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -188,7 +188,7 @@ export class MeetingsController {
 
         await meeting.populate(['owner', 'template']);
 
-        return plainToClass(CommonMeetingDTO, meeting, {
+        return plainToInstance(CommonMeetingDTO, meeting, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });

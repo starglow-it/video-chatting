@@ -5,7 +5,10 @@ import { DashboardEmitEvents } from '../../const/socket-events/emitters/dashboar
 import { DashboardGateway } from './dashboard.gateway';
 
 // shared
-import {KickUserFromMeetingPayload, SendTrialExpiredNotificationPayload} from 'shared-types';
+import {
+  KickUserFromMeetingPayload,
+  SendTrialExpiredNotificationPayload,
+} from 'shared-types';
 import { SocketBrokerPatterns } from 'shared-const';
 
 @Controller('/dashboard')
@@ -29,7 +32,7 @@ export class DashboardController {
     this.dashboardGateway.emitToRoom(
       `dashboard:${userId}`,
       DashboardEmitEvents.KickUser,
-        { reason }
+      { reason },
     );
   }
 }

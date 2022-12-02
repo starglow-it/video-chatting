@@ -11,6 +11,7 @@ import {
     ProfileTemplatesCount,
     StateWithError,
     TokenPair,
+    PlanKeys,
 } from 'shared-types';
 import { NextPageContext } from 'next';
 
@@ -57,7 +58,8 @@ export type Profile = {
     stripeAccountId: string;
     stripeEmail: string;
     stripeSubscriptionId: string;
-    subscriptionPlanKey: string;
+    subscriptionPlanKey: PlanKeys;
+    previousSubscriptionPlanKey: PlanKeys;
     isSubscriptionActive: boolean;
     isStripeEnabled: boolean;
     wasSuccessNotificationShown: boolean;
@@ -70,6 +72,7 @@ export type Profile = {
     businessCategories: IBusinessCategory[];
     isProfessionalTrialAvailable: boolean;
     shouldShowTrialExpiredNotification: boolean;
+    isDowngradeMessageShown: boolean;
 };
 
 export type MeetingUser = {
@@ -194,6 +197,7 @@ export type AppDialogsState = {
     confirmCancelRoomCreationDialog: boolean;
     userBlockedDialog: boolean;
     hostUserDeletedDialog: boolean;
+    downgradedSubscriptionDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -219,6 +223,7 @@ export enum AppDialogsEnum {
     hostTimeExpiredDialog = 'hostTimeExpiredDialog',
     hostUserDeletedDialog = 'hostUserDeletedDialog',
     userBlockedDialog = 'userBlockedDialog',
+    downgradedSubscriptionDialog = 'downgradedSubscriptionDialog',
 }
 
 export type DialogActionPayload = {
@@ -356,5 +361,5 @@ export type ContactFormResponse = {
 export type ProfileTemplatesCountState = StateWithError<ProfileTemplatesCount>;
 
 export interface INextPageContext {
-    ctx: NextPageContext,
+    ctx: NextPageContext;
 }

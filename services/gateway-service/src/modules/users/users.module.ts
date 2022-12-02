@@ -10,8 +10,9 @@ import { NotificationsModule } from '../../services/notifications/notifications.
 import { CoreModule } from '../../services/core/core.module';
 import { TemplatesModule } from '../templates/templates.module';
 import { UploadModule } from '../upload/upload.module';
-import {PaymentsModule} from "../payments/payments.module";
-import {SocketModule} from "../../services/socket/socket.module";
+import { PaymentsModule } from '../payments/payments.module';
+import { SocketModule } from '../../services/socket/socket.module';
+import { UserTemplatesModule } from '../user-templates/user-templates.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import {SocketModule} from "../../services/socket/socket.module";
     CoreModule,
     NotificationsModule,
     TemplatesModule,
+    UserTemplatesModule,
     UploadModule,
     SocketModule,
     JwtModule.registerAsync({

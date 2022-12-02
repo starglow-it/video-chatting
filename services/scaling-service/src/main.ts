@@ -42,7 +42,7 @@ async function bootstrap() {
 
     tasksService.addInterval({
       name: 'terminateInstances',
-      ts: getTimeoutTimestamp({ value: 10, type: TimeoutTypesEnum.Minutes }),
+      ts: getTimeoutTimestamp({ value: 3, type: TimeoutTypesEnum.Minutes }),
       callback: scalingService.terminateStoppedInstances.bind(scalingService),
     });
 

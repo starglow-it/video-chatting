@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react';
+import React, {useMemo, memo, useEffect} from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -28,7 +28,7 @@ import {
     $profileStore,
     $subscriptionStore,
     getCustomerPortalSessionUrlFx,
-    getStripeProductsFx,
+    getStripeProductsFx, getSubscriptionFx,
     startCheckoutSessionForSubscriptionFx,
 } from '../../../store';
 
@@ -57,6 +57,12 @@ const Component = () => {
     const { translation } = useLocalization('subscriptions');
 
     useSubscriptionNotification(profileRoute);
+
+    useEffect(() => {
+        getSubscriptionFx({
+            subscriptionId: profile.stripeSubscriptionId,
+        });
+    }, [profile.stripeSubscriptionId, profile.subscriptionPlanKey]);
 
     const handleChooseSubscription = async (productId: string, isPaid: boolean, trial: boolean) => {
         if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
@@ -126,7 +132,7 @@ const Component = () => {
 
     return (
         <CustomPaper className={styles.paperWrapper}>
-            <a id="subscriptions"/>
+            <a id="subscriptions" />
             <CustomGrid container direction="column">
                 <CustomGrid
                     container
@@ -148,7 +154,9 @@ const Component = () => {
                             className={styles.nextPayment}
                             color="colors.grayscale.normal"
                             nameSpace="subscriptions"
-                            translation={`subscriptions.${isTrial ? 'expirationDate' : 'nextPayment'}`}
+                            translation={`subscriptions.${
+                                isTrial ? 'expirationDate' : 'nextPayment'
+                            }`}
                             options={{ nextPaymentDate }}
                         />
                     </ConditionalRender>

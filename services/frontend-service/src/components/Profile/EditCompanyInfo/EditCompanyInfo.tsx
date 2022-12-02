@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomBox , CustomGrid } from 'shared-frontend/library';
+import { CustomBox, CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 

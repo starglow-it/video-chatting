@@ -51,5 +51,5 @@ export type GetStripeChargesPayload = {
 };
 
 export type CancelUserSubscriptionPayload = {
-  subscriptionId: ICommonUser["id"];
+  subscriptionId: ICommonUser['id'];
 };

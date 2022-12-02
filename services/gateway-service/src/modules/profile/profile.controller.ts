@@ -365,36 +365,4 @@ export class ProfileController {
       throw new BadRequestException(err);
     }
   }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('/reset-trial-notification')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Reset trial notification' })
-  @ApiOkResponse({
-    description: 'Notification reset successfully',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  async resetTrialNotification(@Request() req) {
-    try {
-      const user = await this.coreService.resetTrialNotification({
-        userId: req.user.userId,
-      });
-
-      return {
-        success: true,
-        result: user,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while reset trial notification`,
-        },
-        JSON.stringify(err),
-      );
-
-      throw new BadRequestException(err);
-    }
-  }
 }

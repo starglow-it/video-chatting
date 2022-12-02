@@ -3,7 +3,7 @@ import { useStore } from 'effector-react';
 
 import { PersonIcon } from 'shared-frontend/icons';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid , CustomBox } from 'shared-frontend/library';
+import { CustomGrid, CustomBox } from 'shared-frontend/library';
 
 import styles from './PersonalInfo.module.scss';
 

@@ -58,7 +58,11 @@ export class TemplatesController {
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
       const templatesData = await this.templatesService.getCommonTemplates({
-        query: { draft: false, isPublic: true },
+        query: {
+          draft: false,
+          isPublic: true,
+          ...(!userId ? { type: 'free' } : {}),
+        },
         options: {
           skip,
           limit,

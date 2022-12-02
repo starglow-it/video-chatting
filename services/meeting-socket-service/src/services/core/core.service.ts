@@ -7,6 +7,7 @@ import {
   IUserTemplate,
   UpdateRoomRatingStatisticPayload,
   UpdateMeetingInstancePayload,
+  UpdateUserTemplatePayload,
   GetUserTemplateByIdPayload,
   FindUserByIdPayload,
   FindUsersByIdPayload,
@@ -19,6 +20,7 @@ import {
   TemplateBrokerPatterns,
   MeetingBrokerPatterns,
   UserBrokerPatterns,
+  UserTemplatesBrokerPatterns,
   CORE_PROVIDER,
 } from 'shared-const';
 
@@ -45,7 +47,7 @@ export class CoreService {
   async findMeetingTemplate(
     payload: GetUserTemplateByIdPayload,
   ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplate };
+    const pattern = { cmd: UserTemplatesBrokerPatterns.GetUserTemplate };
 
     return firstValueFrom(this.client.send(pattern, payload));
   }
@@ -53,7 +55,7 @@ export class CoreService {
   async findMeetingTemplateById(payload: {
     id: IUserTemplate['id'];
   }): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplateById };
+    const pattern = { cmd: UserTemplatesBrokerPatterns.GetUserTemplateById };
 
     return firstValueFrom(this.client.send(pattern, payload));
   }
@@ -80,6 +82,14 @@ export class CoreService {
     payload: UpdateMeetingInstancePayload,
   ): Promise<boolean> {
     const pattern = { cmd: MeetingBrokerPatterns.UpdateMeetingInstance };
+
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async updateUserTemplate(
+    payload: UpdateUserTemplatePayload,
+  ): Promise<IUserTemplate> {
+    const pattern = { cmd: UserTemplatesBrokerPatterns.UpdateUserTemplate };
 
     return firstValueFrom(this.client.send(pattern, payload));
   }

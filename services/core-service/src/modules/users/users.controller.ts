@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -31,12 +31,19 @@ import {
   VerifyPasswordPayload,
   LoginUserByEmailPayload,
   SetResetPasswordTokenPayload,
-  ResetTrialNotificationPayload,
   SearchUsersPayload,
-  UserRoles, ManageUserRightsPayload,
+  UserRoles,
+  ManageUserRightsPayload,
+  TimeoutTypesEnum
 } from 'shared-types';
 
-import { escapeRegexString } from 'shared-utils';
+import {
+  getRandomHexColor,
+  escapeRegexString,
+  addDaysCustom,
+  addMonthsCustom,
+  getTimeoutTimestamp
+} from 'shared-utils';
 
 import {
   UserBrokerPatterns,
@@ -50,8 +57,6 @@ import {
   USERS_SERVICE,
   plans,
 } from 'shared-const';
-
-import { getRandomHexColor } from 'shared-utils';
 
 // mongo
 import {
@@ -70,14 +75,6 @@ import { UserTokenService } from '../user-token/user-token.service';
 import { TasksService } from '../tasks/tasks.service';
 import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
-
-// types
-import { TimeoutTypesEnum } from 'shared-types';
-
-// utils
-import { addMonthsCustom } from '../../utils/dates/addMonths';
-import { addDaysCustom } from '../../utils/dates/addDaysCustom';
-import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 
 @Controller('users')
 export class UsersController {
@@ -125,7 +122,7 @@ export class UsersController {
               ? addMonthsCustom(Date.now(), 1)
               : addDaysCustom(Date.now(), 1);
 
-          const nextRenewDateInSeconds = nextRenewDate.getTime() / 1000;
+          const nextRenewDateInSeconds = nextRenewDate / 1000;
 
           await this.usersService.findByIdAndUpdate(user._id, {
             maxMeetingTime: plan.features.timeLimit,
@@ -164,7 +161,7 @@ export class UsersController {
             (environment === 'demo'
               ? addMonthsCustom(Date.now(), 1)
               : addDaysCustom(Date.now(), 1)
-            ).getTime() / 1000;
+            ) / 1000;
 
           const newUser = await this.usersService.createUser(
             {
@@ -224,7 +221,7 @@ export class UsersController {
             session,
           });
 
-          return plainToClass(CommonUserDTO, newUser, {
+          return plainToInstance(CommonUserDTO, newUser, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });
@@ -244,13 +241,13 @@ export class UsersController {
       this.connection,
       async (session: ITransactionSession) => {
         try {
-          const updatedUser = await this.usersService.findUserAndUpdate(
-            updateUserData.query,
-            updateUserData.data,
+          const updatedUser = await this.usersService.findUserAndUpdate({
+            query: updateUserData.query,
+            data: updateUserData.data,
             session,
-          );
+          });
 
-          return plainToClass(CommonUserDTO, updatedUser, {
+          return plainToInstance(CommonUserDTO, updatedUser, {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
           });
@@ -402,7 +399,7 @@ export class UsersController {
 
       const count = await this.usersService.count({
         query: finalQuery,
-        session
+        session,
       });
 
       const parsedUsers = plainToInstance(CommonUserDTO, users, {
@@ -413,7 +410,7 @@ export class UsersController {
       return {
         list: parsedUsers,
         count,
-      }
+      };
     });
   }
 
@@ -423,17 +420,17 @@ export class UsersController {
     { email, data }: FindUserByEmailAndUpdatePayload,
   ) {
     return withTransaction(this.connection, async (session) => {
-      const userData = await this.usersService.findUserAndUpdate(
-        { email },
+      const userData = await this.usersService.findUserAndUpdate({
+        query: { email },
         data,
-        session,
-      );
+        session
+      });
 
       if (!userData) {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      return plainToClass(CommonUserDTO, userData, {
+      return plainToInstance(CommonUserDTO, userData, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -501,7 +498,7 @@ export class UsersController {
         session,
       );
 
-      return plainToClass(CommonUserDTO, user, {
+      return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
@@ -590,10 +587,16 @@ export class UsersController {
   }
 
   @MessagePattern({ cmd: UserBrokerPatterns.ManageUserRights })
-  async manageUserRights(@Payload() { userId, key, value }: ManageUserRightsPayload) {
+  async manageUserRights(
+    @Payload() { userId, key, value }: ManageUserRightsPayload,
+  ) {
     return withTransaction(this.connection, async (session) => {
       if (key === 'block') {
-        const user = await this.usersService.findByIdAndUpdate(userId, { isBlocked: value }, session);
+        const user = await this.usersService.findByIdAndUpdate(
+          userId,
+          { isBlocked: value },
+          session,
+        );
 
         await this.userTokenService.deleteUserTokens({ userId, session });
 
@@ -803,11 +806,11 @@ export class UsersController {
         session,
       );
 
-      await this.usersService.findUserAndUpdate(
-        { userId: user.id },
-        { isResetPasswordActive: true },
-        session,
-      );
+      await this.usersService.findUserAndUpdate({
+        query: { userId: user.id },
+        data: { isResetPasswordActive: true },
+        session
+      });
 
       user.tokens.push(token);
 
@@ -840,7 +843,7 @@ export class UsersController {
           token: payload.token,
         },
         session,
-        populatePath: 'user',
+        populatePaths: 'user',
       });
 
       const user = await this.usersService.findById(token.user._id, session);
@@ -872,23 +875,6 @@ export class UsersController {
   async countUsers(@Payload() payload: CountUsersPayload): Promise<number> {
     return withTransaction(this.connection, async (session) => {
       return this.usersService.count({ query: payload, session });
-    });
-  }
-
-  @MessagePattern({ cmd: UserBrokerPatterns.ResetTrialNotification })
-  async resetTrialNotification(
-    @Payload() payload: ResetTrialNotificationPayload,
-  ) {
-    return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findByIdAndUpdate(
-        payload.userId,
-        { shouldShowTrialExpiredNotification: false },
-        session,
-      );
-      return plainToInstance(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
     });
   }
 }

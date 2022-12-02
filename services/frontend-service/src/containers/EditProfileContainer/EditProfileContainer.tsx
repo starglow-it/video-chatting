@@ -26,7 +26,7 @@ import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
 import { CustomImage } from 'shared-frontend/library';
 
 // stores
-import {IBusinessCategory, ILanguage, ISocialLink} from 'shared-types';
+import { IBusinessCategory, ILanguage, ISocialLink } from 'shared-types';
 import { $profileStore, $routeToChangeStore, appDialogsApi, updateProfileFx } from '../../store';
 
 // validations
@@ -85,7 +85,7 @@ const EditProfileContainer = memo(() => {
         defaultValues: {
             companyName: profile.companyName,
             contactEmail: profile.contactEmail,
-            businessCategories: profile.businessCategories.map(category => category.key),
+            businessCategories: profile?.businessCategories?.map(category => category.key),
             description: profile.description,
             languages: profile.languages.map(category => category.key).filter(key => key),
             fullName: profile.fullName,
@@ -118,7 +118,7 @@ const EditProfileContainer = memo(() => {
                 reset({
                     companyName: newProfile.companyName,
                     contactEmail: newProfile.contactEmail,
-                    businessCategories: newProfile.businessCategories.map(category => category.key),
+                    businessCategories: newProfile?.businessCategories?.map(category => category.key),
                     description: newProfile.description,
                     languages: newProfile.languages
                         .map(category => category.key)
@@ -153,7 +153,7 @@ const EditProfileContainer = memo(() => {
         reset({
             companyName: profile.companyName,
             contactEmail: profile.contactEmail,
-            businessCategories: profile.businessCategories.map(category => category.key),
+            businessCategories: profile?.businessCategories?.map(category => category.key),
             description: profile.description,
             languages: profile.languages.map(category => category.key).filter(key => key),
             fullName: profile.fullName,

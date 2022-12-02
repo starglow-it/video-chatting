@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 import { CORE_PROVIDER } from 'shared-const';
-import { TemplateBrokerPatterns, UserBrokerPatterns } from 'shared-const';
+import { UserTemplatesBrokerPatterns, UserBrokerPatterns } from 'shared-const';
 import {
   IUserTemplate,
   ICommonUser,
@@ -35,7 +35,7 @@ export class CoreService {
   async findMeetingTemplateById(
     payload: GetUserTemplateByIdPayload,
   ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplateById };
+    const pattern = { cmd: UserTemplatesBrokerPatterns.GetUserTemplateById };
 
     return this.client.send(pattern, payload).toPromise();
   }
@@ -43,7 +43,7 @@ export class CoreService {
   async findMeetingTemplate(payload: {
     id: IUserTemplate['id'];
   }): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.GetUserTemplate };
+    const pattern = { cmd: UserTemplatesBrokerPatterns.GetUserTemplate };
 
     return this.client.send(pattern, payload).toPromise();
   }

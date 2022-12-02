@@ -4,9 +4,10 @@ import {
 } from 'shared-types';
 
 export const planColors: Record<string, string> = {
-  House: '#30BE39',
+  House: '#69E071',
   Professional: '#2E6DF2',
-  Business: '#FF884E',
+  Business: '#FFB84E',
+  AllPlans: '#0F0F10',
 };
 
 export const monetizationStatisticsData = [

@@ -60,9 +60,10 @@ export class UserTokenController {
           session,
         });
 
-        await this.userTokenService.deleteUserTokens(
-          { userId: userModel._id, session },
-        );
+        await this.userTokenService.deleteUserTokens({
+          userId: userModel._id,
+          session,
+        });
 
         userModel.tokens = [];
 
