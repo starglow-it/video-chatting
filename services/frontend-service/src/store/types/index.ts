@@ -1,79 +1,17 @@
 import { Socket } from 'socket.io-client';
 import {
     ErrorState,
-    IBusinessCategory,
     ICommonTemplate,
-    ILanguage,
-    IPreviewImage,
-    IProfileAvatar,
-    ISocialLink,
     MeetingAccessStatusEnum,
     ProfileTemplatesCount,
     StateWithError,
     TokenPair,
-    PlanKeys,
+    IUserTemplate,
+    ICommonUser,
 } from 'shared-types';
 import { NextPageContext } from 'next';
 
-export interface Template {
-    id: string;
-    usedAt: string;
-    templateId: number;
-    url: string;
-    draftUrl?: string;
-    name: string;
-    description: string;
-    shortDescription: string;
-    type: string;
-    companyName: string;
-    contactEmail: string;
-    fullName: string;
-    position: string;
-    customLink: string;
-    maxParticipants: number;
-    priceInCents: number;
-    isAudioAvailable: boolean;
-    isPublic?: boolean;
-    usersPosition: { bottom: number; left: number }[];
-    links?: { id: string; item: string; position: { top: number; left: number } }[];
-    businessCategories: IBusinessCategory[];
-    previewUrls: IPreviewImage[];
-    draftPreviewUrls?: IPreviewImage[];
-    languages: ILanguage[];
-    socials: ISocialLink[];
-    author?: string;
-    templateType: 'video' | 'image';
-}
-
-export type Profile = {
-    id: string;
-    fullName: string;
-    position: string;
-    profileAvatar: IProfileAvatar;
-    companyName: string;
-    email: string;
-    country: string;
-    contactEmail: string;
-    signBoard: string;
-    stripeAccountId: string;
-    stripeEmail: string;
-    stripeSubscriptionId: string;
-    subscriptionPlanKey: PlanKeys;
-    previousSubscriptionPlanKey: PlanKeys;
-    isSubscriptionActive: boolean;
-    isStripeEnabled: boolean;
-    wasSuccessNotificationShown: boolean;
-    description: string;
-    maxTemplatesNumber: number;
-    renewSubscriptionTimestampInSeconds: number;
-    maxMeetingTime: number;
-    socials: ISocialLink[];
-    languages: ILanguage[];
-    businessCategories: IBusinessCategory[];
-    isProfessionalTrialAvailable: boolean;
-    shouldShowTrialExpiredNotification: boolean;
-    isDowngradeMessageShown: boolean;
-};
+export type Profile = ICommonUser;
 
 export type MeetingUser = {
     id: string;
@@ -105,22 +43,6 @@ export type Meeting = {
     ownerProfileId: MeetingUser['profileId'];
     users: MeetingUser[];
 };
-
-export interface UserTemplate extends Template {
-    signBoard: string;
-    isMonetizationEnabled: boolean;
-    templatePrice: number;
-    templateCurrency: 'USD' | 'CAD';
-    meetingInstance: {
-        id: string;
-        serverIp: string;
-        owner: Profile['id'];
-        serverStatus: string;
-    };
-    user?: {
-        profileAvatar: IProfileAvatar;
-    };
-}
 
 export type AuthUserState = {
     isAuthenticated: boolean;
@@ -166,7 +88,7 @@ export type DashboardNotificationUser = {
 
 export type DashboardNotification = {
     id: string;
-    template: UserTemplate;
+    template: IUserTemplate;
     notificationType: DashboardNotificationTypes;
     sender: DashboardNotificationUser;
     senderFullName: string;
@@ -236,7 +158,7 @@ export enum MeetingSoundsEnum {
 }
 
 export type MeetingStore = {
-    currentMeeting?: UserTemplate;
+    currentMeeting?: IUserTemplate;
 };
 
 export type MeetingNote = {

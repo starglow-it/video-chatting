@@ -50,7 +50,7 @@ import {
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
   MonetizationStatisticPeriods,
-  MonetizationStatisticTypes, PlanKeys,
+  MonetizationStatisticTypes,
 } from 'shared-types';
 
 @Controller(PAYMENTS_SCOPE)
@@ -113,6 +113,7 @@ export class PaymentsController {
           this.logger.log('handle "customer.subscription.updated" event');
           await this.handleSubscriptionUpdate(
             event.data.object as Stripe.Subscription,
+              event.data.previous_attributes
           );
           break;
         case 'invoice.paid':
@@ -709,51 +710,53 @@ export class PaymentsController {
     });
 
     const productData = await this.paymentService.getStripeProduct(
-      // @ts-ignore
-      subscription.plan.product,
+        // @ts-ignore
+        subscription.plan.product,
     );
 
-    const prevPlan = plans[user.subscriptionPlanKey || 'House'];
-    const currentPlan = plans[productData.name || 'House'];
+    const currentPlan = plans[user.subscriptionPlanKey || 'House'];
+    const nextPlan = plans[productData.name || 'House'];
 
-    const isPlanHasChanged = prevPlan.name !== currentPlan.name;
-    const isPlanDowngraded = currentPlan.priceInCents < prevPlan.priceInCents;
-    const isPrevSubscriptionIsActive =
-      subscription.current_period_end * 1000 > Date.now();
+    const isPlanHasChanged = nextPlan.name !== currentPlan.name;
+    const isPlanDowngraded = currentPlan.priceInCents < nextPlan.priceInCents;
+    const isCurrentSubscriptionIsActive = user.renewSubscriptionTimestampInSeconds * 1000 > Date.now();
+
+    const isSubscriptionPeriodUpdated = user.renewSubscriptionTimestampInSeconds < subscription.current_period_end;
 
     await this.coreService.updateUser({
       query: { stripeSubscriptionId: subscription.id },
       data: {
-        subscriptionPlanKey: isPrevSubscriptionIsActive
-            ? prevPlan.name
+        subscriptionPlanKey: isSubscriptionPeriodUpdated
+            ? nextPlan.name
             : currentPlan.name,
-        maxTemplatesNumber: isPrevSubscriptionIsActive
-            ? prevPlan.features.templatesLimit
+        maxTemplatesNumber: isSubscriptionPeriodUpdated
+            ? nextPlan.features.templatesLimit
             : currentPlan.features.templatesLimit,
-        maxMeetingTime: isPrevSubscriptionIsActive
-            ? prevPlan.features.timeLimit
+        maxMeetingTime: isSubscriptionPeriodUpdated
+            ? nextPlan.features.timeLimit
             : currentPlan.features.timeLimit,
-        renewSubscriptionTimestampInSeconds: subscription.current_period_end,
-        previousSubscriptionPlanKey: prevPlan.name,
-        isDowngradeMessageShown: !(
-          isPlanHasChanged &&
-          isPlanDowngraded &&
-          isPrevSubscriptionIsActive
-        ),
+        nextSubscriptionPlanKey: isPlanHasChanged ? nextPlan.name : null,
+        prevSubscriptionPlanKey: user.subscriptionPlanKey,
+        renewSubscriptionTimestampInSeconds: isCurrentSubscriptionIsActive
+            ? user.renewSubscriptionTimestampInSeconds
+            : subscription.current_period_end,
+        isDowngradeMessageShown:
+          !(isPlanHasChanged && isPlanDowngraded && isCurrentSubscriptionIsActive),
       },
     });
+
+    if (isSubscriptionPeriodUpdated) {
+      await this.coreService.deleteLeastUsedUserTemplates({
+        userId: user.id,
+        templatesLimit: currentPlan.features.templatesLimit,
+      });
+    }
   }
 
   async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-    const product = await this.paymentService.getStripeProduct(
-      // @ts-ignore
-      subscription.plan.product,
-    );
-
     const environment = await this.configService.get('environment');
 
     const planData = plans['House'];
-    const prevPlanData = plans[product.name];
 
     const trialExpired =
       subscription.trial_end === subscription.current_period_end;
@@ -770,8 +773,6 @@ export class PaymentsController {
         subscriptionPlanKey: 'House',
         maxTemplatesNumber: planData.features.templatesLimit,
         maxMeetingTime: planData.features.timeLimit,
-        previousSubscriptionPlanKey: prevPlanData.name,
-        isDowngradeMessageShown: trialExpired,
         shouldShowTrialExpiredNotification: trialExpired,
         renewSubscriptionTimestampInSeconds:
           (environment === 'demo'

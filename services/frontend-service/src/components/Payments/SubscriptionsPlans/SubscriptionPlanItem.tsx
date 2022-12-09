@@ -6,27 +6,24 @@ import { List, ListItem, ListItemIcon } from '@mui/material';
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { RoundCheckIcon } from 'shared-frontend/icons/RoundIcons/RoundCheckIcon';
+
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid, CustomBox, CustomButton } from 'shared-frontend/library';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-
-// common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-
-// icons
-import { RoundCheckIcon } from 'shared-frontend/icons';
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
+import { Translation } from '@library/common/Translation/Translation';
 
 // styles
 import { currencies } from 'src/const/profile/subscriptions';
 import { planColors } from "shared-const";
 
 // types
-import { Translation } from '@library/common/Translation/Translation';
 import { SubscriptionPlanItemProps, TranslationFeatureItem } from './types';
 
 // styles
@@ -54,8 +51,8 @@ const Component = (
     }, [isFree, product.id, product.name, activePlanKey, onChooseSubscription]);
 
     const handleChooseTrial = useCallback(() => {
-        onChooseSubscription(product.id, !isFree, true);
-    }, [isFree, product.id, product.name, onChooseSubscription]);
+        onChooseSubscription(product?.id, !isFree, true);
+    }, [isFree, product?.id, product?.name, onChooseSubscription]);
 
     const { translation } = useLocalization('subscriptions');
 

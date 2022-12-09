@@ -1,4 +1,4 @@
-import { ErrorState, UserTemplate } from '../../../../types';
+import { ErrorState, IUserTemplate } from '../../../../types';
 import { sendRequest } from '../../../../../helpers/http/sendRequest';
 import { getMeetingTemplateUrl } from '../../../../../utils/urls';
 import { initialTemplateState } from '../model';
@@ -6,9 +6,9 @@ import { initialTemplateState } from '../model';
 export const handleGetMeetingTemplate = async ({
     templateId,
 }: {
-    templateId: UserTemplate['id'];
-}): Promise<UserTemplate> => {
-    const response = await sendRequest<UserTemplate, ErrorState>(
+    templateId: IUserTemplate['id'];
+}): Promise<IUserTemplate> => {
+    const response = await sendRequest<IUserTemplate, ErrorState>(
         getMeetingTemplateUrl({ templateId }),
     );
 

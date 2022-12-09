@@ -1,53 +1,53 @@
 import React, {
-	memo, useCallback, useEffect, useState 
+	memo, useCallback, useEffect, useState
 } from 'react';
 import {
-	useStore 
+	useStore
 } from 'effector-react';
 import * as yup from 'yup';
 import {
-	FormProvider, useForm 
+	FormProvider, useForm
 } from 'react-hook-form';
 
 // hooks
 import {
-	useToggle 
+	useToggle
 } from '@hooks/useToggle';
 import {
-	useYupValidationResolver 
+	useYupValidationResolver
 } from '@hooks/useYupValidationResolver';
 
 // custom components
 import {
-	CustomButton 
-} from 'shared-frontend/library';
+	CustomButton
+} from 'shared-frontend/library/custom/CustomButton';
 import {
-	CustomDialog 
-} from 'shared-frontend/library';
+	CustomDialog
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
-	CustomGrid 
-} from 'shared-frontend/library';
+	CustomGrid
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
-	CustomTypography 
+	CustomTypography
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
-	CustomDivider 
-} from 'shared-frontend/library';
+	CustomDivider
+} from 'shared-frontend/library/custom/CustomDivider';
 
 // components
 import {
-	MediaPreview 
+	MediaPreview
 } from '@components/Media/MediaPreview/MediaPreview';
 import {
-	MeetingSettingsContent 
+	MeetingSettingsContent
 } from '@components/Meeting/MeetingSettingsContent/MeetingSettingsContent';
 
 // store
 import {
-	Translation 
+	Translation
 } from '@library/common/Translation/Translation';
 import {
-	IUserTemplate 
+	IUserTemplate
 } from 'shared-types';
 import {
 	$appDialogsStore,
@@ -56,36 +56,35 @@ import {
 	addNotificationEvent,
 } from '../../../store';
 import {
-	$audioDevicesStore,
-	$audioErrorStore,
-	$backgroundAudioVolume,
-	$changeStreamStore,
-	$isAuraActive,
-	$isBackgroundAudioActive,
-	$isCameraActiveStore,
-	$isMicActiveStore,
-	$isOwner,
-	$isStreamRequestedStore,
-	$localUserStore,
-	$meetingTemplateStore,
-	$videoDevicesStore,
-	$videoErrorStore,
-	initDevicesEventFxWithStore,
-	resetMediaStoreEvent,
-	setActiveStreamEvent,
-	setBackgroundAudioActive,
-	setBackgroundAudioVolume,
-	setDevicesPermission,
-	setIsAuraActive,
-	toggleLocalDeviceEvent,
-	updateLocalUserEvent,
-	updateMeetingTemplateFxWithData,
-	updateUserSocketEvent,
+    $audioDevicesStore,
+    $audioErrorStore,
+    $backgroundAudioVolume,
+    $changeStreamStore,
+    $isAuraActive,
+    $isBackgroundAudioActive,
+    $isCameraActiveStore,
+    $isMicActiveStore,
+    $isOwner,
+    $isStreamRequestedStore,
+    $localUserStore,
+    $meetingTemplateStore,
+    $videoDevicesStore,
+    $videoErrorStore,
+    initDevicesEventFxWithStore,
+    resetMediaStoreEvent,
+    setActiveStreamEvent,
+    setBackgroundAudioActive,
+    setBackgroundAudioVolume,
+    setIsAuraActive,
+    toggleLocalDeviceEvent,
+    updateLocalUserEvent,
+    updateMeetingTemplateFxWithData,
+    updateUserSocketEvent,
 } from '../../../store/roomStores';
 
 // types
 import {
-	AppDialogsEnum, NotificationType 
+	AppDialogsEnum, NotificationType
 } from '../../../store/types';
 
 // styles
@@ -93,16 +92,16 @@ import styles from './DevicesSettingsDialog.module.scss';
 
 // validations
 import {
-	booleanSchema, simpleStringSchema 
+	booleanSchema, simpleStringSchema
 } from '../../../validation/common';
 import {
-	templatePriceSchema 
+	templatePriceSchema
 } from '../../../validation/payments/templatePrice';
 import {
-	BackgroundManager 
+	BackgroundManager
 } from '../../../helpers/media/applyBlur';
 import {
-	changeTracksState 
+	changeTracksState
 } from '../../../helpers/media/changeTrackState';
 
 const validationSchema = yup.object({
@@ -119,7 +118,7 @@ type MonetizationFormType = {
 
 const Component = () => {
 	const {
-		devicesSettingsDialog 
+		devicesSettingsDialog
 	} = useStore($appDialogsStore);
 	const profile = useStore($profileStore);
 
@@ -217,66 +216,63 @@ const Component = () => {
 		setVolume(backgroundAudioVolume);
 	}, [backgroundAudioVolume]);
 
-	const handleToggleCamera = () => {
-		changeTracksState({
-			enabled: !isNewCameraSettingActive,
-			tracks: changeStream?.getVideoTracks(),
-		});
-		handleToggleNewCameraSetting();
-	};
+    const handleToggleCamera = useCallback(() => {
+        changeTracksState({
+            enabled: !isNewCameraSettingActive,
+            tracks: changeStream?.getVideoTracks(),
+        });
+        handleToggleNewCameraSetting();
+    }, [changeStream, isNewCameraSettingActive]);
 
-	const handleToggleMic = () => {
-		changeTracksState({
-			enabled: !isNewMicSettingActive,
-			tracks: changeStream?.getAudioTracks(),
-		});
-		handleToggleNewMicSetting();
-	};
+    const handleToggleMic = useCallback(() => {
+        changeTracksState({
+            enabled: !isNewMicSettingActive,
+            tracks: changeStream?.getAudioTracks(),
+        });
+        handleToggleNewMicSetting();
+    }, [isNewMicSettingActive, changeStream]);
 
-	const handleSaveSettings = useCallback(async () => {
-		if (changeStream) {
-			if (isAuraActive !== isAuraEnabled) {
-				updateLocalUserEvent({
-					isAuraActive: isAuraEnabled,
-				});
+    const handleSaveSettings = useCallback(async () => {
+        if (changeStream) {
+            updateLocalUserEvent({
+                isAuraActive: isAuraEnabled,
+            });
 
-				await updateUserSocketEvent({
-					isAuraActive: isAuraEnabled,
-				});
+            await updateUserSocketEvent({ isAuraActive: isAuraEnabled });
 
-				if (isAuraEnabled) {
-					const clonedStream = changeStream?.clone();
+            toggleLocalDeviceEvent({
+                isCamEnabled: isNewCameraSettingActive,
+            });
+            toggleLocalDeviceEvent({
+                isMicEnabled: isNewMicSettingActive,
+            });
 
-					const streamWithBackground =
-                        await BackgroundManager.applyBlur(
-                        	clonedStream,
-                        	isNewCameraSettingActive,
-                        	isAuraEnabled,
-                        );
+            if (isAuraEnabled) {
+                const clonedStream = changeStream?.clone();
 
-					setActiveStreamEvent(streamWithBackground);
-				} else {
-					setActiveStreamEvent(changeStream);
-				}
-			}
+                const streamWithBackground = await BackgroundManager.applyBlur(
+                    clonedStream,
+                    isNewCameraSettingActive,
+                    isAuraEnabled,
+                );
 
-			appDialogsApi.closeDialog({
-				dialogKey: AppDialogsEnum.devicesSettingsDialog,
-			});
+                setActiveStreamEvent(streamWithBackground);
+            } else {
+                setActiveStreamEvent(changeStream.clone());
+            }
 
 			setIsAuraActive(isAuraEnabled);
 			setBackgroundAudioVolume(volume);
 			setBackgroundAudioActive(isSettingsAudioBackgroundActive);
 
-			updateLocalUserEvent({
-				cameraStatus: isNewCameraSettingActive ? 'active' : 'inactive',
-				micStatus: isNewMicSettingActive ? 'active' : 'inactive',
-			});
+            appDialogsApi.closeDialog({
+                dialogKey: AppDialogsEnum.devicesSettingsDialog,
+            });
 
-			setDevicesPermission({
-				isMicEnabled: isNewMicSettingActive,
-				isCamEnabled: isNewCameraSettingActive,
-			});
+            updateLocalUserEvent({
+                cameraStatus: isNewCameraSettingActive ? 'active' : 'inactive',
+                micStatus: isNewMicSettingActive ? 'active' : 'inactive',
+            })
 
 			addNotificationEvent({
 				type: NotificationType.DevicesAction,

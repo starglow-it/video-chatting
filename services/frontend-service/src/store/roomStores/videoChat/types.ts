@@ -1,9 +1,10 @@
 import { Room } from 'livekit-client';
 
-import { Meeting, MeetingUser, UserTemplate } from '../../types';
+import {Meeting, MeetingUser} from '../../types';
 import { CustomMediaStream } from '../../../types';
 import { ConnectionType, ServerTypes, StreamType, TrackKind } from '../../../const/webrtc';
 import { DeviceInputKindEnum } from '../../../const/media/DEVICE_KINDS';
+import {IUserTemplate} from "shared-types";
 
 export type OfferExchangePayload = {
     type: 'offer';
@@ -181,14 +182,14 @@ export type ToggleDevicePayload = {
 };
 
 export type GetLiveKitTokenPayload = {
-    templateId: UserTemplate['id'];
+    templateId: IUserTemplate['id'];
     userId: MeetingUser['id'];
 };
 
 export type ConnectToSFUPayload = {
-    templateId: UserTemplate['id'];
+    templateId: IUserTemplate['id'];
     userId: MeetingUser['id'];
-    serverIp: UserTemplate['meetingInstance']['serverIp'];
+    serverIp: IUserTemplate['meetingInstance']['serverIp'];
 };
 
 export type PublishTracksPayload = {

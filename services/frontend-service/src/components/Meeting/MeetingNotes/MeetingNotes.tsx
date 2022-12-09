@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { MeetingNoteItem } from '@components/Meeting/MeetingNoteItem/MeetingNoteItem';
 
 // stores

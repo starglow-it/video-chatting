@@ -26,7 +26,11 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty()
-  previousSubscriptionPlanKey: ICommonUser['previousSubscriptionPlanKey'];
+  nextSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
+
+  @Expose()
+  @ApiProperty()
+  prevSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Expose()
   @ApiProperty()

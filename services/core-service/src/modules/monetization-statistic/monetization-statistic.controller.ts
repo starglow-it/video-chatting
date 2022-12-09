@@ -11,7 +11,7 @@ import {
   MonetizationStatisticPeriods,
   MonetizationStatisticTypes,
 } from 'shared-types';
-import {getTimeoutTimestamp, subtractMonths} from 'shared-utils';
+import { getTimeoutTimestamp, subtractMonths } from 'shared-utils';
 import { StatisticBrokerPatterns } from 'shared-const';
 
 import { withTransaction } from '../../helpers/mongo/withTransaction';

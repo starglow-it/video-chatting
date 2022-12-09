@@ -1,5 +1,5 @@
 import React, { forwardRef, memo, ForwardedRef } from 'react';
-import { TextField } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 // types
 import { CustomInputProps } from './types';

@@ -1,6 +1,5 @@
-import { ErrorState } from 'shared-types';
+import {ErrorState, IUserTemplate} from 'shared-types';
 
-import { UserTemplate } from '../../types';
 import { postProfileTemplatesUrl } from '../../../utils/urls';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
@@ -9,8 +8,8 @@ import { UpdateTemplatePayload } from '../types';
 export const handleUpdateProfileTemplate = async ({
     templateId,
     data,
-}: UpdateTemplatePayload): Promise<UserTemplate | null> => {
-    const response = await sendRequestWithCredentials<UserTemplate, ErrorState>({
+}: UpdateTemplatePayload): Promise<IUserTemplate | null> => {
+    const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>({
         ...postProfileTemplatesUrl({ templateId }),
         data,
     });

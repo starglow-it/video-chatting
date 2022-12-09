@@ -1,15 +1,15 @@
 import React, { memo, useCallback, useState } from 'react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomAccordion } from 'shared-frontend/library/custom/CustomAccordion';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { Translation } from '@library/common/Translation/Translation';
 
 // icons
-import { ArrowIcon } from 'shared-frontend/icons';
+import { ArrowIcon } from 'shared-frontend/icons/OtherIcons/ArrowIcon';
 
 // styles
-import { CustomAccordion } from 'shared-frontend';
-import { Translation } from '@library/common/Translation/Translation';
 import styles from './Faq.module.scss';
 
 enum Accordion {

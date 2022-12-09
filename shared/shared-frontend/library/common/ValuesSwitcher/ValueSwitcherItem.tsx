@@ -1,13 +1,14 @@
 import { ForwardedRef, forwardRef, memo, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { CustomGrid, CustomTypography } from '../../custom';
+import { CustomGrid } from '../../custom/CustomGrid';
+import { CustomTypography } from '../../custom/CustomTypography';
 
 import styles from './ValuesSwitcher.module.scss';
 
-import { ValueSwitcherItemProps } from './types';
+import { ValueSwitcherItemProps, ValueType } from './types';
 
-const Component = <ValueType extends number | string, Label extends string>(
+const Component = <Value extends ValueType, Label extends string>(
     {
         activeValue,
         className,
@@ -15,7 +16,7 @@ const Component = <ValueType extends number | string, Label extends string>(
         index,
         onValueChanged,
         variant = 'primary',
-    }: ValueSwitcherItemProps<ValueType, Label>,
+    }: ValueSwitcherItemProps<Value, Label>,
     ref: ForwardedRef<HTMLDivElement>,
 ) => {
     const handleChooseValue = useCallback(() => {
@@ -38,4 +39,6 @@ const Component = <ValueType extends number | string, Label extends string>(
     );
 };
 
-export const ValueSwitcherItem = memo(forwardRef(Component)) as typeof Component;
+const ValueSwitcherItem = memo(forwardRef(Component)) as typeof Component;
+
+export { ValueSwitcherItem };

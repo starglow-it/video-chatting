@@ -1,12 +1,12 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
-// helpers
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomImage } from 'shared-frontend/library';
-import { emptyFunction } from '../../../utils/functions/emptyFunction';
-
 // shared
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+
+// helpers
+import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // styles
 import styles from './ProfileAvatar.module.scss';

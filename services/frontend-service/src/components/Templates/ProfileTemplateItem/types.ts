@@ -1,6 +1,6 @@
-import { UserTemplate } from '../../../store/types';
+import {IUserTemplate} from "shared-types";
 
 export type ProfileTemplateProps = {
-    template: UserTemplate;
-    onChooseTemplate?: (templateId: UserTemplate['id']) => void;
+    template: IUserTemplate;
+    onChooseTemplate?: (templateId: IUserTemplate['id']) => void;
 };

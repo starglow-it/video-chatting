@@ -14,7 +14,7 @@ import {
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 
 // styles
 import styles from './AuthenticationLink.module.scss';

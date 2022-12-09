@@ -15,21 +15,21 @@ import {
 } from '@hooks/useBrowserDetect';
 import {
 	WarningIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/WarningIcon';
 
 // custom
 import {
 	CustomDialog 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomButton 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomButton';
 
 // stores
 import {

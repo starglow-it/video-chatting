@@ -14,13 +14,13 @@ import {
 // custom
 import {
 	CustomDialog 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomButton 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomButton';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
@@ -28,12 +28,12 @@ import {
 // components
 import {
 	CustomLinkIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 
 // shared
 import {
 	CustomImage 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import {

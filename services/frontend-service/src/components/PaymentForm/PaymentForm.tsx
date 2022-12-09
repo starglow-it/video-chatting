@@ -2,13 +2,13 @@ import React, { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDivider } from 'shared-frontend/library';
 
 // components
 import { StripeElement } from '@components/Stripe/StripeElement/StripeElement';
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { CardDataForm } from '@components/Payments/CardDataForm/CardDataForm';
 
 // stores
@@ -94,7 +94,7 @@ const Component = ({ onClose }: PaymentFormProps) => {
                     alignItems="center"
                     className={styles.loader}
                 >
-                    <WiggleLoader />
+                    <CustomLoader />
                 </CustomGrid>
             )}
         </CustomGrid>

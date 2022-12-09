@@ -32,6 +32,14 @@ export class UsersService {
     return this.meetingUser.updateOne(query, data, { new: true, session });
   }
 
+  async updateMany(
+    query,
+    data,
+    { session }: ITransactionSession,
+  ): Promise<UpdateWriteOpResult> {
+    return this.meetingUser.updateMany(query, data, { new: true, session });
+  }
+
   async findOne({
     query,
     session,

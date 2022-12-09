@@ -12,7 +12,7 @@ import {
 // custom
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
@@ -26,7 +26,7 @@ import {
 // components
 import {
 	BellIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/BellIcon';
 import {
 	DashboardNotificationItem 
 } from '@components/Dashboard/DashboardNotificationItem/DashboardNotificationItem';
@@ -34,7 +34,8 @@ import {
 // types
 import {
 	CustomImage 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomImage';
+
 import {
 	DashboardNotificationsProps 
 } from './types';

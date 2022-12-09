@@ -1,9 +1,9 @@
 import React, { ForwardedRef, forwardRef, memo, useCallback } from 'react';
 import clsx from 'clsx';
-import { ButtonUnstyled } from '@mui/base';
+import ButtonUnstyled from '@mui/base/ButtonUnstyled';
+import { ButtonProps } from '@mui/material/Button/Button';
 
 // types
-import { ButtonProps } from '@mui/material';
 import { ActionButtonProps } from './types';
 
 // styles

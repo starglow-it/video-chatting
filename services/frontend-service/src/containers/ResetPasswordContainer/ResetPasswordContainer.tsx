@@ -12,7 +12,7 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ResetPassword } from '@components/ResetPassword/ResetPassword';
 import { NotValidLink } from '@components/NotValidLink/NotValidLink';
 import { ResetSuccessful } from '@components/ResetPassword/ResetSuccessful';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // styles
 import styles from './ResetPasswordContainer.module.scss';

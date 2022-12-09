@@ -1,13 +1,15 @@
 import React, {memo, useCallback, useMemo} from "react";
 import clsx from "clsx";
 
-import {CustomGrid} from "../../custom";
-import {ActionButton} from "../../common";
-import {ArrowLeftIcon, ArrowRightIcon } from "../../../icons";
+import {CustomGrid} from "../../custom/CustomGrid";
+import {ActionButton} from "../../common/ActionButton";
+import { ArrowRightIcon } from "../../../icons/OtherIcons/ArrowRightIcon";
+import { ArrowLeftIcon } from "../../../icons/OtherIcons/ArrowLeftIcon";
 
 import {CustomPaginationProps} from "./CustomPagination.types";
 
 import styles from './CustomPagination.module.scss';
+import usePagination from "@mui/material/usePagination";
 
 const Component = ({
     count,
@@ -18,6 +20,15 @@ const Component = ({
 }: CustomPaginationProps) => {
     const maxPages = Math.ceil(count / rowsPerPage);
 
+    const data = usePagination({
+        count,
+        page,
+        onChange: (...args) => {
+            console.log(args);
+            onPageChange();
+        }
+    });
+
     const handlePreviousPage = useCallback(() => {
         onPageChange?.(page === 1 ? 1 : page - 1);
     }, [page, onPageChange]);
@@ -27,37 +38,21 @@ const Component = ({
     }, [count, rowsPerPage, page, onPageChange]);
 
     const renderPagesButtons = useMemo(() => {
-        const indexArray = new Array(maxPages).fill(0).map((number, index) => index + 1);
+        return data.items.map(({ onClick, selected, disabled, page, type }) => {
 
-        const slicedIndexArray = [
-            (page > 5 ? indexArray.slice(0, 2) : indexArray),
-            (page >= maxPages - 5 ? [] : page <= 5 ? indexArray.slice(0, 7) : indexArray.slice(page - 3, page)),
-            (page <= 5 ? [] : page >= maxPages - 5 ? indexArray.slice(maxPages - 7, maxPages) : indexArray.slice(page, page + 2)),
-            (page < maxPages - 5 ? indexArray.slice(maxPages - 2, maxPages) : []),
-        ].flat();
-
-        const arrayWithSeparator = slicedIndexArray.reduce((acc, number, index, arr) => (
-            (index === 0 || number - arr[index - 1] === 1) ? [...acc, number] : [...acc, '...', number]
-        ), []);
-
-        return arrayWithSeparator.map(number => {
-            const handleChangePage = () => {
-                onPageChange?.(number);
-            }
-
-            const isPageActive = page === number;
+            console.log(type);
 
             return (
                 <ActionButton
-                    disabled={isDisabled}
-                    variant={isPageActive ? 'black' : 'transparentPrimary'}
-                    onAction={typeof number === 'number' ? handleChangePage : undefined}
+                    disabled={isDisabled || disabled}
+                    variant={selected ? 'black' : 'transparentPrimary'}
+                    onAction={page ? onClick : undefined}
                     className={clsx(styles.pageButton)}
-                    label={number}
+                    label={page}
                 />
-            );
-        });
-    }, [maxPages, page, count, rowsPerPage, onPageChange, isDisabled]);
+            )
+        })
+    }, [])
 
     return (
         <CustomGrid container justifyContent="space-evenly">

@@ -1,14 +1,12 @@
-import { updateLocalUserEvent } from '../../../users/localUser/model';
-import {
-    sendEnterMeetingRequestSocketEvent,
-    sendStartMeetingSocketEvent,
-} from '../../sockets/init';
-import { emitEnterWaitingRoom } from '../../sockets/model';
-import { setBackgroundAudioActive, setBackgroundAudioVolume } from '../../../audio/model';
-import { StorageKeysEnum, WebStorage } from '../../../../../controllers/WebStorageController';
-import { setActiveStreamEvent } from '../../../videoChat/localMedia/model';
-import { JoinMeetingFxPayload } from '../types';
-import { BackgroundManager } from '../../../../../helpers/media/applyBlur';
+import {updateLocalUserEvent} from '../../../users/localUser/model';
+import {sendEnterMeetingRequestSocketEvent, sendStartMeetingSocketEvent,} from '../../sockets/init';
+import {emitEnterWaitingRoom} from '../../sockets/model';
+import {setBackgroundAudioActive, setBackgroundAudioVolume} from '../../../audio/model';
+import {StorageKeysEnum, WebStorage} from '../../../../../controllers/WebStorageController';
+import {setActiveStreamEvent} from '../../../videoChat/localMedia/model';
+import {JoinMeetingFxPayload} from '../types';
+import {BackgroundManager} from '../../../../../helpers/media/applyBlur';
+import {MeetingAccessStatusEnum} from "shared-types";
 
 export const handleJoinMeting = async ({
     needToRememberSettings,
@@ -34,6 +32,10 @@ export const handleJoinMeting = async ({
     } else if (isMeetingInstanceExists && isOwnerInMeeting) {
         await sendEnterMeetingRequestSocketEvent();
     } else {
+        updateLocalUserEvent({
+            accessStatus: MeetingAccessStatusEnum.Waiting,
+            isAuraActive: isAuraActive,
+        });
         emitEnterWaitingRoom();
     }
 

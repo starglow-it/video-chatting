@@ -7,8 +7,8 @@ import { useLocalization } from '@hooks/useTranslation';
 import { useNavigation } from '@hooks/useNavigation';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
@@ -17,17 +17,17 @@ import { EditPrivacyProps } from '@components/TemplateManagement/EditPrivacy/typ
 import { OptionItem } from '@components/TemplateManagement/EditPrivacy/OptionItem/OptionItem';
 
 // icons
-import { ArrowLeftIcon } from 'shared-frontend/icons';
-import { LockIcon } from 'shared-frontend/icons';
-import { PeopleIcon } from 'shared-frontend/icons';
-import { RoundInfoIcon } from 'shared-frontend/icons';
-import { ArrowRightIcon } from 'shared-frontend/icons';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { RoundInfoIcon } from 'shared-frontend/icons/RoundIcons/RoundInfoIcon';
+import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // const
 import frontendConfig from '../../../const/config';
 
 // store
-import { $isTrial } from '../../../store';
+import {$isTrial, $subscriptionStore} from '../../../store';
 
 // styles
 import styles from './EditPrivacy.module.scss';
@@ -52,7 +52,11 @@ const options = [
 ];
 
 const Component = ({ onNextStep, onPreviousStep, onUpgradePlan }: EditPrivacyProps) => {
+    const subscription = useStore($subscriptionStore);
+
     const isTrial = useStore($isTrial);
+
+    console.log(subscription);
 
     const { setValue, watch } = useFormContext();
 

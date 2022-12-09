@@ -11,47 +11,33 @@ export const handleSetSFUPermissions = async (
         isMicActive: boolean;
     },
 ) => {
+    const updateData = {
+        userId: data.userId,
+        video: data.isCameraActive,
+        audio:data.isMicActive,
+    };
+
     if (data.room) {
-        if ('isCamEnabled' in data) {
-            const videoTrackPub = data.room.localParticipant.getTrack(Track.Source.Camera);
+        const videoTrackPub = data.room.localParticipant.getTrack(Track.Source.Camera);
 
-            if (videoTrackPub) {
-                if (data.isCamEnabled) {
-                    await videoTrackPub.unmute();
-                } else {
-                    await videoTrackPub.mute();
-                }
-
-                sendDevicesPermissionSocketEvent({
-                    audio: data.isMicActive,
-                    video:
-                        typeof data.isCamEnabled === 'boolean'
-                            ? data.isCamEnabled ?? !data.isCameraActive
-                            : data.isCameraActive,
-                    userId: data.userId,
-                });
+        if (videoTrackPub) {
+            if (updateData.video) {
+                await videoTrackPub.unmute();
+            } else {
+                await videoTrackPub.mute();
             }
         }
 
-        if ('isMicEnabled' in data) {
-            const audioTrackPub = data.room.localParticipant.getTrack(Track.Source.Microphone);
+        const audioTrackPub = data.room.localParticipant.getTrack(Track.Source.Microphone);
 
-            if (audioTrackPub) {
-                if (data.isMicEnabled) {
-                    await audioTrackPub.unmute();
-                } else {
-                    await audioTrackPub.mute();
-                }
-
-                sendDevicesPermissionSocketEvent({
-                    audio:
-                        typeof data.isMicEnabled === 'boolean'
-                            ? data.isMicEnabled ?? !data.isMicActive
-                            : data.isMicActive,
-                    video: data.isCameraActive,
-                    userId: data.userId,
-                });
+        if (audioTrackPub) {
+            if (updateData.audio) {
+                await audioTrackPub.unmute();
+            } else {
+                await audioTrackPub.mute();
             }
         }
     }
+
+    sendDevicesPermissionSocketEvent(updateData);
 };

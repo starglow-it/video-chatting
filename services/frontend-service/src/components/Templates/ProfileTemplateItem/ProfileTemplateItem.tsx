@@ -5,30 +5,27 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { EllipsisIcon } from 'shared-frontend/icons/OtherIcons/EllipsisIcon';
+import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-
-// icon
-import { EllipsisIcon } from 'shared-frontend/icons';
-import { DeleteIcon } from 'shared-frontend/icons';
+import {CustomTooltip} from "@library/custom/CustomTooltip/CustomTooltip";
 
 // common
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { Translation } from '@library/common/Translation/Translation';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 
-// hooks
-import { useToggle } from '@hooks/useToggle';
-
 // stores
-import { CustomImage } from 'shared-frontend/library';
-import { Translation } from '@library/common/Translation/Translation';
 import {
-    $isBusinessSubscription,
+    $isBusinessSubscription, $isProfessionalSubscription,
     $profileStore,
     addNotificationEvent,
     appDialogsApi,
@@ -38,8 +35,6 @@ import {
 
 // const
 import { editRoomRoute } from '../../../const/client-routes';
-
-// shared
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';
@@ -51,8 +46,11 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplateProps) => {
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
+    const isProfSubscription = useStore($isProfessionalSubscription);
 
     const isDisabled = profile.maxMeetingTime === 0 && !isBusinessSubscription;
+
+    const isHouseSubscription = !isBusinessSubscription && !isProfSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
     const actionButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -96,8 +94,10 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
     }, []);
 
     const handleEditMeeting = useCallback(() => {
-        router.push(`${editRoomRoute}/${template.customLink || template.id}`);
-    }, []);
+        if (!isHouseSubscription) {
+            router.push(`${editRoomRoute}/${template.customLink || template.id}`);
+        }
+    }, [isHouseSubscription]);
 
     const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);
 
@@ -198,9 +198,25 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                         classes={{ paper: styles.menu }}
                         onClose={onHideMenu}
                     >
-                        <MenuItem onClick={handleEditMeeting} className={styles.item}>
-                            <CustomTypography nameSpace="templates" translation="buttons.edit" />
-                        </MenuItem>
+                        <CustomTooltip
+                            arrow
+                            title={isHouseSubscription
+                                ? (
+                                    <CustomTypography
+                                        variant="body3"
+                                        nameSpace="templates"
+                                        translation="editTemplateDisabled"
+                                    />
+                                )
+                                : null
+                            }
+                            placement="bottom"
+                            popperClassName={styles.tooltip}
+                        >
+                            <MenuItem onClick={handleEditMeeting} className={clsx(styles.item, {[styles.disabled]: isHouseSubscription })}>
+                                <CustomTypography nameSpace="templates" translation="buttons.edit" />
+                            </MenuItem>
+                        </CustomTooltip>
                         <MenuItem onClick={handleOpenDeleteDialog} className={styles.item}>
                             <CustomTypography nameSpace="templates" translation="buttons.delete" />
                         </MenuItem>

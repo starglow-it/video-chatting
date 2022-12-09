@@ -23,24 +23,24 @@ import {
 // custom
 import {
 	CustomDialog 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomInput 
 } from '@library/custom/CustomInput/CustomInput';
 import {
 	CustomButton 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomButton';
 
 // stores
 import {
 	CustomImage 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomImage';
 import {
 	Translation 
 } from '@library/common/Translation/Translation';

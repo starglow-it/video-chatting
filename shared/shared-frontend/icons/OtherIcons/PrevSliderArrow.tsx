@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { RoundArrowIcon } from '../RoundIcons';
+import { RoundArrowIcon } from '../RoundIcons/RoundArrowIcon';
 import { SliderArrowProps } from '../types';
 
 const PrevSliderArrow = memo(({ customClassName, onClick, dotsRef }: SliderArrowProps) => {

@@ -1,6 +1,6 @@
-import { ICommonTemplate, QueryParams } from 'shared-types';
+import {ICommonTemplate, IUserTemplate, QueryParams} from 'shared-types';
 import { serverUrl, templatesScope, usersScope } from './baseData';
-import { HttpMethods, UserTemplate } from '../../store/types';
+import { HttpMethods } from '../../store/types';
 
 import frontendConfig from '../../const/config';
 
@@ -17,7 +17,7 @@ export const userTemplateUrl = ({ templateId }: { templateId: ICommonTemplate['i
     method: HttpMethods.Get,
 });
 
-export const updateUserTemplateUrl = ({ templateId }: { templateId: UserTemplate['id'] }) => ({
+export const updateUserTemplateUrl = ({ templateId }: { templateId: IUserTemplate['id'] }) => ({
     url: `${userTemplatesUrl}/templates/${templateId}`,
     method: HttpMethods.Put,
 });

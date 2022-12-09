@@ -1,9 +1,10 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
-import { IconButton, InputAdornment, TextField } from '@mui/material';
-import { TextFieldProps } from '@mui/material/TextField/TextField';
+import TextField, { TextFieldProps } from '@mui/material/TextField/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from "@mui/material/InputAdornment";
 
 // components
-import { RoundCloseIcon } from '../../../icons';
+import { RoundCloseIcon } from '../../../icons/RoundIcons/RoundCloseIcon';
 
 // types
 import { EmailInputProps } from './EmailInput.types';

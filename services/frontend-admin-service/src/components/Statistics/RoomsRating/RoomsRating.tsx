@@ -10,12 +10,20 @@ import {
 
 // shared
 import {
-	CustomGrid,
-	CustomPaper,
-	CustomTypography,
-	CustomTable,
-	CustomDropdown,
-} from 'shared-frontend/library';
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+import {
+	CustomTable 
+} from 'shared-frontend/library/custom/CustomTable';
+import {
+	CustomDropdown 
+} from 'shared-frontend/library/custom/CustomDropdown';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
 
 // components
 import {

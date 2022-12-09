@@ -1,3 +1,3 @@
 import { PropsWithClassName } from 'shared-frontend/types';
 
-export type EditProfileAvatarProps = PropsWithClassName;
+export type EditProfileAvatarProps = PropsWithClassName<any>;

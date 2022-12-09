@@ -1,14 +1,14 @@
 import { attach, combine, Store } from 'effector-next';
-import { ErrorState } from 'shared-types';
+import {ErrorState, IUserTemplate} from 'shared-types';
 import { meetingDomain } from '../../../domains';
 
 import { $profileStore } from '../../../profile/profile/model';
 import { $meetingUsersStore } from '../../users/meetingUsers/model';
 
-import { MeetingUser, Profile, UserTemplate } from '../../../types';
+import {MeetingUser, Profile} from '../../../types';
 import { UpdateTemplatePayload } from '../../../profile/types';
 
-export const initialTemplateState: UserTemplate = {
+export const initialTemplateState: IUserTemplate = {
     id: '',
     templateId: 0,
     url: '',
@@ -42,14 +42,14 @@ export const initialTemplateState: UserTemplate = {
     },
 };
 
-export const $meetingTemplateStore = meetingDomain.createStore<UserTemplate>(initialTemplateState);
+export const $meetingTemplateStore = meetingDomain.createStore<IUserTemplate>(initialTemplateState);
 
 export const $isUserSendEnterRequest = meetingDomain.createStore<boolean>(false);
 export const $isMeetingInstanceExists = $meetingTemplateStore.map(state =>
     Boolean(state?.meetingInstance?.id),
 );
 
-export const $isOwner = combine<{ meetingTemplate: UserTemplate; profile: Profile }>({
+export const $isOwner = combine<{ meetingTemplate: IUserTemplate; profile: Profile }>({
     meetingTemplate: $meetingTemplateStore,
     profile: $profileStore,
 }).map(
@@ -57,7 +57,7 @@ export const $isOwner = combine<{ meetingTemplate: UserTemplate; profile: Profil
         Boolean(profile.id) && meetingTemplate?.meetingInstance?.owner === profile.id,
 );
 
-export const $isOwnerInMeeting = combine<{ template: UserTemplate; users: MeetingUser[] }>({
+export const $isOwnerInMeeting = combine<{ template: IUserTemplate; users: MeetingUser[] }>({
     users: $meetingUsersStore,
     template: $meetingTemplateStore,
 }).map(({ users, template }) =>
@@ -73,21 +73,21 @@ export const resetMeetingTemplateStoreEvent = meetingDomain.createEvent(
 );
 
 export const getMeetingTemplateFx = meetingDomain.createEffect<
-    { templateId: UserTemplate['id'] },
-    UserTemplate,
+    { templateId: IUserTemplate['id'] },
+    IUserTemplate,
     ErrorState
 >('getMeetingTemplateFx');
 
 export const updateMeetingTemplateFx = meetingDomain.createEffect<
     UpdateTemplatePayload,
-    UserTemplate,
+    IUserTemplate,
     ErrorState
 >('updateMeetingTemplateFx');
 
 export const updateMeetingTemplateFxWithData = attach<
-    Partial<UserTemplate>,
+    Partial<IUserTemplate>,
     Store<{
-        meetingTemplate: UserTemplate;
+        meetingTemplate: IUserTemplate;
         profile: Profile;
     }>,
     typeof updateMeetingTemplateFx
@@ -98,7 +98,7 @@ export const updateMeetingTemplateFxWithData = attach<
         data: params,
     }),
     effect: updateMeetingTemplateFx,
-    source: combine<{ meetingTemplate: UserTemplate; profile: Profile }>({
+    source: combine<{ meetingTemplate: IUserTemplate; profile: Profile }>({
         meetingTemplate: $meetingTemplateStore,
         profile: $profileStore,
     }),

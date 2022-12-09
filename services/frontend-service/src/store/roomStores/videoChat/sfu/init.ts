@@ -91,14 +91,28 @@ sample({
         localUser: $localUserStore,
     }),
     fn: ({ isCameraActive, isMicActive, room, localUser }, data) => ({
-        isCameraActive,
-        isMicActive,
+        isCameraActive: data.isCamEnabled ?? isCameraActive ,
+        isMicActive: data.isMicEnabled ?? isMicActive,
         room,
         userId: localUser.id,
-        ...data,
     }),
     target: setSFUPermissionsFx,
 });
+
+sample({
+    clock: publishTracksFx.done,
+    source: combine({
+        room: $SFURoom,
+        localUser: $localUserStore,
+    }),
+    fn: ({ room, localUser }, { params }) => ({
+        isCameraActive: params.isCameraActive,
+        isMicActive: params.isMicActive,
+        room,
+        userId: localUser.id,
+    }),
+    target: setSFUPermissionsFx
+})
 
 sample({
     clock: startSFUSharingEvent,

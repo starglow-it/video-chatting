@@ -10,20 +10,16 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
-import { CustomButton, CustomBox, CustomCheckbox, CustomGrid } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // common
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
-import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
+import { CenteredPaper } from 'shared-frontend/library/common/CenteredPaper';
 
 // dialogs
 import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { RegisterUserParams } from 'src/store/types';
@@ -37,6 +33,11 @@ import styles from './RegisterContainer.module.scss';
 import { emailSchema } from '../../validation/users/email';
 import { passwordSchema } from '../../validation/users/password';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import {CustomBox} from "shared-frontend/library/custom/CustomBox";
+import {CustomImage} from "shared-frontend/library/custom/CustomImage";
+import {CustomCheckbox} from "shared-frontend/library/custom/CustomCheckbox";
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -77,17 +78,11 @@ const Component = () => {
 
         resetRegisterErrorEvent();
 
-        try {
-            await registerUserFx({
-                email: data.email.trim().toLowerCase(),
-                password: data.password,
-                templateId: initialTemplateData.templateId,
-            });
-
-            WebStorage.delete({ key: StorageKeysEnum.templateId });
-        } catch (e) {
-            console.log(e);
-        }
+        registerUserFx({
+            email: data.email.trim().toLowerCase(),
+            password: data.password,
+            templateId: initialTemplateData.templateId,
+        });
     });
 
     useEffect(() => {

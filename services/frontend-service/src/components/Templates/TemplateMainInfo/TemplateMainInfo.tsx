@@ -2,9 +2,9 @@ import React, { memo } from 'react';
 import { Fade } from '@mui/material';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomBox } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // components
 import { TemplateParticipants } from '@components/Templates/TemplateParticipants/TemplateParticipants';

@@ -7,24 +7,20 @@ import { List, ListItem, ListItemIcon } from '@mui/material';
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomButton, CustomBox } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { RoundCheckIcon } from 'shared-frontend/icons/RoundIcons/RoundCheckIcon';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-
-// common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-
-// icons
-import { RoundCheckIcon } from 'shared-frontend/icons';
+import { Translation } from '@library/common/Translation/Translation';
 
 // const
-import { CustomImage } from 'shared-frontend/library';
-import { Translation } from '@library/common/Translation/Translation';
 import { currencies } from '../../../const/profile/subscriptions';
 import {planColors} from "shared-const";
-
-// shared
 
 // styles
 import styles from './SubscriptionPlanCard.module.scss';

@@ -4,18 +4,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
-import { useToggle } from '@hooks/useToggle';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 // common
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
+import { Translation } from '@library/common/Translation/Translation';
 
 // validations
-import { Translation } from '@library/common/Translation/Translation';
 import { passwordLoginSchema, passwordSchema } from '../../../validation/users/password';
 import { simpleStringSchema } from '../../../validation/common';
 
@@ -122,6 +122,7 @@ const EditProfilePasswordInfo = memo(({ onCancel, onChanged }: EditProfilePasswo
                         nameSpace="profile"
                         translation="editProfile.currentPassword"
                         error={currentPasswordErrorMessage}
+                        errorClassName={styles.error}
                         {...register('currentPassword')}
                     />
                     <CustomGrid container>
@@ -142,6 +143,7 @@ const EditProfilePasswordInfo = memo(({ onCancel, onChanged }: EditProfilePasswo
                         nameSpace="profile"
                         translation="editProfile.newPasswordRepeat"
                         error={errors?.newPasswordRepeat?.[0]?.message}
+                        errorClassName={styles.error}
                         {...register('newPasswordRepeat')}
                     />
                     <CustomGrid container gap={2} wrap="nowrap">

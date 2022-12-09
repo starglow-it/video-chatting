@@ -9,13 +9,11 @@ import {
 } from 'effector-react';
 
 // components
-import {
-	CustomTypography,
-	CustomButton,
-	CustomDialog,
-	CustomGrid,
-	WarningIcon,
-} from 'shared-frontend';
+import {CustomDialog} from "shared-frontend/library/custom/CustomDialog";
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import { WarningIcon } from 'shared-frontend/icons/OtherIcons/WarningIcon';
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
 import {
 	Translation 
 } from '@library/common/Translation/Translation';

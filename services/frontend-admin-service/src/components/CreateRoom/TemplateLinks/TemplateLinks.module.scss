@@ -1,0 +1,83 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.paper {
+  position: absolute;
+  top: rem(90px);
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: rem(9px 16px);
+}
+
+.buttonsGroup {
+  position: absolute;
+  bottom: rem(28px);
+  left: 50%;
+  transform: translate(-50%);
+
+  .actionButton {
+    width: rem(46px);
+    height: rem(46px);
+    border-radius: rem(12px);
+    padding: rem(6px);
+  }
+}
+
+.itemTooltip {
+  height: auto;
+  padding: 0;
+  background: rgba($primary-black, 0.75);
+  backdrop-filter: blur(14px);
+  border-radius: 8px;
+  max-width: rem(393px);
+}
+
+.linkItem {
+  position: fixed;
+  top: var(--top);
+  left: var(--left);
+
+  cursor: pointer;
+
+  transform: translate(-50%, -50%);
+
+  width: rem(9px);
+  height: rem(9px);
+  border-radius: 50%;
+
+  background: $primary-blue;
+  border: 1px solid $primary-white;
+  z-index: 200;
+}
+
+.tooltipContent {
+  padding: 9px 12px;
+}
+
+.inputWrapper {
+  max-width: 450px;
+  color: $primary-white;
+
+  .input::placeholder {
+    color: rgba($primary-white, 0.6);
+  }
+}
+
+.acceptIcon {
+  margin: rem(4px 0 0 0);
+  color: $primary-orange;
+}
+
+.rejectIcon {
+  margin: rem(4px 0 0 0);
+  color: rgba($primary-white, 0.25);
+}
+
+.draggable {
+  pointer-events: all;
+}

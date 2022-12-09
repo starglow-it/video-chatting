@@ -10,7 +10,7 @@ import { UserDocument } from '../../schemas/user.schema';
 import { TokenPayloadType } from 'shared-types';
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { GetModelQuery} from '../../types/custom';
+import { GetModelQuery } from '../../types/custom';
 
 @Injectable()
 export class UserTokenService {
@@ -47,10 +47,14 @@ export class UserTokenService {
   async findOne({
     query,
     session,
-                  populatePaths,
+    populatePaths,
   }: GetModelQuery<UserTokenDocument>) {
     return this.userToken
-      .findOne(query, {}, { populate: populatePaths, session: session?.session })
+      .findOne(
+        query,
+        {},
+        { populate: populatePaths, session: session?.session },
+      )
       .exec();
   }
 

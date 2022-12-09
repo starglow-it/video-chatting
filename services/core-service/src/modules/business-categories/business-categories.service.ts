@@ -9,7 +9,7 @@ import {
 
 import { IBusinessCategory } from 'shared-types';
 
-import {GetModelQuery} from "../../types/custom";
+import { GetModelQuery } from '../../types/custom';
 
 @Injectable()
 export class BusinessCategoriesService {

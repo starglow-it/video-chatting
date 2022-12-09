@@ -32,4 +32,10 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
 
   @IsBoolean()
   readonly isAuraActive: boolean;
+
+  @IsBoolean()
+  readonly micStatus: string;
+
+  @IsBoolean()
+  readonly cameraStatus: string;
 }

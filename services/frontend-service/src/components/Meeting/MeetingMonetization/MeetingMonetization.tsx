@@ -9,15 +9,16 @@ import { useStore } from 'effector-react';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // icons
-import { MonetizationIcon } from 'shared-frontend/icons';
+import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 
 // custom
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';
-import { CustomBox, CustomButton, CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // common
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
-import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
+import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 
 // validation
 import { Translation } from '@library/common/Translation/Translation';
@@ -32,6 +33,7 @@ import { $meetingTemplateStore, updateMeetingTemplateFxWithData } from '../../..
 
 // const
 import { currencyValues } from '../../../const/profile/subscriptions';
+import {ErrorMessage} from "@library/common/ErrorMessage/ErrorMessage";
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -58,7 +60,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         },
     });
 
-    const { register, setValue, control, handleSubmit } = methods;
+    const { register, setValue, control, handleSubmit, formState: { errors } } = methods;
 
     const handleValueChanged = useCallback(newValue => {
         setValue('templateCurrency', newValue.value);
@@ -90,6 +92,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     );
 
     const registerData = register('templatePrice');
+
+    const templatePriceMessage = ['min', 'max'].includes(errors?.templatePrice?.[0]?.type)
+        ? errors?.templatePrice?.[0]?.message
+        : '';
 
     return (
         <FormProvider {...methods}>
@@ -125,7 +131,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                             }
                         />
                         <Fade in={isMonetizationEnabled}>
-                            <CustomBox>
+                            <CustomGrid container>
                                 <CustomGrid
                                     container
                                     className={styles.amountInput}
@@ -149,7 +155,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                         className={styles.switcher}
                                     />
                                 </CustomGrid>
-                            </CustomBox>
+                                <ErrorMessage error={templatePriceMessage} className={styles.error} />
+                            </CustomGrid>
                         </Fade>
                     </CustomGrid>
                     <CustomButton

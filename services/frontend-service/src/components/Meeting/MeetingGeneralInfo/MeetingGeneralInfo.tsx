@@ -12,24 +12,24 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // icons
-import { EditIcon } from 'shared-frontend/icons';
-import { InfoIcon } from 'shared-frontend/icons';
-import { RoundErrorIcon } from 'shared-frontend/icons';
+import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
+import { InfoIcon } from 'shared-frontend/icons/OtherIcons/InfoIcon';
+import { RoundErrorIcon } from 'shared-frontend/icons/RoundIcons/RoundErrorIcon';
 
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
 import { MeetingTimer } from '@components/Meeting/MeetingTimer/MeetingTimer';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
 import styles from './MeetingGeneralInfo.module.scss';

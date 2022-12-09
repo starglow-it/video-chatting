@@ -1,6 +1,7 @@
 {
   "selectTemplates": "Select a Room",
   "myTemplates": "My Rooms",
+  "editTemplateDisabled": "Upgrade your subscription to edit the Room or to create a new one",
   "buttons": {
     "startMeeting": "Enter",
     "replace": "Replace",

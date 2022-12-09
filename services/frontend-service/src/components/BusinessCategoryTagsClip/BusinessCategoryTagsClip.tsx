@@ -19,13 +19,13 @@ import {
 // custom
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomBox 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomBox';
 import {
 	CustomPaper 
 } from '@library/custom/CustomPaper/CustomPaper';

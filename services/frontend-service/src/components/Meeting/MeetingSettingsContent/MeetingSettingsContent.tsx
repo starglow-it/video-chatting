@@ -9,12 +9,14 @@ import { useToggle } from '@hooks/useToggle';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid, CustomFade, CustomDivider } from 'shared-frontend/library';
+import { CustomFade } from 'shared-frontend/library/custom/CustomFade';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomRange } from '@library/custom/CustomRange/CustomRange';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // components
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
@@ -23,13 +25,6 @@ import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // icons
-import {
-    ArrowIcon,
-    SpeakerIcon,
-    NewArrowIcon,
-    BackgroundBlurIcon,
-    MusicIcon,
-} from 'shared-frontend/icons';
 
 // styles
 import styles from './MeetingSettingsContent.module.scss';
@@ -86,7 +81,7 @@ const Component = ({
                     [styles.relative]: !isAudioVideoSettingsOpened,
                 })}
             >
-                <Fade in={!isAudioVideoSettingsOpened}>
+                <Fade in={!isAudioVideoSettingsOpened} unmountOnExit>
                     <CustomGrid container gap={2.5}>
                         <CustomGrid
                             container
@@ -139,7 +134,7 @@ const Component = ({
                     [styles.relative]: isAudioVideoSettingsOpened,
                 })}
             >
-                <Fade in={isAudioVideoSettingsOpened}>
+                <Fade in={isAudioVideoSettingsOpened} unmountOnExit>
                     <CustomGrid container>
                         <CustomGrid container gap={1.5} alignItems="center">
                             <ConditionalRender condition={!isMobile && !isSafari}>

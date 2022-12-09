@@ -22,21 +22,11 @@ import {
 import {
 	CustomDatePicker 
 } from '@library/custom/CustomDatePicker/CustomDatePicker';
-import {
-	CustomDialog,
-	CustomGrid,
-	CustomDivider,
-	CustomFade,
-	CustomButton,
-} from 'shared-frontend/library';
 
 // components
 import {
-	ValuesSwitcher 
-} from '@library/common/ValuesSwitcher/ValuesSwitcher';
-import {
-	ValuesSwitcherItem 
-} from '@library/common/ValuesSwitcher/types';
+	ValuesSwitcher,
+} from 'shared-frontend/library/common/ValuesSwitcher';
 import {
 	ScheduleTime 
 } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
@@ -84,6 +74,12 @@ import {
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import CustomDivider from "shared-frontend/library/custom/CustomDivider/CustomDivider";
+import CustomFade from "shared-frontend/library/custom/CustomFade/CustomFade";
+import CustomButton from "shared-frontend/library/custom/CustomButton/CustomButton";
+import { ValuesSwitcherItem } from 'shared-frontend/types';
 
 const validationSchema = yup.object({
 	timeZone: simpleStringSchema().required('required'),

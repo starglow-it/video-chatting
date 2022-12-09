@@ -12,10 +12,10 @@ import { CustomRange } from '@library/custom/CustomRange/CustomRange';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // icons
-import { SpeakerIcon } from 'shared-frontend/icons';
+import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
 
 // styles
 import styles from './BackgroundAudioControl.module.scss';

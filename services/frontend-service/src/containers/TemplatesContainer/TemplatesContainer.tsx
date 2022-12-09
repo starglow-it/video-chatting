@@ -8,16 +8,17 @@ import { useTemplateNotification } from '@hooks/useTemplateNotification';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox, CustomChip } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
 
 // components
-import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
+import { MainProfileWrapper } from '@components/MainProfileWrapper/MainProfileWrapper';
 import { CommonTemplateItem } from '@components/Templates/CommonTemplateItem/CommonTemplateItem';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
 import { ProfileTemplateItem } from '@components/Templates/ProfileTemplateItem/ProfileTemplateItem';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
 
 // dialogs
@@ -29,10 +30,10 @@ import { ReplaceTemplateDialog } from '@components/Dialogs/ReplaceTemplateDialog
 import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExpiredDialog';
 
 // icons
-import { PlusIcon } from 'shared-frontend/icons';
+import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { useLocalization } from '@hooks/useTranslation';
@@ -71,7 +72,7 @@ import styles from './TemplatesContainer.module.scss';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
-import { AppDialogsEnum, UserTemplate } from '../../store/types';
+import { AppDialogsEnum, IUserTemplate } from '../../store/types';
 
 // utils
 import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
@@ -187,7 +188,7 @@ const Component = () => {
             templateId,
             deleteTemplateId,
         }: {
-            deleteTemplateId: UserTemplate['id'];
+            deleteTemplateId: IUserTemplate['id'];
             templateId: ICommonTemplate['id'];
         }) => {
             const targetTemplate = templates?.list?.find(template => template.id === templateId);
@@ -208,7 +209,7 @@ const Component = () => {
     );
 
     const handleChooseProfileTemplate = useCallback(
-        async (templateId: UserTemplate['id']) => {
+        async (templateId: IUserTemplate['id']) => {
             await handleCreateMeeting({ templateId });
         },
         [handleCreateMeeting],
@@ -319,7 +320,7 @@ const Component = () => {
                         icon={<PlusIcon width="24px" height="24px" />}
                         className={styles.createRoomButton}
                     />
-                    <TemplatesGrid<UserTemplate>
+                    <TemplatesGrid<IUserTemplate>
                         list={profileTemplates.list}
                         count={profileTemplates.count}
                         onPageChange={handleProfileTemplatesPageChange}

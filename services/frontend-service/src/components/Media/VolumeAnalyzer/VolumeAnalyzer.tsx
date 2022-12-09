@@ -5,7 +5,7 @@ import { useStore } from 'effector-react';
 import { useAudioVolumeMeter } from '@hooks/useAudioAnalyzer';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
 import { VolumeIndicator } from '@components/Media/VolumeAnalyzer/VolumeIndicator';

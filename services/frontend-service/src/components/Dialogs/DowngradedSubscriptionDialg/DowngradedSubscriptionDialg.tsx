@@ -1,67 +1,63 @@
 import {
-	useEffect, useMemo, memo, useCallback 
+	useEffect, useMemo, memo, useCallback
 } from 'react';
 import {
-	useStore 
+	useStore
 } from 'effector-react';
 
 // shared
 import {
-	plans 
+	plans
 } from 'shared-const';
-import {
-	CustomButton,
-	CustomDialog,
-	CustomGrid,
-	CustomTypography,
-} from 'shared-frontend';
 
 // components
 import {
-	Translation 
+	Translation
 } from '@library/common/Translation/Translation';
 
 // stores
 import {
-	$appDialogsStore,
-	$profileStore,
-	appDialogsApi,
-	updateProfileFx,
+    $appDialogsStore,
+    $profileStore,
+    appDialogsApi,
+    updateProfileFx
 } from '../../../store';
+
+// utils
+import {formatDate} from "../../../utils/time/formatDate";
 
 // types
 import {
-	AppDialogsEnum 
+	AppDialogsEnum
 } from '../../../store/types';
 
 // styles
 import styles from './DowngradedSubscriptionDialog.module.scss';
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
 
 const Component = () => {
-	const profile = useStore($profileStore);
-	const {
-		downgradedSubscriptionDialog 
-	} = useStore($appDialogsStore);
+    const profile = useStore($profileStore);
 
-	useEffect(() => {
-		if (profile?.id && !profile?.isDowngradeMessageShown) {
-			appDialogsApi.openDialog({
-				dialogKey: AppDialogsEnum.downgradedSubscriptionDialog,
-			});
-		}
-	}, [profile?.isDowngradeMessageShown]);
+    const { downgradedSubscriptionDialog } = useStore($appDialogsStore);
 
-	const prevTemplatesNumber = useMemo(
-		() =>
-			plans[profile.previousSubscriptionPlanKey]?.features
-				?.templatesLimit ?? 0,
-		[profile.previousSubscriptionPlanKey],
-	);
+    const nextProduct = useMemo(() => {
+        return products.find(product => product.product.id === subscription?.plan?.product)
+    }, [products, subscription?.plan?.product]);
 
-	const currentTemplatesNumber = useMemo(
-		() => plans[profile.subscriptionPlanKey]?.features?.templatesLimit ?? 0,
-		[profile.subscriptionPlanKey],
-	);
+    useEffect(() => {
+        if (nextProduct?.product?.name && profile?.id && !profile?.isDowngradeMessageShown) {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.downgradedSubscriptionDialog,
+            });
+        }
+    }, [profile?.isDowngradeMessageShown, nextProduct?.product?.name]);
+
+    const nextTemplatesNumber = useMemo(() => plans[profile.nextSubscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.nextSubscriptionPlanKey]);
+    const prevTemplatesNumber = useMemo(() => plans[profile.prevSubscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.prevSubscriptionPlanKey]);
+    const currentTemplatesNumber = useMemo(() => plans[profile.subscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.subscriptionPlanKey]);
 
 	const handleConfirm = useCallback(() => {
 		updateProfileFx({
@@ -73,53 +69,44 @@ const Component = () => {
 		});
 	}, []);
 
-	return (
-		<CustomDialog
-			open={downgradedSubscriptionDialog}
-			contentClassName={styles.wrapper}
-		>
-			<CustomGrid
-				container
-				direction="column"
-				alignItems="center"
-				justifyContent="center"
-			>
-				<CustomTypography
-					variant="h4bold"
-					textAlign="center"
-				>
-					<Translation
-						nameSpace="dashboard"
-						translation="downgradedSubscription.title"
-						options={{
-							prevPlan: profile.previousSubscriptionPlanKey,
-							currentPlan: profile.subscriptionPlanKey,
-						}}
-					/>
-				</CustomTypography>
-				<CustomTypography textAlign="center">
-					<Translation
-						nameSpace="dashboard"
-						translation="downgradedSubscription.text"
-						options={{
-							prevTemplatesNumber,
-							currentTemplatesNumber,
-						}}
-					/>
-				</CustomTypography>
-				<CustomButton
-					className={styles.button}
-					onClick={handleConfirm}
-					label={
-						<Translation
-							nameSpace="common"
-							translation="buttons.continue"
-						/>
-					}
-				/>
-			</CustomGrid>
-		</CustomDialog>
-	);
+    const dueDate = profile?.renewSubscriptionTimestampInSeconds
+        ? formatDate((profile?.renewSubscriptionTimestampInSeconds) * 1000, 'dd MMM, yyyy')
+        : '';
+
+    return (
+        <CustomDialog open={downgradedSubscriptionDialog} contentClassName={styles.wrapper}>
+            <CustomGrid container direction="column" alignItems="center" justifyContent="center">
+                <CustomTypography variant="h4bold" textAlign="center">
+                    <Translation
+                        nameSpace="dashboard"
+                        translation={`downgradedSubscription.${profile.nextSubscriptionPlanKey ? 'manual' : 'auto'}.title`}
+                        options={{
+                            prevPlan: profile.prevSubscriptionPlanKey,
+                            nextPlan: profile.nextSubscriptionPlanKey,
+                            currentPlan: profile.subscriptionPlanKey,
+                        }}
+                    />
+                </CustomTypography>
+                <CustomTypography textAlign="center">
+                    <Translation
+                        nameSpace="dashboard"
+                        translation={`downgradedSubscription.${profile.nextSubscriptionPlanKey ? 'manual' : 'auto'}.text`}
+                        options={{
+                            dueDate,
+                            prevTemplatesNumber,
+                            nextTemplatesNumber,
+                            currentTemplatesNumber,
+                        }}
+                    />
+                </CustomTypography>
+                <CustomButton
+                    className={styles.button}
+                    onClick={handleConfirm}
+                    label={<Translation nameSpace="common" translation="buttons.continue" />}
+                />
+            </CustomGrid>
+        </CustomDialog>
+    );
 };
 
 export const DowngradedSubscriptionDialog = memo(Component);

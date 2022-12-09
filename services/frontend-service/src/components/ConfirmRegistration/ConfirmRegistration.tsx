@@ -14,7 +14,7 @@ import {
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomPaper 
 } from '@library/custom/CustomPaper/CustomPaper';

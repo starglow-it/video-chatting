@@ -34,7 +34,7 @@ import {
   SearchUsersPayload,
   UserRoles,
   ManageUserRightsPayload,
-  TimeoutTypesEnum
+  TimeoutTypesEnum,
 } from 'shared-types';
 
 import {
@@ -42,7 +42,7 @@ import {
   escapeRegexString,
   addDaysCustom,
   addMonthsCustom,
-  getTimeoutTimestamp
+  getTimeoutTimestamp,
 } from 'shared-utils';
 
 import {
@@ -160,8 +160,7 @@ export class UsersController {
           const renewSubscriptionTimestampInSeconds =
             (environment === 'demo'
               ? addMonthsCustom(Date.now(), 1)
-              : addDaysCustom(Date.now(), 1)
-            ) / 1000;
+              : addDaysCustom(Date.now(), 1)) / 1000;
 
           const newUser = await this.usersService.createUser(
             {
@@ -282,23 +281,31 @@ export class UsersController {
 
   @MessagePattern({ cmd: UserBrokerPatterns.FindUserById })
   async findUserById(@Payload() data: FindUserByIdPayload) {
-    return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findById(data.userId, session, [
-        'businessCategories',
-        'socials',
-        'languages',
-        'profileAvatar',
-      ]);
+    try {
+      return withTransaction(this.connection, async (session) => {
+        if (data.userId) {
+          const user = await this.usersService.findById(data.userId, session, [
+            'businessCategories',
+            'socials',
+            'languages',
+            'profileAvatar',
+          ]);
 
-      if (!user) {
-        throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
-      }
+          if (!user) {
+            throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+          }
 
-      return plainToInstance(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+          return plainToInstance(CommonUserDTO, user, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+        }
       });
-    });
+    } catch (e) {
+      console.log('findUserById error', e.message);
+
+     return;
+    }
   }
 
   @MessagePattern({ cmd: UserBrokerPatterns.FindUsersById })
@@ -423,7 +430,7 @@ export class UsersController {
       const userData = await this.usersService.findUserAndUpdate({
         query: { email },
         data,
-        session
+        session,
       });
 
       if (!userData) {
@@ -809,7 +816,7 @@ export class UsersController {
       await this.usersService.findUserAndUpdate({
         query: { userId: user.id },
         data: { isResetPasswordActive: true },
-        session
+        session,
       });
 
       user.tokens.push(token);

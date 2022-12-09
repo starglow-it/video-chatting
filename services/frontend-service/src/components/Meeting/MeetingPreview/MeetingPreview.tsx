@@ -7,18 +7,18 @@ import clsx from 'clsx';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
-import { ArrowLeftIcon } from 'shared-frontend/icons';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';

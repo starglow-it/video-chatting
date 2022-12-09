@@ -1,6 +1,6 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
-import { Typography } from '@mui/material/Typography';
+import Typography from '@mui/material/Typography';
 
 // types
 import { CustomTypographyProps } from './CustomTypography.types';
@@ -13,7 +13,6 @@ const Component = (
         transform,
         children,
         className,
-        options,
         ...rest
     }: CustomTypographyProps,
     ref: ForwardedRef<HTMLSpanElement>,

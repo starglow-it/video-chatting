@@ -1,9 +1,9 @@
 import React, { memo } from "react";
 import clsx from "clsx";
 
-import { CustomGrid } from "../../custom";
-import { SearchIcon } from "../../../icons";
-import { InputBase } from "@mui/material";
+import { CustomGrid } from "../../custom/CustomGrid";
+import { SearchIcon } from "../../../icons/OtherIcons/SearchIcon";
+import InputBase from "@mui/material/InputBase";
 
 import styles from './CustomSearch.module.scss';
 import {CustomSearchProps} from "./CustomSearch.types";

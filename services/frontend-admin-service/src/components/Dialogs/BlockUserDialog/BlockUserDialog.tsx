@@ -7,11 +7,17 @@ import {
 
 // shared
 import {
-	CustomButton,
-	CustomDialog,
-	CustomGrid,
-	CustomTypography,
-} from 'shared-frontend';
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomButton 
+} from 'shared-frontend/library/custom/CustomButton';
+import {
+	CustomDialog 
+} from 'shared-frontend/library/custom/CustomDialog';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
 
 // components
 import {

@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 
-import { ErrorIcon } from 'shared-frontend/icons';
+import { ErrorIcon } from 'shared-frontend/icons/OtherIcons/ErrorIcon';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
 
 import { ErrorMessageProps } from './types';
 

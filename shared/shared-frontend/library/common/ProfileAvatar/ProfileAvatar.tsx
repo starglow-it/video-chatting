@@ -2,7 +2,8 @@ import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
 // helpers
-import { CustomImage, CustomGrid } from '../../custom';
+import { CustomGrid } from '../../custom/CustomGrid';
+import { CustomImage } from '../../custom/CustomImage';
 
 // styles
 import styles from './ProfileAvatar.module.scss';

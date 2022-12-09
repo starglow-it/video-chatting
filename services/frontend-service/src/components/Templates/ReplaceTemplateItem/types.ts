@@ -1,6 +1,6 @@
-import { UserTemplate } from '../../../store/types';
+import {IUserTemplate} from "shared-types";
 
 export type ReplaceTemplateItemProps = {
-    template: UserTemplate;
-    onChooseTemplate?: (templateId: UserTemplate['id']) => Promise<void> | void;
+    template: IUserTemplate;
+    onChooseTemplate?: (templateId: IUserTemplate['id']) => Promise<void> | void;
 };

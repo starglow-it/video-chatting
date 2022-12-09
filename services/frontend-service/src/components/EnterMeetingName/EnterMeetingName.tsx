@@ -1,60 +1,63 @@
 import React, {
-	memo, useCallback 
+	memo, useCallback
 } from 'react';
 import {
-	useStore 
+	useStore
 } from 'effector-react';
 import {
-	useForm 
+	useForm
 } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
 // hooks
 import {
-	useYupValidationResolver 
+	useYupValidationResolver
 } from '@hooks/useYupValidationResolver';
 import {
-	useBrowserDetect 
+	useBrowserDetect
 } from '@hooks/useBrowserDetect';
 
 // custom
 import {
-	CustomGrid 
-} from 'shared-frontend/library';
+	CustomGrid
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
-	CustomTypography 
+	CustomTypography
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
-	CustomLink 
+	CustomLink
 } from '@library/custom/CustomLink/CustomLink';
 import {
-	CustomInput 
+	CustomInput
 } from '@library/custom/CustomInput/CustomInput';
 import {
-	CustomButton 
-} from 'shared-frontend/library';
+	CustomButton
+} from 'shared-frontend/library/custom/CustomButton';
 
 // validation
 import {
-	MeetingAccessStatusEnum 
+	MeetingAccessStatusEnum
 } from 'shared-types';
 import {
-	Translation 
+	Translation
 } from '@library/common/Translation/Translation';
 import {
-	fullNameSchema 
+	fullNameSchema
 } from '../../validation/users/fullName';
 
 // stores
 import {
-	$profileStore, $authStore, $isSocketConnected 
+    $profileStore,
+    $authStore,
+    $isSocketConnected
 } from '../../store';
 import {
-	$isOwner,
-	$localUserStore,
-	$meetingTemplateStore,
-	updateLocalUserEvent,
+    $isMeetingSocketConnecting,
+    $isOwner,
+    $localUserStore,
+    $meetingTemplateStore, sendJoinWaitingRoomSocketEvent,
+    updateLocalUserEvent,
 } from '../../store/roomStores';
 
 // types
@@ -67,29 +70,29 @@ const validationSchema = yup.object({
 });
 
 const Component = () => {
-	const {
-		isAuthenticated 
-	} = useStore($authStore);
-	const profile = useStore($profileStore);
-	const localUser = useStore($localUserStore);
-	const meetingTemplate = useStore($meetingTemplateStore);
-	const isSocketConnected = useStore($isSocketConnected);
+    const { isAuthenticated } = useStore($authStore);
+    const profile = useStore($profileStore);
+    const localUser = useStore($localUserStore);
+    const meetingTemplate = useStore($meetingTemplateStore);
+    const isSocketConnected = useStore($isSocketConnected);
+    const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
+    const isJoinWaitingRoomPending = useStore(sendJoinWaitingRoomSocketEvent.pending);
 
-	const isOwner = useStore($isOwner);
+    const isOwner = useStore($isOwner);
 
 	const resolver = useYupValidationResolver<{
         fullName: string;
     }>(validationSchema);
 
 	const {
-		isMobile 
+		isMobile
 	} = useBrowserDetect();
 
 	const {
 		register,
 		handleSubmit,
 		formState: {
- errors 
+ errors
 },
 	} = useForm({
 		criteriaMode: 'all',
@@ -165,37 +168,27 @@ const Component = () => {
 					)}
 				</CustomGrid>
 
-				<form
-					onSubmit={onSubmit}
-					className={styles.formContent}
-				>
-					<CustomInput
-						nameSpace="forms"
-						translation="yourName"
-						value={fullNameRegister.value}
-						onChange={fullNameRegister.onChange}
-						onBlur={fullNameRegister.onBlur}
-						ref={fullNameRegister.ref}
-						name={fullNameRegister.name}
-						error={fullNameError}
-					/>
-					<CustomButton
-						disabled={!isSocketConnected}
-						className={clsx(styles.button, {
-							[styles.mobile]: isMobile,
-						})}
-						type="submit"
-						label={
-							<Translation
-								nameSpace="meeting"
-								translation="buttons.continue"
-							/>
-						}
-					/>
-				</form>
-			</CustomGrid>
-		</CustomGrid>
-	);
+                <form onSubmit={onSubmit} className={styles.formContent}>
+                    <CustomInput
+                        nameSpace="forms"
+                        translation="yourName"
+                        value={fullNameRegister.value}
+                        onChange={fullNameRegister.onChange}
+                        onBlur={fullNameRegister.onBlur}
+                        ref={fullNameRegister.ref}
+                        name={fullNameRegister.name}
+                        error={fullNameError}
+                    />
+                    <CustomButton
+                        disabled={!isSocketConnected || isMeetingSocketConnecting || isJoinWaitingRoomPending}
+                        className={clsx(styles.button, { [styles.mobile]: isMobile })}
+                        type="submit"
+                        label={<Translation nameSpace="meeting" translation="buttons.continue" />}
+                    />
+                </form>
+            </CustomGrid>
+        </CustomGrid>
+    );
 };
 
 export const EnterMeetingName = memo(Component);

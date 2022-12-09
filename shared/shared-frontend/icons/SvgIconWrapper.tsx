@@ -1,5 +1,5 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
-import { SvgIcon, SvgIconProps } from '@mui/material/SvgIcon';
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 
 import { CommonIconProps } from './types';
 

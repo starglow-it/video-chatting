@@ -3,11 +3,11 @@ import { useStore, useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomBox } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // components
 import { MeetingControlPanel } from '@components/Meeting/MeetingControlPanel/MeetingControlPanel';
@@ -25,10 +25,10 @@ import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKic
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { MobilePortraitStub } from '@library/common/MobilePortraitStub/MobilePortraitStub';
+import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
 import { isMobile } from 'shared-utils';

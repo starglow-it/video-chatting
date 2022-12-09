@@ -12,7 +12,7 @@ import clsx from 'clsx';
 // custom
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomPaper 
 } from '@library/custom/CustomPaper/CustomPaper';
@@ -21,15 +21,15 @@ import {
 } from '@library/custom/CustomTooltip/CustomTooltip';
 import {
 	CustomDivider 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomDivider';
 
 // icons
 import {
 	TemplatesIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/TemplatesIcon';
 import {
 	ExitIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/ExitIcon';
 import {
 	ProfileAvatar 
 } from '@components/Profile/ProfileAvatar/ProfileAvatar';

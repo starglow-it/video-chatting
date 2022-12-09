@@ -8,17 +8,17 @@ import { useStore } from 'effector-react';
 import { useFileReader } from '@hooks/useFileReader';
 
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // icons
-import { ImagePlaceholderIcon } from 'shared-frontend/icons';
-import { UploadArrowIcon } from 'shared-frontend/icons';
-import { RoundCloseIcon } from 'shared-frontend/icons';
+import { ImagePlaceholderIcon } from 'shared-frontend/icons/OtherIcons/ImagePlaceholderIcon';
+import { UploadArrowIcon } from 'shared-frontend/icons/OtherIcons/UploadArrow';
+import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 
 // helpers
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
 
 // const

@@ -30,5 +30,13 @@
     "attendees": "Attendees: {{number}}",
     "tooltip": "Drag & Drop users to the right places",
     "user": "User {{index}}"
+  },
+  "addLink": "Add Link",
+  "templateLinks": {
+    "title": "Drag & Drop circles to the right places / Click on link to edit"
+  },
+  "tooltips": {
+    "cancel": "Cancel",
+    "addLinkDisabled": "Add Link disabled"
   }
 }

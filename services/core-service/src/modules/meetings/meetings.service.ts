@@ -9,7 +9,7 @@ import {
 
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { IMeetingInstance } from 'shared-types';
-import {GetModelQuery, UpdateModelQuery} from "../../types/custom";
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 
 @Injectable()
 export class MeetingsService {
@@ -50,10 +50,7 @@ export class MeetingsService {
       .exec();
   }
 
-  async find({
-    query,
-    session,
-  }: GetModelQuery<MeetingInstanceDocument>) {
+  async find({ query, session }: GetModelQuery<MeetingInstanceDocument>) {
     return this.meetingInstance
       .find(query, {}, { session: session.session })
       .exec();

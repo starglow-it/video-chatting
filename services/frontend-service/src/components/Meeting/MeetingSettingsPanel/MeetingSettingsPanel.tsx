@@ -16,10 +16,8 @@ import { MeetingInfo } from '@components/Meeting/MeetingInfo/MeetingInfo';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomBox } from 'shared-frontend/library';
-
-// icons
-import { RoundCloseIcon } from 'shared-frontend/icons';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 
 // stores
 import {
@@ -31,7 +29,7 @@ import {
 
 // styles
 import { ISocialLink } from 'shared-types';
-import { customTemplateLinkSchema } from 'shared-frontend';
+import { customTemplateLinkSchema } from 'shared-frontend/validation';
 import styles from './MeetingSettingsPanel.module.scss';
 
 // validations

@@ -6,12 +6,11 @@ import clsx from 'clsx';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { BellIcon } from 'shared-frontend/icons/OtherIcons/BellIcon';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
-import { BellIcon } from 'shared-frontend/icons';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
 import { DashboardNotifications } from '@components/Dashboard/DashboardNotifications/DashboardNotifications';
 
 // styles
@@ -26,6 +25,7 @@ import {
 
 // types
 import { DashboardNotificationReadStatus } from '../../../store/types';
+import {ActionButton} from "shared-frontend/library/common/ActionButton";
 
 const ProfileNotifications = memo(() => {
     const isMainSocketConnected = useStore($isSocketConnected);

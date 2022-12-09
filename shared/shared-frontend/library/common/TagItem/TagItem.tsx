@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from '../../custom';
+import { CustomGrid } from '../../custom/CustomGrid';
 
 // styles
 import { PropsWithClassName } from '../../../types';

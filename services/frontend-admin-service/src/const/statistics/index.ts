@@ -1,6 +1,6 @@
 import {
 	ValuesSwitcherItem 
-} from 'shared-frontend';
+} from 'shared-frontend/types';
 import {
 	MonetizationStatisticPeriods 
 } from 'shared-types';

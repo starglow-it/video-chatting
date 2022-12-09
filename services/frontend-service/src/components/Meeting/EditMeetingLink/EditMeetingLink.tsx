@@ -6,9 +6,9 @@ import clsx from 'clsx';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomLinkIcon } from 'shared-frontend/icons';
+import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';

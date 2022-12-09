@@ -1,44 +1,39 @@
 import React, {
-	memo, useCallback, useEffect, useMemo 
+	memo, useCallback, useEffect, useMemo
 } from 'react';
 import linkify from 'linkify-string';
-import {
-	useRouter 
-} from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 // hooks
 import {
-	useLocalization 
+	useLocalization
 } from '@hooks/useTranslation';
 import {
-	useNavigation 
+	useNavigation
 } from '@hooks/useNavigation';
 
-// custom
+// shared
 import {
-	CustomGrid, CustomChip 
-} from 'shared-frontend/library';
+	CustomImage
+} from 'shared-frontend/library/custom/CustomImage';
+import {CustomChip} from "shared-frontend/library/custom/CustomChip";
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
 import {
-	CustomTypography 
+	CustomTypography
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
-	CustomPaper 
+	CustomPaper
 } from '@library/custom/CustomPaper/CustomPaper';
+import {
+	Translation
+} from '@library/common/Translation/Translation';
 
 // icons
 import {
 	ArrowLeftIcon 
-} from 'shared-frontend/icons';
-
-// shared
-import {
-	CustomImage 
-} from 'shared-frontend/library';
+} from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 
 // const
-import {
-	Translation 
-} from '@library/common/Translation/Translation';
 import frontendConfig from '../../const/config';
 
 // styles
@@ -62,21 +57,21 @@ const tabs = [
 
 const Component = () => {
 	const {
-		translation 
+		translation
 	} = useLocalization('static');
 
 	const {
-		activeTab, 
-		onChange: onChangeTab 
+		activeTab,
+		onChange: onChangeTab
 	} = useNavigation({
 		tabs,
 	});
 
 	const router = useRouter();
 
-	const handleGoBack = useCallback(() => {
-		router.back();
-	}, [router]);
+    const handleGoBack = useCallback(() => {
+        Router.back();
+    }, [router]);
 
 	useEffect(() => {
 		if (router.query.section === 'privacy') {
@@ -86,7 +81,7 @@ const Component = () => {
 
 	const textWithLinks = useMemo(() => {
 		const {
-			translationKey 
+			translationKey
 		} = activeTab;
 		return linkify(
 			translation(`${translationKey}.text`, {
@@ -101,8 +96,8 @@ const Component = () => {
 	const chips = useMemo(
 		() =>
 			tabs.map(({
-				value, 
-				translationKey 
+				value,
+				translationKey
 			}) => (
 				<CustomChip
 					active={value === activeTab.value}

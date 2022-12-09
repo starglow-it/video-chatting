@@ -11,16 +11,21 @@ import clsx from 'clsx';
 
 // shared
 import {
-	CustomGrid,
-	CustomTypography,
-	CustomChip,
-} from 'shared-frontend/library';
-import {
 	useNavigation 
-} from 'shared-frontend/hooks';
+} from 'shared-frontend/hooks/useNavigation';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomChip 
+} from 'shared-frontend/library/custom/CustomChip';
 import {
 	ValuesSwitcherItem 
-} from 'shared-frontend';
+} from 'shared-frontend/types';
+
 import {
 	MonetizationStatisticPeriods 
 } from 'shared-types';

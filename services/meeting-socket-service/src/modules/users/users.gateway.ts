@@ -13,7 +13,7 @@ import { Socket } from 'socket.io';
 import { BaseGateway } from '../../gateway/base.gateway';
 
 // types
-import { ResponseSumType } from 'shared-types';
+import {MeetingAccessStatusEnum, ResponseSumType} from 'shared-types';
 
 // services
 import { MeetingsService } from '../meetings/meetings.service';
@@ -154,7 +154,7 @@ export class UsersGateway extends BaseGateway {
           this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
         }
 
-        await this.usersService.deleteUser({ id: message.id }, session);
+        await this.usersService.updateOne({ _id: message.id }, { accessStatus: MeetingAccessStatusEnum.Left }, session);
       }
     });
   }

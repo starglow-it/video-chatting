@@ -65,7 +65,6 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - NODE_OPTIONS=--max-old-space-size=8192
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service
       - FRONTEND_URL=http://localhost:8000
@@ -100,7 +99,6 @@ services:
     ports:
       - '9000:9000'
     environment:
-      - NODE_OPTIONS=--max-old-space-size=8192
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service
       - FRONTEND_URL=http://localhost:9000

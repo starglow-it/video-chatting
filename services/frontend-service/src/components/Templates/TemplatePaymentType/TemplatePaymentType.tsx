@@ -2,11 +2,9 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { PaymentIcon } from 'shared-frontend/icons/OtherIcons/PaymentIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-
-// icons
-import { PaymentIcon } from 'shared-frontend/icons';
 
 // types
 import { TemplatePaymentTypeProps } from './types';

@@ -17,7 +17,7 @@ import {
 // custom
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomInput 
 } from '@library/custom/CustomInput/CustomInput';
@@ -31,10 +31,10 @@ import {
 // icons
 import {
 	PlusAddIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/PlusAddIcon';
 import {
 	RoundCloseIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 
 // types
 import {
@@ -44,7 +44,7 @@ import {
 // shared
 import {
 	CustomImage 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomImage';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';

@@ -1,12 +1,12 @@
 import { io } from 'socket.io-client';
 import frontendConfig from '../../../../const/config';
-import { UserTemplate } from '../../../types';
 import { getMeetingInstanceSocketUrl } from '../../../../utils/functions/getMeetingInstanceSocketUrl';
+import {IUserTemplate} from "shared-types";
 
 export const handleConnectSocket = async ({
     serverIp,
 }: {
-    serverIp: UserTemplate['meetingInstance']['serverIp'];
+    serverIp: IUserTemplate['meetingInstance']['serverIp'];
 }) => {
     const socketUrl =
         !['localhost', frontendConfig.defaultServerIp].includes(serverIp) && serverIp

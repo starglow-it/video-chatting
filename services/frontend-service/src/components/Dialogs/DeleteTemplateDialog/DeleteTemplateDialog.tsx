@@ -8,19 +8,19 @@ import {
 // custom
 import {
 	CustomDialog 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomButton 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomButton';
 import {
-	WiggleLoader 
-} from '@library/common/WiggleLoader/WiggleLoader';
+	CustomLoader
+} from 'shared-frontend/library/custom/CustomLoader';
 
 // store
 import {
@@ -85,7 +85,7 @@ const Component = () => {
 				onBackdropClick={handleClose}
 				onClose={handleClose}
 			>
-				<WiggleLoader />
+				<CustomLoader />
 			</CustomDialog>
 		);
 	}

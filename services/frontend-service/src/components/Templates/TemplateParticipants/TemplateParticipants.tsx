@@ -1,7 +1,10 @@
 import React, { memo } from 'react';
-import { PeopleIcon } from 'shared-frontend/icons';
+
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
+
 import { TemplateParticipantsProps } from './types';
 
 import styles from './TemplateParticipants.module.scss';

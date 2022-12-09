@@ -6,21 +6,42 @@ import {
 } from 'effector-react';
 
 import {
-	ConditionalRender,
-	CustomButton,
-	CustomDivider,
-	CustomGrid,
-	CustomPaper,
-	CustomTypography,
-	ProfileAvatar,
-} from 'shared-frontend/library';
+	ProfileAvatar 
+} from 'shared-frontend/library/common/ProfileAvatar';
 import {
-	ArrowLeftIcon,
-	LockIcon,
-	PersonIcon,
-	StarIcon,
-	TrashIcon,
-} from 'shared-frontend/icons';
+	ConditionalRender 
+} from 'shared-frontend/library/common/ConditionalRender';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomDivider 
+} from 'shared-frontend/library/custom/CustomDivider';
+import {
+	CustomButton 
+} from 'shared-frontend/library/custom/CustomButton';
+
+import {
+	ArrowLeftIcon 
+} from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import {
+	LockIcon 
+} from 'shared-frontend/icons/OtherIcons/LockIcon';
+import {
+	PersonIcon 
+} from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import {
+	StarIcon 
+} from 'shared-frontend/icons/OtherIcons/StarIcon';
+import {
+	TrashIcon 
+} from 'shared-frontend/icons/OtherIcons/TrashIcon';
 
 import {
 	Translation 

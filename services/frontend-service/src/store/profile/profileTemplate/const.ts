@@ -1,6 +1,6 @@
-import { UserTemplate } from '../../types';
+import {IUserTemplate} from "shared-types";
 
-export const initialProfileTemplateState: UserTemplate = {
+export const initialProfileTemplateState: IUserTemplate = {
     id: '',
     usedAt: '',
     url: '',

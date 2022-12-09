@@ -1,4 +1,6 @@
-import { ParticipantPosition } from '@containers/CreateRoomContainer/types';
+import {
+	ParticipantPosition 
+} from '@containers/CreateRoomContainer/types';
 
 export type UserVideoStubProps = {
     stubId: string;

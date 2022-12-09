@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 import { Fade } from '@mui/material';
 
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 import { PropsWithClassName } from 'shared-frontend/types';
 

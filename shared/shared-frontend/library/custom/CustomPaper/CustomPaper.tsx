@@ -1,6 +1,6 @@
 import { ForwardedRef, forwardRef, memo, PropsWithChildren } from 'react';
 
-import { Paper, PaperProps } from '@mui/material';
+import Paper, { PaperProps } from '@mui/material/Paper';
 
 const Component = (
     { children, ...rest }: PropsWithChildren<PaperProps>,

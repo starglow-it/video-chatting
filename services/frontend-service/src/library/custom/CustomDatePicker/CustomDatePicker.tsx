@@ -1,11 +1,11 @@
 import React, { forwardRef, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
-// icons
-import { RoundArrowIcon } from 'shared-frontend/icons';
+// shared
+import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // time utils
-import { CustomGrid } from 'shared-frontend/library';
 import { formatDate } from '../../../utils/time/formatDate';
 import { getNextMonth } from '../../../utils/time/getNextMonth';
 import { getCalendarMonthData } from '../../../utils/time/getCalendarMonthData';

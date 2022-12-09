@@ -13,13 +13,13 @@ import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
-	CustomGrid,
 	CustomButton,
-	CustomDialog,
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomButton';
+import {CustomDialog} from "shared-frontend/library/custom/CustomDialog";
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
 import {
 	WarningIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/WarningIcon';
 
 // styles
 import {

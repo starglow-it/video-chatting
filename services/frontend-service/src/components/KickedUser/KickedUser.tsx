@@ -5,12 +5,12 @@ import React, {
 // icon
 import {
 	WarningIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/WarningIcon';
 
 // custom
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';

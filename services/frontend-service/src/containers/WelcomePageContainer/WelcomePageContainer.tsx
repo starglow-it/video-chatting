@@ -2,20 +2,19 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
+import { ICommonTemplate } from 'shared-types';
+
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
-import { CustomImage } from 'shared-frontend/library';
-import { ICommonTemplate } from 'shared-types';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
-
-// shared
 
 // styles
 import styles from './WelcomePageContainer.module.scss';

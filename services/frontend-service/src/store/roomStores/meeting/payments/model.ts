@@ -1,9 +1,9 @@
 import { attach, Store } from 'effector-next';
-import { ErrorState } from 'shared-types';
+import {ErrorState, IUserTemplate} from 'shared-types';
 
 import { paymentsDomain } from '../../../domains';
 import { CancelPaymentIntentPayload, CreatePaymentIntentPayload } from '../../../payments/types';
-import { PaymentIntentStore, UserTemplate } from '../../../types';
+import { PaymentIntentStore } from '../../../types';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 
 export const $paymentIntent = paymentsDomain.store<PaymentIntentStore>({
@@ -24,7 +24,7 @@ export const cancelPaymentIntentFx = paymentsDomain.effect<
 
 export const createPaymentIntentWithData = attach<
     void,
-    Store<UserTemplate>,
+    Store<IUserTemplate>,
     typeof createPaymentIntentFx
 >({
     effect: createPaymentIntentFx,

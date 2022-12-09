@@ -12,7 +12,7 @@ const Component = ({ width, height, className, onClick, ...rest }: CommonIconPro
         fill="none"
         {...rest}
     >
-        <circle cx="8" cy="8" r="8" fill="#F55252" />
+        <circle cx="8" cy="8" r="8" fill="currentColor" />
         <path
             fillRule="evenodd"
             clipRule="evenodd"

@@ -6,36 +6,33 @@ import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // shared
-import { CustomButton, CustomCheckbox } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomCheckbox } from 'shared-frontend/library/custom/CustomCheckbox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
+import { DoneIcon } from 'shared-frontend/icons/OtherIcons/DoneIcon';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-
-// hooks
-import { useToggle } from '@hooks/useToggle';
-
-// icons
-import { DoneIcon } from 'shared-frontend/icons';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
+import { Translation } from '@library/common/Translation/Translation';
 
 // validations
-import frontendConfig from 'src/const/config';
 import { MAX_CONTACT_US_MESSAGE_LENGTH } from 'src/const/general';
-import { Translation } from '@library/common/Translation/Translation';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { simpleStringSchemaWithLength } from '../../../validation/common';
 import { emailSchema } from '../../../validation/users/email';
 
 // const
 import { dashboardRoute } from '../../../const/client-routes';
+import frontendConfig from 'src/const/config';
 
 // types
 import { ContactFormPayload } from '../../../store/types';
@@ -219,7 +216,7 @@ const Component = () => {
                                 labelClassName={styles.checkbox}
                             />
                             {isSendContactFormPending ? (
-                                <WiggleLoader className={styles.loader} />
+                                <CustomLoader className={styles.loader} />
                             ) : (
                                 <CustomButton
                                     disabled={!isSubmitButtonEnabled}

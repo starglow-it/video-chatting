@@ -1,6 +1,5 @@
 import React from 'react';
-import { IBusinessCategory, ILanguage, ISocialLink } from 'shared-types';
-import { UserTemplate } from '../../../store/types';
+import {IBusinessCategory, ILanguage, ISocialLink, IUserTemplate} from 'shared-types';
 
 export type SettingsData = {
     companyName: string;
@@ -16,6 +15,6 @@ export type SettingsData = {
 };
 
 export type MeetingSettingsPanelProps = React.PropsWithChildren<{
-    template: UserTemplate;
-    onTemplateUpdate: (updateData?: { templateId: UserTemplate['id']; data: SettingsData }) => void;
+    template: IUserTemplate;
+    onTemplateUpdate: (updateData?: { templateId: IUserTemplate['id']; data: SettingsData }) => void;
 }>;

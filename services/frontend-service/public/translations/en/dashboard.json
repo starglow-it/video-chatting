@@ -16,7 +16,13 @@
     "titleSecond": "Which one do you want \n to replace?"
   },
   "downgradedSubscription": {
-    "title": "Your subscription was downgraded from {{prevPlan}} to {{currentPlan}}",
-    "text": "The number of rooms you can use for free was reduced from {{prevTemplatesNumber}} to {{currentTemplatesNumber}}. You can still replace a room with another one"
+    "manual": {
+      "title": "You downgraded subscription from {{prevPlan}} to {{currentPlan}}. ",
+      "text": "On {{dueDate}}, the number of rooms you can use for free will be reduced from {{prevTemplatesNumber}} to {{currentTemplatesNumber}}. You will still be able to select another Room to replace the one you have"
+    },
+    "auto": {
+      "title": "Your subscription was downgraded from {{currentPlan}} to {{nextPlan}}",
+      "text": "The number of rooms you can use for free was reduced from {{currentTemplatesNumber}} to {{nextTemplatesNumber}}. You can still replace a room with another one"
+    }
   }
 }

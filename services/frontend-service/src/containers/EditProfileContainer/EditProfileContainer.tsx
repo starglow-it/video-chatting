@@ -8,11 +8,11 @@ import { useRouter } from 'next/router';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
+import { MainProfileWrapper } from '@components/MainProfileWrapper/MainProfileWrapper';
 import { EditAccountInfo } from '@components/Profile/EditAccountInfo/EditAccountInfo';
 import { EditCompanyInfo } from '@components/Profile/EditCompanyInfo/EditCompanyInfo';
 import { EditPersonalInfo } from '@components/Profile/EditPersonalInfo/EditPersonalInfo';
@@ -23,7 +23,7 @@ import { DeleteProfileDialog } from '@components/Dialogs/DeleteProfileDialog/Del
 import { DeleteProfile } from '@components/Profile/DeleteProfile/DeleteProfile';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { IBusinessCategory, ILanguage, ISocialLink } from 'shared-types';

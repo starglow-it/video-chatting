@@ -2,17 +2,15 @@ import React, { memo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // icons
-import { ArrowLeftIcon } from 'shared-frontend/icons';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 
 // components
 import { ContactUsForm } from '@components/Support/ContactUsForm/ContactUsForm';
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './Support.module.scss';

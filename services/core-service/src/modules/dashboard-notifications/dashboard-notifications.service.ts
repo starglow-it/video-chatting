@@ -26,8 +26,10 @@ export class DashboardNotificationsService {
   async findNotifications({
     query,
     session,
-                      populatePaths,
-  }: GetModelQuery<DashboardNotificationDocument>): Promise<DashboardNotificationDocument[]> {
+    populatePaths,
+  }: GetModelQuery<DashboardNotificationDocument>): Promise<
+    DashboardNotificationDocument[]
+  > {
     return this.dashboardNotification
       .find(query, {}, { session: session.session, populate: populatePaths })
       .exec();
@@ -37,7 +39,10 @@ export class DashboardNotificationsService {
     query,
     data,
     session,
-  }: UpdateModelQuery<DashboardNotificationDocument, DashboardNotification>): Promise<any> {
+  }: UpdateModelQuery<
+    DashboardNotificationDocument,
+    DashboardNotification
+  >): Promise<any> {
     return this.dashboardNotification.updateMany(query, data, {
       session: session.session,
     });
@@ -47,8 +52,11 @@ export class DashboardNotificationsService {
     query,
     data,
     session,
-                                    populatePaths,
-  }: UpdateModelQuery<DashboardNotificationDocument, DashboardNotification>): Promise<any> {
+    populatePaths,
+  }: UpdateModelQuery<
+    DashboardNotificationDocument,
+    DashboardNotification
+  >): Promise<any> {
     return this.dashboardNotification.findOneAndUpdate(query, data, {
       session: session.session,
       populate: populatePaths,

@@ -4,7 +4,7 @@ import React, { memo, useEffect, useRef } from 'react';
 import { MeetingUserAudioItemProps } from '@components/Meeting/MeetingUserAudioItem/types';
 
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // hooks
 import { useAudioVolumeMeter } from '@hooks/useAudioAnalyzer';

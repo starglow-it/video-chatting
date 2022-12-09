@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomBox } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 

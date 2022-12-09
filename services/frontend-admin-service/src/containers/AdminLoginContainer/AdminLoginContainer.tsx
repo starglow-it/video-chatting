@@ -20,20 +20,40 @@ import {
 	emailSchema, passwordLoginSchema 
 } from 'shared-frontend/validation';
 import {
-	ErrorMessage,
-	EmailInput,
-	CenteredPaper,
-	CustomGrid,
-	CustomBox,
-	CustomImage,
-	CustomTypography,
-	PasswordInput,
-	CustomButton,
-	ConditionalRender,
-} from 'shared-frontend/library';
+	ErrorMessage 
+} from 'shared-frontend/library/common/ErrorMessage';
+import {
+	EmailInput 
+} from 'shared-frontend/library/common/EmailInput';
+import {
+	PasswordInput
+} from 'shared-frontend/library/common/PasswordInput';
+import {
+	CenteredPaper 
+} from 'shared-frontend/library/common/CenteredPaper';
+import {
+	ConditionalRender 
+} from 'shared-frontend/library/common/ConditionalRender';
+
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomBox 
+} from 'shared-frontend/library/custom/CustomBox';
+import {
+	CustomImage 
+} from 'shared-frontend/library/custom/CustomImage';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomButton 
+} from 'shared-frontend/library/custom/CustomButton';
+
 import {
 	useYupValidationResolver 
-} from 'shared-frontend/hooks';
+} from 'shared-frontend/hooks/useYupValidationResolver';
 
 // components
 import {
@@ -79,8 +99,8 @@ const Component = () => {
 		reset,
 		register,
 		formState: {
- errors 
-},
+		 	errors
+		},
 	} = methods;
 
 	const [email, password] = useWatch({

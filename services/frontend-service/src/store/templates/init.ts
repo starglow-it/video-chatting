@@ -52,6 +52,7 @@ import { handleAddTemplateToUser } from './handlers/handleAddTemplateToUser';
 import { handleEditUserTemplate } from './handlers/handleEditUserTemplate';
 import { handleDeleteCommonTemplate } from './handlers/handleDeleteCommonTemplate';
 import { handleGetUserTemplate } from './handlers/handleGetUserTemplate';
+import {clearProfileEvent} from "../profile/profile/model";
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -80,7 +81,8 @@ $templatesStore
             ...state,
             list: state.list.map(template => template.id === data?.id ? data : template)
         },
-    }));
+    }))
+    .reset(clearProfileEvent);
 
 $templatePreviewStore.on(setPreviewTemplate, (_state, data: ICommonTemplate | null) => data);
 $setUpTemplateStore.on(getTemplateFx.doneData, (state, data) => data);

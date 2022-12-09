@@ -1,12 +1,12 @@
 import { attach } from 'effector-next';
-import { ICommonTemplate } from 'shared-types';
+import {ICommonTemplate, IUserTemplate} from 'shared-types';
 import { profileDomain } from '../../domains';
 
 import { $profileStore } from '../profile/model';
 
 import { initialProfileTemplatesStore } from './const';
 
-import { EntityList, Profile, ProfileTemplatesCountState, UserTemplate } from '../../types';
+import { EntityList, Profile, ProfileTemplatesCountState } from '../../types';
 
 import {
     DeleteProfileTemplatesPayload,
@@ -17,11 +17,11 @@ import {
 
 import { templatesDomain } from '../../templates/domain/model';
 
-export const $profileTemplatesStore = profileDomain.createStore<EntityList<UserTemplate>>(
+export const $profileTemplatesStore = profileDomain.createStore<EntityList<IUserTemplate>>(
     initialProfileTemplatesStore,
 );
 export const $skipProfileTemplates = profileDomain.createStore<number>(6);
-export const $deleteProfileTemplateId = profileDomain.createStore<UserTemplate['id']>('');
+export const $deleteProfileTemplateId = profileDomain.createStore<IUserTemplate['id']>('');
 export const $profileTemplatesCountStore = profileDomain.createStore<ProfileTemplatesCountState>({
     state: {
         count: 0,
@@ -30,7 +30,7 @@ export const $profileTemplatesCountStore = profileDomain.createStore<ProfileTemp
 });
 
 export const setSkipProfileTemplates = profileDomain.createEvent<number>('setSkipProfileTemplates');
-export const setDeleteTemplateIdEvent = profileDomain.createEvent<UserTemplate['id']>(
+export const setDeleteTemplateIdEvent = profileDomain.createEvent<IUserTemplate['id']>(
     'setDeleteTemplateIdEvent',
 );
 
@@ -54,7 +54,7 @@ export const deleteProfileTemplateFx = profileDomain.createEffect<
 
 export const getProfileTemplateByTemplateIdFx = templatesDomain.effect<
     { templateId: ICommonTemplate['templateId'] },
-    UserTemplate | null | undefined,
+    IUserTemplate | null | undefined,
     void
 >('getUserTemplateByTemplateIdFx');
 

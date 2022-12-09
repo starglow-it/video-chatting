@@ -1,11 +1,11 @@
-import { MeetingAccessStatusEnum } from 'shared-types';
-import { Meeting, MeetingUser, Profile, UserTemplate } from '../../../types';
+import {IUserTemplate, MeetingAccessStatusEnum} from 'shared-types';
+import {Meeting, MeetingUser, Profile} from '../../../types';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
     profileUserName: Profile['fullName'];
     profileAvatar: Profile['profileAvatar']['url'];
-    templateId: UserTemplate['id'];
+    templateId: IUserTemplate['id'];
     isOwner: boolean;
     accessStatus: MeetingAccessStatusEnum;
     isAuraActive: boolean;
@@ -25,7 +25,7 @@ export type CancelAccessMeetingRequestPayload = {
     meetingId: Meeting['id'];
 };
 export type UpdateMeetingTemplatePayload = {
-    templateId: UserTemplate['customLink'] | UserTemplate['id'];
+    templateId: IUserTemplate['customLink'] | IUserTemplate['id'];
 };
 
 export type JoinWaitingRoomResponse = {
@@ -53,6 +53,6 @@ export type SendAnswerMeetingRequestParams = {
 
 export type EnterWaitingRoomPayload = {
     profileId: Profile['id'];
-    templateId: UserTemplate['id'];
+    templateId: IUserTemplate['id'];
     username: MeetingUser['username'];
 };

@@ -2,8 +2,8 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
@@ -11,8 +11,8 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { UserVideoStub } from '@components/TemplateManagement/EditAttendeesPosition/UserVideoStub/UserVideoStub';
 
 // icons
-import { ArrowLeftIcon } from 'shared-frontend/icons';
-import { ArrowRightIcon } from 'shared-frontend/icons';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // types
 import { EditAttendeesPositionProps } from '@components/TemplateManagement/EditAttendeesPosition/types';

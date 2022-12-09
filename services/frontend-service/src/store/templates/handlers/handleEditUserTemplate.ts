@@ -1,5 +1,4 @@
-import { ErrorState } from 'shared-types';
-import { UserTemplate } from '../../types';
+import {ErrorState, IUserTemplate} from 'shared-types';
 import { postProfileTemplatesUrl } from '../../../utils/urls';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { generateFormData } from '../../../utils/form/generateFormData';
@@ -11,7 +10,7 @@ export const handleEditUserTemplate = async ({
 }: EditUserTemplatePayload): Promise<EditUserTemplateResponse> => {
     const formData = generateFormData(data);
 
-    const response = await sendRequestWithCredentials<UserTemplate, ErrorState>({
+    const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>({
         ...postProfileTemplatesUrl({ templateId }),
         data: formData,
     });

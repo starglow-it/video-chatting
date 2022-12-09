@@ -1,9 +1,9 @@
 import React, { memo, useMemo } from 'react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // styles
 import { PropsWithClassName } from 'shared-frontend/types';

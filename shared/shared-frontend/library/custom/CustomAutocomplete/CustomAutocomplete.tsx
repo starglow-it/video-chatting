@@ -1,14 +1,18 @@
 import React, { memo, useCallback } from 'react';
 import { Controller } from 'react-hook-form';
-import { Autocomplete, AutocompleteRenderInputParams, FilterOptionsState } from '@mui/material';
+import Autocomplete, {AutocompleteRenderInputParams} from '@mui/material/Autocomplete';
+import {FilterOptionsState} from "@mui/base";
+
 import { matchSorter } from 'match-sorter';
 import clsx from "clsx";
 
 // icons
-import { RoundCloseIcon } from '../../../icons';
+import { RoundCloseIcon } from '../../../icons/RoundIcons/RoundCloseIcon';
 
 // custom
-import {CustomChip, CustomGrid, CustomInput} from '../../custom';
+import { CustomGrid } from '../../custom/CustomGrid';
+import { CustomInput } from '../../custom/CustomInput';
+import { CustomChip } from '../../custom/CustomChip';
 
 // types
 import { CustomAutocompleteProps } from './types';

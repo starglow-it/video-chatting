@@ -26,7 +26,9 @@ $meetingTemplateStore
     .on(updateMeetingTemplateFx.doneData, (state, data) => data)
     .reset([resetRoomStores, resetMeetingTemplateStoreEvent]);
 
-$isUserSendEnterRequest.on(setIsUserSendEnterRequest, (state, data) => data);
+$isUserSendEnterRequest
+    .on(setIsUserSendEnterRequest, (state, data) => data)
+    .reset(resetRoomStores);
 
 updateMeetingTemplateFxWithData.doneData.watch(() => {
     sendUpdateMeetingTemplateSocketEvent();

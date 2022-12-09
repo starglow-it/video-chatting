@@ -6,10 +6,14 @@ import {
 } from 'shared-frontend/types';
 
 import {
-	CustomGrid,
-	CustomBox,
-	CustomTypography,
-} from 'shared-frontend/library';
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomBox 
+} from 'shared-frontend/library/custom/CustomBox';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
 
 import styles from './ChartLegend.module.scss';
 

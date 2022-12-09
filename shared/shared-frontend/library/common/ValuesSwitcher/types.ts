@@ -1,6 +1,6 @@
 import {PropsWithClassName, ValuesSwitcherItem} from "../../../types";
 
-type ValueType = string | number;
+export type ValueType = string | number;
 
 type ValueSwitcherVariant = 'primary' | 'transparent';
 
@@ -10,6 +10,7 @@ export type ValueSwitcherProps<T extends ValueType, Label> = PropsWithClassName<
     onValueChanged: (value: ValuesSwitcherItem<T, Label>) => Promise<void> | void;
     variant?: ValueSwitcherVariant;
     itemClassName?: string;
+    width?: number;
 }>;
 
 export type ValueSwitcherItemProps<T extends ValueType, Label> = PropsWithClassName<{

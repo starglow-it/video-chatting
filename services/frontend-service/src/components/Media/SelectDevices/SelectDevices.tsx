@@ -6,16 +6,16 @@ import { useStore } from 'effector-react';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // icons
-import { RoundArrowIcon } from 'shared-frontend/icons';
-import { CameraIcon } from 'shared-frontend/icons';
-import { MicIcon } from 'shared-frontend/icons';
+import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
+import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
+import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // styles
 import styles from './SelectDevices.module.scss';
@@ -55,7 +55,7 @@ const Component = () => {
     const handleChangeMic = useCallback(
         ({ target: { value } }) => {
             changeStreamFxWithStore({
-                kind: DeviceInputKindEnum.VideoInput,
+                kind: DeviceInputKindEnum.AudioInput,
                 deviceId: value,
             });
         },

@@ -4,7 +4,7 @@ import React, {
 
 import {
 	CustomBox 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomBox';
 
 import {
 	ChooseFileProps 

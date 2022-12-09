@@ -9,7 +9,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
-import { $isBusinessSubscription, $profileStore } from '../../../store';
+import {$isBusinessSubscription, $profileStore, updateProfileFx} from '../../../store';
 import {
     $isMeetingHostStore,
     $localUserStore,
@@ -53,7 +53,15 @@ const Component = () => {
             !isBusinessSubscription &&
             isMeetingHost
         ) {
-            setTimeLimitWarningEvent(true);
+            if (profile.maxMeetingTime > 20 * 60 * 1000) {
+                updateProfileFx({
+                    maxMeetingTime: profile.maxMeetingTime
+                }).then(() => {
+                    setTimeLimitWarningEvent(true);
+                });
+            } else {
+                setTimeLimitWarningEvent(true);
+            }
         }
         if (!isMeetingHost) {
             setTimeLimitWarningEvent(false);

@@ -1,16 +1,16 @@
 import type {
-    NextPage
+	NextPage 
 } from 'next';
 import React from 'react';
 import {
-    withStart
+	withStart 
 } from 'effector-next';
 import {
-    RoomsContainer
+	RoomsContainer 
 } from '@containers/RoomsContainer/RoomsContainer';
 
 import {
-    pageLoaded
+	pageLoaded 
 } from '../../src/store';
 
 const enhance = withStart(pageLoaded);
@@ -18,7 +18,7 @@ const enhance = withStart(pageLoaded);
 const RoomsPage: NextPage = (): JSX.Element => <RoomsContainer />;
 
 RoomsPage.getInitialProps = async () => ({
-    namespacesRequired: ['common', 'statistics', 'rooms', 'errors'],
+	namespacesRequired: ['common', 'statistics', 'rooms', 'errors'],
 });
 
 export default enhance(RoomsPage);

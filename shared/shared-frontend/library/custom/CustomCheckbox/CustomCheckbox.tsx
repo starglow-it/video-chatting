@@ -1,10 +1,12 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
-import { alpha, Checkbox, FormControlLabel } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from "@mui/material/FormControlLabel";
+import {alpha} from "@mui/material/styles";
 
 // icons
-import { CheckIcon } from '../../../icons';
+import { CheckIcon } from '../../../icons/OtherIcons/CheckIcon';
 import { CustomCheckboxProps } from './types';
 
 // styles

@@ -8,11 +8,11 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // common
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // components
 import { EnterMeetingName } from '@components/EnterMeetingName/EnterMeetingName';
@@ -209,7 +209,7 @@ const MeetingContainer = memo(() => {
     return (
         <>
             {Boolean(meetingTemplate?.id) && (
-                <ConditionalRender condition={isSettingsChecked && !isJoinMeetingPending}>
+                <ConditionalRender condition={isOwner ? !isJoinMeetingPending : isSettingsChecked}>
                     <ConditionalRender
                         condition={MeetingAccessStatusEnum.InMeeting !== localUser.accessStatus}
                     >

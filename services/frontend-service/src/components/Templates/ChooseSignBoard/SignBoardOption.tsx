@@ -3,21 +3,19 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { RadioIcon } from 'shared-frontend/icons/OtherIcons/RadioIcon';
+import { ColorPickerIcon } from 'shared-frontend/icons/OtherIcons/ColorPickerIcon';
+
 import { CustomRadio } from '@library/custom/CustomRadio/CustomRadio';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // components
 import FormControlLabel from '@mui/material/FormControlLabel';
-
-// icon
-import { RadioIcon, ColorPickerIcon } from 'shared-frontend/icons';
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './ChooseSignBoard.module.scss';

@@ -9,10 +9,10 @@ import { useToggle } from '@hooks/useToggle';
 
 // components
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
-import { EyeVisibilityIcon } from 'shared-frontend/icons';
+import { EyeVisibilityIcon } from 'shared-frontend/icons/OtherIcons/EyeVisibilityIcon';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // styles
 import styles from '@library/custom/CustomInput/CustomInput.module.scss';

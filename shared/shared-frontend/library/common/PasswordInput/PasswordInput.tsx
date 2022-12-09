@@ -1,12 +1,13 @@
 import React, { ForwardedRef, forwardRef, memo, useCallback } from 'react';
-import { IconButton, InputAdornment, TextField } from '@mui/material';
-import { TextFieldProps } from '@mui/material/TextField/TextField';
+import TextField, { TextFieldProps } from '@mui/material/TextField/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from "@mui/material/InputAdornment";
 
 // hooks
-import { useToggle } from '../../../hooks';
+import { useToggle } from '../../../hooks/useToggle';
 
 // components
-import { EyeVisibilityIcon } from '../../../icons';
+import { EyeVisibilityIcon } from '../../../icons/OtherIcons/EyeVisibilityIcon';
 
 // types
 import { PasswordInputProps } from './PasswordInput.types';
@@ -70,8 +71,6 @@ const Component = (
     );
 };
 
-const PasswordInput = memo<ComponentProps>(
-    forwardRef<HTMLInputElement, ComponentProps>(Component),
-);
+const PasswordInput = memo(forwardRef(Component));
 
 export default PasswordInput;

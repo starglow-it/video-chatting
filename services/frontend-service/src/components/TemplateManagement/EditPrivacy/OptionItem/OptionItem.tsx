@@ -2,16 +2,16 @@ import React, { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // types
 import { OptionItemProps } from '@components/TemplateManagement/EditPrivacy/OptionItem/types';
 
 // icons
-import { SuccessIcon } from 'shared-frontend/icons';
+import { SuccessIcon } from 'shared-frontend/icons/OtherIcons/SuccessIcon';
 
 // styles
 import { Translation } from '@library/common/Translation/Translation';

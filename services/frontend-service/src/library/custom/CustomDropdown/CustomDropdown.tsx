@@ -5,7 +5,7 @@ import { FormControl, InputLabel, Select } from '@mui/material';
 import { useLocalization } from '@hooks/useTranslation';
 
 // common
-import { RoundArrowIcon } from 'shared-frontend/icons';
+import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // types

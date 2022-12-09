@@ -7,17 +7,16 @@ import clsx from 'clsx';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
+
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // types
 import { UserVideoStubProps } from '@components/TemplateManagement/EditAttendeesPosition/UserVideoStub/types';
-
-// icons
-import { PersonIcon } from 'shared-frontend/icons';
-import { MicIcon } from 'shared-frontend/icons';
 
 // store
 import { $windowSizeStore } from '../../../../store';

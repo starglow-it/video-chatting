@@ -72,9 +72,11 @@ class BackgroundManagerInstance {
     }
 
     destroy() {
-        this.videoEffects?.destroy();
-        this.videoEffects = null;
-        this.effectBackground = null;
+        if (this.videoEffects) {
+            this.videoEffects?.destroy();
+            this.videoEffects = null;
+            this.effectBackground = null;
+        }
     }
 }
 

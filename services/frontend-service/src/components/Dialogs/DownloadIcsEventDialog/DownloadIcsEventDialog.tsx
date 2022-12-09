@@ -8,21 +8,21 @@ import {
 // custom
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomButton 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomButton';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomDialog 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomDialog';
 
 // components
 import {
 	DownloadIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/DownloadIcon';
 
 // stores
 import {

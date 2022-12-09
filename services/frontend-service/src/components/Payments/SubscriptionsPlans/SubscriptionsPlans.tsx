@@ -6,32 +6,29 @@ import { ClickAwayListener } from '@mui/base';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { RoundCheckIcon } from 'shared-frontend/icons/RoundIcons/RoundCheckIcon';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from 'shared-frontend/library';
 
 // common
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // components
 import { SubscriptionPlanItem } from '@components/Payments/SubscriptionsPlans/SubscriptionPlanItem';
-import {SubscriptionPlansWrapper} from "@components/Payments/SubscriptionsPlans/SubscritionPlansWrapper";
+import { SubscriptionPlansWrapper } from "@components/Payments/SubscriptionsPlans/SubscritionPlansWrapper";
 
 // types
 import {
     SubscriptionsPlansProps,
     TranslationFeatureItem,
-} from '@components/Payments/SubscriptionsPlans/types';
+} from './types';
 
 // hooks
 import { useLocalization } from '@hooks/useTranslation';
-
-// icons
-import { RoundCheckIcon } from 'shared-frontend/icons';
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
 
 // stores
 import { $productsStore, $profileStore, getStripeProductsFx } from '../../../store';
@@ -136,8 +133,9 @@ const Component = ({
             featuresPlans: TranslationFeatureItem[][];
         };
 
-        const renderFeature = featuresChunk => (
+        const renderFeature = (featuresChunk, index) => (
             <CustomGrid
+                key={index}
                 item
                 container
                 flexWrap="nowrap"
@@ -200,7 +198,7 @@ const Component = ({
             open={isSubscriptionStep}
         >
             <ConditionalRender condition={isProductsLoading}>
-                <WiggleLoader />
+                <CustomLoader />
             </ConditionalRender>
             <ConditionalRender condition={Boolean(products.length) && isSubscriptionStep}>
                 <ClickAwayListener onClickAway={handleClose}>

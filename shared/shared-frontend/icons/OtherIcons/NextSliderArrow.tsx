@@ -1,6 +1,6 @@
 import React, { useEffect, useState, memo } from 'react';
 
-import { RoundArrowIcon } from '../RoundIcons';
+import { RoundArrowIcon } from '../RoundIcons/RoundArrowIcon';
 
 import { SliderArrowProps } from '../types';
 

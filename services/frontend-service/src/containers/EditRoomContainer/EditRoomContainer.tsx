@@ -11,15 +11,14 @@ import { TemplateManagement } from '@components/TemplateManagement/TemplateManag
 import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // const
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
-import { UserTemplate } from '../../store/types';
 
 // store
 import {
@@ -40,13 +39,14 @@ import { convertToBase64 } from '../../utils/string/convertToBase64';
 
 // styles
 import styles from './EditRoomContainer.module.scss';
+import {IUserTemplate} from "shared-types";
 
 const Component = () => {
-    const prevTemplateDataRef = useRef<UserTemplate | null>(null);
+    const prevTemplateDataRef = useRef<IUserTemplate | null>(null);
     const isGetTemplateRequestIsPending = useStore(getEditingTemplateFx.pending);
     const isUpdateMeetingTemplateFilePending = useStore(uploadUserTemplateFileFx.pending);
 
-    const [template, setTemplate] = useState<UserTemplate | null>(null);
+    const [template, setTemplate] = useState<IUserTemplate | null>(null);
 
     const savedTemplateProgress = useRef<IUploadTemplateFormData | null>(null);
 
@@ -184,7 +184,7 @@ const Component = () => {
     if (isGetTemplateRequestIsPending) {
         return (
             <CustomGrid container className={styles.wrapper}>
-                <WiggleLoader className={styles.loader} />
+                <CustomLoader className={styles.loader} />
             </CustomGrid>
         );
     }

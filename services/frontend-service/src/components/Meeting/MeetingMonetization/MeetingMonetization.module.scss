@@ -21,7 +21,7 @@
   }
 
   &.active {
-    height: rem(100px);
+    height: rem(115px);
   }
 
   .amountInput {
@@ -58,4 +58,7 @@
 
 .button {
   margin: rem(20px 0 0 0);
+}
+.error {
+  position: relative;
 }

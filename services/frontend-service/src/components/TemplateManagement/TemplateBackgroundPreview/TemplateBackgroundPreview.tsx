@@ -1,21 +1,18 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomVideoPlayer } from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
-// utils
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
-
 // types
-import { TemplateBackgroundPreviewProps } from '@components/TemplateManagement/TemplateBackgroundPreview/TemplateBackgroundPreview.types';
-import { CustomVideoPlayerOptions } from '@library/custom/CustomVideoPlayer/types';
+import { TemplateBackgroundPreviewProps } from './TemplateBackgroundPreview.types';
+
+// utils
 import { isVideoFile } from '../../../utils/files/isVideoFile';
 
 // styles
@@ -26,19 +23,11 @@ const Component = ({ children, isFileUploading }: TemplateBackgroundPreviewProps
 
     const url = useWatch({ control, name: 'url' });
 
-    const videoJsOptions = useMemo(
-        (): CustomVideoPlayerOptions => ({
-            src: url ?? '',
-            type: 'video/mp4',
-        }),
-        [url],
-    );
-
     return (
         <CustomGrid className={styles.background}>
             <ConditionalRender condition={Boolean(url) && isVideoFile(url)}>
                 <CustomVideoPlayer
-                    options={videoJsOptions}
+                    src={url}
                     className={styles.player}
                     volume={0}
                     isPlaying
@@ -56,7 +45,7 @@ const Component = ({ children, isFileUploading }: TemplateBackgroundPreviewProps
             </ConditionalRender>
             <ConditionalRender condition={isFileUploading}>
                 <CustomPaper variant="black-glass" className={styles.loader}>
-                    <WiggleLoader />
+                    <CustomLoader />
                 </CustomPaper>
             </ConditionalRender>
             {children}

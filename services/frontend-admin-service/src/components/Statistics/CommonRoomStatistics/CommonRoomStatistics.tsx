@@ -7,8 +7,12 @@ import {
 } from 'shared-types';
 
 import {
-	CustomGrid, CustomPaper 
-} from 'shared-frontend/library';
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+
 import {
 	getRandomHexColor 
 } from 'shared-utils';

@@ -1,6 +1,6 @@
 import { attach, combine, sample, Store } from 'effector-next';
 import { isMobile } from 'shared-utils';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import {ICommonUser, IUserTemplate, MeetingAccessStatusEnum} from 'shared-types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
     $isOwner,
@@ -33,7 +33,6 @@ import {
     AppDialogsEnum,
     Meeting,
     MeetingUser,
-    UserTemplate,
     Profile,
     JoinMeetingResult,
 } from '../../../types';
@@ -60,7 +59,7 @@ export const sendEnterWaitingRoomSocketEvent = attach({
 
 export const sendJoinWaitingRoomSocketEvent = attach<
     void,
-    Store<{ profile: Profile; template: UserTemplate; localUser: MeetingUser }>,
+    Store<{ profile: ICommonUser; template: IUserTemplate; localUser: MeetingUser }>,
     typeof joinWaitingRoomSocketEvent
 >({
     effect: joinWaitingRoomSocketEvent,
@@ -71,7 +70,7 @@ export const sendJoinWaitingRoomSocketEvent = attach<
     }),
     mapParams: (
         data,
-        source: { profile: Profile; template: UserTemplate; localUser: MeetingUser },
+        source: { profile: Profile; template: IUserTemplate; localUser: MeetingUser },
     ) => ({
         profileId: source.profile?.id,
         profileUserName: source?.profile?.fullName,
@@ -80,6 +79,8 @@ export const sendJoinWaitingRoomSocketEvent = attach<
         isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
         accessStatus: source.localUser.accessStatus,
         isAuraActive: source.localUser.isAuraActive,
+        cameraStatus: source.localUser.cameraStatus,
+        micStatus: source.localUser.micStatus,
         maxParticipants: source.template.maxParticipants,
     }),
 });
@@ -157,7 +158,7 @@ export const sendCancelAccessMeetingRequestEvent = attach<
 
 export const sendUpdateMeetingTemplateSocketEvent = attach<
     void,
-    Store<{ template: UserTemplate }>,
+    Store<{ template: IUserTemplate }>,
     typeof updateMeetingTemplateSocketEvent
 >({
     effect: updateMeetingTemplateSocketEvent,

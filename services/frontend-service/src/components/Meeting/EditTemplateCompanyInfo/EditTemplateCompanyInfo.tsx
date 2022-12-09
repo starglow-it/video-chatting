@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
 import { EmailInput } from '@library/common/EmailInput/EmailInput';

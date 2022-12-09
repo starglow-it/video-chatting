@@ -1,5 +1,5 @@
-import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
 import { useCallback, useMemo, useState } from 'react';
+import {ValuesSwitcherItem} from "shared-frontend/types";
 
 type ValueType = string | number;
 

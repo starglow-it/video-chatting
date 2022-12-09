@@ -1,13 +1,10 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomVideoPlayerOptions } from '@library/custom/CustomVideoPlayer/types';
-
-// styles
-import { CustomVideoPlayer } from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // types
 import { MeetingBackgroundVideoProps } from './types';
@@ -27,14 +24,6 @@ const Component = ({ children, src, templateType }: MeetingBackgroundVideoProps)
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
-    const videoJsOptions = useMemo(
-        (): CustomVideoPlayerOptions => ({
-            src,
-            type: 'video/mp4',
-        }),
-        [src],
-    );
-
     return (
         <ConditionalRender condition={Boolean(src)}>
             <CustomGrid className={styles.backgroundVideo}>
@@ -43,7 +32,7 @@ const Component = ({ children, src, templateType }: MeetingBackgroundVideoProps)
                         isPlaying={!isScreenSharing}
                         isMuted={!isAudioBackgroundActive}
                         volume={backgroundAudioVolume}
-                        options={videoJsOptions}
+                        src={src}
                         className={styles.player}
                     />
                 </ConditionalRender>

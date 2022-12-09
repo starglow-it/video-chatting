@@ -2,22 +2,22 @@ import React, { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // types
-import { CustomImage } from 'shared-frontend/library';
 import { TemplateGeneralInfoProps } from './types';
-
-// shared
 
 // styles
 import styles from './TemplateGeneralInfo.module.scss';
+
+// const
 import { SIGN_BOARDS } from '../../../const/signBoards';
 
 const TemplateGeneralInfo = memo(

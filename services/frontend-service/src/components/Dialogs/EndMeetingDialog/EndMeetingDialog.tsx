@@ -1,38 +1,38 @@
 import React, {
-	memo, useCallback 
+	memo, useCallback
 } from 'react';
 import {
-	useStore 
+	useStore
 } from 'effector-react';
 import {
-	useRouter 
+	useRouter
 } from 'next/router';
 
 // hooks
 import {
-	useLocalization 
+	useLocalization
 } from '@hooks/useTranslation';
 
 // custom
 import {
-	CustomDialog 
-} from 'shared-frontend/library';
+	CustomDialog
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
-	CustomButton 
-} from 'shared-frontend/library';
+	CustomButton
+} from 'shared-frontend/library/custom/CustomButton';
 import {
-	CustomGrid 
-} from 'shared-frontend/library';
+	CustomGrid
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
-	CustomTypography 
+	CustomTypography
 } from '@library/custom/CustomTypography/CustomTypography';
 
 // stores
 import {
-	Translation 
+	Translation
 } from '@library/common/Translation/Translation';
 import {
-	appDialogsApi, $appDialogsStore 
+	appDialogsApi, $appDialogsStore
 } from '../../../store';
 import {
 	$isMeetingHostStore,
@@ -48,12 +48,12 @@ import styles from './EndMeetingDialog.module.scss';
 
 // types
 import {
-	AppDialogsEnum 
+	AppDialogsEnum
 } from '../../../store/types';
 
 // const
 import {
-	clientRoutes, dashboardRoute 
+	clientRoutes, dashboardRoute
 } from '../../../const/client-routes';
 
 const Component = () => {
@@ -63,11 +63,11 @@ const Component = () => {
 	const localUser = useStore($localUserStore);
 
 	const {
-		translation 
+		translation
 	} = useLocalization('meeting');
 
 	const {
-		endMeetingDialog 
+		endMeetingDialog
 	} = useStore($appDialogsStore);
 
 	const handleClose = useCallback(() => {
@@ -76,18 +76,19 @@ const Component = () => {
 		});
 	}, []);
 
-	const handleLeave = useCallback(async () => {
-		handleClose();
-		disconnectFromVideoChatEvent();
-		await sendLeaveMeetingSocketEvent();
-		await router.push(
-			localUser.isGenerated ? clientRoutes.welcomeRoute : dashboardRoute,
-		);
-	}, [localUser.isGenerated]);
+    const handleLeave = useCallback(async () => {
+        handleClose();
 
-	const handleEndMeeting = useCallback(async () => {
-		handleClose();
-		sendEndMeetingSocketEvent();
+        await sendLeaveMeetingSocketEvent();
+
+        disconnectFromVideoChatEvent();
+
+        await router.push(localUser.isGenerated ? clientRoutes.welcomeRoute : dashboardRoute);
+    }, [localUser.isGenerated]);
+
+    const handleEndMeeting = useCallback(async () => {
+        handleClose();
+        await sendEndMeetingSocketEvent();
 
 		disconnectFromVideoChatEvent();
 

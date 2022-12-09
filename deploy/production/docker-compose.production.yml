@@ -98,6 +98,7 @@ services:
       - STRIPE_PUBLIC_API_KEY
       - BASE_ENV_DOMAIN
       - SUPPORT_EMAIL
+      - GEOLOCATION_API_KEY
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=liveoffice_traefik"

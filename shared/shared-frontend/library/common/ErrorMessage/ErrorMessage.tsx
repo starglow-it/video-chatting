@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
 
-import { ErrorIcon } from '../../../icons';
+import { ErrorIcon } from '../../../icons/OtherIcons/ErrorIcon';
 
-import CustomTypography from '../../custom/CustomTypography/CustomTypography';
-import CustomGrid from '../../custom/CustomGrid/CustomGrid';
-import ConditionalRender from "../ConditionalRender/ConditionalRender";
+import { CustomTypography } from '../../custom/CustomTypography';
+import { CustomGrid } from '../../custom/CustomGrid';
+import { ConditionalRender } from "../ConditionalRender";
 
 import { ErrorMessageProps } from './ErrorMessage.types';
 

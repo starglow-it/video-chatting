@@ -35,7 +35,8 @@ split({
 	match: {
 		blockUserDialog: type => type === AdminDialogsEnum.blockUserDialog,
 		deleteUserDialog: type => type === AdminDialogsEnum.deleteUserDialog,
-		cancelCreateRoomDialog: type => type === AdminDialogsEnum.cancelCreateRoomDialog,
+		cancelCreateRoomDialog: type =>
+			type === AdminDialogsEnum.cancelCreateRoomDialog,
 	},
 	cases: {
 		deleteUserDialog: openDeleteUserDialogEvent,
@@ -49,7 +50,8 @@ split({
 	match: {
 		blockUserDialog: type => type === AdminDialogsEnum.blockUserDialog,
 		deleteUserDialog: type => type === AdminDialogsEnum.deleteUserDialog,
-		cancelCreateRoomDialog: type => type === AdminDialogsEnum.cancelCreateRoomDialog,
+		cancelCreateRoomDialog: type =>
+			type === AdminDialogsEnum.cancelCreateRoomDialog,
 	},
 	cases: {
 		deleteUserDialog: closeDeleteUserDialogEvent,

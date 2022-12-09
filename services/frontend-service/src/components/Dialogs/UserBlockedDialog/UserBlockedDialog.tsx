@@ -10,14 +10,6 @@ import {
 } from '@hooks/useTranslation';
 
 import {
-	CustomButton,
-	CustomDialog,
-	CustomGrid,
-	CustomImage,
-	CustomTypography,
-} from 'shared-frontend';
-
-import {
 	Translation 
 } from '@library/common/Translation/Translation';
 
@@ -32,6 +24,11 @@ import frontendConfig from '../../../const/config';
 import {
 	AppDialogsEnum 
 } from '../../../store/types';
+import {CustomDialog} from "shared-frontend/library/custom/CustomDialog";
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import {CustomImage} from "shared-frontend/library/custom/CustomImage";
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
 
 const Component = () => {
 	const {

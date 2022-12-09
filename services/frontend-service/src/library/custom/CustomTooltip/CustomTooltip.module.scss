@@ -6,6 +6,10 @@
   cursor: pointer;
 }
 
+.tooltip {
+  height: unset;
+}
+
 .blackGlass {
   .tooltip {
     background: rgba($primary-black, 0.6);

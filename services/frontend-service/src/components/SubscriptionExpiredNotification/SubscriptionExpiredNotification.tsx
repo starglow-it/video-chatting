@@ -3,16 +3,16 @@ import Snackbar from '@mui/material/Snackbar';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
+// hooks
+import { useLocalization } from '@hooks/useTranslation';
+
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomIconButton } from '@library/custom/CustomIconButton/CustomIconButton';
 
-// icons
-import { CloseIcon } from 'shared-frontend/icons';
-
 // styles
-import { useLocalization } from '@hooks/useTranslation';
 import styles from './SubscriptionExpiredNotification.module.scss';
 
 // stores

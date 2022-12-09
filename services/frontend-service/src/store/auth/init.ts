@@ -1,26 +1,30 @@
 import { forward, sample } from 'effector-next';
+import {USER_IS_BLOCKED} from "shared-const";
 
 import {
     $authStore,
     checkAuthFx,
     loginUserFx,
-    logoutUserFx,
+    logoutUserFx, refreshAuthFx,
     resetAuthErrorEvent,
     resetAuthStateEvent,
     setUserCountryFx,
 } from './model';
 import { clearProfileEvent, setProfileEvent } from '../profile/profile/model';
+import {appDialogsApi} from "../dialogs/init";
 
+// handlers
 import { handleLoginUser } from './handlers/handleLoginUser';
 import { handleCheckUserAuthentication } from './handlers/handleCheckUserAuthentication';
+import { handleRefreshUserAuthentication } from './handlers/handleRefreshUserAuthentication';
 import { handleLogoutUser } from './handlers/handleLogoutUser';
 import { handleSetUserCountry } from './handlers/handleSetUserCountry';
-import {appDialogsApi} from "../dialogs/init";
-import {AppDialogsEnum, DialogActionPayload} from "../types";
-import {USER_IS_BLOCKED} from "shared-const";
+// types
+import {AppDialogsEnum} from "../types";
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
+refreshAuthFx.use(handleRefreshUserAuthentication);
 logoutUserFx.use(handleLogoutUser);
 setUserCountryFx.use(handleSetUserCountry);
 
@@ -31,17 +35,16 @@ forward({
 
 sample({
     clock: loginUserFx.doneData,
-    filter: (state, payload) => !payload?.user?.country,
+    filter: (payload) => !payload?.user?.country,
     target: setUserCountryFx,
 });
 
-sample({
-    clock: loginUserFx.fail,
-    filter: (state, payload) => payload.error?.message === USER_IS_BLOCKED.message,
-    fn: (): DialogActionPayload => ({
-        dialogKey: AppDialogsEnum.userBlockedDialog,
-    }),
-    target: appDialogsApi.openDialog,
+loginUserFx.doneData.watch((payload) => {
+    if (payload?.error?.message === USER_IS_BLOCKED.message)  {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.userBlockedDialog,
+        })
+    }
 });
 
 forward({
@@ -55,7 +58,11 @@ forward({
 });
 
 $authStore
-    .on([loginUserFx.doneData, checkAuthFx.doneData, logoutUserFx.doneData], (state, data) => data)
+    .on([
+        loginUserFx.doneData,
+        checkAuthFx.doneData,
+        logoutUserFx.doneData
+    ], (state, data) => data)
     .on(resetAuthStateEvent, () => ({
         isAuthenticated: false,
     }))

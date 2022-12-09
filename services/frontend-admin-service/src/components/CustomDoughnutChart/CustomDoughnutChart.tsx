@@ -15,7 +15,8 @@ import {
 
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
+
 import {
 	PropsWithClassName 
 } from 'shared-frontend/types';

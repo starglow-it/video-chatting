@@ -1,8 +1,10 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
-import { FormControl, InputLabel, Select } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from "@mui/material/Select";
 
 // common
-import { RoundArrowIcon } from '../../../icons';
+import { RoundArrowIcon } from '../../../icons/RoundIcons/RoundArrowIcon';
 
 // types
 import { CustomDropdownProps } from './CustomDropdown.types';

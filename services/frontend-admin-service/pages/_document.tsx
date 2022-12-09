@@ -33,7 +33,7 @@ class MyDocument extends Document {
 					/>
 					<meta
 						name="theme-color"
-						content={baseTheme.palette.primary.main}
+						content={baseTheme?.palette?.primary?.main}
 					/>
 					<link
 						rel="stylesheet"

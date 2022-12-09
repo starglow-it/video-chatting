@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import App from 'next/app';
 import type {
 	AppContext, AppProps
@@ -78,12 +78,11 @@ import {
 	rootDomain
 } from '../src/store/domains';
 import {
-	dashboardRoute,
-	loginRoute,
-	profileRoute,
-	registerRoute,
-	setUpTemplateRoute,
-	welcomeRoute,
+    dashboardRoute,
+    loginRoute,
+    registerRoute,
+    setUpTemplateRoute,
+    welcomeRoute,
 } from '../src/const/client-routes';
 
 const {
@@ -114,33 +113,34 @@ const CustomApp = ({
 		});
 	}
 
-	return (
-		<CacheProvider value={emotionCache}>
-			<Head>
-				<title>{publicRuntimeConfig.applicationName}</title>
-				<meta
-					name="viewport"
-					content="initial-scale=1, width=device-width"
-				/>
-			</Head>
-			<Provider value={scope}>
-				<ThemeProvider theme={baseTheme}>
-					<ThemeProvider theme={typographyTheme}>
-						<ThemeProvider theme={uiTheme}>
-							<ThemeProvider theme={componentsTheme}>
-								<CssBaseline />
-								<GlobalStyles styles={globalStyles} />
-								<Layout>
-									<Component {...pageProps} />
-								</Layout>
-								<ToastsNotifications />
-							</ThemeProvider>
-						</ThemeProvider>
-					</ThemeProvider>
-				</ThemeProvider>
-			</Provider>
-		</CacheProvider>
-	);
+    useEffect(() => {
+        window.history.scrollRestoration = "manual";
+    }, []);
+
+    return (
+        <CacheProvider value={emotionCache}>
+            <Head>
+                <title>{publicRuntimeConfig.applicationName}</title>
+                <meta name="viewport" content="initial-scale=1, width=device-width" />
+            </Head>
+            <Provider value={scope}>
+                <ThemeProvider theme={baseTheme}>
+                    <ThemeProvider theme={typographyTheme}>
+                        <ThemeProvider theme={uiTheme}>
+                            <ThemeProvider theme={componentsTheme}>
+                                <CssBaseline />
+                                <GlobalStyles styles={globalStyles} />
+                                <Layout>
+                                    <Component {...pageProps} />
+                                </Layout>
+                                <ToastsNotifications />
+                            </ThemeProvider>
+                        </ThemeProvider>
+                    </ThemeProvider>
+                </ThemeProvider>
+            </Provider>
+        </CacheProvider>
+    );
 };
 
 CustomApp.getInitialProps = async (context: AppContext) => {
@@ -166,18 +166,16 @@ CustomApp.getInitialProps = async (context: AppContext) => {
         redirectTo(context?.ctx ?? null, loginRoute);
     }
 
-	let products = [];
-	let subscription = {
-	};
-	if (pathName === profileRoute) {
-		products = await getStripeProductsFx({
-			ctx: context?.ctx,
-		});
-		subscription = await getSubscriptionFx({
-			subscriptionId: data?.user?.stripeSubscriptionId,
-			ctx: context?.ctx,
-		});
-	}
+    let products = [];
+    let subscription = {};
+
+    if (pathName.includes('dashboard')) {
+        products = await getStripeProductsFx({ ctx: context?.ctx });
+        subscription = await getSubscriptionFx({
+            subscriptionId: data?.user?.stripeSubscriptionId,
+            ctx: context?.ctx,
+        });
+    }
 
 	props.pageProps.initialState = {
 		[`${$profileStore.sid}`]: {

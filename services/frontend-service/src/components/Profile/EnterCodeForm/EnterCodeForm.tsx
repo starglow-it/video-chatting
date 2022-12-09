@@ -7,13 +7,13 @@ import { useToggle } from '@hooks/useToggle';
 import { useCountDown } from '@hooks/useCountDown';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import { SuccessIcon } from 'shared-frontend/icons';
+import { SuccessIcon } from 'shared-frontend/icons/OtherIcons/SuccessIcon';
 
 // styles
 import { Translation } from '@library/common/Translation/Translation';

@@ -1,11 +1,12 @@
 import { attach, combine, Effect, sample, Store } from 'effector-next';
 
-import { EmitSocketEventPayload, SocketState, UserTemplate } from '../../types';
+import { EmitSocketEventPayload, SocketState } from '../../types';
 import { rootDomain } from '../../domains';
 import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
 import { createSocketEvent } from '../../socket/model';
 import { JoinRoomBeforeMeetingPayload } from '../../socket/types';
 import { DashboardSocketEmitters } from '../../../const/socketEvents/emitters';
+import {IUserTemplate} from "shared-types";
 
 export const meetingSocketDomain = rootDomain.createDomain('socketDomain');
 
@@ -28,7 +29,7 @@ export const meetingSocketEventRequest = meetingSocketDomain.effect<
 >('meetingSocketEventRequest');
 
 export const initiateMeetingSocketConnectionFx = meetingSocketDomain.effect<
-    { serverIp: UserTemplate['meetingInstance']['serverIp'] },
+    { serverIp: IUserTemplate['meetingInstance']['serverIp'] },
     SocketState
 >('initiateMeetingSocketConnectionFx');
 

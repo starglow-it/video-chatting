@@ -1,8 +1,11 @@
 import React, { memo, PropsWithChildren, useMemo} from "react";
 import clsx from "clsx";
 import { Fade } from "@mui/material";
-import { CustomGrid, CustomTypography, useNavigation } from "shared-frontend";
 import { planColors } from "shared-const";
+
+import {useNavigation} from "shared-frontend/hooks/useNavigation";
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
 
 import styles from './SubscriptionsPlans.module.scss';
 

@@ -46,4 +46,5 @@ export enum MeetingAccessStatusEnum {
   InMeeting = 'inMeeting',
   Rejected = 'rejected',
   Kicked = 'Kicked',
+  Left = 'Left',
 }

@@ -8,23 +8,34 @@ import clsx from 'clsx';
 
 // custom
 import {
-	CustomTooltip,
-	CustomDivider,
-	CustomGrid,
-	CustomPaper,
-} from 'shared-frontend/library';
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+import {
+	CustomDivider 
+} from 'shared-frontend/library/custom/CustomDivider';
+import {
+	CustomTooltip 
+} from 'shared-frontend/library/custom/CustomTooltip';
+import {
+	DiscoveryIcon 
+} from 'shared-frontend/icons/OtherIcons/DiscoveryIcon';
+import {
+	PeopleIcon 
+} from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import {
+	StatisticsIcon 
+} from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
+import {
+	ExitIcon 
+} from 'shared-frontend/icons/OtherIcons/ExitIcon';
+
+// components
 import {
 	Translation 
 } from '@components/Translation/Translation';
-import {
-	DiscoveryIcon,
-	PeopleIcon, StatisticsIcon
-} from 'shared-frontend/icons';
-
-// icons
-import {
-	ExitIcon 
-} from 'shared-frontend/icons';
 
 // stores
 import {

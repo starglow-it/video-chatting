@@ -2,17 +2,15 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-
-// common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { VideoEyeIcon } from 'shared-frontend/icons/OtherIcons/VideoEyeIcon';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // avatar
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // styles
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { VideoEyeIcon } from 'shared-frontend/icons';
 
 // styles
 import styles from './RoundedVideo.module.scss';

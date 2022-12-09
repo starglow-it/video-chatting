@@ -1,6 +1,6 @@
 import { getMeetingTemplateFx } from '../../meetingTemplate/model';
-import { UserTemplate } from '../../../../types';
+import {IUserTemplate} from "shared-types";
 
-export const handleUpdateMeetingTemplate = ({ templateId }: { templateId: UserTemplate['id'] }) => {
+export const handleUpdateMeetingTemplate = ({ templateId }: { templateId: IUserTemplate['id'] }) => {
     getMeetingTemplateFx({ templateId });
 };

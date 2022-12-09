@@ -3,14 +3,14 @@ import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
 // components
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // custom
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // icons
-import { EditIcon } from 'shared-frontend/icons';
+import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
 
 // stores
 import { $profileStore } from '../../store';

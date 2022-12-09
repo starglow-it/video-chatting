@@ -5,22 +5,20 @@ import { useStore } from 'effector-react';
 import { useToggle } from '@hooks/useToggle';
 
 // custom
-import { CustomButton } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
 
 // components
 import { EditProfileAvatar } from '@components/Profile/EditProfileAvatar/EditProfileAvatar';
 import { EditProfileEmailInfo } from '@components/Profile/EditProfileEmailInfo/EditProfileEmailInfo';
 import { EditProfilePasswordInfo } from '@components/Profile/EditProfilePasswordInfo/EditProfilePasswordInfo';
-
-// icons
-import { LockIcon } from 'shared-frontend/icons';
+import { Translation } from '@library/common/Translation/Translation';
 
 // stores
-import { Translation } from '@library/common/Translation/Translation';
 import { $profileStore } from '../../../store';
 
 // styles

@@ -5,7 +5,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { Counter, CounterDocument } from '../../schemas/counter.schema';
 
 import { ICounter } from 'shared-types';
-import {GetModelQuery, UpdateModelQuery} from "../../types/custom";
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 
 @Injectable()
 export class CountersService {
@@ -18,10 +18,7 @@ export class CountersService {
     return this.counter.create(data);
   }
 
-  async find({
-    query,
-    session,
-  }: GetModelQuery<CounterDocument>) {
+  async find({ query, session }: GetModelQuery<CounterDocument>) {
     return this.counter.find(query, {}, { session: session?.session }).exec();
   }
 

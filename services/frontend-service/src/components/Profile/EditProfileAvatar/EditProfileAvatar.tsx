@@ -7,17 +7,17 @@ import { ClickAwayListener } from '@mui/material';
 import { useToggle } from '@hooks/useToggle';
 
 // library
-import { EditRoundIcon } from 'shared-frontend/icons';
-import { UploadRoundIcon } from 'shared-frontend/icons';
-import { HiddenPaper } from '@library/common/HiddenPaper/HiddenPaper';
+import { EditRoundIcon } from 'shared-frontend/icons/OtherIcons/EditRoundIcon';
+import { UploadRoundIcon } from 'shared-frontend/icons/OtherIcons/UploadRoundIcon';
+import { HiddenPaper } from 'shared-frontend/library/common/HiddenPaper';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ChooseFile } from '@components/ChooseFile/ChooseFile';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomBox } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomList } from '@library/custom/CustomList/CustomList';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
@@ -84,8 +84,8 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
             onHideFileTypeError();
             onHideFileSizeError();
             await updateProfilePhotoFx({ file });
-            onCloseEditProfileAvatarMenu();
         }
+        onCloseEditProfileAvatarMenu();
     }, []);
 
     const handleDeleteProfilePhoto = useCallback(async () => {

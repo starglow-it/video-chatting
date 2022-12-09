@@ -19,6 +19,8 @@ export const initialProfileState = {
     businessCategories: [],
     signBoard: 'default',
     subscriptionPlanKey: 'House',
+    nextSubscriptionPlanKey: 'House',
+    prevSubscriptionPlanKey: 'House',
     stripeAccountId: '',
     stripeEmail: '',
     stripeSubscriptionId: '',

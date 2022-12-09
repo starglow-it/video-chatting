@@ -13,7 +13,7 @@ import {
   monetizationStatisticsData,
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
-import {executePromiseQueue} from "shared-utils";
+import { executePromiseQueue } from 'shared-utils';
 
 // services
 import { UsersService } from '../modules/users/users.service';

@@ -2,7 +2,7 @@ import React, { memo, useMemo, useState, useRef, useLayoutEffect } from 'react';
 import clsx from 'clsx';
 
 // custom
-import CustomGrid from '../../custom/CustomGrid/CustomGrid';
+import { CustomGrid } from '../../custom/CustomGrid';
 
 // components
 import { ValueSwitcherItem } from './ValueSwitcherItem';
@@ -13,12 +13,13 @@ import styles from './ValuesSwitcher.module.scss';
 // types
 import { ValueSwitcherProps } from './types';
 
-const Component = <ValueType extends string | number, Label extends string>({
+const Component = <ValueType extends string | number, Label extends string = string>({
     values,
     activeValue,
     onValueChanged,
     itemClassName,
     variant = 'primary',
+    width,
     className,
 }: ValueSwitcherProps<ValueType, Label>) => {
     const [activeElementIndex, setActiveElementIndex] = useState<number | null>(null);
@@ -52,7 +53,7 @@ const Component = <ValueType extends string | number, Label extends string>({
             '--width': `${activeElementRef.current?.clientWidth ?? 0}px`,
             left: left,
         } as React.CSSProperties;
-    }, [activeElementIndex]);
+    }, [activeElementIndex, width]);
 
     return (
         <CustomGrid
@@ -65,7 +66,7 @@ const Component = <ValueType extends string | number, Label extends string>({
                 [styles.transparent]: variant === 'transparent',
             })}
         >
-            <CustomGrid className={clsx(styles.transition)} style={style} container />
+            <CustomGrid className={styles.transition} style={style} container />
             {renderValues}
         </CustomGrid>
     );

@@ -6,7 +6,9 @@ import { useFormContext } from 'react-hook-form';
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton, CustomBox, CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
 import { useStore } from 'effector-react';

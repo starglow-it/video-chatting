@@ -7,21 +7,20 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { ShopIcon } from 'shared-frontend/icons/OtherIcons/ShopIcon';
+
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomButton } from 'shared-frontend/library';
-
-// common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
+import { Translation } from '@library/common/Translation/Translation';
 
 // components
-import { ShopIcon } from 'shared-frontend/icons';
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
 import { SubscriptionPlanCard } from '@components/Profile/SubscriptionPlanCard/SubscriptionPlanCard';
 
 // store
-import { Translation } from '@library/common/Translation/Translation';
 import {
     $isTrial,
     $productsStore,
@@ -49,10 +48,10 @@ const Component = () => {
     const subscription = useStore($subscriptionStore);
     const profile = useStore($profileStore);
     const products = useStore($productsStore);
+    const isTrial = useStore($isTrial);
 
     const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
     const isGetProductsPending = useStore(getStripeProductsFx.pending);
-    const isTrial = useStore($isTrial);
 
     const { translation } = useLocalization('subscriptions');
 
@@ -181,7 +180,7 @@ const Component = () => {
                     className={styles.plans}
                 >
                     {isGetProductsPending ? (
-                        <WiggleLoader />
+                        <CustomLoader />
                     ) : (
                         <>
                             {renderSubscriptionPlans}

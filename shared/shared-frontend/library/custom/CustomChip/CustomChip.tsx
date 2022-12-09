@@ -1,7 +1,7 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
-import { Chip } from '@mui/material';
+import Chip from '@mui/material/Chip';
 
 // types
 import { CustomChipProps } from './types';

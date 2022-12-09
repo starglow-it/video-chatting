@@ -1,11 +1,9 @@
 import React, { memo } from 'react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
 
 // styles
 import styles from './NotValidLink.module.scss';

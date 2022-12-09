@@ -8,7 +8,7 @@ import {
   CountryStatisticDocument,
 } from '../../schemas/country-statistic.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import {GetModelQuery, UpdateModelQuery} from "../../types/custom";
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 
 @Injectable()
 export class CountryStatisticsService {

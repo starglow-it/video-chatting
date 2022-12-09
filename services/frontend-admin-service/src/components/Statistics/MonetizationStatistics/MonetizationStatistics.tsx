@@ -16,15 +16,27 @@ import {
 	MonetizationStatisticPeriods 
 } from 'shared-types';
 
-// components
+// shared
 import {
-	ValuesSwitcher,
-	CustomPaper,
-	CustomTypography,
-	CustomGrid,
-	CustomImage,
-	WiggleLoader,
-} from 'shared-frontend/library';
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomImage 
+} from 'shared-frontend/library/custom/CustomImage';
+import {
+	CustomLoader
+} from 'shared-frontend/library/custom/CustomLoader';
+import {
+	ValuesSwitcher 
+} from 'shared-frontend/library/common/ValuesSwitcher';
+
+// components
 import {
 	Translation 
 } from '@components/Translation/Translation';
@@ -94,7 +106,7 @@ const Component = ({
 			{statistic.totalNumber === 0 ? (
 				<>
 					{isDataLoading ? (
-						<WiggleLoader className={styles.loader} />
+						<CustomLoader className={styles.loader} />
 					) : (
 						<CustomGrid
 							container

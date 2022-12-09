@@ -6,21 +6,19 @@ import { MenuItem } from '@mui/material';
 import { IBusinessCategory } from 'shared-types';
 import { AutocompleteType } from 'shared-frontend/types';
 
-import {ConditionalRender, CustomAutocomplete, ErrorMessage} from 'shared-frontend';
-
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // icons
-import { ArrowLeftIcon } from 'shared-frontend/icons';
-import { CustomLinkIcon } from 'shared-frontend/icons';
-import { ArrowDownIcon } from 'shared-frontend/icons';
-import { ArrowRightIcon } from 'shared-frontend/icons';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
+import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
+import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // types
 import { EditTemplateDescriptionProps } from '@components/TemplateManagement/EditTemplateDescription/types';

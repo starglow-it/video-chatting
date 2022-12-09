@@ -6,10 +6,10 @@ import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { useLocalization } from '@hooks/useTranslation';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
-import { RoundCloseIcon } from 'shared-frontend/icons';
+import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // types

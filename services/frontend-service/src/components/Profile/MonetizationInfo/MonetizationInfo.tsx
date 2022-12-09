@@ -2,18 +2,18 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { useStore } from 'effector-react';
 
 // icons
-import { MonetizationIcon } from 'shared-frontend/icons';
-import { StripeIcon } from 'shared-frontend/icons';
-import { ArrowIcon } from 'shared-frontend/icons';
+import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
+import { StripeIcon } from 'shared-frontend/icons/OtherIcons/StripeIcon';
+import { ArrowIcon } from 'shared-frontend/icons/OtherIcons/ArrowIcon';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
 import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // styles
 import styles from './MonetizationInfo.module.scss';
@@ -141,7 +141,7 @@ const MonetizationInfo = memo(() => {
                                     />
                                 </>
                             ) : (
-                                <WiggleLoader />
+                                <CustomLoader />
                             )}
                         </SocialLogin>
                     </CustomGrid>

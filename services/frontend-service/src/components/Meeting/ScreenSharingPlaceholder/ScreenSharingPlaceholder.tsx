@@ -3,9 +3,9 @@ import React, { memo } from 'react';
 // utils
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { getRandomNumber } from '../../../utils/functions/getRandomNumber';
 
 // shared

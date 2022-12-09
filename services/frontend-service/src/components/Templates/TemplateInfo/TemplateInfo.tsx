@@ -2,12 +2,12 @@ import React, { memo } from 'react';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // icons
-import { LockIcon } from 'shared-frontend/icons';
-import { PeopleIcon } from 'shared-frontend/icons';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // types
 import { PropsWithClassName } from 'shared-frontend/types';

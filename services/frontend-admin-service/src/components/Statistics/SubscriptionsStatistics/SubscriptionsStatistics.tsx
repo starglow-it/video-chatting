@@ -16,12 +16,20 @@ import {
 	PropsWithClassName 
 } from 'shared-frontend/types';
 import {
-	CustomImage,
-	CustomGrid,
-	CustomPaper,
-	CustomTypography,
-	WiggleLoader,
-} from 'shared-frontend/library';
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomImage 
+} from 'shared-frontend/library/custom/CustomImage';
+import {
+	CustomLoader
+} from 'shared-frontend/library/custom/CustomLoader';
 
 // components
 import {
@@ -72,7 +80,7 @@ const Component = ({
 			{statistic.totalNumber === 0 ? (
 				<>
 					{isGetSubscriptionsStatisticsPending ? (
-						<WiggleLoader className={styles.loader} />
+						<CustomLoader className={styles.loader} />
 					) : (
 						<CustomGrid
 							container

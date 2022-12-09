@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
+import { MainProfileWrapper } from '@components/MainProfileWrapper/MainProfileWrapper';
 import { PersonalInfoSection } from '@components/Profile/PersonalInfoSection/PersonalInfoSection';
 import { MainInfo } from '@components/Profile/MainInfo/MainInfo';
 

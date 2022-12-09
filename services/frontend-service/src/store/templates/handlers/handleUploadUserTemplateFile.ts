@@ -1,7 +1,6 @@
-import { ErrorState } from 'shared-types';
+import {ErrorState, IUserTemplate} from 'shared-types';
 import { generateFormData } from '../../../utils/form/generateFormData';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { UserTemplate } from '../../types';
 import { updateUserTemplateUrl } from '../../../utils/urls';
 import { UploadUserTemplateFilePayload, UploadUserTemplateFileResponse } from '../types';
 
@@ -10,7 +9,7 @@ export const handleUploadUserTemplateFile = async (
 ): Promise<UploadUserTemplateFileResponse> => {
     const formData = generateFormData(data);
 
-    const response = await sendRequestWithCredentials<UserTemplate, ErrorState>({
+    const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>({
         ...updateUserTemplateUrl({ templateId: data.templateId }),
         data: formData,
     });

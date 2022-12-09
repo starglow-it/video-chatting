@@ -10,21 +10,21 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // icons
-import { PeopleIcon } from 'shared-frontend/icons';
-import { NotesIcon } from 'shared-frontend/icons';
-import { MonetizationIcon } from 'shared-frontend/icons';
-import { CloseIcon } from 'shared-frontend/icons';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
+import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 
 // components
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MeetingMonetization } from '@components/Meeting/MeetingMonetization/MeetingMonetization';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
 import { MeetingUsersList } from '@components/Meeting/MeetingUsersList/MeetingUsersList';
 import { MeetingInviteParticipants } from '@components/Meeting/MeetingInviteParticipants/MeetingInviteParticipants';

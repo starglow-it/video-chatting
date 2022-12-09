@@ -3,7 +3,8 @@ import Fade from '@mui/material/Fade';
 import { Popper } from '@mui/material';
 import clsx from 'clsx';
 
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+
 import styles from './CustomPopper.module.scss';
 
 import { CustomPopperProps } from './types';

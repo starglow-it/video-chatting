@@ -3,8 +3,8 @@ import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { WiggleLoader } from '@library/common/WiggleLoader/WiggleLoader';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // components
 import { TemplateManagement } from '@components/TemplateManagement/TemplateManagement';
@@ -210,7 +210,7 @@ const Component = () => {
     if (isGetTemplateRequestIsPending) {
         return (
             <CustomGrid container className={styles.wrapper}>
-                <WiggleLoader className={styles.loader} />
+                <CustomLoader className={styles.loader} />
             </CustomGrid>
         );
     }

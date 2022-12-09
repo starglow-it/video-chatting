@@ -9,16 +9,16 @@ import { useMediaQuery } from '@mui/material';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomButton } from 'shared-frontend/library';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // common
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
-import { CenteredPaper } from '@library/common/CenteredPaper/CenteredPaper';
+import { CenteredPaper } from 'shared-frontend/library/common/CenteredPaper';
 
 // components
 import { ForgotPassword } from '@components/ForgotPassword/ForgotPassword';
@@ -26,7 +26,7 @@ import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPassword
 import { UserBlockedDialog } from "@components/Dialogs/UserBlockedDialog/UserBlockedDialog";
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
 import { Translation } from '@library/common/Translation/Translation';

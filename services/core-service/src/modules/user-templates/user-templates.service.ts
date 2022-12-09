@@ -18,7 +18,11 @@ import {
 // types
 import { IUserTemplate, ICommonTemplate } from 'shared-types';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import {CustomPopulateOptions, GetModelQuery, UpdateModelQuery} from '../../types/custom';
+import {
+  CustomPopulateOptions,
+  GetModelQuery,
+  UpdateModelQuery,
+} from '../../types/custom';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import {
   PreviewImage,
@@ -154,7 +158,10 @@ export class UserTemplatesService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<UserTemplateDocument, UserTemplateDocument>): Promise<any> {
+  }: UpdateModelQuery<
+    UserTemplateDocument,
+    UserTemplateDocument
+  >): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,

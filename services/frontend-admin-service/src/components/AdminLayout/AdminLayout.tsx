@@ -4,20 +4,31 @@ import React, {
 import {
 	useStore 
 } from 'effector-react';
-import {useRouter} from "next/router";
+import {
+	useRouter 
+} from 'next/router';
 
 // hooks
 import {
 	useBrowserDetect 
 } from 'shared-frontend/hooks/useBrowserDetect';
 
-// custom
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import CustomGrid from 'shared-frontend/library/custom/CustomGrid/CustomGrid';
-import ConditionalRender from 'shared-frontend/library/common/ConditionalRender/ConditionalRender';
+// shared
 import {
-	AdminNavigation
+	CustomBox 
+} from 'shared-frontend/library/custom/CustomBox';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	ConditionalRender 
+} from 'shared-frontend/library/common/ConditionalRender';
+
+// components
+import {
+	AdminNavigation 
 } from '@components/AdminNavigation/AdminNavigation';
+
 // types
 import {
 	AdminLayoutProps 
@@ -68,7 +79,12 @@ const Component = ({
 							/>
 						</CustomBox>
 					</ConditionalRender>
-					<ConditionalRender condition={authState?.isAuthenticated && isNeedToRenderNavigation}>
+					<ConditionalRender
+						condition={
+							authState?.isAuthenticated &&
+                            isNeedToRenderNavigation
+						}
+					>
 						<AdminNavigation />
 					</ConditionalRender>
 					{children}

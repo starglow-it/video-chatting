@@ -158,7 +158,13 @@ export class User {
     type: mongoose.Schema.Types.String,
     default: 'House',
   })
-  previousSubscriptionPlanKey: ICommonUser['previousSubscriptionPlanKey'];
+  nextSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: 'House',
+  })
+  prevSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,

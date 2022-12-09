@@ -1,4 +1,3 @@
-import { ErrorState } from 'shared-types';
-import { UserTemplate } from '../types';
+import {ErrorState, IUserTemplate} from 'shared-types';
 
-export type CreateMeetingResponse = { template?: UserTemplate; error?: ErrorState };
+export type CreateMeetingResponse = { template?: IUserTemplate; error?: ErrorState };

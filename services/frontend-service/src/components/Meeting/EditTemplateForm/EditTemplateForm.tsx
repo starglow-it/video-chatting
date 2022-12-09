@@ -1,18 +1,19 @@
 import React, { memo, useCallback, useState } from 'react';
 
 // custom
-import { CustomButton } from 'shared-frontend/library';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomAccordion } from 'shared-frontend/library/custom/CustomAccordion';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // icons
-import { CustomLinkIcon } from 'shared-frontend/icons';
-import { EditIcon } from 'shared-frontend/icons';
-import { PersonIcon } from 'shared-frontend/icons';
-import { MoneyIcon } from 'shared-frontend/icons';
+import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
+import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import { MoneyIcon } from 'shared-frontend/icons/OtherIcons/MoneyIcon';
+import { SignBoardIcon } from 'shared-frontend/icons/OtherIcons/SignBoardIcon';
 import { Socials } from '@components/Socials/Socials';
-import { SignBoardIcon } from 'shared-frontend/icons';
 
 // components
 import { EditTemplatePersonalInfo } from '@components/Meeting/EditTemplatePersonalInfo/EditTemplatePersonalInfo';
@@ -22,7 +23,6 @@ import { ChooseSignBoard } from '@components/Templates/ChooseSignBoard/ChooseSig
 
 // styles
 import { Translation } from '@library/common/Translation/Translation';
-import { CustomAccordion } from 'shared-frontend';
 import styles from './EditTemplateForm.module.scss';
 
 const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {

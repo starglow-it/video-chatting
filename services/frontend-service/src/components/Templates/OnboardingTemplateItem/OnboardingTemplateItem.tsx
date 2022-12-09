@@ -3,20 +3,18 @@ import { Fade } from '@mui/material';
 import { useRouter } from 'next/router';
 
 // custom
-import { CustomButton } from 'shared-frontend/library';
-import { CustomGrid } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
+import { Translation } from '@library/common/Translation/Translation';
 
 // types
-import { CustomImage } from 'shared-frontend/library';
 import { ICommonTemplate } from 'shared-types';
-import { Translation } from '@library/common/Translation/Translation';
 import { AppDialogsEnum } from '../../../store/types';
-
-// shared
 
 // stores
 import { setPreviewTemplate, appDialogsApi } from '../../../store';

@@ -5,25 +5,39 @@ import {
 	useStore 
 } from 'effector-react';
 import debounce from '@mui/utils/debounce';
-import {
-	Slide 
-} from '@mui/material';
+import Slide from '@mui/material/Slide';
 import clsx from 'clsx';
 
 import {
 	useLocalization 
 } from '@hooks/useTranslation';
 
+// shared
 import {
-	CustomGrid,
-	CustomPaper,
-	CustomTable,
-	CustomTypography,
-	CustomChip,
-	CustomSearch,
-	CustomImage,
-	usePrevious,
-} from 'shared-frontend';
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+import {
+	CustomTable 
+} from 'shared-frontend/library/custom/CustomTable';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomChip 
+} from 'shared-frontend/library/custom/CustomChip';
+import {
+	CustomSearch 
+} from 'shared-frontend/library/custom/CustomSearch';
+import {
+	CustomImage 
+} from 'shared-frontend/library/custom/CustomImage';
+import {
+	usePrevious 
+} from 'shared-frontend/hooks/usePrevious';
+
 import {
 	ICommonUser 
 } from 'shared-types';

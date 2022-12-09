@@ -6,18 +6,18 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import Linkify from 'linkify-react';
 
 // hooks
-import { useToggle } from '@hooks/useToggle';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // icons
-import { RoundCloseIcon } from 'shared-frontend/icons';
-import { CopyIcon } from 'shared-frontend/icons';
+import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
+import { CopyIcon } from 'shared-frontend/icons/OtherIcons/CopyIcon';
 
 // types
 import { MeetingNote, NotificationType } from '../../../store/types';

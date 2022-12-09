@@ -12,7 +12,7 @@ import {
 // library
 import {
 	PlusAddIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/PlusAddIcon';
 
 // custom
 import {
@@ -20,7 +20,7 @@ import {
 } from '@library/custom/CustomDropdown/CustomDropdown';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomScroll 
 } from '@library/custom/CustomScroll/CustomScroll';

@@ -1,9 +1,11 @@
 import {
-	Theme
+	Theme 
 } from '@mui/material/styles';
 
 import createTheme from '@mui/material/styles/createTheme';
-import {alpha} from "@mui/system";
+import {
+	alpha 
+} from '@mui/system';
 
 export const componentsTheme = (theme: Theme) =>
 	createTheme({
@@ -492,7 +494,9 @@ export const componentsTheme = (theme: Theme) =>
 			MuiChip: {
 				variants: [
 					{
-						props: { size: 'small' },
+						props: {
+							size: 'small',
+						},
 						style: {
 							height: '32px',
 							fontSize: theme.typography.pxToRem(14),
@@ -500,7 +504,9 @@ export const componentsTheme = (theme: Theme) =>
 						},
 					},
 					{
-						props: { size: 'medium' },
+						props: {
+							size: 'medium',
+						},
 						style: {
 							height: '44px',
 							borderRadius: '22px',
@@ -509,7 +515,9 @@ export const componentsTheme = (theme: Theme) =>
 						},
 					},
 					{
-						props: { variant: 'custom-squared' },
+						props: {
+							variant: 'custom-squared',
+						},
 						style: {
 							borderRadius: '6px',
 
@@ -530,7 +538,8 @@ export const componentsTheme = (theme: Theme) =>
 
 						'&:hover': {
 							boxShadow: `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
-							backgroundColor: theme.designSystemColors.white.primary,
+							backgroundColor:
+                                theme.designSystemColors.white.primary,
 							color: theme.designSystemColors.black.primary,
 						},
 					},

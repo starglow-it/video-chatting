@@ -4,7 +4,7 @@ import React, {
 
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
@@ -14,10 +14,10 @@ import {
 
 import {
 	ActionButton 
-} from '@library/common/ActionButton/ActionButton';
+} from 'shared-frontend/library/common/ActionButton';
 import {
 	DoubleArrowIcon 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/DoubleArrowIcon';
 
 import styles from './Footer.module.scss';
 

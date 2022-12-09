@@ -32,6 +32,7 @@ export const generateIcsEventData = async ({
     start: [year, month, day, startHours, startMinutes],
     duration: { hours, minutes },
     title: 'Scheduled Meeting',
+    // description: 'X-ALT-DESC;FMTTYPE=text/html:<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"><HTML><BODY><a href="https://google.com" target="_blank">LinkText</a></BODY></HTML>',
     description: comment,
     status: 'CONFIRMED',
     method: 'REQUEST',

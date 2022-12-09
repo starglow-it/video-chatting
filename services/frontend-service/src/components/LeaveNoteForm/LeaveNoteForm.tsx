@@ -10,14 +10,14 @@ import { makeStyles } from '@mui/styles';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
+import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // components
-import { AcceptIcon } from 'shared-frontend/icons';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { DeleteIcon } from 'shared-frontend/icons';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // const
 import { MAX_NOTE_CONTENT } from '../../const/general';

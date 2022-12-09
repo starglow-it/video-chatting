@@ -32,7 +32,11 @@ import { Counters } from 'shared-types';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
 // types
-import {CustomPopulateOptions, GetModelQuery, UpdateModelQuery} from '../../types/custom';
+import {
+  CustomPopulateOptions,
+  GetModelQuery,
+  UpdateModelQuery,
+} from '../../types/custom';
 
 // const
 import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
@@ -110,7 +114,11 @@ export class CommonTemplatesService {
       .findOne(
         query,
         {},
-        { session: session?.session, populate: populatePaths, sort: options?.sort },
+        {
+          session: session?.session,
+          populate: populatePaths,
+          sort: options?.sort,
+        },
       )
       .exec();
   }
@@ -147,7 +155,10 @@ export class CommonTemplatesService {
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<CommonTemplateDocument, CommonTemplateDocument>): Promise<any> {
+  }: UpdateModelQuery<
+    CommonTemplateDocument,
+    CommonTemplateDocument
+  >): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,

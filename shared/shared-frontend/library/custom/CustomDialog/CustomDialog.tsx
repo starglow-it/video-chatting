@@ -1,8 +1,10 @@
 import React, { memo } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogProps } from '@mui/material';
+import Dialog, { DialogProps } from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
 
 // icons
-import { RoundCloseIcon } from '../../../icons';
+import { RoundCloseIcon } from '../../../icons/RoundIcons/RoundCloseIcon';
 
 // types
 import { CustomDialogProps } from './types';

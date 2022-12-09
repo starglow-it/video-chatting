@@ -4,15 +4,13 @@ import { useStore } from 'effector-react';
 import { Fade } from '@mui/material';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { CheckIcon } from 'shared-frontend/icons/OtherIcons/CheckIcon';
 
-// custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CheckIcon } from 'shared-frontend/icons';
-import { CustomImage } from 'shared-frontend/library';
+// styles
 import styles from './ReplaceTemplateItem.module.scss';
-
-// shared
 
 // stores
 import { $deleteProfileTemplateId } from '../../../store';

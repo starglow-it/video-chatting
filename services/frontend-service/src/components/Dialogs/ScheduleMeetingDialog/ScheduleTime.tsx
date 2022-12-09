@@ -14,7 +14,7 @@ import {
 } from '@library/custom/CustomDropdown/CustomDropdown';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';

@@ -17,11 +17,11 @@ import {
 import {
 	CacheProvider, EmotionCache 
 } from '@emotion/react';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import {
-	ThemeProvider 
-} from '@mui/material/styles';
+	GlobalStyles 
+} from '@mui/styled-engine';
 import CssBaseline from '@mui/material/CssBaseline';
-import GlobalStyles from '@mui/material/GlobalStyles';
 
 // components
 import {
@@ -33,8 +33,8 @@ import {
 
 // hooks
 import {
-	useScope
-} from "@hooks/useScope";
+	useScope 
+} from '@hooks/useScope';
 
 // stores
 import {

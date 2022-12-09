@@ -4,7 +4,7 @@ import { Theme } from '@mui/material';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // types
 import { PropsWithClassName } from 'shared-frontend/types';

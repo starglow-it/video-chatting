@@ -2,18 +2,19 @@ import React, { memo, useCallback } from 'react';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
 // custom
-import { CustomButton } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // stripe
-import { StripeIcon } from 'shared-frontend/icons';
+import { StripeIcon } from 'shared-frontend/icons/OtherIcons/StripeIcon';
 import { StripeCardNumber } from '@components/Stripe/StripeCardNumber/StripeCardNumber';
 import { StripeCardExpiry } from '@components/Stripe/StripeCardExpiry/StripeCardExpiry';
 import { StripeCardCvc } from '@components/Stripe/StripeCardCvc/StripeCardCvc';
 
 // styles
-import { CardDataFormProps } from '@components/Payments/CardDataForm/types';
+import { CardDataFormProps } from './types';
+
 import styles from './CardDataForm.module.scss';
 
 // types

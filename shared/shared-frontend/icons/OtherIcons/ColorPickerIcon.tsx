@@ -1,4 +1,4 @@
-import { CommonIconProps } from '@library/types';
+import { CommonIconProps } from '../types';
 import { memo } from 'react';
 import { SvgIconWrapper } from '../SvgIconWrapper';
 
@@ -18,4 +18,4 @@ const Icon = ({ width, height, className, onClick }: CommonIconProps) => (
     </SvgIconWrapper>
 );
 
-export const ColorPickerIcon = memo<CommonIconProps>(Icon);
+export const ColorPickerIcon = memo(Icon);

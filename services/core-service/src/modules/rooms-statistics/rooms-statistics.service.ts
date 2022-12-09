@@ -7,7 +7,7 @@ import {
   RoomStatistic,
   RoomStatisticDocument,
 } from '../../schemas/room-statistic.schema';
-import {GetModelQuery, UpdateModelQuery} from "../../types/custom";
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 
 @Injectable()
 export class RoomsStatisticsService {

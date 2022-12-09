@@ -2,12 +2,14 @@ import React, { memo, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 // library
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { Translation } from '@library/common/Translation/Translation';
+
+import styles from './EnterPasswordForm.module.scss'
 
 const EnterPasswordForm = memo(
     ({ onPasswordEntered, onCancel }: { onPasswordEntered: () => void; onCancel: () => void }) => {
@@ -31,6 +33,7 @@ const EnterPasswordForm = memo(
                     nameSpace="profile"
                     translation="editProfile.password"
                     error={errors?.password?.[0]?.message}
+                    errorClassName={styles.error}
                     {...register('password')}
                 />
                 <CustomGrid container gap={2} wrap="nowrap">

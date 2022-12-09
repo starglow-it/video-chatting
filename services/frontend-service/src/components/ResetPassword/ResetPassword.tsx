@@ -9,8 +9,8 @@ import { useToggle } from '@hooks/useToggle';
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomButton } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
@@ -18,7 +18,7 @@ import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 
 // shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
 import { Translation } from '@library/common/Translation/Translation';

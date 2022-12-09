@@ -5,7 +5,7 @@ import { stopStream } from '../../../../../helpers/media/stopStream';
 import {
     setAudioErrorEvent,
     setChangeStreamEvent,
-    setCurrentAudioDeviceEvent,
+    setCurrentAudioDeviceEvent, setCurrentVideoDeviceEvent,
     setVideoErrorEvent,
 } from '../model';
 import { ChangeStreamPayload } from '../../types';
@@ -44,8 +44,8 @@ export const handleChangeStream = async ({ kind, deviceId, stream }: ChangeStrea
             ) {
                 stopStream(stream);
 
-                setCurrentAudioDeviceEvent((newAudioDevice || oldVideoDevice) as string);
-                setCurrentAudioDeviceEvent((newVideoDevice || oldAudioDevice) as string);
+                setCurrentVideoDeviceEvent((newVideoDevice || oldVideoDevice) as string);
+                setCurrentAudioDeviceEvent((newAudioDevice || oldAudioDevice) as string);
 
                 setChangeStreamEvent(newStream?.stream);
             } else {

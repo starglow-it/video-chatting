@@ -3,26 +3,24 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDivider } from 'shared-frontend/library';
+import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
 import { TagItem } from '@library/common/TagItem/TagItem';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { CustomButton } from 'shared-frontend/library';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 
 // components
 import { UserVideoStub } from '@components/TemplateManagement/EditAttendeesPosition/UserVideoStub/UserVideoStub';
+import { Translation } from '@library/common/Translation/Translation';
 
 // types
 import { ParticipantPosition } from '@containers/CreateRoomContainer/types';
-import { TemplatePreviewProps } from '@components/TemplateManagement/TemplatePreview/types';
-
-// icons
-import { ArrowLeftIcon } from 'shared-frontend/icons';
+import { TemplatePreviewProps } from './types';
 
 // store
-import { Translation } from '@library/common/Translation/Translation';
 import { $windowSizeStore } from '../../../store';
 
 // styles

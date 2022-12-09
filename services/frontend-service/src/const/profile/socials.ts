@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { InstagramIcon } from 'shared-frontend/icons';
-import { TwitterIcon } from 'shared-frontend/icons';
-import { LinkedInIcon } from 'shared-frontend/icons';
-import { YoutubeIcon } from 'shared-frontend/icons';
-import { FacebookIcon } from 'shared-frontend/icons';
-import { CustomLinkIcon } from 'shared-frontend/icons';
+import { InstagramIcon } from 'shared-frontend/icons/OtherIcons/InstagramIcon';
+import { TwitterIcon } from 'shared-frontend/icons/OtherIcons/TwitterIcon';
+import { LinkedInIcon } from 'shared-frontend/icons/OtherIcons/LinkedInIcon';
+import { YoutubeIcon } from 'shared-frontend/icons/OtherIcons/YoutubeIcon';
+import { FacebookIcon } from 'shared-frontend/icons/OtherIcons/FacebookIcon';
+import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 
 import { ISocialLink } from 'shared-types';
 import { SocialLinkKeysEnum } from '../../store/types';

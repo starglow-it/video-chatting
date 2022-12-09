@@ -1,5 +1,5 @@
-import { ICommonTemplate, ICommonUser, QueryParams } from 'shared-types';
-import { EntityList, UserTemplate } from '../types';
+import {ICommonTemplate, ICommonUser, IUserTemplate, QueryParams} from 'shared-types';
+import { EntityList } from '../types';
 import { templatesDomain } from './domain/model';
 import {
     AddTemplateToUserEffectPayload,
@@ -27,7 +27,7 @@ const initialTemplatesStore: EntityList<ICommonTemplate> = {
     count: 0,
 };
 
-const initialUserTemplatesStore: EntityList<UserTemplate> = {
+const initialUserTemplatesStore: EntityList<IUserTemplate> = {
     list: [],
     count: 0,
 };
@@ -38,11 +38,11 @@ export const $templatesStore =
 export const $setUpTemplateStore = templatesDomain.createStore<ICommonTemplate | null>(null);
 export const $templatePreviewStore = templatesDomain.createStore<ICommonTemplate | null>(null);
 export const $discoveryTemplatesStore =
-    templatesDomain.createStore<EntityList<UserTemplate>>(initialUserTemplatesStore);
-export const $scheduleTemplateIdStore = templatesDomain.createStore<UserTemplate['id']>('');
+    templatesDomain.createStore<EntityList<IUserTemplate>>(initialUserTemplatesStore);
+export const $scheduleTemplateIdStore = templatesDomain.createStore<IUserTemplate['id']>('');
 export const $scheduleEventLinkStore = templatesDomain.createStore<string>('');
 export const $replaceTemplateIdStore = templatesDomain.createStore<ICommonTemplate['id']>('');
-export const $templateDraft = templatesDomain.createStore<ICommonTemplate | UserTemplate | null>(
+export const $templateDraft = templatesDomain.createStore<ICommonTemplate | IUserTemplate | null>(
     null,
 );
 
@@ -76,19 +76,19 @@ export const getTemplateFx = templatesDomain.effect<
 
 export const getUsersTemplatesFx = templatesDomain.effect<
     QueryParams,
-    EntityList<UserTemplate> | null | undefined,
+    EntityList<IUserTemplate> | null | undefined,
     void
 >('getUsersTemplatesFx');
 
 export const getUserTemplateFx = templatesDomain.effect<
     GetUserTemplatePayload,
-    UserTemplate | null | undefined,
+    IUserTemplate | null | undefined,
     void
 >('getUserTemplateFx');
 
 export const getUserTemplateByIdFx = templatesDomain.effect<
     GetUserTemplateByIdPayload,
-    UserTemplate | null | undefined,
+    IUserTemplate | null | undefined,
     void
 >('getUserTemplateByIdFx');
 

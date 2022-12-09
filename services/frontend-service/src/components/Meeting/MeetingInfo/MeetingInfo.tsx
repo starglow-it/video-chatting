@@ -2,23 +2,23 @@ import React, { ForwardedRef, forwardRef, memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // icons
-import { InfoIcon } from 'shared-frontend/icons';
-import { PeopleIcon } from 'shared-frontend/icons';
-import { EmailIcon } from 'shared-frontend/icons';
-import { LanguageIcon } from 'shared-frontend/icons';
+import { InfoIcon } from 'shared-frontend/icons/OtherIcons/InfoIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { EmailIcon } from 'shared-frontend/icons/OtherIcons/EmailIcon';
+import { LanguageIcon } from 'shared-frontend/icons/OtherIcons/LanguageIcon';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
 
 // stores

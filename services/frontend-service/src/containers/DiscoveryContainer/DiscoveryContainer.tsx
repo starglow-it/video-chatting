@@ -3,19 +3,19 @@ import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
 
 // components
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
-import { MainProfileWrapper } from '@library/common/MainProfileWrapper/MainProfileWrapper';
+import { MainProfileWrapper } from '@components/MainProfileWrapper/MainProfileWrapper';
 import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem/DiscoverTemplateItem';
 
 // stores
-import { CustomImage } from 'shared-frontend/library';
-import { ICommonTemplate } from 'shared-types';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import {ICommonTemplate, IUserTemplate} from 'shared-types';
 import {
     $discoveryTemplatesStore,
     getUsersTemplatesFx,
@@ -29,7 +29,7 @@ import {
 import styles from './DiscoveryContainer.module.scss';
 
 // types
-import { AppDialogsEnum, UserTemplate } from '../../store/types';
+import { AppDialogsEnum } from '../../store/types';
 import { getClientMeetingUrl } from '../../utils/urls';
 
 const DiscoveryContainer = memo(() => {
@@ -85,7 +85,7 @@ const DiscoveryContainer = memo(() => {
                         translation="pages.discovery"
                     />
                 </CustomGrid>
-                <TemplatesGrid<UserTemplate>
+                <TemplatesGrid<IUserTemplate>
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleUserTemplatesPageChange}

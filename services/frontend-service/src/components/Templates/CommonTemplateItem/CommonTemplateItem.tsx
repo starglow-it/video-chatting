@@ -4,18 +4,16 @@ import { Fade } from '@mui/material';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { CustomButton } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { Translation } from '@library/common/Translation/Translation';
 
 // components
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
-// shared
-import { CustomImage } from 'shared-frontend/library';
-
 // stores
-import { Translation } from '@library/common/Translation/Translation';
 import {
     $isBusinessSubscription,
     $profileStore,

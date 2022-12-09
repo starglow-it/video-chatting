@@ -70,6 +70,15 @@
   .item {
     height: rem(34px);
     padding: rem(6px 8px);
+
+    &.disabled {
+      cursor: default;
+      color: $normal-gray-scale;
+    }
   }
+}
+
+.tooltip {
+  z-index: 1500;
 }
 

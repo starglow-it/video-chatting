@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import { TimeoutTypesEnum } from 'shared-types';
+import {MeetingAccessStatusEnum, TimeoutTypesEnum} from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 import { MeetingTimeService } from '../meeting-time/meeting-time.service';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
@@ -64,22 +64,18 @@ export class MeetingsCommonService {
   }
 
   async handleClearMeetingData({ templateId, userId, instanceId, meetingId, session }) {
-    this.taskService.deleteTimeout({
-      name: `meeting:finish:${meetingId}`,
-    });
-
-    await this.usersService.deleteMany({ meeting: meetingId }, session);
+    await this.usersService.updateMany({ meeting: meetingId }, { accessStatus: MeetingAccessStatusEnum.Left }, session);
 
     await this.meetingsService.deleteById({ meetingId }, session);
 
-    this.coreService.updateMeetingInstance({
+    await this.coreService.updateMeetingInstance({
       instanceId,
       data: {
         owner: null,
       },
     });
 
-    this.coreService.updateUserTemplate({
+    await this.coreService.updateUserTemplate({
       templateId,
       userId,
       data: { meetingInstance: null }

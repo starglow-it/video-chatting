@@ -4,18 +4,18 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
 // custom
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomGrid, CustomBox, CustomButton } from 'shared-frontend/library';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { Translation } from '@library/common/Translation/Translation';
 
 // helper
-import { CustomImage } from 'shared-frontend/library';
 import { ISocialLink } from 'shared-types';
-import { Translation } from '@library/common/Translation/Translation';
 import { reduceValuesNumber } from '../../../helpers/mics/reduceKeysNumber';
 import { padArray } from '../../../utils/arrays/padArray';
-
-// shared
 
 // styles
 import styles from './SubmitProfileInfo.module.scss';

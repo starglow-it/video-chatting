@@ -1,4 +1,4 @@
-import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
+import {ValuesSwitcherItem} from "shared-frontend/types";
 
 export const currencies: Record<string, string> = {
     cad: 'C$',

@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef } from 'react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // styles
 import styles from './ScreenSharingVideo.module.scss';

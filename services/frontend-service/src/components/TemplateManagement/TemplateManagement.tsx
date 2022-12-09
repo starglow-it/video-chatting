@@ -4,19 +4,23 @@ import { useRouter } from 'next/router';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
-// store
-
-// const
-
 // custom
-import { ValuesSwitcherItem } from '@library/common/ValuesSwitcher/types';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
+
+// icons
+import { ImagePlaceholderIcon } from 'shared-frontend/icons/OtherIcons/ImagePlaceholderIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+
+// library
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { ValuesSwitcher } from '@library/common/ValuesSwitcher/ValuesSwitcher';
+import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // components
 import { ConfirmCancelRoomCreationDialog } from '@components/Dialogs/ConfirmCancelRoomCreationDialog/ConfirmCancelRoomCreationDialog';
@@ -27,22 +31,15 @@ import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttend
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
 
-// icons
-import { ImagePlaceholderIcon } from 'shared-frontend/icons';
-import { PeopleIcon } from 'shared-frontend/icons';
-import { LockIcon } from 'shared-frontend/icons';
-import { CloseIcon } from 'shared-frontend/icons';
-
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useValueSwitcher } from '@hooks/useValueSwitcher';
 import { usePrevious } from '@hooks/usePrevious';
-import { useToggle } from '@hooks/useToggle';
 
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { TemplateManagementProps } from '@components/TemplateManagement/TemplateManagement.types';
-import { customTemplateLinkSchema } from 'shared-frontend';
+import { customTemplateLinkSchema } from 'shared-frontend/validation';
 import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from '../../const/templates/info';
 import { dashboardRoute } from '../../const/client-routes';
 import {
@@ -67,6 +64,7 @@ import styles from './TemplateManagement.module.scss';
 // utils
 import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 import { parseBase64 } from '../../utils/string/parseBase64';
+import {ValuesSwitcherItem} from "shared-frontend/types";
 
 enum TabsValues {
     Background = 1,

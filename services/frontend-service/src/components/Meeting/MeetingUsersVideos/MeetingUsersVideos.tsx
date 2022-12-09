@@ -10,8 +10,8 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { MeetingUserVideoItem } from '@components/Meeting/MeetingUserVideoItem/MeetingUserVideoItem';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';

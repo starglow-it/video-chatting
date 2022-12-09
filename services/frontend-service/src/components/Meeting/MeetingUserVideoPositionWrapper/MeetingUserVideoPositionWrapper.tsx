@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import clsx from 'clsx';
 
 // custom
-import { CustomBox } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // types
 import { MeetingUserVideoPositionWrapperProps } from './types';

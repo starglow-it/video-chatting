@@ -4,14 +4,14 @@ import clsx from 'clsx';
 
 import { Theme } from '@mui/material';
 
-// store
-
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // styles
 import styles from '@components/Profile/MainInfo/MainInfo.module.scss';
+
+// stores
 import { $profileStore } from '../../../store';
 
 // const

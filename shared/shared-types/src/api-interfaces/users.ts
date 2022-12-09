@@ -2,8 +2,7 @@ import {
   IBusinessCategory,
   ILanguage,
   ISocialLink,
-  IProfileAvatar,
-  PlanKeys,
+  IProfileAvatar, PlanKeys,
 } from './common';
 
 export enum UserRoles {
@@ -35,7 +34,8 @@ export interface ICommonUser {
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
   subscriptionPlanKey?: PlanKeys;
-  previousSubscriptionPlanKey?: PlanKeys;
+  prevSubscriptionPlanKey?: PlanKeys;
+  nextSubscriptionPlanKey?: PlanKeys;
   stripeEmail: string;
   maxTemplatesNumber: number;
   maxMeetingTime: number;
@@ -68,7 +68,8 @@ export interface IUpdateProfile {
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
   subscriptionPlanKey?: PlanKeys;
-  previousSubscriptionPlanKey?: PlanKeys;
+  nextSubscriptionPlanKey?: PlanKeys;
+  prevSubscriptionPlanKey?: PlanKeys;
   isSubscriptionActive?: boolean;
   maxTemplatesNumber?: number;
   maxMeetingTime?: number;

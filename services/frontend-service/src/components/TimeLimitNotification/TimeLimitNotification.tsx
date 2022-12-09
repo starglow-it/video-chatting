@@ -4,14 +4,14 @@ import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from 'shared-frontend/library';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomIconButton } from '@library/custom/CustomIconButton/CustomIconButton';
 
 // icons
-import { WarningIcon } from 'shared-frontend/icons';
-import { CloseIcon } from 'shared-frontend/icons';
+import { WarningIcon } from 'shared-frontend/icons/OtherIcons/WarningIcon';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 
 // styles
 import { MeetingAccessStatusEnum } from 'shared-types';

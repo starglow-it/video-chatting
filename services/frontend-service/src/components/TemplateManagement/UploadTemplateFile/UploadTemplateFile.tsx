@@ -5,18 +5,18 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomButton } from 'shared-frontend/library';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // components
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // icons
-import { ArrowUp } from 'shared-frontend/icons';
-import { ArrowRightIcon } from 'shared-frontend/icons';
+import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
+import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';

@@ -1,9 +1,15 @@
 import React, { memo, useMemo } from 'react';
 import clsx from "clsx";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-import {CustomPagination} from "../../custom";
-import {ConditionalRender} from "../../common";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+
+import {CustomPagination} from "../../custom/CustomPagination";
+import {ConditionalRender} from "../../common/ConditionalRender";
 
 import styles from './CustomTable.module.scss';
 import {CustomTableProps} from "./CustomTable.types";

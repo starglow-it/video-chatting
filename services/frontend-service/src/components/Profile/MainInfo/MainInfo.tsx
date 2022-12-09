@@ -7,19 +7,15 @@ import { SocialLinks } from '@components/SocialLinks/SocialLinks';
 import { ProfileDescription } from '@components/Profile/ProfileDescription/ProfileDescription';
 import { ProfileBusinessTags } from '@components/Profile/ProfileBusinessTags/ProfileBusinessTags';
 
-// common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
-
 // custom
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomGrid } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-
-// shared
-import { CustomImage } from 'shared-frontend/library';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // stores
-import { CustomBox } from 'shared-frontend/library';
 import { $profileStore, $profileTemplatesStore, getProfileTemplatesFx } from '../../../store';
 
 // styles

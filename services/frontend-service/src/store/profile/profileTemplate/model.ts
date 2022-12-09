@@ -1,11 +1,12 @@
 import { attach } from 'effector-next';
 import { initialProfileTemplateState } from './const';
-import { Profile, UserTemplate } from '../../types';
+import { Profile } from '../../types';
 import { $profileStore } from '../profile/model';
 import { profileDomain } from '../../domains';
 import { GetProfileTemplatePayload, UpdateTemplatePayload } from '../types';
+import {IUserTemplate} from "shared-types";
 
-export const $profileTemplateStore = profileDomain.createStore<UserTemplate>(
+export const $profileTemplateStore = profileDomain.createStore<IUserTemplate>(
     initialProfileTemplateState,
 );
 
@@ -13,13 +14,13 @@ export const resetProfileTemplateEvent = profileDomain.createEvent('resetProfile
 
 export const getProfileTemplateBaseEffect = profileDomain.createEffect<
     GetProfileTemplatePayload,
-    UserTemplate,
+    IUserTemplate,
     void
 >('getProfileTemplateFx');
 
 export const updateProfileTemplateBaseEffect = profileDomain.createEffect<
     UpdateTemplatePayload,
-    UserTemplate | null,
+    IUserTemplate | null,
     void
 >('updateProfileTemplateBaseEffect');
 

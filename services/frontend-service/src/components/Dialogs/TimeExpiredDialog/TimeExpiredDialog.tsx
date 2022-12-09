@@ -14,9 +14,7 @@ import {
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
 	CustomGrid,
-	CustomButton,
-	CustomDialog,
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 
 // utils
 import {
@@ -43,6 +41,8 @@ import {
 import {
 	profileRoute 
 } from '../../../const/client-routes';
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
+import {CustomDialog} from "shared-frontend/library/custom/CustomDialog";
 
 const Component = () => {
 	const router = useRouter();

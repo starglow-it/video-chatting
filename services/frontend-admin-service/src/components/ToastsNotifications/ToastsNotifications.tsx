@@ -5,15 +5,15 @@ import SnackbarContent from '@mui/material/SnackbarContent/SnackbarContent';
 import Snackbar from '@mui/material/Snackbar/Snackbar';
 
 import {
-	useStore
+	useStore 
 } from 'effector-react';
 
 // hooks
 import {
-	useLocalization
+	useLocalization 
 } from '@hooks/useTranslation';
 import {
-	useBrowserDetect
+	useBrowserDetect 
 } from 'shared-frontend/hooks/useBrowserDetect';
 
 // custom
@@ -22,28 +22,32 @@ import CustomTypography from 'shared-frontend/library/custom/CustomTypography/Cu
 import ConditionalRender from 'shared-frontend/library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
-import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
 import {
-	RoundErrorIcon
+	LockIcon 
+} from 'shared-frontend/icons/OtherIcons/LockIcon';
+import {
+	TrashIcon 
+} from 'shared-frontend/icons/OtherIcons/TrashIcon';
+import {
+	RoundErrorIcon 
 } from 'shared-frontend/icons/RoundIcons/RoundErrorIcon';
 import {
-	RoundSuccessIcon
+	RoundSuccessIcon 
 } from 'shared-frontend/icons/RoundIcons/RoundSuccessIcon';
 
 // const
 import {
-	ONE_SECOND
+	ONE_SECOND 
 } from 'shared-const';
 
 // store
 import {
-	$notificationsStore, removeNotification
+	$notificationsStore, removeNotification 
 } from '../../store';
 
 // types
 import {
-	Notification
+	Notification 
 } from '../../store/types';
 
 // styles
@@ -60,14 +64,14 @@ const Component = () => {
 	const notifications = useStore($notificationsStore);
 
 	const {
-		translation
+		translation 
 	} = useLocalization('notifications');
 
 	const [open, setOpen] = useState(false);
 	const [messageInfo, setMessageInfo] = useState<Notification>();
 
 	const {
-		isMobile
+		isMobile 
 	} = useBrowserDetect();
 
 	useEffect(() => {
@@ -139,15 +143,10 @@ const Component = () => {
 								height="16px"
 							/>
 						</ConditionalRender>
-						{Boolean(Icon)
-							? (
-								<Icon
-									width="16px"
-									height="16px"
-								/>
-							)
-							: null
-						}
+						{Icon ? <Icon
+							width="16px"
+							height="16px"
+						        /> : null}
 						<CustomTypography
 							dangerouslySetInnerHTML={{
 								__html: translation(

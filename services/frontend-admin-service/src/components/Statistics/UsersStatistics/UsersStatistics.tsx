@@ -9,15 +9,22 @@ import {
 import {
 	PropsWithClassName 
 } from 'shared-frontend/types';
-
-// components
 import {
-	CustomPaper,
-	CustomTypography,
-	CustomGrid,
-	WiggleLoader,
-	CustomImage,
-} from 'shared-frontend/library';
+	CustomPaper 
+} from 'shared-frontend/library/custom/CustomPaper';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomImage 
+} from 'shared-frontend/library/custom/CustomImage';
+import {
+	CustomLoader
+} from 'shared-frontend/library/custom/CustomLoader';
+
 import {
 	Translation 
 } from '@components/Translation/Translation';
@@ -91,7 +98,7 @@ const Component = ({
 			{statistic.totalNumber === 0 ? (
 				<>
 					{isGetUsersStatisticsPending ? (
-						<WiggleLoader className={styles.loader} />
+						<CustomLoader className={styles.loader} />
 					) : (
 						<CustomGrid
 							container

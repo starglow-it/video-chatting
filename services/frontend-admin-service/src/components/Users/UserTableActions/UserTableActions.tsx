@@ -8,12 +8,22 @@ import clsx from 'clsx';
 
 // shared
 import {
-	ActionButton,
-	CustomGrid,
-	CustomTooltip,
-	LockIcon,
-	TrashIcon,
-} from 'shared-frontend';
+	LockIcon 
+} from 'shared-frontend/icons/OtherIcons/LockIcon';
+import {
+	TrashIcon 
+} from 'shared-frontend/icons/OtherIcons/TrashIcon';
+import {
+	CustomTooltip 
+} from 'shared-frontend/library/custom/CustomTooltip';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	ActionButton 
+} from 'shared-frontend/library/common/ActionButton';
+
+// components
 import {
 	Translation 
 } from '@components/Translation/Translation';

@@ -18,18 +18,18 @@ import {
 // library
 import {
 	LiveOfficeLogo 
-} from 'shared-frontend/icons';
+} from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 import {
 	ConditionalRender 
-} from '@library/common/ConditionalRender/ConditionalRender';
+} from 'shared-frontend/library/common/ConditionalRender';
 
 // custom
 import {
 	CustomBox 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomBox';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
 	CustomLink 
 } from '@library/custom/CustomLink/CustomLink';
@@ -163,54 +163,49 @@ const Component = ({
 
 			<CustomBox className={styles.bgImage} />
 
-			<CustomGrid
-				container
-				direction="column"
-				flex={1}
-				flexWrap="nowrap"
-				className={clsx(styles.contentWrapper, {
-					[styles.meetingLayout]: isMeetingRoute,
-					[styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
-				})}
-			>
-				<CustomGrid
-					item
-					flex={1}
-				>
-					<ConditionalRender condition={!isMobile}>
-						<CustomBox className={styles.header}>
-							<CustomGrid
-								container
-								justifyContent="space-between"
-								alignItems="center"
-							>
-								<CustomLink
-									href={isAuthenticated ? dashboardRoute : ''}
-								>
-									<LiveOfficeLogo
-										className={clsx(isAuthenticated, {
-											[styles.link]: isAuthenticated,
-										})}
-										width="210px"
-										height="44px"
-									/>
-								</CustomLink>
-								<CustomGrid>
-									{!isAuthenticated && <AuthenticationLink />}
-								</CustomGrid>
-							</CustomGrid>
-						</CustomBox>
-					</ConditionalRender>
-					{children}
-				</CustomGrid>
-				<ConditionalRender condition={shouldShowFooter}>
-					<CustomGrid item>
-						<Footer />
-					</CustomGrid>
-				</ConditionalRender>
-			</CustomGrid>
-		</CustomBox>
-	);
+            <CustomGrid
+                container
+                direction="column"
+                flex={1}
+                flexWrap="nowrap"
+                className={clsx(styles.contentWrapper, {
+                    [styles.meetingLayout]: isMeetingRoute,
+                    [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
+                })}
+            >
+                <CustomGrid item flex={1} className={clsx({[styles.mobileContent]: isMobile})}>
+                    <ConditionalRender condition={!isMobile}>
+                        <CustomBox className={styles.header}>
+                            <CustomGrid
+                                container
+                                justifyContent="space-between"
+                                alignItems="center"
+                            >
+                                <CustomLink href={isAuthenticated ? dashboardRoute : ''}>
+                                    <LiveOfficeLogo
+                                        className={clsx(isAuthenticated, {
+                                            [styles.link]: isAuthenticated,
+                                        })}
+                                        width="210px"
+                                        height="44px"
+                                    />
+                                </CustomLink>
+                                <CustomGrid>
+                                    {!isAuthenticated && <AuthenticationLink />}
+                                </CustomGrid>
+                            </CustomGrid>
+                        </CustomBox>
+                    </ConditionalRender>
+                    {children}
+                </CustomGrid>
+                <ConditionalRender condition={shouldShowFooter}>
+                    <CustomGrid item>
+                        <Footer />
+                    </CustomGrid>
+                </ConditionalRender>
+            </CustomGrid>
+        </CustomBox>
+    );
 };
 
 export const Layout = memo(Component);

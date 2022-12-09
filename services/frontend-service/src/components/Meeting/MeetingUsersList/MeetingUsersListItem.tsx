@@ -2,18 +2,18 @@ import React, { memo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // icons
-import { CloseIcon } from 'shared-frontend/icons';
-import { AcceptIcon } from 'shared-frontend/icons';
-import { HostIcon } from 'shared-frontend/icons';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
+import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 
 // stores
 import { $isMeetingHostStore } from '../../../store/roomStores';

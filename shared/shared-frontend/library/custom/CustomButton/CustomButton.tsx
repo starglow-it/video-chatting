@@ -1,6 +1,7 @@
 import React, { ForwardedRef, forwardRef, memo } from 'react';
-import { Button, ButtonProps } from '@mui/material';
-import {CustomTypography} from "../../custom";
+import Button from '@mui/material/Button';
+import { ButtonProps} from "@mui/material/Button/Button";
+import {CustomTypography} from "../../custom/CustomTypography";
 
 import { CustomButtonProps } from './CustomButton.types';
 

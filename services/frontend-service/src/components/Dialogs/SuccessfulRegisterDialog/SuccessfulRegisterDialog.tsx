@@ -10,13 +10,15 @@ import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
-	CustomGrid, CustomDialog 
-} from 'shared-frontend/library';
-
-// store
+	CustomGrid
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomDialog
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
 	CustomImage 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomImage';
+// store
 import {
 	$appDialogsStore, appDialogsApi 
 } from '../../../store';

@@ -1,5 +1,5 @@
-import { ErrorState, QueryParams } from 'shared-types';
-import { EntityList, Profile, UserTemplate } from '../types';
+import {ErrorState, IUserTemplate, QueryParams} from 'shared-types';
+import { EntityList, Profile } from '../types';
 
 export type UpdateProfileEmailPayload = { email: string };
 export type UpdateProfilePasswordPayload = {
@@ -15,20 +15,20 @@ export type ResetPasswordPayload = {
     token: string;
 };
 export type CheckResetPasswordLinkPayload = { token: string };
-export type GetProfileTemplatePayload = { templateId: UserTemplate['id']; userId: Profile['id'] };
+export type GetProfileTemplatePayload = { templateId: IUserTemplate['id']; userId: Profile['id'] };
 export type UpdateTemplatePayload = {
-    templateId: UserTemplate['id'];
+    templateId: IUserTemplate['id'];
     userId: Profile['id'];
-    data: Partial<UserTemplate>;
+    data: Partial<IUserTemplate>;
 };
 export type GetProfileTemplatesPayload = QueryParams & { userId: string };
 export type GetProfileTemplatesCountPayload = QueryParams & {
     userId: string;
     templateType?: string;
 };
-export type DeleteProfileTemplatesPayload = { templateId: UserTemplate['id'] };
+export type DeleteProfileTemplatesPayload = { templateId: IUserTemplate['id'] };
 
 export type CheckResetPasswordLinkResponse = { isUserConfirmed: boolean; error?: ErrorState };
 export type CommonProfileResponse = Profile | null | undefined;
-export type GetProfileTemplatesResponse = EntityList<UserTemplate> | undefined;
+export type GetProfileTemplatesResponse = EntityList<IUserTemplate> | undefined;
 export type GetProfileTemplatesCountResponse = { count: number };

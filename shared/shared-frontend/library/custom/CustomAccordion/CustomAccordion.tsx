@@ -1,13 +1,16 @@
 import React, { memo, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
 
 // custom
-import {CustomGrid, CustomTypography} from "../../custom";
+import {CustomGrid} from "../../custom/CustomGrid";
+import {CustomTypography} from "../../custom/CustomTypography";
 
 // icons
-import { RoundArrowIcon } from '../../../icons';
+import { RoundArrowIcon } from '../../../icons/RoundIcons/RoundArrowIcon';
 import { CustomAccordionProps } from './types';
 
 import styles from './CustomAccordion.module.scss';

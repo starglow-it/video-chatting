@@ -6,23 +6,23 @@ import { useStore } from 'effector-react';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // common
-import { ConditionalRender } from '@library/common/ConditionalRender/ConditionalRender';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // components
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
 
 // icons
-import { HangUpIcon } from 'shared-frontend/icons';
-import { SettingsIcon } from 'shared-frontend/icons';
-import { SharingIcon } from 'shared-frontend/icons';
-import { GoodsIcon } from 'shared-frontend/icons';
-import { MicIcon } from 'shared-frontend/icons';
+import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
+import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
+import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
+import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
+import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // stores
 import { $isGoodsVisible, appDialogsApi, toggleIsGoodsVisible } from '../../../store';
@@ -33,6 +33,7 @@ import {
     $meetingConnectedStore,
     $meetingStore,
     $meetingTemplateStore,
+    setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
     updateLocalUserEvent,
@@ -86,6 +87,9 @@ const Component = () => {
         if (isMeetingConnected) {
             updateLocalUserEvent({
                 micStatus: isMicActive ? 'inactive' : 'active',
+            });
+            setDevicesPermission({
+                isMicEnabled: !isMicActive,
             });
         }
     }, [isMeetingConnected, isMicActive, isCamActive]);

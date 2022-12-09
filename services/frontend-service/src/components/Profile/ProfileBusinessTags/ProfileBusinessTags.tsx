@@ -3,12 +3,12 @@ import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // hooks
-import { useToggle } from '@hooks/useToggle';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from 'shared-frontend/library';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
@@ -19,8 +19,6 @@ import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
 // stores
 import { IBusinessCategory } from 'shared-types';
 import { $profileStore } from '../../../store';
-
-// types
 
 // styles
 import styles from './ProfileBusinessTags.module.scss';

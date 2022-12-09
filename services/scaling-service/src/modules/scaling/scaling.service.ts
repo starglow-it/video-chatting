@@ -234,36 +234,38 @@ export class ScalingService {
 
             const newInstance = await this.vultrService.createInstance();
 
-            await this.coreService.createMeetingInstance({
-              instanceId: newInstance.id,
-              serverStatus: MeetingInstanceServerStatus.Inactive,
-              snapshotId: this.vultrSnapshotId,
-            });
+            if (newInstance) {
+              await this.coreService.createMeetingInstance({
+                instanceId: newInstance.id,
+                serverStatus: MeetingInstanceServerStatus.Inactive,
+                snapshotId: this.vultrSnapshotId,
+              });
 
-            this.logger.debug('Try to get ip address');
+              this.logger.debug('Try to get ip address');
 
-            const ipAddress = await this.getPublicIpAddress({
-              instanceId: newInstance.id,
-            });
+              const ipAddress = await this.getPublicIpAddress({
+                instanceId: newInstance.id,
+              });
 
-            await this.coreService.updateMeetingInstance({
-              instanceId: newInstance.id,
-              data: {
-                serverIp: ipAddress,
-                serverStatus: MeetingInstanceServerStatus.Pending,
-              },
-            });
+              await this.coreService.updateMeetingInstance({
+                instanceId: newInstance.id,
+                data: {
+                  serverIp: ipAddress,
+                  serverStatus: MeetingInstanceServerStatus.Pending,
+                },
+              });
 
-            this.logger.debug('Try to get active status of the instance');
+              this.logger.debug('Try to get active status of the instance');
 
-            await this.getActiveServerStatus({ instanceId: newInstance.id });
+              await this.getActiveServerStatus({ instanceId: newInstance.id });
 
-            await this.coreService.updateMeetingInstance({
-              instanceId: newInstance.id,
-              data: {
-                serverStatus: MeetingInstanceServerStatus.Active,
-              },
-            });
+              await this.coreService.updateMeetingInstance({
+                instanceId: newInstance.id,
+                data: {
+                  serverStatus: MeetingInstanceServerStatus.Active,
+                },
+              });
+            }
           });
 
           await Promise.all(createServersPromises);

@@ -1,12 +1,11 @@
-import { ICommonTemplate } from 'shared-types';
-import { UserTemplate } from '../types';
+import { ICommonTemplate, IUserTemplate } from 'shared-types';
 import { ParsedTimeStamp } from '../../types';
 
 export type EditUserTemplatePayload = {
-    templateId: UserTemplate['id'];
-    data: Omit<Partial<UserTemplate>, 'id' | 'previewUrls'>;
+    templateId: IUserTemplate['id'];
+    data: Omit<Partial<IUserTemplate>, 'id' | 'previewUrls'>;
 };
-export type EditUserTemplateResponse = UserTemplate | null;
+export type EditUserTemplateResponse = IUserTemplate | null;
 export type EditTemplatePayload = {
     templateId: ICommonTemplate['id'];
     data: Omit<Partial<ICommonTemplate>, 'id' | 'previewUrls'>;
@@ -14,14 +13,14 @@ export type EditTemplatePayload = {
 export type EditTemplateResponse = ICommonTemplate | null;
 export type CreateTemplateResponse = ICommonTemplate | null | undefined;
 export type UploadTemplateFilePayload = { templateId: ICommonTemplate['id']; file: File };
-export type UploadUserTemplateFilePayload = { templateId: UserTemplate['id']; file: File };
+export type UploadUserTemplateFilePayload = { templateId: IUserTemplate['id']; file: File };
 export type UploadTemplateFileResponse = ICommonTemplate | null;
-export type UploadUserTemplateFileResponse = UserTemplate | null;
+export type UploadUserTemplateFileResponse = IUserTemplate | null;
 export type GetEditingTemplatePayload = {
-    templateId: UserTemplate['id'];
+    templateId: IUserTemplate['id'];
     withCredentials: boolean;
 };
-export type GetEditingTemplateResponse = UserTemplate | undefined | null;
+export type GetEditingTemplateResponse = IUserTemplate | undefined | null;
 export type SendScheduleInvitePayload = {
     templateId: string;
     timeZone: string;
@@ -37,6 +36,6 @@ export type GetUserTemplateByIdPayload = { templateId: ICommonTemplate['id'] };
 export type AddTemplateToUserEffectPayload = {
     templateId: ICommonTemplate['id'];
 };
-export type AddTemplateToUserEffectResponse = UserTemplate | null;
+export type AddTemplateToUserEffectResponse = IUserTemplate | null;
 
 export type DeleteCommonTemplatePayload = { templateId: ICommonTemplate['id'] };

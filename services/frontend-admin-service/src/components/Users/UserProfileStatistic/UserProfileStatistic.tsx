@@ -7,11 +7,17 @@ import {
 
 // shared
 import {
-	CustomGrid,
-	CustomTypography,
-	StatisticsIcon,
-	WiggleLoader,
-} from 'shared-frontend';
+	CustomLoader
+} from 'shared-frontend/library/custom/CustomLoader';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	StatisticsIcon 
+} from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
 
 // components
 import {
@@ -48,7 +54,7 @@ const Component = () => {
 	}, [activeUserId]);
 
 	if (isGetUserProfileStatisticsPending) {
-		return <WiggleLoader className={styles.loader} />;
+		return <CustomLoader className={styles.loader} />;
 	}
 
 	return (

@@ -1,5 +1,4 @@
-import { ErrorState, ICommonTemplate } from 'shared-types';
-import { UserTemplate } from '../../types';
+import {ErrorState, ICommonTemplate, IUserTemplate} from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { profileTemplateByTemplateIdUrl } from '../../../utils/urls';
 
@@ -7,8 +6,8 @@ export const handleFetchProfileTemplateByTemplateId = async ({
     templateId,
 }: {
     templateId: ICommonTemplate['templateId'];
-}): Promise<UserTemplate | undefined | null> => {
-    const response = await sendRequestWithCredentials<UserTemplate, ErrorState>(
+}): Promise<IUserTemplate | undefined | null> => {
+    const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>(
         profileTemplateByTemplateIdUrl({ templateId }),
     );
 

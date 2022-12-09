@@ -3,17 +3,29 @@ import React, {
 } from 'react';
 import clsx from 'clsx';
 
-// custom
+// shared
 import {
-	CustomImage,
-	CustomGrid,
-	ConditionalRender,
-	CustomBox,
-	CustomTypography,
-} from 'shared-frontend/library';
+	CustomGrid 
+} from 'shared-frontend/library/custom/CustomGrid';
 import {
-	PaymentIcon, PeopleIcon 
-} from 'shared-frontend/icons';
+	CustomImage 
+} from 'shared-frontend/library/custom/CustomImage';
+import {
+	CustomBox 
+} from 'shared-frontend/library/custom/CustomBox';
+import {
+	CustomTypography 
+} from 'shared-frontend/library/custom/CustomTypography';
+import {
+	ConditionalRender 
+} from 'shared-frontend/library/common/ConditionalRender';
+
+import {
+	PaymentIcon 
+} from 'shared-frontend/icons/OtherIcons/PaymentIcon';
+import {
+	PeopleIcon 
+} from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';

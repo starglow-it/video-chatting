@@ -4,7 +4,7 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { Profile } from '../../types';
 import { meUrl } from '../../../utils/urls';
 
-export const handleCheckUserAuthentication = async (ctx: NextPageContext) => {
+export const handleCheckUserAuthentication = async (ctx?: NextPageContext) => {
     const response = await sendRequestWithCredentials<Profile, ErrorState>({
         ...meUrl,
         ctx,

@@ -1,17 +1,16 @@
 import React, { useRef, memo, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-
+import InputAdornment from '@mui/material/InputAdornment';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 // custom
-import { CustomGrid } from 'shared-frontend/library';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // components
-import { ActionButton } from '@library/common/ActionButton/ActionButton';
-import { InputAdornment } from '@mui/material';
-import { TrashIcon } from 'shared-frontend/icons';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
 
 // styles
 import styles from './Socials.module.scss';

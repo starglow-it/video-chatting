@@ -8,21 +8,21 @@ import {
 // custom
 import {
 	CustomDialog 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomDialog';
 import {
 	CustomGrid 
-} from 'shared-frontend/library';
+} from 'shared-frontend/library/custom/CustomGrid';
+import {
+	CustomButton
+} from 'shared-frontend/library/custom/CustomButton';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
 import {
-	CustomButton 
-} from 'shared-frontend/library';
-
-// stores
-import {
 	Translation 
 } from '@library/common/Translation/Translation';
+
+// stores
 import {
 	$appDialogsStore, appDialogsApi 
 } from '../../../store';

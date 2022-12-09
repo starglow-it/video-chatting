@@ -104,7 +104,10 @@ export class CommonUserDTO implements ICommonUser {
   subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Expose()
-  previousSubscriptionPlanKey: ICommonUser['previousSubscriptionPlanKey'];
+  nextSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
+
+  @Expose()
+  prevSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   tokens: string[];
   password: ICommonUser['password'];

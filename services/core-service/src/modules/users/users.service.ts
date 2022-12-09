@@ -18,7 +18,11 @@ import {
   ProfileAvatar,
   ProfileAvatarDocument,
 } from '../../schemas/profile-avatar.schema';
-import {CustomPopulateOptions, GetModelQuery, UpdateModelQuery} from '../../types/custom';
+import {
+  CustomPopulateOptions,
+  GetModelQuery,
+  UpdateModelQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class UsersService {
@@ -57,7 +61,11 @@ export class UsersService {
     return;
   }
 
-  async findUser({ query, session, populatePaths }: GetModelQuery<UserDocument>) {
+  async findUser({
+    query,
+    session,
+    populatePaths,
+  }: GetModelQuery<UserDocument>) {
     return this.user
       .findOne(
         query,
@@ -81,7 +89,12 @@ export class UsersService {
       .exec();
   }
 
-  async findUsers({ query, options, populatePaths, session }: GetModelQuery<UserDocument>) {
+  async findUsers({
+    query,
+    options,
+    populatePaths,
+    session,
+  }: GetModelQuery<UserDocument>) {
     return this.user
       .find(
         query,
@@ -100,7 +113,7 @@ export class UsersService {
   async findUserAndUpdate({
     query,
     data,
-    session
+    session,
   }: UpdateModelQuery<UserDocument, User>) {
     return this.user.findOneAndUpdate(
       query,
@@ -172,7 +185,10 @@ export class UsersService {
     return;
   }
 
-  async count({ query, session }: GetModelQuery<UserDocument>): Promise<number> {
+  async count({
+    query,
+    session,
+  }: GetModelQuery<UserDocument>): Promise<number> {
     return this.user
       .countDocuments(query, { session: session?.session })
       .exec();
@@ -192,7 +208,8 @@ export class UsersService {
       stripeCustomerId: data.stripeCustomerId,
       stripeSubscriptionId: data.stripeSubscriptionId,
       subscriptionPlanKey: data.subscriptionPlanKey,
-      previousSubscriptionPlanKey: data.previousSubscriptionPlanKey,
+      nextSubscriptionPlanKey: data.nextSubscriptionPlanKey,
+      prevSubscriptionPlanKey: data.prevSubscriptionPlanKey,
       maxTemplatesNumber: data.maxTemplatesNumber,
       maxMeetingTime: data.maxMeetingTime,
       isSubscriptionActive: data.isSubscriptionActive,
