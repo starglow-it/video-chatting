@@ -57,30 +57,6 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
         [tags],
     );
 
-    const tooltipTitle = useMemo(
-        () => (
-            <CustomGrid container direction="column">
-                <CustomTypography
-                    variant="body2bold"
-                    nameSpace="createRoom"
-                    translation="preview.about"
-                    className={styles.title}
-                />
-                <CustomTypography className={styles.description} variant="body2">
-                    {description}
-                </CustomTypography>
-                <CustomDivider className={styles.divider} />
-                <CustomTypography variant="body2" className={styles.link}>
-                    {`${frontendConfig.frontendUrl}/.../${customLink}`}
-                </CustomTypography>
-                <CustomGrid container gap={1}>
-                    {tagsChips}
-                </CustomGrid>
-            </CustomGrid>
-        ),
-        [description, customLink, tagsChips],
-    );
-
     const tooltipStyle = useMemo(() => {
         if (!controlPanelRef?.current) {
             return {};
@@ -96,7 +72,24 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
                 {participantStubs}
             </CustomGrid>
             <CustomPaper variant="black-glass" style={tooltipStyle} className={styles.paper}>
-                {tooltipTitle}
+                <CustomGrid container direction="column">
+                    <CustomTypography
+                        variant="body2bold"
+                        nameSpace="createRoom"
+                        translation="preview.about"
+                        className={styles.title}
+                    />
+                    <CustomTypography className={styles.description} variant="body2">
+                        {description}
+                    </CustomTypography>
+                    <CustomDivider className={styles.divider} />
+                    <CustomTypography variant="body2" className={styles.link}>
+                        {`${frontendConfig.frontendUrl}/.../${customLink}`}
+                    </CustomTypography>
+                    <CustomGrid container gap={1}>
+                        {tagsChips}
+                    </CustomGrid>
+                </CustomGrid>
             </CustomPaper>
             <CustomGrid
                 container

@@ -4,6 +4,7 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 const ObjectId = Types.ObjectId;
 
@@ -35,11 +36,23 @@ import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { BusinessCategoriesService } from '../business-categories/business-categories.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
 import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
+import {TranscodeService} from "../transcode/transcode.service";
+import {TemplateSoundService} from "../template-sound/template-sound.service";
+import {AwsConnectorService} from "../../services/aws-connector/aws-connector.service";
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 
-import { CommonTemplateDocument } from '../../schemas/common-template.schema';
+import {CommonTemplate, CommonTemplateDocument} from '../../schemas/common-template.schema';
+import {UpdateModelQuery} from "../../types/custom";
+
+const screenShotResolutions = [
+  { key: '1080p', value: '1920x1080' },
+  { key: '720p', value: '1280x720' },
+  { key: '540p', value: '960x540' },
+  { key: '360p', value: '640x360' },
+  { key: '240p', value: '320x240' },
+];
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -52,6 +65,9 @@ export class CommonTemplatesController {
     private businessCategoriesService: BusinessCategoriesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
+    private transcodeService: TranscodeService,
+    private templateSoundService: TemplateSoundService,
+    private awsService: AwsConnectorService,
   ) {}
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
@@ -143,6 +159,7 @@ export class CommonTemplatesController {
             populatePaths: [
               { path: 'businessCategories' },
               { path: 'previewUrls' },
+              { path: 'sound' },
             ],
           });
 
@@ -291,30 +308,101 @@ export class CommonTemplatesController {
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.UploadTemplateFile })
   async uploadTemplateFile(
-    @Payload() data: UploadTemplateFilePayload,
-  ): Promise<void> {
-    const { url, id, mimeType } = data;
+    @Payload() payload: UploadTemplateFilePayload,
+  ): Promise<ICommonTemplate> {
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const { url, id, mimeType, fileName, uploadKey } = payload;
 
-    const previewImages = await this.commonTemplatesService.generatePreviews({
-      url,
-      id,
-      mimeType,
-    });
+        const templateType = mimeType.includes('image') ? 'image' : 'video';
 
-    const imageIds = previewImages.map((image) => image._id);
+        const screenShotUploadKey = `templates/${id}/images`;
 
-    await this.commonTemplatesService.updateCommonTemplate({
-      query: {
-        _id: id,
-      },
-      data: {
-        templateType: mimeType.includes('image') ? 'image' : 'video',
-        draftPreviewUrls: imageIds,
-        draftUrl: url,
-      },
-    });
+        this.awsService.deleteFolder(screenShotUploadKey);
 
-    return;
+        const screenShotPromises = screenShotResolutions.map(async (resolution) => {
+          const screenShotData = await this.transcodeService.createVideoScreenShots({
+            url,
+            mimeType,
+            key: screenShotUploadKey,
+            resolution,
+          });
+
+          return this.commonTemplatesService.createPreview({
+            data: {
+              url: screenShotData.url,
+              uploadKey: screenShotData.uploadKey,
+              size: screenShotData.size,
+              resolution: screenShotData.resolution
+            },
+            session
+          });
+        });
+
+        const updateData: UpdateModelQuery<CommonTemplateDocument, CommonTemplate>["data"] = {
+          templateType,
+        }
+
+        let promises = []
+
+        if (templateType === 'video') {
+          const fileDataPromise = this.transcodeService.getFileData({ url });
+
+          const transcodeVideoPromise = this.transcodeService.transcodeVideo({
+            url,
+            key: `${uploadKey}/videos/${uuidv4()}.mp4`
+          });
+
+          const extractSoundPromise = this.transcodeService.extractTemplateSound({
+            url,
+            key: `${uploadKey}/sounds/${uuidv4()}.mp3`
+          });
+          promises.push(...[fileDataPromise, transcodeVideoPromise, extractSoundPromise])
+        }
+
+        const [fileData, videoUrl, soundUrl] = await Promise.all(promises);
+
+        const previewImages = await Promise.all(screenShotPromises);
+
+        updateData.draftPreviewUrls = previewImages.map((image) => image._id);
+
+        if (templateType === 'video') {
+          const [soundData] = await this.templateSoundService.create({
+            data: {
+              fileName,
+              size: fileData.size,
+              mimeType: 'audio/mpeg',
+              url: soundUrl,
+            },
+            session
+          });
+
+          updateData.sound = soundData._id;
+          updateData.draftUrl = videoUrl;
+        } else {
+          updateData.draftUrl = url;
+        }
+
+        const updatedTemplate = await this.commonTemplatesService.updateCommonTemplate({
+          query: {
+            _id: id,
+          },
+          data: updateData,
+          session,
+          populatePaths: [{ path: 'sound'}, { path: 'draftPreviewUrls'}]
+        });
+
+        return plainToInstance(CommonTemplateDTO, updatedTemplate, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      })
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.CreateTemplate })
@@ -339,11 +427,7 @@ export class CommonTemplatesController {
     return withTransaction(this.connection, async (session) => {
       const { businessCategories, ...restData } = data;
 
-      const updateData: UpdateQuery<CommonTemplateDocument> = {
-        ...restData,
-        draftUrl: '',
-        draftPreviewUrls: [],
-      };
+      const updateData: UpdateQuery<CommonTemplateDocument> = restData;
 
       if ('businessCategories' in data) {
         const businessCategoriesPromises = await Promise.all(

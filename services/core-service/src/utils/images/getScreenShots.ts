@@ -30,7 +30,7 @@ export const getScreenShots = async (
 
       ffmpeg(inputPath)
         .on('end', function () {
-          resolve(`${outputPath}/${uuidv4()}_${resolution.key}.png`);
+          resolve(`${outputPath}/${uuidv4()}_${resolution.key}.webp`);
         })
         .on('error', function (err) {
           reject(err);

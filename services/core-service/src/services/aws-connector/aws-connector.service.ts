@@ -1,25 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import { InjectS3 } from 'nestjs-s3';
 
 import { ConfigClientService } from '../config/config.service';
+import {GetObjectRequest} from "aws-sdk/clients/s3";
+import * as stream from "stream";
 
 @Injectable()
 export class AwsConnectorService {
+  private readonly logger = new Logger();
+
+  vultrUploadBucket: string;
+
   constructor(
     private configService: ConfigClientService,
     @InjectS3() private readonly s3: S3,
   ) {}
 
-  async deleteResource(key: string) {
-    const vultrUploadBucket = await this.configService.get<string>(
-      'vultrUploadBucket',
-    );
+  async onModuleInit() {
+    this.vultrUploadBucket = await this.configService.get<string>('vultrUploadBucket');
+  }
 
+  async getResource(key: string) {
+    const params: GetObjectRequest = {
+      Bucket: this.vultrUploadBucket,
+      Key: key,
+    }
+
+    return new Promise((res, rej) => {
+      this.s3.getObject(params, (err, data) => {
+        if (err) {
+          rej(err.message);
+        }
+        res(data)
+      })
+    })
+  }
+
+  async deleteResource(key: string) {
     return new Promise((resolve, reject) => {
       this.s3.deleteObject(
         {
-          Bucket: vultrUploadBucket,
+          Bucket: this.vultrUploadBucket,
           Key: key,
         },
         (err, data) => {
@@ -33,10 +55,8 @@ export class AwsConnectorService {
   }
 
   async uploadFile(fileData: Buffer, key: string): Promise<string> {
-    const Bucket = await this.configService.get('vultrUploadBucket');
-
     const params = {
-      Bucket,
+      Bucket: this.vultrUploadBucket,
       Key: key,
       Body: fileData,
       ACL: 'public-read',
@@ -51,11 +71,32 @@ export class AwsConnectorService {
     return response.Location;
   }
 
-  async deleteFolder(keyFolder: string) {
-    const bucket = await this.configService.get<string>('vultrUploadBucket');
+  async uploadStreamFile(fileData: stream.PassThrough, key: string): Promise<string> {
+    const params: S3.Types.PutObjectRequest = {
+      Bucket: this.vultrUploadBucket,
+      Key: key,
+      Body: fileData,
+      ACL: 'public-read',
+    };
 
+    try {
+      const response = await this.s3.upload(params).promise();
+
+      if (!/^https:\/\/*/.test(response.Location)) {
+        return `https://${response.Location}`;
+      }
+
+      return response.Location;
+    } catch (e) {
+      this.logger.error(e.message);
+
+      return '';
+    }
+  }
+
+  async deleteFolder(keyFolder: string) {
     const params = {
-      Bucket: bucket,
+      Bucket: this.vultrUploadBucket,
       Prefix: keyFolder,
     } as S3.Types.ListObjectsRequest;
 
@@ -63,7 +104,7 @@ export class AwsConnectorService {
 
     await this.s3
       .deleteObjects({
-        Bucket: bucket,
+        Bucket: this.vultrUploadBucket,
         Delete: {
           Objects: objects.Contents?.map(({ Key }) => ({ Key })) ?? [],
         },
@@ -72,7 +113,7 @@ export class AwsConnectorService {
 
     return this.s3
       .deleteObject({
-        Bucket: bucket,
+        Bucket: this.vultrUploadBucket,
         Key: keyFolder,
       })
       .promise();

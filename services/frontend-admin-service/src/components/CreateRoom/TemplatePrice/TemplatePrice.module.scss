@@ -1,0 +1,66 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.paper {
+  padding: rem(40px);
+  max-width: rem(359px);
+  width: 100%;
+  height: fit-content;
+}
+
+.buttonsGroup {
+  position: absolute;
+  bottom: rem(28px);
+  left: 50%;
+  transform: translate(-50%);
+
+  .actionButton {
+    width: rem(46px);
+    height: rem(46px);
+    border-radius: rem(12px);
+    padding: rem(6px);
+  }
+}
+
+.switcher {
+  margin: rem(32px 0 20px 0);
+  background: rgba($primary-white, 0.25);
+  height: rem(38px);
+  padding: 0;
+
+  .switcherItem {
+    height: 100%;
+  }
+}
+
+.inputWrapper {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: rem(10px);
+  padding: rem(0 12px);
+  color: $primary-white;
+  margin: rem(0 0 20px 0);
+  height: rem(56px);
+
+  .input::placeholder {
+    color: rgba($primary-white, 0.6);
+  }
+
+  .input::-webkit-outer-spin-button,
+  .input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  .input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}

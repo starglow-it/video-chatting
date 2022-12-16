@@ -1,9 +1,6 @@
 import React, {
 	memo, useMemo
 } from 'react';
-import {
-	useFormContext, useWatch
-} from "react-hook-form";
 
 // shared
 import {
@@ -18,49 +15,34 @@ import {
 import {
 	ArrowRightIcon 
 } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
+import {CustomPaper} from "shared-frontend/library/custom/CustomPaper";
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
 
 // styles
 import styles from './TemplateLinks.module.scss';
-import {TemplateLinkItem} from "@components/CreateRoom/TemplateLinks/TemplateLinkItem";
-import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
-import {Translation} from "@components/Translation/Translation";
-import {CustomPaper} from "shared-frontend/library/custom/CustomPaper";
 
-export type TemplatesLinksProps = {
-    onNextStep: () => void;
-    onPreviousStep: () => void;
-	onRemoveLink: (index: number) => void;
-};
+import {TemplateLinkItem} from "./TemplateLinkItem";
+import {Translation} from "@components/Translation/Translation";
+import {TemplatesLinksProps} from "./TemplateLinks.types";
 
 const Component = ({
+   	links,
 	onNextStep, 
 	onPreviousStep,
    	onRemoveLink
 }: TemplatesLinksProps) => {
-	const {
-		control,
-	} = useFormContext();
-
-	const templateLinks = useWatch({
-		control,
-		name: 'templateLinks',
-	});
-
-	const renderLinks = useMemo(() => {
-		return templateLinks.map((link, index) => {
-			return <TemplateLinkItem
+	const renderLinks = useMemo(() =>
+		links.map((link, index) => (
+			<TemplateLinkItem
+				key={link?.key}
 				index={index}
 				onAccept={() => {}}
+				onPositionChange={() => {}}
 				onRemove={onRemoveLink}
-				onToggleActive={() => {}}
-				url={link?.value}
-				key={link?.key}
-				top={link.top}
-				left={link.left}
+				data={link}
 				isDraggable
 			/>
-		})
-	}, [templateLinks]);
+	)), [links]);
 
 	return (
 		<CustomGrid
@@ -95,7 +77,7 @@ const Component = ({
 						<ArrowLeftIcon
 							width="32px"
 							height="32px"
-					  />
+					  	/>
 					)}
 					className={styles.actionButton}
 					onAction={onPreviousStep}

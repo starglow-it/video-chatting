@@ -14,6 +14,7 @@ import {
 import {
 	useRouter 
 } from 'next/router';
+import clsx from "clsx";
 
 // shared
 import {
@@ -21,10 +22,10 @@ import {
 	participantsPositionsSchema,
 	simpleStringSchema,
 	simpleStringSchemaWithLength,
-	tagsSchema,
+	tagsSchema, templatePriceSchema,
 	validateSocialLink,
 } from 'shared-frontend/validation';
-
+import {getRandomNumber} from "shared-utils";
 import {
 	MAX_DESCRIPTION_LENGTH 
 } from 'shared-const';
@@ -44,20 +45,28 @@ import {
 import {
 	ActionButton
 } from "shared-frontend/library/common/ActionButton";
-
+import {
+	ValuesSwitcher
+} from "shared-frontend/library/common/ValuesSwitcher";
+import {
+	CustomFade
+} from "shared-frontend/library/custom/CustomFade";
+import {
+	CustomTypography
+} from 'shared-frontend/library/custom/CustomTypography';
 import {
 	CustomLinkIcon 
 } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
 import {
 	CloseIcon 
 } from 'shared-frontend/icons/OtherIcons/CloseIcon';
-
 import {
 	useYupValidationResolver
 } from "shared-frontend/hooks/useYupValidationResolver";
 import {
 	useValueSwitcher
 } from "shared-frontend/hooks/useValuesSwitcher";
+import { CustomAudio } from '@components/CreateRoom/CustomAudio/CustomAudio';
 
 // components
 import {
@@ -78,17 +87,10 @@ import {
 import {
 	TemplateLinks 
 } from '@components/CreateRoom/TemplateLinks/TemplateLinks';
+import { TemplateSound } from '@components/CreateRoom/TemplateSound/TemplateSound';
+import {TemplatePrice} from "@components/CreateRoom/TemplatePrice/TemplatePrice";
 
 // stores
-import {
-	ValuesSwitcher
-} from "shared-frontend/library/common/ValuesSwitcher";
-import {
-	CustomFade
-} from "shared-frontend/library/custom/CustomFade";
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
 import {
 	$businessCategoriesStore,
 	$commonTemplateStore,
@@ -99,6 +101,7 @@ import {
 	removeWindowListeners,
 	openAdminDialogEvent,
 	uploadTemplateFileFx,
+	updateCommonTemplateDataEvent,
 } from '../../store';
 
 // styles
@@ -108,9 +111,11 @@ import styles from './CreateAdminRoomContainer.module.scss';
 import {
 	AdminDialogsEnum, NotificationType 
 } from '../../store/types';
-import {getRandomNumber} from "shared-utils";
-import clsx from "clsx";
 
+import {ValuesSwitcherItem} from "shared-frontend/types";
+import {ImagePlaceholderIcon} from "shared-frontend/icons/OtherIcons/ImagePlaceholderIcon";
+import {TemplatePreview} from "@components/CreateRoom/TemplatePreview/TemplatePreview";
+import { usePrevious } from 'shared-frontend/hooks/usePrevious';
 
 // utils
 enum TabsValues {
@@ -175,6 +180,8 @@ const tabs: ValuesSwitcherAlias[] = [
 
 const defaultValues = {
 	background: '',
+	backgroundSound: '',
+	name: '',
 	description: '',
 	tags: [],
 	participantsNumber: 1,
@@ -186,10 +193,14 @@ const defaultValues = {
 		},
 	],
 	templateLinks: [],
+	type: 'free',
+	templatePrice: undefined,
 };
 
 const validationSchema = yup.object({
 	background: simpleStringSchema(),
+	backgroundSound: simpleStringSchema(),
+	name: simpleStringSchema(),
 	description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH).required(
 		'required',
 	),
@@ -197,6 +208,8 @@ const validationSchema = yup.object({
 	participantsNumber: participantsNumberSchema().required('required'),
 	participantsPositions: participantsPositionsSchema(),
 	templateLinks: yup.array().of(validateSocialLink()),
+	type: simpleStringSchema(),
+	templatePrice: templatePriceSchema(0.99, 999999),
 });
 
 const Component = () => {
@@ -205,11 +218,25 @@ const Component = () => {
 	const {
 		state: commonTemplate 
 	} = useStore($commonTemplateStore);
+
 	const {
-		state: categories 
+		state: categories
 	} = useStore($businessCategoriesStore);
 
+	const prevFieldsCount = useRef(0);
+
+
 	const isFileUploading = useStore(uploadTemplateFileFx.pending);
+
+	const {
+		activeItem,
+		onValueChange,
+		onNextValue,
+		onPreviousValue,
+	} = useValueSwitcher<TabsValues, TabsLabels>({
+		values: tabs,
+		initialValue: tabs[0].value,
+	});
 
 	const resolver = useYupValidationResolver(validationSchema, {
 		reduceArrayErrors: true,
@@ -229,13 +256,8 @@ const Component = () => {
 		setFocus
 	} = methods;
 
-	const background = useWatch({
-		control,
-		name: 'background',
-	});
-
 	const {
-		fields, 
+		fields,
 		append,
 		remove
 	} = useFieldArray({
@@ -243,15 +265,52 @@ const Component = () => {
 		name: 'templateLinks',
 	});
 
-	const {
-		activeItem,
-		onValueChange,
-		onNextValue,
-		onPreviousValue,
-	} = useValueSwitcher<TabsValues, TabsLabels>({
-		values: tabs,
-		initialValue: tabs[0].value,
+	const background = useWatch({
+		control,
+		name: 'background',
 	});
+
+	const templateName = useWatch({
+		control,
+		name: 'name',
+	});
+
+	const type = useWatch({
+		control,
+		name: 'type',
+	});
+
+	const backgroundSound = useWatch({
+		control,
+		name: 'backgroundSound',
+	});
+
+	const templateLinks = useWatch({
+		control,
+		name: 'templateLinks',
+	});
+
+	const participantsNumber = useWatch({
+		control,
+		name: 'participantsNumber',
+	});
+
+	const participantsPositions = useWatch({
+		control,
+		name: 'participantsPositions',
+	});
+
+	const tags = useWatch({
+		control,
+		name: 'tags',
+	});
+
+	const description = useWatch({
+		control,
+		name: 'description',
+	});
+
+	const previousParticipantsNumber = usePrevious(participantsNumber);
 
 	useEffect(() => {
 		getCommonTemplateFx({
@@ -266,6 +325,34 @@ const Component = () => {
 			removeWindowListeners();
 		};
 	}, [router.isReady]);
+
+	useEffect(() => {
+		setValue('backgroundSound', commonTemplate?.sound?.url);
+	}, [commonTemplate?.sound?.url]);
+
+	useEffect(() => {
+		if (!previousParticipantsNumber || participantsNumber === previousParticipantsNumber) return;
+
+		if (previousParticipantsNumber > participantsNumber) {
+			setValue('participantsPositions', participantsPositions.slice(0, participantsNumber));
+			return;
+		}
+
+		const newPositions = [
+			...participantsPositions,
+			...new Array(participantsNumber - participantsPositions.length ).fill({}).keys()];
+
+		setValue('participantsPositions', newPositions.map(data => data.id ? data : ({
+			left: 50,
+			top: 50,
+			id: getRandomNumber(10000).toString(),
+		}) ));
+
+	}, [
+		participantsNumber,
+		previousParticipantsNumber,
+		participantsPositions,
+	]);
 
 	const handleValueChange = useCallback(
 		async (item: ValuesSwitcherAlias) => {
@@ -282,14 +369,14 @@ const Component = () => {
 			}
 
 			if (item.value > TabsValues.Settings) {
-				const response = await trigger();
+				const response = await trigger(['description', 'name']);
 				onValueChange(response ? item : tabs[1]);
 				return;
 			}
 
 			onValueChange(item);
 		},
-		[onValueChange, background, commonTemplate?.draftUrl],
+		[background, commonTemplate?.draftUrl],
 	);
 
 	const onSubmit = useCallback(
@@ -301,6 +388,13 @@ const Component = () => {
 
 	const handleFileUploaded = useCallback(
 		async (file: File) => {
+			setValue('background', '');
+			updateCommonTemplateDataEvent({
+				draftUrl: '',
+				draftPreviewUrls: [],
+				templateType: file.type.split('/')[0] === 'video' ? 'video' : 'image'
+			});
+
 			setValue('background', URL.createObjectURL(file));
 
 			if (commonTemplate?.id) {
@@ -313,16 +407,33 @@ const Component = () => {
 		[commonTemplate?.id],
 	);
 
+	const handleSoundUploaded = useCallback(
+		async (file: File) => {
+			setValue('backgroundSound', '');
+
+			updateCommonTemplateDataEvent({
+				sound: null,
+			});
+
+			setValue('backgroundSound', URL.createObjectURL(file));
+
+			if (commonTemplate?.id) {
+				await uploadTemplateFileFx({
+					file,
+					templateId: commonTemplate.id,
+				});
+			}
+		},
+		[commonTemplate?.id],
+	);
+
 	const handleOpenCancelConfirmationDialog = useCallback(() => {
 		openAdminDialogEvent(AdminDialogsEnum.cancelCreateRoomDialog);
 	}, []);
 
-	const prevFieldsCount = useRef(0);
-
 	useEffect(() => {
 		if (fields.length) {
 			prevFieldsCount.current = fields.length;
-			console.log('focus')
 			setFocus(`templatesLinks[${fields.length - 1}].value`);
 		}
 	}, [fields]);
@@ -336,8 +447,17 @@ const Component = () => {
 		});
 	}, [fields]);
 
-	const handleRemoveTemplateLink = useCallback((index) => {
+	const handleRemoveTemplateLink = useCallback((index: number) => {
 		remove(index);
+	}, []);
+
+	const handleRemoveSound = useCallback(() => {
+
+		// TODO: removeRemoteUrl
+		updateCommonTemplateDataEvent({
+			sound: null,
+		});
+		setValue('backgroundSound', '');
 	}, []);
 
 	const isAddLinkDisabled = fields.length === 5;
@@ -348,9 +468,14 @@ const Component = () => {
 			className={styles.wrapper}
 		>
 			<FormProvider {...methods}>
-				<form onSubmit={onSubmit}>
+				<form className={styles.form} onSubmit={onSubmit}>
 					<TemplateBackground
+						templateType={commonTemplate?.templateType ?? 'video'}
 						url={commonTemplate?.draftUrl || background}
+					/>
+					<CustomAudio
+						isMuted={isFileUploading || activeItem.label === TabsLabels.Sound}
+						src={commonTemplate?.sound?.url}
 					/>
 
 					<CustomGrid
@@ -360,6 +485,53 @@ const Component = () => {
 						gap={1.5}
 						className={styles.navigationPaper}
 					>
+						<CustomGrid container gap={1.5} className={styles.infoWrapper}>
+							<CustomGrid
+								item
+								container
+								flexShrink={0}
+								alignItems="center"
+								justifyContent="center"
+								className={styles.imagePlaceholder}
+							>
+								<ImagePlaceholderIcon width="34px" height="34px" />
+							</CustomGrid>
+
+							<CustomPaper variant="black-glass" className={styles.mainInfo}>
+								<CustomGrid container direction="column">
+									{templateName ? (
+										<CustomTypography
+											color="colors.white.primary"
+											className={styles.name}
+										>
+											{templateName}
+										</CustomTypography>
+									) : (
+										<CustomTypography
+											color="colors.white.primary"
+										>
+											<Translation
+												nameSpace="rooms"
+												translation="preview.roomName"
+											/>
+										</CustomTypography>
+									)}
+									{type
+										? (
+											<CustomTypography
+												variant="body2"
+												color="colors.green.primary"
+												className={styles.type}
+											>
+												{type}
+											</CustomTypography>
+										)
+										: null
+									}
+								</CustomGrid>
+							</CustomPaper>
+						</CustomGrid>
+
 						<CustomPaper
 							variant="black-glass"
 							className={styles.paper}
@@ -473,15 +645,60 @@ const Component = () => {
 						</CustomFade>
 
 						<CustomFade
+							key={TabsLabels.Sound}
+							open={activeItem.label === TabsLabels.Sound}
+							unmountOnExit
+							className={styles.componentItem}
+						>
+							<TemplateSound
+								isUploadDisabled={isFileUploading}
+								fileName={commonTemplate?.sound?.fileName}
+								src={commonTemplate?.sound?.url || backgroundSound}
+								onRemove={handleRemoveSound}
+								onFileUploaded={handleSoundUploaded}
+								onNextStep={onNextValue}
+								onPreviousStep={onPreviousValue}
+							/>
+						</CustomFade>
+
+						<CustomFade
 							key={TabsLabels.Links}
 							open={activeItem.label === TabsLabels.Links}
 							unmountOnExit
 							className={styles.componentItem}
 						>
 							<TemplateLinks
+								links={templateLinks}
 								onNextStep={onNextValue}
 								onPreviousStep={onPreviousValue}
 								onRemoveLink={handleRemoveTemplateLink}
+							/>
+						</CustomFade>
+
+						<CustomFade
+							key={TabsLabels.Monetization}
+							open={activeItem.label === TabsLabels.Monetization}
+							unmountOnExit
+							className={styles.componentItem}
+						>
+							<TemplatePrice
+								onNextStep={onNextValue}
+								onPreviousStep={onPreviousValue}
+							/>
+						</CustomFade>
+
+						<CustomFade
+							key={TabsLabels.Preview}
+							open={activeItem.label === TabsLabels.Preview}
+							unmountOnExit
+							className={styles.componentItem}
+						>
+							<TemplatePreview
+								participantsPositions={participantsPositions}
+								templateTags={tags}
+								description={description}
+								templateLinks={templateLinks}
+								onPreviousStep={onPreviousValue}
 							/>
 						</CustomFade>
 					</CustomGrid>

@@ -1227,6 +1227,8 @@ export class MeetingsGateway
               });
             }
 
+            console.log(timeToAdd);
+
             await this.coreService.updateUserProfileStatistic({
               userId: plainUser.profileId,
               statisticKey: 'minutesSpent',

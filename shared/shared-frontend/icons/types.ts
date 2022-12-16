@@ -6,7 +6,8 @@ export type CommonIconProps = {
     className?: string;
     isActive?: boolean;
     style?: React.CSSProperties;
-    onClick?: ((() => void) & React.MouseEventHandler<unknown>) | undefined;
+    onClick?: React.MouseEventHandler<SVGSVGElement> | undefined;
+    onMouseDown?: React.MouseEventHandler<SVGSVGElement> | undefined;
 };
 
 export type SliderArrowProps = {

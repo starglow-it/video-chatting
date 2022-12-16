@@ -39,35 +39,39 @@
         [
           {
             "key": "videochat",
-            "text": "enjoy immersive video calls in rooms"
+            "text": "enjoy immersive video calls in Rooms"
           },
           {
             "key": "rooms",
-            "text": "rooms designed to reduce stress and fatigue"
+            "text": "Rooms designed to reduce stress and fatigue"
           },
           {
             "key": "customize",
-            "text": "customize rooms with your logo and links"
+            "text": "customize Rooms with your logo and links"
           }
         ],
         [
+          {
+            "key": "brainstorm",
+            "text": "brainstorm with yellow stickies"
+          },
           {
             "key": "payments",
             "text": "accept payments in calls"
           },
           {
-            "key": "notes",
-            "text": "share notes and your screen with callers"
+            "key": "screenSharing",
+            "text": "simple and dependable screen sharing"
           }
         ],
         [
           {
-            "key": "schedule",
-            "text": "schedule calls and send invitations"
+            "key": "joinWithLink",
+            "text": "guests join with a simple link - no account required"
           },
           {
             "key": "web",
-            "text": "it is web-based, no need to download"
+            "text": "TheLiveOffice is web-based"
           }
         ]
       ],
@@ -75,15 +79,19 @@
         [
           {
             "key": "videochat",
-            "text": "enjoy immersive video calls in rooms"
+            "text": "enjoy immersive video calls in Rooms"
           },
           {
             "key": "rooms",
-            "text": "rooms designed to reduce stress and fatigue"
+            "text": "Rooms designed to reduce stress and fatigue"
           },
           {
             "key": "customize",
-            "text": "customize rooms with your logo and links"
+            "text": "customize Rooms with your logo and links"
+          },
+          {
+            "key": "brainstorm",
+            "text": "brainstorm with yellow stickies"
           }
         ],
         [
@@ -92,16 +100,16 @@
             "text": "accept payments in calls"
           },
           {
-            "key": "notes",
-            "text": "share notes and your screen with callers"
+            "key": "screenSharing",
+            "text": "simple and dependable screen sharing"
           },
           {
-            "key": "schedule",
-            "text": "schedule calls and send invitations"
+            "key": "joinWithLink",
+            "text": "guests join with a simple link - no account required"
           },
           {
             "key": "web",
-            "text": "it is web-based, no need to download"
+            "text": "TheLiveOffice is web-based"
           }
         ]
       ]
@@ -115,7 +123,7 @@
           },
           {
             "key": "rooms",
-            "text": "1 Free Room from the TheLiveOffice library",
+            "text": "1 Saved Room from the TheLiveOffice library",
             "subText": "You can switch room for free to try other"
           }
         ],
@@ -137,7 +145,7 @@
           },
           {
             "key": "rooms",
-            "text": "2 Free Rooms from TheLiveOffice library",
+            "text": "2 Saved Rooms from TheLiveOffice library",
             "subText": "You can switch room for free to try other"
           }
         ],
@@ -149,12 +157,12 @@
           },
           {
             "key": "createCustomRooms",
-            "text": "Create custom private and public Rooms (unlimited)"
+            "text": "<strong>Create custom private and public Rooms (unlimited)</strong>"
           }
         ]
       ],
       "trial": "With <strong>7 Days Free Trial</strong> you can create own Rooms for private usage only",
-      "trialHint": "Try all Professional features <strong>with 7 days free trial</strong>, except for creating public rooms."
+      "trialHint": "Get Pro features <strong>free for 7 days no credit\ncard required</strong>"
     },
     "Business": {
       "features": [
@@ -165,7 +173,7 @@
           },
           {
             "key": "rooms",
-            "text": "10 Free Rooms from TheLiveOffice library",
+            "text": "10 Saved Rooms from TheLiveOffice library",
             "subText": "You can switch room for free to try other"
           }
         ],
@@ -177,7 +185,7 @@
           },
           {
             "key": "createCustomRooms",
-            "text": "Create custom private and public Rooms (unlimited)"
+            "text": "<strong>Create custom private and public Rooms (unlimited)</strong>"
           }
         ]
       ]

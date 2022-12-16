@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 import { BusinessCategoryDocument } from './business-category.schema';
 import { PreviewImageDocument } from './preview-image.schema';
 import { UserDocument } from './user.schema';
+import {TemplateSoundFileDocument} from "./template-sound-file.schema";
 
 @Schema()
 export class CommonTemplate {
@@ -17,6 +18,12 @@ export class CommonTemplate {
     type: mongoose.Schema.Types.String,
   })
   url: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'TemplateSoundFile'
+  })
+  sound: TemplateSoundFileDocument;
 
   @Prop({
     type: mongoose.Schema.Types.String,

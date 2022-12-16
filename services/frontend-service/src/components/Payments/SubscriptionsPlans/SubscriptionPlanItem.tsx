@@ -80,7 +80,12 @@ const Component = (
                                 <RoundCheckIcon width="16px" height="16px" />
                             </ListItemIcon>
                             <CustomGrid container direction="column">
-                                <CustomTypography variant="body1">{feature.text}</CustomTypography>
+                                <CustomTypography
+                                    variant="body1"
+                                    dangerouslySetInnerHTML={{
+                                        __html: feature.text,
+                                    }}
+                                />
                                 <CustomTypography variant="body2" className={styles.subText}>
                                     {feature.subText}
                                 </CustomTypography>

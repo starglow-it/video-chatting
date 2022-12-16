@@ -113,7 +113,7 @@
 }
 
 .allFeaturesCard {
-  max-width: rem(420px);
+  max-width: rem(425px);
   width: max-content;
   display: flex;
   padding: rem(28px 40px);
@@ -155,11 +155,11 @@
     }
 
     .listWrapper {
-      column-gap: rem(30px);
+      column-gap: rem(20px);
       margin: rem(8px 0 0);
       flex-direction: row;
       display: grid;
-      grid-template-columns: 1fr 0.91fr 0.86fr;
+      grid-template-columns: 1.1fr 1.0fr 1.26fr;
 
       .column {
         row-gap: rem(10px);

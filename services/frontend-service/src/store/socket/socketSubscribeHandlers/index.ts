@@ -23,7 +23,7 @@ const DASHBOARD_SUBSCRIBE_HANDLERS_REGISTRY: DashboardSocketHandlerDataMap = new
     ],
     [DashboardSubscribeEvents.OnMeetingAvailable, { handler: handleMeetingAvailable }],
     [DashboardSubscribeEvents.OnTrialExpired, { handler: handleTrialExpired }],
-    [DashboardSubscribeEvents.KickUser, { handler: handleKickDeletedUser }],
+    [DashboardSubscribeEvents.OnKickUser, { handler: handleKickDeletedUser }],
 ]);
 
 export const getDashboardSocketSubscribeHandler = (

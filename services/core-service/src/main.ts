@@ -51,7 +51,6 @@ async function bootstrap() {
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
   await seeder.createCounter();
-  await seeder.seedCommonTemplates();
   await seeder.seedAdminUser();
   await seeder.seedMonetizationStatistic();
   await seeder.seedRoomStatistic();
@@ -59,6 +58,7 @@ async function bootstrap() {
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
   dashboardNotificationsController.deleteDashboardNotifications();
+
   return;
 }
 

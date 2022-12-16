@@ -8,5 +8,6 @@ export const handleKickDeletedUser = ({ reason }: { reason: KickUserReasons }) =
         logoutUserFx();
     } else if (KickUserReasons.Deleted === reason) {
         sendEndMeetingSocketEvent({ reason });
+        logoutUserFx();
     }
 }

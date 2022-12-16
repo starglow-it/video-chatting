@@ -110,8 +110,6 @@ const Component = ({
 	return (
 		<CustomGrid
 			container
-			alignItems="center"
-			justifyContent="center"
 			className={styles.wrapper}
 		>
 			<CustomPaper

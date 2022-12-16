@@ -2,7 +2,7 @@ import {
   IBusinessCategory,
   ILanguage,
   ISocialLink,
-  IPreviewImage,
+  IPreviewImage, ITemplateSoundFile,
 } from './common';
 import { ITemplateUser } from './users';
 import { IMeetingInstance } from './meeting';
@@ -18,6 +18,7 @@ export interface ICommonTemplate {
   description: string;
   shortDescription: string;
   url: string;
+  sound?: ITemplateSoundFile | null;
   draftUrl?: string;
   previewUrls: IPreviewImage[];
   draftPreviewUrls?: IPreviewImage[];
@@ -40,8 +41,10 @@ export interface IUserTemplate {
   usedAt?: string;
   templateId: number;
   url: string;
+  sound?: ITemplateSoundFile;
   draftUrl?: string;
   name: string;
+  signBoard: string;
   maxParticipants: number;
   description: string;
   shortDescription: string;
@@ -76,6 +79,7 @@ export interface IUpdateTemplate {
   name?: string;
   description: string;
   url?: string;
+  sound?: ITemplateSoundFile | string;
   draftUrl?: string;
   previewUrls?: string[];
   fullName: string;

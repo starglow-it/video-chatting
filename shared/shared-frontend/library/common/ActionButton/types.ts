@@ -1,7 +1,7 @@
 import React from 'react';
 
 export type ActionButtonProps = {
-    onAction?: (() => void) | undefined | null;
+    onAction?: ((event: React.MouseEvent<HTMLButtonElement>) => void) | undefined | null;
     Icon: React.ReactElement;
     variant?:
         | 'danger'

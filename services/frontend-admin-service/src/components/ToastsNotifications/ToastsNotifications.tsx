@@ -139,6 +139,7 @@ const Component = () => {
 							condition={Boolean(messageInfo?.withErrorIcon)}
 						>
 							<RoundErrorIcon
+								className={styles.errorIcon}
 								width="16px"
 								height="16px"
 							/>

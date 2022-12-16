@@ -1,0 +1,34 @@
+@import "../../../styles/rem";
+
+.wrapper {
+  padding: rem(16px 0 0 0);
+}
+
+.paper {
+  position: absolute;
+  left: 96px;
+  width: rem(298px);
+  padding: rem(16px);
+}
+
+.description {
+
+}
+
+.divider {
+  margin: rem(16px 0);
+}
+
+.buttonsGroup {
+  position: absolute;
+  bottom: rem(28px);
+  left: 50%;
+  transform: translate(-50%);
+
+  .actionButton {
+    width: rem(46px);
+    height: rem(46px);
+    border-radius: rem(12px);
+    padding: rem(6px);
+  }
+}

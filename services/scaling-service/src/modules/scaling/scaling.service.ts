@@ -311,8 +311,11 @@ export class ScalingService {
 
           if (!instanceData) {
             this.logger.debug('Delete server instance record....');
-            return this.coreService.deleteMeetingInstance({
-              id: instance.id,
+            return this.coreService.updateMeetingInstance({
+              instanceId: instance.instanceId,
+              data: {
+                serverStatus: MeetingInstanceServerStatus.Stopped,
+              },
             });
           }
 

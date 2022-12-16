@@ -2,17 +2,18 @@ import { memo } from 'react';
 
 import { CommonIconProps } from '../types';
 
-const Component = ({ width, height, className, onClick, ...rest }: CommonIconProps) => (
+const Component = ({ width, height, className, onClick, onMouseDown, ...rest }: CommonIconProps) => (
     <svg
         className={className}
         width={width}
         height={height}
         onClick={onClick}
+        onMouseDown={onMouseDown}
         viewBox="0 0 16 16"
         fill="none"
         {...rest}
     >
-        <circle cx="8" cy="8" r="8" fill="currentColor" />
+        <circle cx="8" cy="8" r="8" fill="#F55252" />
         <path
             fillRule="evenodd"
             clipRule="evenodd"

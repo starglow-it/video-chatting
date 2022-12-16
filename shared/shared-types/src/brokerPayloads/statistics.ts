@@ -1,4 +1,4 @@
-import { ICommonUser, IUserTemplate } from '../api-interfaces';
+import {ICommonUser, ITemplateSoundFile, IUserTemplate} from '../api-interfaces';
 
 type IncreaseRoomTransactionStatisticPayload = {
   templateId: IUserTemplate['id'];
@@ -36,6 +36,13 @@ type UpdateUserTemplateUsageNumberPayload = {
   value: number;
 };
 
+type CreateTemplateSoundPayload = {
+  url: ITemplateSoundFile['url'];
+  mimeType: ITemplateSoundFile['mimeType'];
+  fileName: ITemplateSoundFile['fileName'];
+  size: ITemplateSoundFile['size'];
+};
+
 type UpdateMonetizationStatisticPayload = {
   period: 'lastMonth' | 'allTime';
   type: string;
@@ -51,4 +58,5 @@ export type {
   GetUserProfileStatisticPayload,
   UpdateUserProfileStatisticPayload,
   UpdateUserTemplateUsageNumberPayload,
+  CreateTemplateSoundPayload,
 };

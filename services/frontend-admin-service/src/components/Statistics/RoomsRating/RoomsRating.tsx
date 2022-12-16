@@ -207,9 +207,10 @@ const Component = () => {
 				},
 				creator: {
 					label:
-                        roomRating?.author?.[0]?.fullName ||
                         roomTypeKey === 'custom'
-                        	? 'Deleted user'
+                        	? roomRating?.author?.[0]
+								? (roomRating?.author?.[0]?.fullName || "-" )
+								: 'Deleted user'
                         	: 'The LiveOffice Admin',
 				},
 				[basedOnKey]: {

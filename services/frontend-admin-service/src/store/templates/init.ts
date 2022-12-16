@@ -19,8 +19,10 @@ import {
 	createTemplateFx,
 	getCommonTemplateFx,
 	getCommonTemplatesFx,
+	updateCommonTemplateDataEvent,
 	uploadTemplateFileFx,
 } from './model';
+import {ICommonTemplate} from "shared-types";
 
 getCommonTemplatesFx.use(handleGetCommonTemplates);
 createTemplateFx.use(handleCreateCommonTemplate);
@@ -29,14 +31,19 @@ getCommonTemplateFx.use(handleGetCommonTemplate);
 
 $commonTemplates.on(getCommonTemplatesFx.doneData, (state, data) => data);
 
-$commonTemplateStore.on(
-	[
-		createTemplateFx.doneData,
-		uploadTemplateFileFx.doneData,
-		getCommonTemplateFx.doneData,
-	],
+$commonTemplateStore
+	.on(
+		[
+			createTemplateFx.doneData,
+			uploadTemplateFileFx.doneData,
+			getCommonTemplateFx.doneData,
+		],
 	(state, data) => data,
-);
+	)
+	.on(updateCommonTemplateDataEvent, (state, data) => ({
+		...state,
+		state: ({ ...state.state, ...data }) as ICommonTemplate,
+	}));
 
 createTemplateFx.doneData.watch(data => {
 	if (data.state?.id) {

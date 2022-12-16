@@ -17,6 +17,7 @@ import {
 	$appDialogsStore, appDialogsApi 
 } from '../../../store';
 
+// styles
 import styles from './UserBlockedDialog.module.scss';
 
 import frontendConfig from '../../../const/config';
@@ -24,6 +25,8 @@ import frontendConfig from '../../../const/config';
 import {
 	AppDialogsEnum 
 } from '../../../store/types';
+
+// components
 import {CustomDialog} from "shared-frontend/library/custom/CustomDialog";
 import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
 import {CustomImage} from "shared-frontend/library/custom/CustomImage";

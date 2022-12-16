@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
@@ -38,7 +38,7 @@ import frontendConfig from 'src/const/config';
 import { ContactFormPayload } from '../../../store/types';
 
 // store
-import { sendContactFormFx } from '../../../store/other/contactUs/model';
+import { $contactForm, changeContactFormData, sendContactFormFx } from '../../../store/other/contactUs/model';
 import { $profileStore } from '../../../store';
 
 // styles
@@ -53,15 +53,16 @@ const validationSchema = yup.object({
 const Component = () => {
     const router = useRouter();
     const profile = useStore($profileStore);
+    const contactFormData = useStore($contactForm);
 
     const resolver = useYupValidationResolver<ContactFormPayload>(validationSchema);
 
     const methods = useForm<ContactFormPayload>({
         resolver,
         defaultValues: {
-            email: profile.email,
-            name: profile.fullName,
-            message: '',
+            email: contactFormData.email || profile.email,
+            name: contactFormData.name || profile.fullName,
+            message: contactFormData.message,
         },
     });
 
@@ -69,6 +70,7 @@ const Component = () => {
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors },
     } = methods;
 
@@ -118,6 +120,15 @@ const Component = () => {
     const errorName: string = errors?.name?.[0]?.message ?? '';
     const errorEmail: string = errors?.email?.[0]?.message ?? '';
     const errorMessage: string = errors?.message?.[0]?.message ?? '';
+
+    useEffect(() => () => {
+        const [name, email, message] = watch(['name', 'email', 'message']);
+        changeContactFormData({
+            name,
+            email,
+            message,
+        });
+    }, [contactFormData]);
 
     return (
         <CustomPaper className={styles.wrapper}>

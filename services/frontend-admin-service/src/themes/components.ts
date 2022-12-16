@@ -325,7 +325,7 @@ export const componentsTheme = (theme: Theme) =>
 								borderRadius: `${
 									ownerState.borderRadius || 12
 								}px`,
-								backdropFilter: 'blur(28px)',
+								backdropFilter: 'blur(14px)',
 								zIndex: -1,
 								background: alpha(
 									theme.designSystemColors.black.primary,

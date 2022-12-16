@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, memo, useCallback } from 'react';
+import React, { ForwardedRef, forwardRef, memo, useCallback} from 'react';
 import clsx from 'clsx';
 import ButtonUnstyled from '@mui/base/ButtonUnstyled';
 import { ButtonProps } from '@mui/material/Button/Button';
@@ -22,8 +22,8 @@ const Component = (
         className,
     );
 
-    const handleAction = useCallback(() => {
-        onAction?.();
+    const handleAction = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+        onAction?.(event);
     }, [onAction]);
 
     return (

@@ -138,7 +138,7 @@ export class TemplatesController {
     @Param('templateId') templateId: string,
     @Body() templateData: Partial<IUpdateTemplate>,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<ResponseSumType<any>> {
+  ): Promise<ResponseSumType<ICommonTemplate>> {
     try {
       if (!templateId) {
         return {
@@ -147,25 +147,42 @@ export class TemplatesController {
       }
 
       if (file) {
-        const { extension } = getFileNameAndExtension(file.originalname);
-        const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
+        const { fileName, extension } = getFileNameAndExtension(file.originalname);
+        const isAudioFile = file.mimetype.includes('audio');
 
-        await this.uploadService.deleteFolder(`templates/videos/${templateId}`);
+        if (isAudioFile) {
+          const uploadKey = `templates/${templateId}/sounds/${uuidv4()}.${extension}`;
 
-        let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
+          await this.uploadService.deleteFolder(`templates/${templateId}/sounds`);
 
-        if (!/^https:\/\/*/.test(url)) {
-          url = `https://${url}`;
+          const soundUrl = await this.uploadService.uploadFile(file.buffer, uploadKey);
+
+          const soundData = await this.coreService.createTemplateSound({
+            fileName,
+            mimeType: file.mimetype,
+            url: soundUrl,
+            size: file.size
+          });
+
+          templateData.sound = soundData.id;
+        } else {
+          const uploadKey = `templates/${templateId}/videos/${uuidv4()}.${extension}`;
+
+          await this.uploadService.deleteFolder(`templates/${templateId}/videos`);
+
+          const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
+
+          await this.coreService.uploadTemplateFile({
+            url,
+            id: templateId,
+            mimeType: file.mimetype,
+            fileName,
+            uploadKey: `templates/${templateId}`,
+          });
         }
-
-        await this.coreService.uploadTemplateFile({
-          url,
-          id: templateId,
-          mimeType: file.mimetype,
-        });
       }
 
-      if (Object.keys(templateData).length > 1) {
+      if (Object.keys(templateData).length >= 1) {
         await this.templatesService.updateTemplate({
           templateId,
           data: templateData,

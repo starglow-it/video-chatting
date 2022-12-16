@@ -59,9 +59,7 @@ const Component = ({ isPlaying, isMuted, volume, src, className }: CustomVideoPl
                 autoPlay
                 loop
                 playsInline
-            >
-                <source src={src} type='video/mp4' />
-            </video>
+            />
         </div>
     );
 };

@@ -27,7 +27,7 @@ import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon'
 import frontendConfig from '../../../const/config';
 
 // store
-import {$isTrial, $subscriptionStore} from '../../../store';
+import {$isTrial } from '../../../store';
 
 // styles
 import styles from './EditPrivacy.module.scss';
@@ -52,11 +52,7 @@ const options = [
 ];
 
 const Component = ({ onNextStep, onPreviousStep, onUpgradePlan }: EditPrivacyProps) => {
-    const subscription = useStore($subscriptionStore);
-
     const isTrial = useStore($isTrial);
-
-    console.log(subscription);
 
     const { setValue, watch } = useFormContext();
 

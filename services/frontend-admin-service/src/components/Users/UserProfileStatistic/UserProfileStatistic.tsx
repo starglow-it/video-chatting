@@ -117,7 +117,7 @@ const Component = () => {
 				gridArea="2/2/2/2"
 				variant="body2"
 			>
-				{userStatistic?.minutesSpent ?? 0}
+				{Math.floor(userStatistic?.minutesSpent ? (userStatistic?.minutesSpent / 1000 / 60) : 0)}
 			</CustomTypography>
 			<CustomTypography
 				gridArea="3/2/3/2"

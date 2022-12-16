@@ -13,7 +13,7 @@
   "endAt": "Ends",
   "comment": "Comment",
   "labels": {
-    "companyName": "What is your company name?",
+    "companyName": "What should we call your live office? (company, brand or nickname)",
     "fullName": "What is your name?",
     "profileAvatar": "Upload profile image (optional)",
     "dragAndDrop": "Tap or drag here"

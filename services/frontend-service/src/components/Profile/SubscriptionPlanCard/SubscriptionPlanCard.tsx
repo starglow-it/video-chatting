@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { Trans } from 'react-i18next';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
 
@@ -60,9 +59,11 @@ const Component = ({
                         <RoundCheckIcon width="20px" height="20px" />
                     </ListItemIcon>
                     <CustomGrid container direction="column">
-                        <CustomTypography>
-                            <Trans>{feature.text}</Trans>
-                        </CustomTypography>
+                        <CustomTypography
+                            dangerouslySetInnerHTML={{
+                                __html: feature.text,
+                            }}
+                        />
                         <CustomTypography variant="body2" color="colors.grayscale.normal">
                             {feature.subText}
                         </CustomTypography>

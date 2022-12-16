@@ -203,16 +203,16 @@ export class UserTemplatesService {
     const imagesPaths = await fsPromises.readdir(outputPath);
 
     await this.previewImage.deleteMany({
-      key: new RegExp(`^templates/images/${id}`),
+      key: new RegExp(`^templates/${id}/images`),
     });
 
-    await this.awsService.deleteFolder(`templates/images/${id}`);
+    await this.awsService.deleteFolder(`templates/${id}/images`);
 
     const uploadedImagesPromises = imagesPaths.map(async (image) => {
       const resolution = image.match(/(\d*)p\./);
 
       const file = await fsPromises.readFile(`${outputPath}/${image}`);
-      const uploadKey = `templates/images/${id}/${image}`;
+      const uploadKey = `templates/${id}/images/${image}`;
       const fileStats = await fsPromises.stat(`${outputPath}/${image}`);
 
       const imageUrl = await this.awsService.uploadFile(file, uploadKey);

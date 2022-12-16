@@ -142,7 +142,7 @@ export class ProfileTemplatesController {
       if (templateId) {
         if (file) {
           const { extension } = getFileNameAndExtension(file.originalname);
-          const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
+          const uploadKey = `templates/${templateId}/videos/${uuidv4()}.${extension}`;
 
           const url = await this.uploadService.uploadFile(
             file.buffer,

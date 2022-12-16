@@ -127,7 +127,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                 maxParticipants={template.maxParticipants}
                 isNeedToShowBusinessInfo
                 isPublic={template.isPublic}
-                isCommonTemplate={false}
+                isCommonTemplate={profile.id ? profile.id !== template.author : true}
             />
             <Fade in={showPreview}>
                 <CustomGrid
@@ -141,6 +141,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                         name={template.name}
                         description={template.description}
                         isPublic={template.isPublic}
+                        isCommonTemplate={profile.id ? profile.id !== template.author : true}
                     />
                     <CustomGrid container wrap="nowrap" gap={1.5}>
                         <CustomButton

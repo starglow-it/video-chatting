@@ -23,9 +23,6 @@ import {
 	ConditionalRender 
 } from 'shared-frontend/library/common/ConditionalRender';
 import {
-	ArrowUp,
-} from 'shared-frontend/icons/OtherIcons/ArrowUp';
-import {
 	ArrowRightIcon 
 } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 import {
@@ -56,6 +53,8 @@ import {
 	Translation 
 } from '@components/Translation/Translation';
 
+import {UploadDragFileOverlay} from "@components/UploadDragFileOverlay/UploadDragFileOverlay";
+
 import {
 	addNotificationEvent 
 } from '../../../store';
@@ -68,7 +67,6 @@ import {
 } from './UploadBackground.types';
 
 import styles from './UploadBackground.module.scss';
-
 
 export const MAX_SIZE_IMAGE = getFileSizeValue({
 	sizeType: FileSizeTypesEnum.megabyte,
@@ -172,7 +170,7 @@ const Component = ({
 
 			onFileUploaded(file);
 		},
-		[generateFileUploadError],
+		[generateFileUploadError, onFileUploaded],
 	);
 
 	const {
@@ -195,39 +193,12 @@ const Component = ({
 	return (
 		<CustomGrid
 			container
-			className={clsx(styles.container, {
-				[styles.active]: isDragActive,
-			})}
+			className={clsx(styles.container)}
 			{...rootProps}
 		>
 			<input {...getInputProps()} />
 			{isDragActive ? (
-				<CustomGrid
-					container
-					alignItems="center"
-					justifyContent="center"
-					direction="column"
-					gap={1.5}
-					className={styles.content}
-				>
-					<CustomGrid
-						item
-						container
-						className={styles.iconWrapper}
-					>
-						<ArrowUp
-							width="20px"
-							height="25px"
-							className={styles.icon}
-						/>
-					</CustomGrid>
-					<CustomTypography
-						variant="h2bold"
-						nameSpace="rooms"
-						color="colors.white.primary"
-						translation="uploadBackground.title"
-					/>
-				</CustomGrid>
+				<UploadDragFileOverlay title="uploadBackground.title" />
 			) : (
 				<>
 					{!isFileExists ? (

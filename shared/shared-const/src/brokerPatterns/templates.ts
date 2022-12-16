@@ -8,3 +8,7 @@ export enum TemplateBrokerPatterns {
   UploadTemplateFile = 'upload_template_file',
   UpdateTemplate = 'update_template',
 }
+
+export enum TemplateSoundBrokerPatterns {
+  CreateTemplateSoundFile = 'create_template_sound',
+}

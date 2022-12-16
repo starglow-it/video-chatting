@@ -1,5 +1,5 @@
 import {
-	GetCommonTemlatePayload,
+	GetCommonTemlatePayload, ICommonTemplate,
 	QueryParams,
 	UploadCommonTemplateFilePayload,
 } from 'shared-types';
@@ -25,6 +25,8 @@ export const $commonTemplateStore =
     	state: undefined,
     	error: null,
     });
+
+export const updateCommonTemplateDataEvent = templatesDomain.createEvent<Partial<ICommonTemplate>>('updateCommonTemplateDataEvent')
 
 export const getCommonTemplatesFx = templatesDomain.createEffect<
     QueryParams,

@@ -381,13 +381,13 @@ export class UsersController {
               ],
             },
           });
-
-          this.socketService.kickUserFromMeeting({
-            userId,
-            reason: KickUserReasons.Blocked,
-          });
         }
       }
+
+      this.socketService.kickUserFromMeeting({
+        userId,
+        reason: KickUserReasons.Blocked,
+      });
 
       return {
         success: true,
@@ -549,6 +549,24 @@ export class UsersController {
           ],
         },
         to: data.userEmails.map((email) => ({ email, name: email })),
+        icsEventLink: icsLink,
+        icalEventContent: content,
+      });
+      this.notificationService.sendEmail({
+        template: {
+          key: emailTemplates.scheduledMeeting,
+          data: [
+            {
+              name: 'MEETINGURL',
+              content: `${this.frontendUrl}/room/${
+                template.customLink || template.id
+              }`,
+            },
+            { name: 'DATE', content: startAtDate },
+            { name: 'ROOMNAME', content: template.name },
+          ],
+        },
+        to: [{ email: senderUser.email, name: senderUser.email }],
         icsEventLink: icsLink,
         icalEventContent: content,
       });

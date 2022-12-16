@@ -23,11 +23,12 @@ import {
 import styles from './TemplateBackground.module.scss';
 
 const Component = ({
-	url 
+	url,
+   	templateType
 }: TemplateBackgroundProps) => (
 	<CustomGrid className={styles.background}>
 		<ConditionalRender condition={Boolean(url)}>
-			{!/\.mp4$/.test(url) ? (
+			{templateType === 'image' ? (
 				<CustomImage
 					src={url ?? ''}
 					alt="background_preview"

@@ -27,6 +27,8 @@ import { UserTemplatesModule } from '../user-templates/user-templates.module';
 import { MeetingsModule } from '../meetings/meetings.module';
 import { RoomsStatisticsModule } from '../rooms-statistics/rooms-statistics.module';
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
+import {TranscodeModule} from "../transcode/transcode.module";
+import {TemplateSoundModule} from "../template-sound/template-sound.module";
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { UserProfileStatisticModule } from '../user-profile-statistic/user-profi
     CountersModule,
     RoomsStatisticsModule,
     UserProfileStatisticModule,
+    TranscodeModule,
+    TemplateSoundModule,
     forwardRef(() => UserTemplatesModule),
     forwardRef(() => MeetingsModule),
     MongooseModule.forFeature([

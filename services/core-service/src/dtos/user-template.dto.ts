@@ -18,6 +18,7 @@ import {
 } from 'shared-types';
 
 import { PreviewImageDTO } from './preview-image.dto';
+import {TemplateSoundFileDTO} from "./template-sound.dto";
 
 export class UserTemplateDTO implements IUserTemplate {
   @Expose()
@@ -46,6 +47,10 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   url: IUserTemplate['url'];
+
+  @Expose()
+  @Type(() => TemplateSoundFileDTO)
+  sound: IUserTemplate["sound"];
 
   @Expose()
   draftUrl: IUserTemplate['draftUrl'];
@@ -92,7 +97,7 @@ export class UserTemplateDTO implements IUserTemplate {
   user: ITemplateUser;
 
   @Expose()
-  signBoard: string;
+  signBoard: IUserTemplate["signBoard"];
 
   @Expose()
   customLink: IUserTemplate['customLink'];
@@ -137,5 +142,5 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   @Transform((data) => data.obj?.author?.['_id'])
-  author: string;
+  author: IUserTemplate["author"];
 }

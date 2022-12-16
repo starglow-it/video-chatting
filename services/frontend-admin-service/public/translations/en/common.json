@@ -20,11 +20,13 @@
     "upgrade": "Upgrade",
     "update": "Update",
     "replace": "Replace",
+    "upload": "Upload",
     "buy": "Buy",
     "leave": "Leave",
     "homePage": "Homepage",
     "block": "Block",
-    "unblock": "Unblock"
+    "unblock": "Unblock",
+    "change": "Change"
   },
   "tooltips": {
     "logout": "Log out",

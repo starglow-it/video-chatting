@@ -167,47 +167,43 @@ const Component = ({
 	);
 
 	const handleChangeDescription = useCallback(event => {
+		let messageError = '';
+
 		if (event.target.value.length > MAX_DESCRIPTION_LENGTH) {
 			// eslint-disable-next-line no-param-reassign
 			event.target.value = event.target.value.slice(
 				0,
 				MAX_DESCRIPTION_LENGTH,
 			);
-			setError('description', [
-				{
-					type: 'focus',
-					message: `maxLength.${MAX_DESCRIPTION_LENGTH}`,
-				},
-			]);
-		} else {
-			setError('description', [
-				{
-					message: '',
-					type: 'focus',
-				},
-			]);
+			messageError = `maxLength.${MAX_DESCRIPTION_LENGTH}`
 		}
+
+		setError('description', [
+			{
+				message: messageError,
+				type: 'focus',
+			},
+		]);
+
 		onChangeDescription(event);
 	}, []);
 
 	const handleChangeName = useCallback(event => {
+		let messageError = '';
+
 		if (event.target.value.length > MAX_NAME_LENGTH) {
 			// eslint-disable-next-line no-param-reassign
 			event.target.value = event.target.value.slice(0, MAX_NAME_LENGTH);
-			setError('name', [
-				{
-					type: 'focus',
-					message: `maxLength.${MAX_NAME_LENGTH}`,
-				},
-			]);
-		} else {
-			setError('name', [
-				{
-					message: '',
-					type: 'focus',
-				},
-			]);
+			messageError = `maxLength.${MAX_NAME_LENGTH}`;
 		}
+
+		setError('name', [
+			{
+				type: 'focus',
+				message: messageError,
+			},
+		]);
+
 		onChangeName(event);
 	}, []);
 

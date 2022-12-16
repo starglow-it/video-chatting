@@ -49,8 +49,8 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         );
 
         socketInstance.on(
-            DashboardSubscribeEvents.KickUser,
-            getDashboardSocketSubscribeHandler(DashboardSubscribeEvents.KickUser),
+            DashboardSubscribeEvents.OnKickUser,
+            getDashboardSocketSubscribeHandler(DashboardSubscribeEvents.OnKickUser),
         );
     }
 });

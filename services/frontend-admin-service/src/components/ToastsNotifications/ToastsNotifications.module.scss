@@ -1,5 +1,10 @@
 @import "../../styles/rem";
+@import "../../styles/variables";
 
 .content {
   backdrop-filter: blur(rem(14px));
+}
+
+.errorIcon {
+  color: $primary-red;
 }

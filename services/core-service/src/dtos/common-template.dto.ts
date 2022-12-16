@@ -1,9 +1,10 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { IBusinessCategory, ICommonTemplate } from 'shared-types';
+import {IBusinessCategory, ICommonTemplate } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { PreviewImageDTO } from './preview-image.dto';
+import {TemplateSoundFileDTO} from "./template-sound.dto";
 
 class UserPositionDTO {
   @Expose()
@@ -19,29 +20,33 @@ export class CommonTemplateDTO implements ICommonTemplate {
   id: string;
 
   @Expose()
-  description: string;
+  description: ICommonTemplate["description"];
 
   @Expose()
-  shortDescription: string;
+  shortDescription: ICommonTemplate["shortDescription"];
 
   @Expose()
   @Type(() => CommonBusinessCategoryDTO)
   businessCategories: IBusinessCategory[];
 
   @Expose()
-  templateId: number;
+  templateId: ICommonTemplate["templateId"];
 
   @Expose()
-  url: string;
+  url: ICommonTemplate["url"];
 
   @Expose()
-  draftUrl: string;
+  @Type(() => TemplateSoundFileDTO)
+  sound: ICommonTemplate["sound"];
 
   @Expose()
-  name: string;
+  draftUrl: ICommonTemplate["draftUrl"];
 
   @Expose()
-  maxParticipants: number;
+  name: ICommonTemplate["name"];
+
+  @Expose()
+  maxParticipants: ICommonTemplate["maxParticipants"];
 
   @Expose()
   @Type(() => PreviewImageDTO)
@@ -52,35 +57,35 @@ export class CommonTemplateDTO implements ICommonTemplate {
   draftPreviewUrls: ICommonTemplate['previewUrls'];
 
   @Expose()
-  type: string;
+  type: ICommonTemplate["type"];
 
   @Expose()
-  priceInCents: number;
+  priceInCents: ICommonTemplate["priceInCents"];
 
   @Expose()
-  isAudioAvailable: boolean;
+  isAudioAvailable: ICommonTemplate["isAudioAvailable"];
 
   @Expose()
-  stripeProductId: string;
+  stripeProductId: ICommonTemplate["stripeProductId"];
 
   @Expose()
   @Type(() => UserPositionDTO)
-  usersPosition: { bottom: number; left: number }[];
+  usersPosition: ICommonTemplate["usersPosition"];
 
   @Expose()
-  draft: boolean;
+  draft: ICommonTemplate["draft"];
 
   @Expose()
-  isPublic: boolean;
+  isPublic: ICommonTemplate["isPublic"];
 
   @Expose()
   @Transform((data) => data.obj?.author?.['_id'])
-  author: string;
+  author: ICommonTemplate["author"];
 
   @Expose()
-  templateType: 'video' | 'image';
+  templateType: ICommonTemplate["templateType"];
 
   @Expose()
   @Transform((data) => Boolean(data.obj?.userTemplate?.[0]?.['_id']))
-  isTemplatePurchased: boolean;
+  isTemplatePurchased: ICommonTemplate["isTemplatePurchased"];
 }

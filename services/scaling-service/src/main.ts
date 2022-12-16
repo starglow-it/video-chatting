@@ -48,7 +48,7 @@ async function bootstrap() {
 
     tasksService.addInterval({
       name: 'checkNumberOfVacantServers',
-      ts: getTimeoutTimestamp({ value: 30, type: TimeoutTypesEnum.Seconds }),
+      ts: getTimeoutTimestamp({ value: 3, type: TimeoutTypesEnum.Minutes }),
       callback: scalingService.checkNumberOfVacantServers.bind(scalingService),
     });
   }

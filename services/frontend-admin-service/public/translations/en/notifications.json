@@ -4,11 +4,17 @@
     "userUnBlocked": "User <strong>{{username}}</strong> is unblocked",
     "userDeleted": "User <strong>{{username}}</strong> is deleted"
   },
+  "uploadBackgroundSound": {
+    "maxSize": "The maximum audio size is {{max}} MB.",
+    "invalidFormat": "Please upload audio of .mp3, .wav format",
+    "general": "Please upload audio of .mp3,.wav format - Up to {{max}} MB"
+  },
   "uploadBackground": {
     "actions": {
       "upload": "Upload",
       "change": "Change"
     },
+
     "video": {
       "maxSize": "The maximum video size is {{max}} MB.",
       "invalidFormat": "Please upload video of .mp4 format",

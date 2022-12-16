@@ -66,7 +66,7 @@ const Component = <ValueType extends string | number, Label extends string = str
                 [styles.transparent]: variant === 'transparent',
             })}
         >
-            <CustomGrid className={styles.transition} style={style} container />
+            <CustomGrid className={clsx(itemClassName, styles.transition)} style={style} container />
             {renderValues}
         </CustomGrid>
     );

@@ -6,6 +6,7 @@ export const emailTemplates = {
   resetPassword: 'reset-password',
   meetingInvite: 'meeting-invitation',
   meetingInviteIcs: 'meeting-invitation-with-ics-file',
+  scheduledMeeting: 'scheduled-meeting',
   emailUpdated: 'email-changed',
   emailOldUpdated: 'email-old-changed',
   codeVerification: 'code-sent',

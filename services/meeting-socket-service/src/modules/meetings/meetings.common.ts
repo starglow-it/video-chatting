@@ -54,6 +54,8 @@ export class MeetingsCommonService {
       0,
     );
 
+    console.log(timeToExtract)
+
     await this.coreService.updateUser({
       query: { _id: profileId },
       data: {

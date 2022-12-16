@@ -289,7 +289,9 @@ export class PaymentsService {
 
   async cancelStripeSubscription({ subscriptionId }): Promise<void> {
     if (subscriptionId) {
-      await this.stripeClient.subscriptions.cancel(subscriptionId);
+      await this.stripeClient.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true,
+      });
     } else {
       this.logger.log(
         '[cancelStripeSubscription]: no subscription id was provided',

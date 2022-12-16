@@ -1,5 +1,6 @@
 import { forward, sample } from 'effector-next';
 import {USER_IS_BLOCKED} from "shared-const";
+import Router from "next/router";
 
 import {
     $authStore,
@@ -19,8 +20,12 @@ import { handleCheckUserAuthentication } from './handlers/handleCheckUserAuthent
 import { handleRefreshUserAuthentication } from './handlers/handleRefreshUserAuthentication';
 import { handleLogoutUser } from './handlers/handleLogoutUser';
 import { handleSetUserCountry } from './handlers/handleSetUserCountry';
+
 // types
 import {AppDialogsEnum} from "../types";
+
+// const
+import {clientRoutes} from "../../const/client-routes";
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
@@ -28,23 +33,10 @@ refreshAuthFx.use(handleRefreshUserAuthentication);
 logoutUserFx.use(handleLogoutUser);
 setUserCountryFx.use(handleSetUserCountry);
 
-forward({
-    from: loginUserFx.doneData,
-    to: setProfileEvent,
-});
-
 sample({
     clock: loginUserFx.doneData,
-    filter: (payload) => !payload?.user?.country,
-    target: setUserCountryFx,
-});
-
-loginUserFx.doneData.watch((payload) => {
-    if (payload?.error?.message === USER_IS_BLOCKED.message)  {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.userBlockedDialog,
-        })
-    }
+    filter: (payload) => payload.isAuthenticated,
+    target: setProfileEvent,
 });
 
 forward({
@@ -52,9 +44,24 @@ forward({
     to: setProfileEvent,
 });
 
-forward({
-    from: logoutUserFx.doneData,
-    to: clearProfileEvent,
+sample({
+    clock: loginUserFx.doneData,
+    filter: (payload) => payload.isAuthenticated && !payload?.user?.country,
+    target: setUserCountryFx,
+});
+
+loginUserFx.doneData.watch((payload) => {
+    console.log(payload);
+    if (payload?.error?.message === USER_IS_BLOCKED.message)  {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.userBlockedDialog,
+        })
+    }
+});
+
+logoutUserFx.doneData.watch(() => {
+    Router.push(clientRoutes.loginRoute)
+    clearProfileEvent()
 });
 
 $authStore

@@ -13,6 +13,10 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import {ErrorMessage} from "shared-frontend/library/common/ErrorMessage";
+import {CustomAutocomplete} from "shared-frontend/library/custom/CustomAutocomplete";
+import { Translation } from '@library/common/Translation/Translation';
 
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
@@ -44,7 +48,6 @@ import styles from './EditTemplateDescription.module.scss';
 
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
-import { Translation } from '@library/common/Translation/Translation';
 
 const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER }, (_, i) => ({
     id: `${i + 1}`,

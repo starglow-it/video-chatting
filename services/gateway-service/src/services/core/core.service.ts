@@ -1,14 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER, UserTemplatesBrokerPatterns } from 'shared-const';
 import {
+  CORE_PROVIDER,
   StatisticBrokerPatterns,
   TemplateBrokerPatterns,
   UserBrokerPatterns,
   MeetingBrokerPatterns,
   CoreBrokerPatterns,
+  UserTemplatesBrokerPatterns,
+  TemplateSoundBrokerPatterns
 } from 'shared-const';
+
 import {
   ICommonUser,
   ICountryStatistic,
@@ -43,7 +46,11 @@ import {
   SearchUsersPayload,
   ManageUserRightsPayload,
   EntityList,
-  UpdateUserTemplateUsageNumberPayload, UpdateCountryStatisticsPayload,
+  UpdateUserTemplateUsageNumberPayload,
+  UpdateCountryStatisticsPayload,
+  CreateTemplateSoundPayload,
+  ITemplateSoundFile,
+  UploadTemplateFilePayload,
 } from 'shared-types';
 
 @Injectable()
@@ -186,7 +193,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async uploadTemplateFile(payload): Promise<void> {
+  async uploadTemplateFile(payload: UploadTemplateFilePayload): Promise<void> {
     const pattern = { cmd: TemplateBrokerPatterns.UploadTemplateFile };
 
     return this.client.send(pattern, payload).toPromise();
@@ -291,6 +298,16 @@ export class CoreService {
   ): Promise<any> {
     const pattern = {
       cmd: UserTemplatesBrokerPatterns.UpdateUserTemplateUsageNumber,
+    };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async createTemplateSound(
+    payload: CreateTemplateSoundPayload,
+  ): Promise<ITemplateSoundFile> {
+    const pattern = {
+      cmd: TemplateSoundBrokerPatterns.CreateTemplateSoundFile,
     };
 
     return this.client.send(pattern, payload).toPromise();

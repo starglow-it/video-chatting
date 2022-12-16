@@ -276,7 +276,7 @@ const Component = () => {
 								<Translation
 									nameSpace="statistics"
 									translation={
-										usersList.count === 0
+										usersList.count === 0 && !userSearch
 											? 'users.users.noData'
 											: 'users.search.noData'
 									}

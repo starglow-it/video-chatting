@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useMemo} from "react";
-import clsx from "clsx";
+import usePagination from "@mui/material/usePagination";
 
 import {CustomGrid} from "../../custom/CustomGrid";
 import {ActionButton} from "../../common/ActionButton";
@@ -9,7 +9,6 @@ import { ArrowLeftIcon } from "../../../icons/OtherIcons/ArrowLeftIcon";
 import {CustomPaginationProps} from "./CustomPagination.types";
 
 import styles from './CustomPagination.module.scss';
-import usePagination from "@mui/material/usePagination";
 
 const Component = ({
     count,
@@ -21,11 +20,14 @@ const Component = ({
     const maxPages = Math.ceil(count / rowsPerPage);
 
     const data = usePagination({
-        count,
+        count: maxPages,
         page,
-        onChange: (...args) => {
-            console.log(args);
-            onPageChange();
+        showLastButton: false,
+        showFirstButton: false,
+        hideNextButton: true,
+        hidePrevButton: true,
+        onChange: (event, page) => {
+            onPageChange(page);
         }
     });
 
@@ -38,21 +40,18 @@ const Component = ({
     }, [count, rowsPerPage, page, onPageChange]);
 
     const renderPagesButtons = useMemo(() => {
-        return data.items.map(({ onClick, selected, disabled, page, type }) => {
-
-            console.log(type);
-
+        return data.items.filter(({ type }) => !['previous', 'next'].includes(type)).map(({ onClick, selected, disabled, page, type }) => {
             return (
                 <ActionButton
                     disabled={isDisabled || disabled}
                     variant={selected ? 'black' : 'transparentPrimary'}
                     onAction={page ? onClick : undefined}
-                    className={clsx(styles.pageButton)}
-                    label={page}
+                    className={styles.pageButton}
+                    label={type.includes('ellipsis') ? '...' : page}
                 />
             )
         })
-    }, [])
+    }, [onPageChange, page]);
 
     return (
         <CustomGrid container justifyContent="space-evenly">

@@ -1,0 +1,23 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.content {
+  position: absolute;
+  inset: 0;
+  background: rgba($primary-black, 0.6);
+  z-index: 2;
+}
+
+.iconWrapper {
+  color: $primary-white;
+  background: $primary-black;
+  width: rem(48px);
+  height: rem(48px);
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    display: flex;
+  }
+}

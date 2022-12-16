@@ -35,7 +35,7 @@ import {
 // components
 import {
 	CustomLoader
-} from 'shared-frontend/library/custom';
+} from 'shared-frontend/library/custom/CustomLoader';
 import {
 	MediaPreview
 } from '@components/Media/MediaPreview/MediaPreview';
@@ -320,7 +320,7 @@ const Component = () => {
                                             })}
                                             gap={1}
                                         >
-                                            <WiggleLoader />
+                                            <CustomLoader />
                                             <CustomTypography
                                                 color="colors.orange.primary"
                                                 nameSpace="meeting"

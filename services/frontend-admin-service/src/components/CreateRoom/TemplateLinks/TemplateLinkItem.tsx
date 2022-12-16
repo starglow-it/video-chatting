@@ -19,15 +19,18 @@ import styles from './TemplateLinks.module.scss';
 
 import {$windowSizeStore} from "../../../store";
 
+import {TemplateLinkItemProps} from "./TemplateLinks.types";
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
+
 const Component = ({
    index,
    isDraggable = false,
-   linkId,
-   top,
-   left,
+    isStatic = false,
+   data,
    onPositionChange,
    onRemove,
-}) => {
+   onAccept,
+}: TemplateLinkItemProps) => {
     const {
         width,
         height
@@ -58,9 +61,9 @@ const Component = ({
 
     useLayoutEffect(() => {
         const xPosition =
-            width * left - (contentRef.current?.clientWidth ?? 0) / 2;
+            width * data.left - (contentRef.current?.clientWidth ?? 0) / 2;
         const yPosition =
-            height * top - (contentRef.current?.clientHeight ?? 0) / 2;
+            height * data.top - (contentRef.current?.clientHeight ?? 0) / 2;
 
         setDraggablePosition({
             x: xPosition,
@@ -94,26 +97,26 @@ const Component = ({
                     10000,
                 ) / 100;
             onPositionChange?.({
-                id: linkId,
+                id: data.id,
                 left: leftPercentage,
                 top: topPercentage,
             });
         },
-        [linkId, width, height, onPositionChange],
+        [data.id, width, height, onPositionChange],
     );
 
-    const handleAcceptLink = (event) => {
+    const handleAcceptLink = (event: React.MouseEvent<unknown>) => {
         event.stopPropagation();
         handleSetElementInActive();
-        // TODO: trigger validation
+        onAccept?.(index);
     }
 
-    const handleRemoveLink = (event) => {
+    const handleRemoveLink = (event: React.MouseEvent<unknown>) => {
         event.stopPropagation()
         onRemove?.(index)
     }
 
-    const handleBlur = (event) => {
+    const handleBlur = (event: React.FocusEvent<Element | HTMLInputElement | HTMLTextAreaElement, Element>) => {
         handleSetElementInActive()
         registerData.onBlur(event);
     }
@@ -134,22 +137,31 @@ const Component = ({
                 tooltipClassName={styles.itemTooltip}
                 title={(
                     <CustomGrid container wrap="nowrap" gap={1} className={styles.tooltipContent}>
-                        <InputBase
-                            multiline
-                            inputProps={{
-                                cols: "25"
-                            }}
-                            minRows={1}
-                            maxRows={4}
-                            classes={{
-                                root: styles.inputWrapper,
-                            }}
-                            placeholder="Your link here"
-                            onFocus={handleSetElementActive}
-                            {...registerData}
-                            onBlur={handleBlur}
-                        />
-                        {isActive
+                        {isStatic
+                            ? (
+                                <CustomTypography color="colors.white.primary">
+                                    {data.value}
+                                </CustomTypography>
+                            )
+                            : (
+                                <InputBase
+                                    multiline
+                                    inputProps={{
+                                        cols: "25"
+                                    }}
+                                    minRows={1}
+                                    maxRows={4}
+                                    classes={{
+                                        root: styles.inputWrapper,
+                                    }}
+                                    placeholder="Your link here"
+                                    onFocus={handleSetElementActive}
+                                    {...registerData}
+                                    onBlur={handleBlur}
+                                />
+                            )
+                        }
+                        {isActive && !isStatic
                             ? (
                                 <RoundSuccessIcon
                                     className={styles.acceptIcon}
@@ -160,12 +172,14 @@ const Component = ({
                             )
                             : null
                         }
-                        <RoundErrorIcon
-                            className={styles.rejectIcon}
-                            onMouseDown={handleRemoveLink}
-                            width="24px"
-                            height="24px"
-                        />
+                        {!isStatic && (
+                            <RoundErrorIcon
+                                className={styles.rejectIcon}
+                                onMouseDown={handleRemoveLink}
+                                width="24px"
+                                height="24px"
+                            />
+                        )}
                     </CustomGrid>
                 )}
             >

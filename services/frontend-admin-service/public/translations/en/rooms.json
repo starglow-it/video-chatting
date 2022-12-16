@@ -18,6 +18,9 @@
       "change": "Change"
     }
   },
+  "uploadBackgroundAudio": {
+    "title": "Upload your Room background sound"
+  },
   "editDescription": {
     "form": {
       "nameAndAttendees": "Name & Attendees",
@@ -38,5 +41,17 @@
   "tooltips": {
     "cancel": "Cancel",
     "addLinkDisabled": "Add Link disabled"
+  },
+  "uploadSound": {
+    "title": "Upload your background sound",
+    "text": "Drag & Drop file here or click button"
+  },
+  "monetization": {
+    "title": "Room monetization",
+    "minimal": "Minimal price $0,99"
+  },
+  "preview": {
+    "roomName": "Roomname",
+    "about": "About this room: "
   }
 }

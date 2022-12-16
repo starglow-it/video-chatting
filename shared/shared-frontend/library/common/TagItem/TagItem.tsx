@@ -12,7 +12,7 @@ import styles from './TagItem.module.scss';
 
 type TagItemProps = PropsWithClassName<{
     label: JSX.Element | string;
-    endIcon: JSX.Element;
+    endIcon?: JSX.Element;
     color?: string;
 }>;
 

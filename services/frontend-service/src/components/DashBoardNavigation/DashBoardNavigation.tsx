@@ -4,7 +4,7 @@ import React, {
 import {
 	useStore 
 } from 'effector-react';
-import Router, {
+import {
 	useRouter 
 } from 'next/router';
 import clsx from 'clsx';
@@ -44,7 +44,6 @@ import styles from './DashBoardNavigation.module.scss';
 
 // const
 import {
-	clientRoutes,
 	dashboardRoute,
 	profileRoute,
 } from '../../const/client-routes';
@@ -54,9 +53,7 @@ const Component = () => {
 	const router = useRouter();
 
 	const handleLogout = useCallback(async () => {
-		await logoutUserFx();
-
-		await Router.push(clientRoutes.loginRoute);
+		logoutUserFx();
 	}, []);
 
 	const isTemplatesLinkActive = router.pathname === dashboardRoute;

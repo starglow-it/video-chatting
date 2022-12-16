@@ -66,7 +66,7 @@
       "linkedInMobile": "LinkedIn"
     },
     "blocked": {
-      "text": "Your account has been blocked by The Live Office Admin.\nFor details please contact us via email {{supportEmail}}"
+      "text": "Your account has been blocked by The Live Office Admin.\nFor details please contact us via email \n {{supportEmail}}"
     }
   },
   "forgotPassword": "Forgot password?",

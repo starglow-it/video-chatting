@@ -12,6 +12,8 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { CustomFade } from 'shared-frontend/library/custom/CustomFade';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
+import {NewArrowIcon} from "shared-frontend/icons/OtherIcons/NewArrowIcon";
+
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomRange } from '@library/custom/CustomRange/CustomRange';
 
@@ -32,6 +34,10 @@ import styles from './MeetingSettingsContent.module.scss';
 // types
 import { MeetingSettingsContentProps } from './types';
 import { $isOwner } from '../../../store/roomStores';
+import {BackgroundBlurIcon} from "shared-frontend/icons/OtherIcons/BackgroundBlurIcon";
+import { ArrowIcon } from 'shared-frontend/icons/OtherIcons/ArrowIcon';
+import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
+import { MusicIcon } from 'shared-frontend/icons/OtherIcons/MusicIcon';
 
 const Component = ({
     title,

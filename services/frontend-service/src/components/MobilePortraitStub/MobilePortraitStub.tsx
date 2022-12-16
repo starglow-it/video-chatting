@@ -13,7 +13,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { PortraitIcon } from 'shared-frontend/icons/OtherIcons/PortraitIcon';
 
 // stores
-import { $isPortraitLayout } from '../../../store';
+import { $isPortraitLayout } from '../../store';
 
 // styles
 import styles from './MobilePortraitStub.module.scss';

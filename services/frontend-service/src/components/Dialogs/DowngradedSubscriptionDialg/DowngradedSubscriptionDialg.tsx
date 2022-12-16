@@ -9,6 +9,10 @@ import {
 import {
 	plans
 } from 'shared-const';
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
 
 // components
 import {
@@ -33,27 +37,19 @@ import {
 
 // styles
 import styles from './DowngradedSubscriptionDialog.module.scss';
-import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
-import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
-import {CustomButton} from "shared-frontend/library/custom/CustomButton";
-import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
 
 const Component = () => {
     const profile = useStore($profileStore);
 
     const { downgradedSubscriptionDialog } = useStore($appDialogsStore);
 
-    const nextProduct = useMemo(() => {
-        return products.find(product => product.product.id === subscription?.plan?.product)
-    }, [products, subscription?.plan?.product]);
-
     useEffect(() => {
-        if (nextProduct?.product?.name && profile?.id && !profile?.isDowngradeMessageShown) {
+        if (profile?.id && !profile?.isDowngradeMessageShown) {
             appDialogsApi.openDialog({
                 dialogKey: AppDialogsEnum.downgradedSubscriptionDialog,
             });
         }
-    }, [profile?.isDowngradeMessageShown, nextProduct?.product?.name]);
+    }, [profile?.isDowngradeMessageShown]);
 
     const nextTemplatesNumber = useMemo(() => plans[profile.nextSubscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.nextSubscriptionPlanKey]);
     const prevTemplatesNumber = useMemo(() => plans[profile.prevSubscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.prevSubscriptionPlanKey]);

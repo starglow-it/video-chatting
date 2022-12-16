@@ -69,6 +69,8 @@ export type UploadTemplateFilePayload = {
   url: ICommonTemplate['url'];
   id: ICommonTemplate['id'];
   mimeType: string;
+  uploadKey: string;
+  fileName: string;
 };
 
 export type UploadCommonTemplateFilePayload = {

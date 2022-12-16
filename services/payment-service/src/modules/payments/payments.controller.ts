@@ -112,8 +112,7 @@ export class PaymentsController {
         case 'customer.subscription.updated':
           this.logger.log('handle "customer.subscription.updated" event');
           await this.handleSubscriptionUpdate(
-            event.data.object as Stripe.Subscription,
-              event.data.previous_attributes
+            event.data.object as Stripe.Subscription
           );
           break;
         case 'invoice.paid':
@@ -718,7 +717,7 @@ export class PaymentsController {
     const nextPlan = plans[productData.name || 'House'];
 
     const isPlanHasChanged = nextPlan.name !== currentPlan.name;
-    const isPlanDowngraded = currentPlan.priceInCents < nextPlan.priceInCents;
+    const isPlanDowngraded = currentPlan.priceInCents > nextPlan.priceInCents;
     const isCurrentSubscriptionIsActive = user.renewSubscriptionTimestampInSeconds * 1000 > Date.now();
 
     const isSubscriptionPeriodUpdated = user.renewSubscriptionTimestampInSeconds < subscription.current_period_end;
@@ -741,14 +740,14 @@ export class PaymentsController {
             ? user.renewSubscriptionTimestampInSeconds
             : subscription.current_period_end,
         isDowngradeMessageShown:
-          !(isPlanHasChanged && isPlanDowngraded && isCurrentSubscriptionIsActive),
+          !(isPlanHasChanged && isPlanDowngraded && (isCurrentSubscriptionIsActive || isSubscriptionPeriodUpdated)),
       },
     });
 
     if (isSubscriptionPeriodUpdated) {
       await this.coreService.deleteLeastUsedUserTemplates({
         userId: user.id,
-        templatesLimit: currentPlan.features.templatesLimit,
+        templatesLimit: nextPlan.features.templatesLimit,
       });
     }
   }

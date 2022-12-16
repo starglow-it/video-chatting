@@ -1,4 +1,4 @@
-import { Connection } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
@@ -60,7 +60,7 @@ export class UserProfileStatisticController {
     try {
       return withTransaction(this.connection, async (session) => {
         return this.userProfileStatisticService.updateOne({
-          query: { user: payload.userId },
+          query: { user: new Types.ObjectId(payload.userId) },
           data: {
             $inc: { [payload.statisticKey]: payload.value },
           },
@@ -76,7 +76,7 @@ export class UserProfileStatisticController {
       );
       throw new RpcException({
         message: err.message,
-        ctx: 'MONETIZATION_STATISTICS_SERVICE',
+        ctx: 'USER_STATISTICS_SERVICE',
       });
     }
   }
