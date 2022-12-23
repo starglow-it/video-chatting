@@ -21,8 +21,8 @@ import { AwsConnectorModule } from './services/aws-connector/aws-connector.modul
 import { PaymentsModule } from './services/payments/payments.module';
 import { CountryStatisticsModule } from './modules/country-statistics/country-statistics.module';
 import { RoomsStatisticsModule } from './modules/rooms-statistics/rooms-statistics.module';
-import {TranscodeModule} from "./modules/transcode/transcode.module";
-import {TemplateSoundModule} from "./modules/template-sound/template-sound.module";
+import { TranscodeModule } from './modules/transcode/transcode.module';
+import { TemplateSoundModule } from './modules/template-sound/template-sound.module';
 
 @Module({
   imports: [
@@ -54,7 +54,7 @@ import {TemplateSoundModule} from "./modules/template-sound/template-sound.modul
     CountryStatisticsModule,
     RoomsStatisticsModule,
     TranscodeModule,
-    TemplateSoundModule
+    TemplateSoundModule,
   ],
   controllers: [],
   providers: [],

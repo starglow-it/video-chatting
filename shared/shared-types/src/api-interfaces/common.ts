@@ -28,6 +28,7 @@ export interface IPreviewImage {
   id: string;
   url: string;
   size: number;
+  key: string;
   mimeType: string;
   resolution: number;
 }
@@ -43,6 +44,21 @@ export interface ITemplateSoundFile {
 export interface ICounter {
   key: string;
   value: number;
+}
+
+export type ITemplateLink = {
+  id: string;
+  key: string;
+  value: string;
+  top: number;
+  left: number;
+}
+
+export type TemplateLinkPosition = {
+  id: string;
+  linkIndex: number;
+  top: number;
+  left: number;
 }
 
 export interface IDashboardNotificationUser {
@@ -65,8 +81,10 @@ export interface IDashboardNotification {
   notificationType: DashboardNotificationTypes;
   status: DashboardNotificationReadStatus;
   template: IUserTemplate;
-  sender: IDashboardNotificationUser;
+  sender?: IDashboardNotificationUser;
   receiver: IDashboardNotificationUser;
+  isSenderGuest: boolean;
+  senderFullName: string;
 }
 
 export interface ISendContactsInfo {
@@ -101,8 +119,8 @@ export enum MonetizationStatisticTypes {
 }
 
 export enum KickUserReasons {
-  Blocked = 'kicked',
-  Deleted = 'blocked',
+  Blocked = 'blocked',
+  Deleted = 'deleted',
 }
 
 export type PlanKeys = 'House' | 'Professional' | 'Business';

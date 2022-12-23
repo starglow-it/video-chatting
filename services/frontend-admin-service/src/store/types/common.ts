@@ -1,7 +1,9 @@
 export enum AdminDialogsEnum {
     blockUserDialog = 'blockUserDialog',
     deleteUserDialog = 'deleteUserDialog',
+    confirmCreateAndPublishRoomDialog = 'confirmCreateAndPublishRoomDialog',
     cancelCreateRoomDialog = 'cancelCreateRoomDialog',
+    roomPreviewDialog = 'roomPreviewDialog',
 }
 
 export enum NotificationType {

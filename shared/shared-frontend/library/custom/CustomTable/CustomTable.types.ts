@@ -14,4 +14,5 @@ export type CustomTableProps<Data> = {
     headCellClassName: string;
     ActionsComponent?: any;
     onPageChange?: (pageValue: number) => void;
+    onRowAction?: (data: { itemId: string }) => void;
 };

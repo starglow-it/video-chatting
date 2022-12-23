@@ -35,18 +35,18 @@ import {
 
 import {
 	AttendeesPositionsProps,
-	ParticipantPosition,
 } from './AttendeesPositions.types';
 
 import styles from './AttendeesPositions.module.scss';
+import { ParticipantPosition } from 'shared-frontend/types';
 
 const Component = ({
 	onPreviousStep, 
 	onNextStep 
 }: AttendeesPositionsProps) => {
 	const {
-		control, 
-		setValue 
+		control,
+		setValue
 	} = useFormContext();
 
 	const participantsPositions = useWatch({
@@ -97,8 +97,8 @@ const Component = ({
 						stubId={id}
 						index={index}
 						position={{
-							top: top / 100,
-							left: left / 100,
+							top: top,
+							left: left,
 						}}
 						onPositionChange={handleChangePosition}
 					/>

@@ -5,7 +5,9 @@ import { PAYMENTS_PROVIDER } from 'shared-const';
 import { PaymentsBrokerPatterns } from 'shared-const';
 import {
   CreateStripeTemplateProductPayload,
+  DeleteTemplateStripeProductPayload,
   GetStripeChargesPayload,
+  GetStripeTemplateProductByNamePayload,
 } from 'shared-types';
 
 @Injectable()
@@ -20,7 +22,9 @@ export class PaymentsService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async getStripeTemplateProductByName(payload: { name: string }) {
+  async getStripeTemplateProductByName(
+    payload: GetStripeTemplateProductByNamePayload,
+  ) {
     const pattern = {
       cmd: PaymentsBrokerPatterns.GetStripeTemplateProductByName,
     };
@@ -31,6 +35,16 @@ export class PaymentsService {
   async getStripeCharges(payload: GetStripeChargesPayload) {
     const pattern = {
       cmd: PaymentsBrokerPatterns.GetStripeCharges,
+    };
+
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async deleteTemplateStripeProduct(
+    payload: DeleteTemplateStripeProductPayload,
+  ) {
+    const pattern = {
+      cmd: PaymentsBrokerPatterns.DeleteTemplateStripeProduct,
     };
 
     return this.client.send(pattern, payload).toPromise();

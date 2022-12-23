@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import {
 	useStore 
 } from 'effector-react';
-import {
+import Router, {
 	useRouter 
 } from 'next/router';
 import clsx from "clsx";
@@ -25,7 +25,7 @@ import {
 	tagsSchema, templatePriceSchema,
 	validateSocialLink,
 } from 'shared-frontend/validation';
-import {getRandomNumber} from "shared-utils";
+import { adjustUserPositions, getRandomNumber} from "shared-utils";
 import {
 	MAX_DESCRIPTION_LENGTH 
 } from 'shared-const';
@@ -60,13 +60,15 @@ import {
 import {
 	CloseIcon 
 } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import {ImagePlaceholderIcon} from "shared-frontend/icons/OtherIcons/ImagePlaceholderIcon";
+
 import {
 	useYupValidationResolver
 } from "shared-frontend/hooks/useYupValidationResolver";
 import {
 	useValueSwitcher
 } from "shared-frontend/hooks/useValuesSwitcher";
-import { CustomAudio } from '@components/CreateRoom/CustomAudio/CustomAudio';
+import { usePrevious } from 'shared-frontend/hooks/usePrevious';
 
 // components
 import {
@@ -89,6 +91,10 @@ import {
 } from '@components/CreateRoom/TemplateLinks/TemplateLinks';
 import { TemplateSound } from '@components/CreateRoom/TemplateSound/TemplateSound';
 import {TemplatePrice} from "@components/CreateRoom/TemplatePrice/TemplatePrice";
+import {CancelCreateRoomDialog} from "@components/Dialogs/CancelCreateRoomDialog/CancelCreateRoomDialog";
+import {ConfirmCreateRoomDialog} from "@components/Dialogs/ConfirmCreateRoomDialog/ConfirmCreateRoomDialog";
+import {TemplatePreview} from "@components/CreateRoom/TemplatePreview/TemplatePreview";
+import { CustomAudio } from '@components/CreateRoom/CustomAudio/CustomAudio';
 
 // stores
 import {
@@ -101,7 +107,7 @@ import {
 	removeWindowListeners,
 	openAdminDialogEvent,
 	uploadTemplateFileFx,
-	updateCommonTemplateDataEvent,
+	updateCommonTemplateDataEvent, updateCommonTemplateFx, deleteCommonTemplateSoundFx,
 } from '../../store';
 
 // styles
@@ -111,11 +117,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 import {
 	AdminDialogsEnum, NotificationType 
 } from '../../store/types';
-
-import {ValuesSwitcherItem} from "shared-frontend/types";
-import {ImagePlaceholderIcon} from "shared-frontend/icons/OtherIcons/ImagePlaceholderIcon";
-import {TemplatePreview} from "@components/CreateRoom/TemplatePreview/TemplatePreview";
-import { usePrevious } from 'shared-frontend/hooks/usePrevious';
+import { ValuesSwitcherItem } from "shared-frontend/types";
 
 // utils
 enum TabsValues {
@@ -187,14 +189,15 @@ const defaultValues = {
 	participantsNumber: 1,
 	participantsPositions: [
 		{
-			left: 50,
-			top: 50,
-			id: '1',
+			left: 0.5,
+			top: 0.5,
+			id: getRandomNumber(10000),
 		},
 	],
 	templateLinks: [],
 	type: 'free',
 	templatePrice: undefined,
+	draft: true,
 };
 
 const validationSchema = yup.object({
@@ -210,6 +213,7 @@ const validationSchema = yup.object({
 	templateLinks: yup.array().of(validateSocialLink()),
 	type: simpleStringSchema(),
 	templatePrice: templatePriceSchema(0.99, 999999),
+	draft: yup.bool(),
 });
 
 const Component = () => {
@@ -224,7 +228,6 @@ const Component = () => {
 	} = useStore($businessCategoriesStore);
 
 	const prevFieldsCount = useRef(0);
-
 
 	const isFileUploading = useStore(uploadTemplateFileFx.pending);
 
@@ -253,7 +256,7 @@ const Component = () => {
 		handleSubmit, 
 		setValue, 
 		trigger,
-		setFocus
+		setFocus,
 	} = methods;
 
 	const {
@@ -328,7 +331,7 @@ const Component = () => {
 
 	useEffect(() => {
 		setValue('backgroundSound', commonTemplate?.sound?.url);
-	}, [commonTemplate?.sound?.url]);
+	}, [commonTemplate]);
 
 	useEffect(() => {
 		if (!previousParticipantsNumber || participantsNumber === previousParticipantsNumber) return;
@@ -338,16 +341,20 @@ const Component = () => {
 			return;
 		}
 
+		const createdPositions = new Array(participantsNumber - participantsPositions.length )
+			.fill(null)
+			.map(() => ({
+				id: getRandomNumber(10000),
+				left: 0.5,
+				top: 0.5,
+			}))
+
 		const newPositions = [
 			...participantsPositions,
-			...new Array(participantsNumber - participantsPositions.length ).fill({}).keys()];
+			...createdPositions
+		];
 
-		setValue('participantsPositions', newPositions.map(data => data.id ? data : ({
-			left: 50,
-			top: 50,
-			id: getRandomNumber(10000).toString(),
-		}) ));
-
+		setValue('participantsPositions', newPositions);
 	}, [
 		participantsNumber,
 		previousParticipantsNumber,
@@ -380,10 +387,39 @@ const Component = () => {
 	);
 
 	const onSubmit = useCallback(
-		handleSubmit(data => {
-			console.log(data);
+		handleSubmit(async data => {
+			if (commonTemplate?.id) {
+				await updateCommonTemplateFx({
+					templateId: commonTemplate.id,
+					data: {
+						url: commonTemplate?.draftUrl,
+						name: data.name,
+						description: data.description,
+						maxParticipants: data.participantsNumber,
+						businessCategories: data.tags,
+						usersPosition: adjustUserPositions(data.participantsPositions),
+						links: data.templateLinks.map(link => ({
+							item: link.value,
+							position: {
+								top: link.top,
+								left: link.left
+							}
+						})),
+						type: data.type,
+						priceInCents: data.type === 'paid' ? data.templatePrice * 100 : 0,
+						isPublic: true,
+						draft: data.draft,
+						previewUrls: data?.draftPreviewUrls?.map(({ id }) => id),
+						draftPreviewUrls: [],
+						draftUrl: '',
+						isAudioAvailable: !!commonTemplate?.sound?.id
+					}
+				});
+
+				Router.push('/rooms');
+			}
 		}),
-		[],
+		[commonTemplate?.id, commonTemplate?.draftUrl, commonTemplate?.draftPreviewUrls],
 	);
 
 	const handleFileUploaded = useCallback(
@@ -398,7 +434,7 @@ const Component = () => {
 			setValue('background', URL.createObjectURL(file));
 
 			if (commonTemplate?.id) {
-				uploadTemplateFileFx({
+				await uploadTemplateFileFx({
 					file,
 					templateId: commonTemplate.id,
 				});
@@ -452,13 +488,19 @@ const Component = () => {
 	}, []);
 
 	const handleRemoveSound = useCallback(() => {
-
-		// TODO: removeRemoteUrl
 		updateCommonTemplateDataEvent({
 			sound: null,
 		});
 		setValue('backgroundSound', '');
+		deleteCommonTemplateSoundFx({
+			templateId: commonTemplate?.id
+		});
 	}, []);
+
+	const handleCreateRoom = useCallback(({ isNeedToPublish }: { isNeedToPublish: boolean }) => {
+		setValue('draft', !isNeedToPublish);
+		onSubmit();
+	}, [onSubmit]);
 
 	const isAddLinkDisabled = fields.length === 5;
 
@@ -475,7 +517,7 @@ const Component = () => {
 					/>
 					<CustomAudio
 						isMuted={isFileUploading || activeItem.label === TabsLabels.Sound}
-						src={commonTemplate?.sound?.url}
+						src={commonTemplate?.sound?.url || backgroundSound}
 					/>
 
 					<CustomGrid
@@ -653,7 +695,7 @@ const Component = () => {
 							<TemplateSound
 								isUploadDisabled={isFileUploading}
 								fileName={commonTemplate?.sound?.fileName}
-								src={commonTemplate?.sound?.url || backgroundSound}
+								src={backgroundSound}
 								onRemove={handleRemoveSound}
 								onFileUploaded={handleSoundUploaded}
 								onNextStep={onNextValue}
@@ -699,11 +741,16 @@ const Component = () => {
 								description={description}
 								templateLinks={templateLinks}
 								onPreviousStep={onPreviousValue}
+								onCreate={handleCreateRoom}
 							/>
 						</CustomFade>
 					</CustomGrid>
 				</form>
 			</FormProvider>
+			<CancelCreateRoomDialog />
+			<ConfirmCreateRoomDialog
+				onCreate={handleCreateRoom}
+			/>
 		</CustomGrid>
 	);
 };

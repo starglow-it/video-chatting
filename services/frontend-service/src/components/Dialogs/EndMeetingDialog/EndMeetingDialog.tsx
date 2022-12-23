@@ -79,7 +79,7 @@ const Component = () => {
     const handleLeave = useCallback(async () => {
         handleClose();
 
-        await sendLeaveMeetingSocketEvent();
+        sendLeaveMeetingSocketEvent();
 
         disconnectFromVideoChatEvent();
 
@@ -88,7 +88,7 @@ const Component = () => {
 
     const handleEndMeeting = useCallback(async () => {
         handleClose();
-        await sendEndMeetingSocketEvent();
+        sendEndMeetingSocketEvent();
 
 		disconnectFromVideoChatEvent();
 

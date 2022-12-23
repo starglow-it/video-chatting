@@ -51,7 +51,6 @@ sample({
 });
 
 loginUserFx.doneData.watch((payload) => {
-    console.log(payload);
     if (payload?.error?.message === USER_IS_BLOCKED.message)  {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.userBlockedDialog,

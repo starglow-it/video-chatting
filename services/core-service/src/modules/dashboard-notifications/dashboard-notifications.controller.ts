@@ -4,22 +4,26 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
-import { USERS_SERVICE } from 'shared-const';
-import { DashboardBrokerPatterns } from 'shared-const';
+import { USERS_SERVICE, DashboardBrokerPatterns } from 'shared-const';
 import {
   CreateNotificationPayload,
   ReadNotificationsPayload,
   DashboardNotificationReadStatus,
   TimeoutTypesEnum,
+  GetNotificationsPayload,
 } from 'shared-types';
 import { getTimeoutTimestamp, subtractDays } from 'shared-utils';
 
 import { withTransaction } from '../../helpers/mongo/withTransaction';
+
+// services
 import { DashboardNotificationsService } from './dashboard-notifications.service';
 import { UsersService } from '../users/users.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
-import { DashboardNotificationDTO } from '../../dtos/dashboard-notification.dto';
 import { TasksService } from '../tasks/tasks.service';
+
+// dtos
+import { DashboardNotificationDTO } from '../../dtos/dashboard-notification.dto';
 
 @Controller('dashboard-notifications')
 export class DashboardNotificationsController {
@@ -41,8 +45,8 @@ export class DashboardNotificationsController {
       senderFullName,
     }: CreateNotificationPayload,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    try {
+      return withTransaction(this.connection, async (session) => {
         const template = await this.userTemplatesService.findUserTemplateById({
           id: templateId,
           session,
@@ -86,12 +90,12 @@ export class DashboardNotificationsController {
               ],
             });
         } else {
-          [notification] =
-            await this.dashboardNotificationService.createNotification(
-              {
+          notification =
+            await this.dashboardNotificationService.createNotification({
+              data: {
                 ...(sender ? { sender } : {}),
                 receiver,
-                template,
+                template: template._id,
                 notificationType,
                 isSenderGuest: Boolean(sender),
                 senderFullName,
@@ -99,7 +103,7 @@ export class DashboardNotificationsController {
                 sentAt: Date.now(),
               },
               session,
-            );
+            });
 
           await notification.populate([
             { path: 'sender', populate: { path: 'profileAvatar' } },
@@ -124,18 +128,18 @@ export class DashboardNotificationsController {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
-      } catch (err) {
-        throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
-      }
-    });
+      });
+    } catch (err) {
+      throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
+    }
   }
 
   @MessagePattern({ cmd: DashboardBrokerPatterns.GetNotifications })
   async getDashboardNotification(
-    @Payload() { receiverId }: { receiverId: string },
+    @Payload() { receiverId }: GetNotificationsPayload,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    try {
+      return withTransaction(this.connection, async (session) => {
         const receiver = await this.usersService.findById(receiverId, session);
 
         const notifications =
@@ -152,19 +156,18 @@ export class DashboardNotificationsController {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
-      } catch (err) {
-        throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
-      }
-    });
+      });
+    } catch (err) {
+      throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
+    }
   }
 
   @MessagePattern({ cmd: DashboardBrokerPatterns.ReadNotifications })
   async readDashboardNotification(
-    @Payload()
-    { receiverId, notifications }: ReadNotificationsPayload,
+    @Payload() { receiverId, notifications }: ReadNotificationsPayload,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      try {
+    try {
+      return withTransaction(this.connection, async (session) => {
         const receiver = await this.usersService.findById(receiverId, session);
 
         await this.dashboardNotificationService.updateNotifications({
@@ -187,10 +190,10 @@ export class DashboardNotificationsController {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
-      } catch (err) {
-        throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
-      }
-    });
+      });
+    } catch (err) {
+      throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
+    }
   }
 
   @MessagePattern({ cmd: DashboardBrokerPatterns.DeleteNotifications })

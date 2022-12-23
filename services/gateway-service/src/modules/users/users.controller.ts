@@ -370,24 +370,36 @@ export class UsersController {
           await this.paymentsService.cancelUserSubscription({
             subscriptionId: user.stripeSubscriptionId,
           });
-
-          this.notificationService.sendEmail({
-            to: [{ email: user.email, name: user.fullName ?? user.email }],
-            template: {
-              key: emailTemplates.blockedAccount,
-              data: [
-                { name: 'USERNAME', content: `${user.fullName ?? user.email}` },
-                { name: 'SUPPORT_URL', content: `${this.frontendUrl}/support` },
-              ],
-            },
-          });
         }
       }
 
-      this.socketService.kickUserFromMeeting({
-        userId,
-        reason: KickUserReasons.Blocked,
-      });
+      if (user.isBlocked) {
+        this.notificationService.sendEmail({
+          to: [{ email: user.email, name: user.fullName ?? user.email }],
+          template: {
+            key: emailTemplates.blockedAccount,
+            data: [
+              { name: 'USERNAME', content: `${user.fullName ?? user.email}` },
+              { name: 'SUPPORT_URL', content: `${this.frontendUrl}/support` },
+            ],
+          },
+        });
+
+        this.socketService.kickUserFromMeeting({
+          userId,
+          reason: KickUserReasons.Blocked,
+        });
+      } else {
+        this.notificationService.sendEmail({
+          to: [{ email: user.email, name: user.fullName ?? user.email }],
+          template: {
+            key: emailTemplates.unblockedAccount,
+            data: [
+              { name: 'LOGIN_URL', content: `${this.frontendUrl}/login` },
+            ],
+          },
+        });
+      }
 
       return {
         success: true,

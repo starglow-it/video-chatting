@@ -20,9 +20,6 @@ import {
 	ActionButton 
 } from 'shared-frontend/library/common/ActionButton';
 import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
-import {
 	ErrorMessage 
 } from 'shared-frontend/library/common/ErrorMessage';
 import {
@@ -336,6 +333,14 @@ const Component = ({
 							rows={3}
 							{...descriptionProps}
 						/>
+						<ErrorMessage
+							error={Boolean(descriptionErrorMessage)}
+						>
+							<Translation
+								nameSpace="errors"
+								translation={descriptionErrorMessage}
+							/>
+						</ErrorMessage>
 					</CustomGrid>
 
 					<CustomGrid
@@ -366,18 +371,14 @@ const Component = ({
 							autoComplete
 							error={tagsErrorMessage}
 							errorComponent={
-								<ConditionalRender
-									condition={Boolean(tagsErrorMessage)}
+								<ErrorMessage
+									error={Boolean(tagsErrorMessage)}
 								>
-									<ErrorMessage
-										error={Boolean(tagsErrorMessage)}
-									>
-										<Translation
-											nameSpace="errors"
-											translation={tagsErrorMessage}
-										/>
-									</ErrorMessage>
-								</ConditionalRender>
+									<Translation
+										nameSpace="errors"
+										translation={tagsErrorMessage}
+									/>
+								</ErrorMessage>
 							}
 						/>
 					</CustomGrid>

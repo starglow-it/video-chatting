@@ -5,7 +5,7 @@ export type EditUserTemplatePayload = {
     templateId: IUserTemplate['id'];
     data: Omit<Partial<IUserTemplate>, 'id' | 'previewUrls'>;
 };
-export type EditUserTemplateResponse = IUserTemplate | null;
+export type EditUserTemplateResponse = IUserTemplate | null | undefined;
 export type EditTemplatePayload = {
     templateId: ICommonTemplate['id'];
     data: Omit<Partial<ICommonTemplate>, 'id' | 'previewUrls'>;

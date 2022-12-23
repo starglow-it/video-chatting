@@ -3,8 +3,8 @@ import { S3 } from 'aws-sdk';
 import { InjectS3 } from 'nestjs-s3';
 
 import { ConfigClientService } from '../config/config.service';
-import {GetObjectRequest} from "aws-sdk/clients/s3";
-import * as stream from "stream";
+import { GetObjectRequest } from 'aws-sdk/clients/s3';
+import * as stream from 'stream';
 
 @Injectable()
 export class AwsConnectorService {
@@ -18,23 +18,25 @@ export class AwsConnectorService {
   ) {}
 
   async onModuleInit() {
-    this.vultrUploadBucket = await this.configService.get<string>('vultrUploadBucket');
+    this.vultrUploadBucket = await this.configService.get<string>(
+      'vultrUploadBucket',
+    );
   }
 
   async getResource(key: string) {
     const params: GetObjectRequest = {
       Bucket: this.vultrUploadBucket,
       Key: key,
-    }
+    };
 
     return new Promise((res, rej) => {
       this.s3.getObject(params, (err, data) => {
         if (err) {
           rej(err.message);
         }
-        res(data)
-      })
-    })
+        res(data);
+      });
+    });
   }
 
   async deleteResource(key: string) {
@@ -71,7 +73,10 @@ export class AwsConnectorService {
     return response.Location;
   }
 
-  async uploadStreamFile(fileData: stream.PassThrough, key: string): Promise<string> {
+  async uploadStreamFile(
+    fileData: stream.PassThrough,
+    key: string,
+  ): Promise<string> {
     const params: S3.Types.PutObjectRequest = {
       Bucket: this.vultrUploadBucket,
       Key: key,

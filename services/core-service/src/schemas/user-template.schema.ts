@@ -9,7 +9,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { MeetingInstanceDocument } from './meeting-instance.schema';
 import { PreviewImageDocument } from './preview-image.schema';
-import {TemplateSoundFileDocument} from "./template-sound-file.schema";
+import { TemplateSoundFileDocument } from './template-sound-file.schema';
 
 @Schema()
 export class UserTemplate {
@@ -38,7 +38,7 @@ export class UserTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'TemplateSoundFile'
+    ref: 'TemplateSoundFile',
   })
   sound: TemplateSoundFileDocument;
 

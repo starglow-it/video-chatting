@@ -29,22 +29,28 @@ export const CustomAudio = ({ src, isMuted = false, onEnded, onStarted }: Custom
 
         if (src && audioElement) {
             audioElement.src = src;
-            audioElement.play();
-            audioElement.addEventListener('ended', handleAudioEnded, false);
-            audioElement.addEventListener('play', handleAudioStarted, false);
         }
 
         return () => {
             if (audioElement) {
                 audioElement.removeEventListener('ended', handleAudioEnded, false);
                 audioElement.removeEventListener('play', handleAudioStarted, false);
-
                 audioElement.pause();
             }
         }
     }, [src]);
 
+    const handleLoadedMetadata = useCallback(() => {
+        const audioElement = audioRef?.current;
+
+        if (audioElement) {
+            audioElement.play();
+            audioElement.addEventListener('ended', handleAudioEnded, false);
+            audioElement.addEventListener('play', handleAudioStarted, false);
+        }
+    }, []);
+
     return (
-        <audio ref={audioRef} muted={isMuted} playsInline />
+        <audio ref={audioRef} onLoadedMetadata={handleLoadedMetadata} muted={isMuted} playsInline />
     )
 }

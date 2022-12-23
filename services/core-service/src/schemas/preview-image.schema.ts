@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { IPreviewImage } from 'shared-types';
 
 @Schema()
 export class PreviewImage {
@@ -13,31 +14,31 @@ export class PreviewImage {
     type: mongoose.Schema.Types.String,
     required: true,
   })
-  url: string;
+  url: IPreviewImage['url'];
 
   @Prop({
     type: mongoose.Schema.Types.Number,
     required: true,
   })
-  size: number;
+  size: IPreviewImage['size'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
     required: true,
   })
-  mimeType: string;
+  mimeType: IPreviewImage['mimeType'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
     required: true,
   })
-  key: string;
+  key: IPreviewImage['key'];
 
   @Prop({
     type: mongoose.Schema.Types.Number,
     required: true,
   })
-  resolution: number;
+  resolution: IPreviewImage['resolution'];
 }
 
 export type PreviewImageDocument = PreviewImage & Document;

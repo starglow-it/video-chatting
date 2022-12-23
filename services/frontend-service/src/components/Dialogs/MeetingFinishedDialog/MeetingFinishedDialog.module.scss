@@ -1,0 +1,22 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.content {
+  width: rem(472px);
+  padding: rem(40px);
+}
+
+.icon {
+  color: $primary-red;
+}
+
+.button {
+  margin: rem(40px 0 0 0);
+}
+
+.text {
+  word-break: break-word;
+  white-space: pre-wrap;
+  text-align: center;
+  margin: rem(8px 0 0 0);
+}

@@ -57,6 +57,7 @@ import {
 
 // styles
 import styles from './UserVideoStub.module.scss';
+import {roundNumberToPrecision} from "shared-utils";
 
 const Component = ({
 	stubId,
@@ -104,18 +105,17 @@ const Component = ({
 				x: data.x,
 				y: data.y,
 			});
-			const leftPercentage =
-                Math.round(
-                	((data.x + (contentRef.current?.clientWidth ?? 0) / 2) /
-                        width) *
-                        10000,
-                ) / 100;
-			const topPercentage =
-                Math.round(
-                	((data.y + (contentRef.current?.clientHeight ?? 0) / 2) /
-                        height) *
-                        10000,
-                ) / 100;
+
+			const leftPercentage = roundNumberToPrecision(
+				(data.x + (contentRef.current?.clientWidth ?? 0) / 2) / width,
+				2
+			);
+
+			const topPercentage = roundNumberToPrecision(
+				(data.y + (contentRef.current?.clientHeight ?? 0) / 2) / height,
+				2
+			);
+
 			onPositionChange?.({
 				id: stubId,
 				left: leftPercentage,

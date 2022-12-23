@@ -4,4 +4,5 @@ export type TemplatePreviewProps = {
     templateTags: any;
     description: any;
     templateLinks: any;
+    onCreate: (data: { isNeedToPublish: boolean }) => void;
 }

@@ -40,10 +40,10 @@ import {
 
 // utils
 import { getCreateRoomUrl } from '../../utils/urls';
-import { adjustUserPositions } from '../../utils/positions/adjustUserPositions';
 
 // styles
 import styles from './CreateRoomContainer.module.scss';
+import {adjustUserPositions} from "shared-utils";
 
 const Component = () => {
     const isGetTemplateRequestIsPending = useStore(getEditingTemplateFx.pending);

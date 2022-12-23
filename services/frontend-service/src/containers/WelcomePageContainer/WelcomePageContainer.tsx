@@ -28,7 +28,7 @@ const WelcomePageContainer = memo(() => {
 
     useEffect(() => {
         (async () => {
-            await getTemplatesFx({ limit: 6, skip: 0 });
+            await getTemplatesFx({ limit: 6, skip: 0, type: 'free' });
         })();
     }, []);
 
@@ -39,7 +39,7 @@ const WelcomePageContainer = memo(() => {
     }, []);
 
     const handleCommonTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getTemplatesFx({ limit: 6 * newPage, skip: 0 });
+        await getTemplatesFx({ limit: 6 * newPage, skip: 0, type: 'free' });
     }, []);
 
     return (

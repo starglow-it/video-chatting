@@ -18,12 +18,15 @@ export class MeetingsService {
     private meetingInstance: Model<MeetingInstanceDocument>,
   ) {}
 
-  async create(
-    createMeetingData: UpdateQuery<MeetingInstanceDocument>,
-    { session }: ITransactionSession,
-  ): Promise<MeetingInstanceDocument> {
-    const [meeting] = await this.meetingInstance.create([createMeetingData], {
-      session,
+  async create({
+    data,
+    session,
+  }: {
+    data: UpdateQuery<MeetingInstanceDocument>;
+    session: ITransactionSession;
+  }): Promise<MeetingInstanceDocument> {
+    const [meeting] = await this.meetingInstance.create([data], {
+      session: session?.session,
     });
 
     return meeting;
@@ -42,15 +45,20 @@ export class MeetingsService {
   }
 
   async findById(
-    getMeetingData: { meetingId: IMeetingInstance['id'] },
+    data: { meetingId: IMeetingInstance['id'] },
     { session }: ITransactionSession,
   ): Promise<MeetingInstanceDocument> {
     return this.meetingInstance
-      .findById(getMeetingData.meetingId, {}, { session })
+      .findById(data.meetingId, {}, { session })
       .exec();
   }
 
-  async find({ query, session }: GetModelQuery<MeetingInstanceDocument>) {
+  async find({
+    query,
+    session,
+  }: GetModelQuery<MeetingInstanceDocument>): Promise<
+    MeetingInstanceDocument[]
+  > {
     return this.meetingInstance
       .find(query, {}, { session: session.session })
       .exec();

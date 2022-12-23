@@ -16,6 +16,7 @@ import {
 } from '../types';
 
 import { templatesDomain } from '../../templates/domain/model';
+import {EditUserTemplatePayload, EditUserTemplateResponse} from "../../templates/types";
 
 export const $profileTemplatesStore = profileDomain.createStore<EntityList<IUserTemplate>>(
     initialProfileTemplatesStore,
@@ -74,3 +75,9 @@ export const getProfileTemplatesCountFx = attach({
         templateType,
     }),
 });
+
+export const editUserTemplateFx = templatesDomain.effect<
+    EditUserTemplatePayload,
+    EditUserTemplateResponse,
+    void
+>('editUserTemplateFx');

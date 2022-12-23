@@ -1,6 +1,7 @@
 import {
-	GetCommonTemlatePayload, ICommonTemplate,
-	QueryParams,
+	DeleteCommonTemplatePayload, DeleteCommonTemplateSoundPayload,
+	GetCommonTemplateByIdPayload, ICommonTemplate,
+	QueryParams, UpdateCommonTemplatePayload,
 	UploadCommonTemplateFilePayload,
 } from 'shared-types';
 
@@ -26,7 +27,12 @@ export const $commonTemplateStore =
     	error: null,
     });
 
-export const updateCommonTemplateDataEvent = templatesDomain.createEvent<Partial<ICommonTemplate>>('updateCommonTemplateDataEvent')
+export const $roomPreviewIdStore =
+    templatesDomain.createStore<ICommonTemplate["id"] | null>(null);
+
+export const updateCommonTemplateDataEvent = templatesDomain.createEvent<Partial<ICommonTemplate>>('updateCommonTemplateDataEvent');
+
+export const setRoomPreviewIdEvent = templatesDomain.createEvent<ICommonTemplate["id"] | null>('setRoomPreviewIdEvent');
 
 export const getCommonTemplatesFx = templatesDomain.createEffect<
     QueryParams,
@@ -40,6 +46,12 @@ export const createTemplateFx = templatesDomain.createEffect<
     void
 >('createTemplateFx');
 
+export const deleteCommonTemplateFx = templatesDomain.createEffect<
+    DeleteCommonTemplatePayload,
+	CommonTemplateState,
+    void
+>('deleteCommonTemplateFx');
+
 export const uploadTemplateFileFx = templatesDomain.createEffect<
     UploadCommonTemplateFilePayload,
     CommonTemplateState,
@@ -47,7 +59,19 @@ export const uploadTemplateFileFx = templatesDomain.createEffect<
 >('uploadTemplateFileFx');
 
 export const getCommonTemplateFx = templatesDomain.createEffect<
-    GetCommonTemlatePayload,
+	GetCommonTemplateByIdPayload,
     CommonTemplateState,
     void
 >('getCommonTemplateFx');
+
+export const updateCommonTemplateFx = templatesDomain.createEffect<
+    UpdateCommonTemplatePayload,
+    CommonTemplateState,
+    void
+>('updateCommonTemplateFx');
+
+export const deleteCommonTemplateSoundFx = templatesDomain.createEffect<
+	DeleteCommonTemplateSoundPayload,
+    CommonTemplateState,
+    void
+>('deleteCommonTemplateSoundFx');

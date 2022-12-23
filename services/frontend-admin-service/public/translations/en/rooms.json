@@ -3,7 +3,7 @@
     "title": "Rooms"
   },
   "createRoom": "Create Room",
-  "noRooms": "No rooms so far",
+  "noRooms": "No created rooms so far",
   "uploadBackground": {
     "title": "Upload your Room background",
     "description": "Drag & Drop file here or click button",
@@ -40,7 +40,8 @@
   },
   "tooltips": {
     "cancel": "Cancel",
-    "addLinkDisabled": "Add Link disabled"
+    "addLinkDisabled": "Add Link disabled",
+    "deleteRoom": "Delete Room"
   },
   "uploadSound": {
     "title": "Upload your background sound",
@@ -52,6 +53,28 @@
   },
   "preview": {
     "roomName": "Roomname",
-    "about": "About this room: "
+    "about": "About this room:"
+  },
+  "cancelCreate": {
+    "title": "Cancel Room creation?",
+    "text": "All your settings will be lost"
+  },
+  "createRoomDialog": {
+    "title": "Create and publish Room?",
+    "text": "The Room will instantly become available for the platform users"
+  },
+  "buttons": {
+    "create": "Create Room",
+    "createAndPublish": "Create & Publish",
+    "revoke": "Revoke",
+    "publish": "Publish",
+    "edit": "Edit room",
+    "statistics": "View statistics"
+  },
+  "table": {
+    "previewAndRoomName": "Preview & Roomname",
+    "participants": "Participants",
+    "price": "Price",
+    "status": "Status"
   }
 }

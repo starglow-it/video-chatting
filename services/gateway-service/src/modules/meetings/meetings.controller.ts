@@ -17,18 +17,23 @@ import {
 } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-import { CommonInstanceMeetingRestDTO } from '../../dtos/response/common-instance-meeting.dto';
 
 import { MEETINGS_SCOPE } from 'shared-const';
 import { ResponseSumType, IUserTemplate } from 'shared-types';
 
+// services
 import { CoreService } from '../../services/core/core.service';
 import { MediaServerService } from '../../services/media-server/media-server.service';
 import { TemplatesService } from '../templates/templates.service';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
+// requests
 import { CreateMeetingRequest } from '../../dtos/requests/create-meeting.request';
 import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.request';
-import { UserTemplatesService } from '../user-templates/user-templates.service';
+
+// dtos
+import { CommonInstanceMeetingRestDTO } from '../../dtos/response/common-instance-meeting.dto';
+import {MeetingsService} from "./meetings.service";
 
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
@@ -39,6 +44,7 @@ export class MeetingsController {
     private templatesService: TemplatesService,
     private userTemplatesService: UserTemplatesService,
     private mediaServerService: MediaServerService,
+    private meetingService: MeetingsService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -72,7 +78,7 @@ export class MeetingsController {
         templateId: userTemplate.templateId,
       });
 
-      const updatedUserTemplate = await this.coreService.assignMeetingInstance({
+      const updatedUserTemplate = await this.meetingService.assignMeetingInstance({
         userId: req.user.userId,
         templateId: userTemplate.id,
       });

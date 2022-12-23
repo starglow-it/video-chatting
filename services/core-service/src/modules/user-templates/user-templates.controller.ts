@@ -6,7 +6,11 @@ import { plainToInstance } from 'class-transformer';
 import * as mongoose from 'mongoose';
 
 // shared
-import { TEMPLATES_SERVICE, UserTemplatesBrokerPatterns } from 'shared-const';
+import {
+  previewResolutions,
+  TEMPLATES_SERVICE,
+  UserTemplatesBrokerPatterns,
+} from 'shared-const';
 
 import {
   CreateUserTemplateByIdPayload,
@@ -41,7 +45,9 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 // schemas
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
-import { isValidObjectId } from '../../utils/mongo/isValidObjectId';
+import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
+import { TranscodeService } from '../transcode/transcode.service';
+import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -54,6 +60,8 @@ export class UserTemplatesController {
     private languageService: LanguagesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
+    private transcodeService: TranscodeService,
+    private awsService: AwsConnectorService,
   ) {}
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
@@ -364,9 +372,12 @@ export class UserTemplatesController {
             }
 
             return this.businessCategoriesService.create({
-              key: category.key,
-              value: category.value,
-              color: category.color,
+              data: {
+                key: category.key,
+                value: category.value,
+                color: category.color,
+              },
+              session,
             });
           });
 
@@ -455,11 +466,31 @@ export class UserTemplatesController {
     return withTransaction(this.connection, async (session) => {
       const { url, id, mimeType } = data;
 
-      const previewImages = await this.userTemplatesService.generatePreviews({
-        url,
-        id,
-        mimeType,
+      const screenShotUploadKey = `templates/${id}/images`;
+
+      this.awsService.deleteFolder(screenShotUploadKey);
+
+      const screenShotPromises = previewResolutions.map(async (resolution) => {
+        const screenShotData =
+          await this.transcodeService.createVideoScreenShots({
+            url,
+            mimeType,
+            key: screenShotUploadKey,
+            resolution,
+          });
+
+        return this.commonTemplatesService.createPreview({
+          data: {
+            url: screenShotData.url,
+            key: screenShotData.uploadKey,
+            size: screenShotData.size,
+            resolution: screenShotData.resolution,
+          },
+          session,
+        });
       });
+
+      const previewImages = await Promise.all(screenShotPromises);
 
       const imageIds = previewImages.map((image) => image._id);
 
@@ -635,11 +666,31 @@ export class UserTemplatesController {
     return withTransaction(this.connection, async (session) => {
       const { url, id, mimeType } = data;
 
-      const previewImages = await this.userTemplatesService.generatePreviews({
-        url,
-        id,
-        mimeType,
+      const screenShotUploadKey = `templates/${id}/images`;
+
+      this.awsService.deleteFolder(screenShotUploadKey);
+
+      const screenShotPromises = previewResolutions.map(async (resolution) => {
+        const screenShotData =
+          await this.transcodeService.createVideoScreenShots({
+            url,
+            mimeType,
+            key: screenShotUploadKey,
+            resolution,
+          });
+
+        return this.commonTemplatesService.createPreview({
+          data: {
+            url: screenShotData.url,
+            key: screenShotData.uploadKey,
+            size: screenShotData.size,
+            resolution: screenShotData.resolution,
+          },
+          session,
+        });
       });
+
+      const previewImages = await Promise.all(screenShotPromises);
 
       const imageIds = previewImages.map((image) => image._id);
 
@@ -691,12 +742,14 @@ export class UserTemplatesController {
           session,
         });
 
-      const customTemplates = await this.userTemplatesService.findUserTemplates({
-        query: {
-          author: payload.userId,
+      const customTemplates = await this.userTemplatesService.findUserTemplates(
+        {
+          query: {
+            author: payload.userId,
+          },
+          session,
         },
-        session,
-      });
+      );
 
       const paidTemplates = await this.userTemplatesService.findUserTemplates({
         query: {
@@ -706,9 +759,9 @@ export class UserTemplatesController {
       });
 
       const templatesIds = [
-          ...paidTemplates,
+        ...paidTemplates,
         ...customTemplates,
-        ...leastUsedFreeTemplates
+        ...leastUsedFreeTemplates,
       ].map((template) => template.id);
 
       await this.userTemplatesService.deleteUserTemplates({

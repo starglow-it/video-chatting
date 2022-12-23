@@ -26,6 +26,8 @@ import {
 import { ConfigClientService } from '../../services/config/config.service';
 import { CoreService } from '../../services/core/core.service';
 import { TemplatesService } from '../templates/templates.service';
+import {StatisticsService} from "./statistics.service";
+import {UserIdParam} from "../../dtos/params/user-id.param";
 
 @Controller('statistics')
 export class StatisticsController {
@@ -35,6 +37,7 @@ export class StatisticsController {
     private configService: ConfigClientService,
     private coreService: CoreService,
     private templatesService: TemplatesService,
+    private statisticsService: StatisticsService,
   ) {}
 
   @Get('/users')
@@ -53,7 +56,7 @@ export class StatisticsController {
         role: UserRoles.User,
       });
 
-      const countryStatistics = await this.coreService.getCountryStatistics();
+      const countryStatistics = await this.statisticsService.getCountryStatistics();
 
       return {
         result: {
@@ -201,7 +204,7 @@ export class StatisticsController {
     @Query('roomType') roomType: string,
   ): Promise<ResponseSumType<RoomRatingStatistics>> {
     try {
-      const roomsStatistics = await this.coreService.getRoomRatingStatistic({
+      const roomsStatistics = await this.statisticsService.getRoomRatingStatistic({
         ratingKey: basedOn,
         roomKey: roomType,
       });
@@ -239,7 +242,7 @@ export class StatisticsController {
   ): Promise<ResponseSumType<any>> {
     try {
       const monetizationStatistic =
-        await this.coreService.getMonetizationStatistic({
+        await this.statisticsService.getMonetizationStatistic({
           type,
           period,
         });
@@ -269,12 +272,12 @@ export class StatisticsController {
     description: 'Forbidden',
   })
   async getUserProfileStatistic(
-    @Param('userId') userId: string,
+    @Param() params: UserIdParam,
   ): Promise<ResponseSumType<ICommonUserStatistic>> {
     try {
       const userProfileStatistic =
-        await this.coreService.getUserProfileStatistic({
-          userId,
+        await this.statisticsService.getUserProfileStatistic({
+          userId: params.userId,
         });
 
       return {

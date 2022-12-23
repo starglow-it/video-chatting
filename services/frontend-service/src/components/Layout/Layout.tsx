@@ -38,6 +38,7 @@ import {
 import {
 	AuthenticationLink 
 } from '@components/AuthenticationLink/AuthenticationLink';
+import { MeetingFinishedDialog } from "@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog";
 
 import {
 	Footer 
@@ -197,6 +198,7 @@ const Component = ({
                         </CustomBox>
                     </ConditionalRender>
                     {children}
+					<MeetingFinishedDialog />
                 </CustomGrid>
                 <ConditionalRender condition={shouldShowFooter}>
                     <CustomGrid item>

@@ -2,7 +2,7 @@ import {
   IBusinessCategory,
   ILanguage,
   ISocialLink,
-  IPreviewImage, ITemplateSoundFile,
+  IPreviewImage, ITemplateSoundFile, TemplateLinkPosition,
 } from './common';
 import { ITemplateUser } from './users';
 import { IMeetingInstance } from './meeting';
@@ -26,7 +26,7 @@ export interface ICommonTemplate {
   priceInCents?: number;
   businessCategories?: IBusinessCategory[];
   usersPosition: { bottom: number; left: number }[];
-  links?: { item: string; position: { top: number; left: number } }[];
+  links?: { item: string; position: TemplateLinkPosition }[];
   stripeProductId?: string;
   isAudioAvailable: boolean;
   draft: boolean;

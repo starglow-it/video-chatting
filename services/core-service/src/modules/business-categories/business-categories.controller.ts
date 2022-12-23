@@ -5,8 +5,7 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import { BUSINESS_CATEGORIES_SERVICE } from 'shared-const';
-import { CoreBrokerPatterns } from 'shared-const';
+import { CoreBrokerPatterns, BUSINESS_CATEGORIES_SERVICE } from 'shared-const';
 
 // types
 import {

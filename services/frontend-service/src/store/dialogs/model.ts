@@ -25,6 +25,7 @@ export const initialDialogsState: AppDialogsState = {
     userBlockedDialog: false,
     hostUserDeletedDialog: false,
     downgradedSubscriptionDialog: false,
+    meetingFinishedDialog: false,
 };
 
 export const $appDialogsStore = dialogsDomain.createStore<AppDialogsState>(initialDialogsState);

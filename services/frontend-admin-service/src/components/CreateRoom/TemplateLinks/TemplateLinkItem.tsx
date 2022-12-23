@@ -8,26 +8,27 @@ import {useStore} from "effector-react";
 import {useFormContext} from "react-hook-form";
 import InputBase from "@mui/material/InputBase";
 
+import {roundNumberToPrecision} from "shared-utils";
+
 import {useToggle} from "shared-frontend/hooks/useToggle";
 import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
 import {CustomBox} from "shared-frontend/library/custom/CustomBox";
 import {CustomTooltip} from "shared-frontend/library/custom/CustomTooltip";
 import { RoundErrorIcon } from 'shared-frontend/icons/RoundIcons/RoundErrorIcon';
 import {RoundSuccessIcon} from "shared-frontend/icons/RoundIcons/RoundSuccessIcon";
+import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
 
 import styles from './TemplateLinks.module.scss';
 
 import {$windowSizeStore} from "../../../store";
 
 import {TemplateLinkItemProps} from "./TemplateLinks.types";
-import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
 
 const Component = ({
    index,
    isDraggable = false,
-    isStatic = false,
-   data,
-   onPositionChange,
+   isStatic = false,
+   data: linkData,
    onRemove,
    onAccept,
 }: TemplateLinkItemProps) => {
@@ -38,6 +39,7 @@ const Component = ({
 
     const {
         register,
+        setValue,
     } = useFormContext();
 
     const {
@@ -61,9 +63,9 @@ const Component = ({
 
     useLayoutEffect(() => {
         const xPosition =
-            width * data.left - (contentRef.current?.clientWidth ?? 0) / 2;
+            width * linkData.left - (contentRef.current?.clientWidth ?? 0) / 2;
         const yPosition =
-            height * data.top - (contentRef.current?.clientHeight ?? 0) / 2;
+            height * linkData.top - (contentRef.current?.clientHeight ?? 0) / 2;
 
         setDraggablePosition({
             x: xPosition,
@@ -84,25 +86,21 @@ const Component = ({
                 x: data.x,
                 y: data.y,
             });
-            const leftPercentage =
-                Math.round(
-                    ((data.x + (contentRef.current?.clientWidth ?? 0) / 2) /
-                        width) *
-                    10000,
-                ) / 100;
-            const topPercentage =
-                Math.round(
-                    ((data.y + (contentRef.current?.clientHeight ?? 0) / 2) /
-                        height) *
-                    10000,
-                ) / 100;
-            onPositionChange?.({
-                id: data.id,
-                left: leftPercentage,
-                top: topPercentage,
-            });
+
+            const leftPercentage = roundNumberToPrecision(
+                (data.x + (contentRef.current?.clientWidth ?? 0) / 2) / width,
+                2
+            );
+
+            const topPercentage = roundNumberToPrecision(
+                (data.y + (contentRef.current?.clientHeight ?? 0) / 2) / height,
+                2
+            );
+
+            setValue(`templateLinks[${index}].top`, topPercentage)
+            setValue(`templateLinks[${index}].left`, leftPercentage)
         },
-        [data.id, width, height, onPositionChange],
+        [linkData.id, width, height],
     );
 
     const handleAcceptLink = (event: React.MouseEvent<unknown>) => {
@@ -112,12 +110,12 @@ const Component = ({
     }
 
     const handleRemoveLink = (event: React.MouseEvent<unknown>) => {
-        event.stopPropagation()
+        event.stopPropagation();
         onRemove?.(index)
     }
 
     const handleBlur = (event: React.FocusEvent<Element | HTMLInputElement | HTMLTextAreaElement, Element>) => {
-        handleSetElementInActive()
+        handleSetElementInActive();
         registerData.onBlur(event);
     }
 
@@ -140,7 +138,7 @@ const Component = ({
                         {isStatic
                             ? (
                                 <CustomTypography color="colors.white.primary">
-                                    {data.value}
+                                    {linkData.value}
                                 </CustomTypography>
                             )
                             : (

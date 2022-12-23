@@ -15,4 +15,5 @@ export const emailTemplates = {
   trialExpires: 'trial-expires',
   blockedAccount: 'account-was-blocked',
   deletedAccountByAdmin: 'account-was-deleted',
+  unblockedAccount: 'unblocked-account',
 };

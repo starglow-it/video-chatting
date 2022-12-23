@@ -22,13 +22,11 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
-import { HostUserDeletedDialog } from '@components/Dialogs/HostUserDeletedDialog/HostUserDeletedDialog';
 
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import {
-    appDialogsApi,
     getSubscriptionWithDataFx,
     initLandscapeListener,
     initWindowListeners,
@@ -140,8 +138,6 @@ const MeetingContainer = memo(() => {
             resetRoomStores();
 
             BackgroundManager.destroy();
-
-            appDialogsApi.resetDialogs();
         };
     }, []);
 
@@ -230,7 +226,6 @@ const MeetingContainer = memo(() => {
                 </ConditionalRender>
             )}
             <HostTimeExpiredDialog />
-            <HostUserDeletedDialog />
             <MeetingErrorDialog />
         </>
     );

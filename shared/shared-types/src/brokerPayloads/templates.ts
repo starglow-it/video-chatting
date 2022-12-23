@@ -78,12 +78,27 @@ export type UploadCommonTemplateFilePayload = {
   templateId: ICommonTemplate['id'];
 };
 
-export type GetCommonTemlatePayload = {
+export type GetCommonTemplateByIdPayload = {
+  templateId: ICommonTemplate['id'];
+};
+
+export type UpdateTemplatePayload = {
+  templateId: IUserTemplate['id'];
+  userId: ICommonUser['id'];
+  data: Partial<IUserTemplate>;
+};
+
+export type UpdateCommonTemplatePayload = {
+  templateId: ICommonTemplate['id'];
+  data: Partial<ICommonTemplate>;
+};
+
+export type DeleteCommonTemplateSoundPayload = {
   templateId: ICommonTemplate['id'];
 };
 
 export type CreateTemplatePayload = {
-  userId: IUserTemplate['id'];
+  userId: ICommonTemplate['id'];
 };
 
 export type EditTemplatePayload = {

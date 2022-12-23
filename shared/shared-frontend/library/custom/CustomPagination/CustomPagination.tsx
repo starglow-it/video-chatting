@@ -37,7 +37,7 @@ const Component = ({
 
     const handleNextPage = useCallback(() => {
         onPageChange?.(maxPages === page ? page : page + 1);
-    }, [count, rowsPerPage, page, onPageChange]);
+    }, [maxPages, page, onPageChange]);
 
     const renderPagesButtons = useMemo(() => {
         return data.items.filter(({ type }) => !['previous', 'next'].includes(type)).map(({ onClick, selected, disabled, page, type }) => {
@@ -51,7 +51,7 @@ const Component = ({
                 />
             )
         })
-    }, [onPageChange, page]);
+    }, [onPageChange, page, data.items, isDisabled]);
 
     return (
         <CustomGrid container justifyContent="space-evenly">

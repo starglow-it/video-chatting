@@ -22,6 +22,7 @@ function Component<Data extends { id: number | string }>(props: CustomTableProps
         page = 1,
         rowsPerPage = 20,
         onPageChange,
+        onRowAction,
         isTableUpdating = false,
         bodyCellClassName,
         headCellClassName,
@@ -40,28 +41,34 @@ function Component<Data extends { id: number | string }>(props: CustomTableProps
 
     const renderBody = useMemo(
         () =>
-            data?.map(item => (
-                <TableRow className={styles.tableBodyRow} hover key={item.id}>
-                    {columns?.map(column => (
-                        <TableCell
-                            key={`${item.id}_${column.key}` as string}
-                            onClick={item[column.key]?.action}
-                            className={clsx(styles.tableBodyCell, bodyCellClassName, item[column.key]?.style, {[styles.withAction]: Boolean(item[column.key]?.action) })}
-                        >
-                            {item[column.key].label}
-                        </TableCell>
-                    ))}
-                    <ConditionalRender condition={Boolean(ActionsComponent)}>
-                        <TableCell
-                            key='actions'
-                            className={clsx(styles.tableBodyCell, bodyCellClassName)}
-                        >
-                            <ActionsComponent actionId={item.id} />
-                        </TableCell>
-                    </ConditionalRender>
-                </TableRow>
-            )),
-        [data],
+            data?.map(item => {
+                const handleAction = () => {
+                    onRowAction?.({ itemId: item.id as string });
+                }
+
+                return (
+                    <TableRow onClick={handleAction} className={styles.tableBodyRow} hover key={item.id}>
+                        {columns?.map(column => (
+                            <TableCell
+                                key={`${item.id}_${column.key}` as string}
+                                onClick={item[column.key]?.action}
+                                className={clsx(styles.tableBodyCell, bodyCellClassName, item[column.key]?.style, {[styles.withAction]: Boolean(item[column.key]?.action) })}
+                            >
+                                {item[column.key].label}
+                            </TableCell>
+                        ))}
+                        <ConditionalRender condition={Boolean(ActionsComponent)}>
+                            <TableCell
+                                key='actions'
+                                className={clsx(styles.tableBodyCell, bodyCellClassName)}
+                            >
+                                <ActionsComponent actionId={item.id} />
+                            </TableCell>
+                        </ConditionalRender>
+                    </TableRow>
+                )
+            }),
+        [data, columns],
     );
 
     return (

@@ -26,7 +26,7 @@ const Component = ({
 	url,
    	templateType
 }: TemplateBackgroundProps) => (
-	<CustomGrid className={styles.background}>
+	<CustomGrid container className={styles.background}>
 		<ConditionalRender condition={Boolean(url)}>
 			{templateType === 'image' ? (
 				<CustomImage

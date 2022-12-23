@@ -34,9 +34,6 @@ import {
 import {
 	CustomImage 
 } from 'shared-frontend/library/custom/CustomImage';
-import {
-	usePrevious 
-} from 'shared-frontend/hooks/usePrevious';
 
 import {
 	ICommonUser 
@@ -62,7 +59,6 @@ import {
 import {
 	$userProfileIdStore,
 	$usersStore,
-	getUsersListFx,
 	setUserProfileIdEvent,
 	searchUsersFx,
 } from '../../store';
@@ -92,6 +88,8 @@ const tableColumnsKeys: UsersTableHeadType['key'][] = [
 	'status',
 ];
 
+const USERS_LIMIT = 20;
+
 const Component = () => {
 	const {
 		state: usersList 
@@ -100,13 +98,10 @@ const Component = () => {
 		state: activeUserId 
 	} = useStore($userProfileIdStore);
 
-	const isUsersLoading = useStore(getUsersListFx.pending);
+	const isUsersLoading = useStore(searchUsersFx.pending);
 
 	const [page, setPage] = useState(1);
 	const [userSearch, setUserSearch] = useState('');
-
-	const prevPage = usePrevious(page);
-	const prevSearch = usePrevious(userSearch);
 
 	const {
 		translation 
@@ -167,51 +162,38 @@ const Component = () => {
 
 	const handleSearchUsers = useCallback(
 		async ({
-			search 
+			search,
+			page
 		}: { search: string }) => {
 			searchUsersFx({
-				skip: (page - 1) * 20,
-				limit: 20,
+				skip: (page - 1) * USERS_LIMIT,
+				limit: USERS_LIMIT,
 				search,
 			});
-		},
-		[page],
-	);
+		},[]);
 
 	const usersSearchRequest = useMemo(
 		() =>
-			debounce<(data: { search: string }) => Promise<void>>(
+			debounce<(data: { page: number; search: string }) => Promise<void>>(
 				handleSearchUsers,
 			500,
 			),
-		[handleSearchUsers],
+		[],
 	);
-
-	useEffect(() => {
-		if (page !== prevPage) {
-			getUsersListFx({
-				skip: (page - 1) * 20,
-				limit: 20,
-				search: userSearch,
-			});
-		} else if (userSearch !== prevSearch) {
-			usersSearchRequest({
-				search: userSearch,
-			});
-		}
-	}, [page, userSearch, usersSearchRequest]);
 
 	useEffect(() => {
 		(async () => {
 			usersSearchRequest({
 				search: userSearch,
+				page,
 			});
 		})();
-	}, [userSearch]);
+	}, [userSearch, page, usersSearchRequest]);
 
-	const handleChangeUsersSearch = event => {
-		setUserSearch(event.target.value);
-	};
+	const handleChangeUsersSearch = useCallback(event => {
+		setUserSearch(() => event.target.value);
+		setPage(() => 1);
+	}, []);
 
 	return (
 		<CustomGrid
@@ -272,7 +254,7 @@ const Component = () => {
 								width={40}
 								height={40}
 							/>
-							<CustomTypography>
+							<CustomTypography variant="body2">
 								<Translation
 									nameSpace="statistics"
 									translation={
@@ -289,7 +271,7 @@ const Component = () => {
 								columns={tableHeadData}
 								data={tableData}
 								count={usersList.count}
-								rowsPerPage={20}
+								rowsPerPage={USERS_LIMIT}
 								page={page}
 								onPageChange={handleChangePage}
 								isTableUpdating={isUsersLoading}

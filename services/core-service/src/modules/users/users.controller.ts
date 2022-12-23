@@ -304,7 +304,7 @@ export class UsersController {
     } catch (e) {
       console.log('findUserById error', e.message);
 
-     return;
+      return;
     }
   }
 
@@ -381,15 +381,19 @@ export class UsersController {
         ? escapeRegexString(options?.search)
         : '';
 
-      const queryRegex = { $regex: searchRegexStr, $options: 'i' };
+      const searchRegEx = new RegExp(searchRegexStr);
+
+      const queryRegex = { $regex: searchRegEx, $options: 'i' };
 
       const finalQuery = {
         ...query,
-        $or: [
-          { companyName: queryRegex },
-          { fullName: queryRegex },
-          { email: queryRegex },
-        ],
+        ...(options?.search ? {
+          $or: [
+            { companyName: queryRegex },
+            { fullName: queryRegex },
+            { email: queryRegex },
+          ]
+        } : {})
       };
 
       const users = await this.usersService.findUsers({
@@ -605,7 +609,9 @@ export class UsersController {
           session,
         );
 
-        await this.userTokenService.deleteUserTokens({ userId, session });
+        if (value) {
+          await this.userTokenService.deleteUserTokens({ userId, session });
+        }
 
         return plainToInstance(CommonUserDTO, user, {
           excludeExtraneousValues: true,

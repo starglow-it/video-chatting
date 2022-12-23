@@ -29,7 +29,7 @@ const Component = ({
    	links,
 	onNextStep, 
 	onPreviousStep,
-   	onRemoveLink
+   	onRemoveLink,
 }: TemplatesLinksProps) => {
 	const renderLinks = useMemo(() =>
 		links.map((link, index) => (
@@ -37,7 +37,6 @@ const Component = ({
 				key={link?.key}
 				index={index}
 				onAccept={() => {}}
-				onPositionChange={() => {}}
 				onRemove={onRemoveLink}
 				data={link}
 				isDraggable

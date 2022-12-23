@@ -46,12 +46,13 @@ import {
   GetStripeChargesPayload,
   GetStripeCheckoutSessionPayload,
   GetStripePortalSessionPayload,
-  GetStripeSubscriptionPayload,
+  GetStripeSubscriptionPayload, GetStripeTemplateProductByNamePayload,
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
   MonetizationStatisticPeriods,
   MonetizationStatisticTypes,
 } from 'shared-types';
+import {DeleteTemplateStripeProductPayload} from "shared-types/src/brokerPayloads";
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
@@ -584,10 +585,17 @@ export class PaymentsController {
   @MessagePattern({
     cmd: PaymentsBrokerPatterns.GetStripeTemplateProductByName,
   })
-  async getTemplateStripeProductByName(@Payload() data: { name: string }) {
+  async getTemplateStripeProductByName(@Payload() payload: GetStripeTemplateProductByNamePayload) {
     const templatesList = await this.paymentService.getStripeTemplates();
 
-    return templatesList.filter((template) => template.name === data.name)[0];
+    return templatesList.filter((template) => template.name === payload.name)[0];
+  }
+
+  @MessagePattern({
+    cmd: PaymentsBrokerPatterns.DeleteTemplateStripeProduct,
+  })
+  async deleteTemplateStripeProduct(@Payload() payload: DeleteTemplateStripeProductPayload) {
+    return this.paymentService.deleteStripeProduct(payload);
   }
 
   @MessagePattern({
@@ -728,14 +736,14 @@ export class PaymentsController {
         subscriptionPlanKey: isSubscriptionPeriodUpdated
             ? nextPlan.name
             : currentPlan.name,
+        nextSubscriptionPlanKey: !isSubscriptionPeriodUpdated ? nextPlan.name : null,
+        prevSubscriptionPlanKey: user.subscriptionPlanKey,
         maxTemplatesNumber: isSubscriptionPeriodUpdated
             ? nextPlan.features.templatesLimit
             : currentPlan.features.templatesLimit,
         maxMeetingTime: isSubscriptionPeriodUpdated
             ? nextPlan.features.timeLimit
             : currentPlan.features.timeLimit,
-        nextSubscriptionPlanKey: isPlanHasChanged ? nextPlan.name : null,
-        prevSubscriptionPlanKey: user.subscriptionPlanKey,
         renewSubscriptionTimestampInSeconds: isCurrentSubscriptionIsActive
             ? user.renewSubscriptionTimestampInSeconds
             : subscription.current_period_end,

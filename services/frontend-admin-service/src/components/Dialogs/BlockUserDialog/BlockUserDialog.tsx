@@ -23,6 +23,7 @@ import {
 import {
 	Translation 
 } from '@components/Translation/Translation';
+import {ButtonsGroup} from "@components/ButtonsGroup/ButtonsGroup";
 
 // stores
 import {
@@ -92,12 +93,8 @@ const Component = () => {
 					{userData?.fullName || userData?.email}
 				</CustomTypography>
 			</CustomGrid>
-			<CustomGrid
+			<ButtonsGroup
 				className={styles.buttons}
-				container
-				alignItems="center"
-				wrap="nowrap"
-				gap={2}
 			>
 				<CustomButton
 					variant={
@@ -125,7 +122,7 @@ const Component = () => {
 						/>
 					}
 				/>
-			</CustomGrid>
+			</ButtonsGroup>
 		</CustomDialog>
 	);
 };

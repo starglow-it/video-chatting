@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import {MeetingAccessStatusEnum, TimeoutTypesEnum} from 'shared-types';
+import { TimeoutTypesEnum } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 import { MeetingTimeService } from '../meeting-time/meeting-time.service';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
@@ -54,8 +54,6 @@ export class MeetingsCommonService {
       0,
     );
 
-    console.log(timeToExtract)
-
     await this.coreService.updateUser({
       query: { _id: profileId },
       data: {
@@ -66,7 +64,7 @@ export class MeetingsCommonService {
   }
 
   async handleClearMeetingData({ templateId, userId, instanceId, meetingId, session }) {
-    await this.usersService.updateMany({ meeting: meetingId }, { accessStatus: MeetingAccessStatusEnum.Left }, session);
+    await this.usersService.deleteMany({ meeting: meetingId }, session);
 
     await this.meetingsService.deleteById({ meetingId }, session);
 

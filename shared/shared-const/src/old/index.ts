@@ -7,5 +7,4 @@ export * from './languages.const';
 export * from './services.const';
 export * from './subscriptions.const';
 export * from './template-draft-data.const';
-export * from './templates.const';
 export * from './tokens.const';

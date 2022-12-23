@@ -22,7 +22,6 @@ import { UpdateTemplateRequest } from '../../dtos/requests/update-template.reque
 import {
   IUserTemplate,
   ResponseSumType,
-  ICommonTemplate,
   EntityList,
 } from 'shared-types';
 import { TemplatesService } from '../templates/templates.service';
@@ -135,40 +134,47 @@ export class ProfileTemplatesController {
   async updateProfileTemplate(
     @Request() req,
     @Body() updateTemplateData: UpdateTemplateRequest,
-    @Param('templateId') templateId: ICommonTemplate['id'],
+    @Param('templateId') templateId: IUserTemplate['id'],
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<ResponseSumType<ICommonTemplate>> {
+  ): Promise<ResponseSumType<IUserTemplate>> {
     try {
-      if (templateId) {
-        if (file) {
-          const { extension } = getFileNameAndExtension(file.originalname);
-          const uploadKey = `templates/${templateId}/videos/${uuidv4()}.${extension}`;
+      if (!templateId) {
+        return {
+          success: false,
+        };
+      }
 
-          const url = await this.uploadService.uploadFile(
-            file.buffer,
-            uploadKey,
-          );
+      let userTemplate = await this.userTemplatesService.getUserTemplateById({
+        id: templateId,
+      });
 
-          await this.coreService.uploadProfileTemplateFile({
-            url,
-            id: templateId,
-            mimeType: file.mimetype,
-          });
-        }
+      if (file) {
+        const { extension } = getFileNameAndExtension(file.originalname);
 
-        const template = await this.userTemplatesService.updateUserTemplate({
+        const uploadKey = `templates/${templateId}/videos/${uuidv4()}.${extension}`;
+
+        await this.uploadService.deleteFolder(`templates/${templateId}/videos`);
+
+        const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
+
+        userTemplate = await this.coreService.uploadUserTemplateFile({
+          url,
+          id: templateId,
+          mimeType: file.mimetype,
+        });
+      }
+
+      if (Object.keys(updateTemplateData).length > 1) {
+        userTemplate = await this.userTemplatesService.updateUserTemplate({
           templateId,
           userId: req.user.userId,
           data: updateTemplateData,
         });
-
-        return {
-          success: true,
-          result: template,
-        };
       }
+
       return {
-        success: false,
+        success: true,
+        result: userTemplate,
       };
     } catch (err) {
       this.logger.error(
@@ -309,7 +315,7 @@ export class ProfileTemplatesController {
     try {
       if (templateId) {
         const template = await this.templatesService.getCommonTemplateById({
-          id: templateId,
+          templateId,
         });
 
         if (template) {

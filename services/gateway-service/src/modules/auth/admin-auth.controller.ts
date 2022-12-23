@@ -65,10 +65,10 @@ export class AdminAuthController {
     description: 'Admin logged in',
   })
   async loginAdmin(
-    @Body() loginAdminData: UserCredentialsRequest,
+    @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
     const isUserExists = await this.coreService.checkIfUserExists({
-      email: loginAdminData.email,
+      email: body.email,
     });
 
     if (!isUserExists) {
@@ -76,14 +76,14 @@ export class AdminAuthController {
     }
 
     const user = await this.coreService.findUserByEmail({
-      email: loginAdminData.email,
+      email: body.email,
     });
 
     if (!user.isConfirmed || user.isResetPasswordActive) {
       throw new DataValidationException(USER_NOT_CONFIRMED);
     }
 
-    const result = await this.authService.loginUser(loginAdminData);
+    const result = await this.authService.loginUser(body);
 
     return {
       success: true,
@@ -108,7 +108,10 @@ export class AdminAuthController {
         userId: req.user.userId,
       });
 
-      return { success: true, result: user };
+      return {
+        success: true,
+        result: user
+      };
     } catch (err) {
       this.logger.error(
         {

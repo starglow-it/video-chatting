@@ -23,8 +23,12 @@ export class CountryStatisticsService {
   }: {
     data: ICountryStatistic;
     session: ITransactionSession;
-  }) {
-    return this.countryStatistic.create([data], { session: session?.session });
+  }): Promise<CountryStatisticDocument> {
+    const [newCountryStatistic] = await this.countryStatistic.create([data], {
+      session: session?.session,
+    });
+
+    return newCountryStatistic;
   }
 
   async find({
@@ -50,7 +54,10 @@ export class CountryStatisticsService {
     query,
     data,
     session,
-  }: UpdateModelQuery<CountryStatisticDocument, CountryStatistic>) {
+  }: UpdateModelQuery<
+    CountryStatisticDocument,
+    CountryStatistic
+  >): Promise<CountryStatisticDocument> {
     return this.countryStatistic
       .findOneAndUpdate(query, data, {
         new: true,
@@ -59,8 +66,10 @@ export class CountryStatisticsService {
       .exec();
   }
 
-  async exists(query: FilterQuery<CountryStatisticDocument>) {
-    return this.countryStatistic.exists(query).exec();
+  async exists(query: FilterQuery<CountryStatisticDocument>): Promise<boolean> {
+    const data = await this.countryStatistic.exists(query).exec();
+
+    return Boolean(data?._id);
   }
 
   async count(query: FilterQuery<CountryStatisticDocument>): Promise<number> {

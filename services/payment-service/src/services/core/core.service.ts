@@ -20,6 +20,7 @@ import {
   IUserTemplate,
   UpdateUserProfileStatisticPayload,
   DeleteLeastUsedTemplatesPayload,
+  GetCommonTemplateByIdPayload,
 } from 'shared-types';
 import { firstValueFrom } from 'rxjs';
 
@@ -44,7 +45,7 @@ export class CoreService {
   }
 
   async getCommonTemplateById(
-    payload: GetCommonTemplatePayload,
+    payload: GetCommonTemplateByIdPayload,
   ): Promise<ICommonUser> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplateById };
 

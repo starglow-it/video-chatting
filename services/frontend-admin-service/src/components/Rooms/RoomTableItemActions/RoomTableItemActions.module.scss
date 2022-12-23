@@ -1,0 +1,41 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.button {
+  height: rem(28px);
+  padding: rem(3px 8px);
+  background: $primary-white;
+  border: 1px solid rgba(189, 200, 211, 0.4);
+
+  box-shadow: 0 12px 24px -4px rgba(15, 15, 16, 0.1);
+  border-radius: rem(6px);
+
+  &.revoke {
+    &:hover {
+      background: $primary-red;
+      color: $primary-white;
+    }
+  }
+
+  &.publish {
+    &:hover {
+      background: $primary-orange;
+      color: $primary-white;
+    }
+  }
+}
+
+.deleteButton {
+  width: rem(28px);
+  height: rem(28px);
+
+  background: $primary-white;
+  border: 1px solid rgba(189, 200, 211, 0.4);
+
+  box-shadow: 0 12px 24px -4px rgba(15, 15, 16, 0.1);
+  border-radius: rem(6px);
+}
+
+.container {
+  width: min-content;
+}

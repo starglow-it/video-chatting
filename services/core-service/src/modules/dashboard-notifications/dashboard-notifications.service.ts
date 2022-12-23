@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
+import { IDashboardNotification } from 'shared-types';
+
 import {
   DashboardNotification,
   DashboardNotificationDocument,
@@ -16,11 +18,18 @@ export class DashboardNotificationsService {
     private dashboardNotification: Model<DashboardNotificationDocument>,
   ) {}
 
-  async createNotification(
+  async createNotification({
     data,
-    { session }: ITransactionSession,
-  ): Promise<DashboardNotificationDocument[]> {
-    return this.dashboardNotification.create([data], { session });
+    session,
+  }: {
+    data: Omit<IDashboardNotification, 'id'>;
+    session: ITransactionSession;
+  }): Promise<DashboardNotificationDocument> {
+    const [newNotification] = await this.dashboardNotification.create([data], {
+      session,
+    });
+
+    return newNotification;
   }
 
   async findNotifications({
@@ -43,9 +52,11 @@ export class DashboardNotificationsService {
     DashboardNotificationDocument,
     DashboardNotification
   >): Promise<any> {
-    return this.dashboardNotification.updateMany(query, data, {
-      session: session.session,
-    });
+    return this.dashboardNotification
+      .updateMany(query, data, {
+        session: session.session,
+      })
+      .exec();
   }
 
   async findAndUpdateNotification({
@@ -56,7 +67,7 @@ export class DashboardNotificationsService {
   }: UpdateModelQuery<
     DashboardNotificationDocument,
     DashboardNotification
-  >): Promise<any> {
+  >): Promise<DashboardNotificationDocument> {
     return this.dashboardNotification.findOneAndUpdate(query, data, {
       session: session.session,
       populate: populatePaths,
@@ -64,15 +75,21 @@ export class DashboardNotificationsService {
     });
   }
 
-  async exists(query) {
-    return this.dashboardNotification.exists(query);
+  async exists(query): Promise<boolean> {
+    const data = await this.dashboardNotification.exists(query);
+
+    return Boolean(data?._id);
   }
 
   async deleteNotification(id): Promise<any> {
-    return this.dashboardNotification.deleteOne({ _id: id });
+    await this.dashboardNotification.deleteOne({ _id: id });
+
+    return;
   }
 
   async deleteManyNotifications(query): Promise<any> {
-    return this.dashboardNotification.deleteMany(query);
+    await this.dashboardNotification.deleteMany(query);
+
+    return;
   }
 }

@@ -1,4 +1,4 @@
-import React, {memo, useMemo } from "react";
+import React, {memo, useCallback, useMemo } from "react";
 
 import {formatCountDown, getRandomNumber} from "shared-utils";
 
@@ -18,16 +18,16 @@ const Component = ({ fileName, src }: { fileName: string; src: string }) => {
         onEndTimer: handleStopAudio,
     } = useTimer(true);
 
-    const handleAudioEnded = () => {
+    const handleAudioEnded = useCallback(() => {
         handleStopAudio();
-    }
+    }, []);
 
-    const handleAudioStarted = ({ duration }: { duration: number }) => {
+    const handleAudioStarted = useCallback(({ duration }: { duration: number }) => {
         handleStartAudio(0,  duration * 1000);
-    }
+    }, []);
 
     const renderAudioProgress = useMemo(() => {
-        return [...new Array(45).fill(0)].map((_, index) => (
+        return new Array(45).fill(null).map((_, index) => (
             <CustomBox
                 key={index}
                 className={styles.audioWaveItem}

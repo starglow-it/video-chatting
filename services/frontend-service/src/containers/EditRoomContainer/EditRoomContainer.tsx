@@ -34,12 +34,12 @@ import {
 
 // utils
 import { getEditRoomUrl } from '../../utils/urls';
-import { adjustUserPositions } from '../../utils/positions/adjustUserPositions';
 import { convertToBase64 } from '../../utils/string/convertToBase64';
 
 // styles
 import styles from './EditRoomContainer.module.scss';
 import {IUserTemplate} from "shared-types";
+import {adjustUserPositions} from "shared-utils";
 
 const Component = () => {
     const prevTemplateDataRef = useRef<IUserTemplate | null>(null);

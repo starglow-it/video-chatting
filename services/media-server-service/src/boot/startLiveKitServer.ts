@@ -11,8 +11,6 @@ export const startLiveKitServer = async () => {
 
         svc.listRooms()
             .then((rooms: Room[]) => {
-                console.log("existing rooms", rooms);
-
                 rooms.forEach((room) => {
                     svc.deleteRoom(room.name).then(() => {
                         console.log("room deleted");

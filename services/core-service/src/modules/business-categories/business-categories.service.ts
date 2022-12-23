@@ -10,6 +10,7 @@ import {
 import { IBusinessCategory } from 'shared-types';
 
 import { GetModelQuery } from '../../types/custom';
+import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
 @Injectable()
 export class BusinessCategoriesService {
@@ -18,8 +19,18 @@ export class BusinessCategoriesService {
     private businessCategory: Model<BusinessCategoryDocument>,
   ) {}
 
-  async create(data: IBusinessCategory) {
-    return this.businessCategory.create(data);
+  async create({
+    data,
+    session,
+  }: {
+    data: IBusinessCategory;
+    session?: ITransactionSession;
+  }): Promise<BusinessCategoryDocument> {
+    const [newTag] = await this.businessCategory.create([data], {
+      session: session?.session,
+    });
+
+    return newTag;
   }
 
   async find({

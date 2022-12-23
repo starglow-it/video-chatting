@@ -18,4 +18,5 @@ export enum PaymentsBrokerPatterns {
   GetStripeProductCheckoutSession = 'get_stripe_product_checkout_session',
   GetStripeCharges = 'get_stripe_charges',
   CancelUserSubscription = 'cancel_user_subscription',
+  DeleteTemplateStripeProduct = 'delete_template_stripe_product',
 }

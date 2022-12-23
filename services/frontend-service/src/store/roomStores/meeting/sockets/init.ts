@@ -121,7 +121,7 @@ export const sendEndMeetingSocketEvent = attach<
 >({
     effect: endMeetingSocketEvent,
     source: combine({ meeting: $meetingStore }),
-    mapParams: (params, { meeting }) => ({ meetingId: meeting?.id }),
+    mapParams: (params, { meeting }) => ({ meetingId: meeting?.id, ...(params ? params : {}) }),
 });
 
 export const sendLeaveMeetingSocketEvent = attach<

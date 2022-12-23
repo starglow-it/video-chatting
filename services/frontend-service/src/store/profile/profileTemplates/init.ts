@@ -4,6 +4,7 @@ import {
     $profileTemplatesStore,
     $skipProfileTemplates,
     deleteProfileTemplateFx,
+    editUserTemplateFx,
     getProfileTemplateByTemplateIdFx,
     getProfileTemplatesBase,
     getProfileTemplatesCountBase,
@@ -16,12 +17,13 @@ import { handleFetchProfileTemplates } from '../handlers/handleFetchProfileTempl
 import { handleFetchProfileTemplatesCount } from '../handlers/handleFetchProfileTemplatesCount';
 import { handleDeleteProfileTemplate } from '../handlers/handleDeleteProfileTemplate';
 import { handleFetchProfileTemplateByTemplateId } from '../handlers/handleFetchProfileTemplateByTemplateId';
-import {editUserTemplateFx} from "../../templates/model";
+import {handleEditUserTemplate} from "../handlers/handleEditUserTemplate";
 
 getProfileTemplatesBase.use(handleFetchProfileTemplates);
 getProfileTemplatesCountBase.use(handleFetchProfileTemplatesCount);
 deleteProfileTemplateFx.use(handleDeleteProfileTemplate);
 getProfileTemplateByTemplateIdFx.use(handleFetchProfileTemplateByTemplateId);
+editUserTemplateFx.use(handleEditUserTemplate);
 
 $profileTemplatesStore
     .on(getProfileTemplatesFx.doneData, (state, data) => data)

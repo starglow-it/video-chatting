@@ -14,7 +14,6 @@ import {
     createTemplateFx,
     deleteCommonTemplateFx,
     editTemplateFx,
-    editUserTemplateFx,
     getEditingTemplateFx,
     getTemplateFx,
     getTemplatesFx,
@@ -32,6 +31,7 @@ import {
 } from './model';
 
 import { appDialogsApi } from '../dialogs/init';
+import {clearProfileEvent} from "../profile/profile/model";
 
 // types
 import { AppDialogsEnum } from '../types';
@@ -49,10 +49,9 @@ import { handleCreateTemplate } from './handlers/handleCreateTemplate';
 import { handleUploadTemplateFile } from './handlers/handleUploadTemplateFile';
 import { handleUploadUserTemplateFile } from './handlers/handleUploadUserTemplateFile';
 import { handleAddTemplateToUser } from './handlers/handleAddTemplateToUser';
-import { handleEditUserTemplate } from './handlers/handleEditUserTemplate';
 import { handleDeleteCommonTemplate } from './handlers/handleDeleteCommonTemplate';
 import { handleGetUserTemplate } from './handlers/handleGetUserTemplate';
-import {clearProfileEvent} from "../profile/profile/model";
+import {editUserTemplateFx} from "../profile/profileTemplates/model";
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -66,22 +65,11 @@ editTemplateFx.use(handleEditTemplate);
 getEditingTemplateFx.use(handleFetchUserTemplate);
 uploadTemplateFileFx.use(handleUploadTemplateFile);
 uploadUserTemplateFileFx.use(handleUploadUserTemplateFile);
-editUserTemplateFx.use(handleEditUserTemplate);
 addTemplateToUserFx.use(handleAddTemplateToUser);
 deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 
 $templatesStore
-    .on(getTemplatesFx.doneData, (state, data) => ({
-        ...state,
-        ...data,
-    }))
-    .on(editUserTemplateFx.doneData, (state, data) => ({
-        ...state,
-        state: {
-            ...state,
-            list: state.list.map(template => template.id === data?.id ? data : template)
-        },
-    }))
+    .on(getTemplatesFx.doneData, (state, data) => data)
     .reset(clearProfileEvent);
 
 $templatePreviewStore.on(setPreviewTemplate, (_state, data: ICommonTemplate | null) => data);
@@ -104,6 +92,7 @@ $scheduleEventLinkStore.on(setScheduleEventLinkEvent, (state, data) => {
 
     return data;
 });
+
 $templateDraft
     .on(
         [

@@ -60,35 +60,49 @@ export class MeetingsController {
   async updateMeetingInstance(
     @Payload() payload: UpdateMeetingInstancePayload,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      const meeting = await this.meetingsService.update({
-        query: { instanceId: payload.instanceId },
-        data: payload.data,
-        session,
-      });
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const meeting = await this.meetingsService.update({
+          query: { instanceId: payload.instanceId },
+          data: payload.data,
+          session,
+        });
 
-      return plainToInstance(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+        return plainToInstance(CommonMeetingDTO, meeting, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
       });
-    });
+    } catch (e) {
+      throw new RpcException({
+        message: e.message,
+        ctx: CORE_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.GetMeetingInstance })
   async getMeetingInstances(@Payload() payload: GetMeetingInstancePayload) {
-    return withTransaction(this.connection, async (session) => {
-      const query = { ...payload, serverIp: { $ne: this.defaultServerIp } };
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const query = { ...payload, serverIp: { $ne: this.defaultServerIp } };
 
-      const meetingInstances = await this.meetingsService.find({
-        query,
-        session,
-      });
+        const meetingInstances = await this.meetingsService.find({
+          query,
+          session,
+        });
 
-      return plainToInstance(CommonMeetingDTO, meetingInstances, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+        return plainToInstance(CommonMeetingDTO, meetingInstances, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
       });
-    });
+    } catch (e) {
+      throw new RpcException({
+        message: e.message,
+        ctx: CORE_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.DeleteMeetingInstance })
@@ -105,7 +119,10 @@ export class MeetingsController {
         return;
       });
     } catch (e) {
-      console.log(e);
+      throw new RpcException({
+        message: e.message,
+        ctx: CORE_SERVICE,
+      });
     }
   }
 
@@ -113,71 +130,85 @@ export class MeetingsController {
   async createMeetingInstance(
     @Payload() payload: CreateMeetingInstancePayload,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      const meetingInstances = await this.meetingsService.create(
-        payload,
-        session,
-      );
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const meetingInstances = await this.meetingsService.create({
+          data: payload,
+          session,
+        });
 
-      return plainToInstance(CommonMeetingDTO, meetingInstances, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+        return plainToInstance(CommonMeetingDTO, meetingInstances, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
       });
-    });
+    } catch (e) {
+      throw new RpcException({
+        message: e.message,
+        ctx: CORE_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.AssignMeetingInstance })
   async assignMeetingInstance(
     @Payload() payload: AssignMeetingInstancePayload,
   ) {
-    return withTransaction(this.connection, async (session) => {
-      let meeting;
+    try {
+      return withTransaction(this.connection, async (session) => {
+        let meeting;
 
-      const userTemplate = await this.userTemplatesService.findUserTemplate({
-        query: { _id: payload.templateId },
-        session,
-        populatePaths: 'meetingInstance',
-      });
-
-      if (this.supportScaling && userTemplate.maxParticipants > 4) {
-        [meeting] = await this.meetingsService.find({
-          query: {
-            serverStatus: MeetingInstanceServerStatus.Active,
-            owner: null,
-          },
+        const userTemplate = await this.userTemplatesService.findUserTemplate({
+          query: { _id: payload.templateId },
           session,
+          populatePaths: 'meetingInstance',
         });
 
-        meeting = await this.meetingsService.update({
-          query: {
-            _id: meeting.id,
-          },
-          data: {
-            owner: payload.userId,
-          },
-          session,
+        if (this.supportScaling && userTemplate.maxParticipants > 4) {
+          [meeting] = await this.meetingsService.find({
+            query: {
+              serverStatus: MeetingInstanceServerStatus.Active,
+              owner: null,
+            },
+            session,
+          });
+
+          meeting = await this.meetingsService.update({
+            query: {
+              _id: meeting.id,
+            },
+            data: {
+              owner: payload.userId,
+            },
+            session,
+          });
+        } else {
+          meeting = await this.meetingsService.create({
+            data: {
+              serverStatus: MeetingInstanceServerStatus.Active,
+              serverIp: this.defaultServerIp,
+              owner: payload.userId,
+            },
+            session,
+          });
+        }
+
+        userTemplate.usedAt = Date.now();
+        userTemplate.meetingInstance = meeting;
+
+        await userTemplate.save({ session: session.session });
+
+        return plainToInstance(UserTemplateDTO, userTemplate, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
         });
-      } else {
-        meeting = await this.meetingsService.create(
-          {
-            serverStatus: MeetingInstanceServerStatus.Active,
-            serverIp: this.defaultServerIp,
-            owner: payload.userId,
-          },
-          session,
-        );
-      }
-
-      userTemplate.usedAt = Date.now();
-      userTemplate.meetingInstance = meeting;
-
-      await userTemplate.save({ session: session.session });
-
-      return plainToInstance(UserTemplateDTO, userTemplate, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
       });
-    });
+    } catch (e) {
+      throw new RpcException({
+        message: e.message,
+        ctx: CORE_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.GetMeeting })
@@ -194,7 +225,10 @@ export class MeetingsController {
         });
       });
     } catch (e) {
-      throw new RpcException({ message: e.message, ctx: CORE_SERVICE });
+      throw new RpcException({
+        message: e.message,
+        ctx: CORE_SERVICE,
+      });
     }
   }
 }

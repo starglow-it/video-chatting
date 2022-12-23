@@ -10,6 +10,12 @@ export const $deleteUserDialogStore = dialogsDomain.createStore<boolean>(false);
 export const $cancelCreateRoomDialogStore =
     dialogsDomain.createStore<boolean>(false);
 
+export const $confirmCreateAndPublishRoomDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
+export const $roomPreviewDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
 export const openAdminDialogEvent = dialogsDomain.createEvent<AdminDialogsEnum>(
 	'openAdminDialogEvent',
 );
@@ -33,4 +39,22 @@ export const openCancelCreateRoomDialogEvent =
 export const closeCancelCreateRoomDialogEvent =
     dialogsDomain.createEvent<AdminDialogsEnum>(
     	'closeCancelCreateRoomDialogEvent',
+    );
+
+export const openConfirmCreateAndPublishRoomDialog =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+    	'openConfirmCreateAndPublishRoomDialog',
+    );
+export const closeConfirmCreateAndPublishRoomDialog =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+    	'closeConfirmCreateAndPublishRoomDialog',
+    );
+
+export const openRoomPreviewDialog =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+    	'openRoomPreviewDialog',
+    );
+export const closeRoomPreviewDialog =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+    	'closeRoomPreviewDialog',
     );

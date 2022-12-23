@@ -9,7 +9,7 @@ import {
   GetCommonTemplatesPayload,
   DeleteCommonTemplatePayload,
   EditTemplatePayload,
-  CreateTemplatePayload,
+  CreateTemplatePayload, GetCommonTemplateByIdPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class TemplatesService {
   }
 
   async getCommonTemplateById(
-    payload: GetCommonTemplatePayload,
+    payload: GetCommonTemplateByIdPayload,
   ): Promise<ICommonTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplateById };
 

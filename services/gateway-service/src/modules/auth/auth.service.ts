@@ -11,8 +11,9 @@ import {
   RegisterUserPayload,
   LoginUserByEmailPayload,
   RefreshTokenPayload,
-  IToken,
+  IToken, ICommonUser, TokenPairWithUserType,
 } from 'shared-types';
+import {firstValueFrom} from "rxjs";
 
 @Injectable()
 export class AuthService {
@@ -22,39 +23,39 @@ export class AuthService {
     await this.client.connect();
   }
 
-  async register(payload: RegisterUserPayload) {
+  async register(payload: RegisterUserPayload): Promise<ICommonUser> {
     const pattern = { cmd: AuthBrokerPatterns.RegisterUserPattern };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async confirmRegister(payload: IToken): Promise<void> {
+  async confirmRegister(payload: IToken): Promise<ICommonUser> {
     const pattern = { cmd: AuthBrokerPatterns.ConfirmRegistration };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async loginUser(payload: LoginUserByEmailPayload) {
+  async loginUser(payload: LoginUserByEmailPayload): Promise<TokenPairWithUserType> {
     const pattern = { cmd: AuthBrokerPatterns.LoginUser };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async refreshToken(payload: RefreshTokenPayload) {
+  async refreshToken(payload: RefreshTokenPayload): Promise<TokenPairWithUserType> {
     const pattern = { cmd: AuthBrokerPatterns.RefreshToken };
 
-    return this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async logoutUser(payload: LogOutUserPayload) {
+  async logoutUser(payload: LogOutUserPayload): Promise<void> {
     const pattern = { cmd: AuthBrokerPatterns.LogOutUser };
 
-    await this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async sendResetPassword(payload: SendResetPasswordLinkEmailPayload) {
+  async sendResetPassword(payload: SendResetPasswordLinkEmailPayload): Promise<void> {
     const pattern = { cmd: AuthBrokerPatterns.SendResetPasswordLink };
 
-    await this.client.send(pattern, payload).toPromise();
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 }

@@ -51,6 +51,8 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { CoreService } from '../../services/core/core.service';
 import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
+import {ResetLinkRequest} from "../../dtos/requests/reset-link.request";
+import {ResetPasswordRequest} from "../../dtos/requests/reset-password.request";
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -68,18 +70,18 @@ export class AuthController {
   })
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   async register(
-    @Body() registerUserRequest: UserCredentialsRequest,
+    @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<void>> {
     try {
       const isUserExists = await this.coreService.checkIfUserExists({
-        email: registerUserRequest.email,
+        email: body.email,
       });
 
       if (isUserExists) {
         throw new DataValidationException(USER_EXISTS);
       }
 
-      await this.authService.register(registerUserRequest);
+      await this.authService.register(body);
 
       return {
         success: true,
@@ -89,7 +91,7 @@ export class AuthController {
       this.logger.error(
         {
           message: `An error occurs, while register`,
-          ctx: { email: registerUserRequest.email },
+          ctx: { email: body.email },
         },
         JSON.stringify(err),
       );
@@ -104,18 +106,18 @@ export class AuthController {
     description: 'User confirmed registration success',
   })
   async confirmRegistration(
-    @Body() confirmTokenData: TokenRequest,
+    @Body() body: TokenRequest,
   ): Promise<ResponseSumType<void>> {
     try {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
-        confirmTokenData.token,
+          body.token,
       );
 
       if (!isUserTokenExists) {
         throw new DataValidationException(USER_TOKEN_NOT_FOUND);
       }
 
-      await this.authService.confirmRegister(confirmTokenData);
+      await this.authService.confirmRegister(body);
 
       return {
         success: true,
@@ -139,16 +141,16 @@ export class AuthController {
     description: 'User start reset password',
   })
   async resetPasswordLink(
-    @Body() resetLinkData: { email: string },
+    @Body() body: ResetLinkRequest,
   ): Promise<ResponseSumType<void>> {
     try {
       const user = await this.coreService.findUserByEmail({
-        email: resetLinkData.email,
+        email: body.email,
       });
 
       if (user) {
         await this.authService.sendResetPassword({
-          email: resetLinkData.email,
+          email: body.email,
         });
       }
 
@@ -175,11 +177,11 @@ export class AuthController {
     description: 'Verify reset password link',
   })
   async verifyResetPasswordLink(
-    @Body() verifyResetPasswordLinkData: { token: string },
+    @Body() body: TokenRequest,
   ): Promise<ResponseSumType<void>> {
     try {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
-        verifyResetPasswordLinkData.token,
+          body.token,
       );
 
       if (!isUserTokenExists) {
@@ -210,14 +212,10 @@ export class AuthController {
   })
   async resetPassword(
     @Body()
-    resetPasswordData: {
-      token: string;
-      newPassword: string;
-      newPasswordRepeat: string;
-    },
+      body: ResetPasswordRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-      await this.coreService.resetPassword(resetPasswordData);
+      await this.coreService.resetPassword(body);
 
       return {
         success: true,
@@ -243,10 +241,10 @@ export class AuthController {
     description: 'User logged in',
   })
   async login(
-    @Body() loginUserData: UserCredentialsRequest,
+    @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
     const isUserExists = await this.coreService.checkIfUserExists({
-      email: loginUserData.email,
+      email: body.email,
     });
 
     if (!isUserExists) {
@@ -254,7 +252,7 @@ export class AuthController {
     }
 
     const user = await this.coreService.findUserByEmail({
-      email: loginUserData.email,
+      email: body.email,
     });
 
     if (!user.isConfirmed || user.isResetPasswordActive) {
@@ -265,7 +263,7 @@ export class AuthController {
       throw new DataValidationException(USER_IS_BLOCKED);
     }
 
-    const result = await this.authService.loginUser(loginUserData);
+    const result = await this.authService.loginUser(body);
 
     return {
       success: true,

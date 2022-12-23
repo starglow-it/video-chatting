@@ -452,7 +452,7 @@ export class PaymentsController {
     try {
       if (templateId) {
         const template = await this.templateService.getCommonTemplateById({
-          id: templateId,
+          templateId,
         });
 
         const user = await this.coreService.findUserById({

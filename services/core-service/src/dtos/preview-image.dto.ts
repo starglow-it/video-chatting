@@ -8,14 +8,16 @@ export class PreviewImageDTO implements IPreviewImage {
   id: string;
 
   @Expose()
-  url: string;
+  url: IPreviewImage['url'];
 
   @Expose()
-  mimeType: string;
+  mimeType: IPreviewImage['mimeType'];
 
   @Expose()
-  size: number;
+  size: IPreviewImage['size'];
 
   @Expose()
-  resolution: number;
+  resolution: IPreviewImage['resolution'];
+
+  key: IPreviewImage['key'];
 }

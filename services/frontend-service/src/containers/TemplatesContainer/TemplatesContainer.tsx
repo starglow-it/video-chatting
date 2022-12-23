@@ -107,13 +107,13 @@ const Component = () => {
     useTemplateNotification(dashboardRoute);
 
     useEffect(() => {
-        (async () => {
-            await getTemplatesFx({
-                limit: 6,
-                skip: 0,
-                userId: profile.id,
-            });
-        })();
+        getTemplatesFx({
+            draft: false,
+            isPublic: true,
+            limit: 6,
+            skip: 0,
+            userId: profile.id,
+        });
     }, []);
 
     useEffect(() => {
@@ -136,7 +136,13 @@ const Component = () => {
     }, []);
 
     const handleCommonTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getTemplatesFx({ limit: 6 * newPage, skip: 0, userId: profile.id });
+        await getTemplatesFx({
+            draft: false,
+            isPublic: true,
+            limit: 6 * newPage,
+            skip: 0,
+            userId: profile.id
+        });
     }, [profile.id]);
 
     const handleCreateMeeting = useCallback(

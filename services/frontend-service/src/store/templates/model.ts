@@ -8,8 +8,6 @@ import {
     DeleteCommonTemplatePayload,
     EditTemplatePayload,
     EditTemplateResponse,
-    EditUserTemplatePayload,
-    EditUserTemplateResponse,
     GetEditingTemplatePayload,
     GetEditingTemplateResponse,
     GetUserTemplateByIdPayload,
@@ -63,8 +61,8 @@ export const setReplaceTemplateIdEvent = templatesDomain.event<string | undefine
 
 // effect
 export const getTemplatesFx = templatesDomain.effect<
-    QueryParams & { userId?: ICommonUser['id'] },
-    EntityList<ICommonTemplate> | null | undefined,
+    QueryParams & { userId?: ICommonUser['id']; draft: boolean; isPublic: boolean },
+    EntityList<ICommonTemplate>,
     void
 >('getTemplatesFx');
 
@@ -116,11 +114,7 @@ export const uploadUserTemplateFileFx = templatesDomain.effect<
     void
 >('uploadUserTemplateFile');
 
-export const editUserTemplateFx = templatesDomain.effect<
-    EditUserTemplatePayload,
-    EditUserTemplateResponse,
-    void
->('editUserTemplateFx');
+
 
 export const createTemplateFx = templatesDomain.effect<void, CreateTemplateResponse, void>(
     'createTemplate',

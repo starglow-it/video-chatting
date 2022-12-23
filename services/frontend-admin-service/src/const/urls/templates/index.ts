@@ -46,3 +46,21 @@ export const getCommonTemplateUrl = ({
 	url: `${templatesUrl}/${templateId}`,
 	method: HttpMethods.Get,
 });
+
+export const deleteCommonTemplateUrl = ({
+	templateId,
+}: {
+    templateId: ICommonTemplate['id'];
+}) => ({
+	url: `${templatesUrl}/${templateId}`,
+	method: HttpMethods.Delete,
+});
+
+export const deleteCommonTemplateSoundUrl = ({
+	templateId,
+}: {
+    templateId: ICommonTemplate['id'];
+}) => ({
+	url: `${templatesUrl}/${templateId}/sound`,
+	method: HttpMethods.Delete,
+});

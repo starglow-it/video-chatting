@@ -1,19 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import * as path from 'path';
 import { InjectModel } from '@nestjs/mongoose';
-import * as mkdirp from 'mkdirp';
-import * as fsPromises from 'fs/promises';
 
 // shared
 import {
-  templatesData,
   LANGUAGES_TAGS,
   BUSINESS_CATEGORIES,
   monetizationStatisticsData,
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
-import { executePromiseQueue } from 'shared-utils';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -35,7 +30,6 @@ import {
 } from '../schemas/preview-image.schema';
 
 // utils
-import { getScreenShots } from '../utils/images/getScreenShots';
 
 @Injectable()
 export class SeederService {
@@ -62,7 +56,7 @@ export class SeederService {
       });
 
       if (!isExists) {
-        await this.businessCategoriesService.create(categoryItem);
+        await this.businessCategoriesService.create({ data: categoryItem });
       }
     });
 
@@ -87,170 +81,6 @@ export class SeederService {
     return;
   }
 
-  async seedCommonTemplates(): Promise<void> {
-    try {
-      const promises = templatesData.map(
-        ({ videoPath, imagePath, ...templateData }) =>
-          async () => {
-            const isExists = await this.commonTemplatesService.exists({
-              query: {
-                templateId: templateData.templateId,
-              },
-            });
-
-            const templateBusinessCategories =
-              await this.businessCategoriesService.find({
-                query: {
-                  value: {
-                    $in: templateData.businessCategories,
-                  },
-                },
-              });
-
-            let videoFile;
-
-            const outputPath = path.join(__dirname, '../../images', imagePath);
-
-            if (!isExists) {
-              if (videoPath) {
-                videoFile = path.join(
-                  __dirname,
-                  '../../files',
-                  `${videoPath}.mp4`,
-                );
-
-                await mkdirp(outputPath);
-
-                await getScreenShots(videoFile, outputPath);
-              }
-
-              const images = await fsPromises.readdir(outputPath);
-
-              await this.awsService.deleteFolder(
-                `templates/images${imagePath}`,
-              );
-
-              const uploadedImagesPromises = images.map(async (image) => {
-                const resolution = image.match(/(\d*)p\./);
-                const file = await fsPromises.readFile(
-                  `${outputPath}/${image}`,
-                );
-                const fileStats = await fsPromises.stat(
-                  `${outputPath}/${image}`,
-                );
-
-                const uploadKey = `templates/images${imagePath}/${image}`;
-
-                this.previewImage.deleteOne({ key: uploadKey });
-
-                const imageLink = await this.awsService.uploadFile(
-                  file,
-                  uploadKey,
-                );
-
-                return this.previewImage.create({
-                  url: imageLink,
-                  size: fileStats.size,
-                  mimeType: 'image/webp',
-                  key: uploadKey,
-                  resolution: resolution?.[1],
-                });
-              });
-
-              const previewUrls = await Promise.all(uploadedImagesPromises);
-
-              const imageIds = previewUrls.map((image) => image._id.toString());
-
-              const createData = {
-                ...templateData,
-                previewUrls: imageIds,
-                businessCategories: templateBusinessCategories.map((category) =>
-                  category._id.toString(),
-                ),
-                stripeProductId: null,
-              };
-
-              if (templateData.type === 'paid') {
-                const existingTemplateProduct =
-                  await this.paymentsService.getStripeTemplateProductByName({
-                    name: templateData.name,
-                  });
-
-                if (existingTemplateProduct?.id) {
-                  createData.stripeProductId = existingTemplateProduct.id;
-                } else {
-                  const stripeProduct =
-                    await this.paymentsService.createTemplateStripeProduct({
-                      name: templateData.name,
-                      description: templateData.shortDescription,
-                      priceInCents: templateData.priceInCents,
-                    });
-
-                  createData.stripeProductId = stripeProduct.id;
-                }
-              }
-
-              const newTemplate =
-                await this.commonTemplatesService.createCommonTemplate({
-                  data: createData,
-                });
-
-              if (videoPath) {
-                const uploadKey = `templates/videos${videoPath}${videoPath}.mp4`;
-
-                const file = await fsPromises.readFile(videoFile);
-
-                const videoLink = await this.awsService.uploadFile(
-                  file,
-                  uploadKey,
-                );
-
-                await this.commonTemplatesService.updateCommonTemplate({
-                  query: {
-                    templateId: newTemplate.templateId,
-                  },
-                  data: {
-                    url: videoLink,
-                  },
-                });
-              }
-            } else {
-              await this.commonTemplatesService.updateCommonTemplate({
-                query: {
-                  templateId: templateData.templateId,
-                },
-                data: {
-                  ...templateData,
-                  businessCategories: templateBusinessCategories.map(
-                    (category) => category._id.toString(),
-                  ),
-                },
-              });
-
-              await this.userTemplatesService.updateUserTemplate({
-                query: {
-                  templateId: templateData.templateId,
-                },
-                data: {
-                  maxParticipants: templateData.maxParticipants,
-                  type: templateData.type,
-                  priceInCents: templateData.priceInCents,
-                  isAudioAvailable: templateData.isAudioAvailable,
-                  usersPosition: templateData.usersPosition,
-                },
-              });
-            }
-          },
-      );
-
-      await executePromiseQueue(promises);
-
-      return;
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   async createCounter() {
     const promises = Object.values(Counters).map(async (counterType) => {
       const isExists = await this.countersService.exists({
@@ -270,8 +100,10 @@ export class SeederService {
         });
 
         await this.countersService.create({
-          key: counterType,
-          value: template ? template.templateId : 1,
+          data: {
+            key: counterType,
+            value: template ? template.templateId : 1,
+          },
         });
       }
     });

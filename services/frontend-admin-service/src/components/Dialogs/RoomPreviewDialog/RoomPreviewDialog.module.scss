@@ -1,0 +1,71 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.dialogContent {
+  padding: 0;
+}
+
+.templatePreview {
+  position: relative;
+  width: rem(740px);
+  height: rem(480px);
+}
+
+.templateInfoContent {
+  display: grid;
+  grid-template: "templateInfo templateInfo templateInfo templateInfo" min-content
+  "title title title title" min-content
+  "description description description description" min-content
+  "buttons buttons buttons buttons";
+  gap: rem(8px);
+  padding: rem(40px);
+  width: rem(472px);
+
+  .templateInfo {
+    grid-area: templateInfo;
+
+      .templateType {
+        width: auto;
+      }
+  }
+
+  .name {
+    margin: rem(24px 0 0 0);
+    grid-area: title;
+  }
+
+  .description {
+    margin: rem(12px 0 0 0);
+    grid-area: description;
+  }
+
+  .buttons {
+    grid-area: buttons;
+
+    .chooseBtn {
+      height: rem(56px);
+    }
+    .statisticsButton {
+
+    }
+  }
+}
+
+.templatePayment {
+  width: min-content;
+  padding: rem(5px 8px 5px 4px);
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: rem(1px) solid rgba($normal-gray-scale, 0.4);
+  box-sizing: border-box;
+  border-radius: rem(6px);
+  text-transform: capitalize;
+  box-shadow: rem(0 4px 10px -2px) rgba($primary-black, 0.1);
+  color: $dark-green;
+
+  &.paid {
+    color: $primary-blue;
+  }
+}

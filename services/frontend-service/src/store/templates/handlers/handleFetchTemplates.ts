@@ -5,7 +5,7 @@ import { EntityList } from '../../types';
 
 const handleFetchTemplates = async (
     payload: QueryParams,
-): Promise<EntityList<ICommonTemplate> | undefined | null> => {
+): Promise<EntityList<ICommonTemplate>> => {
     const response = await sendRequestWithCredentials<EntityList<ICommonTemplate>, ErrorState>(
         getTemplatesUrl(payload),
     );

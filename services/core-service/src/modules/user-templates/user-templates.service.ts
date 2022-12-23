@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
-import * as mkdirp from 'mkdirp';
-import * as path from 'path';
-import * as fsPromises from 'fs/promises';
 
 // schemas
 import {
@@ -14,6 +11,10 @@ import {
   SocialLink,
   SocialLinkDocument,
 } from '../../schemas/social-link.schema';
+import {
+  PreviewImage,
+  PreviewImageDocument,
+} from '../../schemas/preview-image.schema';
 
 // types
 import { IUserTemplate, ICommonTemplate } from 'shared-types';
@@ -23,11 +24,8 @@ import {
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
-import { getScreenShots } from '../../utils/images/getScreenShots';
-import {
-  PreviewImage,
-  PreviewImageDocument,
-} from '../../schemas/preview-image.schema';
+
+// services
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 
 @Injectable()
@@ -183,51 +181,5 @@ export class UserTemplatesService {
     };
 
     return this.userTemplate.deleteMany(query, options);
-  }
-
-  async generatePreviews({
-    id,
-    mimeType,
-    url,
-  }: {
-    id: string;
-    mimeType: string;
-    url: string;
-  }) {
-    const outputPath = path.join(__dirname, '../../../../images', id);
-    await mkdirp(outputPath);
-
-    const fileType = mimeType.split('/')[0];
-    await getScreenShots(url, outputPath, fileType);
-
-    const imagesPaths = await fsPromises.readdir(outputPath);
-
-    await this.previewImage.deleteMany({
-      key: new RegExp(`^templates/${id}/images`),
-    });
-
-    await this.awsService.deleteFolder(`templates/${id}/images`);
-
-    const uploadedImagesPromises = imagesPaths.map(async (image) => {
-      const resolution = image.match(/(\d*)p\./);
-
-      const file = await fsPromises.readFile(`${outputPath}/${image}`);
-      const uploadKey = `templates/${id}/images/${image}`;
-      const fileStats = await fsPromises.stat(`${outputPath}/${image}`);
-
-      const imageUrl = await this.awsService.uploadFile(file, uploadKey);
-
-      await fsPromises.rm(`${outputPath}/${image}`);
-
-      return this.previewImage.create({
-        url: imageUrl,
-        resolution: resolution?.[1],
-        size: fileStats.size,
-        mimeType: 'image/webp',
-        key: uploadKey,
-      });
-    });
-
-    return Promise.all(uploadedImagesPromises);
   }
 }

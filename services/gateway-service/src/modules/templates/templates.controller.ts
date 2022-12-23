@@ -5,7 +5,7 @@ import {
   Delete,
   Get,
   Logger,
-  Param,
+  Param, ParseBoolPipe,
   ParseIntPipe,
   Post,
   Put,
@@ -55,13 +55,16 @@ export class TemplatesController {
     @Query('skip', ParseIntPipe) skip: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('userId') userId: string,
+    @Query('draft', ParseBoolPipe) draft: boolean,
+    @Query('isPublic', ParseBoolPipe) isPublic: boolean,
+    @Query('type') type: string,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
-          draft: false,
-          isPublic: true,
-          ...(!userId ? { type: 'free' } : {}),
+          ...(draft ? { draft } : {} ),
+          ...(isPublic ? { isPublic } : {} ),
+          ...(type ? { type } : {}),
         },
         options: {
           skip,
@@ -146,6 +149,8 @@ export class TemplatesController {
         };
       }
 
+      console.log(file);
+
       if (file) {
         const { fileName, extension } = getFileNameAndExtension(file.originalname);
         const isAudioFile = file.mimetype.includes('audio');
@@ -158,7 +163,7 @@ export class TemplatesController {
           const soundUrl = await this.uploadService.uploadFile(file.buffer, uploadKey);
 
           const soundData = await this.coreService.createTemplateSound({
-            fileName,
+            fileName: `${fileName}.${extension}`,
             mimeType: file.mimetype,
             url: soundUrl,
             size: file.size
@@ -190,7 +195,7 @@ export class TemplatesController {
       }
 
       const template = await this.templatesService.getCommonTemplateById({
-        id: templateId,
+        templateId,
       });
 
       return {
@@ -221,7 +226,7 @@ export class TemplatesController {
     try {
       if (templateId) {
         const template = await this.templatesService.getCommonTemplateById({
-          id: templateId,
+          templateId,
         });
 
         return {
@@ -263,6 +268,50 @@ export class TemplatesController {
       if (templateId) {
         await this.templatesService.deleteCommonTemplate({
           templateId,
+        });
+
+        return {
+          success: true,
+        };
+      }
+      return {
+        success: false,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while delete common template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:templateId/sound')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete Template Sound' })
+  @ApiOkResponse({
+    description: 'Delete Common Template Sound Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async deleteCommonTemplateSound(
+    @Request() req,
+    @Param('templateId') templateId: string,
+  ) {
+    try {
+      if (templateId) {
+        await this.uploadService.deleteFolder(`templates/${templateId}/sounds`);
+
+        await this.templatesService.updateTemplate({
+          templateId,
+          data: {
+            sound: null,
+          },
         });
 
         return {

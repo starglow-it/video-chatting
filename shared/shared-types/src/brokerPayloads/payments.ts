@@ -37,6 +37,15 @@ export type CreateStripeTemplateProductPayload = {
   priceInCents: number;
   description: string;
 };
+
+export type DeleteTemplateStripeProductPayload = {
+  productId: string;
+};
+
+export type GetStripeTemplateProductByNamePayload = {
+  name: string;
+};
+
 export type GetProductCheckoutSessionPayload = {
   productId: string;
   templateId: string;

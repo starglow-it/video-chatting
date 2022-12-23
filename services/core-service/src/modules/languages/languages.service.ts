@@ -18,11 +18,16 @@ export class LanguagesService {
     return this.language.create(data);
   }
 
-  async find({ query, session }: GetModelQuery<LanguageDocument>) {
+  async find({
+    query,
+    session,
+  }: GetModelQuery<LanguageDocument>): Promise<LanguageDocument[]> {
     return this.language.find(query, {}, { session: session?.session }).exec();
   }
 
-  async exists(query: FilterQuery<LanguageDocument>) {
-    return this.language.exists(query);
+  async exists(query: FilterQuery<LanguageDocument>): Promise<boolean> {
+    const data = await this.language.exists(query);
+
+    return Boolean(data?._id);
   }
 }

@@ -84,6 +84,7 @@ import {
     setUpTemplateRoute,
     welcomeRoute,
 } from '../src/const/client-routes';
+import {MeetingFinishedDialog} from "@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog";
 
 const {
 	publicRuntimeConfig
@@ -117,6 +118,10 @@ const CustomApp = ({
         window.history.scrollRestoration = "manual";
     }, []);
 
+    useEffect(() => {
+        window.history.scrollRestoration = "manual";
+    }, []);
+
     return (
         <CacheProvider value={emotionCache}>
             <Head>
@@ -134,6 +139,7 @@ const CustomApp = ({
                                     <Component {...pageProps} />
                                 </Layout>
                                 <ToastsNotifications />
+								<MeetingFinishedDialog />
                             </ThemeProvider>
                         </ThemeProvider>
                     </ThemeProvider>

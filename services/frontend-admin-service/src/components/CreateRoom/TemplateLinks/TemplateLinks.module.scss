@@ -39,12 +39,10 @@
 
 .linkItem {
   position: fixed;
-  top: var(--top);
-  left: var(--left);
+  top: 0;
+  left: 0;
 
   cursor: pointer;
-
-  transform: translate(-50%, -50%);
 
   width: rem(9px);
   height: rem(9px);

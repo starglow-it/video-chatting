@@ -44,7 +44,11 @@ $localUserStore
         return state;
     })
     .on(leaveDeletedUserMeetingEvent, state => {
-        appDialogsApi.openDialog({ dialogKey: AppDialogsEnum.hostUserDeletedDialog });
+        Router.push(clientRoutes.dashboardRoute).then(() => {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.meetingFinishedDialog,
+            });
+        });
 
         return state;
     })

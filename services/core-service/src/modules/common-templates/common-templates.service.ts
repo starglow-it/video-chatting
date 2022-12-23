@@ -8,6 +8,9 @@ import {
 } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
+import { Counters, IPreviewImage } from 'shared-types';
+
 // schemas
 import {
   CommonTemplate,
@@ -22,9 +25,6 @@ import {
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { CountersService } from '../counters/counters.service';
 
-// const
-import { Counters } from 'shared-types';
-
 // helpers
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 
@@ -34,9 +34,6 @@ import {
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
-
-// const
-import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
 
 @Injectable()
 export class CommonTemplatesService {
@@ -133,6 +130,7 @@ export class CommonTemplatesService {
       },
       session,
     });
+
     return this.commonTemplate.create({
       ...DEFAULT_TEMPLATE_DATA,
       templateId: counter.value,
@@ -140,7 +138,11 @@ export class CommonTemplatesService {
     });
   }
 
-  async countCommonTemplates({ query }: { query: QueryOptions }) {
+  async countCommonTemplates({
+    query,
+  }: {
+    query: QueryOptions;
+  }): Promise<number> {
     return this.commonTemplate.count(query);
   }
 
@@ -163,29 +165,21 @@ export class CommonTemplatesService {
   }
 
   async createPreview({
-    data: {
-      uploadKey,
-      size,
-      url,
-      resolution
-    },
-    session
+    data,
+    session,
   }: {
-    data: {
-      uploadKey: string;
-      size: number;
-      url: string;
-      resolution: number;
-    };
-    session: ITransactionSession
+    data: Omit<IPreviewImage, 'id' | 'mimeType'>;
+    session: ITransactionSession;
   }) {
-    const [newPreview] = await this.previewImage.create([{
-      url,
-      resolution,
-      size,
-      mimeType: 'image/webp',
-      key: uploadKey,
-    }], { session: session?.session });
+    const [newPreview] = await this.previewImage.create(
+      [
+        {
+          ...data,
+          mimeType: 'image/webp',
+        },
+      ],
+      { session: session?.session },
+    );
 
     return newPreview;
   }
@@ -201,10 +195,26 @@ export class CommonTemplatesService {
       session: session?.session,
     };
 
-    return this.commonTemplate.deleteOne(query, options).exec();
+    await this.commonTemplate.deleteOne(query, options).exec();
+
+    return;
   }
 
   async aggregate(aggregationPipeline: PipelineStage[]) {
     return this.commonTemplate.aggregate(aggregationPipeline).exec();
+  }
+
+  async deletePreview({
+    id,
+    session,
+  }: {
+    id: string;
+    session: ITransactionSession;
+  }): Promise<void> {
+    await this.previewImage
+      .deleteOne({ _id: id, session: session?.session })
+      .exec();
+
+    return;
   }
 }

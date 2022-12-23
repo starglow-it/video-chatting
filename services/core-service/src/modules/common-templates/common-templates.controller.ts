@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Connection, PipelineStage, UpdateQuery } from 'mongoose';
+import { Connection, PipelineStage } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -9,7 +9,11 @@ import { v4 as uuidv4 } from 'uuid';
 const ObjectId = Types.ObjectId;
 
 //  const
-import { TEMPLATES_SERVICE, TemplateBrokerPatterns } from 'shared-const';
+import {
+  TEMPLATES_SERVICE,
+  TemplateBrokerPatterns,
+  previewResolutions,
+} from 'shared-const';
 
 // types
 import {
@@ -22,6 +26,7 @@ import {
   EditTemplatePayload,
   UploadTemplateFilePayload,
   DeleteCommonTemplatePayload,
+  GetCommonTemplateByIdPayload,
 } from 'shared-types';
 
 // dtos
@@ -36,26 +41,19 @@ import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { BusinessCategoriesService } from '../business-categories/business-categories.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
 import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
-import {TranscodeService} from "../transcode/transcode.service";
-import {TemplateSoundService} from "../template-sound/template-sound.service";
-import {AwsConnectorService} from "../../services/aws-connector/aws-connector.service";
+import { TranscodeService } from '../transcode/transcode.service';
+import { TemplateSoundService } from '../template-sound/template-sound.service';
+import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
+import { PaymentsService } from '../../services/payments/payments.service';
+import { ConfigClientService } from '../../services/config/config.service';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 
-import {CommonTemplate, CommonTemplateDocument} from '../../schemas/common-template.schema';
-import {UpdateModelQuery} from "../../types/custom";
-
-const screenShotResolutions = [
-  { key: '1080p', value: '1920x1080' },
-  { key: '720p', value: '1280x720' },
-  { key: '540p', value: '960x540' },
-  { key: '360p', value: '640x360' },
-  { key: '240p', value: '320x240' },
-];
-
 @Controller('common-templates')
 export class CommonTemplatesController {
+  vultrUploadBucket: string;
+
   constructor(
     @InjectConnection() private connection: Connection,
     private commonTemplatesService: CommonTemplatesService,
@@ -68,7 +66,15 @@ export class CommonTemplatesController {
     private transcodeService: TranscodeService,
     private templateSoundService: TemplateSoundService,
     private awsService: AwsConnectorService,
+    private configService: ConfigClientService,
+    private paymentService: PaymentsService,
   ) {}
+
+  async onModuleInit() {
+    this.vultrUploadBucket = await this.configService.get<string>(
+      'vultrUploadBucket',
+    );
+  }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
   async getCommonTemplates(
@@ -93,6 +99,14 @@ export class CommonTemplatesController {
               localField: 'previewUrls',
               foreignField: '_id',
               as: 'previewUrls',
+            },
+          },
+          {
+            $lookup: {
+              from: 'previewimages',
+              localField: 'draftPreviewUrls',
+              foreignField: '_id',
+              as: 'draftPreviewUrls',
             },
           },
           {
@@ -148,18 +162,19 @@ export class CommonTemplatesController {
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplateById })
   async getCommonTemplateById(
-    @Payload() { id }: GetCommonTemplatePayload,
+    @Payload() { templateId }: GetCommonTemplateByIdPayload,
   ): Promise<ICommonTemplate> {
     try {
       return withTransaction(this.connection, async (session) => {
         const commonTemplate =
           await this.commonTemplatesService.findCommonTemplateById({
-            templateId: id,
+            templateId,
             session,
             populatePaths: [
-              { path: 'businessCategories' },
-              { path: 'previewUrls' },
-              { path: 'sound' },
+              'businessCategories',
+              'previewUrls',
+              'sound',
+              'author',
             ],
           });
 
@@ -186,11 +201,7 @@ export class CommonTemplatesController {
           await this.commonTemplatesService.findCommonTemplate({
             query: payload,
             session,
-            populatePaths: [
-              { path: 'businessCategories' },
-              { path: 'previewUrls' },
-              { path: 'author' },
-            ],
+            populatePaths: ['businessCategories', 'previewUrls', 'author'],
           });
 
         return plainToInstance(CommonTemplateDTO, commonTemplate, {
@@ -208,102 +219,110 @@ export class CommonTemplatesController {
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.AddTemplateToUser })
   async addTemplateToUser(@Payload() data: AddTemplateToUserPayload) {
-    return withTransaction(this.connection, async (session) => {
-      const targetTemplate =
-        await this.commonTemplatesService.findCommonTemplate({
-          query: { _id: data.templateId },
-          session,
-          populatePaths: ['businessCategories'],
-        });
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const targetTemplate =
+          await this.commonTemplatesService.findCommonTemplate({
+            query: { _id: data.templateId },
+            session,
+            populatePaths: 'businessCategories',
+          });
 
-      const targetUser = await this.usersService.findUser({
-        query: {
-          _id: data.userId,
-        },
-        session,
-        populatePaths: ['socials', 'languages', 'templates'],
-      });
-
-      const templateData = {
-        user: targetUser._id,
-        templateId: targetTemplate.templateId,
-        url: targetTemplate.url,
-        name: targetTemplate.name,
-        maxParticipants: targetTemplate.maxParticipants,
-        previewUrls: targetTemplate.previewUrls,
-        type: targetTemplate.type,
-        templateType: targetTemplate.templateType,
-        priceInCents: targetTemplate.priceInCents,
-        businessCategories: targetTemplate?.businessCategories?.map(
-          (category) => category._id,
-        ),
-        fullName: targetUser.fullName,
-        position: targetUser.position,
-        description: targetTemplate.description,
-        shortDescription: targetTemplate.shortDescription,
-        companyName: targetUser.companyName,
-        contactEmail: targetUser.contactEmail,
-        languages: targetUser.languages.map((language) => language._id),
-        socials: targetUser.socials.map((social) => social._id),
-        usersPosition: targetTemplate.usersPosition,
-        isAudioAvailable: targetTemplate.isAudioAvailable,
-        links: targetTemplate.links,
-        signBoard: targetUser.signBoard,
-        author: targetTemplate.author,
-      };
-
-      const [userTemplate] = await this.userTemplatesService.createUserTemplate(
-        templateData,
-        session,
-      );
-
-      targetUser.templates.push(userTemplate);
-
-      await targetUser.save();
-
-      const isRoomStatisticsExists = await this.roomStatisticService.exists({
-        query: {
-          template: targetTemplate._id,
-        },
-      });
-
-      if (!isRoomStatisticsExists) {
-        await this.roomStatisticService.create({
-          data: {
-            template: targetTemplate._id,
-            author: targetTemplate.author,
-            transactions: 0,
-            minutes: 0,
-            calls: 0,
-            money: 0,
-            uniqueUsers: 1,
+        const targetUser = await this.usersService.findUser({
+          query: {
+            _id: data.userId,
           },
           session,
+          populatePaths: ['socials', 'languages', 'templates'],
         });
-      } else {
-        await this.roomStatisticService.updateOne({
+
+        const templateData = {
+          user: targetUser._id,
+          templateId: targetTemplate.templateId,
+          url: targetTemplate.url,
+          name: targetTemplate.name,
+          maxParticipants: targetTemplate.maxParticipants,
+          previewUrls: targetTemplate.previewUrls,
+          type: targetTemplate.type,
+          templateType: targetTemplate.templateType,
+          priceInCents: targetTemplate.priceInCents,
+          businessCategories: targetTemplate?.businessCategories?.map(
+            (category) => category._id,
+          ),
+          fullName: targetUser.fullName,
+          position: targetUser.position,
+          description: targetTemplate.description,
+          shortDescription: targetTemplate.shortDescription,
+          companyName: targetUser.companyName,
+          contactEmail: targetUser.contactEmail,
+          languages: targetUser.languages.map((language) => language._id),
+          socials: targetUser.socials.map((social) => social._id),
+          usersPosition: targetTemplate.usersPosition,
+          isAudioAvailable: targetTemplate.isAudioAvailable,
+          links: targetTemplate.links,
+          signBoard: targetUser.signBoard,
+          author: targetTemplate.author,
+        };
+
+        const [userTemplate] =
+          await this.userTemplatesService.createUserTemplate(
+            templateData,
+            session,
+          );
+
+        targetUser.templates.push(userTemplate);
+
+        await targetUser.save({ session: session?.session });
+
+        const isRoomStatisticsExists = await this.roomStatisticService.exists({
           query: {
             template: targetTemplate._id,
           },
-          data: {
-            $inc: { uniqueUsers: 1 },
-          },
-          session,
         });
-      }
 
-      await this.userProfileStatisticService.updateOne({
-        query: { user: targetUser._id },
-        data: {
-          $inc: { roomsUsed: 1 },
-        },
-      });
+        if (!isRoomStatisticsExists) {
+          await this.roomStatisticService.create({
+            data: {
+              template: targetTemplate._id,
+              author: targetTemplate.author,
+              transactions: 0,
+              minutes: 0,
+              calls: 0,
+              money: 0,
+              uniqueUsers: 1,
+            },
+            session,
+          });
+        } else {
+          await this.roomStatisticService.updateOne({
+            query: {
+              template: targetTemplate._id,
+            },
+            data: {
+              $inc: { uniqueUsers: 1 },
+            },
+            session,
+          });
+        }
 
-      return plainToInstance(UserTemplateDTO, userTemplate, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+        await this.userProfileStatisticService.updateOne({
+          query: { user: targetUser._id },
+          data: {
+            $inc: { roomsUsed: 1 },
+          },
+        });
+
+        return plainToInstance(UserTemplateDTO, userTemplate, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
       });
-    });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.UploadTemplateFile })
@@ -318,46 +337,52 @@ export class CommonTemplatesController {
 
         const screenShotUploadKey = `templates/${id}/images`;
 
-        this.awsService.deleteFolder(screenShotUploadKey);
+        const screenShotPromises = previewResolutions.map(
+          async (resolution) => {
+            const screenShotData =
+              await this.transcodeService.createVideoScreenShots({
+                url,
+                mimeType,
+                key: screenShotUploadKey,
+                resolution,
+              });
 
-        const screenShotPromises = screenShotResolutions.map(async (resolution) => {
-          const screenShotData = await this.transcodeService.createVideoScreenShots({
-            url,
-            mimeType,
-            key: screenShotUploadKey,
-            resolution,
-          });
+            return this.commonTemplatesService.createPreview({
+              data: {
+                url: screenShotData.url,
+                key: screenShotData.uploadKey,
+                size: screenShotData.size,
+                resolution: screenShotData.resolution,
+              },
+              session,
+            });
+          },
+        );
 
-          return this.commonTemplatesService.createPreview({
-            data: {
-              url: screenShotData.url,
-              uploadKey: screenShotData.uploadKey,
-              size: screenShotData.size,
-              resolution: screenShotData.resolution
-            },
-            session
-          });
-        });
-
-        const updateData: UpdateModelQuery<CommonTemplateDocument, CommonTemplate>["data"] = {
+        const updateData: Parameters<
+          typeof this.commonTemplatesService.updateCommonTemplate
+        >[0]['data'] = {
           templateType,
-        }
+        };
 
-        let promises = []
+        const promises = [];
 
         if (templateType === 'video') {
           const fileDataPromise = this.transcodeService.getFileData({ url });
 
           const transcodeVideoPromise = this.transcodeService.transcodeVideo({
             url,
-            key: `${uploadKey}/videos/${uuidv4()}.mp4`
+            key: `${uploadKey}/videos/${uuidv4()}.mp4`,
           });
 
-          const extractSoundPromise = this.transcodeService.extractTemplateSound({
-            url,
-            key: `${uploadKey}/sounds/${uuidv4()}.mp3`
-          });
-          promises.push(...[fileDataPromise, transcodeVideoPromise, extractSoundPromise])
+          const extractSoundPromise =
+            this.transcodeService.extractTemplateSound({
+              url,
+              key: `${uploadKey}/sounds/${uuidv4()}.mp3`,
+            });
+          promises.push(
+            ...[fileDataPromise, transcodeVideoPromise, extractSoundPromise],
+          );
         }
 
         const [fileData, videoUrl, soundUrl] = await Promise.all(promises);
@@ -374,7 +399,7 @@ export class CommonTemplatesController {
               mimeType: 'audio/mpeg',
               url: soundUrl,
             },
-            session
+            session,
           });
 
           updateData.sound = soundData._id;
@@ -383,20 +408,23 @@ export class CommonTemplatesController {
           updateData.draftUrl = url;
         }
 
-        const updatedTemplate = await this.commonTemplatesService.updateCommonTemplate({
-          query: {
-            _id: id,
-          },
-          data: updateData,
-          session,
-          populatePaths: [{ path: 'sound'}, { path: 'draftPreviewUrls'}]
-        });
+        const updatedTemplate =
+          await this.commonTemplatesService.updateCommonTemplate({
+            query: {
+              _id: id,
+            },
+            data: updateData,
+            session,
+            populatePaths: ['sound', 'draftPreviewUrls'],
+          });
+
+        this.awsService.deleteFolder(screenShotUploadKey);
 
         return plainToInstance(CommonTemplateDTO, updatedTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
-      })
+      });
     } catch (err) {
       throw new RpcException({
         message: err.message,
@@ -407,67 +435,92 @@ export class CommonTemplatesController {
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.CreateTemplate })
   async createTemplate(@Payload() data: CreateTemplatePayload) {
-    return withTransaction(this.connection, async (session) => {
-      const template = await this.commonTemplatesService.createCommonTemplate({
-        data: {
-          author: data.userId,
-        },
-        session,
-      });
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const template = await this.commonTemplatesService.createCommonTemplate(
+          {
+            data: {
+              author: data.userId,
+            },
+            session,
+          },
+        );
 
-      return plainToInstance(CommonTemplateDTO, template, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+        return plainToInstance(CommonTemplateDTO, template, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
       });
-    });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.UpdateTemplate })
   async editTemplate(@Payload() { templateId, data }: EditTemplatePayload) {
-    return withTransaction(this.connection, async (session) => {
-      const { businessCategories, ...restData } = data;
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const { businessCategories, ...restData } = data;
 
-      const updateData: UpdateQuery<CommonTemplateDocument> = restData;
+        const updateData: Parameters<
+          typeof this.commonTemplatesService.updateCommonTemplate
+        >[0]['data'] = restData;
 
-      if ('businessCategories' in data) {
-        const businessCategoriesPromises = await Promise.all(
-          businessCategories?.map(async (category) => {
-            const [existingCategory] =
-              await this.businessCategoriesService.find({
-                query: { key: category.key },
+        // create links
+
+        if ('businessCategories' in data) {
+          const businessCategoriesPromises = await Promise.all(
+            businessCategories?.map(async (category) => {
+              const [existingCategory] =
+                await this.businessCategoriesService.find({
+                  query: { key: category.key },
+                  session,
+                });
+
+              if (existingCategory) {
+                return existingCategory;
+              }
+
+              return this.businessCategoriesService.create({
+                data: {
+                  key: category.key,
+                  value: category.value,
+                  color: category.color,
+                },
                 session,
               });
+            }) ?? [],
+          );
 
-            if (existingCategory) {
-              return existingCategory;
-            }
+          updateData.businessCategories = businessCategoriesPromises.map(
+            ({ _id }) => _id,
+          );
+        }
 
-            return this.businessCategoriesService.create({
-              key: category.key,
-              value: category.value,
-              color: category.color,
-            });
-          }) ?? [],
+        const template = await this.commonTemplatesService.updateCommonTemplate(
+          {
+            query: {
+              _id: templateId,
+            },
+            data: updateData,
+            session,
+          },
         );
 
-        updateData.businessCategories = businessCategoriesPromises.map(
-          ({ _id }) => _id,
-        );
-      }
-
-      const template = await this.commonTemplatesService.updateCommonTemplate({
-        query: {
-          _id: templateId,
-        },
-        data: updateData,
-        session,
+        return plainToInstance(CommonTemplateDTO, template, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
       });
-
-      return plainToInstance(CommonTemplateDTO, template, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
       });
-    });
+    }
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.DeleteCommonTemplate })
@@ -480,12 +533,39 @@ export class CommonTemplatesController {
           await this.commonTemplatesService.findCommonTemplateById({
             templateId,
             session,
-            populatePaths: 'author',
+            populatePaths: [
+              'sound',
+              'author',
+              'previewUrls',
+              'draftPreviewUrls',
+              'links',
+            ],
           });
 
         if (!template) {
           return;
         }
+
+        if (template.sound?._id) {
+          this.templateSoundService.deleteSound({
+            id: template.sound.id,
+            session,
+          });
+        }
+
+        template.previewUrls.map((preview) => {
+          this.commonTemplatesService.deletePreview({
+            id: preview._id,
+            session,
+          });
+        });
+
+        template.draftPreviewUrls.map((preview) => {
+          this.commonTemplatesService.deletePreview({
+            id: preview._id,
+            session,
+          });
+        });
 
         await this.commonTemplatesService.deleteCommonTemplate({
           query: {
@@ -500,6 +580,14 @@ export class CommonTemplatesController {
           },
           session,
         });
+
+        if (template.stripeProductId) {
+          this.paymentService.deleteTemplateStripeProduct({
+            productId: template.stripeProductId,
+          });
+        }
+
+        await this.awsService.deleteFolder(`templates/${template.id}`);
       });
     } catch (err) {
       throw new RpcException({

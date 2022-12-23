@@ -1,4 +1,4 @@
-import React, {memo, useMemo} from "react";
+import React, {memo, useCallback, useMemo} from "react";
 
 // shared
 import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
@@ -8,26 +8,32 @@ import {CustomTypography} from "shared-frontend/library/custom/CustomTypography"
 import {TagItem} from "shared-frontend/library/common/TagItem";
 import {ActionButton} from "shared-frontend/library/common/ActionButton";
 import {ArrowLeftIcon} from "shared-frontend/icons/OtherIcons/ArrowLeftIcon";
-import {
-    UserVideoStub
-} from '@components/CreateRoom/UserVideoStub/UserVideoStub';
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
+
 // components
-import { Translation } from "@components/Translation/Translation";
+import {ButtonsGroup} from "@components/ButtonsGroup/ButtonsGroup";
+import {TemplateLinkItem} from "@components/CreateRoom/TemplateLinks/TemplateLinkItem";
+import {UserVideoStub} from '@components/CreateRoom/UserVideoStub/UserVideoStub';
+import {Translation} from "@components/Translation/Translation";
 
 // styles
 import styles from './TemplatePreview.module.scss';
 
+// stores
+import {openAdminDialogEvent} from "../../../store";
+
 // types
 import {TemplatePreviewProps} from "./TemplatePreviewProps.types";
 import {ParticipantPosition} from "shared-frontend/types";
-import {TemplateLinkItem} from "@components/CreateRoom/TemplateLinks/TemplateLinkItem";
+import {AdminDialogsEnum} from "../../../store/types";
 
 export const TemplatePreview = memo(({
      onPreviousStep,
      participantsPositions,
      templateTags,
      description,
-     templateLinks
+     templateLinks,
+     onCreate
 }: TemplatePreviewProps) => {
     const participantStubs = useMemo(
         () =>
@@ -36,7 +42,7 @@ export const TemplatePreview = memo(({
                     isDraggable={false}
                     stubId={id}
                     index={index}
-                    position={{ top: top / 100, left: left / 100 }}
+                    position={{ top, left }}
                 />
             )),
         [participantsPositions],
@@ -47,7 +53,7 @@ export const TemplatePreview = memo(({
     }, [templateTags]);
 
     const renderLinks = useMemo(() =>
-        templateLinks.map((link, index) => (
+        templateLinks.map((link, index: number) => (
             <TemplateLinkItem
                 key={link?.key}
                 index={index}
@@ -55,6 +61,14 @@ export const TemplatePreview = memo(({
                 data={link}
             />
         )), [templateLinks]);
+
+    const handleCreateRoom = useCallback(() => {
+        onCreate({ isNeedToPublish: false })
+    }, []);
+
+    const handleOpenConfirmDialog = useCallback(() => {
+        openAdminDialogEvent(AdminDialogsEnum.confirmCreateAndPublishRoomDialog)
+    }, []);
 
     return (
         <CustomGrid container className={styles.wrapper}>
@@ -85,13 +99,7 @@ export const TemplatePreview = memo(({
             </CustomPaper>
             {participantStubs}
             {renderLinks}
-            <CustomGrid
-                container
-                gap={1.5}
-                flexWrap="nowrap"
-                justifyContent="center"
-                className={styles.buttonsGroup}
-            >
+            <ButtonsGroup className={styles.buttonsGroup}>
                 <ActionButton
                     variant="gray"
                     Icon={(
@@ -103,7 +111,21 @@ export const TemplatePreview = memo(({
                     className={styles.actionButton}
                     onAction={onPreviousStep}
                 />
-            </CustomGrid>
+                <CustomButton
+                    className={styles.button}
+                    onClick={handleCreateRoom}
+                    label={(
+                        <Translation nameSpace="rooms" translation="buttons.create" />
+                    )}
+                />
+                <CustomButton
+                    className={styles.button}
+                    onClick={handleOpenConfirmDialog}
+                    label={(
+                        <Translation nameSpace="rooms" translation="buttons.createAndPublish" />
+                    )}
+                />
+            </ButtonsGroup>
         </CustomGrid>
     )
 })

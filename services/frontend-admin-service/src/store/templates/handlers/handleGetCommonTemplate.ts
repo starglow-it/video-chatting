@@ -1,6 +1,6 @@
 import {
 	ErrorState,
-	GetCommonTemlatePayload,
+	GetCommonTemplateByIdPayload,
 	ICommonTemplate,
 } from 'shared-types';
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../../const/urls/templates';
 
 export const handleGetCommonTemplate = async (
-	params: GetCommonTemlatePayload,
+	params: GetCommonTemplateByIdPayload,
 ): Promise<CommonTemplateState> => {
 	const response = await sendRequestWithCredentials<
         ICommonTemplate,

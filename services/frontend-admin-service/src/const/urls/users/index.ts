@@ -8,6 +8,9 @@ import {
 import {
 	serverUrl 
 } from '../common';
+
+import frontendConfig from '../../config';
+
 import {
 	GetUserProfileParams,
 	GetUserProfileStatisticsParams,
@@ -48,14 +51,18 @@ export const userProfileTemplateUrl = ({
 	method: HttpMethods.Get,
 });
 
-export const searchUsersUrl = ({
-	skip = 0,
-	limit = 0,
-	search,
-}: QueryParams) => ({
-	url: `${serverUrl}/${usersScope}/search?skip=${skip}&limit=${limit}&search=${search}`,
-	method: HttpMethods.Get,
-});
+export const searchUsersUrl = (data: QueryParams = { skip: 0, limit: 0 }) => {
+	const urlHref = new URL(`${frontendConfig.frontendUrl}${serverUrl}/${usersScope}/search`);
+
+	Object.entries(data).forEach(entry => {
+		urlHref.searchParams.append(entry[0], entry[1]);
+	});
+
+	return {
+		url: urlHref.href,
+		method: HttpMethods.Get,
+	}
+};
 
 export const blockUserUrl = ({
 	userId,
