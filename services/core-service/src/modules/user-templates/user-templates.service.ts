@@ -169,6 +169,21 @@ export class UserTemplatesService {
     return this.userTemplate.findOneAndUpdate(query, data, options);
   }
 
+  async updateUserTemplates({
+    query,
+    data,
+    session,
+  }: UpdateModelQuery<
+    UserTemplateDocument,
+    UserTemplateDocument
+  >): Promise<any> {
+    const options: QueryOptions = {
+      session: session?.session,
+    };
+
+    return this.userTemplate.updateMany(query, data, options);
+  }
+
   async deleteUserTemplates({
     query,
     session,

@@ -5,7 +5,8 @@ import {
   Delete,
   Get,
   Logger,
-  Param, ParseBoolPipe,
+  Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Put,
@@ -62,8 +63,9 @@ export class TemplatesController {
     try {
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
-          ...(draft ? { draft } : {} ),
-          ...(isPublic ? { isPublic } : {} ),
+          isDeleted: false,
+          ...(draft ? { draft } : {}),
+          ...(isPublic ? { isPublic } : {}),
           ...(type ? { type } : {}),
         },
         options: {
@@ -131,60 +133,16 @@ export class TemplatesController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  @UseInterceptors(
-    FileInterceptor('file', {
-      preservePath: true,
-    }),
-  )
   async editTemplate(
     @Request() req,
     @Param('templateId') templateId: string,
     @Body() templateData: Partial<IUpdateTemplate>,
-    @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<ICommonTemplate>> {
     try {
       if (!templateId) {
         return {
           success: false,
         };
-      }
-
-      console.log(file);
-
-      if (file) {
-        const { fileName, extension } = getFileNameAndExtension(file.originalname);
-        const isAudioFile = file.mimetype.includes('audio');
-
-        if (isAudioFile) {
-          const uploadKey = `templates/${templateId}/sounds/${uuidv4()}.${extension}`;
-
-          await this.uploadService.deleteFolder(`templates/${templateId}/sounds`);
-
-          const soundUrl = await this.uploadService.uploadFile(file.buffer, uploadKey);
-
-          const soundData = await this.coreService.createTemplateSound({
-            fileName: `${fileName}.${extension}`,
-            mimeType: file.mimetype,
-            url: soundUrl,
-            size: file.size
-          });
-
-          templateData.sound = soundData.id;
-        } else {
-          const uploadKey = `templates/${templateId}/videos/${uuidv4()}.${extension}`;
-
-          await this.uploadService.deleteFolder(`templates/${templateId}/videos`);
-
-          const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
-
-          await this.coreService.uploadTemplateFile({
-            url,
-            id: templateId,
-            mimeType: file.mimetype,
-            fileName,
-            uploadKey: `templates/${templateId}`,
-          });
-        }
       }
 
       if (Object.keys(templateData).length >= 1) {
@@ -224,19 +182,20 @@ export class TemplatesController {
   })
   async getCommonTemplate(@Param('templateId') templateId: string) {
     try {
-      if (templateId) {
-        const template = await this.templatesService.getCommonTemplateById({
-          templateId,
-        });
-
+      if (!templateId) {
         return {
-          success: true,
-          result: template,
+          success: false,
+          result: null,
         };
       }
+
+      const template = await this.templatesService.getCommonTemplateById({
+        templateId,
+      });
+
       return {
-        success: false,
-        result: null,
+        success: true,
+        result: template,
       };
     } catch (err) {
       this.logger.error(
@@ -265,17 +224,162 @@ export class TemplatesController {
     @Param('templateId') templateId: string,
   ) {
     try {
-      if (templateId) {
-        await this.templatesService.deleteCommonTemplate({
-          templateId,
-        });
-
+      if (!templateId) {
         return {
-          success: true,
+          success: false,
         };
       }
+
+      await this.templatesService.deleteCommonTemplate({
+        templateId,
+      });
+
       return {
-        success: false,
+        success: true,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while delete common template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/:templateId/background')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Upload Template Background' })
+  @ApiOkResponse({
+    description: 'Upload Common Template Background Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      preservePath: true,
+    }),
+  )
+  async uploadCommonTemplateBackground(
+    @Request() req,
+    @Query('updateKey') updateKey: string,
+    @Param('templateId') templateId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      if (!templateId || !file) {
+        return {
+          success: false,
+        };
+      }
+
+      const template = await this.templatesService.getCommonTemplateById({ templateId });
+
+      const { fileName, extension } = getFileNameAndExtension(
+          file.originalname,
+      );
+
+      const uploadKey = `templates/${templateId}/videos/${uuidv4()}.${extension}`;
+
+      if (updateKey === 'url') {
+        const oldKey = this.uploadService.getUploadKeyFromUrl(template.url);
+
+        this.uploadService.deleteResource(oldKey);
+      }
+
+      const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
+
+      const updatedTemplate = await this.coreService.uploadTemplateFile({
+        url,
+        id: templateId,
+        mimeType: file.mimetype,
+        fileName,
+        uploadKey,
+      });
+
+      return {
+        success: true,
+        result: updatedTemplate,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while delete common template`,
+        },
+        JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/:templateId/sound')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Upload Template Sound' })
+  @ApiOkResponse({
+    description: 'Upload Common Template Sound Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      preservePath: true,
+    }),
+  )
+  async uploadCommonTemplateSound(
+    @Request() req,
+    @Query('updateKey') updateKey: string,
+    @Param('templateId') templateId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      if (!templateId || !file) {
+        return {
+          success: false,
+        };
+      }
+
+      const template = await this.templatesService.getCommonTemplateById({ templateId });
+
+      const { fileName, extension } = getFileNameAndExtension(
+        file.originalname,
+      );
+
+      const uploadKey = `templates/${templateId}/sounds/${uuidv4()}.${extension}`;
+
+      if (updateKey === 'sound') {
+        await this.uploadService.deleteResource(template.sound.uploadKey);
+      }
+
+      const soundUrl = await this.uploadService.uploadFile(
+        file.buffer,
+        uploadKey,
+      );
+
+      const soundData = await this.coreService.createTemplateSound({
+        fileName: `${fileName}.${extension}`,
+        mimeType: file.mimetype,
+        url: soundUrl,
+        size: file.size,
+        uploadKey,
+      });
+
+      const updatedTemplate = await this.templatesService.updateTemplate({
+        templateId,
+        data: {
+          [updateKey]: soundData.id,
+        },
+      });
+
+      return {
+        success: true,
+        result: updatedTemplate,
       };
     } catch (err) {
       this.logger.error(
@@ -301,25 +405,31 @@ export class TemplatesController {
   })
   async deleteCommonTemplateSound(
     @Request() req,
+    @Query('updateKey') updateKey: string,
     @Param('templateId') templateId: string,
   ) {
     try {
-      if (templateId) {
-        await this.uploadService.deleteFolder(`templates/${templateId}/sounds`);
-
-        await this.templatesService.updateTemplate({
-          templateId,
-          data: {
-            sound: null,
-          },
-        });
-
+      if (!templateId) {
         return {
-          success: true,
+          success: false,
         };
       }
+
+      const template = await this.templatesService.getCommonTemplateById({ templateId });
+
+      if (updateKey === 'sound') {
+        await this.uploadService.deleteResource(template.sound.uploadKey);
+      }
+
+      await this.templatesService.updateTemplate({
+        templateId,
+        data: {
+          [updateKey]: null,
+        },
+      });
+
       return {
-        success: false,
+        success: true,
       };
     } catch (err) {
       this.logger.error(

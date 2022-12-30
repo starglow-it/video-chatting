@@ -1,28 +1,19 @@
-import React, {
+import {
 	memo, useEffect 
 } from 'react';
-import {
-	useStore 
-} from 'effector-react';
+import { useStore } from 'effector-react';
+
+import { getTimeoutTimestamp } from 'shared-utils';
+import { TimeoutTypesEnum } from 'shared-types';
 
 // shared
-import {
-	CustomLoader
-} from 'shared-frontend/library/custom/CustomLoader';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	StatisticsIcon 
-} from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 // stores
 import {
@@ -33,6 +24,11 @@ import {
 
 // styles
 import styles from './UserProfileStatistic.module.scss';
+
+const ONE_MINUTE = getTimeoutTimestamp({
+	type: TimeoutTypesEnum.Minutes,
+	value: 1,
+});
 
 const Component = () => {
 	const {
@@ -56,6 +52,12 @@ const Component = () => {
 	if (isGetUserProfileStatisticsPending) {
 		return <CustomLoader className={styles.loader} />;
 	}
+
+	const minutesSpent = Math.floor(
+		userStatistic?.minutesSpent && userStatistic?.minutesSpent !== 0
+			? userStatistic.minutesSpent / ONE_MINUTE
+			: 0,
+	);
 
 	return (
 		<CustomGrid
@@ -117,7 +119,7 @@ const Component = () => {
 				gridArea="2/2/2/2"
 				variant="body2"
 			>
-				{Math.floor(userStatistic?.minutesSpent ? (userStatistic?.minutesSpent / 1000 / 60) : 0)}
+				{minutesSpent}
 			</CustomTypography>
 			<CustomTypography
 				gridArea="3/2/3/2"

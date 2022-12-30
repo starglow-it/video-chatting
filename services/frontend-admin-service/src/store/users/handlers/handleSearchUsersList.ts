@@ -2,15 +2,9 @@ import {
 	ErrorState, QueryParams, UsersList 
 } from 'shared-types';
 
-import {
-	UsersListState 
-} from '../../types';
-import {
-	sendRequest 
-} from '../../../helpers/http/sendRequest';
-import {
-	searchUsersUrl 
-} from '../../../const/urls/users';
+import { UsersListState } from '../../types';
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { searchUsersUrl } from '../../../const/urls/users';
 
 export const handleSearchUsersList = async (
 	payload: QueryParams,

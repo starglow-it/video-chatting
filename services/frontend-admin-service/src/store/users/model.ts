@@ -4,9 +4,7 @@ import {
 	QueryParams,
 	UserProfileId,
 } from 'shared-types';
-import {
-	usersDomain 
-} from '../domains';
+import { usersDomain } from '../domains';
 import {
 	BlockUserParams,
 	DeleteUserParams,

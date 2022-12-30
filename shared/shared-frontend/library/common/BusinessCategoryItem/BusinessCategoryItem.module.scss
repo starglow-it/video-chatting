@@ -1,0 +1,6 @@
+@import "../../../styles/mixins";
+
+.tagText {
+  @extend %text-ellips;
+  white-space: nowrap;
+}

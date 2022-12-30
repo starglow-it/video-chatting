@@ -173,7 +173,7 @@ const EditProfileContainer = memo(() => {
             >
                 <CustomGrid container alignItems="center" justifyContent="center">
                     <CustomImage
-                        src="/images/edit-hand.png"
+                        src="/images/edit-hand.webp"
                         width="40px"
                         height="40px"
                         alt="edit-hand"

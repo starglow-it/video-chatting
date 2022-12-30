@@ -1,17 +1,11 @@
-import {
-	ErrorState 
-} from 'shared-types';
+import { ErrorState } from 'shared-types';
 
 import {
 	SubscriptionsStatisticsResponse,
 	SubscriptionsStatisticsState,
 } from '../../types';
-import {
-	sendRequest 
-} from '../../../helpers/http/sendRequest';
-import {
-	subscriptionsStatisticsUrl 
-} from '../../../const/urls/statistics';
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { subscriptionsStatisticsUrl } from '../../../const/urls/statistics';
 
 export const handleGetSubscriptionsStatistics =
     async (): Promise<SubscriptionsStatisticsState> => {

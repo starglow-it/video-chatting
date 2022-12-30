@@ -58,7 +58,7 @@ const Component = () => {
 				className={styles.container}
 			>
 				<CustomImage
-					src="/images/email2.png"
+					src="/images/email2.webp"
 					width="52px"
 					height="52px"
 				/>

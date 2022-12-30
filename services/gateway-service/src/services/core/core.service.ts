@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {firstValueFrom} from "rxjs";
+import { firstValueFrom } from 'rxjs';
 
 import {
   CORE_PROVIDER,
@@ -10,7 +10,7 @@ import {
   MeetingBrokerPatterns,
   CoreBrokerPatterns,
   UserTemplatesBrokerPatterns,
-  TemplateSoundBrokerPatterns
+  TemplateSoundBrokerPatterns,
 } from 'shared-const';
 
 import {
@@ -228,7 +228,9 @@ export class CoreService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async updateCountryStatistics(payload: UpdateCountryStatisticsPayload): Promise<ICountryStatistic> {
+  async updateCountryStatistics(
+    payload: UpdateCountryStatisticsPayload,
+  ): Promise<ICountryStatistic> {
     const pattern = { cmd: CoreBrokerPatterns.UpdateCountryStatistics };
 
     return firstValueFrom(this.client.send(pattern, payload));
@@ -265,6 +267,6 @@ export class CoreService {
   }
 
   async sendCustom(pattern, payload) {
-    return firstValueFrom(this.client.send(pattern, payload));
+    return this.client.send(pattern, payload).toPromise();
   }
 }

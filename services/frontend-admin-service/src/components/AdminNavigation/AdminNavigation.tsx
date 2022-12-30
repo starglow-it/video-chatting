@@ -1,46 +1,24 @@
-import React, {
+import {
 	memo, useCallback 
 } from 'react';
-import Router, {
-	useRouter 
-} from 'next/router';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
 // custom
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomDivider 
-} from 'shared-frontend/library/custom/CustomDivider';
-import {
-	CustomTooltip 
-} from 'shared-frontend/library/custom/CustomTooltip';
-import {
-	DiscoveryIcon 
-} from 'shared-frontend/icons/OtherIcons/DiscoveryIcon';
-import {
-	PeopleIcon 
-} from 'shared-frontend/icons/OtherIcons/PeopleIcon';
-import {
-	StatisticsIcon 
-} from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
-import {
-	ExitIcon 
-} from 'shared-frontend/icons/OtherIcons/ExitIcon';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { DiscoveryIcon } from 'shared-frontend/icons/OtherIcons/DiscoveryIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
+import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 // stores
-import {
-	logoutAdminFx 
-} from '../../store';
+import { logoutAdminFx } from '../../store';
 
 // styles
 import styles from './AdminNavigation.module.scss';
@@ -49,9 +27,7 @@ const Component = () => {
 	const router = useRouter();
 
 	const handleLogout = useCallback(async () => {
-		await logoutAdminFx();
-
-		await Router.push('/');
+		logoutAdminFx();
 	}, []);
 
 	const isStatisticsPageActive = router.pathname === '/statistics';

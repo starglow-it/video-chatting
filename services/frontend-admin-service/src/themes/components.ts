@@ -1,11 +1,7 @@
-import {
-	Theme 
-} from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
-import createTheme from '@mui/material/styles/createTheme';
-import {
-	alpha 
-} from '@mui/system';
+import { alpha } from '@mui/system';
 
 export const componentsTheme = (theme: Theme) =>
 	createTheme({

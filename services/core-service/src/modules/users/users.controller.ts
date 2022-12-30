@@ -387,13 +387,15 @@ export class UsersController {
 
       const finalQuery = {
         ...query,
-        ...(options?.search ? {
-          $or: [
-            { companyName: queryRegex },
-            { fullName: queryRegex },
-            { email: queryRegex },
-          ]
-        } : {})
+        ...(options?.search
+          ? {
+              $or: [
+                { companyName: queryRegex },
+                { fullName: queryRegex },
+                { email: queryRegex },
+              ],
+            }
+          : {}),
       };
 
       const users = await this.usersService.findUsers({
@@ -593,7 +595,8 @@ export class UsersController {
   @MessagePattern({ cmd: UserBrokerPatterns.DeleteProfile })
   async deleteProfile(@Payload() { userId }: { userId: string }) {
     return withTransaction(this.connection, async (session) => {
-      return this.usersService.deleteUser(userId, session);
+      await this.usersService.deleteUser(userId, session);
+      return {}
     });
   }
 

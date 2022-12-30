@@ -53,6 +53,10 @@ export class UserTemplateDTO implements IUserTemplate {
   sound: IUserTemplate['sound'];
 
   @Expose()
+  @Type(() => TemplateSoundFileDTO)
+  draftSound: IUserTemplate['draftSound'];
+
+  @Expose()
   draftUrl: IUserTemplate['draftUrl'];
 
   @Expose()

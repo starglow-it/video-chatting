@@ -24,7 +24,6 @@ Update Dev Traefik:
 update:dev:
   extends:
     - .staging-dev
-  stage: update_dev_staging
   except: [testing]
   script:
     - cd deploy/staging

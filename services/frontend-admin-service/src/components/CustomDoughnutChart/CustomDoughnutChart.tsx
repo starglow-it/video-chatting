@@ -9,17 +9,11 @@ import {
 	Tooltip,
 	TooltipItem,
 } from 'chart.js';
-import {
-	deepmerge 
-} from 'deepmerge-ts';
+import { deepmerge } from 'deepmerge-ts';
 
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-import {
-	PropsWithClassName 
-} from 'shared-frontend/types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
 Chart.register([DoughnutController, ArcElement, Tooltip]);
 
@@ -32,11 +26,7 @@ type RenderTextPayload = {
 };
 
 const renderText = ({
-	ctx, 
-	font, 
-	text, 
-	width, 
-	height 
+	ctx, font, text, width, height 
 }: RenderTextPayload) => {
 	ctx.save();
 
@@ -179,11 +169,17 @@ const getChartOptions = (
 						model: TooltipItem<'doughnut'>,
 					): string | string[] => {
 						if (model.label?.length === 1) {
-							return `${((model.raw / totalNumber) * 100).toFixed(
-								2,
-							)}% - ${model.raw}`;
+							return `${
+								model.raw
+									? (
+										((model.raw as number) /
+                                              totalNumber) *
+                                          100
+									).toFixed(2)
+									: 0
+							}% - ${model.raw}`;
 						}
-						return model.label.map((label, index) => {
+						return model.label.map((_, index) => {
 							const part = dataSets[model.dataIndex].parts[index];
 							return `${((part / totalNumber) * 100).toFixed(
 								2,
@@ -207,10 +203,8 @@ const Component = ({
 	height,
 	label,
 	data: {
- totalLabel, 
-totalNumber, 
-dataSets 
-},
+		totalLabel, totalNumber, dataSets 
+	},
 }: PropsWithClassName<CustomDoughnutChartProps>) => {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const chartRef = useRef<Chart | null>(null);

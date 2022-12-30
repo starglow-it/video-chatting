@@ -1,6 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
 
-import { IBusinessCategory, ICommonTemplate } from 'shared-types';
+import {IBusinessCategory, ICommonTemplate } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { PreviewImageDTO } from './preview-image.dto';
@@ -40,6 +40,10 @@ export class CommonTemplateDTO implements ICommonTemplate {
   sound: ICommonTemplate['sound'];
 
   @Expose()
+  @Type(() => TemplateSoundFileDTO)
+  draftSound: ICommonTemplate['draftSound'];
+
+  @Expose()
   draftUrl: ICommonTemplate['draftUrl'];
 
   @Expose()
@@ -54,7 +58,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   @Type(() => PreviewImageDTO)
-  draftPreviewUrls: ICommonTemplate['previewUrls'];
+  draftPreviewUrls: ICommonTemplate['draftPreviewUrls'];
 
   @Expose()
   type: ICommonTemplate['type'];
@@ -88,4 +92,14 @@ export class CommonTemplateDTO implements ICommonTemplate {
   @Expose()
   @Transform((data) => Boolean(data.obj?.userTemplate?.[0]?.['_id']))
   isTemplatePurchased: ICommonTemplate['isTemplatePurchased'];
+
+  @Expose()
+  @Transform((data) =>
+      data.obj?.links?.map((link) => ({
+        id: link._id,
+        item: link.item,
+        position: link.position,
+      })),
+  )
+  links: ICommonTemplate['links'];
 }

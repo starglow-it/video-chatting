@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 import { BaseSchema, ValidationError } from 'yup';
-
-// const
-import { hasArrayIndex } from '../const/regexp';
+import {hasArrayIndex} from "../const/regexp";
 
 export type ParsedValidationErrors<Values> = {
     [p in keyof Values]?: Partial<ValidationError>[];
@@ -42,45 +40,49 @@ export const useYupValidationResolver = <Values>(
 
                     const initialReduceState: ParsedValidationErrors<Values> = {};
 
-                    return {
-                        values: {},
-                        errors: err?.reduce((allErrors, currentError) => {
-                            let errorKey = `${currentError.path}` as keyof Values;
-                            if (
-                                hasArrayIndex.test(errorKey as string) &&
-                                options?.reduceArrayErrors
-                            ) {
-                                errorKey = (errorKey as string).replace(
-                                    /\[\d*]/,
-                                    '',
-                                ) as keyof Values;
-                            }
+                    const errors = err?.reduce((allErrors, currentError) => {
+                        let errorKey = `${currentError.path}` as keyof Values;
 
-                            const keyErrors = allErrors[errorKey] as ValidationError[];
+                        if (
+                            hasArrayIndex.test(errorKey as string) &&
+                            options?.reduceArrayErrors
+                        ) {
+                            const errorPathMatch = (errorKey as string).match(
+                                /(.*)\[\d*]/
+                            );
 
-                            if (allErrors[errorKey]) {
-                                return {
-                                    ...allErrors,
-                                    [errorKey]: [
-                                        ...keyErrors,
-                                        {
-                                            type: currentError.type ?? 'validation',
-                                            message: currentError.message,
-                                        },
-                                    ],
-                                };
-                            }
+                            errorKey = errorPathMatch?.[1] as keyof Values;
+                        }
 
+                        const keyErrors = allErrors[errorKey] as ValidationError[];
+
+                        if (allErrors[errorKey]) {
                             return {
                                 ...allErrors,
                                 [errorKey]: [
+                                    ...keyErrors,
                                     {
                                         type: currentError.type ?? 'validation',
                                         message: currentError.message,
                                     },
                                 ],
                             };
-                        }, initialReduceState),
+                        }
+
+                        return {
+                            ...allErrors,
+                            [errorKey]: [
+                                {
+                                    type: currentError.type ?? 'validation',
+                                    message: currentError.message,
+                                },
+                            ],
+                        };
+                    }, initialReduceState);
+
+                    return {
+                        values: {},
+                        errors,
                     };
                 }
                 return {

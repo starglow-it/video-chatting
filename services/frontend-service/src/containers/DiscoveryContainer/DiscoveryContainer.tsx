@@ -73,7 +73,7 @@ const DiscoveryContainer = memo(() => {
                 >
                     <CustomBox className={styles.image}>
                         <CustomImage
-                            src="/images/blush-face.png"
+                            src="/images/blush-face.webp"
                             width="40px"
                             height="40px"
                             alt="blush-face"

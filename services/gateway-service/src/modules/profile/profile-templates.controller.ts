@@ -19,11 +19,7 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
-import {
-  IUserTemplate,
-  ResponseSumType,
-  EntityList,
-} from 'shared-types';
+import { IUserTemplate, ResponseSumType, EntityList } from 'shared-types';
 import { TemplatesService } from '../templates/templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';

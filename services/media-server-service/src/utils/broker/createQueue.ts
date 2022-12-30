@@ -1,5 +1,5 @@
-import { Channel } from "amqplib";
-import { IQueue } from "../../../types/broker";
+import { Channel } from 'amqplib';
+import { IQueue } from '../../../types/broker';
 
 export interface IArgs {
     exchangeName: string;

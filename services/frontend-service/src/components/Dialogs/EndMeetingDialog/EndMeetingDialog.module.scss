@@ -14,7 +14,11 @@
 
 .text {
   display: block;
-  width: rem(320px);
+}
+
+.hint {
+  margin: rem(8px 16px 0);
+  white-space: pre;
 }
 
 .wrapper {

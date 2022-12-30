@@ -663,49 +663,56 @@ export class UserTemplatesController {
   async uploadProfileTemplateFile(
     @Payload() data: { url: string; id: string; mimeType: string },
   ): Promise<void> {
-    return withTransaction(this.connection, async (session) => {
-      const { url, id, mimeType } = data;
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const { url, id, mimeType } = data;
 
-      const screenShotUploadKey = `templates/${id}/images`;
+        const screenShotUploadKey = `templates/${id}/images`;
 
-      this.awsService.deleteFolder(screenShotUploadKey);
+        this.awsService.deleteFolder(screenShotUploadKey);
 
-      const screenShotPromises = previewResolutions.map(async (resolution) => {
-        const screenShotData =
-          await this.transcodeService.createVideoScreenShots({
-            url,
-            mimeType,
-            key: screenShotUploadKey,
-            resolution,
+        const screenShotPromises = previewResolutions.map(async (resolution) => {
+          const screenShotData =
+              await this.transcodeService.createVideoScreenShots({
+                url,
+                mimeType,
+                key: screenShotUploadKey,
+                resolution,
+              });
+
+          return this.commonTemplatesService.createPreview({
+            data: {
+              url: screenShotData.url,
+              key: screenShotData.uploadKey,
+              size: screenShotData.size,
+              resolution: screenShotData.resolution,
+            },
+            session,
           });
+        });
 
-        return this.commonTemplatesService.createPreview({
+        const previewImages = await Promise.all(screenShotPromises);
+
+        const imageIds = previewImages.map((image) => image._id);
+
+        return this.userTemplatesService.updateUserTemplate({
+          query: {
+            _id: id,
+          },
           data: {
-            url: screenShotData.url,
-            key: screenShotData.uploadKey,
-            size: screenShotData.size,
-            resolution: screenShotData.resolution,
+            templateType: mimeType.includes('image') ? 'image' : 'video',
+            draftPreviewUrls: imageIds,
+            draftUrl: url,
           },
           session,
         });
       });
-
-      const previewImages = await Promise.all(screenShotPromises);
-
-      const imageIds = previewImages.map((image) => image._id);
-
-      return this.userTemplatesService.updateUserTemplate({
-        query: {
-          _id: id,
-        },
-        data: {
-          templateType: mimeType.includes('image') ? 'image' : 'video',
-          draftPreviewUrls: imageIds,
-          draftUrl: url,
-        },
-        session,
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
       });
-    });
+    }
   }
 
   @MessagePattern({
@@ -714,63 +721,81 @@ export class UserTemplatesController {
   async updateUserTemplateUsageNumber(
     @Payload() payload: UpdateUserTemplateUsageNumberPayload,
   ): Promise<void> {
-    return withTransaction(this.connection, async (session) => {
-      await this.userTemplatesService.findUserTemplateByIdAndUpdate(
-        payload.templateId,
-        {
-          $inc: { timesUsed: payload.value },
-        },
-        session,
-      );
-    });
+    try {
+      return withTransaction(this.connection, async (session) => {
+        await this.userTemplatesService.findUserTemplateByIdAndUpdate(
+            payload.templateId,
+            {
+              $inc: { timesUsed: payload.value },
+            },
+            session,
+        );
+
+        return {};
+      });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
   }
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.DeleteLeastUsedTemplates })
   async deleteLeastUsedTemplates(
     @Payload() payload: DeleteLeastUsedTemplatesPayload,
   ): Promise<void> {
-    return withTransaction(this.connection, async (session) => {
-      const leastUsedFreeTemplates =
-        await this.userTemplatesService.findUserTemplates({
+    try {
+      return withTransaction(this.connection, async (session) => {
+        const leastUsedFreeTemplates =
+            await this.userTemplatesService.findUserTemplates({
+              query: {
+                type: 'free',
+                user: payload.userId,
+                isPublic: true,
+                draft: false,
+              },
+              options: { sort: { usedAt: -1 }, limit: payload.templatesLimit },
+              session,
+            });
+
+        const customTemplates = await this.userTemplatesService.findUserTemplates(
+            {
+              query: {
+                author: payload.userId,
+              },
+              session,
+            },
+        );
+
+        const paidTemplates = await this.userTemplatesService.findUserTemplates({
           query: {
-            type: 'free',
-            user: payload.userId,
-            isPublic: true,
-            draft: false,
+            type: 'paid',
           },
-          options: { sort: { usedAt: -1 }, limit: payload.templatesLimit },
           session,
         });
 
-      const customTemplates = await this.userTemplatesService.findUserTemplates(
-        {
+        const templatesIds = [
+          ...paidTemplates,
+          ...customTemplates,
+          ...leastUsedFreeTemplates,
+        ].map((template) => template.id);
+
+        await this.userTemplatesService.deleteUserTemplates({
           query: {
-            author: payload.userId,
+            _id: { $nin: templatesIds },
+            user: payload.userId,
           },
           session,
-        },
-      );
+        });
 
-      const paidTemplates = await this.userTemplatesService.findUserTemplates({
-        query: {
-          type: 'paid',
-        },
-        session,
+        return {}
       });
-
-      const templatesIds = [
-        ...paidTemplates,
-        ...customTemplates,
-        ...leastUsedFreeTemplates,
-      ].map((template) => template.id);
-
-      await this.userTemplatesService.deleteUserTemplates({
-        query: {
-          _id: { $nin: templatesIds },
-          user: payload.userId,
-        },
-        session,
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
       });
-    });
+    }
   }
 }

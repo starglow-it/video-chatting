@@ -25,6 +25,7 @@ export class TemplateSoundController {
             url: payload.url,
             mimeType: payload.mimeType,
             size: payload.size,
+            uploadKey: payload.uploadKey,
           },
           session,
         });

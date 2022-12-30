@@ -91,7 +91,7 @@ const Component: React.FunctionComponent<ComponentPropsType> = (
 						className={styles.noNotificationsWrapper}
 					>
 						<CustomImage
-							src="/images/eyes.png"
+							src="/images/eyes.webp"
 							width={40}
 							height={40}
 						/>

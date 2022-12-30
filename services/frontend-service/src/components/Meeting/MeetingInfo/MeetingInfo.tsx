@@ -19,7 +19,6 @@ import { LanguageIcon } from 'shared-frontend/icons/OtherIcons/LanguageIcon';
 // components
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
 
 // stores
 import { $meetingTemplateStore } from '../../../store/roomStores';
@@ -29,6 +28,7 @@ import styles from './MeetingInfo.module.scss';
 
 // const
 import { SOCIALS_ICONS } from '../../../const/profile/socials';
+import { BusinessCategoryItem } from 'shared-frontend/library/common/BusinessCategoryItem';
 
 const Component = (_: unknown, ref: ForwardedRef<HTMLDivElement>) => {
     const meetingTemplate = useStore($meetingTemplateStore);

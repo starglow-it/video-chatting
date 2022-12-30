@@ -1,39 +1,21 @@
-import React, {
-	memo 
-} from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
 // shared
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomImage 
-} from 'shared-frontend/library/custom/CustomImage';
-import {
-	CustomBox 
-} from 'shared-frontend/library/custom/CustomBox';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
-import {
-	PaymentIcon 
-} from 'shared-frontend/icons/OtherIcons/PaymentIcon';
-import {
-	PeopleIcon 
-} from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { PaymentIcon } from 'shared-frontend/icons/OtherIcons/PaymentIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // styles
 import styles from './ProfileTemplateItem.module.scss';
 
 // types
-import {
-	ProfileTemplateProps 
-} from './types';
+import { ProfileTemplateProps } from './types';
 
 const ProfileTemplateItem = memo(({
 	template 
@@ -52,8 +34,8 @@ const ProfileTemplateItem = memo(({
 			<ConditionalRender condition={Boolean(previewImage?.url)}>
 				<CustomImage
 					src={previewImage?.url || ''}
-					width="334px"
-					height="190px"
+					width={334}
+					height={190}
 				/>
 			</ConditionalRender>
 			<CustomGrid
@@ -153,6 +135,6 @@ const ProfileTemplateItem = memo(({
 	);
 });
 
-export {
-	ProfileTemplateItem 
-};
+ProfileTemplateItem.displayName = 'ProfileTemplateItem';
+
+export { ProfileTemplateItem };

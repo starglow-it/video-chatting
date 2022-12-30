@@ -28,5 +28,15 @@
     "manyFiles": "Please upload 1 file",
     "shouldBeUploaded": "Background file should be uploaded at first",
     "isPending": "Please wait until file is uploaded"
+  },
+  "templates": {
+    "published": "Room {{templateName}} published to TheLiveOffice library",
+    "revoked": "Room {{templateName}} removed from TheLiveOffice library",
+    "createdAndPublished": "Room {{templateName}} created and published to TheLiveOffice library",
+    "created": "Room {{templateName}} created",
+    "roomChangesSaved": "Changes in {{templateName}} saved"
+  },
+  "errors": {
+    "invalidUrl": "Entered link is invalid"
   }
 }

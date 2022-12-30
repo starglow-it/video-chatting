@@ -13,8 +13,8 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
-import { BusinessCategoryItem } from '@components/BusinessCategoryItem/BusinessCategoryItem';
-import { TagWrapper } from '@library/common/TagWrapper/TagWrapper';
+import { TagWrapper } from 'shared-frontend/library/common/TagWrapper';
+import {BusinessCategoryItem} from "shared-frontend/library/common/BusinessCategoryItem";
 
 // stores
 import { IBusinessCategory } from 'shared-types';

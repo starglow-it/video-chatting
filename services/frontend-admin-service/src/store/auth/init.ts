@@ -8,15 +8,9 @@ import {
 	resetAuthStateEvent,
 } from './model';
 
-import {
-	handleLoginAdmin 
-} from './handlers/handleLoginAdmin';
-import {
-	handleCheckAdminAuthentication 
-} from './handlers/handleCheckAdminAuthentication';
-import {
-	handleLogoutAdmin 
-} from './handlers/handleLogoutAdmin';
+import { handleLoginAdmin } from './handlers/handleLoginAdmin';
+import { handleCheckAdminAuthentication } from './handlers/handleCheckAdminAuthentication';
+import { handleLogoutAdmin } from './handlers/handleLogoutAdmin';
 
 loginAdminFx.use(handleLoginAdmin);
 checkAdminAuthFx.use(handleCheckAdminAuthentication);

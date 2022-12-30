@@ -1,80 +1,164 @@
-import React, {memo, useCallback} from "react";
-import clsx from "clsx";
-import { useStoreMap } from "effector-react";
+import React, {
+	memo, useCallback, useMemo, useRef
+} from 'react';
+import clsx from 'clsx';
+import { useStoreMap } from 'effector-react';
+import Router from "next/router";
 
-import {CustomTooltip} from "shared-frontend/library/custom/CustomTooltip";
-import {ActionButton} from "shared-frontend/library/common/ActionButton";
-import {TrashIcon} from "shared-frontend/icons/OtherIcons/TrashIcon";
-import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
-import { CustomTypography } from "shared-frontend/library/custom/CustomTypography";
+import {useToggle} from "shared-frontend/hooks/useToggle";
 
-import {Translation} from "@components/Translation/Translation";
+// components
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { EllipsisIcon } from "shared-frontend/icons/OtherIcons/EllipsisIcon";
+import CustomMenu from "@components/CustomMenu/CustomMenu";
 
-import {$commonTemplates } from "../../../store";
+import { Translation } from '@components/Translation/Translation';
 
-import styles from "./RoomTableItemActions.module.scss";
+import {
+	$commonTemplates,
+	openAdminDialogEvent,
+	setActiveTemplateIdEvent,
+} from '../../../store';
 
-export const RoomTableItemActions = memo(({ actionId }: { actionId: string }) => {
-    const templateData = useStoreMap({
-        store: $commonTemplates,
-        keys: [actionId],
-        fn: (state, [templateId]) =>
-            state?.state?.list?.find(template => template.id === templateId) || null,
-    });
+import styles from './RoomTableItemActions.module.scss';
+import { AdminDialogsEnum } from '../../../store/types';
 
-    const handleDeleteRoom = useCallback((event) => {
-        event?.stopPropagation()
-        console.log(actionId);
-    }, []);
+const RoomTableItemActions = memo(({
+	actionId 
+}: { actionId: string }) => {
+	const actionButtonRef = useRef(null);
 
-    const handleRevokeRoomStatus = useCallback((event) => {
-        event?.stopPropagation();
-        console.log(actionId);
-    }, []);
+	const {
+		value: isMenuOpen,
+		onSwitchOn: onShowMenu,
+		onSwitchOff: onHideMenu
+	} = useToggle(false);
 
-    return (
-        <CustomGrid
-            container
-            alignItems="center"
-            justifyContent="flex-end"
-            wrap="nowrap"
-            className={styles.container}
-            gap={1}
-        >
-            <ActionButton
-                className={clsx(styles.button, {[styles.revoke]: !templateData?.draft, [styles.publish]: templateData?.draft})}
-                onAction={handleRevokeRoomStatus}
-                variant="decline"
-                label={(
-                    <CustomTypography variant="body2">
-                        <Translation
-                            nameSpace="rooms"
-                            translation={!templateData?.draft ? "buttons.revoke" : "buttons.publish"}
-                        />
-                    </CustomTypography>
-                )}
-            />
-            <CustomTooltip
-                title={
-                    <Translation
-                        nameSpace="rooms"
-                        translation="tooltips.deleteRoom"
-                    />
-                }
-                placement="bottom"
-            >
-                <ActionButton
-                    className={styles.deleteButton}
-                    onAction={handleDeleteRoom}
-                    variant="decline"
-                    Icon={
-                        <TrashIcon
-                            width="18px"
-                            height="18px"
-                        />
-                    }
-                />
-            </CustomTooltip>
-        </CustomGrid>
-    )
+	const templateData = useStoreMap({
+		store: $commonTemplates,
+		keys: [actionId],
+		fn: (state, [templateId]) =>
+			state?.state?.list?.find(template => template.id === templateId) ||
+            null,
+	});
+
+	const handleOpenSettingsRoom = useCallback((event) => {
+		event?.stopPropagation();
+		onShowMenu();
+	}, []);
+
+	const handleRoomAction = useCallback(
+		event => {
+			event?.stopPropagation();
+			setActiveTemplateIdEvent(actionId);
+
+			if (templateData?.draft) {
+				openAdminDialogEvent(AdminDialogsEnum.publishRoomDialog);
+			} else {
+				openAdminDialogEvent(AdminDialogsEnum.revokeRoomDialog);
+			}
+		},
+		[templateData?.draft],
+	);
+
+	const handleDeleteRoom = useCallback((event) => {
+		event?.stopPropagation();
+		openAdminDialogEvent(AdminDialogsEnum.confirmDeleteRoomDialog);
+		setActiveTemplateIdEvent(templateData?.id);
+		onHideMenu();
+	}, [templateData?.id]);
+
+	const handleEditRoom = useCallback((event) => {
+		event?.stopPropagation();
+		Router.push(`/rooms/edit/${templateData?.id}`);
+		onHideMenu();
+	}, [templateData?.id]);
+
+	const handleHideMenu = useCallback((event) => {
+		event?.stopPropagation();
+		onHideMenu();
+	}, []);
+
+	const menuItemsData = useMemo(() => {
+		return [
+			{
+				id: 0,
+				onClick: handleEditRoom,
+				Component: (
+					<CustomTypography>
+						<Translation
+							nameSpace="common"
+							translation="buttons.edit"
+						/>
+					</CustomTypography>
+				),
+			},
+			{
+				id: 1,
+				onClick: handleDeleteRoom,
+				Component: (
+					<CustomTypography>
+						<Translation
+							nameSpace="common"
+							translation="buttons.delete"
+						/>
+					</CustomTypography>
+				),
+			},
+		]
+	}, []);
+
+	return (
+		<CustomGrid
+			container
+			alignItems="center"
+			justifyContent="flex-end"
+			wrap="nowrap"
+			className={styles.container}
+			gap={1}
+		>
+			<ActionButton
+				className={clsx(styles.button, {
+					[styles.revoke]: !templateData?.draft,
+					[styles.publish]: templateData?.draft,
+				})}
+				onAction={handleRoomAction}
+				variant="decline"
+				label={
+					<CustomTypography variant="body2">
+						<Translation
+							nameSpace="rooms"
+							translation={
+								!templateData?.draft
+									? 'buttons.revoke'
+									: 'buttons.publish'
+							}
+						/>
+					</CustomTypography>
+				}
+			/>
+			<ActionButton
+				ref={actionButtonRef}
+				className={styles.deleteButton}
+				onAction={handleOpenSettingsRoom}
+				variant="decline"
+				Icon={<EllipsisIcon
+					width="18px"
+					height="18px"
+					  />}
+			/>
+			<CustomMenu
+				open={isMenuOpen}
+				menuItemsData={menuItemsData}
+				buttonRef={actionButtonRef}
+				onClose={handleHideMenu}
+			/>
+		</CustomGrid>
+	);
 });
+
+RoomTableItemActions.displayName = 'RoomTableItemActions';
+
+export { RoomTableItemActions };

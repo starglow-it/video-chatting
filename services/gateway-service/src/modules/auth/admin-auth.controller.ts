@@ -110,7 +110,7 @@ export class AdminAuthController {
 
       return {
         success: true,
-        result: user
+        result: user,
       };
     } catch (err) {
       this.logger.error(

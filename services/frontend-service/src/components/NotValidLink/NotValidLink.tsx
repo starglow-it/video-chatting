@@ -10,7 +10,7 @@ import styles from './NotValidLink.module.scss';
 
 const Component = () => (
     <CustomGrid container direction="column" justifyContent="center" alignItems="center">
-        <CustomImage src="/images/clock.png" width="52px" height="52px" />
+        <CustomImage src="/images/clock.webp" width="52px" height="52px" />
         <CustomTypography
             className={styles.title}
             variant="h2bold"

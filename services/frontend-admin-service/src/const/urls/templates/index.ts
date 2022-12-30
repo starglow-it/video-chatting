@@ -1,13 +1,10 @@
 import {
-	HttpMethods, ICommonTemplate, QueryParams 
+	DeleteCommonTemplateSoundPayload,
+	HttpMethods, ICommonTemplate, QueryParams
 } from 'shared-types';
-import {
-	templatesScope 
-} from 'shared-const';
+import { templatesScope } from 'shared-const';
 import frontendConfig from '../../config';
-import {
-	serverUrl 
-} from '../common';
+import { serverUrl } from '../common';
 
 export const templatesUrl = `${serverUrl}/${templatesScope}`;
 
@@ -58,9 +55,28 @@ export const deleteCommonTemplateUrl = ({
 
 export const deleteCommonTemplateSoundUrl = ({
 	templateId,
+ 	updateKey,
+}: DeleteCommonTemplateSoundPayload) => ({
+	url: `${templatesUrl}/${templateId}/sound?updateKey=${updateKey}`,
+	method: HttpMethods.Delete,
+});
+
+export const uploadCommonTemplateSoundUrl = ({
+	templateId,
+ 	updateKey,
 }: {
     templateId: ICommonTemplate['id'];
 }) => ({
-	url: `${templatesUrl}/${templateId}/sound`,
-	method: HttpMethods.Delete,
+	url: `${templatesUrl}/${templateId}/sound?updateKey=${updateKey}`,
+	method: HttpMethods.Post,
+});
+
+export const uploadCommonTemplateBackgroundUrl = ({
+	templateId,
+ 	updateKey,
+}: {
+    templateId: ICommonTemplate['id'];
+}) => ({
+	url: `${templatesUrl}/${templateId}/background?updateKey=${updateKey}`,
+	method: HttpMethods.Post,
 });

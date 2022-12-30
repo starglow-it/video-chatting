@@ -89,7 +89,6 @@ const Component = () => {
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
     const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
-
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
 
@@ -281,7 +280,7 @@ const Component = () => {
                     <CustomGrid container alignItems="center" justifyContent="center">
                         <CustomBox className={styles.image}>
                             <CustomImage
-                                src="/images/ok-hand.png"
+                                src="/images/ok-hand.webp"
                                 width="40px"
                                 height="40px"
                                 alt="ok-hand"
@@ -346,7 +345,7 @@ const Component = () => {
                 <CustomGrid container alignItems="center" justifyContent="center">
                     <CustomBox className={styles.image}>
                         <CustomImage
-                            src="/images/blush-face.png"
+                            src="/images/blush-face.webp"
                             width="40px"
                             height="40px"
                             alt="blush-face"

@@ -1,7 +1,7 @@
 import { ICommonTemplate, IUserTemplate } from './templates';
 import { ICommonUser, ICommonUserStatistic } from './users';
 import { EntityList } from '../common';
-import {IBusinessCategory} from "./common";
+import { IBusinessCategory } from './common';
 
 export type StatisticBase<Type> = {
   totalNumber: number;

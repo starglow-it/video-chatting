@@ -1,4 +1,4 @@
-import axios, { Method, CancelToken } from "axios";
+import axios, { Method, CancelToken } from 'axios';
 
 interface IArgs {
     method: Method;

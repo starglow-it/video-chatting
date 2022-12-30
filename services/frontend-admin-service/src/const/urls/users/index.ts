@@ -5,9 +5,7 @@ import {
 	HttpMethods, QueryParams 
 } from 'shared-types';
 
-import {
-	serverUrl 
-} from '../common';
+import { serverUrl } from '../common';
 
 import frontendConfig from '../../config';
 
@@ -18,9 +16,7 @@ import {
 } from '../../../store/types';
 
 export const usersListUrl = ({
-	skip = 0, 
-	limit = 0, 
-	search 
+	skip = 0, limit = 0, search 
 }: QueryParams) => ({
 	url: `${serverUrl}/${usersScope}?skip=${skip}&limit=${limit}&search=${search}`,
 	method: HttpMethods.Get,
@@ -51,8 +47,15 @@ export const userProfileTemplateUrl = ({
 	method: HttpMethods.Get,
 });
 
-export const searchUsersUrl = (data: QueryParams = { skip: 0, limit: 0 }) => {
-	const urlHref = new URL(`${frontendConfig.frontendUrl}${serverUrl}/${usersScope}/search`);
+export const searchUsersUrl = (
+	data: QueryParams = {
+		skip: 0,
+		limit: 0,
+	},
+) => {
+	const urlHref = new URL(
+		`${frontendConfig.frontendUrl}${serverUrl}/${usersScope}/search`,
+	);
 
 	Object.entries(data).forEach(entry => {
 		urlHref.searchParams.append(entry[0], entry[1]);
@@ -61,7 +64,7 @@ export const searchUsersUrl = (data: QueryParams = { skip: 0, limit: 0 }) => {
 	return {
 		url: urlHref.href,
 		method: HttpMethods.Get,
-	}
+	};
 };
 
 export const blockUserUrl = ({

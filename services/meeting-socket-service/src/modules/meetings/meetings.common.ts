@@ -63,7 +63,13 @@ export class MeetingsCommonService {
     });
   }
 
-  async handleClearMeetingData({ templateId, userId, instanceId, meetingId, session }) {
+  async handleClearMeetingData({
+    templateId,
+    userId,
+    instanceId,
+    meetingId,
+    session,
+  }) {
     await this.usersService.deleteMany({ meeting: meetingId }, session);
 
     await this.meetingsService.deleteById({ meetingId }, session);
@@ -78,7 +84,7 @@ export class MeetingsCommonService {
     await this.coreService.updateUserTemplate({
       templateId,
       userId,
-      data: { meetingInstance: null }
+      data: { meetingInstance: null },
     });
   }
 }

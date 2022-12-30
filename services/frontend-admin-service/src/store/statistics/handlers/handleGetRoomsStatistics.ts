@@ -1,15 +1,9 @@
-import {
-	ErrorState 
-} from 'shared-types';
-import {
-	sendRequest 
-} from '../../../helpers/http/sendRequest';
+import { ErrorState } from 'shared-types';
+import { sendRequest } from '../../../helpers/http/sendRequest';
 import {
 	RoomsStatisticsState, RoomsStatisticsResponse 
 } from '../../types';
-import {
-	roomsStatisticsUrl 
-} from '../../../const/urls/statistics';
+import { roomsStatisticsUrl } from '../../../const/urls/statistics';
 
 export const handleGetRoomsStatistics =
     async (): Promise<RoomsStatisticsState> => {

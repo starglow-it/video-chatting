@@ -1,29 +1,20 @@
-import React, {
-	memo 
-} from 'react';
-import {
-	Trans 
-} from 'react-i18next';
+import { memo } from 'react';
 
-import {
-	useLocalization 
-} from '@hooks/useTranslation';
+import { useLocalization } from '@hooks/useTranslation';
 
-import {
-	TranslationProps 
-} from './types';
+import { TranslationProps } from './types';
 
 const Component = ({
 	nameSpace,
 	translation: ts,
 	options = {
-},
+	},
 }: TranslationProps) => {
 	const {
 		translation 
 	} = useLocalization(nameSpace);
 
-	return <Trans>{translation(ts, options)}</Trans>;
+	return translation(ts, options);
 };
 
 export const Translation = memo(Component);

@@ -1,32 +1,18 @@
-import React, {
+import {
 	memo, useCallback 
 } from 'react';
-import {
-	useStoreMap 
-} from 'effector-react';
+import { useStoreMap } from 'effector-react';
 import clsx from 'clsx';
 
 // shared
-import {
-	LockIcon 
-} from 'shared-frontend/icons/OtherIcons/LockIcon';
-import {
-	TrashIcon 
-} from 'shared-frontend/icons/OtherIcons/TrashIcon';
-import {
-	CustomTooltip 
-} from 'shared-frontend/library/custom/CustomTooltip';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	ActionButton 
-} from 'shared-frontend/library/common/ActionButton';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
+import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 // stores
 import {
@@ -40,9 +26,7 @@ import {
 import styles from './UserTableActions.module.scss';
 
 // types
-import {
-	AdminDialogsEnum 
-} from '../../../store/types';
+import { AdminDialogsEnum } from '../../../store/types';
 
 const Component = ({
 	actionId 

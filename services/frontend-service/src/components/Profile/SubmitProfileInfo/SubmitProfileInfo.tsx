@@ -128,7 +128,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
             <CustomGrid container alignItems="center" wrap="nowrap">
                 <CustomBox className={styles.image}>
                     <CustomImage
-                        src="/images/edit-hand.png"
+                        src="/images/edit-hand.webp"
                         width="24px"
                         height="24px"
                         alt="edit-hand"

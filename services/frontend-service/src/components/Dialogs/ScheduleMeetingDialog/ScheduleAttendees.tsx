@@ -19,14 +19,14 @@ import {
 	CustomGrid 
 } from 'shared-frontend/library/custom/CustomGrid';
 import {
-	CustomInput 
-} from '@library/custom/CustomInput/CustomInput';
-import {
 	CustomScroll 
 } from '@library/custom/CustomScroll/CustomScroll';
 import {
 	CustomTypography 
 } from '@library/custom/CustomTypography/CustomTypography';
+
+// components
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // icons
 import {
@@ -45,6 +45,9 @@ import {
 import {
 	CustomImage 
 } from 'shared-frontend/library/custom/CustomImage';
+import {
+	CustomInput
+} from 'shared-frontend/library/custom/CustomInput';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
@@ -138,25 +141,31 @@ const Component = ({
 			className={className}
 			gap={1}
 		>
-			<CustomInput
-				nameSpace="forms"
-				translation="addUserEmail"
-				{...register('currentUserEmail')}
-				error={errors?.currentUserEmail?.[0].message}
-				onKeyPress={handleEnterPress}
-				InputProps={{
-					endAdornment: (
-						<InputAdornment position="end">
-							<PlusAddIcon
-								width="24px"
-								height="24px"
-								className={styles.addIcon}
-								onClick={handleAddUserEmail}
-							/>
-						</InputAdornment>
-					),
-				}}
-			/>
+			<CustomGrid container direction="column">
+				<CustomInput
+					nameSpace="forms"
+					translation="addUserEmail"
+					{...register('currentUserEmail')}
+					error={errors?.currentUserEmail?.[0].message}
+					onKeyPress={handleEnterPress}
+					InputProps={{
+						endAdornment: (
+							<InputAdornment position="end">
+								<PlusAddIcon
+									width="24px"
+									height="24px"
+									className={styles.addIcon}
+									onClick={handleAddUserEmail}
+								/>
+							</InputAdornment>
+						),
+					}}
+				/>
+				<ErrorMessage
+					error={errors?.currentUserEmail?.[0].message}
+					className={styles.error}
+				/>
+			</CustomGrid>
 			<CustomGrid
 				container
 				flex="1 1 auto"
@@ -180,7 +189,7 @@ const Component = ({
 				) : (
 					<>
 						<CustomImage
-							src="/images/sad-face.png"
+							src="/images/sad-face.webp"
 							width="40px"
 							height="40px"
 						/>

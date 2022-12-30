@@ -38,6 +38,15 @@ export type CreateStripeTemplateProductPayload = {
   description: string;
 };
 
+export type UpdateStripeTemplateProductPayload = {
+  productId: string;
+  data: {
+    name: string;
+    priceInCents: number;
+    description: string;
+  }
+};
+
 export type DeleteTemplateStripeProductPayload = {
   productId: string;
 };

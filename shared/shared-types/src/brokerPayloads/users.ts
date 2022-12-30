@@ -31,7 +31,7 @@ export type SearchUsersPayload = {
 };
 
 export type UpdateCountryStatisticsPayload = {
-  key: ICommonUser["country"];
+  key: ICommonUser['country'];
   value: number;
 };
 

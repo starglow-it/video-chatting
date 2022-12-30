@@ -109,7 +109,7 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
     return (
         <CustomGrid container direction="column" alignItems="center">
             <CustomGrid container alignItems="center" gap={1} justifyContent="center">
-                <CustomImage src="/images/lock.png" width="28px" height="28px" />
+                <CustomImage src="/images/lock.webp" width="28px" height="28px" />
                 <CustomTypography
                     variant="h2bold"
                     nameSpace="common"

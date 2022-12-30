@@ -1,9 +1,5 @@
-import {
-	useCallback 
-} from 'react';
-import {
-	useTranslation as useT 
-} from '../../i18n';
+import { useCallback } from 'react';
+import { useTranslation as useT } from '../../i18n';
 
 type ReturnT = {
     translation: (ts: string, options?: Record<string, unknown>) => string;

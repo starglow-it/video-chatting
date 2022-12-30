@@ -1,57 +1,25 @@
-import React, {
-	forwardRef, memo, useCallback, useEffect 
+import {
+	memo, useCallback, useEffect 
 } from 'react';
-import {
-	useStore 
-} from 'effector-react';
+import { useStore } from 'effector-react';
 
-import {
-	ProfileAvatar 
-} from 'shared-frontend/library/common/ProfileAvatar';
-import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomDivider 
-} from 'shared-frontend/library/custom/CustomDivider';
-import {
-	CustomButton 
-} from 'shared-frontend/library/custom/CustomButton';
+import { ProfileAvatar } from 'shared-frontend/library/common/ProfileAvatar';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
-import {
-	ArrowLeftIcon 
-} from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
-import {
-	LockIcon 
-} from 'shared-frontend/icons/OtherIcons/LockIcon';
-import {
-	PersonIcon 
-} from 'shared-frontend/icons/OtherIcons/PersonIcon';
-import {
-	StarIcon 
-} from 'shared-frontend/icons/OtherIcons/StarIcon';
-import {
-	TrashIcon 
-} from 'shared-frontend/icons/OtherIcons/TrashIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import { StarIcon } from 'shared-frontend/icons/OtherIcons/StarIcon';
+import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
 
-import {
-	Translation 
-} from '@components/Translation/Translation';
-import {
-	UserProfileStatistic 
-} from '@components/Users/UserProfileStatistic/UserProfileStatistic';
-import {
-	ProfileTemplateItem 
-} from '@components/ProfileTemplateItem/ProfileTemplateItem';
+import { Translation } from '@components/Translation/Translation';
+import { UserProfileStatistic } from '@components/Users/UserProfileStatistic/UserProfileStatistic';
+import { ProfileTemplateItem } from '@components/ProfileTemplateItem/ProfileTemplateItem';
 
 import {
 	$userProfileIdStore,
@@ -66,12 +34,9 @@ import {
 } from '../../../store';
 
 import styles from './UserProfile.module.scss';
-import {
-	AdminDialogsEnum 
-} from '../../../store/types';
+import { AdminDialogsEnum } from '../../../store/types';
 
-const Component = ({
-}, ref) => {
+const UserProfile = memo(() => {
 	const {
 		state: activeUserId 
 	} = useStore($userProfileIdStore);
@@ -111,10 +76,7 @@ const Component = ({
 	}, []);
 
 	return (
-		<CustomPaper
-			ref={ref}
-			className={styles.wrapper}
-		>
+		<CustomPaper className={styles.wrapper}>
 			<CustomGrid
 				container
 				justifyContent="center"
@@ -343,6 +305,8 @@ const Component = ({
 			</CustomGrid>
 		</CustomPaper>
 	);
-};
+});
 
-export const UserProfile = memo(forwardRef(Component));
+UserProfile.displayName = 'UserProfile';
+
+export { UserProfile };

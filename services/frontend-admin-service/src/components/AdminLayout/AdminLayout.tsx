@@ -1,45 +1,27 @@
-import React, {
+import {
 	memo, PropsWithChildren 
 } from 'react';
-import {
-	useStore 
-} from 'effector-react';
-import {
-	useRouter 
-} from 'next/router';
+import { useStore } from 'effector-react';
+import { useRouter } from 'next/router';
 
 // hooks
-import {
-	useBrowserDetect 
-} from 'shared-frontend/hooks/useBrowserDetect';
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 // shared
-import {
-	CustomBox 
-} from 'shared-frontend/library/custom/CustomBox';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // components
-import {
-	AdminNavigation 
-} from '@components/AdminNavigation/AdminNavigation';
+import { AdminNavigation } from '@components/AdminNavigation/AdminNavigation';
 
 // types
-import {
-	AdminLayoutProps 
-} from './AdminLayout.types';
+import { AdminLayoutProps } from './AdminLayout.types';
 
 // styles
 import styles from './AdminLayout.module.scss';
 
-import {
-	$authStore 
-} from '../../store';
+import { $authStore } from '../../store';
 
 const Component = ({
 	children 
@@ -53,7 +35,7 @@ const Component = ({
 		isMobile 
 	} = useBrowserDetect();
 
-	const isNeedToRenderNavigation = !router.pathname.includes('rooms/create');
+	const isNeedToRenderNavigation = !['rooms/create/', '/rooms/edit'].some(path => router.pathname.includes(path));
 
 	return (
 		<CustomBox className={styles.main}>

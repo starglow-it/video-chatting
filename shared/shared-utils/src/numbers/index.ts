@@ -1,1 +1,1 @@
-export * from './roundNumberToPrecision'
+export * from './roundNumberToPrecision';

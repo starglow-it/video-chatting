@@ -1,17 +1,8 @@
-import type {
-	NextPage 
-} from 'next';
-import React from 'react';
-import {
-	withStart 
-} from 'effector-next';
-import {
-	RoomsContainer 
-} from '@containers/RoomsContainer/RoomsContainer';
+import type { NextPage } from 'next';
+import { withStart } from 'effector-next';
+import { RoomsContainer } from '@containers/RoomsContainer/RoomsContainer';
 
-import {
-	pageLoaded 
-} from '../../src/store';
+import { pageLoaded } from '../../src/store';
 
 const enhance = withStart(pageLoaded);
 

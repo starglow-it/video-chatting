@@ -28,7 +28,13 @@ const WelcomePageContainer = memo(() => {
 
     useEffect(() => {
         (async () => {
-            await getTemplatesFx({ limit: 6, skip: 0, type: 'free' });
+            await getTemplatesFx({
+                limit: 6,
+                skip: 0,
+                type: 'free',
+                draft: false,
+                isPublic: true
+            });
         })();
     }, []);
 
@@ -60,7 +66,7 @@ const WelcomePageContainer = memo(() => {
                 >
                     <CustomBox className={styles.image}>
                         <CustomImage
-                            src="/images/winking-face.png"
+                            src="/images/winking-face.webp"
                             width="40px"
                             height="40px"
                             alt="winking-face"

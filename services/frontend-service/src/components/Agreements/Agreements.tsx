@@ -129,7 +129,7 @@ const Component = () => {
 				gap={1.5}
 			>
 				<CustomImage
-					src="/images/agreements.png"
+					src="/images/agreements.webp"
 					width="40px"
 					height="40px"
 				/>

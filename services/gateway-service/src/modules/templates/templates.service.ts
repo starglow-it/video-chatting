@@ -9,7 +9,8 @@ import {
   GetCommonTemplatesPayload,
   DeleteCommonTemplatePayload,
   EditTemplatePayload,
-  CreateTemplatePayload, GetCommonTemplateByIdPayload,
+  CreateTemplatePayload,
+  GetCommonTemplateByIdPayload,
 } from 'shared-types';
 
 @Injectable()

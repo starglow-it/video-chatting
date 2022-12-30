@@ -5,12 +5,8 @@ import {
 import {
 	GetUserProfileParams, UserProfileState 
 } from '../../types';
-import {
-	sendRequest 
-} from '../../../helpers/http/sendRequest';
-import {
-	userProfileUrl 
-} from '../../../const/urls/users';
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { userProfileUrl } from '../../../const/urls/users';
 
 export const handleGetUserProfile = async (
 	payload: GetUserProfileParams,

@@ -121,19 +121,38 @@ export class CommonTemplatesService {
     data: UpdateQuery<CommonTemplateDocument>;
     session?: ITransactionSession;
   }) {
-    const counter = await this.countersService.updateOne({
-      query: {
-        key: Counters.Templates,
-      },
+    const isTemplatesCounterExists = await this.countersService.exists({
+      key: Counters.Templates,
+    });
+
+    if (isTemplatesCounterExists) {
+      const counter = await this.countersService.updateOne({
+        query: {
+          key: Counters.Templates,
+        },
+        data: {
+          $inc: { value: 1 },
+        },
+        session,
+      });
+
+      return this.commonTemplate.create({
+        ...DEFAULT_TEMPLATE_DATA,
+        templateId: counter.value,
+        ...data,
+      });
+    }
+
+    const newCounter = await this.countersService.create({
       data: {
-        $inc: { value: 1 },
+        key: Counters.Templates,
+        value: 1,
       },
-      session,
     });
 
     return this.commonTemplate.create({
       ...DEFAULT_TEMPLATE_DATA,
-      templateId: counter.value,
+      templateId: newCounter.value,
       ...data,
     });
   }

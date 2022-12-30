@@ -26,8 +26,8 @@ import {
 import { ConfigClientService } from '../../services/config/config.service';
 import { CoreService } from '../../services/core/core.service';
 import { TemplatesService } from '../templates/templates.service';
-import {StatisticsService} from "./statistics.service";
-import {UserIdParam} from "../../dtos/params/user-id.param";
+import { StatisticsService } from './statistics.service';
+import { UserIdParam } from '../../dtos/params/user-id.param';
 
 @Controller('statistics')
 export class StatisticsController {
@@ -56,7 +56,8 @@ export class StatisticsController {
         role: UserRoles.User,
       });
 
-      const countryStatistics = await this.statisticsService.getCountryStatistics();
+      const countryStatistics =
+        await this.statisticsService.getCountryStatistics();
 
       return {
         result: {
@@ -147,7 +148,7 @@ export class StatisticsController {
   async getRoomsStatistics(): Promise<ResponseSumType<RoomsStatistics>> {
     try {
       const commonTemplates = await this.templatesService.getCommonTemplates({
-        query: { draft: false, isDeleted: false },
+        query: { isDeleted: false },
         options: {
           skip: 0,
           limit: 0,
@@ -204,10 +205,11 @@ export class StatisticsController {
     @Query('roomType') roomType: string,
   ): Promise<ResponseSumType<RoomRatingStatistics>> {
     try {
-      const roomsStatistics = await this.statisticsService.getRoomRatingStatistic({
-        ratingKey: basedOn,
-        roomKey: roomType,
-      });
+      const roomsStatistics =
+        await this.statisticsService.getRoomRatingStatistic({
+          ratingKey: basedOn,
+          roomKey: roomType,
+        });
 
       return {
         result: {

@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 
 // custom
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -14,17 +14,6 @@ import { Socials } from '@components/Socials/Socials';
 import styles from './EditSocialInfo.module.scss';
 
 const EditSocialInfo = memo(() => {
-    const renderSocialTitle = useMemo(
-        () => (
-            <CustomTypography
-                variant="body1"
-                nameSpace="profile"
-                translation="editProfile.social.title"
-            />
-        ),
-        [],
-    );
-
     return (
         <CustomPaper className={styles.paperWrapper}>
             <CustomBox
@@ -49,7 +38,16 @@ const EditSocialInfo = memo(() => {
                     wrap="nowrap"
                     className={styles.contentWrapper}
                 >
-                    <Socials title={renderSocialTitle} buttonClassName={styles.socialBtn} />
+                    <Socials
+                        title={(
+                            <CustomTypography
+                                variant="body1"
+                                nameSpace="profile"
+                                translation="editProfile.social.title"
+                            />
+                        )}
+                        buttonClassName={styles.socialBtn}
+                    />
                 </CustomGrid>
             </CustomBox>
         </CustomPaper>

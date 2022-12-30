@@ -135,7 +135,7 @@ const Component = () => {
                         <CustomImage
                             width="28"
                             height="28"
-                            src="/images/winking-face.png"
+                            src="/images/winking-face.webp"
                             alt="winking-face"
                         />
                     </CustomBox>

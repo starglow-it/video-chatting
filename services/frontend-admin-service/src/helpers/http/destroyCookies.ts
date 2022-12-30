@@ -1,9 +1,5 @@
-import {
-	NextPageContext 
-} from 'next';
-import {
-	destroyCookie 
-} from 'nookies';
+import { NextPageContext } from 'next';
+import { destroyCookie } from 'nookies';
 
 export function deleteAuthCookies(ctx: NextPageContext | undefined) {
 	destroyCookie(ctx, 'accessToken', {

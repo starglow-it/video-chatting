@@ -6,23 +6,13 @@ import {
 } from 'effector-react';
 
 // shared
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomButton 
-} from 'shared-frontend/library/custom/CustomButton';
-import {
-	CustomDialog 
-} from 'shared-frontend/library/custom/CustomDialog';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 import {
 	$deleteUserDialogStore,

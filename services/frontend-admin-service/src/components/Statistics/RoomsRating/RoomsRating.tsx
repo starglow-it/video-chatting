@@ -1,34 +1,18 @@
-import React, {
+import {
 	memo, useCallback, useEffect, useMemo, useState 
 } from 'react';
-import {
-	MenuItem 
-} from '@mui/material';
-import {
-	useStore 
-} from 'effector-react';
+import { MenuItem } from '@mui/material';
+import { useStore } from 'effector-react';
 
 // shared
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomTable 
-} from 'shared-frontend/library/custom/CustomTable';
-import {
-	CustomDropdown 
-} from 'shared-frontend/library/custom/CustomDropdown';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTable } from 'shared-frontend/library/custom/CustomTable';
+import { CustomDropdown } from 'shared-frontend/library/custom/CustomDropdown';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 // stores
 import {
@@ -195,28 +179,38 @@ const Component = () => {
 
 	const tableData = useMemo(
 		() =>
-			roomsRating.data.map((roomRating, index) => ({
-				id: {
-					label: roomRating.id,
-				},
-				position: {
-					label: index + 1,
-				},
-				roomName: {
-					label: roomRating?.template?.[0]?.name || '-',
-				},
-				creator: {
-					label:
-                        roomTypeKey === 'custom'
-                        	? roomRating?.author?.[0]
-								? (roomRating?.author?.[0]?.fullName || "-" )
-								: 'Deleted user'
-                        	: 'The LiveOffice Admin',
-				},
-				[basedOnKey]: {
-					label: formatTableValue(basedOnKey, roomRating[basedOnKey]),
-				},
-			})),
+			roomsRating.data.map((roomRating, index) => {
+				const author = roomRating?.author?.[0];
+				const template = roomRating?.template?.[0];
+
+				const authorName = author
+					? author?.fullName || '-'
+					: 'Deleted user';
+
+				return {
+					id: {
+						label: roomRating.id,
+					},
+					position: {
+						label: index + 1,
+					},
+					roomName: {
+						label: template?.name || '-',
+					},
+					creator: {
+						label:
+                            roomTypeKey === 'custom'
+                            	? authorName
+                            	: 'The LiveOffice Admin',
+					},
+					[basedOnKey]: {
+						label: formatTableValue(
+							basedOnKey,
+							roomRating[basedOnKey],
+						),
+					},
+				};
+			}),
 		[roomsRating, roomTypeKey],
 	);
 

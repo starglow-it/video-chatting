@@ -1,6 +1,4 @@
-import {
-	sample 
-} from 'effector';
+import { sample } from 'effector';
 
 import {
 	$blockUserIdStore,
@@ -21,37 +19,19 @@ import {
 	setDeleteUserId,
 	setUserProfileIdEvent,
 } from './model';
-import {
-	addNotificationEvent 
-} from '../notifications/model';
+import { addNotificationEvent } from '../notifications/model';
 
 // handlers
-import {
-	handleGetUsersList 
-} from './handlers/handleGetUsersList';
-import {
-	handleGetUserProfile 
-} from './handlers/handleGetUserProfile';
-import {
-	handleGetUserProfileStatistic 
-} from './handlers/handleGetUserProfileStatistic';
-import {
-	handleGetUserProfileTemplate 
-} from './handlers/handleGetUserProfileTemplate';
-import {
-	handleSearchUsersList 
-} from './handlers/handleSearchUsersList';
-import {
-	handleBlockUser 
-} from './handlers/handleBlockUser';
-import {
-	handleDeleteUser 
-} from './handlers/handleDeleteUser';
+import { handleGetUsersList } from './handlers/handleGetUsersList';
+import { handleGetUserProfile } from './handlers/handleGetUserProfile';
+import { handleGetUserProfileStatistic } from './handlers/handleGetUserProfileStatistic';
+import { handleGetUserProfileTemplate } from './handlers/handleGetUserProfileTemplate';
+import { handleSearchUsersList } from './handlers/handleSearchUsersList';
+import { handleBlockUser } from './handlers/handleBlockUser';
+import { handleDeleteUser } from './handlers/handleDeleteUser';
 
 // types
-import {
-	NotificationType 
-} from '../types';
+import { NotificationType } from '../types';
 
 getUsersListFx.use(handleGetUsersList);
 getUserProfileFx.use(handleGetUserProfile);

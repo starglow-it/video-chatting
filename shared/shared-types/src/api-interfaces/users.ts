@@ -2,7 +2,8 @@ import {
   IBusinessCategory,
   ILanguage,
   ISocialLink,
-  IProfileAvatar, PlanKeys,
+  IProfileAvatar,
+  PlanKeys,
 } from './common';
 
 export enum UserRoles {

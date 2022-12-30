@@ -1,27 +1,33 @@
-import {
-	split 
-} from 'effector';
+import { split } from 'effector';
 import {
 	$blockUserDialogStore,
 	$cancelCreateRoomDialogStore,
-	$confirmCreateAndPublishRoomDialogStore,
-	$deleteUserDialogStore, $roomPreviewDialogStore,
+	$cancelEditRoomDialogStore,
+	$confirmCreateAndPublishRoomDialogStore, $confirmDeleteRoomDialogStore,
+	$deleteUserDialogStore,
+	$publishRoomDialogStore,
+	$revokeRoomDialogStore,
+	$roomPreviewDialogStore, $saveRoomChangesDialogStore,
 	closeAdminDialogEvent,
 	closeBlockUserDialogEvent,
 	closeCancelCreateRoomDialogEvent,
-	closeConfirmCreateAndPublishRoomDialog,
+	closeCancelEditRoomDialogEvent,
+	closeConfirmCreateAndPublishRoomDialog, closeConfirmDeleteRoomDialogEvent,
 	closeDeleteUserDialogEvent,
-	closeRoomPreviewDialog,
+	closePublishRoomDialogEvent,
+	closeRevokeRoomDialogEvent,
+	closeRoomPreviewDialogEvent, closeSaveRoomChangesDialogEvent,
 	openAdminDialogEvent,
 	openBlockUserDialogEvent,
 	openCancelCreateRoomDialogEvent,
-	openConfirmCreateAndPublishRoomDialog,
+	openCancelEditRoomDialogEvent,
+	openConfirmCreateAndPublishRoomDialogEvent, openConfirmDeleteRoomDialogEvent,
 	openDeleteUserDialogEvent,
-	openRoomPreviewDialog,
+	openPublishRoomDialogEvent,
+	openRevokeRoomDialogEvent,
+	openRoomPreviewDialogEvent, openSaveRoomChangesDialogEvent,
 } from './model';
-import {
-	AdminDialogsEnum 
-} from '../types';
+import { AdminDialogsEnum } from '../types';
 
 $blockUserDialogStore
 	.on(openBlockUserDialogEvent, () => true)
@@ -36,51 +42,88 @@ $cancelCreateRoomDialogStore
 	.on(closeCancelCreateRoomDialogEvent, () => false);
 
 $confirmCreateAndPublishRoomDialogStore
-	.on(openConfirmCreateAndPublishRoomDialog, () => true)
+	.on(openConfirmCreateAndPublishRoomDialogEvent, () => true)
 	.on(closeConfirmCreateAndPublishRoomDialog, () => false);
 
 $roomPreviewDialogStore
-	.on(openRoomPreviewDialog, () => true)
-	.on(closeRoomPreviewDialog, () => false);
+	.on(openRoomPreviewDialogEvent, () => true)
+	.on(closeRoomPreviewDialogEvent, () => false);
+
+$publishRoomDialogStore
+	.on(openPublishRoomDialogEvent, () => true)
+	.on(closePublishRoomDialogEvent, () => false);
+
+$revokeRoomDialogStore
+	.on(openRevokeRoomDialogEvent, () => true)
+	.on(closeRevokeRoomDialogEvent, () => false);
+
+$cancelEditRoomDialogStore
+	.on(openCancelEditRoomDialogEvent, () => true)
+	.on(closeCancelEditRoomDialogEvent, () => false);
+
+$saveRoomChangesDialogStore
+	.on(openSaveRoomChangesDialogEvent, () => true)
+	.on(closeSaveRoomChangesDialogEvent, () => false);
+
+$confirmDeleteRoomDialogStore
+	.on(openConfirmDeleteRoomDialogEvent, () => true)
+	.on(closeConfirmDeleteRoomDialogEvent, () => false);
+
+const adminDialogCases = {
+	blockUserDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.blockUserDialog,
+	deleteUserDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.deleteUserDialog,
+	cancelCreateRoomDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.cancelCreateRoomDialog,
+	confirmCreateAndPublishRoomDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.confirmCreateAndPublishRoomDialog,
+	roomPreviewDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.roomPreviewDialog,
+	publishRoomDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.publishRoomDialog,
+	revokeRoomDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.revokeRoomDialog,
+	cancelEditRoomDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.cancelEditRoomDialog,
+	saveRoomChangesDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.saveRoomChangesDialog,
+	confirmDeleteRoomDialog: (type: AdminDialogsEnum) =>
+		type === AdminDialogsEnum.confirmDeleteRoomDialog,
+};
 
 split({
 	source: openAdminDialogEvent,
-	match: {
-		blockUserDialog: type => type === AdminDialogsEnum.blockUserDialog,
-		deleteUserDialog: type => type === AdminDialogsEnum.deleteUserDialog,
-		cancelCreateRoomDialog: type =>
-			type === AdminDialogsEnum.cancelCreateRoomDialog,
-		confirmCreateAndPublishRoomDialog: type =>
-			type === AdminDialogsEnum.confirmCreateAndPublishRoomDialog,
-		roomPreviewDialog: type =>
-			type === AdminDialogsEnum.roomPreviewDialog,
-	},
+	match: adminDialogCases,
 	cases: {
 		deleteUserDialog: openDeleteUserDialogEvent,
 		blockUserDialog: openBlockUserDialogEvent,
 		cancelCreateRoomDialog: openCancelCreateRoomDialogEvent,
-		confirmCreateAndPublishRoomDialog: openConfirmCreateAndPublishRoomDialog,
-		roomPreviewDialog: openRoomPreviewDialog,
+		confirmCreateAndPublishRoomDialog:
+            openConfirmCreateAndPublishRoomDialogEvent,
+		roomPreviewDialog: openRoomPreviewDialogEvent,
+		publishRoomDialog: openPublishRoomDialogEvent,
+		revokeRoomDialog: openRevokeRoomDialogEvent,
+		cancelEditRoomDialog: openCancelEditRoomDialogEvent,
+		saveRoomChangesDialog: openSaveRoomChangesDialogEvent,
+		confirmDeleteRoomDialog: openConfirmDeleteRoomDialogEvent,
 	},
 });
 
 split({
 	source: closeAdminDialogEvent,
-	match: {
-		blockUserDialog: type => type === AdminDialogsEnum.blockUserDialog,
-		deleteUserDialog: type => type === AdminDialogsEnum.deleteUserDialog,
-		cancelCreateRoomDialog: type =>
-			type === AdminDialogsEnum.cancelCreateRoomDialog,
-		confirmCreateAndPublishRoomDialog: type =>
-			type === AdminDialogsEnum.confirmCreateAndPublishRoomDialog,
-		roomPreviewDialog: type =>
-			type === AdminDialogsEnum.roomPreviewDialog,
-	},
+	match: adminDialogCases,
 	cases: {
 		deleteUserDialog: closeDeleteUserDialogEvent,
 		blockUserDialog: closeBlockUserDialogEvent,
 		cancelCreateRoomDialog: closeCancelCreateRoomDialogEvent,
-		confirmCreateAndPublishRoomDialog: closeConfirmCreateAndPublishRoomDialog,
-		roomPreviewDialog: closeRoomPreviewDialog,
+		confirmCreateAndPublishRoomDialog:
+            closeConfirmCreateAndPublishRoomDialog,
+		roomPreviewDialog: closeRoomPreviewDialogEvent,
+		publishRoomDialog: closePublishRoomDialogEvent,
+		revokeRoomDialog: closeRevokeRoomDialogEvent,
+		cancelEditRoomDialog: closeCancelEditRoomDialogEvent,
+		saveRoomChangesDialog: closeSaveRoomChangesDialogEvent,
+		confirmDeleteRoomDialog: closeConfirmDeleteRoomDialogEvent,
 	},
 });

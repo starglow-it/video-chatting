@@ -1,6 +1,4 @@
-import {
-	createDomain 
-} from 'effector-next';
+import { createDomain } from 'effector-next';
 
 export const rootDomain = createDomain('rootDomain');
 export const authDomain = rootDomain.createDomain('authDomain');

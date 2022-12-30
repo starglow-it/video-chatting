@@ -1,6 +1,4 @@
-import {
-	ParticipantPosition 
-} from '@containers/CreateRoomContainer/types';
+import { ParticipantPosition } from 'shared-frontend/types';
 
 export type UserVideoStubProps = {
     stubId: string;

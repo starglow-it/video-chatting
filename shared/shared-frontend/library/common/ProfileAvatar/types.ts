@@ -4,7 +4,7 @@ export type ProfileAvatarProps = {
     src?: string | undefined;
     width: string;
     height: string;
-    userName: string;
+    userName?: string;
     className?: string;
     onClick?: MouseEventHandler<HTMLDivElement>;
     withoutShadow?: boolean;

@@ -1,6 +1,6 @@
 export type CustomAudioProps = {
     src?: string;
-    isMuted?: boolean
+    isMuted?: boolean;
     onEnded?: () => void;
-    onStarted?: (data: { duration: number}) => void;
-}
+    onStarted?: (data: { duration: number }) => void;
+};

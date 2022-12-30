@@ -157,7 +157,7 @@ const Component = (
                                 Icon={
                                     <CustomBox className={styles.icon}>
                                         <CustomImage
-                                            src="/images/ok-hand.png"
+                                            src="/images/ok-hand.webp"
                                             width="20px"
                                             height="20px"
                                             alt="ok-hand"

@@ -172,6 +172,7 @@ const Component = () => {
                     <CustomInput
                         nameSpace="forms"
                         translation="yourName"
+                        autoComplete="given-name"
                         value={fullNameRegister.value}
                         onChange={fullNameRegister.onChange}
                         onBlur={fullNameRegister.onBlur}

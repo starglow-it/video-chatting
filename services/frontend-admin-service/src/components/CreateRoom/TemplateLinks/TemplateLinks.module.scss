@@ -1,17 +1,26 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
+@import "../../../styles/mixins";
 
 .wrapper {
   position: relative;
   width: 100%;
 }
 
-.paper {
+.addLinkButton {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
-  padding: rem(9px 16px);
+  width: 106px;
+  padding: 0;
+  align-self: flex-end;
+  height: rem(46px);
+
+  &.disabled {
+    background: rgba($primary-orange, 0.6);
+    color: rgba($primary-white, 0.6);
+  }
 }
 
 .buttonsGroup {
@@ -78,4 +87,8 @@
 
 .draggable {
   pointer-events: all;
+}
+
+.staticLink {
+  @extend %text-ellips;
 }

@@ -1,4 +1,4 @@
-import React, {
+import {
 	memo, useCallback, useMemo 
 } from 'react';
 import {
@@ -6,47 +6,27 @@ import {
 } from 'react-hook-form';
 
 // shared
-import {
-	ArrowRightIcon 
-} from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
-import {
-	ArrowLeftIcon 
-} from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
-import {
-	ActionButton 
-} from 'shared-frontend/library/common/ActionButton';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
+import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
-import {
-	UserVideoStub 
-} from '@components/CreateRoom/UserVideoStub/UserVideoStub';
+import { Translation } from '@components/Translation/Translation';
+import { UserVideoStub } from '@components/CreateRoom/UserVideoStub/UserVideoStub';
 
-import {
-	AttendeesPositionsProps,
-} from './AttendeesPositions.types';
+import { ParticipantPosition } from 'shared-frontend/types';
+import { AttendeesPositionsProps } from './AttendeesPositions.types';
 
 import styles from './AttendeesPositions.module.scss';
-import { ParticipantPosition } from 'shared-frontend/types';
 
 const Component = ({
-	onPreviousStep, 
-	onNextStep 
+	onPreviousStep, onNextStep 
 }: AttendeesPositionsProps) => {
 	const {
-		control,
-		setValue
+		control, setValue 
 	} = useFormContext();
 
 	const participantsPositions = useWatch({
@@ -60,9 +40,7 @@ const Component = ({
 
 	const handleChangePosition = useCallback(
 		({
-			id, 
-			top, 
-			left 
+			id, top, left 
 		}: ParticipantPosition) => {
 			const positionIndex = participantsPositions.findIndex(
 				({
@@ -88,17 +66,15 @@ const Component = ({
 		() =>
 			participantsPositions.map(
 				({
-					id, 
-					top, 
-					left 
+					id, top, left 
 				}: ParticipantPosition, index: number) => (
 					<UserVideoStub
 						key={id}
 						stubId={id}
 						index={index}
 						position={{
-							top: top,
-							left: left,
+							top,
+							left,
 						}}
 						onPositionChange={handleChangePosition}
 					/>

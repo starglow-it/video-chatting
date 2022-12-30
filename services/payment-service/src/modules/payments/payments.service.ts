@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectStripe } from 'nestjs-stripe';
 import { Stripe } from 'stripe';
 import { ConfigClientService } from '../../services/config/config.service';
-import {CreatePaymentIntentPayload, DeleteTemplateStripeProductPayload} from 'shared-types';
+import {
+  CreatePaymentIntentPayload,
+  DeleteTemplateStripeProductPayload,
+} from 'shared-types';
 import { parseBoolean } from 'shared-utils';
 
 @Injectable()
@@ -404,7 +407,9 @@ export class PaymentsService {
     );
   }
 
-  async deleteStripeProduct({ productId }: DeleteTemplateStripeProductPayload): Promise<void> {
+  async deleteStripeProduct({
+    productId,
+  }: DeleteTemplateStripeProductPayload): Promise<void> {
     try {
       await this.stripeClient.products.del(productId);
 

@@ -1,63 +1,38 @@
-import React, {
-	memo,
-	useCallback,
-	useLayoutEffect,
-	useRef,
-	useState,
+import {
+	memo, useCallback, useLayoutEffect, useRef, useState 
 } from 'react';
 import Draggable, {
 	ControlPosition,
 	DraggableData,
 	DraggableEvent,
 } from 'react-draggable';
-import {
-	useStore 
-} from 'effector-react';
+import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
-// custom
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomTooltip 
-} from 'shared-frontend/library/custom/CustomTooltip';
+import { roundNumberToPrecision } from 'shared-utils';
 
-import {
-	useToggle 
-} from 'shared-frontend/hooks/useToggle';
+// custom
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 
 // icons
-import {
-	MicIcon 
-} from 'shared-frontend/icons/OtherIcons/MicIcon';
-import {
-	PersonIcon 
-} from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 // types
-import {
-	UserVideoStubProps 
-} from './types';
+import { UserVideoStubProps } from './types';
 
 // store
-import {
-	$windowSizeStore 
-} from '../../../store';
+import { $windowSizeStore } from '../../../store';
 
 // styles
 import styles from './UserVideoStub.module.scss';
-import {roundNumberToPrecision} from "shared-utils";
 
 const Component = ({
 	stubId,
@@ -79,8 +54,7 @@ const Component = ({
 	} = useToggle(false);
 
 	const {
-		width, 
-		height 
+		width, height 
 	} = useStore($windowSizeStore);
 
 	const [draggablePosition, setDraggablePosition] = useState<ControlPosition>(
@@ -108,12 +82,12 @@ const Component = ({
 
 			const leftPercentage = roundNumberToPrecision(
 				(data.x + (contentRef.current?.clientWidth ?? 0) / 2) / width,
-				2
+				2,
 			);
 
 			const topPercentage = roundNumberToPrecision(
 				(data.y + (contentRef.current?.clientHeight ?? 0) / 2) / height,
-				2
+				2,
 			);
 
 			onPositionChange?.({

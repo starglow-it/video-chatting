@@ -15,24 +15,12 @@ import {
 	resetPlatformMonetization,
 } from './model';
 
-import {
-	handleGetUsersStatistics 
-} from './handlers/handleGetUsersStatistics';
-import {
-	handleGetSubscriptionsStatistics 
-} from './handlers/handleGetSubscriptionsStatistics';
-import {
-	handleGetRoomsStatistics 
-} from './handlers/handleGetRoomsStatistics';
-import {
-	handleGetRoomsRatingStatistic 
-} from './handlers/handleGetRoomsRatingStatistic';
-import {
-	handleGetUsersMonetizationStatistic 
-} from './handlers/handleGetUsersMonetizationStatistic';
-import {
-	handleGetPlatformMonetizationStatistic 
-} from './handlers/handleGetPlatformMonetizationStatistic';
+import { handleGetUsersStatistics } from './handlers/handleGetUsersStatistics';
+import { handleGetSubscriptionsStatistics } from './handlers/handleGetSubscriptionsStatistics';
+import { handleGetRoomsStatistics } from './handlers/handleGetRoomsStatistics';
+import { handleGetRoomsRatingStatistic } from './handlers/handleGetRoomsRatingStatistic';
+import { handleGetUsersMonetizationStatistic } from './handlers/handleGetUsersMonetizationStatistic';
+import { handleGetPlatformMonetizationStatistic } from './handlers/handleGetPlatformMonetizationStatistic';
 
 getUsersStatisticsFx.use(handleGetUsersStatistics);
 getSubscriptionsStatisticsFx.use(handleGetSubscriptionsStatistics);

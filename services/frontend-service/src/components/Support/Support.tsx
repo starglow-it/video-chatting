@@ -41,7 +41,7 @@ const Component = () => {
                     <ArrowLeftIcon width="32px" height="32px" />
                 </CustomGrid>
                 <CustomGrid container alignItems="center" justifyContent="center" gap={1.5}>
-                    <CustomImage src="/images/handshake.png" width="40px" height="40px" />
+                    <CustomImage src="/images/handshake.webp" width="40px" height="40px" />
                     <CustomTypography variant="h1" nameSpace="static" translation="support.title" />
                 </CustomGrid>
             </CustomGrid>

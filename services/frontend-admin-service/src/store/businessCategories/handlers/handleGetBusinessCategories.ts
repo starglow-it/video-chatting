@@ -2,12 +2,8 @@ import {
 	BusinessCategoryList, ErrorState, QueryParams 
 } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import {
-	BusinessCategoriesState 
-} from '../../types';
-import {
-	getBusinessCategoriesUrl 
-} from '../../../const/urls/businessCategories';
+import { BusinessCategoriesState } from '../../types';
+import { getBusinessCategoriesUrl } from '../../../const/urls/businessCategories';
 
 export const handleGetBusinessCategories = async ({
 	limit,
@@ -23,10 +19,20 @@ export const handleGetBusinessCategories = async ({
     	}),
     );
 
-	if (response.success) {
+	if (response.success && response.result) {
 		return {
-			state: response.result!,
+			state: response.result,
 			error: null,
+		};
+	}
+
+	if (!response.success) {
+		return {
+			state: {
+				list: [],
+				count: 0,
+			},
+			error: response.error,
 		};
 	}
 
@@ -35,6 +41,6 @@ export const handleGetBusinessCategories = async ({
 			list: [],
 			count: 0,
 		},
-		error: response.error,
+		error: null,
 	};
 };

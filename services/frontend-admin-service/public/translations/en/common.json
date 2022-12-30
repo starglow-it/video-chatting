@@ -26,7 +26,10 @@
     "homePage": "Homepage",
     "block": "Block",
     "unblock": "Unblock",
-    "change": "Change"
+    "change": "Change",
+    "publish": "Publish",
+    "revoke": "Revoke",
+    "edit": "Edit"
   },
   "tooltips": {
     "logout": "Log out",

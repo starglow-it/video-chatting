@@ -1,12 +1,8 @@
 import {
 	ErrorState, UserProfileStatistic 
 } from 'shared-types';
-import {
-	sendRequest 
-} from '../../../helpers/http/sendRequest';
-import {
-	userProfileStatisticUrl 
-} from '../../../const/urls/users';
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { userProfileStatisticUrl } from '../../../const/urls/users';
 import {
 	GetUserProfileStatisticsParams,
 	UserProfileStatisticState,

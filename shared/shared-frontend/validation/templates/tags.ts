@@ -1,4 +1,6 @@
 import * as yup from 'yup';
+import {baseUrlSchema} from "../users";
+import {object} from "yup";
 
 export const tagsSchema = () =>
     yup
@@ -7,8 +9,20 @@ export const tagsSchema = () =>
             yup.object({
                 id: yup.string().optional(),
                 key: yup.string().required(),
-                value: yup.string().unicodeLettersString('tags.unacceptableSymbols').required(),
+                value: yup.string().max(20, 'maxLength.base').unicodeLettersString('tags.unacceptableSymbols').required(),
                 color: yup.string().required(),
             }),
         )
         .max(6, 'tags.max');
+
+export const templatesLinksSchema = () =>
+    yup
+        .array()
+        .of(
+            yup.object().when({
+                is: () => true,
+                then: object({
+                    value: baseUrlSchema(),
+                }),
+            }),
+        )

@@ -1,6 +1,4 @@
-import {
-	TokenPair 
-} from 'shared-types';
+import { TokenPair } from 'shared-types';
 import {
 	AuthAdminState,
 	MonetizationStatisticState,

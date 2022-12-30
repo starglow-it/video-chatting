@@ -36,6 +36,8 @@ export interface IPreviewImage {
 export interface ITemplateSoundFile {
   id: string;
   url: string;
+
+  uploadKey: string;
   size: number;
   mimeType: string;
   fileName: string;
@@ -52,14 +54,14 @@ export type ITemplateLink = {
   value: string;
   top: number;
   left: number;
-}
+};
 
 export type TemplateLinkPosition = {
   id: string;
   linkIndex: number;
   top: number;
   left: number;
-}
+};
 
 export interface IDashboardNotificationUser {
   fullName: ICommonUser['fullName'];
@@ -124,3 +126,13 @@ export enum KickUserReasons {
 }
 
 export type PlanKeys = 'House' | 'Professional' | 'Business';
+
+export enum PriceValues {
+  Free = 'free',
+  Paid = 'paid',
+}
+
+export enum PriceLabels {
+  Free = 'Free',
+  Paid = 'Paid',
+}

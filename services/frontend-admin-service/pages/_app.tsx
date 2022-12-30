@@ -1,76 +1,49 @@
-import React from 'react';
 import App from 'next/app';
 import type {
 	AppContext, AppProps 
 } from 'next/app';
 import Head from 'next/head';
 import getConfig from 'next/config';
-import {
-	withHydrate 
-} from 'effector-next';
-import {
-	hydrate 
-} from 'effector';
-import {
-	Provider 
-} from 'effector-react/ssr';
+import { withHydrate } from 'effector-next';
+import { hydrate } from 'effector';
+import { Provider } from 'effector-react/ssr';
 import {
 	CacheProvider, EmotionCache 
 } from '@emotion/react';
-import ThemeProvider from '@mui/material/styles/ThemeProvider';
-import {
-	GlobalStyles 
-} from '@mui/styled-engine';
+import { ThemeProvider } from '@mui/material/styles';
+import { GlobalStyles } from '@mui/styled-engine';
 import CssBaseline from '@mui/material/CssBaseline';
 
 // components
-import {
-	AdminLayout 
-} from '@components/AdminLayout/AdminLayout';
-import {
-	ToastsNotifications 
-} from '@components/ToastsNotifications/ToastsNotifications';
+import { AdminLayout } from '@components/AdminLayout/AdminLayout';
+import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
 
 // hooks
-import {
-	useScope 
-} from '@hooks/useScope';
+import { useScope } from '@hooks/useScope';
 
 // stores
 import {
 	$authStore, checkAdminAuthFx 
 } from '../src/store';
-import {
-	rootDomain 
-} from '../src/store/domains';
+import { rootDomain } from '../src/store/domains';
 
 // helpers
-import {
-	redirectTo 
-} from '../src/helpers/http/redirectTo';
+import { redirectTo } from '../src/helpers/http/redirectTo';
 
 // styles
 import globalStyles from '../src/app.styles';
 
-import {
-	appWithTranslation 
-} from '../i18n';
+import { appWithTranslation } from '../i18n';
 
 // themes
-import {
-	baseTheme 
-} from '../src/themes/base';
-import {
-	typographyTheme 
-} from '../src/themes/typography';
-import {
-	componentsTheme 
-} from '../src/themes/components';
-import {
-	uiTheme 
-} from '../src/themes/ui';
+import { baseTheme } from '../src/themes/base';
+import { typographyTheme } from '../src/themes/typography';
+import { componentsTheme } from '../src/themes/components';
+import { uiTheme } from '../src/themes/ui';
 
 import createEmotionCache from '../src/createEmotionCache';
+
+import 'shared-frontend/validation';
 
 const {
 	publicRuntimeConfig 
@@ -83,7 +56,7 @@ const clientSideEmotionCache = createEmotionCache();
 const enhance = withHydrate();
 
 const REDIRECT_ROUTES: string[] = ['/'];
-const LOGIN_REDIRECT_ROUTES: string[] = ['/statistics'];
+const LOGIN_REDIRECT_ROUTES: string[] = ['/statistics', '/rooms'];
 
 const CustomApp = ({
 	Component,

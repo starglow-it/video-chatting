@@ -2,6 +2,7 @@
 
 .content {
   max-width: rem(472px);
+  height: rem(240px);
   padding: rem(28px 40px 40px 40px);
   display: flex;
   flex-direction: column;
@@ -11,4 +12,8 @@
 
 .buttons {
   margin: rem(28px 0 0 0);
+
+  .button {
+    height: rem(56px);
+  }
 }

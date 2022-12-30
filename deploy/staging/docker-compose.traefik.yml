@@ -11,12 +11,12 @@ services:
       - "io.portainer.accesscontrol.public"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/letsencrypt/archive/livekit.liveoffice.forasoft.com-0001:/etc/certs/
+      - /etc/letsencrypt/archive/liveoffice.forasoft.com:/etc/certs/
       - /data/traefik/config/certs-traefik.yaml:/etc/traefik/dynamic/certs-traefik.yaml
     ports:
       - "80:80"
       - "443:443"
-      - "127.0.0.1:9090:9090"
+      - "9090:9090"
     networks:
       - traefikpublic
 

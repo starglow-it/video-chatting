@@ -1,4 +1,4 @@
-export type PropsWithClassName<T> = T & { className?: string };
+export type PropsWithClassName<T = unknown> = T & { className?: string };
 
 type ValueType = string | number;
 

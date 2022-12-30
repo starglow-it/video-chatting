@@ -1,9 +1,8 @@
-import {
-	ValuesSwitcherItem 
-} from 'shared-frontend/types';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
 
 import {
-	MonetizationStatisticPeriods 
+	IMonetizationStatistic,
+	MonetizationStatisticPeriods,
 } from 'shared-types';
 
 export type MonetizationStatisticsProps = {
@@ -11,7 +10,7 @@ export type MonetizationStatisticsProps = {
     isDataLoading: boolean;
     statistic: {
         totalNumber: number;
-        data: Record<string, any>[];
+        data: IMonetizationStatistic[];
     };
     periods: ValuesSwitcherItem<MonetizationStatisticPeriods>[];
     currentPeriod: ValuesSwitcherItem<MonetizationStatisticPeriods>;

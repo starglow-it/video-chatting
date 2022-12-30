@@ -1,61 +1,32 @@
-import React, {
+import {
 	useEffect, memo, useMemo, useCallback, useState 
 } from 'react';
-import {
-	useStore 
-} from 'effector-react';
+import { useStore } from 'effector-react';
 import debounce from '@mui/utils/debounce';
 import Slide from '@mui/material/Slide';
 import clsx from 'clsx';
 
-import {
-	useLocalization 
-} from '@hooks/useTranslation';
+import { useLocalization } from '@hooks/useTranslation';
 
 // shared
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomTable 
-} from 'shared-frontend/library/custom/CustomTable';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomChip 
-} from 'shared-frontend/library/custom/CustomChip';
-import {
-	CustomSearch 
-} from 'shared-frontend/library/custom/CustomSearch';
-import {
-	CustomImage 
-} from 'shared-frontend/library/custom/CustomImage';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTable } from 'shared-frontend/library/custom/CustomTable';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
+import { CustomSearch } from 'shared-frontend/library/custom/CustomSearch';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
-import {
-	ICommonUser 
-} from 'shared-types';
+import { ICommonUser } from 'shared-types';
 
-import {
-	Translation 
-} from '@components/Translation/Translation';
-import {
-	UserProfile 
-} from '@components/Users/UserProfile/UserProfile';
-import {
-	UserTableActions 
-} from '@components/Users/UserTableActions/UserTableActions';
-import {
-	BlockUserDialog 
-} from '@components/Dialogs/BlockUserDialog/BlockUserDialog';
-import {
-	DeleteUserDialog 
-} from '@components/Dialogs/DeleteUserDialog/DeleteUserDialog';
+import { Translation } from '@components/Translation/Translation';
+import { UserProfile } from '@components/Users/UserProfile/UserProfile';
+import { UserTableActions } from '@components/Users/UserTableActions/UserTableActions';
+import { BlockUserDialog } from '@components/Dialogs/BlockUserDialog/BlockUserDialog';
+import { DeleteUserDialog } from '@components/Dialogs/DeleteUserDialog/DeleteUserDialog';
 
 // store
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import {
 	$userProfileIdStore,
 	$usersStore,
@@ -162,15 +133,16 @@ const Component = () => {
 
 	const handleSearchUsers = useCallback(
 		async ({
-			search,
-			page
+			search, page: newPage 
 		}: { search: string }) => {
 			searchUsersFx({
-				skip: (page - 1) * USERS_LIMIT,
+				skip: (newPage - 1) * USERS_LIMIT,
 				limit: USERS_LIMIT,
 				search,
 			});
-		},[]);
+		},
+		[],
+	);
 
 	const usersSearchRequest = useMemo(
 		() =>
@@ -289,7 +261,9 @@ const Component = () => {
 				in={Boolean(activeUserId)}
 				unmountOnExit
 			>
-				<UserProfile />
+				<CustomBox>
+					<UserProfile />
+				</CustomBox>
 			</Slide>
 			<BlockUserDialog />
 			<DeleteUserDialog />

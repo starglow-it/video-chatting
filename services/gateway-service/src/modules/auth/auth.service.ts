@@ -11,9 +11,11 @@ import {
   RegisterUserPayload,
   LoginUserByEmailPayload,
   RefreshTokenPayload,
-  IToken, ICommonUser, TokenPairWithUserType,
+  IToken,
+  ICommonUser,
+  TokenPairWithUserType,
 } from 'shared-types';
-import {firstValueFrom} from "rxjs";
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -35,13 +37,17 @@ export class AuthService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async loginUser(payload: LoginUserByEmailPayload): Promise<TokenPairWithUserType> {
+  async loginUser(
+    payload: LoginUserByEmailPayload,
+  ): Promise<TokenPairWithUserType> {
     const pattern = { cmd: AuthBrokerPatterns.LoginUser };
 
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async refreshToken(payload: RefreshTokenPayload): Promise<TokenPairWithUserType> {
+  async refreshToken(
+    payload: RefreshTokenPayload,
+  ): Promise<TokenPairWithUserType> {
     const pattern = { cmd: AuthBrokerPatterns.RefreshToken };
 
     return firstValueFrom(this.client.send(pattern, payload));
@@ -53,7 +59,9 @@ export class AuthService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async sendResetPassword(payload: SendResetPasswordLinkEmailPayload): Promise<void> {
+  async sendResetPassword(
+    payload: SendResetPasswordLinkEmailPayload,
+  ): Promise<void> {
     const pattern = { cmd: AuthBrokerPatterns.SendResetPasswordLink };
 
     return firstValueFrom(this.client.send(pattern, payload));

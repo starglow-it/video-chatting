@@ -26,9 +26,6 @@ import {
 } from '@library/custom/CustomScroll/CustomScroll';
 
 // components
-import {
-	LanguageTagItem 
-} from '@components/LanguageTagItem/LanguageTagItem';
 
 // const
 import {
@@ -42,6 +39,8 @@ import {
 
 // styles
 import styles from './LanguagesSelect.module.scss';
+import {CustomTypography} from "@library/custom/CustomTypography/CustomTypography";
+import {TagItem} from "shared-frontend/library/common/TagItem";
 
 const LanguagesSelect = memo(
 	({
@@ -94,9 +93,11 @@ const LanguagesSelect = memo(
 							);
 
 							return (
-								<LanguageTagItem
+								<TagItem
 									key={selectedKey}
-									language={selectedLanguage}
+									label={
+										<CustomTypography>{selectedLanguage?.value}</CustomTypography>
+									}
 								/>
 							);
 						})}

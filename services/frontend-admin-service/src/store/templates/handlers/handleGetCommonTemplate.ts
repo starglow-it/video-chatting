@@ -3,13 +3,9 @@ import {
 	GetCommonTemplateByIdPayload,
 	ICommonTemplate,
 } from 'shared-types';
-import {
-	CommonTemplateState 
-} from '../../types';
+import { CommonTemplateState } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import {
-	getCommonTemplateUrl 
-} from '../../../const/urls/templates';
+import { getCommonTemplateUrl } from '../../../const/urls/templates';
 
 export const handleGetCommonTemplate = async (
 	params: GetCommonTemplateByIdPayload,
@@ -21,7 +17,7 @@ export const handleGetCommonTemplate = async (
 
 	if (response.success) {
 		return {
-			state: response.result!,
+			state: response.result,
 			error: null,
 		};
 	}

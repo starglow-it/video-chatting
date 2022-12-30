@@ -10,17 +10,19 @@
 .paper {
   max-width: rem(532px);
   width: 100%;
-  height: fit-content;
+  height: rem(258px);
   padding: rem(32px);
 
   &.uploadedAudio {
     max-width: rem(331px);
+    height: min-content;
   }
 }
 
 .uploadButton {
   margin: rem(32px 0 0 0);
-  width: min-content;
+  width: rem(106px);
+  height: rem(54px);
 }
 
 .buttonsGroup {
@@ -59,4 +61,9 @@
       fill-opacity: 1;
     }
   }
+}
+
+.text {
+  word-break: break-word;
+  white-space: pre-wrap;
 }

@@ -1,23 +1,13 @@
-import {
-	parseCookies 
-} from 'nookies';
-import {
-	ErrorState 
-} from 'shared-types';
+import { parseCookies } from 'nookies';
+import { ErrorState } from 'shared-types';
 
 // helpers
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import {
-	deleteAuthCookies 
-} from '../../../helpers/http/destroyCookies';
+import { deleteAuthCookies } from '../../../helpers/http/destroyCookies';
 
 // const
-import {
-	logoutAdminUrl 
-} from '../../../const/urls/admin';
-import {
-	AuthAdminState 
-} from '../../types';
+import { logoutAdminUrl } from '../../../const/urls/admin';
+import { AuthAdminState } from '../../types';
 
 export const handleLogoutAdmin = async (): Promise<AuthAdminState> => {
 	const {

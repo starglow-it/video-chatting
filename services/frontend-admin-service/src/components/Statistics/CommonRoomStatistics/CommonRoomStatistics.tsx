@@ -1,28 +1,13 @@
-import React, {
-	memo 
-} from 'react';
+import { memo } from 'react';
 
-import {
-	RoomsStatistics 
-} from 'shared-types';
+import { RoomsStatistics } from 'shared-types';
+import { getRandomHexColor } from 'shared-utils';
 
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 
-import {
-	getRandomHexColor 
-} from 'shared-utils';
-
-import {
-	CustomDoughnutChart 
-} from '@components/CustomDoughnutChart/CustomDoughnutChart';
-import {
-	ChartLegend 
-} from '@components/ChartLegend/ChartLegend';
+import { CustomDoughnutChart } from '@components/CustomDoughnutChart/CustomDoughnutChart';
+import { ChartLegend } from '@components/ChartLegend/ChartLegend';
 
 import styles from './CommonRoomStatistics.module.scss';
 
@@ -32,11 +17,13 @@ const Component = ({
 	const data = {
 		totalNumber: statistic.totalNumber ?? 0,
 		dataSets:
-            statistic?.data?.map(data => ({
-            	label: data.label,
-            	parts: Array.isArray(data.value) ? data.value : [data.value],
-            	color: data.color ?? getRandomHexColor(100, 255),
-            	labels: [data.label],
+            statistic?.data?.map(statisticData => ({
+            	label: statisticData.label,
+            	parts: Array.isArray(statisticData.value)
+            		? statisticData.value
+            		: [statisticData.value],
+            	color: statisticData.color ?? getRandomHexColor(100, 255),
+            	labels: [statisticData.label],
             })) ?? [],
 	};
 

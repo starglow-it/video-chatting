@@ -1,20 +1,13 @@
 import React, {
 	memo, useCallback, useEffect, useMemo, useState 
 } from 'react';
-import SnackbarContent from '@mui/material/SnackbarContent/SnackbarContent';
-import Snackbar from '@mui/material/Snackbar/Snackbar';
+import {Snackbar, SnackbarContent} from "@mui/material";
 
-import {
-	useStore 
-} from 'effector-react';
+import { useStore } from 'effector-react';
 
 // hooks
-import {
-	useLocalization 
-} from '@hooks/useTranslation';
-import {
-	useBrowserDetect 
-} from 'shared-frontend/hooks/useBrowserDetect';
+import { useLocalization } from '@hooks/useTranslation';
+import { useBrowserDetect } from 'shared-frontend/hooks/useBrowserDetect';
 
 // custom
 import CustomGrid from 'shared-frontend/library/custom/CustomGrid/CustomGrid';
@@ -22,23 +15,13 @@ import CustomTypography from 'shared-frontend/library/custom/CustomTypography/Cu
 import ConditionalRender from 'shared-frontend/library/common/ConditionalRender/ConditionalRender';
 
 // icons
-import {
-	LockIcon 
-} from 'shared-frontend/icons/OtherIcons/LockIcon';
-import {
-	TrashIcon 
-} from 'shared-frontend/icons/OtherIcons/TrashIcon';
-import {
-	RoundErrorIcon 
-} from 'shared-frontend/icons/RoundIcons/RoundErrorIcon';
-import {
-	RoundSuccessIcon 
-} from 'shared-frontend/icons/RoundIcons/RoundSuccessIcon';
+import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
+import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
+import { RoundErrorIcon } from 'shared-frontend/icons/RoundIcons/RoundErrorIcon';
+import { RoundSuccessIcon } from 'shared-frontend/icons/RoundIcons/RoundSuccessIcon';
 
 // const
-import {
-	ONE_SECOND 
-} from 'shared-const';
+import { ONE_SECOND } from 'shared-const';
 
 // store
 import {
@@ -46,9 +29,7 @@ import {
 } from '../../store';
 
 // types
-import {
-	Notification 
-} from '../../store/types';
+import { Notification } from '../../store/types';
 
 // styles
 import styles from './ToastsNotifications.module.scss';

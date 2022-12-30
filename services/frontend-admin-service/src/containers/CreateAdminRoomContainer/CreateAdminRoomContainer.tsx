@@ -1,20 +1,12 @@
-import React, {
-	memo, useCallback, useEffect, useRef
+import {
+	memo, useCallback, useEffect 
 } from 'react';
 import {
-	FormProvider,
-	useFieldArray,
-	useForm,
-	useWatch,
+	FormProvider, useForm, useWatch 
 } from 'react-hook-form';
 import * as yup from 'yup';
-import {
-	useStore 
-} from 'effector-react';
-import Router, {
-	useRouter 
-} from 'next/router';
-import clsx from "clsx";
+import { useStore } from 'effector-react';
+import Router, { useRouter } from 'next/router';
 
 // shared
 import {
@@ -22,92 +14,62 @@ import {
 	participantsPositionsSchema,
 	simpleStringSchema,
 	simpleStringSchemaWithLength,
-	tagsSchema, templatePriceSchema,
-	validateSocialLink,
+	tagsSchema,
+	templatePriceSchema,
+	templatesLinksSchema,
 } from 'shared-frontend/validation';
-import { adjustUserPositions, getRandomNumber} from "shared-utils";
 import {
-	MAX_DESCRIPTION_LENGTH 
+	adjustUserPositions, getRandomNumber 
+} from 'shared-utils';
+import {
+	MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH 
 } from 'shared-const';
 
-import {
-	CustomButton 
-} from 'shared-frontend/library/custom/CustomButton';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomTooltip
-} from "shared-frontend/library/custom/CustomTooltip";
-import {
-	ActionButton
-} from "shared-frontend/library/common/ActionButton";
-import {
-	ValuesSwitcher
-} from "shared-frontend/library/common/ValuesSwitcher";
-import {
-	CustomFade
-} from "shared-frontend/library/custom/CustomFade";
-import {
-	CustomTypography
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomLinkIcon 
-} from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
-import {
-	CloseIcon 
-} from 'shared-frontend/icons/OtherIcons/CloseIcon';
-import {ImagePlaceholderIcon} from "shared-frontend/icons/OtherIcons/ImagePlaceholderIcon";
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
+import { CustomFade } from 'shared-frontend/library/custom/CustomFade';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import { ImagePlaceholderIcon } from 'shared-frontend/icons/OtherIcons/ImagePlaceholderIcon';
 
-import {
-	useYupValidationResolver
-} from "shared-frontend/hooks/useYupValidationResolver";
-import {
-	useValueSwitcher
-} from "shared-frontend/hooks/useValuesSwitcher";
+import { useYupValidationResolver } from 'shared-frontend/hooks/useYupValidationResolver';
+import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
 import { usePrevious } from 'shared-frontend/hooks/usePrevious';
 
 // components
-import {
-	TemplateBackground 
-} from '@components/CreateRoom/TemplateBackground/TemplateBackground';
-import {
-	Translation 
-} from '@components/Translation/Translation';
-import {
-	UploadBackground 
-} from '@components/CreateRoom/UploadBackground/UploadBackground';
-import {
-	CommonTemplateSettings 
-} from '@components/CreateRoom/CommonTemplateSettings/CommonTemplateSettings';
-import {
-	AttendeesPositions 
-} from '@components/CreateRoom/AttendeesPositions/AttendeesPositions';
-import {
-	TemplateLinks 
-} from '@components/CreateRoom/TemplateLinks/TemplateLinks';
+import { TemplateBackground } from '@components/CreateRoom/TemplateBackground/TemplateBackground';
+import { Translation } from '@components/Translation/Translation';
+import { UploadBackground } from '@components/CreateRoom/UploadBackground/UploadBackground';
+import { CommonTemplateSettings } from '@components/CreateRoom/CommonTemplateSettings/CommonTemplateSettings';
+import { AttendeesPositions } from '@components/CreateRoom/AttendeesPositions/AttendeesPositions';
+import { TemplateLinks } from '@components/CreateRoom/TemplateLinks/TemplateLinks';
 import { TemplateSound } from '@components/CreateRoom/TemplateSound/TemplateSound';
-import {TemplatePrice} from "@components/CreateRoom/TemplatePrice/TemplatePrice";
-import {CancelCreateRoomDialog} from "@components/Dialogs/CancelCreateRoomDialog/CancelCreateRoomDialog";
-import {ConfirmCreateRoomDialog} from "@components/Dialogs/ConfirmCreateRoomDialog/ConfirmCreateRoomDialog";
-import {TemplatePreview} from "@components/CreateRoom/TemplatePreview/TemplatePreview";
+import { TemplatePrice } from '@components/CreateRoom/TemplatePrice/TemplatePrice';
+import { CancelCreateRoomDialog } from '@components/Dialogs/CancelCreateRoomDialog/CancelCreateRoomDialog';
+import { ConfirmCreateRoomDialog } from '@components/Dialogs/ConfirmCreateRoomDialog/ConfirmCreateRoomDialog';
+import { TemplatePreview } from '@components/CreateRoom/TemplatePreview/TemplatePreview';
 import { CustomAudio } from '@components/CreateRoom/CustomAudio/CustomAudio';
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
 
 // stores
+import { ValuesSwitcherItem } from 'shared-frontend/types';
 import {
 	$businessCategoriesStore,
 	$commonTemplateStore,
 	addNotificationEvent,
-	getBusinessCategoriesFx,
-	getCommonTemplateFx,
 	initWindowListeners,
 	removeWindowListeners,
 	openAdminDialogEvent,
-	uploadTemplateFileFx,
-	updateCommonTemplateDataEvent, updateCommonTemplateFx, deleteCommonTemplateSoundFx,
+	updateCommonTemplateDataEvent,
+	updateCommonTemplateFx,
+	deleteCommonTemplateSoundFx,
+	uploadTemplateSoundFx,
+	getCommonTemplateEvent,
+	getBusinessCategoriesEvent,
+	resetCommonTemplateStore, uploadTemplateBackgroundFx,
 } from '../../store';
 
 // styles
@@ -117,7 +79,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 import {
 	AdminDialogsEnum, NotificationType 
 } from '../../store/types';
-import { ValuesSwitcherItem } from "shared-frontend/types";
+import {PriceValues} from "shared-types";
 
 // utils
 enum TabsValues {
@@ -186,8 +148,13 @@ const defaultValues = {
 	name: '',
 	description: '',
 	tags: [],
-	participantsNumber: 1,
+	participantsNumber: 2,
 	participantsPositions: [
+		{
+			left: 0.5,
+			top: 0.5,
+			id: getRandomNumber(10000),
+		},
 		{
 			left: 0.5,
 			top: 0.5,
@@ -203,14 +170,14 @@ const defaultValues = {
 const validationSchema = yup.object({
 	background: simpleStringSchema(),
 	backgroundSound: simpleStringSchema(),
-	name: simpleStringSchema(),
+	name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
 	description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH).required(
 		'required',
 	),
 	tags: tagsSchema(),
 	participantsNumber: participantsNumberSchema().required('required'),
 	participantsPositions: participantsPositionsSchema(),
-	templateLinks: yup.array().of(validateSocialLink()),
+	templateLinks: templatesLinksSchema(),
 	type: simpleStringSchema(),
 	templatePrice: templatePriceSchema(0.99, 999999),
 	draft: yup.bool(),
@@ -224,49 +191,31 @@ const Component = () => {
 	} = useStore($commonTemplateStore);
 
 	const {
-		state: categories
+		state: categories 
 	} = useStore($businessCategoriesStore);
 
-	const prevFieldsCount = useRef(0);
-
-	const isFileUploading = useStore(uploadTemplateFileFx.pending);
+	const isFileUploading = useStore(uploadTemplateBackgroundFx.pending);
+	const isSoundUploading = useStore(uploadTemplateSoundFx.pending);
 
 	const {
-		activeItem,
-		onValueChange,
-		onNextValue,
-		onPreviousValue,
-	} = useValueSwitcher<TabsValues, TabsLabels>({
-		values: tabs,
-		initialValue: tabs[0].value,
-	});
+		activeItem, onValueChange, onNextValue, onPreviousValue 
+	} =
+        useValueSwitcher<TabsValues, TabsLabels>({
+        	values: tabs,
+        	initialValue: tabs[0].value,
+        });
 
-	const resolver = useYupValidationResolver(validationSchema, {
-		reduceArrayErrors: true,
-	});
+	const resolver = useYupValidationResolver(validationSchema, { reduceArrayErrors: true });
 
 	const methods = useForm({
+		criteriaMode: 'all',
 		defaultValues,
 		resolver,
-		mode: 'onBlur',
 	});
 
 	const {
-		control, 
-		handleSubmit, 
-		setValue, 
-		trigger,
-		setFocus,
+		control, handleSubmit, setValue, trigger
 	} = methods;
-
-	const {
-		fields,
-		append,
-		remove
-	} = useFieldArray({
-		control,
-		name: 'templateLinks',
-	});
 
 	const background = useWatch({
 		control,
@@ -313,53 +262,56 @@ const Component = () => {
 		name: 'description',
 	});
 
+	const templatePrice = useWatch({
+		control,
+		name: 'templatePrice',
+	});
+
 	const previousParticipantsNumber = usePrevious(participantsNumber);
 
 	useEffect(() => {
-		getCommonTemplateFx({
+		getCommonTemplateEvent({
 			templateId: router.query.roomId as string,
 		});
-		getBusinessCategoriesFx({
-		});
+		getBusinessCategoriesEvent({});
 
 		initWindowListeners();
 
 		return () => {
 			removeWindowListeners();
+			resetCommonTemplateStore();
 		};
 	}, [router.isReady]);
 
 	useEffect(() => {
-		setValue('backgroundSound', commonTemplate?.sound?.url);
-	}, [commonTemplate]);
-
-	useEffect(() => {
-		if (!previousParticipantsNumber || participantsNumber === previousParticipantsNumber) return;
+		if (
+			!previousParticipantsNumber ||
+            participantsNumber === previousParticipantsNumber
+		)
+			return;
 
 		if (previousParticipantsNumber > participantsNumber) {
-			setValue('participantsPositions', participantsPositions.slice(0, participantsNumber));
+			setValue(
+				'participantsPositions',
+				participantsPositions.slice(0, participantsNumber),
+			);
 			return;
 		}
 
-		const createdPositions = new Array(participantsNumber - participantsPositions.length )
+		const createdPositions = new Array(
+			participantsNumber - participantsPositions.length,
+		)
 			.fill(null)
 			.map(() => ({
 				id: getRandomNumber(10000),
 				left: 0.5,
 				top: 0.5,
-			}))
+			}));
 
-		const newPositions = [
-			...participantsPositions,
-			...createdPositions
-		];
+		const newPositions = [...participantsPositions, ...createdPositions];
 
 		setValue('participantsPositions', newPositions);
-	}, [
-		participantsNumber,
-		previousParticipantsNumber,
-		participantsPositions,
-	]);
+	}, [participantsNumber, previousParticipantsNumber, participantsPositions]);
 
 	const handleValueChange = useCallback(
 		async (item: ValuesSwitcherAlias) => {
@@ -376,7 +328,7 @@ const Component = () => {
 			}
 
 			if (item.value > TabsValues.Settings) {
-				const response = await trigger(['description', 'name']);
+				const response = await trigger(['description', 'name', 'tags']);
 				onValueChange(response ? item : tabs[1]);
 				return;
 			}
@@ -397,47 +349,76 @@ const Component = () => {
 						description: data.description,
 						maxParticipants: data.participantsNumber,
 						businessCategories: data.tags,
-						usersPosition: adjustUserPositions(data.participantsPositions),
+						usersPosition: adjustUserPositions(
+							data.participantsPositions,
+						),
 						links: data.templateLinks.map(link => ({
 							item: link.value,
 							position: {
 								top: link.top,
-								left: link.left
-							}
+								left: link.left,
+							},
 						})),
 						type: data.type,
-						priceInCents: data.type === 'paid' ? data.templatePrice * 100 : 0,
-						isPublic: true,
+						priceInCents:
+                            data.type === 'paid'
+								? data.templatePrice * 100
+								: 0,
+						isPublic: !data.draft,
 						draft: data.draft,
-						previewUrls: data?.draftPreviewUrls?.map(({ id }) => id),
+						sound: commonTemplate.draftSound?.id,
+						previewUrls: commonTemplate?.draftPreviewUrls?.map(
+							({
+								id 
+							}) => id,
+						),
 						draftPreviewUrls: [],
 						draftUrl: '',
-						isAudioAvailable: !!commonTemplate?.sound?.id
-					}
+						draftSound: null,
+						isAudioAvailable: !!commonTemplate?.sound?.id,
+					},
 				});
 
 				Router.push('/rooms');
+
+				addNotificationEvent({
+					type: NotificationType.roomPublished,
+					message: data.draft
+						? 'templates.created'
+						: 'templates.createdAndPublished',
+					messageOptions: {
+						templateName: data.name,
+					},
+				});
 			}
 		}),
-		[commonTemplate?.id, commonTemplate?.draftUrl, commonTemplate?.draftPreviewUrls],
+		[
+			commonTemplate?.id,
+			commonTemplate?.draftUrl,
+			commonTemplate?.draftSound,
+			commonTemplate?.draftPreviewUrls,
+		],
 	);
 
 	const handleFileUploaded = useCallback(
 		async (file: File) => {
-			setValue('background', '');
+			setValue('background', URL.createObjectURL(file));
+
 			updateCommonTemplateDataEvent({
 				draftUrl: '',
 				draftPreviewUrls: [],
-				templateType: file.type.split('/')[0] === 'video' ? 'video' : 'image'
+				templateType:
+                    file.type.split('/')[0],
 			});
 
-			setValue('background', URL.createObjectURL(file));
-
 			if (commonTemplate?.id) {
-				await uploadTemplateFileFx({
+				const response = await uploadTemplateBackgroundFx({
 					file,
+					updateKey: 'draftUrl',
 					templateId: commonTemplate.id,
 				});
+
+				setValue('background', response.state?.draftUrl);
 			}
 		},
 		[commonTemplate?.id],
@@ -445,64 +426,55 @@ const Component = () => {
 
 	const handleSoundUploaded = useCallback(
 		async (file: File) => {
-			setValue('backgroundSound', '');
-
 			updateCommonTemplateDataEvent({
-				sound: null,
+				draftSound: null,
 			});
 
-			setValue('backgroundSound', URL.createObjectURL(file));
+			setValue('backgroundSound', URL.createObjectURL(file), { shouldDirty: true });
 
 			if (commonTemplate?.id) {
-				await uploadTemplateFileFx({
+				const response = await uploadTemplateSoundFx({
 					file,
+					updateKey: 'draftSound',
 					templateId: commonTemplate.id,
 				});
+
+				setValue('backgroundSound', response?.state?.draftSound?.url);
 			}
 		},
 		[commonTemplate?.id],
 	);
 
-	const handleOpenCancelConfirmationDialog = useCallback(() => {
-		openAdminDialogEvent(AdminDialogsEnum.cancelCreateRoomDialog);
-	}, []);
-
-	useEffect(() => {
-		if (fields.length) {
-			prevFieldsCount.current = fields.length;
-			setFocus(`templatesLinks[${fields.length - 1}].value`);
-		}
-	}, [fields]);
-
-	const handleAddLinkInput = useCallback(() => {
-		append({
-			value: '',
-			key: getRandomNumber(100),
-			top: 0.5,
-			left: 0.5,
-		});
-	}, [fields]);
-
-	const handleRemoveTemplateLink = useCallback((index: number) => {
-		remove(index);
-	}, []);
-
 	const handleRemoveSound = useCallback(() => {
+		setValue('backgroundSound', null, { shouldDirty: true });
 		updateCommonTemplateDataEvent({
-			sound: null,
+			draftSound: null,
 		});
-		setValue('backgroundSound', '');
 		deleteCommonTemplateSoundFx({
-			templateId: commonTemplate?.id
+			updateKey: 'draftSound',
+			templateId: commonTemplate?.id,
 		});
-	}, []);
+	}, [commonTemplate?.id]);
 
-	const handleCreateRoom = useCallback(({ isNeedToPublish }: { isNeedToPublish: boolean }) => {
-		setValue('draft', !isNeedToPublish);
+	const handleCreateRoom = useCallback(() => {
+		setValue('draft', true);
 		onSubmit();
 	}, [onSubmit]);
 
-	const isAddLinkDisabled = fields.length === 5;
+	const handleCreateAndPublishRoom = useCallback(() => {
+		setValue('draft', false);
+		onSubmit();
+	}, [onSubmit]);
+
+	const handleOpenConfirmDialog = useCallback(() => {
+		openAdminDialogEvent(
+			AdminDialogsEnum.confirmCreateAndPublishRoomDialog,
+		);
+	}, []);
+
+	const handleOpenCancelConfirmationDialog = useCallback(() => {
+		openAdminDialogEvent(AdminDialogsEnum.cancelCreateRoomDialog);
+	}, []);
 
 	return (
 		<CustomGrid
@@ -510,14 +482,20 @@ const Component = () => {
 			className={styles.wrapper}
 		>
 			<FormProvider {...methods}>
-				<form className={styles.form} onSubmit={onSubmit}>
+				<form
+					className={styles.form}
+					onSubmit={onSubmit}
+				>
 					<TemplateBackground
 						templateType={commonTemplate?.templateType ?? 'video'}
 						url={commonTemplate?.draftUrl || background}
 					/>
 					<CustomAudio
-						isMuted={isFileUploading || activeItem.label === TabsLabels.Sound}
-						src={commonTemplate?.sound?.url || backgroundSound}
+						isMuted={
+							isFileUploading ||
+                            activeItem.label === TabsLabels.Sound
+						}
+						src={commonTemplate?.draftSound?.url || backgroundSound}
 					/>
 
 					<CustomGrid
@@ -527,7 +505,11 @@ const Component = () => {
 						gap={1.5}
 						className={styles.navigationPaper}
 					>
-						<CustomGrid container gap={1.5} className={styles.infoWrapper}>
+						<CustomGrid
+							container
+							gap={1.5}
+							className={styles.infoWrapper}
+						>
 							<CustomGrid
 								item
 								container
@@ -536,11 +518,20 @@ const Component = () => {
 								justifyContent="center"
 								className={styles.imagePlaceholder}
 							>
-								<ImagePlaceholderIcon width="34px" height="34px" />
+								<ImagePlaceholderIcon
+									width="34px"
+									height="34px"
+								/>
 							</CustomGrid>
 
-							<CustomPaper variant="black-glass" className={styles.mainInfo}>
-								<CustomGrid container direction="column">
+							<CustomPaper
+								variant="black-glass"
+								className={styles.mainInfo}
+							>
+								<CustomGrid
+									container
+									direction="column"
+								>
 									{templateName ? (
 										<CustomTypography
 											color="colors.white.primary"
@@ -549,9 +540,7 @@ const Component = () => {
 											{templateName}
 										</CustomTypography>
 									) : (
-										<CustomTypography
-											color="colors.white.primary"
-										>
+										<CustomTypography color="colors.white.primary">
 											<Translation
 												nameSpace="rooms"
 												translation="preview.roomName"
@@ -562,10 +551,15 @@ const Component = () => {
 										? (
 											<CustomTypography
 												variant="body2"
-												color="colors.green.primary"
+												color={type === PriceValues.Paid
+													? "colors.blue.primary"
+													: "colors.green.primary"
+												}
 												className={styles.type}
 											>
-												{type}
+												{type === PriceValues.Paid
+													? `${templatePrice ?? 0}$`
+													: type}
 											</CustomTypography>
 										)
 										: null
@@ -588,40 +582,6 @@ const Component = () => {
 							/>
 						</CustomPaper>
 
-						<CustomFade
-							key={TabsLabels.Links}
-							open={activeItem.label === TabsLabels.Links}
-							unmountOnExit
-						>
-							<CustomTooltip
-								title={isAddLinkDisabled ?
-									<Translation
-										nameSpace="rooms"
-										translation="tooltips.addLinkDisabled"
-									/> : ''
-								}
-							>
-								<CustomButton
-									onClick={handleAddLinkInput}
-									className={clsx(styles.addLinkButton, {[styles.disabled]: isAddLinkDisabled })}
-									label={
-										<CustomTypography variant="body2">
-											<Translation
-												nameSpace="rooms"
-												translation="addLink"
-											/>
-										</CustomTypography>
-									}
-									Icon={
-										<CustomLinkIcon
-											width="24px"
-											height="24px"
-										/>
-									}
-								/>
-							</CustomTooltip>
-						</CustomFade>
-
 						<CustomTooltip
 							title={
 								<Translation
@@ -632,12 +592,10 @@ const Component = () => {
 						>
 							<ActionButton
 								onAction={handleOpenCancelConfirmationDialog}
-								Icon={
-									<CloseIcon
-										width="40px"
-										height="40px"
-									/>
-								}
+								Icon={<CloseIcon
+									width="40px"
+									height="40px"
+								      />}
 								className={styles.closeButton}
 								variant="gray"
 							/>
@@ -693,8 +651,8 @@ const Component = () => {
 							className={styles.componentItem}
 						>
 							<TemplateSound
-								isUploadDisabled={isFileUploading}
-								fileName={commonTemplate?.sound?.fileName}
+								isLoading={isSoundUploading}
+								fileName={commonTemplate?.draftSound?.fileName}
 								src={backgroundSound}
 								onRemove={handleRemoveSound}
 								onFileUploaded={handleSoundUploaded}
@@ -713,7 +671,6 @@ const Component = () => {
 								links={templateLinks}
 								onNextStep={onNextValue}
 								onPreviousStep={onPreviousValue}
-								onRemoveLink={handleRemoveTemplateLink}
 							/>
 						</CustomFade>
 
@@ -741,16 +698,37 @@ const Component = () => {
 								description={description}
 								templateLinks={templateLinks}
 								onPreviousStep={onPreviousValue}
-								onCreate={handleCreateRoom}
+								submitButtons={(
+									<>
+										<CustomButton
+											className={styles.createButton}
+											onClick={handleCreateRoom}
+											label={
+												<Translation
+													nameSpace="rooms"
+													translation="buttons.create"
+												/>
+											}
+										/>
+										<CustomButton
+											className={styles.createAndPublishButton}
+											onClick={handleOpenConfirmDialog}
+											label={
+												<Translation
+													nameSpace="rooms"
+													translation="buttons.createAndPublish"
+												/>
+											}
+										/>
+									</>
+								)}
 							/>
 						</CustomFade>
 					</CustomGrid>
 				</form>
 			</FormProvider>
 			<CancelCreateRoomDialog />
-			<ConfirmCreateRoomDialog
-				onCreate={handleCreateRoom}
-			/>
+			<ConfirmCreateRoomDialog onCreate={handleCreateAndPublishRoom} />
 		</CustomGrid>
 	);
 };

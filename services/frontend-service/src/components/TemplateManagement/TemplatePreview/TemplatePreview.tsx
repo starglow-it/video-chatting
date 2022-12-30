@@ -7,7 +7,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
-import { TagItem } from '@library/common/TagItem/TagItem';
+import { TagItem } from 'shared-frontend/library/common/TagItem';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
@@ -53,7 +53,7 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
     );
 
     const tagsChips = useMemo(
-        () => tags.map(tag => <TagItem color={tag.color}>{tag.label}</TagItem>),
+        () => tags.map(tag => <TagItem color={tag.color} label={tag.label}/>),
         [tags],
     );
 

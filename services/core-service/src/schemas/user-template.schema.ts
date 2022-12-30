@@ -43,6 +43,12 @@ export class UserTemplate {
   sound: TemplateSoundFileDocument;
 
   @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'TemplateSoundFile',
+  })
+  draftSound: TemplateSoundFileDocument;
+
+  @Prop({
     type: mongoose.Schema.Types.String,
   })
   draftUrl: string;

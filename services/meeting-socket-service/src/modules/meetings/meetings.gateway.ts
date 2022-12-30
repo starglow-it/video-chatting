@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import {Connection, Types} from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 import { plainToInstance } from 'class-transformer';
 
@@ -22,7 +22,8 @@ import {
   ResponseSumType,
   MeetingSoundsEnum,
   MeetingAccessStatusEnum,
-  TimeoutTypesEnum, KickUserReasons,
+  TimeoutTypesEnum,
+  KickUserReasons,
 } from 'shared-types';
 
 import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
@@ -138,7 +139,10 @@ export class MeetingsGateway
         await Promise.all(updateUsersPromises);
 
         const meetingUsers = await this.usersService.findUsers(
-          { meeting: meetingId, accessStatus: MeetingAccessStatusEnum.InMeeting, },
+          {
+            meeting: meetingId,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          },
           session,
         );
 
@@ -154,10 +158,14 @@ export class MeetingsGateway
             enableImplicitConversion: true,
           });
 
-          const plainMeeting = plainToInstance(CommonMeetingDTO, updatedMeeting, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
+          const plainMeeting = plainToInstance(
+            CommonMeetingDTO,
+            updatedMeeting,
+            {
+              excludeExtraneousValues: true,
+              enableImplicitConversion: true,
+            },
+          );
 
           this.emitToRoom(
             `waitingRoom:${templateId}`,
@@ -191,10 +199,10 @@ export class MeetingsGateway
         const user = await this.usersService.findOneAndUpdate(
           {
             socketId: client.id,
-            accessStatus: MeetingAccessStatusEnum.InMeeting
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
           },
           { accessStatus: MeetingAccessStatusEnum.Left },
-          session
+          session,
         );
 
         if (!user) {
@@ -214,9 +222,9 @@ export class MeetingsGateway
         });
 
         const meeting = await this.meetingsService.findById(
-            user?.meeting?._id,
-            session,
-            'owner',
+          user?.meeting?._id,
+          session,
+          'owner',
         );
 
         if (!meeting) {
@@ -235,9 +243,9 @@ export class MeetingsGateway
         });
 
         const commonTemplate =
-            await this.coreService.findCommonTemplateByTemplateId({
-              templateId: userTemplate.templateId,
-            });
+          await this.coreService.findCommonTemplateByTemplateId({
+            templateId: userTemplate.templateId,
+          });
 
         const timeToAdd = Date.now() - user.joinedAt;
 
@@ -248,8 +256,11 @@ export class MeetingsGateway
         }
 
         const meetingUsers = await this.usersService.findUsers(
-            { meeting: meeting.id, accessStatus: MeetingAccessStatusEnum.InMeeting, },
-            session,
+          {
+            meeting: meeting.id,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          },
+          session,
         );
 
         const activeParticipants = meetingUsers.length;
@@ -268,27 +279,27 @@ export class MeetingsGateway
 
         if (userTemplate) {
           this.emitToRoom(
-              `meeting:${user.meeting._id}`,
-              UserEmitEvents.RemoveUsers,
-              {
-                users: [plainUser.id],
-              },
+            `meeting:${user.meeting._id}`,
+            UserEmitEvents.RemoveUsers,
+            {
+              users: [plainUser.id],
+            },
           );
 
           const isOwner = plainMeeting.owner === plainUser.id;
           const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
 
           if (
-              !isOwner &&
-              meeting?.owner?.socketId &&
-              plainUser?.accessStatus === MeetingAccessStatusEnum.RequestSent
+            !isOwner &&
+            meeting?.owner?.socketId &&
+            plainUser?.accessStatus === MeetingAccessStatusEnum.RequestSent
           ) {
             this.emitToSocketId(
-                meeting?.owner?.socketId,
-                UserEmitEvents.RemoveUsers,
-                {
-                  users: [plainUser.id],
-                },
+              meeting?.owner?.socketId,
+              UserEmitEvents.RemoveUsers,
+              {
+                users: [plainUser.id],
+              },
             );
           }
 
@@ -327,7 +338,8 @@ export class MeetingsGateway
                 value: 15,
               });
 
-              const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
+              const meetingEndTime =
+                (meeting.endsAt || Date.now()) - Date.now();
 
               this.taskService.deleteTimeout({
                 name: `meeting:finish:${plainMeeting.id}`,
@@ -335,7 +347,8 @@ export class MeetingsGateway
 
               this.taskService.addTimeout({
                 name: `meeting:finish:${plainMeeting.id}`,
-                ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+                ts:
+                  meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
                 callback: this.endMeeting.bind(this, client, {
                   meetingId: meeting._id,
                 }),
@@ -358,7 +371,7 @@ export class MeetingsGateway
                     meetingId: meeting.id,
                     templateId: meeting.templateId,
                   });
-                } catch(e) {
+                } catch (e) {
                   console.log(e);
                 }
               },
@@ -398,7 +411,6 @@ export class MeetingsGateway
         ctx: message,
       });
 
-      // TODO: fetch main instance
       this.logger.debug(`User joined meeting ${message.templateId}`);
 
       socket.join(`waitingRoom:${message.templateId}`);
@@ -444,8 +456,8 @@ export class MeetingsGateway
         });
 
         if (
-            mainUser.maxMeetingTime === 0 &&
-            mainUser.subscriptionPlanKey !== 'Business'
+          mainUser.maxMeetingTime === 0 &&
+          mainUser.subscriptionPlanKey !== 'Business'
         ) {
           return {
             success: false,
@@ -1013,8 +1025,8 @@ export class MeetingsGateway
       );
 
       const userSocket = await this.getSocket(
-          `waitingRoom:${meeting.templateId}`,
-          plainUser.socketId,
+        `waitingRoom:${meeting.templateId}`,
+        plainUser.socketId,
       );
 
       userSocket.join(`meeting:${meeting._id}`);
@@ -1027,8 +1039,8 @@ export class MeetingsGateway
 
   @SubscribeMessage(MeetingSubscribeEvents.OnEndMeeting)
   async endMeeting(
-      @ConnectedSocket() socket: Socket,
-      @MessageBody() message: EndMeetingRequestDTO
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: EndMeetingRequestDTO,
   ) {
     this.logger.debug({
       message: `[${MeetingSubscribeEvents.OnEndMeeting}] event`,
@@ -1039,7 +1051,7 @@ export class MeetingsGateway
       return withTransaction(this.connection, async (session) => {
         const meeting = await this.meetingsService.findById(
           message.meetingId,
-          session
+          session,
         );
 
         if (!meeting) {
@@ -1049,9 +1061,9 @@ export class MeetingsGateway
         }
 
         await this.meetingsService.updateMeetingById(
-            meeting._id,
-            { endsAt: Date.now() },
-            session
+          meeting._id,
+          { endsAt: Date.now() },
+          session,
         );
 
         const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
@@ -1059,29 +1071,33 @@ export class MeetingsGateway
           enableImplicitConversion: true,
         });
 
-        if (Object.values(KickUserReasons).includes(message.reason as KickUserReasons)) {
+        if (
+          Object.values(KickUserReasons).includes(
+            message.reason as KickUserReasons,
+          )
+        ) {
           this.broadcastToRoom(
-              socket,
-              `meeting:${message.meetingId}`,
-              MeetingEmitEvents.FinishMeeting,
-              {
-                reason: message.reason,
-              },
+            socket,
+            `meeting:${message.meetingId}`,
+            MeetingEmitEvents.FinishMeeting,
+            {
+              reason: message.reason,
+            },
           );
         } else {
           this.emitToRoom(
-              `meeting:${message.meetingId}`,
-              MeetingEmitEvents.FinishMeeting,
-              {
-                reason: message.reason,
-              },
+            `meeting:${message.meetingId}`,
+            MeetingEmitEvents.FinishMeeting,
+            {
+              reason: message.reason,
+            },
           );
         }
 
         try {
           const user = await this.usersService.findOne({
             query: { socketId: socket.id },
-            session
+            session,
           });
           const plainUser = plainToInstance(CommonUserDTO, user, {
             excludeExtraneousValues: true,
@@ -1140,7 +1156,7 @@ export class MeetingsGateway
     return withTransaction(this.connection, async (session) => {
       const user = await this.usersService.findOne({
         query: { socketId: socket.id },
-        session
+        session,
       });
 
       if (user) {
@@ -1301,7 +1317,7 @@ export class MeetingsGateway
             data: {
               endAt: Date.now(),
             },
-            session
+            session,
           });
 
           const newTime =
@@ -1322,11 +1338,11 @@ export class MeetingsGateway
       }
 
       const newMeeting = await this.meetingsService.updateMeetingById(
-          meeting.id,
-          {
-            hostUserId: message.userId,
-          },
-          session,
+        meeting.id,
+        {
+          hostUserId: message.userId,
+        },
+        session,
       );
 
       this.taskService.deleteTimeout({

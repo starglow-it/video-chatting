@@ -13,9 +13,6 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 // library
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 
-// components
-import { BusinessCategoriesSelect } from '@components/BusinessCategoriesSelect/BusinessCategoriesSelect';
-
 // store
 import { getBusinessCategoriesFx } from '../../../store';
 
@@ -80,12 +77,6 @@ const EditCompanyInfo = memo(() => {
                                 translation="contactEmail"
                                 error={currentEmailErrorMessage}
                                 {...register('contactEmail')}
-                            />
-
-                            <BusinessCategoriesSelect
-                                nameSpace="profile"
-                                translation="editProfile.businessCategories"
-                                formKey="businessCategories"
                             />
 
                             <CustomInput

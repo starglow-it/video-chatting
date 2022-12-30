@@ -1,5 +1,5 @@
 import React, {
-	memo, useCallback, useEffect, useState
+	memo, useCallback, useEffect, useRef, useState
 } from 'react';
 import {
 	useStore
@@ -20,6 +20,9 @@ import {
 import {
 	useBrowserDetect
 } from '@hooks/useBrowserDetect';
+
+// helpers
+import { BackgroundManager } from '../../helpers/media/applyBlur';
 
 // custom
 import {
@@ -57,6 +60,7 @@ import {
 	$profileStore, addNotificationEvent
 } from '../../store';
 import {
+	$activeStreamStore,
 	$audioDevicesStore,
 	$audioErrorStore,
 	$backgroundAudioVolume,
@@ -76,6 +80,7 @@ import {
 	sendCancelAccessMeetingRequestEvent,
 	sendEnterMeetingRequestSocketEvent,
 	sendEnterWaitingRoomSocketEvent,
+	setActiveStreamEvent,
 	setIsAudioActiveEvent,
 	setIsCameraActiveEvent,
 	toggleIsAuraActive,
@@ -117,6 +122,7 @@ const Component = () => {
 
 	const isStreamRequested = useStore($isStreamRequestedStore);
 	const changeStream = useStore($changeStreamStore);
+	const activeStream = useStore($activeStreamStore);
 	const isMicActive = useStore($isMicActiveStore);
 	const isCameraActive = useStore($isCameraActiveStore);
 	const videoDevices = useStore($videoDevicesStore);
@@ -130,6 +136,8 @@ const Component = () => {
 	const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
 	const backgroundAudioVolume = useStore($backgroundAudioVolume);
 	const isAuraActive = useStore($isAuraActive);
+
+	const isCameraActiveRef = useRef(isCameraActive);
 
 	const isEnterMeetingRequestPending = useStore(
 		sendEnterMeetingRequestSocketEvent.pending,
@@ -179,6 +187,37 @@ const Component = () => {
 			isAuraActive,
 		});
 	}, [isAuraActive]);
+
+	useEffect(() => {
+		setActiveStreamEvent(changeStream?.clone());
+	}, [changeStream]);
+
+	useEffect(() => {
+		isCameraActiveRef.current = isCameraActive
+	}, [isCameraActive]);
+
+	useEffect(() => {
+		if (!changeStream) {
+			return;
+		}
+
+		if (isAuraActive) {
+			const clonedStream = changeStream.clone();
+
+			(async () => {
+				const streamWithBackground = await BackgroundManager.applyBlur(
+					clonedStream,
+					isCameraActiveRef.current,
+					isAuraActive,
+				);
+
+				setActiveStreamEvent(streamWithBackground);
+			})();
+		} else {
+			const clonedStream = changeStream.clone();
+			setActiveStreamEvent(clonedStream);
+		}
+	}, [isAuraActive, changeStream]);
 
 	const handleToggleMic = useCallback(() => {
 		addNotificationEvent({
@@ -271,7 +310,7 @@ const Component = () => {
                             audioDevices={audioDevices}
                             profileAvatar={profile.profileAvatar?.url}
                             userName={localUser?.username}
-                            stream={changeStream}
+                            stream={activeStream}
                             onToggleAudio={handleToggleMic}
                             onToggleVideo={handleToggleCamera}
                         />

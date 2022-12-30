@@ -1,5 +1,5 @@
-import React, {
-	memo, useCallback 
+import {
+	memo, useCallback, useMemo 
 } from 'react';
 import clsx from 'clsx';
 import {
@@ -7,32 +7,15 @@ import {
 } from 'react-dropzone';
 
 // shared
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomTooltip 
-} from 'shared-frontend/library/custom/CustomTooltip';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomButton 
-} from 'shared-frontend/library/custom/CustomButton';
-import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
-import {
-	ArrowRightIcon 
-} from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
-import {
-	ActionButton
-} from "shared-frontend/library/common/ActionButton";
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // utils
-import {
-	getFileSizeValue 
-} from 'shared-utils';
+import { getFileSizeValue } from 'shared-utils';
 
 // const
 import {
@@ -44,27 +27,19 @@ import {
 } from 'shared-const';
 
 // types
-import {
-	FileSizeTypesEnum 
-} from 'shared-types';
+import { FileSizeTypesEnum } from 'shared-types';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
-import {UploadDragFileOverlay} from "@components/UploadDragFileOverlay/UploadDragFileOverlay";
+import { UploadDragFileOverlay } from '@components/UploadDragFileOverlay/UploadDragFileOverlay';
 
-import {
-	addNotificationEvent 
-} from '../../../store';
+import { addNotificationEvent } from '../../../store';
 import {
 	Notification, NotificationType 
 } from '../../../store/types';
 
-import {
-	UploadBackgroundProps 
-} from './UploadBackground.types';
+import { UploadBackgroundProps } from './UploadBackground.types';
 
 import styles from './UploadBackground.module.scss';
 
@@ -174,9 +149,7 @@ const Component = ({
 	);
 
 	const {
-		getRootProps, 
-		getInputProps, 
-		isDragActive 
+		getRootProps, getInputProps, isDragActive 
 	} = useDropzone({
 		maxFiles: 1,
 		maxSize: Math.max(MAX_SIZE_IMAGE, MAX_SIZE_VIDEO),
@@ -186,9 +159,135 @@ const Component = ({
 	});
 
 	const {
-		onClick, 
-		...rootProps 
+		onClick, ...rootProps 
 	} = getRootProps();
+
+	const fallbackComponent = useMemo(
+		() =>
+			!isFileExists ? (
+				<CustomGrid
+					container
+					direction="column"
+					alignItems="center"
+					justifyContent="center"
+					className={styles.uploadDescription}
+				>
+					<CustomTypography
+						className={styles.title}
+						variant="h2bold"
+					>
+						<Translation
+							nameSpace="rooms"
+							translation="uploadBackground.title"
+						/>
+					</CustomTypography>
+					<CustomTypography
+						className={styles.description}
+						color="colors.grayscale.semidark"
+					>
+						<Translation
+							nameSpace="rooms"
+							translation="uploadBackground.description"
+						/>
+					</CustomTypography>
+					<CustomTooltip
+						arrow
+						open
+						placement="bottom"
+						variant="black-glass"
+						title={
+							<CustomGrid
+								container
+								direction="column"
+								alignItems="center"
+								gap={1}
+							>
+								<CustomTypography variant="body2bold">
+									<Translation
+										nameSpace="rooms"
+										translation="uploadBackground.tip.title"
+									/>
+								</CustomTypography>
+								<CustomGrid
+									item
+									container
+									direction="column"
+									alignItems="center"
+								>
+									<CustomTypography variant="body2">
+										<Translation
+											nameSpace="rooms"
+											translation="uploadBackground.tip.resolution"
+										/>
+									</CustomTypography>
+									<CustomTypography variant="body2">
+										<Translation
+											nameSpace="rooms"
+											translation="uploadBackground.tip.imageRestricts"
+											options={{
+												maxSize: MAX_SIZE_IMAGE_MB,
+											}}
+										/>
+									</CustomTypography>
+									<CustomTypography variant="body2">
+										<Translation
+											nameSpace="rooms"
+											translation="uploadBackground.tip.videoRestricts"
+											options={{
+												maxSize: MAX_SIZE_VIDEO_MB,
+											}}
+										/>
+									</CustomTypography>
+								</CustomGrid>
+							</CustomGrid>
+						}
+						popperClassName={styles.popper}
+					>
+						<CustomButton
+							label={
+								<Translation
+									nameSpace="rooms"
+									translation="uploadBackground.actions.upload"
+								/>
+							}
+							className={styles.button}
+							onClick={onClick}
+						/>
+					</CustomTooltip>
+				</CustomGrid>
+			) : (
+				<CustomGrid
+					container
+					gap={1.5}
+					flexWrap="nowrap"
+					justifyContent="center"
+					className={styles.buttonsGroup}
+				>
+					<CustomButton
+						isLoading={isUploadDisabled}
+						variant="custom-gray"
+						label={
+							<Translation
+								nameSpace="rooms"
+								translation="uploadBackground.actions.change"
+							/>
+						}
+						className={styles.button}
+						onClick={onClick}
+					/>
+					<ActionButton
+						variant="accept"
+						Icon={<ArrowRightIcon
+							width="32px"
+							height="32px"
+						      />}
+						className={styles.actionButton}
+						onAction={onNextStep}
+					/>
+				</CustomGrid>
+			),
+		[isFileExists, isUploadDisabled, onFileUploaded],
+	);
 
 	return (
 		<CustomGrid
@@ -200,135 +299,7 @@ const Component = ({
 			{isDragActive ? (
 				<UploadDragFileOverlay title="uploadBackground.title" />
 			) : (
-				<>
-					{!isFileExists ? (
-						<CustomGrid
-							container
-							direction="column"
-							alignItems="center"
-							justifyContent="center"
-							className={styles.uploadDescription}
-						>
-							<CustomTypography
-								className={styles.title}
-								variant="h2bold"
-							>
-								<Translation
-									nameSpace="rooms"
-									translation="uploadBackground.title"
-								/>
-							</CustomTypography>
-							<CustomTypography
-								className={styles.description}
-								color="colors.grayscale.semidark"
-							>
-								<Translation
-									nameSpace="rooms"
-									translation="uploadBackground.description"
-								/>
-							</CustomTypography>
-							<CustomTooltip
-								arrow
-								open
-								placement="bottom"
-								variant="black-glass"
-								title={
-									<CustomGrid
-										container
-										direction="column"
-										alignItems="center"
-										gap={1}
-									>
-										<CustomTypography variant="body2bold">
-											<Translation
-												nameSpace="rooms"
-												translation="uploadBackground.tip.title"
-											/>
-										</CustomTypography>
-										<CustomGrid
-											item
-											container
-											direction="column"
-											alignItems="center"
-										>
-											<CustomTypography variant="body2">
-												<Translation
-													nameSpace="rooms"
-													translation="uploadBackground.tip.resolution"
-												/>
-											</CustomTypography>
-											<CustomTypography variant="body2">
-												<Translation
-													nameSpace="rooms"
-													translation="uploadBackground.tip.imageRestricts"
-													options={{
-														maxSize:
-                                                            MAX_SIZE_IMAGE_MB,
-													}}
-												/>
-											</CustomTypography>
-											<CustomTypography variant="body2">
-												<Translation
-													nameSpace="rooms"
-													translation="uploadBackground.tip.videoRestricts"
-													options={{
-														maxSize:
-                                                            MAX_SIZE_VIDEO_MB,
-													}}
-												/>
-											</CustomTypography>
-										</CustomGrid>
-									</CustomGrid>
-								}
-								popperClassName={styles.popper}
-							>
-								<CustomButton
-									label={
-										<Translation
-											nameSpace="rooms"
-											translation="uploadBackground.actions.upload"
-										/>
-									}
-									className={styles.button}
-									onClick={onClick}
-								/>
-							</CustomTooltip>
-						</CustomGrid>
-					) : (
-						<CustomGrid
-							container
-							gap={1.5}
-							flexWrap="nowrap"
-							justifyContent="center"
-							className={styles.buttonsGroup}
-						>
-							<ConditionalRender condition={!isUploadDisabled}>
-								<CustomButton
-									variant="custom-gray"
-									label={
-										<Translation
-											nameSpace="rooms"
-											translation="uploadBackground.actions.change"
-										/>
-									}
-									className={styles.button}
-									onClick={onClick}
-								/>
-							</ConditionalRender>
-							<ActionButton
-								variant="accept"
-								Icon={
-									<ArrowRightIcon
-										width="32px"
-										height="32px"
-									/>
-								}
-								className={styles.actionButton}
-								onAction={onNextStep}
-							/>
-						</CustomGrid>
-					)}
-				</>
+				fallbackComponent
 			)}
 		</CustomGrid>
 	);

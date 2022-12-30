@@ -1,9 +1,5 @@
-import {
-	Notification 
-} from '../types';
-import {
-	notificationsDomain 
-} from '../domains';
+import { Notification } from '../types';
+import { notificationsDomain } from '../domains';
 
 export const $notificationsStore = notificationsDomain.createStore<
     Notification[]

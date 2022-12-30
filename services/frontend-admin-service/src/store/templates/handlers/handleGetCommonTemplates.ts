@@ -1,13 +1,9 @@
 import {
 	CommonTemplatesList, ErrorState, QueryParams 
 } from 'shared-types';
-import {
-	CommonTemplatesListState 
-} from '../../types';
+import { CommonTemplatesListState } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import {
-	getTemplatesUrl 
-} from '../../../const/urls/templates';
+import { getTemplatesUrl } from '../../../const/urls/templates';
 
 export const handleGetCommonTemplates = async (
 	payload: QueryParams,
@@ -17,17 +13,20 @@ export const handleGetCommonTemplates = async (
         ErrorState
     >(getTemplatesUrl(payload));
 
-	if (response.success) {
+	if (response.success && response.result) {
 		return {
 			error: null,
-			state: response.result!,
+			state: response.result,
 		};
 	}
 
 	if (!response.success) {
 		return {
-			error: null,
-			state: response.result!,
+			error: response.error,
+			state: {
+				list: [],
+				count: 0,
+			},
 		};
 	}
 

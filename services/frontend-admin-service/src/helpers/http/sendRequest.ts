@@ -1,6 +1,4 @@
-import axios, {
-	AxiosRequestConfig 
-} from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import {
 	ApiParams, FailedResult, SuccessResult 
 } from 'shared-types';
@@ -14,8 +12,7 @@ export async function sendRequest<Result, Error>(
 	} = options;
 
 	const {
-		token, 
-		...restOptions 
+		token, ...restOptions 
 	} = options;
 
 	if (token) {
@@ -40,7 +37,7 @@ export async function sendRequest<Result, Error>(
 			success: true,
 		};
 	} catch (err) {
-		const typedError = err as any;
+		const typedError = err as unknown;
 
 		return {
 			success: false,

@@ -6,16 +6,12 @@ import Document, {
 	NextScript,
 	DocumentContext,
 } from 'next/document';
-import {
-	withFork 
-} from 'effector-next';
+import { withFork } from 'effector-next';
 import createEmotionServer from '@emotion/server/create-instance';
 
 import createEmotionCache from '../src/createEmotionCache';
 
-import {
-	baseTheme 
-} from '../src/themes/base';
+import { baseTheme } from '../src/themes/base';
 
 const enhance = withFork({
 	debug: false,

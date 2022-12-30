@@ -1,9 +1,5 @@
-import {
-	AdminDialogsEnum 
-} from '../types';
-import {
-	dialogsDomain 
-} from '../domains';
+import { AdminDialogsEnum } from '../types';
+import { dialogsDomain } from '../domains';
 
 export const $blockUserDialogStore = dialogsDomain.createStore<boolean>(false);
 export const $deleteUserDialogStore = dialogsDomain.createStore<boolean>(false);
@@ -15,6 +11,20 @@ export const $confirmCreateAndPublishRoomDialogStore =
 
 export const $roomPreviewDialogStore =
     dialogsDomain.createStore<boolean>(false);
+
+export const $publishRoomDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
+export const $cancelEditRoomDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
+export const $saveRoomChangesDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
+export const $confirmDeleteRoomDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
+export const $revokeRoomDialogStore = dialogsDomain.createStore<boolean>(false);
 
 export const openAdminDialogEvent = dialogsDomain.createEvent<AdminDialogsEnum>(
 	'openAdminDialogEvent',
@@ -41,20 +51,41 @@ export const closeCancelCreateRoomDialogEvent =
     	'closeCancelCreateRoomDialogEvent',
     );
 
-export const openConfirmCreateAndPublishRoomDialog =
+export const openConfirmCreateAndPublishRoomDialogEvent =
     dialogsDomain.createEvent<AdminDialogsEnum>(
-    	'openConfirmCreateAndPublishRoomDialog',
+    	'openConfirmCreateAndPublishRoomDialogEvent',
     );
 export const closeConfirmCreateAndPublishRoomDialog =
     dialogsDomain.createEvent<AdminDialogsEnum>(
     	'closeConfirmCreateAndPublishRoomDialog',
     );
 
-export const openRoomPreviewDialog =
-    dialogsDomain.createEvent<AdminDialogsEnum>(
-    	'openRoomPreviewDialog',
-    );
-export const closeRoomPreviewDialog =
-    dialogsDomain.createEvent<AdminDialogsEnum>(
-    	'closeRoomPreviewDialog',
-    );
+export const openRoomPreviewDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('openRoomPreviewDialogEvent');
+export const closeRoomPreviewDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('closeRoomPreviewDialogEvent');
+
+export const openPublishRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('openPublishRoomDialogEvent');
+export const closePublishRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('closePublishRoomDialogEvent');
+
+export const openRevokeRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('openRevokeRoomDialogEvent');
+export const closeRevokeRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('closeRevokeRoomDialogEvent');
+
+export const openCancelEditRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('openCancelEditRoomDialogEvent');
+export const closeCancelEditRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('closeCancelEditRoomDialogEvent');
+
+export const openSaveRoomChangesDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('openSaveRoomChangesDialogEvent');
+export const closeSaveRoomChangesDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('closeSaveRoomChangesDialogEvent');
+
+export const openConfirmDeleteRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('openConfirmDeleteRoomDialogEvent');
+export const closeConfirmDeleteRoomDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>('closeConfirmDeleteRoomDialogEvent');

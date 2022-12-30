@@ -1,6 +1,4 @@
-import {
-	statisticsDomain 
-} from '../domains';
+import { statisticsDomain } from '../domains';
 import {
 	UsersStatisticsState,
 	SubscriptionsStatisticsState,

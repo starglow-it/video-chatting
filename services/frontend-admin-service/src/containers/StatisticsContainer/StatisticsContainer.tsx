@@ -1,54 +1,26 @@
-import React, {
+import {
 	useCallback, memo, useEffect, useMemo, useState 
 } from 'react';
-import {
-	Fade 
-} from '@mui/material';
-import {
-	useStore 
-} from 'effector-react';
+import { Fade } from '@mui/material';
+import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
 // shared
-import {
-	useNavigation 
-} from 'shared-frontend/hooks/useNavigation';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomChip 
-} from 'shared-frontend/library/custom/CustomChip';
-import {
-	ValuesSwitcherItem 
-} from 'shared-frontend/types';
+import { useNavigation } from 'shared-frontend/hooks/useNavigation';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
 
-import {
-	MonetizationStatisticPeriods 
-} from 'shared-types';
+import { MonetizationStatisticPeriods } from 'shared-types';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
-import {
-	UsersStatistics 
-} from '@components/Statistics/UsersStatistics/UsersStatistics';
-import {
-	SubscriptionsStatistics 
-} from '@components/Statistics/SubscriptionsStatistics/SubscriptionsStatistics';
-import {
-	CommonRoomStatistics 
-} from '@components/Statistics/CommonRoomStatistics/CommonRoomStatistics';
-import {
-	MonetizationStatistics 
-} from '@components/Statistics/MonetizationStatistics/MonetizationStatistics';
-import {
-	RoomsRating 
-} from '@components/Statistics/RoomsRating/RoomsRating';
+import { Translation } from '@components/Translation/Translation';
+import { UsersStatistics } from '@components/Statistics/UsersStatistics/UsersStatistics';
+import { SubscriptionsStatistics } from '@components/Statistics/SubscriptionsStatistics/SubscriptionsStatistics';
+import { CommonRoomStatistics } from '@components/Statistics/CommonRoomStatistics/CommonRoomStatistics';
+import { MonetizationStatistics } from '@components/Statistics/MonetizationStatistics/MonetizationStatistics';
+import { RoomsRating } from '@components/Statistics/RoomsRating/RoomsRating';
 
 // store
 import {
@@ -132,8 +104,7 @@ const Component = () => {
 	}, [platformPeriodType.value]);
 
 	const {
-		activeTab, 
-		onChange: onChangeTab 
+		activeTab, onChange: onChangeTab 
 	} = useNavigation({
 		tabs: statisticTabs,
 	});
@@ -141,8 +112,7 @@ const Component = () => {
 	const renderTabs = useMemo(
 		() =>
 			statisticTabs.map(({
-				value, 
-				translationKey 
+				value, translationKey 
 			}) => (
 				<CustomChip
 					key={value}

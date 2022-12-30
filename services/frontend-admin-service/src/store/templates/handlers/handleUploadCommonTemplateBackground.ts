@@ -3,17 +3,11 @@ import {
 	ErrorState,
 	ICommonTemplate,
 } from 'shared-types';
-import {
-	generateFormData 
-} from 'shared-utils';
+import { generateFormData } from 'shared-utils';
 
-import {
-	CommonTemplateState 
-} from '../../types';
+import { CommonTemplateState } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import {
-	updateCommonTemplateUrl 
-} from '../../../const/urls/templates';
+import { uploadCommonTemplateBackgroundUrl } from '../../../const/urls/templates';
 
 export const handleUploadCommonTemplateBackground = async (
 	params: UploadCommonTemplateFilePayload,
@@ -26,9 +20,7 @@ export const handleUploadCommonTemplateBackground = async (
         ICommonTemplate,
         ErrorState
     >({
-    	...updateCommonTemplateUrl({
-    		templateId: params.templateId,
-    	}),
+    	...uploadCommonTemplateBackgroundUrl(params),
     	data: formData,
     });
 

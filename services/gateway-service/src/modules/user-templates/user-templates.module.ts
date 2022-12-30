@@ -16,7 +16,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { CoreModule } from '../../services/core/core.module';
 import { TemplatesModule } from '../templates/templates.module';
 import { ConfigModule } from '../../services/config/config.module';
-import {UploadModule} from "../upload/upload.module";
+import { UploadModule } from '../upload/upload.module';
 
 @Module({
   imports: [

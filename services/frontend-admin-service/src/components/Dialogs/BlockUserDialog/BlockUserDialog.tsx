@@ -6,24 +6,14 @@ import {
 } from 'effector-react';
 
 // shared
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomButton 
-} from 'shared-frontend/library/custom/CustomButton';
-import {
-	CustomDialog 
-} from 'shared-frontend/library/custom/CustomDialog';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
-import {ButtonsGroup} from "@components/ButtonsGroup/ButtonsGroup";
+import { Translation } from '@components/Translation/Translation';
+import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
 
 // stores
 import {
@@ -36,9 +26,7 @@ import {
 } from '../../../store';
 
 // types
-import {
-	AdminDialogsEnum 
-} from '../../../store/types';
+import { AdminDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './BlockUserDialog.module.scss';
@@ -93,9 +81,7 @@ const Component = () => {
 					{userData?.fullName || userData?.email}
 				</CustomTypography>
 			</CustomGrid>
-			<ButtonsGroup
-				className={styles.buttons}
-			>
+			<ButtonsGroup className={styles.buttons}>
 				<CustomButton
 					variant={
 						userData?.isBlocked ? 'custom-black' : 'custom-danger'

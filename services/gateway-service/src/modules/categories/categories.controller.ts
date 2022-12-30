@@ -14,15 +14,13 @@ import {
 } from '@nestjs/swagger';
 import { EntityList, ResponseSumType, IBusinessCategory } from 'shared-types';
 import { CategoryRestDTO } from '../../dtos/response/common-category.dto';
-import {CategoriesService} from "./categories.service";
+import { CategoriesService } from './categories.service';
 
 @Controller('categories')
 export class CategoriesController {
   private readonly logger = new Logger();
 
-  constructor(
-      private categoriesService: CategoriesService
-  ) {}
+  constructor(private categoriesService: CategoriesService) {}
 
   @Get('/')
   @ApiOperation({ summary: 'Get Categories' })
@@ -39,10 +37,11 @@ export class CategoriesController {
     @Query('limit', ParseIntPipe) limit: number,
   ): Promise<ResponseSumType<EntityList<IBusinessCategory>>> {
     try {
-      const businessCategories = await this.categoriesService.getBusinessCategories({
-        skip,
-        limit,
-      });
+      const businessCategories =
+        await this.categoriesService.getBusinessCategories({
+          skip,
+          limit,
+        });
 
       return {
         success: true,

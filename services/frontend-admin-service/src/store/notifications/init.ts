@@ -3,9 +3,7 @@ import {
 	addNotificationEvent,
 	removeNotification,
 } from './model';
-import {
-	Notification 
-} from '../types';
+import { Notification } from '../types';
 
 $notificationsStore
 	.on(addNotificationEvent, (state, payload: Notification) => [

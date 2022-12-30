@@ -1,15 +1,9 @@
-import React, {
+import {
 	memo, useCallback, useMemo 
 } from 'react';
-import {
-	useStore 
-} from 'effector-react';
-import {
-	useMediaQuery 
-} from '@mui/material';
-import {
-	ValidationError 
-} from 'yup';
+import { useStore } from 'effector-react';
+import { useMediaQuery } from '@mui/material';
+import { ValidationError } from 'yup';
 import * as yup from 'yup';
 import {
 	useForm, useWatch, FormProvider 
@@ -19,46 +13,22 @@ import {
 import {
 	emailSchema, passwordLoginSchema 
 } from 'shared-frontend/validation';
-import {
-	ErrorMessage 
-} from 'shared-frontend/library/common/ErrorMessage';
-import {
-	EmailInput 
-} from 'shared-frontend/library/common/EmailInput';
-import {
-	PasswordInput
-} from 'shared-frontend/library/common/PasswordInput';
-import {
-	CenteredPaper 
-} from 'shared-frontend/library/common/CenteredPaper';
-import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
+import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
+import { EmailInput } from 'shared-frontend/library/common/EmailInput';
+import { PasswordInput } from 'shared-frontend/library/common/PasswordInput';
+import { CenteredPaper } from 'shared-frontend/library/common/CenteredPaper';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomBox 
-} from 'shared-frontend/library/custom/CustomBox';
-import {
-	CustomImage 
-} from 'shared-frontend/library/custom/CustomImage';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomButton 
-} from 'shared-frontend/library/custom/CustomButton';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
-import {
-	useYupValidationResolver 
-} from 'shared-frontend/hooks/useYupValidationResolver';
+import { useYupValidationResolver } from 'shared-frontend/hooks/useYupValidationResolver';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 // stores
 import {
@@ -99,7 +69,7 @@ const Component = () => {
 		reset,
 		register,
 		formState: {
-		 	errors
+			errors 
 		},
 	} = methods;
 
@@ -179,8 +149,8 @@ const Component = () => {
 			>
 				<CustomBox className={styles.image}>
 					<CustomImage
-						width="28"
-						height="28"
+						width={28}
+						height={28}
 						src="/images/winking-face.webp"
 						alt="winking-face"
 					/>

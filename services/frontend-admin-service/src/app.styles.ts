@@ -1,4 +1,4 @@
-export default (theme) => ({
+export default theme => ({
 	WebkitFontSmoothing: 'antialiased',
 	MozOsxFontSmoothing: 'grayscale',
 	boxSizing: 'border-box',

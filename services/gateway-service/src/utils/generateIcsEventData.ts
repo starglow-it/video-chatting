@@ -1,18 +1,18 @@
 import * as ics from 'ics';
-import {EventAttributes} from 'ics';
+import { EventAttributes } from 'ics';
 
-import {parseTimestamp} from './dateHelpers/parseTimestamp';
-import {getTimeoutTimestamp} from "shared-utils";
-import {TimeoutTypesEnum} from "shared-types";
+import { parseTimestamp } from './dateHelpers/parseTimestamp';
+import { getTimeoutTimestamp } from 'shared-utils';
+import { TimeoutTypesEnum } from 'shared-types';
 
 const ONE_HOUR = getTimeoutTimestamp({
   type: TimeoutTypesEnum.Hours,
-  value: 1
+  value: 1,
 });
 
 const ONE_MINUTE = getTimeoutTimestamp({
   type: TimeoutTypesEnum.Minutes,
-  value: 1
+  value: 1,
 });
 
 export const generateIcsEventData = async ({

@@ -1,12 +1,8 @@
 import {
 	EntityList, ErrorState, UserProfileTemplate 
 } from 'shared-types';
-import {
-	sendRequest 
-} from '../../../helpers/http/sendRequest';
-import {
-	userProfileTemplateUrl 
-} from '../../../const/urls/users';
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { userProfileTemplateUrl } from '../../../const/urls/users';
 import {
 	GetUserProfileTemplateParams,
 	UserProfileTemplateState,

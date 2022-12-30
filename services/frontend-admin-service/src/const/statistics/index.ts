@@ -1,9 +1,5 @@
-import {
-	ValuesSwitcherItem 
-} from 'shared-frontend/types';
-import {
-	MonetizationStatisticPeriods 
-} from 'shared-types';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { MonetizationStatisticPeriods } from 'shared-types';
 
 export const schedulePages: ValuesSwitcherItem<MonetizationStatisticPeriods>[] =
     [

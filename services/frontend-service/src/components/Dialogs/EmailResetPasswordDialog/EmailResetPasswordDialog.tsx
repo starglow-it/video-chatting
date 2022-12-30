@@ -135,7 +135,7 @@ isSubmitted
 					justifyContent="center"
 				>
 					<CustomImage
-						src="/images/email2.png"
+						src="/images/email2.webp"
 						width="52px"
 						height="52px"
 					/>
@@ -198,7 +198,7 @@ isSubmitted
 							justifyContent="center"
 						>
 							<CustomImage
-								src="/images/lock.png"
+								src="/images/lock.webp"
 								width="28px"
 								height="28px"
 							/>

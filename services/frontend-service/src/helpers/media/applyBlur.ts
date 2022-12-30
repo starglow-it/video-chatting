@@ -80,4 +80,4 @@ class BackgroundManagerInstance {
     }
 }
 
-export const BackgroundManager = new BackgroundManagerInstance('/images/orange.png');
+export const BackgroundManager = new BackgroundManagerInstance('/images/orange.webp');

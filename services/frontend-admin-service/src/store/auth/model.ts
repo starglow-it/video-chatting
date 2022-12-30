@@ -1,9 +1,5 @@
-import {
-	NextPageContext 
-} from 'next';
-import {
-	authDomain 
-} from '../domains';
+import { NextPageContext } from 'next';
+import { authDomain } from '../domains';
 
 import {
 	AuthAdminState, LoginAdminPayload 

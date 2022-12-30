@@ -74,22 +74,20 @@
   height: rem(46px);
 }
 
-.addLinkButton {
-  width: 106px;
-  padding: 0;
-  align-self: flex-end;
-  height: rem(46px);
-
-  &.disabled {
-    background: rgba($primary-orange, 0.6);
-    color: rgba($primary-white, 0.6);
-  }
-}
-
 .imagePlaceholder {
   width: rem(56px);
   height: rem(56px);
   background-color: $primary-white;
   border-radius: 50%;
   box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.24);
+}
+
+.createAndPublishButton {
+  width: rem(186px);
+  height: rem(46px);
+}
+
+.createButton {
+  width: rem(154px);
+  height: rem(46px);
 }

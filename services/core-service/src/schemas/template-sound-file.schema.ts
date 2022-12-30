@@ -19,6 +19,12 @@ export class TemplateSoundFile {
     type: mongoose.Schema.Types.String,
     required: true,
   })
+  uploadKey: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true,
+  })
   fileName: string;
 
   @Prop({

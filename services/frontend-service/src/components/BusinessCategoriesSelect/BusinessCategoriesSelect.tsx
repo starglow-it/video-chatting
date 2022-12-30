@@ -34,9 +34,7 @@ import {
 } from '@library/custom/CustomScroll/CustomScroll';
 
 // components
-import {
-	BusinessCategoryItem 
-} from '@components/BusinessCategoryItem/BusinessCategoryItem';
+import { BusinessCategoryItem } from 'shared-frontend/library/common/BusinessCategoryItem';
 
 // styles
 import styles from './BusinessCategoriesSelect.module.scss';

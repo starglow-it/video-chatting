@@ -1,25 +1,13 @@
-import {
-	parseCookies 
-} from 'nookies';
-import {
-	NextPageContext 
-} from 'next';
-import {
-	AxiosRequestConfig 
-} from 'axios';
+import { parseCookies } from 'nookies';
+import { NextPageContext } from 'next';
+import { AxiosRequestConfig } from 'axios';
 import {
 	TokenPair, ApiError, SuccessResult, FailedResult 
 } from 'shared-types';
 
-import {
-	setAuthCookies 
-} from './setAuthCookies';
-import {
-	sendRequest 
-} from './sendRequest';
-import {
-	refreshUrl 
-} from '../../const/urls/admin';
+import { setAuthCookies } from './setAuthCookies';
+import { sendRequest } from './sendRequest';
+import { refreshUrl } from '../../const/urls/admin';
 
 export interface IsomorphicRequestOptions extends AxiosRequestConfig {
     authRequest?: boolean;
@@ -33,9 +21,7 @@ export default async function sendRequestWithCredentials<Result, Error>(
 	},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
 	const {
-		ctx, 
-		authRequest, 
-		...requestOptions 
+		ctx, authRequest, ...requestOptions 
 	} = options;
 
 	const path = options.url;

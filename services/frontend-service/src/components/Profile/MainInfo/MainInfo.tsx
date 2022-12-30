@@ -5,7 +5,6 @@ import { useStore, useStoreMap } from 'effector-react';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { SocialLinks } from '@components/SocialLinks/SocialLinks';
 import { ProfileDescription } from '@components/Profile/ProfileDescription/ProfileDescription';
-import { ProfileBusinessTags } from '@components/Profile/ProfileBusinessTags/ProfileBusinessTags';
 
 // custom
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -90,7 +89,6 @@ const MainInfo = memo(() => {
                         </CustomTypography>
                         <ProfileDescription />
                     </CustomGrid>
-                    <ProfileBusinessTags />
                 </CustomGrid>
             </CustomGrid>
         </CustomPaper>

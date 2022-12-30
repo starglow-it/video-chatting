@@ -159,8 +159,3 @@ setActivePermissionsEvent.watch(data => {
         userId: data.userId,
     });
 });
-
-// TODO:
-// navigator.mediaDevices.ondevicechange = async () => {
-// const { audio, video } = await getDevices();
-// };

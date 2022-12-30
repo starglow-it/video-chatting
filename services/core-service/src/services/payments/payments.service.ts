@@ -7,8 +7,9 @@ import {
   CreateStripeTemplateProductPayload,
   DeleteTemplateStripeProductPayload,
   GetStripeChargesPayload,
-  GetStripeTemplateProductByNamePayload,
+  GetStripeTemplateProductByNamePayload, UpdateStripeTemplateProductPayload,
 } from 'shared-types';
+import {firstValueFrom} from "rxjs";
 
 @Injectable()
 export class PaymentsService {
@@ -20,6 +21,14 @@ export class PaymentsService {
     const pattern = { cmd: PaymentsBrokerPatterns.CreateStripeTemplateProduct };
 
     return this.client.send(pattern, payload).toPromise();
+  }
+
+  async updateTemplateStripeProduct(
+    payload: UpdateStripeTemplateProductPayload,
+  ) {
+    const pattern = { cmd: PaymentsBrokerPatterns.UpdateStripeTemplateProduct };
+
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async getStripeTemplateProductByName(

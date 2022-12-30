@@ -394,9 +394,7 @@ export class UsersController {
           to: [{ email: user.email, name: user.fullName ?? user.email }],
           template: {
             key: emailTemplates.unblockedAccount,
-            data: [
-              { name: 'LOGIN_URL', content: `${this.frontendUrl}/login` },
-            ],
+            data: [{ name: 'LOGIN_URL', content: `${this.frontendUrl}/login` }],
           },
         });
       }

@@ -1,59 +1,33 @@
-import React, {
-	memo 
+import {
+	memo, useMemo 
 } from 'react';
 import clsx from 'clsx';
 
 // hooks
-import {
-	useLocalization 
-} from '@hooks/useTranslation';
+import { useLocalization } from '@hooks/useTranslation';
 
 // shared
-import {
-	PropsWithClassName 
-} from 'shared-frontend/types';
-import {
-	MonetizationStatisticPeriods 
-} from 'shared-types';
+import { PropsWithClassName } from 'shared-frontend/types';
+import { MonetizationStatisticPeriods } from 'shared-types';
 
 // shared
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomImage 
-} from 'shared-frontend/library/custom/CustomImage';
-import {
-	CustomLoader
-} from 'shared-frontend/library/custom/CustomLoader';
-import {
-	ValuesSwitcher 
-} from 'shared-frontend/library/common/ValuesSwitcher';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
+import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
-import {
-	CustomDoughnutChart 
-} from '@components/CustomDoughnutChart/CustomDoughnutChart';
-import {
-	ChartLegend 
-} from '@components/ChartLegend/ChartLegend';
+import { Translation } from '@components/Translation/Translation';
+import { CustomDoughnutChart } from '@components/CustomDoughnutChart/CustomDoughnutChart';
+import { ChartLegend } from '@components/ChartLegend/ChartLegend';
 
 // styles
 import styles from './MonetizationStatistics.module.scss';
 
 // types
-import {
-	MonetizationStatisticsProps 
-} from './MonetizationStatistics.types';
+import { MonetizationStatisticsProps } from './MonetizationStatistics.types';
 
 const Component = ({
 	className,
@@ -72,15 +46,43 @@ const Component = ({
 		totalNumber: statistic.totalNumber ?? 0,
 		totalLabel: `$${Math.round(statistic.totalNumber / 100)}`,
 		dataSets:
-            statistic?.data?.map(data => ({
-            	label: translation(`monetization.${data.label}`),
-            	parts: Array.isArray(data.value)
-            		? Math.round(data.value / 100)
-            		: [Math.round(data.value / 100)],
-            	color: data.color,
-            	labels: [translation(`monetization.${data.label}`)],
+            statistic?.data?.map(statisticsData => ({
+            	label: translation(`monetization.${statisticsData.label}`),
+            	parts: Array.isArray(statisticsData.value)
+            		? Math.round(statisticsData.value / 100)
+            		: [Math.round(statisticsData.value / 100)],
+            	color: statisticsData.color,
+            	labels: [translation(`monetization.${statisticsData.label}`)],
             })) ?? [],
 	};
+
+	const dataLoadingFallback = useMemo(
+		() =>
+			isDataLoading ? (
+				<CustomLoader className={styles.loader} />
+			) : (
+				<CustomGrid
+					container
+					direction="column"
+					justifyContent="center"
+					alignItems="center"
+					flex="1 1"
+				>
+					<CustomImage
+						src="/images/eyes.webp"
+						width={40}
+						height={40}
+					/>
+					<CustomTypography>
+						<Translation
+							nameSpace="statistics"
+							translation="users.monetization.noData"
+						/>
+					</CustomTypography>
+				</CustomGrid>
+			),
+		[isDataLoading],
+	);
 
 	return (
 		<CustomPaper className={clsx(styles.wrapper, className)}>
@@ -103,32 +105,8 @@ const Component = ({
 				/>
 			</CustomGrid>
 
-			{statistic.totalNumber === 0 ? (
-				<>
-					{isDataLoading ? (
-						<CustomLoader className={styles.loader} />
-					) : (
-						<CustomGrid
-							container
-							direction="column"
-							justifyContent="center"
-							alignItems="center"
-							flex="1 1"
-						>
-							<CustomImage
-								src="/images/eyes.webp"
-								width={40}
-								height={40}
-							/>
-							<CustomTypography>
-								<Translation
-									nameSpace="statistics"
-									translation="users.monetization.noData"
-								/>
-							</CustomTypography>
-						</CustomGrid>
-					)}
-				</>
+			{statistic.totalNumber === 0 || isDataLoading ? (
+				dataLoadingFallback
 			) : (
 				<CustomGrid
 					container

@@ -2,7 +2,9 @@ import {
   IBusinessCategory,
   ILanguage,
   ISocialLink,
-  IPreviewImage, ITemplateSoundFile, TemplateLinkPosition,
+  IPreviewImage,
+  ITemplateSoundFile,
+  TemplateLinkPosition,
 } from './common';
 import { ITemplateUser } from './users';
 import { IMeetingInstance } from './meeting';
@@ -19,6 +21,7 @@ export interface ICommonTemplate {
   shortDescription: string;
   url: string;
   sound?: ITemplateSoundFile | null;
+  draftSound?: ITemplateSoundFile | null;
   draftUrl?: string;
   previewUrls: IPreviewImage[];
   draftPreviewUrls?: IPreviewImage[];
@@ -42,6 +45,7 @@ export interface IUserTemplate {
   templateId: number;
   url: string;
   sound?: ITemplateSoundFile;
+  draftSound?: ITemplateSoundFile;
   draftUrl?: string;
   name: string;
   signBoard: string;
@@ -80,6 +84,7 @@ export interface IUpdateTemplate {
   description: string;
   url?: string;
   sound?: ITemplateSoundFile | string;
+  draftSound?: ITemplateSoundFile | string;
   draftUrl?: string;
   previewUrls?: string[];
   fullName: string;

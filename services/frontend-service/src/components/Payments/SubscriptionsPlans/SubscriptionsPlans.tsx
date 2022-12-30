@@ -207,7 +207,7 @@ const Component = ({
                             {title ?? (
                                 <>
                                     <CustomImage
-                                        src="/images/winking-face.png"
+                                        src="/images/winking-face.webp"
                                         width="30px"
                                         height="30px"
                                     />

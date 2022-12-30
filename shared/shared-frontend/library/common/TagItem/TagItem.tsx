@@ -13,11 +13,13 @@ import styles from './TagItem.module.scss';
 type TagItemProps = PropsWithClassName<{
     label: JSX.Element | string;
     endIcon?: JSX.Element;
+    startIcon?: JSX.Element;
     color?: string;
 }>;
 
-const Component: React.FunctionComponent<TagItemProps> = ({ endIcon, className, color, label }) => (
+const Component: React.FunctionComponent<TagItemProps> = ({ startIcon, endIcon, className, color, label }) => (
     <CustomGrid item alignItems="center" sx={{ color }} className={clsx(styles.wrapper, className)}>
+        {startIcon ? startIcon : null}
         {label}
         {endIcon ? endIcon : null}
     </CustomGrid>

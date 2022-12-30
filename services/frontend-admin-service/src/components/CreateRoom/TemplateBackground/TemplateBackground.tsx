@@ -1,32 +1,22 @@
-import React, {
-	memo 
-} from 'react';
+import { memo } from 'react';
 
 // shared
-import {
-	CustomVideoPlayer 
-} from 'shared-frontend/library/custom/CustomVideoPlayer';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomImage 
-} from 'shared-frontend/library/custom/CustomImage';
-import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
-import {
-	TemplateBackgroundProps 
-} from './TemplateBackground.types';
+import { TemplateBackgroundProps } from './TemplateBackground.types';
 
 import styles from './TemplateBackground.module.scss';
 
 const Component = ({
-	url,
-   	templateType
+	url, templateType 
 }: TemplateBackgroundProps) => (
-	<CustomGrid container className={styles.background}>
+	<CustomGrid
+		container
+		className={styles.background}
+	>
 		<ConditionalRender condition={Boolean(url)}>
 			{templateType === 'image' ? (
 				<CustomImage

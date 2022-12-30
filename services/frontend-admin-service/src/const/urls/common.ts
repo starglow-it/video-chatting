@@ -1,7 +1,5 @@
 import getConfig from 'next/config';
-import {
-	isServer 
-} from 'shared-utils';
+import { isServer } from 'shared-utils';
 
 const {
 	publicRuntimeConfig 

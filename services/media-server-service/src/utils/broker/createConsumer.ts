@@ -1,6 +1,6 @@
-import { IBrokerHandler } from "../../../types/broker";
-import { wrapMsgPayloadWithCatch } from "./wrapMsgPayloadWithCatch";
-import { getConnection } from "./getConnection";
+import { IBrokerHandler } from '../../../types/broker';
+import { wrapMsgPayloadWithCatch } from './wrapMsgPayloadWithCatch';
+import { getConnection } from './getConnection';
 
 interface IArgs {
     queueName: string;
@@ -21,6 +21,6 @@ export const createConsumer = async (
             handlers,
             channel,
             noAck,
-        })
+        }),
     );
 };

@@ -1,13 +1,17 @@
 import {
-  BadRequestException, Body,
+  BadRequestException,
+  Body,
   Controller,
   Get,
   Logger,
   Param,
-  ParseIntPipe, Put,
+  ParseIntPipe,
+  Put,
   Query,
-  Request, UploadedFile,
-  UseGuards, UseInterceptors,
+  Request,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -17,27 +21,26 @@ import {
 } from '@nestjs/swagger';
 
 import { UserTemplatesService } from './user-templates.service';
-import {UploadService} from "../upload/upload.service";
-import {CoreService} from "../../services/core/core.service";
+import { UploadService } from '../upload/upload.service';
+import { CoreService } from '../../services/core/core.service';
 
 // dtos
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-import {FileInterceptor} from "@nestjs/platform-express";
-import {getFileNameAndExtension} from "../../utils/getFileNameAndExtension";
-import {v4 as uuidv4} from "uuid";
-import {IUpdateTemplate} from "shared-types";
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
+import { v4 as uuidv4 } from 'uuid';
+import { IUpdateTemplate } from 'shared-types';
 
 @Controller('user-templates')
 export class UserTemplatesController {
   private readonly logger = new Logger();
   constructor(
-      private userTemplatesService: UserTemplatesService,
-      private uploadService: UploadService,
-      private coreService: CoreService,
+    private userTemplatesService: UserTemplatesService,
+    private uploadService: UploadService,
+    private coreService: CoreService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -129,15 +132,15 @@ export class UserTemplatesController {
     description: 'Forbidden',
   })
   @UseInterceptors(
-      FileInterceptor('file', {
-        preservePath: true,
-      }),
+    FileInterceptor('file', {
+      preservePath: true,
+    }),
   )
   async updateUserTemplate(
-      @Request() req,
-      @Param('templateId') templateId: string,
-      @Body() templateData: Partial<IUpdateTemplate>,
-      @UploadedFile() file: Express.Multer.File,
+    @Request() req,
+    @Param('templateId') templateId: string,
+    @Body() templateData: Partial<IUpdateTemplate>,
+    @UploadedFile() file: Express.Multer.File,
   ) {
     try {
       if (!templateId) {
@@ -180,10 +183,10 @@ export class UserTemplatesController {
       };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while update template`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while update template`,
+        },
+        JSON.stringify(err),
       );
       throw new BadRequestException(err);
     }

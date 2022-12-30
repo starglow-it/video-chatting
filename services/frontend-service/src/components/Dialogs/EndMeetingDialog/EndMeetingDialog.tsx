@@ -55,6 +55,7 @@ import {
 import {
 	clientRoutes, dashboardRoute
 } from '../../../const/client-routes';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const Component = () => {
 	const router = useRouter();
@@ -103,7 +104,7 @@ const Component = () => {
 		>
 			<CustomTypography
 				className={styles.text}
-				variant="h4"
+				variant="h4bold"
 				textAlign="center"
 				dangerouslySetInnerHTML={{
 					__html: translation(
@@ -113,6 +114,14 @@ const Component = () => {
 					),
 				}}
 			/>
+			<ConditionalRender condition={isMeetingHost}>
+				<CustomTypography
+					className={styles.hint}
+					textAlign="center"
+					nameSpace="meeting"
+					translation="endMeeting.hint"
+				/>
+			</ConditionalRender>
 			<CustomGrid
 				className={styles.buttonsWrapper}
 				container

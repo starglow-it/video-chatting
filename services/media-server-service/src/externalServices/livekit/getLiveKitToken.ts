@@ -1,5 +1,5 @@
-import { AccessToken } from "livekit-server-sdk";
-import { getConfigVar } from "../../services/config";
+import { AccessToken } from 'livekit-server-sdk';
+import { getConfigVar } from '../../services/config';
 
 export const getLiveKitToken = async ({
     templateId,
@@ -9,8 +9,8 @@ export const getLiveKitToken = async ({
     userId: string;
 }) => {
     try {
-        const apiKey = await getConfigVar("livekitApiKey");
-        const apiSecret = await getConfigVar("livekitApiSecret");
+        const apiKey = await getConfigVar('livekitApiKey');
+        const apiSecret = await getConfigVar('livekitApiSecret');
 
         const at = new AccessToken(apiKey, apiSecret, {
             identity: userId,
@@ -21,6 +21,6 @@ export const getLiveKitToken = async ({
         return at.toJwt();
     } catch (e) {
         console.log(e);
-        return "";
+        return '';
     }
 };

@@ -58,7 +58,7 @@
       "ImportDeclaration": { "multiline": true, "minProperties": 1 },
       "ExportDeclaration": { "multiline": true, "minProperties": 1 }
     }],
-    "destructuring-newline/object-property-newline": 2,
+    "destructuring-newline/object-property-newline": 1,
     "consistent-return": "off",
     "jsx-a11y/media-has-caption": "off"
   },

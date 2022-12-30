@@ -51,8 +51,8 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { CoreService } from '../../services/core/core.service';
 import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
-import {ResetLinkRequest} from "../../dtos/requests/reset-link.request";
-import {ResetPasswordRequest} from "../../dtos/requests/reset-password.request";
+import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
+import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -110,7 +110,7 @@ export class AuthController {
   ): Promise<ResponseSumType<void>> {
     try {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
-          body.token,
+        body.token,
       );
 
       if (!isUserTokenExists) {
@@ -181,7 +181,7 @@ export class AuthController {
   ): Promise<ResponseSumType<void>> {
     try {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
-          body.token,
+        body.token,
       );
 
       if (!isUserTokenExists) {
@@ -212,7 +212,7 @@ export class AuthController {
   })
   async resetPassword(
     @Body()
-      body: ResetPasswordRequest,
+    body: ResetPasswordRequest,
   ): Promise<ResponseSumType<void>> {
     try {
       await this.coreService.resetPassword(body);

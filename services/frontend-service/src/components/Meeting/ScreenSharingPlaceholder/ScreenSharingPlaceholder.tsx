@@ -14,10 +14,10 @@ import { getRandomNumber } from '../../../utils/functions/getRandomNumber';
 import styles from './ScreenSharingPlaceholder.module.scss';
 
 const images = [
-    '/images/winking-face.png',
-    '/images/eyes.png',
-    '/images/stars.png',
-    '/images/time-clock.png',
+    '/images/winking-face.webp',
+    '/images/eyes.webp',
+    '/images/stars.webp',
+    '/images/time-clock.webp',
 ];
 
 const Component = () => (

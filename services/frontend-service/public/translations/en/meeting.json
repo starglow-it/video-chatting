@@ -35,8 +35,8 @@
     "join": "Join now",
     "cancel": "Cancel",
     "saveSettings": "Save settings",
-    "leave": "Leave meeting",
-    "end": "End meeting",
+    "leave": "Leave Office",
+    "end": "Close Office",
     "send": "Send",
     "continue": "Continue",
     "kick": "Kick",
@@ -49,8 +49,9 @@
     "switchOff":"Switch OFF"
   },
   "endMeeting": {
-    "forHost": "Do you want to <b>Leave Meeting</b> or <b>End it for all</b>?",
-    "forAttendee": "Leave Meeting?"
+    "forHost": "Leave Office or Close it for everyone?",
+    "forAttendee": "Leave Meeting?",
+    "hint": "When you leave, guests can stay in your office and\nsend payments."
   },
   "invite": {
     "title": "Invite attendees",

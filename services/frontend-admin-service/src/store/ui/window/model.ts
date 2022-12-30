@@ -1,6 +1,4 @@
-import {
-	uiDomain 
-} from '../../domains';
+import { uiDomain } from '../../domains';
 
 export const $windowSizeStore = uiDomain.createStore({
 	width: 0,

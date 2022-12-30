@@ -33,7 +33,7 @@ import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.re
 
 // dtos
 import { CommonInstanceMeetingRestDTO } from '../../dtos/response/common-instance-meeting.dto';
-import {MeetingsService} from "./meetings.service";
+import { MeetingsService } from './meetings.service';
 
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
@@ -78,10 +78,11 @@ export class MeetingsController {
         templateId: userTemplate.templateId,
       });
 
-      const updatedUserTemplate = await this.meetingService.assignMeetingInstance({
-        userId: req.user.userId,
-        templateId: userTemplate.id,
-      });
+      const updatedUserTemplate =
+        await this.meetingService.assignMeetingInstance({
+          userId: req.user.userId,
+          templateId: userTemplate.id,
+        });
 
       await this.coreService.updateRoomRatingStatistic({
         templateId: commonTemplate.id,

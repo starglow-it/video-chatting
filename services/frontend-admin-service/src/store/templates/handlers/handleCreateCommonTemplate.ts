@@ -2,12 +2,8 @@ import {
 	ErrorState, ICommonTemplate 
 } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import {
-	createCommonTemplateUrl 
-} from '../../../const/urls/templates';
-import {
-	CommonTemplateState 
-} from '../../types';
+import { createCommonTemplateUrl } from '../../../const/urls/templates';
+import { CommonTemplateState } from '../../types';
 
 export const handleCreateCommonTemplate =
     async (): Promise<CommonTemplateState> => {

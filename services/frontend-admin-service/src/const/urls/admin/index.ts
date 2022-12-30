@@ -1,12 +1,6 @@
-import {
-	HttpMethods 
-} from 'shared-types';
-import {
-	authScope 
-} from 'shared-const';
-import {
-	serverUrl 
-} from '../common';
+import { HttpMethods } from 'shared-types';
+import { authScope } from 'shared-const';
+import { serverUrl } from '../common';
 
 export const loginAdminUrl = {
 	url: `${serverUrl}/${authScope}/admin`,

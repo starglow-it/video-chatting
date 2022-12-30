@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -36,6 +37,8 @@ const Component = () => {
 
     const { value: isAudioControlOpen, onToggleSwitch: handleToggleAudioControl } =
         useToggle(false);
+
+    const { isMobile } = useBrowserDetect();
 
     const handleMouseEnter = useCallback(() => {
         if (isBackgroundAudioActive) {
@@ -95,7 +98,10 @@ const Component = () => {
                     open={isAudioControlOpen}
                     anchorEl={buttonRef.current}
                 >
-                    <CustomPaper variant="black-glass" className={styles.audioControl}>
+                    <CustomPaper
+                        variant="black-glass"
+                        className={clsx(styles.audioControl, { [styles.mobile]: isMobile })}
+                    >
                         <CustomRange
                             className={styles.range}
                             color="primary"

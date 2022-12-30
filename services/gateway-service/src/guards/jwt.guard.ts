@@ -5,20 +5,18 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import {CoreService} from "../services/core/core.service";
+import { CoreService } from '../services/core/core.service';
 
 type TokenDataDto = { userId: string; exp: number };
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
-      private jwtService: JwtService,
-      private coreService: CoreService,
+    private jwtService: JwtService,
+    private coreService: CoreService,
   ) {}
 
-  async canActivate(
-    ctx: ExecutionContext,
-  ): Promise<boolean> {
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<Request>();
 
     let token: string;

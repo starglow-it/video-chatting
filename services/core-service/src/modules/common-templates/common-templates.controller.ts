@@ -26,7 +26,7 @@ import {
   EditTemplatePayload,
   UploadTemplateFilePayload,
   DeleteCommonTemplatePayload,
-  GetCommonTemplateByIdPayload,
+  GetCommonTemplateByIdPayload, PriceValues,
 } from 'shared-types';
 
 // dtos
@@ -79,7 +79,7 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
   async getCommonTemplates(
     @Payload()
-    { query, options = { skip: 6, limit: 0 } }: GetCommonTemplatesPayload,
+    { query, options }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
     try {
       return withTransaction(this.connection, async () => {
@@ -121,11 +121,11 @@ export class CommonTemplatesController {
           { $sort: { maxParticipants: 1 } },
         ];
 
-        if (options.limit) {
+        if (options?.limit) {
           aggregationPipeline.push({ $limit: options.limit });
         }
 
-        if (options.skip) {
+        if (options?.skip) {
           aggregationPipeline.push({ $skip: options.skip });
         }
 
@@ -173,8 +173,11 @@ export class CommonTemplatesController {
             populatePaths: [
               'businessCategories',
               'previewUrls',
+              'draftPreviewUrls',
               'sound',
               'author',
+              'draftSound',
+              'links'
             ],
           });
 
@@ -337,6 +340,8 @@ export class CommonTemplatesController {
 
         const screenShotUploadKey = `templates/${id}/images`;
 
+        this.awsService.deleteFolder(screenShotUploadKey);
+
         const screenShotPromises = previewResolutions.map(
           async (resolution) => {
             const screenShotData =
@@ -418,8 +423,6 @@ export class CommonTemplatesController {
             populatePaths: ['sound', 'draftPreviewUrls'],
           });
 
-        this.awsService.deleteFolder(screenShotUploadKey);
-
         return plainToInstance(CommonTemplateDTO, updatedTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
@@ -465,11 +468,14 @@ export class CommonTemplatesController {
       return withTransaction(this.connection, async (session) => {
         const { businessCategories, ...restData } = data;
 
+        const template = await this.commonTemplatesService.findCommonTemplateById({
+          templateId,
+          session,
+        });
+
         const updateData: Parameters<
           typeof this.commonTemplatesService.updateCommonTemplate
         >[0]['data'] = restData;
-
-        // create links
 
         if ('businessCategories' in data) {
           const businessCategoriesPromises = await Promise.all(
@@ -500,15 +506,68 @@ export class CommonTemplatesController {
           );
         }
 
-        const template = await this.commonTemplatesService.updateCommonTemplate(
+        if (updateData.type === PriceValues.Paid) {
+          if (template.stripeProductId) {
+            await this.paymentService.updateTemplateStripeProduct({
+              productId: template.stripeProductId,
+              data: {
+                name: updateData.name,
+                description: updateData.desciption,
+                priceInCents: updateData.priceInCents,
+              }
+            });
+          } else {
+            const stripeProduct = await this.paymentService.createTemplateStripeProduct({
+              name: updateData.name,
+              priceInCents: updateData.priceInCents,
+              description: updateData.description,
+            });
+
+            updateData.stripeProductId = stripeProduct.id;
+          }
+        }
+
+        if (updateData.type === PriceValues.Free) {
+          this.paymentService.deleteTemplateStripeProduct({
+            productId: template.stripeProductId,
+          });
+
+          updateData.stripeProductId = null;
+        }
+
+        const updatedTemplate = await this.commonTemplatesService.updateCommonTemplate(
           {
             query: {
               _id: templateId,
             },
             data: updateData,
             session,
+            populatePaths: ['draftSound', 'sound', 'links'],
           },
         );
+
+        await this.userTemplatesService.updateUserTemplates({
+          query: {
+            meetingInstance: null,
+            templateId: updatedTemplate.templateId,
+          },
+          data: {
+            description: updatedTemplate.description,
+            name: updatedTemplate.name,
+            usersPosition: updatedTemplate.usersPosition,
+            maxParticipants: updatedTemplate.maxParticipants,
+            links: updatedTemplate.links,
+            templateType: updatedTemplate.templateType,
+            isAudioAvailable: updatedTemplate.isAudioAvailable,
+            priceInCents: updatedTemplate.priceInCents,
+            type: updatedTemplate.type,
+            previewUrls: updatedTemplate.previewUrls,
+            businessCategories: updatedTemplate.businessCategories,
+            url: updatedTemplate.url,
+            sound: updatedTemplate.sound._id,
+          },
+          session,
+        });
 
         return plainToInstance(CommonTemplateDTO, template, {
           excludeExtraneousValues: true,

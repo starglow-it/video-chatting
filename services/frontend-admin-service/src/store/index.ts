@@ -1,3 +1,4 @@
+/* eslint-disable import/export */
 export * from './root';
 
 export * from './auth/model';

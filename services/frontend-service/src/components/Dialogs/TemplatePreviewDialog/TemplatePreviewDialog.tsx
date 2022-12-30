@@ -27,6 +27,7 @@ import {
 import {
 	ConditionalRender 
 } from 'shared-frontend/library/common/ConditionalRender';
+import {BusinessCategoryTagsClip} from "shared-frontend/library/common/BusinessCategoryTagsClip";
 
 // components
 import {
@@ -41,9 +42,6 @@ import {
 import {
 	TemplateGeneralInfo 
 } from '@components/Templates/TemplateGeneralInfo/TemplateGeneralInfo';
-import {
-	BusinessCategoryTagsClip 
-} from '@components/BusinessCategoryTagsClip/BusinessCategoryTagsClip';
 
 // icons
 import {
@@ -172,11 +170,17 @@ const Component = ({
 						className={styles.templateInfo}
 						gap={2}
 					>
-						<BusinessCategoryTagsClip
-							lines={1}
-							maxWidth={210}
-							tags={previewTemplate?.businessCategories}
-						/>
+						{previewTemplate?.businessCategories
+							? (
+								<BusinessCategoryTagsClip
+									lines={1}
+									maxWidth={210}
+									tags={previewTemplate?.businessCategories}
+								/>
+							)
+							: null
+						}
+
 						{isNeedToRenderTemplateInfo && (
 							<CustomGrid
 								container

@@ -1,19 +1,11 @@
 import {
 	memo, useMemo 
 } from 'react';
-import {
-	PropsWithClassName 
-} from 'shared-frontend/types';
+import { PropsWithClassName } from 'shared-frontend/types';
 
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomBox 
-} from 'shared-frontend/library/custom/CustomBox';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
 import styles from './ChartLegend.module.scss';
 
@@ -21,7 +13,7 @@ type ChartLegendProps = {
     totalNumber: number;
     dataSets: {
         label: string;
-        parts: number;
+        parts: number | number[];
         color: string;
     }[];
 };
@@ -36,8 +28,7 @@ type ChartLegendItemProps = {
 };
 
 const ChartLegendItem = ({
-	data, 
-	totalNumber 
+	data, totalNumber 
 }: ChartLegendItemProps) => {
 	const partsValue = useMemo(
 		() =>

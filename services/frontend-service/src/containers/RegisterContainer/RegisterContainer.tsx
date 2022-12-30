@@ -123,7 +123,7 @@ const Component = () => {
                         <CustomImage
                             width="28"
                             height="28"
-                            src="/images/hi-hand.png"
+                            src="/images/hi-hand.webp"
                             alt="hi-hand"
                         />
                     </CustomBox>

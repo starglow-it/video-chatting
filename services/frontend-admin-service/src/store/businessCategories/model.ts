@@ -1,12 +1,6 @@
-import {
-	QueryParams 
-} from 'shared-types';
-import {
-	rootDomain 
-} from '../domains';
-import {
-	BusinessCategoriesState 
-} from '../types';
+import { QueryParams} from 'shared-types';
+import {rootDomain, templatesDomain} from '../domains';
+import { BusinessCategoriesState } from '../types';
 
 export const $businessCategoriesStore =
     rootDomain.createStore<BusinessCategoriesState>({
@@ -21,3 +15,5 @@ export const getBusinessCategoriesFx = rootDomain.createEffect<
     QueryParams,
     BusinessCategoriesState
 >('getBusinessCategoriesFx');
+export const getBusinessCategoriesEvent = templatesDomain.createEvent<QueryParams>('getBusinessCategoriesEvent');
+

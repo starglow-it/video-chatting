@@ -1,4 +1,4 @@
-import React, {
+import {
 	memo, useCallback, useEffect, useMemo 
 } from 'react';
 import {
@@ -7,56 +7,26 @@ import {
 import {
 	generateKeyByLabel, getRandomHexColor 
 } from 'shared-utils';
-import {
-	MenuItem 
-} from '@mui/material';
+import { MenuItem } from '@mui/material';
 
-import {
-	IBusinessCategory 
-} from 'shared-types';
+import { IBusinessCategory } from 'shared-types';
 
 // shred
-import {
-	ActionButton 
-} from 'shared-frontend/library/common/ActionButton';
-import {
-	ErrorMessage 
-} from 'shared-frontend/library/common/ErrorMessage';
-import {
-	CustomAutocomplete 
-} from 'shared-frontend/library/custom/CustomAutocomplete';
-import {
-	CustomDropdown 
-} from 'shared-frontend/library/custom/CustomDropdown';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomInput 
-} from 'shared-frontend/library/custom/CustomInput';
-import {
-	CustomPaper 
-} from 'shared-frontend/library/custom/CustomPaper';
-import {
-	CustomTypography 
-} from 'shared-frontend/library/custom/CustomTypography';
-import {
-	ArrowDownIcon 
-} from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
-import {
-	ArrowLeftIcon 
-} from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
-import {
-	ArrowRightIcon 
-} from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
-import {
-	AutocompleteType 
-} from 'shared-frontend/types';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
+import { CustomAutocomplete } from 'shared-frontend/library/custom/CustomAutocomplete';
+import { CustomDropdown } from 'shared-frontend/library/custom/CustomDropdown';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
+import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
+import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
+import { AutocompleteType } from 'shared-frontend/types';
 
 // components
-import {
-	Translation 
-} from '@components/Translation/Translation';
+import { Translation } from '@components/Translation/Translation';
 
 import {
 	MAX_DESCRIPTION_LENGTH,
@@ -64,19 +34,17 @@ import {
 	MAX_PARTICIPANTS_NUMBER,
 } from 'shared-const';
 
-import {
-	CommonTemplateSettingsProps 
-} from './CommonTemplateSettings.types';
+import { CommonTemplateSettingsProps } from './CommonTemplateSettings.types';
 
 import styles from './CommonTemplateSettings.module.scss';
 
 const participantsNumberValues = Array.from(
 	{
-		length: MAX_PARTICIPANTS_NUMBER,
+		length: MAX_PARTICIPANTS_NUMBER - 1,
 	},
 	(_, i) => ({
-		id: `${i + 1}`,
-		value: i + 1,
+		id: `${i + 2}`,
+		value: i + 2,
 	}),
 );
 
@@ -91,9 +59,10 @@ const Component = ({
 		trigger,
 		setError,
 		setValue,
+		clearErrors,
 		formState: {
- errors 
-},
+			errors 
+		},
 	} = useFormContext();
 
 	const description = useWatch({
@@ -110,43 +79,48 @@ const Component = ({
 		name: 'participantsNumber',
 	});
 
-	useEffect(() => {
-		trigger('tags');
+	const nameErrorMessage: string = errors?.name?.[0]?.message || '';
+	const descriptionErrorMessage: string =
+		errors?.description?.[0]?.message || '';
+	const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
 
-		if (
-			!tags.find(
-				(value: AutocompleteType<IBusinessCategory> | string) =>
-					typeof value === 'string',
-			)
-		) {
-			return;
-		}
-		setValue(
-			'tags',
-			tags.map((item: AutocompleteType<IBusinessCategory> | string) =>
-				typeof item === 'string'
-					? {
-						label: item,
-						key: generateKeyByLabel(item),
-						value: item,
-						color: getRandomHexColor(50, 220),
-					}
-					: item,
-			),
-		);
+	useEffect(() => {
+		(async () => {
+			if (
+				!tags.find(
+					(value: AutocompleteType<IBusinessCategory> | string) =>
+						typeof value === 'string',
+				)
+			) {
+				return;
+			}
+
+			setValue(
+				'tags',
+				tags.map((item: AutocompleteType<IBusinessCategory> | string) =>
+					typeof item === 'string'
+						? {
+							label: item,
+							key: generateKeyByLabel(item),
+							value: item,
+							color: getRandomHexColor(50, 220),
+						}
+						: item,
+				),
+			);
+		})()
 	}, [tags]);
 
 	const handleClickNextStep = useCallback(async () => {
-		const response = await trigger(['name', 'description', 'tags']);
+		const isNextClickValidation = await trigger('tags');
 
-		if (response) {
+		if (isNextClickValidation) {
 			onNextStep();
 		}
 	}, []);
 
 	const {
-		onChange: onChangeName, 
-		...nameProps 
+		onChange: onChangeName, ...nameProps 
 	} = useMemo(
 		() => register('name'),
 		[],
@@ -156,8 +130,7 @@ const Component = ({
 		[],
 	);
 	const {
-		onChange: onChangeDescription, 
-		...descriptionProps 
+		onChange: onChangeDescription, ...descriptionProps 
 	} = useMemo(
 		() => register('description'),
 		[],
@@ -172,15 +145,19 @@ const Component = ({
 				0,
 				MAX_DESCRIPTION_LENGTH,
 			);
-			messageError = `maxLength.${MAX_DESCRIPTION_LENGTH}`
+			messageError = `maxLength.${MAX_DESCRIPTION_LENGTH}`;
 		}
 
-		setError('description', [
-			{
-				message: messageError,
-				type: 'focus',
-			},
-		]);
+		if (messageError) {
+			setError('description', [
+				{
+					message: messageError,
+					type: 'focus',
+				},
+			]);
+		} else {
+			clearErrors('description')
+		}
 
 		onChangeDescription(event);
 	}, []);
@@ -194,12 +171,16 @@ const Component = ({
 			messageError = `maxLength.${MAX_NAME_LENGTH}`;
 		}
 
-		setError('name', [
-			{
-				type: 'focus',
-				message: messageError,
-			},
-		]);
+		if (messageError) {
+			setError('name', [
+				{
+					type: 'focus',
+					message: messageError,
+				},
+			]);
+		} else {
+			clearErrors('name')
+		}
 
 		onChangeName(event);
 	}, []);
@@ -207,8 +188,7 @@ const Component = ({
 	const participantsNumberList = useMemo(
 		() =>
 			participantsNumberValues.map(({
-				id, 
-				value 
+				id, value 
 			}) => (
 				<MenuItem
 					key={id}
@@ -228,11 +208,6 @@ const Component = ({
 			})),
 		[categories],
 	);
-
-	const nameErrorMessage: string = errors?.name?.[0]?.message || '';
-	const descriptionErrorMessage: string =
-        errors?.description?.[0]?.message || '';
-	const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
 
 	return (
 		<CustomGrid
@@ -282,6 +257,12 @@ const Component = ({
 									onChange={handleChangeName}
 									{...nameProps}
 								/>
+								<ErrorMessage error={Boolean(nameErrorMessage)}>
+									<Translation
+										nameSpace="errors"
+										translation={nameErrorMessage}
+									/>
+								</ErrorMessage>
 							</CustomGrid>
 							<CustomGrid
 								item
@@ -333,9 +314,7 @@ const Component = ({
 							rows={3}
 							{...descriptionProps}
 						/>
-						<ErrorMessage
-							error={Boolean(descriptionErrorMessage)}
-						>
+						<ErrorMessage error={Boolean(descriptionErrorMessage)}>
 							<Translation
 								nameSpace="errors"
 								translation={descriptionErrorMessage}
@@ -371,9 +350,7 @@ const Component = ({
 							autoComplete
 							error={tagsErrorMessage}
 							errorComponent={
-								<ErrorMessage
-									error={Boolean(tagsErrorMessage)}
-								>
+								<ErrorMessage error={Boolean(tagsErrorMessage)}>
 									<Translation
 										nameSpace="errors"
 										translation={tagsErrorMessage}

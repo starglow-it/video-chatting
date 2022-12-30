@@ -1,20 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable } from '@nestjs/common';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { ConfigClientService } from '../../services/config/config.service';
 
 @Injectable()
 export class UploadService {
+  vultrUploadBucket: string;
+  vultrStorageHostname: string;
+
   constructor(
     private configService: ConfigClientService,
     @InjectS3() private readonly s3: S3,
   ) {}
 
-  async uploadFile(fileData: Buffer, key: string): Promise<string> {
-    const Bucket = await this.configService.get('vultrUploadBucket');
+  async onModuleInit() {
+    this.vultrUploadBucket = await this.configService.get<string>(
+        'vultrUploadBucket',
+    );
+    this.vultrStorageHostname = await this.configService.get<string>(
+        'vultrStorageHostname',
+    );
+  }
 
+  getUploadKeyFromUrl(url) {
+    return url.replace(`https://${this.vultrStorageHostname}/${this.vultrUploadBucket}/`, '');
+  }
+
+  async uploadFile(fileData: Buffer, key: string): Promise<string> {
     const params = {
-      Bucket,
+      Bucket: this.vultrUploadBucket,
       Key: key,
       Body: fileData,
       ACL: 'public-read',
@@ -30,10 +44,8 @@ export class UploadService {
   }
 
   async deleteFolder(keyFolder: string) {
-    const bucket = await this.configService.get<string>('vultrUploadBucket');
-
     const params = {
-      Bucket: bucket,
+      Bucket: this.vultrUploadBucket,
       Prefix: keyFolder,
     } as S3.Types.ListObjectsRequest;
 
@@ -41,7 +53,7 @@ export class UploadService {
 
     await this.s3
       .deleteObjects({
-        Bucket: bucket,
+        Bucket: this.vultrUploadBucket,
         Delete: {
           Objects: objects.Contents?.map(({ Key }) => ({ Key })) ?? [],
         },
@@ -50,9 +62,26 @@ export class UploadService {
 
     return this.s3
       .deleteObject({
-        Bucket: bucket,
+        Bucket: this.vultrUploadBucket,
         Key: keyFolder,
       })
       .promise();
+  }
+
+  async deleteResource(key: string) {
+    return new Promise((resolve, reject) => {
+      this.s3.deleteObject(
+          {
+            Bucket: this.vultrUploadBucket,
+            Key: key,
+          },
+          (err, data) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(data);
+          },
+      );
+    });
   }
 }

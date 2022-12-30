@@ -1,13 +1,7 @@
-import {
-	statisticsScope 
-} from 'shared-const';
-import {
-	HttpMethods 
-} from 'shared-types';
+import { statisticsScope } from 'shared-const';
+import { HttpMethods } from 'shared-types';
 
-import {
-	serverUrl 
-} from '../common';
+import { serverUrl } from '../common';
 
 export const usersStatisticsUrl = {
 	url: `${serverUrl}/${statisticsScope}/users`,
@@ -25,8 +19,7 @@ export const roomsStatisticsUrl = {
 };
 
 export const roomsRatingStatisticUrl = ({
-	basedOn, 
-	roomType 
+	basedOn, roomType 
 }) => ({
 	url: `${serverUrl}/${statisticsScope}/rating?basedOn=${basedOn}&roomType=${roomType}`,
 	method: HttpMethods.Get,
