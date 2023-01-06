@@ -4,7 +4,7 @@ import { AxiosRequestConfig } from 'axios';
 import { TokenPair, ApiError, SuccessResult, FailedResult } from 'shared-types';
 import setAuthCookies from './setAuthCookies';
 import { sendRequest } from './sendRequest';
-import { refreshUrl } from '../../utils/urls';
+import {authApiMethods} from "../../utils/urls";
 
 export interface IsomorphicRequestOptions extends AxiosRequestConfig {
     authRequest?: boolean;
@@ -12,6 +12,8 @@ export interface IsomorphicRequestOptions extends AxiosRequestConfig {
     refreshToken?: string;
     ctx?: NextPageContext;
 }
+
+const refreshUrl = authApiMethods.refreshUrl();
 
 export default async function sendRequestWithCredentials<Result, Error>(
     options: IsomorphicRequestOptions = {},

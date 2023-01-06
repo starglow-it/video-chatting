@@ -23,5 +23,5 @@ Update Production:
   script:
     - cd deploy/production
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build
+    - docker-compose --compatibility -p liveoffice_${CI_COMMIT_REF_NAME} -f docker-compose.${CI_COMMIT_REF_NAME}.yml up -d --build --force-recreate --remove-orphans
   interruptible: true

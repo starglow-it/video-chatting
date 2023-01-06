@@ -1,6 +1,6 @@
 import { ErrorState } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { profileTemplatesUrl } from '../../../utils/urls';
+import { profileApiMethods } from '../../../utils/urls';
 import { initialProfileTemplatesStore } from '../profileTemplates/const';
 import { GetProfileTemplatesPayload, GetProfileTemplatesResponse } from '../types';
 
@@ -8,8 +8,10 @@ export const handleFetchProfileTemplates = async ({
     limit,
     skip,
 }: GetProfileTemplatesPayload): Promise<GetProfileTemplatesResponse> => {
+    const profileTemplatesUrl = profileApiMethods.profileTemplatesUrl({ limit, skip });
+
     const response = await sendRequestWithCredentials<GetProfileTemplatesResponse, ErrorState>(
-        profileTemplatesUrl({ limit, skip }),
+        profileTemplatesUrl,
     );
 
     if (response.success) {

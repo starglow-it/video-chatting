@@ -33,8 +33,9 @@ export type QueryParams = {
   sort?: any;
   direction?: number;
   templateType?: string;
-
   type?: string;
+
+  updateKey?: string;
 };
 
 export interface IToken {

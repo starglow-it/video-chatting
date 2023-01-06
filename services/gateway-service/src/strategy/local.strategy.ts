@@ -5,12 +5,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CoreService } from '../services/core/core.service';
 import { INVALID_CREDENTIALS, USER_NOT_FOUND } from 'shared-const';
+import {UsersService} from "../modules/users/users.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private coreService: CoreService) {
+  constructor(private usersService: UsersService) {
     super({
       usernameField: 'email',
     });
@@ -18,7 +18,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(username: string, password: string): Promise<any> {
     try {
-      return await this.coreService.validateUser({
+      return await this.usersService.validateUser({
         email: username,
         password,
       });

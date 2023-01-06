@@ -43,13 +43,13 @@ const Component = ({
 	} = useLocalization('statistics');
 
 	const data = {
-		totalNumber: statistic.totalNumber ?? 0,
+		totalNumber: statistic.totalNumber ? statistic.totalNumber / 100 : 0,
 		totalLabel: `$${Math.round(statistic.totalNumber / 100)}`,
 		dataSets:
-            statistic?.data?.map(statisticsData => ({
+            statistic?.data?.filter(set => Array.isArray(set.value) ? true : set.value !== 0)?.map(statisticsData => ({
             	label: translation(`monetization.${statisticsData.label}`),
             	parts: Array.isArray(statisticsData.value)
-            		? Math.round(statisticsData.value / 100)
+            		? statisticsData.value.map(value => Math.round(value / 100))
             		: [Math.round(statisticsData.value / 100)],
             	color: statisticsData.color,
             	labels: [translation(`monetization.${statisticsData.label}`)],
@@ -121,7 +121,7 @@ const Component = ({
 					/>
 					<ChartLegend
 						dataSets={data.dataSets}
-						totalNumber={Math.round(data.totalNumber / 100)}
+						totalNumber={data.totalNumber}
 					/>
 				</CustomGrid>
 			)}

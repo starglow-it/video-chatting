@@ -1,16 +1,23 @@
 import {ErrorState, IUserTemplate} from 'shared-types';
 import { generateFormData } from '../../../utils/form/generateFormData';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { updateProfileTemplateUrl } from '../../../utils/urls';
+import { profileApiMethods } from '../../../utils/urls';
 import { UploadUserTemplateFilePayload, UploadUserTemplateFileResponse } from '../types';
 
 export const handleUploadUserTemplateFile = async (
-    data: UploadUserTemplateFilePayload,
+    params: UploadUserTemplateFilePayload,
 ): Promise<UploadUserTemplateFileResponse> => {
-    const formData = generateFormData(data);
+    const formData = generateFormData({
+        file: params.file,
+    });
+
+    const updateProfileTemplateBackgroundUrl = profileApiMethods.updateProfileTemplateBackgroundUrl(
+        { templateId: params.templateId },
+        { uploadKey: params.uploadKey }
+    );
 
     const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>({
-        ...updateProfileTemplateUrl({ templateId: data.templateId }),
+        ...updateProfileTemplateBackgroundUrl,
         data: formData,
     });
 

@@ -146,6 +146,12 @@ const Component = () => {
 		sendEnterWaitingRoomSocketEvent.pending,
 	);
 
+	const {
+		value: isJoinBlocked,
+		onSwitchOn: handleBlockJoin,
+		onSwitchOff: handleUnblockJoin
+	} = useToggle(false);
+
 	const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
 
@@ -201,6 +207,8 @@ const Component = () => {
 			return;
 		}
 
+		handleBlockJoin();
+
 		if (isAuraActive) {
 			const clonedStream = changeStream.clone();
 
@@ -217,6 +225,8 @@ const Component = () => {
 			const clonedStream = changeStream.clone();
 			setActiveStreamEvent(clonedStream);
 		}
+
+		handleUnblockJoin()
 	}, [isAuraActive, changeStream]);
 
 	const handleToggleMic = useCallback(() => {
@@ -430,7 +440,7 @@ const Component = () => {
                     </ConditionalRender>
                     <CustomButton
                         onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
-                        disabled={isEnterMeetingDisabled || isStreamRequested}
+                        disabled={isJoinBlocked || isEnterMeetingDisabled || isStreamRequested}
                         label={
                             <Translation
                                 nameSpace="meeting"

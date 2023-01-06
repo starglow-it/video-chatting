@@ -48,8 +48,10 @@ import { LocalAuthGuard } from '../../guards/local.guard';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 
 // services
-import { CoreService } from '../../services/core/core.service';
 import { AuthService } from './auth.service';
+import {UsersService} from "../users/users.service";
+
+// requests
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
@@ -60,7 +62,7 @@ export class AuthController {
   private readonly logger = new Logger();
   constructor(
     private authService: AuthService,
-    private coreService: CoreService,
+    private usersService: UsersService,
   ) {}
 
   @Post('/register')
@@ -73,7 +75,7 @@ export class AuthController {
     @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-      const isUserExists = await this.coreService.checkIfUserExists({
+      const isUserExists = await this.usersService.checkIfUserExists({
         email: body.email,
       });
 
@@ -109,7 +111,7 @@ export class AuthController {
     @Body() body: TokenRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-      const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
+      const isUserTokenExists = await this.usersService.checkIfUserTokenExists(
         body.token,
       );
 
@@ -144,7 +146,7 @@ export class AuthController {
     @Body() body: ResetLinkRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-      const user = await this.coreService.findUserByEmail({
+      const user = await this.usersService.findUserByEmail({
         email: body.email,
       });
 
@@ -180,7 +182,7 @@ export class AuthController {
     @Body() body: TokenRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-      const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
+      const isUserTokenExists = await this.usersService.checkIfUserTokenExists(
         body.token,
       );
 
@@ -215,7 +217,7 @@ export class AuthController {
     body: ResetPasswordRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-      await this.coreService.resetPassword(body);
+      await this.usersService.resetPassword(body);
 
       return {
         success: true,
@@ -243,7 +245,7 @@ export class AuthController {
   async login(
     @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
-    const isUserExists = await this.coreService.checkIfUserExists({
+    const isUserExists = await this.usersService.checkIfUserExists({
       email: body.email,
     });
 
@@ -251,7 +253,7 @@ export class AuthController {
       throw new DataValidationException(USER_NOT_FOUND);
     }
 
-    const user = await this.coreService.findUserByEmail({
+    const user = await this.usersService.findUserByEmail({
       email: body.email,
     });
 
@@ -284,7 +286,7 @@ export class AuthController {
   })
   async getProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
     try {
-      const user = await this.coreService.findUserById({
+      const user = await this.usersService.findUserById({
         userId: req.user.userId,
       });
 

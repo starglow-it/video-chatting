@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {Global, Module} from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { S3Module, S3ModuleOptions } from 'nestjs-s3';
 
@@ -11,11 +11,9 @@ import { ConfigClientService } from '../../services/config/config.service';
 
 import { ConfigModule } from '../../services/config/config.module';
 
-import { CoreModule } from '../../services/core/core.module';
-
+@Global()
 @Module({
   imports: [
-    CoreModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],

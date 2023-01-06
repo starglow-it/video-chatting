@@ -150,6 +150,7 @@ const Component = () => {
 
             return uploadTemplateFileFx({
                 file,
+                uploadKey: 'draftUrl',
                 templateId: template.id,
             });
         },

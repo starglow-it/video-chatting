@@ -1,26 +1,26 @@
 import React, {
-	memo, useCallback, useEffect, useState 
+	memo, useCallback, useEffect, useState
 } from 'react';
 import {
-	useStore 
+	useStore
 } from 'effector-react';
 import {
-	FormProvider, useForm, useWatch 
+	FormProvider, useForm, useWatch
 } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
 
 // hooks
 import {
-	useMultipleToggle 
+	useMultipleToggle
 } from '@hooks/useMultipleToggle';
 import {
-	useYupValidationResolver 
+	useYupValidationResolver
 } from '@hooks/useYupValidationResolver';
 
 // custom
 import {
-	CustomDatePicker 
+	CustomDatePicker
 } from '@library/custom/CustomDatePicker/CustomDatePicker';
 
 // components
@@ -28,24 +28,24 @@ import {
 	ValuesSwitcher,
 } from 'shared-frontend/library/common/ValuesSwitcher';
 import {
-	ScheduleTime 
+	ScheduleTime
 } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleTime';
 import {
-	Translation 
+	Translation
 } from '@library/common/Translation/Translation';
 import {
-	ScheduleAttendees 
+	ScheduleAttendees
 } from './ScheduleAttendees';
 
 // helpers
 import {
-	getDateTimestamp 
+	getDateTimestamp
 } from '../../../utils/time/getDateTimestamp';
 import {
-	parseTimestamp 
+	parseTimestamp
 } from '../../../utils/time/parseTimestamp';
 import {
-	getTimeZone 
+	getTimeZone
 } from '../../../utils/time/getTimeZone';
 
 // stores
@@ -60,7 +60,7 @@ import {
 
 // types
 import {
-	AppDialogsEnum 
+	AppDialogsEnum
 } from '../../../store/types';
 
 // validations
@@ -69,7 +69,7 @@ import {
 	simpleStringSchemaWithLength,
 } from '../../../validation/common';
 import {
-	emailSchema 
+	emailSchema
 } from '../../../validation/users/email';
 
 // styles
@@ -114,7 +114,7 @@ type FormType = {
 
 const Component = () => {
 	const {
-		scheduleMeetingDialog 
+		scheduleMeetingDialog
 	} = useStore($appDialogsStore);
 	const scheduleTemplateId = useStore($scheduleTemplateIdStore);
 	const profile = useStore($profileStore);
@@ -128,40 +128,37 @@ const Component = () => {
 
 	const {
 		values: {
- isSettingsOpen, 
-isInviteOpen 
+ isSettingsOpen,
+isInviteOpen
 },
 		onSwitchOn: handleOpenOption,
 	} = useMultipleToggle(['isSettingsOpen', 'isInviteOpen'], 'isSettingsOpen');
 
 	const resolver = useYupValidationResolver<FormType>(validationSchema);
 
-	const methods = useForm({
-		criteriaMode: 'all',
-		resolver,
-		defaultValues: {
-			timeZone: getTimeZone(),
-			startAt: '',
-			endAt: '',
-			comment: '',
-			currentUserEmail: '',
-			date:
-                profile.renewSubscriptionTimestampInSeconds &&
-                profile.maxMeetingTime === 0
-                	? new Date(
-                		profile.renewSubscriptionTimestampInSeconds * 1000,
-                	)
-                	: new Date(),
-		},
-	});
+    const methods = useForm({
+        criteriaMode: 'all',
+        resolver,
+        defaultValues: {
+            timeZone: getTimeZone(),
+            startAt: '',
+            endAt: '',
+            comment: '',
+            currentUserEmail: '',
+            date:
+                profile.subscriptionPlanKey !== "Business" && profile.renewSubscriptionTimestampInSeconds && profile.maxMeetingTime === 0
+                    ? new Date(profile.renewSubscriptionTimestampInSeconds * 1000)
+                    : new Date(),
+        },
+    });
 
 	const {
-		handleSubmit, 
-		control, 
-		setValue, 
-		register, 
-		trigger, 
-		reset 
+		handleSubmit,
+		control,
+		setValue,
+		register,
+		trigger,
+		reset
 	} =
         methods;
 
@@ -261,66 +258,53 @@ isInviteOpen
 		setUserEmails(prev => prev.filter(email => email !== oldEmail));
 	}, []);
 
-	return (
-		<CustomDialog
-			open={scheduleMeetingDialog}
-			onBackdropClick={handleClose}
-			contentClassName={styles.content}
-			maxWidth="lg"
-		>
-			<FormProvider {...methods}>
-				<form
-					onSubmit={onSubmit}
-					className={styles.form}
-				>
-					<CustomGrid
-						container
-						wrap="nowrap"
-					>
-						<CustomGrid className={styles.leftSide}>
-							<CustomDatePicker
-								className={styles.datePicker}
-								selected={selectedDate}
-								startDate={new Date()}
-								blockedDate={
-									profile.maxMeetingTime === 0
-										? new Date(
-											profile.renewSubscriptionTimestampInSeconds *
-                                                  1000,
-										)
-										: new Date()
-								}
-								onDateSelected={handleSelectDate}
-								{...restDateRegisterData}
-							/>
-						</CustomGrid>
-						<CustomDivider
-							orientation="vertical"
-							flexItem
-						/>
-						<CustomGrid
-							className={styles.rightSide}
-							container
-							direction="column"
-							alignItems="center"
-						>
-							<ValuesSwitcher
-								values={schedulePages}
-								activeValue={activeSchedulePage}
-								onValueChanged={handleChangeSchedulePage}
-								className={styles.switcher}
-							/>
-							<CustomGrid className={styles.optionsWrapper}>
-								<CustomFade
-									open={isSettingsOpen}
-									className={styles.optionItem}
-								>
-									<ScheduleTime
-										currentDate={selectedDate}
-										blockedDate={
-											profile.maxMeetingTime === 0
-												? new Date(
-													profile.renewSubscriptionTimestampInSeconds *
+    return (
+        <CustomDialog
+            open={scheduleMeetingDialog}
+            onBackdropClick={handleClose}
+            contentClassName={styles.content}
+            maxWidth="lg"
+        >
+            <FormProvider {...methods}>
+                <form onSubmit={onSubmit} className={styles.form}>
+                    <CustomGrid container wrap="nowrap">
+                        <CustomGrid className={styles.leftSide}>
+                            <CustomDatePicker
+                                className={styles.datePicker}
+                                selected={selectedDate}
+                                startDate={new Date()}
+                                blockedDate={
+                                    profile.subscriptionPlanKey !== "Business" && profile.maxMeetingTime === 0
+                                        ? new Date(
+                                              profile.renewSubscriptionTimestampInSeconds * 1000,
+                                          )
+                                        : new Date()
+                                }
+                                onDateSelected={handleSelectDate}
+                                {...restDateRegisterData}
+                            />
+                        </CustomGrid>
+                        <CustomDivider orientation="vertical" flexItem />
+                        <CustomGrid
+                            className={styles.rightSide}
+                            container
+                            direction="column"
+                            alignItems="center"
+                        >
+                            <ValuesSwitcher
+                                values={schedulePages}
+                                activeValue={activeSchedulePage}
+                                onValueChanged={handleChangeSchedulePage}
+                                className={styles.switcher}
+                            />
+                            <CustomGrid className={styles.optionsWrapper}>
+                                <CustomFade open={isSettingsOpen} className={styles.optionItem}>
+                                    <ScheduleTime
+                                        currentDate={selectedDate}
+                                        blockedDate={
+                                            profile.subscriptionPlanKey !== "Business" && profile.maxMeetingTime === 0
+                                                ? new Date(
+                                                      profile.renewSubscriptionTimestampInSeconds *
                                                           1000,
 												)
 												: new Date()

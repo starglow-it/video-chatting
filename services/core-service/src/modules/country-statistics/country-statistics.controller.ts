@@ -5,7 +5,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 
 // shared
-import { CoreBrokerPatterns, COUNTRY_STATISTICS_SERVICE } from 'shared-const';
+import {CoreBrokerPatterns, COUNTRY_STATISTICS_SERVICE, StatisticBrokerPatterns} from 'shared-const';
 import {
   ICountryStatistic,
   UpdateCountryStatisticsPayload,
@@ -52,7 +52,7 @@ export class CountryStatisticsController {
     }
   }
 
-  @MessagePattern({ cmd: CoreBrokerPatterns.UpdateCountryStatistics })
+  @MessagePattern({ cmd: StatisticBrokerPatterns.UpdateCountryStatistics })
   async updateCountryStatistics(
     @Payload() payload: UpdateCountryStatisticsPayload,
   ): Promise<ICountryStatistic> {

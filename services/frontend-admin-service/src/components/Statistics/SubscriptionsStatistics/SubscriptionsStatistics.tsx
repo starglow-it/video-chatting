@@ -37,7 +37,7 @@ const Component = ({
 	const data = {
 		totalNumber: statistic.totalNumber ?? 0,
 		dataSets:
-            statistic?.data?.map(statisticData => ({
+            statistic?.data?.filter(set => Array.isArray(set.value) ? true : set.value !== 0)?.map(statisticData => ({
             	label: statisticData.label,
             	parts: Array.isArray(statisticData.value)
             		? statisticData.value

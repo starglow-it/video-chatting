@@ -3,6 +3,8 @@ import Draggable, { ControlPosition, DraggableData, DraggableEvent } from 'react
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
+import {roundNumberToPrecision} from "shared-utils";
+
 // hooks
 import { useToggle } from '@hooks/useToggle';
 
@@ -55,24 +57,36 @@ const Component = ({
 
     const handleStopDrag = useCallback(
         (e: DraggableEvent, data: DraggableData) => {
-            setDraggablePosition({ x: data.x, y: data.y });
-            const leftPercentage =
-                Math.round(
-                    ((data.x + (contentRef.current?.clientWidth ?? 0) / 2) / width) * 10000,
-                ) / 100;
-            const topPercentage =
-                Math.round(
-                    ((data.y + (contentRef.current?.clientHeight ?? 0) / 2) / height) * 10000,
-                ) / 100;
-            onPositionChange?.({ id: stubId, left: leftPercentage, top: topPercentage });
+            setDraggablePosition({
+                x: data.x,
+                y: data.y,
+            });
+
+            const leftPercentage = roundNumberToPrecision(
+                (data.x + (contentRef.current?.clientWidth ?? 0) / 2) / width,
+                2,
+            );
+
+            const topPercentage = roundNumberToPrecision(
+                (data.y + (contentRef.current?.clientHeight ?? 0) / 2) / height,
+                2,
+            );
+
+            onPositionChange?.({
+                id: stubId,
+                left: leftPercentage,
+                top: topPercentage,
+            });
             onStopDrag();
         },
         [stubId, width, height, onPositionChange],
     );
 
     useLayoutEffect(() => {
-        const xPosition = width * position.left - (contentRef.current?.clientWidth ?? 0) / 2;
-        const yPosition = height * position.top - (contentRef.current?.clientHeight ?? 0) / 2;
+        const xPosition =
+            width * position.left - (contentRef.current?.clientWidth ?? 0) / 2;
+        const yPosition =
+            height * position.top - (contentRef.current?.clientHeight ?? 0) / 2;
 
         setDraggablePosition({
             x: xPosition,

@@ -90,7 +90,11 @@ const defaultValues: IUploadTemplateFormData = {
     customLink: '',
     tags: [],
     participantsNumber: 1,
-    participantsPositions: [{ left: 50, top: 50, id: '1' }],
+    participantsPositions: [{
+        left: 0.5,
+        top: 0.5,
+        id: '1',
+    }],
     isPublic: false,
 };
 
@@ -219,8 +223,8 @@ const Component = ({
             participantsNumber: template.maxParticipants,
             participantsPositions: template.usersPosition.length
                 ? template.usersPosition.map(({ bottom, left }) => ({
-                      top: 100 - bottom * 100,
-                      left: left * 100,
+                      top: 1 - bottom,
+                      left,
                       id: getRandomNumber(10000).toString(),
                   }))
                 : defaultValues.participantsPositions,
@@ -250,8 +254,8 @@ const Component = ({
         const newPositions = [...participantsPositions];
         for (let i = 0; i < participantsNumber - previousParticipantsNumber; i += 1) {
             newPositions.push({
-                left: 50,
-                top: 50,
+                left: 0.5,
+                top: 0.5,
                 id: getRandomNumber(10000).toString(),
             });
         }

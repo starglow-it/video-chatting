@@ -1,13 +1,13 @@
 .backgroundVideo {
   position: absolute;
-  width: 100%;
   height: 100%;
 }
 
 .player {
-  width: 100%;
   height: 100%;
   position: absolute;
   z-index: 10;
   background: transparent;
+  left: 50%;
+  transform: translateX(-50%);
 }

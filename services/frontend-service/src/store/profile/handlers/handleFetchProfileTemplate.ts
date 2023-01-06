@@ -1,11 +1,11 @@
 import {ErrorState, IUserTemplate} from 'shared-types';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { getProfileTemplateUrl } from '../../../utils/urls';
 
 import { Profile } from '../../types';
 
 import { initialProfileTemplateState } from '../profileTemplate/const';
+import {profileApiMethods} from "../../../utils/urls";
 
 export const handleFetchProfileTemplate = async ({
     templateId,
@@ -13,8 +13,10 @@ export const handleFetchProfileTemplate = async ({
     templateId: IUserTemplate['id'];
     userId: Profile['id'];
 }): Promise<IUserTemplate> => {
+    const getProfileTemplateUrl = profileApiMethods.getProfileTemplateUrl({ templateId });
+
     const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>(
-        getProfileTemplateUrl({ templateId }),
+        getProfileTemplateUrl,
     );
 
     if (response.success) {

@@ -6,7 +6,7 @@ import {
   GetUserProfileStatisticPayload,
   ICommonUserStatistic,
   ICountryStatistic,
-  IRoomsRatingStatistic,
+  IRoomsRatingStatistic, UpdateCountryStatisticsPayload, UpdateRoomRatingStatisticPayload,
 } from 'shared-types';
 import { CoreBrokerPatterns, StatisticBrokerPatterns } from 'shared-const';
 
@@ -42,5 +42,23 @@ export class StatisticsService {
     const pattern = { cmd: CoreBrokerPatterns.GetCountryStatistics };
 
     return this.coreService.sendCustom(pattern, {});
+  }
+
+  async updateRoomRatingStatistic(
+      payload: UpdateRoomRatingStatisticPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: StatisticBrokerPatterns.UpdateRoomRatingStatistic,
+    };
+
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async updateCountryStatistics(
+      payload: UpdateCountryStatisticsPayload,
+  ): Promise<ICountryStatistic> {
+    const pattern = { cmd: StatisticBrokerPatterns.UpdateCountryStatistics };
+
+    return this.coreService.sendCustom(pattern, payload);
   }
 }

@@ -211,7 +211,7 @@ export class UsersService {
       nextSubscriptionPlanKey: data.nextSubscriptionPlanKey,
       prevSubscriptionPlanKey: data.prevSubscriptionPlanKey,
       maxTemplatesNumber: data.maxTemplatesNumber,
-      maxMeetingTime: data.maxMeetingTime,
+      maxMeetingTime: data.subscriptionPlanKey === 'Business' && data.maxMeetingTime === 0 ? null : data.maxMeetingTime,
       isSubscriptionActive: data.isSubscriptionActive,
       stripeEmail: data.stripeEmail,
       isStripeEnabled: data.isStripeEnabled,

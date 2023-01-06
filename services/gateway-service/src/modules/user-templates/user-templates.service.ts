@@ -11,7 +11,7 @@ import {
   GetUserTemplateByTemplateIdPayload,
   GetUserTemplatePayload,
   GetUserTemplatesPayload,
-  UpdateUserTemplatePayload,
+  UpdateUserTemplatePayload, UpdateUserTemplateUsageNumberPayload,
 } from 'shared-types';
 import { UserTemplatesBrokerPatterns } from 'shared-const';
 
@@ -89,6 +89,22 @@ export class UserTemplatesService {
     payload: CountUserTemplatesPayload,
   ): Promise<{ count: number }> {
     const pattern = { cmd: UserTemplatesBrokerPatterns.CountUserTemplates };
+
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async updateUserTemplateUsageNumber(
+      payload: UpdateUserTemplateUsageNumberPayload,
+  ): Promise<any> {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.UpdateUserTemplateUsageNumber,
+    };
+
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async uploadUserTemplateFile(payload) {
+    const pattern = { cmd: UserTemplatesBrokerPatterns.UploadUserTemplateFile };
 
     return this.coreService.sendCustom(pattern, payload);
   }

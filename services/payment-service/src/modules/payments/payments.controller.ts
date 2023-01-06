@@ -797,7 +797,7 @@ export class PaymentsController {
         maxMeetingTime: planData.features.timeLimit,
         shouldShowTrialExpiredNotification: trialExpired,
         renewSubscriptionTimestampInSeconds:
-          (environment === 'demo'
+          (['production', 'demo'].includes(environment)
             ? addMonthsCustom(Date.now(), 1)
             : addDaysCustom(Date.now(), 1)
           ).getTime() / 1000,

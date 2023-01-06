@@ -1,12 +1,18 @@
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { ErrorState } from '../../types';
-import { deleteTemplateUrl } from '../../../utils/urls';
+import { templatesApiMethods } from '../../../utils/urls';
 import { DeleteCommonTemplatePayload } from '../types';
+import {ErrorState} from "shared-types";
 
 export const handleDeleteCommonTemplate = async ({ templateId }: DeleteCommonTemplatePayload) => {
-    const response = await sendRequestWithCredentials<void, ErrorState>({
-        ...deleteTemplateUrl({ templateId }),
-    });
+    if (templateId) {
+        const deleteTemplateUrl = templatesApiMethods.deleteTemplateUrl({ templateId });
 
-    return response.success;
+        const response = await sendRequestWithCredentials<void, ErrorState>({
+            ...deleteTemplateUrl,
+        });
+
+        return response.success;
+    }
+
+    return null;
 };

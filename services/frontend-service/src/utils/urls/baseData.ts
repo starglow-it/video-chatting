@@ -5,7 +5,7 @@ const { publicRuntimeConfig } = getConfig();
 
 export const serverUrl = isServer()
     ? `http://${publicRuntimeConfig.gatewayHost}:${publicRuntimeConfig.gatewayPort}/api`
-    : '/api';
+    : `${publicRuntimeConfig.frontendUrl}/api`;
 
 export const authScope = 'auth';
 export const meetingScope = 'meetings';

@@ -2,17 +2,21 @@ import {ErrorState, IUserTemplate} from 'shared-types';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { AddTemplateToUserEffectPayload, AddTemplateToUserEffectResponse } from '../types';
-import { addTemplateToUserUrl } from '../../../utils/urls';
+import { profileApiMethods } from '../../../utils/urls';
 
 export const handleAddTemplateToUser = async ({
     templateId,
 }: AddTemplateToUserEffectPayload): Promise<AddTemplateToUserEffectResponse> => {
-    const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>(
-        addTemplateToUserUrl({ templateId }),
-    );
+    if (templateId) {
+        const addTemplateToUserUrl = profileApiMethods.addTemplateToUserUrl({ templateId });
 
-    if (response.success) {
-        return response.result;
+        const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>(
+            addTemplateToUserUrl,
+        );
+
+        if (response.success && response.result) {
+            return response.result;
+        }
     }
 
     return null;

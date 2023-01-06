@@ -26,7 +26,7 @@ type RenderTextPayload = {
 };
 
 const renderText = ({
-	ctx, font, text, width, height 
+	ctx, font, text, width, height
 }: RenderTextPayload) => {
 	ctx.save();
 
@@ -85,13 +85,6 @@ type CustomDoughnutChartProps = {
     };
 };
 
-const defaultDataSetsSettings = {
-	spacing: 12,
-	borderRadius: 6,
-	borderWidth: 0,
-	hoverOffset: 10,
-};
-
 const defaultOptionsSettings = {
 	cutout: '75%',
 	radius: '100%',
@@ -143,13 +136,17 @@ const getChartData = (
 ): ChartData<'doughnut'> => ({
 	labels: dataSets.map(dataSet => dataSet.labels),
 	datasets: [
-		deepmerge(defaultDataSetsSettings, {
+		{
+			borderRadius: dataSets?.length === 1 ? 0 : 6,
+			borderWidth: 0,
+			hoverOffset: 10,
+			spacing: dataSets?.length === 1 ? 0 : 12,
 			label,
 			backgroundColor: dataSets.map(dataSet => dataSet.color),
 			data: dataSets.map(dataSet =>
 				dataSet.parts.reduce((acc, b) => acc + b, 0),
 			),
-		}),
+		}
 	],
 });
 
@@ -179,11 +176,12 @@ const getChartOptions = (
 									: 0
 							}% - ${model.raw}`;
 						}
-						return model.label.map((_, index) => {
+						return model.label.map((label, index) => {
 							const part = dataSets[model.dataIndex].parts[index];
+
 							return `${((part / totalNumber) * 100).toFixed(
 								2,
-							)}% - ${part}`;
+							)}% - ${label}`;
 						});
 					},
 				},
@@ -203,7 +201,7 @@ const Component = ({
 	height,
 	label,
 	data: {
-		totalLabel, totalNumber, dataSets 
+		totalLabel, totalNumber, dataSets
 	},
 }: PropsWithClassName<CustomDoughnutChartProps>) => {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);

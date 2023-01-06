@@ -53,10 +53,10 @@ services:
         - LIVEKIT_API_SECRET
     restart: unless-stopped
     ports:
-      - "7890:7880"
-      - "7891:7881"
-      - "7892:7882/udp"
-      - "6790:6789"
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+      - "6789:6789"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=liveoffice_traefik"
@@ -64,7 +64,6 @@ services:
       - "traefik.http.routers.livekit.entrypoints=https"
       - "traefik.http.routers.livekit.tls=true"
       - "traefik.http.services.livekit.loadbalancer.server.port=7880"
-      - "io.portainer.accesscontrol.public"
     networks:
       - liveoffice_production
       - traefik
@@ -109,6 +108,35 @@ services:
     networks:
       - traefik
       - liveoffice_production
+
+  frontend-admin-service:
+    container_name: production_frontend-admin
+    build:
+      context: ../../
+      dockerfile: services/frontend-admin-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+    restart: unless-stopped
+    environment:
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
+      - FRONTEND_URL=https://admin.app.theliveoffice.com
+      - GATEWAY_PORT=3000
+      - GATEWAY_HOST=gateway-service
+      - DEFAULT_SERVER_IP
+      - VULTR_STORAGE_HOSTNAME
+    ports:
+      - '9000:9000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=liveoffice_traefik"
+      - "traefik.http.routers.front_admin.rule=Host(`admin.app.theliveoffice.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_admin.entrypoints=https"
+      - "traefik.http.routers.front_admin.tls=true"
+      - "traefik.http.services.front_admin.loadbalancer.server.port=9000"
+    networks:
+      - liveoffice_production
+      - traefik
 
   gateway-service:
     container_name: production_gateway

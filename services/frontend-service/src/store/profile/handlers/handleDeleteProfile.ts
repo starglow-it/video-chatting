@@ -1,10 +1,12 @@
 import { ErrorState } from 'shared-types';
-import { deleteProfileUrl } from '../../../utils/urls';
+import { profileApiMethods } from '../../../utils/urls';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { deleteAuthCookies } from '../../../helpers/http/destroyCookies';
 
 export const handleDeleteProfile = async (): Promise<void> => {
+    const deleteProfileUrl = profileApiMethods.deleteProfileUrl();
+
     await sendRequestWithCredentials<void, ErrorState>(deleteProfileUrl);
 
     deleteAuthCookies(undefined);

@@ -1,8 +1,7 @@
 import { ErrorState, ICommonTemplate } from 'shared-types';
 
 // utils
-import { updateTemplateUrl } from 'src/utils/urls';
-import { generateFormData } from 'src/utils/form/generateFormData';
+import { templatesApiMethods } from 'src/utils/urls';
 
 // types
 import { EditTemplatePayload, EditTemplateResponse } from '../types';
@@ -14,17 +13,17 @@ export const handleEditTemplate = async ({
     templateId,
     data,
 }: EditTemplatePayload): Promise<EditTemplateResponse> => {
-    const formData = generateFormData(data);
+    if (templateId) {
+        const updateTemplateUrl = templatesApiMethods.updateTemplateUrl({ templateId });
 
-    const response = await sendRequestWithCredentials<ICommonTemplate | null, ErrorState>({
-        ...updateTemplateUrl({ templateId }),
-        data: formData,
-    });
+        const response = await sendRequestWithCredentials<ICommonTemplate | null, ErrorState>({
+            ...updateTemplateUrl,
+            data: data,
+        });
 
-    if (response.success && response.result) {
-        return {
-            ...response.result,
-        };
+        if (response.success && response.result) {
+            return response.result;
+        }
     }
 
     return null;

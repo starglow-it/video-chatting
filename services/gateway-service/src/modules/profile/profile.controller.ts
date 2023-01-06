@@ -30,9 +30,9 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { UpdateProfileRequest } from '../../dtos/requests/update-profile.request';
 
 // services
-import { CoreService } from '../../services/core/core.service';
 import { NotificationsService } from '../../services/notifications/notifications.service';
 import { ConfigClientService } from '../../services/config/config.service';
+import {UsersService} from "../users/users.service";
 
 @Controller('profile')
 export class ProfileController {
@@ -41,7 +41,7 @@ export class ProfileController {
   constructor(
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
-    private coreService: CoreService,
+    private usersService: UsersService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -55,7 +55,7 @@ export class ProfileController {
     description: 'Forbidden',
   })
   async getProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
-    const user = await this.coreService.findUserById({
+    const user = await this.usersService.findUserById({
       userId: req.user.userId,
     });
 
@@ -79,7 +79,7 @@ export class ProfileController {
     @Body() data: UpdateProfileRequest,
     @Request() req,
   ): Promise<ResponseSumType<ICommonUser>> {
-    const user = await this.coreService.findUserAndUpdate({
+    const user = await this.usersService.findUserAndUpdate({
       userId: req.user.userId,
       data,
     });
@@ -101,11 +101,11 @@ export class ProfileController {
     description: 'Forbidden',
   })
   async deleteProfile(@Request() req): Promise<ResponseSumType<void>> {
-    const targetUser = await this.coreService.findUserById({
+    const targetUser = await this.usersService.findUserById({
       userId: req.user.userId,
     });
 
-    await this.coreService.deleteUser({
+    await this.usersService.deleteUser({
       userId: req.user.userId,
     });
 
@@ -144,7 +144,7 @@ export class ProfileController {
     try {
       const frontendUrl = await this.configService.get('frontendUrl');
 
-      const user = await this.coreService.findUserByEmail({
+      const user = await this.usersService.findUserByEmail({
         email: req.user.email,
       });
 
@@ -167,7 +167,7 @@ export class ProfileController {
         },
       });
 
-      const updatedUser = await this.coreService.findUserAndUpdate({
+      const updatedUser = await this.usersService.findUserAndUpdate({
         userId: req.user.userId,
         data: updateEmail,
       });
@@ -203,7 +203,7 @@ export class ProfileController {
     @Request() req,
   ): Promise<ResponseSumType<any>> {
     try {
-      await this.coreService.validateUser({
+      await this.usersService.validateUser({
         userId: req.user.userId,
         password: verifyData.password,
       });
@@ -239,7 +239,7 @@ export class ProfileController {
     @Request() req,
   ): Promise<ResponseSumType<any>> {
     try {
-      await this.coreService.validateUserCode({
+      await this.usersService.validateUserCode({
         code: verifyData.code,
         userId: req.user.userId,
       });
@@ -275,7 +275,7 @@ export class ProfileController {
     @Request() req,
   ): Promise<ResponseSumType<any>> {
     try {
-      const isUserWithEmailExists = await this.coreService.checkIfUserExists({
+      const isUserWithEmailExists = await this.usersService.checkIfUserExists({
         email: verifyData.email,
       });
 
@@ -283,13 +283,13 @@ export class ProfileController {
         throw new BadRequestException(USER_EXISTS);
       }
 
-      const user = await this.coreService.findUserById({
+      const user = await this.usersService.findUserById({
         userId: req.user.userId,
       });
 
       const code = generateVerificationCode(7);
 
-      await this.coreService.setVerificationCode({
+      await this.usersService.setVerificationCode({
         code,
         userId: req.user.userId,
       });
@@ -336,12 +336,12 @@ export class ProfileController {
     @Request() req,
   ) {
     try {
-      await this.coreService.validateUser({
+      await this.usersService.validateUser({
         userId: req.user.userId,
         password: updateData.currentPassword,
       });
 
-      const isSamePassword = await this.coreService.comparePasswords({
+      const isSamePassword = await this.usersService.comparePasswords({
         userId: req.user.userId,
         password: updateData.newPassword,
       });
@@ -350,7 +350,7 @@ export class ProfileController {
         throw new BadRequestException(SAME_PASSWORD);
       }
 
-      await this.coreService.updateUserPassword({
+      await this.usersService.updateUserPassword({
         userId: req.user.userId,
         password: updateData.newPassword,
       });

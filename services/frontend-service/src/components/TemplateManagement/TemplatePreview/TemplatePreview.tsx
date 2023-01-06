@@ -46,7 +46,7 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
                     isDraggable={false}
                     stubId={id}
                     index={index}
-                    position={{ top: top / 100, left: left / 100 }}
+                    position={{ top, left }}
                 />
             )),
         [participantsPositions],

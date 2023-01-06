@@ -1,5 +1,4 @@
 import React, { useRef, memo, useEffect } from 'react';
-import clsx from 'clsx';
 
 // types
 import { CustomVideoPlayerProps } from './types';
@@ -55,7 +54,7 @@ const Component = ({ isPlaying, isMuted, volume, src, className }: CustomVideoPl
         <div className={className}>
             <video
                 ref={videoRef}
-                className={clsx(styles.video, className)}
+                className={styles.video}
                 autoPlay
                 loop
                 playsInline

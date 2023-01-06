@@ -84,6 +84,7 @@ export class CommonTemplatesController {
     try {
       return withTransaction(this.connection, async () => {
         const aggregationPipeline: PipelineStage[] = [
+          { $sort: { maxParticipants: 1, _id: 1 } },
           { $match: query },
           {
             $lookup: {
@@ -118,7 +119,6 @@ export class CommonTemplatesController {
               as: 'userTemplate',
             },
           },
-          { $sort: { maxParticipants: 1 } },
         ];
 
         if (options?.limit) {
@@ -340,8 +340,6 @@ export class CommonTemplatesController {
 
         const screenShotUploadKey = `templates/${id}/images`;
 
-        this.awsService.deleteFolder(screenShotUploadKey);
-
         const screenShotPromises = previewResolutions.map(
           async (resolution) => {
             const screenShotData =
@@ -370,48 +368,43 @@ export class CommonTemplatesController {
           templateType,
         };
 
-        const promises = [];
-
         if (templateType === 'video') {
-          const fileDataPromise = this.transcodeService.getFileData({ url });
+          const fileData = await this.transcodeService.getFileData({ url });
 
-          const transcodeVideoPromise = this.transcodeService.transcodeVideo({
+          const videoUrl = await this.transcodeService.transcodeVideo({
             url,
             key: `${uploadKey}/videos/${uuidv4()}.mp4`,
           });
 
-          const extractSoundPromise =
-            this.transcodeService.extractTemplateSound({
-              url,
-              key: `${uploadKey}/sounds/${uuidv4()}.mp3`,
+          if (fileData.hasAudio) {
+            const soundUrl =
+                await this.transcodeService.extractTemplateSound({
+                  url,
+                  key: `${uploadKey}/sounds/${uuidv4()}.mp3`,
+                });
+
+            const soundData = await this.templateSoundService.create({
+              data: {
+                fileName,
+                size: fileData.size,
+                mimeType: 'audio/mpeg',
+                url: soundUrl,
+                uploadKey: `${uploadKey}/sounds/${uuidv4()}.mp3`
+              },
+              session,
             });
-          promises.push(
-            ...[fileDataPromise, transcodeVideoPromise, extractSoundPromise],
-          );
-        }
 
-        const [fileData, videoUrl, soundUrl] = await Promise.all(promises);
+            updateData.sound = soundData._id;
+          }
 
-        const previewImages = await Promise.all(screenShotPromises);
-
-        updateData.draftPreviewUrls = previewImages.map((image) => image._id);
-
-        if (templateType === 'video') {
-          const [soundData] = await this.templateSoundService.create({
-            data: {
-              fileName,
-              size: fileData.size,
-              mimeType: 'audio/mpeg',
-              url: soundUrl,
-            },
-            session,
-          });
-
-          updateData.sound = soundData._id;
           updateData.draftUrl = videoUrl;
         } else {
           updateData.draftUrl = url;
         }
+
+        const previewImages = await Promise.all(screenShotPromises);
+
+        updateData.draftPreviewUrls = previewImages.map((image) => image._id);
 
         const updatedTemplate =
           await this.commonTemplatesService.updateCommonTemplate({
@@ -564,7 +557,7 @@ export class CommonTemplatesController {
             previewUrls: updatedTemplate.previewUrls,
             businessCategories: updatedTemplate.businessCategories,
             url: updatedTemplate.url,
-            sound: updatedTemplate.sound._id,
+            sound: updatedTemplate?.sound?._id,
           },
           session,
         });

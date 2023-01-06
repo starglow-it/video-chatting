@@ -28,7 +28,7 @@ export const initialProfileState = {
     isStripeEnabled: false,
     isSubscriptionActive: false,
     maxTemplatesNumber: 0,
-    maxMeetingTime: 0,
+    maxMeetingTime: null,
     wasSuccessNotificationShown: false,
     country: '',
     isProfessionalTrialAvailable: false,

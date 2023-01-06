@@ -19,7 +19,7 @@ export class TemplateSoundController {
   async createSound(@Payload() payload: CreateTemplateSoundPayload) {
     try {
       return withTransaction(this.connection, async (session) => {
-        const [soundData] = await this.templateSoundService.create({
+        const soundData = await this.templateSoundService.create({
           data: {
             fileName: payload.fileName,
             url: payload.url,

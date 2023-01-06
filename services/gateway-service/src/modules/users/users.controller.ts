@@ -34,7 +34,6 @@ import {
 
 // services
 import { NotificationsService } from '../../services/notifications/notifications.service';
-import { CoreService } from '../../services/core/core.service';
 import { ConfigClientService } from '../../services/config/config.service';
 import { UploadService } from '../upload/upload.service';
 import { TemplatesService } from '../templates/templates.service';
@@ -58,6 +57,8 @@ import { parseDateObject } from '../../utils/dateHelpers/parseDateObject';
 import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
 import { generateIcsEventData } from '../../utils/generateIcsEventData';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
+import {StatisticsService} from "../statistics/statistics.service";
+import { UsersService } from './users.service';
 
 @Controller('/users')
 export class UsersController {
@@ -68,12 +69,13 @@ export class UsersController {
   constructor(
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
-    private coreService: CoreService,
     private uploadService: UploadService,
     private templatesService: TemplatesService,
     private userTemplatesService: UserTemplatesService,
     private paymentsService: PaymentsService,
     private socketService: SocketService,
+    private statisticsService: StatisticsService,
+    private usersService: UsersService,
   ) {}
 
   async onModuleInit() {
@@ -97,7 +99,7 @@ export class UsersController {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };
 
-      const users = await this.coreService.findUsers({
+      const users = await this.usersService.findUsers({
         query,
         options: {
           skip,
@@ -108,7 +110,7 @@ export class UsersController {
         },
       });
 
-      const usersCount = await this.coreService.countUsers(query);
+      const usersCount = await this.usersService.countUsers(query);
 
       return {
         success: true,
@@ -146,7 +148,7 @@ export class UsersController {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };
 
-      const { list, count } = await this.coreService.searchUsers({
+      const { list, count } = await this.usersService.searchUsers({
         query,
         options: {
           skip,
@@ -265,7 +267,7 @@ export class UsersController {
     @Param('userId') userId: string,
   ): Promise<ResponseSumType<ICommonUser>> {
     try {
-      const user = await this.coreService.findUserById({
+      const user = await this.usersService.findUserById({
         userId,
       });
 
@@ -296,13 +298,13 @@ export class UsersController {
     @Param('userId') userId: string,
   ): Promise<ResponseSumType<void>> {
     try {
-      const user = await this.coreService.findUserById({ userId });
+      const user = await this.usersService.findUserById({ userId });
 
-      await this.coreService.deleteUser({
+      await this.usersService.deleteUser({
         userId,
       });
 
-      await this.coreService.updateCountryStatistics({
+      await this.statisticsService.updateCountryStatistics({
         key: user.country,
         value: -1,
       });
@@ -359,7 +361,7 @@ export class UsersController {
     @Query('value', ParseBoolPipe) value: boolean,
   ): Promise<ResponseSumType<ICommonUser>> {
     try {
-      const user = await this.coreService.manageUserRights({
+      const user = await this.usersService.manageUserRights({
         userId,
         key,
         value,
@@ -429,7 +431,7 @@ export class UsersController {
     @Request() req,
   ): Promise<void> {
     try {
-      const user = await this.coreService.findUserById({
+      const user = await this.usersService.findUserById({
         userId: req.user.userId,
       });
 
@@ -506,7 +508,7 @@ export class UsersController {
     },
   ) {
     try {
-      const senderUser = await this.coreService.findUserById({
+      const senderUser = await this.usersService.findUserById({
         userId: req.user.userId,
       });
 

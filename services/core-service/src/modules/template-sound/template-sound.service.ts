@@ -15,8 +15,10 @@ export class TemplateSoundService {
     private templateSound: Model<TemplateSoundFileDocument>,
   ) {}
 
-  async create({ data, session }: { data: any; session: ITransactionSession }) {
-    return this.templateSound.create([data], { session: session?.session });
+  async create({ data, session }: { data: any; session: ITransactionSession }): Promise<TemplateSoundFileDocument> {
+    const [newSound] = await this.templateSound.create([data], { session: session?.session });
+
+    return newSound;
   }
 
   async deleteSound({

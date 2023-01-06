@@ -22,16 +22,24 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { EntityList, ResponseSumType, ICommonTemplate } from 'shared-types';
-import { TemplatesService } from './templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadService } from '../upload/upload.service';
-import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
-import { CoreService } from '../../services/core/core.service';
-import { IUserTemplate, IUpdateTemplate } from 'shared-types';
-import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
+
+// types
+import { EntityList, ResponseSumType, ICommonTemplate, IUserTemplate, IUpdateTemplate } from 'shared-types';
+
+// services
+import { TemplatesService } from './templates.service';
+import { UploadService } from '../upload/upload.service';
+
+// dtos
+import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
+
+// utils
+import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
+
+// guards
+import { JwtAuthGuard } from '../../guards/jwt.guard';
 
 @Controller('templates')
 export class TemplatesController {
@@ -39,7 +47,6 @@ export class TemplatesController {
   constructor(
     private templatesService: TemplatesService,
     private uploadService: UploadService,
-    private coreService: CoreService,
   ) {}
 
   @Get('/')
@@ -145,15 +152,9 @@ export class TemplatesController {
         };
       }
 
-      if (Object.keys(templateData).length >= 1) {
-        await this.templatesService.updateTemplate({
-          templateId,
-          data: templateData,
-        });
-      }
-
-      const template = await this.templatesService.getCommonTemplateById({
+      const template =  await this.templatesService.updateTemplate({
         templateId,
+        data: templateData,
       });
 
       return {
@@ -293,7 +294,7 @@ export class TemplatesController {
 
       const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 
-      const updatedTemplate = await this.coreService.uploadTemplateFile({
+      const updatedTemplate = await this.templatesService.uploadTemplateFile({
         url,
         id: templateId,
         mimeType: file.mimetype,
@@ -362,7 +363,7 @@ export class TemplatesController {
         uploadKey,
       );
 
-      const soundData = await this.coreService.createTemplateSound({
+      const soundData = await this.templatesService.createTemplateSound({
         fileName: `${fileName}.${extension}`,
         mimeType: file.mimetype,
         url: soundUrl,

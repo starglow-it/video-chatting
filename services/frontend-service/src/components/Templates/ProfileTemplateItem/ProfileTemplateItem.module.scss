@@ -79,6 +79,11 @@
 }
 
 .tooltip {
+  max-width: rem(293px);
+  height: auto;
+  white-space: initial;
+}
+.popper {
   z-index: 1500;
 }
 

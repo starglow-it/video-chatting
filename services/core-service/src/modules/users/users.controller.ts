@@ -155,10 +155,10 @@ export class UsersController {
       this.connection,
       async (session: ITransactionSession) => {
         try {
-          const environment = await this.configService.get('environment');
+          const environment = await this.configService.get<string>('environment');
 
           const renewSubscriptionTimestampInSeconds =
-            (environment === 'demo'
+            (['production', 'demo'].includes(environment)
               ? addMonthsCustom(Date.now(), 1)
               : addDaysCustom(Date.now(), 1)) / 1000;
 

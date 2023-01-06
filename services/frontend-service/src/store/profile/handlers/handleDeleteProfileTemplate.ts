@@ -1,15 +1,17 @@
 import {ErrorState, IUserTemplate} from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 
-import { deleteProfileTemplatesUrl } from '../../../utils/urls';
+import { profileApiMethods } from '../../../utils/urls';
 
 export const handleDeleteProfileTemplate = async ({
     templateId,
 }: {
     templateId: IUserTemplate['id'];
 }): Promise<void> => {
+    const deleteProfileTemplatesUrl = profileApiMethods.deleteProfileTemplatesUrl({ templateId });
+
     const response = await sendRequestWithCredentials<void, ErrorState>(
-        deleteProfileTemplatesUrl({ templateId }),
+        deleteProfileTemplatesUrl,
     );
 
     if (response.success) {

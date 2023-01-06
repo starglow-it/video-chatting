@@ -5,4 +5,5 @@ export enum StatisticBrokerPatterns {
   UpdateMonetizationStatistic = 'update_monetization_statistic',
   GetUserProfileStatistic = 'get_user_profile_statistic',
   UpdateUserProfileStatistic = 'update_user_profile_statistic',
+  UpdateCountryStatistics = 'update_country_statistics',
 }

@@ -40,12 +40,12 @@ import { UserCredentialsRequest } from '../../dtos/requests/userCredentials.requ
 import { LocalAuthGuard } from '../../guards/local.guard';
 
 // services
-import { CoreService } from '../../services/core/core.service';
 import { AuthService } from './auth.service';
 
 // exception
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
+import {UsersService} from "../users/users.service";
 
 @ApiTags('auth/admin')
 @Controller('auth/admin')
@@ -54,7 +54,7 @@ export class AdminAuthController {
 
   constructor(
     private authService: AuthService,
-    private coreService: CoreService,
+    private usersService: UsersService,
   ) {}
 
   @UseGuards(LocalAuthGuard)
@@ -67,7 +67,7 @@ export class AdminAuthController {
   async loginAdmin(
     @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
-    const isUserExists = await this.coreService.checkIfUserExists({
+    const isUserExists = await this.usersService.checkIfUserExists({
       email: body.email,
     });
 
@@ -75,7 +75,7 @@ export class AdminAuthController {
       throw new DataValidationException(USER_NOT_FOUND);
     }
 
-    const user = await this.coreService.findUserByEmail({
+    const user = await this.usersService.findUserByEmail({
       email: body.email,
     });
 
@@ -104,7 +104,7 @@ export class AdminAuthController {
   })
   async getAdminProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
     try {
-      const user = await this.coreService.findUserById({
+      const user = await this.usersService.findUserById({
         userId: req.user.userId,
       });
 

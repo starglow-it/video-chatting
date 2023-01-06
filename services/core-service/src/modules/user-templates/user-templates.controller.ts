@@ -430,6 +430,7 @@ export class UserTemplatesController {
 
         if (userTemplate?.author?._id?.toString?.() === userId) {
           const updateCommonTemplateData = {
+            ...filteredData,
             isPublic: userTemplate.isPublic,
           };
           await this.commonTemplatesService.updateCommonTemplate({
@@ -468,8 +469,6 @@ export class UserTemplatesController {
 
       const screenShotUploadKey = `templates/${id}/images`;
 
-      this.awsService.deleteFolder(screenShotUploadKey);
-
       const screenShotPromises = previewResolutions.map(async (resolution) => {
         const screenShotData =
           await this.transcodeService.createVideoScreenShots({
@@ -493,25 +492,6 @@ export class UserTemplatesController {
       const previewImages = await Promise.all(screenShotPromises);
 
       const imageIds = previewImages.map((image) => image._id);
-
-      const userTemplate = await this.userTemplatesService.findUserTemplateById(
-        {
-          id,
-          session,
-        },
-      );
-
-      await this.commonTemplatesService.updateCommonTemplate({
-        query: {
-          templateId: userTemplate.templateId,
-        },
-        data: {
-          templateType: mimeType.includes('image') ? 'image' : 'video',
-          draftPreviewUrls: imageIds,
-          draftUrl: url,
-        },
-        session,
-      });
 
       const template = await this.userTemplatesService.updateUserTemplate({
         query: {

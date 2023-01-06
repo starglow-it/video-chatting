@@ -2,12 +2,14 @@ import { ErrorState } from 'shared-types';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { Profile } from '../../types';
-import { postProfileUrl } from '../../../utils/urls';
+import { profileApiMethods } from '../../../utils/urls';
 import { CommonProfileResponse, UpdateProfilePayload } from '../types';
 
 export const handleUpdateProfileInfo = async (
     params: UpdateProfilePayload,
 ): Promise<CommonProfileResponse> => {
+    const postProfileUrl = profileApiMethods.postProfileUrl();
+
     const response = await sendRequestWithCredentials<Profile, ErrorState>({
         ...postProfileUrl,
         data: params,

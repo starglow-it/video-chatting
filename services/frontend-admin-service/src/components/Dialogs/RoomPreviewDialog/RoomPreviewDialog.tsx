@@ -27,6 +27,7 @@ import { PaymentIcon } from 'shared-frontend/icons/OtherIcons/PaymentIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 import {
+	$activeTemplateIdStore,
 	$commonTemplates,
 	$roomPreviewDialogStore,
 	closeAdminDialogEvent,
@@ -37,6 +38,7 @@ import styles from './RoomPreviewDialog.module.scss';
 import { AdminDialogsEnum } from '../../../store/types';
 
 const RoomPreviewDialog = memo(() => {
+	const activeTemplateId = useStore($activeTemplateIdStore);
 
 	const previewTemplate = useStoreMap({
 		store: $commonTemplates,

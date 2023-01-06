@@ -349,9 +349,7 @@ export class MeetingsGateway
                 name: `meeting:finish:${plainMeeting.id}`,
                 ts:
                   meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-                callback: this.endMeeting.bind(this, client, {
-                  meetingId: meeting._id,
-                }),
+                callback: this.endMeeting.bind(this, { meetingId: meeting._id }),
               });
             }
 
@@ -447,8 +445,6 @@ export class MeetingsGateway
       const template = await this.coreService.findMeetingTemplateById({
         id: meeting.templateId,
       });
-
-      console.log(template.user);
 
       if (template.user) {
         const mainUser = await this.coreService.findUserById({
@@ -1039,8 +1035,8 @@ export class MeetingsGateway
 
   @SubscribeMessage(MeetingSubscribeEvents.OnEndMeeting)
   async endMeeting(
-    @ConnectedSocket() socket: Socket,
     @MessageBody() message: EndMeetingRequestDTO,
+    @ConnectedSocket() socket: Socket,
   ) {
     this.logger.debug({
       message: `[${MeetingSubscribeEvents.OnEndMeeting}] event`,
@@ -1324,10 +1320,14 @@ export class MeetingsGateway
             prevProfileHostUser.maxMeetingTime -
             (hostTimeData.endAt - hostTimeData.startAt);
 
+          const fallBackTime = prevProfileHostUser.subscriptionPlanKey === 'Business'
+              ? null
+              : 0;
+
           await this.coreService.updateUser({
             query: { _id: prevProfileHostUser.id },
             data: {
-              maxMeetingTime: newTime < 0 ? 0 : newTime,
+              maxMeetingTime: newTime < 0 ? fallBackTime : newTime,
             },
           });
 
@@ -1403,10 +1403,14 @@ export class MeetingsGateway
                 profileUser.maxMeetingTime -
                 (hostTimeData.endAt - hostTimeData.startAt);
 
+              const fallBackTime = profileUser.subscriptionPlanKey === 'Business'
+                  ? null
+                  : 0;
+
               await this.coreService.updateUser({
                 query: { _id: profileUser.id },
                 data: {
-                  maxMeetingTime: newTime < 0 ? 0 : newTime,
+                  maxMeetingTime: newTime < 0 ? fallBackTime : newTime,
                 },
               });
 
@@ -1500,10 +1504,14 @@ export class MeetingsGateway
 
     const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
+    const fallBackTime = mainUser.subscriptionPlanKey === 'Business'
+        ? null
+        : 0;
+
     await this.coreService.updateUser({
       query: { _id: mainUser.id },
       data: {
-        maxMeetingTime: newTime < 0 ? 0 : newTime,
+        maxMeetingTime: newTime < 0 ? fallBackTime : newTime,
       },
     });
 

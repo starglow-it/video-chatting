@@ -1,18 +1,17 @@
 import {ErrorState, IUserTemplate} from 'shared-types';
-import { postProfileTemplatesUrl } from '../../../utils/urls';
+import { profileApiMethods } from '../../../utils/urls';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { generateFormData } from '../../../utils/form/generateFormData';
-import { EditUserTemplatePayload, EditUserTemplateResponse } from '../types';
+import {EditUserTemplatePayload, EditUserTemplateResponse} from "../../templates/types";
 
 export const handleEditUserTemplate = async ({
     templateId,
     data,
 }: EditUserTemplatePayload): Promise<EditUserTemplateResponse> => {
-    const formData = generateFormData(data);
+    const postProfileTemplatesUrl = profileApiMethods.postProfileTemplatesUrl({ templateId });
 
     const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>({
-        ...postProfileTemplatesUrl({ templateId }),
-        data: formData,
+        ...postProfileTemplatesUrl,
+        data: data,
     });
 
     if (response.success) {

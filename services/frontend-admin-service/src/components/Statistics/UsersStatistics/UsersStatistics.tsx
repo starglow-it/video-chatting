@@ -77,14 +77,15 @@ const UsersStatistics = memo(
 		const data = {
 			totalNumber: statistic.totalNumber ?? 0,
 			dataSets:
-                statisticsDataSets?.map(statisticSet => ({
-                	label: statisticSet.key,
-                	parts: Array.isArray(statisticSet.value)
-                		? statisticSet.value
-                		: [statisticSet.value],
-                	color: statisticSet.color,
-                	labels: statisticSet?.labels ?? [statisticSet.key],
-                })) ?? [],
+                statisticsDataSets?.filter(set => Array.isArray(set.value) ? true : set.value !== 0)
+					.map(statisticSet => ({
+						label: statisticSet.key,
+						parts: Array.isArray(statisticSet.value)
+							? statisticSet.value
+							: [statisticSet.value],
+						color: statisticSet.color,
+						labels: statisticSet?.labels ?? [statisticSet.key],
+                	})) ?? [],
 		};
 
 		const dataLoadingFallback = useMemo(

@@ -22,7 +22,7 @@
     },
     "auto": {
       "title": "Your subscription was downgraded from {{prevPlan}} to {{currentPlan}}",
-      "text": "The number of rooms you can use for free was reduced from {{prevTemplatesNumber}} to {{currentTemplatesNumber}}. You can still replace a room with another one"
+      "text": "The number of rooms you can use for free was reduced from {{prevTemplatesNumber}} to {{currentTemplatesNumber}}. You can still select another Room to replace the one you have"
     }
   },
   "dialogs": {

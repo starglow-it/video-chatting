@@ -54,7 +54,7 @@ const Component = ({ onNextStep, onPreviousStep }: EditAttendeesPositionProps) =
                     key={id}
                     stubId={id}
                     index={index}
-                    position={{ top: top / 100, left: left / 100 }}
+                    position={{ top, left }}
                     onPositionChange={handleChangePosition}
                 />
             )),

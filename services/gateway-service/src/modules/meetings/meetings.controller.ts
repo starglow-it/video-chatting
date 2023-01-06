@@ -22,10 +22,11 @@ import { MEETINGS_SCOPE } from 'shared-const';
 import { ResponseSumType, IUserTemplate } from 'shared-types';
 
 // services
-import { CoreService } from '../../services/core/core.service';
 import { MediaServerService } from '../../services/media-server/media-server.service';
 import { TemplatesService } from '../templates/templates.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
+import { MeetingsService } from './meetings.service';
+import {StatisticsService} from "../statistics/statistics.service";
 
 // requests
 import { CreateMeetingRequest } from '../../dtos/requests/create-meeting.request';
@@ -33,18 +34,17 @@ import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.re
 
 // dtos
 import { CommonInstanceMeetingRestDTO } from '../../dtos/response/common-instance-meeting.dto';
-import { MeetingsService } from './meetings.service';
 
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
   private readonly logger = new Logger();
 
   constructor(
-    private coreService: CoreService,
     private templatesService: TemplatesService,
     private userTemplatesService: UserTemplatesService,
     private mediaServerService: MediaServerService,
     private meetingService: MeetingsService,
+    private statisticsService: StatisticsService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -84,14 +84,14 @@ export class MeetingsController {
           templateId: userTemplate.id,
         });
 
-      await this.coreService.updateRoomRatingStatistic({
+      await this.statisticsService.updateRoomRatingStatistic({
         templateId: commonTemplate.id,
         userId: commonTemplate.author,
         ratingKey: 'calls',
         value: 1,
       });
 
-      await this.coreService.updateUserTemplateUsageNumber({
+      await this.userTemplatesService.updateUserTemplateUsageNumber({
         templateId: updatedUserTemplate.id,
         value: 1,
       });
@@ -122,7 +122,7 @@ export class MeetingsController {
   })
   async getMeeting(@Param('meetingId') meetingId: string) {
     try {
-      const meeting = await this.coreService.findMeetingById({ meetingId });
+      const meeting = await this.meetingService.findMeetingById({ meetingId });
 
       return {
         success: true,

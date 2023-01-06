@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CoreService } from '../services/core/core.service';
+import {UsersService} from "../modules/users/users.service";
 
 type TokenDataDto = { userId: string; exp: number };
 
@@ -13,7 +13,7 @@ type TokenDataDto = { userId: string; exp: number };
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
-    private coreService: CoreService,
+    private usersService: UsersService,
   ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
@@ -43,7 +43,7 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const userToken = await this.coreService.checkIfUserTokenExists(token);
+    const userToken = await this.usersService.checkIfUserTokenExists(token);
 
     if (!tokenData?.userId || !tokenData?.exp || !userToken) {
       throw new UnauthorizedException();

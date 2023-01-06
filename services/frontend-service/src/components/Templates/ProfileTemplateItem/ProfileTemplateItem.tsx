@@ -212,7 +212,8 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                                 : null
                             }
                             placement="bottom"
-                            popperClassName={styles.tooltip}
+                            tooltipClassName={styles.tooltip}
+                            popperClassName={styles.popper}
                         >
                             <MenuItem onClick={handleEditMeeting} className={clsx(styles.item, {[styles.disabled]: isHouseSubscription })}>
                                 <CustomTypography nameSpace="templates" translation="buttons.edit" />

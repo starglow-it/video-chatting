@@ -24,10 +24,10 @@ import {
 
 // services
 import { ConfigClientService } from '../../services/config/config.service';
-import { CoreService } from '../../services/core/core.service';
 import { TemplatesService } from '../templates/templates.service';
 import { StatisticsService } from './statistics.service';
 import { UserIdParam } from '../../dtos/params/user-id.param';
+import {UsersService} from "../users/users.service";
 
 @Controller('statistics')
 export class StatisticsController {
@@ -35,9 +35,9 @@ export class StatisticsController {
 
   constructor(
     private configService: ConfigClientService,
-    private coreService: CoreService,
     private templatesService: TemplatesService,
     private statisticsService: StatisticsService,
+    private usersService: UsersService,
   ) {}
 
   @Get('/users')
@@ -51,7 +51,7 @@ export class StatisticsController {
   })
   async getUsersStatistics(): Promise<ResponseSumType<UserStatistics>> {
     try {
-      const usersCount = await this.coreService.countUsers({
+      const usersCount = await this.usersService.countUsers({
         isConfirmed: true,
         role: UserRoles.User,
       });
@@ -96,7 +96,7 @@ export class StatisticsController {
         { label: 'Business', value: 0, color: '#2E6DF2' },
       ];
 
-      const usersWithSubscriptions = await this.coreService.findUsers({
+      const usersWithSubscriptions = await this.usersService.findUsers({
         query: {
           isConfirmed: true,
           role: UserRoles.User,

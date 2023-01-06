@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {Global, Module} from '@nestjs/common';
 import {
   ClientProvider,
   ClientsModule,
@@ -9,7 +9,6 @@ import { PassportModule } from '@nestjs/passport';
 
 // modules
 import { ConfigModule } from '../../services/config/config.module';
-import { CoreModule } from '../../services/core/core.module';
 
 // controllers
 import { AuthController } from './auth.controller';
@@ -25,6 +24,7 @@ import { JWT_ACCESS_EXPIRE, AUTH_PROVIDER } from 'shared-const';
 // strategy
 import { LocalStrategy } from '../../strategy/local.strategy';
 
+@Global()
 @Module({
   imports: [
     ClientsModule.registerAsync([
@@ -52,7 +52,6 @@ import { LocalStrategy } from '../../strategy/local.strategy';
         },
       },
     ]),
-    CoreModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
