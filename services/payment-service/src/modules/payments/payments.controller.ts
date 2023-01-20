@@ -51,7 +51,7 @@ import {
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
   MonetizationStatisticPeriods,
-  MonetizationStatisticTypes,
+  MonetizationStatisticTypes, PlanKeys,
 } from 'shared-types';
 import { DeleteTemplateStripeProductPayload } from 'shared-types/src/brokerPayloads';
 
@@ -355,7 +355,7 @@ export class PaymentsController {
         );
       }
 
-      const plan = plans[product?.name || 'House'];
+      const plan = plans[product?.name || PlanKeys.House];
 
       const paymentIntent = await this.paymentService.createPaymentIntent({
         templatePrice: payload.templatePrice,
@@ -481,7 +481,7 @@ export class PaymentsController {
         payload.productId,
       );
 
-      const plan = plans[product.name ?? 'House'];
+      const plan = plans[product.name ?? PlanKeys.House];
       return this.paymentService.getStripeCheckoutSession({
         paymentMode: 'subscription',
         priceId: product.default_price as string,
@@ -728,8 +728,8 @@ export class PaymentsController {
       subscription.plan.product,
     );
 
-    const currentPlan = plans[user.subscriptionPlanKey || 'House'];
-    const nextPlan = plans[productData.name || 'House'];
+    const currentPlan = plans[user.subscriptionPlanKey || PlanKeys.House];
+    const nextPlan = plans[productData.name || PlanKeys.House];
 
     const isPlanHasChanged = nextPlan.name !== currentPlan.name;
     const isPlanDowngraded = currentPlan.priceInCents > nextPlan.priceInCents;
@@ -778,7 +778,7 @@ export class PaymentsController {
   async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     const environment = await this.configService.get('environment');
 
-    const planData = plans['House'];
+    const planData = plans[PlanKeys.House];
 
     const trialExpired =
       subscription.trial_end === subscription.current_period_end;
@@ -792,7 +792,7 @@ export class PaymentsController {
       data: {
         isSubscriptionActive: false,
         stripeSubscriptionId: null,
-        subscriptionPlanKey: 'House',
+        subscriptionPlanKey: PlanKeys.House,
         maxTemplatesNumber: planData.features.templatesLimit,
         maxMeetingTime: planData.features.timeLimit,
         shouldShowTrialExpiredNotification: trialExpired,
@@ -852,7 +852,7 @@ export class PaymentsController {
         subscription.plan.product,
       );
 
-      const plan = plans[product.name || 'House'];
+      const plan = plans[product.name || PlanKeys.House];
 
       await this.coreService.updateUser({
         query: { stripeSessionId: session.id },

@@ -11,26 +11,19 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 // custom
 import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
-import {CustomBox} from "shared-frontend/library/custom/CustomBox";
-import {CustomImage} from "shared-frontend/library/custom/CustomImage";
-import {CustomCheckbox} from "shared-frontend/library/custom/CustomCheckbox";
-import {CustomButton} from "shared-frontend/library/custom/CustomButton";
 
 // common
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 import { PasswordHints } from '@library/common/PasswordHints/PasswordHints';
 import { CenteredPaper } from 'shared-frontend/library/common/CenteredPaper';
-import { Translation } from '@library/common/Translation/Translation';
 
 // dialogs
 import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegisterDialog/SuccessfulRegisterDialog';
 
 // stores
 import { RegisterUserParams } from 'src/store/types';
-
-// stores
+import { Translation } from '@library/common/Translation/Translation';
 import { $registerStore, registerUserFx, resetRegisterErrorEvent } from '../../store';
 
 // styles
@@ -40,6 +33,11 @@ import styles from './RegisterContainer.module.scss';
 import { emailSchema } from '../../validation/users/email';
 import { passwordSchema } from '../../validation/users/password';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import {CustomBox} from "shared-frontend/library/custom/CustomBox";
+import {CustomImage} from "shared-frontend/library/custom/CustomImage";
+import {CustomCheckbox} from "shared-frontend/library/custom/CustomCheckbox";
+import {CustomButton} from "shared-frontend/library/custom/CustomButton";
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),

@@ -56,7 +56,7 @@ export class AuthService {
   async logoutUser(payload: LogOutUserPayload): Promise<void> {
     const pattern = { cmd: AuthBrokerPatterns.LogOutUser };
 
-    return firstValueFrom(this.client.send(pattern, payload));
+    return this.client.send(pattern, payload).toPromise();
   }
 
   async sendResetPassword(

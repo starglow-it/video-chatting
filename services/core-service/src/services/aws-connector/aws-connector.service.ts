@@ -11,6 +11,7 @@ export class AwsConnectorService {
   private readonly logger = new Logger();
 
   vultrUploadBucket: string;
+  vultrStorageHostname: string;
 
   constructor(
     private configService: ConfigClientService,
@@ -21,6 +22,13 @@ export class AwsConnectorService {
     this.vultrUploadBucket = await this.configService.get<string>(
       'vultrUploadBucket',
     );
+    this.vultrStorageHostname = await this.configService.get<string>(
+      'vultrStorageHostname',
+    );
+  }
+
+  getUploadKeyFromUrl(url) {
+    return url.replace(`https://${this.vultrStorageHostname}/${this.vultrUploadBucket}/`, '');
   }
 
   async getResource(key: string) {

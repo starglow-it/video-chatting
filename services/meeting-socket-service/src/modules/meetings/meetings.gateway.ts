@@ -5,54 +5,48 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection, Types } from 'mongoose';
-import { Socket } from 'socket.io';
-import { plainToInstance } from 'class-transformer';
+import {Logger} from '@nestjs/common';
+import {InjectConnection} from '@nestjs/mongoose';
+import {Connection, Types} from 'mongoose';
+import {Socket} from 'socket.io';
+import {plainToInstance} from 'class-transformer';
 
-import { BaseGateway } from '../../gateway/base.gateway';
+import {BaseGateway} from '../../gateway/base.gateway';
 
-import { MeetingsService } from './meetings.service';
-import { UsersService } from '../users/users.service';
-import { TasksService } from '../tasks/tasks.service';
-import { CoreService } from '../../services/core/core.service';
+import {MeetingsService} from './meetings.service';
+import {UsersService} from '../users/users.service';
+import {TasksService} from '../tasks/tasks.service';
+import {CoreService} from '../../services/core/core.service';
 
 import {
-  ResponseSumType,
-  MeetingSoundsEnum,
-  MeetingAccessStatusEnum,
-  TimeoutTypesEnum,
   KickUserReasons,
+  MeetingAccessStatusEnum,
+  MeetingSoundsEnum,
+  PlanKeys,
+  ResponseSumType,
+  TimeoutTypesEnum,
 } from 'shared-types';
 
-import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
-import { JoinMeetingRequestDTO } from '../../dtos/requests/join-meeting.dto';
-import { CommonUserDTO } from '../../dtos/response/common-user.dto';
-import { CommonMeetingDTO } from '../../dtos/response/common-meeting.dto';
-import { EnterMeetingRequestDTO } from '../../dtos/requests/enter-meeting.dto';
-import { MeetingAccessAnswerRequestDTO } from '../../dtos/requests/answer-access-meeting.dto';
-import { LeaveMeetingRequestDTO } from '../../dtos/requests/leave-meeting.dto';
-import { EndMeetingRequestDTO } from '../../dtos/requests/end-meeting.dto';
-import { UpdateMeetingRequestDTO } from '../../dtos/requests/update-meeting.dto';
+import {StartMeetingRequestDTO} from '../../dtos/requests/start-meeting.dto';
+import {JoinMeetingRequestDTO} from '../../dtos/requests/join-meeting.dto';
+import {CommonUserDTO} from '../../dtos/response/common-user.dto';
+import {CommonMeetingDTO} from '../../dtos/response/common-meeting.dto';
+import {EnterMeetingRequestDTO} from '../../dtos/requests/enter-meeting.dto';
+import {MeetingAccessAnswerRequestDTO} from '../../dtos/requests/answer-access-meeting.dto';
+import {LeaveMeetingRequestDTO} from '../../dtos/requests/leave-meeting.dto';
+import {EndMeetingRequestDTO} from '../../dtos/requests/end-meeting.dto';
+import {UpdateMeetingRequestDTO} from '../../dtos/requests/update-meeting.dto';
 
-import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
-import {
-  ITransactionSession,
-  withTransaction,
-} from '../../helpers/mongo/withTransaction';
-import { MeetingTimeService } from '../meeting-time/meeting-time.service';
-import {
-  MeetingEmitEvents,
-  UserEmitEvents,
-  VideoChatEmitEvents,
-} from '../../const/socket-events/emitters';
+import {getTimeoutTimestamp} from '../../utils/getTimeoutTimestamp';
+import {ITransactionSession, withTransaction,} from '../../helpers/mongo/withTransaction';
+import {MeetingTimeService} from '../meeting-time/meeting-time.service';
+import {MeetingEmitEvents, UserEmitEvents, VideoChatEmitEvents,} from '../../const/socket-events/emitters';
 import {
   MeetingSubscribeEvents,
   UsersSubscribeEvents,
   VideoChatSubscribeEvents,
 } from '../../const/socket-events/subscribers';
-import { MeetingsCommonService } from './meetings.common';
+import {MeetingsCommonService} from './meetings.common';
 
 type SendOfferPayload = {
   type: string;
@@ -317,7 +311,7 @@ export class MeetingsGateway
             }
 
             if (isMeetingHost) {
-              if (profileUser.subscriptionPlanKey !== 'Business') {
+              if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
                 await this.meetingsCommonService.handleTimeLimit({
                   profileId: profileUser.id,
                   meetingId: plainMeeting.id,
@@ -453,7 +447,7 @@ export class MeetingsGateway
 
         if (
           mainUser.maxMeetingTime === 0 &&
-          mainUser.subscriptionPlanKey !== 'Business'
+          mainUser.subscriptionPlanKey !== PlanKeys.Business
         ) {
           return {
             success: false,
@@ -641,7 +635,7 @@ export class MeetingsGateway
         name: `meeting:finish:${message.meetingId}`,
         ts:
           mainUser.maxMeetingTime < finishTime &&
-          mainUser.subscriptionPlanKey !== 'Business'
+          mainUser.subscriptionPlanKey !== PlanKeys.Business
             ? mainUser.maxMeetingTime
             : finishTime,
         callback: this.endMeeting.bind(this, {
@@ -650,7 +644,7 @@ export class MeetingsGateway
         }),
       });
 
-      if (mainUser.subscriptionPlanKey !== 'Business') {
+      if (mainUser.subscriptionPlanKey !== PlanKeys.Business) {
         const timeLimitNotificationTimeout = getTimeoutTimestamp({
           value: 20,
           type: TimeoutTypesEnum.Minutes,
@@ -1107,7 +1101,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== 'Business') {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1189,7 +1183,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== 'Business') {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1280,7 +1274,7 @@ export class MeetingsGateway
       if (
         profileUser &&
         profileUser?.maxMeetingTime === 0 &&
-        ['House', 'Professional'].includes(profileUser?.subscriptionPlanKey)
+        [PlanKeys.House, PlanKeys.Professional].includes(profileUser?.subscriptionPlanKey)
       ) {
         return {
           success: false,
@@ -1303,7 +1297,7 @@ export class MeetingsGateway
           userId: prevHostUser.profileId,
         });
 
-        if (prevProfileHostUser.subscriptionPlanKey !== 'Business') {
+        if (prevProfileHostUser.subscriptionPlanKey !== PlanKeys.Business) {
           const hostTimeData = await this.meetingHostTimeService.update({
             query: {
               host: new Types.ObjectId(prevHostUser.id),
@@ -1320,14 +1314,10 @@ export class MeetingsGateway
             prevProfileHostUser.maxMeetingTime -
             (hostTimeData.endAt - hostTimeData.startAt);
 
-          const fallBackTime = prevProfileHostUser.subscriptionPlanKey === 'Business'
-              ? null
-              : 0;
-
           await this.coreService.updateUser({
             query: { _id: prevProfileHostUser.id },
             data: {
-              maxMeetingTime: newTime < 0 ? fallBackTime : newTime,
+              maxMeetingTime: newTime < 0 ? 0 : newTime,
             },
           });
 
@@ -1349,7 +1339,7 @@ export class MeetingsGateway
         name: `meeting:timeLimit:${meeting.id}`,
       });
 
-      if (profileUser?.subscriptionPlanKey !== 'Business') {
+      if (profileUser?.subscriptionPlanKey !== PlanKeys.Business) {
         await this.meetingHostTimeService.create({
           data: {
             host: user.id,
@@ -1403,7 +1393,7 @@ export class MeetingsGateway
                 profileUser.maxMeetingTime -
                 (hostTimeData.endAt - hostTimeData.startAt);
 
-              const fallBackTime = profileUser.subscriptionPlanKey === 'Business'
+              const fallBackTime = profileUser.subscriptionPlanKey === PlanKeys.Business
                   ? null
                   : 0;
 
@@ -1504,7 +1494,7 @@ export class MeetingsGateway
 
     const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
-    const fallBackTime = mainUser.subscriptionPlanKey === 'Business'
+    const fallBackTime = mainUser.subscriptionPlanKey === PlanKeys.Business
         ? null
         : 0;
 

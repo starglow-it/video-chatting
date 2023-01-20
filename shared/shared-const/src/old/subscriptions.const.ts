@@ -15,7 +15,7 @@ type PlanData = {
 };
 
 const houseSubscription: PlanData = {
-  name: 'House',
+  name: PlanKeys.House,
   key: 'house',
   priceInCents: 0,
   description: 'Best for trying and occasional use',
@@ -27,7 +27,7 @@ const houseSubscription: PlanData = {
 };
 
 const professionalSubscription: PlanData = {
-  name: 'Professional',
+  name: PlanKeys.Professional,
   key: 'professional',
   priceInCents: 2900,
   description: 'Best for standard use and monetization',
@@ -41,7 +41,7 @@ const professionalSubscription: PlanData = {
 };
 
 const businessSubscription: PlanData = {
-  name: 'Business',
+  name: PlanKeys.Business,
   key: 'business',
   priceInCents: 7900,
   description: 'Best for monetization and frequent use',

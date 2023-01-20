@@ -35,6 +35,7 @@ import { $productsStore, $profileStore, getStripeProductsFx } from '../../../sto
 
 // styles
 import styles from './SubscriptionsPlans.module.scss';
+import {PlanKeys} from "shared-types";
 
 const Component = ({
     isSubscriptionStep,
@@ -92,7 +93,7 @@ const Component = ({
                                         isDisabled={isDisabled}
                                         buttonTranslation={buttonTranslation}
                                         withTrial={
-                                            product?.product?.name === 'Professional' &&
+                                            product?.product?.name === PlanKeys.Professional &&
                                             profile.isProfessionalTrialAvailable
                                         }
                                     />
@@ -108,7 +109,7 @@ const Component = ({
                                 isDisabled={isDisabled}
                                 buttonTranslation={buttonTranslation}
                                 withTrial={
-                                    product?.product?.name === 'Professional' &&
+                                    product?.product?.name === PlanKeys.Professional &&
                                     profile.isProfessionalTrialAvailable
                                 }
                             />

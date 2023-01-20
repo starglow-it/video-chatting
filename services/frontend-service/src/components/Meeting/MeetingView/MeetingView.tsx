@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
-import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -148,11 +147,7 @@ const Component = () => {
                 <CustomBox className={styles.imageWrapper}>
                     <ConditionalRender condition={Boolean(previewImage?.url)}>
                         <CustomImage
-                            className={clsx(styles.image, {
-                                [styles.blured]:
-                                    Boolean(meetingTemplate.url) &&
-                                    meetingTemplate.templateType === 'video',
-                            })}
+                            className={styles.image}
                             src={previewImage?.url || ''}
                             width="100%"
                             height="100%"
@@ -173,7 +168,7 @@ const Component = () => {
                 >
                     <MeetingUsersVideos />
                     <ConditionalRender
-                        condition={meetingTemplate.templateId === 20 && !isScreenSharingActive}
+                        condition={Boolean(meetingTemplate?.links?.length) && !isScreenSharingActive}
                     >
                         <MeetingGoodsLinks />
                     </ConditionalRender>

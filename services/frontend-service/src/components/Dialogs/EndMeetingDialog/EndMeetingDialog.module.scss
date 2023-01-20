@@ -1,4 +1,5 @@
 @import "../../../styles/rem";
+@import "../../../styles/variables";
 
 .buttonsWrapper {
   margin: rem(40px 0 0 0);
@@ -6,10 +7,12 @@
   .baseBtn {
     width: rem(212px);
     height: rem(56px);
+  }
 
-    &:last-child {
-      margin: rem(0 0 0 16px);
-    }
+  .leaveButton {
+    background: $dark-green;
+    width: rem(212px);
+    height: rem(56px);
   }
 }
 

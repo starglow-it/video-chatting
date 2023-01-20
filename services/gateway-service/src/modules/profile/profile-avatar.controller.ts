@@ -23,16 +23,16 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { UpdateProfileAvatarRequest } from '../../dtos/requests/update-profile-avatar.request';
 
 // services
+import { CoreService } from '../../services/core/core.service';
 import { NotificationsService } from '../../services/notifications/notifications.service';
 import { ConfigClientService } from '../../services/config/config.service';
-import {UsersService} from "../users/users.service";
 
 @Controller('profile/avatar')
 export class ProfileAvatarController {
   constructor(
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
-    private usersService: UsersService,
+    private coreService: CoreService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -49,7 +49,7 @@ export class ProfileAvatarController {
     @Body() data: UpdateProfileAvatarRequest,
     @Request() req,
   ): Promise<ResponseSumType<ICommonUser>> {
-    const user = await this.usersService.findUserAndUpdateAvatar({
+    const user = await this.coreService.findUserAndUpdateAvatar({
       userId: req.user.userId,
       data,
     });
@@ -73,7 +73,7 @@ export class ProfileAvatarController {
   async deleteProfileAvatar(
     @Request() req,
   ): Promise<ResponseSumType<ICommonUser>> {
-    const user = await this.usersService.deleteProfileAvatar({
+    const user = await this.coreService.deleteProfileAvatar({
       userId: req.user.userId,
     });
 

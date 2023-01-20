@@ -1,7 +1,7 @@
-import { ErrorState } from 'shared-types';
-import { Profile, UpdateProfileAvatar } from '../../types';
-import { initialProfileState } from './const';
-import { profileDomain } from '../../domains';
+import {ErrorState, PlanKeys} from 'shared-types';
+import {Profile, UpdateProfileAvatar} from '../../types';
+import {initialProfileState} from './const';
+import {profileDomain} from '../../domains';
 import {
     CheckResetPasswordLinkPayload,
     CheckResetPasswordLinkResponse,
@@ -16,10 +16,10 @@ import {
 export const $profileStore = profileDomain.createStore<Profile>(initialProfileState);
 
 export const $isBusinessSubscription = $profileStore.map(
-    profile => profile.subscriptionPlanKey === 'Business',
+    profile => profile.subscriptionPlanKey === PlanKeys.Business,
 );
 export const $isProfessionalSubscription = $profileStore.map(
-    profile => profile.subscriptionPlanKey === 'Professional',
+    profile => profile.subscriptionPlanKey === PlanKeys.Professional,
 );
 
 export const setProfileEvent = profileDomain.createEvent<{ user?: Profile }>('setProfileEvent');

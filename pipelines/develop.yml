@@ -11,6 +11,7 @@
     variables:
       - $CLIENT_PUSH_ACTIVE == "true"
 
+
 Update Dev Traefik:
   stage: update_traefik
   extends:

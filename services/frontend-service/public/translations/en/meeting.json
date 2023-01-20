@@ -35,12 +35,13 @@
     "join": "Join now",
     "cancel": "Cancel",
     "saveSettings": "Save settings",
-    "leave": "Leave Office",
+    "leave": "Leave",
     "end": "Close Office",
     "send": "Send",
     "continue": "Continue",
     "kick": "Kick",
-    "stay": "Stay"
+    "stay": "Stay",
+    "lockUp": "Lock Up"
   },
   "devices": {
     "turnOn":"Turn on",
@@ -49,9 +50,9 @@
     "switchOff":"Switch OFF"
   },
   "endMeeting": {
-    "forHost": "Leave Office or Close it for everyone?",
-    "forAttendee": "Leave Meeting?",
-    "hint": "When you leave, guests can stay in your office and\nsend payments."
+    "forHost": "Leave?",
+    "forAttendee": "Leave?",
+    "hint": "When you Leave callers can still look around and\nsend payments"
   },
   "invite": {
     "title": "Invite attendees",

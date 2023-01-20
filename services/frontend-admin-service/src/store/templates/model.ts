@@ -27,6 +27,7 @@ export const $commonTemplateStore =
     	error: null,
     });
 
+
 export const $activeTemplateIdStore = templatesDomain.createStore<
     ICommonTemplate['id'] | null
 >(null);
@@ -90,3 +91,5 @@ export const uploadTemplateBackgroundFx = templatesDomain.createEffect<
     CommonTemplateState,
     void
 >('uploadTemplateBackgroundFx');
+
+export const $isUploadTemplateBackgroundInProgress = uploadTemplateBackgroundFx.pending;

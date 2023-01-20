@@ -27,8 +27,6 @@ import { UserTemplatesModule } from '../user-templates/user-templates.module';
 import { MeetingsModule } from '../meetings/meetings.module';
 import { RoomsStatisticsModule } from '../rooms-statistics/rooms-statistics.module';
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
-import { TranscodeModule } from '../transcode/transcode.module';
-import { TemplateSoundModule } from '../template-sound/template-sound.module';
 import { PaymentsModule } from '../../services/payments/payments.module';
 
 @Module({
@@ -40,8 +38,6 @@ import { PaymentsModule } from '../../services/payments/payments.module';
     CountersModule,
     RoomsStatisticsModule,
     UserProfileStatisticModule,
-    TranscodeModule,
-    TemplateSoundModule,
     PaymentsModule,
     forwardRef(() => UserTemplatesModule),
     forwardRef(() => MeetingsModule),

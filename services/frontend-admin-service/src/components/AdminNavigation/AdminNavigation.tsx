@@ -94,24 +94,24 @@ const Component = () => {
 					/>
 				</CustomTooltip>
 
-				<CustomTooltip
-					title={
-						<Translation
-							nameSpace="common"
-							translation="tooltips.pages.rooms"
-						/>
-					}
-					placement="right"
-				>
-					<DiscoveryIcon
-						onClick={handleRoomsPage}
-						width="28px"
-						height="28px"
-						className={clsx(styles.linkIcon, {
-							[styles.activeIcon]: isRoomsPageActive,
-						})}
-					/>
-				</CustomTooltip>
+				{/*<CustomTooltip*/}
+				{/*	title={*/}
+				{/*		<Translation*/}
+				{/*			nameSpace="common"*/}
+				{/*			translation="tooltips.pages.rooms"*/}
+				{/*		/>*/}
+				{/*	}*/}
+				{/*	placement="right"*/}
+				{/*>*/}
+				{/*	<DiscoveryIcon*/}
+				{/*		onClick={handleRoomsPage}*/}
+				{/*		width="28px"*/}
+				{/*		height="28px"*/}
+				{/*		className={clsx(styles.linkIcon, {*/}
+				{/*			[styles.activeIcon]: isRoomsPageActive,*/}
+				{/*		})}*/}
+				{/*	/>*/}
+				{/*</CustomTooltip>*/}
 
 				<CustomDivider
 					className={styles.divider}

@@ -14,8 +14,8 @@ export const ACCEPT_MIMES_VIDEO = {
 };
 export const ACCEPT_MIMES = { ...ACCEPT_MIMES_IMAGE, ...ACCEPT_MIMES_VIDEO };
 
-export const MAX_SIZE_IMAGE_MB = 20;
-export const MAX_SIZE_VIDEO_MB = 320;
+export const MAX_SIZE_IMAGE_MB = 5;
+export const MAX_SIZE_VIDEO_MB = 10;
 
 export const MAX_SIZE_IMAGE = getFileSizeValue({
     sizeType: FileSizeTypesEnum.megabyte,

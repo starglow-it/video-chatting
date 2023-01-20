@@ -145,3 +145,6 @@ export const deleteCommonTemplateFx = templatesDomain.effect<
     boolean,
     void
 >('deleteCommonTemplateFx');
+
+export const $isUploadTemplateBackgroundInProgress = uploadTemplateFileFx.pending;
+

@@ -5,7 +5,7 @@ import { sample} from "effector-next";
 import {
 	$activeTemplateIdStore,
 	$commonTemplates,
-	$commonTemplateStore,
+	$commonTemplateStore, $isUploadTemplateBackgroundInProgress,
 	createTemplateFx,
 	deleteCommonTemplateFx,
 	deleteCommonTemplateSoundFx,
@@ -83,6 +83,8 @@ $commonTemplateStore
 		} as ICommonTemplate,
 	}))
 	.reset([resetCommonTemplateStore, deleteCommonTemplateFx.doneData]);
+
+$isUploadTemplateBackgroundInProgress.reset(resetCommonTemplateStore);
 
 $activeTemplateIdStore.on(setActiveTemplateIdEvent, (state, data) => data);
 

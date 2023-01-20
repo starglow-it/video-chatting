@@ -2,18 +2,16 @@ import { ErrorState } from 'shared-types';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { GetProfileTemplatesCountPayload, GetProfileTemplatesCountResponse } from '../types';
+import { profileTemplatesCountUrl } from '../../../utils/urls';
 import { ProfileTemplatesCountState } from '../../types';
-import {profileApiMethods} from "../../../utils/urls";
 
 export const handleFetchProfileTemplatesCount = async ({
     limit,
     skip,
     templateType,
 }: GetProfileTemplatesCountPayload): Promise<ProfileTemplatesCountState> => {
-    const profileTemplatesCountUrl = profileApiMethods.profileTemplatesCountUrl({ limit, skip, templateType });
-
     const response = await sendRequestWithCredentials<GetProfileTemplatesCountResponse, ErrorState>(
-        profileTemplatesCountUrl,
+        profileTemplatesCountUrl({ limit, skip, templateType }),
     );
 
     if (response.success) {

@@ -127,13 +127,24 @@ const Component = () => {
 				container
 				justifyContent="center"
 				alignItems="center"
+				gap={2}
 			>
 				{isMeetingHost ? (
 					<>
 						<CustomButton
-							onClick={handleLeave}
+							onClick={handleEndMeeting}
 							className={styles.baseBtn}
-							variant="custom-cancel"
+							label={
+								<Translation
+									nameSpace="meeting"
+									translation="buttons.lockUp"
+								/>
+							}
+							variant="custom-error"
+						/>
+						<CustomButton
+							onClick={handleLeave}
+							className={styles.leaveButton}
 							label={
 								<Translation
 									nameSpace="meeting"
@@ -141,17 +152,7 @@ const Component = () => {
 								/>
 							}
 						/>
-						<CustomButton
-							onClick={handleEndMeeting}
-							className={styles.baseBtn}
-							label={
-								<Translation
-									nameSpace="meeting"
-									translation="buttons.end"
-								/>
-							}
-							variant="custom-error"
-						/>
+
 					</>
 				) : (
 					<>

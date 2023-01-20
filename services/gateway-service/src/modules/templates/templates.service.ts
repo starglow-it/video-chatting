@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {TemplateBrokerPatterns, TemplateSoundBrokerPatterns} from 'shared-const';
+import { TemplateBrokerPatterns } from 'shared-const';
 import { CoreService } from '../../services/core/core.service';
 import {
   EntityList,
@@ -11,10 +11,6 @@ import {
   EditTemplatePayload,
   CreateTemplatePayload,
   GetCommonTemplateByIdPayload,
-  CreateTemplateSoundPayload,
-  ITemplateSoundFile,
-  AddTemplateToUserPayload,
-  UploadTemplateFilePayload,
 } from 'shared-types';
 
 @Injectable()
@@ -61,30 +57,6 @@ export class TemplatesService {
     payload: DeleteCommonTemplatePayload,
   ): Promise<void> {
     const pattern = { cmd: TemplateBrokerPatterns.DeleteCommonTemplate };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async createTemplateSound(
-      payload: CreateTemplateSoundPayload,
-  ): Promise<ITemplateSoundFile> {
-    const pattern = {
-      cmd: TemplateSoundBrokerPatterns.CreateTemplateSoundFile,
-    };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async addTemplateToUser(
-      payload: AddTemplateToUserPayload,
-  ): Promise<IUserTemplate> {
-    const pattern = { cmd: TemplateBrokerPatterns.AddTemplateToUser };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async uploadTemplateFile(payload: UploadTemplateFilePayload): Promise<void> {
-    const pattern = { cmd: TemplateBrokerPatterns.UploadTemplateFile };
 
     return this.coreService.sendCustom(pattern, payload);
   }

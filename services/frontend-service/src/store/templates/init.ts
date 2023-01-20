@@ -1,7 +1,7 @@
 import { forward } from 'effector';
 
 import {
-    $discoveryTemplatesStore,
+    $discoveryTemplatesStore, $isUploadTemplateBackgroundInProgress,
     $replaceTemplateIdStore,
     $scheduleEventLinkStore,
     $scheduleTemplateIdStore,
@@ -106,6 +106,8 @@ $templateDraft
     .reset(clearTemplateDraft);
 
 $replaceTemplateIdStore.on(setReplaceTemplateIdEvent, (state, data) => data);
+
+$isUploadTemplateBackgroundInProgress.reset(clearTemplateDraft);
 
 forward({
     from: sendScheduleInviteFx.doneData,

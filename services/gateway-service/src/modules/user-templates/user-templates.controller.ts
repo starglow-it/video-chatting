@@ -19,23 +19,20 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { v4 as uuidv4 } from 'uuid';
-import { FileInterceptor } from '@nestjs/platform-express';
-
-// utils
-import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
-
-// shared
-import { IUpdateTemplate } from 'shared-types';
 
 import { UserTemplatesService } from './user-templates.service';
 import { UploadService } from '../upload/upload.service';
+import { CoreService } from '../../services/core/core.service';
 
 // dtos
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 
 // guards
 import { JwtAuthGuard } from '../../guards/jwt.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
+import { v4 as uuidv4 } from 'uuid';
+import { IUpdateTemplate } from 'shared-types';
 
 @Controller('user-templates')
 export class UserTemplatesController {
@@ -43,6 +40,7 @@ export class UserTemplatesController {
   constructor(
     private userTemplatesService: UserTemplatesService,
     private uploadService: UploadService,
+    private coreService: CoreService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -164,7 +162,7 @@ export class UserTemplatesController {
 
         const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 
-        userTemplate = await this.userTemplatesService.uploadUserTemplateFile({
+        userTemplate = await this.coreService.uploadUserTemplateFile({
           url,
           id: templateId,
           mimeType: file.mimetype,

@@ -1,16 +1,14 @@
 import { ErrorState, HttpMethods } from 'shared-types';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 import { RegisterUserParams } from '../../types';
+import { registerUserUrl } from '../../../utils/urls';
 import frontendConfig from '../../../const/config';
-import { authApiMethods } from "../../../utils/urls";
 
 export const handleRegisterUser = async (params: RegisterUserParams) => {
     const userData = await sendRequest<{ country_name: string }, ErrorState>({
         url: `https://api.ipgeolocation.io/ipgeo?apiKey=${frontendConfig.geolocationApiKey}`,
         method: HttpMethods.Get,
     });
-
-    const registerUserUrl = authApiMethods.registerUserUrl();
 
     const response = await sendRequest<void, ErrorState>({
         ...registerUserUrl,

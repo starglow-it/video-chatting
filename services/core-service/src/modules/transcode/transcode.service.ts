@@ -3,6 +3,7 @@ import { AwsConnectorService } from '../../services/aws-connector/aws-connector.
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as probe from 'ffmpeg-probe';
 import * as stream from 'stream';
+import * as fs from "fs/promises";
 import { v4 as uuidv4 } from 'uuid';
 
 const extractAudioOptions = ['-q:a', '0', '-map', 'a'];
@@ -37,14 +38,31 @@ export class TranscodeService {
     const fileName = `${uuidv4()}_${resolution.key}.webp`;
 
     const uploadKey = `${key}/${fileName}`;
+    //
+    // const pass = new stream.PassThrough();
+    //
+    // ffmpeg(url).outputOptions(options).format('webp').pipe(pass, { end: true });
+    // const resultUrl = await this.awsService.uploadStreamFile(pass, uploadKey);
 
-    const pass = new stream.PassThrough();
+    const transcodePromise = new Promise((resolve) => {
+      ffmpeg(url)
+          .outputOptions(options)
+          .output(`./${fileName}`)
+          .on('end', () => {
+            resolve(`./${fileName}`);
+          })
+          .run();
+    });
 
-    ffmpeg(url).outputOptions(options).format('webp').pipe(pass, { end: true });
+    await transcodePromise;
 
-    const resultUrl = await this.awsService.uploadStreamFile(pass, uploadKey);
+    const file = await fs.readFile(`./${fileName}`);
+
+    const resultUrl = await this.awsService.uploadFile(file, uploadKey);
 
     const metaData = await this.getFileData({ url: resultUrl });
+
+    fs.rm(`./${fileName}`);
 
     return {
       url: resultUrl,
@@ -76,6 +94,40 @@ export class TranscodeService {
         .pipe(pass, { end: true });
 
       return this.awsService.uploadStreamFile(pass, key);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async transcodeImage({ url, uploadKey }): Promise<string> {
+    try {
+      // const pass = new stream.PassThrough();
+      //
+      // ffmpeg(url).outputOptions(['-c:v', 'libwebp']).format('webp').pipe(pass, { end: true });
+      //
+      // return this.awsService.uploadStreamFile(pass, uploadKey);
+
+      const fileName = `${uuidv4()}.webp`;
+
+      const transcodePromise = new Promise((resolve) => {
+        ffmpeg(url)
+            .outputOptions(['-c:v', 'libwebp'])
+            .output(`./${fileName}`)
+            .on('end', () => {
+              resolve(`./${fileName}`);
+            })
+            .run();
+      });
+
+      await transcodePromise;
+
+      const file = await fs.readFile(`./${fileName}`);
+
+      const resultUrl = await this.awsService.uploadFile(file, uploadKey);
+
+      fs.rm(`./${fileName}`);
+
+      return resultUrl;
     } catch (e) {
       console.log(e);
     }

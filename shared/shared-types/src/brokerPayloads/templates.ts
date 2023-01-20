@@ -69,13 +69,10 @@ export type UploadTemplateFilePayload = {
   url: ICommonTemplate['url'];
   id: ICommonTemplate['id'];
   mimeType: string;
-  uploadKey: string;
-  fileName: string;
 };
 
 export type UploadCommonTemplateFilePayload = {
   file: File;
-  updateKey: ICommonTemplate['sound'] | ICommonTemplate['draftSound'];
   templateId: ICommonTemplate['id'];
 };
 
@@ -96,7 +93,6 @@ export type UpdateCommonTemplatePayload = {
 
 export type DeleteCommonTemplateSoundPayload = {
   templateId: ICommonTemplate['id'];
-  updateKey: ICommonTemplate['sound'] | ICommonTemplate['draftSound'];
 };
 
 export type CreateTemplatePayload = {

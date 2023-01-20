@@ -42,6 +42,7 @@ import { profileRoute } from '../../../const/client-routes';
 
 // utils
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
+import {PlanKeys} from "shared-types";
 
 const Component = () => {
     const router = useRouter();
@@ -111,7 +112,7 @@ const Component = () => {
                     onChooseSubscription={handleChooseSubscription}
                     isDisabled={isSubscriptionPurchasePending}
                     withTrial={
-                        product?.product?.name === 'Professional' &&
+                        product?.product?.name === PlanKeys.Professional &&
                         profile.isProfessionalTrialAvailable
                     }
                 />
@@ -127,7 +128,7 @@ const Component = () => {
 
     const shouldShowManageButton = Boolean(profile.stripeSubscriptionId) && !isTrial;
     const shouldShowNextRenewalDate = Boolean(nextPaymentDate) && !isGetProductsPending;
-    const planTranslation = `${profile.subscriptionPlanKey || 'House'}${isTrial ? ' (Trial)' : ''}`;
+    const planTranslation = `${profile.subscriptionPlanKey || PlanKeys.House}${isTrial ? ' (Trial)' : ''}`;
 
     return (
         <CustomPaper className={styles.paperWrapper}>

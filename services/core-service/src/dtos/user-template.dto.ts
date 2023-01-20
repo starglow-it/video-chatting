@@ -18,7 +18,6 @@ import {
 } from 'shared-types';
 
 import { PreviewImageDTO } from './preview-image.dto';
-import { TemplateSoundFileDTO } from './template-sound.dto';
 
 export class UserTemplateDTO implements IUserTemplate {
   @Expose()
@@ -47,14 +46,6 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   url: IUserTemplate['url'];
-
-  @Expose()
-  @Type(() => TemplateSoundFileDTO)
-  sound: IUserTemplate['sound'];
-
-  @Expose()
-  @Type(() => TemplateSoundFileDTO)
-  draftSound: IUserTemplate['draftSound'];
 
   @Expose()
   draftUrl: IUserTemplate['draftUrl'];

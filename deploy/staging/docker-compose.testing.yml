@@ -65,8 +65,6 @@ services:
         - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
     restart: unless-stopped
     environment:
-      - WAIT_HOSTS=gateway-service:3000
-      - WAIT_TIMEOUT=60000
       - FRONTEND_URL
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service
@@ -104,8 +102,6 @@ services:
         - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
     restart: unless-stopped
     environment:
-      - WAIT_HOSTS=gateway-service:3000
-      - WAIT_TIMEOUT=60000
       - FRONTEND_URL=https://test-admin.liveoffice.forasoft.com
       - GATEWAY_PORT=3000
       - GATEWAY_HOST=gateway-service

@@ -127,13 +127,22 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            if (profileAvatar.file) {
-                await updateProfilePhotoFx({ file: profileAvatar.file });
+            if (setUpTemplate?.id) {
+                if (profileAvatar.file) {
+                    await updateProfilePhotoFx({ file: profileAvatar.file });
+                }
+
+                await updateProfileFx({
+                    ...data,
+                    registerTemplate: null,
+                });
+
+                const result = await createMeetingFx({ templateId: setUpTemplate.id });
+
+                const meetingUrl = getClientMeetingUrl(result?.template?.id);
+                await router.push(`${meetingUrl}?success_house=true`);
             }
-
-            await updateProfileFx(data);
-
-            handleSetProfileUpdated();
+            // handleSetProfileUpdated();
         }),
         [profileAvatar.file, setUpTemplate?.id],
     );

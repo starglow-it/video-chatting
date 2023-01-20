@@ -1,16 +1,14 @@
 import {ErrorState, ICommonTemplate, IUserTemplate} from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { profileApiMethods } from '../../../utils/urls';
+import { profileTemplateByTemplateIdUrl } from '../../../utils/urls';
 
 export const handleFetchProfileTemplateByTemplateId = async ({
     templateId,
 }: {
     templateId: ICommonTemplate['templateId'];
 }): Promise<IUserTemplate | undefined | null> => {
-    const profileTemplateByTemplateIdUrl = profileApiMethods.profileTemplateByTemplateIdUrl({ templateId });
-
     const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>(
-        profileTemplateByTemplateIdUrl,
+        profileTemplateByTemplateIdUrl({ templateId }),
     );
 
     if (!response.success) {

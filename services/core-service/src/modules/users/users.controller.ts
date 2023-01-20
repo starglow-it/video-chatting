@@ -34,7 +34,7 @@ import {
   SearchUsersPayload,
   UserRoles,
   ManageUserRightsPayload,
-  TimeoutTypesEnum,
+  TimeoutTypesEnum, PlanKeys,
 } from 'shared-types';
 
 import {
@@ -113,7 +113,7 @@ export class UsersController {
     const usersPromises = users.map(async (user) => {
       const productKey = user.subscriptionPlanKey;
 
-      if (productKey === 'House') {
+      if (productKey === PlanKeys.House) {
         if (user.renewSubscriptionTimestampInSeconds < Date.now() / 1000) {
           const plan = plans[productKey];
 
@@ -884,6 +884,8 @@ export class UsersController {
       );
 
       await this.userTokenService.deleteToken({ token: token.token }, session);
+
+      return {};
     });
   }
 

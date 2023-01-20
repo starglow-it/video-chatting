@@ -4,7 +4,6 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 
 const ObjectId = Types.ObjectId;
 
@@ -12,7 +11,6 @@ const ObjectId = Types.ObjectId;
 import {
   TEMPLATES_SERVICE,
   TemplateBrokerPatterns,
-  previewResolutions,
 } from 'shared-const';
 
 // types
@@ -41,8 +39,6 @@ import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { BusinessCategoriesService } from '../business-categories/business-categories.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
 import { RoomsStatisticsService } from '../rooms-statistics/rooms-statistics.service';
-import { TranscodeService } from '../transcode/transcode.service';
-import { TemplateSoundService } from '../template-sound/template-sound.service';
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { PaymentsService } from '../../services/payments/payments.service';
 import { ConfigClientService } from '../../services/config/config.service';
@@ -63,8 +59,6 @@ export class CommonTemplatesController {
     private businessCategoriesService: BusinessCategoriesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
-    private transcodeService: TranscodeService,
-    private templateSoundService: TemplateSoundService,
     private awsService: AwsConnectorService,
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
@@ -174,9 +168,7 @@ export class CommonTemplatesController {
               'businessCategories',
               'previewUrls',
               'draftPreviewUrls',
-              'sound',
               'author',
-              'draftSound',
               'links'
             ],
           });
@@ -331,95 +323,31 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.UploadTemplateFile })
   async uploadTemplateFile(
     @Payload() payload: UploadTemplateFilePayload,
-  ): Promise<ICommonTemplate> {
+  ): Promise<void> {
     try {
-      return withTransaction(this.connection, async (session) => {
-        const { url, id, mimeType, fileName, uploadKey } = payload;
+      return withTransaction(this.connection, async () => {
+        const { url, id, mimeType } = payload;
 
-        const templateType = mimeType.includes('image') ? 'image' : 'video';
-
-        const screenShotUploadKey = `templates/${id}/images`;
-
-        const screenShotPromises = previewResolutions.map(
-          async (resolution) => {
-            const screenShotData =
-              await this.transcodeService.createVideoScreenShots({
-                url,
-                mimeType,
-                key: screenShotUploadKey,
-                resolution,
-              });
-
-            return this.commonTemplatesService.createPreview({
-              data: {
-                url: screenShotData.url,
-                key: screenShotData.uploadKey,
-                size: screenShotData.size,
-                resolution: screenShotData.resolution,
-              },
-              session,
-            });
-          },
-        );
-
-        const updateData: Parameters<
-          typeof this.commonTemplatesService.updateCommonTemplate
-        >[0]['data'] = {
-          templateType,
-        };
-
-        if (templateType === 'video') {
-          const fileData = await this.transcodeService.getFileData({ url });
-
-          const videoUrl = await this.transcodeService.transcodeVideo({
-            url,
-            key: `${uploadKey}/videos/${uuidv4()}.mp4`,
-          });
-
-          if (fileData.hasAudio) {
-            const soundUrl =
-                await this.transcodeService.extractTemplateSound({
-                  url,
-                  key: `${uploadKey}/sounds/${uuidv4()}.mp3`,
-                });
-
-            const soundData = await this.templateSoundService.create({
-              data: {
-                fileName,
-                size: fileData.size,
-                mimeType: 'audio/mpeg',
-                url: soundUrl,
-                uploadKey: `${uploadKey}/sounds/${uuidv4()}.mp3`
-              },
-              session,
-            });
-
-            updateData.sound = soundData._id;
-          }
-
-          updateData.draftUrl = videoUrl;
-        } else {
-          updateData.draftUrl = url;
-        }
-
-        const previewImages = await Promise.all(screenShotPromises);
-
-        updateData.draftPreviewUrls = previewImages.map((image) => image._id);
-
-        const updatedTemplate =
-          await this.commonTemplatesService.updateCommonTemplate({
-            query: {
-              _id: id,
-            },
-            data: updateData,
-            session,
-            populatePaths: ['sound', 'draftPreviewUrls'],
-          });
-
-        return plainToInstance(CommonTemplateDTO, updatedTemplate, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
+        const previewImages = await this.commonTemplatesService.generatePreviews({
+          url,
+          id,
+          mimeType,
         });
+
+        const imageIds = previewImages.map((image) => image._id);
+
+        await this.commonTemplatesService.updateCommonTemplate({
+          query: {
+            _id: id,
+          },
+          data: {
+            templateType: mimeType.includes('image') ? 'image' : 'video',
+            draftPreviewUrls: imageIds,
+            draftUrl: url,
+          },
+        });
+
+        return;
       });
     } catch (err) {
       throw new RpcException({
@@ -535,7 +463,7 @@ export class CommonTemplatesController {
             },
             data: updateData,
             session,
-            populatePaths: ['draftSound', 'sound', 'links'],
+            populatePaths: ['links'],
           },
         );
 
@@ -557,7 +485,6 @@ export class CommonTemplatesController {
             previewUrls: updatedTemplate.previewUrls,
             businessCategories: updatedTemplate.businessCategories,
             url: updatedTemplate.url,
-            sound: updatedTemplate?.sound?._id,
           },
           session,
         });
@@ -586,7 +513,6 @@ export class CommonTemplatesController {
             templateId,
             session,
             populatePaths: [
-              'sound',
               'author',
               'previewUrls',
               'draftPreviewUrls',
@@ -597,27 +523,6 @@ export class CommonTemplatesController {
         if (!template) {
           return;
         }
-
-        if (template.sound?._id) {
-          this.templateSoundService.deleteSound({
-            id: template.sound.id,
-            session,
-          });
-        }
-
-        template.previewUrls.map((preview) => {
-          this.commonTemplatesService.deletePreview({
-            id: preview._id,
-            session,
-          });
-        });
-
-        template.draftPreviewUrls.map((preview) => {
-          this.commonTemplatesService.deletePreview({
-            id: preview._id,
-            session,
-          });
-        });
 
         await this.commonTemplatesService.deleteCommonTemplate({
           query: {

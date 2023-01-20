@@ -34,6 +34,7 @@ import {
 
 // services
 import { NotificationsService } from '../../services/notifications/notifications.service';
+import { CoreService } from '../../services/core/core.service';
 import { ConfigClientService } from '../../services/config/config.service';
 import { UploadService } from '../upload/upload.service';
 import { TemplatesService } from '../templates/templates.service';
@@ -57,8 +58,7 @@ import { parseDateObject } from '../../utils/dateHelpers/parseDateObject';
 import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
 import { generateIcsEventData } from '../../utils/generateIcsEventData';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
-import {StatisticsService} from "../statistics/statistics.service";
-import { UsersService } from './users.service';
+import {MeetingsService} from "../meetings/meetings.service";
 
 @Controller('/users')
 export class UsersController {
@@ -69,13 +69,13 @@ export class UsersController {
   constructor(
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
+    private coreService: CoreService,
     private uploadService: UploadService,
     private templatesService: TemplatesService,
     private userTemplatesService: UserTemplatesService,
     private paymentsService: PaymentsService,
     private socketService: SocketService,
-    private statisticsService: StatisticsService,
-    private usersService: UsersService,
+    private meetingService: MeetingsService,
   ) {}
 
   async onModuleInit() {
@@ -99,7 +99,7 @@ export class UsersController {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };
 
-      const users = await this.usersService.findUsers({
+      const users = await this.coreService.findUsers({
         query,
         options: {
           skip,
@@ -110,7 +110,7 @@ export class UsersController {
         },
       });
 
-      const usersCount = await this.usersService.countUsers(query);
+      const usersCount = await this.coreService.countUsers(query);
 
       return {
         success: true,
@@ -148,7 +148,7 @@ export class UsersController {
     try {
       const query = { isConfirmed: true, role: UserRoles.User };
 
-      const { list, count } = await this.usersService.searchUsers({
+      const { list, count } = await this.coreService.searchUsers({
         query,
         options: {
           skip,
@@ -254,6 +254,43 @@ export class UsersController {
     }
   }
 
+  @Get('/templates/id/:templateId')
+  @ApiOperation({
+    summary: 'Get Template by id',
+  })
+  @ApiOkResponse({
+    type: CommonTemplateRestDTO,
+    description: 'Get User Template by id Success',
+  })
+  async getUserTemplateById(@Param('templateId') templateId: string) {
+    try {
+      if (templateId) {
+        const template =
+            await this.userTemplatesService.getUserTemplateById({
+              id: templateId,
+            });
+
+        return {
+          success: true,
+          result: template,
+        };
+      }
+      return {
+        success: false,
+        result: null,
+      };
+    } catch (err) {
+      this.logger.error(
+          {
+            message: `An error occurs, while get user template by template id`,
+          },
+          JSON.stringify(err),
+      );
+
+      throw new BadRequestException(err);
+    }
+  }
+
   @Get('/:userId')
   @ApiOperation({ summary: 'Get User by id' })
   @ApiOkResponse({
@@ -267,7 +304,7 @@ export class UsersController {
     @Param('userId') userId: string,
   ): Promise<ResponseSumType<ICommonUser>> {
     try {
-      const user = await this.usersService.findUserById({
+      const user = await this.coreService.findUserById({
         userId,
       });
 
@@ -298,13 +335,13 @@ export class UsersController {
     @Param('userId') userId: string,
   ): Promise<ResponseSumType<void>> {
     try {
-      const user = await this.usersService.findUserById({ userId });
+      const user = await this.coreService.findUserById({ userId });
 
-      await this.usersService.deleteUser({
+      await this.coreService.deleteUser({
         userId,
       });
 
-      await this.statisticsService.updateCountryStatistics({
+      await this.coreService.updateCountryStatistics({
         key: user.country,
         value: -1,
       });
@@ -361,7 +398,7 @@ export class UsersController {
     @Query('value', ParseBoolPipe) value: boolean,
   ): Promise<ResponseSumType<ICommonUser>> {
     try {
-      const user = await this.usersService.manageUserRights({
+      const user = await this.coreService.manageUserRights({
         userId,
         key,
         value,
@@ -431,7 +468,7 @@ export class UsersController {
     @Request() req,
   ): Promise<void> {
     try {
-      const user = await this.usersService.findUserById({
+      const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });
 
@@ -508,7 +545,7 @@ export class UsersController {
     },
   ) {
     try {
-      const senderUser = await this.usersService.findUserById({
+      const senderUser = await this.coreService.findUserById({
         userId: req.user.userId,
       });
 
@@ -581,6 +618,11 @@ export class UsersController {
         to: [{ email: senderUser.email, name: senderUser.email }],
         icsEventLink: icsLink,
         icalEventContent: content,
+      });
+
+      await this.meetingService.assignMeetingInstance({
+        userId: req.user.userId,
+        templateId: template.id,
       });
 
       return {

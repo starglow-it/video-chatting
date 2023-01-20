@@ -37,8 +37,8 @@ import {
 
 // store
 import {
+    $isUploadTemplateBackgroundInProgress,
     addNotificationEvent,
-    uploadTemplateFileFx,
     uploadUserTemplateFileFx,
 } from '../../../store';
 
@@ -51,7 +51,7 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     const background = useWatch<IUploadTemplateFormData>({ control, name: 'background' });
     const url = useWatch<IUploadTemplateFormData>({ control, name: 'url' });
 
-    const isUploadTemplateFilePending = useStore(uploadTemplateFileFx.pending);
+    const isUploadTemplateFilePending = useStore($isUploadTemplateBackgroundInProgress);
     const isUpdateMeetingTemplateFilePending = useStore(uploadUserTemplateFileFx.pending);
 
     const generateFileUploadError = useCallback((rejectedFiles: FileRejection[], total: number) => {

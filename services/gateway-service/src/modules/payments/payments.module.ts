@@ -1,4 +1,4 @@
-import {Global, Module} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import {
   ClientProvider,
@@ -16,11 +16,16 @@ import { PaymentsService } from './payments.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
 // nodules
+import { CoreModule } from '../../services/core/core.module';
+import { TemplatesModule } from '../templates/templates.module';
 import { ConfigModule } from '../../services/config/config.module';
+import { UserTemplatesModule } from '../user-templates/user-templates.module';
 
-@Global()
 @Module({
   imports: [
+    CoreModule,
+    TemplatesModule,
+    UserTemplatesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],

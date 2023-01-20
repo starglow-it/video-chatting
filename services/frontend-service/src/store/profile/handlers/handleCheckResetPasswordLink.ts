@@ -1,13 +1,11 @@
 import { ErrorState } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { authApiMethods } from '../../../utils/urls';
+import { checkResetPasswordLinkUrl } from '../../../utils/urls';
 import { CheckResetPasswordLinkPayload, CheckResetPasswordLinkResponse } from '../types';
 
 export const handleCheckResetPasswordLink = async (
     params: CheckResetPasswordLinkPayload,
 ): Promise<CheckResetPasswordLinkResponse> => {
-    const checkResetPasswordLinkUrl = authApiMethods.checkResetPasswordLinkUrl();
-
     const response = await sendRequestWithCredentials<void, ErrorState>({
         ...checkResetPasswordLinkUrl,
         data: params,

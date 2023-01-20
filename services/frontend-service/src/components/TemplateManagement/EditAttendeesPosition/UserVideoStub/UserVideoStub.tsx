@@ -3,8 +3,6 @@ import Draggable, { ControlPosition, DraggableData, DraggableEvent } from 'react
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
-import {roundNumberToPrecision} from "shared-utils";
-
 // hooks
 import { useToggle } from '@hooks/useToggle';
 
@@ -25,6 +23,7 @@ import { $windowSizeStore } from '../../../../store';
 
 // styles
 import styles from './UserVideoStub.module.scss';
+import {roundNumberToPrecision} from "shared-utils";
 
 const Component = ({
     stubId,

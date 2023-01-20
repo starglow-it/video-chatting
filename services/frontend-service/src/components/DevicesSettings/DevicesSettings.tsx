@@ -220,13 +220,14 @@ const Component = () => {
 				);
 
 				setActiveStreamEvent(streamWithBackground);
+				handleUnblockJoin()
 			})();
 		} else {
 			const clonedStream = changeStream.clone();
 			setActiveStreamEvent(clonedStream);
+			handleUnblockJoin();
 		}
 
-		handleUnblockJoin()
 	}, [isAuraActive, changeStream]);
 
 	const handleToggleMic = useCallback(() => {

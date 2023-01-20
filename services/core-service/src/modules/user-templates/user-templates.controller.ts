@@ -7,7 +7,6 @@ import * as mongoose from 'mongoose';
 
 // shared
 import {
-  previewResolutions,
   TEMPLATES_SERVICE,
   UserTemplatesBrokerPatterns,
 } from 'shared-const';
@@ -46,8 +45,6 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 // schemas
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
-import { TranscodeService } from '../transcode/transcode.service';
-import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -60,8 +57,6 @@ export class UserTemplatesController {
     private languageService: LanguagesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
-    private transcodeService: TranscodeService,
-    private awsService: AwsConnectorService,
   ) {}
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
@@ -179,6 +174,7 @@ export class UserTemplatesController {
           languages: user.languages.map((language) => language._id),
           socials: user.socials.map((social) => social._id),
           signBoard: user.signBoard,
+          templateType: targetTemplate.templateType,
         };
 
         const [userTemplate] =
@@ -467,31 +463,32 @@ export class UserTemplatesController {
     return withTransaction(this.connection, async (session) => {
       const { url, id, mimeType } = data;
 
-      const screenShotUploadKey = `templates/${id}/images`;
-
-      const screenShotPromises = previewResolutions.map(async (resolution) => {
-        const screenShotData =
-          await this.transcodeService.createVideoScreenShots({
-            url,
-            mimeType,
-            key: screenShotUploadKey,
-            resolution,
-          });
-
-        return this.commonTemplatesService.createPreview({
-          data: {
-            url: screenShotData.url,
-            key: screenShotData.uploadKey,
-            size: screenShotData.size,
-            resolution: screenShotData.resolution,
-          },
-          session,
-        });
+      const previewImages = await this.userTemplatesService.generatePreviews({
+        url,
+        id,
+        mimeType,
       });
 
-      const previewImages = await Promise.all(screenShotPromises);
-
       const imageIds = previewImages.map((image) => image._id);
+
+      const userTemplate = await this.userTemplatesService.findUserTemplateById(
+        {
+          id,
+          session,
+        },
+      );
+
+      await this.commonTemplatesService.updateCommonTemplate({
+        query: {
+          templateId: userTemplate.templateId,
+        },
+        data: {
+          templateType: mimeType.includes('image') ? 'image' : 'video',
+          draftPreviewUrls: imageIds,
+          draftUrl: url,
+        },
+        session,
+      });
 
       const template = await this.userTemplatesService.updateUserTemplate({
         query: {
@@ -643,56 +640,29 @@ export class UserTemplatesController {
   async uploadProfileTemplateFile(
     @Payload() data: { url: string; id: string; mimeType: string },
   ): Promise<void> {
-    try {
-      return withTransaction(this.connection, async (session) => {
-        const { url, id, mimeType } = data;
+    return withTransaction(this.connection, async (session) => {
+      const { url, id, mimeType } = data;
 
-        const screenShotUploadKey = `templates/${id}/images`;
-
-        this.awsService.deleteFolder(screenShotUploadKey);
-
-        const screenShotPromises = previewResolutions.map(async (resolution) => {
-          const screenShotData =
-              await this.transcodeService.createVideoScreenShots({
-                url,
-                mimeType,
-                key: screenShotUploadKey,
-                resolution,
-              });
-
-          return this.commonTemplatesService.createPreview({
-            data: {
-              url: screenShotData.url,
-              key: screenShotData.uploadKey,
-              size: screenShotData.size,
-              resolution: screenShotData.resolution,
-            },
-            session,
-          });
-        });
-
-        const previewImages = await Promise.all(screenShotPromises);
-
-        const imageIds = previewImages.map((image) => image._id);
-
-        return this.userTemplatesService.updateUserTemplate({
-          query: {
-            _id: id,
-          },
-          data: {
-            templateType: mimeType.includes('image') ? 'image' : 'video',
-            draftPreviewUrls: imageIds,
-            draftUrl: url,
-          },
-          session,
-        });
+      const previewImages = await this.userTemplatesService.generatePreviews({
+        url,
+        id,
+        mimeType,
       });
-    } catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: TEMPLATES_SERVICE,
+
+      const imageIds = previewImages.map((image) => image._id);
+
+      return this.userTemplatesService.updateUserTemplate({
+        query: {
+          _id: id,
+        },
+        data: {
+          templateType: mimeType.includes('image') ? 'image' : 'video',
+          draftPreviewUrls: imageIds,
+          draftUrl: url,
+        },
+        session,
       });
-    }
+    });
   }
 
   @MessagePattern({

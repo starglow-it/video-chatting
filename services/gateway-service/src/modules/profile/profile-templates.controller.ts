@@ -15,22 +15,18 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import {ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation} from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { v4 as uuidv4 } from 'uuid';
-
-import { IUserTemplate, ResponseSumType, EntityList } from 'shared-types';
-
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-
+import { ApiOkResponse, ApiOperation} from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
-
+import {IUserTemplate, ResponseSumType, EntityList, ICommonTemplate} from 'shared-types';
 import { TemplatesService } from '../templates/templates.service';
-import { UserTemplatesService } from '../user-templates/user-templates.service';
-import { UploadService } from '../upload/upload.service';
-
+import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
+import { UploadService } from '../upload/upload.service';
+import { CoreService } from '../../services/core/core.service';
+import { v4 as uuidv4 } from 'uuid';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 @Controller('profile/templates')
 export class ProfileTemplatesController {
@@ -40,6 +36,7 @@ export class ProfileTemplatesController {
     private templatesService: TemplatesService,
     private userTemplatesService: UserTemplatesService,
     private uploadService: UploadService,
+    private coreService: CoreService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -125,27 +122,48 @@ export class ProfileTemplatesController {
     type: CommonTemplateRestDTO,
     description: 'Update Profile Template Success',
   })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      preservePath: true,
+    }),
+  )
   async updateProfileTemplate(
     @Request() req,
     @Body() updateTemplateData: UpdateTemplateRequest,
-    @Param('templateId') templateId: IUserTemplate['id'],
+    @Param('templateId') templateId: ICommonTemplate['id'],
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IUserTemplate>> {
     try {
-      if (!templateId) {
+      if (templateId) {
+        if (file) {
+          const { extension } = getFileNameAndExtension(file.originalname);
+          const uploadKey = `templates/videos/${templateId}/${uuidv4()}.${extension}`;
+
+          const url = await this.uploadService.uploadFile(
+            file.buffer,
+            uploadKey,
+          );
+
+          await this.coreService.uploadProfileTemplateFile({
+            url,
+            id: templateId,
+            mimeType: file.mimetype,
+          });
+        }
+
+        const template = await this.userTemplatesService.updateUserTemplate({
+          templateId,
+          userId: req.user.userId,
+          data: updateTemplateData,
+        });
+
         return {
-          success: false,
+          success: true,
+          result: template,
         };
       }
-
-      const userTemplate = await this.userTemplatesService.updateUserTemplate({
-        templateId,
-        userId: req.user.userId,
-        data: updateTemplateData,
-      });
-
       return {
-        success: true,
-        result: userTemplate,
+        success: false,
       };
     } catch (err) {
       this.logger.error(
@@ -284,40 +302,40 @@ export class ProfileTemplatesController {
     @Param('templateId') templateId: string,
   ) {
     try {
-      if (!templateId) {
-        return {
-          success: false,
-          result: null,
-        };
-      }
-
-      const template = await this.templatesService.getCommonTemplateById({
-        templateId,
-      });
-
-      if (!template) {
-        return {
-          success: false,
-          result: null,
-        };
-      }
-
-      let userTemplate =
-          await this.userTemplatesService.getUserTemplateByTemplateId({
-            id: template.templateId,
-            userId: req.user.userId,
-          });
-
-      if (!userTemplate) {
-        userTemplate = await this.templatesService.addTemplateToUser({
-          templateId: template.id,
-          userId: req.user.userId,
+      if (templateId) {
+        const template = await this.templatesService.getCommonTemplateById({
+          templateId,
         });
+
+        if (template) {
+          let userTemplate =
+            await this.userTemplatesService.getUserTemplateByTemplateId({
+              id: template.templateId,
+              userId: req.user.userId,
+            });
+
+          if (!userTemplate) {
+            userTemplate = await this.coreService.addTemplateToUser({
+              templateId: template.id,
+              userId: req.user.userId,
+            });
+          }
+
+          return {
+            success: true,
+            result: userTemplate,
+          };
+        }
+
+        return {
+          success: false,
+          result: null,
+        };
       }
 
       return {
-        success: true,
-        result: userTemplate,
+        success: false,
+        result: null,
       };
     } catch (err) {
       this.logger.error(
@@ -325,74 +343,6 @@ export class ProfileTemplatesController {
           message: `An error occurs, while add template to user`,
         },
         JSON.stringify(err),
-      );
-
-      throw new BadRequestException(err);
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('/:templateId/background')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Upload Template Background' })
-  @ApiOkResponse({
-    description: 'Upload Profile Template Background Success',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  @UseInterceptors(
-      FileInterceptor('file', {
-        preservePath: true,
-      }),
-  )
-  async uploadProfileTemplateBackground(
-      @Request() req,
-      @Query('updateKey') updateKey: string,
-      @Param('templateId') templateId: string,
-      @UploadedFile() file: Express.Multer.File,
-  ) {
-    try {
-      if (!templateId || !file) {
-        return {
-          success: false,
-        };
-      }
-
-      const userTemplate = await this.userTemplatesService.getUserTemplateById({ id: templateId });
-
-      const { fileName, extension } = getFileNameAndExtension(
-          file.originalname,
-      );
-
-      const uploadKey = `templates/${templateId}/videos/${uuidv4()}.${extension}`;
-
-      if (updateKey === 'url') {
-        const oldKey = this.uploadService.getUploadKeyFromUrl(userTemplate.url);
-
-        this.uploadService.deleteResource(oldKey);
-      }
-
-      const url = await this.uploadService.uploadFile(file.buffer, uploadKey);
-
-      const updatedTemplate = await this.userTemplatesService.uploadUserTemplateFile({
-        url,
-        id: templateId,
-        mimeType: file.mimetype,
-        fileName,
-        uploadKey,
-      });
-
-      return {
-        success: true,
-        result: updatedTemplate,
-      };
-    } catch (err) {
-      this.logger.error(
-          {
-            message: `An error occurs, while delete common template`,
-          },
-          JSON.stringify(err),
       );
 
       throw new BadRequestException(err);

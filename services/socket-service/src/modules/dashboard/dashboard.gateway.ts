@@ -18,7 +18,7 @@ import { CoreService } from '../../services/core/core.service';
 import {
   DashboardNotificationTypes,
   ResponseSumType,
-  IDashboardNotification,
+  IDashboardNotification, PlanKeys,
 } from 'shared-types';
 
 @WebSocketGateway({ transports: ['websocket'] })
@@ -71,7 +71,7 @@ export class DashboardGateway extends BaseGateway {
         userId: targetTemplate.user.id,
       });
 
-      if (!user.maxMeetingTime && user.subscriptionPlanKey !== 'Business') {
+      if (!user.maxMeetingTime && user.subscriptionPlanKey !== PlanKeys.Business) {
         return {
           success: false,
           message: 'meeting.timeLimit',

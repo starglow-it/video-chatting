@@ -7,9 +7,9 @@ import {
   UpdateQuery,
 } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-
-import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
-import { Counters, IPreviewImage } from 'shared-types';
+import * as mkdirp from 'mkdirp';
+import * as path from 'path';
+import * as fsPromises from 'fs/promises';
 
 // schemas
 import {
@@ -34,6 +34,9 @@ import {
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
+import {getScreenShots} from "../../utils/images/getScreenShots";
+import {DEFAULT_TEMPLATE_DATA} from "shared-const";
+import {Counters} from "shared-types";
 
 @Injectable()
 export class CommonTemplatesService {
@@ -183,24 +186,65 @@ export class CommonTemplatesService {
     return this.commonTemplate.findOneAndUpdate(query, data, options).exec();
   }
 
-  async createPreview({
+  async updateCommonTemplates({
+    query,
     data,
     session,
-  }: {
-    data: Omit<IPreviewImage, 'id' | 'mimeType'>;
-    session: ITransactionSession;
-  }) {
-    const [newPreview] = await this.previewImage.create(
-      [
-        {
-          ...data,
-          mimeType: 'image/webp',
-        },
-      ],
-      { session: session?.session },
-    );
+  }: UpdateModelQuery<
+    CommonTemplateDocument,
+    CommonTemplate
+  >): Promise<any> {
+    const options: QueryOptions = {
+      session: session?.session,
+    };
 
-    return newPreview;
+    return this.commonTemplate.updateMany(query, data, options).exec();
+  }
+
+  async generatePreviews({
+    id,
+    mimeType,
+    url,
+  }: {
+    id: string;
+    mimeType: string;
+    url: string;
+  }) {
+    const outputPath = path.join(__dirname, '../../../../images', id);
+    await mkdirp(outputPath);
+
+    const fileType = mimeType.split('/')[0];
+    await getScreenShots(url, outputPath, fileType);
+
+    const imagesPaths = await fsPromises.readdir(outputPath);
+
+    await this.previewImage.deleteMany({
+      key: new RegExp(`^templates/images/${id}`),
+    });
+
+    await this.awsService.deleteFolder(`templates/images/${id}`);
+
+    const uploadedImagesPromises = imagesPaths.map(async (image) => {
+      const resolution = image.match(/(\d*)p\./);
+
+      const file = await fsPromises.readFile(`${outputPath}/${image}`);
+      const uploadKey = `templates/images/${id}/${image}`;
+      const fileStats = await fsPromises.stat(`${outputPath}/${image}`);
+
+      const imageUrl = await this.awsService.uploadFile(file, uploadKey);
+
+      await fsPromises.rm(`${outputPath}/${image}`);
+
+      return this.previewImage.create({
+        url: imageUrl,
+        resolution: resolution?.[1],
+        size: fileStats.size,
+        mimeType: 'image/webp',
+        key: uploadKey,
+      });
+    });
+
+    return Promise.all(uploadedImagesPromises);
   }
 
   async deleteCommonTemplate({
@@ -231,7 +275,7 @@ export class CommonTemplatesService {
     session: ITransactionSession;
   }): Promise<void> {
     await this.previewImage
-      .deleteOne({ _id: id, session: session?.session })
+      .deleteOne({ _id: id }, { session: session?.session })
       .exec();
 
     return;

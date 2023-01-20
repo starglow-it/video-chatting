@@ -26,7 +26,6 @@ import { UserTemplatesService } from './user-templates.service';
 // controllers
 import { UserTemplatesController } from './user-templates.controller';
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
-import { TranscodeModule } from '../transcode/transcode.module';
 
 @Module({
   imports: [
@@ -37,7 +36,6 @@ import { TranscodeModule } from '../transcode/transcode.module';
     AwsConnectorModule,
     RoomsStatisticsModule,
     UserProfileStatisticModule,
-    TranscodeModule,
     MongooseModule.forFeature([
       { name: UserTemplate.name, schema: UserTemplateSchema },
       { name: SocialLink.name, schema: SocialLinkSchema },

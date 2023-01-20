@@ -7,7 +7,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
-import { ICommonUser, UserRoles } from 'shared-types';
+import {ICommonUser, PlanKeys, UserRoles} from 'shared-types';
 
 @Schema({
   timestamps: true,
@@ -150,21 +150,21 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: 'House',
+    default: PlanKeys.House,
   })
   subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: 'House',
+    default: PlanKeys.House,
   })
-  nextSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
+  nextSubscriptionPlanKey: ICommonUser['nextSubscriptionPlanKey'];
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: 'House',
+    default: PlanKeys.House,
   })
-  prevSubscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
+  prevSubscriptionPlanKey: ICommonUser['prevSubscriptionPlanKey'];
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,

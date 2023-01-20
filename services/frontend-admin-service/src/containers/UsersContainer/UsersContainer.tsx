@@ -17,7 +17,7 @@ import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
 import { CustomSearch } from 'shared-frontend/library/custom/CustomSearch';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
-import { ICommonUser } from 'shared-types';
+import {ICommonUser, PlanKeys} from 'shared-types';
 
 import { Translation } from '@components/Translation/Translation';
 import { UserProfile } from '@components/Users/UserProfile/UserProfile';
@@ -26,7 +26,6 @@ import { BlockUserDialog } from '@components/Dialogs/BlockUserDialog/BlockUserDi
 import { DeleteUserDialog } from '@components/Dialogs/DeleteUserDialog/DeleteUserDialog';
 
 // store
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import {
 	$userProfileIdStore,
 	$usersStore,
@@ -115,7 +114,7 @@ const Component = () => {
 					label: user.fullName,
 				},
 				subscriptionPlanKey: {
-					label: user.subscriptionPlanKey ?? 'House',
+					label: user.subscriptionPlanKey ?? PlanKeys.House,
 				},
 				status: {
 					label: user.isBlocked ? 'Blocked' : 'Active',
@@ -261,9 +260,15 @@ const Component = () => {
 				in={Boolean(activeUserId)}
 				unmountOnExit
 			>
-				<CustomBox>
+				<CustomGrid
+					container
+					className={styles.wrapper}
+					direction="column"
+					alignItems="center"
+					wrap="nowrap"
+				>
 					<UserProfile />
-				</CustomBox>
+				</CustomGrid>
 			</Slide>
 			<BlockUserDialog />
 			<DeleteUserDialog />

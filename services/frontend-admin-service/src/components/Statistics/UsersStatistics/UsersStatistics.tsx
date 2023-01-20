@@ -47,7 +47,7 @@ const UsersStatistics = memo(
 
 			const othersInitialData: OthersStatistics = {
 				value: [],
-				key: 'Others',
+				key: 'Other',
 				color: '#BDC8D3',
 				labels: [],
 			};
@@ -59,6 +59,7 @@ const UsersStatistics = memo(
 				others.reduce(
 					(acc: OthersStatistics, newData: ICountryStatistic) => ({
 						...acc,
+						key: 'Other',
 						value: [
 							...(Array.isArray(acc.value)
 								? acc.value

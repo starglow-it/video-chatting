@@ -1,8 +1,8 @@
 import React, {
-	memo, useCallback, useEffect 
+	memo, useCallback
 } from 'react';
 import {
-	useStore 
+	useStore, useStoreMap
 } from 'effector-react';
 
 // custom
@@ -32,8 +32,8 @@ import {
 	$deleteProfileTemplateId,
 	deleteProfileTemplateFx,
 	getProfileTemplateFx,
-	$profileTemplateStore,
 	$profileStore,
+	$profileTemplatesStore,
 } from '../../../store';
 
 // styles
@@ -49,17 +49,14 @@ const Component = () => {
 		deleteTemplateDialog 
 	} = useStore($appDialogsStore);
 	const deleteProfileTemplateId = useStore($deleteProfileTemplateId);
-	const profileTemplateToDelete = useStore($profileTemplateStore);
 	const profile = useStore($profileStore);
 	const isGetProfileTemplatePending = useStore(getProfileTemplateFx.pending);
 
-	useEffect(() => {
-		if (deleteProfileTemplateId) {
-			getProfileTemplateFx({
-				templateId: deleteProfileTemplateId,
-			});
-		}
-	}, [deleteProfileTemplateId]);
+	const templateToDelete = useStoreMap({
+		store: $profileTemplatesStore,
+		keys: [deleteProfileTemplateId],
+		fn: (state, [templateId]) => state?.list ? state.list.find(template => template.id === templateId) : null
+	});
 
 	const handleClose = useCallback(() => {
 		appDialogsApi.closeDialog({
@@ -109,8 +106,7 @@ const Component = () => {
 					translation="deleteTemplate.title"
 				/>
 
-				{profile.id === profileTemplateToDelete?.author &&
-                profileTemplateToDelete.isPublic ? (
+				{profile.id === templateToDelete?.author && templateToDelete?.isPublic ? (
 						<CustomTypography
 							nameSpace="templates"
 							translation="deleteTemplate.textPublicTemplate"

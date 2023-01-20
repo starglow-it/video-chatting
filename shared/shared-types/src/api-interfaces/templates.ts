@@ -20,8 +20,6 @@ export interface ICommonTemplate {
   description: string;
   shortDescription: string;
   url: string;
-  sound?: ITemplateSoundFile | null;
-  draftSound?: ITemplateSoundFile | null;
   draftUrl?: string;
   previewUrls: IPreviewImage[];
   draftPreviewUrls?: IPreviewImage[];
@@ -44,8 +42,6 @@ export interface IUserTemplate {
   usedAt?: string;
   templateId: number;
   url: string;
-  sound?: ITemplateSoundFile;
-  draftSound?: ITemplateSoundFile;
   draftUrl?: string;
   name: string;
   signBoard: string;
@@ -83,8 +79,6 @@ export interface IUpdateTemplate {
   name?: string;
   description: string;
   url?: string;
-  sound?: ITemplateSoundFile | string;
-  draftSound?: ITemplateSoundFile | string;
   draftUrl?: string;
   previewUrls?: string[];
   fullName: string;

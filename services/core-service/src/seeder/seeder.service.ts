@@ -28,6 +28,8 @@ import {
   PreviewImage,
   PreviewImageDocument,
 } from '../schemas/preview-image.schema';
+import {TranscodeService} from "../modules/transcode/transcode.service";
+import {executePromiseQueue} from "shared-utils";
 
 // utils
 
@@ -45,6 +47,7 @@ export class SeederService {
     private configService: ConfigClientService,
     private monetizationStatisticService: MonetizationStatisticService,
     private roomsStatisticService: RoomsStatisticsService,
+    private transcodeService: TranscodeService,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
   ) {}
@@ -188,5 +191,114 @@ export class SeederService {
         }
       }),
     );
+  }
+
+  async seedLinks() {
+    await this.commonTemplatesService.updateCommonTemplates({
+      query: { name: "Spaceball" },
+      data: {
+        links: [
+          {
+            item: "https://pizzahut.com/",
+            position: {
+              top: 0.86,
+              left: 0.33,
+            }
+          }
+        ]
+      }
+    });
+
+    await this.userTemplatesService.updateUserTemplates({
+      query: { name: "Spaceball" },
+      data: {
+        links: [
+          {
+            item: "https://pizzahut.com/",
+            position: {
+              top: 0.86,
+              left: 0.33,
+            }
+          }
+        ]
+      }
+    });
+  }
+
+  async migrateToWebp(): Promise<void> {
+    const imagesCache = [];
+
+    const commonTemplates = await this.commonTemplatesService.findCommonTemplates({
+      query: {},
+      populatePaths: ['previewUrls'],
+    });
+
+    const userTemplates = await this.userTemplatesService.findUserTemplates({
+      query: {},
+      populatePaths: ['previewUrls'],
+    });
+
+    const promises = [...userTemplates, ...commonTemplates].map((template) => async () => {
+      const imagePromises = template?.previewUrls?.map((image) => async () => {
+        console.log('isImage has been migrated', imagesCache.includes(image?._id));
+
+        if (!imagesCache.includes(image?._id)) {
+          // key - mimeType - size - url
+          // url - https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/free-lake_harmony/70178d4c-a18d-4098-9e3a-fd3c419d0b29_1080p.png
+
+          const oldKey = this.awsService.getUploadKeyFromUrl(image.url);
+
+          console.log('oldKey');
+          console.log(oldKey);
+
+          // this.awsService.deleteResource(oldKey);
+
+          const fileNameMatch = image.url.match(/.*\/(.*)\..*$/);
+
+          if (fileNameMatch) {
+            const existedFileName = fileNameMatch?.[1];
+
+            console.log('existedFileName');
+            console.log(existedFileName);
+
+            const newKey = `templates/${template._id}/images/${existedFileName}.webp`;
+
+            console.log('newKey');
+            console.log(newKey);
+
+            const newImageUrl = await this.transcodeService.transcodeImage({
+              url: image.url,
+              uploadKey: newKey
+            });
+
+            console.log('newImageUrl');
+            console.log(newImageUrl);
+
+            const fileData = await this.transcodeService.getFileData({ url: newImageUrl });
+
+            const updateData = {
+              url: newImageUrl,
+              size: fileData.size,
+              mimeType: 'image/webp',
+              key: newKey
+            };
+
+            imagesCache.push(image._id);
+
+            return this.previewImage.updateOne({ _id: image._id }, { $set: updateData });
+          }
+
+          return;
+        }
+
+        return;
+      })
+
+      return executePromiseQueue(imagePromises);
+    });
+
+    await executePromiseQueue(promises);
+
+    return;
   }
 }

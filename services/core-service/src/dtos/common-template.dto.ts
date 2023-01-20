@@ -4,7 +4,6 @@ import {IBusinessCategory, ICommonTemplate } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
 import { PreviewImageDTO } from './preview-image.dto';
-import { TemplateSoundFileDTO } from './template-sound.dto';
 
 class UserPositionDTO {
   @Expose()
@@ -34,14 +33,6 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   url: ICommonTemplate['url'];
-
-  @Expose()
-  @Type(() => TemplateSoundFileDTO)
-  sound: ICommonTemplate['sound'];
-
-  @Expose()
-  @Type(() => TemplateSoundFileDTO)
-  draftSound: ICommonTemplate['draftSound'];
 
   @Expose()
   draftUrl: ICommonTemplate['draftUrl'];

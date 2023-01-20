@@ -160,12 +160,17 @@ const getChartOptions = (
 		plugins: {
 			tooltip: {
 				callbacks: {
-					title: (model: TooltipItem<'doughnut'>) =>
-						model[0].label?.length === 1 ? model[0].label : 'Other',
+					title: (model: TooltipItem<'doughnut'>[]) => {
+						const part = dataSets[model?.[0]?.dataIndex]?.label;
+
+						return part !== 'Other' ? model?.[0]?.label : part;
+					},
 					label: (
 						model: TooltipItem<'doughnut'>,
 					): string | string[] => {
-						if (model.label?.length === 1) {
+						const part = dataSets[model?.dataIndex].label;
+
+						if (part !== "Other") {
 							return `${
 								model.raw
 									? (
@@ -176,8 +181,8 @@ const getChartOptions = (
 									: 0
 							}% - ${model.raw}`;
 						}
-						return model.label.map((label, index) => {
-							const part = dataSets[model.dataIndex].parts[index];
+						return model?.label.map((label, index) => {
+							const part = dataSets[model.dataIndex]?.parts?.[index];
 
 							return `${((part / totalNumber) * 100).toFixed(
 								2,

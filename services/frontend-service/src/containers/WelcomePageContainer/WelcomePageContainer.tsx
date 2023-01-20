@@ -22,6 +22,12 @@ import styles from './WelcomePageContainer.module.scss';
 // stores
 import { $templatesStore, getTemplatesFx } from '../../store';
 
+const baseTemplateParams = {
+    type: 'free',
+    draft: false,
+    isPublic: true
+}
+
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
     const templates = useStore($templatesStore);
@@ -31,9 +37,7 @@ const WelcomePageContainer = memo(() => {
             await getTemplatesFx({
                 limit: 6,
                 skip: 0,
-                type: 'free',
-                draft: false,
-                isPublic: true
+                ...baseTemplateParams,
             });
         })();
     }, []);
@@ -45,7 +49,11 @@ const WelcomePageContainer = memo(() => {
     }, []);
 
     const handleCommonTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getTemplatesFx({ limit: 6 * newPage, skip: 0, type: 'free' });
+        await getTemplatesFx({
+            limit: 6 * newPage,
+            skip: 0,
+            ...baseTemplateParams
+        });
     }, []);
 
     return (

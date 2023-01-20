@@ -26,7 +26,7 @@ export class DashboardNotificationsService {
     session: ITransactionSession;
   }): Promise<DashboardNotificationDocument> {
     const [newNotification] = await this.dashboardNotification.create([data], {
-      session,
+      session: session?.session,
     });
 
     return newNotification;
@@ -69,7 +69,7 @@ export class DashboardNotificationsService {
     DashboardNotification
   >): Promise<DashboardNotificationDocument> {
     return this.dashboardNotification.findOneAndUpdate(query, data, {
-      session: session.session,
+      session: session?.session,
       populate: populatePaths,
       new: true,
     });

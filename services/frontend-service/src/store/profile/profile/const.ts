@@ -1,4 +1,5 @@
 import { Profile } from '../../types';
+import {PlanKeys} from "shared-types";
 
 export const initialProfileState = {
     id: '',
@@ -18,9 +19,9 @@ export const initialProfileState = {
     socials: [],
     businessCategories: [],
     signBoard: 'default',
-    subscriptionPlanKey: 'House',
-    nextSubscriptionPlanKey: 'House',
-    prevSubscriptionPlanKey: 'House',
+    subscriptionPlanKey: PlanKeys.House,
+    nextSubscriptionPlanKey: PlanKeys.House,
+    prevSubscriptionPlanKey: PlanKeys.House,
     stripeAccountId: '',
     stripeEmail: '',
     stripeSubscriptionId: '',

@@ -12,8 +12,8 @@ export type EditTemplatePayload = {
 };
 export type EditTemplateResponse = ICommonTemplate | null;
 export type CreateTemplateResponse = ICommonTemplate | null | undefined;
-export type UploadTemplateFilePayload = { templateId: ICommonTemplate['id']; uploadKey: string; file: File };
-export type UploadUserTemplateFilePayload = { templateId: IUserTemplate['id']; uploadKey: string; file: File };
+export type UploadTemplateFilePayload = { templateId: ICommonTemplate['id']; file: File };
+export type UploadUserTemplateFilePayload = { templateId: IUserTemplate['id']; file: File };
 export type UploadTemplateFileResponse = ICommonTemplate | null;
 export type UploadUserTemplateFileResponse = IUserTemplate | null;
 export type GetEditingTemplatePayload = {

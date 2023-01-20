@@ -125,7 +125,11 @@ export enum KickUserReasons {
   Deleted = 'deleted',
 }
 
-export type PlanKeys = 'House' | 'Professional' | 'Business';
+export enum PlanKeys {
+  House = "House",
+  Professional = "Professional",
+  Business = "Business",
+}
 
 export enum PriceValues {
   Free = 'free',

@@ -20,11 +20,13 @@ import { UploadService } from './upload.service';
 import { ResponseSumType } from 'shared-types';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
+import { CoreService } from '../../services/core/core.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
 @Controller('upload')
 export class UploadController {
   constructor(
+    private coreService: CoreService,
     private uploadService: UploadService,
     private configService: ConfigClientService,
   ) {}

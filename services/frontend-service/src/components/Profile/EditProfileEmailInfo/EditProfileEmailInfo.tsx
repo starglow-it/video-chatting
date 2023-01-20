@@ -10,7 +10,9 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { EnterCodeForm } from '@components/Profile/EnterCodeForm/EnterCodeForm';
 import { EnterEmailForm } from '@components/Profile/EnterEmailForm/EnterEmailForm';
 import {
-    profileApiMethods,
+    codeVerificationUrl,
+    emailVerificationUrl,
+    passwordVerificationUrl,
 } from '../../../utils/urls';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 
@@ -80,7 +82,7 @@ const EditProfileEmailInfo = memo(
         const handleCodeEntered = useCallback(
             async () =>
                 sendRequestWithCredentials({
-                    ...profileApiMethods.codeVerificationUrl(),
+                    ...codeVerificationUrl,
                     data: { code, email },
                 }),
             [email, code],
@@ -108,8 +110,6 @@ const EditProfileEmailInfo = memo(
         );
 
         const handlePasswordEntered = useCallback(async () => {
-            const passwordVerificationUrl = profileApiMethods.passwordVerificationUrl();
-
             const result = await sendRequestWithCredentials({
                 ...passwordVerificationUrl,
                 data: { password },
@@ -125,7 +125,7 @@ const EditProfileEmailInfo = memo(
 
         const handleEmailEntered = useCallback(async () => {
             const result = await sendRequestWithCredentials({
-                ...profileApiMethods.emailVerificationUrl(),
+                ...emailVerificationUrl,
                 data: { email },
             });
 
@@ -138,8 +138,6 @@ const EditProfileEmailInfo = memo(
         }, [email]);
 
         const handleResendCode = useCallback(async () => {
-            const emailVerificationUrl = profileApiMethods.emailVerificationUrl();
-
             await sendRequestWithCredentials({
                 ...emailVerificationUrl,
                 data: { email },

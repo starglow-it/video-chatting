@@ -23,6 +23,7 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 
 // store
 import {
+    $isUploadTemplateBackgroundInProgress,
     $profileStore,
     addTemplateToUserFx,
     clearTemplateDraft,
@@ -47,7 +48,7 @@ import {adjustUserPositions} from "shared-utils";
 
 const Component = () => {
     const isGetTemplateRequestIsPending = useStore(getEditingTemplateFx.pending);
-    const isTemplatePreviewPending = useStore(uploadTemplateFileFx.pending);
+    const isTemplatePreviewPending = useStore($isUploadTemplateBackgroundInProgress);
     const profile = useStore($profileStore);
 
     const router = useRouter();
@@ -150,7 +151,6 @@ const Component = () => {
 
             return uploadTemplateFileFx({
                 file,
-                uploadKey: 'draftUrl',
                 templateId: template.id,
             });
         },

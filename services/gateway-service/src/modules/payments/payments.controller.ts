@@ -10,22 +10,22 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+
+import { PAYMENTS_SCOPE } from 'shared-const';
+import { ResponseSumType } from 'shared-types';
+
+import { PaymentsService } from './payments.service';
+import { CoreService } from '../../services/core/core.service';
+import { TemplatesService } from '../templates/templates.service';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
+
+import { JwtAuthGuard } from '../../guards/jwt.guard';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-
-import { PAYMENTS_SCOPE } from 'shared-const';
-import { ResponseSumType } from 'shared-types';
-
-import { PaymentsService } from './payments.service';
-import { TemplatesService } from '../templates/templates.service';
-import { UserTemplatesService } from '../user-templates/user-templates.service';
-import {UsersService} from "../users/users.service";
-
-import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 
 @Controller(PAYMENTS_SCOPE)
@@ -34,9 +34,9 @@ export class PaymentsController {
 
   constructor(
     private paymentsService: PaymentsService,
+    private coreService: CoreService,
     private templateService: TemplatesService,
     private userTemplatesService: UserTemplatesService,
-    private usersService: UsersService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -53,7 +53,7 @@ export class PaymentsController {
     @Request() req,
   ): Promise<ResponseSumType<{ url: string }>> {
     try {
-      const user = await this.usersService.findUserById({
+      const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });
 
@@ -64,7 +64,7 @@ export class PaymentsController {
             email: user.contactEmail || user.email,
           });
 
-        await this.usersService.findUserAndUpdate({
+        await this.coreService.findUserAndUpdate({
           userId: req.user.userId,
           data: { stripeAccountId: accountId, stripeEmail: accountEmail },
         });
@@ -113,7 +113,7 @@ export class PaymentsController {
     @Request() req,
   ): Promise<ResponseSumType<{ url: string }>> {
     try {
-      const user = await this.usersService.findUserById({
+      const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });
 
@@ -161,7 +161,7 @@ export class PaymentsController {
   })
   async deleteAccount(@Request() req) {
     try {
-      const user = await this.usersService.findUserById({
+      const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });
 
@@ -170,7 +170,7 @@ export class PaymentsController {
           accountId: user.stripeAccountId,
         });
 
-        await this.usersService.findUserAndUpdate({
+        await this.coreService.findUserAndUpdate({
           userId: req.user.userId,
           data: {
             stripeAccountId: '',
@@ -219,7 +219,7 @@ export class PaymentsController {
         };
       }
 
-      const user = await this.usersService.findUserById({
+      const user = await this.coreService.findUserById({
         userId: userTemplate.user.id,
       });
 
@@ -342,7 +342,7 @@ export class PaymentsController {
         cancelUrl: body.cancelUrl,
       });
 
-      await this.usersService.findUserAndUpdate({
+      await this.coreService.findUserAndUpdate({
         userId: req.user.userId,
         data: { stripeSessionId: session.id },
       });
@@ -455,7 +455,7 @@ export class PaymentsController {
           templateId,
         });
 
-        const user = await this.usersService.findUserById({
+        const user = await this.coreService.findUserById({
           userId: req.user.userId,
         });
 
@@ -468,7 +468,7 @@ export class PaymentsController {
             templateId: template.id,
           });
 
-        await this.usersService.findUserAndUpdate({
+        await this.coreService.findUserAndUpdate({
           userId: req.user.userId,
           data: {
             stripeSessionId: productCheckoutSession.id,
