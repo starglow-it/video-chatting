@@ -1,6 +1,5 @@
 import {
   ICommonUser,
-  ITemplateSoundFile,
   IUserTemplate,
 } from '../api-interfaces';
 
@@ -40,14 +39,6 @@ type UpdateUserTemplateUsageNumberPayload = {
   value: number;
 };
 
-type CreateTemplateSoundPayload = {
-  url: ITemplateSoundFile['url'];
-  mimeType: ITemplateSoundFile['mimeType'];
-  fileName: ITemplateSoundFile['fileName'];
-  size: ITemplateSoundFile['size'];
-  uploadKey: ITemplateSoundFile['uploadKey'];
-};
-
 type UpdateMonetizationStatisticPayload = {
   period: 'lastMonth' | 'allTime';
   type: string;
@@ -63,5 +54,4 @@ export type {
   GetUserProfileStatisticPayload,
   UpdateUserProfileStatisticPayload,
   UpdateUserTemplateUsageNumberPayload,
-  CreateTemplateSoundPayload,
 };

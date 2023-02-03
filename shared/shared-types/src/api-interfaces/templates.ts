@@ -3,7 +3,6 @@ import {
   ILanguage,
   ISocialLink,
   IPreviewImage,
-  ITemplateSoundFile,
   TemplateLinkPosition,
 } from './common';
 import { ITemplateUser } from './users';
@@ -94,6 +93,7 @@ export interface IUpdateTemplate {
   templatePrice?: number;
   templateCurrency?: string;
   meetingInstance?: IMeetingInstance;
+  links?: { item: string; position: { top: number; left: number } }[];
   socials: {
     youtube?: string;
     facebook?: string;

@@ -279,7 +279,7 @@ export class UserTemplatesController {
       return withTransaction(this.connection, async (session) => {
         const userTemplates = await this.userTemplatesService.findUserTemplates(
           {
-            query: { user: new mongoose.Types.ObjectId(userId) },
+            query: { isDeleted: false, user: new mongoose.Types.ObjectId(userId) },
             options: {
               ...(sort ? { sort: { [sort]: direction ?? 1 } } : {}),
               skip,
@@ -353,6 +353,7 @@ export class UserTemplatesController {
           url: data.url,
           previewUrls: data.previewUrls,
           draftUrl: data.draftUrl,
+          links: data.links,
         } as UpdateQuery<UserTemplateDocument>;
 
         if ('businessCategories' in data) {

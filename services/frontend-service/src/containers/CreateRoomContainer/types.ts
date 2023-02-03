@@ -17,4 +17,5 @@ export interface IUploadTemplateFormData {
     participantsNumber: number;
     participantsPositions: ParticipantPosition[];
     isPublic: boolean;
+    templateLinks: any[];
 }

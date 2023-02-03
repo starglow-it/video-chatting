@@ -55,7 +55,7 @@ export const MAX_SIZE_VIDEO = getFileSizeValue({
 const Component = ({
 	isFileExists,
 	onNextStep,
-	isUploadDisabled,
+					   isFileUploading,
 	onFileUploaded,
 }: UploadBackgroundProps) => {
 	const generateFileUploadError = useCallback(
@@ -164,7 +164,7 @@ const Component = ({
 
 	const fallbackComponent = useMemo(
 		() =>
-			!isFileExists ? (
+			!(isFileExists || isFileUploading) ? (
 				<CustomGrid
 					container
 					direction="column"
@@ -264,7 +264,7 @@ const Component = ({
 					className={styles.buttonsGroup}
 				>
 					<CustomButton
-						isLoading={isUploadDisabled}
+						isLoading={isFileUploading}
 						variant="custom-gray"
 						label={
 							<Translation
@@ -286,7 +286,7 @@ const Component = ({
 					/>
 				</CustomGrid>
 			),
-		[isFileExists, isUploadDisabled, onFileUploaded],
+		[isFileExists, isFileUploading, onFileUploaded],
 	);
 
 	return (

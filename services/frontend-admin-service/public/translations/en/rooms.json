@@ -18,9 +18,6 @@
       "change": "Change"
     }
   },
-  "uploadBackgroundAudio": {
-    "title": "Upload your Room background sound"
-  },
   "editDescription": {
     "form": {
       "nameAndAttendees": "Name & Attendees",
@@ -42,10 +39,6 @@
     "cancel": "Cancel",
     "addLinkDisabled": "Add Link disabled",
     "deleteRoom": "Delete Room"
-  },
-  "uploadSound": {
-    "title": "Upload your background sound",
-    "text": "Drag & Drop file here or click button \n .mp3, .wav format up to 5 MB"
   },
   "monetization": {
     "title": "Room monetization",

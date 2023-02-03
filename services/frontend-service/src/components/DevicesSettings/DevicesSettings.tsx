@@ -21,9 +21,6 @@ import {
 	useBrowserDetect
 } from '@hooks/useBrowserDetect';
 
-// helpers
-import { BackgroundManager } from '../../helpers/media/applyBlur';
-
 // custom
 import {
 	CustomGrid
@@ -146,12 +143,6 @@ const Component = () => {
 		sendEnterWaitingRoomSocketEvent.pending,
 	);
 
-	const {
-		value: isJoinBlocked,
-		onSwitchOn: handleBlockJoin,
-		onSwitchOff: handleUnblockJoin
-	} = useToggle(false);
-
 	const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
 
@@ -201,34 +192,6 @@ const Component = () => {
 	useEffect(() => {
 		isCameraActiveRef.current = isCameraActive
 	}, [isCameraActive]);
-
-	useEffect(() => {
-		if (!changeStream) {
-			return;
-		}
-
-		handleBlockJoin();
-
-		if (isAuraActive) {
-			const clonedStream = changeStream.clone();
-
-			(async () => {
-				const streamWithBackground = await BackgroundManager.applyBlur(
-					clonedStream,
-					isCameraActiveRef.current,
-					isAuraActive,
-				);
-
-				setActiveStreamEvent(streamWithBackground);
-				handleUnblockJoin()
-			})();
-		} else {
-			const clonedStream = changeStream.clone();
-			setActiveStreamEvent(clonedStream);
-			handleUnblockJoin();
-		}
-
-	}, [isAuraActive, changeStream]);
 
 	const handleToggleMic = useCallback(() => {
 		addNotificationEvent({
@@ -441,7 +404,7 @@ const Component = () => {
                     </ConditionalRender>
                     <CustomButton
                         onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
-                        disabled={isJoinBlocked || isEnterMeetingDisabled || isStreamRequested}
+                        disabled={isEnterMeetingDisabled || isStreamRequested}
                         label={
                             <Translation
                                 nameSpace="meeting"

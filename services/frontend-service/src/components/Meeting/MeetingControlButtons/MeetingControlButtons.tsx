@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
+import {useRouter} from "next/router";
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -32,7 +33,7 @@ import {
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
-    $meetingTemplateStore,
+    $meetingTemplateStore, disconnectFromVideoChatEvent, sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
@@ -44,8 +45,11 @@ import { AppDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
+import {clientRoutes, dashboardRoute} from "../../../const/client-routes";
 
 const Component = () => {
+    const router = useRouter();
+
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
@@ -69,10 +73,13 @@ const Component = () => {
 
     const { isMobile } = useBrowserDetect();
 
-    const handleEndVideoChat = useCallback(() => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.endMeetingDialog,
-        });
+    const handleEndVideoChat = useCallback(async () => {
+        sendLeaveMeetingSocketEvent();
+        disconnectFromVideoChatEvent();
+        await router.push(localUser.isGenerated
+            ? clientRoutes.welcomeRoute
+            : dashboardRoute
+        );
     }, []);
 
     const handleToggleSharing = useCallback(async () => {

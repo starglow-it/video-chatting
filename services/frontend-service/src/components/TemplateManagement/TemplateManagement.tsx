@@ -30,6 +30,7 @@ import { EditTemplateDescription } from '@components/TemplateManagement/EditTemp
 import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttendeesPosition/EditAttendeesPosition';
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
+import {TemplateLinks} from "@components/TemplateManagement/TemplateLinks/TemplateLinks";
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -39,7 +40,7 @@ import { usePrevious } from '@hooks/usePrevious';
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { TemplateManagementProps } from '@components/TemplateManagement/TemplateManagement.types';
-import { customTemplateLinkSchema } from 'shared-frontend/validation';
+import {customTemplateLinkSchema, templatesLinksSchema} from 'shared-frontend/validation';
 import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from '../../const/templates/info';
 import { dashboardRoute } from '../../const/client-routes';
 import {
@@ -70,8 +71,9 @@ enum TabsValues {
     Background = 1,
     Settings = 2,
     Attendees = 3,
-    Privacy = 4,
-    Preview = 5,
+    Links = 4,
+    Privacy = 5,
+    Preview = 6,
 }
 
 const tabs: ValuesSwitcherItem<number>[] = [
@@ -82,6 +84,15 @@ const tabs: ValuesSwitcherItem<number>[] = [
     { id: 5, value: TabsValues.Preview, label: 'Preview' },
 ];
 
+const businessUserTabs: ValuesSwitcherItem<number>[] = [
+    { id: 1, value: TabsValues.Background, label: 'Background' },
+    { id: 2, value: TabsValues.Settings, label: 'Settings' },
+    { id: 3, value: TabsValues.Attendees, label: 'Attendees' },
+    { id: 4, value: TabsValues.Links, label: 'Links' },
+    { id: 5, value: TabsValues.Privacy, label: 'Privacy' },
+    { id: 6, value: TabsValues.Preview, label: 'Preview' },
+];
+
 const defaultValues: IUploadTemplateFormData = {
     name: '',
     url: '',
@@ -89,6 +100,7 @@ const defaultValues: IUploadTemplateFormData = {
     description: '',
     customLink: '',
     tags: [],
+    templateLinks: [],
     participantsNumber: 1,
     participantsPositions: [{
         left: 0.5,
@@ -106,6 +118,7 @@ const validationSchema = yup.object({
     isPublic: booleanSchema().required('required'),
     customLink: customTemplateLinkSchema(),
     participantsPositions: participantsPositionsSchema(),
+    templateLinks: templatesLinksSchema(),
 });
 
 const Component = ({
@@ -139,16 +152,22 @@ const Component = ({
     const isPublic = useWatch({ control, name: 'isPublic' });
     const background = useWatch({ control, name: 'background' });
     const previewUrl = useWatch({ control, name: 'url' });
+    const templateLinks = useWatch({
+        control,
+        name: 'templateLinks',
+    });
 
     const previousParticipantsNumber = usePrevious(participantsNumber);
 
     const controlPanelRef = useRef<HTMLDivElement | null>(null);
     const savedTemplateProgress = useRef<IUploadTemplateFormData | null>(null);
 
+    const targetTab = isBusinessSubscription ? businessUserTabs : tabs;
+
     const { activeValue, activeItem, onValueChange, onNextValue, onPreviousValue } =
         useValueSwitcher({
-            values: tabs,
-            initialValue: tabs[0].value,
+            values: targetTab,
+            initialValue: targetTab[0].value,
         });
 
     const {
@@ -230,6 +249,11 @@ const Component = ({
                 : defaultValues.participantsPositions,
             previewUrls: template.previewUrls.map(({ id }) => id),
             isPublic: template.isPublic,
+            templateLinks: template.links?.map((link) => ({
+                value: link.item,
+                top: link.position.top,
+                left: link.position.left,
+            })) || [],
         });
         if (template.maxParticipants > 1) {
             onPreventNextParticipantsPositionsUpdate();
@@ -275,7 +299,7 @@ const Component = ({
             typeof router.query.step === 'string' &&
             activeItem.label.toLowerCase() !== router.query.step
         ) {
-            const tab = tabs.find(({ label }) => label.toLowerCase() === router.query.step);
+            const tab = targetTab.find(({ label }) => label.toLowerCase() === router.query.step);
             if (tab) {
                 onValueChange(tab);
             }
@@ -303,6 +327,11 @@ const Component = ({
             participantsPositions: savedProgress.participantsPositions,
             previewUrls: savedProgress.previewUrls,
             isPublic: savedProgress.isPublic,
+            templateLinks: savedProgress.links?.map((link) => ({
+                value: link.item,
+                top: link.position.top,
+                left: link.position.left,
+            })) || [],
         });
         if (savedProgress.participantsNumber > 1) {
             onPreventNextParticipantsPositionsUpdate();
@@ -334,7 +363,7 @@ const Component = ({
             }
             onUpgradePlan(data);
         }),
-        [onSubmit, isFileUploading],
+        [onUpgradePlan, isFileUploading],
     );
 
     const handleValueChange = useCallback(
@@ -349,7 +378,7 @@ const Component = ({
             }
             if (item.value > TabsValues.Settings) {
                 const response = await trigger();
-                onValueChange(response ? item : tabs[1]);
+                onValueChange(response ? item : targetTab[1]);
                 return;
             }
 
@@ -357,6 +386,24 @@ const Component = ({
         },
         [onValueChange, background, previewUrl],
     );
+
+    const handleNextStepWithValidation = useCallback(async () => {
+        if (activeValue > TabsValues.Background && !(background || previewUrl)) {
+            addNotificationEvent({
+                type: NotificationType.BackgroundFileShouldBeUploaded,
+                message: 'uploadBackground.shouldBeUploaded',
+                withErrorIcon: true,
+            });
+            return;
+        }
+        if (activeValue > TabsValues.Settings) {
+            const response = await trigger();
+            onValueChange(response ? activeItem : targetTab[1]);
+            return;
+        }
+
+        onNextValue();
+    }, [activeValue, activeItem]);
 
     const handleOpenCancelConfirmationDialog = useCallback(() => {
         appDialogsApi.openDialog({
@@ -375,7 +422,7 @@ const Component = ({
                         <ConditionalRender condition={activeValue === TabsValues.Settings}>
                             <EditTemplateDescription
                                 template={template}
-                                onNextStep={onNextValue}
+                                onNextStep={handleNextStepWithValidation}
                                 onPreviousStep={onPreviousValue}
                             />
                         </ConditionalRender>
@@ -398,6 +445,16 @@ const Component = ({
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
                                 onUpgradePlan={handleUpgradePlanClick}
+                            />
+                        </ConditionalRender>
+
+                        <ConditionalRender
+                            condition={activeValue === TabsValues.Links}
+                        >
+                            <TemplateLinks
+                                links={templateLinks}
+                                onNextStep={onNextValue}
+                                onPreviousStep={onPreviousValue}
                             />
                         </ConditionalRender>
 
@@ -447,7 +504,7 @@ const Component = ({
                                                 />
                                             )}
 
-                                            <CustomGrid container alignItems="center" gap={0.5}>
+                                            <CustomGrid container wrap="nowrap" alignItems="center" gap={0.5}>
                                                 {isPublic ? (
                                                     <PeopleIcon
                                                         width="16px"
@@ -482,7 +539,7 @@ const Component = ({
                                     className={styles.navigationPaper}
                                 >
                                     <ValuesSwitcher<number>
-                                        values={tabs}
+                                        values={targetTab}
                                         activeValue={activeItem}
                                         onValueChanged={handleValueChange}
                                         variant="transparent"

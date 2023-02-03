@@ -14,6 +14,8 @@ const RoomsTablePreviewItem = memo(
 			container
 			alignItems="center"
 			gap={1.5}
+			wrap="nowrap"
+			className={styles.wrapper}
 		>
 			{src ? (
 				<CustomImage

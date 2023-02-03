@@ -38,10 +38,8 @@ import {UploadBackground} from '@components/CreateRoom/UploadBackground/UploadBa
 import {CommonTemplateSettings} from '@components/CreateRoom/CommonTemplateSettings/CommonTemplateSettings';
 import {AttendeesPositions} from '@components/CreateRoom/AttendeesPositions/AttendeesPositions';
 import {TemplateLinks} from '@components/CreateRoom/TemplateLinks/TemplateLinks';
-import {TemplateSound} from '@components/CreateRoom/TemplateSound/TemplateSound';
 import {TemplatePrice} from '@components/CreateRoom/TemplatePrice/TemplatePrice';
 import {TemplatePreview} from '@components/CreateRoom/TemplatePreview/TemplatePreview';
-import {CustomAudio} from '@components/CreateRoom/CustomAudio/CustomAudio';
 import {CustomButton} from "shared-frontend/library/custom/CustomButton";
 import {ConfirmSaveChangesDialog} from "@components/Dialogs/ConfirmSaveChangesDialog/ConfirmSaveChangesDialog";
 import {CancelEditRoomDialog} from "@components/Dialogs/CancelEditRoomDialog/CancelEditRoomDialog";
@@ -57,9 +55,7 @@ import {
     openAdminDialogEvent,
     removeWindowListeners,
     updateCommonTemplateDataEvent,
-    deleteCommonTemplateSoundFx,
     updateCommonTemplateFx,
-    uploadTemplateSoundFx,
     getBusinessCategoriesEvent,
     resetCommonTemplateStore,
     uploadTemplateBackgroundFx,
@@ -134,7 +130,6 @@ const tabs: ValuesSwitcherAlias[] = [
 
 const defaultValues = {
     background: '',
-    backgroundSound: '',
     name: '',
     description: '',
     tags: [],
@@ -148,7 +143,6 @@ const defaultValues = {
 
 const validationSchema = yup.object({
     background: simpleStringSchema(),
-    backgroundSound: yup.mixed().oneOf([simpleStringSchema(), null]),
     name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
     description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH).required(
         'required',
@@ -173,7 +167,6 @@ const Component = () => {
     } = useStore($businessCategoriesStore);
 
     const isFileUploading = useStore(uploadTemplateBackgroundFx.pending);
-    const isSoundUploading = useStore(uploadTemplateSoundFx.pending);
 
     const {
         activeItem, onValueChange, onNextValue, onPreviousValue
@@ -208,11 +201,6 @@ const Component = () => {
     const type = useWatch({
         control,
         name: 'type',
-    });
-
-    const backgroundSound = useWatch({
-        control,
-        name: 'backgroundSound',
     });
 
     const templateLinks = useWatch({
@@ -282,7 +270,6 @@ const Component = () => {
                 description: commonTemplate.description || '',
                 type: commonTemplate.type,
                 background: commonTemplate.url,
-                backgroundSound: commonTemplate.sound?.url,
                 templateLinks,
                 templatePrice: commonTemplate.priceInCents ? commonTemplate.priceInCents / 100 : undefined,
                 participantsNumber: commonTemplate.maxParticipants,
@@ -291,7 +278,6 @@ const Component = () => {
             });
 
             updateCommonTemplateDataEvent({
-                draftSound: commonTemplate.sound,
                 draftUrl: commonTemplate.url,
             });
         }
@@ -379,16 +365,12 @@ const Component = () => {
                     draftPreviewUrls: [],
                     draftUrl: '',
                     draftSound: null,
+                    isAudioAvailable: true,
                 };
 
                 if (dirtyFields.background) {
                     updateData.url = commonTemplate?.draftUrl;
                     updateData.previewUrls = commonTemplate?.draftPreviewUrls?.map(({ id }) => id)
-                }
-
-                if (dirtyFields.backgroundSound) {
-                    updateData.sound = data.backgroundSound;
-                    updateData.isAudioAvailable = !!data.backgroundSound;
                 }
 
                 await updateCommonTemplateFx({
@@ -440,25 +422,6 @@ const Component = () => {
         [commonTemplate?.id],
     );
 
-    const handleSoundUploaded = useCallback(
-        async (file: File) => {
-            updateCommonTemplateDataEvent({
-                draftSound: null,
-            });
-
-            if (commonTemplate?.id) {
-                const response = await uploadTemplateSoundFx({
-                    file,
-                    updateKey: 'draftSound',
-                    templateId: commonTemplate.id,
-                });
-
-                setValue('backgroundSound', response?.state?.draftSound?.url);
-            }
-        },
-        [commonTemplate?.id],
-    );
-
     const handleOpenCancelEditDialog = useCallback(() => {
         openAdminDialogEvent(AdminDialogsEnum.cancelEditRoomDialog);
     }, []);
@@ -483,17 +446,6 @@ const Component = () => {
         openAdminDialogEvent(AdminDialogsEnum.saveRoomChangesDialog);
     }, []);
 
-    const handleRemoveSound = useCallback(() => {
-        setValue('backgroundSound', null, { shouldDirty: true });
-        updateCommonTemplateDataEvent({
-            draftSound: null,
-        });
-        deleteCommonTemplateSoundFx({
-            updateKey: 'draftSound',
-            templateId: commonTemplate?.id,
-        });
-    }, [commonTemplate?.id]);
-
     return (
         <CustomGrid
             container
@@ -507,13 +459,6 @@ const Component = () => {
                     <TemplateBackground
                         templateType={commonTemplate?.templateType ?? 'video'}
                         url={commonTemplate?.draftUrl || background}
-                    />
-                    <CustomAudio
-                        isMuted={
-                            isFileUploading ||
-                            activeItem.label === TabsLabels.Sound
-                        }
-                        src={commonTemplate?.draftSound?.url || backgroundSound}
                     />
 
                     <CustomGrid
@@ -659,24 +604,6 @@ const Component = () => {
                             className={styles.componentItem}
                         >
                             <AttendeesPositions
-                                onNextStep={onNextValue}
-                                onPreviousStep={onPreviousValue}
-                            />
-                        </CustomFade>
-
-                        <CustomFade
-                            key={TabsLabels.Sound}
-                            open={activeItem.label === TabsLabels.Sound}
-                            unmountOnExit
-                            className={styles.componentItem}
-                        >
-                            <TemplateSound
-                                key={activeItem.label === TabsLabels.Sound}
-                                isLoading={isSoundUploading}
-                                fileName={commonTemplate?.draftSound?.fileName}
-                                src={backgroundSound}
-                                onRemove={handleRemoveSound}
-                                onFileUploaded={handleSoundUploaded}
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
                             />

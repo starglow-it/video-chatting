@@ -55,5 +55,8 @@
       "shouldBeUploaded": "Background file should be uploaded at first",
       "isPending": "Please wait until file is uploaded"
     }
+  },
+  "errors": {
+    "invalidUrl": "Entered link is invalid"
   }
 }

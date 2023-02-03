@@ -1,6 +1,5 @@
 import {
 	DeleteCommonTemplatePayload,
-	DeleteCommonTemplateSoundPayload,
 	GetCommonTemplateByIdPayload,
 	ICommonTemplate,
 	QueryParams,
@@ -73,18 +72,6 @@ export const updateCommonTemplateFx = templatesDomain.createEffect<
     CommonTemplateState,
     void
 >('updateCommonTemplateFx');
-
-export const deleteCommonTemplateSoundFx = templatesDomain.createEffect<
-    DeleteCommonTemplateSoundPayload,
-    CommonTemplateState,
-    void
->('deleteCommonTemplateSoundFx');
-
-export const uploadTemplateSoundFx = templatesDomain.createEffect<
-    UploadCommonTemplateFilePayload,
-    CommonTemplateState,
-    void
->('uploadTemplateSoundFx');
 
 export const uploadTemplateBackgroundFx = templatesDomain.createEffect<
     UploadCommonTemplateFilePayload,

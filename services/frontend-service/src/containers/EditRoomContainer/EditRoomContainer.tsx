@@ -107,6 +107,13 @@ const Component = () => {
                 draft: false,
                 url: data.url,
                 previewUrls: data.previewUrls,
+                links: data.templateLinks.map(link => ({
+                    item: link.value,
+                    position: {
+                        top: link.top,
+                        left: link.left,
+                    },
+                })),
             };
 
             await editUserTemplateFx({

@@ -1,7 +1,16 @@
 @import "../../../styles/rem";
+@import "../../../styles/mixins";
 
 .previewImage {
   width: rem(42px);
   height: rem(28px);
   border-radius: rem(3px);
+}
+
+.wrapper {
+  max-width: 100%;
+}
+
+.text {
+  @extend %text-ellips;
 }

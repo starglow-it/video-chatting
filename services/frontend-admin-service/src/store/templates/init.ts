@@ -8,7 +8,6 @@ import {
 	$commonTemplateStore, $isUploadTemplateBackgroundInProgress,
 	createTemplateFx,
 	deleteCommonTemplateFx,
-	deleteCommonTemplateSoundFx,
 	getCommonTemplateEvent,
 	getCommonTemplateFx,
 	getCommonTemplatesFx,
@@ -17,25 +16,20 @@ import {
 	updateCommonTemplateDataEvent,
 	updateCommonTemplateFx,
 	uploadTemplateBackgroundFx,
-	uploadTemplateSoundFx,
 } from './model';
 
 import { handleDeleteCommonTemplate } from './handlers/handleDeleteCommonTemplate';
 import { handleUpdateCommonTemplate } from './handlers/handleUpdateCommonTemplate';
-import { handleDeleteCommonTemplateSound } from './handlers/handleDeleteCommonTemplateSound';
 import { handleGetCommonTemplates } from './handlers/handleGetCommonTemplates';
 import { handleCreateCommonTemplate } from './handlers/handleCreateCommonTemplate';
 import { handleUploadCommonTemplateBackground } from './handlers/handleUploadCommonTemplateBackground';
 import { handleGetCommonTemplate } from './handlers/handleGetCommonTemplate';
-import { handleUploadCommonTemplateSound } from './handlers/handleUploadCommonTemplateSound';
 
 getCommonTemplatesFx.use(handleGetCommonTemplates);
 createTemplateFx.use(handleCreateCommonTemplate);
 getCommonTemplateFx.use(handleGetCommonTemplate);
 deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 updateCommonTemplateFx.use(handleUpdateCommonTemplate);
-deleteCommonTemplateSoundFx.use(handleDeleteCommonTemplateSound);
-uploadTemplateSoundFx.use(handleUploadCommonTemplateSound);
 uploadTemplateBackgroundFx.use(handleUploadCommonTemplateBackground);
 
 $commonTemplates
@@ -64,7 +58,6 @@ $commonTemplateStore
 		[
 			createTemplateFx.doneData,
 			getCommonTemplateFx.doneData,
-			uploadTemplateSoundFx.doneData,
 			uploadTemplateBackgroundFx.doneData,
 		],
 		(state, data) =>

@@ -37,9 +37,7 @@ import {
 import {
 	$isMeetingHostStore,
 	$localUserStore,
-	$meetingTemplateStore,
 	disconnectFromVideoChatEvent,
-	sendEndMeetingSocketEvent,
 	sendLeaveMeetingSocketEvent,
 } from '../../../store/roomStores';
 
@@ -59,9 +57,9 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 
 const Component = () => {
 	const router = useRouter();
-	const meetingTemplate = useStore($meetingTemplateStore);
-	const isMeetingHost = useStore($isMeetingHostStore);
+
 	const localUser = useStore($localUserStore);
+	const isMeetingHost = useStore($isMeetingHostStore);
 
 	const {
 		translation
@@ -87,14 +85,14 @@ const Component = () => {
         await router.push(localUser.isGenerated ? clientRoutes.welcomeRoute : dashboardRoute);
     }, [localUser.isGenerated]);
 
-    const handleEndMeeting = useCallback(async () => {
-        handleClose();
-        sendEndMeetingSocketEvent();
-
-		disconnectFromVideoChatEvent();
-
-		await router.push(dashboardRoute);
-	}, [meetingTemplate.id]);
+    // const handleEndMeeting = useCallback(async () => {
+    //     handleClose();
+    //     sendEndMeetingSocketEvent();
+	//
+	// 	disconnectFromVideoChatEvent();
+	//
+	// 	await router.push(dashboardRoute);
+	// }, [meetingTemplate.id]);
 
 	return (
 		<CustomDialog
@@ -108,9 +106,7 @@ const Component = () => {
 				textAlign="center"
 				dangerouslySetInnerHTML={{
 					__html: translation(
-						`endMeeting.${
-							isMeetingHost ? 'forHost' : 'forAttendee'
-						}`,
+						`endMeeting.forAttendee`,
 					),
 				}}
 			/>
@@ -129,57 +125,27 @@ const Component = () => {
 				alignItems="center"
 				gap={2}
 			>
-				{isMeetingHost ? (
-					<>
-						<CustomButton
-							onClick={handleEndMeeting}
-							className={styles.baseBtn}
-							label={
-								<Translation
-									nameSpace="meeting"
-									translation="buttons.lockUp"
-								/>
-							}
-							variant="custom-error"
+				<CustomButton
+					onClick={handleClose}
+					className={styles.baseBtn}
+					label={
+						<Translation
+							nameSpace="meeting"
+							translation="buttons.cancel"
 						/>
-						<CustomButton
-							onClick={handleLeave}
-							className={styles.leaveButton}
-							label={
-								<Translation
-									nameSpace="meeting"
-									translation="buttons.leave"
-								/>
-							}
+					}
+					variant="custom-error"
+				/>
+				<CustomButton
+					onClick={handleLeave}
+					className={styles.leaveButton}
+					label={
+						<Translation
+							nameSpace="common"
+							translation="buttons.leave"
 						/>
-
-					</>
-				) : (
-					<>
-						<CustomButton
-							onClick={handleClose}
-							className={styles.baseBtn}
-							label={
-								<Translation
-									nameSpace="meeting"
-									translation="buttons.cancel"
-								/>
-							}
-							variant="custom-cancel"
-						/>
-						<CustomButton
-							onClick={handleLeave}
-							className={styles.baseBtn}
-							label={
-								<Translation
-									nameSpace="common"
-									translation="buttons.leave"
-								/>
-							}
-							variant="custom-error"
-						/>
-					</>
-				)}
+					}
+				/>
 			</CustomGrid>
 		</CustomDialog>
 	);

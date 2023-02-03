@@ -109,8 +109,6 @@ services:
       - ../../services/frontend-admin-service/pages:/app/services/frontend-admin-service/pages
       - ../../services/frontend-admin-service/src:/app/services/frontend-admin-service/src
       - ../../services/frontend-admin-service/public:/app/services/frontend-admin-service/public
-      - /app/services/frontend-admin-service/node_modules
-      - /app/services/frontend-admin-service/.next
     networks:
       - liveoffice_local
 

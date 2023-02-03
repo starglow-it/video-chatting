@@ -28,12 +28,14 @@ import styles from './TemplatePreview.module.scss';
 
 // const
 import frontendConfig from '../../../const/config';
+import {TemplateLinkItem} from "@components/TemplateManagement/TemplateLinks/TemplateLinkItem";
 
 const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePreviewProps) => {
     const { control } = useFormContext();
 
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
+    const templateLinks = useWatch({ control, name: 'templateLinks' });
     const tags = useWatch({ control, name: 'tags' });
     const participantsPositions = useWatch({ control, name: 'participantsPositions' });
 
@@ -55,6 +57,19 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
     const tagsChips = useMemo(
         () => tags.map(tag => <TagItem color={tag.color} label={tag.label}/>),
         [tags],
+    );
+
+    const renderLinks = useMemo(
+        () =>
+            templateLinks?.map((link, index: number) => (
+                <TemplateLinkItem
+                    key={link?.key}
+                    index={index}
+                    isStatic
+                    data={link}
+                />
+            )),
+        [templateLinks],
     );
 
     const tooltipStyle = useMemo(() => {
@@ -91,6 +106,7 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>
+            {renderLinks}
             <CustomGrid
                 container
                 gap={1.5}

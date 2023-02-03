@@ -91,10 +91,6 @@ export type UpdateCommonTemplatePayload = {
   data: Partial<ICommonTemplate>;
 };
 
-export type DeleteCommonTemplateSoundPayload = {
-  templateId: ICommonTemplate['id'];
-};
-
 export type CreateTemplatePayload = {
   userId: ICommonTemplate['id'];
 };

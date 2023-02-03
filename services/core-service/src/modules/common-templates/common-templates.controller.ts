@@ -115,12 +115,12 @@ export class CommonTemplatesController {
           },
         ];
 
-        if (options?.limit) {
-          aggregationPipeline.push({ $limit: options.limit });
-        }
-
         if (options?.skip) {
           aggregationPipeline.push({ $skip: options.skip });
+        }
+
+        if (options?.limit) {
+          aggregationPipeline.push({ $limit: options.limit });
         }
 
         const commonTemplates = await this.commonTemplatesService.aggregate(
@@ -456,6 +456,8 @@ export class CommonTemplatesController {
           updateData.stripeProductId = null;
         }
 
+        console.log(updateData);
+
         const updatedTemplate = await this.commonTemplatesService.updateCommonTemplate(
           {
             query: {
@@ -485,6 +487,7 @@ export class CommonTemplatesController {
             previewUrls: updatedTemplate.previewUrls,
             businessCategories: updatedTemplate.businessCategories,
             url: updatedTemplate.url,
+            draft: updatedTemplate.draft,
           },
           session,
         });

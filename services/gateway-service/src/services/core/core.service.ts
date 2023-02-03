@@ -9,7 +9,6 @@ import {
   UserBrokerPatterns,
   MeetingBrokerPatterns,
   UserTemplatesBrokerPatterns,
-  TemplateSoundBrokerPatterns,
 } from 'shared-const';
 
 import {
@@ -17,7 +16,6 @@ import {
   ICountryStatistic,
   IMeetingInstance,
   EntityList,
-  ITemplateSoundFile,
   IUserTemplate,
   FindUsersPayload,
   GetMeetingPayload,
@@ -43,7 +41,6 @@ import {
   ManageUserRightsPayload,
   UpdateUserTemplateUsageNumberPayload,
   UpdateCountryStatisticsPayload,
-  CreateTemplateSoundPayload,
   UploadTemplateFilePayload,
 } from 'shared-types';
 
@@ -250,16 +247,6 @@ export class CoreService {
   ): Promise<any> {
     const pattern = {
       cmd: UserTemplatesBrokerPatterns.UpdateUserTemplateUsageNumber,
-    };
-
-    return firstValueFrom(this.client.send(pattern, payload));
-  }
-
-  async createTemplateSound(
-    payload: CreateTemplateSoundPayload,
-  ): Promise<ITemplateSoundFile> {
-    const pattern = {
-      cmd: TemplateSoundBrokerPatterns.CreateTemplateSoundFile,
     };
 
     return firstValueFrom(this.client.send(pattern, payload));

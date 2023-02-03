@@ -67,5 +67,6 @@
       "public": "Public",
       "private": "Private"
     }
-  }
+  },
+  "addLink": "Add Link"
 }

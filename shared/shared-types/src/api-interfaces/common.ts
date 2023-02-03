@@ -33,16 +33,6 @@ export interface IPreviewImage {
   resolution: number;
 }
 
-export interface ITemplateSoundFile {
-  id: string;
-  url: string;
-
-  uploadKey: string;
-  size: number;
-  mimeType: string;
-  fileName: string;
-}
-
 export interface ICounter {
   key: string;
   value: number;

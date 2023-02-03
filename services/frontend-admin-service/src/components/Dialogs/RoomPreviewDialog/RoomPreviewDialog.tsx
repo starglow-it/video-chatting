@@ -22,7 +22,6 @@ import { Translation } from '@components/Translation/Translation';
 
 // icons
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
-import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
 import { PaymentIcon } from 'shared-frontend/icons/OtherIcons/PaymentIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
@@ -171,20 +170,6 @@ const RoomPreviewDialog = memo(() => {
 					</CustomTypography>
 
 					<ButtonsGroup className={styles.buttons}>
-						<CustomButton
-							variant="custom-cancel"
-							className={styles.statisticsButton}
-							Icon={<StatisticsIcon
-								width="28px"
-								height="28px"
-							      />}
-							label={
-								<Translation
-									nameSpace="rooms"
-									translation="buttons.statistics"
-								/>
-							}
-						/>
 						<CustomButton
 							onClick={handleEditRoom}
 							className={styles.chooseBtn}
