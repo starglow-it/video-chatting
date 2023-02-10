@@ -25,7 +25,13 @@ const Component = () => {
                 } as React.CSSProperties;
 
                 const handleOpenLink = () => {
-                    window.open(link.item, '_blank');
+                    let url = link.item;
+
+                    if (!url.match(/^https?:\/\//i)) {
+                        url = 'http://' + url;
+                    }
+
+                    return window.open(url, '_blank');
                 };
 
                 return (

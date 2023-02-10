@@ -225,39 +225,65 @@ export class PaymentsService {
   }) {
     const environment = await this.configService.get('environment');
 
-    return this.stripeClient.products.create({
+    const product = await this.stripeClient.products.create({
       name: productData.name,
       active: true,
       tax_code: 'txcd_10000000',
-      default_price_data: {
-        currency: 'usd',
-        unit_amount: productData.priceInCents,
-        ...(productData.type === 'subscription'
-          ? {
-              recurring: {
-                interval: ['demo', 'production'].includes(environment)
-                  ? 'month'
-                  : 'day',
-              },
-            }
-          : {}),
-      },
       metadata: {
         type: productData.type,
       },
       description: productData.description,
     });
+
+    await this.stripeClient.prices.create({
+      product: product.id,
+      currency: 'usd',
+      unit_amount: productData.priceInCents,
+      ...(productData.type === 'subscription'
+          ? {
+            recurring: {
+              interval: ['demo', 'production'].includes(environment)
+                  ? 'month'
+                  : 'day',
+            },
+          }
+          : {}),
+    });
+
+    return product;
   }
 
   async updateProduct(productId, data) {
-    return this.stripeClient.products.update(productId, {
+    const updatedProduct = await this.stripeClient.products.update(productId, {
       name: data.name,
       description: data.description,
     });
+
+    if (data.priceInCents) {
+      const price = await this.getProductPrice(productId);
+
+      await this.stripeClient.prices.update(price.id, { active: false });
+
+      await this.stripeClient.prices.create({
+        product: productId,
+        currency: 'usd',
+        unit_amount: data.priceInCents,
+      });
+    }
+
+    return updatedProduct;
   }
 
   async getProduct(productId) {
     return this.stripeClient.products.retrieve(productId);
+  }
+
+  async getProductPrice(productId) {
+    const prices = await this.stripeClient.prices.search({
+      query: `product:"${productId}"`,
+    });
+
+    return prices.data[0];
   }
 
   async getCustomer({ customerId }: { customerId: string }) {
@@ -415,7 +441,7 @@ export class PaymentsService {
 
       return;
     } catch (e) {
-      console.log(e);
+      await this.stripeClient.products.update(productId, { active: false });
     }
   }
 }

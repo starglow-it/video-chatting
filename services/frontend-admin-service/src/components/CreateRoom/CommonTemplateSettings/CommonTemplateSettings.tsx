@@ -112,9 +112,10 @@ const Component = ({
 	}, [tags]);
 
 	const handleClickNextStep = useCallback(async () => {
-		const isNextClickValidation = await trigger('tags');
+		const isNextClickValidation = await trigger(['name', 'description', 'tags']);
 
 		if (isNextClickValidation) {
+			clearErrors()
 			onNextStep();
 		}
 	}, []);

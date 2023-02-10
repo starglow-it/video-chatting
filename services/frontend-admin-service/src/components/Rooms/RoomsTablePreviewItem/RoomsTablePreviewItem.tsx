@@ -25,7 +25,7 @@ const RoomsTablePreviewItem = memo(
 					src={src}
 				/>
 			) : null}
-			<CustomTypography variant="body2">{roomName}</CustomTypography>
+			<CustomTypography className={styles.text} variant="body2">{roomName}</CustomTypography>
 		</CustomGrid>
 	),
 );

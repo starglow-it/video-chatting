@@ -30,7 +30,7 @@ const Component = ({
 	onNextStep, onPreviousStep 
 }: TemplatesLinksProps) => {
 	const {
-		control 
+		control, trigger
 	} = useFormContext();
 
 	const {
@@ -65,6 +65,14 @@ const Component = ({
 			top: 0.5,
 			left: 0.5,
 		});
+	}, []);
+
+	const handleClickNextStep = useCallback(async () => {
+		const isNextClickValidation = await trigger('templateLinks');
+
+		if (isNextClickValidation) {
+			onNextStep();
+		}
 	}, []);
 
 	const isAddLinkDisabled = fields.length === 5;
@@ -129,7 +137,7 @@ const Component = ({
 						height="32px"
 					      />}
 					className={styles.actionButton}
-					onAction={onNextStep}
+					onAction={handleClickNextStep}
 				/>
 			</CustomGrid>
 		</CustomGrid>

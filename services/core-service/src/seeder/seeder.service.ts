@@ -240,39 +240,25 @@ export class SeederService {
 
     const promises = [...userTemplates, ...commonTemplates].map((template) => async () => {
       const imagePromises = template?.previewUrls?.map((image) => async () => {
-        console.log('isImage has been migrated', imagesCache.includes(image?._id));
-
         if (!imagesCache.includes(image?._id)) {
           // key - mimeType - size - url
           // url - https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/free-lake_harmony/70178d4c-a18d-4098-9e3a-fd3c419d0b29_1080p.png
 
           const oldKey = this.awsService.getUploadKeyFromUrl(image.url);
 
-          console.log('oldKey');
-          console.log(oldKey);
-
-          // this.awsService.deleteResource(oldKey);
+          this.awsService.deleteResource(oldKey);
 
           const fileNameMatch = image.url.match(/.*\/(.*)\..*$/);
 
           if (fileNameMatch) {
             const existedFileName = fileNameMatch?.[1];
 
-            console.log('existedFileName');
-            console.log(existedFileName);
-
             const newKey = `templates/${template._id}/images/${existedFileName}.webp`;
-
-            console.log('newKey');
-            console.log(newKey);
 
             const newImageUrl = await this.transcodeService.transcodeImage({
               url: image.url,
               uploadKey: newKey
             });
-
-            console.log('newImageUrl');
-            console.log(newImageUrl);
 
             const fileData = await this.transcodeService.getFileData({ url: newImageUrl });
 

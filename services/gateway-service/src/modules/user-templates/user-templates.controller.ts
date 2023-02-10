@@ -169,7 +169,7 @@ export class UserTemplatesController {
         });
       }
 
-      if (Object.keys(templateData).length > 1) {
+      if (Object.keys(templateData).length >= 1) {
         userTemplate = await this.userTemplatesService.updateUserTemplate({
           templateId,
           userId: req.user.userId,

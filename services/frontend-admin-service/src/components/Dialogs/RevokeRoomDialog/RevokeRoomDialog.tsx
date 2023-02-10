@@ -53,6 +53,7 @@ const Component = () => {
 				templateId: templateData.id,
 				data: {
 					draft: true,
+					isPublic: false,
 				},
 			});
 

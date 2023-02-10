@@ -110,16 +110,18 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
     const handleClickNextStep = useCallback(async () => {
         const response = await trigger(['name', 'description', 'tags', 'customLink']);
 
-        const isBusy = await checkCustomLinkFx({
-            templateId: template?.id!,
-            customLink,
-        });
+        if (customLink) {
+            const isBusy = await checkCustomLinkFx({
+                templateId: template?.id!,
+                customLink,
+            });
 
-        if (isBusy) {
-            setError('customLink', [
-                { type: 'focus', message: 'meeting.settings.customLink.busy' },
-            ]);
-            return;
+            if (isBusy) {
+                setError('customLink', [
+                    { type: 'focus', message: 'meeting.settings.customLink.busy' },
+                ]);
+                return;
+            }
         }
 
         clearErrors('customLink');

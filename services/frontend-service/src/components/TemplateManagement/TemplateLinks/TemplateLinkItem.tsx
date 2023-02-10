@@ -172,7 +172,7 @@ const Component = ({
 								classes={{
 									root: styles.inputWrapper,
 								}}
-								placeholder="Your link here"
+								placeholder="Enter link & drag to place"
 								onFocus={handleSetElementActive}
 								{...registerData}
 							/>

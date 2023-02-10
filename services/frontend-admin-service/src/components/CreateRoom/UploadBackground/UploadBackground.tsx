@@ -55,7 +55,7 @@ export const MAX_SIZE_VIDEO = getFileSizeValue({
 const Component = ({
 	isFileExists,
 	onNextStep,
-					   isFileUploading,
+   	isFileUploading,
 	onFileUploaded,
 }: UploadBackgroundProps) => {
 	const generateFileUploadError = useCallback(

@@ -121,8 +121,8 @@ const RoomTableItemActions = memo(({
 		>
 			<ActionButton
 				className={clsx(styles.button, {
-					[styles.revoke]: !templateData?.draft,
-					[styles.publish]: templateData?.draft,
+					[styles.revoke]: templateData?.isPublic,
+					[styles.publish]: !templateData?.isPublic,
 				})}
 				onAction={handleRoomAction}
 				variant="decline"
@@ -131,7 +131,7 @@ const RoomTableItemActions = memo(({
 						<Translation
 							nameSpace="rooms"
 							translation={
-								!templateData?.draft
+								templateData?.isPublic
 									? 'buttons.revoke'
 									: 'buttons.publish'
 							}

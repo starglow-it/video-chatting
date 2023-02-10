@@ -51,7 +51,7 @@ import {
   GetStripeTemplateProductPayload,
   LoginStripeExpressAccountPayload,
   MonetizationStatisticPeriods,
-  MonetizationStatisticTypes, PlanKeys,
+  MonetizationStatisticTypes, PlanKeys, UpdateStripeTemplateProductPayload,
 } from 'shared-types';
 import { DeleteTemplateStripeProductPayload } from 'shared-types/src/brokerPayloads';
 
@@ -597,6 +597,15 @@ export class PaymentsController {
   }
 
   @MessagePattern({
+    cmd: PaymentsBrokerPatterns.UpdateStripeTemplateProduct
+  })
+  async updateStripeTemplateProduct(
+      @Payload() payload: UpdateStripeTemplateProductPayload,
+  ) {
+    return this.paymentService.updateProduct(payload.productId, payload.data);
+  }
+
+  @MessagePattern({
     cmd: PaymentsBrokerPatterns.DeleteTemplateStripeProduct,
   })
   async deleteTemplateStripeProduct(
@@ -624,10 +633,14 @@ export class PaymentsController {
     try {
       const product = await this.paymentService.getProduct(payload.productId);
 
+      const price = await this.paymentService.getProductPrice(product.id);
+
+      console.log(price.id);
+
       if (product?.id) {
         return this.paymentService.getStripeCheckoutSession({
           paymentMode: 'payment',
-          priceId: product.default_price as string,
+          priceId: price.id,
           basePath: 'dashboard',
           customerEmail: payload.customerEmail,
           customer: payload.customer,

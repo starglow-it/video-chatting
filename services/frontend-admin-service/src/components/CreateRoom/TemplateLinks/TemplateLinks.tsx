@@ -24,12 +24,16 @@ import styles from './TemplateLinks.module.scss';
 
 import { TemplateLinkItem } from './TemplateLinkItem';
 import { TemplatesLinksProps } from './TemplateLinks.types';
+import {addNotificationEvent} from "../../../store";
+import {NotificationType} from "../../../store/types";
 
 const Component = ({
 	onNextStep, onPreviousStep 
 }: TemplatesLinksProps) => {
 	const {
-		control 
+		control,
+		trigger,
+		clearErrors
 	} = useFormContext();
 
 	const {
@@ -64,6 +68,21 @@ const Component = ({
 			top: 0.5,
 			left: 0.5,
 		});
+	}, []);
+
+	const handleClickNextStep = useCallback(async () => {
+		const isNextClickValidation = await trigger(['templateLinks']);
+
+		if (isNextClickValidation) {
+			clearErrors();
+			onNextStep();
+		} else {
+			addNotificationEvent({
+				message: 'errors.invalidUrl',
+				withErrorIcon: true,
+				type: NotificationType.validationError,
+			});
+		}
 	}, []);
 
 	const isAddLinkDisabled = fields.length === 5;
@@ -128,7 +147,7 @@ const Component = ({
 						height="32px"
 					      />}
 					className={styles.actionButton}
-					onAction={onNextStep}
+					onAction={handleClickNextStep}
 				/>
 			</CustomGrid>
 		</CustomGrid>

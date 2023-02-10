@@ -25,7 +25,9 @@ import { $templatesStore, getTemplatesFx } from '../../store';
 const baseTemplateParams = {
     type: 'free',
     draft: false,
-    isPublic: true
+    isPublic: true,
+    sort: 'maxParticipants',
+    order: 1
 }
 
 const WelcomePageContainer = memo(() => {

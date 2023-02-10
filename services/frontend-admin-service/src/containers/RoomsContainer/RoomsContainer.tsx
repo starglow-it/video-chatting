@@ -69,7 +69,7 @@ const tableColumnsKeys: UsersTableHeadType['key'][] = [
 	'status',
 ];
 
-const ROOMS_LIMIT = 10;
+const ROOMS_LIMIT = 9;
 
 const Component = () => {
 	const {
@@ -86,6 +86,7 @@ const Component = () => {
 
 	useEffect(() => {
 		getCommonTemplatesFx({
+			draft: false,
 			limit: ROOMS_LIMIT,
 			skip: 0,
 		});
@@ -133,10 +134,10 @@ const Component = () => {
                             	: 'Free',
 					},
 					status: {
-						label: template.draft ? 'Pending' : 'Published',
+						label: !template.isPublic ? 'Pending' : 'Published',
 						style: clsx(styles.roomStatus, {
-							[styles.published]: !template.draft,
-							[styles.pending]: template.draft,
+							[styles.published]: template.isPublic,
+							[styles.pending]: !template.isPublic,
 						}),
 					},
 				};
@@ -151,6 +152,7 @@ const Component = () => {
 					page: newPage 
 				}) => {
 					getCommonTemplatesFx({
+						draft: false,
 						skip: (newPage - 1) * ROOMS_LIMIT,
 						limit: ROOMS_LIMIT,
 					});

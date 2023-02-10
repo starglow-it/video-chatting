@@ -30,32 +30,6 @@ services:
     labels:
       - "io.portainer.accesscontrol.public"
 
-  livekit-service:
-    container_name: liveoffice_develop_livekit
-    build:
-      context: ../../services/
-      dockerfile: ./livekit-service/Dockerfile
-      args:
-        - LIVEKIT_IP
-        - LIVEKIT_API_KEY
-        - LIVEKIT_API_SECRET
-    restart: unless-stopped
-    ports:
-      - "7880:7880"
-      - "7881:7881"
-      - "7882:7882/udp"
-      - "6789:6789"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.livekit_dev.rule=Host(`dev.livekit.liveoffice.forasoft.com`)"
-      - "traefik.http.routers.livekit_dev.entrypoints=https"
-      - "traefik.http.routers.livekit_dev.tls=true"
-      - "traefik.http.services.livekit_dev.loadbalancer.server.port=7880"
-      - "io.portainer.accesscontrol.public"
-    networks:
-      - liveoffice_dev
-      - traefikpublic
-
   frontend-service:
     container_name: liveoffice_develop_frontend
     build:

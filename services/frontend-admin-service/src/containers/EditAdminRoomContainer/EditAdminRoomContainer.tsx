@@ -72,7 +72,6 @@ enum TabsValues {
     Background = 1,
     Settings = 2,
     Attendees = 3,
-    Sound = 4,
     Links = 5,
     Monetization = 6,
     Preview = 7,
@@ -82,7 +81,6 @@ enum TabsLabels {
     Background = 'Background',
     Settings = 'Settings',
     Attendees = 'Attendees',
-    Sound = 'Sound',
     Links = 'Links',
     Monetization = 'Monetization',
     Preview = 'Preview',
@@ -105,11 +103,6 @@ const tabs: ValuesSwitcherAlias[] = [
         id: 3,
         value: TabsValues.Attendees,
         label: TabsLabels.Attendees,
-    },
-    {
-        id: 4,
-        value: TabsValues.Sound,
-        label: TabsLabels.Sound,
     },
     {
         id: 5,
@@ -329,13 +322,29 @@ const Component = () => {
 
             if (item.value > TabsValues.Settings) {
                 const response = await trigger(['description', 'name', 'tags']);
-                onValueChange(response ? item : tabs[1]);
-                return;
+
+                if (!response) {
+                    return;
+                }
+            }
+
+            if (item.value > TabsValues.Links) {
+                const isLinksValid = await trigger(['templateLinks']);
+
+                if (!isLinksValid) {
+                    addNotificationEvent({
+                        message: 'errors.invalidUrl',
+                        withErrorIcon: true,
+                        type: NotificationType.validationError,
+                    });
+                    onValueChange(tabs[3]);
+                    return;
+                }
             }
 
             onValueChange(item);
         },
-        [background, commonTemplate?.draftUrl],
+        [activeItem, background, commonTemplate?.draftUrl],
     );
 
     const onSubmit = useCallback(
@@ -364,7 +373,6 @@ const Component = () => {
                     })),
                     draftPreviewUrls: [],
                     draftUrl: '',
-                    draftSound: null,
                     isAudioAvailable: true,
                 };
 
@@ -392,7 +400,6 @@ const Component = () => {
         [
             commonTemplate?.id,
             commonTemplate?.draftUrl,
-            commonTemplate?.draftSound,
             commonTemplate?.draftPreviewUrls,
             dirtyFields,
         ],
@@ -432,7 +439,6 @@ const Component = () => {
             data: {
                 draftUrl: '',
                 draftPreviewUrls: [],
-                draftSound: null
             }
         });
         router.push('/rooms');

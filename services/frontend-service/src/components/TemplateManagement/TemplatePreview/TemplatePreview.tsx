@@ -77,7 +77,7 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
             return {};
         }
         const { clientHeight, clientTop } = controlPanelRef.current;
-        const top = clientHeight + clientTop - 14;
+        const top = clientHeight + clientTop + 20;
         return { top };
     }, [width]);
 

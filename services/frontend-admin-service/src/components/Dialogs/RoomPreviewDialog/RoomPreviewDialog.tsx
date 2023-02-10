@@ -80,8 +80,8 @@ const RoomPreviewDialog = memo(() => {
 			>
 				<CustomGrid className={styles.templatePreview}>
 					<TagItem
-						label={previewTemplate?.draft ? 'Pending' : 'Published'}
-						color={previewTemplate?.draft ? '#BDC8D3' : '#30BE39'}
+						label={!previewTemplate?.isPublic ? 'Pending' : 'Published'}
+						color={!previewTemplate?.isPublic ? '#BDC8D3' : '#30BE39'}
 						className={styles.roomStatusLabel}
 					/>
 					<ConditionalRender condition={Boolean(previewImage?.id)}>

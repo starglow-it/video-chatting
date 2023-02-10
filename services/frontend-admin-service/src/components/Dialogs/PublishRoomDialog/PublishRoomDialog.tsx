@@ -56,6 +56,7 @@ const Component = () => {
 				templateId: templateData.id,
 				data: {
 					draft: false,
+					isPublic: true,
 				},
 			});
 
@@ -80,7 +81,7 @@ const Component = () => {
 				alignItems="center"
 				justifyContent="center"
 			>
-				<CustomTypography variant="h4bold">
+				<CustomTypography variant="h4bold" className={styles.title}>
 					<Translation
 						nameSpace="rooms"
 						translation="publishRoomDialog.title"

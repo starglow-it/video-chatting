@@ -136,6 +136,11 @@ const Component = ({
 		[onRemove],
 	);
 
+	const handleBlur = (event) => {
+		handleSetElementInActive()
+		registerData.onBlur(event);
+	}
+
 	return (
 		<Draggable
 			disabled={!isDraggable}
@@ -171,8 +176,9 @@ const Component = ({
 								maxRows={4}
 								classes={{
 									root: styles.inputWrapper,
+									input: styles.textArea
 								}}
-								placeholder="Your link here"
+								placeholder="Enter link & drag to place"
 								onFocus={handleSetElementActive}
 								{...registerData}
 							/>

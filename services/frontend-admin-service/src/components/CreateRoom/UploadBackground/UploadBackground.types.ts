@@ -1,6 +1,6 @@
 export type UploadBackgroundProps = {
     isFileExists: boolean;
     onNextStep: () => void;
-    isUploadDisabled?: boolean;
+    isFileUploading?: boolean;
     onFileUploaded: (file: File) => void;
 };

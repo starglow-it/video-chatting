@@ -44,6 +44,7 @@
   backdrop-filter: blur(14px);
   border-radius: 8px;
   max-width: rem(393px);
+  width: rem(392px);
 }
 
 .linkItem {
@@ -63,15 +64,20 @@
 }
 
 .tooltipContent {
-  padding: 9px 12px;
+  width: rem(392px);
+  padding: rem(9px 12px);
 }
 
 .inputWrapper {
   max-width: 450px;
+  flex: 1 1 auto;
   color: $primary-white;
 
   .input::placeholder {
     color: rgba($primary-white, 0.6);
+  }
+  .textArea {
+    padding: rem(0 20px 0 0);
   }
 }
 

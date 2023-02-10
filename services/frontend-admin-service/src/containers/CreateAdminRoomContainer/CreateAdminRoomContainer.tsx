@@ -185,7 +185,7 @@ const Component = () => {
 	const isFileUploading = useStore(uploadTemplateBackgroundFx.pending);
 
 	const {
-		activeItem, onValueChange, onNextValue, onPreviousValue 
+		activeItem, onValueChange, onNextValue, onPreviousValue
 	} =
         useValueSwitcher<TabsValues, TabsLabels>({
         	values: tabs,
@@ -311,26 +311,48 @@ const Component = () => {
 
 			if (item.value > TabsValues.Settings) {
 				const response = await trigger(['description', 'name', 'tags']);
-				onValueChange(response ? item : tabs[1]);
-				return;
+
+				if (!response) {
+					return;
+				}
+			}
+
+			if (item.value > TabsValues.Links) {
+				const isLinksValid = await trigger(['templateLinks']);
+
+				if (!isLinksValid) {
+					addNotificationEvent({
+						message: 'errors.invalidUrl',
+						withErrorIcon: true,
+						type: NotificationType.validationError,
+					});
+					onValueChange(tabs[3]);
+					return;
+				}
 			}
 
 			onValueChange(item);
 		},
-		[background, commonTemplate?.draftUrl],
+		[activeItem, background, commonTemplate?.draftUrl],
 	);
 
 	const onSubmit = useCallback(
 		handleSubmit(async data => {
 			if (commonTemplate?.id) {
+				const templatePrice = data.type === 'paid'
+					? data.templatePrice * 100
+					: 0;
+
 				await updateCommonTemplateFx({
 					templateId: commonTemplate.id,
 					data: {
-						url: commonTemplate?.draftUrl,
 						name: data.name,
 						description: data.description,
 						maxParticipants: data.participantsNumber,
 						businessCategories: data.tags,
+						priceInCents: templatePrice,
+						type: data.type,
+						url: commonTemplate?.draftUrl,
 						usersPosition: adjustUserPositions(
 							data.participantsPositions,
 						),
@@ -341,13 +363,8 @@ const Component = () => {
 								left: link.left,
 							},
 						})),
-						type: data.type,
-						priceInCents:
-                            data.type === 'paid'
-								? data.templatePrice * 100
-								: 0,
 						isPublic: !data.draft,
-						draft: data.draft,
+						draft: false,
 						previewUrls: commonTemplate?.draftPreviewUrls?.map(
 							({
 								id 
@@ -386,6 +403,8 @@ const Component = () => {
 				templateType:
                     file.type.split('/')[0],
 			});
+
+			setValue('background', URL.createObjectURL(file), { shouldDirty: true });
 
 			if (commonTemplate?.id) {
 				const response = await uploadTemplateBackgroundFx({

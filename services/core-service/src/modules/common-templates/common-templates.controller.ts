@@ -77,8 +77,9 @@ export class CommonTemplatesController {
   ): Promise<EntityList<ICommonTemplate>> {
     try {
       return withTransaction(this.connection, async () => {
+        console.log(query);
         const aggregationPipeline: PipelineStage[] = [
-          { $sort: { maxParticipants: 1, _id: 1 } },
+          { $sort: { ...(options?.sort ?? {}), _id: -1 } },
           { $match: query },
           {
             $lookup: {
@@ -448,15 +449,13 @@ export class CommonTemplatesController {
           }
         }
 
-        if (updateData.type === PriceValues.Free) {
+        if (updateData.type === PriceValues.Free && template.stripeProductId) {
           this.paymentService.deleteTemplateStripeProduct({
             productId: template.stripeProductId,
           });
 
           updateData.stripeProductId = null;
         }
-
-        console.log(updateData);
 
         const updatedTemplate = await this.commonTemplatesService.updateCommonTemplate(
           {
@@ -471,7 +470,6 @@ export class CommonTemplatesController {
 
         await this.userTemplatesService.updateUserTemplates({
           query: {
-            meetingInstance: null,
             templateId: updatedTemplate.templateId,
           },
           data: {
@@ -532,6 +530,11 @@ export class CommonTemplatesController {
             _id: template._id,
           },
           session,
+        });
+
+        await this.userTemplatesService.deleteUserTemplates({
+          query: { templateId: template.templateId },
+          session
         });
 
         await this.roomStatisticService.delete({

@@ -112,6 +112,8 @@ const Component = () => {
             limit: 6,
             skip: 0,
             userId: profile.id,
+            sort: 'maxParticipants',
+            direction: 1
         });
     }, []);
 
@@ -140,7 +142,9 @@ const Component = () => {
             isPublic: true,
             limit: 6 * newPage,
             skip: 0,
-            userId: profile.id
+            userId: profile.id,
+            sort: 'maxParticipants',
+            direction: 1,
         });
     }, [profile.id]);
 

@@ -6,8 +6,6 @@ import {
   Get,
   Logger,
   Param,
-  ParseBoolPipe,
-  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -32,6 +30,7 @@ import { CoreService } from '../../services/core/core.service';
 import { IUserTemplate, IUpdateTemplate } from 'shared-types';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
+import {GetTemplatesQueryDto} from "../../dtos/query/GetTemplatesQuery.dto";
 
 @Controller('templates')
 export class TemplatesController {
@@ -53,22 +52,20 @@ export class TemplatesController {
   })
   async getCommonTemplates(
     @Request() req,
-    @Query('skip', ParseIntPipe) skip: number,
-    @Query('limit', ParseIntPipe) limit: number,
-    @Query('userId') userId: string,
-    @Query('draft', ParseBoolPipe) draft: boolean,
-    @Query('isPublic', ParseBoolPipe) isPublic: boolean,
-    @Query('type') type: string,
+    @Query() query: GetTemplatesQueryDto,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
+      const { skip, limit, userId, draft, isPublic, type, sort, direction } = query;
+
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
           isDeleted: false,
-          ...(draft ? { draft } : {}),
-          ...(isPublic ? { isPublic } : {}),
+          ...(draft !== undefined ? { draft } : {}),
+          ...(isPublic !== undefined ? { isPublic } : {}),
           ...(type ? { type } : {}),
         },
         options: {
+          ...(sort ? { sort: {[sort]: direction } } : {}),
           skip,
           limit,
           userId,
@@ -123,7 +120,6 @@ export class TemplatesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('/:templateId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Template' })
@@ -168,7 +164,7 @@ export class TemplatesController {
         });
       }
 
-      if (Object.keys(templateData).length > 1) {
+      if (Object.keys(templateData).length >= 1) {
         await this.templatesService.updateTemplate({
           templateId,
           data: templateData,

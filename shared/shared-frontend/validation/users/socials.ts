@@ -4,7 +4,7 @@ import {ISocialLink, SocialLinkKeysEnum} from 'shared-types';
 
 export const baseUrlSchema = () =>
     string().matches(
-        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+)?(&[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+)*?$/,
+        /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&=]*)/,
         'url.common',
     );
 

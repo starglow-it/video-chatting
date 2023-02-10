@@ -376,34 +376,33 @@ const Component = ({
                 });
                 return;
             }
+
             if (item.value > TabsValues.Settings) {
-                const response = await trigger();
-                onValueChange(response ? item : targetTab[1]);
-                return;
+                const response = await trigger(['description', 'name', 'tags']);
+
+                if (!response) {
+                    return;
+                }
+            }
+
+            if (item.value > TabsValues.Links) {
+                const isLinksValid = await trigger(['templateLinks']);
+
+                if (!isLinksValid) {
+                    addNotificationEvent({
+                        message: 'errors.invalidUrl',
+                        withErrorIcon: true,
+                        type: NotificationType.validationError,
+                    });
+                    onValueChange(tabs[3]);
+                    return;
+                }
             }
 
             onValueChange(item);
         },
-        [onValueChange, background, previewUrl],
+        [activeItem, onValueChange, background, previewUrl],
     );
-
-    const handleNextStepWithValidation = useCallback(async () => {
-        if (activeValue > TabsValues.Background && !(background || previewUrl)) {
-            addNotificationEvent({
-                type: NotificationType.BackgroundFileShouldBeUploaded,
-                message: 'uploadBackground.shouldBeUploaded',
-                withErrorIcon: true,
-            });
-            return;
-        }
-        if (activeValue > TabsValues.Settings) {
-            const response = await trigger();
-            onValueChange(response ? activeItem : targetTab[1]);
-            return;
-        }
-
-        onNextValue();
-    }, [activeValue, activeItem]);
 
     const handleOpenCancelConfirmationDialog = useCallback(() => {
         appDialogsApi.openDialog({
@@ -422,7 +421,7 @@ const Component = ({
                         <ConditionalRender condition={activeValue === TabsValues.Settings}>
                             <EditTemplateDescription
                                 template={template}
-                                onNextStep={handleNextStepWithValidation}
+                                onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
                             />
                         </ConditionalRender>
