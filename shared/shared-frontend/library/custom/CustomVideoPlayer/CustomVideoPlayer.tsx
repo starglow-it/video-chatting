@@ -5,7 +5,7 @@ import { CustomVideoPlayerProps } from './types';
 
 import styles from './CustomVideoPlayer.module.scss';
 
-const Component = ({ isPlaying, isMuted, volume, src, className }: CustomVideoPlayerProps) => {
+const Component = ({ isPlaying, isMuted, volume, src }: CustomVideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
@@ -51,15 +51,13 @@ const Component = ({ isPlaying, isMuted, volume, src, className }: CustomVideoPl
     }, [src]);
 
     return (
-        <div className={className}>
-            <video
-                ref={videoRef}
-                className={styles.video}
-                autoPlay
-                loop
-                playsInline
-            />
-        </div>
+        <video
+            ref={videoRef}
+            className={styles.video}
+            autoPlay
+            loop
+            playsInline
+        />
     );
 };
 

@@ -33,6 +33,7 @@ import { UpdateProfileRequest } from '../../dtos/requests/update-profile.request
 import { CoreService } from '../../services/core/core.service';
 import { NotificationsService } from '../../services/notifications/notifications.service';
 import { ConfigClientService } from '../../services/config/config.service';
+import {PaymentsService} from "../payments/payments.service";
 
 @Controller('profile')
 export class ProfileController {
@@ -42,6 +43,7 @@ export class ProfileController {
     private configService: ConfigClientService,
     private notificationService: NotificationsService,
     private coreService: CoreService,
+    private paymentsService: PaymentsService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -108,6 +110,12 @@ export class ProfileController {
     await this.coreService.deleteUser({
       userId: req.user.userId,
     });
+
+    if (targetUser.stripeSubscriptionId) {
+      await this.paymentsService.cancelUserSubscription({
+        subscriptionId: targetUser.stripeSubscriptionId,
+      });
+    }
 
     this.notificationService.sendEmail({
       template: {

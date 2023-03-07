@@ -54,13 +54,13 @@ const RoomTableItemActions = memo(({
 			event?.stopPropagation();
 			setActiveTemplateIdEvent(actionId);
 
-			if (templateData?.draft) {
+			if (!templateData?.isPublic) {
 				openAdminDialogEvent(AdminDialogsEnum.publishRoomDialog);
 			} else {
 				openAdminDialogEvent(AdminDialogsEnum.revokeRoomDialog);
 			}
 		},
-		[templateData?.draft],
+		[templateData?.isPublic],
 	);
 
 	const handleDeleteRoom = useCallback((event) => {

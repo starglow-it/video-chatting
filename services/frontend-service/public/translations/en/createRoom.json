@@ -11,7 +11,8 @@
     }
   },
   "tooltips": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "addLinkDisabled": "Add Link disabled"
   },
   "uploadBackground": {
     "title": "Upload your Room background",

@@ -1,4 +1,4 @@
-import {memo, useCallback, useEffect} from 'react';
+import {memo, useCallback, useEffect, useRef} from 'react';
 import {FormProvider, useForm, useWatch} from 'react-hook-form';
 import * as yup from 'yup';
 import {useStore} from 'effector-react';
@@ -161,6 +161,8 @@ const Component = () => {
 
     const isFileUploading = useStore(uploadTemplateBackgroundFx.pending);
 
+    const templateTypeRef = useRef('');
+
     const {
         activeItem, onValueChange, onNextValue, onPreviousValue
     } =
@@ -233,7 +235,6 @@ const Component = () => {
             templateId: router.query.roomId as string,
         });
         getBusinessCategoriesEvent({});
-
         initWindowListeners();
 
         return () => {
@@ -273,6 +274,8 @@ const Component = () => {
             updateCommonTemplateDataEvent({
                 draftUrl: commonTemplate.url,
             });
+
+            templateTypeRef.current = commonTemplate.templateType;
         }
     }, [commonTemplate?.id]);
 
@@ -371,14 +374,14 @@ const Component = () => {
                             left: link.left,
                         },
                     })),
-                    draftPreviewUrls: [],
-                    draftUrl: '',
                     isAudioAvailable: true,
                 };
 
                 if (dirtyFields.background) {
+                    updateData.draftUrl = '';
+                    updateData.draftPreviewUrls = [];
                     updateData.url = commonTemplate?.draftUrl;
-                    updateData.previewUrls = commonTemplate?.draftPreviewUrls?.map(({ id }) => id)
+                    updateData.previewUrls = commonTemplate?.draftPreviewUrls?.map(({ id }) => id);
                 }
 
                 await updateCommonTemplateFx({
@@ -419,7 +422,6 @@ const Component = () => {
             if (commonTemplate?.id) {
                 const response = await uploadTemplateBackgroundFx({
                     file,
-                    uploadKey: 'draftUrl',
                     templateId: commonTemplate.id,
                 });
 
@@ -439,6 +441,7 @@ const Component = () => {
             data: {
                 draftUrl: '',
                 draftPreviewUrls: [],
+                templateType: templateTypeRef.current,
             }
         });
         router.push('/rooms');
@@ -581,7 +584,7 @@ const Component = () => {
                             className={styles.componentItem}
                         >
                             <UploadBackground
-                                isUploadDisabled={isFileUploading}
+                                isFileUploading={isFileUploading}
                                 isFileExists={Boolean(
                                     commonTemplate?.draftUrl || background,
                                 )}
@@ -657,6 +660,7 @@ const Component = () => {
                                         <CustomButton
                                             className={styles.createButton}
                                             onClick={handleSaveChanges}
+                                            disabled={isFileUploading}
                                             label={
                                                 <Translation
                                                     nameSpace="rooms"

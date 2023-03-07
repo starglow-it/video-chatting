@@ -21,6 +21,7 @@ import { ProfileService } from './profile.service';
 import { ProfileTemplatesController } from './profile-templates.controller';
 import { ProfileAvatarController } from './profile-avatar.controller';
 import { ProfileController } from './profile.controller';
+import {PaymentsModule} from "../payments/payments.module";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProfileController } from './profile.controller';
     TemplatesModule,
     UserTemplatesModule,
     UploadModule,
+    PaymentsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],

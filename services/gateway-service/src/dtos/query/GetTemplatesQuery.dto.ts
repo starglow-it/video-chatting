@@ -35,7 +35,7 @@ export class GetTemplatesQueryDto {
     @IsString()
     public sort;
 
-    @Transform(({ value }) => toNumber(value, 0))
+    @Transform(({ value }) => toNumber(value, 1))
     @IsOptional()
     @IsNumber()
     public direction;

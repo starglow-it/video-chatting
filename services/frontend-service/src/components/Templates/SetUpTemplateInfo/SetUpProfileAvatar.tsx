@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import {ErrorCode, FileRejection, useDropzone} from 'react-dropzone';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
@@ -22,7 +22,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
 
 // const
-import { ACCEPT_MIMES, ACCEPT_MIMES_NAMES } from '../../../const/profile/profilePhoto';
+import { ACCEPT_MIMES_NAMES } from '../../../const/profile/profilePhoto';
 
 // types
 import { FileSizeTypesEnum } from '../../../types/fileSize';
@@ -38,19 +38,35 @@ import {
     setProfileAvatarEvent,
     resetProfileAvatarEvent,
 } from '../../../store';
+import {ErrorMessage} from "shared-frontend/library/common/ErrorMessage";
+import { Translation } from '@library/common/Translation/Translation';
 
 const SetUpProfileAvatar = memo(() => {
     const profileAvatar = useStore($profileAvatarImage);
-    const [uploadError, setUploadError] = useState<boolean>(false);
+    const [uploadError, setUploadError] = useState<string>('');
 
     const { onFileAvailable } = useFileReader();
 
-    const handleSetFileData = useCallback(async acceptedFiles => {
+    const handleSetFileData = useCallback(async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
         const file = acceptedFiles[0];
 
-        if (!file) return setUploadError(true);
+        const rejectedFile = rejectedFiles[0]
 
-        setUploadError(false);
+        if (rejectedFile) {
+            const error = rejectedFile.errors[0];
+
+            if (error.code === ErrorCode.FileInvalidType) {
+                return setUploadError('invalidFormat');
+            }
+
+            if (error.code === ErrorCode.FileTooLarge) {
+                return setUploadError('maxSize');
+            }
+
+            return setUploadError('general');
+        }
+
+        setUploadError('');
 
         const dataUrl = await onFileAvailable(file);
 
@@ -67,7 +83,10 @@ const SetUpProfileAvatar = memo(() => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         maxFiles: 1,
         maxSize: getFileSizeValue({ sizeType: FileSizeTypesEnum.megabyte, amount: 2 }),
-        accept: ACCEPT_MIMES.join(', '),
+        accept: {
+            'image/jpeg': ['.jpg', '.jpeg'],
+            'image/png': ['.png'],
+        },
         onDrop: handleSetFileData,
         noDrag: false,
     });
@@ -143,6 +162,15 @@ const SetUpProfileAvatar = memo(() => {
                         </CustomGrid>
                     </CustomGrid>
                 )}
+                <ErrorMessage
+                    className={styles.errorMessage}
+                    error={Boolean(uploadError)}
+                >
+                    <Translation
+                        nameSpace="errors"
+                        translation={`imageUpload.${uploadError}`}
+                    />
+                </ErrorMessage>
             </CustomBox>
         </CustomGrid>
     );

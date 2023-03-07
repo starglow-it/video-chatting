@@ -77,7 +77,6 @@ export class CommonTemplatesController {
   ): Promise<EntityList<ICommonTemplate>> {
     try {
       return withTransaction(this.connection, async () => {
-        console.log(query);
         const aggregationPipeline: PipelineStage[] = [
           { $sort: { ...(options?.sort ?? {}), _id: -1 } },
           { $match: query },
@@ -392,6 +391,7 @@ export class CommonTemplatesController {
 
         const template = await this.commonTemplatesService.findCommonTemplateById({
           templateId,
+          populatePaths: ['previewUrls'],
           session,
         });
 
@@ -457,6 +457,23 @@ export class CommonTemplatesController {
           updateData.stripeProductId = null;
         }
 
+        if (updateData.url && template.url !== updateData.url) {
+          const deletePreviewImagesPromises = template.previewUrls.map(async (preview) => {
+            if (preview._id) {
+              await this.commonTemplatesService.deletePreview({
+                id: preview._id,
+                session
+              });
+
+              if (preview.key) {
+                await this.awsService.deleteResource(preview.key);
+              }
+            }
+          })
+
+          await deletePreviewImagesPromises;
+        }
+
         const updatedTemplate = await this.commonTemplatesService.updateCommonTemplate(
           {
             query: {
@@ -509,6 +526,8 @@ export class CommonTemplatesController {
   ): Promise<undefined> {
     try {
       return withTransaction(this.connection, async (session) => {
+        console.log('templateId', templateId);
+
         const template =
           await this.commonTemplatesService.findCommonTemplateById({
             templateId,

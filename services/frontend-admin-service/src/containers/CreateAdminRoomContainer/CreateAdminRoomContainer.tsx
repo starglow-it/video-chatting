@@ -640,6 +640,7 @@ const Component = () => {
 									<>
 										<CustomButton
 											className={styles.createButton}
+											disabled={isFileUploading}
 											onClick={handleCreateRoom}
 											label={
 												<Translation
@@ -651,6 +652,7 @@ const Component = () => {
 										<CustomButton
 											className={styles.createAndPublishButton}
 											onClick={handleOpenConfirmDialog}
+											disabled={isFileUploading}
 											label={
 												<Translation
 													nameSpace="rooms"

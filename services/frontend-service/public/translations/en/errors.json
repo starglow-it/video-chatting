@@ -92,5 +92,10 @@
   "tags": {
     "unacceptableSymbols": "Please use alphabetic only",
     "max": "Maximum tags number is 6"
+  },
+  "imageUpload": {
+    "maxSize": "Up to 2mb",
+    "invalidFormat": "Invalid image format",
+    "general": "Something went wrong"
   }
 }

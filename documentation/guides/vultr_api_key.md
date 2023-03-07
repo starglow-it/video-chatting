@@ -1,1 +1,0 @@
-`VULTR_API_KEY`

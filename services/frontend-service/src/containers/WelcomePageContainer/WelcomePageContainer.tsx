@@ -27,7 +27,7 @@ const baseTemplateParams = {
     draft: false,
     isPublic: true,
     sort: 'maxParticipants',
-    order: 1
+    direction: 1
 }
 
 const WelcomePageContainer = memo(() => {

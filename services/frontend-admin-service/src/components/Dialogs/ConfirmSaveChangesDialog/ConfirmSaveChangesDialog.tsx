@@ -47,14 +47,14 @@ const Component = ({ onConfirm }: { onConfirm: () => void }) => {
             <CustomTypography variant="h3bold">
                 <Translation
                     nameSpace="rooms"
-                    translation={commonTemplate?.draft
+                    translation={commonTemplate?.isPublic
                         ? "saveChanges.title"
                         : "savePublishedChanges.title"
                     }
                 />
             </CustomTypography>
 
-            {!commonTemplate?.draft
+            {!commonTemplate?.isPublic
                 ? (
                     <CustomTypography textAlign="center">
                         <Translation

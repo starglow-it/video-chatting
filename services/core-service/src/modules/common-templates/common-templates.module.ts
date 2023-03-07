@@ -28,6 +28,7 @@ import { MeetingsModule } from '../meetings/meetings.module';
 import { RoomsStatisticsModule } from '../rooms-statistics/rooms-statistics.module';
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
 import { PaymentsModule } from '../../services/payments/payments.module';
+import {TranscodeModule} from "../transcode/transcode.module";
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PaymentsModule } from '../../services/payments/payments.module';
     RoomsStatisticsModule,
     UserProfileStatisticModule,
     PaymentsModule,
+    TranscodeModule,
     forwardRef(() => UserTemplatesModule),
     forwardRef(() => MeetingsModule),
     MongooseModule.forFeature([

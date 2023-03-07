@@ -43,6 +43,8 @@ const Component = ({
 		name: 'templateLinks',
 	});
 
+	const isAddLinkDisabled = fields.length === 5;
+
 	const handleRemoveTemplateLink = useCallback((index: number) => {
 		remove(index);
 	}, []);
@@ -62,13 +64,17 @@ const Component = ({
 	);
 
 	const handleAddLinkInput = useCallback(() => {
+		if (isAddLinkDisabled) {
+			return;
+		}
+
 		append({
 			value: '',
 			key: getRandomNumber(100),
 			top: 0.5,
 			left: 0.5,
 		});
-	}, []);
+	}, [isAddLinkDisabled]);
 
 	const handleClickNextStep = useCallback(async () => {
 		const isNextClickValidation = await trigger(['templateLinks']);
@@ -84,8 +90,6 @@ const Component = ({
 			});
 		}
 	}, []);
-
-	const isAddLinkDisabled = fields.length === 5;
 
 	return (
 		<CustomGrid

@@ -1,7 +1,0 @@
-.env
-node_modules
-doc
-.idea
-*.log
-.vscode
-_tmp

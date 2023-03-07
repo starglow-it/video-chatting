@@ -72,7 +72,7 @@ services:
       - TURN_PASSWORD=liveofficeturnpassword
       - TURN_USERNAME=liveofficeturn
       - TURN_PORT=443
-      - LIVEKIT_WSS=ws://localhost:7880
+      - LIVEKIT_WSS=ws://localhost:7890
       - MEETING_SOCKET_URL=ws://localhost:8180
       - DEFAULT_SERVER_IP=localhost
       - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com

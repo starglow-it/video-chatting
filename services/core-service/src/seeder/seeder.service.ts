@@ -195,7 +195,7 @@ export class SeederService {
 
   async seedLinks() {
     await this.commonTemplatesService.updateCommonTemplates({
-      query: { name: "Spaceball" },
+      query: { name: "Spaceballs" },
       data: {
         links: [
           {
@@ -210,7 +210,7 @@ export class SeederService {
     });
 
     await this.userTemplatesService.updateUserTemplates({
-      query: { name: "Spaceball" },
+      query: { name: "Spaceballs" },
       data: {
         links: [
           {

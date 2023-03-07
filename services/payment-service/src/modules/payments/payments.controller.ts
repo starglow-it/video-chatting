@@ -419,8 +419,8 @@ export class PaymentsController {
       const products = await this.paymentService.getStripeProducts();
 
       const pricesPromise = products.data.map(async (product) => {
-        const price = await this.paymentService.getStripePrice(
-          product.default_price,
+        const price = await this.paymentService.getProductPrice(
+          product.id,
         );
 
         return {
@@ -445,8 +445,8 @@ export class PaymentsController {
         await this.paymentService.getStripeSubscriptions();
 
       const pricesPromise = subscriptionProducts.map(async (product) => {
-        const price = await this.paymentService.getStripePrice(
-          product.default_price,
+        const price = await this.paymentService.getProductPrice(
+          product.id,
         );
 
         return {
@@ -481,10 +481,14 @@ export class PaymentsController {
         payload.productId,
       );
 
+      const price = await this.paymentService.getProductPrice(
+        product.id,
+      );
+
       const plan = plans[product.name ?? PlanKeys.House];
       return this.paymentService.getStripeCheckoutSession({
         paymentMode: 'subscription',
-        priceId: product.default_price as string,
+        priceId: price.id as string,
         basePath: payload.baseUrl,
         cancelPath: payload.cancelUrl,
         meetingToken: payload.meetingToken,
