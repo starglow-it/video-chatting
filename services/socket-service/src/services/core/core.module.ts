@@ -26,6 +26,8 @@ import { CORE_PROVIDER } from 'shared-const';
             rabbitMqUser,
             rabbitMqPass,
             rabbitMqCoreHost,
+            environment,
+            rabbitMqHost,
             rabbitMqCorePort,
             rabbitMqCoreQueue,
           } = await config.getAll();
@@ -34,7 +36,9 @@ import { CORE_PROVIDER } from 'shared-const';
             transport: Transport.RMQ,
             options: {
               urls: [
-                `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqCoreHost}:${rabbitMqCorePort}`,
+                environment == 'local'
+                  ? `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`
+                  : `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqCoreHost}:${rabbitMqCorePort}`,
               ],
               queue: rabbitMqCoreQueue,
               queueOptions: {

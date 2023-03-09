@@ -36,7 +36,9 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: [
-          `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqCoreHost}:${config.rabbitMqCorePort}`,
+          config.environment == 'local'
+            ? `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`
+            : `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqCoreHost}:${config.rabbitMqCorePort}`,
         ],
         queue: config.rabbitMqCoreQueue,
         queueOptions: {
@@ -56,12 +58,19 @@ async function bootstrap() {
   await seeder.seedRoomStatistic();
   await seeder.seedLinks();
 
+
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
   dashboardNotificationsController.deleteDashboardNotifications();
 
   return;
 }
+
+process.on('uncaughtException', (err, origin) => console.log(origin)
+)
+
+process.on('unhandledRejection', (reason) => console.log(reason)
+)
 
 bootstrap().then(() => {
   console.log('Core Microservice is listening');
