@@ -34,11 +34,11 @@ import { ConfigClientService } from '../config/config.service';
           return {
             transport: Transport.RMQ,
             options: {
-              urls: [
-                environment == 'local'
-                  ? `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`
-                  : `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqCoreHost}:${rabbitMqCorePort}`,
-              ],
+                urls: [
+                  environment == 'local'
+                    ? `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqHost}`
+                    : `amqp://${rabbitMqUser}:${rabbitMqPass}@${rabbitMqCoreHost}:${rabbitMqCorePort}`,
+                ],
               queue: rabbitMqCoreQueue,
               queueOptions: {
                 durable: false,
