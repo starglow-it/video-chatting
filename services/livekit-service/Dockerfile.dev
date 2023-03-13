@@ -1,4 +1,4 @@
-FROM livekit/livekit-server:v1.3.3
+FROM livekit/livekit-server:v1.2.0
 
 COPY ./livekit-service/livekit.local.yaml /livekit.yaml
 

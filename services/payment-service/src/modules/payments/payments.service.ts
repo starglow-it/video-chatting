@@ -301,6 +301,10 @@ export class PaymentsService {
       active: true,
     });
 
+
+    console.log(allProducts);
+    
+
     return allProducts.data.filter(
       (product) => product.metadata.type === 'subscription',
     );

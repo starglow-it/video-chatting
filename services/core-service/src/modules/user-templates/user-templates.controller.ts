@@ -5,6 +5,8 @@ import { Connection, UpdateQuery } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
 import * as mongoose from 'mongoose';
 
+
+
 // shared
 import {
   TEMPLATES_SERVICE,
@@ -136,6 +138,7 @@ export class UserTemplatesController {
   async createMeetingTemplate(
     @Payload() { id, userId }: CreateUserTemplateByIdPayload,
   ) {
+    
     return withTransaction(this.connection, async (session) => {
       try {
         const targetTemplate =
@@ -144,7 +147,10 @@ export class UserTemplatesController {
             session,
           });
 
+        
+
         const user = await this.usersService.findById(userId, session);
+        
 
         await user.populate(['socials', 'languages', 'templates']);
 
@@ -153,12 +159,12 @@ export class UserTemplatesController {
           templateId: targetTemplate.templateId,
           author: targetTemplate.author,
           url: targetTemplate.url,
-          name: targetTemplate.name,
+          name: targetTemplate.name || 'Phi',
           maxParticipants: targetTemplate.maxParticipants,
           previewUrls: targetTemplate.previewUrls,
           type: targetTemplate.type,
           priceInCents: targetTemplate.priceInCents,
-          description: targetTemplate.description,
+          description: targetTemplate.description || 'ok',
           shortDescription: targetTemplate.shortDescription,
           usersPosition: targetTemplate.usersPosition,
           isAudioAvailable: targetTemplate.isAudioAvailable,
@@ -177,12 +183,15 @@ export class UserTemplatesController {
           templateType: targetTemplate.templateType,
         };
 
+        console.log(templateData);
+        
+        
+
         const [userTemplate] =
           await this.userTemplatesService.createUserTemplate(
             templateData,
             session,
           );
-
         user.templates.push(userTemplate);
 
         await user.save({ session: session.session });
@@ -230,6 +239,8 @@ export class UserTemplatesController {
           enableImplicitConversion: true,
         });
       } catch (err) {
+        console.log(err);
+        
         throw new RpcException({
           message: err.message,
           ctx: TEMPLATES_SERVICE,

@@ -28,8 +28,8 @@ import {
   PreviewImage,
   PreviewImageDocument,
 } from '../schemas/preview-image.schema';
-import {TranscodeService} from "../modules/transcode/transcode.service";
-import {executePromiseQueue} from "shared-utils";
+import { TranscodeService } from "../modules/transcode/transcode.service";
+import { executePromiseQueue } from "shared-utils";
 
 // utils
 
@@ -50,7 +50,7 @@ export class SeederService {
     private transcodeService: TranscodeService,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
-  ) {}
+  ) { }
 
   async seedBusinessCategories(): Promise<void> {
     const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
@@ -101,6 +101,8 @@ export class SeederService {
             sort: '-templateId',
           },
         });
+        
+        
 
         await this.countersService.create({
           data: {
@@ -140,13 +142,18 @@ export class SeederService {
 
   async seedRoomStatistic() {
     try {
+
       const commonTemplates =
         await this.commonTemplatesService.findCommonTemplates({
           query: {},
           populatePaths: ['author'],
         });
 
+        
+      
+
       const statisticPromise = commonTemplates.map(async (template) => {
+        
         const isStatisticExists = await this.roomsStatisticService.exists({
           query: { template: template._id },
         });
@@ -165,6 +172,8 @@ export class SeederService {
           },
         });
       });
+
+      
 
       await Promise.all(statisticPromise);
     } catch (e) {

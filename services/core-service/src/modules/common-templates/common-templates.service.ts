@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
   FilterQuery,
   Model,
@@ -34,12 +34,12 @@ import {
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
-import {getScreenShots} from "../../utils/images/getScreenShots";
-import {DEFAULT_TEMPLATE_DATA} from "shared-const";
-import {Counters} from "shared-types";
+import { getScreenShots } from "../../utils/images/getScreenShots";
+import { DEFAULT_TEMPLATE_DATA } from "shared-const";
+import { Counters } from "shared-types";
 
 @Injectable()
-export class CommonTemplatesService {
+export class CommonTemplatesService implements OnModuleInit {
   constructor(
     private awsService: AwsConnectorService,
     private countersService: CountersService,
@@ -47,7 +47,11 @@ export class CommonTemplatesService {
     private commonTemplate: Model<CommonTemplateDocument>,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
-  ) {}
+  ) { }
+
+  async onModuleInit() {
+    // await this.commonTemplate.deleteMany();
+  }
 
   async exists({
     query,
@@ -96,6 +100,7 @@ export class CommonTemplatesService {
         { populate: populatePaths, session: session?.session },
       )
       .exec();
+    
   }
 
   async findCommonTemplate({
@@ -127,6 +132,7 @@ export class CommonTemplatesService {
     const isTemplatesCounterExists = await this.countersService.exists({
       key: Counters.Templates,
     });
+
 
     if (isTemplatesCounterExists) {
       const counter = await this.countersService.updateOne({
@@ -259,6 +265,7 @@ export class CommonTemplatesService {
 
   async aggregate(aggregationPipeline: PipelineStage[]) {
     return this.commonTemplate.aggregate(aggregationPipeline).exec();
+    
   }
 
   async deletePreview({

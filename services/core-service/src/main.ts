@@ -58,6 +58,8 @@ async function bootstrap() {
   await seeder.seedRoomStatistic();
   await seeder.seedLinks();
 
+  
+
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();

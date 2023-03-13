@@ -30,7 +30,7 @@ import { CoreService } from '../../services/core/core.service';
 import { IUserTemplate, IUpdateTemplate } from 'shared-types';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
-import {GetTemplatesQueryDto} from "../../dtos/query/GetTemplatesQuery.dto";
+import { GetTemplatesQueryDto } from "../../dtos/query/GetTemplatesQuery.dto";
 
 @Controller('templates')
 export class TemplatesController {
@@ -39,7 +39,7 @@ export class TemplatesController {
     private templatesService: TemplatesService,
     private uploadService: UploadService,
     private coreService: CoreService,
-  ) {}
+  ) { }
 
   @Get('/')
   @ApiOperation({ summary: 'Get Templates' })
@@ -65,16 +65,248 @@ export class TemplatesController {
           ...(type ? { type } : {}),
         },
         options: {
-          ...(sort ? { sort: {[sort]: direction } } : {}),
+          ...(sort ? { sort: { [sort]: direction } } : {}),
           skip,
           limit,
           userId,
         },
       });
 
+      const templateHardCode: EntityList<ICommonTemplate> = {
+        list: [
+          {
+            "id": "63fed274fbe4e34f1be79aa4",
+            "description": "This is a great place to meet friends, family or even have a team meeting with colleagues in a fun and energizing setting",
+            "shortDescription": "",
+            "usedAt": "2023-03-10T02:18:47.037Z",
+            "businessCategories": [
+              {
+                
+                "key": "counselling",
+                "value": "Counselling",
+                "color": "#ea392f"
+              },
+              {
+                
+                "key": "energizing",
+                "value": "Energizing",
+                "color": "#b4c9e0"
+              },
+              {
+                
+                "key": "teamMeeting",
+                "value": "Team meeting",
+                "color": "#deb550"
+              },
+              {
+                
+                "key": "casual",
+                "value": "Casual",
+                "color": "#a698c0"
+              }
+            ],
+            "templateId": 375,
+            "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/videos/63fd5444fbe4e34f1be748d3/b0c35997-47ab-425e-97af-18d0b0198fb4.mp4",
+            "name": "Central Perk Coffeeshop",
+            "maxParticipants": 6,
+            "previewUrls": [
+              {
+                "id": "63fd5455fbe4e34f1be748dc",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/63fd5444fbe4e34f1be748d3/46d67593-326b-4d75-ae91-ca285af2e67c_240p.webp",
+                "mimeType": "image/webp",
+                "size": 14414,
+                "key": "8834jsdhfjsf736",
+                "resolution": 240
+              },
+              {
+                "id": "63fd5456fbe4e34f1be748e0",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/63fd5444fbe4e34f1be748d3/4a0345ac-13f6-46ed-a32e-6d602424330a_360p.webp",
+                "mimeType": "image/webp",
+                "size": 35946,
+                "key": "8834jsdhfjsf736",
+                "resolution": 360
+              },
+              {
+                "id": "63fd5456fbe4e34f1be748e2",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/63fd5444fbe4e34f1be748d3/59ccaa35-88c7-444d-bf75-65032c470c69_1080p.webp",
+                "mimeType": "image/webp",
+                "size": 160014,
+                "key": "8834jsdhfjsf736",
+                "resolution": 1080
+              },
+              {
+                "id": "63fd5455fbe4e34f1be748de",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/63fd5444fbe4e34f1be748d3/7cca72b3-ce28-4e7e-ad14-2e30311f9956_540p.webp",
+                "mimeType": "image/webp",
+                "size": 66920,
+                "key": "8834jsdhfjsf736",
+                "resolution": 540
+              },
+              {
+                "id": "63fd5455fbe4e34f1be748da",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/63fd5444fbe4e34f1be748d3/a373fb44-03f4-41b1-b5de-f06cfd844e09_720p.webp",
+                "mimeType": "image/webp",
+                "size": 97214,
+                "key": "8834jsdhfjsf736",
+                "resolution": 720
+              }
+            ],
+            "draftPreviewUrls": [],
+            "type": "free",
+            "customLink": "",
+            "isAudioAvailable": true,
+            "priceInCents": 0,
+            "usersPosition": [
+              {
+                "bottom": 0.52,
+                "left": 0.93,
+              },
+              {
+                "bottom": 0.52,
+                "left": 0.45,
+              },
+              {
+                "bottom": 0.52,
+                "left": 0.62,
+              },
+              {
+                "bottom": 0.79,
+                "left": 0.29,
+              },
+              {
+                "bottom": 0.5900000000000001,
+                "left": 0.22,
+              },
+              {
+                "bottom": 0.62,
+                "left": 0.05,
+              }
+            ],
+            "links": [
+              {
+                "item": "https://centralperk.com/",
+                "position": {
+                  "id": "63fd5518fbe4e34f1be748f3",
+                  "top": 0.82,
+                  "linkIndex": 2,
+                  "left": 0.53
+                }
+              },
+              {
+                "item": "https://burtonmorriscollection.com/limitededitions",
+                "position": {
+                  "id": "63fd5518fbe4e34f1be748f4",
+                  "top": 0.24,
+                  "linkIndex": 2,
+                  "left": 0.38
+                }
+              },
+              {
+                "item": "https://www.reddit.com/r/howyoudoin/",
+                "position": {
+                  "id": "63fd5518fbe4e34f1be748f5",
+                  "top": 0.6,
+                  "linkIndex": 2,
+                  "left": 0.22
+                }
+              },
+              {
+                "item": "https://centralperk.com/pages/shop-coffee",
+                "position": {
+                  "id": "63fd5518fbe4e34f1be748f6",
+                  "top": 0.79,
+                  "linkIndex": 2,
+                  "left": 0.74
+                }
+              }
+            ],
+            "isPublic": true,
+            "templateType": "video",
+            "draft": false,
+            "author": "6391f2a2bb7bbb4a7dce4d4a"
+          },
+          {
+            "id": "640083a8fbe4e34f1be83e07",
+            "description": "test",
+            "shortDescription": "",
+            "usedAt": "2023-03-03T04:54:55.786Z",
+            "businessCategories": [
+              {
+                "key": "adventure",
+                "value": "Adventure",
+                "color": "#b94dac"
+              }
+            ],
+            "templateId": 385,
+            "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/videos/6400833afbe4e34f1be83d25/62a27202-89d0-420b-a448-a70552a2a0bc.jpeg",
+            "name": "Test office",
+            "maxParticipants": 1,
+            "previewUrls": [
+              {
+                "id": "64008362fbe4e34f1be83d37",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/6400833afbe4e34f1be83d25/18f39331-73f6-40f6-9b43-7aafdde4f1e1_540p.webp",
+                "mimeType": "image/webp",
+                "key": "jsadhshdsakjhd",
+                "size": 10916,
+                "resolution": 540
+              },
+              {
+                "id": "6400835efbe4e34f1be83d33",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/6400833afbe4e34f1be83d25/19f7dca6-4e48-426f-8727-47562551cd8a_360p.webp",
+                "mimeType": "image/webp",
+                "key": "jsadhshdsakjhd",
+                "size": 10916,
+                "resolution": 360
+              },
+              {
+                "id": "6400835cfbe4e34f1be83d31",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/6400833afbe4e34f1be83d25/6f86343f-4f5d-468d-9b26-b7d10cf922b9_1080p.webp",
+                "mimeType": "image/webp",
+                "key": "jsadhshdsakjhd",
+                "size": 10916,
+                "resolution": 1080
+              },
+              {
+                "id": "64008361fbe4e34f1be83d35",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/6400833afbe4e34f1be83d25/fb600a28-3f28-4f07-9fd0-e97f4dfa3781_720p.webp",
+                "mimeType": "image/webp",
+                "key": "jsadhshdsakjhd",
+                "size": 10916,
+                "resolution": 720
+              },
+              {
+                "id": "6400835cfbe4e34f1be83d2f",
+                "url": "https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/6400833afbe4e34f1be83d25/fda2886b-151e-4799-8d03-78a513700d49_240p.webp",
+                "mimeType": "image/webp",
+                "key": "jsadhshdsakjhd",
+                "size": 10916,
+                "resolution": 240
+              }
+            ],
+            "draftPreviewUrls": [],
+            "type": "free",
+
+            "customLink": "",
+            "isAudioAvailable": true,
+            "usersPosition": [
+              {
+                "bottom": 0.5,
+                "left": 0.5,
+              }
+            ],
+            "links": [],
+            "isPublic": false,
+            "templateType": "image",
+            "draft": false,
+            "author": "63fd889dfbe4e34f1be74d79"
+          }
+        ],
+        count: 2
+      }
+
       return {
         success: true,
-        result: templatesData,
+        result: templateHardCode,
       };
     } catch (err) {
       this.logger.error(
@@ -104,6 +336,7 @@ export class TemplatesController {
       const templateData = await this.templatesService.createTemplate({
         userId: req.user.userId,
       });
+
 
       return {
         success: true,

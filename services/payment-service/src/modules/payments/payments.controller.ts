@@ -444,6 +444,9 @@ export class PaymentsController {
       const subscriptionProducts =
         await this.paymentService.getStripeSubscriptions();
 
+
+        
+
       const pricesPromise = subscriptionProducts.map(async (product) => {
         const price = await this.paymentService.getProductPrice(
           product.id,

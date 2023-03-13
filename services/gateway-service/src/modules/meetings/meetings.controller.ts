@@ -60,14 +60,20 @@ export class MeetingsController {
   })
   async createMeeting(
     @Request() req,
-    @Body() body: CreateMeetingRequest,
-  ): Promise<ResponseSumType<IUserTemplate>> {
+    // @Body() body: any | CreateMeetingRequest,
+  ): Promise<any | ResponseSumType<IUserTemplate>> {
     try {
+      const body = {
+        templateId: '640af4440351289ec03d1367'
+      } as any;
+      
       let userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: body.templateId,
       });
 
+
       if (!userTemplate) {
+        
         userTemplate = await this.userTemplatesService.createUserTemplate({
           id: body.templateId,
           userId: req.user.userId,
