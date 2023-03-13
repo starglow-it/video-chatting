@@ -233,7 +233,7 @@ export class AuthController {
     }
   }
 
-  // @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({
