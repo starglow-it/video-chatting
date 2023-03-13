@@ -526,7 +526,6 @@ export class CommonTemplatesController {
   ): Promise<undefined> {
     try {
       return withTransaction(this.connection, async (session) => {
-        console.log('templateId', templateId);
 
         const template =
           await this.commonTemplatesService.findCommonTemplateById({

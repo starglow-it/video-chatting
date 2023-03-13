@@ -60,8 +60,8 @@ export class MeetingsController {
   })
   async createMeeting(
     @Request() req,
-    // @Body() body: any | CreateMeetingRequest,
-  ): Promise<any | ResponseSumType<IUserTemplate>> {
+    @Body() body: CreateMeetingRequest,
+  ): Promise<ResponseSumType<IUserTemplate>> {
     try {
       const body = {
         templateId: '640af4440351289ec03d1367'

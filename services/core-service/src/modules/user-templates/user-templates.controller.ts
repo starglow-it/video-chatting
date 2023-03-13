@@ -183,7 +183,6 @@ export class UserTemplatesController {
           templateType: targetTemplate.templateType,
         };
 
-        console.log(templateData);
         
         
 

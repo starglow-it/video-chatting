@@ -75,7 +75,6 @@ export class TranscodeService {
   async getFileData({ url }): Promise<{ size: number; hasAudio: boolean }> {
     const probeData = await probe(url);
 
-    console.log(probeData);
 
     return {
       size: parseInt(probeData.format.size, 10),

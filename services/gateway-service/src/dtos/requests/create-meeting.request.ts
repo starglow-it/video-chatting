@@ -4,13 +4,13 @@ import { ICreateMeeting } from 'shared-types';
 import { Test } from './test.validation';
 
 export class CreateMeetingRequest {
-  // @IsNotEmpty({
-  //   message: 'TemplateId must be present',
-  // })
-  // @IsString({
-  //   message: 'Invalid templateId value',
-  // })
+  @IsNotEmpty({
+    message: 'TemplateId must be present',
+  })
+  @IsString({
+    message: 'Invalid templateId value',
+  })
   @ApiProperty()
   @Test()
-  readonly templateId?: unknown;
+  readonly templateId?: ICreateMeeting['templateId'];
 }
