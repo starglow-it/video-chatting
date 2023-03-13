@@ -333,7 +333,6 @@ export class PaymentsController {
     @Param('productId') productId: string,
   ): Promise<ResponseSumType<any>> {
     try {
-      console.log(body);
       
       const session = await this.paymentsService.getCheckoutSession({
         productId,

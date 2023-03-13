@@ -60,9 +60,6 @@ export class ProfileTemplatesController {
         direction: -1,
       });
 
-      console.log(template);
-      
-
       return {
         success: true,
         result: template,
@@ -305,8 +302,6 @@ export class ProfileTemplatesController {
     @Param('templateId') templateId: string,
   ) {
 
-    console.log(templateId, 'template id');
-    
     try {
       if (templateId) {
         const template = await this.templatesService.getCommonTemplateById({

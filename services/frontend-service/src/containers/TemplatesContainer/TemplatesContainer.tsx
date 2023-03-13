@@ -151,7 +151,6 @@ const Component = () => {
     const handleCreateMeeting = useCallback(
         async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
             const result = await createMeetingFx({ templateId });
-            console.log(result);
             
             if (result.template) {
                 await router.push(
@@ -177,7 +176,7 @@ const Component = () => {
             }
             
             if (profile.maxTemplatesNumber === profileTemplatesCount.count) {
-                // setReplaceTemplateIdEvent(templateId);
+                setReplaceTemplateIdEvent(templateId);
                 
                 appDialogsApi.openDialog({
                     dialogKey: AppDialogsEnum.replaceTemplateConfirmDialog,

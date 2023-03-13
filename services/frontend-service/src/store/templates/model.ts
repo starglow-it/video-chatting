@@ -132,7 +132,12 @@ export const getEditingTemplateFx = templatesDomain.effect<
     void
 >('getEditingTemplateFx');
 
-export const addTemplateToUserFx = templatesDomain.effect<AddTemplateToUserEffectPayload,AddTemplateToUserEffectResponse,void>('addTemplateToUserFx');
+export const addTemplateToUserFx = templatesDomain.effect<
+    AddTemplateToUserEffectPayload,
+    AddTemplateToUserEffectResponse,
+    void
+>('addTemplateToUserFx');
+
 
 export const clearTemplateDraft = templatesDomain.event('clearTemplateDraft');
 

@@ -121,8 +121,6 @@ const Component = ({
 		async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
 			const totalFiles = acceptedFiles.length + rejectedFiles.length;
 			
-			// return;
-
 			if (rejectedFiles.length || totalFiles > 1) {
 				
 				generateFileUploadError(

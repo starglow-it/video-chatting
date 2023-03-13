@@ -46,12 +46,12 @@ export class MonetizationStatisticController {
   async checkLastMonthMonetization() {
     this.logger.debug('Start check last month monetization');
 
-    // const transactionChargesAmount = await this.paymentService.getStripeCharges(
-    //   {
-    //     time: subtractMonths(Date.now(), 1),
-    //     type: 'transactions',
-    //   },
-    // );
+    const transactionChargesAmount = await this.paymentService.getStripeCharges(
+      {
+        time: subtractMonths(Date.now(), 1),
+        type: 'transactions',
+      },
+    );
 
     const roomsPurchaseChargesAmount =
       await this.paymentService.getStripeCharges({
@@ -65,34 +65,34 @@ export class MonetizationStatisticController {
         type: 'subscription',
       });
 
-    // return withTransaction(this.connection, async (session) => {
-    //   await this.monetizationStatisticService.updateOne({
-    //     query: {
-    //       key: MonetizationStatisticPeriods.Month,
-    //       type: MonetizationStatisticTypes.Subscriptions,
-    //     },
-    //     data: { value: subscriptionsChargesAmount },
-    //     session,
-    //   });
+    return withTransaction(this.connection, async (session) => {
+      await this.monetizationStatisticService.updateOne({
+        query: {
+          key: MonetizationStatisticPeriods.Month,
+          type: MonetizationStatisticTypes.Subscriptions,
+        },
+        data: { value: subscriptionsChargesAmount },
+        session,
+      });
 
-    //   await this.monetizationStatisticService.updateOne({
-    //     query: {
-    //       key: MonetizationStatisticPeriods.Month,
-    //       type: MonetizationStatisticTypes.PurchaseRooms,
-    //     },
-    //     data: { value: roomsPurchaseChargesAmount },
-    //     session,
-    //   });
+      await this.monetizationStatisticService.updateOne({
+        query: {
+          key: MonetizationStatisticPeriods.Month,
+          type: MonetizationStatisticTypes.PurchaseRooms,
+        },
+        data: { value: roomsPurchaseChargesAmount },
+        session,
+      });
 
-    //   await this.monetizationStatisticService.updateOne({
-    //     query: {
-    //       key: MonetizationStatisticPeriods.Month,
-    //       type: MonetizationStatisticTypes.RoomTransactions,
-    //     },
-    //     data: { value: transactionChargesAmount },
-    //     session,
-    //   });
-    // });
+      await this.monetizationStatisticService.updateOne({
+        query: {
+          key: MonetizationStatisticPeriods.Month,
+          type: MonetizationStatisticTypes.RoomTransactions,
+        },
+        data: { value: transactionChargesAmount },
+        session,
+      });
+    });
   }
 
   @MessagePattern({

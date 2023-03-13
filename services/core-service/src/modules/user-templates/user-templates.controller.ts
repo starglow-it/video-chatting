@@ -159,12 +159,12 @@ export class UserTemplatesController {
           templateId: targetTemplate.templateId,
           author: targetTemplate.author,
           url: targetTemplate.url,
-          name: targetTemplate.name || 'Phi',
+          name: targetTemplate.name,
           maxParticipants: targetTemplate.maxParticipants,
           previewUrls: targetTemplate.previewUrls,
           type: targetTemplate.type,
           priceInCents: targetTemplate.priceInCents,
-          description: targetTemplate.description || 'ok',
+          description: targetTemplate.description,
           shortDescription: targetTemplate.shortDescription,
           usersPosition: targetTemplate.usersPosition,
           isAudioAvailable: targetTemplate.isAudioAvailable,
@@ -182,8 +182,6 @@ export class UserTemplatesController {
           signBoard: user.signBoard,
           templateType: targetTemplate.templateType,
         };
-
-        
         
 
         const [userTemplate] =

@@ -39,7 +39,7 @@ import { DEFAULT_TEMPLATE_DATA } from "shared-const";
 import { Counters } from "shared-types";
 
 @Injectable()
-export class CommonTemplatesService implements OnModuleInit {
+export class CommonTemplatesService{
   constructor(
     private awsService: AwsConnectorService,
     private countersService: CountersService,
@@ -49,9 +49,6 @@ export class CommonTemplatesService implements OnModuleInit {
     private previewImage: Model<PreviewImageDocument>,
   ) { }
 
-  async onModuleInit() {
-    // await this.commonTemplate.deleteMany();
-  }
 
   async exists({
     query,

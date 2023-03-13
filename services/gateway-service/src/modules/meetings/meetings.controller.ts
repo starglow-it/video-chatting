@@ -70,7 +70,6 @@ export class MeetingsController {
 
 
       if (!userTemplate) {
-        
         userTemplate = await this.userTemplatesService.createUserTemplate({
           id: body.templateId,
           userId: req.user.userId,
