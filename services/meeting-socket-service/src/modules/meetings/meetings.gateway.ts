@@ -570,6 +570,9 @@ export class MeetingsGateway
         id: meeting.templateId,
       });
 
+      console.log(template);
+      
+
       if (!template) {
         this.logger.error({
           message: 'no template found',
@@ -878,6 +881,9 @@ export class MeetingsGateway
       message: `[${MeetingSubscribeEvents.OnAnswerAccessRequest}] event`,
       ctx: message,
     });
+
+    console.log(message);
+    
 
     return withTransaction(this.connection, async (session) => {
       const meeting = await this.meetingsService.findById(

@@ -18,9 +18,10 @@ RUN pnpm add nx -D -w
 
 COPY ./services/socket-service/package.json ./services/socket-service
 
-RUN pnpm install
 
 COPY ./services/socket-service ./services/socket-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 
