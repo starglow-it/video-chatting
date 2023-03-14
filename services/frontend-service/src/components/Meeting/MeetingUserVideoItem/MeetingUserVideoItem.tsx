@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useStoreMap } from 'effector-react';
 
@@ -28,6 +28,8 @@ import { ConnectionType, StreamType } from '../../../const/webrtc';
 // styles
 import styles from './MeetingUserVideoItem.module.scss';
 import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
+import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable';
+import { ResizeCallbackData } from 'react-resizable';
 
 // utils
 
@@ -47,8 +49,10 @@ const Component = ({
     isAuraActive = false,
     isScreenSharing = false,
     isScreenSharingUser = false,
+    onResizeVideo
 }: MeetingUserVideoItemProps) => {
     const container = useRef<HTMLVideoElement | null>(null);
+    const [scale, setScale] = useState<number>(size)
 
     const userTracks = useStoreMap({
         store: $tracksStore,
@@ -82,6 +86,18 @@ const Component = ({
         }
     }, [localStream, userTracks]);
 
+    const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
+        setScale(data.size.width);
+    };
+
+    const handleResizeStart = (e: SyntheticEvent) => {
+        e.stopPropagation();
+    };
+
+    const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
+        onResizeVideo(data.size.width || 0);
+    };
+
     return (
         <MeetingUserVideoPositionWrapper
             bottom={bottom}
@@ -90,14 +106,24 @@ const Component = ({
             isLocal={isLocal}
             size={size}
         >
+            <CustomResizable
+                width={scale}
+                height={scale}
+                onResize={handleResize}
+                maxConstraints={[170, 170]}
+                minConstraints={[size, size]}
+                onResizeStart={handleResizeStart}
+                onResizeStop={handleResizeStop}
+                resizeHandles={['sw' , 'nw' , 'se' , 'ne']}
+            >
             <CustomGrid container direction="column" alignItems="center">
                 <CustomBox
                     className={clsx(styles.media, {
                         [styles.aura]: isAuraActive && isCameraEnabled,
                     })}
                     sx={{
-                        width: `${size}px`,
-                        height: `${size}px`,
+                        width: `${scale}px`,
+                        height: `${scale}px`,
                     }}
                 >
                     <MeetingUserAudioItem
@@ -113,7 +139,7 @@ const Component = ({
                         userName={userName}
                         userProfilePhoto={userProfileAvatar}
                         videoRef={container}
-                        size={size}
+                        size={scale}
                         onToggleVideo={onToggleVideo}
                         isScreenSharing={isScreenSharing}
                     />
@@ -159,6 +185,7 @@ const Component = ({
                     </CustomPaper>
                 </ConditionalRender>
             </CustomGrid>
+            </CustomResizable>
         </MeetingUserVideoPositionWrapper>
     );
 };

@@ -76,7 +76,8 @@
     "ts-node": "10.9.1",
     "webrtc-adapter": "8.1.2",
     "xregexp": "5.1.1",
-    "yup": "0.32.11"
+    "yup": "0.32.11",
+    "react-resizable": "3.0.4"
   },
   "devDependencies": {
     "@types/compression": "1.7.2",
@@ -92,6 +93,7 @@
     "@typescript-eslint/eslint-plugin": "5.39.0",
     "@typescript-eslint/parser": "5.39.0",
     "babel-eslint": "10.1.0",
+    "@types/react-resizable": "3.0.3",
     "eslint": "8.24.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-next": "12.3.1",

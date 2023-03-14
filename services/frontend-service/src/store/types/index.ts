@@ -29,6 +29,7 @@ export type MeetingUser = {
         bottom: number;
         left: number;
     };
+    size?: number;
 };
 
 export type Meeting = {
