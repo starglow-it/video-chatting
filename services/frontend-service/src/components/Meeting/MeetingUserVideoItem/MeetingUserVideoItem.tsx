@@ -54,6 +54,10 @@ const Component = ({
     const container = useRef<HTMLVideoElement | null>(null);
     const [scale, setScale] = useState<number>(size)
 
+    useEffect(() => {
+        setScale(size)
+    },[size])
+
     const userTracks = useStoreMap({
         store: $tracksStore,
         keys: [
@@ -95,7 +99,7 @@ const Component = ({
     };
 
     const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
-        onResizeVideo(data.size.width || 0);
+        isLocal && onResizeVideo(data.size.width || 0);
     };
 
     return (

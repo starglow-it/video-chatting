@@ -84,7 +84,7 @@ const Component = () => {
                 <MeetingUserVideoItem
                     userId={user.id}
                     key={user.id}
-                    size={videoSize}
+                    size={user.size || videoSize || 0}
                     userName={user.username}
                     isCameraEnabled={user.cameraStatus === 'active'}
                     isMicEnabled={user.micStatus === 'active'}
