@@ -31,6 +31,7 @@ import {
     $meetingUsersStore,
     setDevicesPermission,
     updateLocalUserEvent,
+    updateUserSocketEvent,
 } from '../../../store/roomStores';
 
 // types
@@ -109,6 +110,16 @@ const Component = () => {
         }
     }, [isLocalMicActive, isLocalCamActive, isMeetingConnected]);
 
+    const handleResizeVideo = (size: number) => {
+        updateLocalUserEvent({
+            size
+        });
+        updateUserSocketEvent({
+            id: localUser.id,
+            size
+        })
+    }
+
     const handleToggleVideo = useCallback(() => {
         if (isMeetingConnected) {
             updateLocalUserEvent({
@@ -186,6 +197,7 @@ const Component = () => {
                 onToggleVideo={handleToggleVideo}
                 bottom={localUser?.userPosition?.bottom}
                 left={localUser?.userPosition?.left}
+                onResizeVideo={handleResizeVideo}
             />
         </CustomGrid>
     );

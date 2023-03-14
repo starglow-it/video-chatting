@@ -49,6 +49,7 @@ const Component = ({
     isAuraActive = false,
     isScreenSharing = false,
     isScreenSharingUser = false,
+    onResizeVideo
 }: MeetingUserVideoItemProps) => {
     const container = useRef<HTMLVideoElement | null>(null);
     const [scale, setScale] = useState<number>(size)
@@ -93,6 +94,10 @@ const Component = ({
         e.stopPropagation();
     };
 
+    const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
+        onResizeVideo(data.size.width || 0);
+    };
+
     return (
         <MeetingUserVideoPositionWrapper
             bottom={bottom}
@@ -108,6 +113,7 @@ const Component = ({
                 maxConstraints={[170, 170]}
                 minConstraints={[size, size]}
                 onResizeStart={handleResizeStart}
+                onResizeStop={handleResizeStop}
                 resizeHandles={['sw' , 'nw' , 'se' , 'ne']}
             >
             <CustomGrid container direction="column" alignItems="center">
