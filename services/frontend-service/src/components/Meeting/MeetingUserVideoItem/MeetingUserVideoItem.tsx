@@ -119,6 +119,7 @@ const Component = ({
                 onResizeStart={handleResizeStart}
                 onResizeStop={handleResizeStop}
                 resizeHandles={['sw' , 'nw' , 'se' , 'ne']}
+                disable={!isLocal}
             >
             <CustomGrid container direction="column" alignItems="center">
                 <CustomBox
