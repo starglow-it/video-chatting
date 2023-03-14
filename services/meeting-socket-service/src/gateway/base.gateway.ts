@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 export class BaseGateway {
   @WebSocketServer() server: Server;
 
-  emitToSocketId(socketId: string, eventName: string, data: any = {}) {
+  emitToSocketId(socketId: string, eventName: string, data: any = {}) { 
     this.server.to(socketId).emit(eventName, data);
   }
 
