@@ -29,6 +29,7 @@
   ],
   "rules": {
     "react/prop-types": "off",
+    "react/display-name": "off",
     "react/react-in-jsx-scope": 0,
     "react/require-default-prop": 0,
     "no-shadow": "off",
