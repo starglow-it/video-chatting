@@ -87,9 +87,9 @@ export class UsersGateway extends BaseGateway {
         enableImplicitConversion: true,
       });
 
-      //TODO: ADD SIZE FOR MEETING USER VIDEO
+      //TODO: ADD SIZE FOR MEETING USER VIDEO CONTAINER
       this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
-        users: plainUsers.map(user => ({ ...user, userPosition: { ...user.userPosition, ...(message.size && { size: message?.size }) } })),
+        users: plainUsers.map(user => ({ ...user, ...(message.size && {size: message.size})})),
       });
 
       

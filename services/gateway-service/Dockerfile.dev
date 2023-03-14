@@ -18,9 +18,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/gateway-service/package.json ./services/gateway-service
 
-RUN pnpm install
-
 COPY ./services/gateway-service ./services/gateway-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-utils,shared-types,shared-const
 
