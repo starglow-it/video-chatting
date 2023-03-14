@@ -87,6 +87,8 @@ const Component = ({
             bottom={bottom}
             left={left}
             isScreenSharing={isScreenSharing}
+            isLocal={isLocal}
+            size={size}
         >
             <CustomGrid container direction="column" alignItems="center">
                 <CustomBox

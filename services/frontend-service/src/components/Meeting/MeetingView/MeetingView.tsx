@@ -165,8 +165,7 @@ const Component = () => {
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
-                >
-                    <MeetingUsersVideos />
+                >                    
                     <ConditionalRender
                         condition={Boolean(meetingTemplate?.links?.length) && !isScreenSharingActive}
                     >
@@ -176,6 +175,7 @@ const Component = () => {
                     <MeetingControlButtons />
                     <MeetingGeneralInfo />
                     <MeetingNotes />
+                    <MeetingUsersVideos />
                 </MeetingSettingsPanel>
             )}
 
