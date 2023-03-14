@@ -8,4 +8,4 @@
 ### Documentation
 1. [Set local env development variables](./documentation/set_local_env_variables.md) **IMPORTANT**
 2. [Start project](./documentation/start_project.md)
-3. [Step by step to run local] (https://docs.google.com/document/d/1vy-zMRYJcdrbBJ14hgbn035knu3-DQmLpZNdflCy6OE)
+3. [Step by step to run local] (https://docs.google.com/document/d/1vy-zMRYJcdrbBJ14hgbn035knu3-DQmLpZNdflCy6OE/edit?usp=sharing)
