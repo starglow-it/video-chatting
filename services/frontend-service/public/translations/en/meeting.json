@@ -47,7 +47,8 @@
     "turnOn":"Turn on",
     "turnOff":"Turn off",
     "switchOn":"Switch ON",
-    "switchOff":"Switch OFF"
+    "switchOff":"Switch OFF",
+    "clickToSeeYourself": "Click to see yourself"
   },
   "endMeeting": {
     "forHost": "Leave?",

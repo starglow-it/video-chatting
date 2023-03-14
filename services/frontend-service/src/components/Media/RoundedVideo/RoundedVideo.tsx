@@ -73,7 +73,8 @@ const Component = ({
                         <CustomTypography
                             variant="body3"
                             nameSpace="meeting"
-                            translation={isCameraActive ? 'devices.switchOff' : 'devices.switchOn'}
+                            align="center"
+                            translation={isCameraActive ? 'devices.switchOff' : 'devices.clickToSeeYourself'}
                         />
                     </ConditionalRender>
                 </CustomGrid>
