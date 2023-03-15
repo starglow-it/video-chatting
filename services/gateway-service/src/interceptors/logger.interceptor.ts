@@ -16,6 +16,8 @@ export class LoggerInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
 
+    const responseWs = context.switchToWs().getClient();
+
 
     return next
       .handle()

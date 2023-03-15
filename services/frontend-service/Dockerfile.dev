@@ -27,9 +27,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/frontend-service/package.json ./services/frontend-service
 
-RUN pnpm install --force
-
 COPY ./services/frontend-service ./services/frontend-service
+
+RUN pnpm install --force
 
 RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils
 

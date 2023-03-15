@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, UpdateWriteOpResult } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import {
   MeetingUser,
   MeetingUserDocument,

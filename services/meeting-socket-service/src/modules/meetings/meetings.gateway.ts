@@ -1,6 +1,7 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
@@ -99,6 +100,7 @@ export class MeetingsGateway
   ) {
     super();
   }
+
 
   async changeUsersPositions({ meetingId, templateId }) {
     try {
@@ -570,7 +572,6 @@ export class MeetingsGateway
         id: meeting.templateId,
       });
 
-      console.log(template);
       
 
       if (!template) {

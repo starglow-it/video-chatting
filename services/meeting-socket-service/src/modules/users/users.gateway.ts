@@ -61,6 +61,7 @@ export class UsersGateway extends BaseGateway {
     @MessageBody() message: UpdateUserRequestDTO,
     @ConnectedSocket() socket: Socket,
   ): Promise<ResponseSumType<{ user: CommonUserDTO }>> {
+    // console.log(socket.handshake.headers.cookie);
     return withTransaction(this.connection, async (session) => {
       const user = await this.usersService.findOneAndUpdate(
         { socketId: socket.id },
@@ -77,6 +78,7 @@ export class UsersGateway extends BaseGateway {
 
       await meeting.populate('users');
 
+
       const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
@@ -87,17 +89,21 @@ export class UsersGateway extends BaseGateway {
         enableImplicitConversion: true,
       });
 
-      //TODO: ADD SIZE FOR MEETING USER VIDEO CONTAINER
+      //TODO: ADD SIZE AND UPDATE POSISTION FOR MEETING USER VIDEO CONTAINER
       this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
-        users: plainUsers.map(user => ({ ...user, ...((message.size && message.id == user.id) && {size: message.size})})),
+        users: plainUsers.map(user =>
+        ({
+          ...user,
+          ...((message.size && message.id == user.id) && { size: message.size }),
+          ...((message.userPosition && message.id == user.id) && {userPosition: message.userPosition})
+        })),
       });
 
-      
       return {
         success: true,
         result: {
           user: {
-            ...plainUser, userPosition: { ...plainUser.userPosition, ...(message.size && { size: message?.size })}
+            ...plainUser, userPosition: { ...plainUser.userPosition, ...(message.size && { size: message?.size }) }
           }
         }
       }
