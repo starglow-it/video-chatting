@@ -63,6 +63,7 @@ const Component = () => {
             ),
     });
 
+    console.log(users)
     const resizeCoeff = width / window.screen.width;
 
     const isLocalMicActive = localUser.micStatus === 'active';
@@ -111,9 +112,6 @@ const Component = () => {
     }, [isLocalMicActive, isLocalCamActive, isMeetingConnected]);
 
     const handleResizeVideo = (size: number) => {
-        updateLocalUserEvent({
-            size
-        });
         updateUserSocketEvent({
             id: localUser.id,
             size
