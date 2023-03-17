@@ -138,7 +138,7 @@ const Component = ({
                     minConstraints={[75, 75]}
                     onResizeStart={handleResizeStart}
                     onResizeStop={handleResizeStop}
-                    resizeHandles={['se']}
+                    resizeHandles={['e']}
                     disabled={!isLocal || isScreenSharing}
                 >
                     <CustomBox

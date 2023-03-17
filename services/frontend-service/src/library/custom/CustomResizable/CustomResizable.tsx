@@ -1,8 +1,7 @@
+import React, { ForwardedRef, forwardRef, memo } from 'react';
 import { Resizable } from 'react-resizable';
 import clsx from 'clsx';
 import { CustomResizableProps } from './type';
-import React, { memo } from 'react';
-// import 'node_modules/react-resizable/css/styles.css';
 import styles from './CustomResizable.module.scss';
 
 const MyHandleComponent = ({
@@ -12,7 +11,8 @@ const MyHandleComponent = ({
     ...restProps
 }: {
     handleAxis: string;
-    innerRef: any;
+    innerRef: ForwardedRef<HTMLInputElement>;
+    disabled: boolean;
 }) => (
     <div
         ref={innerRef}
@@ -25,9 +25,11 @@ const MyHandleComponent = ({
     />
 );
 
-const MyHandle = React.forwardRef((props, ref) => (
-    <MyHandleComponent innerRef={ref} {...props} />
-));
+const MyHandle = forwardRef(
+    (props: any, ref: ForwardedRef<HTMLInputElement>) => (
+        <MyHandleComponent innerRef={ref} {...props} />
+    ),
+);
 
 const Component = ({
     width = 75,
@@ -35,21 +37,21 @@ const Component = ({
     disabled = false,
     children,
     ...restProps
-}: CustomResizableProps) => {
-    console.log(disabled);
-    return (
-        <Resizable
-            width={width}
-            height={height}
-            axis="x"
-            draggableOpts={{ disabled, offsetParent: document.body }}
-            className={styles['react-resizable']}
-            handle={<MyHandle />}
-            disabled={disabled}
-            {...restProps}
-        >
-            {children}
-        </Resizable>
-    );
-};
+}: CustomResizableProps) => (
+    <Resizable
+        width={width}
+        height={height}
+        axis="x"
+        draggableOpts={{
+            disabled,
+            offsetParent: document.body,
+            bounds: { left: 0, bottom: 0 },
+        }}
+        className={styles['react-resizable']}
+        handle={<MyHandle disabled={disabled} />}
+        {...restProps}
+    >
+        {children}
+    </Resizable>
+);
 export const CustomResizable = memo(Component);
