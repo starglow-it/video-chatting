@@ -17,7 +17,6 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { MeetingAccessStatusEnum } from 'shared-types';
 import {
     $profileStore,
-    $windowSizeStore,
     $isSideUsersOpenStore,
     setIsSideUsersOpenEvent,
 } from '../../../store';
@@ -48,10 +47,8 @@ const Component = () => {
 
     const profile = useStore($profileStore);
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
-    const { width } = useStore($windowSizeStore);
-
     const { isMobile } = useBrowserDetect();
-
+    
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -63,21 +60,8 @@ const Component = () => {
             ),
     });
 
-    console.log(users)
-    const resizeCoeff = width / window.screen.width;
-
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
-
-    const baseSize = isMobile ? 90 : 150;
-
-    const coefValue = baseSize * resizeCoeff;
-
-    const videoSizeForBigScreen = coefValue > baseSize ? baseSize : coefValue;
-
-    const videoSizeForMeeting = coefValue < 75 ? 75 : videoSizeForBigScreen;
-
-    const videoSize = isScreenSharing ? 56 : videoSizeForMeeting;
 
     const renderUsers = useMemo(
         () =>
@@ -85,7 +69,7 @@ const Component = () => {
                 <MeetingUserVideoItem
                     userId={user.id}
                     key={user.id}
-                    size={user.size || videoSize || 0}
+                    size={user.size || 0}
                     userName={user.username}
                     isCameraEnabled={user.cameraStatus === 'active'}
                     isMicEnabled={user.micStatus === 'active'}
@@ -97,7 +81,7 @@ const Component = () => {
                     left={user?.userPosition?.left}
                 />
             )),
-        [users, meeting.sharingUserId, meetingTemplate.usersPosition, videoSize, isScreenSharing],
+        [users, meeting.sharingUserId, meetingTemplate.usersPosition, isScreenSharing],
     );
 
     const handleToggleAudio = useCallback(() => {
@@ -152,7 +136,7 @@ const Component = () => {
                 <MeetingUserVideoItem
                     key={localUser.id}
                     userId={localUser.id}
-                    size={videoSize}
+                    size={localUser.size || 0}
                     userProfileAvatar={profile?.profileAvatar?.url || ''}
                     userName={localUser.username}
                     localStream={activeStream}
@@ -181,7 +165,7 @@ const Component = () => {
             <MeetingUserVideoItem
                 userId={localUser.id}
                 key={localUser.id}
-                size={videoSize}
+                size={localUser.size || 0}
                 userProfileAvatar={profile?.profileAvatar?.url || ''}
                 userName={localUser.username}
                 localStream={activeStream}

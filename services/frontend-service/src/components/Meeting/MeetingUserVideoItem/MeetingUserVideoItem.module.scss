@@ -56,11 +56,11 @@
   min-width: rem(32px);
   max-height: rem(34px);
   min-height: rem(24px);
-  padding: rem(8px);
+  padding: rem(4px 8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: rem(8px) 0 0 0;
+  // margin: rem(8px) 0 0 0;
 
   &.forSharing {
     padding: rem(4px 8px);
