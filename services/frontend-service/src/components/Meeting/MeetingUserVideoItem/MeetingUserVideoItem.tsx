@@ -121,7 +121,7 @@ const Component = ({
                 resizeHandles={['sw' , 'nw' , 'se' , 'ne']}
                 disable={!isLocal}
             >
-            <CustomGrid container direction="column" alignItems="center">
+            <CustomGrid container direction="column" alignItems="center" gap={1.625}>
                 <CustomBox
                     className={clsx(styles.media, {
                         [styles.aura]: isAuraActive && isCameraEnabled,
