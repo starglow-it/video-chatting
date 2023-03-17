@@ -8,6 +8,7 @@ import styles from './CustomResizable.module.scss';
 const MyHandleComponent = ({
     handleAxis,
     innerRef,
+    disabled,
     ...restProps
 }: {
     handleAxis: string;
@@ -18,6 +19,7 @@ const MyHandleComponent = ({
         className={clsx(
             styles['react-resizable-handle'],
             styles[`react-resizable-handle-${handleAxis}`],
+            { [styles.disabled]: disabled },
         )}
         {...restProps}
     />
@@ -33,17 +35,21 @@ const Component = ({
     disabled = false,
     children,
     ...restProps
-}: CustomResizableProps) => (
-    <Resizable
-        width={width}
-        height={height}
-        axis="both"
-        draggableOpts={{ disabled }}
-        className={styles['react-resizable']}
-        handle={<MyHandle />}
-        {...restProps}
-    >
-        {children}
-    </Resizable>
-);
+}: CustomResizableProps) => {
+    console.log(disabled);
+    return (
+        <Resizable
+            width={width}
+            height={height}
+            axis="x"
+            draggableOpts={{ disabled, offsetParent: document.body }}
+            className={styles['react-resizable']}
+            handle={<MyHandle />}
+            disabled={disabled}
+            {...restProps}
+        >
+            {children}
+        </Resizable>
+    );
+};
 export const CustomResizable = memo(Component);

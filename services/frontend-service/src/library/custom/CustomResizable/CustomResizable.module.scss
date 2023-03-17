@@ -1,6 +1,6 @@
 .react-resizable {
     position: relative;
-    &:hover .react-resizable-handle {
+    &:hover .react-resizable-handle:not(.disabled) {
         display: block;
     }
 }

@@ -73,7 +73,7 @@ const Component = ({
 
     useEffect(() => {
         setScale(videoSize);
-    }, [size, width, isLocal]);
+    }, [size, width, isScreenSharing]);
 
     const userTracks = useStoreMap({
         store: $tracksStore,
@@ -119,7 +119,7 @@ const Component = ({
     };
 
     const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
-        onResizeVideo(data.size.width / resizeCoeff);
+       if(isLocal) onResizeVideo(data.size.width / resizeCoeff);
     };
 
     return (
@@ -139,7 +139,7 @@ const Component = ({
                     onResizeStart={handleResizeStart}
                     onResizeStop={handleResizeStop}
                     resizeHandles={['se']}
-                    disable={!isLocal || isScreenSharing}
+                    disabled={!isLocal || isScreenSharing}
                 >
                     <CustomBox
                         className={clsx(styles.media, {
