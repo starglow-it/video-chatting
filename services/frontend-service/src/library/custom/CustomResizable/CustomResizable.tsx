@@ -1,20 +1,42 @@
-import { ResizableBox } from 'react-resizable';
+import { Resizable } from 'react-resizable';
 import { CustomResizableProps } from './type';
 import React, { Fragment, memo } from 'react';
-import 'node_modules/react-resizable/css/styles.css';
+// import 'node_modules/react-resizable/css/styles.css';
+import styles from './CustomResizable.module.scss';
+import clsx from 'clsx';
+
+const MyHandleComponent = ({ handleAxis, innerRef, ...restProps }: {}) => (
+    <div
+        ref={innerRef}
+        className={clsx(
+            styles['react-resizable-handle'],
+            styles[`react-resizable-handle-${handleAxis}`],
+        )}
+        {...restProps}
+    />
+);
+
+const MyHandle = React.forwardRef((props, ref) => (
+    <MyHandleComponent innerRef={ref} {...props} />
+));
 
 const Component = ({
     width = 75,
     height = 75,
-    disable = false,
+    disabled = false,
     children,
     ...restProps
-}: CustomResizableProps) =>
-    !disable ? (
-        <ResizableBox width={width} height={height} axis="both" {...restProps}>
-            {children}
-        </ResizableBox>
-    ) : (
-        <Fragment>{children}</Fragment>
-    );
+}: CustomResizableProps) => (
+    <Resizable
+        width={width}
+        height={height}
+        axis="both"
+        draggableOpts={{ disabled }}
+        className={styles['react-resizable']}
+        handle={<MyHandle />}
+        {...restProps}
+    >
+        {children}
+    </Resizable>
+);
 export const CustomResizable = memo(Component);

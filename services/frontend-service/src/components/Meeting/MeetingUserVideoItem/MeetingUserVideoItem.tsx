@@ -1,6 +1,6 @@
 import React, { memo, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { useStoreMap } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -30,6 +30,8 @@ import styles from './MeetingUserVideoItem.module.scss';
 import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
 import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable';
 import { ResizeCallbackData } from 'react-resizable';
+import { $windowSizeStore } from 'src/store';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // utils
 
@@ -51,8 +53,17 @@ const Component = ({
     isScreenSharingUser = false,
     onResizeVideo
 }: MeetingUserVideoItemProps) => {
+    const { width } = useStore($windowSizeStore);
+    const { isMobile } = useBrowserDetect();
+    const resizeCoeff = width / window.screen.width;
+    const baseSize = size || (isMobile ? 90 : 150);
+    const coefValue = baseSize * resizeCoeff;
+    const videoSizeForBigScreen = coefValue > baseSize ? baseSize : coefValue;
+    const videoSizeForMeeting = coefValue < 75 ? 75 : videoSizeForBigScreen;
+    const videoSize = isScreenSharing ? 56 : videoSizeForMeeting;
+
     const container = useRef<HTMLVideoElement | null>(null);
-    const [scale, setScale] = useState<number>(size)
+    const [scale, setScale] = useState<number>(videoSize)
 
     useEffect(() => {
         setScale(size)
@@ -99,7 +110,7 @@ const Component = ({
     };
 
     const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
-        isLocal && onResizeVideo(data.size.width || 0);
+        onResizeVideo(data.size.width / resizeCoeff);
     };
 
     return (
@@ -114,12 +125,11 @@ const Component = ({
                 width={scale}
                 height={scale}
                 onResize={handleResize}
-                maxConstraints={[170, 170]}
-                minConstraints={[size, size]}
+                minConstraints={[75, 75]}
                 onResizeStart={handleResizeStart}
                 onResizeStop={handleResizeStop}
                 resizeHandles={['sw' , 'nw' , 'se' , 'ne']}
-                disable={!isLocal}
+                disable={!isLocal || isScreenSharing}
             >
             <CustomGrid container direction="column" alignItems="center">
                 <CustomBox
