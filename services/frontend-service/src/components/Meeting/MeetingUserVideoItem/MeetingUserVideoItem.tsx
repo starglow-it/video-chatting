@@ -119,7 +119,7 @@ const Component = ({
     };
 
     const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
-       if(isLocal) onResizeVideo(data.size.width / resizeCoeff);
+       if(isLocal && onResizeVideo) onResizeVideo(data.size.width / resizeCoeff);
     };
 
     return (
@@ -130,7 +130,7 @@ const Component = ({
             isLocal={isLocal}
             size={size}
         >
-            <CustomGrid container direction="column" alignItems="center"  gap={1.625}>
+            <CustomGrid container direction="column" alignItems="center"  gap={1.625} >
                 <CustomResizable
                     width={scale}
                     height={scale}

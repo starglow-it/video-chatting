@@ -41,11 +41,11 @@ const Component = ({
     <Resizable
         width={width}
         height={height}
+        lockAspectRatio
         axis="x"
         draggableOpts={{
             disabled,
-            offsetParent: document.body,
-            bounds: { left: 0, bottom: 0 },
+            offsetParent: document.body
         }}
         className={styles['react-resizable']}
         handle={<MyHandle disabled={disabled} />}

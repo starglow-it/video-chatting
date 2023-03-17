@@ -49,7 +49,6 @@ const Component = () => {
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
     const { isMobile } = useBrowserDetect();
     
-
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
