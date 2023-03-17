@@ -135,7 +135,7 @@ export const DefaultConfigValues: Record<
   vultrApiKey: '',
   livekitApiKey: 'apikey',
   livekitApiSecret: 'apisecret',
-  livekitHost: 'http://localhost:7890',
+  livekitHost: 'http://localhost:7880',
   stripeApiKey: '',
   stripeWebhookSecret: '',
   stripeExpressWebhookSecret: '',

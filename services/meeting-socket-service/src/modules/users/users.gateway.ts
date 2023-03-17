@@ -13,7 +13,7 @@ import { Socket } from 'socket.io';
 import { BaseGateway } from '../../gateway/base.gateway';
 
 // types
-import { MeetingAccessStatusEnum, ResponseSumType } from 'shared-types';
+import { IUserTemplate, MeetingAccessStatusEnum, ResponseSumType } from 'shared-types';
 
 // services
 import { MeetingsService } from '../meetings/meetings.service';
@@ -37,6 +37,7 @@ import {
   UserEmitEvents,
 } from '../../const/socket-events/emitters';
 import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
+import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -56,12 +57,100 @@ export class UsersGateway extends BaseGateway {
     super();
   }
 
+  async updateIndexUsers(userTemplateId: string, user: MeetingUserDocument) {
+    try {
+      const userTemplate = await this.coreService.findMeetingTemplateById({
+        id: userTemplateId,
+      });
+      const updateIndexUsers = userTemplate.indexUsers.map(userId => {
+        if (user.id.toString() === userId) return null;
+        return userId;
+      });
+
+      await this.coreService.updateUserTemplate({
+        userId: user.id,
+        templateId: userTemplate.id,
+        data: { indexUsers: updateIndexUsers }
+      });
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+
+  private async handleUpdateUsersTemplateVideoContainer(userTemplateId: string, meetingUserId: string, data: Partial<MeetingUserDocument>, session) {
+   try{
+    const usersTemplate = await this.coreService.findMeetingTemplateById({
+      id: userTemplateId
+    });
+
+    console.log(data);
+    
+
+    const updateUser = await this.usersService.findOne({
+      query: {
+        _id: meetingUserId,
+      },
+      session,
+    });
+
+    console.log('a');
+    
+
+    let countIndexUser = 0;
+    let updateUsersPosistion = usersTemplate.usersPosition;
+    let updateUsersSize = usersTemplate.usersSize;
+
+    if (data?.userPosition) {
+      updateUser.userPosition = data.userPosition;
+
+      updateUsersPosistion = usersTemplate.usersPosition.map(userPosition => {
+        if(usersTemplate.indexUsers[countIndexUser] !== meetingUserId)return userPosition;
+        userPosition = data?.userPosition;
+        countIndexUser++;
+        return userPosition;
+      });
+    }
+
+    if (data?.userSize) {
+      updateUser.userSize = data.userSize;
+      updateUsersSize = usersTemplate.usersSize.map(userSize => {
+        if(usersTemplate.indexUsers[countIndexUser] !== meetingUserId){
+          countIndexUser++;
+          return userSize;
+        }
+        countIndexUser++;
+        userSize = data?.userSize;
+        return userSize;
+      });
+    }
+
+    updateUser.save();
+    console.log(updateUsersSize);
+    
+    this.coreService.updateUserTemplate({
+      templateId: userTemplateId,
+      userId: meetingUserId,
+      data: {
+        usersPosition: updateUsersPosistion,
+        usersSize: updateUsersSize
+      }
+    });
+    console.log('c');
+    
+   }
+   catch(err){
+    console.log(err);
+    
+   }
+  }
+
   @SubscribeMessage(UsersSubscribeEvents.OnUpdateUser)
   async updateUser(
     @MessageBody() message: UpdateUserRequestDTO,
     @ConnectedSocket() socket: Socket,
   ): Promise<ResponseSumType<{ user: CommonUserDTO }>> {
-    // console.log(socket.handshake.headers.cookie);
     return withTransaction(this.connection, async (session) => {
       const user = await this.usersService.findOneAndUpdate(
         { socketId: socket.id },
@@ -76,7 +165,13 @@ export class UsersGateway extends BaseGateway {
         session,
       );
 
+      await this.handleUpdateUsersTemplateVideoContainer(meeting.templateId, user.id.toString(),{
+        userPosition: message?.userPosition,
+        userSize: message?.size
+      },session)
+
       await meeting.populate('users');
+
 
 
       const plainUser = plainToInstance(CommonUserDTO, user, {
@@ -95,7 +190,7 @@ export class UsersGateway extends BaseGateway {
         ({
           ...user,
           ...((message.size && message.id == user.id) && { size: message.size }),
-          ...((message.userPosition && message.id == user.id) && {userPosition: message.userPosition})
+          ...((message.userPosition && message.id == user.id) && { userPosition: message.userPosition })
         })),
       });
 
@@ -162,6 +257,7 @@ export class UsersGateway extends BaseGateway {
           );
 
           this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
+          await this.updateIndexUsers(meeting.templateId, user);
         }
 
         await this.usersService.updateOne(

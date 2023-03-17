@@ -49,4 +49,7 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
     };
   })
   userPosition: ICommonMeetingUserDTO['userPosition'];
+
+  @Expose()
+  userSize: ICommonMeetingUserDTO['userSize'];
 }

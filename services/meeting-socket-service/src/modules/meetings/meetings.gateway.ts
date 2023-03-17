@@ -6,18 +6,18 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import {Logger} from '@nestjs/common';
-import {InjectConnection} from '@nestjs/mongoose';
-import {Connection, Types} from 'mongoose';
-import {Socket} from 'socket.io';
-import {plainToInstance} from 'class-transformer';
+import { Logger } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
+import { Connection, Types } from 'mongoose';
+import { Socket } from 'socket.io';
+import { plainToInstance } from 'class-transformer';
 
-import {BaseGateway} from '../../gateway/base.gateway';
+import { BaseGateway } from '../../gateway/base.gateway';
 
-import {MeetingsService} from './meetings.service';
-import {UsersService} from '../users/users.service';
-import {TasksService} from '../tasks/tasks.service';
-import {CoreService} from '../../services/core/core.service';
+import { MeetingsService } from './meetings.service';
+import { UsersService } from '../users/users.service';
+import { TasksService } from '../tasks/tasks.service';
+import { CoreService } from '../../services/core/core.service';
 
 import {
   KickUserReasons,
@@ -28,26 +28,28 @@ import {
   TimeoutTypesEnum,
 } from 'shared-types';
 
-import {StartMeetingRequestDTO} from '../../dtos/requests/start-meeting.dto';
-import {JoinMeetingRequestDTO} from '../../dtos/requests/join-meeting.dto';
-import {CommonUserDTO} from '../../dtos/response/common-user.dto';
-import {CommonMeetingDTO} from '../../dtos/response/common-meeting.dto';
-import {EnterMeetingRequestDTO} from '../../dtos/requests/enter-meeting.dto';
-import {MeetingAccessAnswerRequestDTO} from '../../dtos/requests/answer-access-meeting.dto';
-import {LeaveMeetingRequestDTO} from '../../dtos/requests/leave-meeting.dto';
-import {EndMeetingRequestDTO} from '../../dtos/requests/end-meeting.dto';
-import {UpdateMeetingRequestDTO} from '../../dtos/requests/update-meeting.dto';
+import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
+import { JoinMeetingRequestDTO } from '../../dtos/requests/join-meeting.dto';
+import { CommonUserDTO } from '../../dtos/response/common-user.dto';
+import { CommonMeetingDTO } from '../../dtos/response/common-meeting.dto';
+import { EnterMeetingRequestDTO } from '../../dtos/requests/enter-meeting.dto';
+import { MeetingAccessAnswerRequestDTO } from '../../dtos/requests/answer-access-meeting.dto';
+import { LeaveMeetingRequestDTO } from '../../dtos/requests/leave-meeting.dto';
+import { EndMeetingRequestDTO } from '../../dtos/requests/end-meeting.dto';
+import { UpdateMeetingRequestDTO } from '../../dtos/requests/update-meeting.dto';
 
-import {getTimeoutTimestamp} from '../../utils/getTimeoutTimestamp';
-import {ITransactionSession, withTransaction,} from '../../helpers/mongo/withTransaction';
-import {MeetingTimeService} from '../meeting-time/meeting-time.service';
-import {MeetingEmitEvents, UserEmitEvents, VideoChatEmitEvents,} from '../../const/socket-events/emitters';
+import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
+import { ITransactionSession, withTransaction, } from '../../helpers/mongo/withTransaction';
+import { MeetingTimeService } from '../meeting-time/meeting-time.service';
+import { MeetingEmitEvents, UserEmitEvents, VideoChatEmitEvents, } from '../../const/socket-events/emitters';
 import {
   MeetingSubscribeEvents,
   UsersSubscribeEvents,
   VideoChatSubscribeEvents,
 } from '../../const/socket-events/subscribers';
-import {MeetingsCommonService} from './meetings.common';
+import { MeetingsCommonService } from './meetings.common';
+import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
+import { isNumber } from 'class-validator';
 
 type SendOfferPayload = {
   type: string;
@@ -86,8 +88,7 @@ type SendDevicesPermissionsPayload = {
 })
 export class MeetingsGateway
   extends BaseGateway
-  implements OnGatewayDisconnect
-{
+  implements OnGatewayDisconnect {
   private readonly logger = new Logger(MeetingsGateway.name);
   constructor(
     private meetingsService: MeetingsService,
@@ -99,6 +100,28 @@ export class MeetingsGateway
     @InjectConnection() private connection: Connection,
   ) {
     super();
+  }
+
+  async updateIndexUsers(userTemplateId: string, user: MeetingUserDocument) {
+    try {
+      const userTemplate = await this.coreService.findMeetingTemplateById({
+        id: userTemplateId,
+      });
+      const updateIndexUsers = userTemplate.indexUsers.map(userId => {
+        if (user.id.toString() === userId) return null;
+        return userId;
+      });
+
+      await this.coreService.updateUserTemplate({
+        userId: user.id,
+        templateId: userTemplate.id,
+        data: { indexUsers: updateIndexUsers }
+      });
+    }
+    catch (err) {
+      console.log(err);
+
+    }
   }
 
 
@@ -117,8 +140,19 @@ export class MeetingsGateway
           id: templateId,
         });
 
-        const updateUsersPromises = users.map(async (user, index) => {
-          const userPosition = template?.usersPosition?.[index];
+        const usersTemplate = await this.coreService.findMeetingTemplateById({
+          id: templateId
+        });
+
+        const updateUsersPromises = users.map(async user => {
+
+          //TODO: Change position and size based on indexUser
+          let indexUserCount = 0;
+          while (usersTemplate.indexUsers[indexUserCount] !== user.id.toString()) {
+            indexUserCount++;
+          }
+          const userPosition = template?.usersPosition?.[indexUserCount];
+          const userSize = template?.usersSize?.[indexUserCount];
 
           const updateUser = await this.usersService.findOne({
             query: {
@@ -128,6 +162,7 @@ export class MeetingsGateway
           });
 
           updateUser.userPosition = userPosition;
+          updateUser.userSize = userSize;
 
           return updateUser.save();
         });
@@ -237,6 +272,8 @@ export class MeetingsGateway
         const userTemplate = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId,
         });
+
+        await this.updateIndexUsers(userTemplate.id, user)
 
         const commonTemplate =
           await this.coreService.findCommonTemplateByTemplateId({
@@ -572,7 +609,7 @@ export class MeetingsGateway
         id: meeting.templateId,
       });
 
-      
+
 
       if (!template) {
         this.logger.error({
@@ -587,10 +624,16 @@ export class MeetingsGateway
         userId: template.user.id,
       });
 
-      const activeParticipants = await this.usersService.countMany({
-        meeting: meeting._id,
-        accessStatus: MeetingAccessStatusEnum.InMeeting,
+      const usersTemplate = await this.coreService.findMeetingTemplate({
+        id: meeting.templateId
       });
+
+      //TODO: Get index user from value is null
+      const indexUser = usersTemplate.indexUsers.map((item, index) => {
+        if (item) return;
+        return index;
+      }).find(item => item || isNumber(item));
+      if (indexUser === -1) return;
 
       const user = await this.usersService.findOneAndUpdate(
         { socketId: socket.id },
@@ -601,10 +644,29 @@ export class MeetingsGateway
           username: message.user.username,
           isAuraActive: message.user.isAuraActive,
           joinedAt: Date.now(),
-          userPosition: template?.usersPosition?.[activeParticipants],
+          userPosition: template?.usersPosition?.[indexUser],
+          userSize: template?.usersSize?.[indexUser]
         },
         session,
       );
+
+      //TODO: Insert userId to indexUsers have value is null
+      let insertIndexUserCount = 0;
+      const updateIndexUsers = usersTemplate.indexUsers.map(item => {
+        if (item || insertIndexUserCount) return item;
+        item = user.id.toString();
+        insertIndexUserCount++;
+        return item;
+      });
+
+      await this.coreService.updateUserTemplate({
+        templateId: usersTemplate.id,
+        userId: user.id.toString(),
+        data: {
+          indexUsers: updateIndexUsers
+        }
+      })
+
 
       await meeting.populate('users');
 
@@ -639,7 +701,7 @@ export class MeetingsGateway
         name: `meeting:finish:${message.meetingId}`,
         ts:
           mainUser.maxMeetingTime < finishTime &&
-          mainUser.subscriptionPlanKey !== PlanKeys.Business
+            mainUser.subscriptionPlanKey !== PlanKeys.Business
             ? mainUser.maxMeetingTime
             : finishTime,
         callback: this.endMeeting.bind(this, {
@@ -771,7 +833,7 @@ export class MeetingsGateway
         if (
           meeting?.hostUserId?.socketId &&
           meeting?.hostUserId?.accessStatus ===
-            MeetingAccessStatusEnum.InMeeting
+          MeetingAccessStatusEnum.InMeeting
         ) {
           this.emitToSocketId(
             meeting?.hostUserId?.socketId,
@@ -883,8 +945,6 @@ export class MeetingsGateway
       ctx: message,
     });
 
-    console.log(message);
-    
 
     return withTransaction(this.connection, async (session) => {
       const meeting = await this.meetingsService.findById(
@@ -923,6 +983,19 @@ export class MeetingsGateway
           };
         }
 
+        //TODO: 
+        const usersTemplate = await this.coreService.findMeetingTemplateById({
+          id: meeting.templateId
+        });
+
+        const indexUser = usersTemplate.indexUsers.map((item, index) => {
+          if (item) return;
+          return index;
+        }).find(item => item || isNumber(item));
+        console.log(indexUser, 'index');
+        
+        if (indexUser === -1) return;
+
         const updatedUser = await this.usersService.findOneAndUpdate(
           {
             _id: message.userId,
@@ -931,10 +1004,28 @@ export class MeetingsGateway
           {
             accessStatus: MeetingAccessStatusEnum.InMeeting,
             joinedAt: Date.now(),
-            userPosition: template?.usersPosition?.[activeParticipants],
+            userPosition: template?.usersPosition?.[indexUser],
+            userSize: template?.usersSize?.[indexUser]
           },
           session,
         );
+
+        //TODO: Insert userId to indexUsers have value is null
+        let insertIndexUserCount = 0;
+        const updateIndexUsers = usersTemplate.indexUsers.map(item => {
+          if (item || insertIndexUserCount) return item;
+          item = user.id.toString();
+          insertIndexUserCount++;
+          return item;
+        });
+
+        await this.coreService.updateUserTemplate({
+          templateId: usersTemplate.id,
+          userId: user.id.toString(),
+          data: {
+            indexUsers: updateIndexUsers
+          }
+        })
 
         if (activeParticipants + 1 === meeting.maxParticipants) {
           const requestUsers = await this.usersService.findUsers(
@@ -1401,8 +1492,8 @@ export class MeetingsGateway
                 (hostTimeData.endAt - hostTimeData.startAt);
 
               const fallBackTime = profileUser.subscriptionPlanKey === PlanKeys.Business
-                  ? null
-                  : 0;
+                ? null
+                : 0;
 
               await this.coreService.updateUser({
                 query: { _id: profileUser.id },
@@ -1502,8 +1593,8 @@ export class MeetingsGateway
     const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
     const fallBackTime = mainUser.subscriptionPlanKey === PlanKeys.Business
-        ? null
-        : 0;
+      ? null
+      : 0;
 
     await this.coreService.updateUser({
       query: { _id: mainUser.id },

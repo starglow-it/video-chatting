@@ -253,6 +253,8 @@ export class CommonTemplatesController {
           languages: targetUser.languages.map((language) => language._id),
           socials: targetUser.socials.map((social) => social._id),
           usersPosition: targetTemplate.usersPosition,
+          usersSize: targetTemplate.usersPosition.map(()=>0),
+          indexUsers: targetTemplate.usersPosition.map(()=>null),
           isAudioAvailable: targetTemplate.isAudioAvailable,
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,

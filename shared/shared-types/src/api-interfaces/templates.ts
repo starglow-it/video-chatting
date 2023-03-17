@@ -64,6 +64,8 @@ export interface IUserTemplate {
   socials: ISocialLink[];
   user: ITemplateUser;
   usersPosition: { bottom: number; left: number }[];
+  usersSize: number[];
+  indexUsers: string[];
   links?: { item: string; position: { top: number; left: number } }[];
   meetingInstance: IMeetingInstance;
   draft: boolean;
@@ -86,6 +88,8 @@ export interface IUpdateTemplate {
   customLink?: string;
   businessCategories?: IBusinessCategory[];
   usersPosition?: { bottom: number; left: number }[];
+  usersSize?: number[];
+  indexUsers?: string[];
   maxParticipants?: number;
   languages?: string[];
   isMonetizationEnabled?: boolean;
