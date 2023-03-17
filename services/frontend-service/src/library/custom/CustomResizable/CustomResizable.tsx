@@ -1,11 +1,18 @@
 import { Resizable } from 'react-resizable';
+import clsx from 'clsx';
 import { CustomResizableProps } from './type';
-import React, { Fragment, memo } from 'react';
+import React, { memo } from 'react';
 // import 'node_modules/react-resizable/css/styles.css';
 import styles from './CustomResizable.module.scss';
-import clsx from 'clsx';
 
-const MyHandleComponent = ({ handleAxis, innerRef, ...restProps }: {}) => (
+const MyHandleComponent = ({
+    handleAxis,
+    innerRef,
+    ...restProps
+}: {
+    handleAxis: string;
+    innerRef: any;
+}) => (
     <div
         ref={innerRef}
         className={clsx(
