@@ -15,6 +15,12 @@
   position: absolute;
   // transform: translate(-50%, 50%);
   transition: top 200ms linear, left 200ms linear;
+  &.dragSharing{
+    transform: unset !important;
+    left: inherit !important;
+    bottom: inherit !important;
+    position: relative !important;
+  }
 }
 .boxPreventClick{
   position: absolute;

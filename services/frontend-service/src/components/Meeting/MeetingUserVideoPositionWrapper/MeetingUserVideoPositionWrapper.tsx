@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Box } from '@mui/material';
 
 // custom
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // types
@@ -62,7 +63,7 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
         }
         handleOffDragging()     
     }
-    const handleStartDrag = (event: DraggableEvent) => {
+    const handleStartDrag = () => {
         !isInitPos && setInitPos(true)
         handleOnDragging() 
     }
@@ -70,7 +71,7 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
     const eventControl = (event: DraggableEvent) => {
         if (event.type === 'mousedown') {
             refTimer.current = setTimeout(() => {
-                handleStartDrag(event) 
+                handleStartDrag() 
             }, 300);
         }
 
@@ -90,16 +91,19 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
         }
     }, [isScreenSharing, bottom, left, isInitPos]);
 
-    if (finalBottom !== '' && finalLeft !== '') {
-        if(isLocal && !isScreenSharing){
-            return (                
+    return (
+        <ConditionalRender condition={Boolean(finalBottom !== '' && finalLeft !== '')}>
+            <ConditionalRender condition={isLocal}>
                 <Draggable
                     axis='both'
                     onStart={eventControl}                         
                     onStop={eventControl}
+                    disabled={isScreenSharing}
                 >
                     <CustomBox
-                        className={styles.boxDraggable}
+                        className={clsx(styles.boxDraggable, {
+                            [styles.dragSharing]: isScreenSharing,
+                        })}
                         style={{
                             bottom: finalBottom, left: finalLeft
                         }}
@@ -109,18 +113,16 @@ const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> =
                         <Box className={clsx(styles.boxPreventClick, {[styles.show]: isDragging})} />
                     </CustomBox>             
                 </Draggable>  
-                      
-            )
-        }
-    }
-
-    return (
-        <CustomBox
-            sx={!isScreenSharing ? { bottom: finalBottom, left: finalLeft } : {}}
-            className={clsx(styles.videoWrapper, { [styles.sharing]: isScreenSharing })}
-        >
-            {children}
-        </CustomBox>
+            </ConditionalRender>
+            <ConditionalRender condition={!isLocal}>
+                <CustomBox
+                    sx={!isScreenSharing ? { bottom: finalBottom, left: finalLeft } : {}}
+                    className={clsx(styles.videoWrapper, { [styles.sharing]: isScreenSharing })}
+                >
+                    {children}
+                </CustomBox>
+            </ConditionalRender>
+        </ConditionalRender>
     )
 };
 
