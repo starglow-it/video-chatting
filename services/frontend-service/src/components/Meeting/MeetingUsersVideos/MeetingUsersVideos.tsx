@@ -69,7 +69,7 @@ const Component = () => {
                 <MeetingUserVideoItem
                     userId={user.id}
                     key={user.id}
-                    size={user.size || 0}
+                    size={user.userSize || 0}
                     userName={user.username}
                     isCameraEnabled={user.cameraStatus === 'active'}
                     isMicEnabled={user.micStatus === 'active'}
@@ -95,10 +95,10 @@ const Component = () => {
         }
     }, [isLocalMicActive, isLocalCamActive, isMeetingConnected]);
 
-    const handleResizeVideo = (size: number) => {
+    const handleResizeVideo = (userSize: number) => {
         updateUserSocketEvent({
             id: localUser.id,
-            size
+            userSize
         })
     }
 
@@ -136,7 +136,7 @@ const Component = () => {
                 <MeetingUserVideoItem
                     key={localUser.id}
                     userId={localUser.id}
-                    size={localUser.size || 0}
+                    size={localUser.userSize || 0}
                     userProfileAvatar={profile?.profileAvatar?.url || ''}
                     userName={localUser.username}
                     localStream={activeStream}
@@ -165,7 +165,7 @@ const Component = () => {
             <MeetingUserVideoItem
                 userId={localUser.id}
                 key={localUser.id}
-                size={localUser.size || 0}
+                size={localUser.userSize || 0}
                 userProfileAvatar={profile?.profileAvatar?.url || ''}
                 userName={localUser.username}
                 localStream={activeStream}
