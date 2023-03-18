@@ -23,12 +23,12 @@ const proxy = {
         changeOrigin: true,
     },
     '/payments': {
-        target: `http://localhost:5000`,
+        target: `http://payment-service:5000`,
         pathRewrite: { '/': '/' },
         changeOrigin: true,
     },
     '/socket.io': {
-        target: `http://localhost:8080`,
+        target: `http://socket-service:8080`,
         changeOrigin: true,
         ws: true,
     },
