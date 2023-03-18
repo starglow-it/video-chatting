@@ -992,7 +992,6 @@ export class MeetingsGateway
           if (item) return;
           return index;
         }).find(item => item || isNumber(item));
-        console.log(indexUser, 'index');
         
         if (indexUser === -1) return;
 

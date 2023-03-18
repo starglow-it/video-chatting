@@ -85,17 +85,12 @@ export class UsersGateway extends BaseGateway {
       id: userTemplateId
     });
 
-    console.log(data);
-    
-
     const updateUser = await this.usersService.findOne({
       query: {
         _id: meetingUserId,
       },
       session,
     });
-
-    console.log('a');
     
 
     let countIndexUser = 0;
@@ -106,9 +101,12 @@ export class UsersGateway extends BaseGateway {
       updateUser.userPosition = data.userPosition;
 
       updateUsersPosistion = usersTemplate.usersPosition.map(userPosition => {
-        if(usersTemplate.indexUsers[countIndexUser] !== meetingUserId)return userPosition;
-        userPosition = data?.userPosition;
+        if(usersTemplate.indexUsers[countIndexUser] !== meetingUserId){
+          countIndexUser++;
+          return userPosition;
+        }
         countIndexUser++;
+        userPosition = data?.userPosition;
         return userPosition;
       });
     }
@@ -127,7 +125,6 @@ export class UsersGateway extends BaseGateway {
     }
 
     updateUser.save();
-    console.log(updateUsersSize);
     
     this.coreService.updateUserTemplate({
       templateId: userTemplateId,
@@ -137,7 +134,6 @@ export class UsersGateway extends BaseGateway {
         usersSize: updateUsersSize
       }
     });
-    console.log('c');
     
    }
    catch(err){
@@ -167,7 +163,7 @@ export class UsersGateway extends BaseGateway {
 
       await this.handleUpdateUsersTemplateVideoContainer(meeting.templateId, user.id.toString(),{
         userPosition: message?.userPosition,
-        userSize: message?.size
+        userSize: message?.userSize
       },session)
 
       await meeting.populate('users');
@@ -189,7 +185,7 @@ export class UsersGateway extends BaseGateway {
         users: plainUsers.map(user =>
         ({
           ...user,
-          ...((message.size && message.id == user.id) && { size: message.size }),
+          ...((message.userSize && message.id == user.id) && { userSize: message.userSize }),
           ...((message.userPosition && message.id == user.id) && { userPosition: message.userPosition })
         })),
       });
@@ -198,7 +194,7 @@ export class UsersGateway extends BaseGateway {
         success: true,
         result: {
           user: {
-            ...plainUser, userPosition: { ...plainUser.userPosition, ...(message.size && { size: message?.size }) }
+            ...plainUser, userPosition: { ...plainUser.userPosition, ...(message.userSize && { userSize: message?.userSize }) }
           }
         }
       }
