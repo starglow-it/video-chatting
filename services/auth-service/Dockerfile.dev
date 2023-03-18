@@ -18,9 +18,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/auth-service/package.json ./services/auth-service
 
-RUN pnpm install
-
 COPY ./services/auth-service ./services/auth-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-types,shared-utils,shared-const
 

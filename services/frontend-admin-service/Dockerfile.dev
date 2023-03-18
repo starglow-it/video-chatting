@@ -27,9 +27,10 @@ RUN pnpm add nx -D -w
 
 COPY ./services/frontend-admin-service/package.json ./services/frontend-admin-service
 
+COPY ./services/frontend-admin-service ./services/frontend-admin-service
+
 RUN pnpm install --force
 
-COPY ./services/frontend-admin-service ./services/frontend-admin-service
 
 RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils
 
