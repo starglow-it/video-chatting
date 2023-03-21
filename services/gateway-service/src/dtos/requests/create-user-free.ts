@@ -4,13 +4,13 @@ import { IsNotEmpty, IsUUID } from "class-validator";
 export class CreateUserFreeRequest {
     @ApiProperty({
         type: String,
-        description: 'This field must be UUID v3 type'
+        description: 'This field must be UUID v4 type'
     })
     @IsNotEmpty({
         message: 'Uuid must be present'
     })
-    @IsUUID(3, {
-        message: 'This field must be UUID v3 type'
+    @IsUUID(4, {
+        message: 'This field must be UUID v4 type'
     })
     readonly uuid: string;
 }

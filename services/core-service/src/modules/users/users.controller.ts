@@ -584,7 +584,7 @@ export class UsersController {
         email: uuid
       }
     });
-    if(existUser) throw new RpcException({message: 'user existed', ctx: USERS_SERVICE});
+    if(existUser) throw new RpcException({message: 'user did exist', ctx: USERS_SERVICE});
     const user = await this.usersService.createUser({
       email: uuid,
       password: 'text',
