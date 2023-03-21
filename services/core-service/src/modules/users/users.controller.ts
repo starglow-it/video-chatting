@@ -587,7 +587,8 @@ export class UsersController {
       fullName: '',
       companyName: '',
       position: '',
-      contactEmail: ''
+      contactEmail: '',
+      maxMeetingTime: 100000000
     });
     return plainToInstance(CommonUserDTO, user, {
       excludeExtraneousValues: true,

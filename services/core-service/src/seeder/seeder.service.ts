@@ -140,7 +140,8 @@ export class SeederService {
     }
   }
 
-  async createGlobalCommonTemplate() {
+  //TODO: Seed create global common template
+  async seedCreateGlobalCommonTemplate() {
     const adminEmail = await this.configService.get<string>('adminEmail');
     const admin = await this.usersService.findUser({
       query: { email: adminEmail },
@@ -160,7 +161,6 @@ export class SeederService {
         isPublic: true,
         maxParticipants: 4,
         description: 'global room',
-        
         name: 'Global Theliveoffice',
         isAcceptNoLogin: true,
       }

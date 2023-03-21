@@ -57,7 +57,7 @@ async function bootstrap() {
   await seeder.seedMonetizationStatistic();
   await seeder.seedRoomStatistic();
   await seeder.seedLinks();
-  await seeder.createGlobalCommonTemplate();
+  await seeder.seedCreateGlobalCommonTemplate();
 
   
 
