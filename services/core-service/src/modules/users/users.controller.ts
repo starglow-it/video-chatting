@@ -90,7 +90,7 @@ export class UsersController {
     private countryStatisticsService: CountryStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
     @InjectConnection() private connection: Connection,
-  ) {}
+  ) { }
 
   startCheckSubscriptions() {
     this.tasksService.addInterval({
@@ -389,12 +389,12 @@ export class UsersController {
         ...query,
         ...(options?.search
           ? {
-              $or: [
-                { companyName: queryRegex },
-                { fullName: queryRegex },
-                { email: queryRegex },
-              ],
-            }
+            $or: [
+              { companyName: queryRegex },
+              { fullName: queryRegex },
+              { email: queryRegex },
+            ],
+          }
           : {}),
       };
 
@@ -574,6 +574,22 @@ export class UsersController {
     } catch (err) {
       throw new RpcException({ message: err.message, ctx: USERS_SERVICE });
     }
+  }
+
+
+  @MessagePattern({ cmd: UserBrokerPatterns.CreateUserWithoutLogin })
+  async createUserWithoutlogin() {
+    const user = await this.usersService.createUser({
+      email: 'text',
+      password: 'text',
+      role: UserRoles.Anonymous,
+      isConfirmed: true,
+      fullName: '',
+      companyName: '',
+      position: '',
+      contactEmail: '',
+    });
+    return user;
   }
 
   @MessagePattern({ cmd: AuthBrokerPatterns.LoginUserByEmail })

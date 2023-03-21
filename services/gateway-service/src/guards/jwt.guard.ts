@@ -5,6 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UserRoles } from 'shared-types';
 import { CoreService } from '../services/core/core.service';
 
 type TokenDataDto = { userId: string; exp: number };
@@ -13,8 +14,8 @@ type TokenDataDto = { userId: string; exp: number };
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
-    private coreService: CoreService,
-  ) {}
+    private coreService: CoreService
+  ) { }
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<Request>();

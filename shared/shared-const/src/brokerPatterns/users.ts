@@ -23,4 +23,5 @@ export enum UserBrokerPatterns {
   ResetTrialNotification = 'reset_trial_notification',
   SearchUsers = 'search_users',
   ManageUserRights = 'manage_user_rights',
+  CreateUserWithoutLogin = 'create_user_withou_login',
 }

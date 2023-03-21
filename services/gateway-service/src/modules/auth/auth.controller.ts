@@ -99,6 +99,17 @@ export class AuthController {
     }
   }
 
+  @Post('/create-free-user')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'User create successful',
+  })
+  async createAccountWithoutLogin(){
+    return await this.coreService.createUserWithoutLogin();
+  }
+
+
   @Post('/confirm-registration')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({
