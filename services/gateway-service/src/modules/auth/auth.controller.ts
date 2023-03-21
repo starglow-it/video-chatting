@@ -110,7 +110,23 @@ export class AuthController {
   async createAccountWithoutLogin() {
     try{
       const uuid = uuidv4() + (new Date()).getTime();
-      return await this.coreService.createUserWithoutLogin(uuid);
+      const user =  await this.coreService.createUserWithoutLogin(uuid);
+      
+      const globalCommonTemplate = await this.coreService.findCommonTemplateByTemplate({
+        isAcceptNoLogin: true
+      });
+      
+      if(!globalCommonTemplate) return;
+      const userTemplate = await this.coreService.addTemplateToUser({
+        templateId: globalCommonTemplate.id,
+        userId: user.id
+      });
+
+      return {
+        user,
+        userTemplateId: userTemplate.id
+      }
+
     }
     catch(err){
       throw new BadRequestException(err);

@@ -223,6 +223,7 @@ export class CommonTemplatesController {
             populatePaths: 'businessCategories',
           });
 
+
         const targetUser = await this.usersService.findUser({
           query: {
             _id: data.userId,
@@ -259,6 +260,7 @@ export class CommonTemplatesController {
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,
           author: targetTemplate.author,
+          isAcceptNoLogin: targetTemplate.isAcceptNoLogin
         };
 
         const [userTemplate] =

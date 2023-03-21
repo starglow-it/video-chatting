@@ -27,7 +27,6 @@ import { MeetingsService } from '../meetings/meetings.service';
     AwsConnectorModule,
     VerificationCodeModule,
     TasksModule,
-    MeetingsService,
     CountryStatisticsModule,
     UserProfileStatisticModule,
     MongooseModule.forFeature([

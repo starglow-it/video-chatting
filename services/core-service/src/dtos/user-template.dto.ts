@@ -145,4 +145,7 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   @Transform((data) => data.obj?.author?.['_id'])
   author: IUserTemplate['author'];
+
+  @Expose()
+  isAcceptNoLogin?: IUserTemplate['isAcceptNoLogin'];
 }

@@ -101,8 +101,8 @@ export class SeederService {
             sort: '-templateId',
           },
         });
-        
-        
+
+
 
         await this.countersService.create({
           data: {
@@ -140,8 +140,31 @@ export class SeederService {
     }
   }
 
-  async createGlobalCommonTemplate(){
-    
+  async createGlobalCommonTemplate() {
+    const adminEmail = await this.configService.get<string>('adminEmail');
+    const admin = await this.usersService.findUser({
+      query: { email: adminEmail },
+    });
+
+    const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({
+      query: {
+        isAcceptNoLogin: true
+      }
+    });
+    if (globalCommonTemplate) return;
+
+    await this.commonTemplatesService.createCommonTemplate({
+      data: {
+        author: admin.id,
+        draft: false,
+        isPublic: true,
+        maxParticipants: 4,
+        description: 'global room',
+        
+        name: 'Global Theliveoffice',
+        isAcceptNoLogin: true,
+      }
+    });
   }
 
   async seedRoomStatistic() {
@@ -153,11 +176,11 @@ export class SeederService {
           populatePaths: ['author'],
         });
 
-        
-      
+
+
 
       const statisticPromise = commonTemplates.map(async (template) => {
-        
+
         const isStatisticExists = await this.roomsStatisticService.exists({
           query: { template: template._id },
         });
@@ -177,7 +200,7 @@ export class SeederService {
         });
       });
 
-      
+
 
       await Promise.all(statisticPromise);
     } catch (e) {

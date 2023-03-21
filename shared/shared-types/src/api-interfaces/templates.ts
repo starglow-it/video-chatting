@@ -34,6 +34,7 @@ export interface ICommonTemplate {
   isDeleted?: boolean;
   templateType: 'image' | 'video';
   isTemplatePurchased?: boolean;
+  isAcceptNoLogin?: boolean;
 }
 
 export interface IUserTemplate {
@@ -71,6 +72,7 @@ export interface IUserTemplate {
   draft: boolean;
   isPublic: boolean;
   author?: string;
+  isAcceptNoLogin?: boolean;
   templateType: 'video' | 'image';
 }
 

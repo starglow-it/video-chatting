@@ -75,7 +75,6 @@ import { UserTokenService } from '../user-token/user-token.service';
 import { TasksService } from '../tasks/tasks.service';
 import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
-import { MeetingsService } from '../meetings/meetings.service';
 
 @Controller('users')
 export class UsersController {
@@ -90,7 +89,6 @@ export class UsersController {
     private verificationCodeService: VerificationCodeService,
     private countryStatisticsService: CountryStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
-    private meetingsService: MeetingsService,
     @InjectConnection() private connection: Connection,
   ) { }
 
@@ -580,7 +578,7 @@ export class UsersController {
 
 
   @MessagePattern({ cmd: UserBrokerPatterns.CreateUserWithoutLogin })
-  async createUserWithoutlogin({uuid}) {
+  async createUserWithoutlogin({ uuid }) {
     const user = await this.usersService.createUser({
       email: uuid,
       password: 'text',
