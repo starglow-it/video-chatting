@@ -140,6 +140,10 @@ export class SeederService {
     }
   }
 
+  async createGlobalCommonTemplate(){
+    
+  }
+
   async seedRoomStatistic() {
     try {
 
