@@ -1,18 +1,26 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from '../../controllers/WebStorageController';
 import { ApiParams, FailedResult, SuccessResult } from '../../store/types';
 
 export async function sendRequest<Result, Error>(
-    options: ApiParams & AxiosRequestConfig = {},
+    options: Partial<ApiParams> & AxiosRequestConfig = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
     const { url } = options;
+    const userWithoutLoginId = WebStorage.get<string>({
+        key: StorageKeysEnum.userWithoutLoginId,
+    });
 
     const { token, ...restOptions } = options;
-
+    const headers = { ...restOptions.headers };
     if (token) {
-        restOptions.headers = {
-            ...restOptions.headers,
-            Authorization: `Bearer ${token}`,
-        };
+        headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (userWithoutLoginId) {
+        headers.userWithoutLoginId = userWithoutLoginId;
     }
 
     try {
@@ -20,7 +28,7 @@ export async function sendRequest<Result, Error>(
             result: Result;
             success: boolean;
             statusCode: number;
-        }>({ url, ...restOptions });
+        }>({ url, headers, ...restOptions });
 
         return {
             result: response?.data?.result ?? response.data,

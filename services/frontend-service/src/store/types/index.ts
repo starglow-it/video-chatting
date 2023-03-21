@@ -187,6 +187,7 @@ export type ApiError = {
 
 export type ApiParams = {
     token?: string;
+    userWithoutLoginId?: string;
 };
 
 export type SuccessResult<Result> = {

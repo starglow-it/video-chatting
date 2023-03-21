@@ -184,13 +184,13 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     }
 
 	props.pageProps.initialState = {
-		[`${$profileStore.sid}`]: {
-			...initialProfileState,
-			...data.user,
-		},
-		[`${$authStore.sid}`]: {
-			isAuthenticated: data.isAuthenticated,
-		},
+		// [`${$profileStore.sid}`]: {
+		// 	...initialProfileState,
+		// 	...data.user,
+		// },
+		// [`${$authStore.sid}`]: {
+		// 	isAuthenticated: data.isAuthenticated,
+		// },
 		[`${$productsStore.sid}`]: products,
 		[`${$subscriptionStore.sid}`]: subscription,
 	};

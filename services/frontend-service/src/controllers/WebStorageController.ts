@@ -1,6 +1,7 @@
 export enum StorageKeysEnum {
     templateId = 'templateId',
     meetingSettings = 'meetingSettings',
+    userWithoutLoginId = 'userWithoutLoginId'
 }
 
 export const WebStorage = {
