@@ -4,12 +4,14 @@ import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
 import * as yup from 'yup';
 import { useMediaQuery } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -192,6 +194,17 @@ const Component = () => {
                         />
                     </form>
                 </FormProvider>
+                <SocialLogin className={styles.btnGoogle}>
+                    <CustomImage
+                        src="/images/logo_google.svg"
+                        width="28px"
+                        height="27px"
+                    />
+                    <CustomTypography
+                        nameSpace="common"
+                        translation="buttons.loginGoggle"
+                    />
+                </SocialLogin>
             </CenteredPaper>
             <EmailResetPasswordDialog />
             <UserBlockedDialog />

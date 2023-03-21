@@ -1,4 +1,5 @@
 @import "../../styles/rem";
+@import "../../styles/variables.scss";
 
 .wrapper {
   width: rem(472px);
@@ -39,6 +40,16 @@
 .signInBtn {
   margin: rem(50px) 0 0 0;
   padding: rem(16px) 0;
+}
+.btnGoogle{
+  cursor: pointer;
+  transition: box-shadow 200ms linear;
+  padding: rem(8px 16px);
+  height: rem(56px);
+  display: flex;
+  align-items: center;
+  gap: rem(8px);
+  margin-top: rem(16px);
 }
 
 .forgotPass {
