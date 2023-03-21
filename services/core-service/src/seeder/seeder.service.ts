@@ -156,7 +156,7 @@ export class SeederService {
 
     await this.commonTemplatesService.createCommonTemplate({
       data: {
-        author: admin.id,
+        author: admin._id,
         draft: false,
         isPublic: true,
         maxParticipants: 4,
