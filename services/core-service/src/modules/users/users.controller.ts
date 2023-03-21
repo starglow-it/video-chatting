@@ -578,9 +578,15 @@ export class UsersController {
 
 
   @MessagePattern({ cmd: UserBrokerPatterns.CreateUserWithoutLogin })
-  async createUserWithoutlogin() {
+  async createUserWithoutlogin({uuid}) {
+    const existUser = await this.usersService.findUser({
+      query: {
+        email: uuid
+      }
+    });
+    if(existUser) throw new RpcException({message: 'user existed', ctx: USERS_SERVICE});
     const user = await this.usersService.createUser({
-      email: 'text',
+      email: uuid,
       password: 'text',
       role: UserRoles.Anonymous,
       isConfirmed: true,
@@ -589,7 +595,10 @@ export class UsersController {
       position: '',
       contactEmail: '',
     });
-    return user;
+    return plainToInstance(CommonUserDTO, user, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
   }
 
   @MessagePattern({ cmd: AuthBrokerPatterns.LoginUserByEmail })
@@ -601,6 +610,7 @@ export class UsersController {
     if (!user) {
       throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
     }
+
 
     return plainToInstance(CommonUserDTO, user, {
       excludeExtraneousValues: true,

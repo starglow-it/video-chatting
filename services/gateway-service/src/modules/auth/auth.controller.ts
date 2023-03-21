@@ -53,6 +53,7 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
+import { CreateUserFreeRequest } from 'src/dtos/requests/create-user-free';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -105,8 +106,13 @@ export class AuthController {
     type: CommonResponseDto,
     description: 'User create successful',
   })
-  async createAccountWithoutLogin(){
-    return await this.coreService.createUserWithoutLogin();
+  async createAccountWithoutLogin(@Body() {uuid}: CreateUserFreeRequest) {
+    try{
+      return await this.coreService.createUserWithoutLogin(uuid);
+    }
+    catch(err){
+      throw new BadRequestException(err);
+    }
   }
 
 

@@ -182,9 +182,9 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async createUserWithoutLogin(){
+  async createUserWithoutLogin(uuid: string){
     const pattern = { cmd: UserBrokerPatterns.CreateUserWithoutLogin }; 
-    return await this.client.send(pattern, {}).toPromise();
+    return await this.client.send(pattern, {uuid}).toPromise();
   }
 
   async uploadUserTemplateFile(payload) {
