@@ -1,26 +1,27 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { parseCookies } from 'nookies';
 import { ApiParams, FailedResult, SuccessResult } from '../../store/types';
 
 export async function sendRequest<Result, Error>(
-    options: ApiParams & AxiosRequestConfig = {},
+    options: Partial<ApiParams> & AxiosRequestConfig = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
     const { url } = options;
-
     const { token, ...restOptions } = options;
-
+    const headers = { ...restOptions.headers };
     if (token) {
-        restOptions.headers = {
-            ...restOptions.headers,
-            Authorization: `Bearer ${token}`,
-        };
+        headers.Authorization = `Bearer ${token}`;
     }
 
+    const { userWithoutLoginId } = parseCookies();
+    if (userWithoutLoginId) {
+        headers.userWithoutLoginId = userWithoutLoginId;
+    }
     try {
         const response = await axios.request<{
             result: Result;
             success: boolean;
             statusCode: number;
-        }>({ url, ...restOptions });
+        }>({ url, headers, ...restOptions });
 
         return {
             result: response?.data?.result ?? response.data,

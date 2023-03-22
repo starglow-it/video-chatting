@@ -1,82 +1,48 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import App from 'next/app';
-import type {
-	AppContext, AppProps
-} from 'next/app';
+import type { AppContext, AppProps } from 'next/app';
 import Head from 'next/head';
 import getConfig from 'next/config';
-import {
-	withHydrate
-} from 'effector-next';
-import {
-	hydrate
-} from 'effector';
-import {
-	Provider
-} from 'effector-react/ssr';
-import {
-	CacheProvider, EmotionCache
-} from '@emotion/react';
-import {
-	Layout
-} from '@components/Layout/Layout';
+import { withHydrate } from 'effector-next';
+import { hydrate } from 'effector';
+import { Provider } from 'effector-react/ssr';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import { Layout } from '@components/Layout/Layout';
 
 // hooks
-import {
-	useScope
-} from '@hooks/useScope';
+import { useScope } from '@hooks/useScope';
 
-import {
-	ThemeProvider
-} from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
 
-import {
-	ToastsNotifications
-} from '@components/ToastsNotifications/ToastsNotifications';
+import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
 
 import {
-	$profileStore,
-	$authStore,
-	checkAuthFx,
-	$productsStore,
-	$subscriptionStore,
-	getStripeProductsFx,
-	getSubscriptionFx,
+    $profileStore,
+    $authStore,
+    checkAuthFx,
+    $productsStore,
+    $subscriptionStore,
+    getStripeProductsFx,
+    getSubscriptionFx,
 } from '../src/store';
 
-import {
-	redirectTo
-} from '../src/helpers/http/redirectTo';
+import { redirectTo } from '../src/helpers/http/redirectTo';
 import createEmotionCache from '../src/createEmotionCache';
 import globalStyles from '../src/app.styles';
-import {
-	appWithTranslation
-} from '../i18n';
+import { appWithTranslation } from '../i18n';
 import '../src/validation';
 
 // themes
-import {
-	baseTheme
-} from '../src/themes/base';
-import {
-	typographyTheme
-} from '../src/themes/typography';
-import {
-	componentsTheme
-} from '../src/themes/components';
-import {
-	uiTheme
-} from '../src/themes/ui';
+import { baseTheme } from '../src/themes/base';
+import { typographyTheme } from '../src/themes/typography';
+import { componentsTheme } from '../src/themes/components';
+import { uiTheme } from '../src/themes/ui';
 
 // stores
-import {
-	initialProfileState
-} from '../src/store/profile/profile/const';
-import {
-	rootDomain
-} from '../src/store/domains';
+import { initialProfileState } from '../src/store/profile/profile/const';
+import { rootDomain } from '../src/store/domains';
 import {
     dashboardRoute,
     loginRoute,
@@ -84,49 +50,51 @@ import {
     setUpTemplateRoute,
     welcomeRoute,
 } from '../src/const/client-routes';
-import {MeetingFinishedDialog} from "@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog";
+import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog';
+import { parseCookies } from 'nookies';
 
-const {
-	publicRuntimeConfig
-} = getConfig();
+const { publicRuntimeConfig } = getConfig();
 
 const clientSideEmotionCache = createEmotionCache();
 
 const enhance = withHydrate();
 
 const REGISTER_REDIRECT_ROUTES: string[] = [
-	loginRoute,
-	registerRoute,
-	welcomeRoute,
+    loginRoute,
+    registerRoute,
+    welcomeRoute,
 ];
 const LOGIN_REDIRECT_ROUTES: string[] = [dashboardRoute];
 
 const CustomApp = ({
-	Component,
-	pageProps,
-	emotionCache = clientSideEmotionCache,
+    Component,
+    pageProps,
+    emotionCache = clientSideEmotionCache,
 }: AppProps & { emotionCache: EmotionCache }): JSX.Element => {
-	const scope = useScope(rootDomain, pageProps.initialState);
+    const scope = useScope(rootDomain, pageProps.initialState);
 
-	if (pageProps.initialState) {
-		hydrate(rootDomain, {
-			values: pageProps.initialState,
-		});
-	}
+    if (pageProps.initialState) {
+        hydrate(rootDomain, {
+            values: pageProps.initialState,
+        });
+    }
 
     useEffect(() => {
-        window.history.scrollRestoration = "manual";
+        window.history.scrollRestoration = 'manual';
     }, []);
 
     useEffect(() => {
-        window.history.scrollRestoration = "manual";
+        window.history.scrollRestoration = 'manual';
     }, []);
 
     return (
         <CacheProvider value={emotionCache}>
             <Head>
                 <title>{publicRuntimeConfig.applicationName}</title>
-                <meta name="viewport" content="initial-scale=1, width=device-width" />
+                <meta
+                    name="viewport"
+                    content="initial-scale=1, width=device-width"
+                />
             </Head>
             <Provider value={scope}>
                 <ThemeProvider theme={baseTheme}>
@@ -139,7 +107,7 @@ const CustomApp = ({
                                     <Component {...pageProps} />
                                 </Layout>
                                 <ToastsNotifications />
-								<MeetingFinishedDialog />
+                                <MeetingFinishedDialog />
                             </ThemeProvider>
                         </ThemeProvider>
                     </ThemeProvider>
@@ -150,52 +118,67 @@ const CustomApp = ({
 };
 
 CustomApp.getInitialProps = async (context: AppContext) => {
-	const props = await App.getInitialProps(context);
+    const props = await App.getInitialProps(context);
 
-	const data = await checkAuthFx(context.ctx);
+    const pathName = context?.ctx?.pathname || '';
 
-	const pathName = context?.ctx?.pathname || '';
+    const { userWithoutLoginId } = parseCookies();
 
-	const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
-		new RegExp(route).test(pathName),
-	);
+    if (userWithoutLoginId) {
+        props.pageProps.initialState = {
+            [`${$productsStore.sid}`]: [],
+            [`${$subscriptionStore.sid}`]: {},
+        };
+    } else {
+        const data = await checkAuthFx(context.ctx);
 
-	const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
-		new RegExp(route).test(pathName),
-	);
+        const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
+            new RegExp(route).test(pathName),
+        );
 
-    if (data?.user?.registerTemplate && !pathName.includes(setUpTemplateRoute)) {
-        redirectTo(context?.ctx ?? null, `${setUpTemplateRoute}/${data?.user?.registerTemplate}`);
-    } else if (data.isAuthenticated && isRegisterRedirectRoute) {
-        redirectTo(context?.ctx ?? null, dashboardRoute);
-    } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
-        redirectTo(context?.ctx ?? null, loginRoute);
+        const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
+            new RegExp(route).test(pathName),
+        );
+
+        if (
+            data?.user?.registerTemplate &&
+            !pathName.includes(setUpTemplateRoute)
+        ) {
+            redirectTo(
+                context?.ctx ?? null,
+                `${setUpTemplateRoute}/${data?.user?.registerTemplate}`,
+            );
+        } else if (data.isAuthenticated && isRegisterRedirectRoute) {
+            redirectTo(context?.ctx ?? null, dashboardRoute);
+        } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
+            redirectTo(context?.ctx ?? null, loginRoute);
+        }
+
+        let products = [];
+        let subscription = {};
+
+        if (pathName.includes('dashboard')) {
+            products = await getStripeProductsFx({ ctx: context?.ctx });
+            subscription = await getSubscriptionFx({
+                subscriptionId: data?.user?.stripeSubscriptionId,
+                ctx: context?.ctx,
+            });
+        }
+
+        props.pageProps.initialState = {
+            [`${$profileStore.sid}`]: {
+                ...initialProfileState,
+                ...data.user,
+            },
+            [`${$authStore.sid}`]: {
+                isAuthenticated: data.isAuthenticated,
+            },
+            [`${$productsStore.sid}`]: products,
+            [`${$subscriptionStore.sid}`]: subscription,
+        };
     }
 
-    let products = [];
-    let subscription = {};
-
-    if (pathName.includes('dashboard')) {
-        products = await getStripeProductsFx({ ctx: context?.ctx });
-        subscription = await getSubscriptionFx({
-            subscriptionId: data?.user?.stripeSubscriptionId,
-            ctx: context?.ctx,
-        });
-    }
-
-	props.pageProps.initialState = {
-		[`${$profileStore.sid}`]: {
-			...initialProfileState,
-			...data.user,
-		},
-		[`${$authStore.sid}`]: {
-			isAuthenticated: data.isAuthenticated,
-		},
-		[`${$productsStore.sid}`]: products,
-		[`${$subscriptionStore.sid}`]: subscription,
-	};
-
-	return props;
+    return props;
 };
 
 export default appWithTranslation(enhance(CustomApp));
