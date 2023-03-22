@@ -703,6 +703,7 @@ importers:
       '@types/jest': 29.0.3
       '@types/multer': 1.4.7
       '@types/node': 18.7.18
+      '@types/passport-google-oauth20': ^2.0.11
       '@types/passport-jwt': 3.0.6
       '@types/supertest': 2.0.12
       '@types/uuid': ^8.3.4
@@ -726,6 +727,7 @@ importers:
       npm-check: 6.0.1
       npm-check-updates: 16.3.4
       passport: 0.6.0
+      passport-google-oauth20: ^2.0.0
       passport-jwt: 4.0.0
       passport-local: 1.0.0
       prettier: 2.7.1
@@ -768,6 +770,7 @@ importers:
       npm-check: 6.0.1
       npm-check-updates: 16.3.4
       passport: 0.6.0
+      passport-google-oauth20: 2.0.0
       passport-jwt: 4.0.0
       passport-local: 1.0.0
       reflect-metadata: 0.1.13
@@ -788,6 +791,7 @@ importers:
       '@types/jest': 29.0.3
       '@types/multer': 1.4.7
       '@types/node': 18.7.18
+      '@types/passport-google-oauth20': 2.0.11
       '@types/passport-jwt': 3.0.6
       '@types/supertest': 2.0.12
       '@typescript-eslint/eslint-plugin': 5.37.0_22c5fnooleyfkzrkkgdmel5kmi
@@ -3340,7 +3344,6 @@ packages:
       rxjs: 7.5.6
       tslib: 2.4.0
       uuid: 8.3.2
-    dev: false
 
   /@nestjs/common/9.0.11_aniaiezvefq2fqnommj6u5l4zi:
     resolution: {integrity: sha512-oYLIcOal3QOwcqt6goXovRNg8ZkalyOMjH0oYYzfJLrait6P7c6nAeWHu4qFDThY7GoZHEanLgji1qlqVEW09g==}
@@ -3387,6 +3390,7 @@ packages:
       rxjs: 7.5.6
       tslib: 2.4.0
       uuid: 8.3.2
+    dev: false
 
   /@nestjs/config/2.2.0_3mdbamkp7cmelffjfexsjo7tau:
     resolution: {integrity: sha512-78Eg6oMbCy3D/YvqeiGBTOWei1Jwi3f2pSIZcZ1QxY67kYsJzTRTkwRT8Iv30DbK0sGKc1mcloDLD5UXgZAZtg==}
@@ -3486,7 +3490,7 @@ packages:
       '@nestjs/websockets':
         optional: true
     dependencies:
-      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/microservices': 9.0.11_6algbrf45rflthf6bldg6jcxr4
       '@nestjs/platform-express': 9.0.11_khr6mt6ojlxbw7bo55fknouh34
       '@nuxtjs/opencollective': 0.3.2
@@ -3506,7 +3510,7 @@ packages:
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0
     dependencies:
-      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       '@types/jsonwebtoken': 8.5.8
       jsonwebtoken: 8.5.1
     dev: false
@@ -3566,7 +3570,7 @@ packages:
       nats:
         optional: true
     dependencies:
-      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/core': 9.0.11_kj7rymkcr5lkprk6tswpsa5dxa
       amqp-connection-manager: 4.1.6_amqplib@0.10.3
       amqplib: 0.10.3
@@ -3644,7 +3648,7 @@ packages:
       '@nestjs/common': ^8.0.0 || ^9.0.0
       passport: ^0.4.0 || ^0.5.0 || ^0.6.0
     dependencies:
-      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       passport: 0.6.0
     dev: false
 
@@ -3654,7 +3658,7 @@ packages:
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
     dependencies:
-      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/core': 9.0.11_kj7rymkcr5lkprk6tswpsa5dxa
       body-parser: 1.20.0
       cors: 2.8.5
@@ -3763,7 +3767,7 @@ packages:
       '@nestjs/platform-express':
         optional: true
     dependencies:
-      '@nestjs/common': 9.0.11_j5hagqx4mwzscud4kyjdvubauy
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/core': 9.0.11_kj7rymkcr5lkprk6tswpsa5dxa
       '@nestjs/microservices': 9.0.11_6algbrf45rflthf6bldg6jcxr4
       '@nestjs/platform-express': 9.0.11_khr6mt6ojlxbw7bo55fknouh34
@@ -4699,8 +4703,22 @@ packages:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: false
 
+  /@types/oauth/0.9.1:
+    resolution: {integrity: sha512-a1iY62/a3yhZ7qH7cNUsxoI3U/0Fe9+RnuFrpTKr+0WVOzbKlSLojShCKe20aOD1Sppv+i8Zlq0pLDuTJnwS4A==}
+    dependencies:
+      '@types/node': 18.7.18
+    dev: true
+
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
+
+  /@types/passport-google-oauth20/2.0.11:
+    resolution: {integrity: sha512-9XMT1GfwhZL7UQEiCepLef55RNPHkbrCtsU7rsWPTEOsmu5qVIW8nSemtB4p+P24CuOhA+IKkv8LsPThYghGww==}
+    dependencies:
+      '@types/express': 4.17.14
+      '@types/passport': 1.0.11
+      '@types/passport-oauth2': 1.4.12
+    dev: true
 
   /@types/passport-jwt/3.0.6:
     resolution: {integrity: sha512-cmAAMIRTaEwpqxlrZyiEY9kdibk94gP5KTF8AT1Ra4rWNZYHNMreqhKUEeC5WJtuN5SJZjPQmV+XO2P5PlnvNQ==}
@@ -4716,6 +4734,14 @@ packages:
       '@types/express': 4.17.14
       '@types/passport': 1.0.11
       '@types/passport-strategy': 0.2.35
+    dev: true
+
+  /@types/passport-oauth2/1.4.12:
+    resolution: {integrity: sha512-RZg6cYTyEGinrZn/7REYQds6zrTxoBorX1/fdaz5UHzkG8xdFE7QQxkJagCr2ETzGII58FAFDmnmbTUVMrltNA==}
+    dependencies:
+      '@types/express': 4.17.14
+      '@types/oauth': 0.9.1
+      '@types/passport': 1.0.11
     dev: true
 
   /@types/passport-strategy/0.2.35:
@@ -6361,6 +6387,11 @@ packages:
     engines: {node: ^4.5.0 || >= 5.9}
     dev: false
 
+  /base64url/3.0.1:
+    resolution: {integrity: sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==}
+    engines: {node: '>=6.0.0'}
+    dev: false
+
   /basic-auth/2.0.1:
     resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
     engines: {node: '>= 0.8'}
@@ -6786,14 +6817,12 @@ packages:
 
   /class-transformer/0.5.1:
     resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
-    dev: false
 
   /class-validator/0.13.2:
     resolution: {integrity: sha512-yBUcQy07FPlGzUjoLuUfIOXzgynnQPPruyK1Ge2B74k9ROwnle1E+NxLWnUv5OLU8hA/qL5leAE9XnXq3byaBw==}
     dependencies:
       libphonenumber-js: 1.10.13
       validator: 13.7.0
-    dev: false
 
   /classnames/2.3.2:
     resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
@@ -11100,7 +11129,6 @@ packages:
 
   /libphonenumber-js/1.10.13:
     resolution: {integrity: sha512-b74iyWmwb4GprAUPjPkJ11GTC7KX4Pd3onpJfKxYyY8y9Rbb4ERY47LvCMEDM09WD3thiLDMXtkfDK/AX+zT7Q==}
-    dev: false
 
   /lines-and-columns/1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -11770,7 +11798,7 @@ packages:
       '@nestjs/core': '>=6.7.0'
       aws-sdk: '>=2.0.0'
     dependencies:
-      '@nestjs/common': 9.0.11_aniaiezvefq2fqnommj6u5l4zi
+      '@nestjs/common': 9.0.11_allg6cauirbqzgqcmexy2wdnoq
       '@nestjs/core': 9.0.11_kj7rymkcr5lkprk6tswpsa5dxa
       aws-sdk: 2.1218.0
     dev: false
@@ -12565,6 +12593,10 @@ packages:
       yargs-parser: 21.0.1
     dev: true
 
+  /oauth/0.9.15:
+    resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
+    dev: false
+
   /object-assign/4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
@@ -12895,6 +12927,13 @@ packages:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
 
+  /passport-google-oauth20/2.0.0:
+    resolution: {integrity: sha512-KSk6IJ15RoxuGq7D1UKK/8qKhNfzbLeLrG3gkLZ7p4A6DBCcv7xpyQwuXtWdpyR0+E0mwkpjY1VfPOhxQrKzdQ==}
+    engines: {node: '>= 0.4.0'}
+    dependencies:
+      passport-oauth2: 1.7.0
+    dev: false
+
   /passport-jwt/4.0.0:
     resolution: {integrity: sha512-BwC0n2GP/1hMVjR4QpnvqA61TxenUMlmfNjYNgK0ZAs0HK4SOQkHcSv4L328blNTLtHq7DbmvyNJiH+bn6C5Mg==}
     dependencies:
@@ -12907,6 +12946,17 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       passport-strategy: 1.0.0
+    dev: false
+
+  /passport-oauth2/1.7.0:
+    resolution: {integrity: sha512-j2gf34szdTF2Onw3+76alNnaAExlUmHvkc7cL+cmaS5NzHzDP/BvFHJruueQ9XAeNOdpI+CH+PWid8RA7KCwAQ==}
+    engines: {node: '>= 0.4.0'}
+    dependencies:
+      base64url: 3.0.1
+      oauth: 0.9.15
+      passport-strategy: 1.0.0
+      uid2: 0.0.4
+      utils-merge: 1.0.1
     dev: false
 
   /passport-strategy/1.0.0:
@@ -15328,6 +15378,10 @@ packages:
     resolution: {integrity: sha512-00y/AXhx0/SsnI51fTc0rLRmafiGOM4/O+ny10Ps7f+j/b8p/ZY11ytMgznXkOVo4GQ+KwQG5UQLkLGirsACRg==}
     dev: false
 
+  /uid2/0.0.4:
+    resolution: {integrity: sha512-IevTus0SbGwQzYh3+fRsAMTVVPOoIVufzacXcHPmdlle1jUpq7BRL+mw3dgeLanvGZdwwbWhRV6XrcFNdBmjWA==}
+    dev: false
+
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
     dependencies:
@@ -15570,7 +15624,6 @@ packages:
   /validator/13.7.0:
     resolution: {integrity: sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==}
     engines: {node: '>= 0.10'}
-    dev: false
 
   /vary/1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}

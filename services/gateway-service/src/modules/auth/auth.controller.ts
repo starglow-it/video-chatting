@@ -9,6 +9,8 @@ import {
   Get,
   Put,
   Delete,
+  Req,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -55,6 +57,8 @@ import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
 import { CreateUserFreeRequest } from 'src/dtos/requests/create-user-free';
 import { v4 as uuidv4 } from 'uuid';
+import { GoogleAuthGuard } from 'src/guards/google.guard';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -268,6 +272,37 @@ export class AuthController {
     }
   }
 
+  @UseGuards(GoogleAuthGuard)
+  @Get('/login-google')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'User logged in',
+  })
+  async loginWithGoogle(
+    @Req() req
+  ): Promise<any> {
+  }
+
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('/google-redirect')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'User logged in',
+  })
+  async googleAuthRedirect(
+    @Req() req,
+    @Res() res
+  ): Promise<any> {
+    return res.json({
+      ...req.user
+    });
+  }
+
+
+
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
@@ -306,7 +341,9 @@ export class AuthController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
+
+
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/me')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Check Auth' })

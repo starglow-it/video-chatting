@@ -160,9 +160,10 @@ export class SeederService {
         draft: false,
         isPublic: true,
         maxParticipants: 4,
-        description: 'global room',
+        description: 'Global Room',
         name: 'Global Theliveoffice',
         isAcceptNoLogin: true,
+        url: 'https://img.freepik.com/free-vector/realistic-blurred-spring-background_52683-55622.jpg'
       }
     });
   }

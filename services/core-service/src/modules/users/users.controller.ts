@@ -584,7 +584,7 @@ export class UsersController {
       password: 'text',
       role: UserRoles.Anonymous,
       isConfirmed: true,
-      fullName: '',
+      fullName: 'Global User',
       companyName: '',
       position: '',
       contactEmail: '',
