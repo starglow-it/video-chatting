@@ -70,14 +70,14 @@ import { GoogleStrategy } from 'src/strategy/google.strategy';
   providers: [
     AuthService,
     LocalStrategy,
-    {
-      provide: 'GOOGLE_AUTH',
-      inject: [ConfigClientService],
-      useFactory: async (config: ConfigClientService) => {
-        const configClient = await config.getAll();
-        return new GoogleStrategy(configClient);
-      }
-    }
+    // {
+    //   provide: 'GOOGLE_AUTH',
+    //   inject: [ConfigClientService],
+    //   useFactory: async (config: ConfigClientService) => {
+    //     const configClient = await config.getAll();
+    //     return new GoogleStrategy(configClient);
+    //   }
+    // }
   ],
   exports: [AuthService],
 })
