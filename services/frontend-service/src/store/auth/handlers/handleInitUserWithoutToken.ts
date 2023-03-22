@@ -1,11 +1,8 @@
 import { ErrorState } from 'shared-types';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from '../../../controllers/WebStorageController';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 import { Profile } from '../../types';
 import { initUserWithoutTokenUrl } from '../../../utils/urls';
+import { setUserWithoutTokenCookies } from '../../../helpers/http/setAuthCookies';
 
 export const handleInitUserWithoutToken = async () => {
     const response = await sendRequest<
@@ -16,10 +13,7 @@ export const handleInitUserWithoutToken = async () => {
     });
     const { result } = response;
     if (result?.user)
-        WebStorage.save({
-            key: StorageKeysEnum.userWithoutLoginId,
-            data: result?.user.id,
-        });
+        setUserWithoutTokenCookies(result?.user.id)
 
     if (response.success && response.result) {
         return {
