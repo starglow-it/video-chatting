@@ -9,6 +9,8 @@ import {
   Get,
   Put,
   Delete,
+  OnModuleInit,
+  OnApplicationBootstrap,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -53,15 +55,35 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
+import { GoogleAuthGuard } from 'src/guards/google.guard';
+import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.request';
+import { OAuth2Client } from 'google-auth-library';
+import { ConfigClientService } from 'src/services/config/config.service';
+import { CommonGoogleInfoDto } from 'src/dtos/response/common-google-info.dto';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
-export class AuthController {
+export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger();
   constructor(
     private authService: AuthService,
     private coreService: CoreService,
+    private configService: ConfigClientService
   ) {}
+
+  private client: OAuth2Client;
+  private googleClientId: string;
+  private googleSecret: string;
+
+
+  async onModuleInit() {
+    this.googleClientId = await this.configService.get<string>('googleClientId');
+    this.googleSecret = await this.configService.get<string>('googleSecret');
+  }
+
+  async onApplicationBootstrap() {
+    this.client = new OAuth2Client(this.googleClientId, this.googleSecret);
+  }
 
   @Post('/register')
   @ApiCreatedResponse({
@@ -351,4 +373,78 @@ export class AuthController {
       throw new BadRequestException(err);
     }
   }
+
+  //==================== GOOGLE AUTH =======================
+  // @UseGuards(GoogleAuthGuard)
+  @Get('/login-google')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonGoogleInfoDto,
+    description: 'User logged in',
+  })
+  async loginWithGoogle(
+  ): Promise<ResponseSumType<{googleClientId: string, googleSecret: string, callbackUrl: string}>> {
+    const callbackUrl = 'http://localhost:8000/google-redirect';
+    return {
+      success: true,
+      result: {
+        googleClientId: this.googleClientId,
+        googleSecret: this.googleSecret,
+        callbackUrl
+      }
+    }
+  }
+
+
+  // @UseGuards(GoogleAuthGuard)
+  @Post('/google-verify')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'User logged in',
+  })
+  async googleAuthRedirect(
+    @Body() body: VerifyGoogleAuthRequest
+  ): Promise<ResponseSumType<TokenPairWithUserType>> {
+    const ticket = await this.client.verifyIdToken({
+      idToken: body.token,
+      audience: this.googleSecret,
+    });
+    
+    const {email, name, picture} = ticket.getPayload();
+
+
+    const isUserExists = await this.coreService.checkIfUserExists({
+      email,
+    });
+
+    let user: ICommonUser;
+
+    
+    if (!isUserExists) {
+      user = await this.authService.createUserFromGoogleAccount({
+        password: 'default',
+        email,
+        picture,
+        name
+      });
+    }
+    else{
+      user = await this.coreService.findUserByEmail({
+        email,
+      });
+    }
+
+    if (user.isBlocked) {
+      throw new DataValidationException(USER_IS_BLOCKED);
+    }
+
+    const result = await this.authService.loginUser({email, password: ''});
+
+    return {
+      success: true,
+      result
+    }
+  }
+
 }

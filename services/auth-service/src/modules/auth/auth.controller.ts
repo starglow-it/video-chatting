@@ -13,6 +13,8 @@ import {
   TokenTypes,
   TokenPairWithUserType,
   ICommonUser,
+  CreateUserFromGoogleAccountPayload,
+  LoginTypes,
 } from 'shared-types';
 
 // services
@@ -110,6 +112,29 @@ export class AuthController {
     } catch (err) {
       throw new RpcException(err);
     }
+  }
+
+
+  @MessagePattern({ cmd: AuthBrokerPatterns.CreateUserFromGoogleAccount })
+  async createUserFromGoogleAccount(payload: CreateUserFromGoogleAccountPayload) {
+
+    const token = await this.authService.generateToken({
+      email: payload.email,
+      type: TokenTypes.Confirm,
+    });
+    const user = await this.coreService.createUser({
+      user: {...payload,loginType: LoginTypes.Google},
+      token
+    });
+
+    // await this.coreService.findUserByEmailAndUpdate({
+    //   email: user.email,
+    //   data: {
+    //     profileAvatar: payload.picture
+    //   }
+    // });
+
+    return user;
   }
 
   @MessagePattern({ cmd: AuthBrokerPatterns.LoginUser })
