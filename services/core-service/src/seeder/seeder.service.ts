@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 
 // shared
 import {
   LANGUAGES_TAGS,
   BUSINESS_CATEGORIES,
   monetizationStatisticsData,
+  TEMPLATES_SERVICE,
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
 
@@ -30,6 +31,15 @@ import {
 } from '../schemas/preview-image.schema';
 import { TranscodeService } from "../modules/transcode/transcode.service";
 import { executePromiseQueue } from "shared-utils";
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { plainToInstance } from 'class-transformer';
+import { CommonTemplateDTO } from 'src/dtos/common-template.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { withTransaction } from 'src/helpers/mongo/withTransaction';
+import { InjectS3 } from 'nestjs-s3';
+import { S3 } from 'aws-sdk';
+import { RpcException } from '@nestjs/microservices';
 
 // utils
 
@@ -48,9 +58,24 @@ export class SeederService {
     private monetizationStatisticService: MonetizationStatisticService,
     private roomsStatisticService: RoomsStatisticsService,
     private transcodeService: TranscodeService,
+    @InjectConnection() private connection: Connection,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
+    @InjectS3() private readonly s3: S3,
   ) { }
+
+  private vultrUploadBucket: string;
+  private vultrStorageHostname: string;
+
+
+  async onModuleInit() {
+    this.vultrUploadBucket = await this.configService.get<string>(
+      'vultrUploadBucket',
+    );
+    this.vultrStorageHostname = await this.configService.get<string>(
+      'vultrStorageHostname',
+    );
+  }
 
   async seedBusinessCategories(): Promise<void> {
     const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
@@ -140,12 +165,49 @@ export class SeederService {
     }
   }
 
+
+  async updateTemplateFile(data: { url: string; id: string; mimeType: string }){
+    try {
+      return withTransaction(this.connection, async () => {
+        const { url, id, mimeType } = data;
+
+        const previewImages = await this.commonTemplatesService.generatePreviews({
+          url,
+          id,
+          mimeType,
+        });
+
+        const imageIds = previewImages.map((image) => image._id);
+
+        await this.commonTemplatesService.updateCommonTemplate({
+          query: {
+            _id: id,
+          },
+          data: {
+            templateType: mimeType.includes('image') ? 'image' : 'video',
+            draftPreviewUrls: imageIds,
+            draftUrl: url,
+          },
+        });
+
+        return;
+      });
+    } catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE,
+      });
+    }
+  }
+
   //TODO: Seed create global common template
   async seedCreateGlobalCommonTemplate() {
     const adminEmail = await this.configService.get<string>('adminEmail');
     const admin = await this.usersService.findUser({
       query: { email: adminEmail },
     });
+
+    const buf = readFileSync(join(process.cwd(), './src/public/clouds_background.webp'));
 
     const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({
       query: {
@@ -154,7 +216,8 @@ export class SeederService {
     });
     if (globalCommonTemplate) return;
 
-    await this.commonTemplatesService.createCommonTemplate({
+
+    const newCommonTemplate = plainToInstance(CommonTemplateDTO, await this.commonTemplatesService.createCommonTemplate({
       data: {
         author: admin._id,
         draft: false,
@@ -163,8 +226,24 @@ export class SeederService {
         description: 'Global Room',
         name: 'Global Theliveoffice',
         isAcceptNoLogin: true,
-        url: 'https://img.freepik.com/free-vector/realistic-blurred-spring-background_52683-55622.jpg'
       }
+    }), {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
+
+    //upload image to vutrl
+    const uploadKey = `templates/videos/${newCommonTemplate.id}/${uuidv4()}.webp`;
+    const url = await this.awsService.uploadFile(
+      buf,
+      uploadKey,
+    );
+
+    //update url to temlate
+    await this.updateTemplateFile({
+      url,
+      id: newCommonTemplate.id.toString(),
+      mimeType: 'image/webp',
     });
   }
 

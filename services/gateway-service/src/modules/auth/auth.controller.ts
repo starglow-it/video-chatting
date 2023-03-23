@@ -55,7 +55,6 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
-import { CreateUserFreeRequest } from 'src/dtos/requests/create-user-free';
 import { v4 as uuidv4 } from 'uuid';
 import { GoogleAuthGuard } from 'src/guards/google.guard';
 import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
@@ -67,7 +66,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private coreService: CoreService,
-  ) {}
+  ) { }
 
   @Post('/register')
   @ApiCreatedResponse({
@@ -114,13 +113,13 @@ export class AuthController {
   async createAccountWithoutLogin() {
     try{
       const uuid = uuidv4() + (new Date()).getTime();
-      const user =  await this.coreService.createUserWithoutLogin(uuid);
-      
+      const user = await this.coreService.createUserWithoutLogin(uuid);
+
       const globalCommonTemplate = await this.coreService.findCommonTemplateByTemplate({
         isAcceptNoLogin: true
       });
-      
-      if(!globalCommonTemplate) return;
+
+      if (!globalCommonTemplate) return;
       const userTemplate = await this.coreService.addTemplateToUser({
         templateId: globalCommonTemplate.id,
         userId: user.id
@@ -132,7 +131,7 @@ export class AuthController {
       }
 
     }
-    catch(err){
+    catch (err) {
       throw new BadRequestException(err);
     }
   }
@@ -146,7 +145,7 @@ export class AuthController {
   })
   async confirmRegistration(
     @Body() body: TokenRequest,
-  ): Promise<ResponseSumType<void>> {
+  ): Promise<ResponseSumType<any>> {
     try {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
         body.token,
