@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
-import {useRouter} from "next/router";
+import { useRouter } from 'next/router';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -26,14 +26,21 @@ import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // stores
-import { $isGoodsVisible, appDialogsApi, toggleIsGoodsVisible } from '../../../store';
+import {
+    $authStore,
+    $isGoodsVisible,
+    appDialogsApi,
+    toggleIsGoodsVisible,
+} from '../../../store';
 import {
     $isMeetingHostStore,
     $isScreenSharingStore,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
-    $meetingTemplateStore, disconnectFromVideoChatEvent, sendLeaveMeetingSocketEvent,
+    $meetingTemplateStore,
+    disconnectFromVideoChatEvent,
+    sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
@@ -45,7 +52,11 @@ import { AppDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
-import {clientRoutes, dashboardRoute} from "../../../const/client-routes";
+import {
+    clientRoutes,
+    dashboardRoute,
+    loginRoute,
+} from '../../../const/client-routes';
 
 const Component = () => {
     const router = useRouter();
@@ -57,10 +68,12 @@ const Component = () => {
     const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
+    const { isWithoutAuthen } = useStore($authStore);
 
     const isSharingScreenActive = localUser.id === meeting.sharingUserId;
 
-    const isAbleToToggleSharing = isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
+    const isAbleToToggleSharing =
+        isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
 
     const handleOpenDeviceSettings = useCallback(() => {
         appDialogsApi.openDialog({
@@ -76,9 +89,13 @@ const Component = () => {
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
-        await router.push(localUser.isGenerated
-            ? clientRoutes.welcomeRoute
-            : dashboardRoute
+
+        await router.push(
+            !isWithoutAuthen
+                ? localUser.isGenerated
+                    ? clientRoutes.welcomeRoute
+                    : dashboardRoute
+                : loginRoute,
         );
     }, []);
 
@@ -88,7 +105,12 @@ const Component = () => {
         } else if (isMeetingHost || isSharingScreenActive) {
             stopScreenSharing();
         }
-    }, [isSharingScreenActive, meeting.sharingUserId, isMeetingHost, localUser.id]);
+    }, [
+        isSharingScreenActive,
+        meeting.sharingUserId,
+        isMeetingHost,
+        localUser.id,
+    ]);
 
     const handleToggleMic = useCallback(() => {
         if (isMeetingConnected) {
@@ -101,7 +123,9 @@ const Component = () => {
         }
     }, [isMeetingConnected, isMicActive, isCamActive]);
 
-    const sharingAction = isAbleToToggleSharing ? handleToggleSharing : undefined;
+    const sharingAction = isAbleToToggleSharing
+        ? handleToggleSharing
+        : undefined;
 
     const tooltipTranslation = useMemo(() => {
         if (isAbleToToggleSharing) {
@@ -115,11 +139,15 @@ const Component = () => {
 
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-            <ConditionalRender condition={Boolean(meetingTemplate?.links?.length)}>
+            <ConditionalRender
+                condition={Boolean(meetingTemplate?.links?.length)}
+            >
                 <CustomTooltip
                     classes={{ tooltip: styles.tooltip }}
                     nameSpace="meeting"
-                    translation={isGoodsVisible ? 'links.offGoods' : 'links.onGoods'}
+                    translation={
+                        isGoodsVisible ? 'links.offGoods' : 'links.onGoods'
+                    }
                 >
                     <CustomPaper
                         variant="black-glass"
@@ -138,12 +166,24 @@ const Component = () => {
                 </CustomTooltip>
             </ConditionalRender>
             <ConditionalRender condition={isMobile}>
-                <CustomPaper variant="black-glass" borderRadius={8} className={styles.deviceButton}>
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
+                >
                     <ActionButton
                         variant="transparentBlack"
                         onAction={handleToggleMic}
-                        className={clsx(styles.deviceButton, { [styles.inactive]: !isMicActive })}
-                        Icon={<MicIcon isActive={isMicActive} width="22px" height="22px" />}
+                        className={clsx(styles.deviceButton, {
+                            [styles.inactive]: !isMicActive,
+                        })}
+                        Icon={
+                            <MicIcon
+                                isActive={isMicActive}
+                                width="22px"
+                                height="22px"
+                            />
+                        }
                     />
                 </CustomPaper>
             </ConditionalRender>
@@ -162,8 +202,10 @@ const Component = () => {
                             variant="transparentBlack"
                             onAction={sharingAction}
                             className={clsx(styles.sharingButton, {
-                                [styles.active]: isSharingActive && isAbleToToggleSharing,
-                                [styles.noRights]: isSharingActive && !isAbleToToggleSharing,
+                                [styles.active]:
+                                    isSharingActive && isAbleToToggleSharing,
+                                [styles.noRights]:
+                                    isSharingActive && !isAbleToToggleSharing,
                             })}
                             Icon={<SharingIcon width="22px" height="22px" />}
                         />
@@ -176,7 +218,11 @@ const Component = () => {
             </ConditionalRender>
 
             <ConditionalRender condition={!isMobile}>
-                <CustomPaper variant="black-glass" borderRadius={8} className={styles.deviceButton}>
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
+                >
                     <ActionButton
                         variant="transparentBlack"
                         onAction={handleOpenDeviceSettings}

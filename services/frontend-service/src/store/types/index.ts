@@ -49,6 +49,7 @@ export type AuthUserState = {
     isAuthenticated: boolean;
     error?: ErrorState | null;
     user?: Profile;
+    isWithoutAuthen?: boolean;
 };
 
 export type LoginUserParams = {

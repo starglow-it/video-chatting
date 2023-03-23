@@ -120,8 +120,10 @@ CustomApp.getInitialProps = async (context: AppContext) => {
 
     const pathName = context?.ctx?.pathname || '';
 
-
     const data = await checkAuthFx(context.ctx);
+    
+    const registerTemplate = data?.user?.registerTemplate;
+    const isWithoutAuthen = data?.isWithoutAuthen;
 
     const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
         new RegExp(route).test(pathName),
@@ -130,19 +132,21 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
         new RegExp(route).test(pathName),
     );
+    const nextPageContext = context?.ctx ?? null;
 
-    if (
-        data?.user?.registerTemplate &&
-        !pathName.includes(setUpTemplateRoute)
-    ) {
-        redirectTo(
-            context?.ctx ?? null,
-            `${setUpTemplateRoute}/${data?.user?.registerTemplate}`,
-        );
-    } else if (data.isAuthenticated && isRegisterRedirectRoute) {
-        redirectTo(context?.ctx ?? null, dashboardRoute);
-    } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
-        redirectTo(context?.ctx ?? null, loginRoute);
+    if (isWithoutAuthen) {
+        if (isLoginRedirectRoutes) redirectTo(nextPageContext, loginRoute);
+    } else {
+        if (registerTemplate && !pathName.includes(setUpTemplateRoute)) {
+            redirectTo(
+                nextPageContext,
+                `${setUpTemplateRoute}/${registerTemplate}`,
+            );
+        } else if (data.isAuthenticated && isRegisterRedirectRoute) {
+            redirectTo(nextPageContext, dashboardRoute);
+        } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
+            redirectTo(nextPageContext, loginRoute);
+        }
     }
 
     let products = [];
@@ -163,6 +167,7 @@ CustomApp.getInitialProps = async (context: AppContext) => {
         },
         [`${$authStore.sid}`]: {
             isAuthenticated: data.isAuthenticated,
+            isWithoutAuthen: data.isWithoutAuthen
         },
         [`${$productsStore.sid}`]: products,
         [`${$subscriptionStore.sid}`]: subscription,
