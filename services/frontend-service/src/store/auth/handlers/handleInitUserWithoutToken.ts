@@ -10,10 +10,11 @@ export const handleInitUserWithoutToken = async () => {
         ErrorState
     >({
         ...initUserWithoutTokenUrl,
+        authRequest: true,
     });
     const { result } = response;
     if (result?.user)
-        setUserWithoutTokenCookies(result?.user.id)
+        setUserWithoutTokenCookies(result?.user.id, result?.userTemplateId);
 
     if (response.success && response.result) {
         return {

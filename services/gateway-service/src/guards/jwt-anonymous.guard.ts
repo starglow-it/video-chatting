@@ -25,7 +25,7 @@ import {
   
       const cookies = request['cookies'];
   
-  
+  console.log(request.headers)
       //Passing auth with user unlogin
       userWithoutLoginId = request.headers['userwithoutloginid'];
     

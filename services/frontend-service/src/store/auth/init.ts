@@ -56,12 +56,6 @@ sample({
     target: setUserCountryFx,
 });
 
-sample({
-    clock: initUserWithoutTokenFx.doneData,
-    filter: payload => payload.user,
-    target: setProfileEvent,
-});
-
 loginUserFx.doneData.watch(payload => {
     if (payload?.error?.message === USER_IS_BLOCKED.message) {
         appDialogsApi.openDialog({
@@ -77,7 +71,7 @@ logoutUserFx.doneData.watch(() => {
 
 initUserWithoutTokenFx.doneData.watch(async ({ user, userTemplateId }) => {
     if (!user || !userTemplateId) return;
-    await setProfileEvent({ user });
+    // await setProfileEvent({ user });
     const { template } = await createMeetingFx({
         templateId: userTemplateId,
     });

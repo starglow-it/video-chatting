@@ -1,16 +1,23 @@
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { useRouter } from 'next/router';
+import { parseCookies } from 'nookies';
 import { memo, useEffect } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { getClientMeetingUrl } from 'src/utils/urls';
 import { initUserWithoutTokenFx } from '../../store';
 import styles from './StartRoomWithoutToken.module.scss';
 
 const StartRoomWithoutTokenContainer = memo(() => {
-    useEffect( () => {
-        initUserWithoutTokenFx();
+    const router = useRouter();
+
+    useEffect(() => {
+        const { userWithoutLoginId, userTemplateId } = parseCookies();
+        if (!userWithoutLoginId) initUserWithoutTokenFx();
+        else router.push(getClientMeetingUrl(userTemplateId));
     }, []);
-    
+
     return (
         <CustomGrid
             container

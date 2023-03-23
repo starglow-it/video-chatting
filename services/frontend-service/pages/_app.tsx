@@ -17,6 +17,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
 
 import { ToastsNotifications } from '@components/ToastsNotifications/ToastsNotifications';
+import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog';
 
 import {
     $profileStore,
@@ -50,9 +51,6 @@ import {
     setUpTemplateRoute,
     welcomeRoute,
 } from '../src/const/client-routes';
-import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog';
-import { parseCookies } from 'nookies';
-
 const { publicRuntimeConfig } = getConfig();
 
 const clientSideEmotionCache = createEmotionCache();
@@ -122,61 +120,53 @@ CustomApp.getInitialProps = async (context: AppContext) => {
 
     const pathName = context?.ctx?.pathname || '';
 
-    const { userWithoutLoginId } = parseCookies();
 
-    if (userWithoutLoginId) {
-        props.pageProps.initialState = {
-            [`${$productsStore.sid}`]: [],
-            [`${$subscriptionStore.sid}`]: {},
-        };
-    } else {
-        const data = await checkAuthFx(context.ctx);
+    const data = await checkAuthFx(context.ctx);
 
-        const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
-            new RegExp(route).test(pathName),
+    const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
+        new RegExp(route).test(pathName),
+    );
+
+    const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
+        new RegExp(route).test(pathName),
+    );
+
+    if (
+        data?.user?.registerTemplate &&
+        !pathName.includes(setUpTemplateRoute)
+    ) {
+        redirectTo(
+            context?.ctx ?? null,
+            `${setUpTemplateRoute}/${data?.user?.registerTemplate}`,
         );
-
-        const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
-            new RegExp(route).test(pathName),
-        );
-
-        if (
-            data?.user?.registerTemplate &&
-            !pathName.includes(setUpTemplateRoute)
-        ) {
-            redirectTo(
-                context?.ctx ?? null,
-                `${setUpTemplateRoute}/${data?.user?.registerTemplate}`,
-            );
-        } else if (data.isAuthenticated && isRegisterRedirectRoute) {
-            redirectTo(context?.ctx ?? null, dashboardRoute);
-        } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
-            redirectTo(context?.ctx ?? null, loginRoute);
-        }
-
-        let products = [];
-        let subscription = {};
-
-        if (pathName.includes('dashboard')) {
-            products = await getStripeProductsFx({ ctx: context?.ctx });
-            subscription = await getSubscriptionFx({
-                subscriptionId: data?.user?.stripeSubscriptionId,
-                ctx: context?.ctx,
-            });
-        }
-
-        props.pageProps.initialState = {
-            [`${$profileStore.sid}`]: {
-                ...initialProfileState,
-                ...data.user,
-            },
-            [`${$authStore.sid}`]: {
-                isAuthenticated: data.isAuthenticated,
-            },
-            [`${$productsStore.sid}`]: products,
-            [`${$subscriptionStore.sid}`]: subscription,
-        };
+    } else if (data.isAuthenticated && isRegisterRedirectRoute) {
+        redirectTo(context?.ctx ?? null, dashboardRoute);
+    } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
+        redirectTo(context?.ctx ?? null, loginRoute);
     }
+
+    let products = [];
+    let subscription = {};
+
+    if (pathName.includes('dashboard')) {
+        products = await getStripeProductsFx({ ctx: context?.ctx });
+        subscription = await getSubscriptionFx({
+            subscriptionId: data?.user?.stripeSubscriptionId,
+            ctx: context?.ctx,
+        });
+    }
+
+    props.pageProps.initialState = {
+        [`${$profileStore.sid}`]: {
+            ...initialProfileState,
+            ...data.user,
+        },
+        [`${$authStore.sid}`]: {
+            isAuthenticated: data.isAuthenticated,
+        },
+        [`${$productsStore.sid}`]: products,
+        [`${$subscriptionStore.sid}`]: subscription,
+    };
 
     return props;
 };

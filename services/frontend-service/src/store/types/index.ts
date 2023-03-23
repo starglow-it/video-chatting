@@ -187,7 +187,7 @@ export type ApiError = {
 
 export type ApiParams = {
     token?: string;
-    userWithoutLoginId?: string;
+    ctx?: NextPageContext;
 };
 
 export type SuccessResult<Result> = {
