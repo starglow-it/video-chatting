@@ -3,6 +3,10 @@
     "label": "Sign in",
     "haveAccount": "Already have an account?"
   },
+  "register": {
+    "text": "Register",
+    "or": "or"
+  },
   "reset": {
     "title": "Reset password",
     "text": "Enter the email associated with your account\nand we'll send a link to reset your password",
