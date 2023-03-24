@@ -1,4 +1,6 @@
 #!bin/bash
 docker stop frontend-admin-service
 docker rm -f frontend-admin-service
-docker-compose up -d --build frontend-admin-service
+docker rmi -f local-frontend-admin-service
+docker volume prune
+docker-compose up --build -d frontend-admin-service
