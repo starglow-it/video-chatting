@@ -56,7 +56,8 @@
     "indent": "off",
     "destructuring-newline/object-property-newline": 1,
     "consistent-return": "off",
-    "jsx-a11y/media-has-caption": "off"
+    "jsx-a11y/media-has-caption": "off",
+    "no-lonely-if": "off"
   },
   "settings": {
     "react": {

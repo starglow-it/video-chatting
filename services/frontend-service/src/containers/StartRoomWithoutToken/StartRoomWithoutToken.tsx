@@ -5,7 +5,7 @@ import { memo, useEffect } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { getClientMeetingUrl } from 'src/utils/urls';
+import { getClientMeetingUrl } from '../../utils/urls';
 import { initUserWithoutTokenFx } from '../../store';
 import styles from './StartRoomWithoutToken.module.scss';
 
@@ -44,13 +44,13 @@ const StartRoomWithoutTokenContainer = memo(() => {
                 <CustomTypography
                     variant="h1"
                     nameSpace="welcome"
-                    translation="title"
+                    translation="settingUpRoom"
                 />
             </CustomGrid>
             <CustomTypography
                 variant="h4"
                 nameSpace="welcome"
-                translation="text"
+                translation="pleaseWaiting"
             />
         </CustomGrid>
     );
