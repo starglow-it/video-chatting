@@ -34,6 +34,7 @@ module.exports = withTM(
             baseEnvDomain: process.env.BASE_ENV_DOMAIN,
             supportEmail: process.env.SUPPORT_EMAIL,
             geolocationApiKey: process.env.GEOLOCATION_API_KEY,
+            googleClientId: process.env.GOOGLE_CLIENT_ID
         },
         reactStrictMode: false,
         typescript: {
