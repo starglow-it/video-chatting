@@ -399,6 +399,9 @@ export class CommonTemplatesController {
           session,
         });
 
+        console.log(restData);
+        
+
         const updateData: Parameters<
           typeof this.commonTemplatesService.updateCommonTemplate
         >[0]['data'] = restData;

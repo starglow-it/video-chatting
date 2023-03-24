@@ -166,10 +166,11 @@ export class SeederService {
   }
 
 
-  async updateTemplateFile(data: { url: string; id: string; mimeType: string }){
+  async updateGlobalTemplateFile(data: { url: string; id: string; mimeType: string }) {
     try {
       return withTransaction(this.connection, async () => {
         const { url, id, mimeType } = data;
+
 
         const previewImages = await this.commonTemplatesService.generatePreviews({
           url,
@@ -185,8 +186,8 @@ export class SeederService {
           },
           data: {
             templateType: mimeType.includes('image') ? 'image' : 'video',
-            draftPreviewUrls: imageIds,
-            draftUrl: url,
+            previewUrls: imageIds,
+            url,
           },
         });
 
@@ -207,22 +208,51 @@ export class SeederService {
       query: { email: adminEmail },
     });
 
-    const buf = readFileSync(join(process.cwd(), './src/public/clouds_background.webp'));
+    const buf = readFileSync(join(process.cwd(), './src/public/rm222batch5-kul-03.jpg'));
+
 
     const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({
       query: {
         isAcceptNoLogin: true
       }
     });
-    if (globalCommonTemplate) return;
+    if (globalCommonTemplate){
+      globalCommonTemplate.usersPosition = [{
+        bottom:
+          0.57,
+        left:
+          0.44
+      },
+      {
+        bottom:
+          0.05,
+        left:
+          0.44
+      },
+      {
+        bottom:
+          0.33,
+        left:
+          0.08
+      },
+      {
+        bottom:
+          0.3,
+        left:
+          0.82
+      }];
+      globalCommonTemplate.save();
+      return;
+    };
 
+    const maxParticipants = 4;
 
     const newCommonTemplate = plainToInstance(CommonTemplateDTO, await this.commonTemplatesService.createCommonTemplate({
       data: {
         author: admin._id,
         draft: false,
         isPublic: true,
-        maxParticipants: 4,
+        maxParticipants,
         description: 'Global Room',
         name: 'Global Theliveoffice',
         isAcceptNoLogin: true,
@@ -240,7 +270,7 @@ export class SeederService {
     );
 
     //update url to temlate
-    await this.updateTemplateFile({
+    await this.updateGlobalTemplateFile({
       url,
       id: newCommonTemplate.id.toString(),
       mimeType: 'image/webp',

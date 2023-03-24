@@ -26,6 +26,7 @@ import {
   PlanKeys,
   ResponseSumType,
   TimeoutTypesEnum,
+  UserRoles,
 } from 'shared-types';
 
 import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
@@ -304,7 +305,7 @@ export class MeetingsGateway
         });
 
         await this.coreService.updateRoomRatingStatistic({
-          templateId: commonTemplate.id,
+          templateId: commonTemplate?.id,
           userId: commonTemplate?.author,
           ratingKey: 'minutes',
           value: timeToAdd,
@@ -350,7 +351,7 @@ export class MeetingsGateway
             }
 
             if (isMeetingHost) {
-              if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
+              if (profileUser.subscriptionPlanKey !== PlanKeys.Business && profileUser.role !== UserRoles.Anonymous) {
                 await this.meetingsCommonService.handleTimeLimit({
                   profileId: profileUser.id,
                   meetingId: plainMeeting.id,
@@ -686,7 +687,9 @@ export class MeetingsGateway
 
         finishTime = endsAtTimeout;
       } else {
-        finishTime = meeting.endsAt - Date.now();
+        if (!template.isAcceptNoLogin) {
+          finishTime = meeting.endsAt - Date.now();
+        }
       }
 
       await this.meetingHostTimeService.create({
@@ -992,7 +995,7 @@ export class MeetingsGateway
           if (item) return;
           return index;
         }).find(item => item || isNumber(item));
-        
+
         if (indexUser === -1) return;
 
         const updatedUser = await this.usersService.findOneAndUpdate(
@@ -1198,7 +1201,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business && profileUser.role !== UserRoles.Anonymous) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1280,7 +1283,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business && profileUser.role !== UserRoles.Anonymous) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
