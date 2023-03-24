@@ -10,4 +10,8 @@
   align-items: center;
   gap: rem(8px);
   margin-top: rem(16px);
+  &.btnProcessing{
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }

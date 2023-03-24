@@ -5,6 +5,7 @@ export const REFRESH_URL = `${authScope}/refresh`;
 export const LOGIN_USER_URL = `${authScope}/login`;
 export const ME_URL = `${authScope}/me`;
 export const LOGOUT_URL = `${authScope}/logout`;
+export const GOOGLE_VERIFY_URL = `${authScope}/google-verify`;
 
 export const loginUserUrl = {
     url: `${serverUrl}/${LOGIN_USER_URL}`,
@@ -24,4 +25,9 @@ export const refreshUrl = {
 export const logoutProfileUrl = {
     url: `${serverUrl}/${LOGOUT_URL}`,
     method: HttpMethods.Delete,
+};
+
+export const googleVerifyUrl = {
+    url: `${serverUrl}/${GOOGLE_VERIFY_URL}`,
+    method: HttpMethods.Post,
 };
