@@ -217,35 +217,35 @@ export class SeederService {
       }
     });
     if (globalCommonTemplate){
-      globalCommonTemplate.usersPosition = [{
-        bottom:
-          0.57,
-        left:
-          0.44
-      },
-      {
-        bottom:
-          0.05,
-        left:
-          0.44
-      },
-      {
-        bottom:
-          0.33,
-        left:
-          0.08
-      },
-      {
-        bottom:
-          0.3,
-        left:
-          0.82
-      }];
-      globalCommonTemplate.save();
       return;
     };
 
     const maxParticipants = 4;
+
+    const usersPosition = [{
+      bottom:
+        0.57,
+      left:
+        0.44
+    },
+    {
+      bottom:
+        0.05,
+      left:
+        0.44
+    },
+    {
+      bottom:
+        0.33,
+      left:
+        0.08
+    },
+    {
+      bottom:
+        0.3,
+      left:
+        0.82
+    }];
 
     const newCommonTemplate = plainToInstance(CommonTemplateDTO, await this.commonTemplatesService.createCommonTemplate({
       data: {
@@ -256,6 +256,7 @@ export class SeederService {
         description: 'Global Room',
         name: 'Global Theliveoffice',
         isAcceptNoLogin: true,
+        usersPosition
       }
     }), {
       excludeExtraneousValues: true,
