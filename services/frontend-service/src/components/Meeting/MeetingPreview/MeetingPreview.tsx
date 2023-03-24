@@ -22,6 +22,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { $authStore } from '../../../store';
 import {
     $isOwner,
     $localUserStore,
@@ -36,7 +37,11 @@ import styles from './MeetingPreview.module.scss';
 import { MeetingUser } from '../../../store/types';
 
 // const
-import { clientRoutes, dashboardRoute } from '../../../const/client-routes';
+import {
+    clientRoutes,
+    dashboardRoute,
+    loginRoute,
+} from '../../../const/client-routes';
 
 const Component = () => {
     const router = useRouter();
@@ -44,6 +49,7 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
+    const { isWithoutAuthen } = useStore($authStore);
 
     const { isMobile } = useBrowserDetect();
 
@@ -59,7 +65,13 @@ const Component = () => {
     });
 
     const handleLeaveMeeting = useCallback(async () => {
-        await router.push(isOwner ? dashboardRoute : clientRoutes.welcomeRoute);
+        await router.push(
+            !isWithoutAuthen
+                ? isOwner
+                    ? dashboardRoute
+                    : clientRoutes.loginRoute
+                : loginRoute,
+        );
     }, []);
 
     const previewImage = (meetingTemplate?.previewUrls || []).find(
@@ -87,7 +99,9 @@ const Component = () => {
                 justifyContent="center"
                 alignItems="center"
                 onClick={handleLeaveMeeting}
-                className={clsx(styles.backButton, { [styles.mobile]: isMobile })}
+                className={clsx(styles.backButton, {
+                    [styles.mobile]: isMobile,
+                })}
             >
                 <ArrowLeftIcon
                     width={isMobile ? '22px' : '32px'}
@@ -120,7 +134,9 @@ const Component = () => {
                     </ConditionalRender>
                 </CustomBox>
                 <ProfileAvatar
-                    className={clsx(styles.profileAvatar, { [styles.mobile]: isMobile })}
+                    className={clsx(styles.profileAvatar, {
+                        [styles.mobile]: isMobile,
+                    })}
                     width={isMobile ? '50px' : '90px'}
                     height={isMobile ? '50px' : '90px'}
                     src={meetingTemplate?.user?.profileAvatar?.url || ''}
@@ -156,7 +172,8 @@ const Component = () => {
                         color="colors.white.primary"
                         className={styles.description}
                     >
-                        {meetingTemplate.shortDescription || meetingTemplate.description}
+                        {meetingTemplate.shortDescription ||
+                            meetingTemplate.description}
                     </CustomTypography>
                 </CustomGrid>
                 <UsersAvatarsCounter<MeetingUser>
