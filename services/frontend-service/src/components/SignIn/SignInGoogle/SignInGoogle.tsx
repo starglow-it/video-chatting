@@ -115,15 +115,15 @@ export const SignInGoogle = () => {
       //     handleReject(err.message)
       //     return
       //   })
-      const client = google.accounts.oauth2.initCodeClient({
+      const client = google.accounts.oauth2.initTokenClient({
         client_id: GOOGLE_CLIENT_ID,
-        scope: 'https://www.googleapis.com/auth/calendar.readonly',
+        scope: 'email profile',
         ux_mode: 'popup',
         callback: (res) => {
           console.log(res)
         }
       })
-      client.requestCode()
+      client.requestAccessToken()
     }
   }, [load, isSdkLoaded, isProcessing])
 
