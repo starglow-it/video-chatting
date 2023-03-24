@@ -56,7 +56,6 @@ import { DataValidationException } from '../../exceptions/dataValidation.excepti
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
 import { v4 as uuidv4 } from 'uuid';
-import { GoogleAuthGuard } from 'src/guards/google.guard';
 import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
 @ApiTags('auth')
@@ -112,7 +111,7 @@ export class AuthController {
   })
   async createAccountWithoutLogin() {
     try{
-      const uuid = uuidv4() + (new Date()).getTime();
+      const uuid = uuidv4();
       const user = await this.coreService.createUserWithoutLogin(uuid);
 
       const globalCommonTemplate = await this.coreService.findCommonTemplateByTemplate({
@@ -270,37 +269,6 @@ export class AuthController {
       throw new BadRequestException(err);
     }
   }
-
-  @UseGuards(GoogleAuthGuard)
-  @Get('/login-google')
-  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
-  @ApiCreatedResponse({
-    type: CommonResponseDto,
-    description: 'User logged in',
-  })
-  async loginWithGoogle(
-    @Req() req
-  ): Promise<any> {
-  }
-
-
-  @UseGuards(GoogleAuthGuard)
-  @Get('/google-redirect')
-  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
-  @ApiCreatedResponse({
-    type: CommonResponseDto,
-    description: 'User logged in',
-  })
-  async googleAuthRedirect(
-    @Req() req,
-    @Res() res
-  ): Promise<any> {
-    return res.json({
-      ...req.user
-    });
-  }
-
-
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
