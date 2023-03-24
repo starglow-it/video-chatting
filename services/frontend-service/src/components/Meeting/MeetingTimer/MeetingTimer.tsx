@@ -9,7 +9,11 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
-import {$isBusinessSubscription, $profileStore, updateProfileFx} from '../../../store';
+import {
+    $isBusinessSubscription,
+    $profileStore,
+    updateProfileFx,
+} from '../../../store';
 import {
     $isMeetingHostStore,
     $localUserStore,
@@ -34,7 +38,10 @@ const Component = () => {
     const timeLimitWarning = useStore($timeLimitWarningStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
 
-    const { value: currentTime, onStartTimer: handleStartMeetingEnd } = useTimer(true);
+    const { value: currentTime, onStartTimer: handleStartMeetingEnd } =
+        useTimer(true);
+
+    const isLimitTime = profile.role !== 'anonymous';
 
     useEffect(() => {
         if (meeting?.endsAt && meeting?.startAt) {
@@ -51,11 +58,12 @@ const Component = () => {
             !timeLimitWarning &&
             localUser?.accessStatus === MeetingAccessStatusEnum.InMeeting &&
             !isBusinessSubscription &&
-            isMeetingHost
+            isMeetingHost &&
+            isLimitTime
         ) {
             if (profile.maxMeetingTime > 20 * 60 * 1000) {
                 updateProfileFx({
-                    maxMeetingTime: profile.maxMeetingTime
+                    maxMeetingTime: profile.maxMeetingTime,
                 }).then(() => {
                     setTimeLimitWarningEvent(true);
                 });
@@ -76,12 +84,15 @@ const Component = () => {
     ]);
 
     const is10MinutesLeft =
-        ((meeting?.endsAt || 0) - (meeting.startAt || 0) || Date.now()) - currentTime <
+        ((meeting?.endsAt || 0) - (meeting.startAt || 0) || Date.now()) -
+            currentTime <
         10 * ONE_MINUTE;
 
     return (
         <CustomTypography
-            color={`colors.${is10MinutesLeft ? 'red' : 'white'}.primary`}
+            color={`colors.${
+                is10MinutesLeft && !isLimitTime ? 'red' : 'white'
+            }.primary`}
             variant="body3bold"
         >
             In progress: &nbsp;
