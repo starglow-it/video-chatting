@@ -12,7 +12,7 @@ export const handleGoogleVerify = async (params: GoogleVerfifyParams) => {
     });
 
     if (response.success) {
-        // setAuthCookies(undefined, response?.result?.accessToken, response?.result?.refreshToken);
+        setAuthCookies(undefined, response?.result?.accessToken, response?.result?.refreshToken);
         console.log('res',response)
         return {
             isAuthenticated: response.success,
