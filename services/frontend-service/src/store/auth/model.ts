@@ -15,7 +15,7 @@ export const setUserCountryFx = authDomain.createEffect<void, void>('setUserCoun
 export const checkAuthFx = authDomain.createEffect<NextPageContext | undefined, AuthUserState>('checkAuthFx');
 export const refreshAuthFx = authDomain.createEffect<void, AuthUserState>('refreshAuthFx');
 export const logoutUserFx = authDomain.createEffect<void, AuthUserState>('logoutUserFx');
-export const googleVeirfyFx = authDomain.createEffect<GoogleVerfifyParams, AuthUserState>('googleVerifyFx');
+export const googleVerifyFx = authDomain.createEffect<GoogleVerfifyParams, AuthUserState>('googleVerifyFx');
 
 
 export const resetAuthErrorEvent = authDomain.createEvent<void>('resetAuthErrorEvent');

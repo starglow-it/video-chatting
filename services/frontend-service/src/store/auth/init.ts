@@ -5,7 +5,7 @@ import Router from "next/router";
 import {
     $authStore,
     checkAuthFx,
-    googleVeirfyFx,
+    googleVerifyFx,
     loginUserFx,
     logoutUserFx, refreshAuthFx,
     resetAuthErrorEvent,
@@ -34,7 +34,7 @@ checkAuthFx.use(handleCheckUserAuthentication);
 refreshAuthFx.use(handleRefreshUserAuthentication);
 logoutUserFx.use(handleLogoutUser);
 setUserCountryFx.use(handleSetUserCountry);
-googleVeirfyFx.use(handleGoogleVerify)
+googleVerifyFx.use(handleGoogleVerify)
 
 sample({
     clock: loginUserFx.doneData,
@@ -71,7 +71,7 @@ $authStore
         loginUserFx.doneData,
         checkAuthFx.doneData,
         logoutUserFx.doneData,
-        googleVeirfyFx.doneData,
+        googleVerifyFx.doneData,
     ], (state, data) => data)
     .on(resetAuthStateEvent, () => ({
         isAuthenticated: false,

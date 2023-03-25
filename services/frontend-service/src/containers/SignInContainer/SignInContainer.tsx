@@ -10,7 +10,6 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
-import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -36,7 +35,7 @@ import { useRouter } from 'next/router';
 import styles from './SignInContainer.module.scss';
 
 // stores
-import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store';
+import { $authStore, loginUserFx, resetAuthErrorEvent, googleLoginFx } from '../../store';
 
 // types
 import { LoginUserParams } from '../../store/types';
@@ -57,7 +56,7 @@ const Component = () => {
     const router = useRouter();
 
     const authState = useStore($authStore);
-    const isLoginPending = useStore(loginUserFx.pending);
+    const isLoginPending = useStore(loginUserFx.pending || googleVerifyFx.pending);
 
     const resolver = useYupValidationResolver<{ email: string; password: string }>(
         validationSchema,

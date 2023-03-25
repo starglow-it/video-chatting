@@ -1,13 +1,14 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import frontendConfig from '../../../const/config';
+import { useCallback, useState } from 'react';
 import clsx from 'clsx';
 
 import { SocialLogin } from '@library/common/SocialLogin/SocialLogin';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 import {
-	addNotificationEvent, googleVeirfyFx
+	addNotificationEvent, googleVerifyFx
 } from '../../../store';
 
 import {
@@ -15,10 +16,7 @@ import {
 } from '../../../store/types';
 
 import styles from './SignInGoogle.module.scss';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
-
-const GOOGLE_CLIENT_ID = frontendConfig.googleClientId //'262625104810-n7svflmq4l9c4oghoaq4j7i45jd7jn3o.apps.googleusercontent.com'
+import frontendConfig from '../../../const/config';
 
 export const SignInGoogle = () => {
   const [isProcessing, setIsProcessing] = useState(false)
@@ -32,11 +30,9 @@ export const SignInGoogle = () => {
   }
 
   const handleSuccess = (token: string) => {
-    console.log('done', token)
-    googleVeirfyFx({
+    googleVerifyFx({
       token
-    }).then((res) => {
-      console.log('res',res)
+    }).then(() => {
       setIsProcessing(false)
     })
   }
@@ -48,7 +44,7 @@ export const SignInGoogle = () => {
     setIsProcessing(true)    
     if (window) {           
       const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: GOOGLE_CLIENT_ID,
+        client_id: frontendConfig.googleClientId,
         scope: 'email profile',
         callback: (res) => {
           handleSuccess(res.access_token)
