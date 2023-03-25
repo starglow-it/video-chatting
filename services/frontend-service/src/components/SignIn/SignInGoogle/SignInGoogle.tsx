@@ -23,6 +23,7 @@ const GOOGLE_CLIENT_ID = frontendConfig.googleClientId //'262625104810-n7svflmq4
 export const SignInGoogle = () => {
   const [isProcessing, setIsProcessing] = useState(false)
   const handleReject = (text: string) => {
+    setIsProcessing(false)
     addNotificationEvent({
 			type: NotificationType.validationError,
 			message: text,
@@ -34,7 +35,10 @@ export const SignInGoogle = () => {
     console.log('done', token)
     googleVeirfyFx({
       token
-    });
+    }).then((res) => {
+      console.log('res',res)
+      setIsProcessing(false)
+    })
   }
 
   const loginGoogle = useCallback(() => {
@@ -47,12 +51,9 @@ export const SignInGoogle = () => {
         client_id: GOOGLE_CLIENT_ID,
         scope: 'email profile',
         callback: (res) => {
-          console.log(res)
-          setIsProcessing(false)
           handleSuccess(res.access_token)
         },
-        error_callback: (err) => {
-          setIsProcessing(false)
+        error_callback: (err) => {          
           handleReject(err.message)
         }
       })      

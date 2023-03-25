@@ -3,7 +3,7 @@ import { ErrorState } from 'shared-types';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 import { GoogleVerfifyParams, LoginUserResponse } from '../../types';
 import { googleVerifyUrl } from '../../../utils/urls';
-// import setAuthCookies from '../../../helpers/http/setAuthCookies';
+import setAuthCookies from '../../../helpers/http/setAuthCookies';
 
 export const handleGoogleVerify = async (params: GoogleVerfifyParams) => {
     const response = await sendRequest<LoginUserResponse, ErrorState>({
@@ -13,7 +13,6 @@ export const handleGoogleVerify = async (params: GoogleVerfifyParams) => {
 
     if (response.success) {
         setAuthCookies(undefined, response?.result?.accessToken, response?.result?.refreshToken);
-        console.log('res',response)
         return {
             isAuthenticated: response.success,
             user: response?.result?.user,
