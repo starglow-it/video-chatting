@@ -34,7 +34,7 @@ import {
   SearchUsersPayload,
   UserRoles,
   ManageUserRightsPayload,
-  TimeoutTypesEnum, PlanKeys,
+  TimeoutTypesEnum, PlanKeys, LoginTypes,
 } from 'shared-types';
 
 import {
@@ -56,6 +56,7 @@ import {
   USER_TOKEN_NOT_FOUND,
   USERS_SERVICE,
   plans,
+  USER_NOT_LOCAL_ACCOUNT,
 } from 'shared-const';
 
 // mongo
@@ -463,6 +464,10 @@ export class UsersController {
 
       if (!user) {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+      }
+
+      if(user.loginType !== LoginTypes.Local){
+        throw new RpcException({...USER_NOT_LOCAL_ACCOUNT, ctx: USERS_SERVICE});
       }
 
       const isPasswordValid = await this.usersService.verifyPassword(

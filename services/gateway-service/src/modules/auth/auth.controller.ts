@@ -30,11 +30,14 @@ import {
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
   USER_IS_BLOCKED,
+  USER_NOT_LOCAL_ACCOUNT,
+  USER_NOT_GOOGLE_ACCOUNT,
 } from 'shared-const';
 import {
   TokenPairWithUserType,
   ResponseSumType,
   ICommonUser,
+  LoginTypes,
 } from 'shared-types';
 
 // dtos
@@ -135,6 +138,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
         body.token,
       );
+
 
       if (!isUserTokenExists) {
         throw new DataValidationException(USER_TOKEN_NOT_FOUND);
@@ -273,6 +277,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     if (!isUserExists) {
       throw new DataValidationException(USER_NOT_FOUND);
     }
+
 
     const user = await this.coreService.findUserByEmail({
       email: body.email,
@@ -426,8 +431,7 @@ async getUserDataFromGoogleToken(token: string) {
     const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
     
     const {email} = tokenVerified;
-    
-    console.log(tokenVerified);
+
     
     const isUserExists = await this.coreService.checkIfUserExists({
       email,
@@ -450,6 +454,9 @@ async getUserDataFromGoogleToken(token: string) {
         email,
       });
     }
+
+    if(user.loginType !== LoginTypes.Google)throw new DataValidationException(USER_NOT_GOOGLE_ACCOUNT);
+
 
     if (user.isBlocked) {
       throw new DataValidationException(USER_IS_BLOCKED);

@@ -7,7 +7,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
-import {ICommonUser, PlanKeys, UserRoles} from 'shared-types';
+import {ICommonUser, LoginTypes, PlanKeys, UserRoles} from 'shared-types';
 
 @Schema({
   timestamps: true,
@@ -224,6 +224,12 @@ export class User {
     default: true,
   })
   isDowngradeMessageShown: ICommonUser['isDowngradeMessageShown'];
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: LoginTypes.Local
+  })
+  loginType: ICommonUser['loginType'];
 }
 
 export type UserDocument = User & Document;
