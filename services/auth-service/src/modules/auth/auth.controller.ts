@@ -126,6 +126,7 @@ export class AuthController {
       user: {...payload,loginType: LoginTypes.Google},
       token
     });
+    await this.coreService.findUserByEmailAndUpdate({data: {fullName: payload.name}, email: user.email});
 
     // await this.coreService.findUserByEmailAndUpdate({
     //   email: user.email,

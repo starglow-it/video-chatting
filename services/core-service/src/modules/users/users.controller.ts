@@ -466,10 +466,7 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      if(user.loginType !== LoginTypes.Local){
-        throw new RpcException({...USER_NOT_LOCAL_ACCOUNT, ctx: USERS_SERVICE});
-      }
-
+      
       const isPasswordValid = await this.usersService.verifyPassword(
         payload.password,
         user.password,
