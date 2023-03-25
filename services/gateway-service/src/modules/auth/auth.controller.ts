@@ -428,7 +428,8 @@ async getUserDataFromGoogleToken(token: string) {
   async googleAuthRedirect(
     @Body() body: VerifyGoogleAuthRequest
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
-    const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
+    try{
+      const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
     
     const {email} = tokenVerified;
 
@@ -467,6 +468,16 @@ async getUserDataFromGoogleToken(token: string) {
     return {
       success: true,
       result
+    }
+    }
+    catch(err){
+      this.logger.error(
+        {
+          message: `An error occurs, while verify google token`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
     }
   }
 
