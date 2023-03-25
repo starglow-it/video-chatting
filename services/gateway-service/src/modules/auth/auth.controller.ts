@@ -60,18 +60,19 @@ import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.re
 import { OAuth2Client } from 'google-auth-library';
 import { ConfigClientService } from 'src/services/config/config.service';
 import { CommonGoogleInfoDto } from 'src/dtos/response/common-google-info.dto';
+import { google, Auth } from 'googleapis';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
 export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger();
+  private oAuth2Client: Auth.OAuth2Client;
   constructor(
     private authService: AuthService,
     private coreService: CoreService,
-    private configService: ConfigClientService
+    private configService: ConfigClientService,
   ) {}
 
-  private client: OAuth2Client;
   private googleClientId: string;
   private googleSecret: string;
 
@@ -82,7 +83,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   }
 
   async onApplicationBootstrap() {
-    this.client = new OAuth2Client(this.googleClientId, this.googleSecret);
+    this.oAuth2Client = new google.auth.OAuth2(this.googleClientId, this.googleSecret);
   }
 
   @Post('/register')
@@ -375,6 +376,22 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   }
 
   //==================== GOOGLE AUTH =======================
+
+
+async getUserDataFromGoogleToken(token: string) {
+  const userInfoClient = google.oauth2('v2').userinfo;
+ 
+  this.oAuth2Client.setCredentials({
+    access_token: token
+  })
+ 
+  const userInfoResponse = await userInfoClient.get({
+    auth: this.oAuth2Client
+  });
+ 
+  return userInfoResponse.data;
+}
+
   // @UseGuards(GoogleAuthGuard)
   @Get('/login-google')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
@@ -406,27 +423,26 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   async googleAuthRedirect(
     @Body() body: VerifyGoogleAuthRequest
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
-    const ticket = await this.client.verifyIdToken({
-      idToken: body.token,
-      audience: this.googleSecret,
-    });
+    const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
     
-    const {email, name, picture} = ticket.getPayload();
-
-
+    const {email} = tokenVerified;
+    
+    console.log(tokenVerified);
+    
     const isUserExists = await this.coreService.checkIfUserExists({
       email,
     });
-
+    
     let user: ICommonUser;
-
+    
     
     if (!isUserExists) {
+      const {given_name, picture} = await this.getUserDataFromGoogleToken(body.token);
       user = await this.authService.createUserFromGoogleAccount({
         password: 'default',
         email,
         picture,
-        name
+        name: given_name
       });
     }
     else{
