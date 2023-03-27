@@ -350,7 +350,7 @@ export class MeetingsGateway
             }
 
             if (isMeetingHost) {
-              if (profileUser.subscriptionPlanKey !== PlanKeys.Business && profileUser.role !== UserRoles.Anonymous) {
+              if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
                 await this.meetingsCommonService.handleTimeLimit({
                   profileId: profileUser.id,
                   meetingId: plainMeeting.id,
@@ -684,9 +684,7 @@ export class MeetingsGateway
 
         finishTime = endsAtTimeout;
       } else {
-        if (!template.isAcceptNoLogin) {
-          finishTime = meeting.endsAt - Date.now();
-        }
+        finishTime = meeting.endsAt - Date.now();
       }
 
       await this.meetingHostTimeService.create({
@@ -697,35 +695,39 @@ export class MeetingsGateway
         session,
       });
 
-      this.taskService.addTimeout({
-        name: `meeting:finish:${message.meetingId}`,
-        ts:
-          mainUser.maxMeetingTime < finishTime &&
-            mainUser.subscriptionPlanKey !== PlanKeys.Business
-            ? mainUser.maxMeetingTime
-            : finishTime,
-        callback: this.endMeeting.bind(this, {
-          meetingId: meeting._id,
-          reason: 'expired',
-        }),
-      });
-
-      if (mainUser.subscriptionPlanKey !== PlanKeys.Business) {
-        const timeLimitNotificationTimeout = getTimeoutTimestamp({
-          value: 20,
-          type: TimeoutTypesEnum.Minutes,
+      if (!template.isAcceptNoLogin) {
+        this.taskService.addTimeout({
+          name: `meeting:finish:${message.meetingId}`,
+          ts:
+            mainUser.maxMeetingTime < finishTime &&
+              mainUser.subscriptionPlanKey !== PlanKeys.Business
+              ? mainUser.maxMeetingTime
+              : finishTime,
+          callback: this.endMeeting.bind(this, {
+            meetingId: meeting._id,
+            reason: 'expired',
+          }),
         });
 
-        if (finishTime > timeLimitNotificationTimeout) {
-          this.taskService.addTimeout({
-            name: `meeting:timeLimit:${message.meetingId}`,
-            ts: finishTime - timeLimitNotificationTimeout,
-            callback: this.sendTimeLimit.bind(this, {
-              meetingId: meeting._id,
-              userId: user._id,
-              mainUserId: mainUser.id,
-            }),
+        if (mainUser.subscriptionPlanKey !== PlanKeys.Business) {
+          const timeLimitNotificationTimeout = getTimeoutTimestamp({
+            value: 20,
+            type: TimeoutTypesEnum.Minutes,
           });
+
+
+
+          if (finishTime > timeLimitNotificationTimeout) {
+            this.taskService.addTimeout({
+              name: `meeting:timeLimit:${message.meetingId}`,
+              ts: finishTime - timeLimitNotificationTimeout,
+              callback: this.sendTimeLimit.bind(this, {
+                meetingId: meeting._id,
+                userId: user._id,
+                mainUserId: mainUser.id,
+              }),
+            });
+          }
         }
       }
 
@@ -1196,7 +1198,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== PlanKeys.Business && profileUser.role !== UserRoles.Anonymous) {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1278,7 +1280,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== PlanKeys.Business && profileUser.role !== UserRoles.Anonymous) {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
