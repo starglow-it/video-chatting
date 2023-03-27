@@ -350,7 +350,7 @@ export class MeetingsGateway
             }
 
             if (isMeetingHost) {
-              if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
+              if (profileUser.subscriptionPlanKey !== PlanKeys.Business && !userTemplate.isAcceptNoLogin) {
                 await this.meetingsCommonService.handleTimeLimit({
                   profileId: profileUser.id,
                   meetingId: plainMeeting.id,
@@ -1193,12 +1193,17 @@ export class MeetingsGateway
 
           const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
 
+          const userTemplate = await this.coreService.findMeetingTemplate({
+            id: meeting.templateId
+          });
+
+
           if (isMeetingHost) {
             const profileUser = await this.coreService.findUserById({
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business && !userTemplate.isAcceptNoLogin) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1275,12 +1280,16 @@ export class MeetingsGateway
 
           const isMeetingHost = plainMeeting.hostUserId === plainUser.id;
 
+          const userTemplate = await this.coreService.findMeetingTemplate({
+            id: meeting.templateId
+          });
+
           if (isMeetingHost) {
             const profileUser = await this.coreService.findUserById({
               userId: plainUser.profileId,
             });
 
-            if (profileUser.subscriptionPlanKey !== PlanKeys.Business) {
+            if (profileUser.subscriptionPlanKey !== PlanKeys.Business && ! userTemplate.isAcceptNoLogin) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1444,75 +1453,81 @@ export class MeetingsGateway
           },
         });
 
-        const timeLimitNotificationTimeout = getTimeoutTimestamp({
-          value: 20,
-          type: TimeoutTypesEnum.Minutes,
+        const userTemplate = await this.coreService.findMeetingTemplate({
+          id: meeting.templateId
         });
 
-        const meetingEndTime = meeting.endsAt - Date.now();
-
-        this.taskService.deleteTimeout({
-          name: `meeting:finish:${meeting.id}`,
-        });
-
-        this.taskService.addTimeout({
-          name: `meeting:finish:${meeting.id}`,
-          ts:
-            profileUser.maxMeetingTime < meetingEndTime
-              ? profileUser.maxMeetingTime
-              : meetingEndTime,
-          callback: this.endMeeting.bind(this, {
-            meetingId: meeting._id,
-            reason: 'expired',
-          }),
-        });
-
-        if (profileUser.maxMeetingTime < meetingEndTime) {
-          this.taskService.addTimeout({
-            name: `meeting:timeLimit:${meeting.id}`,
-            ts:
-              profileUser.maxMeetingTime < timeLimitNotificationTimeout
-                ? 0
-                : profileUser.maxMeetingTime - timeLimitNotificationTimeout,
-            callback: async () => {
-              const hostTimeData = await this.meetingHostTimeService.update({
-                query: {
-                  host: user.id,
-                  meeting: meeting.id,
-                  endAt: null,
-                },
-                data: {
-                  endAt: Date.now(),
-                },
-              });
-
-              const newTime =
-                profileUser.maxMeetingTime -
-                (hostTimeData.endAt - hostTimeData.startAt);
-
-              const fallBackTime = profileUser.subscriptionPlanKey === PlanKeys.Business
-                ? null
-                : 0;
-
-              await this.coreService.updateUser({
-                query: { _id: profileUser.id },
-                data: {
-                  maxMeetingTime: newTime < 0 ? fallBackTime : newTime,
-                },
-              });
-
-              if (user?.socketId) {
-                this.emitToSocketId(user?.socketId, 'meeting:timeLimit');
-              }
-
-              await this.meetingHostTimeService.create({
-                data: {
-                  host: user.id,
-                  meeting: meeting.id,
-                },
-              });
-            },
+        if(!userTemplate.isAcceptNoLogin){
+          const timeLimitNotificationTimeout = getTimeoutTimestamp({
+            value: 20,
+            type: TimeoutTypesEnum.Minutes,
           });
+  
+          const meetingEndTime = meeting.endsAt - Date.now();
+  
+          this.taskService.deleteTimeout({
+            name: `meeting:finish:${meeting.id}`,
+          });
+  
+          this.taskService.addTimeout({
+            name: `meeting:finish:${meeting.id}`,
+            ts:
+              profileUser.maxMeetingTime < meetingEndTime
+                ? profileUser.maxMeetingTime
+                : meetingEndTime,
+            callback: this.endMeeting.bind(this, {
+              meetingId: meeting._id,
+              reason: 'expired',
+            }),
+          });
+  
+          if (profileUser.maxMeetingTime < meetingEndTime) {
+            this.taskService.addTimeout({
+              name: `meeting:timeLimit:${meeting.id}`,
+              ts:
+                profileUser.maxMeetingTime < timeLimitNotificationTimeout
+                  ? 0
+                  : profileUser.maxMeetingTime - timeLimitNotificationTimeout,
+              callback: async () => {
+                const hostTimeData = await this.meetingHostTimeService.update({
+                  query: {
+                    host: user.id,
+                    meeting: meeting.id,
+                    endAt: null,
+                  },
+                  data: {
+                    endAt: Date.now(),
+                  },
+                });
+  
+                const newTime =
+                  profileUser.maxMeetingTime -
+                  (hostTimeData.endAt - hostTimeData.startAt);
+  
+                const fallBackTime = profileUser.subscriptionPlanKey === PlanKeys.Business
+                  ? null
+                  : 0;
+  
+                await this.coreService.updateUser({
+                  query: { _id: profileUser.id },
+                  data: {
+                    maxMeetingTime: newTime < 0 ? fallBackTime : newTime,
+                  },
+                });
+  
+                if (user?.socketId) {
+                  this.emitToSocketId(user?.socketId, 'meeting:timeLimit');
+                }
+  
+                await this.meetingHostTimeService.create({
+                  data: {
+                    host: user.id,
+                    meeting: meeting.id,
+                  },
+                });
+              },
+            });
+          }
         }
 
         const plainMeeting = plainToInstance(CommonMeetingDTO, newMeeting, {
