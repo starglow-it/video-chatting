@@ -1,6 +1,5 @@
 import { ICommonMeetingDTO } from './common-meeting.interface';
 
-//TODO: Update usersSize
 export interface ICommonMeetingUserDTO {
   id: string;
   profileId: string;

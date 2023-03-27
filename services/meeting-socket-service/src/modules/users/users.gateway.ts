@@ -79,7 +79,7 @@ export class UsersGateway extends BaseGateway {
     }
   }
 
-  private async handleUpdateUsersTemplateVideoContainer(userTemplateId: string, meetingUserId: string, data: Partial<MeetingUserDocument>, session) {
+  private async handleUpdateUsersVideoContainer(userTemplateId: string, meetingUserId: string, data: Partial<MeetingUserDocument>, session) {
    try{
     const usersTemplate = await this.coreService.findMeetingTemplateById({
       id: userTemplateId
@@ -161,7 +161,7 @@ export class UsersGateway extends BaseGateway {
         session,
       );
 
-      await this.handleUpdateUsersTemplateVideoContainer(meeting.templateId, user.id.toString(),{
+      await this.handleUpdateUsersVideoContainer(meeting.templateId, user.id.toString(),{
         userPosition: message?.userPosition,
         userSize: message?.userSize
       },session)
@@ -180,7 +180,6 @@ export class UsersGateway extends BaseGateway {
         enableImplicitConversion: true,
       });
 
-      //TODO: ADD SIZE AND UPDATE POSISTION FOR MEETING USER VIDEO CONTAINER
       this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
         users: plainUsers.map(user =>
         ({

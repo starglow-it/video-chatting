@@ -201,7 +201,6 @@ export class SeederService {
     }
   }
 
-  //TODO: Seed create global common template
   async seedCreateGlobalCommonTemplate() {
     const adminEmail = await this.configService.get<string>('adminEmail');
     const admin = await this.usersService.findUser({

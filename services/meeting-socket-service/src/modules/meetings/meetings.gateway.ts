@@ -147,7 +147,6 @@ export class MeetingsGateway
 
         const updateUsersPromises = users.map(async user => {
 
-          //TODO: Change position and size based on indexUser
           let indexUserCount = 0;
           while (usersTemplate.indexUsers[indexUserCount] !== user.id.toString()) {
             indexUserCount++;
@@ -629,7 +628,6 @@ export class MeetingsGateway
         id: meeting.templateId
       });
 
-      //TODO: Get index user from value is null
       const indexUser = usersTemplate.indexUsers.map((item, index) => {
         if (item) return;
         return index;
@@ -651,7 +649,6 @@ export class MeetingsGateway
         session,
       );
 
-      //TODO: Insert userId to indexUsers have value is null
       let insertIndexUserCount = 0;
       const updateIndexUsers = usersTemplate.indexUsers.map(item => {
         if (item || insertIndexUserCount) return item;
@@ -986,7 +983,6 @@ export class MeetingsGateway
           };
         }
 
-        //TODO: 
         const usersTemplate = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId
         });
@@ -1012,7 +1008,6 @@ export class MeetingsGateway
           session,
         );
 
-        //TODO: Insert userId to indexUsers have value is null
         let insertIndexUserCount = 0;
         const updateIndexUsers = usersTemplate.indexUsers.map(item => {
           if (item || insertIndexUserCount) return item;
