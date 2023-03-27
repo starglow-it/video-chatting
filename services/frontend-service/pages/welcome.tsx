@@ -1,18 +1,12 @@
-import type { NextPage } from 'next';
-import { withStart } from 'effector-next';
-import React from 'react';
-
-import { WelcomePageContainer } from '@containers/WelcomePageContainer/WelcomePageContainer';
-
-import { pageLoaded } from '../src/store';
-import { StartRoomWithoutTokenContainer } from '@containers/StartRoomWithoutToken/StartRoomWithoutToken';
+import { WelcomePageContainer } from "@containers/WelcomePageContainer/WelcomePageContainer";
+import { withStart } from "effector-next";
+import { NextPage } from "next";
+import { pageLoaded } from "../src/store";
 
 const enhance = withStart(pageLoaded);
 
-// const WelcomePage: NextPage = (): JSX.Element => <WelcomePageContainer />;
-
 const WelcomePage: NextPage = (): JSX.Element => (
-    <StartRoomWithoutTokenContainer />
+    <WelcomePageContainer />
 );
 
 WelcomePage.getInitialProps = () => ({

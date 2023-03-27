@@ -11,6 +11,7 @@ export const dashboardRoute = '/dashboard';
 export const profileRoute = '/dashboard/profile';
 export const editProfileRoute = '/dashboard/profile/edit';
 export const setUpTemplateRoute = '/dashboard/templates/setup';
+export const getStartedRoute = '/get-started';
 
 export const clientRoutes = {
     loginRoute,
@@ -24,4 +25,5 @@ export const clientRoutes = {
     profileRoute,
     editProfileRoute,
     setUpTemplateRoute,
+    getStartedRoute,
 };
