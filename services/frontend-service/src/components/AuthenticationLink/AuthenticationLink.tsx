@@ -10,7 +10,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import styles from './AuthenticationLink.module.scss';
 
 // const
-import { clientRoutes, registerRoute } from '../../const/client-routes';
+import { clientRoutes, welcomeRoute } from '../../const/client-routes';
 
 const Component = () => {
     const router = useRouter();
@@ -25,7 +25,7 @@ const Component = () => {
             link: `${isNotLoginPage ? 'signIn' : 'signUp'}.label`,
             href: isNotLoginPage
                 ? clientRoutes.loginRoute
-                : clientRoutes.welcomeRoute,
+                : clientRoutes.getStartedRoute,
         }),
         [isNotLoginPage],
     );
@@ -56,7 +56,7 @@ const Component = () => {
                         nameSpace="common"
                         variant="body2"
                         translation="register.text"
-                        href={registerRoute}
+                        href={welcomeRoute}
                     />
                 </>
             )}
