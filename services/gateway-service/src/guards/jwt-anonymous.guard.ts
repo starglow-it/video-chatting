@@ -21,7 +21,6 @@ export class JwtAuthAnonymousGuard implements CanActivate {
     const request = ctx.switchToHttp().getRequest<Request>();
 
     let token: string;
-    let userWithoutLoginId: string;
 
     const cookies = request['cookies'];
 
