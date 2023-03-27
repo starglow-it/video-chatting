@@ -57,6 +57,7 @@ import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
+import { CommonCreateFreeUserDto } from 'src/dtos/response/common-create-free-user.dto';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -106,7 +107,7 @@ export class AuthController {
   @Post('/create-free-user')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({
-    type: CommonResponseDto,
+    type: CommonCreateFreeUserDto,
     description: 'User create successful',
   })
   async createAccountWithoutLogin() {
