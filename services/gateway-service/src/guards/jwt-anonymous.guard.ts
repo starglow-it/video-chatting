@@ -25,12 +25,7 @@ export class JwtAuthAnonymousGuard implements CanActivate {
 
     const cookies = request['cookies'];
 
-    console.log(request.headers)
-    //Passing auth with user unlogin
-    userWithoutLoginId = request.headers['userwithoutloginid'];
-
-
-    if (userWithoutLoginId && !cookies.accessToken) {
+    if (cookies && cookies.userWithoutLoginId && !cookies.accessToken) {
       const user = await this.coreService.findUserById({ userId: userWithoutLoginId });
       if (user.role === UserRoles.Anonymous) {
         request['user'] = {
