@@ -119,11 +119,10 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const props = await App.getInitialProps(context);
 
     const pathName = context?.ctx?.pathname || '';
-
-    const data = await checkAuthFx(context.ctx);
-    
-    const registerTemplate = data?.user?.registerTemplate;
-    const isWithoutAuthen = data?.isWithoutAuthen;
+    const nextPageContext = context?.ctx ?? null;
+    const data = await checkAuthFx(nextPageContext);
+    const { isAuthenticated, isWithoutAuthen, user } = data;
+    const registerTemplate = user?.registerTemplate;
 
     const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
         new RegExp(route).test(pathName),
@@ -132,7 +131,6 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
         new RegExp(route).test(pathName),
     );
-    const nextPageContext = context?.ctx ?? null;
 
     if (isWithoutAuthen) {
         if (isLoginRedirectRoutes) redirectTo(nextPageContext, loginRoute);
@@ -142,9 +140,9 @@ CustomApp.getInitialProps = async (context: AppContext) => {
                 nextPageContext,
                 `${setUpTemplateRoute}/${registerTemplate}`,
             );
-        } else if (data.isAuthenticated && isRegisterRedirectRoute) {
+        } else if (isAuthenticated && isRegisterRedirectRoute) {
             redirectTo(nextPageContext, dashboardRoute);
-        } else if (!data.isAuthenticated && isLoginRedirectRoutes) {
+        } else if (!isAuthenticated && isLoginRedirectRoutes) {
             redirectTo(nextPageContext, loginRoute);
         }
     }
@@ -153,21 +151,21 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     let subscription = {};
 
     if (pathName.includes('dashboard')) {
-        products = await getStripeProductsFx({ ctx: context?.ctx });
+        products = await getStripeProductsFx({ ctx: nextPageContext });
         subscription = await getSubscriptionFx({
-            subscriptionId: data?.user?.stripeSubscriptionId,
-            ctx: context?.ctx,
+            subscriptionId: user?.stripeSubscriptionId,
+            ctx: nextPageContext,
         });
     }
 
     props.pageProps.initialState = {
         [`${$profileStore.sid}`]: {
             ...initialProfileState,
-            ...data.user,
+            ...user,
         },
         [`${$authStore.sid}`]: {
-            isAuthenticated: data.isAuthenticated,
-            isWithoutAuthen: data.isWithoutAuthen
+            isAuthenticated,
+            isWithoutAuthen,
         },
         [`${$productsStore.sid}`]: products,
         [`${$subscriptionStore.sid}`]: subscription,
