@@ -30,7 +30,6 @@ import {
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
   USER_IS_BLOCKED,
-  USER_NOT_LOCAL_ACCOUNT,
   USER_NOT_GOOGLE_ACCOUNT,
 } from 'shared-const';
 import {
@@ -58,9 +57,7 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
-import { GoogleAuthGuard } from 'src/guards/google.guard';
 import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.request';
-import { OAuth2Client } from 'google-auth-library';
 import { ConfigClientService } from 'src/services/config/config.service';
 import { CommonGoogleInfoDto } from 'src/dtos/response/common-google-info.dto';
 import { google, Auth } from 'googleapis';
@@ -397,28 +394,8 @@ async getUserDataFromGoogleToken(token: string) {
   return userInfoResponse.data;
 }
 
-  // @UseGuards(GoogleAuthGuard)
-  @Get('/login-google')
-  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
-  @ApiCreatedResponse({
-    type: CommonGoogleInfoDto,
-    description: 'User logged in',
-  })
-  async loginWithGoogle(
-  ): Promise<ResponseSumType<{googleClientId: string, googleSecret: string, callbackUrl: string}>> {
-    const callbackUrl = 'http://localhost:8000/google-redirect';
-    return {
-      success: true,
-      result: {
-        googleClientId: this.googleClientId,
-        googleSecret: this.googleSecret,
-        callbackUrl
-      }
-    }
-  }
 
 
-  // @UseGuards(GoogleAuthGuard)
   @Post('/google-verify')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({

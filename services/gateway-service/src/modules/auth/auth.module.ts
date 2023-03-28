@@ -24,7 +24,6 @@ import { JWT_ACCESS_EXPIRE, AUTH_PROVIDER } from 'shared-const';
 
 // strategy
 import { LocalStrategy } from '../../strategy/local.strategy';
-import { GoogleStrategy } from 'src/strategy/google.strategy';
 
 @Module({
   imports: [
@@ -69,15 +68,7 @@ import { GoogleStrategy } from 'src/strategy/google.strategy';
   controllers: [AuthController, AdminAuthController],
   providers: [
     AuthService,
-    LocalStrategy,
-    {
-      provide: 'GOOGLE_AUTH',
-      inject: [ConfigClientService],
-      useFactory: async (config: ConfigClientService) => {
-        const configClient = await config.getAll();
-        return new GoogleStrategy(configClient);
-      }
-    }
+    LocalStrategy
   ],
   exports: [AuthService],
 })

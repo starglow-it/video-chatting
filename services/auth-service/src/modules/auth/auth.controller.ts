@@ -128,13 +128,6 @@ export class AuthController {
     });
     await this.coreService.findUserByEmailAndUpdate({data: {fullName: payload.name}, email: user.email});
 
-    // await this.coreService.findUserByEmailAndUpdate({
-    //   email: user.email,
-    //   data: {
-    //     profileAvatar: payload.picture
-    //   }
-    // });
-
     return user;
   }
 
