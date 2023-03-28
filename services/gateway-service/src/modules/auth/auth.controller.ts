@@ -9,6 +9,8 @@ import {
   Get,
   Put,
   Delete,
+  OnModuleInit,
+  OnApplicationBootstrap,
   Req,
   Res,
 } from '@nestjs/common';
@@ -30,11 +32,13 @@ import {
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
   USER_IS_BLOCKED,
+  USER_NOT_GOOGLE_ACCOUNT,
 } from 'shared-const';
 import {
   TokenPairWithUserType,
   ResponseSumType,
   ICommonUser,
+  LoginTypes,
 } from 'shared-types';
 
 // dtos
@@ -55,18 +59,40 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
+import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.request';
+import { ConfigClientService } from 'src/services/config/config.service';
+import { google, Auth } from 'googleapis';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 import { CommonCreateFreeUserDto } from 'src/dtos/response/common-create-free-user.dto';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
-export class AuthController {
+export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger();
+  private oAuth2Client: Auth.OAuth2Client;
   constructor(
     private authService: AuthService,
     private coreService: CoreService,
+    private configService: ConfigClientService,
   ) { }
+
+  private googleClientId: string;
+  private googleSecret: string;
+
+  async onModuleInit() {
+    this.googleClientId = await this.configService.get<string>(
+      'googleClientId',
+    );
+    this.googleSecret = await this.configService.get<string>('googleSecret');
+  }
+
+  async onApplicationBootstrap() {
+    this.oAuth2Client = new google.auth.OAuth2(
+      this.googleClientId,
+      this.googleSecret,
+    );
+  }
 
   @Post('/register')
   @ApiCreatedResponse({
@@ -385,6 +411,79 @@ export class AuthController {
       this.logger.error(
         {
           message: `An error occurs, while logout`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  //==================== GOOGLE AUTH =======================
+
+  async getUserDataFromGoogleToken(token: string) {
+    const userInfoClient = google.oauth2('v2').userinfo;
+
+    this.oAuth2Client.setCredentials({
+      access_token: token,
+    });
+
+
+    return userInfoResponse.data;
+  }
+
+  @Post('/google-verify')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonResponseDto,
+    description: 'User logged in',
+  })
+  async googleAuthRedirect(
+    @Body() body: VerifyGoogleAuthRequest,
+  ): Promise<ResponseSumType<TokenPairWithUserType>> {
+    try {
+      const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
+
+      const { email } = tokenVerified;
+
+      const isUserExists = await this.coreService.checkIfUserExists({
+        email,
+      });
+
+      let user: ICommonUser;
+
+      if (!isUserExists) {
+        const { given_name, picture } = await this.getUserDataFromGoogleToken(
+          body.token,
+        );
+        user = await this.authService.createUserFromGoogleAccount({
+          password: 'default',
+          email,
+          picture,
+          name: given_name,
+        });
+      } else {
+        user = await this.coreService.findUserByEmail({
+          email,
+        });
+      }
+
+      if (user.loginType !== LoginTypes.Google)
+        throw new DataValidationException(USER_NOT_GOOGLE_ACCOUNT);
+
+      if (user.isBlocked) {
+        throw new DataValidationException(USER_IS_BLOCKED);
+      }
+
+      const result = await this.authService.loginUser({ email, password: '' });
+
+      return {
+        success: true,
+        result,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while verify google token`,
         },
         JSON.stringify(err),
       );

@@ -58,7 +58,7 @@ import { parseDateObject } from '../../utils/dateHelpers/parseDateObject';
 import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
 import { generateIcsEventData } from '../../utils/generateIcsEventData';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
-import {MeetingsService} from "../meetings/meetings.service";
+import { MeetingsService } from '../meetings/meetings.service';
 
 @Controller('/users')
 export class UsersController {
@@ -265,10 +265,9 @@ export class UsersController {
   async getUserTemplateById(@Param('templateId') templateId: string) {
     try {
       if (templateId) {
-        const template =
-            await this.userTemplatesService.getUserTemplateById({
-              id: templateId,
-            });
+        const template = await this.userTemplatesService.getUserTemplateById({
+          id: templateId,
+        });
 
         return {
           success: true,
@@ -281,10 +280,10 @@ export class UsersController {
       };
     } catch (err) {
       this.logger.error(
-          {
-            message: `An error occurs, while get user template by template id`,
-          },
-          JSON.stringify(err),
+        {
+          message: `An error occurs, while get user template by template id`,
+        },
+        JSON.stringify(err),
       );
 
       throw new BadRequestException(err);

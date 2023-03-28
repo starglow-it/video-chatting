@@ -80,6 +80,7 @@ services:
       - BASE_ENV_DOMAIN=liveoffice.forasoft.com
       - SUPPORT_EMAIL
       - GEOLOCATION_API_KEY=8938b4b594c74e39bd845d380ffe99fd
+      - GOOGLE_CLIENT_ID=262625104810-160tsngddev8rlpi729qjnvuukh8vlok.apps.googleusercontent.com
     volumes:
       - ../../services/frontend-service/pages:/app/services/frontend-service/pages
       - ../../services/frontend-service/src:/app/services/frontend-service/src
@@ -305,6 +306,8 @@ services:
       - SUPPORT_EMAIL
       - ADMIN_EMAIL
       - ADMIN_PASSWORD
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_SECRET
     depends_on:
       - mongo
       - rabbit

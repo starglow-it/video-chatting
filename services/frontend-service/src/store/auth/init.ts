@@ -6,6 +6,7 @@ import {
     $authStore,
     checkAuthFx,
     initUserWithoutTokenFx,
+    googleVerifyFx,
     loginUserFx,
     logoutUserFx,
     refreshAuthFx,
@@ -27,7 +28,8 @@ import { handleSetUserCountry } from './handlers/handleSetUserCountry';
 import { AppDialogsEnum } from '../types';
 
 // const
-import { clientRoutes } from '../../const/client-routes';
+import {clientRoutes} from "../../const/client-routes";
+import { handleGoogleVerify } from './handlers/handleGoogleVerify';
 import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToken';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { createMeetingFx } from '../meetings/model';
@@ -37,6 +39,7 @@ checkAuthFx.use(handleCheckUserAuthentication);
 refreshAuthFx.use(handleRefreshUserAuthentication);
 logoutUserFx.use(handleLogoutUser);
 setUserCountryFx.use(handleSetUserCountry);
+googleVerifyFx.use(handleGoogleVerify);
 initUserWithoutTokenFx.use(handleInitUserWithoutToken);
 
 sample({
@@ -80,10 +83,12 @@ initUserWithoutTokenFx.doneData.watch(async ({ user, userTemplateId }) => {
 });
 
 $authStore
-    .on(
-        [loginUserFx.doneData, checkAuthFx.doneData, logoutUserFx.doneData],
-        (state, data) => data,
-    )
+    .on([
+        loginUserFx.doneData,
+        checkAuthFx.doneData,
+        logoutUserFx.doneData,
+        googleVerifyFx.doneData,
+    ], (state, data) => data)
     .on(resetAuthStateEvent, () => ({
         isAuthenticated: false,
     }))

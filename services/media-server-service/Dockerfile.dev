@@ -24,9 +24,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/media-server-service/package.json ./services/media-server-service
 
-RUN pnpm install
-
 COPY ./services/media-server-service ./services/media-server-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 

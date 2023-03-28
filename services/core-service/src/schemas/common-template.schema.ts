@@ -93,7 +93,7 @@ export class CommonTemplate {
     required: true,
   })
   usersPosition: { bottom: number; left: number }[];
-  
+
   @Prop({
     type: [
       {

@@ -5,7 +5,11 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 
 // shared
-import {CoreBrokerPatterns, COUNTRY_STATISTICS_SERVICE, StatisticBrokerPatterns} from 'shared-const';
+import {
+  CoreBrokerPatterns,
+  COUNTRY_STATISTICS_SERVICE,
+  StatisticBrokerPatterns,
+} from 'shared-const';
 import {
   ICountryStatistic,
   UpdateCountryStatisticsPayload,

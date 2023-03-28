@@ -14,9 +14,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/payment-service/package.json ./services/payment-service
 
-RUN pnpm install
-
 COPY ./services/payment-service ./services/payment-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils,payment-service
 

@@ -80,7 +80,7 @@ export class MeetingUser {
 
   @Prop({
     type: mongoose.Schema.Types.Number,
-    default: 0
+    default: 0,
   })
   userSize: number;
 }

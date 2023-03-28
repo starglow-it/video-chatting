@@ -6,6 +6,7 @@ import {
   ILanguage,
   IProfileAvatar,
   ISocialLink,
+  LoginTypes,
   UserRoles,
   PlanKeys,
 } from 'shared-types';
@@ -268,6 +269,9 @@ export class CommonUserRestDTO implements ICommonUser {
     type: Boolean
   })
   isDowngradeMessageShown: ICommonUser['isBlocked'];
+
+  @Expose()
+  loginType: ICommonUser['loginType'];
 
   createdAt: Date;
   updatedAt: Date;

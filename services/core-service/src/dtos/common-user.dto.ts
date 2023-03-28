@@ -5,6 +5,7 @@ import {
   ILanguage,
   ICommonUser,
   ISocialLink,
+  LoginTypes,
 } from 'shared-types';
 
 import { CommonBusinessCategoryDTO } from './common-business-category.dto';
@@ -132,4 +133,7 @@ export class CommonUserDTO implements ICommonUser {
 
   @Expose()
   isDowngradeMessageShown: ICommonUser['isDowngradeMessageShown'];
+
+  @Expose()
+  loginType: ICommonUser['loginType'];
 }
