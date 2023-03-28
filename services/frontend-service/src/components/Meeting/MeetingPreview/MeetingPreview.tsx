@@ -37,11 +37,7 @@ import styles from './MeetingPreview.module.scss';
 import { MeetingUser } from '../../../store/types';
 
 // const
-import {
-    clientRoutes,
-    dashboardRoute,
-    loginRoute,
-} from '../../../const/client-routes';
+import { clientRoutes } from '../../../const/client-routes';
 
 const Component = () => {
     const router = useRouter();
@@ -68,9 +64,9 @@ const Component = () => {
         await router.push(
             !isWithoutAuthen
                 ? isOwner
-                    ? dashboardRoute
+                    ? clientRoutes.dashboardRoute
                     : clientRoutes.loginRoute
-                : loginRoute,
+                : clientRoutes.loginRoute,
         );
     }, []);
 
