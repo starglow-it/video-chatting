@@ -387,6 +387,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       access_token: token,
     });
 
+    const userInfoResponse = await userInfoClient.get({
+      auth: this.oAuth2Client
+    });
 
     return userInfoResponse.data;
   }
