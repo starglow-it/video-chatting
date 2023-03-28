@@ -47,8 +47,6 @@ export interface IConfig {
   supportEmail: string;
   adminEmail: string;
   adminPassword: string;
-  googleClientId: string;
-  googleSecret: string;
 }
 
 export type ConfigKeysType = keyof IConfig;
@@ -102,8 +100,6 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
   'supportEmail',
   'adminEmail',
   'adminPassword',
-  'googleClientId',
-  'googleSecret'
 ];
 
 export const DefaultConfigValues: Record<
@@ -154,6 +150,4 @@ export const DefaultConfigValues: Record<
   supportEmail: 'foratestqa+liveofficesupport@gmail.com',
   adminEmail: 'foratestqa+admin@gmail.com',
   adminPassword: 'liveoffice12admin34',
-  googleClientId: '262625104810-160tsngddev8rlpi729qjnvuukh8vlok.apps.googleusercontent.com',
-  googleSecret: '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'
 };

@@ -145,7 +145,7 @@ export class AuthController {
   })
   async confirmRegistration(
     @Body() body: TokenRequest,
-  ): Promise<ResponseSumType<any>> {
+  ): Promise<ResponseSumType<void>> {
     try {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
         body.token,
