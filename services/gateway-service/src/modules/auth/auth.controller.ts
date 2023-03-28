@@ -431,7 +431,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       auth: this.oAuth2Client
     });
 
-
     return userInfoResponse.data;
   }
 
