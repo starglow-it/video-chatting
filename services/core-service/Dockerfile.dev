@@ -17,8 +17,6 @@ COPY ./pnpm-workspace.yaml ./
 COPY ./.npmrc ./
 COPY ./shared ./shared
 
-RUN pnpm add nx -D -w
-
 COPY ./services/core-service/package.json ./services/core-service
 
 COPY ./services/core-service ./services/core-service

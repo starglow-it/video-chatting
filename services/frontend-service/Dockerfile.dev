@@ -29,9 +29,9 @@ COPY ./services/frontend-service/package.json ./services/frontend-service
 
 COPY ./services/frontend-service ./services/frontend-service
 
-RUN pnpm install --force
-
 RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils
+
+RUN pnpm install --force
 
 EXPOSE 8000
 

@@ -93,4 +93,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
     })),
   )
   links: ICommonTemplate['links'];
+
+  @Expose()
+  isAcceptNoLogin: ICommonTemplate['isAcceptNoLogin'];
 }

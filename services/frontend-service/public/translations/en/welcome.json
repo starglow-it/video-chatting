@@ -1,4 +1,6 @@
 {
   "title": "Pick your first Room",
-  "text": "You can always switch later"
+  "text": "You can always switch later",
+  "settingUpRoom": "Setting up room...",
+  "pleaseWaiting": "Please waiting"
 }

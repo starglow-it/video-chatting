@@ -235,6 +235,7 @@ importers:
       '@nestjs/platform-express': 9.0.11
       '@nestjs/schedule': 2.1.0
       '@nestjs/schematics': 9.0.3
+      '@nestjs/serve-static': ^3.0.1
       '@nestjs/testing': 9.0.11
       '@types/bcrypt': 5.0.0
       '@types/bcryptjs': 2.4.2
@@ -284,6 +285,7 @@ importers:
       '@nestjs/mongoose': 9.2.0_65kiipszqxuvpeo52yf6s5tgae
       '@nestjs/platform-express': 9.0.11_khr6mt6ojlxbw7bo55fknouh34
       '@nestjs/schedule': 2.1.0_fvppslgepxggj3fnmtlnh4cori
+      '@nestjs/serve-static': 3.0.1_khr6mt6ojlxbw7bo55fknouh34
       '@types/bcryptjs': 2.4.2
       '@types/mongoose': 5.11.97
       amqp-connection-manager: 4.1.6_amqplib@0.10.3
@@ -3735,6 +3737,27 @@ packages:
     transitivePeerDependencies:
       - chokidar
     dev: true
+
+  /@nestjs/serve-static/3.0.1_khr6mt6ojlxbw7bo55fknouh34:
+    resolution: {integrity: sha512-i766UJPYOqvQ2BbRKh0/+Mmq5NkJnmKcShjWV1i5qpXyeM0KDZTn0n7g7ykWq/3LbQgjpMzrhYtGv35GX7GVQw==}
+    peerDependencies:
+      '@fastify/static': ^6.5.0
+      '@nestjs/common': ^9.0.0
+      '@nestjs/core': ^9.0.0
+      express: ^4.18.1
+      fastify: ^4.7.0
+    peerDependenciesMeta:
+      '@fastify/static':
+        optional: true
+      express:
+        optional: true
+      fastify:
+        optional: true
+    dependencies:
+      '@nestjs/common': 9.0.11_aniaiezvefq2fqnommj6u5l4zi
+      '@nestjs/core': 9.0.11_kj7rymkcr5lkprk6tswpsa5dxa
+      path-to-regexp: 0.2.5
+    dev: false
 
   /@nestjs/swagger/6.1.2_ivnm4e5qsl7bn6kf5k4o57kelu:
     resolution: {integrity: sha512-RU1DeTDyuN/lRXKFWaf7I9LYF34/ale3IIGeY3romAcXL/N9W0+50Ek3ou+Ajd5FqpLqzt7saYhnaQegVuU4UQ==}
@@ -7863,7 +7886,7 @@ packages:
     dependencies:
       confusing-browser-globals: 1.0.11
       eslint: 8.24.0
-      eslint-plugin-import: 2.26.0_gofx6msuqd4luqedfouzks2s4u
+      eslint-plugin-import: 2.26.0_s4vppe3rjapx4e2z54qvzpm5hu
       object.assign: 4.1.4
       object.entries: 1.1.5
       semver: 6.3.0
@@ -13114,6 +13137,10 @@ packages:
 
   /path-to-regexp/0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
+
+  /path-to-regexp/0.2.5:
+    resolution: {integrity: sha512-l6qtdDPIkmAmzEO6egquYDfqQGPMRNGjYtrU13HAXb3YSRrt7HSb1sJY0pKp6o2bAa86tSB6iwaW2JbthPKr7Q==}
+    dev: false
 
   /path-to-regexp/1.8.0:
     resolution: {integrity: sha512-n43JRhlUKUAlibEJhPeir1ncUID16QnEjNpwzNdO3Lm4ywrBpBZ5oLD0I6br9evr1Y9JTqwRtAh7JLoOzAQdVA==}

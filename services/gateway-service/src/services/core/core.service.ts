@@ -42,6 +42,7 @@ import {
   UpdateUserTemplateUsageNumberPayload,
   UpdateCountryStatisticsPayload,
   UploadTemplateFilePayload,
+  ICommonTemplate,
 } from 'shared-types';
 
 @Injectable()
@@ -182,6 +183,11 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
+  async createUserWithoutLogin(uuid: string): Promise<ICommonUser>{
+    const pattern = { cmd: UserBrokerPatterns.CreateUserWithoutLogin }; 
+    return await this.client.send(pattern, {uuid}).toPromise();
+  }
+
   async uploadUserTemplateFile(payload) {
     const pattern = { cmd: UserTemplatesBrokerPatterns.UploadUserTemplateFile };
 
@@ -254,5 +260,11 @@ export class CoreService {
 
   async sendCustom(pattern, payload) {
     return this.client.send(pattern, payload).toPromise();
+  }
+
+  async findCommonTemplateByTemplate(payload: Partial<ICommonTemplate>): Promise<ICommonTemplate> {
+    const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
+
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 }
