@@ -66,7 +66,10 @@ import { LocalStrategy } from '../../strategy/local.strategy';
     }),
   ],
   controllers: [AuthController, AdminAuthController],
-  providers: [AuthService, LocalStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

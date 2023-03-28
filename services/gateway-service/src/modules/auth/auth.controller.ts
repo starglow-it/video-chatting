@@ -30,7 +30,6 @@ import {
   USER_NOT_CONFIRMED,
   USER_NOT_FOUND,
   USER_IS_BLOCKED,
-  USER_NOT_LOCAL_ACCOUNT,
   USER_NOT_GOOGLE_ACCOUNT,
 } from 'shared-const';
 import {
@@ -388,9 +387,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       access_token: token,
     });
 
-    const userInfoResponse = await userInfoClient.get({
-      auth: this.oAuth2Client,
-    });
 
     return userInfoResponse.data;
   }

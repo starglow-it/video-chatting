@@ -30,11 +30,6 @@ export const USER_IS_BLOCKED = {
   errorCode: 108,
 };
 
-export const USER_NOT_LOCAL_ACCOUNT = {
-  message: 'user.notLocalAccount',
-  errorCode: 109
-}
-
 export const USER_NOT_GOOGLE_ACCOUNT = {
   message: 'user.notGoogleAccount',
   errorCode: 110

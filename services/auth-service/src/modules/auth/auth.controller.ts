@@ -130,6 +130,7 @@ export class AuthController {
       data: { fullName: payload.name },
       email: user.email,
     });
+    await this.coreService.findUserByEmailAndUpdate({data: {fullName: payload.name}, email: user.email});
 
     return user;
   }

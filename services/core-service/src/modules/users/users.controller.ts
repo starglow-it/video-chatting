@@ -58,7 +58,6 @@ import {
   USER_TOKEN_NOT_FOUND,
   USERS_SERVICE,
   plans,
-  USER_NOT_LOCAL_ACCOUNT,
 } from 'shared-const';
 
 // mongo
