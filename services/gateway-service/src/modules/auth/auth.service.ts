@@ -68,9 +68,11 @@ export class AuthService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async createUserFromGoogleAccount(payload: CreateUserFromGoogleAccountPayload): Promise<ICommonUser>{
+  async createUserFromGoogleAccount(
+    payload: CreateUserFromGoogleAccountPayload,
+  ): Promise<ICommonUser> {
     const pattern = { cmd: AuthBrokerPatterns.CreateUserFromGoogleAccount };
 
-  return firstValueFrom(this.client.send(pattern, payload));
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 }

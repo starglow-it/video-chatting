@@ -34,12 +34,12 @@ import {
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
-import { getScreenShots } from "../../utils/images/getScreenShots";
-import { DEFAULT_TEMPLATE_DATA } from "shared-const";
-import { Counters } from "shared-types";
+import { getScreenShots } from '../../utils/images/getScreenShots';
+import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
+import { Counters } from 'shared-types';
 
 @Injectable()
-export class CommonTemplatesService{
+export class CommonTemplatesService {
   constructor(
     private awsService: AwsConnectorService,
     private countersService: CountersService,
@@ -47,8 +47,7 @@ export class CommonTemplatesService{
     private commonTemplate: Model<CommonTemplateDocument>,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
-  ) { }
-
+  ) {}
 
   async exists({
     query,
@@ -97,7 +96,6 @@ export class CommonTemplatesService{
         { populate: populatePaths, session: session?.session },
       )
       .exec();
-    
   }
 
   async findCommonTemplate({
@@ -129,7 +127,6 @@ export class CommonTemplatesService{
     const isTemplatesCounterExists = await this.countersService.exists({
       key: Counters.Templates,
     });
-
 
     if (isTemplatesCounterExists) {
       const counter = await this.countersService.updateOne({
@@ -193,10 +190,7 @@ export class CommonTemplatesService{
     query,
     data,
     session,
-  }: UpdateModelQuery<
-    CommonTemplateDocument,
-    CommonTemplate
-  >): Promise<any> {
+  }: UpdateModelQuery<CommonTemplateDocument, CommonTemplate>): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
     };
@@ -262,7 +256,6 @@ export class CommonTemplatesService{
 
   async aggregate(aggregationPipeline: PipelineStage[]) {
     return this.commonTemplate.aggregate(aggregationPipeline).exec();
-    
   }
 
   async deletePreview({

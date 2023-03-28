@@ -75,14 +75,18 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   private googleClientId: string;
   private googleSecret: string;
 
-
   async onModuleInit() {
-    this.googleClientId = await this.configService.get<string>('googleClientId');
+    this.googleClientId = await this.configService.get<string>(
+      'googleClientId',
+    );
     this.googleSecret = await this.configService.get<string>('googleSecret');
   }
 
   async onApplicationBootstrap() {
-    this.oAuth2Client = new google.auth.OAuth2(this.googleClientId, this.googleSecret);
+    this.oAuth2Client = new google.auth.OAuth2(
+      this.googleClientId,
+      this.googleSecret,
+    );
   }
 
   @Post('/register')
@@ -376,22 +380,16 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
   //==================== GOOGLE AUTH =======================
 
+  async getUserDataFromGoogleToken(token: string) {
+    const userInfoClient = google.oauth2('v2').userinfo;
 
-async getUserDataFromGoogleToken(token: string) {
-  const userInfoClient = google.oauth2('v2').userinfo;
- 
-  this.oAuth2Client.setCredentials({
-    access_token: token
-  })
- 
-  const userInfoResponse = await userInfoClient.get({
-    auth: this.oAuth2Client
-  });
- 
-  return userInfoResponse.data;
-}
+    this.oAuth2Client.setCredentials({
+      access_token: token,
+    });
 
 
+    return userInfoResponse.data;
+  }
 
   @Post('/google-verify')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
@@ -400,51 +398,49 @@ async getUserDataFromGoogleToken(token: string) {
     description: 'User logged in',
   })
   async googleAuthRedirect(
-    @Body() body: VerifyGoogleAuthRequest
+    @Body() body: VerifyGoogleAuthRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
-    try{
+    try {
       const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
-    
-    const {email} = tokenVerified;
 
-    
-    const isUserExists = await this.coreService.checkIfUserExists({
-      email,
-    });
-    
-    let user: ICommonUser;
-    
-    
-    if (!isUserExists) {
-      const {given_name, picture} = await this.getUserDataFromGoogleToken(body.token);
-      user = await this.authService.createUserFromGoogleAccount({
-        password: 'default',
-        email,
-        picture,
-        name: given_name
-      });
-    }
-    else{
-      user = await this.coreService.findUserByEmail({
+      const { email } = tokenVerified;
+
+      const isUserExists = await this.coreService.checkIfUserExists({
         email,
       });
-    }
 
-    if(user.loginType !== LoginTypes.Google)throw new DataValidationException(USER_NOT_GOOGLE_ACCOUNT);
+      let user: ICommonUser;
 
+      if (!isUserExists) {
+        const { given_name, picture } = await this.getUserDataFromGoogleToken(
+          body.token,
+        );
+        user = await this.authService.createUserFromGoogleAccount({
+          password: 'default',
+          email,
+          picture,
+          name: given_name,
+        });
+      } else {
+        user = await this.coreService.findUserByEmail({
+          email,
+        });
+      }
 
-    if (user.isBlocked) {
-      throw new DataValidationException(USER_IS_BLOCKED);
-    }
+      if (user.loginType !== LoginTypes.Google)
+        throw new DataValidationException(USER_NOT_GOOGLE_ACCOUNT);
 
-    const result = await this.authService.loginUser({email, password: ''});
+      if (user.isBlocked) {
+        throw new DataValidationException(USER_IS_BLOCKED);
+      }
 
-    return {
-      success: true,
-      result
-    }
-    }
-    catch(err){
+      const result = await this.authService.loginUser({ email, password: '' });
+
+      return {
+        success: true,
+        result,
+      };
+    } catch (err) {
       this.logger.error(
         {
           message: `An error occurs, while verify google token`,
@@ -454,5 +450,4 @@ async getUserDataFromGoogleToken(token: string) {
       throw new BadRequestException(err);
     }
   }
-
 }

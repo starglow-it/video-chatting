@@ -114,17 +114,21 @@ export class AuthController {
     }
   }
 
-
   @MessagePattern({ cmd: AuthBrokerPatterns.CreateUserFromGoogleAccount })
-  async createUserFromGoogleAccount(payload: CreateUserFromGoogleAccountPayload) {
-
+  async createUserFromGoogleAccount(
+    payload: CreateUserFromGoogleAccountPayload,
+  ) {
     const token = await this.authService.generateToken({
       email: payload.email,
       type: TokenTypes.Confirm,
     });
     const user = await this.coreService.createUser({
-      user: {...payload,loginType: LoginTypes.Google},
-      token
+      user: { ...payload, loginType: LoginTypes.Google },
+      token,
+    });
+    await this.coreService.findUserByEmailAndUpdate({
+      data: { fullName: payload.name },
+      email: user.email,
     });
     await this.coreService.findUserByEmailAndUpdate({data: {fullName: payload.name}, email: user.email});
 

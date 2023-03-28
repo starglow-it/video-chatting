@@ -76,7 +76,7 @@ export const SignInGoogle = () => {
         />
         <CustomTypography
             nameSpace="common"
-            translation="buttons.loginGoggle"
+            translation="buttons.loginGoogle"
         />
       </ConditionalRender>
     </SocialLogin>

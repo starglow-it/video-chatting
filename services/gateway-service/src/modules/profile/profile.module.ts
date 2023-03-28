@@ -21,7 +21,7 @@ import { ProfileService } from './profile.service';
 import { ProfileTemplatesController } from './profile-templates.controller';
 import { ProfileAvatarController } from './profile-avatar.controller';
 import { ProfileController } from './profile.controller';
-import {PaymentsModule} from "../payments/payments.module";
+import { PaymentsModule } from '../payments/payments.module';
 
 @Module({
   imports: [

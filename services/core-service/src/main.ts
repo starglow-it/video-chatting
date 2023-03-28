@@ -58,9 +58,6 @@ async function bootstrap() {
   await seeder.seedRoomStatistic();
   await seeder.seedLinks();
 
-  
-
-
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
   dashboardNotificationsController.deleteDashboardNotifications();
@@ -68,11 +65,9 @@ async function bootstrap() {
   return;
 }
 
-process.on('uncaughtException', (err, origin) => console.log(origin)
-)
+process.on('uncaughtException', (err, origin) => console.log(origin));
 
-process.on('unhandledRejection', (reason) => console.log(reason)
-)
+process.on('unhandledRejection', (reason) => console.log(reason));
 
 bootstrap().then(() => {
   console.log('Core Microservice is listening');
