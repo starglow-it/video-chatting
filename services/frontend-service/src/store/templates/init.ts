@@ -69,7 +69,7 @@ addTemplateToUserFx.use(handleAddTemplateToUser);
 deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 
 $templatesStore
-    .on(getTemplatesFx.doneData, (state, data) => data)
+    .on(getTemplatesFx.doneData, (state, data) => ({...data, list: data.list.filter(item => !item.isAcceptNoLogin)}))
     .reset(clearProfileEvent);
 
 $templatePreviewStore.on(setPreviewTemplate, (_state, data: ICommonTemplate | null) => data);
