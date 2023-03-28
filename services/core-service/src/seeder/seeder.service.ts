@@ -127,8 +127,6 @@ export class SeederService {
           },
         });
 
-
-
         await this.countersService.create({
           data: {
             key: counterType,
@@ -178,7 +176,6 @@ export class SeederService {
           mimeType,
         });
 
-        const imageIds = previewImages.map((image) => image._id);
 
         await this.commonTemplatesService.updateCommonTemplate({
           query: {
@@ -186,7 +183,7 @@ export class SeederService {
           },
           data: {
             templateType: mimeType.includes('image') ? 'image' : 'video',
-            previewUrls: imageIds,
+            previewUrls: previewImages.map((image) => image._id),
             url,
           },
         });
@@ -219,43 +216,40 @@ export class SeederService {
       return;
     };
 
-    const maxParticipants = 4;
-
-    const usersPosition = [{
-      bottom:
-        0.57,
-      left:
-        0.44
-    },
-    {
-      bottom:
-        0.05,
-      left:
-        0.44
-    },
-    {
-      bottom:
-        0.33,
-      left:
-        0.08
-    },
-    {
-      bottom:
-        0.3,
-      left:
-        0.82
-    }];
 
     const newCommonTemplate = plainToInstance(CommonTemplateDTO, await this.commonTemplatesService.createCommonTemplate({
       data: {
         author: admin._id,
         draft: false,
         isPublic: true,
-        maxParticipants,
+        maxParticipants: 4,
         description: 'Global Room',
         name: 'Global Theliveoffice',
         isAcceptNoLogin: true,
-        usersPosition
+        usersPosition: [{
+          bottom:
+            0.57,
+          left:
+            0.44
+        },
+        {
+          bottom:
+            0.05,
+          left:
+            0.44
+        },
+        {
+          bottom:
+            0.33,
+          left:
+            0.08
+        },
+        {
+          bottom:
+            0.3,
+          left:
+            0.82
+        }]
       }
     }), {
       excludeExtraneousValues: true,

@@ -148,6 +148,7 @@ export class UserTemplatesController {
           });
         
 
+
         const user = await this.usersService.findById(userId, session);
         
 
@@ -330,7 +331,6 @@ export class UserTemplatesController {
       });
     }
   }
-
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.UpdateUserTemplate })
   async updateUserTemplate(

@@ -305,8 +305,6 @@ services:
       - SUPPORT_EMAIL
       - ADMIN_EMAIL
       - ADMIN_PASSWORD
-      - GOOGLE_CLIENT_ID
-      - GOOGLE_SECRET
     depends_on:
       - mongo
       - rabbit

@@ -223,7 +223,6 @@ export class CommonTemplatesController {
             populatePaths: 'businessCategories',
           });
 
-
         const targetUser = await this.usersService.findUser({
           query: {
             _id: data.userId,
@@ -398,9 +397,6 @@ export class CommonTemplatesController {
           populatePaths: ['previewUrls'],
           session,
         });
-
-        console.log(restData);
-        
 
         const updateData: Parameters<
           typeof this.commonTemplatesService.updateCommonTemplate
