@@ -22,8 +22,6 @@ import { PaymentsModule } from './services/payments/payments.module';
 import { CountryStatisticsModule } from './modules/country-statistics/country-statistics.module';
 import { RoomsStatisticsModule } from './modules/rooms-statistics/rooms-statistics.module';
 import {TranscodeModule} from "./modules/transcode/transcode.module";
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -39,9 +37,6 @@ import { join } from 'path';
           uri: allConfig.mongoUri,
         };
       },
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
     }),
     UsersModule,
     UserTokenModule,
