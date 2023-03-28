@@ -45,7 +45,7 @@ export class JwtAuthAnonymousGuard implements CanActivate {
     if (cookies && cookies.accessToken) {
       token = cookies.accessToken;
     } else {
-      const authHeader = request.headers['authorization'];
+      const authHeader = headers['authorization'];
       if (!authHeader) {
         throw new UnauthorizedException();
       }
