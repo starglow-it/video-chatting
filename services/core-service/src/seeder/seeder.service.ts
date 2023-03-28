@@ -204,7 +204,7 @@ export class SeederService {
       query: { email: adminEmail },
     });
 
-    const buf = readFileSync(join(process.cwd(), './src/public/rm222batch5-kul-03.jpg'));
+    const buf = readFileSync(join(process.cwd(), './src/public/office_1.jpeg'));
 
 
     const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({
