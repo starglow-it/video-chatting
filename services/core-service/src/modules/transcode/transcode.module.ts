@@ -4,9 +4,9 @@ import { TranscodeService } from './transcode.service';
 import { AwsConnectorModule } from '../../services/aws-connector/aws-connector.module';
 
 @Module({
-    imports: [AwsConnectorModule],
-    controllers: [TranscodeController],
-    providers: [TranscodeService],
-    exports: [TranscodeService],
+  imports: [AwsConnectorModule],
+  controllers: [TranscodeController],
+  providers: [TranscodeService],
+  exports: [TranscodeService],
 })
 export class TranscodeModule {}

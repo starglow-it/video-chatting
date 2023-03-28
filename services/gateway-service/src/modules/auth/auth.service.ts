@@ -14,6 +14,7 @@ import {
   IToken,
   ICommonUser,
   TokenPairWithUserType,
+  CreateUserFromGoogleAccountPayload,
 } from 'shared-types';
 import { firstValueFrom } from 'rxjs';
 
@@ -63,6 +64,14 @@ export class AuthService {
     payload: SendResetPasswordLinkEmailPayload,
   ): Promise<void> {
     const pattern = { cmd: AuthBrokerPatterns.SendResetPasswordLink };
+
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
+  async createUserFromGoogleAccount(
+    payload: CreateUserFromGoogleAccountPayload,
+  ): Promise<ICommonUser> {
+    const pattern = { cmd: AuthBrokerPatterns.CreateUserFromGoogleAccount };
 
     return firstValueFrom(this.client.send(pattern, payload));
   }

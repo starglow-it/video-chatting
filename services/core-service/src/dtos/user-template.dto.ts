@@ -122,7 +122,6 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   indexUsers: IUserTemplate['indexUsers'];
 
-
   @Expose()
   @Transform((data) =>
     data.obj?.links?.map((link) => ({

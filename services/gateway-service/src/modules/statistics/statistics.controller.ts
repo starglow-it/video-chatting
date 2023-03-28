@@ -13,7 +13,8 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import {
-  ICommonUserStatistic, PlanKeys,
+  ICommonUserStatistic,
+  PlanKeys,
   ResponseSumType,
   RoomRatingStatistics,
   RoomsStatistics,

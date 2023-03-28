@@ -16,10 +16,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-import { ApiOkResponse, ApiOperation} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
-import {IUserTemplate, ResponseSumType, EntityList, ICommonTemplate} from 'shared-types';
+import {
+  IUserTemplate,
+  ResponseSumType,
+  EntityList,
+  ICommonTemplate,
+} from 'shared-types';
 import { TemplatesService } from '../templates/templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
@@ -301,7 +306,6 @@ export class ProfileTemplatesController {
     @Req() req,
     @Param('templateId') templateId: string,
   ) {
-
     try {
       if (templateId) {
         const template = await this.templatesService.getCommonTemplateById({

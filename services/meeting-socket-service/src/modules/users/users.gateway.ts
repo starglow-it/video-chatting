@@ -13,7 +13,11 @@ import { Socket } from 'socket.io';
 import { BaseGateway } from '../../gateway/base.gateway';
 
 // types
-import { IUserTemplate, MeetingAccessStatusEnum, ResponseSumType } from 'shared-types';
+import {
+  IUserTemplate,
+  MeetingAccessStatusEnum,
+  ResponseSumType,
+} from 'shared-types';
 
 // services
 import { MeetingsService } from '../meetings/meetings.service';
@@ -62,7 +66,7 @@ export class UsersGateway extends BaseGateway {
       const userTemplate = await this.coreService.findMeetingTemplateById({
         id: userTemplateId,
       });
-      const updateIndexUsers = userTemplate.indexUsers.map(userId => {
+      const updateIndexUsers = userTemplate.indexUsers.map((userId) => {
         if (user.id.toString() === userId) return null;
         return userId;
       });
@@ -70,76 +74,77 @@ export class UsersGateway extends BaseGateway {
       await this.coreService.updateUserTemplate({
         userId: user.id,
         templateId: userTemplate.id,
-        data: { indexUsers: updateIndexUsers }
+        data: { indexUsers: updateIndexUsers },
       });
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
-
     }
   }
 
-  private async handleUpdateUsersTemplateVideoContainer(userTemplateId: string, meetingUserId: string, data: Partial<MeetingUserDocument>, session) {
-   try{
-    const usersTemplate = await this.coreService.findMeetingTemplateById({
-      id: userTemplateId
-    });
-
-    const updateUser = await this.usersService.findOne({
-      query: {
-        _id: meetingUserId,
-      },
-      session,
-    });
-    
-
-    let countIndexUser = 0;
-    let updateUsersPosistion = usersTemplate.usersPosition;
-    let updateUsersSize = usersTemplate.usersSize;
-
-    if (data?.userPosition) {
-      updateUser.userPosition = data.userPosition;
-
-      updateUsersPosistion = usersTemplate.usersPosition.map(userPosition => {
-        if(usersTemplate.indexUsers[countIndexUser] !== meetingUserId){
-          countIndexUser++;
-          return userPosition;
-        }
-        countIndexUser++;
-        userPosition = data?.userPosition;
-        return userPosition;
+  private async handleUpdateUsersTemplateVideoContainer(
+    userTemplateId: string,
+    meetingUserId: string,
+    data: Partial<MeetingUserDocument>,
+    session,
+  ) {
+    try {
+      const usersTemplate = await this.coreService.findMeetingTemplateById({
+        id: userTemplateId,
       });
-    }
 
-    if (data?.userSize) {
-      updateUser.userSize = data.userSize;
-      updateUsersSize = usersTemplate.usersSize.map(userSize => {
-        if(usersTemplate.indexUsers[countIndexUser] !== meetingUserId){
-          countIndexUser++;
-          return userSize;
-        }
-        countIndexUser++;
-        userSize = data?.userSize;
-        return userSize;
+      const updateUser = await this.usersService.findOne({
+        query: {
+          _id: meetingUserId,
+        },
+        session,
       });
-    }
 
-    updateUser.save();
-    
-    this.coreService.updateUserTemplate({
-      templateId: userTemplateId,
-      userId: meetingUserId,
-      data: {
-        usersPosition: updateUsersPosistion,
-        usersSize: updateUsersSize
+      let countIndexUser = 0;
+      let updateUsersPosistion = usersTemplate.usersPosition;
+      let updateUsersSize = usersTemplate.usersSize;
+
+      if (data?.userPosition) {
+        updateUser.userPosition = data.userPosition;
+
+        updateUsersPosistion = usersTemplate.usersPosition.map(
+          (userPosition) => {
+            if (usersTemplate.indexUsers[countIndexUser] !== meetingUserId) {
+              countIndexUser++;
+              return userPosition;
+            }
+            countIndexUser++;
+            userPosition = data?.userPosition;
+            return userPosition;
+          },
+        );
       }
-    });
-    
-   }
-   catch(err){
-    console.log(err);
-    
-   }
+
+      if (data?.userSize) {
+        updateUser.userSize = data.userSize;
+        updateUsersSize = usersTemplate.usersSize.map((userSize) => {
+          if (usersTemplate.indexUsers[countIndexUser] !== meetingUserId) {
+            countIndexUser++;
+            return userSize;
+          }
+          countIndexUser++;
+          userSize = data?.userSize;
+          return userSize;
+        });
+      }
+
+      updateUser.save();
+
+      this.coreService.updateUserTemplate({
+        templateId: userTemplateId,
+        userId: meetingUserId,
+        data: {
+          usersPosition: updateUsersPosistion,
+          usersSize: updateUsersSize,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   @SubscribeMessage(UsersSubscribeEvents.OnUpdateUser)
@@ -161,14 +166,17 @@ export class UsersGateway extends BaseGateway {
         session,
       );
 
-      await this.handleUpdateUsersTemplateVideoContainer(meeting.templateId, user.id.toString(),{
-        userPosition: message?.userPosition,
-        userSize: message?.userSize
-      },session)
+      await this.handleUpdateUsersTemplateVideoContainer(
+        meeting.templateId,
+        user.id.toString(),
+        {
+          userPosition: message?.userPosition,
+          userSize: message?.userSize,
+        },
+        session,
+      );
 
       await meeting.populate('users');
-
-
 
       const plainUser = plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
@@ -182,11 +190,12 @@ export class UsersGateway extends BaseGateway {
 
       //TODO: ADD SIZE AND UPDATE POSISTION FOR MEETING USER VIDEO CONTAINER
       this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
-        users: plainUsers.map(user =>
-        ({
+        users: plainUsers.map((user) => ({
           ...user,
-          ...((message.userSize && message.id == user.id) && { userSize: message.userSize }),
-          ...((message.userPosition && message.id == user.id) && { userPosition: message.userPosition })
+          ...(message.userSize &&
+            message.id == user.id && { userSize: message.userSize }),
+          ...(message.userPosition &&
+            message.id == user.id && { userPosition: message.userPosition }),
         })),
       });
 
@@ -194,10 +203,14 @@ export class UsersGateway extends BaseGateway {
         success: true,
         result: {
           user: {
-            ...plainUser, userPosition: { ...plainUser.userPosition, ...(message.userSize && { userSize: message?.userSize }) }
-          }
-        }
-      }
+            ...plainUser,
+            userPosition: {
+              ...plainUser.userPosition,
+              ...(message.userSize && { userSize: message?.userSize }),
+            },
+          },
+        },
+      };
     });
   }
 

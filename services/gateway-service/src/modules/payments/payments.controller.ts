@@ -294,7 +294,7 @@ export class PaymentsController {
   async getStripeProducts(): Promise<ResponseSumType<any>> {
     try {
       const products = await this.paymentsService.getStripeProducts();
-      
+
       return {
         success: true,
         result: products,
@@ -333,7 +333,6 @@ export class PaymentsController {
     @Param('productId') productId: string,
   ): Promise<ResponseSumType<any>> {
     try {
-      
       const session = await this.paymentsService.getCheckoutSession({
         productId,
         meetingToken: body.meetingToken,

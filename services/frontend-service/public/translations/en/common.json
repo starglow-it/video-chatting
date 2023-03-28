@@ -37,6 +37,7 @@
   "buttons": {
     "logout": "Logout",
     "login": "Sign in",
+    "loginGoogle": "Login with google",
     "save": "Save",
     "cancel": "Cancel",
     "close": "Close",

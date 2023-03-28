@@ -4,6 +4,7 @@ import { ICommonUser } from '../api-interfaces';
 
 export type LoginUserByEmailPayload = IUserCredentials;
 export type RegisterUserPayload = IUserCredentials;
+export type CreateUserFromGoogleAccountPayload = IUserCredentials & {name: string, picture?: string};
 
 export type AssignTokensToUserPayload = TokenPairWithUserType;
 export type SetResetPasswordTokenPayload = {
