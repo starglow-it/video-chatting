@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useStoreMap } from 'effector-react';
+import { useStore } from 'effector-react';
 
 import { ICommonTemplate } from 'shared-types';
 
@@ -36,14 +36,7 @@ const baseTemplateParams = {
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
 
-    const templates = useStoreMap({
-        store: $templatesStore,
-        keys: [],
-        fn: state => ({
-            ...state,
-            list: state.list.filter(user => user.isAcceptNoLogin !== true),
-        }),
-    });
+    const templates = useStore($templatesStore);
 
     useEffect(() => {
         (async () => {
