@@ -7,12 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { TokensModule } from './modules/tokens/tokens.module';
 
 @Module({
-  imports: [
-    AuthModule,
-    CoreModule,
-    NotificationsModule,
-    TokensModule,
-  ],
+  imports: [AuthModule, CoreModule, NotificationsModule, TokensModule],
   controllers: [],
   providers: [],
 })

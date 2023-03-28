@@ -66,7 +66,6 @@ export class UserTemplatesService {
     data,
     { session }: ITransactionSession,
   ): Promise<UserTemplateDocument[]> {
-    
     return this.userTemplate.create([data], { session });
   }
 

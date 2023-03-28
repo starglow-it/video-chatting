@@ -1,5 +1,5 @@
 export const toBoolean = (value: string): boolean => {
-    value = value.toLowerCase();
+  value = value.toLowerCase();
 
-    return value === 'true' || value === '1';
-}
+  return value === 'true' || value === '1';
+};

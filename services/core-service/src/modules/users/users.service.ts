@@ -1,18 +1,28 @@
-import {Injectable} from '@nestjs/common';
-import {Model, UpdateQuery} from 'mongoose';
-import {InjectModel} from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
+import { Model, UpdateQuery } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 
 // schemas
-import {User, UserDocument} from '../../schemas/user.schema';
+import { User, UserDocument } from '../../schemas/user.schema';
 
 // shared
-import {ITransactionSession} from '../../helpers/mongo/withTransaction';
-import {ICommonUser, IUpdateProfile, PlanKeys} from 'shared-types';
+import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import { ICommonUser, IUpdateProfile, PlanKeys } from 'shared-types';
 
-import {SocialLink, SocialLinkDocument,} from '../../schemas/social-link.schema';
-import {ProfileAvatar, ProfileAvatarDocument,} from '../../schemas/profile-avatar.schema';
-import {CustomPopulateOptions, GetModelQuery, UpdateModelQuery,} from '../../types/custom';
+import {
+  SocialLink,
+  SocialLinkDocument,
+} from '../../schemas/social-link.schema';
+import {
+  ProfileAvatar,
+  ProfileAvatarDocument,
+} from '../../schemas/profile-avatar.schema';
+import {
+  CustomPopulateOptions,
+  GetModelQuery,
+  UpdateModelQuery,
+} from '../../types/custom';
 
 @Injectable()
 export class UsersService {
@@ -201,7 +211,11 @@ export class UsersService {
       nextSubscriptionPlanKey: data.nextSubscriptionPlanKey,
       prevSubscriptionPlanKey: data.prevSubscriptionPlanKey,
       maxTemplatesNumber: data.maxTemplatesNumber,
-      maxMeetingTime: data.subscriptionPlanKey === PlanKeys.Business && data.maxMeetingTime === 0 ? null : data.maxMeetingTime,
+      maxMeetingTime:
+        data.subscriptionPlanKey === PlanKeys.Business &&
+        data.maxMeetingTime === 0
+          ? null
+          : data.maxMeetingTime,
       isSubscriptionActive: data.isSubscriptionActive,
       stripeEmail: data.stripeEmail,
       isStripeEnabled: data.isStripeEnabled,

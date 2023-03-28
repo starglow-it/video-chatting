@@ -3,7 +3,7 @@ import { AwsConnectorService } from '../../services/aws-connector/aws-connector.
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as probe from 'ffmpeg-probe';
 import * as stream from 'stream';
-import * as fs from "fs/promises";
+import * as fs from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
 
 const extractAudioOptions = ['-q:a', '0', '-map', 'a'];
@@ -46,12 +46,12 @@ export class TranscodeService {
 
     const transcodePromise = new Promise((resolve) => {
       ffmpeg(url)
-          .outputOptions(options)
-          .output(`./${fileName}`)
-          .on('end', () => {
-            resolve(`./${fileName}`);
-          })
-          .run();
+        .outputOptions(options)
+        .output(`./${fileName}`)
+        .on('end', () => {
+          resolve(`./${fileName}`);
+        })
+        .run();
     });
 
     await transcodePromise;
@@ -75,10 +75,11 @@ export class TranscodeService {
   async getFileData({ url }): Promise<{ size: number; hasAudio: boolean }> {
     const probeData = await probe(url);
 
-
     return {
       size: parseInt(probeData.format.size, 10),
-      hasAudio: probeData.streams.some(stream => stream.codec_type === 'audio'),
+      hasAudio: probeData.streams.some(
+        (stream) => stream.codec_type === 'audio',
+      ),
     };
   }
 
@@ -112,12 +113,12 @@ export class TranscodeService {
 
       const transcodePromise = new Promise((resolve) => {
         ffmpeg(url)
-            .outputOptions(['-c:v', 'libwebp'])
-            .output(`./${fileName}`)
-            .on('end', () => {
-              resolve(`./${fileName}`);
-            })
-            .run();
+          .outputOptions(['-c:v', 'libwebp'])
+          .output(`./${fileName}`)
+          .on('end', () => {
+            resolve(`./${fileName}`);
+          })
+          .run();
       });
 
       await transcodePromise;

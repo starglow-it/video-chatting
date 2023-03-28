@@ -63,11 +63,9 @@ export class MeetingsController {
     @Body() body: CreateMeetingRequest,
   ): Promise<ResponseSumType<IUserTemplate>> {
     try {
-      
       let userTemplate = await this.userTemplatesService.getUserTemplateById({
         id: body.templateId,
       });
-
 
       if (!userTemplate) {
         userTemplate = await this.userTemplatesService.createUserTemplate({

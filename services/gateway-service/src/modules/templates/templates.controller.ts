@@ -30,7 +30,7 @@ import { CoreService } from '../../services/core/core.service';
 import { IUserTemplate, IUpdateTemplate } from 'shared-types';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
-import { GetTemplatesQueryDto } from "../../dtos/query/GetTemplatesQuery.dto";
+import { GetTemplatesQueryDto } from '../../dtos/query/GetTemplatesQuery.dto';
 
 @Controller('templates')
 export class TemplatesController {
@@ -39,7 +39,7 @@ export class TemplatesController {
     private templatesService: TemplatesService,
     private uploadService: UploadService,
     private coreService: CoreService,
-  ) { }
+  ) {}
 
   @Get('/')
   @ApiOperation({ summary: 'Get Templates' })
@@ -55,7 +55,8 @@ export class TemplatesController {
     @Query() query: GetTemplatesQueryDto,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
-      const { skip, limit, userId, draft, isPublic, type, sort, direction } = query;
+      const { skip, limit, userId, draft, isPublic, type, sort, direction } =
+        query;
 
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
@@ -104,7 +105,6 @@ export class TemplatesController {
       const templateData = await this.templatesService.createTemplate({
         userId: req.user.userId,
       });
-
 
       return {
         success: true,

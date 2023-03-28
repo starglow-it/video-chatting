@@ -67,8 +67,6 @@ export class PaymentsService {
       cmd: PaymentsBrokerPatterns.GetStripeSubscriptionProducts,
     };
 
-    
-
     return this.client.send(pattern, payload || {}).toPromise();
   }
 

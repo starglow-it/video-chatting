@@ -18,13 +18,13 @@ export class LoggerInterceptor implements NestInterceptor {
 
     const responseWs = context.switchToWs().getClient();
 
-
     return next
       .handle()
       .pipe(
         tap(() =>
           this.logger.log(
-            `Request: [${request.method}] ${request.path} | Response: ${response.statusCode
+            `Request: [${request.method}] ${request.path} | Response: ${
+              response.statusCode
             } ${Date.now() - now}ms`,
             context.getClass().name,
           ),

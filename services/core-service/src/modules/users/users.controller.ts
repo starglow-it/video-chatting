@@ -34,7 +34,9 @@ import {
   SearchUsersPayload,
   UserRoles,
   ManageUserRightsPayload,
-  TimeoutTypesEnum, PlanKeys, LoginTypes,
+  TimeoutTypesEnum,
+  PlanKeys,
+  LoginTypes,
 } from 'shared-types';
 
 import {
@@ -156,7 +158,9 @@ export class UsersController {
       this.connection,
       async (session: ITransactionSession) => {
         try {
-          const environment = await this.configService.get<string>('environment');
+          const environment = await this.configService.get<string>(
+            'environment',
+          );
 
           const renewSubscriptionTimestampInSeconds =
             (['production', 'demo'].includes(environment)
@@ -466,7 +470,6 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      
       const isPasswordValid = await this.usersService.verifyPassword(
         payload.password,
         user.password,
@@ -598,7 +601,7 @@ export class UsersController {
   async deleteProfile(@Payload() { userId }: { userId: string }) {
     return withTransaction(this.connection, async (session) => {
       await this.usersService.deleteUser(userId, session);
-      return {}
+      return {};
     });
   }
 

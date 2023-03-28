@@ -7,7 +7,7 @@ import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
 import { UserTemplateDocument } from './user-template.schema';
 import { ProfileAvatarDocument } from './profile-avatar.schema';
-import {ICommonUser, LoginTypes, PlanKeys, UserRoles} from 'shared-types';
+import { ICommonUser, LoginTypes, PlanKeys, UserRoles } from 'shared-types';
 
 @Schema({
   timestamps: true,
@@ -227,7 +227,7 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: LoginTypes.Local
+    default: LoginTypes.Local,
   })
   loginType: ICommonUser['loginType'];
 }
