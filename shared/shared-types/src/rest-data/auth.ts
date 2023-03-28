@@ -6,4 +6,5 @@ export interface IUserCredentials {
   password: ICommonUser['password'];
   templateId?: ICommonTemplate['id'];
   country?: ICommonUser['country'];
+  loginType?: ICommonUser['loginType'];
 }

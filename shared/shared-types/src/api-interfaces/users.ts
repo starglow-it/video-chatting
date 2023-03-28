@@ -12,6 +12,11 @@ export enum UserRoles {
   Anonymous = 'anonymous'
 }
 
+export enum LoginTypes {
+  Local = 'local',
+  Google = 'google'
+}
+
 export interface ICommonUser {
   id: string;
   email: string;
@@ -51,6 +56,7 @@ export interface ICommonUser {
   isProfessionalTrialAvailable: boolean;
   isSubscriptionActive?: boolean;
   isDowngradeMessageShown: boolean;
+  loginType: LoginTypes;
 }
 
 export interface IUpdateProfile {

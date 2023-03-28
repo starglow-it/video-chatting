@@ -7,9 +7,10 @@ import {
   CreateStripeTemplateProductPayload,
   DeleteTemplateStripeProductPayload,
   GetStripeChargesPayload,
-  GetStripeTemplateProductByNamePayload, UpdateStripeTemplateProductPayload,
+  GetStripeTemplateProductByNamePayload,
+  UpdateStripeTemplateProductPayload,
 } from 'shared-types';
-import {firstValueFrom} from "rxjs";
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class PaymentsService {

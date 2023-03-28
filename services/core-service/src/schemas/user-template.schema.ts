@@ -192,16 +192,14 @@ export class UserTemplate {
   usersPosition: { bottom: number; left: number }[];
 
   @Prop({
-    type: [mongoose.Schema.Types.Number]
+    type: [mongoose.Schema.Types.Number],
   })
   usersSize: number[];
 
   @Prop({
-    type: [mongoose.Schema.Types.String]
+    type: [mongoose.Schema.Types.String],
   })
   indexUsers: string[];
-
-
 
   @Prop({
     type: [

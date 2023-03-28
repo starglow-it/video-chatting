@@ -57,6 +57,10 @@ export type LoginUserParams = {
     password: string;
 };
 
+export type GoogleVerfifyParams = {
+    token: string
+};
+
 export type RegisteredUserState = {
     isUserRegistered?: boolean;
     isUserConfirmed?: boolean;
