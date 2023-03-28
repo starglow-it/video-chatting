@@ -9,10 +9,10 @@ import {
   Get,
   Put,
   Delete,
-  Req,
-  Res,
   OnModuleInit,
   OnApplicationBootstrap,
+  Req,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -59,12 +59,12 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
-import { v4 as uuidv4 } from 'uuid';
-import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
-import { CommonCreateFreeUserDto } from 'src/dtos/response/common-create-free-user.dto';
 import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.request';
 import { ConfigClientService } from 'src/services/config/config.service';
 import { google, Auth } from 'googleapis';
+import { v4 as uuidv4 } from 'uuid';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
+import { CommonCreateFreeUserDto } from 'src/dtos/response/common-create-free-user.dto';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -75,7 +75,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     private authService: AuthService,
     private coreService: CoreService,
     private configService: ConfigClientService,
-  ) {}
+  ) { }
 
   private googleClientId: string;
   private googleSecret: string;
@@ -171,7 +171,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   })
   async confirmRegistration(
     @Body() body: TokenRequest,
-  ): Promise<ResponseSumType<any>> {
+  ): Promise<ResponseSumType<void>> {
     try {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
         body.token,

@@ -1,7 +1,11 @@
 import { NextPageContext } from 'next';
 import { authDomain } from '../domains';
-
-import { AuthUserState, GoogleVerfifyParams, LoginUserParams, Profile } from '../types';
+import {
+    AuthUserState,
+    GoogleVerfifyParams,
+    LoginUserParams,
+    Profile,
+} from '../types';
 
 export const initialAuthState: AuthUserState = {
     isAuthenticated: false,
@@ -28,8 +32,10 @@ export const refreshAuthFx = authDomain.createEffect<void, AuthUserState>(
 export const logoutUserFx = authDomain.createEffect<void, AuthUserState>(
     'logoutUserFx',
 );
-
-export const googleVerifyFx = authDomain.createEffect<GoogleVerfifyParams, AuthUserState>('googleVerifyFx');
+export const googleVerifyFx = authDomain.createEffect<
+    GoogleVerfifyParams,
+    AuthUserState
+>('googleVerifyFx');
 
 export const resetAuthErrorEvent = authDomain.createEvent<void>(
     'resetAuthErrorEvent',

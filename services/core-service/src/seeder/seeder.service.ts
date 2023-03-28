@@ -279,11 +279,7 @@ export class SeederService {
           populatePaths: ['author'],
         });
 
-        
-      
-
       const statisticPromise = commonTemplates.map(async (template) => {
-        
         const isStatisticExists = await this.roomsStatisticService.exists({
           query: { template: template._id },
         });
