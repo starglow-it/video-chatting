@@ -26,8 +26,19 @@ export default async function sendRequestWithCredentials<Result, Error>(
 
     const cookies = parseCookies(ctx);
 
-    const { accessToken = options.accessToken } = cookies;
-    const { refreshToken = options.refreshToken } = cookies;
+    const {
+        accessToken = options.accessToken,
+        refreshToken = options.refreshToken,
+        userWithoutLoginId,
+    } = cookies;
+
+    if(userWithoutLoginId) {
+        return sendRequest<Result, Error>({
+            url: path,
+            ctx,
+            ...requestOptions,
+        });
+    }
 
     if (!accessToken && !refreshToken) {
         return {

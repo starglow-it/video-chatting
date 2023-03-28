@@ -34,6 +34,7 @@ import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.re
 // dtos
 import { CommonInstanceMeetingRestDTO } from '../../dtos/response/common-instance-meeting.dto';
 import { MeetingsService } from './meetings.service';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
@@ -47,7 +48,7 @@ export class MeetingsController {
     private meetingService: MeetingsService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Post('/')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Meeting' })

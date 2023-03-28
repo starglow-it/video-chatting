@@ -240,6 +240,11 @@ export class UserTemplate {
     default: 'video',
   })
   templateType: 'video' | 'image';
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean
+  })
+  isAcceptNoLogin: boolean;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

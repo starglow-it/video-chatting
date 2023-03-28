@@ -92,7 +92,7 @@ export class UsersController {
     private countryStatisticsService: CountryStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
     @InjectConnection() private connection: Connection,
-  ) {}
+  ) { }
 
   startCheckSubscriptions() {
     this.tasksService.addInterval({
@@ -393,12 +393,12 @@ export class UsersController {
         ...query,
         ...(options?.search
           ? {
-              $or: [
-                { companyName: queryRegex },
-                { fullName: queryRegex },
-                { email: queryRegex },
-              ],
-            }
+            $or: [
+              { companyName: queryRegex },
+              { fullName: queryRegex },
+              { email: queryRegex },
+            ],
+          }
           : {}),
       };
 
@@ -580,6 +580,26 @@ export class UsersController {
     }
   }
 
+
+  @MessagePattern({ cmd: UserBrokerPatterns.CreateUserWithoutLogin })
+  async createUserWithoutlogin({ uuid }) {
+    const user = await this.usersService.createUser({
+      email: uuid,
+      password: 'text',
+      role: UserRoles.Anonymous,
+      isConfirmed: true,
+      fullName: 'Global User',
+      companyName: '',
+      position: '',
+      contactEmail: '',
+      maxMeetingTime: 10
+    });
+    return plainToInstance(CommonUserDTO, user, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
+  }
+
   @MessagePattern({ cmd: AuthBrokerPatterns.LoginUserByEmail })
   async loginUserByEmail(@Payload() loginData: LoginUserByEmailPayload) {
     const user = await this.usersService.findUser({
@@ -589,6 +609,7 @@ export class UsersController {
     if (!user) {
       throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
     }
+
 
     return plainToInstance(CommonUserDTO, user, {
       excludeExtraneousValues: true,

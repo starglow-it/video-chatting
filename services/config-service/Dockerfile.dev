@@ -14,9 +14,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/config-service/package.json ./services/config-service
 
-RUN pnpm install
-
 COPY ./services/config-service ./services/config-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 

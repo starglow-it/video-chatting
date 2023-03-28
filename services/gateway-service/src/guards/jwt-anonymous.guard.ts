@@ -11,22 +11,41 @@ import { CoreService } from '../services/core/core.service';
 type TokenDataDto = { userId: string; exp: number };
 
 @Injectable()
-export class JwtAuthGuard implements CanActivate {
+export class JwtAuthAnonymousGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private coreService: CoreService
-  ) {}
+  ) { }
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<Request>();
 
     let token: string;
+    let userWithoutLoginId: string;
 
     const cookies = request['cookies'];
+    const headers = request['headers'];
+
+    userWithoutLoginId = cookies['userWithoutLoginId'] || headers['userwithoutloginid'];
+
+
+    if (userWithoutLoginId && !cookies.accessToken) {
+      const user = await this.coreService.findUserById({ userId: userWithoutLoginId });
+      if (user.role === UserRoles.Anonymous) {
+        request['user'] = {
+          userId: user.id,
+          exp: 1000000000000
+        };
+        return true;
+      }
+    }
+
+
+
     if (cookies && cookies.accessToken) {
       token = cookies.accessToken;
     } else {
-      const authHeader = request.headers['authorization'];
+      const authHeader = headers['authorization'];
       if (!authHeader) {
         throw new UnauthorizedException();
       }

@@ -13,4 +13,5 @@ export const DEFAULT_TEMPLATE_DATA: Omit<ICommonTemplate, 'templateId'> = {
   draft: true,
   isPublic: false,
   templateType: 'video',
+  isAcceptNoLogin: false
 };

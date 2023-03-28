@@ -11,6 +11,8 @@ import {
   Delete,
   OnModuleInit,
   OnApplicationBootstrap,
+  Req,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -60,6 +62,9 @@ import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request
 import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.request';
 import { ConfigClientService } from 'src/services/config/config.service';
 import { google, Auth } from 'googleapis';
+import { v4 as uuidv4 } from 'uuid';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
+import { CommonCreateFreeUserDto } from 'src/dtos/response/common-create-free-user.dto';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -70,7 +75,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     private authService: AuthService,
     private coreService: CoreService,
     private configService: ConfigClientService,
-  ) {}
+  ) { }
 
   private googleClientId: string;
   private googleSecret: string;
@@ -124,6 +129,39 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       throw new BadRequestException(err);
     }
   }
+
+  @Post('/create-free-user')
+  @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
+  @ApiCreatedResponse({
+    type: CommonCreateFreeUserDto,
+    description: 'User create successful',
+  })
+  async createAccountWithoutLogin() {
+    try{
+      const uuid = uuidv4();
+      const user = await this.coreService.createUserWithoutLogin(uuid);
+
+      const globalCommonTemplate = await this.coreService.findCommonTemplateByTemplate({
+        isAcceptNoLogin: true
+      });
+
+      if (!globalCommonTemplate) return;
+      const userTemplate = await this.coreService.addTemplateToUser({
+        templateId: globalCommonTemplate.id,
+        userId: user.id
+      });
+
+      return {
+        user,
+        userTemplateId: userTemplate.id
+      }
+
+    }
+    catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
 
   @Post('/confirm-registration')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
@@ -297,7 +335,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
+
+
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/me')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Check Auth' })
@@ -385,6 +425,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
     this.oAuth2Client.setCredentials({
       access_token: token,
+    });
+
+    const userInfoResponse = await userInfoClient.get({
+      auth: this.oAuth2Client
     });
 
 

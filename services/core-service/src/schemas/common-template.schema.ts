@@ -139,6 +139,12 @@ export class CommonTemplate {
     default: 'video',
   })
   templateType: 'image' | 'video';
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean,
+    default: false
+  })
+  isAcceptNoLogin: boolean;
 }
 
 export type CommonTemplateDocument = CommonTemplate & Document;

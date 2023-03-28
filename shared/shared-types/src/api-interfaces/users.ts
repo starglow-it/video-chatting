@@ -9,6 +9,7 @@ import {
 export enum UserRoles {
   Admin = 'admin',
   User = 'user',
+  Anonymous = 'anonymous'
 }
 
 export enum LoginTypes {
