@@ -59,7 +59,6 @@ import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
 import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.request';
 import { ConfigClientService } from 'src/services/config/config.service';
-import { CommonGoogleInfoDto } from 'src/dtos/response/common-google-info.dto';
 import { google, Auth } from 'googleapis';
 
 @ApiTags('auth')
@@ -135,7 +134,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const isUserTokenExists = await this.coreService.checkIfUserTokenExists(
         body.token,
       );
-
 
       if (!isUserTokenExists) {
         throw new DataValidationException(USER_TOKEN_NOT_FOUND);
@@ -274,7 +272,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     if (!isUserExists) {
       throw new DataValidationException(USER_NOT_FOUND);
     }
-
 
     const user = await this.coreService.findUserByEmail({
       email: body.email,

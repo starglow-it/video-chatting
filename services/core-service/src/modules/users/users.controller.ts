@@ -465,7 +465,6 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      
       const isPasswordValid = await this.usersService.verifyPassword(
         payload.password,
         user.password,
