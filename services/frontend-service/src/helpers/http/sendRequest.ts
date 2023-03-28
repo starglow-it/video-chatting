@@ -3,7 +3,7 @@ import { parseCookies } from 'nookies';
 import { ApiParams, FailedResult, SuccessResult } from '../../store/types';
 
 export async function sendRequest<Result, Error>(
-    options: Partial<ApiParams> & AxiosRequestConfig = {},
+    options: ApiParams & AxiosRequestConfig = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
     const { token, url, headers, ctx, ...restOptions } = options;
     const newHeaders = { ...headers };

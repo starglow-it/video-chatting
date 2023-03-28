@@ -4,8 +4,7 @@
     "haveAccount": "Already have an account?"
   },
   "register": {
-    "text": "Register",
-    "or": "or"
+    "text": "Register"
   },
   "reset": {
     "title": "Reset password",
