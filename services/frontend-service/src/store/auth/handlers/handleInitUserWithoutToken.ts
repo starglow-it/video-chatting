@@ -10,20 +10,19 @@ export const handleInitUserWithoutToken = async () => {
         ErrorState
     >({
         ...initUserWithoutTokenUrl,
-        authRequest: true,
     });
-    const { result } = response;
-    if (result?.user)
-        setUserWithoutTokenCookies(result?.user.id, result?.userTemplateId);
+    const { result, success } = response;
 
-    if (response.success && response.result) {
+    if (success && result) {
+        const { user, userTemplateId } = result;
+        if (user) setUserWithoutTokenCookies(user?.id, userTemplateId);
         return {
-            user: result?.user || null,
-            userTemplateId: result?.userTemplateId || '',
+            user: user || null,
+            userTemplateId: userTemplateId || '',
         };
     }
 
-    if (!response.success) {
+    if (!success) {
         return {
             user: null,
             userTemplateId: '',

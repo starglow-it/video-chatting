@@ -8,7 +8,7 @@ import { useTimer } from '@hooks/useTimer';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // stores
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, UserRoles } from 'shared-types';
 import {
     $isBusinessSubscription,
     $profileStore,
@@ -41,7 +41,7 @@ const Component = () => {
     const { value: currentTime, onStartTimer: handleStartMeetingEnd } =
         useTimer(true);
 
-    const isLimitTime = profile.role !== 'anonymous';
+    const isLimitTime = profile.role !== UserRoles.Anonymous;
 
     useEffect(() => {
         if (meeting?.endsAt && meeting?.startAt) {

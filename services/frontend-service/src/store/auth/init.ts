@@ -71,14 +71,12 @@ logoutUserFx.doneData.watch(() => {
 
 initUserWithoutTokenFx.doneData.watch(async ({ user, userTemplateId }) => {
     if (!user || !userTemplateId) return;
-    // await setProfileEvent({ user });
     const { template } = await createMeetingFx({
         templateId: userTemplateId,
     });
 
-    if (template) {
+    if (template)
         Router.push(getClientMeetingUrl(template?.customLink || template?.id));
-    }
 });
 
 $authStore
