@@ -48,7 +48,8 @@
     "turnOff":"Turn off",
     "switchOn":"Switch ON",
     "switchOff":"Switch OFF",
-    "clickToSeeYourself": "Click to see yourself"
+    "clickToSeeYourself": "Click to see yourself",
+    "selfViewOff": "Self-View Off"
   },
   "endMeeting": {
     "forHost": "Leave?",

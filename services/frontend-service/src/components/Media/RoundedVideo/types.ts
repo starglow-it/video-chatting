@@ -11,4 +11,6 @@ export type RoundedVideoProps = {
     videoRef?: MutableRefObject<HTMLVideoElement | null>;
     isScreenSharing?: boolean;
     onToggleVideo?: () => void;
+    isSelfView?: boolean;
+    isVideoSelfView: boolean;
 };

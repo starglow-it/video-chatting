@@ -29,14 +29,23 @@ const Component = ({
     isVideoAvailable = false,
     isLocal = false,
     isScreenSharing = false,
+    isSelfView = false,
+    isVideoSelfView = false
 }: RoundedVideoProps) => {
     const [isVideoActive, setIsVideoActive] = useState(false);
+
+
 
     const handleVideoLoaded = useCallback(() => {
         setIsVideoActive(true);
     }, []);
 
-    const style = useMemo(() => ({ '--sizeCoef': size / 150 } as React.CSSProperties), [size]);
+    const style = useMemo(
+        () => ({ '--sizeCoef': size / 150 } as React.CSSProperties),
+        [size],
+    );
+
+    console.log(videoRef)
 
     return (
         <CustomGrid
@@ -46,7 +55,11 @@ const Component = ({
             sx={{ width: `${size}px`, height: `${size}px` }}
             className={clsx(styles.videoWrapper, className)}
         >
-            {!(isCameraActive && isVideoActive && isVideoAvailable) && (
+            {!(
+                (!isSelfView ? isCameraActive : isVideoSelfView) &&
+                isVideoActive &&
+                isVideoAvailable
+            ) && (
                 <ProfileAvatar
                     src={userProfilePhoto}
                     className={styles.avatarOverlay}
@@ -67,14 +80,26 @@ const Component = ({
                     <VideoEyeIcon
                         width={isScreenSharing ? '30px' : '40px'}
                         height={isScreenSharing ? '30px' : '40px'}
-                        isActive={isCameraActive}
+                        isActive={
+                            !isSelfView ? isCameraActive : isVideoSelfView
+                        }
                     />
-                    <ConditionalRender condition={!isScreenSharing && size > 84}>
+                    <ConditionalRender
+                        condition={!isScreenSharing && size > 84}
+                    >
                         <CustomTypography
                             variant="body3"
                             nameSpace="meeting"
                             align="center"
-                            translation={isCameraActive ? 'devices.switchOff' : 'devices.clickToSeeYourself'}
+                            translation={
+                                !isSelfView
+                                    ? isCameraActive
+                                        ? 'devices.switchOff'
+                                        : 'devices.switchOn'
+                                    : isVideoSelfView
+                                    ? 'devices.selfViewOff'
+                                    : 'devices.clickToSeeYourself'
+                            }
                         />
                     </ConditionalRender>
                 </CustomGrid>

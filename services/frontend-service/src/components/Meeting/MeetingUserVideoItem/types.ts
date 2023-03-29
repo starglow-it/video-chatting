@@ -19,6 +19,7 @@ export type MeetingUserVideoItemProps = {
     bottom: number | undefined;
     left: number | undefined;
     onResizeVideo?: (size: number) => void;
+    isSelfView?: boolean;
 };
 
 export type MeetingUserVideoComProps = {
