@@ -20,9 +20,9 @@ COPY ./services/gateway-service/package.json ./services/gateway-service
 
 COPY ./services/gateway-service ./services/gateway-service
 
-RUN npx nx run-many --target=build --projects=shared-utils,shared-types,shared-const
-
 RUN pnpm install
+
+RUN npx nx run-many --target=build --projects=shared-utils,shared-types,shared-const
 
 EXPOSE 3000
 
