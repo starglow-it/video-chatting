@@ -20,9 +20,9 @@ COPY ./services/meeting-socket-service/package.json ./services/meeting-socket-se
 
 COPY ./services/meeting-socket-service ./services/meeting-socket-service
 
-RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
-
 RUN pnpm install
+
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 
 EXPOSE 8180
 

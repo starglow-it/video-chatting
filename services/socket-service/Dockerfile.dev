@@ -21,9 +21,9 @@ COPY ./services/socket-service/package.json ./services/socket-service
 
 COPY ./services/socket-service ./services/socket-service
 
-RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
-
 RUN pnpm install
+
+RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 
 EXPOSE 8080
 
