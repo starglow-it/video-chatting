@@ -20,3 +20,18 @@ export type MeetingUserVideoItemProps = {
     left: number | undefined;
     onResizeVideo?: (size: number) => void;
 };
+
+export type MeetingUserVideoComProps = {
+    isLocal?: boolean;
+    localStream?: CustomMediaStream;
+    userId: MeetingUser['id'];
+    isCameraEnabled: boolean;
+    scale: number;
+    isMicEnabled: boolean;
+    userName: MeetingUser['username'];
+    userProfileAvatar: MeetingUser['profileAvatar'] | string;
+    onToggleVideo?: () => void;
+    isScreenSharingUser: boolean;
+    isScreenSharing: boolean;
+    isAuraActive: boolean;
+}
