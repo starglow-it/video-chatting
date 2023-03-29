@@ -16,10 +16,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-import { ApiOkResponse, ApiOperation} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
-import {IUserTemplate, ResponseSumType, EntityList, ICommonTemplate} from 'shared-types';
+import {
+  IUserTemplate,
+  ResponseSumType,
+  EntityList,
+  ICommonTemplate,
+} from 'shared-types';
 import { TemplatesService } from '../templates/templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
@@ -27,6 +32,7 @@ import { UploadService } from '../upload/upload.service';
 import { CoreService } from '../../services/core/core.service';
 import { v4 as uuidv4 } from 'uuid';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
 @Controller('profile/templates')
 export class ProfileTemplatesController {
@@ -115,7 +121,7 @@ export class ProfileTemplatesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Post('/:templateId')
   @ApiOperation({ summary: 'Update Profile Template' })
   @ApiOkResponse({
@@ -301,7 +307,6 @@ export class ProfileTemplatesController {
     @Req() req,
     @Param('templateId') templateId: string,
   ) {
-
     try {
       if (templateId) {
         const template = await this.templatesService.getCommonTemplateById({

@@ -3,6 +3,9 @@
     "label": "Sign in",
     "haveAccount": "Already have an account?"
   },
+  "register": {
+    "text": "Register"
+  },
   "reset": {
     "title": "Reset password",
     "text": "Enter the email associated with your account\nand we'll send a link to reset your password",
@@ -37,6 +40,7 @@
   "buttons": {
     "logout": "Logout",
     "login": "Sign in",
+    "loginGoogle": "Login with google",
     "save": "Save",
     "cancel": "Cancel",
     "close": "Close",

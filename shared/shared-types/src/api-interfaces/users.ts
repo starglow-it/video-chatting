@@ -9,6 +9,12 @@ import {
 export enum UserRoles {
   Admin = 'admin',
   User = 'user',
+  Anonymous = 'anonymous'
+}
+
+export enum LoginTypes {
+  Local = 'local',
+  Google = 'google'
 }
 
 export interface ICommonUser {
@@ -50,6 +56,7 @@ export interface ICommonUser {
   isProfessionalTrialAvailable: boolean;
   isSubscriptionActive?: boolean;
   isDowngradeMessageShown: boolean;
+  loginType: LoginTypes;
 }
 
 export interface IUpdateProfile {

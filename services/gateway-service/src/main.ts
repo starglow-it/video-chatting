@@ -29,7 +29,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix(ROOT_SCOPE);
 
-
   // Swagger setup
   const options = new DocumentBuilder()
     .setTitle('The LiveOffice')

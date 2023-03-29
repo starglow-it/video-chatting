@@ -49,11 +49,16 @@ export type AuthUserState = {
     isAuthenticated: boolean;
     error?: ErrorState | null;
     user?: Profile;
+    isWithoutAuthen?: boolean;
 };
 
 export type LoginUserParams = {
     email: string;
     password: string;
+};
+
+export type GoogleVerfifyParams = {
+    token: string
 };
 
 export type RegisteredUserState = {
@@ -187,6 +192,7 @@ export type ApiError = {
 
 export type ApiParams = {
     token?: string;
+    ctx?: NextPageContext;
 };
 
 export type SuccessResult<Result> = {

@@ -39,7 +39,7 @@ export class UserTemplatesService {
     payload: CreateUserTemplateByIdPayload,
   ): Promise<IUserTemplate> {
     const pattern = { cmd: UserTemplatesBrokerPatterns.CreateUserTemplate };
-    
+
     return this.coreService.sendCustom(pattern, payload);
   }
 

@@ -1,5 +1,9 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
+
+import {
+    LoginTypes,
+  } from 'shared-types';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
@@ -19,6 +23,7 @@ import { EditProfilePasswordInfo } from '@components/Profile/EditProfilePassword
 import { Translation } from '@library/common/Translation/Translation';
 
 // stores
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { $profileStore } from '../../../store';
 
 // styles
@@ -43,40 +48,42 @@ const EditAccountInfo = memo(() => {
         () => (
             <>
                 <CustomTypography variant="body1">{profile.email}</CustomTypography>
-                <CustomGrid container gap={1} className={styles.buttonsWrapper} wrap="nowrap">
-                    <CustomButton
-                        onClick={handleToggleEditEmail}
-                        className={styles.button}
-                        label={
-                            <Translation
-                                nameSpace="profile"
-                                translation="editProfile.changeEmail"
-                            />
-                        }
-                        variant="custom-cancel"
-                        typographyProps={{
-                            variant: 'body2',
-                        }}
-                    />
-                    <CustomButton
-                        label={
-                            <Translation
-                                nameSpace="profile"
-                                translation="editProfile.changePassword"
-                            />
-                        }
-                        onClick={handleStartEditPassword}
-                        className={styles.button}
-                        variant="custom-cancel"
-                        typographyProps={{
-                            variant: 'body2',
-                        }}
-                    />
-                </CustomGrid>
+                <ConditionalRender condition={profile.loginType === LoginTypes.Local}>
+                    <CustomGrid container gap={1} className={styles.buttonsWrapper} wrap="nowrap">
+                        <CustomButton
+                            onClick={handleToggleEditEmail}
+                            className={styles.button}
+                            label={
+                                <Translation
+                                    nameSpace="profile"
+                                    translation="editProfile.changeEmail"
+                                />
+                            }
+                            variant="custom-cancel"
+                            typographyProps={{
+                                variant: 'body2',
+                            }}
+                        />
+                        <CustomButton
+                            label={
+                                <Translation
+                                    nameSpace="profile"
+                                    translation="editProfile.changePassword"
+                                />
+                            }
+                            onClick={handleStartEditPassword}
+                            className={styles.button}
+                            variant="custom-cancel"
+                            typographyProps={{
+                                variant: 'body2',
+                            }}
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
             </>
         ),
         [profile.email],
-    );
+    )
 
     return (
         <CustomPaper className={styles.paperWrapper}>

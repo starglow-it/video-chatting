@@ -35,3 +35,8 @@ export default function setAuthCookies(
         });
     }
 }
+
+export function setUserWithoutTokenCookies(userWithoutLoginId: string, userTemplateId: string) :void{
+    setCookie(undefined, 'userWithoutLoginId', userWithoutLoginId);
+    setCookie(undefined, 'userTemplateId', userTemplateId);
+}

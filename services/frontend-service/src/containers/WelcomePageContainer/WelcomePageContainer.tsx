@@ -14,7 +14,10 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
-import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from '../../controllers/WebStorageController';
 
 // styles
 import styles from './WelcomePageContainer.module.scss';
@@ -27,11 +30,12 @@ const baseTemplateParams = {
     draft: false,
     isPublic: true,
     sort: 'maxParticipants',
-    direction: 1
-}
+    direction: 1,
+};
 
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
+
     const templates = useStore($templatesStore);
 
     useEffect(() => {
@@ -44,19 +48,28 @@ const WelcomePageContainer = memo(() => {
         })();
     }, []);
 
-    const handleStartOnboarding = useCallback((templateId: ICommonTemplate['id']) => {
-        WebStorage.save({ key: StorageKeysEnum.templateId, data: { templateId } });
+    const handleStartOnboarding = useCallback(
+        (templateId: ICommonTemplate['id']) => {
+            WebStorage.save({
+                key: StorageKeysEnum.templateId,
+                data: { templateId },
+            });
 
-        router.push(`/register`);
-    }, []);
+            router.push(`/register`);
+        },
+        [],
+    );
 
-    const handleCommonTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getTemplatesFx({
-            limit: 6 * newPage,
-            skip: 0,
-            ...baseTemplateParams
-        });
-    }, []);
+    const handleCommonTemplatesPageChange = useCallback(
+        async (newPage: number) => {
+            await getTemplatesFx({
+                limit: 6 * newPage,
+                skip: 0,
+                ...baseTemplateParams,
+            });
+        },
+        [],
+    );
 
     return (
         <>
@@ -82,9 +95,17 @@ const WelcomePageContainer = memo(() => {
                             alt="winking-face"
                         />
                     </CustomBox>
-                    <CustomTypography variant="h1" nameSpace="welcome" translation="title" />
+                    <CustomTypography
+                        variant="h1"
+                        nameSpace="welcome"
+                        translation="title"
+                    />
                 </CustomGrid>
-                <CustomTypography variant="h4" nameSpace="welcome" translation="text" />
+                <CustomTypography
+                    variant="h4"
+                    nameSpace="welcome"
+                    translation="text"
+                />
                 <TemplatesGrid<ICommonTemplate>
                     list={templates.list}
                     count={templates.count}

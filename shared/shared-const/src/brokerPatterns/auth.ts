@@ -8,5 +8,6 @@ export enum AuthBrokerPatterns {
   LoginUser = 'login_user',
   RefreshToken = 'refresh_token',
   LogOutUser = 'logout_user',
+  CreateUserFromGoogleAccount = 'create_user_from_google_account',
   SendResetPasswordLink = 'send_reset_password_link',
 }

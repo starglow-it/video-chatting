@@ -8,6 +8,7 @@
     "code": {
       "incorrect": "Code is incorrect"
     },
+    "notGoogleAccount": "This email is already used",
     "pass": {
       "invalid": "Please enter valid password",
       "incorrect": "Password is incorrect",
