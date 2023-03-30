@@ -36,7 +36,7 @@ import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
 $tracksStore
     .on(disconnectFromVideoChatEvent, () => ({}))
     .on(disconnectFromP2PEvent, () => ({}))
-    .on(setConnectionStream, (state, { connectionId, type, track }) => {
+    .on(setConnectionStream, (state, { connectionId, type, track }) => {        
         if (type === TrackKind.Audio && track) {
             return {
                 ...state,

@@ -81,6 +81,11 @@ const MeetingUserVideoChildCom = ({
     };
 
     useEffect(() => {
+        setVideoSelfView(isCameraEnabled);
+    }, [isCameraEnabled]);
+
+    useEffect(() => {
+        console.log(userTracks)
         const videoTrack = isLocal
             ? localStream?.getVideoTracks?.()?.[0]
             : userTracks?.videoTrack;

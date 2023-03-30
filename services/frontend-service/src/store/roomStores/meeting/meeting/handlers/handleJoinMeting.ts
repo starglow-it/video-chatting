@@ -3,7 +3,7 @@ import {sendEnterMeetingRequestSocketEvent, sendStartMeetingSocketEvent,} from '
 import {emitEnterWaitingRoom} from '../../sockets/model';
 import {setBackgroundAudioActive, setBackgroundAudioVolume} from '../../../audio/model';
 import {StorageKeysEnum, WebStorage} from '../../../../../controllers/WebStorageController';
-import {setActiveStreamEvent} from '../../../videoChat/localMedia/model';
+import {setActiveStreamEvent, setLocalStreamEvent} from '../../../videoChat/localMedia/model';
 import {JoinMeetingFxPayload} from '../types';
 import {BackgroundManager} from '../../../../../helpers/media/applyBlur';
 import {MeetingAccessStatusEnum} from "shared-types";
@@ -66,4 +66,5 @@ export const handleJoinMeting = async ({
     );
 
     setActiveStreamEvent(streamWithBackground);
+    setLocalStreamEvent(streamWithBackground);
 };

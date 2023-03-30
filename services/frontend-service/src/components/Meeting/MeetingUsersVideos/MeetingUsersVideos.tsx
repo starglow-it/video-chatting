@@ -23,6 +23,7 @@ import {
 import {
     $activeStreamStore,
     $isScreenSharingStore,
+    $localStreamStore,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
@@ -43,7 +44,8 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
-    const activeStream = useStore($activeStreamStore);
+    // const activeStream = useStore($activeStreamStore);
+    const activeStream = useStore($localStreamStore);
     console.log(activeStream?.getVideoTracks()[0])
 
     const profile = useStore($profileStore);
