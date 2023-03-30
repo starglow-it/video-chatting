@@ -28,11 +28,12 @@ import { handleSetUserCountry } from './handlers/handleSetUserCountry';
 import { AppDialogsEnum } from '../types';
 
 // const
-import {clientRoutes} from "../../const/client-routes";
+import { clientRoutes } from '../../const/client-routes';
 import { handleGoogleVerify } from './handlers/handleGoogleVerify';
 import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToken';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { createMeetingFx } from '../meetings/model';
+import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
@@ -65,6 +66,11 @@ loginUserFx.doneData.watch(payload => {
             dialogKey: AppDialogsEnum.userBlockedDialog,
         });
     }
+    deleteUserAnonymousCookies();
+});
+
+googleVerifyFx.doneData.watch(() => {
+    deleteUserAnonymousCookies();
 });
 
 logoutUserFx.doneData.watch(() => {
@@ -83,12 +89,15 @@ initUserWithoutTokenFx.doneData.watch(async ({ user, userTemplateId }) => {
 });
 
 $authStore
-    .on([
-        loginUserFx.doneData,
-        checkAuthFx.doneData,
-        logoutUserFx.doneData,
-        googleVerifyFx.doneData,
-    ], (state, data) => data)
+    .on(
+        [
+            loginUserFx.doneData,
+            checkAuthFx.doneData,
+            logoutUserFx.doneData,
+            googleVerifyFx.doneData,
+        ],
+        (state, data) => data,
+    )
     .on(resetAuthStateEvent, () => ({
         isAuthenticated: false,
     }))
