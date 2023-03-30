@@ -81,9 +81,18 @@ const MeetingUserVideoChildCom = ({
     };
 
     useEffect(() => {
-        const videoTrack = isLocal
-            ? localStream?.getVideoTracks?.()?.[0]
-            : userTracks?.videoTrack;
+        let videoTrack
+
+        if(isLocal){    
+            const localStreamTrack = localStream?.getVideoTracks?.()?.[0]
+            if(localStreamTrack){
+                const cloneLocalStream = localStreamTrack.clone()
+                cloneLocalStream.enabled = true
+                videoTrack = cloneLocalStream
+            }                    
+        }else{
+            videoTrack = userTracks?.videoTrack;
+        }
 
         if (videoTrack) {
             const videoTracks = mediaStreamRef.current.getVideoTracks();
