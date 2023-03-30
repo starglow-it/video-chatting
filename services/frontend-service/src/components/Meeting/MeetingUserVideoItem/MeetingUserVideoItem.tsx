@@ -87,7 +87,7 @@ const MeetingUserVideoChildCom = ({
             const localStreamTrack = localStream?.getVideoTracks?.()?.[0]
             if(localStreamTrack){
                 const cloneLocalStream = localStreamTrack.clone()
-                cloneLocalStream.enabled = true
+                cloneLocalStream.enabled = isVideoSelfView
                 videoTrack = cloneLocalStream
             }                    
         }else{
@@ -108,7 +108,7 @@ const MeetingUserVideoChildCom = ({
             if (container.current)
                 container.current.srcObject = mediaStreamRef.current;
         }
-    }, [localStream, userTracks]);
+    }, [localStream, userTracks, isVideoSelfView]);
 
     const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
         setScale(data.size.width);
@@ -136,7 +136,7 @@ const MeetingUserVideoChildCom = ({
         >
             <CustomBox
                 className={clsx(styles.media, {
-                    [styles.aura]: isAuraActive && isCameraEnabled,
+                    [styles.aura]: isLocal ? isVideoSelfView : (isAuraActive && isCameraEnabled), 
                 })}
                 sx={{
                     width: `${scale}px`,
