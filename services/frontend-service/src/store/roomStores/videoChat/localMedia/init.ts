@@ -36,8 +36,6 @@ import {
     toggleDevicesEvent,
     toggleIsAuraActive,
     toggleLocalDeviceEvent,
-    $localStreamStore,
-    setLocalStreamEvent,
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { sendDevicesPermissionSocketEvent } from '../sockets/model';
@@ -59,45 +57,28 @@ import { resetRoomStores } from '../../../root';
 import { clearStreamStore } from '../../../../helpers/media/clearStreamStore';
 import { setNewStream } from '../../../../helpers/media/setNewStream';
 
-$audioDevicesStore
-    .on(setAudioDevicesEvent, (state, data) => data)
-    .reset(resetRoomStores);
-$videoDevicesStore
-    .on(setVideoDevicesEvent, (state, data) => data)
-    .reset(resetRoomStores);
+$audioDevicesStore.on(setAudioDevicesEvent, (state, data) => data).reset(resetRoomStores);
+$videoDevicesStore.on(setVideoDevicesEvent, (state, data) => data).reset(resetRoomStores);
 $currentAudioDeviceStore
     .on(setCurrentAudioDeviceEvent, (state, data) => data)
     .reset([resetRoomStores, resetMediaStoreEvent]);
 $currentVideoDeviceStore
     .on(setCurrentVideoDeviceEvent, (state, data) => data)
     .reset([resetRoomStores, resetMediaStoreEvent]);
-$audioErrorStore
-    .on(setAudioErrorEvent, (state, data) => data)
-    .reset(resetRoomStores);
-$videoErrorStore
-    .on(setVideoErrorEvent, (state, data) => data)
-    .reset(resetRoomStores);
+$audioErrorStore.on(setAudioErrorEvent, (state, data) => data).reset(resetRoomStores);
+$videoErrorStore.on(setVideoErrorEvent, (state, data) => data).reset(resetRoomStores);
 
 $changeStreamStore
     .on(setChangeStreamEvent, setNewStream)
     .on([resetRoomStores, resetMediaStoreEvent], clearStreamStore);
 
-$activeStreamStore
-    .on(setActiveStreamEvent, setNewStream)
-    .on(resetRoomStores, clearStreamStore);
-$localStreamStore
-    .on(setLocalStreamEvent, setNewStream)
-    // .on(resetRoomStores, clearStreamStore);
+$activeStreamStore.on(setActiveStreamEvent, setNewStream).on(resetRoomStores, clearStreamStore);
 $sharingStream
     .on(chooseSharingStreamFx.doneData, (state, data) => data)
     .on([stopScreenSharingFx.doneData, resetRoomStores], clearStreamStore);
 
-$isStreamRequestedStore
-    .on(setIsStreamRequestedEvent, (state, data) => data)
-    .reset(resetRoomStores);
-$isAuraActive
-    .on(setIsAuraActive, (state, data) => data)
-    .on(toggleIsAuraActive, state => !state);
+$isStreamRequestedStore.on(setIsStreamRequestedEvent, (state, data) => data).reset(resetRoomStores);
+$isAuraActive.on(setIsAuraActive, (state, data) => data).on(toggleIsAuraActive, state => !state);
 $isCameraActiveStore
     .on(setIsCameraActiveEvent, (state, data) => data)
     .on(setPermissionsEvent, handleSetCameraPermissions)

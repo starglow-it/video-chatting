@@ -75,9 +75,7 @@ import {
     setActiveStreamEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
-    setDevicesPermission,
     setIsAuraActive,
-    setLocalStreamEvent,
     toggleLocalDeviceEvent,
     updateLocalUserEvent,
     updateMeetingTemplateFxWithData,
@@ -248,12 +246,10 @@ const Component = () => {
             toggleLocalDeviceEvent({
                 isMicEnabled: isNewMicSettingActive,
             });
-			setDevicesPermission({
-                isCamEnabled: isNewCameraSettingActive,
-            });
 
             if (isAuraEnabled) {
                 const clonedStream = changeStream?.clone();
+
                 const streamWithBackground = await BackgroundManager.applyBlur(
                     clonedStream,
                     isNewCameraSettingActive,
@@ -261,10 +257,8 @@ const Component = () => {
                 );
 
                 setActiveStreamEvent(streamWithBackground);
-				setLocalStreamEvent(streamWithBackground);
             } else {
                 setActiveStreamEvent(changeStream.clone());
-                setLocalStreamEvent(changeStream.clone());
             }
 
 			setIsAuraActive(isAuraEnabled);
