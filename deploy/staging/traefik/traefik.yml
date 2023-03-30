@@ -10,6 +10,16 @@ providers:
     network: traefikpublic
     exposedByDefault: false
 
+
+certificatesResolvers:
+  simple-resolver:
+    acme:
+      httpchallenge:
+        entrypoint: http
+      email: nam@namnm.com
+      storage: /letsencrypt/acme.json
+      tlschallenge: true
+
 entryPoints:
   http:
     address: :80
@@ -19,16 +29,8 @@ entryPoints:
           to: https
           scheme: https
           permanent: true
-  https:
+  websecure:
     address: :443
-
-certificatesResolvers:
-  simple-resolver:
-    acme:
-      httpchallenge:
-        entrypoint: http
-      email: nam@namnm.com
-      storage: /letsencrypt/acme.json
 
 
 accessLog: {}

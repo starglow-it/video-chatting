@@ -1,4 +1,4 @@
-FROM traefik:v2.5.2
+FROM traefik:v2.9
 
 WORKDIR /traefik
 
