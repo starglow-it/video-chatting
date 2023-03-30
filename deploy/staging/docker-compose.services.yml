@@ -42,8 +42,8 @@ services:
       - internal
 
   livekit-service:
-    env_file: env
-    
+    env_file:
+      - env
     build:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
@@ -70,7 +70,8 @@ services:
 
 
   gateway-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/gateway-service/Dockerfile
@@ -92,7 +93,8 @@ services:
       - internal
 
   frontend-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: services/frontend-service/Dockerfile
@@ -113,9 +115,6 @@ services:
       - TURN_PASSWORD
       - TURN_USERNAME
       - TURN_PORT
-      - LIVEKIT_WSS
-      - MEETING_SOCKET_URL
-      - DEFAULT_SERVER_IP
       - VULTR_STORAGE_HOSTNAME
       - STRIPE_PUBLIC_API_KEY
       - BASE_ENV_DOMAIN
@@ -133,7 +132,8 @@ services:
       - internal
 
   frontend-admin-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: services/frontend-admin-service/Dockerfile
@@ -164,7 +164,8 @@ services:
 
 
   socket-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/socket-service/Dockerfile
@@ -186,7 +187,8 @@ services:
       - internal
 
   core-service:
-    env_file: env
+    env_file:
+      - env
     
     build:
       context: ../../
@@ -199,7 +201,8 @@ services:
       - internal
 
   auth-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/auth-service/Dockerfile
@@ -211,7 +214,8 @@ services:
       - internal
 
   meeting-socket-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/meeting-socket-service/Dockerfile
@@ -234,7 +238,8 @@ services:
       - traefikpublic
 
   payment-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/payment-service/Dockerfile
@@ -256,7 +261,8 @@ services:
       - traefikpublic
 
   notification-service:
-    env_file: env
+    env_file:
+      - env
     
     build:
       context: ../../
@@ -269,7 +275,8 @@ services:
       - internal
 
   media-server-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/media-server-service/Dockerfile
@@ -281,7 +288,8 @@ services:
       - internal
 
   scaling-service:
-    env_file: env
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/scaling-service/Dockerfile
@@ -293,7 +301,8 @@ services:
       - internal
 
   config-service:
-    env_file: env
+    env_file:
+      - env
     
     build:
       context: ../../
@@ -302,7 +311,6 @@ services:
     depends_on:
       - mongo
       - rabbit
-      - scaling-service
     environment:
       - RABBIT_MQ_CORE_QUEUE
       - RABBIT_MQ_SOCKET_QUEUE
