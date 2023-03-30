@@ -55,6 +55,7 @@ const MeetingUserVideoChildCom = ({
     isScreenSharing,
     isScreenSharingUser,
     isAuraActive,
+    isSelfView
 }: MeetingUserVideoComProps) => {
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLVideoElement | null>(null);
@@ -69,6 +70,13 @@ const MeetingUserVideoChildCom = ({
         ],
         fn: (tracks, [connectionId]) => tracks[connectionId],
     });
+
+    const [isVideoSelfView, setVideoSelfView] = useState<boolean>(isCameraEnabled);
+
+    const toggleSelfView = () => {
+        setVideoSelfView(!isVideoSelfView)
+    }
+
     useEffect(() => {
         const videoTrack = isLocal
             ? localStream?.getVideoTracks?.()?.[0]
@@ -89,6 +97,7 @@ const MeetingUserVideoChildCom = ({
                 container.current.srcObject = mediaStreamRef.current;
         }
     }, [localStream, userTracks]);
+
     return (
         <CustomBox
             className={clsx(styles.media, {
@@ -116,8 +125,11 @@ const MeetingUserVideoChildCom = ({
                 userProfilePhoto={userProfileAvatar}
                 videoRef={container}
                 size={scale}
-                onToggleVideo={onToggleVideo}
+                onToggleVideo={toggleSelfView}
                 isScreenSharing={isScreenSharing}
+                isSelfView={isSelfView}
+                isVideoSelfView={isVideoSelfView}
+
             />
             {isScreenSharingUser && (
                 <CustomGrid
@@ -150,6 +162,7 @@ const Component = ({
     isScreenSharing = false,
     isScreenSharingUser = false,
     onResizeVideo,
+    isSelfView = true
 }: MeetingUserVideoItemProps) => {
     const { width } = useStore($windowSizeStore);
     const { isMobile } = useBrowserDetect();
@@ -192,6 +205,7 @@ const Component = ({
         isScreenSharing,
         isScreenSharingUser,
         isAuraActive,
+        isSelfView
     }
 
     return (

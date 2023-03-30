@@ -35,4 +35,5 @@ export type MeetingUserVideoComProps = {
     isScreenSharingUser: boolean;
     isScreenSharing: boolean;
     isAuraActive: boolean;
+    isSelfView?: boolean;
 }

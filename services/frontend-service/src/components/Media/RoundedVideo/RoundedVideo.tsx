@@ -45,8 +45,6 @@ const Component = ({
         [size],
     );
 
-    console.log(videoRef)
-
     return (
         <CustomGrid
             container
@@ -77,6 +75,16 @@ const Component = ({
                     justifyContent="center"
                     alignItems="center"
                 >
+                    <ConditionalRender
+                        condition={isSelfView && size > 84}
+                    >
+                        <CustomTypography
+                            variant="body3"
+                            nameSpace="meeting"
+                            align="center"
+                            translation="devices.dragAndResize"
+                        />
+                    </ConditionalRender>
                     <VideoEyeIcon
                         width={isScreenSharing ? '30px' : '40px'}
                         height={isScreenSharing ? '30px' : '40px'}

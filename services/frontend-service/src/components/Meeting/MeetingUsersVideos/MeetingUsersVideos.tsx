@@ -44,6 +44,7 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const activeStream = useStore($activeStreamStore);
+    console.log(activeStream?.getVideoTracks()[0])
 
     const profile = useStore($profileStore);
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
