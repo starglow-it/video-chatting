@@ -5,7 +5,7 @@ name: deploy staging
 # Controls when the action will run. 
 on:
   push:
-    branches: [ staging ]
+    branches: [ main ]
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -21,18 +21,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: staging
-#      - name: Update env
-#        run: |
-#          cd deploy/staging
-#          echo "${{ vars.STAGING_ENV }}" > staging.env
-#
-#      - name: Update Traefik
-#        run: |
-#          cd deploy/staging
-#          docker-compose -f docker-compose.proxy.yml up -d --build --force-recreate --remove-orphans
-#
-#      - name: Deploy new source
-#        run: |
-#          cd deploy/staging
-#          rsync -av staging.env ../../services/config-service/.env
-#          docker-compose -f docker-compose.services.yml up -d --build --remove-orphans
+
+      - name: Update Traefik
+        run: |
+          cd deploy/staging
+          docker-compose -f docker-compose.proxy.yml up -d --build --force-recreate --remove-orphans
+
+      - name: Deploy new source
+        run: |
+          cd deploy/staging
+          rsync -av env ../../services/config-service/.env
+          docker-compose -f docker-compose.services.yml up -d --build --remove-orphans

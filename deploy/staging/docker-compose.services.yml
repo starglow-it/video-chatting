@@ -42,7 +42,7 @@ services:
       - internal
 
   livekit-service:
-    env_file: staging.env
+    env_file: env
     
     build:
       context: ../../services/
@@ -70,7 +70,7 @@ services:
 
 
   gateway-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: ./services/gateway-service/Dockerfile
@@ -92,7 +92,7 @@ services:
       - internal
 
   frontend-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: services/frontend-service/Dockerfile
@@ -133,7 +133,7 @@ services:
       - internal
 
   frontend-admin-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: services/frontend-admin-service/Dockerfile
@@ -164,7 +164,7 @@ services:
 
 
   socket-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: ./services/socket-service/Dockerfile
@@ -186,7 +186,7 @@ services:
       - internal
 
   core-service:
-    env_file: staging.env
+    env_file: env
     
     build:
       context: ../../
@@ -199,7 +199,7 @@ services:
       - internal
 
   auth-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: ./services/auth-service/Dockerfile
@@ -211,7 +211,7 @@ services:
       - internal
 
   meeting-socket-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: ./services/meeting-socket-service/Dockerfile
@@ -234,7 +234,7 @@ services:
       - traefikpublic
 
   payment-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: ./services/payment-service/Dockerfile
@@ -256,7 +256,7 @@ services:
       - traefikpublic
 
   notification-service:
-    env_file: staging.env
+    env_file: env
     
     build:
       context: ../../
@@ -269,7 +269,7 @@ services:
       - internal
 
   media-server-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: ./services/media-server-service/Dockerfile
@@ -281,7 +281,7 @@ services:
       - internal
 
   scaling-service:
-    env_file: staging.env
+    env_file: env
     build:
       context: ../../
       dockerfile: ./services/scaling-service/Dockerfile
@@ -293,7 +293,7 @@ services:
       - internal
 
   config-service:
-    env_file: staging.env
+    env_file: env
     
     build:
       context: ../../
