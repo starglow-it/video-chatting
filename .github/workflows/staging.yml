@@ -4,8 +4,14 @@ name: deploy staging
 
 # Controls when the action will run. 
 on:
-#  push:
-#    branches: [ main ]
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'staging'
+  push:
+    branches:
+      - 'staging'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
