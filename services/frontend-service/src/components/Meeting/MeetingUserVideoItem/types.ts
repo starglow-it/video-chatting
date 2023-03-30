@@ -36,4 +36,7 @@ export type MeetingUserVideoComProps = {
     isScreenSharing: boolean;
     isAuraActive: boolean;
     isSelfView?: boolean;
+    setScale: (size: number) => void;
+    resizeCoeff: number;
+    onResizeVideo?: (size: number) => void;
 }

@@ -34,8 +34,6 @@ const Component = ({
 }: RoundedVideoProps) => {
     const [isVideoActive, setIsVideoActive] = useState(false);
 
-
-
     const handleVideoLoaded = useCallback(() => {
         setIsVideoActive(true);
     }, []);
@@ -76,7 +74,7 @@ const Component = ({
                     alignItems="center"
                 >
                     <ConditionalRender
-                        condition={isSelfView && size > 84}
+                        condition={isSelfView && size > 80}
                     >
                         <CustomTypography
                             variant="body3"
@@ -93,7 +91,7 @@ const Component = ({
                         }
                     />
                     <ConditionalRender
-                        condition={!isScreenSharing && size > 84}
+                        condition={!isScreenSharing && size > 80}
                     >
                         <CustomTypography
                             variant="body3"
