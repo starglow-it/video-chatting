@@ -49,5 +49,23 @@ docker exec -it liveoffice_staging_frontend curl http://config-service:4000/v1/c
 
 ###### setup action-runner
 ```shell
+export RUNNER_ALLOW_RUNASROOT="1"
+cd /src
+mkdir actions-runner && cd actions-runner
+curl -o actions-runner-linux-x64-2.303.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.303.0/actions-runner-linux-x64-2.303.0.tar.gz
+tar xzf ./actions-runner-linux-x64-2.303.0.tar.gz
+./config.sh --url https://github.com/nongdan-dev/tlo --token APVBWUPUULB7BY67QKNT5CDEEULSG --labels liveofficeStaging --name liveofficeStaging --runnergroup Default --work _work
+sudo ./svc.sh install
+
+cd /src/actions-runner
+# operation runner
+sudo ./svc.sh start
+sudo ./svc.sh status
+sudo ./svc.sh stop
+# uninstall runner
+sudo ./svc.sh uninstall
+
+# remove token of runner
+./config.sh remove --token <APVBWUPUULB7BY67QKNT5CDEEULSG>
 
 ```
