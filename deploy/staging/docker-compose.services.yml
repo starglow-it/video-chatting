@@ -115,7 +115,7 @@ services:
       - TURN_PORT
       - LIVEKIT_WSS
       - MEETING_SOCKET_URL=wss://tlo-meeting-socket.nongdan.dev
-      - DEFAULT_SERVER_IP
+      - DEFAULT_SERVER_IP=108.61.203.79
       - VULTR_STORAGE_HOSTNAME
       - STRIPE_PUBLIC_API_KEY
       - BASE_ENV_DOMAIN
