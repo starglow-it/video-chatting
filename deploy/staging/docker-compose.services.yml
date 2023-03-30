@@ -302,7 +302,6 @@ services:
     depends_on:
       - mongo
       - rabbit
-      - scaling-service
     environment:
       - RABBIT_MQ_CORE_QUEUE
       - RABBIT_MQ_SOCKET_QUEUE

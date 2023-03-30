@@ -22,13 +22,13 @@ jobs:
         with:
           ref: staging
 
-      - name: Update Traefik
-        run: |
-          cd deploy/staging
-          docker-compose -f docker-compose.proxy.yml up -d --build --force-recreate --remove-orphans
-
-      - name: Deploy new source
-        run: |
-          cd deploy/staging
-          rsync -av env ../../services/config-service/.env
-          docker-compose -f docker-compose.services.yml up -d --build --remove-orphans
+#      - name: Update Traefik
+#        run: |
+#          cd deploy/staging
+#          docker-compose -f docker-compose.proxy.yml up -d --build --force-recreate --remove-orphans
+#
+#      - name: Deploy new source
+#        run: |
+#          cd deploy/staging
+#          rsync -av env ../../services/config-service/.env
+#          docker-compose -f docker-compose.services.yml up -d --build --remove-orphans
