@@ -79,6 +79,7 @@ const Component = () => {
                     isScreenSharing={isScreenSharing}
                     bottom={user?.userPosition?.bottom}
                     left={user?.userPosition?.left}
+                    isSelfView={false}
                 />
             )),
         [users, meeting.sharingUserId, meetingTemplate.usersPosition, isScreenSharing],
@@ -101,18 +102,6 @@ const Component = () => {
             userSize
         })
     }
-
-    const handleToggleVideo = useCallback(() => {
-        if (isMeetingConnected) {
-            updateLocalUserEvent({
-                cameraStatus: isLocalCamActive ? 'inactive' : 'active',
-            });
-
-            setDevicesPermission({
-                isCamEnabled: !isLocalCamActive,
-            });
-        }
-    }, [isLocalCamActive, isLocalMicActive, isMeetingConnected]);
 
     const handleClosePanel = useCallback(() => {
         if (isSideUsersOpen) {
@@ -147,7 +136,6 @@ const Component = () => {
                     isLocal
                     isAuraActive={localUser.isAuraActive}
                     onToggleAudio={handleToggleAudio}
-                    onToggleVideo={handleToggleVideo}
                     bottom={localUser?.userPosition?.bottom}
                     left={localUser?.userPosition?.left}
                 />
@@ -176,7 +164,6 @@ const Component = () => {
                 isLocal
                 isAuraActive={localUser.isAuraActive}
                 onToggleAudio={isMobile ? undefined : handleToggleAudio}
-                onToggleVideo={handleToggleVideo}
                 bottom={localUser?.userPosition?.bottom}
                 left={localUser?.userPosition?.left}
                 onResizeVideo={handleResizeVideo}
