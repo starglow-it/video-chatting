@@ -74,7 +74,7 @@ const Component = ({
                     alignItems="center"
                 >
                     <ConditionalRender
-                        condition={isSelfView && size > 80}
+                        condition={isSelfView && size > 105}
                     >
                         <CustomTypography
                             variant="body3"
@@ -91,7 +91,7 @@ const Component = ({
                         }
                     />
                     <ConditionalRender
-                        condition={!isScreenSharing && size > 80}
+                        condition={!isScreenSharing && size > 105}
                     >
                         <CustomTypography
                             variant="body3"

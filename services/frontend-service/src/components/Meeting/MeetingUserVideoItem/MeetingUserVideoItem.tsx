@@ -81,7 +81,7 @@ const MeetingUserVideoChildCom = ({
     };
 
     useEffect(() => {
-        setVideoSelfView(isCameraEnabled);
+        if (!isLocal) setVideoSelfView(isCameraEnabled);
     }, [isCameraEnabled]);
 
     useEffect(() => {
