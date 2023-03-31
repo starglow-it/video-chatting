@@ -28,7 +28,7 @@ import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUser
 import { $tracksStore } from '../../../store/roomStores';
 
 // types
-import { MeetingUserVideoItemProps } from './types';
+import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
 import { ConnectionType, StreamType } from '../../../const/webrtc';
 
 // styles
@@ -40,6 +40,150 @@ import { $windowSizeStore } from 'src/store';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // utils
+
+const MeetingUserVideoChildCom = ({
+    isLocal,
+    localStream,
+    userId,
+    isCameraEnabled,
+    scale,
+    isMicEnabled,
+    userName,
+    userProfileAvatar,
+    isScreenSharing,
+    isScreenSharingUser,
+    isAuraActive,
+    isSelfView,
+    setScale,
+    resizeCoeff,
+    onResizeVideo,
+}: MeetingUserVideoComProps) => {
+    const mediaStreamRef = useRef(new MediaStream());
+    const container = useRef<HTMLVideoElement | null>(null);
+    const userTracks = useStoreMap({
+        store: $tracksStore,
+        keys: [
+            getConnectionKey({
+                userId,
+                connectionType: ConnectionType.VIEW,
+                streamType: StreamType.VIDEO_CHAT,
+            }),
+        ],
+        fn: (tracks, [connectionId]) => tracks[connectionId],
+    });
+
+    const [isVideoSelfView, setVideoSelfView] =
+        useState<boolean>(isCameraEnabled);
+
+    const toggleSelfView = () => {
+        setVideoSelfView(!isVideoSelfView);
+    };
+
+    useEffect(() => {
+        if (!isLocal) setVideoSelfView(isCameraEnabled);
+    }, [isCameraEnabled]);
+
+    useEffect(() => {
+        let videoTrack;
+
+        if (isLocal) {
+            const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
+            if (localStreamTrack) {
+                const cloneLocalStream = localStreamTrack.clone();
+                cloneLocalStream.enabled = isVideoSelfView;
+                videoTrack = cloneLocalStream;
+            }
+        } else {
+            videoTrack = userTracks?.videoTrack;
+        }
+
+        if (videoTrack) {
+            const videoTracks = mediaStreamRef.current.getVideoTracks();
+
+            if (videoTracks.length) {
+                videoTracks.forEach(track => {
+                    mediaStreamRef.current.removeTrack(track);
+                });
+            }
+
+            mediaStreamRef.current.addTrack(videoTrack);
+
+            if (container.current)
+                container.current.srcObject = mediaStreamRef.current;
+        }
+    }, [localStream, userTracks, isVideoSelfView]);
+
+    const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
+        setScale(data.size.width);
+    };
+
+    const handleResizeStart = (e: SyntheticEvent) => {
+        e.stopPropagation();
+    };
+
+    const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
+        if (isLocal && onResizeVideo)
+            onResizeVideo(data.size.width / resizeCoeff);
+    };
+
+    return (
+        <CustomResizable
+            width={scale}
+            height={scale}
+            onResize={handleResize}
+            minConstraints={[75, 75]}
+            onResizeStart={handleResizeStart}
+            onResizeStop={handleResizeStop}
+            resizeHandles={['ne']}
+            disabled={!isLocal || isScreenSharing}
+        >
+            <CustomBox
+                className={clsx(styles.media, {
+                    [styles.aura]: isLocal
+                        ? isVideoSelfView
+                        : isAuraActive && isCameraEnabled,
+                })}
+                sx={{
+                    width: `${scale}px`,
+                    height: `${scale}px`,
+                }}
+            >
+                <MeetingUserAudioItem
+                    isLocal={isLocal}
+                    audioTrack={
+                        localStream?.getAudioTracks?.()?.[0] ??
+                        userTracks?.audioTrack
+                    }
+                    isMicEnabled={isMicEnabled}
+                    isAuraActive={isAuraActive}
+                />
+                <RoundedVideo
+                    isLocal={isLocal}
+                    isCameraActive={isCameraEnabled}
+                    isVideoAvailable
+                    userName={userName}
+                    userProfilePhoto={userProfileAvatar}
+                    videoRef={container}
+                    size={scale}
+                    onToggleVideo={toggleSelfView}
+                    isScreenSharing={isScreenSharing}
+                    isSelfView={isSelfView}
+                    isVideoSelfView={isVideoSelfView}
+                />
+                {isScreenSharingUser && (
+                    <CustomGrid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        className={styles.activeSharing}
+                    >
+                        <SharingArrowIcon width="16px" height="16px" />
+                    </CustomGrid>
+                )}
+            </CustomBox>
+        </CustomResizable>
+    );
+};
 
 const Component = ({
     size,
@@ -58,6 +202,7 @@ const Component = ({
     isScreenSharing = false,
     isScreenSharingUser = false,
     onResizeVideo,
+    isSelfView = true,
 }: MeetingUserVideoItemProps) => {
     const { width } = useStore($windowSizeStore);
     const { isMobile } = useBrowserDetect();
@@ -68,58 +213,29 @@ const Component = ({
     const videoSizeForMeeting = coefValue < 75 ? 75 : videoSizeForBigScreen;
     const videoSize = isScreenSharing ? 56 : videoSizeForMeeting;
 
-    const container = useRef<HTMLVideoElement | null>(null);
     const [scale, setScale] = useState<number>(videoSize);
 
     useEffect(() => {
         setScale(videoSize);
     }, [size, width, isScreenSharing]);
 
-    const userTracks = useStoreMap({
-        store: $tracksStore,
-        keys: [
-            getConnectionKey({
-                userId,
-                connectionType: ConnectionType.VIEW,
-                streamType: StreamType.VIDEO_CHAT,
-            }),
-        ],
-        fn: (tracks, [connectionId]) => tracks[connectionId],
-    });
-
-    const mediaStreamRef = useRef(new MediaStream());
-
-    useEffect(() => {
-        const videoTrack = isLocal
-            ? localStream?.getVideoTracks?.()?.[0]
-            : userTracks?.videoTrack;
-
-        if (videoTrack) {
-            const videoTracks = mediaStreamRef.current.getVideoTracks();
-
-            if (videoTracks.length) {
-                videoTracks.forEach(track => {
-                    mediaStreamRef.current.removeTrack(track);
-                });
-            }
-
-            mediaStreamRef.current.addTrack(videoTrack);
-
-            if (container.current)
-                container.current.srcObject = mediaStreamRef.current;
-        }
-    }, [localStream, userTracks]);
-
-    const handleResize = (e: SyntheticEvent, data: ResizeCallbackData) => {
-        setScale(data.size.width);
-    };
-
-    const handleResizeStart = (e: SyntheticEvent) => {
-        e.stopPropagation();
-    };
-
-    const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
-       if(isLocal && onResizeVideo) onResizeVideo(data.size.width / resizeCoeff);
+    const childProps = {
+        isLocal,
+        localStream,
+        userId,
+        isCameraEnabled,
+        scale,
+        isMicEnabled,
+        userName,
+        userProfileAvatar,
+        onToggleVideo,
+        isScreenSharing,
+        isScreenSharingUser,
+        isAuraActive,
+        isSelfView,
+        setScale,
+        resizeCoeff,
+        onResizeVideo,
     };
 
     return (
@@ -130,58 +246,14 @@ const Component = ({
             isLocal={isLocal}
             size={size}
         >
-            <CustomGrid container direction="column" alignItems="center"  gap={1.625} >
-                <CustomResizable
-                    width={scale}
-                    height={scale}
-                    onResize={handleResize}
-                    minConstraints={[75, 75]}
-                    onResizeStart={handleResizeStart}
-                    onResizeStop={handleResizeStop}
-                    resizeHandles={['ne']}
-                    disabled={!isLocal || isScreenSharing}
-                >
-                    <CustomBox
-                        className={clsx(styles.media, {
-                            [styles.aura]: isAuraActive && isCameraEnabled,
-                        })}
-                        sx={{
-                            width: `${scale}px`,
-                            height: `${scale}px`,
-                        }}
-                    >
-                        <MeetingUserAudioItem
-                            isLocal={isLocal}
-                            audioTrack={
-                                localStream?.getAudioTracks?.()?.[0] ??
-                                userTracks?.audioTrack
-                            }
-                            isMicEnabled={isMicEnabled}
-                            isAuraActive={isAuraActive}
-                        />
-                        <RoundedVideo
-                            isLocal={isLocal}
-                            isCameraActive={isCameraEnabled}
-                            isVideoAvailable
-                            userName={userName}
-                            userProfilePhoto={userProfileAvatar}
-                            videoRef={container}
-                            size={scale}
-                            onToggleVideo={onToggleVideo}
-                            isScreenSharing={isScreenSharing}
-                        />
-                        {isScreenSharingUser && (
-                            <CustomGrid
-                                container
-                                justifyContent="center"
-                                alignItems="center"
-                                className={styles.activeSharing}
-                            >
-                                <SharingArrowIcon width="16px" height="16px" />
-                            </CustomGrid>
-                        )}
-                    </CustomBox>
-                </CustomResizable>
+            <CustomGrid
+                container
+                direction="column"
+                alignItems="center"
+                gap={1.625}
+            >
+                <MeetingUserVideoChildCom {...childProps} />
+
                 <ConditionalRender
                     condition={(isScreenSharing && isLocal) || !isScreenSharing}
                 >
