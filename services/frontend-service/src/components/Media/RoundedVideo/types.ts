@@ -12,5 +12,5 @@ export type RoundedVideoProps = {
     isScreenSharing?: boolean;
     onToggleVideo?: () => void;
     isSelfView?: boolean;
-    isVideoSelfView: boolean;
+    isVideoSelfView?: boolean;
 };

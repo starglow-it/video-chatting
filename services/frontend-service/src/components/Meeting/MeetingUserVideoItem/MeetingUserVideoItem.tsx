@@ -50,7 +50,6 @@ const MeetingUserVideoChildCom = ({
     isMicEnabled,
     userName,
     userProfileAvatar,
-    onToggleVideo,
     isScreenSharing,
     isScreenSharingUser,
     isAuraActive,
