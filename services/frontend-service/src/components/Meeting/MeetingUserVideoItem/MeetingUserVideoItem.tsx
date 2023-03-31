@@ -81,16 +81,20 @@ const MeetingUserVideoChildCom = ({
     };
 
     useEffect(() => {
-        let videoTrack
+        setVideoSelfView(isCameraEnabled);
+    }, [isCameraEnabled]);
 
-        if(isLocal){    
-            const localStreamTrack = localStream?.getVideoTracks?.()?.[0]
-            if(localStreamTrack){
-                const cloneLocalStream = localStreamTrack.clone()
-                cloneLocalStream.enabled = isVideoSelfView
-                videoTrack = cloneLocalStream
-            }                    
-        }else{
+    useEffect(() => {
+        let videoTrack;
+
+        if (isLocal) {
+            const localStreamTrack = localStream?.getVideoTracks?.()?.[0];
+            if (localStreamTrack) {
+                const cloneLocalStream = localStreamTrack.clone();
+                cloneLocalStream.enabled = isVideoSelfView;
+                videoTrack = cloneLocalStream;
+            }
+        } else {
             videoTrack = userTracks?.videoTrack;
         }
 
@@ -136,7 +140,9 @@ const MeetingUserVideoChildCom = ({
         >
             <CustomBox
                 className={clsx(styles.media, {
-                    [styles.aura]: isLocal ? isVideoSelfView : (isAuraActive && isCameraEnabled), 
+                    [styles.aura]: isLocal
+                        ? isVideoSelfView
+                        : isAuraActive && isCameraEnabled,
                 })}
                 sx={{
                     width: `${scale}px`,
