@@ -108,7 +108,6 @@ services:
     environment:
       - WAIT_HOSTS=gateway-service:3000
       - WAIT_TIMEOUT=60000
-      - FRONTEND_URL
       - GATEWAY_PORT
       - GATEWAY_HOST
       - TURN_URL
