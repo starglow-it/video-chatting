@@ -96,6 +96,14 @@ const Component = () => {
 
     useEffect(() => {
         (async () => {
+            console.log([
+                localUser.accessStatus,
+                meeting.id,
+                localUser.id,
+                isMeetingConnected,
+                serverType,
+                isJoinMeetingPending,
+            ])
             if (
                 localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                 meeting.id &&
@@ -103,6 +111,7 @@ const Component = () => {
                 !isMeetingConnected &&
                 !isJoinMeetingPending
             ) {
+                console.log('#Duy Phan console', serverType, 'inittt')
                 initVideoChatEvent({ serverType });
                 setMeetingConnectedEvent(true);
             }
