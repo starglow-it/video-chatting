@@ -53,10 +53,11 @@ export const handleCreatePeerConnections = async ({
                 onIceConnectionStateFailed: () => {},
             });
 
-            try {
+            // try {
                 await connection.createPeerConnection();
 
                 if (connection.isInitial()) {
+                    console.log('#Duy Phan console')
                     await connection.createOffer();
                 }
 
@@ -68,9 +69,9 @@ export const handleCreatePeerConnections = async ({
                 }
 
                 return connection;
-            } catch (e) {
-                await connection.release();
-            }
+            // } catch (e) {
+            //     await connection.release();
+            // }
         },
     );
 

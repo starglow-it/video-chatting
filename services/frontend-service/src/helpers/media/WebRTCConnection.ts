@@ -151,6 +151,14 @@ export class WebRtcConnection implements IWebRtcConnection {
             offerToReceiveVideo: !isPublish,
         });
         await this.peerConnection.setLocalDescription(offer);
+        console.log('#Duy Phan console', {
+            type: 'offer',
+            sdp: offer.sdp,
+            connectionId: this.connectionId,
+            userId: this.userId,
+            socketId: this.socketId,
+            senderId: this.senderId,
+        })
         this.onGotOffer({
             type: 'offer',
             sdp: offer.sdp,

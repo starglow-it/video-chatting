@@ -31,7 +31,6 @@ export default async function sendRequestWithCredentials<Result, Error>(
         refreshToken = options.refreshToken,
         userWithoutLoginId,
     } = cookies;
-    console.log('#Duy Phan console cookie', userWithoutLoginId, accessToken, refreshToken)
 
     if(userWithoutLoginId) {
         return sendRequest<Result, Error>({
