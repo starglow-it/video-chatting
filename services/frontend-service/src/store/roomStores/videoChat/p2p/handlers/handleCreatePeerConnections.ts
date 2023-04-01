@@ -18,6 +18,7 @@ export const handleCreatePeerConnections = async ({
     connectionsData,
     options,
 }: CreatePeerConnectionsPayload): Promise<ConnectionsStore> => {
+    console.log('connect_init');
     const connectionPromises = connectionsData.map(
         async ({ connectionType, streamType, isInitial, userId, senderId, socketId }) => {
             const connectionId = getConnectionKey({

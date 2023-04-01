@@ -60,6 +60,7 @@ export class WebRtcConnection implements IWebRtcConnection {
         this.streamType = data.streamType;
         this.userId = data.userId;
         this.iceServers = iceServers;
+        console.log('iceServer',iceServers)
         this.stream = data.stream;
         this.initial = data.isInitial ?? false;
 
