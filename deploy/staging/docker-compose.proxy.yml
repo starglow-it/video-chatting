@@ -1,0 +1,73 @@
+version: "3.8"
+name: proxy
+
+services:
+  traefik:
+    build: ./traefik
+    container_name: traefik
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /data/letsencrypt:/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:9090:9090"
+      # close or move dashboard port to the save place
+      - "8080:8080"
+    networks:
+      - traefikpublic
+
+  instance-proxy:
+    container_name: instance_proxy
+    build:
+      context: ../../services/instance-proxy
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "7000:7000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.proxy.rule=Host(`{subdomain:.+}.scaling.demo.nongdan.dev`)"
+      - "traefik.http.routers.proxy.entrypoints=websecure"
+      # - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
+      # - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.nongdan.dev"
+      # - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.nongdan.dev"
+      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - traefikpublic
+
+  whoami:
+    image: "traefik/whoami"
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.whoami.rule=(Host(`tlo-livekit.nongdan.dev`) || Host(`tlo-meeting-socket.nongdan.dev`) || Host(`tlo.nongdan.dev`) || Host(`tlo-admin.nongdan.dev`)) && PathPrefix(`/whoami`)"
+      - traefik.http.routers.whoami.entrypoints=https
+      # - traefik.http.routers.whoami.tls.domains[1].main=demo.nongdan.dev
+      # - traefik.http.routers.whoami.tls.domains[1].sans=*.demo.nongdan.dev
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
+      # - traefik.http.routers.whoami.tls.certresolver=wildcard-resolver
+    networks:
+      - traefikpublic
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - 9443:9443
+    volumes:
+      - data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+#    networks:
+#      - traefikpublic
+networks:
+  traefikpublic:
+    name: traefikpublic
+volumes:
+  data:
