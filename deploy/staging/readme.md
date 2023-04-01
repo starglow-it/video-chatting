@@ -1,14 +1,10 @@
 
 ```shell
-docker-compose -f docker-compose.proxy.yml up -d --build --force-recreate --remove-orphans
-
-rsync -av env /srv/tlo/services/config-service/.env
-docker-compose -f docker-compose.services.yml up -d --build --remove-orphans
-
 # down
-docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml down
+docker-compose -f docker-compose.proxy.yml down --remove-orphans
 
-docker-compose --compatibility -p liveoffice_staging -f docker-compose.staging.yml down
+docker-compose -f docker-compose.services.yml down --remove-orphans
+
 
 ```
 
