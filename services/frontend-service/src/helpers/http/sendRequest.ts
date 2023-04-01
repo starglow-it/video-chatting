@@ -28,6 +28,7 @@ export async function sendRequest<Result, Error>(
         };
     } catch (err) {
         const typedError = err as any;
+        console.log('catch error', err);
         return {
             success: false,
             error: typedError?.response?.data?.error,
