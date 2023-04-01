@@ -108,15 +108,6 @@ services:
     environment:
       - WAIT_HOSTS=gateway-service:3000
       - WAIT_TIMEOUT=60000
-      - TURN_URL
-      - TURN_PASSWORD
-      - TURN_USERNAME
-      - TURN_PORT
-      - VULTR_STORAGE_HOSTNAME
-      - STRIPE_PUBLIC_API_KEY
-      - BASE_ENV_DOMAIN
-      - SUPPORT_EMAIL
-      - GEOLOCATION_API_KEY
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
@@ -140,11 +131,6 @@ services:
     environment:
       - WAIT_HOSTS=gateway-service:3000
       - WAIT_TIMEOUT=60000
-      - FRONTEND_URL
-      - GATEWAY_PORT
-      - GATEWAY_HOST
-      - DEFAULT_SERVER_IP
-      - VULTR_STORAGE_HOSTNAME
     ports:
       - '9010:9000'
     labels:
@@ -300,7 +286,6 @@ services:
   config-service:
     env_file:
       - env
-    
     build:
       context: ../../
       dockerfile: ./services/config-service/Dockerfile
@@ -308,50 +293,5 @@ services:
     depends_on:
       - mongo
       - rabbit
-    environment:
-      - RABBIT_MQ_CORE_QUEUE
-      - RABBIT_MQ_SOCKET_QUEUE
-      - RABBIT_MQ_AUTH_QUEUE
-      - RABBIT_MQ_PAYMENT_QUEUE
-      - RABBIT_MQ_NOTIFICATIONS_QUEUE
-      - RABBIT_MQ_MEDIA_SERVER_QUEUE
-      - RABBIT_MQ_SCALING_QUEUE
-      - RABBIT_MQ_USER
-      - RABBIT_MQ_PASS
-      - RABBIT_MQ_HOST
-      - RABBIT_MQ_CORE_HOST
-      - RABBIT_MQ_CORE_PORT
-      - VULTR_UPLOAD_BUCKET
-      - VULTR_STORAGE_HOSTNAME
-      - VULTR_SECRET_ACCESS_KEY
-      - VULTR_ACCESS_KEY
-      - VULTR_SNAPSHOT_ID
-      - VULTR_API_KEY
-      - STRIPE_API_KEY
-      - STRIPE_WEBHOOK_SECRET
-      - STRIPE_EXPRESS_WEBHOOK_SECRET
-      - LIVEKIT_API_KEY
-      - LIVEKIT_API_SECRET
-      - LIVEKIT_HOST
-      - NODE_ENV
-      - PORT=4000
-      - EMAIL_SERVICE
-      - ENVIRONMENT=production
-      - GATEWAY_PORT
-      - FRONTEND_URL
-      - JWT_SECRET
-      - MONGO_URI
-      - SMTP_HOST
-      - SMTP_PORT
-      - SMTP_USER
-      - SMTP_PASS
-      - DEFAULT_SERVER_IP
-      - DEFAULT_DOMAIN
-      - MANDRILL_API_KEY
-      - SUPPORT_SCALING
-      - NUMBER_OF_ACTIVE_SERVERS
-      - SUPPORT_EMAIL
-      - ADMIN_EMAIL
-      - ADMIN_PASSWORD
     networks:
       - internal
