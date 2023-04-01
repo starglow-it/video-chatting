@@ -122,7 +122,7 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const nextPageContext = context?.ctx ?? null;
     const data = await checkAuthFx(nextPageContext);
     const { isAuthenticated, isWithoutAuthen, user } = data;
-    console.log('#Duy Phan console', data, user);
+    console.log('#Duy Phan console', data, user, isAuthenticated);
     const registerTemplate = user?.registerTemplate;
 
     const isRegisterRedirectRoute = REGISTER_REDIRECT_ROUTES.some(route =>
