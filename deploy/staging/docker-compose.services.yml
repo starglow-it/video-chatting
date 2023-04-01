@@ -2,7 +2,7 @@ version: '3.8'
 name: services
 networks:
   traefikpublic:
-    name: proxy_traefikpublic
+    name: traefikpublic
     external: true
   internal:
 
