@@ -56,6 +56,8 @@ export const handleCreatePeerConnections = async ({
             // try {
                 await connection.createPeerConnection();
 
+                console.log('connection', connection)
+
                 if (connection.isInitial()) {
                     console.log('#Duy Phan console')
                     await connection.createOffer();
