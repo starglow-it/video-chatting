@@ -350,9 +350,14 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   })
   async getProfile(@Request() req): Promise<ResponseSumType<ICommonUser>> {
     try {
+
+      console.log('Phi console.log')
+      console.log(req.user, 'user');
       const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });
+
+      console.log(user);
 
       return { success: true, result: user };
     } catch (err) {
