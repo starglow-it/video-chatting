@@ -68,5 +68,6 @@ services:
 #      - traefikpublic
 networks:
   traefikpublic:
+    name: traefikpublic
 volumes:
   data:

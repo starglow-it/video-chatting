@@ -2,7 +2,7 @@ version: '3.8'
 name: services
 networks:
   traefikpublic:
-    name: proxy_traefikpublic
+    name: traefikpublic
     external: true
   internal:
 
@@ -48,9 +48,9 @@ services:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
       args:
-        - LIVEKIT_IP
-        - LIVEKIT_API_KEY
-        - LIVEKIT_API_SECRET
+        - LIVEKIT_IP=108.61.203.79
+        - LIVEKIT_API_KEY=APIwj2xEkRuhwY9
+        - LIVEKIT_API_SECRET=qZJdMzPHyHAOnYlyqZeaHlJmyqpJYgHmIksXxzOTtbY
     restart: unless-stopped
     ports:
       - "7880:7880"
@@ -108,7 +108,6 @@ services:
     environment:
       - WAIT_HOSTS=gateway-service:3000
       - WAIT_TIMEOUT=60000
-      - FRONTEND_URL
       - GATEWAY_PORT
       - GATEWAY_HOST
       - TURN_URL
