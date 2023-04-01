@@ -5,7 +5,7 @@ import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
 initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     if (socketInstance) {
         socketInstance.on(
-            VideoChatSocketSubscribers.OnGetOffer,
+            VideoChatSocketSubscribers.,
             getVideoChatSocketSubscribeHandler(VideoChatSocketSubscribers.OnGetOffer),
         );
 
