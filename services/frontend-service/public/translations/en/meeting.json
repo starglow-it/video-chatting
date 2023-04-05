@@ -140,5 +140,8 @@
     "title": "Meeting was finished",
     "text": "The meeting has been finished as the host's account was deleted by TheLiveOffice admin. Sorry for inconvenience",
     "button": "Homepage"
+  },
+  "changeBackground": {
+    "text": "Background"
   }
 }

@@ -1,0 +1,54 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+.commonOpenPanel {
+    position: absolute;
+    padding: rem(20px);
+    opacity: 1;
+    width: 300px;
+    right: 20px;
+    top: 5%;
+
+    .headers {
+        padding-left: 10px;
+        
+    }
+
+    &.mobile {
+        left: 50%;
+    }
+
+    &.open {
+        opacity: 1;
+    }
+
+    .barge{
+        margin-left: 10px;
+        margin-top: 5px;
+        background-color: black;
+        border-radius: 20px;
+        padding: 2px 5px;
+        height: 22px;
+        cursor: pointer;
+
+        &.active {
+            background-color: $primary-white;
+        }
+
+        .button {
+            text-transform: lowercase;
+            font-weight: bold;
+        }
+        
+    }
+    .image {
+        width: 72px;
+        height: 72px;
+        background-color: #FFFFFF;
+        margin: 5px;
+        border-radius: 16px;
+
+        &:hover {
+            border: 2px solid $light-white;
+        }
+    }
+}
