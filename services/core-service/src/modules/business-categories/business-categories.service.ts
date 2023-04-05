@@ -1,22 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, QueryOptions } from 'mongoose';
 
 import {
   BusinessCategory,
   BusinessCategoryDocument,
 } from '../../schemas/business-category.schema';
 
-import { IBusinessCategory } from 'shared-types';
+import { IBusinessCategory, IBusinessMedia } from 'shared-types';
 
-import { GetModelQuery } from '../../types/custom';
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import { BusinessMedia, BusinessMediaDocument } from 'src/schemas/business-media.schema';
 
 @Injectable()
 export class BusinessCategoriesService {
   constructor(
     @InjectModel(BusinessCategory.name)
     private businessCategory: Model<BusinessCategoryDocument>,
+    @InjectModel(BusinessMedia.name)
+    private businessMedia: Model<BusinessMediaDocument>
   ) {}
 
   async create({
@@ -31,6 +34,20 @@ export class BusinessCategoriesService {
     });
 
     return newTag;
+  }
+
+  async createBusinessMedia({
+    data,
+    session,
+  }: {
+    data: Partial<BusinessMediaDocument>;
+    session?: ITransactionSession;
+  }): Promise<BusinessMediaDocument> {
+    const [newMedia] = await this.businessMedia.create([data], {
+      session: session?.session,
+    });
+
+    return newMedia;
   }
 
   async find({
@@ -50,6 +67,54 @@ export class BusinessCategoriesService {
       )
       .exec();
   }
+
+  async findBusinessMedias({
+    query,
+    options,
+    session,
+  }: GetModelQuery<BusinessMediaDocument>) {
+    return this.businessMedia
+      .find(
+        query,
+        {},
+        {
+          skip: options?.skip,
+          limit: options?.limit,
+          session: session?.session,
+        },
+      )
+      .exec();
+  }
+
+  async findBusinessCategory({
+    query,
+    session,
+    populatePaths,
+  }: GetModelQuery<BusinessMediaDocument>): Promise<BusinessMediaDocument> {
+    return this.businessMedia
+      .findOne(query, {}, { session: session.session, populate: populatePaths })
+      .exec();
+  }
+
+  async updateBusinessMedia({
+    query,
+    data,
+    session,
+    populatePaths,
+  }: UpdateModelQuery<
+    BusinessMediaDocument,
+    BusinessMediaDocument
+  >): Promise<any> {
+    const options: QueryOptions = {
+      session: session?.session,
+      populate: populatePaths,
+      new: true,
+    };
+
+    return this.businessMedia.findOneAndUpdate(query, data, options);
+  }
+
+
 
   async exists(query: FilterQuery<BusinessCategoryDocument>): Promise<boolean> {
     const existedDocument = await this.businessCategory.exists(query).exec();

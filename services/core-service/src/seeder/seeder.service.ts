@@ -8,6 +8,7 @@ import {
   BUSINESS_CATEGORIES,
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
+  BUSINESS_FILE_PATH,
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
 
@@ -40,6 +41,7 @@ import { withTransaction } from 'src/helpers/mongo/withTransaction';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
+import { CommonBusinessMediaDTO } from 'src/dtos/common-business-media.dto';
 
 // utils
 
@@ -77,6 +79,32 @@ export class SeederService {
     );
   }
 
+  async updateBusinessMedia(data: { url: string; id: string; mimeType: string }) {
+    return withTransaction(this.connection, async () => {
+      const { url, id, mimeType } = data;
+
+
+      const previewImages = await this.commonTemplatesService.generatePreviews({
+        url,
+        id,
+        mimeType,
+      });
+
+      await this.businessCategoriesService.updateBusinessMedia({
+        query: {
+          _id: id,
+        },
+        data: {
+          mediaType: mimeType.includes('image') ? 'image' : 'video',
+          previewUrls: previewImages.map((image) => image._id),
+          url,
+        },
+      });
+
+      return;
+    });
+  }
+
   async seedBusinessCategories(): Promise<void> {
     const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
       const isExists = await this.businessCategoriesService.exists({
@@ -84,7 +112,38 @@ export class SeederService {
       });
 
       if (!isExists) {
-        await this.businessCategoriesService.create({ data: categoryItem });
+        const newCategory = await this.businessCategoriesService.create({ data: categoryItem });
+
+        const promise = BUSINESS_FILE_PATH.map(async filePath => {
+          
+          if (filePath.includes(`public/${categoryItem.key}`)) {
+            const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
+              data: {
+                businessCategory: newCategory._id
+              }
+            }), {
+              excludeExtraneousValues: true,
+              enableImplicitConversion: true,
+            });
+            
+            const buf = readFileSync(join(process.cwd(), filePath));
+
+            const uploadKey = `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`;
+            const url = await this.awsService.uploadFile(
+              buf,
+              uploadKey
+            );
+
+            await this.updateBusinessMedia({
+              url,
+              id: newMedia.id.toString(),
+              mimeType: 'image/webp',
+            });
+          }
+        });
+
+        await Promise.all(promise);
+
       }
     });
 
@@ -212,7 +271,7 @@ export class SeederService {
         isAcceptNoLogin: true
       }
     });
-    if (globalCommonTemplate){
+    if (globalCommonTemplate) {
       return;
     };
 
