@@ -64,3 +64,8 @@ export const getUserTemplateUrl = ({ templateId }: { templateId: string }) => ({
     url: `${serverUrl}/user-templates/${templateId}`,
     method: HttpMethods.Get,
 });
+
+export const updateUserTemplateUrl = ({ templateId }: { templateId: string }) => ({
+    url: `${serverUrl}/user-templates/${templateId}`,
+    method: HttpMethods.Put,
+});

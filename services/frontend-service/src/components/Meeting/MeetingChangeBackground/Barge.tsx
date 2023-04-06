@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { IBusinessCategory } from 'shared-types';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = ({
@@ -11,7 +12,7 @@ const Component = ({
     onSelect,
 }: {
     isActive: boolean;
-    item: any;
+    item: IBusinessCategory & {id: string};
     onSelect: (id: string) => void;
 }) => {
     console.log(isActive);
@@ -28,7 +29,6 @@ const Component = ({
                 justifyContent="center"
             >
                 <CustomTypography
-                    title={item.name}
                     color={
                         isActive
                             ? 'colors.black.primary'
@@ -37,7 +37,7 @@ const Component = ({
                     variant="button"
                     fontSize={10}
                     className={styles.button}
-                />
+                >{item.value}</CustomTypography>
             </CustomBox>
         </CustomGrid>
     );

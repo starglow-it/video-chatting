@@ -1,4 +1,3 @@
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import clsx from 'clsx';
 import { memo } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
@@ -22,8 +21,13 @@ const Component = ({
             item
             onClick={() => onSelect(item.id)}
         >
-            {item.src !== '' ? (
-                <CustomImage src="/images/clock.webp" width={72} height={72} />
+            {item.url !== '' ? (
+                <CustomImage
+                    src={item.url}
+                    width={72}
+                    height={72}
+                    className={styles.image}
+                />
             ) : (
                 <CustomBox />
             )}

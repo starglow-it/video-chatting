@@ -1,35 +1,37 @@
 import { meetingDomain } from '../../../domains';
+import { ICategoryMedia } from './types';
 
 export const $isToggleChangeBackground =
     meetingDomain.createStore<boolean>(false);
 
 export const $backgroundMeetingStore = meetingDomain.createStore<{
-    types: string[];
-    images: string[];
-    typeSelected: string;
-    backgroundSelected: string;
+    medias: ICategoryMedia[];
+    categorySelected: string;
+    mediaSelected: string;
 }>({
-    types: [],
-    images: [],
-    typeSelected: '',
-    backgroundSelected: '',
+    medias: [],
+    categorySelected: '',
+    mediaSelected: '',
 });
 
 export const toggleChangeBackgroundEvent = meetingDomain.createEvent(
     'toggleChangeBackgroundEvent',
 );
 
-export const setBackgroundEvent = meetingDomain.createEvent<{
-    typeSelected?: string;
-    backgroundSelected?: string;
-}>('setBackgroundEvent');
+export const setCategoryEvent = meetingDomain.createEvent<{
+    categorySelected: string;
+}>('setCategoryEvent');
 
-export const setImagesEvent = meetingDomain.createEvent<{
-    types: string[];
-    images: string[];
-}>('setImagesEvent');
+export const setMediaEvent = meetingDomain.createEvent<{
+    mediaSelected: string;
+}>('setMediaEvent');
 
 export const getBackgroundMeetingFx = meetingDomain.createEffect<
     { id: string },
-    void
+    ICategoryMedia[]
 >('getBackgroundMeetingFx');
+
+export const updateBackgroundMeetingFx = meetingDomain.createEffect<
+    { templateId: string; data: any },
+    void
+>('updateBackgroundMeetingFx');

@@ -7,10 +7,12 @@ import { memo } from 'react';
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { $businessCategoriesStore } from 'src/store';
 import {
     $backgroundMeetingStore,
     $isToggleChangeBackground,
-    setBackgroundEvent,
+    setCategoryEvent,
+    setMediaEvent,
     toggleChangeBackgroundEvent,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
@@ -19,16 +21,18 @@ import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
     const isToggleChangeBackground = useStore($isToggleChangeBackground);
-    const { images, types, typeSelected, backgroundSelected } = useStore(
+    const { medias, categorySelected, mediaSelected } = useStore(
         $backgroundMeetingStore,
     );
+    const { list: categories } = useStore($businessCategoriesStore);
+    console.log(medias,categorySelected);
 
     const handleSelectBackground = (id: string) => {
-        setBackgroundEvent({ backgroundSelected: id });
+        setMediaEvent({ mediaSelected: id });
     };
 
     const handleSelectType = (id: string) => {
-        setBackgroundEvent({ typeSelected: id });
+        setCategoryEvent({ categorySelected: id });
     };
 
     return (
@@ -37,7 +41,7 @@ const Component = () => {
                 variant="black-glass"
                 className={clsx(styles.commonOpenPanel)}
             >
-                <CustomGrid flex={1} container>
+                <CustomGrid flex={1} container flexDirection="column">
                     <CustomBox
                         display="flex"
                         className={styles.headers}
@@ -67,20 +71,21 @@ const Component = () => {
                         flexWrap="wrap"
                         paddingTop={2}
                     >
-                        {types.map(item => (
+                        {categories.map(item => (
                             <Barge
-                                key={item}
-                                isActive={item.id === typeSelected}
+                                key={item.key}
+                                isActive={item.id === categorySelected}
                                 onSelect={handleSelectType}
+                                item={item}
                             />
                         ))}
                     </CustomBox>
 
                     <CustomGrid container flex={75} paddingTop={2}>
-                        {images.map(item => (
+                        {medias.map(item => (
                             <Images
-                                key={item}
-                                isActive={item.id === backgroundSelected}
+                                key={item.id}
+                                isActive={item.id === mediaSelected}
                                 item={item}
                                 onSelect={handleSelectBackground}
                             />
