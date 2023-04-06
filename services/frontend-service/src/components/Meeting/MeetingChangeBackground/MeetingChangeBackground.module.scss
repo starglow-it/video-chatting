@@ -1,5 +1,6 @@
 @import "../../../styles/variables";
 @import "../../../styles/rem";
+
 .commonOpenPanel {
     position: absolute;
     padding: rem(20px);
@@ -9,16 +10,7 @@
     top: 4%;
 
     .headers {
-        padding-left: 10px;
-        
-    }
-
-    &.mobile {
-        left: 50%;
-    }
-
-    &.open {
-        opacity: 1;
+        padding-left: 10px;   
     }
 
     .closeIcon {
@@ -45,11 +37,12 @@
         
     }
     .container {
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
         background-color: #FFFFFF;
         margin: 5px;
         border-radius: 12px;
+        position: relative;
 
         &:hover {
             border: 2px solid $light-white;
@@ -59,6 +52,11 @@
         }
 
         .image {
+            border-radius: 12px;
+        }
+
+        .skelon {
+            position: absolute;
             border-radius: 12px;
         }
     }

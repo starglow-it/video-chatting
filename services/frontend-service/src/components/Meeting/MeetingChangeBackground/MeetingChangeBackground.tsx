@@ -16,7 +16,7 @@ import {
     toggleChangeBackgroundEvent,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
-import { Images } from './Images';
+import { Media } from './Images';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
@@ -73,7 +73,7 @@ const Component = () => {
                         display="flex"
                         flexDirection="row"
                         flexWrap="wrap"
-                        paddingTop={2}
+                        paddingTop={1}
                     >
                         {categories.map(item => (
                             <Barge
@@ -85,9 +85,9 @@ const Component = () => {
                         ))}
                     </CustomBox>
 
-                    <CustomGrid container flex={75} paddingTop={2}>
+                    <CustomGrid container flex={75} paddingTop={3} paddingLeft="6px">
                         {medias.map(item => (
-                            <Images
+                            <Media
                                 key={item.id}
                                 isActive={item.id === mediaSelected}
                                 item={item}

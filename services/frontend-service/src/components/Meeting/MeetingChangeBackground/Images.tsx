@@ -1,8 +1,10 @@
+import { Skeleton } from '@mui/material';
 import clsx from 'clsx';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ICategoryMedia } from '../../../store/roomStores/meeting/meetingBackground/types';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = ({
@@ -11,22 +13,30 @@ const Component = ({
     onSelect,
 }: {
     isActive: boolean;
-    item: any;
+    item: ICategoryMedia;
     onSelect: (id: string) => void;
 }) => {
-    console.log(isActive);
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const handleLoadEnd = () => {
+        setIsLoaded(true);
+    };
+
     return (
         <CustomGrid
             className={clsx(styles.container, { [styles.active]: isActive })}
             item
             onClick={() => onSelect(item.id)}
         >
+            {!isLoaded && (
+                <Skeleton width={55} height={55} className={styles.skelon} variant="rectangular" />
+            )}
             {item.url !== '' ? (
                 <CustomImage
                     src={item.url}
-                    width={60}
-                    height={60}
+                    width={55}
+                    height={55}
                     className={styles.image}
+                    onLoad={handleLoadEnd}
                 />
             ) : (
                 <CustomBox />
@@ -35,4 +45,4 @@ const Component = ({
     );
 };
 
-export const Images = memo(Component);
+export const Media = memo(Component);

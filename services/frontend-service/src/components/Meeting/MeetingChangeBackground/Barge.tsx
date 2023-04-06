@@ -12,11 +12,9 @@ const Component = ({
     onSelect,
 }: {
     isActive: boolean;
-    item: IBusinessCategory & {id: string};
+    item: IBusinessCategory & { id: string };
     onSelect: (id: string) => void;
 }) => {
-    console.log(isActive);
-
     return (
         <CustomGrid
             className={clsx(styles.barge, { [styles.active]: isActive })}
@@ -29,15 +27,13 @@ const Component = ({
                 justifyContent="center"
             >
                 <CustomTypography
-                    color={
-                        isActive
-                            ? 'colors.black.primary'
-                            : 'colors.white.primary'
-                    }
+                    color={isActive ? 'colors.black.primary' : item.color}
                     variant="button"
                     fontSize={11}
                     className={styles.button}
-                >{item.value}</CustomTypography>
+                >
+                    {item.value}
+                </CustomTypography>
             </CustomBox>
         </CustomGrid>
     );

@@ -57,7 +57,8 @@
     "destructuring-newline/object-property-newline": 1,
     "consistent-return": "off",
     "jsx-a11y/media-has-caption": "off",
-    "no-lonely-if": "off"
+    "no-lonely-if": "off",
+    "arrow-body-style": "off"
   },
   "settings": {
     "react": {
