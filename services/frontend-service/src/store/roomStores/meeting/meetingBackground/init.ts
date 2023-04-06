@@ -41,16 +41,22 @@ sample({
         backgroundMeetingStore: $backgroundMeetingStore,
         meetingTemplateStore: $meetingTemplateStore,
     }),
-    fn: ({ meetingTemplateStore, backgroundMeetingStore }, clock) => ({
-        templateId: meetingTemplateStore.id,
-        data: backgroundMeetingStore.medias.find(
+    fn: ({ meetingTemplateStore, backgroundMeetingStore }, clock) => {
+        const dataUpdate = backgroundMeetingStore.medias.find(
             item => item.id === clock.mediaSelected,
-        )?.previewUrls,
-    }),
+        );
+        return {
+            templateId: meetingTemplateStore.id,
+            data: {
+                previewUrls: dataUpdate?.previewUrls.map((item) => item.id),
+                url: dataUpdate?.url,
+            },
+        };
+    },
     target: updateBackgroundMeetingFx,
 });
 
 forward({
     from: updateBackgroundMeetingFx.doneData,
-    to: sendUpdateMeetingTemplateSocketEvent
-})
+    to: sendUpdateMeetingTemplateSocketEvent,
+});

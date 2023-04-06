@@ -35,6 +35,7 @@ import {
 } from '../../../store';
 import {
     $isMeetingHostStore,
+    $isOwner,
     $isScreenSharingStore,
     $localUserStore,
     $meetingConnectedStore,
@@ -76,6 +77,7 @@ const Component = () => {
 
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
+    const isOwner = useStore($isOwner);
 
     const handleOpenDeviceSettings = useCallback(() => {
         appDialogsApi.openDialog({
@@ -234,24 +236,26 @@ const Component = () => {
                 </CustomPaper>
             </ConditionalRender>
 
-            <CustomTooltip
-                classes={{ tooltip: styles.tooltip }}
-                nameSpace="meeting"
-                translation="changeBackground.text"
-            >
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={8}
-                    className={styles.deviceButton}
+            {isOwner && (
+                <CustomTooltip
+                    classes={{ tooltip: styles.tooltip }}
+                    nameSpace="meeting"
+                    translation="changeBackground.text"
                 >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={toggleChangeBackgroundEvent}
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
                         className={styles.deviceButton}
-                        Icon={<ImageIcon width="22px" height="22px" />}
-                    />
-                </CustomPaper>
-            </CustomTooltip>
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={toggleChangeBackgroundEvent}
+                            className={styles.deviceButton}
+                            Icon={<ImageIcon width="22px" height="22px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            )}
 
             <ActionButton
                 variant="danger"

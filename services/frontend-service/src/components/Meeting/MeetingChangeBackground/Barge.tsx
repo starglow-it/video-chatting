@@ -35,7 +35,7 @@ const Component = ({
                             : 'colors.white.primary'
                     }
                     variant="button"
-                    fontSize={10}
+                    fontSize={11}
                     className={styles.button}
                 >{item.value}</CustomTypography>
             </CustomBox>

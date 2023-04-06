@@ -7,6 +7,6 @@ export const getBusinessCategoriesUrl = ({ skip = 0, limit = 0 }) => ({
 });
 
 export const getMediasCategory = ({ skip = 0, limit = 0, categoryId = '' }) => ({
-    url: `${serverUrl}/categories/${categoryId}?skip=${skip}&limit=${limit}`,
+    url: `${serverUrl}/categories/medias/${categoryId}?skip=${skip}&limit=${limit}`,
     method: HttpMethods.Get,
 });

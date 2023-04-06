@@ -17,15 +17,15 @@ const Component = ({
     console.log(isActive);
     return (
         <CustomGrid
-            className={clsx(styles.image, { [styles.active]: isActive })}
+            className={clsx(styles.container, { [styles.active]: isActive })}
             item
             onClick={() => onSelect(item.id)}
         >
             {item.url !== '' ? (
                 <CustomImage
                     src={item.url}
-                    width={72}
-                    height={72}
+                    width={60}
+                    height={60}
                     className={styles.image}
                 />
             ) : (

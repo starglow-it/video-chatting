@@ -3,7 +3,7 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -25,7 +25,11 @@ const Component = () => {
         $backgroundMeetingStore,
     );
     const { list: categories } = useStore($businessCategoriesStore);
-    console.log(medias,categorySelected);
+
+    useEffect(() => {
+        if (categories.length)
+            setCategoryEvent({ categorySelected: categories[0].id });
+    }, []);
 
     const handleSelectBackground = (id: string) => {
         setMediaEvent({ mediaSelected: id });

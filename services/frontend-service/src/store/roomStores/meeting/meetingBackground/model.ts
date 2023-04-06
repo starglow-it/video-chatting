@@ -1,3 +1,4 @@
+import { IUserTemplate } from 'shared-types';
 import { meetingDomain } from '../../../domains';
 import { ICategoryMedia } from './types';
 
@@ -32,6 +33,6 @@ export const getBackgroundMeetingFx = meetingDomain.createEffect<
 >('getBackgroundMeetingFx');
 
 export const updateBackgroundMeetingFx = meetingDomain.createEffect<
-    { templateId: string; data: any },
+    { templateId: string; data: Partial<IUserTemplate> },
     void
 >('updateBackgroundMeetingFx');

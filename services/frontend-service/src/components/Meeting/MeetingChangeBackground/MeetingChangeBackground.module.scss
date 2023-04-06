@@ -4,9 +4,9 @@
     position: absolute;
     padding: rem(20px);
     opacity: 1;
-    width: 300px;
+    width: 270px;
     right: 20px;
-    top: 5%;
+    top: 4%;
 
     .headers {
         padding-left: 10px;
@@ -21,12 +21,16 @@
         opacity: 1;
     }
 
+    .closeIcon {
+        cursor: pointer;
+    }
+
     .barge{
         margin-left: 10px;
         margin-top: 5px;
         background-color: black;
         border-radius: 20px;
-        padding: 2px 5px;
+        padding: 2px 10px;
         height: 22px;
         cursor: pointer;
 
@@ -40,15 +44,22 @@
         }
         
     }
-    .image {
-        width: 72px;
-        height: 72px;
+    .container {
+        width: 60px;
+        height: 60px;
         background-color: #FFFFFF;
         margin: 5px;
-        border-radius: 16px;
+        border-radius: 12px;
 
         &:hover {
             border: 2px solid $light-white;
+        }
+        &.active {
+            border: 3px solid #71abe6;
+        }
+
+        .image {
+            border-radius: 12px;
         }
     }
 }
