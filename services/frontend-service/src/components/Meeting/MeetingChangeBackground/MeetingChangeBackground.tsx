@@ -16,7 +16,7 @@ import {
     toggleChangeBackgroundEvent,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
-import { Media } from './Images';
+import { Media } from './Media';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
