@@ -80,7 +80,7 @@ export class BusinessCategoriesController {
       const limitQuery = limit || 8;
 
       const businessCategory = await this.businessCategoriesService.findBusinessCategory({
-        query: isValidObjectId(businessCategoryId) ? { businessCategory: businessCategoryId } : {},
+        query: isValidObjectId(businessCategoryId) ? { _id: businessCategoryId } : {},
         session
       });
 

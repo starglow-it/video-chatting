@@ -12,12 +12,14 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import { EntityList, ResponseSumType, IBusinessCategory, IBusinessMedia } from 'shared-types';
 import { BusinessMediaRestDTO } from 'src/dtos/response/common-business-media.dto';
 import { CategoryRestDTO } from '../../dtos/response/common-category.dto';
 import { CategoriesService } from './categories.service';
 
+@ApiTags('Business Category')
 @Controller('categories')
 export class CategoriesController {
   private readonly logger = new Logger();
@@ -61,8 +63,8 @@ export class CategoriesController {
   }
 
 
-  @Get('/:categoryId')
-  @ApiOperation({ summary: 'Get Business media' })
+  @Get('medias/:categoryId')
+  @ApiOperation({ summary: 'Get Business medias' })
   @ApiOkResponse({
     type: [BusinessMediaRestDTO],
     description: 'Get Business Medias',

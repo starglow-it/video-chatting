@@ -18,6 +18,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import { UserTemplatesService } from './user-templates.service';
@@ -34,7 +35,9 @@ import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { v4 as uuidv4 } from 'uuid';
 import { IUpdateTemplate } from 'shared-types';
 import { USER_TEMPLATE_SCOPE } from 'shared-const';
+import { UpdateTemplateRequest } from 'src/dtos/requests/update-template.request';
 
+@ApiTags('User templates')
 @Controller(USER_TEMPLATE_SCOPE)
 export class UserTemplatesController {
   private readonly logger = new Logger();
@@ -140,7 +143,7 @@ export class UserTemplatesController {
   async updateUserTemplate(
     @Request() req,
     @Param('templateId') templateId: string,
-    @Body() templateData: Partial<IUpdateTemplate>,
+    @Body() templateData: UpdateTemplateRequest,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
