@@ -36,6 +36,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { IUpdateTemplate } from 'shared-types';
 import { USER_TEMPLATE_SCOPE } from 'shared-const';
 import { UpdateTemplateRequest } from 'src/dtos/requests/update-template.request';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
 @ApiTags('User templates')
 @Controller(USER_TEMPLATE_SCOPE)
@@ -125,7 +126,7 @@ export class UserTemplatesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Put('/:templateId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Template' })
