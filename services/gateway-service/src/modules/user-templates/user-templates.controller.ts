@@ -33,8 +33,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { v4 as uuidv4 } from 'uuid';
 import { IUpdateTemplate } from 'shared-types';
+import { USER_TEMPLATE_SCOPE } from 'shared-const';
 
-@Controller('user-templates')
+@Controller(USER_TEMPLATE_SCOPE)
 export class UserTemplatesController {
   private readonly logger = new Logger();
   constructor(
