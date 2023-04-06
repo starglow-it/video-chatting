@@ -95,12 +95,6 @@ export class BusinessCategoriesController {
         businessCategory: businessCategory._id
       });
 
-      console.log(mediaCount);
-      
-
-
-      console.log(businessCategory);
-
       const medias = await this.businessCategoriesService.findBusinessMedias({
         query: {
           businessCategory: businessCategory?._id
@@ -109,7 +103,7 @@ export class BusinessCategoriesController {
           skip: skipQuery,
           limit: limitQuery
         },
-        populatePaths: ['businessCategory']
+        populatePaths: ['businessCategory', 'previewUrls']
       });
 
       // console.log(medias);
