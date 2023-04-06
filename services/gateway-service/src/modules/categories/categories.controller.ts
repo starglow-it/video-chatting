@@ -61,18 +61,17 @@ export class CategoriesController {
   }
 
 
-  @Get('/:categororyId')
-  @ApiOperation({ summary: 'Get Categories' })
+  @Get('/:categoryId')
+  @ApiOperation({ summary: 'Get Business media' })
   @ApiOkResponse({
     type: [BusinessMediaRestDTO],
-    description: 'Get Categories Success',
+    description: 'Get Business Medias',
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
   async getBusinessMeidas(
-    @Request() req,
-    @Param('categororyId') categoryId: string,
+    @Param('categoryId') categoryId: string,
     @Query('skip', ParseIntPipe) skip: number,
     @Query('limit', ParseIntPipe) limit: number,
   ): Promise<ResponseSumType<EntityList<IBusinessMedia>>> {

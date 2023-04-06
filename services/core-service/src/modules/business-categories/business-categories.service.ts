@@ -72,6 +72,7 @@ export class BusinessCategoriesService {
     query,
     options,
     session,
+    populatePaths
   }: GetModelQuery<BusinessMediaDocument>) {
     return this.businessMedia
       .find(
@@ -81,6 +82,7 @@ export class BusinessCategoriesService {
           skip: options?.skip,
           limit: options?.limit,
           session: session?.session,
+          populate: populatePaths
         },
       )
       .exec();
@@ -90,8 +92,8 @@ export class BusinessCategoriesService {
     query,
     session,
     populatePaths,
-  }: GetModelQuery<BusinessMediaDocument>): Promise<BusinessMediaDocument> {
-    return this.businessMedia
+  }: GetModelQuery<BusinessCategoryDocument>): Promise<BusinessCategoryDocument> {
+    return this.businessCategory
       .findOne(query, {}, { session: session.session, populate: populatePaths })
       .exec();
   }
@@ -124,5 +126,9 @@ export class BusinessCategoriesService {
 
   async count(query: FilterQuery<BusinessCategoryDocument>): Promise<number> {
     return this.businessCategory.count(query).exec();
+  }
+
+  async countBusinessMedia(query: FilterQuery<BusinessMediaDocument>): Promise<number> {
+    return this.businessMedia.count(query).exec();
   }
 }

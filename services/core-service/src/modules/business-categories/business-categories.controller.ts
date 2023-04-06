@@ -72,7 +72,7 @@ export class BusinessCategoriesController {
   }
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetBusinessMedias })
-  async getBusinessMida(@Payload() payload: GetBusinessMediasPayload) {
+  async getBusinessMida(@Payload() payload: GetBusinessMediasPayload): Promise<EntityList<IBusinessCategory>> {
     return withTransaction(this.connection, async session => {
       const { skip, limit, businessCategoryId } = payload;
 
@@ -80,7 +80,7 @@ export class BusinessCategoriesController {
       const limitQuery = limit || 8;
 
       const businessCategory = await this.businessCategoriesService.findBusinessCategory({
-        query: isValidObjectId(businessCategoryId) ? { _id: businessCategoryId } : {},
+        query: isValidObjectId(businessCategoryId) ? { businessCategory: businessCategoryId } : {},
         session
       });
 
@@ -91,15 +91,43 @@ export class BusinessCategoriesController {
         });
       }
 
-      return plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.findBusinessMedias({
+      const mediaCount = await this.businessCategoriesService.countBusinessMedia({
+        businessCategory: businessCategory._id
+      });
+
+      console.log(mediaCount);
+      
+
+
+      console.log(businessCategory);
+
+      const medias = await this.businessCategoriesService.findBusinessMedias({
         query: {
-          businessCategory: businessCategory._id
+          businessCategory: businessCategory?._id
         },
         options: {
           skip: skipQuery,
           limit: limitQuery
-        }
-      }));
+        },
+        populatePaths: ['businessCategory']
+      });
+
+      // console.log(medias);
+      
+      
+
+      const plainBusinessMedias =  plainToInstance(CommonBusinessMediaDTO, medias ,{
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true
+      });
+
+      console.log(plainBusinessMedias);
+      
+
+      return {
+        list: plainBusinessMedias,
+        count: mediaCount,
+      };
     });
   }
 
