@@ -108,8 +108,7 @@ export class UsersGateway extends BaseGateway {
 
         updateUsersPosistion = usersTemplate.usersPosition.map((userPosition, index) => {
             if (usersTemplate.indexUsers[index] !== meetingUserId) return userPosition;
-            userPosition = data?.userPosition;
-            return userPosition;
+            return data?.userPosition;
           },
         );
       }
@@ -118,8 +117,7 @@ export class UsersGateway extends BaseGateway {
         updateUser.userSize = data.userSize;
         updateUsersSize = usersTemplate.usersSize.map((userSize, index) => {
           if (usersTemplate.indexUsers[index] !== meetingUserId) return userSize;
-          userSize = data?.userSize;
-          return userSize;
+          return data?.userSize;
         });
       }
 
