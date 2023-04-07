@@ -1,0 +1,63 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.commonOpenPanel {
+    position: absolute;
+    padding: rem(20px);
+    opacity: 1;
+    width: 270px;
+    right: 20px;
+    top: 4%;
+
+    .headers {
+        padding-left: 10px;   
+    }
+
+    .closeIcon {
+        cursor: pointer;
+    }
+
+    .barge{
+        margin-left: 10px;
+        margin-top: 5px;
+        background-color: black;
+        border-radius: 20px;
+        padding: 2px 10px;
+        height: 22px;
+        cursor: pointer;
+
+        &.active {
+            background-color: $primary-white;
+        }
+
+        .button {
+            text-transform: lowercase;
+            font-weight: bold;
+        }
+        
+    }
+    .container {
+        width: 55px;
+        height: 55px;
+        background-color: #FFFFFF;
+        margin: 5px;
+        border-radius: 12px;
+        position: relative;
+
+        &:hover {
+            border: 2px solid $light-white;
+        }
+        &.active {
+            border: 3px solid #71abe6;
+        }
+
+        .image {
+            border-radius: 8px;
+        }
+
+        .skeleton {
+            position: absolute;
+            border-radius: 12px;
+        }
+    }
+}

@@ -16,6 +16,7 @@ export * from './subscriptions/subscription/model';
 export * from './other/routeToChange/model';
 export * from './other/profileAvatarSetUp/model';
 export * from './other/contactUs/init';
+export * from './other/version/model';
 
 export * from './meetings/model';
 
@@ -45,6 +46,7 @@ export * from './meetings/init';
 
 export * from './other/routeToChange/init';
 export * from './other/profileAvatarSetUp/init';
+export * from './other/version/init';
 
 export * from './templates/init';
 export * from './waitingRoom/init';
