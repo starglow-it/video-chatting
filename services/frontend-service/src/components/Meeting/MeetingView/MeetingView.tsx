@@ -55,6 +55,7 @@ import {
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 
 // helpers
 
@@ -185,6 +186,7 @@ const Component = () => {
                     <MeetingGeneralInfo />
                     <MeetingNotes />
                     <MeetingUsersVideos />
+                    <MeetingChangeBackground />
                 </MeetingSettingsPanel>
             )}
 

@@ -24,6 +24,7 @@ import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
 import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
+import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 
 // stores
 import {
@@ -34,6 +35,7 @@ import {
 } from '../../../store';
 import {
     $isMeetingHostStore,
+    $isOwner,
     $isScreenSharingStore,
     $localUserStore,
     $meetingConnectedStore,
@@ -44,6 +46,7 @@ import {
     setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
+    toggleChangeBackgroundEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
 
@@ -74,6 +77,7 @@ const Component = () => {
 
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
+    const isOwner = useStore($isOwner);
 
     const handleOpenDeviceSettings = useCallback(() => {
         appDialogsApi.openDialog({
@@ -230,6 +234,27 @@ const Component = () => {
                         Icon={<SettingsIcon width="22px" height="22px" />}
                     />
                 </CustomPaper>
+            </ConditionalRender>
+
+            <ConditionalRender condition={isOwner}>
+                <CustomTooltip
+                    classes={{ tooltip: styles.tooltip }}
+                    nameSpace="meeting"
+                    translation="changeBackground.text"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={toggleChangeBackgroundEvent}
+                            className={styles.deviceButton}
+                            Icon={<ImageIcon width="22px" height="22px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
             </ConditionalRender>
 
             <ActionButton

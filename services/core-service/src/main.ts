@@ -62,7 +62,7 @@ async function bootstrap() {
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
   dashboardNotificationsController.deleteDashboardNotifications();
-
+  
   return;
 }
 

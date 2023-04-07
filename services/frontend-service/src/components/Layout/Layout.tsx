@@ -1,168 +1,143 @@
-import React, {
-	memo, PropsWithChildren, useEffect, useMemo 
-} from 'react';
-import {
-	useStore 
-} from 'effector-react';
+import React, { memo, PropsWithChildren, useEffect, useMemo } from 'react';
+import { useStore } from 'effector-react';
 import clsx from 'clsx';
-import {
-	useRouter 
-} from 'next/router';
+import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 
 // hooks
-import {
-	useBrowserDetect 
-} from '@hooks/useBrowserDetect';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // library
-import {
-	LiveOfficeLogo 
-} from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
-import {
-	ConditionalRender 
-} from 'shared-frontend/library/common/ConditionalRender';
+import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // custom
-import {
-	CustomBox 
-} from 'shared-frontend/library/custom/CustomBox';
-import {
-	CustomGrid 
-} from 'shared-frontend/library/custom/CustomGrid';
-import {
-	CustomLink 
-} from '@library/custom/CustomLink/CustomLink';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 
 // components
-import {
-	AuthenticationLink 
-} from '@components/AuthenticationLink/AuthenticationLink';
-import { MeetingFinishedDialog } from "@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog";
+import { AuthenticationLink } from '@components/AuthenticationLink/AuthenticationLink';
+import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog/MeetingFinishedDialog';
 
-import {
-	Footer 
-} from '@components/Footer/Footer';
+import { Footer } from '@components/Footer/Footer';
 
 // types
-import {
-	LayoutProps 
-} from './types';
+import { LayoutProps } from './types';
 
 // stores
 import {
-	$authStore,
-	$isSocketConnected,
-	initiateSocketConnectionEvent,
-	sendJoinDashboardSocketEvent,
+    $authStore,
+    $isSocketConnected,
+    getAppVersionFx,
+    initiateSocketConnectionEvent,
+    sendJoinDashboardSocketEvent,
 } from '../../store';
 
 // const
 import {
-	createRoomRoute,
-	dashboardRoute,
-	editRoomRoute,
-	roomRoute,
+    createRoomRoute,
+    dashboardRoute,
+    editRoomRoute,
+    roomRoute,
 } from '../../const/client-routes';
 
 // styles
 import styles from './Layout.module.scss';
 
 const TimeLimitNotification = dynamic(
-	() => import('@components/TimeLimitNotification/TimeLimitNotification'),
-	{
-		ssr: false,
-	},
+    () => import('@components/TimeLimitNotification/TimeLimitNotification'),
+    {
+        ssr: false,
+    },
 );
 
 const TimeLimitWarning = dynamic(
-	() => import('@components/TimeLimitWarning/TimeLimitWarning'),
-	{
-		ssr: false,
-	},
+    () => import('@components/TimeLimitWarning/TimeLimitWarning'),
+    {
+        ssr: false,
+    },
 );
 
 const SubscriptionExpiredNotification = dynamic(
-	() =>
-		import(
-			'@components/SubscriptionExpiredNotification/SubscriptionExpiredNotification'
-		),
-	{
-		ssr: false,
-	},
+    () =>
+        import(
+            '@components/SubscriptionExpiredNotification/SubscriptionExpiredNotification'
+        ),
+    {
+        ssr: false,
+    },
 );
 
 const ROUTES_WITHOUT_FOOTER: string[] = [
-	roomRoute,
-	createRoomRoute,
-	editRoomRoute,
+    roomRoute,
+    createRoomRoute,
+    editRoomRoute,
 ];
 
-const Component = ({
-	children 
-}: PropsWithChildren<LayoutProps>) => {
-	const {
-		isAuthenticated 
-	} = useStore($authStore);
-	const isSocketConnected = useStore($isSocketConnected);
+const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
+    const { isAuthenticated } = useStore($authStore);
+    const isSocketConnected = useStore($isSocketConnected);
 
-	const router = useRouter();
+    const router = useRouter();
 
-	const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(
-		router.pathname,
-	);
-	const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
+    const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(
+        router.pathname,
+    );
+    const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
 
-	const shouldShowFooter = useMemo(
-		() =>
-			!ROUTES_WITHOUT_FOOTER.find(route =>
-				new RegExp(`${route}`).test(router.pathname),
-			),
-		[router.pathname],
-	);
+    const shouldShowFooter = useMemo(
+        () =>
+            !ROUTES_WITHOUT_FOOTER.find(route =>
+                new RegExp(`${route}`).test(router.pathname),
+            ),
+        [router.pathname],
+    );
 
-	useEffect(() => {
-		(async () => {
-			if (isDashboardRoute || isRoomRoute) {
-				initiateSocketConnectionEvent();
-			}
-		})();
-	}, [router.pathname]);
+    useEffect(() => {
+        (async () => {
+            if (isDashboardRoute || isRoomRoute) {
+                initiateSocketConnectionEvent();
+            }
+        })();
+    }, [router.pathname]);
 
-	const {
-		isMobile 
-	} = useBrowserDetect();
+    useEffect(() => {
+        if (shouldShowFooter) getAppVersionFx();
+    }, []);
 
-	useEffect(() => {
-		if (isSocketConnected) {
-			sendJoinDashboardSocketEvent();
-		}
-	}, [isSocketConnected]);
+    const { isMobile } = useBrowserDetect();
 
-	const isMeetingRoute =
+    useEffect(() => {
+        if (isSocketConnected) {
+            sendJoinDashboardSocketEvent();
+        }
+    }, [isSocketConnected]);
+
+    const isMeetingRoute =
         router.pathname.includes('room') ||
         router.pathname.includes('dashboard/templates/setup');
 
-	return (
-		<CustomBox
-			className={clsx(styles.main, {
-				[styles.meetingLayout]: isMeetingRoute,
-				[styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
-			})}
-		>
-			<ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
-				<TimeLimitNotification />
-			</ConditionalRender>
+    return (
+        <CustomBox
+            className={clsx(styles.main, {
+                [styles.meetingLayout]: isMeetingRoute,
+                [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
+            })}
+        >
+            <ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
+                <TimeLimitNotification />
+            </ConditionalRender>
 
-			<ConditionalRender condition={isMeetingRoute}>
-				<TimeLimitWarning />
-			</ConditionalRender>
+            <ConditionalRender condition={isMeetingRoute}>
+                <TimeLimitWarning />
+            </ConditionalRender>
 
-			<ConditionalRender condition={isDashboardRoute}>
-				<SubscriptionExpiredNotification />
-			</ConditionalRender>
+            <ConditionalRender condition={isDashboardRoute}>
+                <SubscriptionExpiredNotification />
+            </ConditionalRender>
 
-			<CustomBox className={styles.bgImage} />
+            <CustomBox className={styles.bgImage} />
 
             <CustomGrid
                 container
@@ -174,7 +149,11 @@ const Component = ({
                     [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
                 })}
             >
-                <CustomGrid item flex={1} className={clsx({[styles.mobileContent]: isMobile})}>
+                <CustomGrid
+                    item
+                    flex={1}
+                    className={clsx({ [styles.mobileContent]: isMobile })}
+                >
                     <ConditionalRender condition={!isMobile}>
                         <CustomBox className={styles.header}>
                             <CustomGrid
@@ -182,7 +161,9 @@ const Component = ({
                                 justifyContent="space-between"
                                 alignItems="center"
                             >
-                                <CustomLink href={isAuthenticated ? dashboardRoute : ''}>
+                                <CustomLink
+                                    href={isAuthenticated ? dashboardRoute : ''}
+                                >
                                     <LiveOfficeLogo
                                         className={clsx(isAuthenticated, {
                                             [styles.link]: isAuthenticated,
@@ -198,7 +179,7 @@ const Component = ({
                         </CustomBox>
                     </ConditionalRender>
                     {children}
-					<MeetingFinishedDialog />
+                    <MeetingFinishedDialog />
                 </CustomGrid>
                 <ConditionalRender condition={shouldShowFooter}>
                     <CustomGrid item>
