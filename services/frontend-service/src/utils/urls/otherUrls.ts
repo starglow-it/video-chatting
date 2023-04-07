@@ -15,3 +15,8 @@ export const sendContactFormUrl = {
     url: `${serverUrl}/${usersScope}/contacts`,
     method: HttpMethods.Post,
 };
+
+export const getVersionUrl = {
+    url: `${serverUrl}/versions`,
+    method: HttpMethods.Get,
+};

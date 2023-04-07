@@ -55,6 +55,7 @@ import {
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 
 // helpers
 
@@ -111,7 +112,6 @@ const Component = () => {
                 !isMeetingConnected &&
                 !isJoinMeetingPending
             ) {
-                console.log('#Duy Phan console', serverType, 'inittt')
                 initVideoChatEvent({ serverType });
                 setMeetingConnectedEvent(true);
             }
@@ -185,6 +185,7 @@ const Component = () => {
                     <MeetingGeneralInfo />
                     <MeetingNotes />
                     <MeetingUsersVideos />
+                    <MeetingChangeBackground />
                 </MeetingSettingsPanel>
             )}
 
