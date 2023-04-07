@@ -89,7 +89,7 @@ const Component: React.FunctionComponent<
     };
 
     useEffect(() => {
-        if (!isScreenSharing && (!isInitPos || !isLocal)) {
+        if (!isScreenSharing && (!isInitPos )) {
             const percentLeft = (left || 0) * 100;
             const percentBottom = (bottom || 0) * 100;
             setLeft(`${percentLeft}%`);
