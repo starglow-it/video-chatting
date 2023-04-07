@@ -106,17 +106,11 @@ export class BusinessCategoriesController {
         populatePaths: ['businessCategory', 'previewUrls']
       });
 
-      // console.log(medias);
-      
-      
 
       const plainBusinessMedias =  plainToInstance(CommonBusinessMediaDTO, medias ,{
         excludeExtraneousValues: true,
         enableImplicitConversion: true
       });
-
-      console.log(plainBusinessMedias);
-      
 
       return {
         list: plainBusinessMedias,
@@ -125,9 +119,4 @@ export class BusinessCategoriesController {
     });
   }
 
-
-  @MessagePattern({ cmd: CoreBrokerPatterns.AddBusinessMedia })
-  async addBusinessMedia() {
-
-  }
 }
