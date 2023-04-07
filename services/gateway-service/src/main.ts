@@ -33,7 +33,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('The LiveOffice')
     .setDescription('The LiveOffice gateway api')
-    .setVersion('0.1.0')
+    .setVersion(config.apiVersion)
     .addTag('liveoffice')
     .addBearerAuth()
     .build();

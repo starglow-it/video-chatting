@@ -11,33 +11,41 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IUpdateTemplate, IBusinessCategory } from 'shared-types';
+import { ApiProperty } from '@nestjs/swagger';
 
 class SocialsDTO {
+
+  @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
   youtube?: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
   facebook?: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
   instagram?: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
   linkedin?: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
   twitter?: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
   @IsUrl({}, { message: 'Url must be valid ' })
@@ -45,76 +53,160 @@ class SocialsDTO {
 }
 
 class BusinessCategoryDTO {
+
+  @ApiProperty({
+    type: String
+  })
   @IsOptional()
   @IsString({ message: 'Id must be string ' })
   id?: string;
 
+  @ApiProperty({
+    type: String
+  })
   @IsString({ message: 'Key must be string ' })
   key: string;
 
+  @ApiProperty({
+    type: String
+  })
   @IsString({ message: 'Value must be string ' })
   value: string;
 
+
+  @ApiProperty({
+    type: String
+  })
   @IsString({ message: 'Color must be string ' })
   color: string;
 }
 
 export class UpdateTemplateRequest implements IUpdateTemplate {
+  @ApiProperty({
+    required: false,
+    type: String
+  })
   @IsOptional()
   @IsString({ message: 'Company Name must be string' })
   companyName: string;
 
+  @ApiProperty({
+    required: false,
+    type: String
+  })
   @IsOptional()
   @ValidateIf((object, value) => Boolean(value))
   @IsString({ message: 'Contact Email must be string' })
   @IsEmail({}, { message: 'Invalid Email' })
   contactEmail: string;
 
+  @ApiProperty({
+    required: false,
+    type: String
+  })
   @IsOptional()
   @IsString({ message: 'FullName must be string' })
   fullName: string;
 
+  @ApiProperty({
+    type: String,
+    required: false
+  })
   @IsOptional()
   @IsString({ message: 'Position must be string' })
   position: string;
 
+  @ApiProperty({
+    required: false,
+    type: String
+  })
   @IsOptional()
   @IsString({ message: 'Description must be string' })
   description: string;
 
+  @ApiProperty({
+    required: false,
+    type: String
+  })
   @IsOptional()
   @IsString({ message: 'Description must be string' })
   signBoard: string;
 
+  @ApiProperty({
+    required: false,
+    type: String
+  })
   @IsOptional()
   @IsString({ message: 'Custom link must be string' })
   customLink: string;
 
+  @ApiProperty({
+    required: false,
+    type: Boolean
+  })
   @IsOptional()
   @IsBoolean({ message: 'isMonetizationEnabled must be boolean' })
   isMonetizationEnabled: boolean;
 
+  @ApiProperty({
+    required: false,
+    type: Number
+  })
   @IsOptional()
   @IsNumber({}, { message: 'templatePrice must be number' })
   templatePrice: number;
 
+  @ApiProperty({
+    type: String,
+    required: false
+  })
   @IsOptional()
   @IsString({ message: 'Currency must be string' })
   templateCurrency: string;
 
+  @ApiProperty({
+    required: false,
+    type: [BusinessCategoryDTO]
+  })
   @IsOptional()
   @IsObject({ message: 'Business category must be object', each: true })
   @Type(() => BusinessCategoryDTO)
   @ValidateNested()
   businessCategories: IBusinessCategory[];
 
+  @ApiProperty({
+    required: false,
+    type: [String]
+  })
   @IsOptional()
   @IsString({ message: 'Language must be string', each: true })
   languages: string[];
 
+  @ApiProperty({
+    required: false,
+    type: SocialsDTO
+  })
   @IsOptional()
   @IsObject()
   @Type(() => SocialsDTO)
   @ValidateNested()
   socials: SocialsDTO;
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Preview Urls are ids'
+  })
+  @IsOptional()
+  @IsString({ message: 'Preview Url must be string', each: true })
+  previewUrls: string[];
+
+
+  @ApiProperty({
+    required: false,
+    type: String
+  })
+  @IsOptional()
+  @IsString({ message: 'Url must be string', each: true })
+  url: string;
 }

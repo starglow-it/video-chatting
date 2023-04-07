@@ -311,6 +311,8 @@ services:
       - mongo
       - rabbit
     environment:
+      - API_VERSION
+      - APP_VERSION
       - RABBIT_MQ_CORE_QUEUE
       - RABBIT_MQ_SOCKET_QUEUE
       - RABBIT_MQ_AUTH_QUEUE

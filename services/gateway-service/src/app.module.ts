@@ -12,6 +12,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
 import { UserTemplatesModule } from './modules/user-templates/user-templates.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { UserTemplatesModule } from './modules/user-templates/user-templates.mod
     CategoriesModule,
     StatisticsModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}

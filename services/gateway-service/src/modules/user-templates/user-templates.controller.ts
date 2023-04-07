@@ -18,6 +18,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import { UserTemplatesService } from './user-templates.service';
@@ -33,8 +34,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { v4 as uuidv4 } from 'uuid';
 import { IUpdateTemplate } from 'shared-types';
+import { USER_TEMPLATE_SCOPE } from 'shared-const';
+import { UpdateTemplateRequest } from 'src/dtos/requests/update-template.request';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
-@Controller('user-templates')
+@ApiTags('User templates')
+@Controller(USER_TEMPLATE_SCOPE)
 export class UserTemplatesController {
   private readonly logger = new Logger();
   constructor(
@@ -121,7 +126,7 @@ export class UserTemplatesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Put('/:templateId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update Template' })
@@ -139,7 +144,7 @@ export class UserTemplatesController {
   async updateUserTemplate(
     @Request() req,
     @Param('templateId') templateId: string,
-    @Body() templateData: Partial<IUpdateTemplate>,
+    @Body() templateData: UpdateTemplateRequest,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {

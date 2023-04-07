@@ -5,13 +5,15 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import { CoreBrokerPatterns, BUSINESS_CATEGORIES_SERVICE } from 'shared-const';
+import { CoreBrokerPatterns, BUSINESS_CATEGORIES_SERVICE, CORE_SERVICE } from 'shared-const';
 
 // types
 import {
   EntityList,
   GetBusinessCategoriesPayload,
+  GetBusinessMediasPayload,
   IBusinessCategory,
+  IBusinessMedia,
 } from 'shared-types';
 
 // dtos
@@ -22,13 +24,15 @@ import { BusinessCategoriesService } from './business-categories.service';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
+import { CommonBusinessMediaDTO } from '../../dtos/common-business-media.dto';
+import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 
 @Controller('categories')
 export class BusinessCategoriesController {
   constructor(
     @InjectConnection() private connection: Connection,
     private businessCategoriesService: BusinessCategoriesService,
-  ) {}
+  ) { }
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetBusinessCategories })
   async getBusinessCategories(
@@ -67,4 +71,53 @@ export class BusinessCategoriesController {
       });
     }
   }
+
+  @MessagePattern({ cmd: CoreBrokerPatterns.GetBusinessMedias })
+  async getBusinessMida(@Payload() payload: GetBusinessMediasPayload): Promise<EntityList<IBusinessMedia>> {
+    return withTransaction(this.connection, async session => {
+      const { skip, limit, businessCategoryId } = payload;
+
+      const skipQuery = skip || 0;
+      const limitQuery = limit || 8;
+
+      const businessCategory = await this.businessCategoriesService.findBusinessCategory({
+        query: isValidObjectId(businessCategoryId) ? { _id: businessCategoryId } : {},
+        session
+      });
+
+      if (!businessCategory) {
+        throw new RpcException({
+          message: 'Business category not found',
+          ctx: CORE_SERVICE,
+        });
+      }
+
+      const mediaCount = await this.businessCategoriesService.countBusinessMedia({
+        businessCategory: businessCategory._id
+      });
+
+      const medias = await this.businessCategoriesService.findBusinessMedias({
+        query: {
+          businessCategory: businessCategory._id
+        },
+        options: {
+          skip: skipQuery,
+          limit: limitQuery
+        },
+        populatePaths: ['businessCategory', 'previewUrls']
+      });
+
+
+      const plainBusinessMedias =  plainToInstance(CommonBusinessMediaDTO, medias ,{
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true
+      });
+
+      return {
+        list: plainBusinessMedias,
+        count: mediaCount,
+      };
+    });
+  }
+
 }

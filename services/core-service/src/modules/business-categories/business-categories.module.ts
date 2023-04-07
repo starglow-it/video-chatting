@@ -7,11 +7,13 @@ import {
   BusinessCategorySchema,
 } from '../../schemas/business-category.schema';
 import { BusinessCategoriesController } from './business-categories.controller';
+import { BusinessMedia, BusinessMediaSchema } from 'src/schemas/business-media.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: BusinessCategory.name, schema: BusinessCategorySchema },
+      { name: BusinessCategory.name, schema: BusinessCategorySchema,},
+      { name: BusinessMedia.name, schema: BusinessMediaSchema,},
     ]),
   ],
   controllers: [BusinessCategoriesController],
