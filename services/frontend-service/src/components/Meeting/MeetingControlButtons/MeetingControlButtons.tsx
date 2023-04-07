@@ -236,7 +236,7 @@ const Component = () => {
                 </CustomPaper>
             </ConditionalRender>
 
-            {isOwner && (
+            <ConditionalRender condition={isOwner}>
                 <CustomTooltip
                     classes={{ tooltip: styles.tooltip }}
                     nameSpace="meeting"
@@ -255,7 +255,7 @@ const Component = () => {
                         />
                     </CustomPaper>
                 </CustomTooltip>
-            )}
+            </ConditionalRender>
 
             <ActionButton
                 variant="danger"
