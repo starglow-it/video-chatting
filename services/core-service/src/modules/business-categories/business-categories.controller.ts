@@ -13,6 +13,7 @@ import {
   GetBusinessCategoriesPayload,
   GetBusinessMediasPayload,
   IBusinessCategory,
+  IBusinessMedia,
 } from 'shared-types';
 
 // dtos
@@ -72,7 +73,7 @@ export class BusinessCategoriesController {
   }
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetBusinessMedias })
-  async getBusinessMida(@Payload() payload: GetBusinessMediasPayload): Promise<EntityList<IBusinessCategory>> {
+  async getBusinessMida(@Payload() payload: GetBusinessMediasPayload): Promise<EntityList<IBusinessMedia>> {
     return withTransaction(this.connection, async session => {
       const { skip, limit, businessCategoryId } = payload;
 
