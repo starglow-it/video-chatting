@@ -114,7 +114,7 @@ export class SeederService {
       if (!isExists) {
         const newCategory = await this.businessCategoriesService.create({ data: categoryItem });
 
-        const promise = BUSINESS_FILE_PATH.map(async filePath => {
+        const promises = BUSINESS_FILE_PATH.map(async filePath => {
           
           if (filePath.includes(`public/${categoryItem.key}`)) {
             const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
@@ -142,7 +142,7 @@ export class SeederService {
           }
         });
 
-        await Promise.all(promise);
+        await Promise.all(promises);
 
       }
     });
