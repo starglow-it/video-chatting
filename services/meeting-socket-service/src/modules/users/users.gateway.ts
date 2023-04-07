@@ -144,6 +144,7 @@ export class UsersGateway extends BaseGateway {
       });
     } catch (err) {
       console.log(err);
+      return;
     }
   }
 
@@ -154,7 +155,7 @@ export class UsersGateway extends BaseGateway {
   ): Promise<ResponseSumType<{ user: CommonUserDTO }>> {
     return withTransaction(this.connection, async (session) => {
       const user = await this.usersService.findOneAndUpdate(
-        { socketId: socket.id },
+        { _id: message.id },
         message,
         session,
       );
