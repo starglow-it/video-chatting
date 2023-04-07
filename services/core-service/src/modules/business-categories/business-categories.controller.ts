@@ -23,8 +23,8 @@ import { BusinessCategoriesService } from './business-categories.service';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
-import { CommonBusinessMediaDTO } from 'src/dtos/common-business-media.dto';
-import { isValidObjectId } from 'src/helpers/mongo/isValidObjectId';
+import { CommonBusinessMediaDTO } from '../../dtos/common-business-media.dto';
+import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 
 @Controller('categories')
 export class BusinessCategoriesController {
@@ -97,7 +97,7 @@ export class BusinessCategoriesController {
 
       const medias = await this.businessCategoriesService.findBusinessMedias({
         query: {
-          businessCategory: businessCategory?._id
+          businessCategory: businessCategory._id
         },
         options: {
           skip: skipQuery,
