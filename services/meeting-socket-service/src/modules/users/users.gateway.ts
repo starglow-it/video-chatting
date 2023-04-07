@@ -78,6 +78,7 @@ export class UsersGateway extends BaseGateway {
       });
     } catch (err) {
       console.log(err);
+      return;
     }
   }
 
