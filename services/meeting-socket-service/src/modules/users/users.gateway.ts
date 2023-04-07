@@ -100,20 +100,14 @@ export class UsersGateway extends BaseGateway {
         session,
       });
 
-      let countIndexUser = 0;
       let updateUsersPosistion = usersTemplate.usersPosition;
       let updateUsersSize = usersTemplate.usersSize;
 
       if (data?.userPosition) {
         updateUser.userPosition = data.userPosition;
 
-        updateUsersPosistion = usersTemplate.usersPosition.map(
-          (userPosition) => {
-            if (usersTemplate.indexUsers[countIndexUser] !== meetingUserId) {
-              countIndexUser++;
-              return userPosition;
-            }
-            countIndexUser++;
+        updateUsersPosistion = usersTemplate.usersPosition.map((userPosition, index) => {
+            if (usersTemplate.indexUsers[index] !== meetingUserId) return userPosition;
             userPosition = data?.userPosition;
             return userPosition;
           },
@@ -122,12 +116,8 @@ export class UsersGateway extends BaseGateway {
 
       if (data?.userSize) {
         updateUser.userSize = data.userSize;
-        updateUsersSize = usersTemplate.usersSize.map((userSize) => {
-          if (usersTemplate.indexUsers[countIndexUser] !== meetingUserId) {
-            countIndexUser++;
-            return userSize;
-          }
-          countIndexUser++;
+        updateUsersSize = usersTemplate.usersSize.map((userSize, index) => {
+          if (usersTemplate.indexUsers[index] !== meetingUserId) return userSize;
           userSize = data?.userSize;
           return userSize;
         });
