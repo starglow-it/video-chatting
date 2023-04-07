@@ -112,7 +112,6 @@ const Component = () => {
                 !isMeetingConnected &&
                 !isJoinMeetingPending
             ) {
-                console.log('#Duy Phan console', serverType, 'inittt')
                 initVideoChatEvent({ serverType });
                 setMeetingConnectedEvent(true);
             }

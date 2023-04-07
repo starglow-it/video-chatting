@@ -18,7 +18,6 @@ export const handleCreatePeerConnections = async ({
     connectionsData,
     options,
 }: CreatePeerConnectionsPayload): Promise<ConnectionsStore> => {
-    console.log('connect_init');
     const connectionPromises = connectionsData.map(
         async ({ connectionType, streamType, isInitial, userId, senderId, socketId }) => {
             const connectionId = getConnectionKey({
@@ -54,13 +53,10 @@ export const handleCreatePeerConnections = async ({
                 onIceConnectionStateFailed: () => {},
             });
 
-            // try {
+            try {
                 await connection.createPeerConnection();
 
-                console.log('connection', connection)
-
                 if (connection.isInitial()) {
-                    console.log('#Duy Phan console')
                     await connection.createOffer();
                 }
 
@@ -72,9 +68,9 @@ export const handleCreatePeerConnections = async ({
                 }
 
                 return connection;
-            // } catch (e) {
-            //     await connection.release();
-            // }
+            } catch (e) {
+                await connection.release();
+            }
         },
     );
 
