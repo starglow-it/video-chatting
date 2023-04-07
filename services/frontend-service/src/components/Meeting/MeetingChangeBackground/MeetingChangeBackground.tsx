@@ -27,9 +27,9 @@ const Component = () => {
     const { list: categories } = useStore($businessCategoriesStore);
 
     useEffect(() => {
-        if (categories.length)
+        if (isToggleChangeBackground && categories.length)
             setCategoryEvent({ categorySelected: categories[0].id });
-    }, []);
+    }, [isToggleChangeBackground]);
 
     const handleSelectBackground = (id: string) => {
         setMediaEvent({ mediaSelected: id });
@@ -85,7 +85,12 @@ const Component = () => {
                         ))}
                     </CustomBox>
 
-                    <CustomGrid container flex={75} paddingTop={3} paddingLeft="6px">
+                    <CustomGrid
+                        container
+                        flex={75}
+                        paddingTop={3}
+                        paddingLeft="6px"
+                    >
                         {medias.map(item => (
                             <Media
                                 key={item.id}
