@@ -122,8 +122,7 @@ const MeetingUserVideoChildCom = ({
     };
 
     const handleResizeStop = (e: SyntheticEvent, data: ResizeCallbackData) => {
-        if (isLocal && onResizeVideo)
-            onResizeVideo(data.size.width / resizeCoeff);
+        if (onResizeVideo) onResizeVideo(data.size.width / resizeCoeff, userId);
     };
 
     return (
@@ -135,7 +134,7 @@ const MeetingUserVideoChildCom = ({
             onResizeStart={handleResizeStart}
             onResizeStop={handleResizeStop}
             resizeHandles={['ne']}
-            disabled={!isLocal || isScreenSharing}
+            disabled={isScreenSharing}
         >
             <CustomBox
                 className={clsx(styles.media, {
@@ -245,6 +244,7 @@ const Component = ({
             isScreenSharing={isScreenSharing}
             isLocal={isLocal}
             size={size}
+            userId={userId}
         >
             <CustomGrid
                 container
