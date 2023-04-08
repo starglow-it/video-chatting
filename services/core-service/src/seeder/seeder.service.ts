@@ -9,7 +9,8 @@ import {
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
   BACKGROUNDS_SCOPE,
-  FILES_SCOPE
+  FILES_SCOPE,
+  EMOJIES_SCOPE
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
 
@@ -106,6 +107,8 @@ export class SeederService {
     });
   }
 
+  
+
   async readFileAndUpload({ filePath, key }: { filePath: string, key: string }) {
     const buf = readFileSync(join(process.cwd(), filePath));
 
@@ -115,6 +118,25 @@ export class SeederService {
       uploadKey
     );
     return url;
+  }
+
+  async uploadEmoji(){
+    readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
+      
+      Promise.all(files.map(async file => {
+
+        const filename = file.split('.')[0];
+
+        console.log(`emoji/images/${filename}.webp`);
+        
+        const url = await this.readFileAndUpload({
+          filePath: `${FILES_SCOPE}/${EMOJIES_SCOPE}/${file}`,
+          key: `emoji/images/${filename}.webp`
+        });
+        console.log(url);
+      })).then(item => item).catch(err => console.log(err));
+      
+    }); 
   }
 
   async seedBusinessCategories(): Promise<void> {

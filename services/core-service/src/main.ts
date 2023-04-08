@@ -50,6 +50,7 @@ async function bootstrap() {
 
   await app.listen();
 
+  await seeder.uploadEmoji();
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
   await seeder.createCounter();
