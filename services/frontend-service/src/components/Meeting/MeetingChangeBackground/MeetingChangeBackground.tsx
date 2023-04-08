@@ -55,8 +55,8 @@ const Component = () => {
                         alignItems="center"
                         justifyContent="flex-start"
                     >
-                        <CustomBox color="white" height={20}>
-                            <ImageIcon width="20px" height="20px" />
+                        <CustomBox color="white" height={18}>
+                            <ImageIcon width="16px" height="16px" />
                         </CustomBox>
 
                         <CustomTypography

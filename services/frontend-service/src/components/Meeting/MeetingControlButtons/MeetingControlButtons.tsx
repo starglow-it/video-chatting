@@ -251,7 +251,7 @@ const Component = () => {
                             variant="transparentBlack"
                             onAction={toggleChangeBackgroundEvent}
                             className={styles.deviceButton}
-                            Icon={<ImageIcon width="22px" height="22px" />}
+                            Icon={<ImageIcon width="16px" height="16px" />}
                         />
                     </CustomPaper>
                 </CustomTooltip>
