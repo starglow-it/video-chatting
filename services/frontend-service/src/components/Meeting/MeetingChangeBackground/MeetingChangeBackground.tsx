@@ -1,9 +1,11 @@
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import { memo, useEffect } from 'react';
+import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -53,12 +55,18 @@ const Component = () => {
                         alignItems="center"
                         justifyContent="flex-start"
                     >
+                        <CustomBox color="white" height={20}>
+                            <ImageIcon width="20px" height="20px" />
+                        </CustomBox>
+
                         <CustomTypography
                             nameSpace="meeting"
                             translation="changeBackground.text"
                             color="colors.white.primary"
                             variant="h4bold"
                             flex={1}
+                            paddingLeft={1}
+                            fontSize="15px"
                         />
                         <RoundCloseIcon
                             className={styles.closeIcon}
@@ -91,14 +99,16 @@ const Component = () => {
                         paddingTop={3}
                         paddingLeft="6px"
                     >
-                        {medias.map(item => (
-                            <Media
-                                key={item.id}
-                                isActive={item.id === mediaSelected}
-                                item={item}
-                                onSelect={handleSelectBackground}
-                            />
-                        ))}
+                        <CustomScroll className={styles.scroll}>
+                            {medias.map(item => (
+                                <Media
+                                    key={item.id}
+                                    isActive={item.id === mediaSelected}
+                                    item={item}
+                                    onSelect={handleSelectBackground}
+                                />
+                            ))}
+                        </CustomScroll>
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>

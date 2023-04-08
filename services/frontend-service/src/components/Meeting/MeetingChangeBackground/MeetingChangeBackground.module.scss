@@ -10,14 +10,14 @@
     top: 4%;
 
     .headers {
-        padding-left: 10px;   
+        padding-left: 10px;
     }
 
     .closeIcon {
         cursor: pointer;
     }
 
-    .barge{
+    .barge {
         margin-left: 10px;
         margin-top: 5px;
         background-color: black;
@@ -34,19 +34,23 @@
             text-transform: lowercase;
             font-weight: bold;
         }
-        
+
     }
+
     .container {
-        width: 55px;
-        height: 55px;
+        width: 60px;
+        height: 60px;
         background-color: #FFFFFF;
-        margin: 5px;
-        border-radius: 12px;
+        margin: 4px;
+        border-radius: 10px;
         position: relative;
+        border: 2px solid #807e7e;
+    
 
         &:hover {
             border: 2px solid $light-white;
         }
+
         &.active {
             border: 3px solid #71abe6;
         }
@@ -59,5 +63,14 @@
             position: absolute;
             border-radius: 12px;
         }
+    }
+
+    .scroll {
+        display: flex;
+        width: 100%;
+        max-height: 200px;
+        background: #00000063;
+        flex-wrap: wrap;
+        padding-left: 10px;
     }
 }

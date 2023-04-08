@@ -28,13 +28,13 @@ const Component = ({
             onClick={() => onSelect(item.id)}
         >
             {!isLoaded && (
-                <Skeleton width={55} height={55} className={styles.skeleton} variant="rectangular" />
+                <Skeleton width={60} height={60} className={styles.skeleton} variant="rectangular" />
             )}
             {item.url !== '' ? (
                 <CustomImage
                     src={item.url}
-                    width={55}
-                    height={55}
+                    width={60}
+                    height={60}
                     className={styles.image}
                     onLoad={handleLoadEnd}
                 />
