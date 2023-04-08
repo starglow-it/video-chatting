@@ -94,7 +94,7 @@ export class BusinessCategoriesService {
     populatePaths,
   }: GetModelQuery<BusinessCategoryDocument>): Promise<BusinessCategoryDocument> {
     return this.businessCategory
-      .findOne(query, {}, { session: session.session, populate: populatePaths })
+      .findOne(query, {}, { session: session?.session, populate: populatePaths })
       .exec();
   }
 

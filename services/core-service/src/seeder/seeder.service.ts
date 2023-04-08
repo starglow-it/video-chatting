@@ -118,69 +118,65 @@ export class SeederService {
   }
 
   async seedBusinessCategories(): Promise<void> {
-
-    return withTransaction(this.connection, async session => {
-      const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
-        let category: BusinessCategoryDocument;
-        const isExists = await this.businessCategoriesService.exists({
-          key: categoryItem.key,
-        });
-
-        if (!isExists) {
-          category = await this.businessCategoriesService.create({ data: categoryItem });
-        }
-        else {
-          category = await this.businessCategoriesService.findBusinessCategory({
-            query: { key: categoryItem.key },
-            session
-          });
-        }
-
-        readdir(join(process.cwd(), `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}`), (err, files) => {
-          if (err) {
-            console.log(err);
-            return;
-          };
-
-          this.businessCategoriesService.deleteBusinessMedias({
-            query: {
-              businessCategory: category._id
-            }
-          })
-            .then(() => {
-              const uploadFilePromise = files.map(async file => {
-
-                if (file.includes(categoryItem.key)) {
-                  const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
-                    data: {
-                      businessCategory: category._id
-                    }
-                  }), {
-                    excludeExtraneousValues: true,
-                    enableImplicitConversion: true,
-                  });
-
-                  const url = await this.readFileAndUpload({
-                    filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
-                    key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
-                  });
-
-                  await this.updateBusinessMedia({
-                    url,
-                    id: newMedia.id.toString(),
-                    mimeType: 'image/webp',
-                  });
-                }
-              });
-
-              Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
-            })
-
-        });
+    const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
+      let category: BusinessCategoryDocument;
+      const isExists = await this.businessCategoriesService.exists({
+        key: categoryItem.key,
       });
 
-      await Promise.all(promises);
+      if (!isExists) {
+        category = await this.businessCategoriesService.create({ data: categoryItem });
+      }
+      else {
+        category = await this.businessCategoriesService.findBusinessCategory({
+          query: { key: categoryItem.key }
+        });
+      }
+
+      readdir(join(process.cwd(), `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}`), (err, files) => {
+        if (err) {
+          console.log(err);
+          return;
+        };
+
+        this.businessCategoriesService.deleteBusinessMedias({
+          query: {
+            businessCategory: category._id
+          },
+        })
+          .then(() => {
+            const uploadFilePromise = files.map(async file => {
+
+              if (file.includes(categoryItem.key)) {
+                const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
+                  data: {
+                    businessCategory: category._id
+                  }
+                }), {
+                  excludeExtraneousValues: true,
+                  enableImplicitConversion: true,
+                });
+
+                const url = await this.readFileAndUpload({
+                  filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
+                  key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
+                });
+
+                await this.updateBusinessMedia({
+                  url,
+                  id: newMedia.id.toString(),
+                  mimeType: 'image/webp',
+                });
+              }
+            });
+
+            Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
+          })
+
+      });
     });
+
+    await Promise.all(promises);
   }
 
   async seedLanguages() {
