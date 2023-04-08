@@ -142,42 +142,39 @@ export class SeederService {
             return;
           };
 
-          if (files.some(file => file.includes(categoryItem.key))) {
-            this.businessCategoriesService.deleteBusinessMedias({
-              query: {
-                businessCategory: category._id
-              }
+          this.businessCategoriesService.deleteBusinessMedias({
+            query: {
+              businessCategory: category._id
+            }
+          })
+            .then(() => {
+              const uploadFilePromise = files.map(async file => {
+
+                if (file.includes(categoryItem.key)) {
+                  const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
+                    data: {
+                      businessCategory: category._id
+                    }
+                  }), {
+                    excludeExtraneousValues: true,
+                    enableImplicitConversion: true,
+                  });
+
+                  const url = await this.readFileAndUpload({
+                    filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
+                    key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
+                  });
+
+                  await this.updateBusinessMedia({
+                    url,
+                    id: newMedia.id.toString(),
+                    mimeType: 'image/webp',
+                  });
+                }
+              });
+
+              Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
             })
-              .then(() => {
-                const uploadFilePromise = files.map(async file => {
-
-                  if (file.includes(categoryItem.key)) {
-                    const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
-                      data: {
-                        businessCategory: category._id
-                      }
-                    }), {
-                      excludeExtraneousValues: true,
-                      enableImplicitConversion: true,
-                    });
-
-                    const url = await this.readFileAndUpload({
-                      filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
-                      key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
-                    });
-
-                    await this.updateBusinessMedia({
-                      url,
-                      id: newMedia.id.toString(),
-                      mimeType: 'image/webp',
-                    });
-                  }
-                });
-
-                Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
-              })
-          }
-
 
         });
       });
@@ -297,9 +294,6 @@ export class SeederService {
       query: { email: adminEmail },
     });
 
-    const buf = readFileSync(join(process.cwd(), './src/public/backgrounds/office_1.webp'));
-
-
     const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({
       query: {
         isAcceptNoLogin: true
@@ -349,12 +343,10 @@ export class SeederService {
       enableImplicitConversion: true,
     });
 
-    //upload image to vutrl
-    const uploadKey = `templates/videos/${newCommonTemplate.id}/${uuidv4()}.webp`;
-    const url = await this.awsService.uploadFile(
-      buf,
-      uploadKey,
-    );
+    const url = await this.readFileAndUpload({
+      filePath: './src/public/backgrounds/office_1.webp',
+      key: `templates/videos/${newCommonTemplate.id}/${uuidv4()}.webp`
+    })
 
     //update url to temlate
     await this.updateGlobalTemplateFile({

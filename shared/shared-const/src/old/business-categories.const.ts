@@ -49,29 +49,3 @@ export const BUSINESS_CATEGORIES = [
 export const FILES_SCOPE = './src/public';
 export const EMOJIES_SCOPE = 'emojies';
 export const BACKGROUNDS_SCOPE = 'backgrounds';
-
-
-export const BUSINESS_EMOJIES_PAHT = [
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/breathing_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/teen_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/movies_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/calming_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/energizing_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/office_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/lgbtq_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/colors_1.png`,
-  `${FILES_SCOPE}/${EMOJIES_SCOPE}/more_1.png`,
-]
-
-
-export const BUSINESS_BACKGROUNDS_PATH = [
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_1.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_2.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_3.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_4.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/flower_1.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/flower_2.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/univer_1.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/univer_2.jpeg`,
-  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/univer_3.jpeg`,
-]
