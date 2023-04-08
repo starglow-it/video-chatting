@@ -4,7 +4,7 @@ import { IUserTemplate } from './templates';
 export interface IBusinessCategory {
   key: string;
   value: string;
-  color: string;
+  emojiUrl: string;
 }
 
 export interface ILanguage {

@@ -1,65 +1,77 @@
-import { readFileSync } from "fs";
-import { join } from "path";
-
 export const BUSINESS_CATEGORIES = [
-  { key: 'cozy', value: 'Cozy', color: '#2915a0' },
-  { key: 'funky', value: 'Funky', color: '#2f3edc' },
-  { key: 'therapy', value: 'Therapy', color: '#914b50' },
-  { key: 'soothing', value: 'Soothing', color: '#1f2418' },
-  { key: 'calming', value: 'Calming', color: '#a698c0' },
-  { key: 'private', value: 'Private', color: '#43e220' },
-  { key: 'asmr', value: 'ASMR', color: '#603f50' },
-  { key: 'teamMeeting', value: 'Team meeting', color: '#deb550' },
-  { key: 'legal', value: 'Legal', color: '#6912a0' },
-  { key: 'mediation', value: 'Mediation', color: '#dc7e10' },
-  { key: 'focused', value: 'Focused', color: '#7a785b' },
-  { key: 'energizing', value: 'Energizing', color: '#b4c9e0' },
-  { key: 'counselling', value: 'Counselling', color: '#ea392f' },
-  { key: 'nature', value: 'Nature', color: '#9ecd50' },
-  { key: 'restorative', value: 'Restorative', color: '#da2690' },
-  { key: 'secluded', value: 'Secluded', color: '#5734fd' },
-  { key: 'consulting', value: 'Consulting', color: '#517f60' },
-  { key: 'therapeutic', value: 'Therapeutic', color: '#5ba555' },
-  { key: 'sounds', value: 'Sounds', color: '#1ee510' },
-  { key: 'retreat', value: 'Retreat', color: '#3219ad' },
-  { key: 'casual', value: 'Casual', color: '#a698c0' },
-  { key: 'celebration', value: 'Celebration', color: '#43e220' },
-  { key: 'coaching', value: 'Coaching', color: '#603f50' },
-  { key: 'fire', value: 'Fire', color: '#deb550' },
-  { key: 'fun', value: 'Fun', color: '#6912a0' },
-  { key: 'indoor', value: 'Indoor', color: '#dc7e10' },
-  { key: 'outdoor', value: 'Outdoor', color: '#7a785b' },
-  { key: 'ocean', value: 'Ocean', color: '#b4c9e0' },
-  { key: 'original', value: 'Original', color: '#ea392f' },
-  { key: 'plain', value: 'Plain', color: '#9ecd50' },
-  { key: 'professional', value: 'Professional', color: '#517f60' },
-  { key: 'sales', value: 'Sales', color: '#5ba555' },
-  { key: 'wellness', value: 'Wellness', color: '#1ee510' },
+  {
+    key: 'breathing',
+    value: 'Breathing',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/breathing_1.webp'
+  },
+  {
+    key: 'teen',
+    value: 'Teen',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/teen_1.webp'
+  },
+  {
+    key: 'movies',
+    value: 'Movies',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/movies_1.webp'
+  },
+  {
+    key: 'calming',
+    value: 'Calming',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/calming_1.webp'
+  },
+  {
+    key: 'energizing',
+    value: 'Energizing',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/energizing_1.webp'
+  },
   {
     key: 'office',
     value: 'Office',
-    color: '#5ba555'
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/office_1.webp'
   },
   {
-    key: 'flower',
-    value: 'Flower',
-    color: '#1ee510'
+    key: 'lgbtq',
+    value: 'LGBTQ',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/lgbtq_1.webp'
   },
   {
-    key: 'univer',
-    value: 'Univer',
-    color: '#1ee510'
+    key: 'colors',
+    value: 'Colors',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/colors_1.webp'
+  },
+  {
+    key: 'more',
+    value: 'More',
+    emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoij/images/more_1.webp'
   },
 ];
 
-export const BUSINESS_FILE_PATH = [
-  './src/public/office_1.jpeg',
-  './src/public/office_2.jpeg',
-  './src/public/office_3.jpeg',
-  './src/public/office_4.jpeg',
-  './src/public/flower_1.jpeg',
-  './src/public/flower_2.jpeg',
-  './src/public/univer_1.jpeg',
-  './src/public/univer_2.jpeg',
-  './src/public/univer_3.jpeg',
+export const FILES_SCOPE = './src/public';
+export const EMOJIES_SCOPE = 'emojies';
+export const BACKGROUNDS_SCOPE = 'backgrounds';
+
+
+export const BUSINESS_EMOJIES_PAHT = [
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/breathing_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/teen_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/movies_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/calming_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/energizing_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/office_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/lgbtq_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/colors_1.png`,
+  `${FILES_SCOPE}/${EMOJIES_SCOPE}/more_1.png`,
+]
+
+
+export const BUSINESS_BACKGROUNDS_PATH = [
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_1.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_2.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_3.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/office_4.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/flower_1.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/flower_2.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/univer_1.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/univer_2.jpeg`,
+  `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/univer_3.jpeg`,
 ]

@@ -131,4 +131,18 @@ export class BusinessCategoriesService {
   async countBusinessMedia(query: FilterQuery<BusinessMediaDocument>): Promise<number> {
     return this.businessMedia.count(query).exec();
   }
+
+  async deleteBusinessMedias({
+    query,
+    session,
+  }: {
+    query: FilterQuery<BusinessMediaDocument>;
+    session?: ITransactionSession;
+  }): Promise<any> {
+    const options: QueryOptions = {
+      session: session?.session,
+    };
+
+    return this.businessMedia.deleteMany(query, options);
+  }
 }

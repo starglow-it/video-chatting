@@ -8,7 +8,8 @@ import {
   BUSINESS_CATEGORIES,
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
-  BUSINESS_FILE_PATH,
+  BACKGROUNDS_SCOPE,
+  FILES_SCOPE
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
 
@@ -32,7 +33,7 @@ import {
 } from '../schemas/preview-image.schema';
 import { TranscodeService } from "../modules/transcode/transcode.service";
 import { executePromiseQueue } from "shared-utils";
-import { readFileSync } from 'fs';
+import { readdir, readFileSync } from 'fs';
 import { join } from 'path';
 import { plainToInstance } from 'class-transformer';
 import { CommonTemplateDTO } from 'src/dtos/common-template.dto';
@@ -42,6 +43,7 @@ import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { CommonBusinessMediaDTO } from 'src/dtos/common-business-media.dto';
+import { BusinessCategoryDocument } from 'src/schemas/business-category.schema';
 
 // utils
 
@@ -83,7 +85,6 @@ export class SeederService {
     return withTransaction(this.connection, async () => {
       const { url, id, mimeType } = data;
 
-
       const previewImages = await this.commonTemplatesService.generatePreviews({
         url,
         id,
@@ -105,51 +106,84 @@ export class SeederService {
     });
   }
 
+  async readFileAndUpload({ filePath, key }: { filePath: string, key: string }) {
+    const buf = readFileSync(join(process.cwd(), filePath));
+
+    const uploadKey = key;
+    const url = await this.awsService.uploadFile(
+      buf,
+      uploadKey
+    );
+    return url;
+  }
+
   async seedBusinessCategories(): Promise<void> {
-    const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
-      const isExists = await this.businessCategoriesService.exists({
-        key: categoryItem.key,
-      });
 
-      if (!isExists) {
-        const newCategory = await this.businessCategoriesService.create({ data: categoryItem });
-
-        const promises = BUSINESS_FILE_PATH.map(async filePath => {
-          
-          if (filePath.includes(`public/${categoryItem.key}`)) {
-            const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
-              data: {
-                businessCategory: newCategory._id
-              }
-            }), {
-              excludeExtraneousValues: true,
-              enableImplicitConversion: true,
-            });
-            
-            const buf = readFileSync(join(process.cwd(), filePath));
-
-            const uploadKey = `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`;
-            const url = await this.awsService.uploadFile(
-              buf,
-              uploadKey
-            );
-
-            await this.updateBusinessMedia({
-              url,
-              id: newMedia.id.toString(),
-              mimeType: 'image/webp',
-            });
-          }
+    return withTransaction(this.connection, async session => {
+      const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
+        let category: BusinessCategoryDocument;
+        const isExists = await this.businessCategoriesService.exists({
+          key: categoryItem.key,
         });
 
-        await Promise.all(promises);
+        if (!isExists) {
+          category = await this.businessCategoriesService.create({ data: categoryItem });
+        }
+        else {
+          category = await this.businessCategoriesService.findBusinessCategory({
+            query: { key: categoryItem.key },
+            session
+          });
+        }
 
-      }
+        readdir(join(process.cwd(), `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}`), (err, files) => {
+          if (err) {
+            console.log(err);
+            return;
+          };
+
+          if (files.some(file => file.includes(categoryItem.key))) {
+            this.businessCategoriesService.deleteBusinessMedias({
+              query: {
+                businessCategory: category._id
+              }
+            })
+              .then(() => {
+                const uploadFilePromise = files.map(async file => {
+
+                  if (file.includes(categoryItem.key)) {
+                    const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
+                      data: {
+                        businessCategory: category._id
+                      }
+                    }), {
+                      excludeExtraneousValues: true,
+                      enableImplicitConversion: true,
+                    });
+
+                    const url = await this.readFileAndUpload({
+                      filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
+                      key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
+                    });
+
+                    await this.updateBusinessMedia({
+                      url,
+                      id: newMedia.id.toString(),
+                      mimeType: 'image/webp',
+                    });
+                  }
+                });
+
+                Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
+              })
+          }
+
+
+        });
+      });
+
+      await Promise.all(promises);
     });
-
-    await Promise.all(promises);
-
-    return;
   }
 
   async seedLanguages() {
@@ -263,7 +297,7 @@ export class SeederService {
       query: { email: adminEmail },
     });
 
-    const buf = readFileSync(join(process.cwd(), './src/public/office_1.jpeg'));
+    const buf = readFileSync(join(process.cwd(), './src/public/backgrounds/office_1.webp'));
 
 
     const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({

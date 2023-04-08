@@ -13,5 +13,5 @@ export class CommonBusinessCategoryDTO implements IBusinessCategory {
   value: string;
 
   @Expose()
-  color: string;
+  emojiUrl: string;
 }

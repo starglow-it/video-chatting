@@ -20,7 +20,7 @@ export class BusinessCategory {
     type: mongoose.Schema.Types.String,
     required: true,
   })
-  color: string;
+  emojiUrl: string;
 }
 
 export type BusinessCategoryDocument = BusinessCategory & Document;
