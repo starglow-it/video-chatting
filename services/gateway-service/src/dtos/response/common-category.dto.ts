@@ -17,5 +17,5 @@ export class CategoryRestDTO implements IBusinessCategory {
 
   @Expose()
   @ApiProperty()
-  color: IBusinessCategory['color'];
+  emojiUrl: IBusinessCategory['emojiUrl'];
 }
