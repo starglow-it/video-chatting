@@ -45,9 +45,14 @@ const Component: React.FunctionComponent<
         onSwitchOn: handleOnDragging,
         onSwitchOff: handleOffDragging,
     } = useToggle(false);
-
+    const [defaultPos, setDefaultPos] = useState<Record<string, number | null>>({
+        left: null,
+        bottom: null
+    })
     const [finalBottom, setBottom] = useState('');
-    const [finalLeft, setLeft] = useState('');
+    const [finalLeft, setLeft] = useState<number | null>(null);
+    const [finalTop, setTop] = useState<number | null>(null);
+    const [localDrag, setLocalDrag] = useState(false)
 
     const contentRef = useRef<HTMLDivElement>(null);
 
@@ -55,16 +60,22 @@ const Component: React.FunctionComponent<
         if (isDragging) {
             const { left, bottom } =
                 contentRef.current?.getBoundingClientRect();
-            const subLeftPercentage = roundNumberToPrecision(left / width, 2);
-            const subTopPercentage = roundNumberToPrecision(
+            const percentLeft = roundNumberToPrecision(left / width, 2);
+            const percentTop = roundNumberToPrecision(
                 bottom / height, // use bottom instead of top , it include height of element, make easy to convert offset bottom
                 2,
             );
+            const percentBottom = roundNumberToPrecision(1 - percentTop, 2)
+            console.log('sent', percentLeft, percentBottom)
+            setDefaultPos({
+                left: percentLeft,
+                bottom: percentBottom
+            })
             updateUserSocketEvent({
                 id: userId,
                 userPosition: {
-                    bottom: roundNumberToPrecision(1 - subTopPercentage, 2),
-                    left: subLeftPercentage,
+                    bottom: percentBottom,
+                    left: percentLeft,
                 },
             });
         }
@@ -72,6 +83,7 @@ const Component: React.FunctionComponent<
     };
     const handleStartDrag = () => {
         !isInitPos && setInitPos(true);
+        !localDrag && setLocalDrag(true)
         handleOnDragging();
     };
 
@@ -79,7 +91,7 @@ const Component: React.FunctionComponent<
         if (event.type === 'mousedown') {
             refTimer.current = setTimeout(() => {
                 handleStartDrag();
-            }, 300);
+            }, 200);
         }
 
         if (event.type === 'mouseup' || event.type === 'touchend') {
@@ -89,17 +101,33 @@ const Component: React.FunctionComponent<
     };
 
     useEffect(() => {
-        if (!isScreenSharing && (!isInitPos )) {
-            const percentLeft = (left || 0) * 100;
-            const percentBottom = (bottom || 0) * 100;
-            setLeft(`${percentLeft}%`);
+        console.log('test', left, bottom, defaultPos, localDrag, isInitPos)
+        if (!isScreenSharing && (defaultPos.left !== left || defaultPos.bottom !== bottom) && !isInitPos) {
+            const percentLeft = roundNumberToPrecision((left || 0) * 100, 2);
+            const percentBottom = roundNumberToPrecision((bottom || 0) * 100, 2);
+            const rect = contentRef.current?.getBoundingClientRect()
+            const subTopPercentage = roundNumberToPrecision(
+                (rect?.height || 0) / height,
+                2,
+            );
+            const percentTop = roundNumberToPrecision(Math.abs(1 - (bottom || 0) - subTopPercentage), 2)
+            setLeft((left || 0) * width);
             setBottom(`${percentBottom}%`);
+            setTop((percentTop || 0) * height)
+            // !isInitPos && setInitPos(true);
+            // localDrag && setLocalDrag(false)
+            setDefaultPos({
+                left: left !== undefined ? left : null,
+                bottom: bottom !== undefined ? bottom : null
+            })            
         }
-    }, [isScreenSharing, bottom, left, isInitPos]);
-
+    }, [isScreenSharing, bottom, left, defaultPos, localDrag, isInitPos]);
+    const ratio = width / height
+    console.log('w', ratio, finalTop, finalLeft)
+    const isRender = (finalTop && Number.isNaN(finalTop) && finalLeft && Number.isNaN(finalLeft))
     return (
         <ConditionalRender
-            condition={Boolean(finalBottom !== '' && finalLeft !== '')}
+            condition={Boolean(isRender)}
         >
             {/* <ConditionalRender condition={isLocal}> */}
             <Draggable
@@ -107,15 +135,19 @@ const Component: React.FunctionComponent<
                 onStart={eventControl}
                 onStop={eventControl}
                 disabled={isScreenSharing}
+                position={{
+                    x: finalLeft || 0,
+                    y: finalTop || 0
+                }}
             >
                 <CustomBox
                     className={clsx(styles.boxDraggable, {
                         [styles.dragSharing]: isScreenSharing,
                     })}
-                    style={{
-                        bottom: finalBottom,
-                        left: finalLeft,
-                    }}
+                    // style={{
+                    //     bottom: finalBottom,
+                    //     left: finalLeft,
+                    // }}
                     ref={contentRef}
                 >
                     {children}
