@@ -27,7 +27,12 @@ const Component = ({
                 alignItems="center"
                 justifyContent="center"
             >
-                <CustomImage width={15} height={15} src={item.emojiUrl} />
+                <CustomImage
+                    width={13}
+                    height={13}
+                    src={item.emojiUrl}
+                    className={styles.emoji}
+                />
                 <CustomTypography
                     color={
                         isActive

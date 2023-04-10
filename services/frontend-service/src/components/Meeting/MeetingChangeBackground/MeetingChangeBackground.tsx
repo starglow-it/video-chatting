@@ -41,6 +41,8 @@ const Component = () => {
         setCategoryEvent({ categorySelected: id });
     };
 
+    console.log(categories)
+
     return (
         <Fade in={isToggleChangeBackground}>
             <CustomPaper
@@ -72,8 +74,8 @@ const Component = () => {
                             className={styles.closeIcon}
                             onClick={toggleChangeBackgroundEvent}
                             isActive
-                            width="24px"
-                            height="24px"
+                            width="22px"
+                            height="22px"
                         />
                     </CustomBox>
                     <CustomBox
