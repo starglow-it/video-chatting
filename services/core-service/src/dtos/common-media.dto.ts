@@ -18,4 +18,7 @@ export class CommonMediaDTO implements IMedia {
     @Expose()
     @Type(() => PreviewImageDTO)
     previewUrls: IMedia['previewUrls'];
+
+    @Expose()
+    type: IMedia['type'];
 }

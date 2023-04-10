@@ -19,4 +19,8 @@ export class MediaRestDTO implements IMedia {
     @ApiProperty()
     previewUrls: IPreviewImage[];
 
+    @Expose()
+    @ApiProperty()
+    type: IMedia['type'];
+
 }
