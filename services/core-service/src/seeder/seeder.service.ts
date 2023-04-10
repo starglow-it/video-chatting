@@ -153,6 +153,9 @@ export class SeederService {
           return;
         };
 
+        const countFilesByCategory =  files.filter(item => item.includes(category.key)).length;
+        if(countFilesByCategory === medias.length) return;
+
         this.mediaService.deleteMedias({
           query: {
             businessCategory: category._id
