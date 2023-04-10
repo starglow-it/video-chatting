@@ -11,6 +11,7 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
     $backgroundMeetingStore,
+    $isLoadMoreMediasStore,
     $isToggleChangeBackground,
     setCategoryEvent,
     setMediaEvent,
@@ -23,13 +24,15 @@ import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
     const isToggleChangeBackground = useStore($isToggleChangeBackground);
-    const { medias, categorySelected, mediaSelected, categories } = useStore(
-        $backgroundMeetingStore,
-    );
+    const { medias, categorySelected, mediaSelected, categories, count } =
+        useStore($backgroundMeetingStore);
+    const isLoadMore = useStore($isLoadMoreMediasStore);
 
     useEffect(() => {
-        if (isToggleChangeBackground && categories.length)
-            setCategoryEvent({ categorySelected: categories[0].id });
+        if (isToggleChangeBackground && categories.length && !categorySelected)
+            setCategoryEvent({
+                categorySelected: categories[0].id,
+            });
     }, [isToggleChangeBackground]);
 
     const handleSelectBackground = (id: string) => {
@@ -41,7 +44,7 @@ const Component = () => {
     };
 
     const handleScrollEnd = () => {
-        setQueryMediasEvent();
+        if (!isLoadMore && medias.length < count) setQueryMediasEvent();
     };
 
     return (

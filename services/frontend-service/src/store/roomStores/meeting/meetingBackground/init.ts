@@ -29,13 +29,16 @@ $backgroundMeetingStore
         ...state,
         ...data,
     }))
-    .on(getBackgroundMeetingFx.doneData, (state, result) => ({
-        ...state,
-        medias: result.isReset
-            ? result.list
-            : [...state.medias, ...result.list],
-        count: result.count,
-    }))
+    .on(getBackgroundMeetingFx.doneData, (state, result) => {
+        console.log(result);
+        return {
+            ...state,
+            medias: result.isReset
+                ? result.list
+                : [...state.medias, ...result.list],
+            count: result.count,
+        };
+    })
     .on(getCategoriesMediasFx.doneData, (state, result) => ({
         ...state,
         categories: result.list,
@@ -91,12 +94,8 @@ sample({
     source: combine({
         backgroundData: $backgroundMeetingStore,
         queryMediasData: $queryMediasBackgroundStore,
-        isLoadMore: $isLoadMoreMediasStore,
     }),
-    filter: ({ isLoadMore, backgroundData: { count, medias } }) => {
-        console.log(isLoadMore);
-        return !isLoadMore && medias.length <= count;
-    },
+
     fn: ({
         backgroundData: { categorySelected },
         queryMediasData: { skip, limit },

@@ -20,6 +20,7 @@ const Component = ({
     const handleLoadEnd = () => {
         setIsLoaded(true);
     };
+    // const url = item.previewUrls.find(img => img.resolution === 240)?.url;
 
     return (
         <CustomGrid
@@ -28,13 +29,18 @@ const Component = ({
             onClick={() => onSelect(item.id)}
         >
             {!isLoaded && (
-                <Skeleton width={60} height={60} className={styles.skeleton} variant="rectangular" />
+                <Skeleton
+                    width={63}
+                    height={63}
+                    className={styles.skeleton}
+                    variant="rectangular"
+                />
             )}
             {item.url !== '' ? (
                 <CustomImage
                     src={item.url}
-                    width={60}
-                    height={60}
+                    width={63}
+                    height={63}
                     className={styles.image}
                     onLoad={handleLoadEnd}
                 />
