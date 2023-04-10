@@ -37,7 +37,7 @@ export class MediaController {
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetMediaCategories })
   async getMediaCategories(
-    @Payload() { skip = 0, limit = 6 }: GetMediaCategoriesPayload,
+    @Payload() { skip = 0, limit = 10 }: GetMediaCategoriesPayload,
   ): Promise<EntityList<IMediaCategory>> {
     try {
       return withTransaction(this.connection, async (session) => {

@@ -364,7 +364,7 @@ export class SeederService {
     });
 
     const url = await this.readFileAndUpload({
-      filePath: './src/public/backgrounds/office_1.webp',
+      filePath: './src/public/default/global_template.jpeg',
       key: `templates/videos/${newCommonTemplate.id}/${uuidv4()}.webp`
     })
 
