@@ -153,11 +153,6 @@ export class SeederService {
           return;
         };
 
-        if (
-          files.filter(item => item.includes(categoryItem.key)).length ===
-          medias.filter(item => item.url).length
-        ) return;
-
         this.mediaService.deleteMedias({
           query: {
             businessCategory: category._id
