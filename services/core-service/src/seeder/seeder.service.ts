@@ -10,7 +10,8 @@ import {
   TEMPLATES_SERVICE,
   BACKGROUNDS_SCOPE,
   FILES_SCOPE,
-  EMOJIES_SCOPE
+  EMOJIES_SCOPE,
+  MEDIA_CATEGORIES
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
 
@@ -43,8 +44,9 @@ import { withTransaction } from 'src/helpers/mongo/withTransaction';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
-import { CommonBusinessMediaDTO } from 'src/dtos/common-business-media.dto';
-import { BusinessCategoryDocument } from 'src/schemas/business-category.schema';
+import { MediaService } from 'src/modules/medias/medias.service';
+import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
+import { CommonMediaDTO } from 'src/dtos/common-media.dto';
 
 // utils
 
@@ -55,6 +57,7 @@ export class SeederService {
     private userTemplatesService: UserTemplatesService,
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
+    private mediaService: MediaService,
     private languagesService: LanguagesService,
     private paymentsService: PaymentsService,
     private awsService: AwsConnectorService,
@@ -69,20 +72,7 @@ export class SeederService {
     @InjectS3() private readonly s3: S3,
   ) { }
 
-  private vultrUploadBucket: string;
-  private vultrStorageHostname: string;
-
-
-  async onModuleInit() {
-    this.vultrUploadBucket = await this.configService.get<string>(
-      'vultrUploadBucket',
-    );
-    this.vultrStorageHostname = await this.configService.get<string>(
-      'vultrStorageHostname',
-    );
-  }
-
-  async updateBusinessMedia(data: { url: string; id: string; mimeType: string }) {
+  async updateMedia(data: { url: string; id: string; mimeType: string }) {
     return withTransaction(this.connection, async () => {
       const { url, id, mimeType } = data;
 
@@ -92,22 +82,20 @@ export class SeederService {
         mimeType,
       });
 
-      await this.businessCategoriesService.updateBusinessMedia({
+      await this.mediaService.updateMedia({
         query: {
           _id: id,
         },
         data: {
-          mediaType: mimeType.includes('image') ? 'image' : 'video',
+          type: mimeType.includes('image') ? 'image' : 'video',
           previewUrls: previewImages.map((image) => image._id),
-          url,
+          url
         },
       });
 
       return;
     });
   }
-
-  
 
   async readFileAndUpload({ filePath, key }: { filePath: string, key: string }) {
     const buf = readFileSync(join(process.cwd(), filePath));
@@ -120,37 +108,35 @@ export class SeederService {
     return url;
   }
 
-  async uploadEmoji(){
-    readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
+  // async uploadEmoji(){
+  //   readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
       
-      Promise.all(files.map(async file => {
+  //     Promise.all(files.map(async file => {
 
-        const filename = file.split('.')[0];
+  //       const filename = file.split('.')[0];
 
-        console.log(`emoji/images/${filename}.webp`);
-        
-        const url = await this.readFileAndUpload({
-          filePath: `${FILES_SCOPE}/${EMOJIES_SCOPE}/${file}`,
-          key: `emoji/images/${filename}.webp`
-        });
-        console.log(url);
-      })).then(item => item).catch(err => console.log(err));
+  //       const url = await this.readFileAndUpload({
+  //         filePath: `${FILES_SCOPE}/${EMOJIES_SCOPE}/${file}`,
+  //         key: `emoji/images/${filename}.webp`
+  //       });
+  //       console.log(url);
+  //     })).then(item => item).catch(err => console.log(err));
       
-    }); 
-  }
+  //   }); 
+  // }
 
-  async seedBusinessCategories(): Promise<void> {
-    const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
-      let category: BusinessCategoryDocument;
-      const isExists = await this.businessCategoriesService.exists({
+  async seedMedias(){
+    const promises = MEDIA_CATEGORIES.map(async (categoryItem) => {
+      let category: MediaCategoryDocument;
+      const isExists = await this.mediaService.existCategories({
         key: categoryItem.key,
       });
 
       if (!isExists) {
-        category = await this.businessCategoriesService.create({ data: categoryItem });
+        category = await this.mediaService.createCategory({ data: categoryItem });
       }
       else {
-        category = await this.businessCategoriesService.findBusinessCategory({
+        category = await this.mediaService.findMediaCategory({
           query: { key: categoryItem.key }
         });
       }
@@ -161,7 +147,7 @@ export class SeederService {
           return;
         };
 
-        this.businessCategoriesService.deleteBusinessMedias({
+        this.mediaService.deleteMedias({
           query: {
             businessCategory: category._id
           },
@@ -170,9 +156,9 @@ export class SeederService {
             const uploadFilePromise = files.map(async file => {
 
               if (file.includes(categoryItem.key)) {
-                const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
+                const newMedia = plainToInstance(CommonMediaDTO, await this.mediaService.createMedia({
                   data: {
-                    businessCategory: category._id
+                    mediaCategory: category._id
                   }
                 }), {
                   excludeExtraneousValues: true,
@@ -184,7 +170,7 @@ export class SeederService {
                   key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
                 });
 
-                await this.updateBusinessMedia({
+                await this.updateMedia({
                   url,
                   id: newMedia.id.toString(),
                   mimeType: 'image/webp',
@@ -199,6 +185,22 @@ export class SeederService {
     });
 
     await Promise.all(promises);
+  }
+
+  async seedBusinessCategories(): Promise<void> {
+    const promises = BUSINESS_CATEGORIES.map(async (categoryItem) => {
+      const isExists = await this.businessCategoriesService.exists({
+        key: categoryItem.key,
+      });
+
+      if (!isExists) {
+        await this.businessCategoriesService.create({ data: categoryItem });
+      }
+    });
+
+    await Promise.all(promises);
+
+    return;
   }
 
   async seedLanguages() {

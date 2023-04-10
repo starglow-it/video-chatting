@@ -1,21 +1,21 @@
 import { Expose, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IBusinessCategory } from 'shared-types';
+import { IMediaCategory } from 'shared-types';
 
-export class CategoryRestDTO implements IBusinessCategory {
+export class MediaCategoryRestDTO implements IMediaCategory {
   @Expose()
   @ApiProperty()
   id: string;
 
   @Expose()
   @ApiProperty()
-  key: IBusinessCategory['key'];
+  key: IMediaCategory['key'];
 
   @Expose()
   @ApiProperty()
-  value: IBusinessCategory['value'];
+  value: IMediaCategory['value'];
 
   @Expose()
   @ApiProperty()
-  color: IBusinessCategory['color'];
+  emojiUrl: IMediaCategory['emojiUrl'];
 }

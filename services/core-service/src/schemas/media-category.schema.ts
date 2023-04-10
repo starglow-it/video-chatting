@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 @Schema()
-export class BusinessCategory {
+export class MediaCategory {
   @Prop({
     type: mongoose.Schema.Types.String,
     required: true,
@@ -20,10 +20,10 @@ export class BusinessCategory {
     type: mongoose.Schema.Types.String,
     required: true,
   })
-  color: string;
+  emojiUrl: string;
 }
 
-export type BusinessCategoryDocument = BusinessCategory & Document;
+export type MediaCategoryDocument = MediaCategory & Document;
 
-export const BusinessCategorySchema =
-  SchemaFactory.createForClass(BusinessCategory);
+export const MediaCategorySchema =
+  SchemaFactory.createForClass(MediaCategory);

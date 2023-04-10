@@ -2,25 +2,16 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
-// shared
-import { UserDocument } from './user.schema';
-import { ICommonUserStatistic } from 'shared-types';
 import { PreviewImageDocument } from './preview-image.schema';
-import { BusinessCategory, BusinessCategoryDocument } from './business-category.schema';
+import { MediaCategory, MediaCategoryDocument } from './media-category.schema';
 
 @Schema()
-export class BusinessMedia {
+export class Media {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: BusinessCategory.name
+    ref: MediaCategory.name
   })
-  businessCategory: BusinessCategoryDocument;
-
-
-  @Prop({
-    type: mongoose.Schema.Types.String,
-  })
-  title: string;
+  mediaCategory: MediaCategoryDocument;
 
   @Prop({
     type: mongoose.Schema.Types.String,
@@ -36,11 +27,11 @@ export class BusinessMedia {
   @Prop({
     type: mongoose.Schema.Types.String
   })
-  mediaType: string;
+  type: string;
 
 }
 
-export type BusinessMediaDocument = BusinessMedia & Document;
+export type MediaDocument = Media & Document;
 
-export const BusinessMediaSchema =
-  SchemaFactory.createForClass(BusinessMedia);
+export const MediaSchema =
+  SchemaFactory.createForClass(Media);

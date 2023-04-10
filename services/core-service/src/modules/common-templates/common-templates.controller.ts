@@ -419,7 +419,7 @@ export class CommonTemplatesController {
                 data: {
                   key: category.key,
                   value: category.value,
-                  emojiUrl: category.emojiUrl,
+                  color: category.color,
                 },
                 session,
               });

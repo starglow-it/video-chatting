@@ -4,6 +4,12 @@ import { IUserTemplate } from './templates';
 export interface IBusinessCategory {
   key: string;
   value: string;
+  color: string;
+}
+
+export interface IMediaCategory {
+  key: string;
+  value: string;
   emojiUrl: string;
 }
 

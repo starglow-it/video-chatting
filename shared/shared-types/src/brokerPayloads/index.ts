@@ -7,3 +7,4 @@ export * from './payments';
 export * from './templates';
 export * from './users';
 export * from './subscriptions';
+export * from './medias';

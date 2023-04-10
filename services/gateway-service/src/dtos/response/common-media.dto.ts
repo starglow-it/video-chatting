@@ -1,19 +1,19 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IBusinessMedia, IPreviewImage } from 'shared-types';
+import {IMedia, IPreviewImage } from 'shared-types';
 
-export class BusinessMediaRestDTO implements IBusinessMedia {
+export class MediaRestDTO implements IMedia {
     @Expose()
     @ApiProperty()
     id: string;
 
     @Expose()
     @ApiProperty()
-    businessCategory: IBusinessMedia['businessCategory'];
+    mediaCategory: IMedia['mediaCategory'];
 
     @Expose()
     @ApiProperty()
-    url: IBusinessMedia['url'];
+    url: IMedia['url'];
 
     @Expose()
     @ApiProperty()

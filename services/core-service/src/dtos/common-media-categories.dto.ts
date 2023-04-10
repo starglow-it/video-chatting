@@ -1,7 +1,7 @@
 import { Expose, Transform } from 'class-transformer';
-import { IBusinessCategory } from 'shared-types';
+import {IMediaCategory } from 'shared-types';
 
-export class CommonBusinessCategoryDTO implements IBusinessCategory {
+export class CommonMediaCategoryDTO implements IMediaCategory {
   @Expose()
   @Transform((data) => data.obj['_id'])
   id: string;
@@ -13,5 +13,5 @@ export class CommonBusinessCategoryDTO implements IBusinessCategory {
   value: string;
 
   @Expose()
-  color: string;
+  emojiUrl: string;
 }
