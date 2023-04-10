@@ -26,7 +26,7 @@ export class MediasController {
 
     constructor(private mediaService: MediasService) { }
 
-    @Get('/')
+    @Get('/categories')
     @ApiOperation({ summary: 'Get Categories' })
     @ApiOkResponse({
         type: MediaCategoryRestDTO,
@@ -63,8 +63,8 @@ export class MediasController {
     }
 
 
-    @Get('medias/:categoryId')
-    @ApiOperation({ summary: 'Get Business medias' })
+    @Get('/:categoryId')
+    @ApiOperation({ summary: 'Get Medias By Category Id' })
     @ApiOkResponse({
         type: [MediaRestDTO],
         description: 'Get Medias',
