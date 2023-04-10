@@ -9,12 +9,12 @@ import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { $businessCategoriesStore } from 'src/store';
 import {
     $backgroundMeetingStore,
     $isToggleChangeBackground,
     setCategoryEvent,
     setMediaEvent,
+    setQueryMediasEvent,
     toggleChangeBackgroundEvent,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
@@ -23,10 +23,9 @@ import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
     const isToggleChangeBackground = useStore($isToggleChangeBackground);
-    const { medias, categorySelected, mediaSelected } = useStore(
+    const { medias, categorySelected, mediaSelected, categories } = useStore(
         $backgroundMeetingStore,
     );
-    const { list: categories } = useStore($businessCategoriesStore);
 
     useEffect(() => {
         if (isToggleChangeBackground && categories.length)
@@ -41,7 +40,9 @@ const Component = () => {
         setCategoryEvent({ categorySelected: id });
     };
 
-    console.log(categories)
+    const handleScrollEnd = () => {
+        setQueryMediasEvent();
+    };
 
     return (
         <Fade in={isToggleChangeBackground}>
@@ -101,7 +102,10 @@ const Component = () => {
                         paddingTop={3}
                         paddingLeft="6px"
                     >
-                        <CustomScroll className={styles.scroll}>
+                        <CustomScroll
+                            className={styles.scroll}
+                            onYReachEnd={handleScrollEnd}
+                        >
                             {medias.map(item => (
                                 <Media
                                     key={item.id}

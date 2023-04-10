@@ -35,7 +35,11 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import styles from './MeetingView.module.scss';
 
 // stores
-import { addNotificationEvent, appDialogsApi, checkIsPortraitLayoutEvent } from '../../../store';
+import {
+    addNotificationEvent,
+    appDialogsApi,
+    checkIsPortraitLayoutEvent,
+} from '../../../store';
 import {
     $isOwner,
     $isScreenSharingStore,
@@ -45,6 +49,7 @@ import {
     $meetingTemplateStore,
     $meetingUsersStore,
     $serverTypeStore,
+    getCategoriesMediasFx,
     initVideoChatEvent,
     joinMeetingFx,
     setMeetingConnectedEvent,
@@ -72,7 +77,8 @@ const Component = () => {
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
         keys: [meeting.hostUserId],
-        fn: (state, [hostUserId]) => state.find(user => user.id === hostUserId) || null,
+        fn: (state, [hostUserId]) =>
+            state.find(user => user.id === hostUserId) || null,
     });
 
     const prevHostUserId = useRef<string>(meeting.hostUserId);
@@ -93,7 +99,12 @@ const Component = () => {
                         : `${hostUser.username} is host now`,
             });
         }
-    }, [hostUser?.id, hostUser?.username, localUser?.id, hostUser?.accessStatus]);
+    }, [
+        hostUser?.id,
+        hostUser?.username,
+        localUser?.id,
+        hostUser?.accessStatus,
+    ]);
 
     useEffect(() => {
         (async () => {
@@ -104,7 +115,7 @@ const Component = () => {
                 isMeetingConnected,
                 serverType,
                 isJoinMeetingPending,
-            ])
+            ]);
             if (
                 localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                 meeting.id &&
@@ -124,6 +135,10 @@ const Component = () => {
         serverType,
         isJoinMeetingPending,
     ]);
+
+    useEffect(() => {
+        getCategoriesMediasFx();
+    }, []);
 
     useEffect(() => {
         if (isMobile()) {
@@ -174,9 +189,12 @@ const Component = () => {
                 <MeetingSettingsPanel
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
-                >                    
+                >
                     <ConditionalRender
-                        condition={Boolean(meetingTemplate?.links?.length) && !isScreenSharingActive}
+                        condition={
+                            Boolean(meetingTemplate?.links?.length) &&
+                            !isScreenSharingActive
+                        }
                     >
                         <MeetingGoodsLinks />
                     </ConditionalRender>

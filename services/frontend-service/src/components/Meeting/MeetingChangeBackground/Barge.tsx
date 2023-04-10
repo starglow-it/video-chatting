@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { IBusinessCategory } from 'shared-types';
+import { IMediaCategory } from 'shared-types';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = ({
@@ -13,7 +13,7 @@ const Component = ({
     onSelect,
 }: {
     isActive: boolean;
-    item: IBusinessCategory & { id: string };
+    item: IMediaCategory & { id: string };
     onSelect: (id: string) => void;
 }) => {
     return (
