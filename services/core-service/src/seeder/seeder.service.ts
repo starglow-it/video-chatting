@@ -141,11 +141,22 @@ export class SeederService {
         });
       }
 
+      const medias = await this.mediaService.findMedias({
+        query: {
+          mediaCategory: category._id
+        }
+      });
+
       readdir(join(process.cwd(), `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}`), (err, files) => {
         if (err) {
           console.log(err);
           return;
         };
+
+        if (
+          files.filter(item => item.includes(categoryItem.key)).length ===
+          medias.filter(item => item.url).length
+        ) return;
 
         this.mediaService.deleteMedias({
           query: {

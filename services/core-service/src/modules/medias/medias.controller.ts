@@ -43,7 +43,7 @@ export class MediaController {
       return withTransaction(this.connection, async (session) => {
         const mediaCategories = await this.mediaService.find({
           query: {},
-          options: { skip, limit },
+          options: { skip: skip*limit, limit },
           session,
         });
 
@@ -91,7 +91,7 @@ export class MediaController {
 
       if (!mediaCategory) {
         throw new RpcException({
-          message: 'Business category not found',
+          message: 'Media category not found',
           ctx: CORE_SERVICE,
         });
       }
@@ -105,7 +105,7 @@ export class MediaController {
           mediaCategory: mediaCategory._id
         },
         options: {
-          skip: skipQuery,
+          skip: skipQuery*limitQuery,
           limit: limitQuery
         },
         populatePaths: ['mediaCategory', 'previewUrls']
