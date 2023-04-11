@@ -38,15 +38,15 @@ import { executePromiseQueue } from "shared-utils";
 import { readdir, readFileSync } from 'fs';
 import { join } from 'path';
 import { plainToInstance } from 'class-transformer';
-import { CommonTemplateDTO } from 'src/dtos/common-template.dto';
+import { CommonTemplateDTO } from '../dtos/common-template.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { withTransaction } from 'src/helpers/mongo/withTransaction';
+import { withTransaction } from '../helpers/mongo/withTransaction';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
-import { MediaService } from 'src/modules/medias/medias.service';
-import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
-import { CommonMediaDTO } from 'src/dtos/common-media.dto';
+import { MediaService } from '../modules/medias/medias.service';
+import { MediaCategoryDocument } from '../schemas/media-category.schema';
+import { CommonMediaDTO } from '../dtos/common-media.dto';
 
 // utils
 
@@ -108,6 +108,8 @@ export class SeederService {
     return url;
   }
 
+
+  //TODO: handle upload emoji (pending)
   // async uploadEmoji(){
   //   readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
       
@@ -158,7 +160,7 @@ export class SeederService {
 
         this.mediaService.deleteMedias({
           query: {
-            businessCategory: category._id
+            mediaCategory: category._id
           },
         })
           .then(() => {
@@ -188,8 +190,7 @@ export class SeederService {
             });
 
             Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
-          })
-
+          });
       });
     });
 

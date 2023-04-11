@@ -103,13 +103,11 @@ export class MediaService {
         MediaDocument,
         IMedia
     >): Promise<MediaDocument> {
-        const options: QueryOptions = {
+        return this.media.findOneAndUpdate(query, data, {
             session: session?.session,
             populate: populatePaths,
             new: true,
-        };
-
-        return this.media.findOneAndUpdate(query, data, options);
+        });
     }
 
 
@@ -135,10 +133,9 @@ export class MediaService {
         query: FilterQuery<MediaDocument>;
         session?: ITransactionSession;
     }): Promise<any> {
-        const options: QueryOptions = {
-            session: session?.session,
-        };
 
-        return this.media.deleteMany(query, options);
+        return this.media.deleteMany(query, {
+            session: session?.session,
+        });
     }
 }
