@@ -88,10 +88,10 @@ services:
       - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls=true"
       - "traefik.http.services.gateway.loadbalancer.server.port=3000"
-      - "traefik.http.middlewares.testheader.headers.accesscontrolallowmethods=GET,POST,OPTIONS,PUT,DELETE"
-      - "traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=*"
-      - "traefik.http.middlewares.testheader.headers.accesscontrolmaxage=100"
-      - "traefik.http.middlewares.testheader.headers.addvaryheader=true"
+      - "traefik.http.middlewares.gateway.headers.accesscontrolallowmethods=GET,POST,OPTIONS,PUT,DELETE"
+      - "traefik.http.middlewares.gateway.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.gateway.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.gateway.headers.addvaryheader=true"
     networks:
       - traefikpublic
       - internal
