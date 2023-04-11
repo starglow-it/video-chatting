@@ -20,7 +20,7 @@ const Component = ({
     const handleLoadEnd = () => {
         setIsLoaded(true);
     };
-    // const url = item.previewUrls.find(img => img.resolution === 240)?.url;
+    const url = item.previewUrls.find(img => img.resolution === 240)?.url || '';
 
     return (
         <CustomGrid
@@ -36,9 +36,9 @@ const Component = ({
                     variant="rectangular"
                 />
             )}
-            {item.url !== '' ? (
+            {url !== '' ? (
                 <CustomImage
-                    src={item.url}
+                    src={url}
                     width={63}
                     height={63}
                     className={styles.image}

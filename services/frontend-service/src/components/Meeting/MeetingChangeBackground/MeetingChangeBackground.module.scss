@@ -57,7 +57,9 @@
         }
 
         .image {
-            border-radius: 8px;
+            border-radius: 7px;
+            object-fit: cover;
+            object-position: left;
         }
 
         .skeleton {
@@ -69,7 +71,7 @@
     .scroll {
         display: flex;
         width: 100%;
-        max-height: 220px;
+        max-height: 223px;
         background: rgba(0, 0, 0, 0.3882352941);
         flex-wrap: wrap;
         border-radius: 9px;

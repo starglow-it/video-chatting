@@ -22,7 +22,7 @@ export const $backgroundMeetingStore = meetingDomain.createStore<{
 export const $queryMediasBackgroundStore = meetingDomain.createStore<{
     skip: number;
     limit: number;
-}>({ skip: 0, limit: 9 });
+}>({ skip: 0, limit: 12 });
 
 export const $isLoadMoreMediasStore = meetingDomain.createStore<boolean>(false);
 
