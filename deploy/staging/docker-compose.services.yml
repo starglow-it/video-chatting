@@ -87,11 +87,12 @@ services:
       - "traefik.http.routers.gateway.rule=Host(`tlo.nongdan.dev`) && PathPrefix(`/api`)"
       - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls=true"
+      - "traefik.http.routers.gateway.middlewares=customcorsheader@docker"
       - "traefik.http.services.gateway.loadbalancer.server.port=3000"
       - "traefik.http.middlewares.gateway.headers.accesscontrolallowmethods=GET,POST,OPTIONS,PUT,DELETE"
-      - "traefik.http.middlewares.gateway.headers.accesscontrolalloworiginlist=*"
-      - "traefik.http.middlewares.gateway.headers.accesscontrolmaxage=100"
-      - "traefik.http.middlewares.gateway.headers.addvaryheader=true"
+      - "traefik.http.middlewares.customcorsheader.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.customcorsheader.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.customcorsheader.headers.addvaryheader=true"
     networks:
       - traefikpublic
       - internal
