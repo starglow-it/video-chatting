@@ -31,7 +31,7 @@ jobs:
       - name: Update Traefik
         run: |
           cd deploy/staging
-          docker-compose -f docker-compose.proxy.yml up -d --build --force-recreate --remove-orphans
+          docker-compose -f docker-compose.proxy.yml up -d --build  --remove-orphans
 
       - name: Deploy new source
         run: |
