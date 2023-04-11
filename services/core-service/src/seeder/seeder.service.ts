@@ -8,7 +8,10 @@ import {
   BUSINESS_CATEGORIES,
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
-  BUSINESS_FILE_PATH,
+  BACKGROUNDS_SCOPE,
+  FILES_SCOPE,
+  EMOJIES_SCOPE,
+  MEDIA_CATEGORIES
 } from 'shared-const';
 import { Counters, UserRoles } from 'shared-types';
 
@@ -32,16 +35,18 @@ import {
 } from '../schemas/preview-image.schema';
 import { TranscodeService } from "../modules/transcode/transcode.service";
 import { executePromiseQueue } from "shared-utils";
-import { readFileSync } from 'fs';
+import { readdir, readFileSync } from 'fs';
 import { join } from 'path';
 import { plainToInstance } from 'class-transformer';
-import { CommonTemplateDTO } from 'src/dtos/common-template.dto';
+import { CommonTemplateDTO } from '../dtos/common-template.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { withTransaction } from 'src/helpers/mongo/withTransaction';
+import { withTransaction } from '../helpers/mongo/withTransaction';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
-import { CommonBusinessMediaDTO } from 'src/dtos/common-business-media.dto';
+import { MediaService } from '../modules/medias/medias.service';
+import { MediaCategoryDocument } from '../schemas/media-category.schema';
+import { CommonMediaDTO } from '../dtos/common-media.dto';
 
 // utils
 
@@ -52,6 +57,7 @@ export class SeederService {
     private userTemplatesService: UserTemplatesService,
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
+    private mediaService: MediaService,
     private languagesService: LanguagesService,
     private paymentsService: PaymentsService,
     private awsService: AwsConnectorService,
@@ -66,23 +72,9 @@ export class SeederService {
     @InjectS3() private readonly s3: S3,
   ) { }
 
-  private vultrUploadBucket: string;
-  private vultrStorageHostname: string;
-
-
-  async onModuleInit() {
-    this.vultrUploadBucket = await this.configService.get<string>(
-      'vultrUploadBucket',
-    );
-    this.vultrStorageHostname = await this.configService.get<string>(
-      'vultrStorageHostname',
-    );
-  }
-
-  async updateBusinessMedia(data: { url: string; id: string; mimeType: string }) {
+  async updateMedia(data: { url: string; id: string; mimeType: string }) {
     return withTransaction(this.connection, async () => {
       const { url, id, mimeType } = data;
-
 
       const previewImages = await this.commonTemplatesService.generatePreviews({
         url,
@@ -90,19 +82,119 @@ export class SeederService {
         mimeType,
       });
 
-      await this.businessCategoriesService.updateBusinessMedia({
+      await this.mediaService.updateMedia({
         query: {
           _id: id,
         },
         data: {
-          mediaType: mimeType.includes('image') ? 'image' : 'video',
+          type: mimeType.includes('image') ? 'image' : 'video',
           previewUrls: previewImages.map((image) => image._id),
-          url,
+          url
         },
       });
 
       return;
     });
+  }
+
+  async readFileAndUpload({ filePath, key }: { filePath: string, key: string }) {
+    const buf = readFileSync(join(process.cwd(), filePath));
+
+    const uploadKey = key;
+    const url = await this.awsService.uploadFile(
+      buf,
+      uploadKey
+    );
+    return url;
+  }
+
+
+  //TODO: handle upload emoji (pending)
+  // async uploadEmoji(){
+  //   readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
+      
+  //     Promise.all(files.map(async file => {
+
+  //       const filename = file.split('.')[0];
+
+  //       const url = await this.readFileAndUpload({
+  //         filePath: `${FILES_SCOPE}/${EMOJIES_SCOPE}/${file}`,
+  //         key: `emoji/images/${filename}.webp`
+  //       });
+  //       console.log(url);
+  //     })).then(item => item).catch(err => console.log(err));
+      
+  //   }); 
+  // }
+
+  async seedMedias(){
+    const promises = MEDIA_CATEGORIES.map(async (categoryItem) => {
+      let category: MediaCategoryDocument;
+      const isExists = await this.mediaService.existCategories({
+        key: categoryItem.key,
+      });
+
+      if (!isExists) {
+        category = await this.mediaService.createCategory({ data: categoryItem });
+      }
+      else {
+        category = await this.mediaService.findMediaCategory({
+          query: { key: categoryItem.key }
+        });
+      }
+
+      const medias = await this.mediaService.findMedias({
+        query: {
+          mediaCategory: category._id
+        }
+      });
+
+      readdir(join(process.cwd(), `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}`), (err, files) => {
+        if (err) {
+          console.log(err);
+          return;
+        };
+
+        const countFilesByCategory =  files.filter(item => item.includes(category.key)).length;
+        if(countFilesByCategory === medias.length) return;
+
+        this.mediaService.deleteMedias({
+          query: {
+            mediaCategory: category._id
+          },
+        })
+          .then(() => {
+            const uploadFilePromise = files.map(async file => {
+
+              if (file.includes(categoryItem.key)) {
+                const newMedia = plainToInstance(CommonMediaDTO, await this.mediaService.createMedia({
+                  data: {
+                    mediaCategory: category._id
+                  }
+                }), {
+                  excludeExtraneousValues: true,
+                  enableImplicitConversion: true,
+                });
+
+                const url = await this.readFileAndUpload({
+                  filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
+                  key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
+                });
+
+                await this.updateMedia({
+                  url,
+                  id: newMedia.id.toString(),
+                  mimeType: 'image/webp',
+                });
+              }
+            });
+
+            Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
+          });
+      });
+    });
+
+    await Promise.all(promises);
   }
 
   async seedBusinessCategories(): Promise<void> {
@@ -112,38 +204,7 @@ export class SeederService {
       });
 
       if (!isExists) {
-        const newCategory = await this.businessCategoriesService.create({ data: categoryItem });
-
-        const promises = BUSINESS_FILE_PATH.map(async filePath => {
-          
-          if (filePath.includes(`public/${categoryItem.key}`)) {
-            const newMedia = plainToInstance(CommonBusinessMediaDTO, await this.businessCategoriesService.createBusinessMedia({
-              data: {
-                businessCategory: newCategory._id
-              }
-            }), {
-              excludeExtraneousValues: true,
-              enableImplicitConversion: true,
-            });
-            
-            const buf = readFileSync(join(process.cwd(), filePath));
-
-            const uploadKey = `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`;
-            const url = await this.awsService.uploadFile(
-              buf,
-              uploadKey
-            );
-
-            await this.updateBusinessMedia({
-              url,
-              id: newMedia.id.toString(),
-              mimeType: 'image/webp',
-            });
-          }
-        });
-
-        await Promise.all(promises);
-
+        await this.businessCategoriesService.create({ data: categoryItem });
       }
     });
 
@@ -263,9 +324,6 @@ export class SeederService {
       query: { email: adminEmail },
     });
 
-    const buf = readFileSync(join(process.cwd(), './src/public/office_1.jpeg'));
-
-
     const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({
       query: {
         isAcceptNoLogin: true
@@ -315,12 +373,10 @@ export class SeederService {
       enableImplicitConversion: true,
     });
 
-    //upload image to vutrl
-    const uploadKey = `templates/videos/${newCommonTemplate.id}/${uuidv4()}.webp`;
-    const url = await this.awsService.uploadFile(
-      buf,
-      uploadKey,
-    );
+    const url = await this.readFileAndUpload({
+      filePath: './src/public/default/global_template.jpeg',
+      key: `templates/videos/${newCommonTemplate.id}/${uuidv4()}.webp`
+    })
 
     //update url to temlate
     await this.updateGlobalTemplateFile({

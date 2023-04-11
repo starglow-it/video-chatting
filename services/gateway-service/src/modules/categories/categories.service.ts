@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CoreService } from '../../services/core/core.service';
 import { CoreBrokerPatterns } from 'shared-const';
-import { GetBusinessMediasPayload } from 'shared-types';
 
 @Injectable()
 export class CategoriesService {
@@ -12,11 +11,4 @@ export class CategoriesService {
 
     return this.coreService.sendCustom(pattern, payload);
   }
-
-  async getBusinessMedias(payload: GetBusinessMediasPayload){
-    const pattern = { cmd: CoreBrokerPatterns.GetBusinessMedias };
-
-    return this.coreService.sendCustom(pattern, payload); 
-  }
-
 }

@@ -1,7 +1,6 @@
-import { EntityList, IUserTemplate } from 'shared-types';
+import { EntityList, IMediaCategory, IUserTemplate } from 'shared-types';
 import sendRequestWithCredentials from '../../../../../helpers/http/sendRequestWithCredentials';
 import { updateUserTemplateUrl } from '../../../../../utils/urls';
-import { ICategoryMedia } from '../types';
 
 export const handleUpdateBackgroundMeeting = async ({
     templateId,
@@ -10,7 +9,7 @@ export const handleUpdateBackgroundMeeting = async ({
     templateId: string;
     data: Partial<IUserTemplate>;
 }): Promise<void> => {
-    await sendRequestWithCredentials<EntityList<ICategoryMedia>, void>({
+    await sendRequestWithCredentials<EntityList<IMediaCategory>, void>({
         ...updateUserTemplateUrl({ templateId }),
         data,
     });

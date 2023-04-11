@@ -1,18 +1,21 @@
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import { memo, useEffect } from 'react';
+import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { $businessCategoriesStore } from 'src/store';
 import {
     $backgroundMeetingStore,
+    $isLoadMoreMediasStore,
     $isToggleChangeBackground,
     setCategoryEvent,
     setMediaEvent,
+    setQueryMediasEvent,
     toggleChangeBackgroundEvent,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
@@ -21,14 +24,15 @@ import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
     const isToggleChangeBackground = useStore($isToggleChangeBackground);
-    const { medias, categorySelected, mediaSelected } = useStore(
-        $backgroundMeetingStore,
-    );
-    const { list: categories } = useStore($businessCategoriesStore);
+    const { medias, categorySelected, mediaSelected, categories, count } =
+        useStore($backgroundMeetingStore);
+    const isLoadMore = useStore($isLoadMoreMediasStore);
 
     useEffect(() => {
-        if (isToggleChangeBackground && categories.length)
-            setCategoryEvent({ categorySelected: categories[0].id });
+        if (isToggleChangeBackground && categories.length && !categorySelected)
+            setCategoryEvent({
+                categorySelected: categories[0].id,
+            });
     }, [isToggleChangeBackground]);
 
     const handleSelectBackground = (id: string) => {
@@ -37,6 +41,10 @@ const Component = () => {
 
     const handleSelectType = (id: string) => {
         setCategoryEvent({ categorySelected: id });
+    };
+
+    const handleScrollEnd = () => {
+        if (!isLoadMore && medias.length < count) setQueryMediasEvent();
     };
 
     return (
@@ -53,19 +61,25 @@ const Component = () => {
                         alignItems="center"
                         justifyContent="flex-start"
                     >
+                        <CustomBox color="white" height={18}>
+                            <ImageIcon width="16px" height="16px" />
+                        </CustomBox>
+
                         <CustomTypography
                             nameSpace="meeting"
                             translation="changeBackground.text"
                             color="colors.white.primary"
                             variant="h4bold"
                             flex={1}
+                            paddingLeft={1}
+                            fontSize="15px"
                         />
                         <RoundCloseIcon
                             className={styles.closeIcon}
                             onClick={toggleChangeBackgroundEvent}
                             isActive
-                            width="24px"
-                            height="24px"
+                            width="22px"
+                            height="22px"
                         />
                     </CustomBox>
                     <CustomBox
@@ -91,14 +105,19 @@ const Component = () => {
                         paddingTop={3}
                         paddingLeft="6px"
                     >
-                        {medias.map(item => (
-                            <Media
-                                key={item.id}
-                                isActive={item.id === mediaSelected}
-                                item={item}
-                                onSelect={handleSelectBackground}
-                            />
-                        ))}
+                        <CustomScroll
+                            className={styles.scroll}
+                            onYReachEnd={handleScrollEnd}
+                        >
+                            {medias.map(item => (
+                                <Media
+                                    key={item.id}
+                                    isActive={item.id === mediaSelected}
+                                    item={item}
+                                    onSelect={handleSelectBackground}
+                                />
+                            ))}
+                        </CustomScroll>
                     </CustomGrid>
                 </CustomGrid>
             </CustomPaper>

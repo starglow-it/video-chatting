@@ -1,5 +1,5 @@
-import { IBusinessMedia } from "shared-types";
+import {  IMedia } from "shared-types";
 
-export interface ICategoryMedia extends IBusinessMedia  {
+export interface IMediaItem extends IMedia  {
     id: string;
 }

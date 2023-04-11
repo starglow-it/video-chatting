@@ -1,25 +1,29 @@
 import { EntityList } from 'shared-types';
 import sendRequestWithCredentials from '../../../../../helpers/http/sendRequestWithCredentials';
 import { getMediasCategory } from '../../../../../utils/urls';
-import { ICategoryMedia } from '../types';
+import { IMediaItem } from '../types';
 
 export const handleGetBackgroundMeeting = async ({
     id,
+    skip,
+    limit,
 }: {
     id: string;
-}): Promise<ICategoryMedia[]> => {
+    skip?: number;
+    limit?: number;
+}): Promise<EntityList<IMediaItem> & { isReset: boolean }> => {
     const { result, success } = await sendRequestWithCredentials<
-        EntityList<ICategoryMedia>,
+        EntityList<IMediaItem>,
         void
     >({
-        ...getMediasCategory({ categoryId: id }),
+        ...getMediasCategory({ categoryId: id, skip, limit }),
     });
 
     if (success && result) {
-        return result.list ?? [];
+        return { ...result, isReset: !skip };
     }
     if (!success) {
-        return [];
+        return { list: [], count: 0, isReset: !skip };
     }
-    return [];
+    return { list: [], count: 0, isReset: !skip };
 };

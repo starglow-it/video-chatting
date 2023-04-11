@@ -2,6 +2,7 @@ import { combine, forward, sample } from 'effector';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 import { sendUpdateMeetingTemplateSocketEvent } from '../sockets/init';
 import { handleGetBackgroundMeeting } from './handlers/handleGetBackground';
+import { handleGetCategories } from './handlers/handleGetCategoriesBackground';
 import { handleUpdateBackgroundMeeting } from './handlers/handleUpdateBackgroundMeeting';
 import {
     $backgroundMeetingStore,
@@ -11,10 +12,15 @@ import {
     getBackgroundMeetingFx,
     setMediaEvent,
     updateBackgroundMeetingFx,
+    $queryMediasBackgroundStore,
+    setQueryMediasEvent,
+    $isLoadMoreMediasStore,
+    getCategoriesMediasFx,
 } from './model';
 
 getBackgroundMeetingFx.use(handleGetBackgroundMeeting);
 updateBackgroundMeetingFx.use(handleUpdateBackgroundMeeting);
+getCategoriesMediasFx.use(handleGetCategories);
 
 $isToggleChangeBackground.on(toggleChangeBackgroundEvent, toggle => !toggle);
 
@@ -23,10 +29,30 @@ $backgroundMeetingStore
         ...state,
         ...data,
     }))
-    .on(getBackgroundMeetingFx.doneData, (state, data) => ({
+    .on(getBackgroundMeetingFx.doneData, (state, result) => {
+        return {
+            ...state,
+            medias: result.isReset
+                ? result.list
+                : [...state.medias, ...result.list],
+            count: result.count,
+        };
+    })
+    .on(getCategoriesMediasFx.doneData, (state, result) => ({
         ...state,
-        medias: data,
+        categories: result.list,
     }));
+
+$queryMediasBackgroundStore
+    .on(setQueryMediasEvent, state => ({
+        ...state,
+        skip: state.skip + 1,
+    }))
+    .reset(setCategoryEvent);
+
+$isLoadMoreMediasStore
+    .on(setQueryMediasEvent, () => true)
+    .on(getBackgroundMeetingFx, () => false);
 
 sample({
     clock: setCategoryEvent,
@@ -41,6 +67,7 @@ sample({
         backgroundMeetingStore: $backgroundMeetingStore,
         meetingTemplateStore: $meetingTemplateStore,
     }),
+
     fn: ({ meetingTemplateStore, backgroundMeetingStore }, clock) => {
         const dataUpdate = backgroundMeetingStore.medias.find(
             item => item.id === clock.mediaSelected,
@@ -48,7 +75,7 @@ sample({
         return {
             templateId: meetingTemplateStore.id,
             data: {
-                previewUrls: dataUpdate?.previewUrls.map((item) => item.id),
+                previewUrls: dataUpdate?.previewUrls.map(item => item.id),
                 url: dataUpdate?.url,
             },
         };
@@ -59,4 +86,22 @@ sample({
 forward({
     from: updateBackgroundMeetingFx.doneData,
     to: sendUpdateMeetingTemplateSocketEvent,
+});
+
+sample({
+    clock: setQueryMediasEvent,
+    source: combine({
+        backgroundData: $backgroundMeetingStore,
+        queryMediasData: $queryMediasBackgroundStore,
+    }),
+
+    fn: ({
+        backgroundData: { categorySelected },
+        queryMediasData: { skip, limit },
+    }) => ({
+        id: categorySelected,
+        skip,
+        limit,
+    }),
+    target: getBackgroundMeetingFx,
 });

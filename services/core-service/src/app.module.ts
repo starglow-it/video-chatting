@@ -22,6 +22,7 @@ import { PaymentsModule } from './services/payments/payments.module';
 import { CountryStatisticsModule } from './modules/country-statistics/country-statistics.module';
 import { RoomsStatisticsModule } from './modules/rooms-statistics/rooms-statistics.module';
 import {TranscodeModule} from "./modules/transcode/transcode.module";
+import { MediasModule } from './modules/medias/medias.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import {TranscodeModule} from "./modules/transcode/transcode.module";
     CommonTemplatesModule,
     SeederModule,
     BusinessCategoriesModule,
+    MediasModule,
     LanguagesModule,
     AwsConnectorModule,
     VerificationCodeModule,
