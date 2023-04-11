@@ -8,7 +8,7 @@ export const getBusinessCategoriesUrl = ({ skip = 0, limit = 0 }) => ({
 
 export const getMediasCategory = ({
     skip = 0,
-    limit = 9,
+    limit = 12,
     categoryId = '',
 }) => ({
     url: `${serverUrl}/${medias}/${categoryId}?skip=${skip}&limit=${limit}`,

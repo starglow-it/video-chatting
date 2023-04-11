@@ -30,7 +30,6 @@ $backgroundMeetingStore
         ...data,
     }))
     .on(getBackgroundMeetingFx.doneData, (state, result) => {
-        console.log(result);
         return {
             ...state,
             medias: result.isReset
