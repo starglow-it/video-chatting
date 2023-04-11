@@ -50,6 +50,7 @@ async function bootstrap() {
 
   await app.listen();
 
+  // await seeder.uploadEmoji();
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
   await seeder.createCounter();
@@ -58,6 +59,7 @@ async function bootstrap() {
   await seeder.seedRoomStatistic();
   await seeder.seedLinks();
   await seeder.seedCreateGlobalCommonTemplate();
+  await seeder.seedMedias();
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();

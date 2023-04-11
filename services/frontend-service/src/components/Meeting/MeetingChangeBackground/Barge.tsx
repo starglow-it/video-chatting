@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { memo } from 'react';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { IBusinessCategory } from 'shared-types';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { IMediaCategory } from 'shared-types';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = ({
@@ -12,7 +13,7 @@ const Component = ({
     onSelect,
 }: {
     isActive: boolean;
-    item: IBusinessCategory & { id: string };
+    item: IMediaCategory & { id: string };
     onSelect: (id: string) => void;
 }) => {
     return (
@@ -26,8 +27,18 @@ const Component = ({
                 alignItems="center"
                 justifyContent="center"
             >
+                <CustomImage
+                    width={13}
+                    height={13}
+                    src={item.emojiUrl}
+                    className={styles.emoji}
+                />
                 <CustomTypography
-                    color={isActive ? 'colors.black.primary' : item.color}
+                    color={
+                        isActive
+                            ? 'colors.black.primary'
+                            : 'colors.white.primary'
+                    }
                     variant="button"
                     fontSize={11}
                     className={styles.button}

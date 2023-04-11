@@ -78,7 +78,7 @@ class BusinessCategoryDTO {
     type: String
   })
   @IsString({ message: 'Color must be string ' })
-  color: string;
+  emojiUrl: string;
 }
 
 export class UpdateTemplateRequest implements IUpdateTemplate {

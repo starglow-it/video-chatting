@@ -7,6 +7,12 @@ export interface IBusinessCategory {
   color: string;
 }
 
+export interface IMediaCategory {
+  key: string;
+  value: string;
+  emojiUrl: string;
+}
+
 export interface ILanguage {
   key: string;
   value: string;

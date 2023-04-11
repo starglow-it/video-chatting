@@ -30,7 +30,7 @@ class BusinessCategory {
   @ApiProperty({
     type: String
   })
-  color: string;
+  emojiUrl: string;
 }
 
 class Language {
