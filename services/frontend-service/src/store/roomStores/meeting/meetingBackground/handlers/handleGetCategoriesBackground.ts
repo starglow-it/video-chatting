@@ -13,7 +13,10 @@ export const handleGetCategories = async (): Promise<
     });
 
     if (success && result) {
-        return result;
+        const newList = [...result.list];
+        const index = newList.findIndex(img => img.key === 'more');
+        if (index > -1) newList.push(newList.splice(index, 1)[0]);
+        return {...result, list: newList};
     }
     if (!success) {
         return { list: [], count: 0 };
