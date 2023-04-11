@@ -25,6 +25,7 @@ import {
     updateUserSocketEvent,
     $localUserStore,
 } from '../../../store/roomStores';
+import { DraggableData } from 'react-draggable';
 
 const Component: React.FunctionComponent<
     MeetingUserVideoPositionWrapperProps
@@ -56,7 +57,7 @@ const Component: React.FunctionComponent<
 
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const handleStopDrag = () => {
+    const handleStopDrag = (data: DraggableData) => {
         if (isDragging) {
             const { left, bottom } =
                 contentRef.current?.getBoundingClientRect();
@@ -66,7 +67,9 @@ const Component: React.FunctionComponent<
                 2,
             );
             const percentBottom = roundNumberToPrecision(1 - percentTop, 2)
-            console.log('sent', percentLeft, percentBottom)
+            console.log('sent', data.x, data.y)
+            setLeft(data.x)
+            setTop(data.y)
             setDefaultPos({
                 left: percentLeft,
                 bottom: percentBottom
@@ -79,15 +82,17 @@ const Component: React.FunctionComponent<
                 },
             });
         }
-        handleOffDragging();
+        setTimeout(() => {
+            handleOffDragging();
+        }, 500)
     };
     const handleStartDrag = () => {
-        !isInitPos && setInitPos(true);
+        // !isInitPos && setInitPos(true);
         !localDrag && setLocalDrag(true)
         handleOnDragging();
     };
 
-    const eventControl = (event: DraggableEvent) => {
+    const eventControl = (event: DraggableEvent, data: DraggableData) => {
         if (event.type === 'mousedown') {
             refTimer.current = setTimeout(() => {
                 handleStartDrag();
@@ -96,35 +101,36 @@ const Component: React.FunctionComponent<
 
         if (event.type === 'mouseup' || event.type === 'touchend') {
             refTimer?.current && clearTimeout(refTimer.current);
-            handleStopDrag();
+            handleStopDrag(data);
         }
     };
 
     useEffect(() => {
-        console.log('test', left, bottom, defaultPos, localDrag, isInitPos)
-        if (!isScreenSharing && (defaultPos.left !== left || defaultPos.bottom !== bottom) && !isInitPos) {
-            const percentLeft = roundNumberToPrecision((left || 0) * 100, 2);
+        console.log('test', left, bottom, defaultPos)
+        if (!isScreenSharing && (defaultPos.left !== left || defaultPos.bottom !== bottom) && !isDragging) {
+            const percentLeft = roundNumberToPrecision((left || 0) * width, 2);
             const percentBottom = roundNumberToPrecision((bottom || 0) * 100, 2);
             const rect = contentRef.current?.getBoundingClientRect()
             const subTopPercentage = roundNumberToPrecision(
                 (rect?.height || 0) / height,
                 2,
             );
-            const percentTop = roundNumberToPrecision(Math.abs(1 - (bottom || 0) - subTopPercentage), 2)
-            setLeft((left || 0) * width);
-            setBottom(`${percentBottom}%`);
-            setTop((percentTop || 0) * height)
+            const percentTop = roundNumberToPrecision(Math.abs(1 - (bottom || 0) - subTopPercentage) * height, 2)
+            setLeft(prev => prev !== percentLeft ? percentLeft : prev);
+            // setBottom(`${percentBottom}%`);
+            setTop(prev => prev !== percentTop ? percentTop : prev)
             // !isInitPos && setInitPos(true);
             // localDrag && setLocalDrag(false)
+            console.log('init ', percentLeft, percentTop)
             setDefaultPos({
                 left: left !== undefined ? left : null,
                 bottom: bottom !== undefined ? bottom : null
             })            
         }
-    }, [isScreenSharing, bottom, left, defaultPos, localDrag, isInitPos]);
-    const ratio = width / height
-    console.log('w', ratio, finalTop, finalLeft)
-    const isRender = (finalTop && Number.isNaN(finalTop) && finalLeft && Number.isNaN(finalLeft))
+    }, [isScreenSharing, bottom, left, defaultPos, isDragging]);
+    const ratio = width / height    
+    const isRender = (finalTop !== null && finalLeft !== null)
+
     return (
         <ConditionalRender
             condition={Boolean(isRender)}
