@@ -622,6 +622,13 @@ export class UserTemplatesController {
             session,
           });
         }
+        
+        this.mediaService.deleteUserTemplateMedias({
+          query: {
+            userTemplate: userTemplate._id
+          }
+        });
+
         await this.userTemplatesService.deleteUserTemplate(
           { _id: templateId },
           session,

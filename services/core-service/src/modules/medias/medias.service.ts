@@ -244,4 +244,17 @@ export class MediaService {
             session: session?.session,
         });
     }
+
+    async deleteUserTemplateMedias({
+        query,
+        session,
+    }: {
+        query: FilterQuery<UserTemplateMediaDocument>;
+        session?: ITransactionSession;
+    }): Promise<any> {
+
+        return this.userTemplateMedia.deleteMany(query, {
+            session: session?.session,
+        });
+    }
 }

@@ -22,11 +22,6 @@ import {
     UploadUserTemplateMediaFilePayload,
 } from 'shared-types';
 
-// dtos
-
-// services
-
-// helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 import { MediaService } from './medias.service';
