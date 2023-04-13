@@ -6,7 +6,6 @@ import {
     AccordionDetails,
     AccordionSummary,
     ClickAwayListener,
-    Fade,
 } from '@mui/material';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
@@ -19,18 +18,16 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
     $backgroundMeetingStore,
     $isLoadMoreMediasStore,
-    $isToggleChangeBackground,
     setCategoryEvent,
     setMediaEvent,
     setQueryMediasEvent,
-    toggleChangeBackgroundEvent,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
 import { Media } from './Media';
 import styles from './MeetingChangeBackground.module.scss';
+import { UploadBackground } from './Upload';
 
 const Component = () => {
-    const isToggleChangeBackground = useStore($isToggleChangeBackground);
     const { medias, categorySelected, mediaSelected, categories, count } =
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
@@ -38,11 +35,11 @@ const Component = () => {
     const [isExpand, setIsExpand] = useState<boolean>(false);
 
     useEffect(() => {
-        if (isToggleChangeBackground && categories.length && !categorySelected)
+        if (isExpand && categories.length && !categorySelected)
             setCategoryEvent({
                 categorySelected: categories[0].id,
             });
-    }, [isToggleChangeBackground]);
+    }, [isExpand]);
 
     const handleSelectBackground = (id: string) => {
         setMediaEvent({ mediaSelected: id });
@@ -53,7 +50,8 @@ const Component = () => {
     };
 
     const handleScrollEnd = () => {
-        if (!isLoadMore && medias.length < count) setQueryMediasEvent();
+        console.log('end')
+        // if (!isLoadMore && medias.length < count) setQueryMediasEvent();
     };
 
     const changeExpand = (event: React.SyntheticEvent, expanded: boolean) => {
@@ -63,7 +61,6 @@ const Component = () => {
     return (
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
             <CustomPaper
-                // variant="black-glass"
                 className={clsx(styles.commonOpenPanel, {
                     [styles.expanded]: isExpand,
                 })}
@@ -74,7 +71,7 @@ const Component = () => {
                     className={clsx(styles.accordion)}
                     TransitionProps={{ timeout: {
                         appear: 600,
-                        enter: 250,
+                        enter: 100,
                         exit: 500
                     } }}
                 >
@@ -109,7 +106,6 @@ const Component = () => {
 
                                 <RoundCloseIcon
                                     className={styles.closeIcon}
-                                    onClick={toggleChangeBackgroundEvent}
                                     isActive
                                     width="22px"
                                     height="22px"
@@ -117,7 +113,7 @@ const Component = () => {
                             </ConditionalRender>
                         </CustomBox>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    <AccordionDetails classes={{root: styles.detail}}>
                         <CustomBox
                             flex={25}
                             display="flex"
@@ -146,6 +142,7 @@ const Component = () => {
                                     className={styles.scroll}
                                     onYReachEnd={handleScrollEnd}
                                 >
+                                    <UploadBackground />
                                     {medias.map(item => (
                                         <Media
                                             key={item.id}

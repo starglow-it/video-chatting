@@ -119,29 +119,26 @@ const Component = () => {
     const commonContent = useMemo(
         () => (
             <>
-                {/* <ClickAwayListener
-                    onClickAway={() => toggleUsersPanelEvent(false)}
-                > */}
-                    <Fade in={isUsersOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile,
-                            })}
-                        >
-                            <CustomScroll>
-                                {isMeetingHost && <MeetingAccessRequests />}
-                                <MeetingUsersList />
-                                <MeetingInviteParticipants
-                                    onAction={
-                                        isMobile
-                                            ? handleCloseMobilePanel
-                                            : undefined
-                                    }
-                                />
-                            </CustomScroll>
-                        </CustomPaper>
-                    </Fade>
+                <Fade in={isUsersOpen}>
+                    <CustomPaper
+                        variant="black-glass"
+                        className={clsx(styles.commonOpenPanel, {
+                            [styles.mobile]: isMobile,
+                        })}
+                    >
+                        <CustomScroll>
+                            {isMeetingHost && <MeetingAccessRequests />}
+                            <MeetingUsersList />
+                            <MeetingInviteParticipants
+                                onAction={
+                                    isMobile
+                                        ? handleCloseMobilePanel
+                                        : undefined
+                                }
+                            />
+                        </CustomScroll>
+                    </CustomPaper>
+                </Fade>
                 {/* </ClickAwayListener> */}
 
                 <Fade in={isPaymentOpen}>
@@ -199,45 +196,10 @@ const Component = () => {
             container
             className={clsx(styles.panelWrapper, { [styles.mobile]: isMobile })}
         >
-            {/* <ClickAwayListener onClickAway={handleClosePayment}> */}
             <CustomPaper
                 variant="black-glass"
                 className={styles.controlPanelWrapper}
             >
-                {/* <CustomGrid container gap={0.75}>
-                    <ConditionalRender
-                        condition={
-                            isOwner
-                                ? Boolean(
-                                      profile.isStripeEnabled &&
-                                          profile.stripeAccountId,
-                                  )
-                                : meetingTemplate.isMonetizationEnabled
-                        }
-                    >
-                        <ActionButton
-                            onAction={
-                                !isCreatePaymentIntentPending
-                                    ? handleTogglePayment
-                                    : undefined
-                            }
-                            className={clsx(
-                                styles.actionButton,
-                                styles.withAction,
-                                {
-                                    [styles.active]: isPaymentOpen,
-                                    [styles.mobile]: isMobile,
-                                },
-                            )}
-                            Icon={
-                                <MonetizationIcon
-                                    width={iconSize}
-                                    height={iconSize}
-                                />
-                            }
-                        />
-                    </ConditionalRender>
-                </CustomGrid> */}
                 {!isMobile ? (
                     <CustomGrid className={styles.panelsWrapper}>
                         {commonContent}
@@ -258,7 +220,6 @@ const Component = () => {
                     </ConditionalRender>
                 )}
             </CustomPaper>
-            {/* </ClickAwayListener> */}
             <ConditionalRender condition={isMobile && isScreenSharing}>
                 <CustomPaper
                     variant="black-glass"

@@ -1,9 +1,10 @@
-import { EntityList, IMediaCategory, IUserTemplate } from 'shared-types';
+import {
+    EntityList,
+    IMediaCategory,
+    IUserTemplate,
+} from 'shared-types';
 import { meetingDomain } from '../../../domains';
-import { IMediaItem } from './types';
-
-export const $isToggleChangeBackground =
-    meetingDomain.createStore<boolean>(false);
+import { IMediaItem, UploadBackgroundPayload } from './types';
 
 export const $backgroundMeetingStore = meetingDomain.createStore<{
     medias: IMediaItem[];
@@ -26,10 +27,6 @@ export const $queryMediasBackgroundStore = meetingDomain.createStore<{
 
 export const $isLoadMoreMediasStore = meetingDomain.createStore<boolean>(false);
 
-export const toggleChangeBackgroundEvent = meetingDomain.createEvent(
-    'toggleChangeBackgroundEvent',
-);
-
 export const setCategoryEvent = meetingDomain.createEvent<{
     categorySelected: string;
 }>('setCategoryEvent');
@@ -39,7 +36,7 @@ export const setMediaEvent = meetingDomain.createEvent<{
 }>('setMediaEvent');
 
 export const getBackgroundMeetingFx = meetingDomain.createEffect<
-    { id: string },
+    { id: string, userTemplateId: string },
     EntityList<IMediaItem> & { isReset: boolean }
 >('getBackgroundMeetingFx');
 
@@ -56,3 +53,12 @@ export const updateBackgroundMeetingFx = meetingDomain.createEffect<
 export const setQueryMediasEvent = meetingDomain.createEvent(
     'setQueryMediasEvent',
 );
+
+export const uploadNewBackgroundFx = meetingDomain.createEffect<
+    UploadBackgroundPayload,
+    IMediaItem | null
+>('uploadNewBackgroundFx');
+
+export const addBackgroundToCategoryEvent = meetingDomain.createEvent<{
+    media: IMediaItem;
+}>('addBackgroundToCategoryEvent');

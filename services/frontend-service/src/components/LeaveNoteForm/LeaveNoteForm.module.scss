@@ -30,19 +30,23 @@
 
 .commonOpenPanel {
   position: absolute;
-  width: rem(40px);
-  transform: translate(-50%, 0);
-  bottom: 8px;
-  left: 50%;
+  width: rem(35px);
+  top: 10%;
+  right: 20px;
   border-radius: 4px;
-  -webkit-transition: all 0.5s;
-  -moz-transition: all 0.5s;
-  transition: all 0.5s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
   background-color: #1c2d2f;
-  border-radius: 10px 4px 4px 7px;
+  border-radius: 8px;
+
+  &:hover:not(.expanded) {
+    background-color: #686666;
+}
 
   &.expanded {
     padding-top: 12px;
+    background-color: #686666;
     width: 300px;
   }
 
@@ -69,11 +73,11 @@
     background: rgba($primary-white, 0.25);
   }
 
-  &.withAction {
-    &:hover {
-      background: rgba($primary-white, 0.25);
-    }
-  }
+  // &.withAction {
+  //   &:hover {
+  //     background: rgba($primary-white, 0.25);
+  //   }
+  // }
 
 }
 
@@ -82,11 +86,13 @@
 
   .summary {
     padding: 0px 5px;
-    min-height: 40px;
+    min-height: 35px;
+    height: 35px;
 
-    &:hover {
-      width: 300px;
-    }
+
+    // &:hover {
+    //   width: 300px;
+    // }
 
   }
 

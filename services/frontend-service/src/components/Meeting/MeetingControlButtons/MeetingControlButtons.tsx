@@ -48,7 +48,6 @@ import {
     setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
-    toggleChangeBackgroundEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';

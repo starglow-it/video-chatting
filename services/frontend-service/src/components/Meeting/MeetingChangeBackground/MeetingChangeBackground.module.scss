@@ -3,21 +3,27 @@
 
 .commonOpenPanel {
     position: absolute;
-    opacity: 1;
-    width: 40px;
+    width: 35px;
     right: 20px;
     top: 4%;
-    -webkit-transition: all 0.5s;
-    -moz-transition: all 0.5s;
-    transition: all 0.5s;
+    -webkit-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
     background-color: #1c2d2f;
-    border-radius: 10px 4px 4px 7px;
+    border-radius: 6px;
+    padding: 0;
+    z-index: 99;
+
+    &:hover:not(.expanded) {
+        background-color: #686666;
+    }
 
     &.expanded {
         width: 270px;
+        padding: rem(20px);
     }
 
-    .headers {
+    .headers:not(.expanded) {
         padding-left: 10px;
         width: 100%;
     }
@@ -91,9 +97,12 @@
 .accordion {
     background-color: transparent;
     width: 100%;
+    padding: 0;
 
     .summary {
-        min-height: 40px;
+        min-height: 35px;
+        height: 35px;
+        padding: 0;
     }
 
     .content {
@@ -102,6 +111,14 @@
         &.expanded {
             margin: 12px 0px;
         }
-    
+
     }
+
+    .detail {
+        padding: 0;
+    }
+}
+
+.upload {
+    border: none;
 }

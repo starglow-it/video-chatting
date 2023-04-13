@@ -122,22 +122,22 @@ const Component = () => {
     return (
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
             <CustomPaper
-                variant="black-glass"
+                // variant="black-glass"
                 className={clsx(styles.commonOpenPanel, {
                     [styles.expanded]: isExpand,
                 })}
             >
                 <FormProvider {...methods}>
                     <Accordion
-                        style={{ background: 'transparent', borderRadius: 0 }}
+                        style={{ background: 'transparent' }}
                         expanded={isExpand}
                         onChange={changeExpand}
                         className={clsx(styles.accordion)}
                         TransitionProps={{
                             timeout: {
                                 appear: 600,
-                                enter: 600,
-                                exit: 500,
+                                enter: 800,
+                                exit: 300,
                             },
                         }}
                     >
@@ -151,11 +151,10 @@ const Component = () => {
                                 <ActionButton
                                     // onAction={handleToggleLeaveNote}
                                     className={clsx(
-                                        styles.actionButton,
-                                        styles.withAction,
+                                        styles.actionButton
                                     )}
                                     Icon={
-                                        <NotesIcon width="28px" height="28px" />
+                                        <NotesIcon width="30px" height="30px" />
                                     }
                                 />
                                 <ConditionalRender condition={isExpand}>
