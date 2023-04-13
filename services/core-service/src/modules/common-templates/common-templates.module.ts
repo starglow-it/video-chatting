@@ -29,6 +29,7 @@ import { RoomsStatisticsModule } from '../rooms-statistics/rooms-statistics.modu
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
 import { PaymentsModule } from '../../services/payments/payments.module';
 import { TranscodeModule } from '../transcode/transcode.module';
+import { MediasModule } from '../medias/medias.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { TranscodeModule } from '../transcode/transcode.module';
     LanguagesModule,
     BusinessCategoriesModule,
     AwsConnectorModule,
+    MediasModule,
     CountersModule,
     RoomsStatisticsModule,
     UserProfileStatisticModule,
