@@ -3,12 +3,19 @@
 
 .commonOpenPanel {
     position: absolute;
-    // padding: rem(20px);
     opacity: 1;
-    width: 270px;
+    width: 40px;
     right: 20px;
     top: 4%;
-    border-radius: 0 !important;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    transition: all 0.5s;
+    background-color: #1c2d2f;
+    border-radius: 10px 4px 4px 7px;
+
+    &.expanded {
+        width: 270px;
+    }
 
     .headers {
         padding-left: 10px;
@@ -85,19 +92,8 @@
     background-color: transparent;
     width: 100%;
 
-    &.expanded {
-        // padding-top: 12px;
-        // width: 300px;
-    }
-
     .summary {
-        // padding: 0px 5px;
         min-height: 40px;
-
-        // &:hover {
-        //     width: 300px;
-        // }
-
     }
 
     .content {

@@ -123,16 +123,23 @@ const Component = () => {
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
             <CustomPaper
                 variant="black-glass"
-                className={styles.commonOpenPanel}
+                className={clsx(styles.commonOpenPanel, {
+                    [styles.expanded]: isExpand,
+                })}
             >
                 <FormProvider {...methods}>
                     <Accordion
                         style={{ background: 'transparent', borderRadius: 0 }}
                         expanded={isExpand}
                         onChange={changeExpand}
-                        className={clsx(styles.accordion, {
-                            [styles.expanded]: isExpand,
-                        })}
+                        className={clsx(styles.accordion)}
+                        TransitionProps={{
+                            timeout: {
+                                appear: 600,
+                                enter: 600,
+                                exit: 500,
+                            },
+                        }}
                     >
                         <AccordionSummary
                             aria-controls="panel1a-content"
@@ -151,14 +158,14 @@ const Component = () => {
                                         <NotesIcon width="28px" height="28px" />
                                     }
                                 />
-                                <CustomTypography
-                                    color="colors.white.primary"
-                                    variant="h4bold"
-                                    nameSpace="meeting"
-                                    translation="features.notes.title"
-                                    fontSize={16}
-                                />
                                 <ConditionalRender condition={isExpand}>
+                                    <CustomTypography
+                                        color="colors.white.primary"
+                                        variant="h4bold"
+                                        nameSpace="meeting"
+                                        translation="features.notes.title"
+                                        fontSize={16}
+                                    />
                                     <CustomTypography
                                         className={styles.textLength}
                                         color="colors.white.primary"

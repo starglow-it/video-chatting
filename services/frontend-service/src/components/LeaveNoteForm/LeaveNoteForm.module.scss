@@ -30,9 +30,7 @@
 
 .commonOpenPanel {
   position: absolute;
-  max-width: rem(360px);
-  min-width: rem(300px);
-  // width: rem(150px);
+  width: rem(40px);
   transform: translate(-50%, 0);
   bottom: 8px;
   left: 50%;
@@ -40,6 +38,13 @@
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   transition: all 0.5s;
+  background-color: #1c2d2f;
+  border-radius: 10px 4px 4px 7px;
+
+  &.expanded {
+    padding-top: 12px;
+    width: 300px;
+  }
 
   &.mobile {
     left: 50%;
@@ -74,11 +79,6 @@
 
 .accordion {
   background-color: transparent;
-
-  &.expanded {
-    padding-top: 12px;
-    // width: 300px;
-  }
 
   .summary {
     padding: 0px 5px;

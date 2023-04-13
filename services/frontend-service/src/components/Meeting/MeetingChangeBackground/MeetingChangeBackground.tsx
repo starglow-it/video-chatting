@@ -63,16 +63,20 @@ const Component = () => {
     return (
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
             <CustomPaper
-                variant="black-glass"
-                className={clsx(styles.commonOpenPanel)}
+                // variant="black-glass"
+                className={clsx(styles.commonOpenPanel, {
+                    [styles.expanded]: isExpand,
+                })}
             >
                 <Accordion
-                    style={{ background: 'transparent' }}
                     expanded={isExpand}
                     onChange={changeExpand}
-                    className={clsx(styles.accordion, {
-                        [styles.expanded]: isExpand,
-                    })}
+                    className={clsx(styles.accordion)}
+                    TransitionProps={{ timeout: {
+                        appear: 600,
+                        enter: 250,
+                        exit: 500
+                    } }}
                 >
                     <AccordionSummary
                         className={styles.summary}
@@ -92,17 +96,17 @@ const Component = () => {
                             <CustomBox color="white" height={18}>
                                 <ImageIcon width="16px" height="16px" />
                             </CustomBox>
-
-                            <CustomTypography
-                                nameSpace="meeting"
-                                translation="changeBackground.text"
-                                color="colors.white.primary"
-                                variant="h4bold"
-                                flex={1}
-                                paddingLeft={1}
-                                fontSize="15px"
-                            />
                             <ConditionalRender condition={isExpand}>
+                                <CustomTypography
+                                    nameSpace="meeting"
+                                    translation="changeBackground.text"
+                                    color="colors.white.primary"
+                                    variant="h4bold"
+                                    flex={1}
+                                    paddingLeft={1}
+                                    fontSize="15px"
+                                />
+
                                 <RoundCloseIcon
                                     className={styles.closeIcon}
                                     onClick={toggleChangeBackgroundEvent}
