@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
@@ -14,6 +14,8 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { useTimer } from '@hooks/useTimer';
+import { MAX_MILLISECOND_BLUR_NOTE } from 'src/const/time/common';
 
 // icons
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
@@ -62,10 +64,28 @@ const Component = ({
     const yPosition = 250 + noteIndex * 124 + 20 * noteIndex;
 
     const {
+        value: currentTime,
+        onStartTimer: handleStartCountDown,
+        onEndTimer: handleEndCountDown,
+    } = useTimer(true);
+
+    console.log(currentTime);
+
+    const isBlur = currentTime === MAX_MILLISECOND_BLUR_NOTE;
+
+    const {
         value: isDragging,
         onSwitchOn: handleOnDragging,
         onSwitchOff: handleOffDragging,
     } = useToggle(false);
+
+    useEffect(() => {
+        handleStartCountDown(0, 30000);
+    }, [note.id]);
+
+    useEffect(() => {
+        if (isBlur) handleEndCountDown();
+    }, [currentTime]);
 
     const handleStart = useCallback(() => {
         handleOnDragging();
@@ -107,6 +127,7 @@ const Component = ({
                 container
                 className={clsx(styles.noteWrapper, {
                     [styles.withSticker]: !isDragging,
+                    [styles.blur]: isBlur,
                 })}
                 style={{ zIndex: dragIndex * 10 }}
             >

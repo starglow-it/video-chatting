@@ -12,7 +12,6 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
-import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
@@ -122,14 +121,12 @@ const Component = () => {
     return (
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
             <CustomPaper
-                // variant="black-glass"
                 className={clsx(styles.commonOpenPanel, {
                     [styles.expanded]: isExpand,
                 })}
             >
                 <FormProvider {...methods}>
                     <Accordion
-                        style={{ background: 'transparent' }}
                         expanded={isExpand}
                         onChange={changeExpand}
                         className={clsx(styles.accordion)}
@@ -149,7 +146,6 @@ const Component = () => {
                         >
                             <CustomGrid container alignItems="center">
                                 <ActionButton
-                                    // onAction={handleToggleLeaveNote}
                                     className={clsx(
                                         styles.actionButton
                                     )}

@@ -6,7 +6,15 @@ import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationI
 import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { $profileStore, appDialogsApi } from 'src/store';
-import { $isOwner, $meetingTemplateStore } from 'src/store/roomStores';
+import {
+    $isOwner,
+    $isTogglePayment,
+    $meetingTemplateStore,
+    $paymentIntent,
+    cancelPaymentIntentWithData,
+    createPaymentIntentWithData,
+    togglePaymentFormEvent,
+} from 'src/store/roomStores';
 import { AppDialogsEnum } from 'src/store/types';
 import styles from './MeetingControlCollapse.module.scss';
 
@@ -27,6 +35,22 @@ const Component = () => {
     const isOwner = useStore($isOwner);
     const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
+    const isPaymentOpen = useStore($isTogglePayment);
+    const paymentIntent = useStore($paymentIntent);
+
+    const handleTogglePayment = () => {
+        if (!isPaymentOpen && !paymentIntent?.id && !isOwner) {
+            createPaymentIntentWithData();
+        }
+
+        if (paymentIntent?.id) {
+            cancelPaymentIntentWithData();
+        }
+        togglePaymentFormEvent();
+    };
 
     const handleActions = (action: string) => {
         switch (action) {
@@ -36,6 +60,7 @@ const Component = () => {
                 });
                 break;
             case 'openPayment':
+                if (!isCreatePaymentIntentPending) handleTogglePayment();
                 break;
             default:
                 break;

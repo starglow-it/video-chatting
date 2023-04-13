@@ -1,8 +1,10 @@
 import {
+    $isTogglePayment,
     $paymentIntent,
     cancelPaymentIntentFx,
     createPaymentIntentFx,
     createPaymentIntentWithData,
+    togglePaymentFormEvent,
 } from './model';
 import { handleCreatePaymentIntent } from './handlers/handleCreatePaymentIntent';
 import { handleCancelPaymentIntent } from './handlers/handleCancelPaymentIntent';
@@ -19,3 +21,5 @@ $paymentIntent
         id: '',
         clientSecret: '',
     }));
+
+$isTogglePayment.on(togglePaymentFormEvent, toggle => !toggle);

@@ -14,15 +14,10 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 // icons
-import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
-import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
-import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 
 // components
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { MeetingMonetization } from '@components/Meeting/MeetingMonetization/MeetingMonetization';
-import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
@@ -38,13 +33,14 @@ import {
     $isMeetingHostStore,
     $isOwner,
     $isScreenSharingStore,
+    $isTogglePayment,
     $isToggleUsersPanel,
     $meetingTemplateStore,
     $meetingUsersStore,
     $paymentIntent,
     cancelPaymentIntentWithData,
     createPaymentIntentWithData,
-    toggleUsersPanelEvent,
+    togglePaymentFormEvent,
 } from '../../../store/roomStores';
 
 // styles
@@ -57,64 +53,36 @@ const Component = () => {
     const isOwner = useStore($isOwner);
     const isMeetingHost = useStore($isMeetingHostStore);
     const paymentIntent = useStore($paymentIntent);
-    const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const users = useStore($meetingUsersStore);
-
-    const isCreatePaymentIntentPending = useStore(
-        createPaymentIntentWithData.pending,
-    );
-
+    const isPaymentOpen = useStore($isTogglePayment);
     const isUsersOpen = useStore($isToggleUsersPanel);
-    const {
-        values: { isPaymentOpen },
-        onSwitchOff: handleSwitchOff,
-        onSwitchToggle: handleSwitchToggle,
-    } = useMultipleToggle(['isPaymentOpen']);
 
     useEffect(() => {
         (async () => {
-            if (!meetingTemplate.isMonetizationEnabled) {
-                handleSwitchOff();
-
-                if (paymentIntent?.id) {
-                    cancelPaymentIntentWithData();
-                }
+            if (!meetingTemplate.isMonetizationEnabled && paymentIntent?.id) {
+                cancelPaymentIntentWithData();
             }
         })();
     }, [meetingTemplate.isMonetizationEnabled]);
 
     const { isMobile } = useBrowserDetect();
 
-    const handleTogglePayment = useCallback(async () => {
-        if (!isPaymentOpen && !paymentIntent?.id && !isOwner) {
-            createPaymentIntentWithData();
-        }
-
-        if (paymentIntent?.id) {
-            cancelPaymentIntentWithData();
-        }
-
-        handleSwitchToggle('isPaymentOpen');
-    }, [isPaymentOpen, paymentIntent?.id, isOwner]);
-
     const handleClosePayment = useCallback(async () => {
         if (paymentIntent?.id) {
             cancelPaymentIntentWithData();
         }
-        handleSwitchOff();
+        togglePaymentFormEvent();
     }, [paymentIntent?.id]);
 
     const handleUpdateMonetization = useCallback(() => {
-        handleSwitchOff();
+        togglePaymentFormEvent();
     }, []);
 
     const handleCloseMobilePanel = useCallback(() => {
-        handleSwitchOff();
+        togglePaymentFormEvent();
     }, []);
-
-    const iconSize = isMobile ? '22px' : '22px';
 
     const commonContent = useMemo(
         () => (
@@ -166,7 +134,6 @@ const Component = () => {
             isUsersOpen,
             handleUpdateMonetization,
             handleClosePayment,
-            handleSwitchOff,
             handleCloseMobilePanel,
             isPaymentOpen,
         ],

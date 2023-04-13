@@ -8,7 +8,6 @@
   transform: translateX(-50%);
   z-index: 1000;
   width: auto;
-  visibility: hidden;
 
   &.mobile {
     top: rem(20px);
@@ -27,7 +26,6 @@
 }
 
 .controlPanelWrapper {
-  padding: rem(6px);
 
   .actionButton {
     position: relative;

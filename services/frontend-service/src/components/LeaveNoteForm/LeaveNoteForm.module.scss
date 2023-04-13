@@ -38,7 +38,7 @@
   -moz-transition: all 0.3s;
   transition: all 0.3s;
   background-color: #1c2d2f;
-  border-radius: 8px;
+  border-radius: 6px;
 
   &:hover:not(.expanded) {
     background-color: #686666;
@@ -46,7 +46,6 @@
 
   &.expanded {
     padding-top: 12px;
-    background-color: #686666;
     width: 300px;
   }
 
@@ -64,20 +63,14 @@
   background: transparent;
   color: $primary-white;
   border: none;
-  width: rem(33px);
-  height: rem(33px);
+  width: rem(35px);
+  height: rem(35px);
   border-radius: rem(4px);
-  margin-right: 4px;
+  cursor: pointer;
 
   &.active {
     background: rgba($primary-white, 0.25);
   }
-
-  // &.withAction {
-  //   &:hover {
-  //     background: rgba($primary-white, 0.25);
-  //   }
-  // }
 
 }
 
@@ -88,12 +81,6 @@
     padding: 0px 5px;
     min-height: 35px;
     height: 35px;
-
-
-    // &:hover {
-    //   width: 300px;
-    // }
-
   }
 
   .content {
