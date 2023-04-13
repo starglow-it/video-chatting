@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { Connection } from 'mongoose';
+import { Connection, FilterQuery } from 'mongoose';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -9,9 +9,11 @@ import { CoreBrokerPatterns, BUSINESS_CATEGORIES_SERVICE, CORE_SERVICE } from 's
 
 // types
 import {
+  DeletesBusinessCategoriesPayload,
   EntityList,
   GetBusinessCategoriesPayload,
   IBusinessCategory,
+  UpdateBusinessCategoryPayload,
 } from 'shared-types';
 
 // dtos
@@ -64,6 +66,61 @@ export class BusinessCategoriesController {
       throw new RpcException({
         message: err.message,
         ctx: BUSINESS_CATEGORIES_SERVICE,
+      });
+    }
+  }
+
+
+  @MessagePattern({ cmd: CoreBrokerPatterns.UpdateBusinessCategory })
+  async updateBusinessCategory({
+    id,
+    data
+  }: UpdateBusinessCategoryPayload) {
+    return withTransaction(this.connection, async session => {
+      try {
+        const businessCategory = await this.businessCategoriesService.findOneAndUpdate({
+          query: {
+            _id: id
+          },
+          data,
+          session
+        });
+
+        if (!businessCategory)
+          throw new RpcException({
+            message: 'Business category not found',
+            ctx: BUSINESS_CATEGORIES_SERVICE
+          });
+
+        return plainToInstance(CommonBusinessCategoryDTO, businessCategory, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
+      }
+      catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: BUSINESS_CATEGORIES_SERVICE
+        })
+      }
+    });
+  }
+
+
+  @MessagePattern({ cmd: CoreBrokerPatterns.DeleteBusinessCategories })
+  async deleteBusinessCategories({
+    query
+  }: DeletesBusinessCategoriesPayload){
+    try{
+      await this.businessCategoriesService.deleteAll({
+        query
+      });
+      return true; 
+    }
+    catch(err){
+      throw new RpcException({
+        message: err.message,
+        ctx: BUSINESS_CATEGORIES_SERVICE
       });
     }
   }

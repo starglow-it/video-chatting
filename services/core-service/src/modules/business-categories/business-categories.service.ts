@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, QueryOptions } from 'mongoose';
+import mongoose, { FilterQuery, Model, QueryOptions } from 'mongoose';
 
 import {
   BusinessCategory,
@@ -59,5 +59,38 @@ export class BusinessCategoriesService {
 
   async count(query: FilterQuery<BusinessCategoryDocument>): Promise<number> {
     return this.businessCategory.count(query).exec();
+  }
+
+
+  async findOneAndUpdate({
+    query,
+    data,
+    session,
+    populatePaths,
+  }: UpdateModelQuery<
+    BusinessCategoryDocument,
+    BusinessCategoryDocument
+  >): Promise<BusinessCategoryDocument> {
+    const options: QueryOptions = {
+      session: session?.session,
+      populate: populatePaths,
+      new: true,
+    };
+
+    return this.businessCategory.findOneAndUpdate(query, data, options);
+  }
+
+  async deleteAll({
+    query,
+    session,
+  }: {
+    query: FilterQuery<BusinessCategoryDocument>;
+    session?: ITransactionSession;
+  }): Promise<any>{
+    const options: QueryOptions = {
+      session: session?.session,
+    };
+
+    await this.businessCategory.deleteMany(query, options);
   }
 }
