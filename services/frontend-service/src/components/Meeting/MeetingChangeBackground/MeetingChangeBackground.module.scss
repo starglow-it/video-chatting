@@ -3,14 +3,16 @@
 
 .commonOpenPanel {
     position: absolute;
-    padding: rem(20px);
+    // padding: rem(20px);
     opacity: 1;
     width: 270px;
     right: 20px;
     top: 4%;
+    border-radius: 0 !important;
 
     .headers {
         padding-left: 10px;
+        width: 100%;
     }
 
     .closeIcon {
@@ -76,5 +78,34 @@
         flex-wrap: wrap;
         border-radius: 9px;
         padding: 5px 0px 5px 5px;
+    }
+}
+
+.accordion {
+    background-color: transparent;
+    width: 100%;
+
+    &.expanded {
+        // padding-top: 12px;
+        // width: 300px;
+    }
+
+    .summary {
+        // padding: 0px 5px;
+        min-height: 40px;
+
+        // &:hover {
+        //     width: 300px;
+        // }
+
+    }
+
+    .content {
+        margin: 0;
+
+        &.expanded {
+            margin: 12px 0px;
+        }
+    
     }
 }

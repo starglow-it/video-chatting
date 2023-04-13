@@ -1,8 +1,10 @@
 import { sample } from 'effector-next';
 
 import {
+    $isToggleUsersPanel,
     $meetingUsersStore,
     removeMeetingUsersEvent,
+    toggleUsersPanelEvent,
     updateMeetingUserEvent,
     updateMeetingUsersEvent,
 } from './model';
@@ -13,7 +15,9 @@ $meetingUsersStore
     .on(updateMeetingUsersEvent, (state, { users }) => {
         if (users?.length) {
             const newUsers = (users || []).map(newUser => {
-                const oldUserData = state.find(oldUser => oldUser.id === newUser.id);
+                const oldUserData = state.find(
+                    oldUser => oldUser.id === newUser.id,
+                );
                 if (oldUserData) {
                     return {
                         ...oldUserData,
@@ -35,12 +39,22 @@ $meetingUsersStore
         return state;
     })
     .on(updateMeetingUserEvent, (state, { user }) =>
-        state.map(_user => (_user.id === user?.id ? { ..._user, ...user } : _user)),
+        state.map(_user =>
+            _user.id === user?.id ? { ..._user, ...user } : _user,
+        ),
     )
     .on(removeMeetingUsersEvent, (state, { users }) =>
         !users ? state : state.filter(_user => !users?.includes(_user.id)),
     )
     .reset(resetRoomStores);
+
+$isToggleUsersPanel.on(
+    toggleUsersPanelEvent,
+    (toggle, newToggle) =>{
+        console.log(newToggle ?? !toggle)
+        return  newToggle ?? !toggle
+    },
+);
 
 sample({
     clock: $meetingUsersStore,

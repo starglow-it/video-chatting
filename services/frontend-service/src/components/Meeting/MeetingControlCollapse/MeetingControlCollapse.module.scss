@@ -1,0 +1,23 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.controlCollapse {
+    // position: absolute;
+    // z-index: 1000;
+    // bottom: rem(50px);
+    // right: rem(20px);
+    width: auto;
+
+}
+
+.root {
+    width: rem(34px);
+    height: rem(34px);
+    border-radius: 22.5%;
+    background-color: #6b6b6c;
+    color: white;
+
+    &:hover {
+        background-color: $primary-black;
+    }
+}

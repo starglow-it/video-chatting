@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
 
 // hooks
@@ -17,14 +17,14 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
-import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
 import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
-import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // stores
 import {
@@ -37,16 +37,19 @@ import {
     $isMeetingHostStore,
     $isOwner,
     $isScreenSharingStore,
+    $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
     $meetingTemplateStore,
+    $meetingUsersStore,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
     toggleChangeBackgroundEvent,
+    toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
 
@@ -60,6 +63,8 @@ import {
     dashboardRoute,
     loginRoute,
 } from '../../../const/client-routes';
+import { ClickAwayListener } from '@mui/base';
+import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 
 const Component = () => {
     const router = useRouter();
@@ -72,12 +77,21 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
+    const isUsersOpen = useStore($isToggleUsersPanel);
+    const isThereNewRequests = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.some(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSent,
+            ),
+    });
 
     const isSharingScreenActive = localUser.id === meeting.sharingUserId;
 
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
-    const isOwner = useStore($isOwner);
 
     const handleOpenDeviceSettings = useCallback(() => {
         appDialogsApi.openDialog({
@@ -143,6 +157,25 @@ const Component = () => {
 
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
+            {/* <ClickAwayListener onClickAway={toggleUsersPanelEvent}> */}
+            <CustomPaper
+                variant="black-glass"
+                borderRadius={8}
+                className={styles.deviceButton}
+            >
+                <ActionButton
+                    variant="transparentBlack"
+                    onAction={() => toggleUsersPanelEvent()}
+                    className={clsx(styles.actionButton, {
+                        [styles.active]: isUsersOpen,
+                        [styles.newRequests]:
+                            isThereNewRequests && isMeetingHost,
+                        [styles.mobile]: isMobile,
+                    })}
+                    Icon={<PeopleIcon width="22px" height="22px" />}
+                />
+            </CustomPaper>
+            {/* </ClickAwayListener> */}
             <ConditionalRender
                 condition={Boolean(meetingTemplate?.links?.length)}
             >
@@ -221,48 +254,13 @@ const Component = () => {
                 <BackgroundAudioControl />
             </ConditionalRender>
 
-            <ConditionalRender condition={!isMobile}>
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={8}
-                    className={styles.deviceButton}
-                >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleOpenDeviceSettings}
-                        className={styles.settingsButton}
-                        Icon={<SettingsIcon width="22px" height="22px" />}
-                    />
-                </CustomPaper>
-            </ConditionalRender>
-
-            <ConditionalRender condition={isOwner}>
-                <CustomTooltip
-                    classes={{ tooltip: styles.tooltip }}
-                    nameSpace="meeting"
-                    translation="changeBackground.text"
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={toggleChangeBackgroundEvent}
-                            className={styles.deviceButton}
-                            Icon={<ImageIcon width="16px" height="16px" />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender>
-
             <ActionButton
                 variant="danger"
                 onAction={handleEndVideoChat}
                 className={styles.hangUpButton}
                 Icon={<HangUpIcon width="22px" height="22px" />}
             />
+            <MeetingControlCollapse />
         </CustomGrid>
     );
 };

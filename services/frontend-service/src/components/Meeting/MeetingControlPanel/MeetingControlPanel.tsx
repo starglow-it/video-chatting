@@ -38,11 +38,13 @@ import {
     $isMeetingHostStore,
     $isOwner,
     $isScreenSharingStore,
+    $isToggleUsersPanel,
     $meetingTemplateStore,
     $meetingUsersStore,
     $paymentIntent,
     cancelPaymentIntentWithData,
     createPaymentIntentWithData,
+    toggleUsersPanelEvent,
 } from '../../../store/roomStores';
 
 // styles
@@ -60,21 +62,16 @@ const Component = () => {
     const isScreenSharing = useStore($isScreenSharingStore);
     const users = useStore($meetingUsersStore);
 
-    const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
 
-    const paperRef = useRef(null);
-
-    const isThereNewRequests = useStoreMap({
-        store: $meetingUsersStore,
-        keys: [],
-        fn: state => state.some(user => user.accessStatus === MeetingAccessStatusEnum.RequestSent),
-    });
-
+    const isUsersOpen = useStore($isToggleUsersPanel);
     const {
-        values: { isUsersOpen, isLeaveNoteOpen, isPaymentOpen },
+        values: { isPaymentOpen },
         onSwitchOff: handleSwitchOff,
         onSwitchToggle: handleSwitchToggle,
-    } = useMultipleToggle(['isUsersOpen', 'isLeaveNoteOpen', 'isPaymentOpen']);
+    } = useMultipleToggle(['isPaymentOpen']);
 
     useEffect(() => {
         (async () => {
@@ -89,14 +86,6 @@ const Component = () => {
     }, [meetingTemplate.isMonetizationEnabled]);
 
     const { isMobile } = useBrowserDetect();
-
-    const handleToggleUsers = useCallback(() => {
-        handleSwitchToggle('isUsersOpen');
-    }, []);
-
-    const handleToggleLeaveNote = useCallback(() => {
-        handleSwitchToggle('isLeaveNoteOpen');
-    }, []);
 
     const handleTogglePayment = useCallback(async () => {
         if (!isPaymentOpen && !paymentIntent?.id && !isOwner) {
@@ -125,47 +114,50 @@ const Component = () => {
         handleSwitchOff();
     }, []);
 
-    const iconSize = isMobile ? '22px' : '30px';
+    const iconSize = isMobile ? '22px' : '22px';
 
     const commonContent = useMemo(
         () => (
             <>
-                <Fade in={isUsersOpen}>
-                    <CustomPaper
-                        variant="black-glass"
-                        className={clsx(styles.commonOpenPanel, { [styles.mobile]: isMobile })}
-                    >
-                        <CustomScroll>
-                            {isMeetingHost && <MeetingAccessRequests />}
-                            <MeetingUsersList />
-                            <MeetingInviteParticipants
-                                onAction={isMobile ? handleCloseMobilePanel : undefined}
-                            />
-                        </CustomScroll>
-                    </CustomPaper>
-                </Fade>
-
-                <ConditionalRender condition={!isMobile}>
-                    <Fade in={isLeaveNoteOpen}>
+                {/* <ClickAwayListener
+                    onClickAway={() => toggleUsersPanelEvent(false)}
+                > */}
+                    <Fade in={isUsersOpen}>
                         <CustomPaper
                             variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, { [styles.mobile]: isMobile })}
+                            className={clsx(styles.commonOpenPanel, {
+                                [styles.mobile]: isMobile,
+                            })}
                         >
-                            <LeaveNoteForm onCancel={handleSwitchOff} />
+                            <CustomScroll>
+                                {isMeetingHost && <MeetingAccessRequests />}
+                                <MeetingUsersList />
+                                <MeetingInviteParticipants
+                                    onAction={
+                                        isMobile
+                                            ? handleCloseMobilePanel
+                                            : undefined
+                                    }
+                                />
+                            </CustomScroll>
                         </CustomPaper>
                     </Fade>
-                </ConditionalRender>
+                {/* </ClickAwayListener> */}
 
                 <Fade in={isPaymentOpen}>
                     <CustomPaper
                         variant="black-glass"
-                        className={clsx(styles.commonOpenPanel, { [styles.mobile]: isMobile })}
+                        className={clsx(styles.commonOpenPanel, {
+                            [styles.mobile]: isMobile,
+                        })}
                     >
                         <ConditionalRender condition={!isOwner}>
                             <PaymentForm onClose={handleClosePayment} />
                         </ConditionalRender>
                         <ConditionalRender condition={isOwner}>
-                            <MeetingMonetization onUpdate={handleUpdateMonetization} />
+                            <MeetingMonetization
+                                onUpdate={handleUpdateMonetization}
+                            />
                         </ConditionalRender>
                     </CustomPaper>
                 </Fade>
@@ -173,7 +165,6 @@ const Component = () => {
         ),
         [
             isOwner,
-            isLeaveNoteOpen,
             isMobile,
             isUsersOpen,
             handleUpdateMonetization,
@@ -208,74 +199,66 @@ const Component = () => {
             container
             className={clsx(styles.panelWrapper, { [styles.mobile]: isMobile })}
         >
-            <ClickAwayListener onClickAway={handleClosePayment}>
-                <CustomPaper
-                    variant="black-glass"
-                    ref={paperRef}
-                    className={styles.controlPanelWrapper}
-                >
-                    <CustomGrid container gap={0.75}>
-                        <ConditionalRender condition={!isMobile}>
-                            <ActionButton
-                                onAction={handleToggleLeaveNote}
-                                className={clsx(styles.actionButton, styles.withAction, {
-                                    [styles.active]: isLeaveNoteOpen,
-                                    [styles.mobile]: isMobile,
-                                })}
-                                Icon={<NotesIcon width={iconSize} height={iconSize} />}
-                            />
-                        </ConditionalRender>
-
-                        <ConditionalRender
-                            condition={
-                                isOwner
-                                    ? Boolean(profile.isStripeEnabled && profile.stripeAccountId)
-                                    : meetingTemplate.isMonetizationEnabled
+            {/* <ClickAwayListener onClickAway={handleClosePayment}> */}
+            <CustomPaper
+                variant="black-glass"
+                className={styles.controlPanelWrapper}
+            >
+                {/* <CustomGrid container gap={0.75}>
+                    <ConditionalRender
+                        condition={
+                            isOwner
+                                ? Boolean(
+                                      profile.isStripeEnabled &&
+                                          profile.stripeAccountId,
+                                  )
+                                : meetingTemplate.isMonetizationEnabled
+                        }
+                    >
+                        <ActionButton
+                            onAction={
+                                !isCreatePaymentIntentPending
+                                    ? handleTogglePayment
+                                    : undefined
                             }
-                        >
-                            <ActionButton
-                                onAction={
-                                    !isCreatePaymentIntentPending ? handleTogglePayment : undefined
-                                }
-                                className={clsx(styles.actionButton, styles.withAction, {
+                            className={clsx(
+                                styles.actionButton,
+                                styles.withAction,
+                                {
                                     [styles.active]: isPaymentOpen,
                                     [styles.mobile]: isMobile,
-                                })}
-                                Icon={<MonetizationIcon width={iconSize} height={iconSize} />}
-                            />
-                        </ConditionalRender>
-
-                        <ActionButton
-                            onAction={handleToggleUsers}
-                            className={clsx(styles.actionButton, styles.withAction, {
-                                [styles.active]: isUsersOpen,
-                                [styles.newRequests]: isThereNewRequests && isMeetingHost,
-                                [styles.mobile]: isMobile,
-                            })}
-                            Icon={<PeopleIcon width={iconSize} height={iconSize} />}
+                                },
+                            )}
+                            Icon={
+                                <MonetizationIcon
+                                    width={iconSize}
+                                    height={iconSize}
+                                />
+                            }
                         />
+                    </ConditionalRender>
+                </CustomGrid> */}
+                {!isMobile ? (
+                    <CustomGrid className={styles.panelsWrapper}>
+                        {commonContent}
                     </CustomGrid>
-                    {!isMobile ? (
-                        <CustomGrid className={styles.panelsWrapper}>{commonContent}</CustomGrid>
-                    ) : (
-                        <ConditionalRender
-                            condition={isUsersOpen || isLeaveNoteOpen || isPaymentOpen}
-                        >
-                            <CustomGrid className={styles.mobilePanelsWrapper}>
-                                <CustomScroll>
-                                    <CloseIcon
-                                        onClick={handleCloseMobilePanel}
-                                        className={styles.closeIcon}
-                                        width="40px"
-                                        height="40px"
-                                    />
-                                    {commonContent}
-                                </CustomScroll>
-                            </CustomGrid>
-                        </ConditionalRender>
-                    )}
-                </CustomPaper>
-            </ClickAwayListener>
+                ) : (
+                    <ConditionalRender condition={isUsersOpen || isPaymentOpen}>
+                        <CustomGrid className={styles.mobilePanelsWrapper}>
+                            <CustomScroll>
+                                <CloseIcon
+                                    onClick={handleCloseMobilePanel}
+                                    className={styles.closeIcon}
+                                    width="40px"
+                                    height="40px"
+                                />
+                                {commonContent}
+                            </CustomScroll>
+                        </CustomGrid>
+                    </ConditionalRender>
+                )}
+            </CustomPaper>
+            {/* </ClickAwayListener> */}
             <ConditionalRender condition={isMobile && isScreenSharing}>
                 <CustomPaper
                     variant="black-glass"
