@@ -146,7 +146,7 @@ export class MediasController {
 
             if (file) {
                 const { extension } = getFileNameAndExtension(file.originalname);
-                const uploadKey = `templates/videos/${userTemplateMedia.id}/${uuidv4()}.${extension}`;
+                const uploadKey = `medias/${userTemplateMedia.id}/videos/${uuidv4()}.${extension}`;
                 
                 let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 

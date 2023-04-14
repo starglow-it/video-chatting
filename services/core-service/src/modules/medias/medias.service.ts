@@ -257,4 +257,8 @@ export class MediaService {
             session: session?.session,
         });
     }
+
+    async deleteFolderMedias(keyFolder: string){
+        await this.awsService.deleteFolder(keyFolder);
+    }
 }

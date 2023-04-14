@@ -622,6 +622,16 @@ export class UserTemplatesController {
             session,
           });
         }
+
+        const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
+          query: {
+            userTemplate: userTemplate._id
+          }
+        });
+
+        userTemplateMedias.map(async media => {
+          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}`);
+        });
         
         this.mediaService.deleteUserTemplateMedias({
           query: {
