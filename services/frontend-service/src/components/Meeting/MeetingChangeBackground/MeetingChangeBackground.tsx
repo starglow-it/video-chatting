@@ -52,8 +52,7 @@ const Component = () => {
     };
 
     const handleScrollEnd = () => {
-        console.log('end');
-        // if (!isLoadMore && medias.length < count) setQueryMediasEvent();
+        if (!isLoadMore && medias.length < count) setQueryMediasEvent();
     };
 
     const changeExpand = (event: React.SyntheticEvent, expanded: boolean) => {
@@ -155,7 +154,7 @@ const Component = () => {
                                             onSelect={handleSelectBackground}
                                         />
                                     ))}
-                                    {isLoading && <Loading />}
+                                    {/* {isLoading && <Loading />} */}
                                 </CustomScroll>
                             </ConditionalRender>
                         </CustomGrid>

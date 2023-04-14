@@ -50,10 +50,7 @@ $meetingUsersStore
 
 $isToggleUsersPanel.on(
     toggleUsersPanelEvent,
-    (toggle, newToggle) =>{
-        console.log(newToggle ?? !toggle)
-        return  newToggle ?? !toggle
-    },
+    (toggle, newToggle) => newToggle ?? !toggle,
 );
 
 sample({

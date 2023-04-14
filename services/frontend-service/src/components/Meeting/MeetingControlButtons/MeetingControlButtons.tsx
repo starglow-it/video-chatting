@@ -22,20 +22,13 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
-import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // stores
-import {
-    $authStore,
-    $isGoodsVisible,
-    appDialogsApi,
-    toggleIsGoodsVisible,
-} from '../../../store';
+import { $authStore } from '../../../store';
 import {
     $isMeetingHostStore,
-    $isOwner,
     $isScreenSharingStore,
     $isToggleUsersPanel,
     $localUserStore,
@@ -51,9 +44,6 @@ import {
     toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
-
-// types
-import { AppDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
@@ -71,7 +61,6 @@ const Component = () => {
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
     const isSharingActive = useStore($isScreenSharingStore);
-    const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
@@ -90,12 +79,6 @@ const Component = () => {
 
     const isAbleToToggleSharing =
         isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
-
-    const handleOpenDeviceSettings = useCallback(() => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.devicesSettingsDialog,
-        });
-    }, []);
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
@@ -142,7 +125,7 @@ const Component = () => {
     const handleToggleUsersPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
-    }
+    };
 
     const sharingAction = isAbleToToggleSharing
         ? handleToggleSharing
@@ -177,32 +160,6 @@ const Component = () => {
                     Icon={<PeopleIcon width="22px" height="22px" />}
                 />
             </CustomPaper>
-            <ConditionalRender
-                condition={Boolean(meetingTemplate?.links?.length)}
-            >
-                <CustomTooltip
-                    classes={{ tooltip: styles.tooltip }}
-                    nameSpace="meeting"
-                    translation={
-                        isGoodsVisible ? 'links.offGoods' : 'links.onGoods'
-                    }
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={toggleIsGoodsVisible}
-                            className={clsx(styles.goodsButton, {
-                                [styles.disabled]: !isGoodsVisible,
-                            })}
-                            Icon={<GoodsIcon width="22px" height="22px" />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender>
             <ConditionalRender condition={isMobile}>
                 <CustomPaper
                     variant="black-glass"

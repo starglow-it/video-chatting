@@ -46,16 +46,11 @@ const Component = () => {
         }
 
         const rejectedFile = rejectedFiles[0]?.file;
-
-        if (!rejectedFile) {
-            return;
-        }
+        if (!rejectedFile) return;
 
         const fileType = rejectedFile.type.split('/')[0];
 
-        if (fileType !== 'image' && fileType !== 'video') {
-            return;
-        }
+        if (fileType !== 'image' && fileType !== 'video') return;
 
         const maxSize = fileType === 'image' ? MAX_SIZE_IMAGE : MAX_SIZE_VIDEO;
         const maxSizeMB =
@@ -102,7 +97,7 @@ const Component = () => {
 
         if (ACCEPT_MIMES_IMAGE[file.type] && file.size > MAX_SIZE_IMAGE) {
             generateFileUploadError(
-                [{ file }],
+                [{ file, errors: [] }],
                 acceptedFiles.length + rejectedFiles.length,
             );
             return;
@@ -150,7 +145,7 @@ const Component = () => {
                 alignItems="center"
                 justifyContent="center"
             >
-                <UploadImageIcon width="42px" height="42px" />
+                <UploadImageIcon width="38px" height="38px" />
             </CustomBox>
         </CustomGrid>
     );

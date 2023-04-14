@@ -26,10 +26,10 @@ import {
 import { AppDialogsEnum } from 'src/store/types';
 import styles from './MeetingControlCollapse.module.scss';
 
-enum CollapseTypes  {
+enum CollapseTypes {
     Settings = 'settings',
     Payments = 'payments',
-    GoodLinks = 'good_links'
+    GoodLinks = 'good_links',
 }
 
 const Actions = [
@@ -60,15 +60,13 @@ const Component = () => {
     const isPaymentOpen = useStore($isTogglePayment);
     const paymentIntent = useStore($paymentIntent);
     const isGoodsVisible = useStore($isGoodsVisible);
+    const intentId = paymentIntent?.id;
 
     const handleTogglePayment = () => {
-        if (!isPaymentOpen && !paymentIntent?.id && !isOwner) {
+        if (!isPaymentOpen && !intentId && !isOwner) {
             createPaymentIntentWithData();
         }
-
-        if (paymentIntent?.id) {
-            cancelPaymentIntentWithData();
-        }
+        if (intentId) cancelPaymentIntentWithData();
         togglePaymentFormEvent();
     };
 
