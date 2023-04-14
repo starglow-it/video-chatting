@@ -91,6 +91,7 @@ const Component = () => {
     });
 
     const [isExpand, setIsExpand] = useState<boolean>(false);
+    const [isOpa, setIsOpa] = useState<boolean>(false);
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
@@ -133,9 +134,11 @@ const Component = () => {
                         TransitionProps={{
                             timeout: {
                                 appear: 600,
-                                enter: 800,
-                                exit: 300,
+                                enter: 600,
+                                exit: 400,
                             },
+                            onEntered: () => setIsOpa(true),
+                            onExited: () => setIsOpa(false)
                         }}
                     >
                         <AccordionSummary
@@ -144,7 +147,7 @@ const Component = () => {
                             className={styles.summary}
                             classes={{ content: styles.content }}
                         >
-                            <CustomGrid container alignItems="center">
+                            <CustomGrid container alignItems="center" className={styles.fadeIn}>
                                 <ActionButton
                                     className={clsx(
                                         styles.actionButton
@@ -153,7 +156,7 @@ const Component = () => {
                                         <NotesIcon width="30px" height="30px" />
                                     }
                                 />
-                                <ConditionalRender condition={isExpand}>
+                                <ConditionalRender condition={isExpand && isOpa}>
                                     <CustomTypography
                                         color="colors.white.primary"
                                         variant="h4bold"

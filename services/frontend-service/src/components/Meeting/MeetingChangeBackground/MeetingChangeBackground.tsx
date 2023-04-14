@@ -21,8 +21,10 @@ import {
     setCategoryEvent,
     setMediaEvent,
     setQueryMediasEvent,
+    uploadNewBackgroundFx,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
+import { Loading } from './Loading';
 import { Media } from './Media';
 import styles from './MeetingChangeBackground.module.scss';
 import { UploadBackground } from './Upload';
@@ -31,9 +33,9 @@ const Component = () => {
     const { medias, categorySelected, mediaSelected, categories, count } =
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
+    const isLoading = useStore(uploadNewBackgroundFx.pending);
 
     const [isExpand, setIsExpand] = useState<boolean>(false);
-
     useEffect(() => {
         if (isExpand && categories.length && !categorySelected)
             setCategoryEvent({
@@ -50,7 +52,7 @@ const Component = () => {
     };
 
     const handleScrollEnd = () => {
-        console.log('end')
+        console.log('end');
         // if (!isLoadMore && medias.length < count) setQueryMediasEvent();
     };
 
@@ -69,11 +71,13 @@ const Component = () => {
                     expanded={isExpand}
                     onChange={changeExpand}
                     className={clsx(styles.accordion)}
-                    TransitionProps={{ timeout: {
-                        appear: 600,
-                        enter: 100,
-                        exit: 500
-                    } }}
+                    TransitionProps={{
+                        timeout: {
+                            appear: 600,
+                            enter: 700,
+                            exit: 500,
+                        },
+                    }}
                 >
                     <AccordionSummary
                         className={styles.summary}
@@ -113,7 +117,7 @@ const Component = () => {
                             </ConditionalRender>
                         </CustomBox>
                     </AccordionSummary>
-                    <AccordionDetails classes={{root: styles.detail}}>
+                    <AccordionDetails classes={{ root: styles.detail }}>
                         <CustomBox
                             flex={25}
                             display="flex"
@@ -151,6 +155,7 @@ const Component = () => {
                                             onSelect={handleSelectBackground}
                                         />
                                     ))}
+                                    {isLoading && <Loading />}
                                 </CustomScroll>
                             </ConditionalRender>
                         </CustomGrid>
