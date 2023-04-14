@@ -76,11 +76,10 @@ const Component: React.FunctionComponent<
                     bottom: percentBottom,
                     left: percentLeft,
                 },
-            });
+            }).then(() => {
+                handleOffDragging();
+            })
         }
-        setTimeout(() => {
-            handleOffDragging();
-        }, 500)
     };
     const handleStartDrag = () => {
         handleOnDragging();
@@ -125,7 +124,6 @@ const Component: React.FunctionComponent<
         <ConditionalRender
             condition={Boolean(isRender)}
         >
-            {/* <ConditionalRender condition={isLocal}> */}
             <Draggable
                 axis="both"
                 onStart={eventControl}
@@ -150,15 +148,6 @@ const Component: React.FunctionComponent<
                     />
                 </CustomBox>
             </Draggable>
-            {/* </ConditionalRender> */}
-            {/* <ConditionalRender condition={!isLocal}>
-                <CustomBox
-                    sx={!isScreenSharing ? { bottom: finalBottom, left: finalLeft } : {}}
-                    className={clsx(styles.videoWrapper, { [styles.sharing]: isScreenSharing })}
-                >
-                    {children}
-                </CustomBox>
-            </ConditionalRender> */}
         </ConditionalRender>
     );
 };

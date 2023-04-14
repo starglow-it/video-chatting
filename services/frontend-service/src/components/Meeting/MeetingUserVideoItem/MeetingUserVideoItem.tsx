@@ -133,7 +133,7 @@ const MeetingUserVideoChildCom = ({
             minConstraints={[75, 75]}
             onResizeStart={handleResizeStart}
             onResizeStop={handleResizeStop}
-            resizeHandles={['ne']}
+            resizeHandles={['se']}
             disabled={isScreenSharing}
         >
             <CustomBox

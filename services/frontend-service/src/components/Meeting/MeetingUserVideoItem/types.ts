@@ -38,5 +38,5 @@ export type MeetingUserVideoComProps = {
     isSelfView?: boolean;
     setScale: (size: number) => void;
     resizeCoeff: number;
-    onResizeVideo?: (size: number) => void;
+    onResizeVideo?: (size: number, userId: string) => void;
 }
