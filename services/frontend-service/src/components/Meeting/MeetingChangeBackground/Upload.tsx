@@ -117,7 +117,8 @@ const Component = () => {
             }
             addNotificationEvent({
                 type: NotificationType.UploadBackgroundSuccess,
-                message: '',
+                message: 'meeting.uploadSuccess',
+                withSuccessIcon: true,
             });
         }
     };
@@ -145,7 +146,7 @@ const Component = () => {
                 alignItems="center"
                 justifyContent="center"
             >
-                <UploadImageIcon width="38px" height="38px" />
+                <UploadImageIcon width="32px" height="32px" />
             </CustomBox>
         </CustomGrid>
     );

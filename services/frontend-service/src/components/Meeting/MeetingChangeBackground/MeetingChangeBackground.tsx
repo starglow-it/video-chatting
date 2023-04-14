@@ -6,6 +6,7 @@ import {
     AccordionDetails,
     AccordionSummary,
     ClickAwayListener,
+    LinearProgress,
 } from '@mui/material';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
@@ -78,6 +79,7 @@ const Component = () => {
                         },
                     }}
                 >
+                    {isLoading && <LinearProgress color="secondary" />}
                     <AccordionSummary
                         className={styles.summary}
                         classes={{
@@ -154,7 +156,6 @@ const Component = () => {
                                             onSelect={handleSelectBackground}
                                         />
                                     ))}
-                                    {/* {isLoading && <Loading />} */}
                                 </CustomScroll>
                             </ConditionalRender>
                         </CustomGrid>
