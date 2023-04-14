@@ -17,6 +17,7 @@ import {
     getCategoriesMediasFx,
     uploadNewBackgroundFx,
     addBackgroundToCategoryEvent,
+    reloadMediasEvent,
 } from './model';
 
 getBackgroundMeetingFx.use(handleGetBackgroundMeeting);
@@ -99,7 +100,7 @@ forward({
 });
 
 sample({
-    clock: setQueryMediasEvent,
+    clock: [setQueryMediasEvent, reloadMediasEvent],
     source: combine({
         backgroundData: $backgroundMeetingStore,
         queryMediasData: $queryMediasBackgroundStore,
@@ -119,8 +120,4 @@ sample({
     target: getBackgroundMeetingFx,
 });
 
-uploadNewBackgroundFx.doneData.watch(media => {
-    if (media) {
-        addBackgroundToCategoryEvent({ media });
-    }
-});
+

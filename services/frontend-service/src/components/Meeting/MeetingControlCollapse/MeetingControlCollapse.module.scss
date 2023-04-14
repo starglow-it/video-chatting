@@ -2,12 +2,7 @@
 @import "../../../styles/variables";
 
 .controlCollapse {
-    // position: absolute;
-    // z-index: 1000;
-    // bottom: rem(50px);
-    // right: rem(20px);
     width: auto;
-
 }
 
 .root {
@@ -15,9 +10,13 @@
     height: rem(34px);
     border-radius: 22.5%;
     background-color: #6b6b6c;
-    color: white;
+    color: $primary-white;
 
     &:hover {
         background-color: $primary-black;
+    }
+
+    &.disabled {
+        color: $normal-gray-scale;
     }
 }

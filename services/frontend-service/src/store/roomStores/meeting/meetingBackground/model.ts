@@ -1,8 +1,4 @@
-import {
-    EntityList,
-    IMediaCategory,
-    IUserTemplate,
-} from 'shared-types';
+import { EntityList, IMediaCategory, IUserTemplate } from 'shared-types';
 import { meetingDomain } from '../../../domains';
 import { IMediaItem, UploadBackgroundPayload } from './types';
 
@@ -36,7 +32,7 @@ export const setMediaEvent = meetingDomain.createEvent<{
 }>('setMediaEvent');
 
 export const getBackgroundMeetingFx = meetingDomain.createEffect<
-    { id: string, userTemplateId: string },
+    { id: string; userTemplateId: string },
     EntityList<IMediaItem> & { isReset: boolean }
 >('getBackgroundMeetingFx');
 
@@ -62,3 +58,5 @@ export const uploadNewBackgroundFx = meetingDomain.createEffect<
 export const addBackgroundToCategoryEvent = meetingDomain.createEvent<{
     media: IMediaItem;
 }>('addBackgroundToCategoryEvent');
+
+export const reloadMediasEvent = meetingDomain.createEvent('reloadMediasEvent');

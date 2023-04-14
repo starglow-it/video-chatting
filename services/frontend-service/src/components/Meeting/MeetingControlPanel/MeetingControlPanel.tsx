@@ -27,8 +27,7 @@ import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAv
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
-import { MeetingAccessStatusEnum } from 'shared-types';
-import { $profileStore, setIsSideUsersOpenEvent } from '../../../store';
+import { setIsSideUsersOpenEvent } from '../../../store';
 import {
     $isMeetingHostStore,
     $isOwner,
@@ -39,8 +38,8 @@ import {
     $meetingUsersStore,
     $paymentIntent,
     cancelPaymentIntentWithData,
-    createPaymentIntentWithData,
     togglePaymentFormEvent,
+    toggleUsersPanelEvent,
 } from '../../../store/roomStores';
 
 // styles
@@ -84,30 +83,36 @@ const Component = () => {
         togglePaymentFormEvent();
     }, []);
 
+    const toggleOutsideUserPanel = (e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        toggleUsersPanelEvent(false);
+    };
+
     const commonContent = useMemo(
         () => (
             <>
-                <Fade in={isUsersOpen}>
-                    <CustomPaper
-                        variant="black-glass"
-                        className={clsx(styles.commonOpenPanel, {
-                            [styles.mobile]: isMobile,
-                        })}
-                    >
-                        <CustomScroll>
-                            {isMeetingHost && <MeetingAccessRequests />}
-                            <MeetingUsersList />
-                            <MeetingInviteParticipants
-                                onAction={
-                                    isMobile
-                                        ? handleCloseMobilePanel
-                                        : undefined
-                                }
-                            />
-                        </CustomScroll>
-                    </CustomPaper>
-                </Fade>
-                {/* </ClickAwayListener> */}
+                <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
+                    <Fade in={isUsersOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.commonOpenPanel, {
+                                [styles.mobile]: isMobile,
+                            })}
+                        >
+                            <CustomScroll>
+                                {isMeetingHost && <MeetingAccessRequests />}
+                                <MeetingUsersList />
+                                <MeetingInviteParticipants
+                                    onAction={
+                                        isMobile
+                                            ? handleCloseMobilePanel
+                                            : undefined
+                                    }
+                                />
+                            </CustomScroll>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
 
                 <Fade in={isPaymentOpen}>
                     <CustomPaper

@@ -230,6 +230,7 @@ export enum NotificationType {
     BackgroundFileShouldBeUploaded = 'background_file_should_be_uploaded',
     BackgroundFileIsNotUploadedYet = 'background_file_is_not_uploaded_yet',
     validationError = 'validationError',
+    UploadBackgroundSuccess = 'upload_background_success'
 }
 
 export type Notification = {

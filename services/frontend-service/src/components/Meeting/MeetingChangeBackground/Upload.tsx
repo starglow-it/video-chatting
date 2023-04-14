@@ -15,6 +15,8 @@ import { addNotificationEvent } from 'src/store';
 import {
     $backgroundMeetingStore,
     $meetingTemplateStore,
+    addBackgroundToCategoryEvent,
+    reloadMediasEvent,
     uploadNewBackgroundFx,
 } from 'src/store/roomStores';
 import { Notification, NotificationType } from 'src/store/types';
@@ -106,11 +108,23 @@ const Component = () => {
             return;
         }
 
-        uploadNewBackgroundFx({
+        const media = await uploadNewBackgroundFx({
             file,
             userTemplateId: meetingTemplate.id,
             mediaCategoryId: backgroundStore.categorySelected,
         });
+
+        if (media) {
+            if (backgroundStore.count >= 12) {
+                addBackgroundToCategoryEvent({ media });
+            } else {
+                reloadMediasEvent();
+            }
+            addNotificationEvent({
+                type: NotificationType.UploadBackgroundSuccess,
+                message: '',
+            });
+        }
     };
 
     const { getRootProps, getInputProps } = useDropzone({

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, SyntheticEvent, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -62,7 +62,6 @@ import {
     dashboardRoute,
     loginRoute,
 } from '../../../const/client-routes';
-import { ClickAwayListener } from '@mui/base';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 
 const Component = () => {
@@ -140,6 +139,11 @@ const Component = () => {
         }
     }, [isMeetingConnected, isMicActive, isCamActive]);
 
+    const handleToggleUsersPanel = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleUsersPanelEvent();
+    }
+
     const sharingAction = isAbleToToggleSharing
         ? handleToggleSharing
         : undefined;
@@ -156,7 +160,6 @@ const Component = () => {
 
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-            {/* <ClickAwayListener onClickAway={toggleUsersPanelEvent}> */}
             <CustomPaper
                 variant="black-glass"
                 borderRadius={8}
@@ -164,7 +167,7 @@ const Component = () => {
             >
                 <ActionButton
                     variant="transparentBlack"
-                    onAction={() => toggleUsersPanelEvent()}
+                    onAction={handleToggleUsersPanel}
                     className={clsx(styles.actionButton, {
                         [styles.active]: isUsersOpen,
                         [styles.newRequests]:
@@ -174,7 +177,6 @@ const Component = () => {
                     Icon={<PeopleIcon width="22px" height="22px" />}
                 />
             </CustomPaper>
-            {/* </ClickAwayListener> */}
             <ConditionalRender
                 condition={Boolean(meetingTemplate?.links?.length)}
             >
