@@ -183,7 +183,8 @@ export class MediaController {
                 }
 
                 const mediasCount = await this.mediaService.countUserTemplateMedias({
-                    mediaCategory: mediaCategory._id
+                    mediaCategory: mediaCategory._id,
+                    userTemplate: userTemplateId
                 });
 
                 const medias = await this.mediaService.findUserTemplateMedias({
