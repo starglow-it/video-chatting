@@ -69,8 +69,6 @@ const Component = ({
         onEndTimer: handleEndCountDown,
     } = useTimer(true);
 
-    console.log(currentTime);
-
     const isBlur = currentTime === MAX_MILLISECOND_BLUR_NOTE;
 
     const {

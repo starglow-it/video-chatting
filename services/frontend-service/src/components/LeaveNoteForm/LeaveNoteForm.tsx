@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { SyntheticEvent, memo, useCallback, useState } from 'react';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
@@ -91,7 +91,7 @@ const Component = () => {
     });
 
     const [isExpand, setIsExpand] = useState<boolean>(false);
-    const [isOpa, setIsOpa] = useState<boolean>(false);
+    const [isVisible, setIsVisible] = useState<boolean>(false);
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
@@ -115,7 +115,7 @@ const Component = () => {
         await onChange(event);
     }, []);
 
-    const changeExpand = (event: React.SyntheticEvent, expanded: boolean) => {
+    const changeExpand = (event: SyntheticEvent, expanded: boolean) => {
         setIsExpand(expanded);
     };
 
@@ -137,8 +137,8 @@ const Component = () => {
                                 enter: 600,
                                 exit: 400,
                             },
-                            onEntered: () => setIsOpa(true),
-                            onExited: () => setIsOpa(false)
+                            onEntered: () => setIsVisible(true),
+                            onExited: () => setIsVisible(false)
                         }}
                     >
                         <AccordionSummary
@@ -156,7 +156,7 @@ const Component = () => {
                                         <NotesIcon width="30px" height="30px" />
                                     }
                                 />
-                                <ConditionalRender condition={isExpand && isOpa}>
+                                <ConditionalRender condition={isExpand && isVisible}>
                                     <CustomTypography
                                         color="colors.white.primary"
                                         variant="h4bold"
