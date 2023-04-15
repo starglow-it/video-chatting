@@ -117,7 +117,7 @@ const Component = () => {
                 );
             case CollapseTypes.Payments:
                 return (
-                    <Translation nameSpace="meeting" translation="allowAudio" />
+                    <Translation nameSpace="meeting" translation="payments.title" />
                 );
 
             case CollapseTypes.GoodLinks:
