@@ -110,7 +110,7 @@ const Component = () => {
         });
 
         if (media) {
-            if (backgroundStore.count >= 12) {
+            if (backgroundStore.count <= 12) {
                 addBackgroundToCategoryEvent({ media });
             } else {
                 reloadMediasEvent();

@@ -46,13 +46,15 @@ $backgroundMeetingStore
     .on(addBackgroundToCategoryEvent, (state, data) => ({
         ...state,
         medias: [...state.medias, data.media],
+        count: state.count + 1,
     }));
 
 $queryMediasBackgroundStore
-    .on([setQueryMediasEvent, reloadMediasEvent], state => ({
+    .on([setQueryMediasEvent], state => ({
         ...state,
         skip: state.skip + 1,
     }))
+    .on(reloadMediasEvent, state => ({ ...state, skip: 0 }))
     .reset(setCategoryEvent);
 
 $isLoadMoreMediasStore

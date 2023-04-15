@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -25,7 +25,6 @@ import {
     uploadNewBackgroundFx,
 } from '../../../store/roomStores';
 import { Barge } from './Barge';
-import { Loading } from './Loading';
 import { Media } from './Media';
 import styles from './MeetingChangeBackground.module.scss';
 import { UploadBackground } from './Upload';
@@ -37,12 +36,17 @@ const Component = () => {
     const isLoading = useStore(uploadNewBackgroundFx.pending);
 
     const [isExpand, setIsExpand] = useState<boolean>(false);
+    const refScroll = useRef<HTMLElement>();
     useEffect(() => {
         if (isExpand && categories.length && !categorySelected)
             setCategoryEvent({
                 categorySelected: categories[0].id,
             });
     }, [isExpand]);
+
+    useEffect(() => {
+        if (refScroll.current) refScroll.current.scrollTop = 0;
+    }, [categorySelected, isLoading]);
 
     const handleSelectBackground = (id: string) => {
         setMediaEvent({ mediaSelected: id });
@@ -148,6 +152,9 @@ const Component = () => {
                                 <CustomScroll
                                     className={styles.scroll}
                                     onYReachEnd={handleScrollEnd}
+                                    containerRef={el =>
+                                        (refScroll.current = el)
+                                    }
                                 >
                                     <UploadBackground />
                                     {medias.map(item => (
