@@ -9,10 +9,6 @@
   box-shadow: rem(0 12px 24px -4px) rgba($primary-black, 0.1);
   border-radius: rem(1px);
 
-  &.blur {
-    opacity: 0.7;
-  }
-
   &:hover {
     .unpinButton {
       opacity: 1;
@@ -90,4 +86,7 @@
   opacity: 0;
   cursor: pointer;
   transition: opacity 200ms linear;
+}
+.blur {
+  opacity: 0.7;
 }

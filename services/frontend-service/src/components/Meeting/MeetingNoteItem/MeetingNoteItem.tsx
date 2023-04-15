@@ -138,7 +138,11 @@ const Component = ({
                 </CopyToClipboard>
                 <CustomScroll className={styles.scroll}>
                     <CustomGrid container className={styles.content}>
-                        <CustomTypography className={styles.text}>
+                        <CustomTypography
+                            className={clsx(styles.text, {
+                                [styles.blur]: isBlur,
+                            })}
+                        >
                             <Linkify
                                 options={{
                                     target: '_blank',

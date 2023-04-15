@@ -49,7 +49,7 @@ $backgroundMeetingStore
     }));
 
 $queryMediasBackgroundStore
-    .on(setQueryMediasEvent, state => ({
+    .on([setQueryMediasEvent, reloadMediasEvent], state => ({
         ...state,
         skip: state.skip + 1,
     }))
@@ -119,5 +119,3 @@ sample({
     }),
     target: getBackgroundMeetingFx,
 });
-
-

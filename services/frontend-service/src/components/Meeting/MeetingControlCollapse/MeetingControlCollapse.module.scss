@@ -8,6 +8,7 @@
 .root {
     width: rem(34px);
     height: rem(34px);
+    min-height: rem(34px);
     border-radius: 22.5%;
     background-color: #6b6b6c;
     color: $primary-white;
