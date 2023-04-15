@@ -50,15 +50,16 @@ export class MediaService {
         const imagesPaths = await fsPromises.readdir(outputPath);
 
         const uploadedImagesPromises = imagesPaths.map(async (image) => {
+            const keyFilePath = `${outputPath}/${image}`;
             const resolution = image.match(/(\d*)p\./);
 
-            const file = await fsPromises.readFile(`${outputPath}/${image}`);
+            const file = await fsPromises.readFile(keyFilePath);
             const uploadKey = `templates/images/${id}/${image}`;
-            const fileStats = await fsPromises.stat(`${outputPath}/${image}`);
+            const fileStats = await fsPromises.stat(keyFilePath);
 
             const imageUrl = await this.awsService.uploadFile(file, uploadKey);
 
-            await fsPromises.rm(`${outputPath}/${image}`);
+            await fsPromises.rm(keyFilePath);
 
             return this.previewImage.create({
                 url: imageUrl,

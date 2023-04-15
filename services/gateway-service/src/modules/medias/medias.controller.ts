@@ -141,8 +141,7 @@ export class MediasController {
         @Body() body: CreateUserTemplateMediaRequest
     ): Promise<ResponseSumType<IUserTemplateMedia>>{
         try {
-            let userTemplateMedia;
-            userTemplateMedia = await this.mediaService.createUserTemplateMedia(body);
+            let userTemplateMedia = await this.mediaService.createUserTemplateMedia(body);
 
             if (file) {
                 const { extension } = getFileNameAndExtension(file.originalname);

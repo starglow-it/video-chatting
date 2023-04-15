@@ -71,13 +71,11 @@ export class BusinessCategoriesService {
     BusinessCategoryDocument,
     BusinessCategoryDocument
   >): Promise<BusinessCategoryDocument> {
-    const options: QueryOptions = {
+    return this.businessCategory.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,
       new: true,
-    };
-
-    return this.businessCategory.findOneAndUpdate(query, data, options);
+    });
   }
 
   async deleteAll({
@@ -87,10 +85,9 @@ export class BusinessCategoriesService {
     query: FilterQuery<BusinessCategoryDocument>;
     session?: ITransactionSession;
   }): Promise<any>{
-    const options: QueryOptions = {
-      session: session?.session,
-    };
 
-    await this.businessCategory.deleteMany(query, options);
+    await this.businessCategory.deleteMany(query, {
+      session: session?.session,
+    });
   }
 }
