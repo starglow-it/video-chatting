@@ -14,9 +14,10 @@
 }
 
 .submitNote {
-  height: rem(32px);
-  width: rem(32px);
+  height: rem(29px);
+  width: rem(29px);
   border-radius: rem(8px);
+  margin-right: 10px;
 }
 
 .textLength {
@@ -25,4 +26,64 @@
 
 .textField {
   background: transparent;
+}
+
+.commonOpenPanel {
+  position: absolute;
+  width: rem(35px);
+  top: 4%;
+  right: 65px;
+  border-radius: 4px;
+  -webkit-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+  background-color: #1c2d2f;
+  border-radius: 6px;
+
+  &:hover:not(.expanded) {
+    background-color: #686666;
+  }
+
+  &.expanded {
+    padding-top: 12px;
+    width: 300px;
+  }
+
+  &.mobile {
+    left: 50%;
+  }
+
+  &.open {
+    opacity: 1;
+  }
+}
+
+.actionButton {
+  position: relative;
+  background: transparent;
+  color: $primary-white;
+  border: none;
+  width: rem(35px);
+  height: rem(35px);
+  border-radius: rem(4px);
+  cursor: pointer;
+
+  &.active {
+    background: rgba($primary-white, 0.25);
+  }
+
+}
+
+.accordion {
+  background-color: transparent;
+
+  .summary {
+    padding: 0px 5px;
+    min-height: 35px;
+    height: 35px;
+  }
+
+  .content {
+    margin: 0px;
+  }
 }

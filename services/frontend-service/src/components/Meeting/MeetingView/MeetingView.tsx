@@ -61,6 +61,7 @@ import {
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
+import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 
 // helpers
 
@@ -204,6 +205,7 @@ const Component = () => {
                     <MeetingNotes />
                     <MeetingUsersVideos />
                     <MeetingChangeBackground />
+                    <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
 
