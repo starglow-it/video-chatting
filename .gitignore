@@ -5,3 +5,4 @@ doc
 *.log
 .vscode
 dist
+.DS_Store
