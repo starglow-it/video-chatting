@@ -49,7 +49,9 @@ const Component = () => {
     };
 
     const handleSelectType = (id: string) => {
-        setCategoryEvent({ categorySelected: id });
+        if (id !== categorySelected) {
+            setCategoryEvent({ categorySelected: id });
+        }
     };
 
     const handleScrollEnd = () => {
