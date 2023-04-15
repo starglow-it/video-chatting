@@ -7,16 +7,18 @@ export const handleGetBackgroundMeeting = async ({
     id,
     skip,
     limit,
+    userTemplateId,
 }: {
     id: string;
     skip?: number;
     limit?: number;
+    userTemplateId?: string
 }): Promise<EntityList<IMediaItem> & { isReset: boolean }> => {
     const { result, success } = await sendRequestWithCredentials<
         EntityList<IMediaItem>,
         void
     >({
-        ...getMediasCategory({ categoryId: id, skip, limit }),
+        ...getMediasCategory({ categoryId: id, skip, limit, userTemplateId }),
     });
 
     if (success && result) {

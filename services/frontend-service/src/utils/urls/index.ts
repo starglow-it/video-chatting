@@ -6,3 +6,4 @@ export * from './otherUrls';
 export * from './payments';
 export * from './clientUrls';
 export * from './businessCategories';
+export * from './backgroundCategories';

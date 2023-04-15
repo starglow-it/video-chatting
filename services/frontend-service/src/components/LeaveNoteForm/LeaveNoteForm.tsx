@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { SyntheticEvent, memo, useCallback, useState } from 'react';
 import * as yup from 'yup';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
@@ -12,7 +12,6 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
-import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
@@ -30,6 +29,16 @@ import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
 
 // styles
 import styles from './LeaveNoteForm.module.scss';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    ClickAwayListener,
+} from '@mui/material';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import clsx from 'clsx';
+import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 const validationSchema = yup.object({
     note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
@@ -62,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type FormType = { note: string };
 
-const Component = ({ onCancel }: { onCancel: () => void }) => {
+const Component = () => {
     const materialStyles = useStyles();
 
     const isSendNotePending = useStore(sendMeetingNoteSocketEvent.pending);
@@ -81,21 +90,20 @@ const Component = ({ onCancel }: { onCancel: () => void }) => {
         name: 'note',
     });
 
+    const [isExpand, setIsExpand] = useState<boolean>(false);
+    const [isVisible, setIsVisible] = useState<boolean>(false);
+
     const onSubmit = useCallback(
         handleSubmit(async data => {
             sendMeetingNoteSocketEvent(data);
             reset();
-            onCancel();
         }),
         [],
     );
 
-    const handleCancelLeaveNote = useCallback(() => {
-        reset();
-        onCancel();
-    }, []);
-
-    const { onChange, ...restRegisterData } = register('note', { maxLength: MAX_NOTE_CONTENT });
+    const { onChange, ...restRegisterData } = register('note', {
+        maxLength: MAX_NOTE_CONTENT,
+    });
 
     const handleChange = useCallback(async event => {
         if (event.target.value.length > MAX_NOTE_CONTENT) {
@@ -107,45 +115,92 @@ const Component = ({ onCancel }: { onCancel: () => void }) => {
         await onChange(event);
     }, []);
 
+    const changeExpand = (event: SyntheticEvent, expanded: boolean) => {
+        setIsExpand(expanded);
+    };
+
     return (
-        <FormProvider {...methods}>
-            <CustomGrid container direction="column" gap={2.5}>
-                <CustomGrid container alignItems="center">
-                    <CustomTypography
-                        color="colors.white.primary"
-                        variant="h4bold"
-                        nameSpace="meeting"
-                        translation="features.notes.title"
-                    />
-                    <CustomTypography className={styles.textLength} color="colors.white.primary">
-                        {`${noteText.length}/${MAX_NOTE_CONTENT}`}
-                    </CustomTypography>
-                    <ActionButton
-                        onAction={onSubmit}
-                        variant="accept"
-                        disabled={isSendNotePending}
-                        className={styles.submitNote}
-                        Icon={<AcceptIcon width="23px" height="23px" />}
-                    />
-                    <ActionButton
-                        variant="decline"
-                        onAction={handleCancelLeaveNote}
-                        disabled={isSendNotePending}
-                        className={styles.cancelNote}
-                        Icon={<DeleteIcon width="23px" height="23px" />}
-                    />
-                </CustomGrid>
-                <CustomInput
-                    nameSpace="meeting"
-                    translation="features.notes.input"
-                    multiline
-                    rows={4}
-                    className={materialStyles.textField}
-                    {...restRegisterData}
-                    onChange={handleChange}
-                />
-            </CustomGrid>
-        </FormProvider>
+        <ClickAwayListener onClickAway={() => setIsExpand(false)}>
+            <CustomPaper
+                className={clsx(styles.commonOpenPanel, {
+                    [styles.expanded]: isExpand,
+                })}
+            >
+                <FormProvider {...methods}>
+                    <Accordion
+                        expanded={isExpand}
+                        onChange={changeExpand}
+                        className={clsx(styles.accordion)}
+                        TransitionProps={{
+                            timeout: {
+                                appear: 600,
+                                enter: 600,
+                                exit: 400,
+                            },
+                            onEntered: () => setIsVisible(true),
+                            onExited: () => setIsVisible(false)
+                        }}
+                    >
+                        <AccordionSummary
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
+                            className={styles.summary}
+                            classes={{ content: styles.content }}
+                        >
+                            <CustomGrid container alignItems="center" className={styles.fadeIn}>
+                                <ActionButton
+                                    className={clsx(
+                                        styles.actionButton
+                                    )}
+                                    Icon={
+                                        <NotesIcon width="30px" height="30px" />
+                                    }
+                                />
+                                <ConditionalRender condition={isExpand && isVisible}>
+                                    <CustomTypography
+                                        color="colors.white.primary"
+                                        variant="h4bold"
+                                        nameSpace="meeting"
+                                        translation="features.notes.title"
+                                        fontSize={16}
+                                    />
+                                    <CustomTypography
+                                        className={styles.textLength}
+                                        color="colors.white.primary"
+                                        fontSize={14}
+                                    >
+                                        {`${noteText.length}/${MAX_NOTE_CONTENT}`}
+                                    </CustomTypography>
+                                    <ActionButton
+                                        onAction={onSubmit}
+                                        variant="accept"
+                                        disabled={isSendNotePending}
+                                        className={styles.submitNote}
+                                        Icon={
+                                            <AcceptIcon
+                                                width="23px"
+                                                height="23px"
+                                            />
+                                        }
+                                    />
+                                </ConditionalRender>
+                            </CustomGrid>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <CustomInput
+                                nameSpace="meeting"
+                                translation="features.notes.input"
+                                multiline
+                                rows={3}
+                                className={materialStyles.textField}
+                                {...restRegisterData}
+                                onChange={handleChange}
+                            />
+                        </AccordionDetails>
+                    </Accordion>
+                </FormProvider>
+            </CustomPaper>
+        </ClickAwayListener>
     );
 };
 

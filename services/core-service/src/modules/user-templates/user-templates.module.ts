@@ -26,6 +26,7 @@ import { UserTemplatesService } from './user-templates.service';
 // controllers
 import { UserTemplatesController } from './user-templates.controller';
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
+import { MediasModule } from '../medias/medias.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UserProfileStatisticModule } from '../user-profile-statistic/user-profi
     BusinessCategoriesModule,
     LanguagesModule,
     CommonTemplatesModule,
+    MediasModule,
     AwsConnectorModule,
     RoomsStatisticsModule,
     UserProfileStatisticModule,

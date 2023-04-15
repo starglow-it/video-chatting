@@ -116,7 +116,8 @@
     "perSession": "per session",
     "yourCard": "Your card",
     "stripe": "Stripe",
-    "payWith": "Pay with"
+    "payWith": "Pay with",
+    "title": "Payments"
   },
   "customLink": {
     "yourLink": "your meeting link here",

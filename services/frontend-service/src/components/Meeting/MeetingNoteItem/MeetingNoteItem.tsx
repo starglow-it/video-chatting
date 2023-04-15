@@ -1,7 +1,7 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import clsx from 'clsx';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Linkify from 'linkify-react';
 
@@ -14,6 +14,8 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { useTimer } from '@hooks/useTimer';
+import { MAX_MILLISECOND_BLUR_NOTE } from 'src/const/time/common';
 
 // icons
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
@@ -30,6 +32,7 @@ import { addNotificationEvent } from '../../../store';
 import {
     $isMeetingHostStore,
     $localUserStore,
+    $meetingUsersStore,
     removeLocalMeetingNoteEvent,
     removeMeetingNoteSocketEvent,
 } from '../../../store/roomStores';
@@ -50,15 +53,37 @@ const Component = ({
     const localUser = useStore($localUserStore);
     const isMeetingHost = useStore($isMeetingHostStore);
 
+    const user = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [note.user],
+        fn: (state, [userId]) => state.find(item => item.id === userId),
+    });
+
     const isMeetingNoteOwner = localUser.id === note.user;
 
     const yPosition = 250 + noteIndex * 124 + 20 * noteIndex;
+
+    const {
+        value: currentTime,
+        onStartTimer: handleStartCountDown,
+        onEndTimer: handleEndCountDown,
+    } = useTimer(true);
+
+    const isBlur = currentTime === MAX_MILLISECOND_BLUR_NOTE;
 
     const {
         value: isDragging,
         onSwitchOn: handleOnDragging,
         onSwitchOff: handleOffDragging,
     } = useToggle(false);
+
+    useEffect(() => {
+        handleStartCountDown(0, 30000);
+    }, [note.id]);
+
+    useEffect(() => {
+        if (isBlur) handleEndCountDown();
+    }, [currentTime]);
 
     const handleStart = useCallback(() => {
         handleOnDragging();
@@ -98,7 +123,10 @@ const Component = ({
         >
             <CustomGrid
                 container
-                className={clsx(styles.noteWrapper, { [styles.withSticker]: !isDragging })}
+                className={clsx(styles.noteWrapper, {
+                    [styles.withSticker]: !isDragging,
+                    [styles.blur]: isBlur,
+                })}
                 style={{ zIndex: dragIndex * 10 }}
             >
                 <CopyToClipboard text={note.content} onCopy={handleTextCopied}>
@@ -108,7 +136,11 @@ const Component = ({
                 </CopyToClipboard>
                 <CustomScroll className={styles.scroll}>
                     <CustomGrid container className={styles.content}>
-                        <CustomTypography className={styles.text}>
+                        <CustomTypography
+                            className={clsx(styles.text, {
+                                [styles.blur]: isBlur,
+                            })}
+                        >
                             <Linkify
                                 options={{
                                     target: '_blank',
@@ -119,7 +151,20 @@ const Component = ({
                         </CustomTypography>
                     </CustomGrid>
                 </CustomScroll>
-                <ConditionalRender condition={isMeetingHost || isMeetingNoteOwner}>
+                <CustomGrid
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="flex-end"
+                    width="100%"
+                    padding={1}
+                >
+                    <CustomTypography variant="subtitle2" color="#c17e7e">
+                        {user?.username}
+                    </CustomTypography>
+                </CustomGrid>
+                <ConditionalRender
+                    condition={isMeetingHost || isMeetingNoteOwner}
+                >
                     <RoundCloseIcon
                         width="20px"
                         height="20px"

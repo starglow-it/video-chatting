@@ -42,6 +42,7 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 // schemas
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
+import { MediaService } from '../medias/medias.service';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -54,6 +55,7 @@ export class UserTemplatesController {
     private languageService: LanguagesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
+    private mediaService: MediaService
   ) {}
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
@@ -215,6 +217,24 @@ export class UserTemplatesController {
             session,
           });
         }
+
+        const medias = await this.mediaService.findMedias({
+          query: {}
+        });
+
+        await Promise.all(medias?.map(async media => {
+          await this.mediaService.createUserTemplateMedia({
+            data: {
+              userTemplate: userTemplate._id,
+              mediaCategory: media.mediaCategory,
+              url: media.url,
+              previewUrls: media.previewUrls,
+              type: media.type
+            },
+            session
+          });
+        }));
+
 
         await this.userProfileStatisticService.updateOne({
           query: { user: user._id },
@@ -602,6 +622,23 @@ export class UserTemplatesController {
             session,
           });
         }
+
+        const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
+          query: {
+            userTemplate: userTemplate._id
+          }
+        });
+
+        userTemplateMedias.map(async media => {
+          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}`);
+        });
+        
+        this.mediaService.deleteUserTemplateMedias({
+          query: {
+            userTemplate: userTemplate._id
+          }
+        });
+
         await this.userTemplatesService.deleteUserTemplate(
           { _id: templateId },
           session,

@@ -178,7 +178,7 @@ export class SeederService {
 
                 const url = await this.readFileAndUpload({
                   filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
-                  key: `templates/videos/${newMedia.id.toString()}/${uuidv4()}.webp`
+                  key: `medias/${newMedia.id.toString()}/videos/${uuidv4()}.webp`
                 });
 
                 await this.updateMedia({
