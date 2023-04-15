@@ -18,7 +18,6 @@ import { VerificationCodeModule } from '../verification-code/verification-code.m
 import { TasksModule } from '../tasks/tasks.module';
 import { CountryStatisticsModule } from '../country-statistics/country-statistics.module';
 import { UserProfileStatisticModule } from '../user-profile-statistic/user-profile-statistic.module';
-import { MeetingsService } from '../meetings/meetings.service';
 
 @Module({
   imports: [

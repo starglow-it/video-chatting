@@ -43,6 +43,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
+import { MediaService } from '../medias/medias.service';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -52,7 +53,6 @@ export class CommonTemplatesController {
     @InjectConnection() private connection: Connection,
     private commonTemplatesService: CommonTemplatesService,
     private userTemplatesService: UserTemplatesService,
-    private meetingsService: MeetingsService,
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
     private roomStatisticService: RoomsStatisticsService,
@@ -60,6 +60,7 @@ export class CommonTemplatesController {
     private awsService: AwsConnectorService,
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
+    private mediaService: MediaService
   ) {}
 
   async onModuleInit() {
@@ -307,6 +308,23 @@ export class CommonTemplatesController {
             $inc: { roomsUsed: 1 },
           },
         });
+
+        const medias = await this.mediaService.findMedias({
+          query: {}
+        });
+
+        await Promise.all(medias?.map(async media => {
+          await this.mediaService.createUserTemplateMedia({
+            data: {
+              userTemplate: userTemplate._id,
+              mediaCategory: media.mediaCategory,
+              url: media.url,
+              previewUrls: media.previewUrls,
+              type: media.type
+            },
+            session
+          });
+        }));
 
         return plainToInstance(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,

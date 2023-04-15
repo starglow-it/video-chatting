@@ -3,5 +3,12 @@ export enum CoreBrokerPatterns {
   GetCountryStatistics = 'get_country_statistics',
   GetMediaCategories = 'get_media_categories',
   GetMedias = 'get_medias',
-  AddMedia = 'add_media'
+  GetUserTemplateMedias = 'get_user_template_medias',
+  CreateMedia = 'create_media',
+  CreateUserTemplateMedia = 'create_user_template_media',
+  UpdateBusinessCategory = 'update_business_category',
+  UploadMediaFile = 'upload_media_file',
+  UploadUserTemplateMediaFile = 'upload_user_template_media_file',
+  UpdateMedia = 'udpate_media',
+  DeleteBusinessCategories = 'delete_business_categories',
 }

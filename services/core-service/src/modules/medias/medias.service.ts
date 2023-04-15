@@ -2,21 +2,76 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, QueryOptions } from 'mongoose';
 
-import { IMedia, IMediaCategory } from 'shared-types';
+import { IMedia, IMediaCategory, IUserTemplateMedia } from 'shared-types';
 
 import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { MediaCategory, MediaCategoryDocument } from 'src/schemas/media-category.schema';
-import { Media, MediaDocument } from 'src/schemas/media.schema';
+import { Media, MediaDocument } from '../../schemas/media.schema';
+import { PreviewImage, PreviewImageDocument } from '../../schemas/preview-image.schema';
+import * as mkdirp from 'mkdirp';
+import * as path from 'path';
+import * as fsPromises from 'fs/promises';
+import { getScreenShots } from 'src/utils/images/getScreenShots';
+import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
+import { UserTemplateMedia, UserTemplateMediaDocument } from 'src/schemas/user-template-media.schema';
 
 @Injectable()
 export class MediaService {
     constructor(
+        private awsService: AwsConnectorService,
         @InjectModel(MediaCategory.name)
         private mediaCategory: Model<MediaCategoryDocument>,
         @InjectModel(Media.name)
-        private media: Model<MediaDocument>
+        private media: Model<MediaDocument>,
+        @InjectModel(PreviewImage.name)
+        private previewImage: Model<PreviewImageDocument>,
+        @InjectModel(UserTemplateMedia.name)
+        private userTemplateMedia: Model<UserTemplateMediaDocument>
     ) { }
+
+
+
+    async generatePreviews({
+        id,
+        mimeType,
+        url,
+    }: {
+        id: string;
+        mimeType: string;
+        url: string;
+    }) {
+        const outputPath = path.join(__dirname, '../../../../images', id);
+        await mkdirp(outputPath);
+
+        const fileType = mimeType.split('/')[0];
+        await getScreenShots(url, outputPath, fileType);
+
+        const imagesPaths = await fsPromises.readdir(outputPath);
+
+        const uploadedImagesPromises = imagesPaths.map(async (image) => {
+            const keyFilePath = `${outputPath}/${image}`;
+            const resolution = image.match(/(\d*)p\./);
+
+            const file = await fsPromises.readFile(keyFilePath);
+            const uploadKey = `templates/images/${id}/${image}`;
+            const fileStats = await fsPromises.stat(keyFilePath);
+
+            const imageUrl = await this.awsService.uploadFile(file, uploadKey);
+
+            await fsPromises.rm(keyFilePath);
+
+            return this.previewImage.create({
+                url: imageUrl,
+                resolution: resolution?.[1],
+                size: fileStats.size,
+                mimeType: 'image/webp',
+                key: uploadKey
+            });
+        });
+
+        return Promise.all(uploadedImagesPromises);
+    }
 
     async createCategory({
         data,
@@ -30,6 +85,20 @@ export class MediaService {
         });
 
         return newTag;
+    }
+
+    async createUserTemplateMedia({
+        data,
+        session,
+    }: {
+        data: Partial<UserTemplateMediaDocument>;
+        session?: ITransactionSession;
+    }){
+        const [newMedia] = await this.userTemplateMedia.create([data], {
+            session: session?.session,
+        });
+
+        return newMedia;
     }
 
     async createMedia({
@@ -46,11 +115,11 @@ export class MediaService {
         return newMedia;
     }
 
-    async find({
+    async findCategories({
         query,
         options,
         session,
-    }: GetModelQuery<MediaCategoryDocument>) {
+    }: GetModelQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument[]> {
         return this.mediaCategory
             .find(
                 query,
@@ -59,6 +128,26 @@ export class MediaService {
                     skip: options?.skip,
                     limit: options?.limit,
                     session: session?.session,
+                },
+            )
+            .exec();
+    }
+
+    async findUserTemplateMedias({
+        query,
+        options,
+        session,
+        populatePaths
+    }: GetModelQuery<UserTemplateMediaDocument>): Promise<UserTemplateMediaDocument[]> {
+        return this.userTemplateMedia
+            .find(
+                query,
+                {},
+                {
+                    skip: options?.skip,
+                    limit: options?.limit,
+                    session: session?.session,
+                    populate: populatePaths
                 },
             )
             .exec();
@@ -110,7 +199,21 @@ export class MediaService {
         });
     }
 
-
+    async updateUserTemplateMedia({
+        query,
+        data,
+        session,
+        populatePaths,
+    }: UpdateModelQuery<
+        UserTemplateMediaDocument,
+        IUserTemplateMedia
+    >): Promise<UserTemplateMediaDocument> {
+        return this.userTemplateMedia.findOneAndUpdate(query, data, {
+            session: session?.session,
+            populate: populatePaths,
+            new: true,
+        });
+    }
 
     async existCategories(query: FilterQuery<MediaCategoryDocument>): Promise<boolean> {
         const existedDocument = await this.mediaCategory.exists(query).exec();
@@ -126,6 +229,10 @@ export class MediaService {
         return this.media.count(query).exec();
     }
 
+    async countUserTemplateMedias(query: FilterQuery<UserTemplateMediaDocument>): Promise<number> {
+        return this.userTemplateMedia.count(query).exec();
+    }
+
     async deleteMedias({
         query,
         session,
@@ -137,5 +244,22 @@ export class MediaService {
         return this.media.deleteMany(query, {
             session: session?.session,
         });
+    }
+
+    async deleteUserTemplateMedias({
+        query,
+        session,
+    }: {
+        query: FilterQuery<UserTemplateMediaDocument>;
+        session?: ITransactionSession;
+    }): Promise<any> {
+
+        return this.userTemplateMedia.deleteMany(query, {
+            session: session?.session,
+        });
+    }
+
+    async deleteFolderMedias(keyFolder: string){
+        await this.awsService.deleteFolder(keyFolder);
     }
 }
