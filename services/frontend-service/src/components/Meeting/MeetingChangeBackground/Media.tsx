@@ -52,7 +52,7 @@ const Component = ({
                 ) : (
                     <CustomVideoPlayer
                         src={item.url}
-                        volume={100}
+                        volume={0}
                         isPlaying
                         isMuted={false}
                     />
