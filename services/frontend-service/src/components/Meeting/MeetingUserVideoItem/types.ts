@@ -18,7 +18,7 @@ export type MeetingUserVideoItemProps = {
     localStream?: CustomMediaStream;
     bottom: number | undefined;
     left: number | undefined;
-    onResizeVideo?: (size: number) => void;
+    onResizeVideo?: (size: number, userId: string) => void;
     isSelfView?: boolean;
 };
 
@@ -38,5 +38,5 @@ export type MeetingUserVideoComProps = {
     isSelfView?: boolean;
     setScale: (size: number) => void;
     resizeCoeff: number;
-    onResizeVideo?: (size: number) => void;
+    onResizeVideo?: (size: number, userId: string) => void;
 }
