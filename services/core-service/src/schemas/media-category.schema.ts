@@ -21,6 +21,12 @@ export class MediaCategory {
     required: true,
   })
   emojiUrl: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true
+  })
+  type: string;
 }
 
 export type MediaCategoryDocument = MediaCategory & Document;
