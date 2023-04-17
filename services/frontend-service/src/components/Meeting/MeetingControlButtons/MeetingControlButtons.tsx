@@ -1,4 +1,10 @@
-import React, { memo, SyntheticEvent, useCallback, useMemo } from 'react';
+import React, {
+    memo,
+    SyntheticEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+} from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -16,7 +22,6 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
 import { MeetingAccessStatusEnum } from 'shared-types';
 
 // icons
@@ -26,21 +31,27 @@ import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // stores
-import { $authStore } from '../../../store';
+import { $authStore, $profileStore } from '../../../store';
 import {
     $isMeetingHostStore,
+    $isOwner,
     $isScreenSharingStore,
+    $isTogglePayment,
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
+    $paymentIntent,
+    cancelPaymentIntentWithData,
+    createPaymentIntentWithData,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
+    togglePaymentFormEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
@@ -53,6 +64,7 @@ import {
     loginRoute,
 } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
+import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 
 const Component = () => {
     const router = useRouter();
@@ -74,6 +86,14 @@ const Component = () => {
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent,
             ),
     });
+    const profile = useStore($profileStore);
+    const isOwner = useStore($isOwner);
+    const isPaymentOpen = useStore($isTogglePayment);
+    const paymentIntent = useStore($paymentIntent);
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
+    const intentId = paymentIntent?.id;
 
     const isSharingScreenActive = localUser.id === meeting.sharingUserId;
 
@@ -84,6 +104,10 @@ const Component = () => {
     const isCamActive = localUser.cameraStatus === 'active';
 
     const { isMobile } = useBrowserDetect();
+
+    useEffect(() => {
+        if (isMeetingHost && isThereNewRequests) toggleUsersPanelEvent(true);
+    }, [isMeetingHost, isThereNewRequests]);
 
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
@@ -140,6 +164,17 @@ const Component = () => {
         }
         return '';
     }, [isAbleToToggleSharing, isSharingActive]);
+
+    const handleTogglePayments = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        if (!isCreatePaymentIntentPending) {
+            if (!isPaymentOpen && !intentId && !isOwner) {
+                createPaymentIntentWithData();
+            }
+            if (intentId) cancelPaymentIntentWithData();
+            togglePaymentFormEvent();
+        }
+    };
 
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
@@ -208,8 +243,34 @@ const Component = () => {
                 </CustomTooltip>
             </ConditionalRender>
 
-            <ConditionalRender condition={meetingTemplate.isAudioAvailable}>
-                <BackgroundAudioControl />
+            <ConditionalRender
+                condition={
+                    isOwner
+                        ? Boolean(
+                              profile.isStripeEnabled &&
+                                  profile.stripeAccountId,
+                          )
+                        : meetingTemplate.isMonetizationEnabled
+                }
+            >
+            <CustomTooltip
+                classes={{ tooltip: styles.tooltip }}
+                nameSpace="meeting"
+                translation="payments.title"
+            >
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
+                >
+                    <ActionButton
+                        variant="transparentBlack"
+                        onAction={handleTogglePayments}
+                        className={styles.deviceButton}
+                        Icon={<MonetizationIcon width="22px" height="22px" />}
+                    />
+                </CustomPaper>
+            </CustomTooltip>
             </ConditionalRender>
 
             <ActionButton

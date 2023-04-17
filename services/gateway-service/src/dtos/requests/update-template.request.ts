@@ -209,4 +209,13 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsOptional()
   @IsString({ message: 'Url must be string', each: true })
   url: string;
+
+  @ApiProperty({
+    required: false,
+    type: String
+  })
+  @IsOptional()
+  @IsString({ message: 'Template type must be string', each: true })
+  templateType: string;
+
 }

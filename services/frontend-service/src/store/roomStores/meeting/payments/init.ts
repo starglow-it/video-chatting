@@ -22,4 +22,6 @@ $paymentIntent
         clientSecret: '',
     }));
 
-$isTogglePayment.on(togglePaymentFormEvent, toggle => !toggle);
+$isTogglePayment.on(togglePaymentFormEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);

@@ -204,7 +204,9 @@ const Component = () => {
                     <MeetingGeneralInfo />
                     <MeetingNotes />
                     <MeetingUsersVideos />
-                    <MeetingChangeBackground />
+                    <ConditionalRender condition={isOwner}>
+                        <MeetingChangeBackground />
+                    </ConditionalRender>
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
