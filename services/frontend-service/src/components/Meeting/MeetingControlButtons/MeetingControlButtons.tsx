@@ -165,7 +165,8 @@ const Component = () => {
         return '';
     }, [isAbleToToggleSharing, isSharingActive]);
 
-    const handleTogglePayments = () => {
+    const handleTogglePayments = (e: SyntheticEvent) => {
+        e.stopPropagation();
         if (!isCreatePaymentIntentPending) {
             if (!isPaymentOpen && !intentId && !isOwner) {
                 createPaymentIntentWithData();
@@ -252,26 +253,24 @@ const Component = () => {
                         : meetingTemplate.isMonetizationEnabled
                 }
             >
-                <CustomTooltip
-                    classes={{ tooltip: styles.tooltip }}
-                    nameSpace="meeting"
-                    translation="payments.title"
+            <CustomTooltip
+                classes={{ tooltip: styles.tooltip }}
+                nameSpace="meeting"
+                translation="payments.title"
+            >
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
+                    <ActionButton
+                        variant="transparentBlack"
+                        onAction={handleTogglePayments}
                         className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={handleTogglePayments}
-                            className={styles.deviceButton}
-                            Icon={
-                                <MonetizationIcon width="22px" height="22px" />
-                            }
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
+                        Icon={<MonetizationIcon width="22px" height="22px" />}
+                    />
+                </CustomPaper>
+            </CustomTooltip>
             </ConditionalRender>
 
             <ActionButton

@@ -53,10 +53,22 @@ const useStyles = makeStyles((theme: Theme) =>
                         borderColor: theme.palette.colors.white.primary,
                     },
                 },
+                height: '35px',
             },
             '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: theme.palette.colors.white.primary,
+                borderRadius: '8px',
             },
+            '& .MuiFormLabel-root': {
+                top: '-8px',
+                fontSize: '14px',
+            },
+            '& .Mui-focused': {
+                top: 0,
+            },
+            "& .MuiFormLabel-filled": {
+                top: 0
+            }
         },
     }),
 );
@@ -106,9 +118,7 @@ const Component = () => {
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
             <FormProvider {...methods}>
                 <CustomPaper
-                    className={clsx(styles.commonOpenPanel, {
-                        [styles.expanded]: isExpand,
-                    })}
+                    className={clsx(styles.commonOpenPanel)}
                     variant="black-glass"
                 >
                     <CustomGrid
@@ -119,30 +129,24 @@ const Component = () => {
                     >
                         <ActionButton
                             className={clsx(styles.actionButton)}
-                            Icon={<NotesIcon width="35px" height="35px" />}
+                            Icon={<NotesIcon width="32px" height="32px" />}
                             onClick={changeExpand}
                         />
-                        <ConditionalRender condition={isExpand}>
+
+                        <CustomGrid flex={1}>
                             <CustomInput
                                 nameSpace="meeting"
                                 translation="features.notes.input"
-                                className={materialStyles.textField}
+                                className={clsx(
+                                    materialStyles.textField,
+                                    styles.textField,
+                                    { [styles.expanded]: isExpand },
+                                )}
                                 onKeyDown={handleKeyDown}
                                 {...restRegisterData}
                                 onChange={handleChange}
-                                InputLabelProps={{
-                                    style: {
-                                        height: '40px',
-                                    },
-                                }}
-                                inputProps={{
-                                    style: {
-                                        height: '40px',
-                                        padding: 0,
-                                    },
-                                }}
                             />
-                        </ConditionalRender>
+                        </CustomGrid>
                     </CustomGrid>
                 </CustomPaper>
             </FormProvider>

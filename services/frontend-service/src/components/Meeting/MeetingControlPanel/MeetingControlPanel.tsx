@@ -87,6 +87,11 @@ const Component = () => {
         toggleUsersPanelEvent(false);
     };
 
+    const toggleOutsidePaymentsPanel = (e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        togglePaymentFormEvent(false);
+    };
+
     const commonContent = useMemo(
         () => (
             <>
@@ -112,24 +117,25 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-
-                <Fade in={isPaymentOpen}>
-                    <CustomPaper
-                        variant="black-glass"
-                        className={clsx(styles.commonOpenPanel, {
-                            [styles.mobile]: isMobile,
-                        })}
-                    >
-                        <ConditionalRender condition={!isOwner}>
-                            <PaymentForm onClose={handleClosePayment} />
-                        </ConditionalRender>
-                        <ConditionalRender condition={isOwner}>
-                            <MeetingMonetization
-                                onUpdate={handleUpdateMonetization}
-                            />
-                        </ConditionalRender>
-                    </CustomPaper>
-                </Fade>
+                <ClickAwayListener onClickAway={toggleOutsidePaymentsPanel}>
+                    <Fade in={isPaymentOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.commonOpenPanel, {
+                                [styles.mobile]: isMobile,
+                            })}
+                        >
+                            <ConditionalRender condition={!isOwner}>
+                                <PaymentForm onClose={handleClosePayment} />
+                            </ConditionalRender>
+                            <ConditionalRender condition={isOwner}>
+                                <MeetingMonetization
+                                    onUpdate={handleUpdateMonetization}
+                                />
+                            </ConditionalRender>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
             </>
         ),
         [
@@ -167,9 +173,7 @@ const Component = () => {
             container
             className={clsx(styles.panelWrapper, { [styles.mobile]: isMobile })}
         >
-            <CustomPaper
-                className={styles.controlPanelWrapper}
-            >
+            <CustomPaper className={styles.controlPanelWrapper}>
                 {!isMobile ? (
                     <> {commonContent}</>
                 ) : (
