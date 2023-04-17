@@ -54,18 +54,20 @@ export class MediaController {
     //#region public method
     @MessagePattern({ cmd: CoreBrokerPatterns.GetMediaCategories })
     async getMediaCategories(
-        @Payload() { skip = 0, limit = 10 }: GetMediaCategoriesPayload,
+        @Payload() { skip = 0, limit = 10, type }: GetMediaCategoriesPayload,
     ): Promise<EntityList<IMediaCategory>> {
         try {
             return withTransaction(this.connection, async (session) => {
                 const mediaCategories = await this.mediaService.findCategories({
-                    query: {},
+                    query: {
+                        type
+                    },
                     options: { skip: skip * limit, limit },
                     session,
                 });
 
                 const categoriesCount = await this.mediaService.countCategories({
-                    query: {},
+                    type
                 });
 
                 const parsedCategories = plainToInstance(

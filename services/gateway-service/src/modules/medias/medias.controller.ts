@@ -11,7 +11,6 @@ import {
     Request,
     UploadedFile,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
     ApiBearerAuth,
     ApiForbiddenResponse,
@@ -28,7 +27,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { UserTemplateMediaRestDto } from '../../dtos/response/common-user-template-media.dto';
-import { GetUserTemplateMediasQueryDto } from 'src/dtos/query/GetUserTemplateMedias.dto';
+import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
+import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategories.dto';
 
 @ApiTags('Medias')
 @Controller('medias')
@@ -50,15 +50,15 @@ export class MediasController {
         description: 'Forbidden',
     })
     async getCategories(
-        @Request() req,
-        @Query('skip', ParseIntPipe) skip: number,
-        @Query('limit', ParseIntPipe) limit: number,
+        @Query() query: GetMediaCategoriesQueryDto
     ): Promise<ResponseSumType<EntityList<IMediaCategory>>> {
         try {
+            const {skip, limit, type} = query;
             const mediaCategories =
                 await this.mediaService.getMediaCategories({
                     skip,
                     limit,
+                    type
                 });
 
             return {

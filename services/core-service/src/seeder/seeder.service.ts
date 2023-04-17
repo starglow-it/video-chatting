@@ -143,6 +143,17 @@ export class SeederService {
         });
       }
 
+      if(!category.type){
+        await this.mediaService.updateMediaCategory({
+          query: {
+            _id: category._id
+          },
+          data: {
+            type: categoryItem.type
+          }
+        });
+      }
+
       const medias = await this.mediaService.findMedias({
         query: {
           mediaCategory: category._id

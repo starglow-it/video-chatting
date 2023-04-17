@@ -182,6 +182,22 @@ export class MediaService {
             .findOne(query, {}, { session: session?.session, populate: populatePaths })
             .exec();
     }
+    
+    async updateMediaCategory({
+        query,
+        data,
+        session,
+        populatePaths,
+    }: UpdateModelQuery<
+        MediaCategoryDocument,
+        IMediaCategory
+    >): Promise<MediaCategoryDocument> {
+        return this.mediaCategory.findOneAndUpdate(query, data, {
+            session: session?.session,
+            populate: populatePaths,
+            new: true,
+        });
+    }
 
     async updateMedia({
         query,
