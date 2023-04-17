@@ -90,6 +90,9 @@ sample({
             data: {
                 previewUrls: dataUpdate?.previewUrls.map(item => item.id),
                 url: dataUpdate?.url,
+                templateType: backgroundMeetingStore.medias.find(
+                    item => item.id === clock.mediaSelected,
+                )?.type,
             },
         };
     },

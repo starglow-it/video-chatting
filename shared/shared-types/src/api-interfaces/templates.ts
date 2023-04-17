@@ -108,6 +108,7 @@ export interface IUpdateTemplate {
     twitter?: string;
     custom?: string;
   };
+  templateType?: string;
 }
 
 export interface IUploadTemplateFile {

@@ -48,9 +48,8 @@ $meetingUsersStore
     )
     .reset(resetRoomStores);
 
-$isToggleUsersPanel.on(
-    toggleUsersPanelEvent,
-    (toggle, newToggle) => newToggle ?? !toggle,
+$isToggleUsersPanel.on(toggleUsersPanelEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
 );
 
 sample({

@@ -1,7 +1,6 @@
-import React, { SyntheticEvent, memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import * as yup from 'yup';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { useStore } from 'effector-react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Theme } from '@mui/system';
 import createStyles from '@mui/styles/createStyles';
 import { makeStyles } from '@mui/styles';
@@ -11,8 +10,6 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // components
@@ -29,12 +26,7 @@ import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
 
 // styles
 import styles from './LeaveNoteForm.module.scss';
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    ClickAwayListener,
-} from '@mui/material';
+import { ClickAwayListener } from '@mui/material';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import clsx from 'clsx';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
@@ -61,10 +53,22 @@ const useStyles = makeStyles((theme: Theme) =>
                         borderColor: theme.palette.colors.white.primary,
                     },
                 },
+                height: '35px',
             },
             '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: theme.palette.colors.white.primary,
+                borderRadius: '8px',
             },
+            '& .MuiFormLabel-root': {
+                top: '-8px',
+                fontSize: '14px',
+            },
+            '& .Mui-focused': {
+                top: 0,
+            },
+            "& .MuiFormLabel-filled": {
+                top: 0
+            }
         },
     }),
 );
@@ -74,8 +78,6 @@ type FormType = { note: string };
 const Component = () => {
     const materialStyles = useStyles();
 
-    const isSendNotePending = useStore(sendMeetingNoteSocketEvent.pending);
-
     const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const methods = useForm({
@@ -83,23 +85,16 @@ const Component = () => {
         defaultValues: { note: '' },
     });
 
-    const { handleSubmit, control, reset, register } = methods;
+    const { reset, register, getValues } = methods;
 
-    const noteText = useWatch({
-        control,
-        name: 'note',
-    });
+    const [isExpand, setIsExpand] = useState<boolean>(true);
 
-    const [isExpand, setIsExpand] = useState<boolean>(false);
-    const [isVisible, setIsVisible] = useState<boolean>(false);
-
-    const onSubmit = useCallback(
-        handleSubmit(async data => {
-            sendMeetingNoteSocketEvent(data);
+    const handleKeyDown = (e: any) => {
+        if (e.key === 'Enter' || e.keyCode === '13') {
+            sendMeetingNoteSocketEvent(getValues());
             reset();
-        }),
-        [],
-    );
+        }
+    };
 
     const { onChange, ...restRegisterData } = register('note', {
         maxLength: MAX_NOTE_CONTENT,
@@ -115,91 +110,46 @@ const Component = () => {
         await onChange(event);
     }, []);
 
-    const changeExpand = (event: SyntheticEvent, expanded: boolean) => {
-        setIsExpand(expanded);
+    const changeExpand = () => {
+        setIsExpand(!isExpand);
     };
 
     return (
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
-            <CustomPaper
-                className={clsx(styles.commonOpenPanel, {
-                    [styles.expanded]: isExpand,
-                })}
-            >
-                <FormProvider {...methods}>
-                    <Accordion
-                        expanded={isExpand}
-                        onChange={changeExpand}
-                        className={clsx(styles.accordion)}
-                        TransitionProps={{
-                            timeout: {
-                                appear: 600,
-                                enter: 600,
-                                exit: 400,
-                            },
-                            onEntered: () => setIsVisible(true),
-                            onExited: () => setIsVisible(false)
-                        }}
+            <FormProvider {...methods}>
+                <CustomPaper
+                    className={clsx(styles.commonOpenPanel)}
+                    variant="black-glass"
+                >
+                    <CustomGrid
+                        container
+                        alignItems="center"
+                        flexDirection="row"
+                        justifyContent="center"
                     >
-                        <AccordionSummary
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                            className={styles.summary}
-                            classes={{ content: styles.content }}
-                        >
-                            <CustomGrid container alignItems="center" className={styles.fadeIn}>
-                                <ActionButton
-                                    className={clsx(
-                                        styles.actionButton
-                                    )}
-                                    Icon={
-                                        <NotesIcon width="30px" height="30px" />
-                                    }
-                                />
-                                <ConditionalRender condition={isExpand && isVisible}>
-                                    <CustomTypography
-                                        color="colors.white.primary"
-                                        variant="h4bold"
-                                        nameSpace="meeting"
-                                        translation="features.notes.title"
-                                        fontSize={16}
-                                    />
-                                    <CustomTypography
-                                        className={styles.textLength}
-                                        color="colors.white.primary"
-                                        fontSize={14}
-                                    >
-                                        {`${noteText.length}/${MAX_NOTE_CONTENT}`}
-                                    </CustomTypography>
-                                    <ActionButton
-                                        onAction={onSubmit}
-                                        variant="accept"
-                                        disabled={isSendNotePending}
-                                        className={styles.submitNote}
-                                        Icon={
-                                            <AcceptIcon
-                                                width="23px"
-                                                height="23px"
-                                            />
-                                        }
-                                    />
-                                </ConditionalRender>
-                            </CustomGrid>
-                        </AccordionSummary>
-                        <AccordionDetails>
+                        <ActionButton
+                            className={clsx(styles.actionButton)}
+                            Icon={<NotesIcon width="32px" height="32px" />}
+                            onClick={changeExpand}
+                        />
+
+                        <CustomGrid flex={1}>
                             <CustomInput
                                 nameSpace="meeting"
                                 translation="features.notes.input"
-                                multiline
-                                rows={3}
-                                className={materialStyles.textField}
+                                className={clsx(
+                                    materialStyles.textField,
+                                    styles.textField,
+                                    { [styles.expanded]: isExpand },
+                                )}
+                                onKeyDown={handleKeyDown}
                                 {...restRegisterData}
                                 onChange={handleChange}
                             />
-                        </AccordionDetails>
-                    </Accordion>
-                </FormProvider>
-            </CustomPaper>
+                        </CustomGrid>
+                    </CustomGrid>
+                </CustomPaper>
+            </FormProvider>
         </ClickAwayListener>
     );
 };

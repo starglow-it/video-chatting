@@ -4,4 +4,5 @@ export type CustomVideoPlayerProps = {
     isPlaying: boolean;
     isMuted: boolean;
     volume: number;
+    classVideo?: string;
 };

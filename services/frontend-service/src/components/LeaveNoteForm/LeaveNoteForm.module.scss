@@ -24,30 +24,13 @@
   margin: rem(0 12px 0 auto);
 }
 
-.textField {
-  background: transparent;
-}
-
 .commonOpenPanel {
   position: absolute;
-  width: rem(35px);
-  top: 4%;
-  right: 65px;
-  border-radius: 4px;
-  -webkit-transition: all 0.4s;
-  -moz-transition: all 0.4s;
-  transition: all 0.4s;
-  background-color: #1c2d2f;
+  bottom: 1%;
+  right: 35%;
+  width: 430px;
   border-radius: 6px;
-
-  &:hover:not(.expanded) {
-    background-color: #686666;
-  }
-
-  &.expanded {
-    padding-top: 12px;
-    width: 300px;
-  }
+  padding: 6px 10px;
 
   &.mobile {
     left: 50%;
@@ -63,27 +46,13 @@
   background: transparent;
   color: $primary-white;
   border: none;
-  width: rem(35px);
-  height: rem(35px);
+  width: rem(43px);
+  height: rem(41px);
   border-radius: rem(4px);
-  cursor: pointer;
+  margin-right: 7px;
 
   &.active {
     background: rgba($primary-white, 0.25);
   }
 
-}
-
-.accordion {
-  background-color: transparent;
-
-  .summary {
-    padding: 0px 5px;
-    min-height: 35px;
-    height: 35px;
-  }
-
-  .content {
-    margin: 0px;
-  }
 }

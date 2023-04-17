@@ -5,18 +5,14 @@
     position: absolute;
     width: 35px;
     right: 20px;
-    top: 4%;
+    top: 1%;
     -webkit-transition: all 0.4s;
     -moz-transition: all 0.4s;
     transition: all 0.4s;
-    background-color: #1c2d2f;
     border-radius: 6px;
     padding: 0;
     z-index: 99;
 
-    &:hover:not(.expanded) {
-        background-color: #686666;
-    }
 
     &.expanded {
         width: 270px;
@@ -125,4 +121,7 @@
     .detail {
         padding: 0;
     }
+}
+.player {
+    overflow: hidden;
 }

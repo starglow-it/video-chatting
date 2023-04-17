@@ -1,11 +1,10 @@
-import React, { memo, useCallback, useRef, useEffect, useMemo } from 'react';
-import { useStore, useStoreMap } from 'effector-react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
 
 // hooks
-import { useMultipleToggle } from '@hooks/useMultipleToggle';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
@@ -88,6 +87,11 @@ const Component = () => {
         toggleUsersPanelEvent(false);
     };
 
+    const toggleOutsidePaymentsPanel = (e: MouseEvent | TouchEvent) => {
+        e.stopPropagation();
+        togglePaymentFormEvent(false);
+    };
+
     const commonContent = useMemo(
         () => (
             <>
@@ -113,24 +117,25 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-
-                <Fade in={isPaymentOpen}>
-                    <CustomPaper
-                        variant="black-glass"
-                        className={clsx(styles.commonOpenPanel, {
-                            [styles.mobile]: isMobile,
-                        })}
-                    >
-                        <ConditionalRender condition={!isOwner}>
-                            <PaymentForm onClose={handleClosePayment} />
-                        </ConditionalRender>
-                        <ConditionalRender condition={isOwner}>
-                            <MeetingMonetization
-                                onUpdate={handleUpdateMonetization}
-                            />
-                        </ConditionalRender>
-                    </CustomPaper>
-                </Fade>
+                <ClickAwayListener onClickAway={toggleOutsidePaymentsPanel}>
+                    <Fade in={isPaymentOpen}>
+                        <CustomPaper
+                            variant="black-glass"
+                            className={clsx(styles.commonOpenPanel, {
+                                [styles.mobile]: isMobile,
+                            })}
+                        >
+                            <ConditionalRender condition={!isOwner}>
+                                <PaymentForm onClose={handleClosePayment} />
+                            </ConditionalRender>
+                            <ConditionalRender condition={isOwner}>
+                                <MeetingMonetization
+                                    onUpdate={handleUpdateMonetization}
+                                />
+                            </ConditionalRender>
+                        </CustomPaper>
+                    </Fade>
+                </ClickAwayListener>
             </>
         ),
         [
@@ -168,14 +173,9 @@ const Component = () => {
             container
             className={clsx(styles.panelWrapper, { [styles.mobile]: isMobile })}
         >
-            <CustomPaper
-                variant="black-glass"
-                className={styles.controlPanelWrapper}
-            >
+            <CustomPaper className={styles.controlPanelWrapper}>
                 {!isMobile ? (
-                    <CustomGrid className={styles.panelsWrapper}>
-                        {commonContent}
-                    </CustomGrid>
+                    <> {commonContent}</>
                 ) : (
                     <ConditionalRender condition={isUsersOpen || isPaymentOpen}>
                         <CustomGrid className={styles.mobilePanelsWrapper}>

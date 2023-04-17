@@ -16,7 +16,7 @@ export const $paymentIntent = paymentsDomain.store<PaymentIntentStore>({
 
 export const $isTogglePayment = paymentsDomain.store<boolean>(false);
 
-export const togglePaymentFormEvent = paymentsDomain.event(
+export const togglePaymentFormEvent = paymentsDomain.event<boolean | undefined>(
     'togglePaymentFormEvent',
 );
 

@@ -69,8 +69,6 @@ const Component = ({
         onEndTimer: handleEndCountDown,
     } = useTimer(true);
 
-    const isBlur = currentTime === MAX_MILLISECOND_BLUR_NOTE;
-
     const {
         value: isDragging,
         onSwitchOn: handleOnDragging,
@@ -78,11 +76,19 @@ const Component = ({
     } = useToggle(false);
 
     useEffect(() => {
-        handleStartCountDown(0, 30000);
+        handleStartCountDown(0, MAX_MILLISECOND_BLUR_NOTE);
+    }, [note.id]);
+
+    const handleUnpinNote = useCallback(() => {
+        removeLocalMeetingNoteEvent(note.id);
+        removeMeetingNoteSocketEvent({ noteId: note.id });
     }, [note.id]);
 
     useEffect(() => {
-        if (isBlur) handleEndCountDown();
+        if (currentTime === MAX_MILLISECOND_BLUR_NOTE) {
+            handleUnpinNote();
+            handleEndCountDown();
+        }
     }, [currentTime]);
 
     const handleStart = useCallback(() => {
@@ -102,11 +108,6 @@ const Component = ({
         [],
     );
 
-    const handleUnpinNote = useCallback(() => {
-        removeLocalMeetingNoteEvent(note.id);
-        removeMeetingNoteSocketEvent({ noteId: note.id });
-    }, [note.id]);
-
     const handleTextCopied = () => {
         addNotificationEvent({
             type: NotificationType.copyNotification,
@@ -125,7 +126,6 @@ const Component = ({
                 container
                 className={clsx(styles.noteWrapper, {
                     [styles.withSticker]: !isDragging,
-                    [styles.blur]: isBlur,
                 })}
                 style={{ zIndex: dragIndex * 10 }}
             >
@@ -136,11 +136,7 @@ const Component = ({
                 </CopyToClipboard>
                 <CustomScroll className={styles.scroll}>
                     <CustomGrid container className={styles.content}>
-                        <CustomTypography
-                            className={clsx(styles.text, {
-                                [styles.blur]: isBlur,
-                            })}
-                        >
+                        <CustomTypography className={styles.text}>
                             <Linkify
                                 options={{
                                     target: '_blank',
