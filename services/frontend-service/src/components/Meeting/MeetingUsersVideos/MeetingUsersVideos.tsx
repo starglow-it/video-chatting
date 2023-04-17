@@ -48,7 +48,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
     const { isMobile } = useBrowserDetect();
-    
+
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -62,6 +62,13 @@ const Component = () => {
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';
+
+    const handleResizeVideo = (userSize: number, userId: string) => {
+        updateUserSocketEvent({
+            id: userId,
+            userSize,
+        });
+    };
 
     const renderUsers = useMemo(
         () =>
@@ -80,9 +87,15 @@ const Component = () => {
                     bottom={user?.userPosition?.bottom}
                     left={user?.userPosition?.left}
                     isSelfView={false}
+                    onResizeVideo={handleResizeVideo}
                 />
             )),
-        [users, meeting.sharingUserId, meetingTemplate.usersPosition, isScreenSharing],
+        [
+            users,
+            meeting.sharingUserId,
+            meetingTemplate.usersPosition,
+            isScreenSharing,
+        ],
     );
 
     const handleToggleAudio = useCallback(() => {
@@ -96,13 +109,6 @@ const Component = () => {
         }
     }, [isLocalMicActive, isLocalCamActive, isMeetingConnected]);
 
-    const handleResizeVideo = (userSize: number) => {
-        updateUserSocketEvent({
-            id: localUser.id,
-            userSize
-        })
-    }
-
     const handleClosePanel = useCallback(() => {
         if (isSideUsersOpen) {
             setIsSideUsersOpenEvent(false);
@@ -112,9 +118,14 @@ const Component = () => {
     if (isScreenSharing && isMobile) {
         return (
             <CustomGrid
-                className={clsx(styles.usersWrapper, styles.sharing, styles.mobileSharing, {
-                    [styles.open]: isSideUsersOpen,
-                })}
+                className={clsx(
+                    styles.usersWrapper,
+                    styles.sharing,
+                    styles.mobileSharing,
+                    {
+                        [styles.open]: isSideUsersOpen,
+                    },
+                )}
             >
                 <ConditionalRender condition={isSideUsersOpen}>
                     <ClickAwayListener onClickAway={handleClosePanel}>
@@ -132,7 +143,9 @@ const Component = () => {
                     isCameraEnabled={isLocalCamActive}
                     isMicEnabled={isLocalMicActive}
                     isScreenSharing={isScreenSharing}
-                    isScreenSharingUser={localUser.id === meeting?.sharingUserId}
+                    isScreenSharingUser={
+                        localUser.id === meeting?.sharingUserId
+                    }
                     isLocal
                     isAuraActive={localUser.isAuraActive}
                     onToggleAudio={handleToggleAudio}

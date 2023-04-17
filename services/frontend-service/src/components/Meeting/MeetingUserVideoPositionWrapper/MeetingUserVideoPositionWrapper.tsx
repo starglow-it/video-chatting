@@ -1,4 +1,9 @@
-import React, { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+    memo,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import clsx from 'clsx';
 import { Box } from '@mui/material';
 
@@ -7,123 +12,144 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // types
-import Draggable, { DraggableEvent } from 'react-draggable';
+import Draggable, { DraggableEvent, DraggableData } from 'react-draggable';
 import { useToggle } from '@hooks/useToggle';
 import { roundNumberToPrecision } from 'shared-utils';
 import { useStore } from 'effector-react';
 import { MeetingUserVideoPositionWrapperProps } from './types';
 // styles
 import styles from './MeetingUserVideoPositionWrapper.module.scss';
-import { $windowSizeStore } from '../../../store'
-import { updateUserSocketEvent, $localUserStore } from '../../../store/roomStores';
+import { $windowSizeStore } from '../../../store';
+import {
+    updateUserSocketEvent,
+} from '../../../store/roomStores';
 
-const Component: React.FunctionComponent<MeetingUserVideoPositionWrapperProps> = ({
+const Component: React.FunctionComponent<
+    MeetingUserVideoPositionWrapperProps
+> = ({
     children,
     isScreenSharing,
     bottom,
     left,
-    isLocal,
+    userId,
 }: MeetingUserVideoPositionWrapperProps) => {
     const {
         width,
         height
     } = useStore($windowSizeStore);
-    const [isInitPos, setInitPos] = useState(false)
-    const refTimer = useRef<NodeJS.Timeout | null>(null)
-    const localUser = useStore($localUserStore);
+    const refTimer = useRef<NodeJS.Timeout | null>(null);
     const {
         value: isDragging,
         onSwitchOn: handleOnDragging,
         onSwitchOff: handleOffDragging,
     } = useToggle(false);
-
-    const [finalBottom, setBottom] = useState('');
-    const [finalLeft, setLeft] = useState('');
+    const [defaultPos, setDefaultPos] = useState<Record<string, number | null>>({
+        left: null,
+        bottom: null
+    })
+    const [finalLeft, setLeft] = useState<number | null>(null);
+    const [finalTop, setTop] = useState<number | null>(null);
 
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const handleStopDrag = () => {
-        if(isDragging){
-            const {left, bottom} = contentRef.current?.getBoundingClientRect()
-            const subLeftPercentage = roundNumberToPrecision(
-                left / width,
+    const handleStopDrag = (data: DraggableData) => {
+        if (isDragging) {
+            const contentRect = contentRef.current?.getBoundingClientRect();
+            const leftRect = contentRect?.left || 0
+            const bottomRect = contentRect?.bottom || 0
+
+            const percentLeft = roundNumberToPrecision(leftRect / width, 2);
+            const percentTop = roundNumberToPrecision(
+                bottomRect / height, // use bottom instead of top , it include height of element, make easy to convert offset bottom
                 2,
             );
-            const subTopPercentage = roundNumberToPrecision(
-                (bottom) / height, // use bottom instead of top , it include height of element, make easy to convert offset bottom
-                2,
-            );            
+            const percentBottom = roundNumberToPrecision(1 - percentTop, 2)
+            setLeft(data.x)
+            setTop(data.y)
+            setDefaultPos({
+                left: percentLeft,
+                bottom: percentBottom
+            })
             updateUserSocketEvent({
-                id: localUser.id,
+                id: userId,
                 userPosition: {
-                    bottom: roundNumberToPrecision(1 - subTopPercentage, 2),
-                    left: subLeftPercentage
-                }
-            })                    
+                    bottom: percentBottom,
+                    left: percentLeft,
+                },
+            }).then(() => {
+                handleOffDragging();
+            })
         }
-        handleOffDragging()     
-    }
+    };
     const handleStartDrag = () => {
-        !isInitPos && setInitPos(true)
-        handleOnDragging() 
-    }
+        handleOnDragging();
+    };
 
-    const eventControl = (event: DraggableEvent) => {
+    const eventControl = (event: DraggableEvent, data: DraggableData) => {
         if (event.type === 'mousedown') {
             refTimer.current = setTimeout(() => {
-                handleStartDrag() 
+                handleStartDrag();
             }, 300);
         }
 
         if (event.type === 'mouseup' || event.type === 'touchend') {
-            refTimer?.current && clearTimeout(refTimer.current)
-            handleStopDrag()
+            if(refTimer?.current){
+                clearTimeout(refTimer.current);
+            }
+            handleStopDrag(data);
         }
-      }
+    };
 
-
-    useEffect(() => {        
-        if (!isScreenSharing && (!isInitPos || !isLocal)) {            
-            const percentLeft = (left || 0) * 100
-            const percentBottom = (bottom || 0) * 100
-            setLeft(`${percentLeft}%`);
-            setBottom(`${percentBottom}%`);
+    useEffect(() => {
+        if (!isScreenSharing && (defaultPos.left !== left || defaultPos.bottom !== bottom) && !isDragging) {
+            const percentLeft = roundNumberToPrecision((left || 0) * width, 2);
+            const rect = contentRef.current?.getBoundingClientRect()
+            const subTopPercentage = roundNumberToPrecision(
+                (rect?.height || 0) / height,
+                2,
+            );
+            const percentTop = roundNumberToPrecision(Math.abs(1 - (bottom || 0) - subTopPercentage) * height, 2)
+            setLeft(prev => prev !== percentLeft ? percentLeft : prev);
+            setTop(prev => prev !== percentTop ? percentTop : prev)
+            setDefaultPos({
+                left: left !== undefined ? left : null,
+                bottom: bottom !== undefined ? bottom : null
+            })            
         }
-    }, [isScreenSharing, bottom, left, isInitPos]);
+    }, [isScreenSharing, bottom, left, defaultPos, isDragging]);
+    
+    const isRender = (finalTop !== null && finalLeft !== null)
 
     return (
-        <ConditionalRender condition={Boolean(finalBottom !== '' && finalLeft !== '')}>
-            <ConditionalRender condition={isLocal}>
-                <Draggable
-                    axis='both'
-                    onStart={eventControl}                         
-                    onStop={eventControl}
-                    disabled={isScreenSharing}
-                >
-                    <CustomBox
-                        className={clsx(styles.boxDraggable, {
-                            [styles.dragSharing]: isScreenSharing,
-                        })}
-                        style={{
-                            bottom: finalBottom, left: finalLeft
-                        }}
-                        ref={contentRef}
-                    >
-                        {children}
-                        <Box className={clsx(styles.boxPreventClick, {[styles.show]: isDragging})} />
-                    </CustomBox>             
-                </Draggable>  
-            </ConditionalRender>
-            <ConditionalRender condition={!isLocal}>
+        <ConditionalRender
+            condition={Boolean(isRender)}
+        >
+            <Draggable
+                axis="both"
+                onStart={eventControl}
+                onStop={eventControl}
+                disabled={isScreenSharing}
+                position={{
+                    x: finalLeft || 0,
+                    y: finalTop || 0
+                }}
+            >
                 <CustomBox
-                    sx={!isScreenSharing ? { bottom: finalBottom, left: finalLeft } : {}}
-                    className={clsx(styles.videoWrapper, { [styles.sharing]: isScreenSharing })}
+                    className={clsx(styles.boxDraggable, {
+                        [styles.dragSharing]: isScreenSharing,
+                    })}
+                    ref={contentRef}
                 >
                     {children}
+                    <Box
+                        className={clsx(styles.boxPreventClick, {
+                            [styles.show]: isDragging,
+                        })}
+                    />
                 </CustomBox>
-            </ConditionalRender>
+            </Draggable>
         </ConditionalRender>
-    )
+    );
 };
 
 export const MeetingUserVideoPositionWrapper = memo(Component);
