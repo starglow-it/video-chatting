@@ -10,18 +10,12 @@ import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
     $isGoodsVisible,
-    $profileStore,
     appDialogsApi,
     toggleIsGoodsVisible,
 } from 'src/store';
 import {
     $isOwner,
-    $isTogglePayment,
     $meetingTemplateStore,
-    $paymentIntent,
-    cancelPaymentIntentWithData,
-    createPaymentIntentWithData,
-    togglePaymentFormEvent,
 } from 'src/store/roomStores';
 import { AppDialogsEnum } from 'src/store/types';
 import styles from './MeetingControlCollapse.module.scss';
@@ -39,11 +33,6 @@ const Actions = [
         type: CollapseTypes.Settings,
     },
     {
-        icon: <MonetizationIcon width="22px" height="22px" />,
-        name: 'Payments',
-        type: CollapseTypes.Payments,
-    },
-    {
         icon: <GoodsIcon width="22px" height="22px" />,
         name: 'GoodLinks',
         type: CollapseTypes.GoodLinks,
@@ -52,23 +41,8 @@ const Actions = [
 
 const Component = () => {
     const isOwner = useStore($isOwner);
-    const profile = useStore($profileStore);
     const meetingTemplate = useStore($meetingTemplateStore);
-    const isCreatePaymentIntentPending = useStore(
-        createPaymentIntentWithData.pending,
-    );
-    const isPaymentOpen = useStore($isTogglePayment);
-    const paymentIntent = useStore($paymentIntent);
     const isGoodsVisible = useStore($isGoodsVisible);
-    const intentId = paymentIntent?.id;
-
-    const handleTogglePayment = () => {
-        if (!isPaymentOpen && !intentId && !isOwner) {
-            createPaymentIntentWithData();
-        }
-        if (intentId) cancelPaymentIntentWithData();
-        togglePaymentFormEvent();
-    };
 
     const handleActions = (action: string) => {
         switch (action) {
@@ -76,9 +50,6 @@ const Component = () => {
                 appDialogsApi.openDialog({
                     dialogKey: AppDialogsEnum.devicesSettingsDialog,
                 });
-                break;
-            case CollapseTypes.Payments:
-                if (!isCreatePaymentIntentPending) handleTogglePayment();
                 break;
             case CollapseTypes.GoodLinks:
                 toggleIsGoodsVisible();
@@ -92,13 +63,6 @@ const Component = () => {
         switch (action) {
             case CollapseTypes.Settings:
                 return !isOwner;
-            case CollapseTypes.Payments:
-                return !(isOwner
-                    ? Boolean(
-                          profile.isStripeEnabled && profile.stripeAccountId,
-                      )
-                    : meetingTemplate.isMonetizationEnabled);
-
             case CollapseTypes.GoodLinks:
                 return !meetingTemplate?.links?.length;
             default:
@@ -114,10 +78,6 @@ const Component = () => {
                         nameSpace="meeting"
                         translation="settings.main"
                     />
-                );
-            case CollapseTypes.Payments:
-                return (
-                    <Translation nameSpace="meeting" translation="payments.title" />
                 );
 
             case CollapseTypes.GoodLinks:

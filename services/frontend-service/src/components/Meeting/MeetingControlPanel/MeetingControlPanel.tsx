@@ -1,11 +1,10 @@
-import React, { memo, useCallback, useRef, useEffect, useMemo } from 'react';
-import { useStore, useStoreMap } from 'effector-react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
 
 // hooks
-import { useMultipleToggle } from '@hooks/useMultipleToggle';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // custom
@@ -169,13 +168,10 @@ const Component = () => {
             className={clsx(styles.panelWrapper, { [styles.mobile]: isMobile })}
         >
             <CustomPaper
-                variant="black-glass"
                 className={styles.controlPanelWrapper}
             >
                 {!isMobile ? (
-                    <CustomGrid className={styles.panelsWrapper}>
-                        {commonContent}
-                    </CustomGrid>
+                    <> {commonContent}</>
                 ) : (
                     <ConditionalRender condition={isUsersOpen || isPaymentOpen}>
                         <CustomGrid className={styles.mobilePanelsWrapper}>

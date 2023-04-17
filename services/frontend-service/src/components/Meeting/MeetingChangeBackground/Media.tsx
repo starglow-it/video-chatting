@@ -1,11 +1,12 @@
 import { Skeleton } from '@mui/material';
 import clsx from 'clsx';
 import { memo, useState } from 'react';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IMediaItem } from '../../../store/roomStores/meeting/meetingBackground/types';
 import styles from './MeetingChangeBackground.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 
 const Component = ({
     isActive = false,
@@ -24,7 +25,10 @@ const Component = ({
 
     return (
         <CustomGrid
-            className={clsx(styles.container, { [styles.active]: isActive })}
+            className={clsx(styles.container, {
+                [styles.active]: isActive,
+                [styles.player]: item.type === 'video',
+            })}
             item
             onClick={() => onSelect(item.id)}
         >
@@ -36,17 +40,24 @@ const Component = ({
                     variant="rectangular"
                 />
             )}
-            {url !== '' ? (
-                <CustomImage
-                    src={url}
-                    width={63}
-                    height={63}
-                    className={styles.image}
-                    onLoad={handleLoadEnd}
-                />
-            ) : (
-                <CustomBox />
-            )}
+            <ConditionalRender condition={url !== ''}>
+                {item.type === 'image' ? (
+                    <CustomImage
+                        src={url}
+                        width={63}
+                        height={63}
+                        className={styles.image}
+                        onLoad={handleLoadEnd}
+                    />
+                ) : (
+                    <CustomVideoPlayer
+                        src={item.url}
+                        volume={100}
+                        isPlaying
+                        isMuted={false}
+                    />
+                )}
+            </ConditionalRender>
         </CustomGrid>
     );
 };

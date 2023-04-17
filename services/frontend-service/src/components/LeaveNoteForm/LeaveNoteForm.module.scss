@@ -26,27 +26,27 @@
 
 .textField {
   background: transparent;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 }
 
 .commonOpenPanel {
   position: absolute;
   width: rem(35px);
-  top: 4%;
-  right: 65px;
+  bottom: 1%;
+  left: 40%;
   border-radius: 4px;
   -webkit-transition: all 0.4s;
   -moz-transition: all 0.4s;
   transition: all 0.4s;
-  background-color: #1c2d2f;
   border-radius: 6px;
+  padding: 0px 10px;
 
-  &:hover:not(.expanded) {
-    background-color: #686666;
-  }
 
   &.expanded {
-    padding-top: 12px;
-    width: 300px;
+    width: 400px;
+    padding: 10px 10px;
   }
 
   &.mobile {
@@ -63,8 +63,8 @@
   background: transparent;
   color: $primary-white;
   border: none;
-  width: rem(35px);
-  height: rem(35px);
+  width: rem(50px);
+  height: rem(50px);
   border-radius: rem(4px);
   cursor: pointer;
 
@@ -74,16 +74,3 @@
 
 }
 
-.accordion {
-  background-color: transparent;
-
-  .summary {
-    padding: 0px 5px;
-    min-height: 35px;
-    height: 35px;
-  }
-
-  .content {
-    margin: 0px;
-  }
-}
