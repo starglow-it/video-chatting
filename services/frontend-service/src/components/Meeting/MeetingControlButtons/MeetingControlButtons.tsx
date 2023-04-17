@@ -1,4 +1,10 @@
-import React, { memo, SyntheticEvent, useCallback, useMemo } from 'react';
+import React, {
+    memo,
+    SyntheticEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+} from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -98,6 +104,10 @@ const Component = () => {
     const isCamActive = localUser.cameraStatus === 'active';
 
     const { isMobile } = useBrowserDetect();
+
+    useEffect(() => {
+        if (isMeetingHost && isThereNewRequests) toggleUsersPanelEvent(true);
+    }, [isMeetingHost, isThereNewRequests]);
 
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
