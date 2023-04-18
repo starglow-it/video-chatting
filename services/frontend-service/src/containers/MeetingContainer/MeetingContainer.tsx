@@ -35,6 +35,8 @@ import {
     resetRoomStores,
 } from '../../store';
 import {
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -64,9 +66,14 @@ import { SavedSettings } from '../../types';
 import styles from './MeetingContainer.module.scss';
 
 // utils
-import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
+import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -102,10 +109,13 @@ const MeetingContainer = memo(() => {
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
+    const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
+    const backgroundAudioVolume = useStore($backgroundAudioVolume);
 
     const { isMobile } = useBrowserDetect();
 
-    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } = useToggle(false);
+    const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
+        useToggle(false);
 
     useEffect(() => {
         initWindowListeners();
@@ -117,7 +127,9 @@ const MeetingContainer = memo(() => {
         };
     }, []);
 
-    useSubscriptionNotification(getClientMeetingUrl(router.query.token as string));
+    useSubscriptionNotification(
+        getClientMeetingUrl(router.query.token as string),
+    );
 
     useEffect(() => {
         (async () => {
@@ -166,9 +178,12 @@ const MeetingContainer = memo(() => {
             const savedSettings = WebStorage.get<SavedSettings>({
                 key: StorageKeysEnum.meetingSettings,
             });
+            const isHasSettings = Object.keys(savedSettings)?.length;
 
-            if (Object.keys(savedSettings)?.length) {
-                setBackgroundAudioVolume(savedSettings.backgroundAudioVolumeSetting);
+            if (isHasSettings) {
+                setBackgroundAudioVolume(
+                    savedSettings.backgroundAudioVolumeSetting,
+                );
                 setBackgroundAudioActive(savedSettings.backgroundAudioSetting);
                 setIsAuraActive(savedSettings.auraSetting);
                 setIsCameraActiveEvent(savedSettings.cameraActiveSetting);
@@ -182,19 +197,32 @@ const MeetingContainer = memo(() => {
 
                 await sendJoinWaitingRoomSocketEvent();
 
-                if (Object.keys(savedSettings)?.length && isOwner) {
-                    updateLocalUserEvent({
-                        isAuraActive: savedSettings.auraSetting,
-                        accessStatus: MeetingAccessStatusEnum.InMeeting,
-                    });
+                if (isOwner) {
+                    if (isHasSettings) {
+                        updateLocalUserEvent({
+                            isAuraActive: savedSettings.auraSetting,
+                            accessStatus: MeetingAccessStatusEnum.InMeeting,
+                        });
 
-                    joinMeetingEvent({
-                        isSettingsAudioBackgroundActive: savedSettings.backgroundAudioSetting,
-                        settingsBackgroundAudioVolume: savedSettings.backgroundAudioVolumeSetting,
-                        needToRememberSettings: false,
-                    });
-
-                    handleSetSettingsChecked();
+                        joinMeetingEvent({
+                            isSettingsAudioBackgroundActive:
+                                savedSettings.backgroundAudioSetting,
+                            settingsBackgroundAudioVolume:
+                                savedSettings.backgroundAudioVolumeSetting,
+                            needToRememberSettings: false,
+                        });
+                    } else {
+                        updateLocalUserEvent({
+                            accessStatus: MeetingAccessStatusEnum.InMeeting,
+                        });
+                        joinMeetingEvent({
+                            isSettingsAudioBackgroundActive:
+                                isBackgroundAudioActive,
+                            settingsBackgroundAudioVolume:
+                                backgroundAudioVolume,
+                            needToRememberSettings: true,
+                        });
+                    }
                 }
             }
 
@@ -205,21 +233,51 @@ const MeetingContainer = memo(() => {
     return (
         <>
             {Boolean(meetingTemplate?.id) && (
-                <ConditionalRender condition={isOwner ? !isJoinMeetingPending : isSettingsChecked}>
+                <ConditionalRender
+                    condition={
+                        isOwner ? !isJoinMeetingPending : isSettingsChecked
+                    }
+                >
                     <ConditionalRender
-                        condition={MeetingAccessStatusEnum.InMeeting !== localUser.accessStatus}
+                        condition={
+                            MeetingAccessStatusEnum.InMeeting !==
+                            localUser.accessStatus
+                        }
                     >
                         <CustomBox
                             className={clsx(styles.waitingRoomWrapper, {
                                 [styles.mobile]: isMobile,
                             })}
                         >
-                            <MeetingPreview />
-                            <NotMeetingComponent />
+                            {isOwner ? (
+                                <>
+                                    <MeetingPreview isAllowBack={false}/>
+                                    <CustomGrid
+                                        container
+                                        alignItems="center"
+                                        justifyContent="flex-start"
+                                        flexDirection="column"
+                                        height="200px"
+                                    >
+                                        <CustomTypography variant='body1bold'>
+                                            Entering meeting room
+                                        </CustomTypography>
+                                        <CustomLoader />
+                                    </CustomGrid>
+                                </>
+                            ) : (
+                                <>
+                                    <MeetingPreview />
+                                    <NotMeetingComponent />
+                                </>
+                            )}
                         </CustomBox>
                     </ConditionalRender>
                     <ConditionalRender
-                        condition={localUser.accessStatus === MeetingAccessStatusEnum.InMeeting}
+                        condition={
+                            localUser.accessStatus ===
+                            MeetingAccessStatusEnum.InMeeting
+                        }
                     >
                         <MeetingView />
                     </ConditionalRender>
