@@ -20,7 +20,11 @@ class BackgroundManagerInstance {
         this.effectBackground = null;
         this.videoEffects = null;
         this.isBackgroundSupported = false;
-        this.supportedBrowsers = [BROWSER_NAMES.chrome, BROWSER_NAMES.chromium, BROWSER_NAMES.edge];
+        this.supportedBrowsers = [
+            BROWSER_NAMES.chrome,
+            BROWSER_NAMES.chromium,
+            BROWSER_NAMES.edge,
+        ];
     }
 
     async init() {
@@ -32,14 +36,24 @@ class BackgroundManagerInstance {
 
                 if (this.browserData) {
                     this.isBackgroundSupported =
-                        this.supportedBrowsers.includes(this.browserData.browser.name || '') &&
-                        this.browserData.platform.type === 'desktop';
+                        this.supportedBrowsers.includes(
+                            this.browserData.browser.name || '',
+                        ) && this.browserData.platform.type === 'desktop';
 
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
-                            this.effectBackground = new Module.EffectBackground();
+                            //     this.effectBackground = new Module.EffectBackground();
 
-                            await this.effectBackground.setBackgroundImage(this.image);
+                            //     await this.effectBackground.setBackgroundImage(this.image);
+
+                            this.effectBackground = new Module.EffectBlur();
+                            await this.effectBackground.setEffects({
+                                blurStrength: 100,
+                                fixSegmentationBlurStrength: 1,
+                                // fixSegmentationIterations: 10,
+                                // fixSegmentation: 100,
+                                // alphaCutterLowerBound: 2
+                            });
                         }
 
                         if (!this.videoEffects) {
@@ -53,7 +67,11 @@ class BackgroundManagerInstance {
         }
     }
 
-    async applyBlur(stream: CustomMediaStream, isCameraActive: boolean, isAuraActive: boolean) {
+    async applyBlur(
+        stream: CustomMediaStream,
+        isCameraActive: boolean,
+        isAuraActive: boolean,
+    ) {
         if (stream) {
             const videoTrack = stream?.getVideoTracks()[0];
             let blurTrack;
@@ -61,7 +79,10 @@ class BackgroundManagerInstance {
             if (videoTrack && isAuraActive && this.videoEffects) {
                 videoTrack.enabled = true;
 
-                blurTrack = await this.videoEffects.setEffect(this.effectBackground, videoTrack);
+                blurTrack = await this.videoEffects.setEffect(
+                    this.effectBackground,
+                    videoTrack,
+                );
 
                 stream.removeTrack(videoTrack);
                 stream.addTrack(blurTrack);
@@ -80,4 +101,6 @@ class BackgroundManagerInstance {
     }
 }
 
-export const BackgroundManager = new BackgroundManagerInstance('/images/orange.webp');
+export const BackgroundManager = new BackgroundManagerInstance(
+    '/images/orange.webp',
+);
