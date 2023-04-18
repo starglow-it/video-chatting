@@ -7,11 +7,14 @@ export class CommonMediaCategoryDTO implements IMediaCategory {
   id: string;
 
   @Expose()
-  key: string;
+  key: IMediaCategory['key'];
 
   @Expose()
-  value: string;
+  value: IMediaCategory['value'];
 
   @Expose()
-  emojiUrl: string;
+  emojiUrl: IMediaCategory['emojiUrl'];
+
+  @Expose()
+  type: IMediaCategory['type'];
 }

@@ -2,8 +2,8 @@ import {IMediaCategory, IPreviewImage } from "./common";
 import { IUserTemplate } from "./templates";
 
 export enum MediaCategoryType {
-    BACKGROUND = 'background',
-    SOUND = 'sound'
+    Background = 'background',
+    Sound = 'sound'
 }
 
 export interface IMedia {

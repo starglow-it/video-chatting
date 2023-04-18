@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IMediaCategory } from 'shared-types';
+import { IMediaCategory, MediaCategoryType } from 'shared-types';
 
 export class MediaCategoryRestDTO implements IMediaCategory {
   @Expose()
@@ -18,4 +18,12 @@ export class MediaCategoryRestDTO implements IMediaCategory {
   @Expose()
   @ApiProperty()
   emojiUrl: IMediaCategory['emojiUrl'];
+
+  @Expose()
+  @ApiProperty({
+    type: String,
+    enum: MediaCategoryType
+  })
+  type: IMediaCategory['type'];
+  
 }

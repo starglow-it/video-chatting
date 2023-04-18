@@ -82,12 +82,18 @@ export class SeederService {
       const mimeTypeList = [...new Set(['image', 'video', 'audio'])];
 
       const mediaType = mimeTypeList.find(type => mimeType.includes(type));
+      let previewImages = [];
 
-      const previewImages = await this.commonTemplatesService.generatePreviews({
-        url,
-        id,
-        mimeType,
-      });
+      console.log(mediaType);
+      
+
+      if (mediaType !== 'audio') {
+        previewImages = await this.commonTemplatesService.generatePreviews({
+          url,
+          id,
+          mimeType,
+        });
+      }
 
       await this.mediaService.updateMedia({
         query: {
@@ -95,7 +101,7 @@ export class SeederService {
         },
         data: {
           type: mediaType || 'unknow',
-          previewUrls: previewImages.map((image) => image._id),
+          previewUrls: previewImages.length ? previewImages.map((image) => image._id) : previewImages,
           url
         },
       });
@@ -119,7 +125,7 @@ export class SeederService {
   //TODO: handle upload emoji (pending)
   // async uploadEmoji(){
   //   readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
-      
+
   //     Promise.all(files.map(async file => {
 
   //       const filename = file.split('.')[0];
@@ -135,6 +141,7 @@ export class SeederService {
   // }
 
   async seedMedias() {
+
     try {
       const promises = MEDIA_CATEGORIES.map(async categoryItem => {
         let category: MediaCategoryDocument;
@@ -143,7 +150,14 @@ export class SeederService {
         });
 
         if (!isExists) {
-          category = await this.mediaService.createCategory({ data: categoryItem });
+          category = await this.mediaService.createCategory(
+            {
+              data: {
+                ...categoryItem,
+                type: categoryItem.type as MediaCategoryType
+              }
+            }
+          );
         }
         else {
           category = await this.mediaService.findMediaCategory({
@@ -164,14 +178,17 @@ export class SeederService {
 
         const medias = await this.mediaService.findMedias({
           query: {
-            mediaCategory: category._id
+            mediaCategory: category._id,
           }
         });
 
         [BACKGROUNDS_SCOPE, SOUNDS_SCOPE].map(async scope => {
           const files = await promisify(readdir)(join(process.cwd(), `${FILES_SCOPE}/${scope}`));
+          if (!scope.includes(category.type)) return;
 
           const countFilesByCategory = files.filter(item => item.includes(category.key)).length;
+
+
           if (countFilesByCategory === medias.length) return;
 
           await this.mediaService.deleteMedias({
@@ -187,7 +204,7 @@ export class SeederService {
             const splitFilename = file.trim().split('.');
             const ext = splitFilename[splitFilename.length - 1];
 
-            const mimeType = mime.getType(`${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`);
+            const mimeType = mime.getType(`${FILES_SCOPE}/${scope}/${file}`);
 
             const newMedia = plainToInstance(CommonMediaDTO, await this.mediaService.createMedia({
               data: {
@@ -198,12 +215,12 @@ export class SeederService {
               enableImplicitConversion: true,
             });
 
-            let filePath = `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`;
+            let filePath = `${FILES_SCOPE}/${scope}/${file}`;
             let key = `medias/${newMedia.id.toString()}/videos/${uuidv4()}.${ext}`;
-            if (category.type === MediaCategoryType.SOUND) {
-              filePath = `${FILES_SCOPE}/${SOUNDS_SCOPE}/${file}`;
+            if (category.type === MediaCategoryType.Sound) {
               key = `medias/${newMedia.id.toString()}/audios/${uuidv4()}.${ext}`;
             }
+
 
             const url = await this.readFileAndUpload({
               filePath,
