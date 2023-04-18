@@ -630,7 +630,7 @@ export class UserTemplatesController {
         });
 
         userTemplateMedias.map(async media => {
-          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}`);
+          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}/videos`);
         });
         
         this.mediaService.deleteUserTemplateMedias({

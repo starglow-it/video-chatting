@@ -11,9 +11,10 @@ import {
   BACKGROUNDS_SCOPE,
   FILES_SCOPE,
   EMOJIES_SCOPE,
-  MEDIA_CATEGORIES
+  MEDIA_CATEGORIES,
+  SOUNDS_SCOPE
 } from 'shared-const';
-import { Counters, UserRoles } from 'shared-types';
+import { Counters, MediaCategoryType, UserRoles } from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -47,6 +48,8 @@ import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import { MediaCategoryDocument } from '../schemas/media-category.schema';
 import { CommonMediaDTO } from '../dtos/common-media.dto';
+import { promisify } from 'util';
+import * as mime from 'mime';
 
 // utils
 
@@ -76,6 +79,10 @@ export class SeederService {
     return withTransaction(this.connection, async () => {
       const { url, id, mimeType } = data;
 
+      const mimeTypeList = [...new Set(['image', 'video', 'audio'])];
+
+      const mediaType = mimeTypeList.find(type => mimeType.includes(type));
+
       const previewImages = await this.commonTemplatesService.generatePreviews({
         url,
         id,
@@ -87,7 +94,7 @@ export class SeederService {
           _id: id,
         },
         data: {
-          type: mimeType.includes('image') ? 'image' : 'video',
+          type: mediaType || 'unknow',
           previewUrls: previewImages.map((image) => image._id),
           url
         },
@@ -123,89 +130,103 @@ export class SeederService {
   //       });
   //       console.log(url);
   //     })).then(item => item).catch(err => console.log(err));
-      
+
   //   }); 
   // }
 
-  async seedMedias(){
-    const promises = MEDIA_CATEGORIES.map(async (categoryItem) => {
-      let category: MediaCategoryDocument;
-      const isExists = await this.mediaService.existCategories({
-        key: categoryItem.key,
-      });
-
-      if (!isExists) {
-        category = await this.mediaService.createCategory({ data: categoryItem });
-      }
-      else {
-        category = await this.mediaService.findMediaCategory({
-          query: { key: categoryItem.key }
+  async seedMedias() {
+    try {
+      const promises = MEDIA_CATEGORIES.map(async categoryItem => {
+        let category: MediaCategoryDocument;
+        const isExists = await this.mediaService.existCategories({
+          key: categoryItem.key,
         });
-      }
 
-      if(!category.type){
-        await this.mediaService.updateMediaCategory({
-          query: {
-            _id: category._id
-          },
-          data: {
-            type: categoryItem.type
-          }
-        });
-      }
-
-      const medias = await this.mediaService.findMedias({
-        query: {
-          mediaCategory: category._id
+        if (!isExists) {
+          category = await this.mediaService.createCategory({ data: categoryItem });
         }
-      });
+        else {
+          category = await this.mediaService.findMediaCategory({
+            query: { key: categoryItem.key }
+          });
+        }
 
-      readdir(join(process.cwd(), `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}`), (err, files) => {
-        if (err) {
-          console.log(err);
-          return;
-        };
+        if (!category.type) {
+          await this.mediaService.updateMediaCategory({
+            query: {
+              key: category.key
+            },
+            data: {
+              type: categoryItem.type
+            }
+          });
+        }
 
-        const countFilesByCategory =  files.filter(item => item.includes(category.key)).length;
-        if(countFilesByCategory === medias.length) return;
-
-        this.mediaService.deleteMedias({
+        const medias = await this.mediaService.findMedias({
           query: {
             mediaCategory: category._id
-          },
-        })
-          .then(() => {
-            const uploadFilePromise = files.map(async file => {
+          }
+        });
 
-              if (file.includes(categoryItem.key)) {
-                const newMedia = plainToInstance(CommonMediaDTO, await this.mediaService.createMedia({
-                  data: {
-                    mediaCategory: category._id
-                  }
-                }), {
-                  excludeExtraneousValues: true,
-                  enableImplicitConversion: true,
-                });
+        [BACKGROUNDS_SCOPE, SOUNDS_SCOPE].map(async scope => {
+          const files = await promisify(readdir)(join(process.cwd(), `${FILES_SCOPE}/${scope}`));
 
-                const url = await this.readFileAndUpload({
-                  filePath: `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`,
-                  key: `medias/${newMedia.id.toString()}/videos/${uuidv4()}.webp`
-                });
+          const countFilesByCategory = files.filter(item => item.includes(category.key)).length;
+          if (countFilesByCategory === medias.length) return;
 
-                await this.updateMedia({
-                  url,
-                  id: newMedia.id.toString(),
-                  mimeType: 'image/webp',
-                });
+          await this.mediaService.deleteMedias({
+            query: {
+              mediaCategory: category._id
+            },
+          });
+
+
+          const uploadFilePromise = files.map(async file => {
+            if (!file.includes(categoryItem.key)) return;
+
+            const splitFilename = file.trim().split('.');
+            const ext = splitFilename[splitFilename.length - 1];
+
+            const mimeType = mime.getType(`${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`);
+
+            const newMedia = plainToInstance(CommonMediaDTO, await this.mediaService.createMedia({
+              data: {
+                mediaCategory: category._id
               }
+            }), {
+              excludeExtraneousValues: true,
+              enableImplicitConversion: true,
             });
 
-            Promise.all(uploadFilePromise).then(item => item).catch(err => console.log(err));
-          });
-      });
-    });
+            let filePath = `${FILES_SCOPE}/${BACKGROUNDS_SCOPE}/${file}`;
+            let key = `medias/${newMedia.id.toString()}/videos/${uuidv4()}.${ext}`;
+            if (category.type === MediaCategoryType.SOUND) {
+              filePath = `${FILES_SCOPE}/${SOUNDS_SCOPE}/${file}`;
+              key = `medias/${newMedia.id.toString()}/audios/${uuidv4()}.${ext}`;
+            }
 
-    await Promise.all(promises);
+            const url = await this.readFileAndUpload({
+              filePath,
+              key
+            });
+
+            await this.updateMedia({
+              url,
+              id: newMedia.id.toString(),
+              mimeType,
+            });
+
+            await Promise.all(uploadFilePromise);
+          });
+        });
+      });
+
+      await Promise.all(promises);
+    }
+    catch (err) {
+      console.log(err);
+      return;
+    }
   }
 
   async seedBusinessCategories(): Promise<void> {
@@ -386,7 +407,7 @@ export class SeederService {
 
     const url = await this.readFileAndUpload({
       filePath: './src/public/default/global_template.jpeg',
-      key: `templates/videos/${newCommonTemplate.id}/${uuidv4()}.webp`
+      key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.webp`
     })
 
     //update url to temlate

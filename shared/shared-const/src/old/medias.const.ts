@@ -53,8 +53,39 @@ export const MEDIA_CATEGORIES = [
         emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/more_1.webp',
         type: 'background'
     },
+    {
+        key: 'jazz',
+        value: 'Jazz',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/jazz_1.webp',
+        type: 'sound'
+    },
+    {
+        key: 'classical',
+        value: 'Classical',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/classical_1.webp',
+        type: 'sound'
+    },
+    {
+        key: 'ocean',
+        value: 'Ocean',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/ocean_1.webp',
+        type: 'sound'
+    },
+    {
+        key: 'fireplace',
+        value: 'Fireplace',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/fireplace_1.webp',
+        type: 'sound'
+    },
+    {
+        key: 'spotify',
+        value: 'Spotify',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/spotify_1.webp',
+        type: 'sound'
+    }
 ];
 
 export const FILES_SCOPE = './src/public';
 export const EMOJIES_SCOPE = 'emojies';
 export const BACKGROUNDS_SCOPE = 'backgrounds';
+export const SOUNDS_SCOPE = 'sounds';
