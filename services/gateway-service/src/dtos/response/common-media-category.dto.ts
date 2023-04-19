@@ -25,5 +25,9 @@ export class MediaCategoryRestDTO implements IMediaCategory {
     enum: MediaCategoryType
   })
   type: IMediaCategory['type'];
+
+  @Expose()
+  @ApiProperty()
+  audio: string;
   
 }

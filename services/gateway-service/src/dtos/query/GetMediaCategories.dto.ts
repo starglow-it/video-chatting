@@ -28,4 +28,11 @@ export class GetMediaCategoriesQueryDto {
     @IsNotEmpty()
     type: string;
 
+
+    @ApiProperty({
+        type: String
+    })
+    @IsNotEmpty()
+    userTemplateId: string;
+
 }
