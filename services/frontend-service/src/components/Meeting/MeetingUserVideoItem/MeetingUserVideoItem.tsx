@@ -137,11 +137,7 @@ const MeetingUserVideoChildCom = ({
             disabled={isScreenSharing}
         >
             <CustomBox
-                className={clsx(styles.media, {
-                    [styles.aura]: isLocal
-                        ? isVideoSelfView
-                        : isAuraActive && isCameraEnabled,
-                })}
+                className={clsx(styles.media)}
                 sx={{
                     width: `${scale}px`,
                     height: `${scale}px`,
