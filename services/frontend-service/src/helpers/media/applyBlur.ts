@@ -42,17 +42,12 @@ class BackgroundManagerInstance {
 
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
-                            //     this.effectBackground = new Module.EffectBackground();
-
-                            //     await this.effectBackground.setBackgroundImage(this.image);
-
                             this.effectBackground = new Module.EffectBlur();
                             await this.effectBackground.setEffects({
-                                blurStrength: 100,
-                                fixSegmentationBlurStrength: 1,
-                                // fixSegmentationIterations: 10,
-                                // fixSegmentation: 100,
-                                // alphaCutterLowerBound: 2
+                                blurStrength: 10,
+                                fixSegmentationBlurStrength: 15,
+                                fixSegmentationIterations: 15,
+                                fixSegmentation: 0,
                             });
                         }
 

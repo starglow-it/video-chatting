@@ -72,8 +72,6 @@ import {
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
-import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -249,28 +247,12 @@ const MeetingContainer = memo(() => {
                                 [styles.mobile]: isMobile,
                             })}
                         >
-                            {isOwner ? (
-                                <>
-                                    <MeetingPreview isAllowBack={false}/>
-                                    <CustomGrid
-                                        container
-                                        alignItems="center"
-                                        justifyContent="flex-start"
-                                        flexDirection="column"
-                                        height="200px"
-                                    >
-                                        <CustomTypography variant='body1bold'>
-                                            Entering meeting room
-                                        </CustomTypography>
-                                        <CustomLoader />
-                                    </CustomGrid>
-                                </>
-                            ) : (
+                            <ConditionalRender condition={!isOwner}>
                                 <>
                                     <MeetingPreview />
                                     <NotMeetingComponent />
                                 </>
-                            )}
+                            </ConditionalRender>
                         </CustomBox>
                     </ConditionalRender>
                     <ConditionalRender

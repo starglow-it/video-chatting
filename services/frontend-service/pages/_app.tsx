@@ -51,6 +51,7 @@ import {
     setUpTemplateRoute,
     welcomeRoute,
 } from '../src/const/client-routes';
+import { SpinnerLoading } from '@components/Spinner/Spinner';
 const { publicRuntimeConfig } = getConfig();
 
 const clientSideEmotionCache = createEmotionCache();
@@ -99,6 +100,7 @@ const CustomApp = ({
                     <ThemeProvider theme={typographyTheme}>
                         <ThemeProvider theme={uiTheme}>
                             <ThemeProvider theme={componentsTheme}>
+                                <SpinnerLoading />
                                 <CssBaseline />
                                 <GlobalStyles styles={globalStyles} />
                                 <Layout>
