@@ -84,9 +84,6 @@ export class SeederService {
       const mediaType = mimeTypeList.find(type => mimeType.includes(type));
       let previewImages = [];
 
-      console.log(mediaType);
-      
-
       if (mediaType !== 'audio') {
         previewImages = await this.commonTemplatesService.generatePreviews({
           url,
@@ -184,7 +181,7 @@ export class SeederService {
 
         [BACKGROUNDS_SCOPE, SOUNDS_SCOPE].map(async scope => {
           const files = await promisify(readdir)(join(process.cwd(), `${FILES_SCOPE}/${scope}`));
-          if (!scope.includes(category.type)) return;
+          if (!scope.includes(category.type)) return;  
 
           const countFilesByCategory = files.filter(item => item.includes(category.key)).length;
 
@@ -202,13 +199,15 @@ export class SeederService {
             if (!file.includes(categoryItem.key)) return;
 
             const splitFilename = file.trim().split('.');
+            const mediaName = splitFilename[0].split('_')[1]?.replaceAll('-', ' ') || '';
             const ext = splitFilename[splitFilename.length - 1];
 
             const mimeType = mime.getType(`${FILES_SCOPE}/${scope}/${file}`);
 
             const newMedia = plainToInstance(CommonMediaDTO, await this.mediaService.createMedia({
               data: {
-                mediaCategory: category._id
+                mediaCategory: category._id,
+                name: mediaName
               }
             }), {
               excludeExtraneousValues: true,
