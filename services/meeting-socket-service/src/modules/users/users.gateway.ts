@@ -144,11 +144,11 @@ export class UsersGateway extends BaseGateway {
   ): Promise<ResponseSumType<{ user: CommonUserDTO }>> {
     return withTransaction(this.connection, async (session) => {
       const user = await this.usersService.findOneAndUpdate(
-        { _id: message.id },
+        message.id ? { _id: message.id } : {socketId: socket.id},
         message,
         session,
       );
-
+      
       if (!user) return;
 
       const meeting = await this.meetingsService.findById(
@@ -187,7 +187,7 @@ export class UsersGateway extends BaseGateway {
             message.id == user.id && { userPosition: message.userPosition }),
         })),
       });
-
+      
       return {
         success: true,
         result: {
