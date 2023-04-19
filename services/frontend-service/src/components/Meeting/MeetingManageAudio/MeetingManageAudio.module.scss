@@ -1,0 +1,87 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.commonOpenPanel {
+    position: absolute;
+    width: 35px;
+    left: 20px;
+    top: 15%;
+    -webkit-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+    border-radius: 6px;
+    padding: 0;
+    z-index: 99;
+
+
+    &.expanded {
+        width: 270px;
+        padding: rem(20px);
+    }
+
+    .headers:not(.expanded) {
+        padding-left: rem(6px);
+        width: 100%;
+    }
+
+    .closeIcon {
+        cursor: pointer;
+    }
+
+    .scroll {
+        display: flex;
+        width: 100%;
+        max-height: 223px;
+        flex-wrap: wrap;
+        border-radius: 9px;
+        padding: 5px 10px 5px 5px;
+    }
+}
+
+.accordion {
+    background-color: transparent;
+    width: 100%;
+    padding: 0;
+    max-height: 425px;
+
+    .summary {
+        min-height: 35px;
+        height: 35px;
+        padding: 0;
+    }
+
+    .content {
+        margin: 0;
+
+        &.expanded {
+            margin: 12px 0px;
+        }
+
+    }
+
+    .detail {
+        padding: 0;
+    }
+}
+
+.audioRange {
+    &.inactive {
+        color: $normal-gray-scale;
+    }
+
+    .icon {
+        color: #ffffff;
+    }
+}
+
+.thumb {
+    width: 12px !important;
+    height: 12px !important;
+}
+.thumbRoot {
+    padding: 0;
+}
+
+.audioPlay{
+    display: none;
+}
