@@ -139,9 +139,10 @@ const Component = (
                     <CustomTypography
                         variant={product.name === PlanKeys.Business ? "body1bold" : "body1"}
                         className={styles.commissionFee}
-                    >
-                        {templateFeaturesText.comissionFee}
-                    </CustomTypography>
+                        dangerouslySetInnerHTML={{
+                            __html: translation('limits.time', { fee: templateFeaturesText.comissionFee }),
+                        }}
+                    />
                     <ConditionalRender condition={withTrial}>
                         <CustomTooltip
                             arrow

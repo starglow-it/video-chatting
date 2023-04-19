@@ -25,6 +25,9 @@
   "trialExpired": {
     "text": "Your subscription for Professional Free Trial plan has expired. You are subscribed to free House plan now.\nYou can upgrade your subscription any time in Profile to continue creating own rooms and using other extended LiveOffice features"
   },
+  "comissionFee":{
+    "text": "Platform commission {{fee}}"
+  },
   "subscriptions": {
     "selectPlan": "Select plan",
     "title": "Subscriptions",
@@ -131,7 +134,7 @@
           }
         ]
       ],
-      "comissionFee": "Platform commission 10%"
+      "comissionFee": "10%"
     },
     "Professional": {
       "features": [
@@ -159,7 +162,7 @@
       ],
       "trial": "With <strong>7 Days Free Trial</strong> you can create own Rooms for private usage only",
       "trialHint": "Get Pro features <strong>free for 7 days no credit\ncard required</strong>",
-      "comissionFee": "Platform commission 5%"
+      "comissionFee": "5%"
     },
     "Business": {
       "features": [
@@ -190,7 +193,7 @@
           }
         ]
       ],
-      "comissionFee": "Platform commission 0%"
+      "comissionFee": "0%"
     }
   },
   "upgradePlan": {
