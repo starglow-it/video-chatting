@@ -101,6 +101,20 @@ export class MediaService {
         return newMedia;
     }
 
+    async createUserTemplateMedias({
+        data,
+        session,
+    }: {
+        data: Partial<UserTemplateMediaDocument>[];
+        session?: ITransactionSession;
+    }){
+        const newMedia = await this.userTemplateMedia.insertMany(data, {
+            session: session?.session,
+        });
+
+        return newMedia;
+    }
+
     async createMedia({
         data,
         session,
