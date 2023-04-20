@@ -319,6 +319,7 @@ export class CommonTemplatesController {
               userTemplate: userTemplate._id,
               mediaCategory: media.mediaCategory,
               url: media.url,
+              name: media.name,
               previewUrls: media.previewUrls,
               type: media.type
             },

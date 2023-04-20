@@ -101,6 +101,20 @@ export class MediaService {
         return newMedia;
     }
 
+    async createUserTemplateMedias({
+        data,
+        session,
+    }: {
+        data: Partial<UserTemplateMediaDocument>[];
+        session?: ITransactionSession;
+    }){
+        const newMedia = await this.userTemplateMedia.insertMany(data, {
+            session: session?.session,
+        });
+
+        return newMedia;
+    }
+
     async createMedia({
         data,
         session,
@@ -181,6 +195,22 @@ export class MediaService {
         return this.mediaCategory
             .findOne(query, {}, { session: session?.session, populate: populatePaths })
             .exec();
+    }
+    
+    async updateMediaCategory({
+        query,
+        data,
+        session,
+        populatePaths,
+    }: UpdateModelQuery<
+        MediaCategoryDocument,
+        IMediaCategory
+    >): Promise<MediaCategoryDocument> {
+        return this.media.findOneAndUpdate(query, data, {
+            session: session?.session,
+            populate: populatePaths,
+            new: true,
+        });
     }
 
     async updateMedia({

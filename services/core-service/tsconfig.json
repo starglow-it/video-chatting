@@ -8,6 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
+    "lib": ["ES2021.String"],
     "outDir": "./dist",
     "baseUrl": ".",
     "incremental": true,

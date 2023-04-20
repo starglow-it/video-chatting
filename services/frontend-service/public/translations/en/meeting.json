@@ -144,5 +144,8 @@
   },
   "changeBackground": {
     "text": "Background"
+  },
+  "manageAudio": {
+    "text": "Sound"
   }
 }

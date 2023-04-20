@@ -18,6 +18,7 @@ export * from './meeting/meetingState/model';
 export * from './meeting/sockets/model';
 export * from './meeting/meetingSounds/model';
 export * from './meeting/meetingBackground/model';
+export * from './meeting/meetingAudio/model';
 
 export * from './meetingSocket/init';
 export * from './timeLimit/init';
@@ -40,3 +41,4 @@ export * from './meeting/meetingState/init';
 export * from './meeting/sockets/init';
 export * from './meeting/meetingSounds/init';
 export * from './meeting/meetingBackground/init';
+export * from './meeting/meetingAudio/init';

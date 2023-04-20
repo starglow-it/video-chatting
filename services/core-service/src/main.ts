@@ -60,6 +60,7 @@ async function bootstrap() {
   await seeder.seedLinks();
   await seeder.seedCreateGlobalCommonTemplate();
   await seeder.seedMedias();
+  await seeder.seedMediasToAvailableTemplates();
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();

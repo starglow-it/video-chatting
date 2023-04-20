@@ -20,6 +20,12 @@ export class UserTemplateMedia {
   url: string;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+    default: ''
+  })
+  name: string;
+
+  @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PreviewImage' }],
     required: true,
   })

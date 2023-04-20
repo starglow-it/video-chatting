@@ -62,6 +62,7 @@ import {
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 
 // helpers
 
@@ -109,14 +110,6 @@ const Component = () => {
 
     useEffect(() => {
         (async () => {
-            console.log([
-                localUser.accessStatus,
-                meeting.id,
-                localUser.id,
-                isMeetingConnected,
-                serverType,
-                isJoinMeetingPending,
-            ]);
             if (
                 localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                 meeting.id &&
@@ -138,7 +131,7 @@ const Component = () => {
     ]);
 
     useEffect(() => {
-        getCategoriesMediasFx();
+        getCategoriesMediasFx({ userTemplateId: meetingTemplate.id });
     }, []);
 
     useEffect(() => {
@@ -206,6 +199,7 @@ const Component = () => {
                     <MeetingUsersVideos />
                     <ConditionalRender condition={isOwner}>
                         <MeetingChangeBackground />
+                        <MeetingManageAudio />
                     </ConditionalRender>
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
