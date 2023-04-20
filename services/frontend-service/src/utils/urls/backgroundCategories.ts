@@ -11,8 +11,13 @@ export const getMediasCategory = ({
     method: HttpMethods.Get,
 });
 
-export const getBackgroundCategories = ({ skip = 0, limit = 10 }) => ({
-    url: `${serverUrl}/${medias}/categories?skip=${skip}&limit=${limit}`,
+export const getBackgroundCategories = ({
+    skip = 0,
+    limit = 10,
+    type = 'background',
+    userTemplateId = '',
+}) => ({
+    url: `${serverUrl}/${medias}/categories?skip=${skip}&limit=${limit}&type=${type}&userTemplateId=${userTemplateId}`,
     method: HttpMethods.Get,
 });
 
