@@ -79,7 +79,7 @@ export class SeederService {
     return withTransaction(this.connection, async () => {
       const { url, id, mimeType } = data;
 
-      const mimeTypeList = [...new Set(['image', 'video', 'audio'])];
+      const mimeTypeList = ['image', 'video', 'audio'];
 
       const mediaType = mimeTypeList.find(type => mimeType.includes(type));
       let previewImages = [];
@@ -98,7 +98,7 @@ export class SeederService {
         },
         data: {
           type: mediaType || 'unknow',
-          previewUrls: previewImages.length ? previewImages.map((image) => image._id) : previewImages,
+          previewUrls: previewImages.map((image) => image._id),
           url
         },
       });
@@ -180,7 +180,8 @@ export class SeederService {
         });
 
         [BACKGROUNDS_SCOPE, SOUNDS_SCOPE].map(async scope => {
-          const files = await promisify(readdir)(join(process.cwd(), `${FILES_SCOPE}/${scope}`));
+          const commonFolderScope = `${FILES_SCOPE}/${scope}`;
+          const files = await promisify(readdir)(join(process.cwd(), commonFolderScope));
           if (!scope.includes(category.type)) return;  
 
           const countFilesByCategory = files.filter(item => item.includes(category.key)).length;
@@ -200,9 +201,9 @@ export class SeederService {
 
             const splitFilename = file.trim().split('.');
             const mediaName = splitFilename[0].split('_')[1]?.replaceAll('-', ' ') || '';
-            const ext = splitFilename[splitFilename.length - 1];
+            const ext = splitFilename.pop();
 
-            const mimeType = mime.getType(`${FILES_SCOPE}/${scope}/${file}`);
+            const mimeType = mime.getType(`${commonFolderScope}/${file}`);
 
             const newMedia = plainToInstance(CommonMediaDTO, await this.mediaService.createMedia({
               data: {
@@ -214,16 +215,9 @@ export class SeederService {
               enableImplicitConversion: true,
             });
 
-            let filePath = `${FILES_SCOPE}/${scope}/${file}`;
-            let key = `medias/${newMedia.id.toString()}/videos/${uuidv4()}.${ext}`;
-            if (category.type === MediaCategoryType.Sound) {
-              key = `medias/${newMedia.id.toString()}/audios/${uuidv4()}.${ext}`;
-            }
-
-
             const url = await this.readFileAndUpload({
-              filePath,
-              key
+              filePath: `${commonFolderScope}/${file}`,
+              key: `medias/${newMedia.id.toString()}/${MediaCategoryType.Sound ? 'audios' : 'videos'}/${uuidv4()}.${ext}`
             });
 
             await this.updateMedia({
