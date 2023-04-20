@@ -257,44 +257,49 @@ export class SeederService {
 
   async seedMediasToAvailableTemplates() {
     return withTransaction(this.connection, async (session) => {
-      const templates = await this.userTemplatesService.findUserTemplates({
-        query: {},
-        session
-      });
-
-      await Promise.all(templates.map(async (template) => {
-        const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
-          query: {
-            userTemplate: template._id
-          },
+      try {
+        const templates = await this.userTemplatesService.findUserTemplates({
+          query: {},
           session
         });
 
-        const medias = await this.mediaService.findMedias({
-          query: {
-            url: {
-              $nin: userTemplateMedias.map(item => item.url)
+        await Promise.all(templates.map(async (template) => {
+          const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
+            query: {
+              userTemplate: template._id
+            },
+            session
+          });
+
+          const medias = await this.mediaService.findMedias({
+            query: {
+              url: {
+                $nin: userTemplateMedias.map(item => item.url)
+              }
+            },
+            session
+          });
+
+          const data = await Promise.all(medias.map(media => (
+            {
+              userTemplate: template._id,
+              mediaCategory: media.mediaCategory,
+              url: media.url,
+              name: media.name,
+              previewUrls: media.previewUrls,
+              type: media.type
             }
-          },
-          session
-        });
+          )));
 
-        const data = await Promise.all(medias.map(media => (
-          {
-            userTemplate: template._id,
-            mediaCategory: media.mediaCategory,
-            url: media.url,
-            name: media.name,
-            previewUrls: media.previewUrls,
-            type: media.type
-          }
-        )));
-
-        await this.mediaService.createUserTemplateMedias({
-          data,
-          session
-        });
-      }));
+          await this.mediaService.createUserTemplateMedias({
+            data,
+            session
+          });
+        }));
+      }
+      catch (err) {
+        console.log(err);
+      }
     });
   }
 
