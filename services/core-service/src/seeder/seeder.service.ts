@@ -182,7 +182,7 @@ export class SeederService {
         [BACKGROUNDS_SCOPE, SOUNDS_SCOPE].map(async scope => {
           const commonFolderScope = `${FILES_SCOPE}/${scope}`;
           const files = await promisify(readdir)(join(process.cwd(), commonFolderScope));
-          if (!scope.includes(category.type)) return;  
+          if (!scope.includes(category.type)) return;
 
           const countFilesByCategory = files.filter(item => item.includes(category.key)).length;
 
@@ -253,6 +253,54 @@ export class SeederService {
     await Promise.all(promises);
 
     return;
+  }
+
+  async seedMediasToAvailableTemplates() {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const templates = await this.userTemplatesService.findUserTemplates({
+          query: {},
+          session
+        });
+
+        await Promise.all(templates.map(async (template) => {
+          const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
+            query: {
+              userTemplate: template._id
+            },
+            session
+          });
+
+          const medias = await this.mediaService.findMedias({
+            query: {
+              url: {
+                $nin: userTemplateMedias.map(item => item.url)
+              }
+            },
+            session
+          });
+
+          const data = await Promise.all(medias.map(media => (
+            {
+              userTemplate: template._id,
+              mediaCategory: media.mediaCategory,
+              url: media.url,
+              name: media.name,
+              previewUrls: media.previewUrls,
+              type: media.type
+            }
+          )));
+
+          await this.mediaService.createUserTemplateMedias({
+            data,
+            session
+          });
+        }));
+      }
+      catch (err) {
+        console.log(err);
+      }
+    });
   }
 
   async seedLanguages() {
