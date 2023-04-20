@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { CommonIconProps } from "../types";
 import { SvgIconWrapper } from "../SvgIconWrapper";
 
-const PauseIcon = memo(({ width, height, ...rest }: CommonIconProps) => (
+const PlayIcon = memo(({ width, height, ...rest }: CommonIconProps) => (
   <SvgIconWrapper
     width={width}
     height={height}
@@ -18,4 +18,4 @@ const PauseIcon = memo(({ width, height, ...rest }: CommonIconProps) => (
   </SvgIconWrapper>
 ));
 
-export { PauseIcon };
+export { PlayIcon };

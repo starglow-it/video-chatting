@@ -10,7 +10,13 @@ export const $meetingAudioStore = meetingDomain.createStore<{
     count: 0,
 });
 
+export const $isToggleMeetingAudioStore =
+    meetingDomain.createStore<boolean>(false);
+
 export const getMeetingAudioFx = meetingDomain.createEffect<
     { userTemplateId: string },
     EntityList<IAudioCategory>
 >('getAudioMeetingFx');
+
+export const toggleMeetingAudioEvent =
+    meetingDomain.createEvent('toggleMettingAudio');

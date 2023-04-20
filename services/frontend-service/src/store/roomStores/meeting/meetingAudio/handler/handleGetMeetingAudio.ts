@@ -14,11 +14,19 @@ export const handleGetMeetingAudio = async ({
         EntityList<IAudioCategory>,
         void
     >({
-        ...getBackgroundCategories({ skip: 0, limit: 12, type, userTemplateId }),
+        ...getBackgroundCategories({
+            skip: 0,
+            limit: 12,
+            type,
+            userTemplateId,
+        }),
     });
 
     if (success && result) {
-        return result;
+        const newList = [...result.list];
+        const index = newList.findIndex(img => img.key === 'classical');
+        if (index > -1) newList.unshift(newList.splice(index, 1)[0]);
+        return { ...result, list: newList };
     }
     if (!success) {
         return { list: [], count: 0 };

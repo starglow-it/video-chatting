@@ -1,5 +1,10 @@
 import { handleGetMeetingAudio } from './handler/handleGetMeetingAudio';
-import { $meetingAudioStore, getMeetingAudioFx } from './model';
+import {
+    $isToggleMeetingAudioStore,
+    $meetingAudioStore,
+    getMeetingAudioFx,
+    toggleMeetingAudioEvent,
+} from './model';
 
 getMeetingAudioFx.use(handleGetMeetingAudio);
 
@@ -8,3 +13,5 @@ $meetingAudioStore.on(getMeetingAudioFx.doneData, (state, data) => ({
     audioList: data.list,
     count: data.count,
 }));
+
+$isToggleMeetingAudioStore.on(toggleMeetingAudioEvent, toggle => !toggle);

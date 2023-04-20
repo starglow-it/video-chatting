@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { SyntheticEvent, memo, useEffect, useState } from 'react';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import clsx from 'clsx';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
@@ -9,13 +9,17 @@ import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon'
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { MusicIcon } from 'shared-frontend/icons/OtherIcons/MusicIcon';
+import { PauseIcon } from 'shared-frontend/icons/OtherIcons/PauseIcon';
+import { PlayIcon } from 'shared-frontend/icons/OtherIcons/PlayIcon';
 import styles from './MeetingManageAudio.module.scss';
 import { AudioItem } from './AudioItem';
 import { useStore, useStoreMap } from 'effector-react';
 import {
+    $isToggleMeetingAudioStore,
     $meetingAudioStore,
     $meetingTemplateStore,
     getMeetingAudioFx,
+    toggleMeetingAudioEvent,
 } from 'src/store/roomStores';
 
 const Component = () => {
@@ -24,11 +28,11 @@ const Component = () => {
         keys: [],
         fn: state => state.audioList.filter(item => item.audio !== null),
     });
-
+    const isPlayAll = useStore($isToggleMeetingAudioStore);
     const { id } = useStore($meetingTemplateStore);
     const [isExpand, setIsExpand] = useState<boolean>(true);
 
-    const changeExpand = (event: React.SyntheticEvent, expanded: boolean) => {
+    const changeExpand = (event: SyntheticEvent, expanded: boolean) => {
         setIsExpand(expanded);
     };
 
@@ -39,6 +43,11 @@ const Component = () => {
             }
         })();
     }, [isExpand]);
+
+    const handleTogglePlayAll = (event: SyntheticEvent) => {
+        event.stopPropagation();
+        toggleMeetingAudioEvent();
+    };
 
     return (
         <CustomPaper
@@ -87,6 +96,26 @@ const Component = () => {
                                 paddingLeft={1}
                                 fontSize="15px"
                             />
+                            <CustomBox
+                                onClick={handleTogglePlayAll}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                            >
+                                {isPlayAll ? (
+                                    <PauseIcon
+                                        width="22px"
+                                        height="22px"
+                                        className={styles.pauseAction}
+                                    />
+                                ) : (
+                                    <PlayIcon
+                                        width="22px"
+                                        height="22px"
+                                        className={styles.pauseAction}
+                                    />
+                                )}
+                            </CustomBox>
 
                             <RoundCloseIcon
                                 className={styles.closeIcon}
@@ -104,7 +133,11 @@ const Component = () => {
                         paddingTop={1}
                         paddingLeft="6px"
                     >
-                        <CustomScroll className={styles.scroll}>
+                        <CustomScroll
+                            className={clsx(styles.scroll, {
+                                [styles.disable]: !isPlayAll,
+                            })}
+                        >
                             {audioList.map(item => (
                                 <AudioItem key={item.key} item={item.audio} />
                             ))}
