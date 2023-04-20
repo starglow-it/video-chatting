@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import clsx from 'clsx';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
@@ -11,15 +11,34 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { MusicIcon } from 'shared-frontend/icons/OtherIcons/MusicIcon';
 import styles from './MeetingManageAudio.module.scss';
 import { AudioItem } from './AudioItem';
+import { useStore, useStoreMap } from 'effector-react';
+import {
+    $meetingAudioStore,
+    $meetingTemplateStore,
+    getMeetingAudioFx,
+} from 'src/store/roomStores';
 
 const Component = () => {
+    const audioList = useStoreMap({
+        store: $meetingAudioStore,
+        keys: [],
+        fn: state => state.audioList.filter(item => item.audio !== null),
+    });
+
+    const { id } = useStore($meetingTemplateStore);
     const [isExpand, setIsExpand] = useState<boolean>(true);
 
     const changeExpand = (event: React.SyntheticEvent, expanded: boolean) => {
         setIsExpand(expanded);
     };
 
-    const handleScrollEnd = () => {};
+    useEffect(() => {
+        (async () => {
+            if (isExpand) {
+                await getMeetingAudioFx({ userTemplateId: id });
+            }
+        })();
+    }, [isExpand]);
 
     return (
         <CustomPaper
@@ -85,12 +104,9 @@ const Component = () => {
                         paddingTop={1}
                         paddingLeft="6px"
                     >
-                        <CustomScroll
-                            className={styles.scroll}
-                            onYReachEnd={handleScrollEnd}
-                        >
-                            {[1, 2, 3, 4].map(item => (
-                                <AudioItem key={item} />
+                        <CustomScroll className={styles.scroll}>
+                            {audioList.map(item => (
+                                <AudioItem key={item.key} item={item.audio} />
                             ))}
                         </CustomScroll>
                     </CustomGrid>

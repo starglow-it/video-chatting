@@ -5,8 +5,10 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import styles from './MeetingManageAudio.module.scss';
 import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
+import { IMediaItem } from 'src/store/roomStores/meeting/meetingBackground/types';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
-const Component = () => {
+const Component = ({ item }: { item: IMediaItem }) => {
     const refAudio = useRef<HTMLAudioElement | null>(null);
     const refIsFirstTime = useRef<boolean>(true);
     const [volume, setVolume] = useState<number>(50);
@@ -43,9 +45,17 @@ const Component = () => {
 
     return (
         <CustomGrid container flexDirection="column">
-            <CustomTypography color="colors.white.primary" fontSize={12}>
-                Don coi Orijin - Rogboog
-            </CustomTypography>
+            <CustomGrid>
+                <CustomImage
+                    src={item.mediaCategory.emojiUrl}
+                    width={10}
+                    height={10}
+                />
+                <CustomTypography color="colors.white.primary" fontSize={12}>
+                    {item.name}
+                </CustomTypography>
+            </CustomGrid>
+
             <CustomRange
                 color="secondary"
                 value={volume}
@@ -67,7 +77,7 @@ const Component = () => {
                 classes={{ thumb: styles.thumb, root: styles.thumbRoot }}
             />
             <audio
-                src="/audio/don-coi.mp3"
+                src={item.url}
                 ref={refAudio}
                 className={styles.audioPlay}
                 loop
