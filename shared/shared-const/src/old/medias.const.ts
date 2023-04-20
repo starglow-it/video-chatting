@@ -82,6 +82,24 @@ export const MEDIA_CATEGORIES = [
         value: 'Spotify',
         emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/spotify_1.webp',
         type: 'sound'
+    },
+    {
+        key: 'lofi',
+        value: 'Lofi',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/lofi_1.webp',
+        type: 'sound'
+    },
+    {
+        key: 'piano',
+        value: 'Piano',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/piano_1.webp',
+        type: 'sound'
+    },
+    {
+        key: 'rain',
+        value: 'Rain',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/rain_1.webp',
+        type: 'sound'
     }
 ];
 
