@@ -15,6 +15,12 @@ export class Media {
 
   @Prop({
     type: mongoose.Schema.Types.String,
+    default: ''
+  })
+  name: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
   })
   url: string;
 

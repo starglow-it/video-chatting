@@ -13,6 +13,9 @@ export class CommonMediaDTO implements IMedia {
     mediaCategory: IMedia['mediaCategory'];
 
     @Expose()
+    name: IMedia['name'];
+
+    @Expose()
     url: string;
 
     @Expose()

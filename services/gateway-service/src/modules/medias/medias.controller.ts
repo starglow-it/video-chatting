@@ -11,7 +11,6 @@ import {
     Request,
     UploadedFile,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
     ApiBearerAuth,
     ApiForbiddenResponse,
@@ -19,7 +18,7 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
-import { EntityList, ResponseSumType, IMedia, IMediaCategory, IUserTemplateMedia } from 'shared-types';
+import { EntityList, ResponseSumType, IMedia, IMediaCategory, IUserTemplateMedia, MediaCategoryType } from 'shared-types';
 import { CreateUserTemplateMediaRequest } from '../../dtos/requests/create-user-template-media.request';
 import { MediaCategoryRestDTO } from '../../dtos/response/common-media-category.dto';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
@@ -28,7 +27,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { UserTemplateMediaRestDto } from '../../dtos/response/common-user-template-media.dto';
-import { GetUserTemplateMediasQueryDto } from 'src/dtos/query/GetUserTemplateMedias.dto';
+import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
+import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategories.dto';
+import { CoreService } from 'src/services/core/core.service';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 @ApiTags('Medias')
 @Controller('medias')
@@ -37,6 +39,7 @@ export class MediasController {
 
     constructor(
         private mediaService: MediasService,
+        private userTemplateService: UserTemplatesService,
         private uploadService: UploadService,
     ) { }
 
@@ -50,16 +53,43 @@ export class MediasController {
         description: 'Forbidden',
     })
     async getCategories(
-        @Request() req,
-        @Query('skip', ParseIntPipe) skip: number,
-        @Query('limit', ParseIntPipe) limit: number,
-    ): Promise<ResponseSumType<EntityList<IMediaCategory>>> {
+        @Query() query: GetMediaCategoriesQueryDto
+    ): Promise<ResponseSumType<EntityList<IMediaCategory & {audio?: string}>>> {
         try {
+            const {skip, limit, type} = query;
+
+            const userTemplate = await this.userTemplateService.getUserTemplateById({
+                id: query.userTemplateId
+            });
+
+            if(!userTemplate){
+                throw new BadRequestException('User template not found');
+            }
+
             const mediaCategories =
                 await this.mediaService.getMediaCategories({
                     skip,
                     limit,
+                    type
                 });
+            if(query.type === MediaCategoryType.Sound){
+                const mediaSoundTypeCategories = mediaCategories?.list?.map(async (mediaCategory) => {
+                    const medias = await this.mediaService.getUserTemplateMedias({
+                        mediaCategoryId: mediaCategory.id,
+                        userTemplateId: query.userTemplateId
+                    });
+
+                    return {...mediaCategory, audio: medias?.list[0] || null}
+                });
+                
+                return {
+                    success: true,
+                    result: {
+                        list: await Promise.all(mediaSoundTypeCategories),
+                        count: mediaCategories.count
+                    },
+                };
+            }
 
             return {
                 success: true,
