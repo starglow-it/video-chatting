@@ -62,6 +62,7 @@ import {
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 
 // helpers
 
@@ -206,6 +207,7 @@ const Component = () => {
                     <MeetingUsersVideos />
                     <ConditionalRender condition={isOwner}>
                         <MeetingChangeBackground />
+                        <MeetingMonetizationButton />
                     </ConditionalRender>
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>

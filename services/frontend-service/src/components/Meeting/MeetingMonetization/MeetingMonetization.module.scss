@@ -1,6 +1,12 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
 
+%base-wrapper-icon-button {
+  width: rem(34px);
+  height: rem(34px);
+  border-radius: 22.5%;
+}
+
 .monetization {
   background: transparent;
   border-radius: rem(10px);
@@ -61,4 +67,31 @@
 }
 .error {
   position: relative;
+}
+.tooltip {
+  margin: rem(2px 0 0 0) !important;  
+}
+
+.deviceButton {
+  @extend %base-wrapper-icon-button;
+
+  &.inactive {
+    color: rgba($primary-white, 0.25);
+  }
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 30%;
+  right: rem(20px);
+  .iconWrapper{
+    border-radius: 22.5%;
+  }
+}
+.commonOpenPanel {
+  max-width: rem(480px);
+  min-width: rem(420px);
+  padding: rem(20px);
+  background-color: none;
 }

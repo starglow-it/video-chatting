@@ -117,7 +117,7 @@ const Component = () => {
                         </CustomPaper>
                     </Fade>
                 </ClickAwayListener>
-                <ClickAwayListener onClickAway={toggleOutsidePaymentsPanel}>
+                {/* <ClickAwayListener onClickAway={toggleOutsidePaymentsPanel}>
                     <Fade in={isPaymentOpen}>
                         <CustomPaper
                             variant="black-glass"
@@ -135,7 +135,7 @@ const Component = () => {
                             </ConditionalRender>
                         </CustomPaper>
                     </Fade>
-                </ClickAwayListener>
+                </ClickAwayListener> */}
             </>
         ),
         [
