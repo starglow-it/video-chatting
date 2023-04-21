@@ -46,14 +46,16 @@ export const MeetingMonetizationButton = () => {
         togglePaymentFormEvent();
     }
   };
-  const conditionRender = (
-    isOwner
-    ? Boolean(
-          profile.isStripeEnabled &&
-              profile.stripeAccountId,
-      )
-    : meetingTemplate.isMonetizationEnabled
-  )
+  // const conditionRender = (
+  //   isOwner
+  //   ? Boolean(
+  //         profile.isStripeEnabled &&
+  //             profile.stripeAccountId,
+  //     )
+  //   : meetingTemplate.isMonetizationEnabled
+  // )
+
+  const conditionRender = isOwner || meetingTemplate.isMonetizationEnabled
 
   const handleClosePayment = useCallback(async () => {
     setAnchorEl(null)
@@ -70,7 +72,7 @@ const handleUpdateMonetization = useCallback(() => {
 
   return (
     <ConditionalRender
-        condition
+      condition={conditionRender}
     >
       <CustomPaper
         variant="black-glass"

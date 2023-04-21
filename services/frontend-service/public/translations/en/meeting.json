@@ -105,6 +105,8 @@
     "faceTracking": "Face detection",
     "audioBackground": "Background audio",
     "monetization": "Monetization",
+    "inMeeting": "In-meeting",
+    "payWall": "Paywall",
     "audioBackgroundDisabled": "Background audio disabled",
     "notes": {
       "title": "Leave a note",

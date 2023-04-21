@@ -6,17 +6,21 @@
   height: rem(34px);
   border-radius: 22.5%;
 }
-
-.monetization {
-  background: transparent;
-  border-radius: rem(10px);
-  height: rem(50px);
-  color: $primary-white;
-
+.wrapperForm{
+  height: rem(0px);
   overflow: hidden;
 
   transition: height 200ms linear;
+  &.active {
+    height: rem(200px);
+  }
+}
 
+.monetization {
+  background: transparent;
+  border-radius: rem(10px);  
+  color: $primary-white;
+  
   .labelWrapper {
     margin: rem(0 0 20px 0);
   }
@@ -24,11 +28,7 @@
   .switcher {
     max-width: rem(112px);
     width: 100%;
-  }
-
-  &.active {
-    height: rem(115px);
-  }
+  }  
 
   .amountInput {
     position: relative;
@@ -63,7 +63,7 @@
 }
 
 .button {
-  margin: rem(20px 0 0 0);
+  margin: 0;
 }
 .error {
   position: relative;
@@ -85,8 +85,9 @@
   position: absolute;
   top: 30%;
   right: rem(20px);
-  .iconWrapper{
-    border-radius: 22.5%;
+  button{
+    width: 100%;
+    height: 100%;
   }
 }
 .commonOpenPanel {
