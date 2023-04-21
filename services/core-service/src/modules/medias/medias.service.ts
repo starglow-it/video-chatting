@@ -276,6 +276,20 @@ export class MediaService {
         });
     }
 
+
+    async deletePreviewImages({
+        query,
+        session,
+    }: {
+        query: FilterQuery<PreviewImageDocument>;
+        session?: ITransactionSession;
+    }): Promise<any> {
+
+        return this.previewImage.deleteMany(query, {
+            session: session?.session,
+        });
+    }
+
     async deleteUserTemplateMedias({
         query,
         session,

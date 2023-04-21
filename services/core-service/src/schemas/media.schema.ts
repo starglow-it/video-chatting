@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 
 import { PreviewImageDocument } from './preview-image.schema';
 import { MediaCategory, MediaCategoryDocument } from './media-category.schema';
+import { UserTemplate, UserTemplateDocument } from './user-template.schema';
 
 @Schema()
 export class Media {
@@ -34,6 +35,13 @@ export class Media {
     type: mongoose.Schema.Types.String
   })
   type: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: UserTemplate.name,
+    default: null
+  })
+  userTemplate: UserTemplateDocument
 
 }
 
