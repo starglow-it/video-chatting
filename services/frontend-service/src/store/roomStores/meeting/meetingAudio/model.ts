@@ -11,7 +11,7 @@ export const $meetingAudioStore = meetingDomain.createStore<{
 });
 
 export const $isToggleMeetingAudioStore =
-    meetingDomain.createStore<boolean>(false);
+    meetingDomain.createStore<boolean>(true);
 
 export const getMeetingAudioFx = meetingDomain.createEffect<
     { userTemplateId: string },
