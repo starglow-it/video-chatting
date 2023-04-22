@@ -205,7 +205,7 @@ export class SeederService {
             $in: previewImages
           }
         }
-      })
+      });
 
       await this.mediaService.deleteMedias({
         query: {
@@ -255,15 +255,21 @@ export class SeederService {
   }
 
   async createMediasByScopes(scopes: string[], category: MediaCategoryDocument) {
-    const promise = scopes.map(async (scope) => {
+    try {
+      const promise = scopes.map(async (scope) => {
 
-      const filePath = `${FILES_SCOPE}/${scope}`;
-      if (!scope.includes(category.type)) return;
+        const filePath = `${FILES_SCOPE}/${scope}`;
+        if (!scope.includes(category.type)) return;
 
-      await this.createMedias(category, filePath);
+        await this.createMedias(category, filePath);
 
-    });
-    await Promise.all(promise);
+      });
+      await Promise.all(promise);
+    }
+    catch (err) {
+      console.log(err);
+      return;
+    }
   }
 
   async seedMedias() {
