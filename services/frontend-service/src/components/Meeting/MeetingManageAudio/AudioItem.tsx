@@ -14,7 +14,7 @@ import styles from './MeetingManageAudio.module.scss';
 const Component = ({ item }: { item: IMediaItem }) => {
     const refAudio = useRef<HTMLAudioElement | null>(null);
     const refIsFirstTime = useRef<boolean>(true);
-    const [volume, setVolume] = useState<number>(50);
+    const [volume, setVolume] = useState<number>(0);
     const [isPlay, setIsPlay] = useState(false);
     const isPlayAll = useStore($isToggleMeetingAudioStore);
 
@@ -68,16 +68,12 @@ const Component = ({ item }: { item: IMediaItem }) => {
     return (
         <CustomGrid container flexDirection="column" marginBottom="10px">
             <CustomGrid flexDirection="row" alignItems="center" display="flex">
-                <ConditionalRender
-                    condition={item.mediaCategory.key !== 'classical'}
-                >
-                    <CustomImage
-                        src={item.mediaCategory.emojiUrl}
-                        width={15}
-                        height={15}
-                        className={styles.emoji}
-                    />
-                </ConditionalRender>
+                <CustomImage
+                    src={item.mediaCategory.emojiUrl}
+                    width={15}
+                    height={15}
+                    className={styles.emoji}
+                />
                 <CustomTypography
                     color="colors.white.primary"
                     fontSize={12}

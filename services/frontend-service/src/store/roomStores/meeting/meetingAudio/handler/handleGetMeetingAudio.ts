@@ -23,10 +23,7 @@ export const handleGetMeetingAudio = async ({
     });
 
     if (success && result) {
-        const newList = [...result.list];
-        const index = newList.findIndex(img => img.key === 'classical');
-        if (index > -1) newList.unshift(newList.splice(index, 1)[0]);
-        return { ...result, list: newList };
+        return result;
     }
     if (!success) {
         return { list: [], count: 0 };
