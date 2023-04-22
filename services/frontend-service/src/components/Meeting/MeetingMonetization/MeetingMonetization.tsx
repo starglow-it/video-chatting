@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { FormProvider, Controller, useForm, useWatch } from 'react-hook-form';
 import { Fade, InputBase } from '@mui/material';
@@ -17,11 +17,14 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // common
-import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 
 // validation
 import { Translation } from '@library/common/Translation/Translation';
+import {ErrorMessage} from "@library/common/ErrorMessage/ErrorMessage";
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { templatePriceSchema, paywallPriceSchema } from '../../../validation/payments/templatePrice';
 import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 
@@ -29,15 +32,12 @@ import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 import styles from './MeetingMonetization.module.scss';
 
 // stores
+import {$profileStore} from '../../../store'
 import { $meetingTemplateStore, updateMeetingTemplateFxWithData } from '../../../store/roomStores';
 
 // const
 import { currencyValues } from '../../../const/profile/subscriptions';
-import {ErrorMessage} from "@library/common/ErrorMessage/ErrorMessage";
 import { MeetingConnectStripe } from '../MeetingConnectStripe/MeetingConnectStripe';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
 
 const validationSchema = yup.object({
     templatePrice: templatePriceSchema(),
@@ -48,7 +48,7 @@ const validationSchema = yup.object({
 
 const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const meetingTemplate = useStore($meetingTemplateStore);
-
+    const profile = useStore($profileStore);
     const resolver = useYupValidationResolver<{
         templateCurrency: string;
         templatePrice: number;
@@ -59,13 +59,18 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         isPaywallPayment: boolean;
     }>(validationSchema);
 
+    const isConnectStripe = Boolean(
+        profile.isStripeEnabled &&
+        profile.stripeAccountId,
+    )        
+
     const methods = useForm({
         criteriaMode: 'all',
         resolver,
         defaultValues: {
             isInmeetingPayment: false,
             isPaywallPayment: false,
-            isMonetizationEnabled: Boolean(meetingTemplate.isMonetizationEnabled),
+            isMonetizationEnabled: isConnectStripe ? Boolean(meetingTemplate.isMonetizationEnabled) : false,
             templatePrice: meetingTemplate.templatePrice || 10,
             paywallPrice: 10,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
@@ -125,6 +130,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         [],
     );
 
+    const isDisableSubmit = !isConnectStripe || (
+        !isPaywallPaymentEnabled && !isInmeetingPaymentEnabled
+    ) || isMonetizationEnabled
+
     const registerData = register('templatePrice');
     const registerPaywallData = register('paywallPrice');
 
@@ -157,8 +166,9 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                     onChange={onChange}
                                     checked={value}
                                     inputRef={ref}
+                                    disabled={!isConnectStripe}
                                 />
-                            )}
+                            )}                            
                         />
                         <Fade in={isMonetizationEnabled}>
                             <CustomGrid
@@ -190,7 +200,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                     input: styles.input,
                                                 }}
                                                 {...registerData}
-                                                disabled={!isInmeetingPaymentEnabled}
+                                                disabled={!isInmeetingPaymentEnabled || !isConnectStripe}
                                             />
                                             <ValuesSwitcher
                                                 values={currencyValues}
@@ -239,7 +249,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                     input: styles.input,
                                                 }}
                                                 {...registerPaywallData}
-                                                disabled={!isPaywallPaymentEnabled}
+                                                disabled={!isPaywallPaymentEnabled || !isConnectStripe}
                                             />
                                             <ValuesSwitcher
                                                 values={currencyValues}
@@ -270,7 +280,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                         <CustomButton
                             type="submit"
                             className={styles.button}
-                            disabled={!isPaywallPaymentEnabled && !isInmeetingPaymentEnabled && isMonetizationEnabled}
+                            disabled={isDisableSubmit}
                             label={<Translation nameSpace="common" translation="buttons.save" />}
                         />
                     </CustomGrid>
