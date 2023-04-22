@@ -144,7 +144,7 @@ export class SeederService {
     let previewImages = [];
 
     if (mediaType !== 'audio') {
-      previewImages = await this.commonTemplatesService.generatePreviews({
+      previewImages = await this.mediaService.generatePreviews({
         url,
         id,
         mimeType,
