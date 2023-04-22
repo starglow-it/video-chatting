@@ -50,17 +50,17 @@ async function bootstrap() {
 
   await app.listen();
 
-  // await seeder.uploadEmoji();
-  await seeder.seedBusinessCategories();
-  await seeder.seedLanguages();
-  await seeder.createCounter();
-  await seeder.seedAdminUser();
-  await seeder.seedMonetizationStatistic();
-  await seeder.seedRoomStatistic();
-  await seeder.seedLinks();
-  await seeder.seedCreateGlobalCommonTemplate();
-  await seeder.seedMedias();
-  await seeder.seedMediasToAvailableTemplates();
+  // // await seeder.uploadEmoji();
+  // await seeder.seedBusinessCategories();
+  // await seeder.seedLanguages();
+  // await seeder.createCounter();
+  // await seeder.seedAdminUser();
+  // await seeder.seedMonetizationStatistic();
+  // await seeder.seedRoomStatistic();
+  // await seeder.seedLinks();
+  // await seeder.seedCreateGlobalCommonTemplate();
+  // await seeder.seedMedias();
+  // await seeder.seedMediasToAvailableTemplates();
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
