@@ -132,7 +132,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const isDisableSubmit = !isConnectStripe || (
         !isPaywallPaymentEnabled && !isInmeetingPaymentEnabled
-    ) || isMonetizationEnabled
+    ) || !isMonetizationEnabled
 
     const registerData = register('templatePrice');
     const registerPaywallData = register('paywallPrice');

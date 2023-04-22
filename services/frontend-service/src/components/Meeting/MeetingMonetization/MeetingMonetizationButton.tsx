@@ -1,17 +1,12 @@
-import { CustomTooltip } from "@library/custom/CustomTooltip/CustomTooltip"
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper'
 import { ActionButton } from "shared-frontend/library/common/ActionButton"
 import { useStore } from "effector-react"
-import { MouseEvent, SyntheticEvent, useCallback, useState } from "react"
+import { MouseEvent, useCallback, useState } from "react"
 import { MonetizationIcon } from "shared-frontend/icons/OtherIcons/MonetizationIcon"
 import { ConditionalRender } from "shared-frontend/library/common/ConditionalRender"
 import { CustomPopover } from "@library/custom/CustomPopover/CustomPopover"
-import clsx from "clsx"
 import { PaymentForm } from "@components/PaymentForm/PaymentForm"
 import styles from './MeetingMonetization.module.scss'
-import {
-  $profileStore
-} from '../../../store';
 import {
   $isTogglePayment,
   $paymentIntent,
@@ -26,7 +21,6 @@ import { MeetingMonetization } from "./MeetingMonetization"
 
 export const MeetingMonetizationButton = () => {
   const paymentIntent = useStore($paymentIntent);
-  const profile = useStore($profileStore);
   const meetingTemplate = useStore($meetingTemplateStore);
   const isOwner = useStore($isOwner);
   const intentId = paymentIntent?.id;
@@ -46,14 +40,6 @@ export const MeetingMonetizationButton = () => {
         togglePaymentFormEvent();
     }
   };
-  // const conditionRender = (
-  //   isOwner
-  //   ? Boolean(
-  //         profile.isStripeEnabled &&
-  //             profile.stripeAccountId,
-  //     )
-  //   : meetingTemplate.isMonetizationEnabled
-  // )
 
   const conditionRender = isOwner || meetingTemplate.isMonetizationEnabled
 
