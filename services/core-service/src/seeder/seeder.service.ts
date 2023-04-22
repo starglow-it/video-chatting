@@ -274,6 +274,7 @@ export class SeederService {
 
   async seedMedias() {
     try {
+      const scopes = [BACKGROUNDS_SCOPE, SOUNDS_SCOPE];
       const promise = MEDIA_CATEGORIES.map(async (mediaCategory) => {
         const existCategory = await this.mediaService.findMediaCategory({
           query: { key: mediaCategory.key },
@@ -288,11 +289,11 @@ export class SeederService {
               },
             }
           );
-          await this.createMediasByScopes([BACKGROUNDS_SCOPE, SOUNDS_SCOPE], newCategory);
+          await this.createMediasByScopes(scopes, newCategory);
         }
         else {
 
-          await this.createMediasByScopes([BACKGROUNDS_SCOPE, SOUNDS_SCOPE], existCategory);
+          await this.createMediasByScopes(scopes, existCategory);
         }
       });
 

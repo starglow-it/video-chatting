@@ -215,12 +215,6 @@ export class CommonTemplatesService {
 
     const imagesPaths = await fsPromises.readdir(outputPath);
 
-    await this.previewImage.deleteMany({
-      key: new RegExp(`^templates/images/${id}`),
-    });
-
-    await this.awsService.deleteFolder(`templates/images/${id}`);
-
     const uploadedImagesPromises = imagesPaths.map(async (image) => {
       const resolution = image.match(/(\d*)p\./);
 
