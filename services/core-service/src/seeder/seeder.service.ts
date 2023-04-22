@@ -248,6 +248,7 @@ export class SeederService {
       }
     }
     catch (err) {
+      console.log(err);
       return;
     }
 
