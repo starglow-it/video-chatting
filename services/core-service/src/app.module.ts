@@ -23,6 +23,11 @@ import { CountryStatisticsModule } from './modules/country-statistics/country-st
 import { RoomsStatisticsModule } from './modules/rooms-statistics/rooms-statistics.module';
 import {TranscodeModule} from "./modules/transcode/transcode.module";
 import { MediasModule } from './modules/medias/medias.module';
+import { AppController } from './app.controller';
+import { MediaCategory, MediaCategorySchema } from './schemas/media-category.schema';
+import { Media, MediaSchema } from './schemas/media.schema';
+import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema';
+import { UserTemplateMedia, UserTemplateMediaSchema } from './schemas/user-template-media.schema';
 
 @Module({
   imports: [
@@ -55,8 +60,14 @@ import { MediasModule } from './modules/medias/medias.module';
     CountryStatisticsModule,
     RoomsStatisticsModule,
     TranscodeModule,
+    MongooseModule.forFeature([
+      { name: MediaCategory.name, schema: MediaCategorySchema},
+      { name: Media.name, schema: MediaSchema},
+      { name: PreviewImage.name, schema: PreviewImageSchema },
+      { name: UserTemplateMedia.name, schema: UserTemplateMediaSchema }
+    ]),
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
