@@ -70,7 +70,7 @@ const Component = ({ onClose }: PaymentFormProps) => {
                 />
             </CustomGrid>
             <CustomDivider light flexItem />
-            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+            {(!isCreatePaymentIntentPending && paymentIntent.clientSecret) ? (
                 <CustomGrid container direction="column" className={styles.paymentForm}>
                     <CustomTypography
                         variant="body1bold"

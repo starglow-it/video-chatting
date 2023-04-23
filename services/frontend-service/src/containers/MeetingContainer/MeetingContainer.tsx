@@ -67,6 +67,7 @@ import styles from './MeetingContainer.module.scss';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
+import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -221,7 +222,9 @@ const MeetingContainer = memo(() => {
                     <ConditionalRender
                         condition={localUser.accessStatus === MeetingAccessStatusEnum.InMeeting}
                     >
-                        <MeetingView />
+                        {
+                            isOwner ? <MeetingView /> : <PaymentForm onClose={() => console.log('test')}/>
+                        }
                     </ConditionalRender>
                 </ConditionalRender>
             )}
