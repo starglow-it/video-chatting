@@ -59,7 +59,7 @@ export interface IUserTemplate {
   isAudioAvailable: boolean;
   templatePrice: number;
   templateCurrency: string;  
-  paywallPrice: number,
+  paywallPrice: number | null,
   paywallCurrency: string,
   customLink: string;
   businessCategories: IBusinessCategory[];
