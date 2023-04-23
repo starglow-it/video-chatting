@@ -123,7 +123,13 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            await updateMeetingTemplateFxWithData(data);
+            await updateMeetingTemplateFxWithData({
+                isMonetizationEnabled: data.isMonetizationEnabled,
+                templatePrice: data.templatePrice,
+                paywallPrice: data.paywallPrice,
+                templateCurrency: data.templateCurrency,
+                paywallCurrency: data.templateCurrency,
+            });
 
             onUpdate?.();
         }),
