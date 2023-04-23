@@ -126,9 +126,9 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
             await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled: data.isMonetizationEnabled,
                 templatePrice: data.templatePrice,
-                paywallPrice: data.paywallPrice,
+                // paywallPrice: data.paywallPrice,
                 templateCurrency: data.templateCurrency,
-                paywallCurrency: data.templateCurrency,
+                // paywallCurrency: data.templateCurrency,
             });
 
             onUpdate?.();
