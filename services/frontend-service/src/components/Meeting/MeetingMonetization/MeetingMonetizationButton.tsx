@@ -83,6 +83,9 @@ const handleUpdateMonetization = useCallback(() => {
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
+        }}        
+        PaperProps={{
+          className: styles.popoverMonetization
         }}
       >
         <CustomPaper
