@@ -353,6 +353,8 @@ export class UserTemplatesController {
           isMonetizationEnabled: data.isMonetizationEnabled,
           templatePrice: data.templatePrice,
           templateCurrency: data.templateCurrency,
+          paywallCurrency: data.paywallCurrency,
+          paywallPrice: data.paywallPrice,
           customLink: data.customLink,
           name: data.name,
           isPublic: data.isPublic,
