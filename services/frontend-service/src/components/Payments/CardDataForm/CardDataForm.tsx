@@ -26,6 +26,7 @@ const Component = ({ onSubmit, onError, paymentIntentSecret }: CardDataFormProps
     const handleSubmit = useCallback(
         async event => {
             event.preventDefault();
+            console.log('submit card', event);
 
             if (stripe && elements) {
                 const result = await stripe.confirmCardPayment(paymentIntentSecret, {
