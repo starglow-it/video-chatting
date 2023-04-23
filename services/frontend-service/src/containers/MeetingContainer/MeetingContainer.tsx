@@ -22,7 +22,7 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
-
+import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
@@ -67,7 +67,6 @@ import styles from './MeetingContainer.module.scss';
 import { StorageKeysEnum, WebStorage } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
-import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -203,6 +202,9 @@ const MeetingContainer = memo(() => {
         })();
     }, [isMeetingSocketConnected, isOwner]);
 
+    const isInMeeting = localUser.accessStatus === MeetingAccessStatusEnum.InMeeting
+    const isPayWallBeforeJoin = meetingTemplate?.paywallPrice !== 0 && !isOwner
+    const isReadyJoinMeeting = (isOwner || !isPayWallBeforeJoin)
     return (
         <>
             {Boolean(meetingTemplate?.id) && (
@@ -220,11 +222,20 @@ const MeetingContainer = memo(() => {
                         </CustomBox>
                     </ConditionalRender>
                     <ConditionalRender
-                        condition={localUser.accessStatus === MeetingAccessStatusEnum.InMeeting}
+                        condition={isInMeeting}
                     >
-                        {
-                            isOwner ? <MeetingView /> : <PaymentForm onClose={() => console.log('test')}/>
-                        }
+                        <ConditionalRender condition={isReadyJoinMeeting}>
+                            <MeetingView /> 
+                        </ConditionalRender>
+                        <ConditionalRender condition={isPayWallBeforeJoin}>
+                            <CustomBox
+                                className={clsx(styles.waitingRoomWrapper, {
+                                    [styles.mobile]: isMobile,
+                                })}
+                            >
+                                <MeetingPaywall />
+                            </CustomBox>
+                        </ConditionalRender>
                     </ConditionalRender>
                 </ConditionalRender>
             )}
