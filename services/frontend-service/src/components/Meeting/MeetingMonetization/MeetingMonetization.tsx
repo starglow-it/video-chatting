@@ -125,10 +125,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         handleSubmit(async data => {
             await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled: data.isMonetizationEnabled,
-                templatePrice: data.templatePrice,
-                // paywallPrice: data.paywallPrice,
-                templateCurrency: data.templateCurrency,
-                // paywallCurrency: data.templateCurrency,
+                templatePrice: data.isInmeetingPayment ? data.templatePrice : undefined,
+                paywallPrice: data.isPaywallPayment ?  data.paywallPrice : undefined,
+                templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
+                paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
             });
 
             onUpdate?.();
