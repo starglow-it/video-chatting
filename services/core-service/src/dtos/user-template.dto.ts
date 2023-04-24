@@ -106,6 +106,14 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   templateCurrency: IUserTemplate['templateCurrency'];
 
+
+  @Expose()
+  paywallCurrency: IUserTemplate['paywallCurrency'];
+
+
+  @Expose()
+  paywallPrice: IUserTemplate['paywallPrice'];
+
   @Expose()
   isAudioAvailable: IUserTemplate['isAudioAvailable'];
 
