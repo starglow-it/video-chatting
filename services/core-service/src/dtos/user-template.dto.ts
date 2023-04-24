@@ -111,6 +111,7 @@ export class UserTemplateDTO implements IUserTemplate {
   paywallCurrency: IUserTemplate['paywallCurrency'];
 
 
+  @Expose()
   paywallPrice: IUserTemplate['paywallPrice'];
 
   @Expose()

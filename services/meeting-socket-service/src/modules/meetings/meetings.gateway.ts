@@ -465,7 +465,7 @@ export class MeetingsGateway
       if (message.isOwner && !meeting) {
         meeting = await this.meetingsService.createMeeting(
           {
-            isMonetizationEnabled: true,
+            isMonetizationEnabled: false,
             mode: 'together',
             ownerProfileId: message.profileId,
             maxParticipants: message.maxParticipants,
