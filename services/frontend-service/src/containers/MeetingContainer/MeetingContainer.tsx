@@ -203,7 +203,7 @@ const MeetingContainer = memo(() => {
     }, [isMeetingSocketConnected, isOwner]);
 
     const isInMeeting = localUser.accessStatus === MeetingAccessStatusEnum.InMeeting
-    const isPayWallBeforeJoin = meetingTemplate?.paywallPrice !== 0 && !isOwner
+    const isPayWallBeforeJoin = Boolean(meetingTemplate?.paywallPrice) && !isOwner
     const isReadyJoinMeeting = (isOwner || !isPayWallBeforeJoin)
     return (
         <>
