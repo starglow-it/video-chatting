@@ -19,7 +19,7 @@ import styles from './CardDataForm.module.scss';
 
 // types
 
-const Component = ({ onSubmit, onError, paymentIntentSecret }: CardDataFormProps) => {
+const Component = ({ onSubmit, onError, paymentIntentSecret, colorForm = 'white' }: CardDataFormProps) => {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -48,9 +48,9 @@ const Component = ({ onSubmit, onError, paymentIntentSecret }: CardDataFormProps
     return (
         <form onSubmit={handleSubmit}>
             <CustomGrid container gap={2}>
-                <StripeCardNumber className={styles.cardField} />
-                <StripeCardExpiry className={styles.dateField} />
-                <StripeCardCvc className={styles.cvcField} />
+                <StripeCardNumber className={styles.cardField} colorForm={colorForm}/>
+                <StripeCardExpiry className={styles.dateField} colorForm={colorForm} />
+                <StripeCardCvc className={styles.cvcField} colorForm={colorForm}/>
             </CustomGrid>
             <CustomButton
                 type="submit"

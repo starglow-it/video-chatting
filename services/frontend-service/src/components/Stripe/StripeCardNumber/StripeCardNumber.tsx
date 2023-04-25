@@ -6,7 +6,10 @@ import { CardNumberElement, CardNumberElementProps } from '@stripe/react-stripe-
 import { PropsWithClassName } from 'shared-frontend/types';
 import styles from '../StripeCommon.module.scss';
 
-const Component = ({ className, ...rest }: PropsWithClassName<CardNumberElementProps>) => (
+interface Props extends CardNumberElementProps{
+    colorForm?: string
+}
+const Component = ({ className, colorForm = 'white', ...rest }: PropsWithClassName<Props>) => (
     <CardNumberElement
         className={clsx(styles.cardField, className)}
         options={{
@@ -17,7 +20,7 @@ const Component = ({ className, ...rest }: PropsWithClassName<CardNumberElementP
             },
             style: {
                 base: {
-                    color: 'white',
+                    color: colorForm,
                     lineHeight: '58px',
                     fontSize: '16px',
                     height: '58px',

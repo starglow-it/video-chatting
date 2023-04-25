@@ -185,7 +185,7 @@ const Component = () => {
                     ) : (
                         <>
                             {renderSubscriptionPlans}
-                            <SubscriptionPlanCard
+                            {/* <SubscriptionPlanCard
                                 key="AllPlans"
                                 isHighlighted
                                 product={{
@@ -197,7 +197,7 @@ const Component = () => {
                                 onChooseSubscription={emptyFunction}
                                 isDisabled={isSubscriptionPurchasePending}
                                 priceLabel="subscriptions.AllPlans.label"
-                            />
+                            /> */}
                         </>
                     )}
                 </CustomGrid>

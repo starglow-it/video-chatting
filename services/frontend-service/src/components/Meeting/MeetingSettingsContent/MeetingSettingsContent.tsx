@@ -123,13 +123,13 @@ const Component = ({
                                     className={styles.switchWrapper}
                                 />
                             </ConditionalRender>
-                            <ConditionalRender
+                            {/* <ConditionalRender
                                 condition={
                                     isOwner && isMonetizationEnabled && isMonetizationAvailable
                                 }
                             >
                                 <EditMonetization />
-                            </ConditionalRender>
+                            </ConditionalRender> */}
                             <ErrorMessage error={templatePriceMessage} />
                         </CustomGrid>
                     </CustomGrid>

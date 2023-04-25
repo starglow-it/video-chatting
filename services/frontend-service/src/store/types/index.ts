@@ -243,7 +243,9 @@ export type Notification = {
 };
 
 export type PaymentIntentStore = { clientSecret: string; id: string };
-
+export type PaymentIntentParams = {
+    isPaymentPaywall?: boolean
+}
 export enum SocialLinkKeysEnum {
     Youtube = 'youtube',
     Facebook = 'facebook',

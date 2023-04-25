@@ -6,7 +6,11 @@ import { PropsWithClassName } from 'shared-frontend/types';
 
 import styles from '../StripeCommon.module.scss';
 
-const Component = ({ className, ...rest }: PropsWithClassName<CardExpiryElementProps>) => (
+interface Props extends CardExpiryElementProps{
+    colorForm?: string
+}
+
+const Component = ({ className, colorForm = 'white', ...rest }: PropsWithClassName<Props>) => (
     <CardExpiryElement
         className={clsx(styles.cardField, className)}
         options={{
@@ -17,7 +21,7 @@ const Component = ({ className, ...rest }: PropsWithClassName<CardExpiryElementP
             },
             style: {
                 base: {
-                    color: 'white',
+                    color: colorForm,
                     lineHeight: '58px',
                     fontSize: '16px',
                     height: '58px',

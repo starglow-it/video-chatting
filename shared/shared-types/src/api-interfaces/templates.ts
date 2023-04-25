@@ -58,9 +58,9 @@ export interface IUserTemplate {
   isMonetizationEnabled: boolean;
   isAudioAvailable: boolean;
   templatePrice: number;
-  templateCurrency: string;
-  paywallCurrency: string;
-  paywallPrice: number;
+  templateCurrency: string;  
+  paywallPrice: number | null,
+  paywallCurrency: string,
   customLink: string;
   businessCategories: IBusinessCategory[];
   languages: ILanguage[];
