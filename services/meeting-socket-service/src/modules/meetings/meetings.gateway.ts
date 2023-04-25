@@ -361,9 +361,8 @@ export class MeetingsGateway
               });
             }
 
-            const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
-            if (isMeetingHost && isHandleTimeLimit) {
+            if (isMeetingHost && this.checkHandleTimeLimitByUser(profileUser)) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -499,10 +498,9 @@ export class MeetingsGateway
           userId: template.user.id,
         });
 
-       const isHandleTimeLimit = this.checkHandleTimeLimitByUser(mainUser);
         if (
           mainUser.maxMeetingTime === 0 &&
-          isHandleTimeLimit
+          this.checkHandleTimeLimitByUser(mainUser)
         ) {
           return {
             success: false,
@@ -1217,9 +1215,8 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
-            if (isHandleTimeLimit) {
+            if (this.checkHandleTimeLimitByUser(profileUser)) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1305,9 +1302,8 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
-            if (isHandleTimeLimit) {
+            if (this.checkHandleTimeLimitByUser(profileUser)) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: plainMeeting.id,
@@ -1423,9 +1419,8 @@ export class MeetingsGateway
           userId: prevHostUser.profileId,
         });
 
-        const isHandleTimeLimit = this.checkHandleTimeLimitByUser(prevProfileHostUser);
 
-        if (isHandleTimeLimit) {
+        if (this.checkHandleTimeLimitByUser(prevProfileHostUser)) {
           const hostTimeData = await this.meetingHostTimeService.update({
             query: {
               host: new Types.ObjectId(prevHostUser.id),
@@ -1467,9 +1462,8 @@ export class MeetingsGateway
         name: `meeting:timeLimit:${meeting.id}`,
       });
 
-      const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
-      if (isHandleTimeLimit) {
+      if (this.checkHandleTimeLimitByUser(profileUser)) {
         await this.meetingHostTimeService.create({
           data: {
             host: user.id,
@@ -1519,13 +1513,12 @@ export class MeetingsGateway
                 },
               });
 
-              const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
               const newTime =
                 profileUser.maxMeetingTime -
                 (hostTimeData.endAt - hostTimeData.startAt);
 
-              const fallBackTime = isHandleTimeLimit
+              const fallBackTime = this.checkHandleTimeLimitByUser(profileUser)
                 ? null
                 : 0;
 
@@ -1626,10 +1619,9 @@ export class MeetingsGateway
 
     const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
-    const isHandleTimeLimit = this.checkHandleTimeLimitByUser(mainUser);
 
     const fallBackTime =
-      isHandleTimeLimit ? null : 0;
+    this.checkHandleTimeLimitByUser(mainUser) ? null : 0;
 
     await this.coreService.updateUser({
       query: { _id: mainUser.id },
