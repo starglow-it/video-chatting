@@ -53,10 +53,11 @@ const Component = ({ onClose, templateType = 'white' }: PaymentFormProps) => {
         });
     }, []);
 
+    const colorMain = `colors.${templateType}.primary`
     return (
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
-                <CustomTypography variant="h3bold" color={`colors.${templateType}.primary`}>
+                <CustomTypography variant="h3bold" color={colorMain}>
                     {currencySigns[meetingTemplate.templateCurrency]}
                     {meetingTemplate.templatePrice}
                 </CustomTypography>
@@ -74,7 +75,7 @@ const Component = ({ onClose, templateType = 'white' }: PaymentFormProps) => {
                 <CustomGrid container direction="column" className={styles.paymentForm}>
                     <CustomTypography
                         variant="body1bold"
-                        color={`colors.${templateType}.primary`}
+                        color={colorMain}
                         nameSpace="meeting"
                         translation="payments.yourCard"
                         className={styles.title}

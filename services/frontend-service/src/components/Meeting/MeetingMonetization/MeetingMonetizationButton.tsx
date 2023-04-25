@@ -41,8 +41,6 @@ export const MeetingMonetizationButton = () => {
     }
   };
 
-  const conditionRender = isOwner || meetingTemplate.isMonetizationEnabled
-
   const handleClosePayment = useCallback(async () => {
     setAnchorEl(null)
     if (paymentIntent?.id) {
@@ -58,7 +56,7 @@ const handleUpdateMonetization = useCallback(() => {
 
   return (
     <ConditionalRender
-      condition={conditionRender}
+      condition={isOwner || meetingTemplate.isMonetizationEnabled}
     >
       <CustomPaper
         variant="black-glass"

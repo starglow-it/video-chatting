@@ -78,7 +78,7 @@ const Component = (
                             disablePadding
                             className={clsx(
                                 styles.listItem,{
-                                    [styles.listItemFade] : feature?.type && feature.type ==='fade'
+                                    [styles.listItemFade] : Boolean(feature?.type ==='fade')
                                 }                                
                             )}
                         >
