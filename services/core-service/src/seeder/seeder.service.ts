@@ -12,9 +12,10 @@ import {
   FILES_SCOPE,
   EMOJIES_SCOPE,
   MEDIA_CATEGORIES,
-  SOUNDS_SCOPE
+  SOUNDS_SCOPE,
+  USERS_SERVICE
 } from 'shared-const';
-import { Counters, MediaCategoryType, UserRoles } from 'shared-types';
+import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -383,6 +384,31 @@ export class SeederService {
     await Promise.all(promises);
 
     return;
+  }
+
+  async seedUpdateMaxMeetingTimeUser() {
+    try {
+      const plans = [PlanKeys.Business, PlanKeys.House, PlanKeys.Professional];
+      await this.usersService.updateUsers({
+        query: {
+          subscriptionPlanKey: {
+            $in: plans
+          },
+          maxMeetingTime: {
+            $ne: null
+          }
+        },
+        data: {
+          maxMeetingTime: null
+        }
+      });
+    }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: USERS_SERVICE,
+      });
+    }
   }
 
   async createCounter() {
