@@ -62,17 +62,17 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const isConnectStripe = Boolean(
         profile.isStripeEnabled &&
         profile.stripeAccountId,
-    )        
+    )
 
     const methods = useForm({
         criteriaMode: 'all',
         resolver,
         defaultValues: {
-            isInmeetingPayment: false,
-            isPaywallPayment: false,
+            isInmeetingPayment: Boolean(meetingTemplate.templatePrice),
+            isPaywallPayment: Boolean(meetingTemplate.paywallPrice),
             isMonetizationEnabled: isConnectStripe ? Boolean(meetingTemplate.isMonetizationEnabled) : false,
             templatePrice: meetingTemplate.templatePrice || 10,
-            paywallPrice: 10,
+            paywallPrice: meetingTemplate.paywallPrice || undefined,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
             paywallCurrency: meetingTemplate.templateCurrency || 'USD',
         },

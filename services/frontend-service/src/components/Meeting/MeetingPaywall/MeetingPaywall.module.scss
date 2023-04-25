@@ -1,5 +1,5 @@
 @import "../../../styles/rem.scss";
-
+@import "../../../styles/variables";
 .title {
   margin: rem(0 0 4px 0);
 }
@@ -29,4 +29,5 @@
 
 .wrapper {
   padding: rem(28px);
+  color: $primary-black;
 }

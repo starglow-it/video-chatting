@@ -7,12 +7,6 @@ import {
 
 // hooks
 
-// custom
-import {
-	CustomGrid
-} from 'shared-frontend/library/custom/CustomGrid';
-// stores
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import {
     $isOwner,
@@ -25,12 +19,11 @@ import {
 
 // types
 
-// styles
-import styles from './MeetingPaywall.module.scss';
-import { MeetingPreview } from '../MeetingPreview/MeetingPreview';
 
-
-const Component = () => {
+interface Props{
+	onPaymentSuccess: () => void
+}
+const Component = ({onPaymentSuccess}: Props) => {
 	const paymentIntent = useStore($paymentIntent);
 	const isOwner = useStore($isOwner);
 	const intentId = paymentIntent?.id;
@@ -48,20 +41,12 @@ const Component = () => {
 		}
 	};
 
-
 	useEffect(() => {
 		initStripe()
 	}, []) 
 	return (
-		<>
-			<MeetingPreview />
-			<CustomPaper className={styles.wrapper}>
-				<CustomGrid container direction="column" wrap="nowrap">
-					<PaymentForm onClose={() => console.log('check payment form')} />
-				</CustomGrid>
-			</CustomPaper>	
-			</>
-    );
+		<PaymentForm onClose={onPaymentSuccess} templateType='black'/>
+  );
 };
 
 export const MeetingPaywall = memo(Component);

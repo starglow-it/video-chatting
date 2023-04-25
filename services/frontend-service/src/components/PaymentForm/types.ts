@@ -1,3 +1,4 @@
 export type PaymentFormProps = {
-    onClose: () => void;
+    onClose?: () => void;
+    templateType?: string
 };

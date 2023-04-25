@@ -31,13 +31,13 @@ const currencySigns = {
     CAD: 'C$',
 };
 
-const Component = ({ onClose }: PaymentFormProps) => {
+const Component = ({ onClose, templateType = 'white' }: PaymentFormProps) => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);
 
     const handleSubmit = useCallback(async () => {
-        onClose();
+        onClose?.();
         addNotificationEvent({
             type: NotificationType.PaymentSuccess,
             message: 'payments.paymentSuccess',
@@ -56,7 +56,7 @@ const Component = ({ onClose }: PaymentFormProps) => {
     return (
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
-                <CustomTypography variant="h3bold" color="colors.white.primary">
+                <CustomTypography variant="h3bold" color={`colors.${templateType}.primary`}>
                     {currencySigns[meetingTemplate.templateCurrency]}
                     {meetingTemplate.templatePrice}
                 </CustomTypography>
@@ -74,7 +74,7 @@ const Component = ({ onClose }: PaymentFormProps) => {
                 <CustomGrid container direction="column" className={styles.paymentForm}>
                     <CustomTypography
                         variant="body1bold"
-                        color="colors.white.primary"
+                        color={`colors.${templateType}.primary`}
                         nameSpace="meeting"
                         translation="payments.yourCard"
                         className={styles.title}
@@ -84,6 +84,7 @@ const Component = ({ onClose }: PaymentFormProps) => {
                             onSubmit={handleSubmit}
                             onError={handleSubmitError}
                             paymentIntentSecret={paymentIntent.clientSecret}
+                            colorForm={templateType}
                         />
                     </StripeElement>
                 </CustomGrid>
