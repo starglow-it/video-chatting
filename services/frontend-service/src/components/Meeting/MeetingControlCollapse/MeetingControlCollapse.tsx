@@ -13,12 +13,10 @@ import {
     appDialogsApi,
     toggleIsGoodsVisible,
 } from 'src/store';
-import {
-    $isOwner,
-    $meetingTemplateStore,
-} from 'src/store/roomStores';
+import { $meetingTemplateStore } from 'src/store/roomStores';
 import { AppDialogsEnum } from 'src/store/types';
 import styles from './MeetingControlCollapse.module.scss';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 enum CollapseTypes {
     Settings = 'settings',
@@ -40,9 +38,9 @@ const Actions = [
 ];
 
 const Component = () => {
-    const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isGoodsVisible = useStore($isGoodsVisible);
+    const { isMobile } = useBrowserDetect();
 
     const handleActions = (action: string) => {
         switch (action) {
@@ -62,7 +60,7 @@ const Component = () => {
     const checkHideAction = (action: string) => {
         switch (action) {
             case CollapseTypes.Settings:
-                return !isOwner;
+                return isMobile;
             case CollapseTypes.GoodLinks:
                 return !meetingTemplate?.links?.length;
             default:
