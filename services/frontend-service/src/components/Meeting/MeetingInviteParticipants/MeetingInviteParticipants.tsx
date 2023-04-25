@@ -8,6 +8,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
 import { EmailIcon } from 'shared-frontend/icons/OtherIcons/EmailIcon';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
+import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -48,10 +49,20 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
         onAction?.();
     }, []);
 
+    const handleOpenScheduling = () => {
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.scheduleMeetingDialog,
+        });
+    }
+
     return (
         <>
             <CustomDivider className={styles.divider} />
-            <CustomGrid container className={styles.meetingInvitesWrapper} alignItems="center">
+            <CustomGrid
+                container
+                className={styles.meetingInvitesWrapper}
+                alignItems="center"
+            >
                 <CustomTypography
                     color="common.white"
                     className={styles.title}
@@ -62,7 +73,10 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
                     text={getClientMeetingUrlWithDomain(router.query.token)}
                     onCopy={handleLinkCopied}
                 >
-                    <CustomTooltip nameSpace="meeting" translation="invite.copyLink">
+                    <CustomTooltip
+                        nameSpace="meeting"
+                        translation="invite.copyLink"
+                    >
                         <ActionButton
                             className={styles.button}
                             Icon={<CopyLinkIcon width="24px" height="24px" />}
@@ -70,7 +84,10 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
                     </CustomTooltip>
                 </CopyToClipboard>
                 <ConditionalRender condition={!localUser.isGenerated}>
-                    <CustomTooltip nameSpace="meeting" translation="invite.sendInvite">
+                    <CustomTooltip
+                        nameSpace="meeting"
+                        translation="invite.sendInvite"
+                    >
                         <ActionButton
                             onAction={handleOpenEmailInvite}
                             className={styles.button}
@@ -78,6 +95,28 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
                         />
                     </CustomTooltip>
                 </ConditionalRender>
+                <CustomGrid
+                    container
+                    className={styles.meetingInvitesWrapper}
+                    alignItems="center"
+                >
+                    <CustomTypography
+                        color="common.white"
+                        className={styles.title}
+                        nameSpace="meeting"
+                        translation="schedule.title"
+                    />
+                    <CustomTooltip
+                        nameSpace="meeting"
+                        translation="schedule.tooltip"
+                    >
+                        <ActionButton
+                            onAction={handleOpenScheduling}
+                            className={styles.button}
+                            Icon={<ScheduleIcon width="24px" height="24px" />}
+                        />
+                    </CustomTooltip>
+                </CustomGrid>
             </CustomGrid>
         </>
     );

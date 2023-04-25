@@ -62,6 +62,7 @@ import { NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 
 // helpers
 
@@ -207,6 +208,7 @@ const Component = () => {
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
             <MobilePortraitStub />
+            <ScheduleMeetingDialog />
         </CustomGrid>
     );
 };

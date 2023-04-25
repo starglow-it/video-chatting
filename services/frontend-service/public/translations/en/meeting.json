@@ -147,5 +147,9 @@
   },
   "manageAudio": {
     "text": "Sound"
+  },
+  "schedule": {
+    "title": "Schedule",
+    "tooltip": "Scheduling"
   }
 }
