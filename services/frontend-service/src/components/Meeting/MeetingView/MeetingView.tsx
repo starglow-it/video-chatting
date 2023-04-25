@@ -37,7 +37,6 @@ import styles from './MeetingView.module.scss';
 // stores
 import {
     addNotificationEvent,
-    appDialogsApi,
     checkIsPortraitLayoutEvent,
 } from '../../../store';
 import {
@@ -59,7 +58,7 @@ import {
 } from '../../../store/roomStores';
 
 // types
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
@@ -137,10 +136,6 @@ const Component = () => {
     useEffect(() => {
         if (isMobile()) {
             checkIsPortraitLayoutEvent();
-        } else {
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
-            });
         }
     }, []);
 
