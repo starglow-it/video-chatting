@@ -27,6 +27,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
+import { CreatePaymentRequest } from 'src/dtos/requests/create-payment.request';
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
@@ -204,7 +205,7 @@ export class PaymentsController {
     description: 'Forbidden',
   })
   async createPaymentIntent(
-    @Body() body: { templateId: string },
+    @Body() body: CreatePaymentRequest,
   ): Promise<
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
@@ -223,9 +224,12 @@ export class PaymentsController {
         userId: userTemplate.user.id,
       });
 
+      const price = body.isPaymentPaywall ? userTemplate.paywallPrice : userTemplate.templatePrice;
+      const currency = body.isPaymentPaywall ? userTemplate.paywallCurrency : userTemplate.templateCurrency;
+
       const paymentIntent = await this.paymentsService.createPaymentIntent({
-        templatePrice: userTemplate.templatePrice,
-        templateCurrency: userTemplate.templateCurrency?.toLowerCase(),
+        templatePrice: price,
+        templateCurrency: currency?.toLowerCase(),
         stripeAccountId: user.stripeAccountId,
         templateId: userTemplate.id,
       });
