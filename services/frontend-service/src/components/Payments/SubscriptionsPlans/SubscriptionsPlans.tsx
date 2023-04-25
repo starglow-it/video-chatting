@@ -19,7 +19,6 @@ import { SubscriptionPlanItem } from '@components/Payments/SubscriptionsPlans/Su
 import { SubscriptionPlansWrapper } from "@components/Payments/SubscriptionsPlans/SubscritionPlansWrapper";
 
 // types
-import { useLocalization } from '@hooks/useTranslation';
 import {PlanKeys} from "shared-types";
 import {
     SubscriptionsPlansProps,
@@ -64,11 +63,6 @@ const Component = ({
         },
         [onChooseSubscription],
     );    
-    // const productsToRender = useMemo(() => products.filter(
-    //     product =>
-    //         (withActivePlan || product?.product?.name !== activePlanKey) &&
-    //         (!onlyPaidPlans || (onlyPaidPlans && product?.price?.unit_amount)) || true,
-    // ), [products]);
 
     const productsToRender = products
     
@@ -122,62 +116,6 @@ const Component = ({
             profile.isProfessionalTrialAvailable,
         ],
     );
-
-    // const commonFeatures = useMemo(() => {
-    //     const translationsObject = translation('subscriptions.AllPlans') as unknown as {
-    //         featuresPlans: TranslationFeatureItem[][];
-    //     };
-
-    //     const renderFeature = (featuresChunk, index) => (
-    //         <CustomGrid
-    //             key={index}
-    //             item
-    //             container
-    //             flexWrap="nowrap"
-    //             flex="28%"
-    //             direction="column"
-    //             className={styles.column}
-    //         >
-    //             {featuresChunk.map(({ text }, index) => (
-    //                 <CustomGrid key={index} item container gap={1} flexWrap="nowrap">
-    //                     <ListItemIcon classes={{ root: styles.listIcon }}>
-    //                         <RoundCheckIcon width="16px" height="16px" />
-    //                     </ListItemIcon>
-    //                     <CustomTypography color="colors.white.primary">{text}</CustomTypography>
-    //                 </CustomGrid>
-    //             ))}
-    //         </CustomGrid>
-    //     );
-
-    //     return (
-    //         <CustomGrid
-    //             container
-    //             direction="column"
-    //             className={clsx(styles.allFeaturesCard, {
-    //                 [styles.fullWidth]: renderSubscriptionPlans.length >= 3 && !is1320Media,
-    //             })}
-    //         >
-    //             <CustomBox className={styles.productName}>
-    //                 <CustomTypography
-    //                     variant="body2bold"
-    //                     color="colors.white.primary"
-    //                     nameSpace="subscriptions"
-    //                     translation="subscriptions.AllPlans.plan"
-    //                 />
-    //             </CustomBox>
-    //             <CustomTypography
-    //                 variant="body2bold"
-    //                 color="colors.white.primary"
-    //                 nameSpace="subscriptions"
-    //                 translation="subscriptions.AllPlans.label"
-    //                 className={styles.price}
-    //             />
-    //             <CustomGrid container direction="column" gap={1.75} className={styles.listWrapper}>
-    //                 {translationsObject.featuresPlans.map(renderFeature)}
-    //             </CustomGrid>
-    //         </CustomGrid>
-    //     );
-    // }, [renderSubscriptionPlans.length, translation, is1320Media]);
 
     const handleClose = useCallback(() => {
         onClose?.();
