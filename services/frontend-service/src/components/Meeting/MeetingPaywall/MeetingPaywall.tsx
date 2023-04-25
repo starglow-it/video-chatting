@@ -34,9 +34,13 @@ const Component = ({onPaymentSuccess}: Props) => {
 	const initStripe = () => {
 		if (!isCreatePaymentIntentPending) {
 				if (!isPaymentOpen && !intentId && !isOwner) {
-						createPaymentIntentWithData();
+						createPaymentIntentWithData({
+							isPaymentPaywall: true
+						});
 				}
-				if (intentId) cancelPaymentIntentWithData();
+				if (intentId) cancelPaymentIntentWithData({
+					isPaymentPaywall: true
+				});
 				togglePaymentFormEvent();
 		}
 	};
