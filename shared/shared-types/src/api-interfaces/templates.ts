@@ -100,6 +100,8 @@ export interface IUpdateTemplate {
   isPublic?: boolean;
   templatePrice?: number;
   templateCurrency?: string;
+  paywallCurrency?: string;
+  paywallPrice?: number;
   meetingInstance?: IMeetingInstance;
   links?: { item: string; position: { top: number; left: number } }[];
   socials: {

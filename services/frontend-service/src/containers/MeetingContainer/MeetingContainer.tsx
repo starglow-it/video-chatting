@@ -22,7 +22,6 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
-import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
@@ -227,7 +226,6 @@ const MeetingContainer = memo(() => {
         })();
     }, [isMeetingSocketConnected, isOwner]);
 
-    const isInMeeting = localUser.accessStatus === MeetingAccessStatusEnum.InMeeting
     return (
         <>
             {Boolean(meetingTemplate?.id) && (
@@ -256,7 +254,10 @@ const MeetingContainer = memo(() => {
                         </CustomBox>
                     </ConditionalRender>
                     <ConditionalRender
-                        condition={isInMeeting}
+                        condition={
+                            localUser.accessStatus ===
+                            MeetingAccessStatusEnum.InMeeting
+                        }
                     >
                         <MeetingView /> 
                     </ConditionalRender>

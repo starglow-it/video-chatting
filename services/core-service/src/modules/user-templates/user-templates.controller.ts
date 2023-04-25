@@ -218,24 +218,6 @@ export class UserTemplatesController {
           });
         }
 
-        const medias = await this.mediaService.findMedias({
-          query: {}
-        });
-
-        await Promise.all(medias?.map(async media => {
-          await this.mediaService.createUserTemplateMedia({
-            data: {
-              userTemplate: userTemplate._id,
-              mediaCategory: media.mediaCategory,
-              url: media.url,
-              previewUrls: media.previewUrls,
-              type: media.type
-            },
-            session
-          });
-        }));
-
-
         await this.userProfileStatisticService.updateOne({
           query: { user: user._id },
           data: {
@@ -371,6 +353,8 @@ export class UserTemplatesController {
           isMonetizationEnabled: data.isMonetizationEnabled,
           templatePrice: data.templatePrice,
           templateCurrency: data.templateCurrency,
+          paywallCurrency: data.paywallCurrency,
+          paywallPrice: data.paywallPrice,
           customLink: data.customLink,
           name: data.name,
           isPublic: data.isPublic,
@@ -631,10 +615,10 @@ export class UserTemplatesController {
         });
 
         userTemplateMedias.map(async media => {
-          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}`);
+          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}/videos`);
         });
         
-        this.mediaService.deleteUserTemplateMedias({
+        this.mediaService.deleteMedias({
           query: {
             userTemplate: userTemplate._id
           }

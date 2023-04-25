@@ -17,6 +17,7 @@ import {
     GetUserTemplateMediasPayload,
     IMedia,
     IMediaCategory,
+    IUserTemplateMedia,
     UpdateMediaPayload,
     UploadMediaFilePayload,
     UploadUserTemplateMediaFilePayload,
@@ -54,18 +55,20 @@ export class MediaController {
     //#region public method
     @MessagePattern({ cmd: CoreBrokerPatterns.GetMediaCategories })
     async getMediaCategories(
-        @Payload() { skip = 0, limit = 10 }: GetMediaCategoriesPayload,
+        @Payload() { skip = 0, limit = 10, type }: GetMediaCategoriesPayload,
     ): Promise<EntityList<IMediaCategory>> {
         try {
             return withTransaction(this.connection, async (session) => {
                 const mediaCategories = await this.mediaService.findCategories({
-                    query: {},
+                    query: {
+                        type
+                    },
                     options: { skip: skip * limit, limit },
                     session,
                 });
 
                 const categoriesCount = await this.mediaService.countCategories({
-                    query: {},
+                    type
                 });
 
                 const parsedCategories = plainToInstance(
@@ -150,7 +153,7 @@ export class MediaController {
 
 
     @MessagePattern({ cmd: CoreBrokerPatterns.GetUserTemplateMedias })
-    async getUserTemplateMedias(@Payload() payload: GetUserTemplateMediasPayload): Promise<EntityList<IMedia>> {
+    async getUserTemplateMedias(@Payload() payload: GetUserTemplateMediasPayload): Promise<EntityList<IUserTemplateMedia>> {
         return withTransaction(this.connection, async session => {
             try {
                 const { skip, limit, mediaCategoryId, userTemplateId } = payload;
@@ -182,16 +185,17 @@ export class MediaController {
                     });
                 }
 
-                const mediasCount = await this.mediaService.countUserTemplateMedias({
+                const query = {
                     mediaCategory: mediaCategory._id,
-                    userTemplate: userTemplateId
-                });
+                    userTemplate: {
+                        $in: [userTemplateId,null]
+                    }
+                };
 
-                const medias = await this.mediaService.findUserTemplateMedias({
-                    query: {
-                        mediaCategory: mediaCategory._id,
-                        userTemplate: userTemplate._id
-                    },
+                const mediasCount = await this.mediaService.countMedias(query);
+
+                const medias = await this.mediaService.findMedias({
+                    query,
                     options: {
                         skip: skipQuery * limitQuery,
                         limit: limitQuery
@@ -274,7 +278,7 @@ export class MediaController {
                     mimeType
                 });
 
-                const media = await this.mediaService.updateUserTemplateMedia({
+                const media = await this.mediaService.updateMedia({
                     query: {
                         _id: id,
                     },
@@ -379,7 +383,7 @@ export class MediaController {
                     });
 
 
-                const newMedia = await this.mediaService.createUserTemplateMedia({
+                const newMedia = await this.mediaService.createMedia({
                     data: {
                         url: '',
                         type: '',

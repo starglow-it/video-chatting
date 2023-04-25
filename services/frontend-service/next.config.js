@@ -61,5 +61,8 @@ module.exports = withTM(
 
             return config;
         },
+        devIndicators: {
+            buildActivity: false
+        }
     }),
 );

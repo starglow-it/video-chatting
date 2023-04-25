@@ -14,7 +14,10 @@ export class CommonUserTemplateMediaDTO implements IUserTemplateMedia {
     mediaCategory: IUserTemplateMedia['mediaCategory'];
 
     @Expose()
-    url: string;
+    url: IUserTemplateMedia['url'];
+
+    @Expose()
+    name: IUserTemplateMedia['name'];
 
     @Expose()
     @Type(() => PreviewImageDTO)

@@ -13,6 +13,10 @@ export class MediaRestDTO implements IMedia {
 
     @Expose()
     @ApiProperty()
+    name: IMedia['name'];
+
+    @Expose()
+    @ApiProperty()
     url: IMedia['url'];
 
     @Expose()

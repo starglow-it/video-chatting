@@ -37,7 +37,7 @@ export const getBackgroundMeetingFx = meetingDomain.createEffect<
 >('getBackgroundMeetingFx');
 
 export const getCategoriesMediasFx = meetingDomain.createEffect<
-    void,
+    { userTemplateId: string },
     EntityList<IMediaCategory>
 >('getCategoriesMediasFx');
 

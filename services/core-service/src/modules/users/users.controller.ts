@@ -583,20 +583,22 @@ export class UsersController {
 
   @MessagePattern({ cmd: UserBrokerPatterns.CreateUserWithoutLogin })
   async createUserWithoutlogin({ uuid }) {
-    const user = await this.usersService.createUser({
-      email: uuid,
-      password: 'text',
-      role: UserRoles.Anonymous,
-      isConfirmed: true,
-      fullName: 'Global User',
-      companyName: '',
-      position: '',
-      contactEmail: '',
-      maxMeetingTime: 10
-    });
-    return plainToInstance(CommonUserDTO, user, {
-      excludeExtraneousValues: true,
-      enableImplicitConversion: true,
+    return withTransaction(this.connection, async session => {
+      const user = await this.usersService.createUser({
+        email: uuid,
+        password: 'text',
+        role: UserRoles.Anonymous,
+        isConfirmed: true,
+        fullName: 'Global User',
+        companyName: '',
+        position: '',
+        contactEmail: '',
+        maxMeetingTime: 10
+      },session);
+      return plainToInstance(CommonUserDTO, user, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
     });
   }
 

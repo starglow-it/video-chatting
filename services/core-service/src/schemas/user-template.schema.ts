@@ -169,6 +169,18 @@ export class UserTemplate {
   templatePrice: number;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+    default: 'USD',
+  })
+  paywallCurrency: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: '',
+  })
+  paywallPrice: number;
+
+  @Prop({
     type: mongoose.Schema.Types.Boolean,
     default: false,
   })

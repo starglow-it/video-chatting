@@ -10,6 +10,10 @@ export class UserTemplateMediaRestDto implements IUserTemplateMedia {
     @Expose()
     @ApiProperty()
     mediaCategory: IUserTemplateMedia['mediaCategory'];
+    
+    @Expose()
+    @ApiProperty()
+    name: IUserTemplateMedia['name'];
 
     @Expose()
     @ApiProperty()

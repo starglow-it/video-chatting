@@ -49,24 +49,32 @@ export class MediaService {
 
         const imagesPaths = await fsPromises.readdir(outputPath);
 
+        const keyFolder = `^templates/images/${id}`;
+        
+        await this.previewImage.deleteMany({
+            key: new RegExp(keyFolder),
+        });
+        
+        await this.awsService.deleteFolder(keyFolder);
+        
         const uploadedImagesPromises = imagesPaths.map(async (image) => {
-            const keyFilePath = `${outputPath}/${image}`;
+            const filePath = `${outputPath}/${image}`;
             const resolution = image.match(/(\d*)p\./);
 
-            const file = await fsPromises.readFile(keyFilePath);
+            const file = await fsPromises.readFile(filePath);
             const uploadKey = `templates/images/${id}/${image}`;
-            const fileStats = await fsPromises.stat(keyFilePath);
+            const fileStats = await fsPromises.stat(filePath);
 
             const imageUrl = await this.awsService.uploadFile(file, uploadKey);
 
-            await fsPromises.rm(keyFilePath);
+            await fsPromises.rm(filePath);
 
             return this.previewImage.create({
                 url: imageUrl,
                 resolution: resolution?.[1],
                 size: fileStats.size,
                 mimeType: 'image/webp',
-                key: uploadKey
+                key: uploadKey,
             });
         });
 
@@ -93,8 +101,22 @@ export class MediaService {
     }: {
         data: Partial<UserTemplateMediaDocument>;
         session?: ITransactionSession;
-    }){
+    }) {
         const [newMedia] = await this.userTemplateMedia.create([data], {
+            session: session?.session,
+        });
+
+        return newMedia;
+    }
+
+    async createUserTemplateMedias({
+        data,
+        session,
+    }: {
+        data: Partial<UserTemplateMediaDocument>[];
+        session?: ITransactionSession;
+    }) {
+        const newMedia = await this.userTemplateMedia.insertMany(data, {
             session: session?.session,
         });
 
@@ -183,6 +205,22 @@ export class MediaService {
             .exec();
     }
 
+    async updateMediaCategory({
+        query,
+        data,
+        session,
+        populatePaths,
+    }: UpdateModelQuery<
+        MediaCategoryDocument,
+        IMediaCategory
+    >): Promise<MediaCategoryDocument> {
+        return this.media.findOneAndUpdate(query, data, {
+            session: session?.session,
+            populate: populatePaths,
+            new: true,
+        });
+    }
+
     async updateMedia({
         query,
         data,
@@ -246,6 +284,20 @@ export class MediaService {
         });
     }
 
+
+    async deletePreviewImages({
+        query,
+        session,
+    }: {
+        query: FilterQuery<PreviewImageDocument>;
+        session?: ITransactionSession;
+    }): Promise<any> {
+
+        return this.previewImage.deleteMany(query, {
+            session: session?.session,
+        });
+    }
+
     async deleteUserTemplateMedias({
         query,
         session,
@@ -259,7 +311,7 @@ export class MediaService {
         });
     }
 
-    async deleteFolderMedias(keyFolder: string){
+    async deleteFolderMedias(keyFolder: string) {
         await this.awsService.deleteFolder(keyFolder);
     }
 }

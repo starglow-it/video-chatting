@@ -39,7 +39,7 @@ import { MeetingUser } from '../../../store/types';
 // const
 import { clientRoutes } from '../../../const/client-routes';
 
-const Component = () => {
+const Component = ({ isAllowBack = true }) => {
     const router = useRouter();
 
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -90,28 +90,30 @@ const Component = () => {
 
     return (
         <CustomGrid>
-            <CustomGrid
-                container
-                justifyContent="center"
-                alignItems="center"
-                onClick={handleLeaveMeeting}
-                className={clsx(styles.backButton, {
-                    [styles.mobile]: isMobile,
-                })}
-            >
-                <ArrowLeftIcon
-                    width={isMobile ? '22px' : '32px'}
-                    height={isMobile ? '22px' : '32px'}
-                />
-                <ConditionalRender condition={isMobile}>
-                    <CustomTypography
-                        color="colors.black.primary"
-                        nameSpace="meeting"
-                        translation="rooms"
-                        className={styles.text}
+            <ConditionalRender condition={isAllowBack}>
+                <CustomGrid
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+                    onClick={handleLeaveMeeting}
+                    className={clsx(styles.backButton, {
+                        [styles.mobile]: isMobile,
+                    })}
+                >
+                    <ArrowLeftIcon
+                        width={isMobile ? '22px' : '32px'}
+                        height={isMobile ? '22px' : '32px'}
                     />
-                </ConditionalRender>
-            </CustomGrid>
+                    <ConditionalRender condition={isMobile}>
+                        <CustomTypography
+                            color="colors.black.primary"
+                            nameSpace="meeting"
+                            translation="rooms"
+                            className={styles.text}
+                        />
+                    </ConditionalRender>
+                </CustomGrid>
+            </ConditionalRender>
 
             <CustomGrid
                 container
