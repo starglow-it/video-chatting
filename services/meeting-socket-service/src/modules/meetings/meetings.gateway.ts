@@ -20,6 +20,7 @@ import { TasksService } from '../tasks/tasks.service';
 import { CoreService } from '../../services/core/core.service';
 
 import {
+  ICommonUser,
   KickUserReasons,
   MeetingAccessStatusEnum,
   MeetingSoundsEnum,
@@ -128,6 +129,11 @@ export class MeetingsGateway
     } catch (err) {
       console.log(err);
     }
+  }
+
+  private checkHandleTimeLimitByUser(user: ICommonUser) {
+    return ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
+      .includes(user.subscriptionPlanKey);
   }
 
   async changeUsersPositions({ meetingId, templateId }) {
@@ -355,11 +361,7 @@ export class MeetingsGateway
               });
             }
 
-            const isHandleTimeLimit =
-              ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-                .includes(profileUser.subscriptionPlanKey);
-
-            console.log(isHandleTimeLimit);
+            const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
             if (isMeetingHost && isHandleTimeLimit) {
               await this.meetingsCommonService.handleTimeLimit({
@@ -497,10 +499,7 @@ export class MeetingsGateway
           userId: template.user.id,
         });
 
-        const isHandleTimeLimit =
-          ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-            .includes(mainUser.subscriptionPlanKey);
-
+       const isHandleTimeLimit = this.checkHandleTimeLimitByUser(mainUser);
         if (
           mainUser.maxMeetingTime === 0 &&
           isHandleTimeLimit
@@ -709,9 +708,7 @@ export class MeetingsGateway
         session,
       });
 
-      const isHandleTimeLimit =
-        ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-          .includes(mainUser.subscriptionPlanKey);
+      const isHandleTimeLimit = this.checkHandleTimeLimitByUser(mainUser);
 
       this.taskService.addTimeout({
         name: `meeting:finish:${message.meetingId}`,
@@ -1220,9 +1217,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            const isHandleTimeLimit =
-              ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-                .includes(profileUser.subscriptionPlanKey);
+            const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
             if (isHandleTimeLimit) {
               await this.meetingsCommonService.handleTimeLimit({
@@ -1310,9 +1305,7 @@ export class MeetingsGateway
               userId: plainUser.profileId,
             });
 
-            const isHandleTimeLimit =
-              ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-                .includes(profileUser.subscriptionPlanKey);
+            const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
             if (isHandleTimeLimit) {
               await this.meetingsCommonService.handleTimeLimit({
@@ -1430,9 +1423,7 @@ export class MeetingsGateway
           userId: prevHostUser.profileId,
         });
 
-        const isHandleTimeLimit =
-          ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-            .includes(prevProfileHostUser.subscriptionPlanKey);
+        const isHandleTimeLimit = this.checkHandleTimeLimitByUser(prevProfileHostUser);
 
         if (isHandleTimeLimit) {
           const hostTimeData = await this.meetingHostTimeService.update({
@@ -1476,9 +1467,7 @@ export class MeetingsGateway
         name: `meeting:timeLimit:${meeting.id}`,
       });
 
-      const isHandleTimeLimit =
-        ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-          .includes(profileUser.subscriptionPlanKey);
+      const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
       if (isHandleTimeLimit) {
         await this.meetingHostTimeService.create({
@@ -1486,10 +1475,6 @@ export class MeetingsGateway
             host: user.id,
             meeting: meeting.id,
           },
-        });
-
-        const userTemplate = await this.coreService.findMeetingTemplate({
-          id: meeting.templateId
         });
 
         const timeLimitNotificationTimeout = getTimeoutTimestamp({
@@ -1534,9 +1519,7 @@ export class MeetingsGateway
                 },
               });
 
-              const isHandleTimeLimit =
-                ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-                  .includes(profileUser.subscriptionPlanKey);
+              const isHandleTimeLimit = this.checkHandleTimeLimitByUser(profileUser);
 
               const newTime =
                 profileUser.maxMeetingTime -
@@ -1643,9 +1626,7 @@ export class MeetingsGateway
 
     const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
-    const isHandleTimeLimit =
-      ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-        .includes(mainUser.subscriptionPlanKey);
+    const isHandleTimeLimit = this.checkHandleTimeLimitByUser(mainUser);
 
     const fallBackTime =
       isHandleTimeLimit ? null : 0;
