@@ -51,6 +51,6 @@ const Component = ({onPaymentSuccess}: Props) => {
 	return (
 		<PaymentForm onClose={onPaymentSuccess} templateType='black'/>
   );
-};
+}
 
 export const MeetingPaywall = memo(Component);
