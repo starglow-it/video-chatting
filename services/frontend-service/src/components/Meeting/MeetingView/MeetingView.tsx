@@ -199,8 +199,8 @@ const Component = () => {
                     <MeetingUsersVideos />
                     <ConditionalRender condition={isOwner}>
                         <MeetingChangeBackground />
-                        <MeetingManageAudio />
                     </ConditionalRender>
+                    <MeetingManageAudio />
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
