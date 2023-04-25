@@ -1,6 +1,7 @@
 import React, { useMemo, ForwardedRef, memo, forwardRef, useCallback } from 'react';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
+import {PlanKeys} from "shared-types";
 
 // hooks
 import { useLocalization } from '@hooks/useTranslation';
@@ -63,18 +64,23 @@ const Component = (
     const templateFeaturesText = translation(`subscriptions.${product.name}`) as unknown as {
         features: TranslationFeatureItem[][];
         trialHint?: string;
+        comissionFee: string
     };
 
     const renderFeaturesListItems = useMemo(
         () =>
             templateFeaturesText?.features?.map((features, index) => (
-                <CustomGrid key={index} container direction="column">
+                <CustomGrid key={index} container direction="column" gap="10px">
                     {features.map(feature => (
                         <ListItem
                             key={feature.key}
                             alignItems="flex-start"
                             disablePadding
-                            className={styles.listItem}
+                            className={clsx(
+                                styles.listItem,{
+                                    [styles.listItemFade] : Boolean(feature?.type ==='fade')
+                                }                                
+                            )}
                         >
                             <ListItemIcon classes={{ root: styles.listIcon }}>
                                 <RoundCheckIcon width="16px" height="16px" />
@@ -85,6 +91,8 @@ const Component = (
                                     dangerouslySetInnerHTML={{
                                         __html: feature.text,
                                     }}
+                                    fontWeight={600}
+                                    className={styles.mainText}
                                 />
                                 <CustomTypography variant="body2" className={styles.subText}>
                                     {feature.subText}
@@ -128,6 +136,13 @@ const Component = (
                 </List>
 
                 <CustomGrid container direction="column" className={styles.buttons}>
+                    <CustomTypography
+                        variant={product.name === PlanKeys.Business ? "body1bold" : "body1"}
+                        className={styles.commissionFee}
+                        dangerouslySetInnerHTML={{
+                            __html: translation('limits.time', { fee: templateFeaturesText.comissionFee }),
+                        }}
+                    />
                     <ConditionalRender condition={withTrial}>
                         <CustomTooltip
                             arrow
@@ -166,7 +181,7 @@ const Component = (
                                 }
                             />
                         </CustomTooltip>
-                    </ConditionalRender>
+                    </ConditionalRender>                    
                     <CustomButton
                         label={
                             <Translation

@@ -40,7 +40,7 @@
   gap: rem(8px);
 
   padding: rem(4px 0);
-
+  font-weight: 700;
   &:first-child {
     padding: rem(0 0 4px 0);
   }
@@ -53,7 +53,14 @@
     color: rgb($primary-black, 0.25);
   }
 }
-
+.listItemFade{
+  .mainText{
+    color: rgb($primary-black, 0.25);
+  }
+  .listIcon{
+    opacity: 0.25;
+  }
+}
 .listIcon {
   width: rem(16px);
   height: rem(16px);
@@ -209,4 +216,13 @@
 .subscriptionItem {
   position: absolute;
   inset: 0;
+}
+
+.commissionFee{
+  text-align: center;
+  font-size: rem(15px);
+  margin-bottom: rem(4px);
+  &.bold{
+    font-family: 600;
+  }
 }

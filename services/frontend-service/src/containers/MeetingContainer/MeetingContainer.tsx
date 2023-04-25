@@ -22,7 +22,6 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
-
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
@@ -192,7 +191,6 @@ const MeetingContainer = memo(() => {
 
             if (isMeetingSocketConnected) {
                 await initDevicesEventFxWithStore();
-
                 await sendJoinWaitingRoomSocketEvent();
 
                 if (isOwner) {
@@ -261,7 +259,7 @@ const MeetingContainer = memo(() => {
                             MeetingAccessStatusEnum.InMeeting
                         }
                     >
-                        <MeetingView />
+                        <MeetingView /> 
                     </ConditionalRender>
                 </ConditionalRender>
             )}

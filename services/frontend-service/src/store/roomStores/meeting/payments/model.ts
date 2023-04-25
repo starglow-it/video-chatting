@@ -6,7 +6,7 @@ import {
     CancelPaymentIntentPayload,
     CreatePaymentIntentPayload,
 } from '../../../payments/types';
-import { PaymentIntentStore } from '../../../types';
+import { PaymentIntentParams, PaymentIntentStore } from '../../../types';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 
 export const $paymentIntent = paymentsDomain.store<PaymentIntentStore>({
@@ -32,7 +32,7 @@ export const cancelPaymentIntentFx = paymentsDomain.effect<
 >('cancelPaymentIntentFx');
 
 export const createPaymentIntentWithData = attach<
-    void,
+    PaymentIntentParams | void,
     Store<IUserTemplate>,
     typeof createPaymentIntentFx
 >({
@@ -40,11 +40,12 @@ export const createPaymentIntentWithData = attach<
     source: $meetingTemplateStore,
     mapParams: (params, meetingTemplate) => ({
         templateId: meetingTemplate.id,
+        isPaymentPaywall: Boolean(params?.isPaymentPaywall)
     }),
 });
 
 export const cancelPaymentIntentWithData = attach<
-    void,
+    PaymentIntentParams | void,
     Store<PaymentIntentStore>,
     typeof cancelPaymentIntentFx
 >({
@@ -52,5 +53,6 @@ export const cancelPaymentIntentWithData = attach<
     source: $paymentIntent,
     mapParams: (params, paymentIntent) => ({
         paymentIntentId: paymentIntent.id,
+        isPaymentPaywall: Boolean(params?.isPaymentPaywall)
     }),
 });

@@ -25,6 +25,9 @@
   "trialExpired": {
     "text": "Your subscription for Professional Free Trial plan has expired. You are subscribed to free House plan now.\nYou can upgrade your subscription any time in Profile to continue creating own rooms and using other extended LiveOffice features"
   },
+  "comissionFee":{
+    "text": "Platform commission {{fee}}"
+  },
   "subscriptions": {
     "selectPlan": "Select plan",
     "title": "Subscriptions",
@@ -119,76 +122,78 @@
         [
           {
             "key": "meetingTime",
-            "text": "120 min / month for calls"
+            "text": "No Time Limit"
+          },
+          {
+            "key": "callers",
+            "text": "Up to 10 callers"
           },
           {
             "key": "rooms",
-            "text": "1 Saved Room from the TheLiveOffice library",
-            "subText": "You can switch room for free to try other"
-          }
-        ],
-        [
-          {
-            "key": "payments",
-            "text": "Accept Payments in calls",
-            "subText": "0.99% processing fee"
+            "text": "Take Payments"
           }
         ]
-      ]
+      ],
+      "comissionFee": "10%"
     },
     "Professional": {
       "features": [
         [
           {
             "key": "meetingTime",
-            "text": "1200 min /\nmonth for calls"
+            "text": "No Time Limit",
+            "type": "fade"
+          },
+          {
+            "key": "callers",
+            "text": "Up to 10 callers",
+            "type": "fade"
           },
           {
             "key": "rooms",
-            "text": "2 Saved Rooms from TheLiveOffice library",
-            "subText": "You can switch room for free to try other"
-          }
-        ],
-        [
-          {
-            "key": "payments",
-            "text": "Accept Payments in calls",
-            "subText": "0% commission from each transaction"
+            "text": "Take Payments",
+            "type": "fade"
           },
           {
-            "key": "createCustomRooms",
-            "text": "<strong>Create custom private and public Rooms (unlimited)</strong>"
+            "key": "upload",
+            "text": "Upload Backgrounds"            
           }
         ]
       ],
       "trial": "With <strong>7 Days Free Trial</strong> you can create own Rooms for private usage only",
-      "trialHint": "Get Pro features <strong>free for 7 days no credit\ncard required</strong>"
+      "trialHint": "Get Pro features <strong>free for 7 days no credit\ncard required</strong>",
+      "comissionFee": "5%"
     },
     "Business": {
       "features": [
         [
           {
             "key": "meetingTime",
-            "text": "Unlimited call\ntime"
+            "text": "No Time Limit",
+            "type": "fade"
+          },
+          {
+            "key": "callers",
+            "text": "Up to 10 callers",
+            "type": "fade"
           },
           {
             "key": "rooms",
-            "text": "10 Saved Rooms from TheLiveOffice library",
-            "subText": "You can switch room for free to try other"
-          }
-        ],
-        [
-          {
-            "key": "payments",
-            "text": "Accept Payments in calls",
-            "subText": "0% commission from each transaction"
+            "text": "Take Payments",
+            "type": "fade"          
           },
           {
-            "key": "createCustomRooms",
-            "text": "<strong>Create custom private and public Rooms (unlimited)</strong>"
+            "key": "upload",
+            "text": "Upload Backgrounds",
+            "type": "fade"           
+          },
+          {
+            "key": "embed",
+            "text": "Embed Links in Backgrounds"            
           }
         ]
-      ]
+      ],
+      "comissionFee": "0%"
     }
   },
   "upgradePlan": {

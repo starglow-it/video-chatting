@@ -100,6 +100,7 @@ import {
 import {
 	templatePriceSchema
 } from '../../validation/payments/templatePrice';
+import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 
 const validationSchema = yup.object({
 	templatePrice: templatePriceSchema(),
@@ -114,6 +115,7 @@ type MonetizationFormType = {
 };
 
 const Component = () => {
+	const [waitingPaywall, setWaitingPaywall] = useState(false)
 	const profile = useStore($profileStore);
 	const localUser = useStore($localUserStore);
 
@@ -256,6 +258,16 @@ const Component = () => {
 		});
 	}, [isUserSentEnterRequest]);
 
+
+	const handlePaywallPayment = useCallback(() => {
+		setWaitingPaywall(true)
+	}, [])
+
+	const handlePaymentSuccess = () => { 
+		setWaitingPaywall(false)
+		handleJoinMeeting()
+	}
+
 	const isAudioError = Boolean(audioError);
 
 	const isEnterMeetingDisabled =
@@ -264,156 +276,167 @@ const Component = () => {
         isEnterWaitingRoomRequestPending ||
         localUser.accessStatus === MeetingAccessStatusEnum.Waiting;
 
-	const joinHandler = isOwner ? onSubmit : handleJoinMeeting;
+	const isPayWallBeforeJoin = Boolean(meetingTemplate?.paywallPrice) && !isOwner && waitingPaywall
+	const functionPaywall = (Boolean(meetingTemplate?.paywallPrice) && !isOwner) ? handlePaywallPayment : handleJoinMeeting
+	const joinHandler = isOwner ? onSubmit : functionPaywall;
 
     return (
         <FormProvider {...methods}>
-                <CustomGrid container direction="column" wrap="nowrap">
-                    <CustomGrid
-                        container
-                        direction={isMobile ? 'column' : 'row'}
-                        wrap="nowrap"
-                        className={clsx(styles.settingsContent, { [styles.mobile]: isMobile })}
-                    >
-                        <MediaPreview
-                            videoError={videoError}
-                            audioError={audioError}
-                            isMicActive={isMicActive}
-                            isCameraActive={isCameraActive}
-                            videoDevices={videoDevices}
-                            audioDevices={audioDevices}
-                            profileAvatar={profile.profileAvatar?.url}
-                            userName={localUser?.username}
-                            stream={activeStream}
-                            onToggleAudio={handleToggleMic}
-                            onToggleVideo={handleToggleCamera}
-                        />
-                        <CustomDivider orientation="vertical" flexItem />
-                        <CustomGrid
-                            className={styles.devicesWrapper}
-                            container
-                            direction={isMobile && isUserSentEnterRequest ? 'column-reverse' : 'column'}
-                            wrap="nowrap"
-                        >
-                            {isUserSentEnterRequest ||
-                            (!isUserSentEnterRequest &&
-                                localUser.accessStatus === MeetingAccessStatusEnum.Waiting) ? (
-                                <>
-                                    <CustomGrid container direction="column">
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation={
-                                                localUser.accessStatus ===
-                                                MeetingAccessStatusEnum.Waiting
-                                                    ? 'meetingNotStarted.title'
-                                                    : 'requestSent'
-                                            }
-                                        />
-                                        <CustomTypography
-                                            variant="body1"
-                                            color="text.secondary"
-                                            nameSpace="meeting"
-                                            translation={
-                                                localUser.accessStatus ===
-                                                MeetingAccessStatusEnum.Waiting
-                                                    ? 'meetingNotStarted.text'
-                                                    : 'enterPermission'
-                                            }
-                                        />
-                                    </CustomGrid>
-                                    <ConditionalRender condition={isUserSentEnterRequest}>
-                                        <CustomGrid
-                                            container
-                                            alignItems="center"
-                                            direction={isMobile ? 'row' : 'column-reverse'}
-                                            className={clsx(styles.loader, {
-                                                [styles.mobile]: isMobile,
-                                            })}
-                                            gap={1}
-                                        >
-                                            <CustomLoader />
-                                            <CustomTypography
-                                                color="colors.orange.primary"
-                                                nameSpace="meeting"
-                                                translation="waitForHost"
-                                            />
-                                        </CustomGrid>
-                                    </ConditionalRender>
-                                </>
-                            ) : (
-                                <MeetingSettingsContent
-                                    stream={changeStream}
-                                    isBackgroundActive={isSettingsAudioBackgroundActive}
-                                    backgroundVolume={settingsBackgroundAudioVolume}
-                                    isAuraActive={isAuraActive}
-                                    isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
-                                    onBackgroundToggle={handleToggleBackgroundAudio}
-                                    onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
-                                    onToggleAura={toggleIsAuraActive}
-                                    isMonetizationAvailable
-                                    isAudioActive={meetingTemplate.isAudioAvailable}
-                                    title={
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation={isMobile ? 'settings.main' : 'readyToJoin'}
-                                        />
-                                    }
-                                />
-                            )}
-                            <ConditionalRender condition={isOwner}>
-                                <CustomCheckbox
-                                    labelClassName={styles.label}
-                                    checked={needToRememberSettings}
-                                    label={
-                                        <Translation
-                                            nameSpace="meeting"
-                                            translation="settings.remember"
-                                        />
-                                    }
-                                    onChange={handleToggleRememberSettings}
-                                />
-                            </ConditionalRender>
-                        </CustomGrid>
-                    </CustomGrid>
-                </CustomGrid>
-                <ConditionalRender condition={isMobile && isAudioError}>
-                    <CustomTypography
-                        textAlign="center"
-                        color="colors.red.primary"
-                        nameSpace="meeting"
-                        translation="allowAudio"
-                        className={styles.devicesError}
-                    />
-                </ConditionalRender>
-                <CustomGrid
-                    container
-                    gap={1}
-                    wrap="nowrap"
-                    className={clsx(styles.joinBtn, { [styles.mobile]: isMobile })}
-                >
-                    <ConditionalRender condition={!isUserSentEnterRequest}>
-                        <CustomButton
-                            onClick={handleBack}
-                            variant="custom-cancel"
-                            label={<Translation nameSpace="common" translation="buttons.back" />}
-                        />
-                    </ConditionalRender>
-                    <CustomButton
-                        onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
-                        disabled={isEnterMeetingDisabled || isStreamRequested}
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
-                            />
-                        }
-                        variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
-                    />
-                </CustomGrid>
+							<CustomGrid container direction="column" wrap="nowrap">
+									<CustomGrid
+											container
+											direction={isMobile ? 'column' : 'row'}
+											wrap="nowrap"
+											className={clsx(styles.settingsContent, { [styles.mobile]: isMobile })}
+									>
+											<ConditionalRender condition={!isPayWallBeforeJoin}>
+												<MediaPreview
+														videoError={videoError}
+														audioError={audioError}
+														isMicActive={isMicActive}
+														isCameraActive={isCameraActive}
+														videoDevices={videoDevices}
+														audioDevices={audioDevices}
+														profileAvatar={profile.profileAvatar?.url}
+														userName={localUser?.username}
+														stream={activeStream}
+														onToggleAudio={handleToggleMic}
+														onToggleVideo={handleToggleCamera}
+												/>
+												<CustomDivider orientation="vertical" flexItem />
+											</ConditionalRender>											
+											<ConditionalRender condition={isPayWallBeforeJoin}>
+												<MeetingPaywall onPaymentSuccess={handlePaymentSuccess}/>
+											</ConditionalRender>
+											<ConditionalRender condition={!isPayWallBeforeJoin}>
+												<CustomGrid
+														className={styles.devicesWrapper}
+														container
+														direction={isMobile && isUserSentEnterRequest ? 'column-reverse' : 'column'}
+														wrap="nowrap"
+												>
+														{isUserSentEnterRequest ||
+														(!isUserSentEnterRequest &&
+																localUser.accessStatus === MeetingAccessStatusEnum.Waiting) ? (
+																<>
+																		<CustomGrid container direction="column">
+																				<CustomTypography
+																						className={styles.title}
+																						variant="h3bold"
+																						nameSpace="meeting"
+																						translation={
+																								localUser.accessStatus ===
+																								MeetingAccessStatusEnum.Waiting
+																										? 'meetingNotStarted.title'
+																										: 'requestSent'
+																						}
+																				/>
+																				<CustomTypography
+																						variant="body1"
+																						color="text.secondary"
+																						nameSpace="meeting"
+																						translation={
+																								localUser.accessStatus ===
+																								MeetingAccessStatusEnum.Waiting
+																										? 'meetingNotStarted.text'
+																										: 'enterPermission'
+																						}
+																				/>
+																		</CustomGrid>
+																		<ConditionalRender condition={isUserSentEnterRequest}>
+																				<CustomGrid
+																						container
+																						alignItems="center"
+																						direction={isMobile ? 'row' : 'column-reverse'}
+																						className={clsx(styles.loader, {
+																								[styles.mobile]: isMobile,
+																						})}
+																						gap={1}
+																				>
+																						<CustomLoader />
+																						<CustomTypography
+																								color="colors.orange.primary"
+																								nameSpace="meeting"
+																								translation="waitForHost"
+																						/>
+																				</CustomGrid>
+																		</ConditionalRender>
+																</>
+														) : (
+																<MeetingSettingsContent
+																		stream={changeStream}
+																		isBackgroundActive={isSettingsAudioBackgroundActive}
+																		backgroundVolume={settingsBackgroundAudioVolume}
+																		isAuraActive={isAuraActive}
+																		isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
+																		onBackgroundToggle={handleToggleBackgroundAudio}
+																		onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
+																		onToggleAura={toggleIsAuraActive}
+																		isMonetizationAvailable
+																		isAudioActive={meetingTemplate.isAudioAvailable}
+																		title={
+																				<CustomTypography
+																						className={styles.title}
+																						variant="h3bold"
+																						nameSpace="meeting"
+																						translation={isMobile ? 'settings.main' : 'readyToJoin'}
+																				/>
+																		}
+																/>
+														)}
+														<ConditionalRender condition={isOwner}>
+																<CustomCheckbox
+																		labelClassName={styles.label}
+																		checked={needToRememberSettings}
+																		label={
+																				<Translation
+																						nameSpace="meeting"
+																						translation="settings.remember"
+																				/>
+																		}
+																		onChange={handleToggleRememberSettings}
+																/>
+														</ConditionalRender>
+												</CustomGrid>
+											</ConditionalRender>
+									</CustomGrid>
+							</CustomGrid>
+							<ConditionalRender condition={isMobile && isAudioError}>
+									<CustomTypography
+											textAlign="center"
+											color="colors.red.primary"
+											nameSpace="meeting"
+											translation="allowAudio"
+											className={styles.devicesError}
+									/>
+							</ConditionalRender>
+							<CustomGrid
+									container
+									gap={1}
+									wrap="nowrap"
+									className={clsx(styles.joinBtn, { [styles.mobile]: isMobile })}
+							>
+									<ConditionalRender condition={!isUserSentEnterRequest && !isPayWallBeforeJoin}>
+											<CustomButton
+													onClick={handleBack}
+													variant="custom-cancel"
+													label={<Translation nameSpace="common" translation="buttons.back" />}
+											/>
+									</ConditionalRender>
+									<ConditionalRender condition={!isPayWallBeforeJoin}>
+										<CustomButton
+												onClick={isUserSentEnterRequest ? handleCancelRequest : joinHandler}
+												disabled={isEnterMeetingDisabled || isStreamRequested}
+												label={
+														<Translation
+																nameSpace="meeting"
+																translation={isUserSentEnterRequest ? 'buttons.cancel' : 'buttons.join'}
+														/>
+												}
+												variant={isUserSentEnterRequest ? 'custom-cancel' : 'custom-primary'}
+										/>
+									</ConditionalRender>
+							</CustomGrid>
         </FormProvider>
     );
 };

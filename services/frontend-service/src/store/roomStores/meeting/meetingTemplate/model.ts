@@ -29,6 +29,8 @@ export const initialTemplateState: IUserTemplate = {
     customLink: '',
     templatePrice: 10,
     priceInCents: 0,
+    paywallCurrency: 'USD',
+    paywallPrice: null,
     templateCurrency: 'USD',
     signBoard: 'default',
     isMonetizationEnabled: false,

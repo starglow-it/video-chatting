@@ -7,7 +7,11 @@ import { PropsWithClassName } from 'shared-frontend/types';
 
 import styles from '../StripeCommon.module.scss';
 
-const Component = ({ className, ...rest }: PropsWithClassName<CardCvcElementProps>) => (
+interface Props extends CardCvcElementProps{
+    colorForm?: string
+}
+
+const Component = ({ className, colorForm = 'white', ...rest }: PropsWithClassName<Props>) => (
     <CardCvcElement
         className={clsx(styles.cardField, className)}
         options={{
@@ -18,12 +22,12 @@ const Component = ({ className, ...rest }: PropsWithClassName<CardCvcElementProp
             },
             style: {
                 base: {
-                    color: 'white',
+                    color: colorForm,
                     lineHeight: '58px',
                     fontSize: '16px',
                     height: '58px',
                     '::placeholder': {
-                        color: ' rgba(white, 0.6)',
+                        color: `rgba(${colorForm}, 0.6)`,
                     },
                 },
             },

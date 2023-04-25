@@ -27,13 +27,15 @@ import { Barge } from './Barge';
 import { Media } from './Media';
 import styles from './MeetingChangeBackground.module.scss';
 import { UploadBackground } from './Upload';
+import { $profileStore } from '../../../store';
+import {PlanKeys} from "shared-types";
 
 const Component = () => {
     const { medias, categorySelected, mediaSelected, categories, count } =
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
     const isLoading = useStore(uploadNewBackgroundFx.pending);
-
+    const profile = useStore($profileStore)
     const [isExpand, setIsExpand] = useState<boolean>(true);
     const refScroll = useRef<HTMLElement>();
     useEffect(() => {
@@ -153,7 +155,9 @@ const Component = () => {
                                 onYReachEnd={handleScrollEnd}
                                 containerRef={el => (refScroll.current = el)}
                             >
-                                <UploadBackground />
+                                <ConditionalRender condition={profile.subscriptionPlanKey !== PlanKeys.House}>
+                                    <UploadBackground />
+                                </ConditionalRender>
                                 {medias.map(item => (
                                     <Media
                                         key={item.id}
