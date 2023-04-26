@@ -74,7 +74,6 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         ? 'buttons.replace'
         : 'buttons.startMeeting';
 
-    const freeTemplateHandler = handleStartMeeting
     const paidTemplateHandler = !(!isFree && isDisabled) ? handleBuyTemplate : undefined;
 
     return (
@@ -107,7 +106,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                     className={styles.templateButtons}
                 >
                     <CustomButton
-                        onClick={isFree ? freeTemplateHandler : paidTemplateHandler}
+                        onClick={isFree ? handleStartMeeting : paidTemplateHandler}
                         className={clsx(styles.button, {
                             [styles.disabled]: (!isFree && isDisabled),
                         })}

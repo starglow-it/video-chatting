@@ -137,11 +137,11 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     );
 
 
-    const isDisableAllPayement = !isPaywallPaymentEnabled && !isInmeetingPaymentEnabled
+    const isDisableAllPayment = !isPaywallPaymentEnabled && !isInmeetingPaymentEnabled
     const isNotChangeMonetization = isMonetizationEnabled === meetingTemplate.isMonetizationEnabled
     const isDisableSubmit = !isConnectStripe ||
-        isDisableAllPayement ||
-        (isNotChangeMonetization&& isDisableAllPayement)
+        isDisableAllPayment ||
+        (isNotChangeMonetization && isDisableAllPayment)
 
     const registerData = register('templatePrice');
     const registerPaywallData = register('paywallPrice');
