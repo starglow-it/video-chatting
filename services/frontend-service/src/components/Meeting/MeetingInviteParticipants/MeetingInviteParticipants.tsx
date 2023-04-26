@@ -17,8 +17,15 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // stores
-import { appDialogsApi, addNotificationEvent } from '../../../store';
-import { $localUserStore } from '../../../store/roomStores';
+import {
+    appDialogsApi,
+    addNotificationEvent,
+    setScheduleTemplateIdEvent,
+} from '../../../store';
+import {
+    $localUserStore,
+    $meetingTemplateStore,
+} from '../../../store/roomStores';
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
@@ -33,6 +40,7 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
     const router = useRouter();
 
     const localUser = useStore($localUserStore);
+    const meetingTemplate = useStore($meetingTemplateStore);
 
     const handleOpenEmailInvite = useCallback(() => {
         appDialogsApi.openDialog({
@@ -50,10 +58,11 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
     }, []);
 
     const handleOpenScheduling = () => {
+        setScheduleTemplateIdEvent(meetingTemplate.id);
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.scheduleMeetingDialog,
         });
-    }
+    };
 
     return (
         <>
