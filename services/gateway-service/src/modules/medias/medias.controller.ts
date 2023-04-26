@@ -29,7 +29,6 @@ import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { UserTemplateMediaRestDto } from '../../dtos/response/common-user-template-media.dto';
 import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
 import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategories.dto';
-import { CoreService } from 'src/services/core/core.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 @ApiTags('Medias')
@@ -200,4 +199,6 @@ export class MediasController {
             throw new BadRequestException(err);
         }
     }
+
+    
 }

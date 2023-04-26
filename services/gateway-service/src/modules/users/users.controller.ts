@@ -599,6 +599,13 @@ export class UsersController {
         to: data.userEmails.map((email) => ({ email, name: email })),
         icsEventLink: icsLink,
         icalEventContent: content,
+        attachments: [
+          {
+            filename: 'meeting.ics',
+            content,
+            contentType: 'text/calendar',
+          },
+        ],
       });
       this.notificationService.sendEmail({
         template: {
@@ -616,7 +623,13 @@ export class UsersController {
         },
         to: [{ email: senderUser.email, name: senderUser.email }],
         icsEventLink: icsLink,
-        icalEventContent: content,
+        attachments: [
+          {
+            filename: 'meeting.ics',
+            content,
+            contentType: 'text/calendar',
+          },
+        ],
       });
 
       await this.meetingService.assignMeetingInstance({
