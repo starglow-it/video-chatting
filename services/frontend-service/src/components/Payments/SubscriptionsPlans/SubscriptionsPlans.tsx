@@ -62,13 +62,11 @@ const Component = ({
             onChooseSubscription(productId, isPaid, trial);
         },
         [onChooseSubscription],
-    );    
-
-    const productsToRender = products
+    );
     
     const renderSubscriptionPlans = useMemo(
         () => {
-            return productsToRender
+            return products
                 .map((product, i) => {
                     return (
                         !is1320Media ? (
@@ -105,7 +103,7 @@ const Component = ({
                 })
         },
         [
-            productsToRender,
+            products,
             is1320Media,
             isDisabled,
             activePlanKey,
@@ -162,7 +160,7 @@ const Component = ({
                         >
                             {is1320Media
                                 ? (
-                                    <SubscriptionPlansWrapper products={productsToRender}>
+                                    <SubscriptionPlansWrapper products={products}>
                                         {renderSubscriptionPlans}
                                     </SubscriptionPlansWrapper>
                                 )

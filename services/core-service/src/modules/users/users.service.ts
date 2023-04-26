@@ -195,6 +195,9 @@ export class UsersService {
   }
 
   prepareUserUpdateData(data: Partial<IUpdateProfile>): Partial<ICommonUser> {
+    const isHandleTimeLimit =
+              ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
+                .includes(data.subscriptionPlanKey);
     return {
       email: data.email,
       fullName: data.fullName,
@@ -212,7 +215,7 @@ export class UsersService {
       prevSubscriptionPlanKey: data.prevSubscriptionPlanKey,
       maxTemplatesNumber: data.maxTemplatesNumber,
       maxMeetingTime:
-        data.subscriptionPlanKey === PlanKeys.Business &&
+        !isHandleTimeLimit &&
         data.maxMeetingTime === 0
           ? null
           : data.maxMeetingTime,

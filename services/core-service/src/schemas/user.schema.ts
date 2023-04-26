@@ -198,7 +198,7 @@ export class User {
 
   @Prop({
     type: mongoose.Schema.Types.Number,
-    default: 120 * 60 * 1000,
+    default: null,
   })
   maxMeetingTime: ICommonUser['maxMeetingTime'];
 
