@@ -145,10 +145,7 @@ isInviteOpen
             endAt: '',
             comment: '',
             currentUserEmail: '',
-            date:
-                profile.subscriptionPlanKey !== "Business" && profile.renewSubscriptionTimestampInSeconds && profile.maxMeetingTime === 0
-                    ? new Date(profile.renewSubscriptionTimestampInSeconds * 1000)
-                    : new Date(),
+            date: new Date()
         },
     });
 
@@ -273,13 +270,7 @@ isInviteOpen
                                 className={styles.datePicker}
                                 selected={selectedDate}
                                 startDate={new Date()}
-                                blockedDate={
-                                    profile.subscriptionPlanKey !== "Business" && profile.maxMeetingTime === 0
-                                        ? new Date(
-                                              profile.renewSubscriptionTimestampInSeconds * 1000,
-                                          )
-                                        : new Date()
-                                }
+                                blockedDate={new Date()}
                                 onDateSelected={handleSelectDate}
                                 {...restDateRegisterData}
                             />
@@ -301,14 +292,7 @@ isInviteOpen
                                 <CustomFade open={isSettingsOpen} className={styles.optionItem}>
                                     <ScheduleTime
                                         currentDate={selectedDate}
-                                        blockedDate={
-                                            profile.subscriptionPlanKey !== "Business" && profile.maxMeetingTime === 0
-                                                ? new Date(
-                                                      profile.renewSubscriptionTimestampInSeconds *
-                                                          1000,
-												)
-												: new Date()
-										}
+                                        blockedDate={new Date()}
 									/>
 								</CustomFade>
 								<CustomFade

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
@@ -24,9 +24,6 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
-
-// components
-import { MeetingTimer } from '@components/Meeting/MeetingTimer/MeetingTimer';
 
 // shared
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
@@ -170,7 +167,6 @@ const Component = () => {
                     >
                         {isOwner ? companyName : meetingTemplate.companyName}
                     </CustomTypography>
-                    <MeetingTimer />
                 </CustomGrid>
             </CustomGrid>
             <CustomPopper

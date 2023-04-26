@@ -272,12 +272,6 @@ const Component = () => {
         [profile.stripeSubscriptionId, templateDraft?.id, isTrial],
     );
 
-    const timeLimit = formatCountDown(profile.maxMeetingTime, {
-        hours: true,
-        minutes: true,
-        numeric: false,
-    });
-
     const templatesLimit = `${profileTemplatesCount.count}/${profile.maxTemplatesNumber}`;
 
     return (
@@ -300,19 +294,6 @@ const Component = () => {
                         />
                     </CustomGrid>
                     <CustomGrid container justifyContent="center">
-                        <ConditionalRender condition={!isBusinessSubscription}>
-                            <CustomTypography
-                                color="colors.grayscale.semidark"
-                                dangerouslySetInnerHTML={{
-                                    __html: translation('limits.time', { timeLimit }),
-                                }}
-                            />
-                            &nbsp;
-                            <CustomTypography color="colors.grayscale.semidark">
-                                &#8226;
-                            </CustomTypography>
-                        </ConditionalRender>
-                        &nbsp;
                         <CustomTypography
                             color="colors.grayscale.semidark"
                             dangerouslySetInnerHTML={{
