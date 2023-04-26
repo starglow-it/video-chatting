@@ -62,7 +62,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const isConnectStripe = Boolean(
         profile.isStripeEnabled &&
         profile.stripeAccountId,
-    ) || true
+    )
 
     const methods = useForm({
         criteriaMode: 'all',
