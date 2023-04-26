@@ -12,7 +12,7 @@ export const ApiFile = (properties?: Record<string, SchemaObject | ReferenceObje
     ApiBody({
       schema: {
         type: 'object',
-        required: [...Object.keys(properties), 'file'],
+        required: [...Object.keys(properties || {}), 'file'],
         properties: {
           file: {
             type: 'string',

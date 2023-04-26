@@ -8,8 +8,10 @@ import {
     ParseIntPipe,
     Post,
     Query,
+    Req,
     Request,
     UploadedFile,
+    UseGuards,
 } from '@nestjs/common';
 import {
     ApiBearerAuth,
@@ -31,6 +33,8 @@ import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateM
 import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategories.dto';
 import { CoreService } from 'src/services/core/core.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
+import { JwtAdminAuthGuard } from 'src/guards/jwt-admin.guard';
+import { CreateMediaCategoryRequest } from 'src/dtos/requests/create-media-category.request';
 
 @ApiTags('Medias')
 @Controller('medias')
@@ -198,6 +202,43 @@ export class MediasController {
         }
         catch (err) {
             throw new BadRequestException(err);
+        }
+    }
+
+
+    @Post('/category')
+    @UseGuards(JwtAdminAuthGuard)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Create Media Category' })
+    @ApiOkResponse({
+        type: UserTemplateMediaRestDto,
+        description: 'Create Media Category',
+    })
+    @ApiForbiddenResponse({
+        description: 'Forbidden',
+    })
+    @ApiFile()
+    async createCategory(
+        @Body() body: CreateMediaCategoryRequest,
+        @UploadedFile() file: Express.Multer.File
+        ){
+        let mediaCateogy = await this.mediaService.createMediaCategory(body);
+        if (file) {
+            const { extension } = getFileNameAndExtension(file.originalname);
+            const uploadKey = `medias/${mediaCateogy}/videos/${uuidv4()}.${extension}`;
+            
+            let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
+
+
+            if (!/^https:\/\/*/.test(url)) {
+                url = `https://${url}`;
+            }
+
+            mediaCateogy = await this.mediaService.uploadUserTemplateMediaFile({
+                url,
+                id: mediaCateogy.id,
+                mimeType: file.mimetype,
+            });
         }
     }
 }

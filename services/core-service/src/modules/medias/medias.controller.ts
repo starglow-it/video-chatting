@@ -19,6 +19,7 @@ import {
     IMediaCategory,
     IUserTemplateMedia,
     UpdateMediaPayload,
+    UploadMediaCategoryFile,
     UploadMediaFilePayload,
     UploadUserTemplateMediaFilePayload,
 } from 'shared-types';
@@ -268,6 +269,50 @@ export class MediaController {
             mimeType,
             url
         }: UploadUserTemplateMediaFilePayload,
+    ): Promise<void> {
+        try {
+            return withTransaction(this.connection, async () => {
+
+                const imageIds = await this.generatePreviewUrs({
+                    url,
+                    id,
+                    mimeType
+                });
+
+                const media = await this.mediaService.updateMedia({
+                    query: {
+                        _id: id,
+                    },
+                    data: {
+                        type: mimeType.includes('image') ? 'image' : 'video',
+                        previewUrls: imageIds,
+                        url,
+                    },
+                    populatePaths: [{
+                        path: 'previewUrls'
+                    }]
+                });
+                return plainToInstance(CommonUserTemplateMediaDTO, media, {
+                    excludeExtraneousValues: true,
+                    enableImplicitConversion: true
+                });
+            });
+        } catch (err) {
+            throw new RpcException({
+                message: err.message,
+                ctx: MEDIA_SERVICE,
+            });
+        }
+    }
+
+
+    @MessagePattern({ cmd: CoreBrokerPatterns.UploadMediaCategoryFile })
+    async uploadMediaCategory(
+        @Payload() {
+            id,
+            mimeType,
+            url
+        }: UploadMediaCategoryFile,
     ): Promise<void> {
         try {
             return withTransaction(this.connection, async () => {
