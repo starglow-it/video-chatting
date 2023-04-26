@@ -62,7 +62,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const isConnectStripe = Boolean(
         profile.isStripeEnabled &&
         profile.stripeAccountId,
-    )
+    ) || true
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -71,8 +71,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
             isInmeetingPayment: Boolean(meetingTemplate.templatePrice),
             isPaywallPayment: Boolean(meetingTemplate.paywallPrice),
             isMonetizationEnabled: isConnectStripe ? Boolean(meetingTemplate.isMonetizationEnabled) : false,
-            templatePrice: meetingTemplate.templatePrice || 0,
-            paywallPrice: meetingTemplate.paywallPrice || 0,
+            templatePrice: meetingTemplate.templatePrice || 5,
+            paywallPrice: meetingTemplate.paywallPrice || 5,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
             paywallCurrency: meetingTemplate.templateCurrency || 'USD',
         },
@@ -125,8 +125,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         handleSubmit(async data => {
             await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled: data.isMonetizationEnabled,
-                templatePrice: data.isInmeetingPayment ? data.templatePrice : 0,
-                paywallPrice: data.isPaywallPayment ?  data.paywallPrice : 0,
+                templatePrice: (data.isInmeetingPayment && data.isMonetizationEnabled) ? data.templatePrice : 0,
+                paywallPrice: (data.isPaywallPayment && data.isMonetizationEnabled) ?  data.paywallPrice : 0,
                 templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
                 paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
             });
@@ -136,9 +136,12 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         [],
     );
 
-    const isDisableSubmit = !isConnectStripe || (
-        !isPaywallPaymentEnabled && !isInmeetingPaymentEnabled
-    ) || !isMonetizationEnabled
+
+    const isDisableAllPayement = !isPaywallPaymentEnabled && !isInmeetingPaymentEnabled
+    const isNotChangeMonetization = isMonetizationEnabled === meetingTemplate.isMonetizationEnabled
+    const isDisableSubmit = !isConnectStripe ||
+        isDisableAllPayement ||
+        (isNotChangeMonetization&& isDisableAllPayement)
 
     const registerData = register('templatePrice');
     const registerPaywallData = register('paywallPrice');
