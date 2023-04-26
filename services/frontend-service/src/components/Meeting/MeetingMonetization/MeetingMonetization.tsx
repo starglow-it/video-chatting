@@ -71,8 +71,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
             isInmeetingPayment: Boolean(meetingTemplate.templatePrice),
             isPaywallPayment: Boolean(meetingTemplate.paywallPrice),
             isMonetizationEnabled: isConnectStripe ? Boolean(meetingTemplate.isMonetizationEnabled) : false,
-            templatePrice: meetingTemplate.templatePrice || 10,
-            paywallPrice: meetingTemplate.paywallPrice || undefined,
+            templatePrice: meetingTemplate.templatePrice || 0,
+            paywallPrice: meetingTemplate.paywallPrice || 0,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
             paywallCurrency: meetingTemplate.templateCurrency || 'USD',
         },
@@ -125,8 +125,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         handleSubmit(async data => {
             await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled: data.isMonetizationEnabled,
-                templatePrice: data.isInmeetingPayment ? data.templatePrice : undefined,
-                paywallPrice: data.isPaywallPayment ?  data.paywallPrice : undefined,
+                templatePrice: data.isInmeetingPayment ? data.templatePrice : 0,
+                paywallPrice: data.isPaywallPayment ?  data.paywallPrice : 0,
                 templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
                 paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
             });

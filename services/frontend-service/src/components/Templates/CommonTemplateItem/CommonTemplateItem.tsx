@@ -15,17 +15,15 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 
 // stores
 import {
-    $isBusinessSubscription,
     $profileStore,
     $profileTemplatesCountStore,
-    addNotificationEvent,
     addTemplateToUserFx,
     appDialogsApi,
     setPreviewTemplate,
 } from '../../../store';
 
 // types
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 import { CommonTemplateItemProps } from './types';
 
 // styles
@@ -36,11 +34,9 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const profile = useStore($profileStore);
     const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
 
-    const isBusinessSubscription = useStore($isBusinessSubscription);
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
 
     const isTemplatesLimitReached = profile.maxTemplatesNumber <= profileTemplatesCount.count;
-    const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
 
@@ -68,13 +64,6 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
 
     const previewImage = (template?.previewUrls || []).find(image => image.resolution === 240);
 
-    const handleShowToast = () => {
-        addNotificationEvent({
-            type: NotificationType.NoTimeLeft,
-            message: `subscriptions.noTimeLeft`,
-        });
-    };
-
     const handleBuyTemplate = useCallback(async () => {
         await onChooseTemplate?.(template.id);
     }, [onChooseTemplate]);
@@ -85,10 +74,8 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         ? 'buttons.replace'
         : 'buttons.startMeeting';
 
-    const freeTemplateHandler = !isTimeLimitReached ? handleStartMeeting : undefined;
+    const freeTemplateHandler = handleStartMeeting
     const paidTemplateHandler = !(!isFree && isDisabled) ? handleBuyTemplate : undefined;
-
-    const freeTemplateHover = isTimeLimitReached ? handleShowToast : undefined;
 
     return (
         <CustomGrid
@@ -120,13 +107,11 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                     className={styles.templateButtons}
                 >
                     <CustomButton
-                        onMouseEnter={isFree ? freeTemplateHover : undefined}
                         onClick={isFree ? freeTemplateHandler : paidTemplateHandler}
                         className={clsx(styles.button, {
-                            [styles.disabled]:
-                                (isFree && isTimeLimitReached) || (!isFree && isDisabled),
+                            [styles.disabled]: (!isFree && isDisabled),
                         })}
-                        disableRipple={(isFree && isTimeLimitReached) || (!isFree && isDisabled)}
+                        disableRipple={(!isFree && isDisabled)}
                         disabled={isAddTemplateInProgress}
                         label={
                             <Translation

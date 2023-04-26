@@ -45,20 +45,6 @@ import {
 // styles
 import styles from './Layout.module.scss';
 
-const TimeLimitNotification = dynamic(
-    () => import('@components/TimeLimitNotification/TimeLimitNotification'),
-    {
-        ssr: false,
-    },
-);
-
-const TimeLimitWarning = dynamic(
-    () => import('@components/TimeLimitWarning/TimeLimitWarning'),
-    {
-        ssr: false,
-    },
-);
-
 const SubscriptionExpiredNotification = dynamic(
     () =>
         import(
@@ -125,14 +111,6 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                 [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
             })}
         >
-            <ConditionalRender condition={isMeetingRoute || isDashboardRoute}>
-                <TimeLimitNotification />
-            </ConditionalRender>
-
-            <ConditionalRender condition={isMeetingRoute}>
-                <TimeLimitWarning />
-            </ConditionalRender>
-
             <ConditionalRender condition={isDashboardRoute}>
                 <SubscriptionExpiredNotification />
             </ConditionalRender>
