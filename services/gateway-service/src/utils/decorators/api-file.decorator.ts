@@ -1,18 +1,27 @@
 import { applyDecorators, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { ReferenceObject, SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { SwaggerSchemaProperty } from '../types/swagger';
 
-export const ApiFile = (properties?: Record<string, SchemaObject | ReferenceObject>) => {
-  return applyDecorators(
-    UseInterceptors(FileInterceptor('file',{
-        preservePath: true,
+type Options = {
+  isOptionalAllProperties: boolean;
+}
+
+type MultiDecorators = <TFunction extends Function, Y>(target: object | TFunction, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Y>) => void;
+
+export const ApiFile = (properties?: SwaggerSchemaProperty, options?: Options): MultiDecorators =>
+  applyDecorators(
+    UseInterceptors(FileInterceptor('file', {
+      preservePath: true
     })),
     ApiConsumes('multipart/form-data'),
     ApiBody({
       schema: {
         type: 'object',
-        required: [...Object.keys(properties || {}), 'file'],
+        ...(
+          !options?.isOptionalAllProperties &&
+          { required: [...Object.keys((properties) || {}), 'file'] }
+        ),
         properties: {
           file: {
             type: 'string',
@@ -23,4 +32,3 @@ export const ApiFile = (properties?: Record<string, SchemaObject | ReferenceObje
       }
     }),
   );
-}

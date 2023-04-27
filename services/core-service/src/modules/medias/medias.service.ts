@@ -214,7 +214,7 @@ export class MediaService {
         MediaCategoryDocument,
         IMediaCategory
     >): Promise<MediaCategoryDocument> {
-        return this.media.findOneAndUpdate(query, data, {
+        return this.mediaCategory.findOneAndUpdate(query, data, {
             session: session?.session,
             populate: populatePaths,
             new: true,

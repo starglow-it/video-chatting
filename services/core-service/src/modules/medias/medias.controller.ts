@@ -9,6 +9,7 @@ import { CoreBrokerPatterns, CORE_SERVICE, MEDIA_SERVICE } from 'shared-const';
 
 // types
 import {
+    CreateMediaCategoryPayload,
     CreateMediaPayload,
     CreateUserTemplateMediaPayload,
     EntityList,
@@ -18,6 +19,7 @@ import {
     IMedia,
     IMediaCategory,
     IUserTemplateMedia,
+    UpdateMediaCategoryPayload,
     UpdateMediaPayload,
     UploadMediaCategoryFile,
     UploadMediaFilePayload,
@@ -179,7 +181,7 @@ export class MediaController {
                     session
                 });
 
-                if(!userTemplate){
+                if (!userTemplate) {
                     throw new RpcException({
                         message: 'User Template not found',
                         ctx: MEDIA_SERVICE
@@ -189,7 +191,7 @@ export class MediaController {
                 const query = {
                     mediaCategory: mediaCategory._id,
                     userTemplate: {
-                        $in: [userTemplateId,null]
+                        $in: [userTemplateId, null]
                     }
                 };
 
@@ -313,33 +315,26 @@ export class MediaController {
             mimeType,
             url
         }: UploadMediaCategoryFile,
-    ): Promise<void> {
+    ): Promise<CommonMediaCategoryDTO> {
         try {
-            return withTransaction(this.connection, async () => {
+            if (!mimeType.includes('image')) {
+                throw new RpcException({
+                    message: 'File must be image type',
+                    ctx: MEDIA_SERVICE
+                });
+            }
 
-                const imageIds = await this.generatePreviewUrs({
-                    url,
-                    id,
-                    mimeType
-                });
-
-                const media = await this.mediaService.updateMedia({
-                    query: {
-                        _id: id,
-                    },
-                    data: {
-                        type: mimeType.includes('image') ? 'image' : 'video',
-                        previewUrls: imageIds,
-                        url,
-                    },
-                    populatePaths: [{
-                        path: 'previewUrls'
-                    }]
-                });
-                return plainToInstance(CommonUserTemplateMediaDTO, media, {
-                    excludeExtraneousValues: true,
-                    enableImplicitConversion: true
-                });
+            const category = await this.mediaService.updateMediaCategory({
+                query: {
+                    _id: id,
+                },
+                data: {
+                    emojiUrl: url
+                }
+            });
+            return plainToInstance(CommonMediaCategoryDTO, category, {
+                excludeExtraneousValues: true,
+                enableImplicitConversion: true
             });
         } catch (err) {
             throw new RpcException({
@@ -392,6 +387,45 @@ export class MediaController {
                 })
             }
         });
+    }
+
+    @MessagePattern({ cmd: CoreBrokerPatterns.CreateMediaCategory })
+    async createMediaCategory(@Payload() {
+        key, type, value
+    }: CreateMediaCategoryPayload) {
+        try {
+            
+            const mediaCategoriesCount = await this.mediaService.countCategories({
+                key,
+                type
+            });
+
+            if (mediaCategoriesCount) {
+                throw new RpcException({
+                    message: 'Key must be unique',
+                    ctx: MEDIA_SERVICE
+                });
+            }
+
+            const newCategory = await this.mediaService.createCategory({
+                data: {
+                    key,
+                    type,
+                    value,
+                }
+            });
+
+            return plainToInstance(CommonMediaCategoryDTO, newCategory, {
+                excludeExtraneousValues: true,
+                enableImplicitConversion: true
+            });
+        }
+        catch (err) {
+            throw new RpcException({
+                message: err.message,
+                ctx: MEDIA_SERVICE
+            })
+        }
     }
 
 
@@ -474,6 +508,33 @@ export class MediaController {
                 });
 
             return plainToInstance(CommonMediaDTO, media, {
+                excludeExtraneousValues: true,
+                enableImplicitConversion: true
+            });
+        });
+    }
+
+    @MessagePattern({ cmd: CoreBrokerPatterns.UpdateMediaCategory })
+    async updateMediaCategory(@Payload() {
+        id,
+        data
+    }: UpdateMediaCategoryPayload) {
+        return withTransaction(this.connection, async session => {
+            const category = await this.mediaService.updateMediaCategory({
+                query: {
+                    _id: id
+                },
+                data,
+                session
+            });
+
+            if (!category)
+                throw new RpcException({
+                    message: 'Media Category not found',
+                    ctx: MEDIA_SERVICE
+                });
+
+            return plainToInstance(CommonMediaCategoryDTO, category, {
                 excludeExtraneousValues: true,
                 enableImplicitConversion: true
             });

@@ -47,3 +47,8 @@ export type UpdateMediaPayload = {
     id: string;
     data: Partial<IMedia>
 }
+
+export type UpdateMediaCategoryPayload = {
+    id: string;
+    data: Partial<IMediaCategory>
+}

@@ -10,6 +10,7 @@ export enum CoreBrokerPatterns {
   UploadMediaCategoryFile = 'upload_media_category_file',
   UpdateBusinessCategory = 'update_business_category',
   UploadMediaFile = 'upload_media_file',
+  UpdateMediaCategory = 'update_media_category',
   UploadUserTemplateMediaFile = 'upload_user_template_media_file',
   UpdateMedia = 'udpate_media',
   DeleteBusinessCategories = 'delete_business_categories',
