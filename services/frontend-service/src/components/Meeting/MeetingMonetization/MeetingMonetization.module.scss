@@ -1,19 +1,8 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
 
-%base-wrapper-icon-button {
-  width: rem(34px);
-  height: rem(34px);
-  border-radius: 22.5%;
-}
 .wrapperForm{
-  height: rem(0px);
-  overflow: hidden;
-
-  transition: height 200ms linear;
-  &.active {
-    height: rem(200px);
-  }
+  height: rem(200px);
 }
 
 .monetization {
@@ -73,7 +62,9 @@
 }
 
 .deviceButton {
-  @extend %base-wrapper-icon-button;
+  width: rem(42px);
+  height: rem(42px);
+  border-radius: 22.5%;
 
   &.inactive {
     color: rgba($primary-white, 0.25);
@@ -83,7 +74,7 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 30%;
+  bottom: 30%;
   right: rem(20px);
   button{
     width: 100%;
