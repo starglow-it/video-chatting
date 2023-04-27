@@ -66,7 +66,7 @@ const handleUpdateMonetization = useCallback(() => {
         <ActionButton
           variant="transparentBlack"
           onAction={handleTogglePayments}
-          Icon={<MonetizationIcon width="22px" height="22px" />}          
+          Icon={<MonetizationIcon width="32px" height="32px" />}          
           style={{
             borderRadius: 12
           }}
@@ -79,9 +79,13 @@ const handleUpdateMonetization = useCallback(() => {
         onClose={handleClosePayment}
         anchorEl={anchorEl}
         anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
-        }}        
+        }}
         PaperProps={{
           className: styles.popoverMonetization
         }}
