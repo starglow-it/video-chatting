@@ -103,7 +103,7 @@ const Component = () => {
                         justifyContent="flex-start"
                     >
                         <CustomBox color="white" height={18}>
-                            <ImageIcon width="16px" height="16px" />
+                            <ImageIcon width="22px" height="20px" />
                         </CustomBox>
                         <ConditionalRender condition={isExpand}>
                             <CustomTypography

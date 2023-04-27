@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { FormProvider, Controller, useForm, useWatch } from 'react-hook-form';
-import { Fade, InputBase } from '@mui/material';
+import { InputBase } from '@mui/material';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
 
@@ -71,8 +71,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
             isInmeetingPayment: Boolean(meetingTemplate.templatePrice),
             isPaywallPayment: Boolean(meetingTemplate.paywallPrice),
             isMonetizationEnabled: isConnectStripe ? Boolean(meetingTemplate.isMonetizationEnabled) : false,
-            templatePrice: meetingTemplate.templatePrice || 10,
-            paywallPrice: meetingTemplate.paywallPrice || undefined,
+            templatePrice: meetingTemplate.templatePrice || 5,
+            paywallPrice: meetingTemplate.paywallPrice || 5,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
             paywallCurrency: meetingTemplate.templateCurrency || 'USD',
         },
@@ -83,11 +83,6 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const handleValueChanged = useCallback((newValue: ValuesSwitcherItem<"USD" | "CAD", string>, type: 'templateCurrency' | 'paywallCurrency') => {
         setValue(type, newValue.value);
     }, []);
-
-    const isMonetizationEnabled = useWatch({
-        control,
-        name: 'isMonetizationEnabled',
-    });
 
     const isInmeetingPaymentEnabled = useWatch({
         control,
@@ -123,10 +118,11 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
+            const isMonetizationEnabled = data.isInmeetingPayment || data.isPaywallPayment
             await updateMeetingTemplateFxWithData({
-                isMonetizationEnabled: data.isMonetizationEnabled,
-                templatePrice: data.isInmeetingPayment ? data.templatePrice : undefined,
-                paywallPrice: data.isPaywallPayment ?  data.paywallPrice : undefined,
+                isMonetizationEnabled,
+                templatePrice: data.isInmeetingPayment ? data.templatePrice : 0,
+                paywallPrice: data.isPaywallPayment ?  data.paywallPrice : 0,
                 templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
                 paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
             });
@@ -135,10 +131,6 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         }),
         [],
     );
-
-    const isDisableSubmit = !isConnectStripe || (
-        !isPaywallPaymentEnabled && !isInmeetingPaymentEnabled
-    ) || !isMonetizationEnabled
 
     const registerData = register('templatePrice');
     const registerPaywallData = register('paywallPrice');
@@ -163,130 +155,115 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
             <FormProvider {...methods}>
                 <form onSubmit={onSubmit}>
                     <CustomGrid container direction="column" wrap="nowrap" gap={2}>
-                        <Controller
-                            control={control}
-                            name="isMonetizationEnabled"
-                            render={({ field: { onChange, value, name, ref } }) => (
-                                <CustomSwitch
-                                    name={name}
-                                    onChange={onChange}
-                                    checked={value}
-                                    inputRef={ref}
-                                    disabled={!isConnectStripe}
-                                />
-                            )}                            
-                        />
-                        <Fade in={isMonetizationEnabled}>
+                        <CustomGrid
+                            container direction="column" wrap="nowrap" gap={2}
+                            className={styles.wrapperForm}
+                        >
                             <CustomGrid
-                                container direction="column" wrap="nowrap" gap={2}
-                                className={clsx(styles.wrapperForm, {
-                                    [styles.active]: isMonetizationEnabled
-                                })}
-                            >
-                                <CustomGrid
-                                    container
-                                    wrap="nowrap"
-                                    className={styles.monetization}
-                                    gap={2}
-                                >                                                        
-                                    <CustomGrid container flex={1}>
-                                        <CustomTypography translation="features.inMeeting" nameSpace="meeting"/>
-                                        <CustomGrid
-                                            container
-                                            className={styles.amountInput}
-                                            wrap="nowrap"
-                                            justifyContent="space-between"
-                                        >
-                                            <InputBase
-                                                type="number"
-                                                placeholder="Amount"
-                                                inputProps={{ 'aria-label': 'amount' }}
-                                                classes={{
-                                                    root: styles.inputWrapper,
-                                                    input: styles.input,
-                                                }}
-                                                {...registerData}
-                                                disabled={!isInmeetingPaymentEnabled || !isConnectStripe}
-                                            />
-                                            <ValuesSwitcher
-                                                values={currencyValues}
-                                                activeValue={targetTemplateCurrency}
-                                                onValueChanged={(value) => handleValueChanged(value, 'templateCurrency')}
-                                                className={styles.switcher}
-                                            />
-                                        </CustomGrid>
-                                        <ErrorMessage error={templatePriceMessage} className={styles.error} />                               
+                                container
+                                wrap="nowrap"
+                                className={styles.monetization}
+                                gap={2}
+                            >                                                        
+                                <CustomGrid container flex={1}>
+                                    <CustomTypography translation="features.inMeeting" nameSpace="meeting"/>
+                                    <CustomGrid
+                                        container
+                                        className={styles.amountInput}
+                                        wrap="nowrap"
+                                        justifyContent="space-between"
+                                    >
+                                        <InputBase
+                                            type="number"
+                                            placeholder="Amount"
+                                            inputProps={{ 'aria-label': 'amount' }}
+                                            classes={{
+                                                root: styles.inputWrapper,
+                                                input: styles.input,
+                                            }}
+                                            {...registerData}
+                                            disabled={!isInmeetingPaymentEnabled || !isConnectStripe}
+                                        />
+                                        <ValuesSwitcher
+                                            values={currencyValues}
+                                            activeValue={targetTemplateCurrency}
+                                            onValueChanged={(value) => handleValueChanged(value, 'templateCurrency')}
+                                            className={styles.switcher}
+                                        />
                                     </CustomGrid>
-                                    <CustomBox marginTop={4.5}>
-                                        <Controller
-                                            control={control}
-                                            name="isInmeetingPayment"
-                                            render={({ field: { onChange, value, name, ref } }) => (
-                                                <CustomSwitch
-                                                    name={name}
-                                                    onChange={onChange}
-                                                    checked={value}
-                                                    inputRef={ref}
-                                                />
-                                            )}
-                                        />   
-                                    </CustomBox>
+                                    <ErrorMessage error={templatePriceMessage} className={styles.error} />                               
                                 </CustomGrid>
-                                <CustomGrid
-                                    container
-                                    wrap="nowrap"
-                                    className={styles.monetization}
-                                    gap={2}
-                                >                                                  
-                                    <CustomGrid container flex={1}>
-                                        <CustomTypography translation="features.payWall" nameSpace="meeting"/>                                  
-                                        <CustomGrid
-                                            container
-                                            className={styles.amountInput}
-                                            wrap="nowrap"
-                                            justifyContent="space-between"
-                                        >
-                                            <InputBase
-                                                type="number"
-                                                placeholder="Amount"
-                                                inputProps={{ 'aria-label': 'amount' }}
-                                                classes={{
-                                                    root: styles.inputWrapper,
-                                                    input: styles.input,
-                                                }}
-                                                {...registerPaywallData}
-                                                disabled={!isPaywallPaymentEnabled || !isConnectStripe}
+                                <CustomBox marginTop={4.5}>
+                                    <Controller
+                                        control={control}
+                                        name="isInmeetingPayment"
+                                        render={({ field: { onChange, value, name, ref } }) => (
+                                            <CustomSwitch
+                                                name={name}
+                                                onChange={onChange}
+                                                checked={value}
+                                                inputRef={ref}
+                                                disabled={!isConnectStripe}
                                             />
-                                            <ValuesSwitcher
-                                                values={currencyValues}
-                                                activeValue={targetPaywallCurrency}
-                                                onValueChanged={(value) => handleValueChanged(value, 'paywallCurrency')}
-                                                className={styles.switcher}
-                                            />
-                                        </CustomGrid>
-                                        <ErrorMessage error={paywallPriceMessage} className={styles.error} />                               
-                                    </CustomGrid>
-                                    <CustomBox marginTop={4.5}>
-                                        <Controller
-                                            control={control}
-                                            name="isPaywallPayment"
-                                            render={({ field: { onChange, value, name, ref } }) => (
-                                                <CustomSwitch
-                                                    name={name}
-                                                    onChange={onChange}
-                                                    checked={value}
-                                                    inputRef={ref}
-                                                />
-                                            )}
-                                        />   
-                                    </CustomBox>
-                                </CustomGrid>                                
+                                        )}
+                                    />   
+                                </CustomBox>
                             </CustomGrid>
-                        </Fade>
+                            <CustomGrid
+                                container
+                                wrap="nowrap"
+                                className={styles.monetization}
+                                gap={2}
+                            >                                                  
+                                <CustomGrid container flex={1}>
+                                    <CustomTypography translation="features.payWall" nameSpace="meeting"/>                                  
+                                    <CustomGrid
+                                        container
+                                        className={styles.amountInput}
+                                        wrap="nowrap"
+                                        justifyContent="space-between"
+                                    >
+                                        <InputBase
+                                            type="number"
+                                            placeholder="Amount"
+                                            inputProps={{ 'aria-label': 'amount' }}
+                                            classes={{
+                                                root: styles.inputWrapper,
+                                                input: styles.input,
+                                            }}
+                                            {...registerPaywallData}
+                                            disabled={!isPaywallPaymentEnabled || !isConnectStripe}
+                                        />
+                                        <ValuesSwitcher
+                                            values={currencyValues}
+                                            activeValue={targetPaywallCurrency}
+                                            onValueChanged={(value) => handleValueChanged(value, 'paywallCurrency')}
+                                            className={styles.switcher}
+                                        />
+                                    </CustomGrid>
+                                    <ErrorMessage error={paywallPriceMessage} className={styles.error} />                               
+                                </CustomGrid>
+                                <CustomBox marginTop={4.5}>
+                                    <Controller
+                                        control={control}
+                                        name="isPaywallPayment"
+                                        render={({ field: { onChange, value, name, ref } }) => (
+                                            <CustomSwitch
+                                                name={name}
+                                                onChange={onChange}
+                                                checked={value}
+                                                inputRef={ref}
+                                                disabled={!isConnectStripe}
+                                            />
+                                        )}
+                                    />   
+                                </CustomBox>
+                            </CustomGrid>                                
+                        </CustomGrid>
                         <CustomButton
                             type="submit"
                             className={styles.button}
-                            disabled={isDisableSubmit}
+                            disabled={!isConnectStripe}
                             label={<Translation nameSpace="common" translation="buttons.save" />}
                         />
                     </CustomGrid>

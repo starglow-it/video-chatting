@@ -90,13 +90,6 @@ const Component = ({
 		templatePreviewDialog 
 	} = useStore($appDialogsStore);
 	const previewTemplate = useStore($templatePreviewStore);
-	const profile = useStore($profileStore);
-	const isBusinessSubscription = useStore($isBusinessSubscription);
-
-	const isTimeLimitReached =
-        Boolean(profile?.id) &&
-        profile.maxMeetingTime === 0 &&
-        !isBusinessSubscription;
 
 	const handleClose = useCallback(() => {
 		appDialogsApi.closeDialog({
@@ -248,24 +241,14 @@ const Component = ({
 						)}
 
 						<CustomButton
-							onMouseEnter={
-								isTimeLimitReached ? handleShowToast : undefined
-							}
-							onClick={
-								!isTimeLimitReached
-									? handleChooseTemplate
-									: undefined
-							}
-							className={clsx(styles.chooseBtn, {
-								[styles.disabled]: isTimeLimitReached,
-							})}
+							onClick={handleChooseTemplate}
+							className={styles.chooseBtn}
 							label={
 								<Translation
 									nameSpace="templates"
 									translation={`buttons.${chooseButtonKey}`}
 								/>
 							}
-							disableRipple={isTimeLimitReached}
 						/>
 					</CustomGrid>
 				</CustomBox>

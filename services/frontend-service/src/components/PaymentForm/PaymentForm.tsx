@@ -62,12 +62,18 @@ const Component = ({ onClose, templateType = 'white' }: PaymentFormProps) => {
                     {meetingTemplate.templatePrice}
                 </CustomTypography>
                 &nbsp;
-                <CustomTypography className={styles.transparentWhite}>&#8226;</CustomTypography>
+                <CustomTypography
+                    sx={{
+                        color: `rgba(${colorMain}, 0.6)`
+                    }}
+                >&#8226;</CustomTypography>
                 &nbsp;
                 <CustomTypography
-                    className={styles.transparentWhite}
                     nameSpace="meeting"
                     translation="payments.perSession"
+                    sx={{
+                        color: `rgba(${colorMain}, 0.6)`
+                    }}
                 />
             </CustomGrid>
             <CustomDivider light flexItem />
