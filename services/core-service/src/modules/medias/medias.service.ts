@@ -85,7 +85,7 @@ export class MediaService {
         data,
         session,
     }: {
-        data: IMediaCategory;
+        data: Omit<IMediaCategory, 'emojiUrl'>;
         session?: ITransactionSession;
     }): Promise<MediaCategoryDocument> {
         const [newTag] = await this.mediaCategory.create([data], {
