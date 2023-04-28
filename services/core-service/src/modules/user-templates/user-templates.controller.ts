@@ -69,7 +69,7 @@ export class UserTemplatesController {
     try {
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myroom'
+          key: 'myrooms'
         },
         session
       });

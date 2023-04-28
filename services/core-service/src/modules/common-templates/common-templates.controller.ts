@@ -74,7 +74,7 @@ export class CommonTemplatesController {
     try {
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myroom'
+          key: 'myrooms'
         },
         session
       });

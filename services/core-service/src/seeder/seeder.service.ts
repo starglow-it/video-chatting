@@ -257,7 +257,7 @@ export class SeederService {
 
   async createMediasByScopes(scopes: string[], category: MediaCategoryDocument) {
     try {
-      if (category.key.includes('myroom')) return;
+      if (category.key.includes('myrooms')) return;
       const promise = scopes.map(async (scope) => {
 
         const filePath = `${FILES_SCOPE}/${scope}`;
@@ -312,7 +312,7 @@ export class SeederService {
 
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myroom'
+          key: 'myrooms'
         },
         session
       });
@@ -344,7 +344,7 @@ export class SeederService {
         {
           $match: {
             "mediaCategories.key": {
-              $ne: "myroom"
+              $ne: "myrooms"
             }
           },
         }
