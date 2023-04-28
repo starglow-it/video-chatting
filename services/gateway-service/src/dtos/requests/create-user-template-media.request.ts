@@ -14,12 +14,4 @@ export class CreateUserTemplateMediaRequest {
         message: 'Invalid userTemplateId value',
     })
     userTemplateId: IUserTemplate['id'];
-
-    @IsNotEmpty({
-        message: 'mediaCategoryId must be present',
-    })
-    @IsString({
-        message: 'Invalid mediaCategoryId value',
-    })
-    mediaCategoryId: string;
 }

@@ -178,7 +178,7 @@ export class MediaController {
                     session
                 });
 
-                if(!userTemplate){
+                if (!userTemplate) {
                     throw new RpcException({
                         message: 'User Template not found',
                         ctx: MEDIA_SERVICE
@@ -188,7 +188,7 @@ export class MediaController {
                 const query = {
                     mediaCategory: mediaCategory._id,
                     userTemplate: {
-                        $in: [userTemplateId,null]
+                        $in: [userTemplateId, null]
                     }
                 };
 
@@ -352,7 +352,6 @@ export class MediaController {
 
     @MessagePattern({ cmd: CoreBrokerPatterns.CreateUserTemplateMedia })
     async createUserTemplateMedia(@Payload() {
-        mediaCategoryId,
         userTemplateId
     }: CreateUserTemplateMediaPayload) {
         return withTransaction(this.connection, async session => {
@@ -371,7 +370,7 @@ export class MediaController {
 
                 const mediaCategory = await this.mediaService.findMediaCategory({
                     query: {
-                        _id: mediaCategoryId
+                        key: 'myroom'
                     },
                     session
                 });

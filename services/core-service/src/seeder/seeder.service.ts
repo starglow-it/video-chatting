@@ -257,6 +257,7 @@ export class SeederService {
 
   async createMediasByScopes(scopes: string[], category: MediaCategoryDocument) {
     try {
+      if (category.key.includes('myroom')) return;
       const promise = scopes.map(async (scope) => {
 
         const filePath = `${FILES_SCOPE}/${scope}`;
@@ -281,6 +282,7 @@ export class SeederService {
           query: { key: mediaCategory.key },
         });
 
+
         if (!existCategory) {
           const newCategory = await this.mediaService.createCategory(
             {
@@ -293,7 +295,6 @@ export class SeederService {
           await this.createMediasByScopes(scopes, newCategory);
         }
         else {
-
           await this.createMediasByScopes(scopes, existCategory);
         }
       });
@@ -320,54 +321,6 @@ export class SeederService {
     await Promise.all(promises);
 
     return;
-  }
-
-  async seedMediasToAvailableTemplates() {
-    return withTransaction(this.connection, async (session) => {
-      try {
-        const templates = await this.userTemplatesService.findUserTemplates({
-          query: {},
-          session
-        });
-
-        await Promise.all(templates.map(async (template) => {
-          const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
-            query: {
-              userTemplate: template._id
-            },
-            session
-          });
-
-          const medias = await this.mediaService.findMedias({
-            query: {
-              url: {
-                $nin: userTemplateMedias.map(item => item.url)
-              }
-            },
-            session
-          });
-
-          const data = await Promise.all(medias.map(media => (
-            {
-              userTemplate: template._id,
-              mediaCategory: media.mediaCategory,
-              url: media.url,
-              name: media.name,
-              previewUrls: media.previewUrls,
-              type: media.type
-            }
-          )));
-
-          await this.mediaService.createUserTemplateMedias({
-            data,
-            session
-          });
-        }));
-      }
-      catch (err) {
-        console.log(err);
-      }
-    });
   }
 
   async seedLanguages() {
