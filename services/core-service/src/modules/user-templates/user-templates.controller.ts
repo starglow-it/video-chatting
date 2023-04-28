@@ -107,7 +107,7 @@ export class UserTemplatesController {
       const deletedpreviewImages = [...previewImages];
 
       await Promise.all(
-        deletedpreviewImages.map(previewImage => this.awsService.deleteResource(previewImage.key))
+        deletedpreviewImages.map(async previewImage => await this.awsService.deleteResource(previewImage.key))
       );
     }
     catch (err) {
@@ -137,9 +137,9 @@ export class UserTemplatesController {
 
       await Promise.all(
         deleteMedias.map(async media => await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`))
-      )
+      );
 
-      await this.deletePreviewUrls(medias, session);
+      await this.deletePreviewUrls(deleteMedias, session);
     }
     catch (err) {
       throw new RpcException({
