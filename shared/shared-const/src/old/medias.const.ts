@@ -104,7 +104,7 @@ export const MEDIA_CATEGORIES = [
     {
         key: 'myrooms',
         value: 'My Rooms',
-        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/myroom_1.webp',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/myrooms_1.webp',
         type: 'background'
     }
 ];
