@@ -49,7 +49,7 @@ export class MediaService {
 
         const imagesPaths = await fsPromises.readdir(outputPath);
 
-        const keyFolder = `^templates/images/${id}`;
+        const keyFolder = `^media/images/${id}`;
         
         await this.previewImage.deleteMany({
             key: new RegExp(keyFolder),
@@ -62,7 +62,7 @@ export class MediaService {
             const resolution = image.match(/(\d*)p\./);
 
             const file = await fsPromises.readFile(filePath);
-            const uploadKey = `templates/images/${id}/${image}`;
+            const uploadKey = `${keyFolder}/${image}`;
             const fileStats = await fsPromises.stat(filePath);
 
             const imageUrl = await this.awsService.uploadFile(file, uploadKey);
@@ -278,7 +278,6 @@ export class MediaService {
         query: FilterQuery<MediaDocument>;
         session?: ITransactionSession;
     }): Promise<any> {
-
         return this.media.deleteMany(query, {
             session: session?.session,
         });
@@ -311,7 +310,7 @@ export class MediaService {
         });
     }
 
-    async deleteFolderMedias(keyFolder: string) {
-        await this.awsService.deleteFolder(keyFolder);
+    async deleteMediaFolders(keyFolder: string) {
+        await this.awsService.deleteFolder(`media/${keyFolder}`);
     }
 }

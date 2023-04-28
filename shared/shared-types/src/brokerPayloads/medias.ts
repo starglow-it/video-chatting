@@ -16,8 +16,8 @@ export type CreateMediaPayload = {
 }
 
 export type CreateUserTemplateMediaPayload = {
-    userTemplateId: IUserTemplate['id'];
-};
+    userTemplateId:  IUserTemplate['id'];
+} & CreateMediaPayload;
 
 export type UploadUserTemplateMediaFilePayload = {
     url: IUserTemplateMedia['url'];

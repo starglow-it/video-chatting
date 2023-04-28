@@ -161,14 +161,13 @@ export class UserTemplatesService {
   }: UpdateModelQuery<
     UserTemplateDocument,
     UserTemplateDocument
-  >): Promise<any> {
+  >): Promise<UserTemplateDocument> {
     const options: QueryOptions = {
       session: session?.session,
       populate: populatePaths,
       new: true,
     };
-
-    return this.userTemplate.findOneAndUpdate(query, data, options);
+    return await this.userTemplate.findOneAndUpdate(query, data, options);
   }
 
   async updateUserTemplates({

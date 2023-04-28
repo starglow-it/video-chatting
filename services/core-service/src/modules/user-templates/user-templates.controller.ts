@@ -25,7 +25,7 @@ import {
 } from 'shared-types';
 
 // helpers
-import { withTransaction } from '../../helpers/mongo/withTransaction';
+import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
 
 // services
 import { UserTemplatesService } from './user-templates.service';
@@ -43,6 +43,11 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 import { MediaService } from '../medias/medias.service';
+import { MediaCategoryDocument } from '../../schemas/media-category.schema';
+import { PreviewImageDocument } from 'src/schemas/preview-image.schema';
+import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
+import { FilterQuery } from 'mongoose';
+import { MediaDocument } from 'src/schemas/media.schema';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -50,13 +55,94 @@ export class UserTemplatesController {
     @InjectConnection() private connection: Connection,
     private userTemplatesService: UserTemplatesService,
     private commonTemplatesService: CommonTemplatesService,
+    private awsService: AwsConnectorService,
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
     private languageService: LanguagesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
     private mediaService: MediaService
-  ) {}
+  ) { }
+
+
+  private async getMyRoomMediaCategory(session: ITransactionSession): Promise<MediaCategoryDocument> {
+    try {
+      const mediaCategory = await this.mediaService.findMediaCategory({
+        query: {
+          key: 'myroom'
+        },
+        session
+      });
+
+      if (!mediaCategory) {
+        throw new RpcException({
+          message: 'Media category not found',
+          ctx: TEMPLATES_SERVICE
+        });
+      }
+
+      return mediaCategory;
+    }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE
+      });
+    }
+  }
+
+  private async deletePreviewUrls<T extends { previewUrls: PreviewImageDocument[] }>(list: Array<T>, session) {
+    const previewImages = list.map(item => item.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
+
+    await this.mediaService.deletePreviewImages({
+      query: {
+        _id: {
+          $in: previewImages
+        }
+      },
+      session
+    });
+
+    for await (const previewImage of previewImages) {
+      await this.awsService.deleteResource(previewImage.key);
+    }
+  }
+
+
+  private async deleteMedias(query: FilterQuery<MediaDocument>, session: ITransactionSession): Promise<void> {
+    const medias = await this.mediaService.findMedias({
+      query,
+      session
+    });
+
+    await this.mediaService.deleteMedias({
+      query,
+      session
+    });
+
+    for await (const media of medias) {
+      await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`);
+    }
+
+    await this.deletePreviewUrls(medias, session);
+
+  }
+
+  private async updateMediaByUserTemplate(userTemplate: UserTemplateDocument, session: ITransactionSession) {
+    const mediaCategory = await this.getMyRoomMediaCategory(session);
+    await this.mediaService.updateMedia({
+      query: {
+        userTemplate,
+        mediaCategory
+      },
+      data: {
+        url: userTemplate.url,
+        type: userTemplate.templateType,
+        previewUrls: userTemplate.previewUrls
+      },
+      session
+    });
+  }
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
   async getUserTemplate(
@@ -223,6 +309,19 @@ export class UserTemplatesController {
           data: {
             $inc: { roomsUsed: 1 },
           },
+        });
+
+        const mediaCategory = await this.getMyRoomMediaCategory(session);
+
+        await this.mediaService.createMedia({
+          data: {
+            userTemplate,
+            url: userTemplate.url,
+            previewUrls: userTemplate.previewUrls,
+            mediaCategory,
+            type: userTemplate.templateType
+          },
+          session
         });
 
         return plainToInstance(UserTemplateDTO, userTemplate, {
@@ -435,6 +534,10 @@ export class UserTemplatesController {
             ],
           );
 
+        if (data.url) {
+          await this.updateMediaByUserTemplate(userTemplate, session);
+        }
+
         if (userTemplate?.author?._id?.toString?.() === userId) {
           const updateCommonTemplateData = {
             ...filteredData,
@@ -608,21 +711,7 @@ export class UserTemplatesController {
           });
         }
 
-        const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
-          query: {
-            userTemplate: userTemplate._id
-          }
-        });
-
-        userTemplateMedias.map(async media => {
-          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}/videos`);
-        });
-        
-        this.mediaService.deleteMedias({
-          query: {
-            userTemplate: userTemplate._id
-          }
-        });
+        await this.deleteMedias({ userTemplate }, session);
 
         await this.userTemplatesService.deleteUserTemplate(
           { _id: templateId },
@@ -679,7 +768,7 @@ export class UserTemplatesController {
 
       const imageIds = previewImages.map((image) => image._id);
 
-      return this.userTemplatesService.updateUserTemplate({
+      const updatedUserTemplate = await this.userTemplatesService.updateUserTemplate({
         query: {
           _id: id,
         },
@@ -690,6 +779,8 @@ export class UserTemplatesController {
         },
         session,
       });
+
+      await this.updateMediaByUserTemplate(updatedUserTemplate, session);
     });
   }
 
@@ -768,7 +859,12 @@ export class UserTemplatesController {
           session,
         });
 
-        return {};
+        await this.deleteMedias({
+          userTemplate: {
+            $nin: templatesIds
+          },
+        }, session);
+
       });
     } catch (err) {
       throw new RpcException({
