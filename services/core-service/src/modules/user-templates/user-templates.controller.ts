@@ -91,7 +91,7 @@ export class UserTemplatesController {
     }
   }
 
-  private async deletePreviewUrls<T extends { previewUrls: PreviewImageDocument[] }>(list: Array<T>, session) {
+  private async deletePreviewUrls<T extends { previewUrls: PreviewImageDocument[] }>(list: Array<T>, session: ITransactionSession) {
     try {
       const previewImages = list.map(item => item.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
 
