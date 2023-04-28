@@ -7,5 +7,4 @@ export interface IMediaItem extends IMedia  {
 export type UploadBackgroundPayload = {
     file: File,
     userTemplateId: string;
-    mediaCategoryId: string;
 }
