@@ -15,7 +15,7 @@ import {
   SOUNDS_SCOPE,
   USERS_SERVICE
 } from 'shared-const';
-import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
+import { Counters, IMedia, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -51,6 +51,7 @@ import { MediaCategoryDocument } from '../schemas/media-category.schema';
 import { CommonMediaDTO } from '../dtos/common-media.dto';
 import { promisify } from 'util';
 import * as mime from 'mime';
+import { MediaDocument } from 'src/schemas/media.schema';
 
 // utils
 
@@ -63,7 +64,6 @@ export class SeederService {
     private businessCategoriesService: BusinessCategoriesService,
     private mediaService: MediaService,
     private languagesService: LanguagesService,
-    private paymentsService: PaymentsService,
     private awsService: AwsConnectorService,
     private countersService: CountersService,
     private configService: ConfigClientService,
@@ -305,6 +305,66 @@ export class SeederService {
       console.log(err);
       return;
     }
+  }
+
+  async seedMyRoomMediasByUserTemplateAmount() {
+    return withTransaction(this.connection, async session => {
+
+      const mediaCategory = await this.mediaService.findMediaCategory({
+        query: {
+          key: 'myroom'
+        },
+        session
+      });
+
+      if (!mediaCategory) {
+        throw new RpcException({
+          message: 'My room category not found',
+          ctx: TEMPLATES_SERVICE
+        });
+      }
+
+      const userTemplates = await this.userTemplatesService.aggregate([
+        {
+          $lookup: {
+            from: "media",
+            localField: "_id",
+            foreignField: "userTemplate",
+            as: "medias"
+          }
+        },
+        {
+          $lookup: {
+            from: "mediacategories",
+            localField: "medias.mediaCategory",
+            foreignField: "_id",
+            as: "mediaCategories"
+          }
+        },
+        {
+          $match: {
+            "mediaCategories.key": {
+              $ne: "myroom"
+            }
+          },
+        }
+
+      ]);
+
+      const data = userTemplates.map(userTemplate => ({
+        mediaCategory,
+        url: userTemplate.url,
+        type: userTemplate.templateType,
+        userTemplate,
+        previewUrls: userTemplate.previewUrls
+      })) as Partial<MediaDocument>[];
+
+      await this.mediaService.createMedias({
+        data,
+        session
+      })
+
+    });
   }
 
   async seedBusinessCategories(): Promise<void> {

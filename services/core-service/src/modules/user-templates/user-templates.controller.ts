@@ -92,56 +92,86 @@ export class UserTemplatesController {
   }
 
   private async deletePreviewUrls<T extends { previewUrls: PreviewImageDocument[] }>(list: Array<T>, session) {
-    const previewImages = list.map(item => item.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
+    try {
+      const previewImages = list.map(item => item.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
 
-    await this.mediaService.deletePreviewImages({
-      query: {
-        _id: {
-          $in: previewImages
-        }
-      },
-      session
-    });
+      await this.mediaService.deletePreviewImages({
+        query: {
+          _id: {
+            $in: previewImages
+          }
+        },
+        session
+      });
 
-    for await (const previewImage of previewImages) {
-      await this.awsService.deleteResource(previewImage.key);
+      const deletedpreviewImages = [...previewImages];
+
+      await Promise.all(
+        deletedpreviewImages.map(previewImage => this.awsService.deleteResource(previewImage.key))
+      );
     }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE
+      });
+    }
+
   }
 
 
   private async deleteMedias(query: FilterQuery<MediaDocument>, session: ITransactionSession): Promise<void> {
-    const medias = await this.mediaService.findMedias({
-      query,
-      session
-    });
+    try {
+      const medias = await this.mediaService.findMedias({
+        query,
+        populatePaths: ['previewUrls'],
+        session
+      });
 
-    await this.mediaService.deleteMedias({
-      query,
-      session
-    });
+      await this.mediaService.deleteMedias({
+        query,
+        session
+      });
 
-    for await (const media of medias) {
-      await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`);
+      const deleteMedias = [...medias];
+
+      await Promise.all(
+        deleteMedias.map(async media => await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`))
+      )
+
+      await this.deletePreviewUrls(medias, session);
     }
-
-    await this.deletePreviewUrls(medias, session);
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE
+      });
+    }
 
   }
 
   private async updateMediaByUserTemplate(userTemplate: UserTemplateDocument, session: ITransactionSession) {
-    const mediaCategory = await this.getMyRoomMediaCategory(session);
-    await this.mediaService.updateMedia({
-      query: {
-        userTemplate,
-        mediaCategory
-      },
-      data: {
-        url: userTemplate.url,
-        type: userTemplate.templateType,
-        previewUrls: userTemplate.previewUrls
-      },
-      session
-    });
+    try {
+      const mediaCategory = await this.getMyRoomMediaCategory(session);
+      await this.mediaService.updateMedia({
+        query: {
+          userTemplate,
+          mediaCategory
+        },
+        data: {
+          url: userTemplate.url,
+          type: userTemplate.templateType,
+          previewUrls: userTemplate.previewUrls
+        },
+        session
+      });
+    }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE
+      });
+    }
   }
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })

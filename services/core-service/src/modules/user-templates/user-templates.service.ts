@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, QueryOptions, UpdateQuery } from 'mongoose';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
 import * as fsPromises from 'fs/promises';
@@ -183,6 +183,10 @@ export class UserTemplatesService {
     };
 
     return this.userTemplate.updateMany(query, data, options);
+  }
+
+  async aggregate(aggregationPipeline: PipelineStage[]) {
+    return this.userTemplate.aggregate(aggregationPipeline).exec();
   }
 
   async deleteUserTemplates({
