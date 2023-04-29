@@ -28,7 +28,6 @@ import { Media } from './Media';
 import styles from './MeetingChangeBackground.module.scss';
 import { UploadBackground } from './Upload';
 import { $profileStore } from '../../../store';
-import {PlanKeys} from "shared-types";
 
 const Component = () => {
     const { medias, categorySelected, mediaSelected, categories, count } =
@@ -155,9 +154,7 @@ const Component = () => {
                                 onYReachEnd={handleScrollEnd}
                                 containerRef={el => (refScroll.current = el)}
                             >
-                                <ConditionalRender condition={profile.subscriptionPlanKey !== PlanKeys.House}>
-                                    <UploadBackground />
-                                </ConditionalRender>
+                                <UploadBackground />
                                 {medias.map(item => (
                                     <Media
                                         key={item.id}
