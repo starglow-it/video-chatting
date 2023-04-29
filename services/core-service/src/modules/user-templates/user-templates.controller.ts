@@ -128,6 +128,13 @@ export class UserTemplatesController {
         session
       });
 
+      const mediaCaetgory = await this.mediaService.findMediaCategory({
+        query: {
+          key: 'myrooms'
+        },
+        session
+      })
+
       await this.mediaService.deleteMedias({
         query,
         session
@@ -139,7 +146,9 @@ export class UserTemplatesController {
         deleteMedias.map(async media => await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`))
       );
 
-      await this.deletePreviewUrls(deleteMedias, session);
+      await this.deletePreviewUrls(
+        deleteMedias.filter(media => media.mediaCategory._id.toString() !== mediaCaetgory._id.toString()),
+        session);
     }
     catch (err) {
       throw new RpcException({
