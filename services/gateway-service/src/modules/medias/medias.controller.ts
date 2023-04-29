@@ -53,15 +53,15 @@ export class MediasController {
     })
     async getCategories(
         @Query() query: GetMediaCategoriesQueryDto
-    ): Promise<ResponseSumType<EntityList<IMediaCategory & {audio?: string}>>> {
+    ): Promise<ResponseSumType<EntityList<IMediaCategory & { audio?: string }>>> {
         try {
-            const {skip, limit, type} = query;
+            const { skip, limit, type } = query;
 
             const userTemplate = await this.userTemplateService.getUserTemplateById({
                 id: query.userTemplateId
             });
 
-            if(!userTemplate){
+            if (!userTemplate) {
                 throw new BadRequestException('User template not found');
             }
 
@@ -71,16 +71,16 @@ export class MediasController {
                     limit,
                     type
                 });
-            if(query.type === MediaCategoryType.Sound){
+            if (query.type === MediaCategoryType.Sound) {
                 const mediaSoundTypeCategories = mediaCategories?.list?.map(async (mediaCategory) => {
                     const medias = await this.mediaService.getUserTemplateMedias({
                         mediaCategoryId: mediaCategory.id,
                         userTemplateId: query.userTemplateId
                     });
 
-                    return {...mediaCategory, audio: medias?.list[0] || null}
+                    return { ...mediaCategory, audio: medias?.list[0] || null }
                 });
-                
+
                 return {
                     success: true,
                     result: {
@@ -120,8 +120,8 @@ export class MediasController {
         @Query() query: GetUserTemplateMediasQueryDto
     ): Promise<ResponseSumType<EntityList<IMedia>>> {
         try {
-            const {skip, limit, userTemplateId} = query;
-            
+            const { skip, limit, userTemplateId } = query;
+
             const medias =
                 await this.mediaService.getUserTemplateMedias({
                     skip,
@@ -159,23 +159,19 @@ export class MediasController {
         userTemplateId: {
             type: 'string',
             format: 'string'
-        },
-        mediaCategoryId: {
-            type: 'string',
-            format: 'string'
         }
     })
     async createUserTemplateMedia(
         @UploadedFile() file: Express.Multer.File,
         @Body() body: CreateUserTemplateMediaRequest
-    ): Promise<ResponseSumType<IUserTemplateMedia>>{
+    ): Promise<ResponseSumType<IUserTemplateMedia>> {
         try {
             let userTemplateMedia = await this.mediaService.createUserTemplateMedia(body);
 
             if (file) {
                 const { extension } = getFileNameAndExtension(file.originalname);
                 const uploadKey = `medias/${userTemplateMedia.id}/videos/${uuidv4()}.${extension}`;
-                
+
                 let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
 
 
@@ -200,5 +196,5 @@ export class MediasController {
         }
     }
 
-    
+
 }
