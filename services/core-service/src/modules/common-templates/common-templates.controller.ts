@@ -61,7 +61,7 @@ export class CommonTemplatesController {
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
     private mediaService: MediaService
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.vultrUploadBucket = await this.configService.get<string>(
@@ -588,17 +588,14 @@ export class CommonTemplatesController {
           return;
         }
 
-        await this.commonTemplatesService.deleteCommonTemplate({
-          query: {
-            _id: template._id,
-          },
-          session,
+        const query = { templateId: template.templateId };
+        
+        const userTemplates = await this.userTemplatesService.findUserTemplates({
+          query,
+          session
         });
-
-        await this.userTemplatesService.deleteUserTemplates({
-          query: { templateId: template.templateId },
-          session,
-        });
+        
+        await this.mediaService.deleteMedias({query: {userTemplate: {$in: userTemplates }}});
 
         await this.roomStatisticService.delete({
           query: {
@@ -607,13 +604,35 @@ export class CommonTemplatesController {
           session,
         });
 
+        await this.userTemplatesService.deleteUserTemplates({
+          query,
+          session,
+        });
+
+        await this.commonTemplatesService.deleteCommonTemplate({
+          query: {
+            _id: template._id,
+          },
+          session,
+        });
+        
         if (template.stripeProductId) {
           this.paymentService.deleteTemplateStripeProduct({
             productId: template.stripeProductId,
           });
         }
 
-        await this.awsService.deleteFolder(`templates/${template.id}`);
+        const countUserTemplateUsingCommonTemplateImage = await this.userTemplatesService
+        .countUserTemplates({
+          url: {
+            $regex: `templates/videos/${template.id}`
+          }
+        });
+        
+
+        if(countUserTemplateUsingCommonTemplateImage) return;
+
+        await this.awsService.deleteFolder(`templates/videos/${template.id}`);
       });
     } catch (err) {
       throw new RpcException({
