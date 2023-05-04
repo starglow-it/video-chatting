@@ -104,10 +104,8 @@ export class UserTemplatesController {
         session
       });
 
-      const deletedpreviewImages = [...previewImages];
-
       await Promise.all(
-        deletedpreviewImages.map(async previewImage => await this.awsService.deleteResource(previewImage.key))
+        previewImages.map(async previewImage => await this.awsService.deleteResource(previewImage.key))
       );
     }
     catch (err) {
@@ -128,18 +126,26 @@ export class UserTemplatesController {
         session
       });
 
+      const mediaCategory = await this.mediaService.findMediaCategory({
+        query: {
+          key: 'myrooms'
+        },
+        session
+      });
+
       await this.mediaService.deleteMedias({
         query,
         session
       });
 
-      const deleteMedias = [...medias];
 
       await Promise.all(
-        deleteMedias.map(async media => await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`))
+        medias.map(async media => await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`))
       );
 
-      await this.deletePreviewUrls(deleteMedias, session);
+      await this.deletePreviewUrls(
+        medias.filter(media => media.mediaCategory._id.toString() !== mediaCategory._id.toString()),
+        session);
     }
     catch (err) {
       throw new RpcException({
