@@ -622,7 +622,7 @@ export class CommonTemplatesController {
           });
         }
 
-        const countUserTemplateUsingCommonTemplateImage = await this.userTemplatesService
+        const countTemplateUseCommon = await this.userTemplatesService
         .countUserTemplates({
           url: {
             $regex: `templates/videos/${template.id}`
@@ -630,7 +630,7 @@ export class CommonTemplatesController {
         });
         
 
-        if(countUserTemplateUsingCommonTemplateImage) return;
+        if(countTemplateUseCommon) return;
 
         await this.awsService.deleteFolder(`templates/videos/${template.id}`);
       });

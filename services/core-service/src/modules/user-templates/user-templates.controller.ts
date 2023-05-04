@@ -126,7 +126,7 @@ export class UserTemplatesController {
         session
       });
 
-      const mediaCaetgory = await this.mediaService.findMediaCategory({
+      const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
           key: 'myrooms'
         },
@@ -144,7 +144,7 @@ export class UserTemplatesController {
       );
 
       await this.deletePreviewUrls(
-        medias.filter(media => media.mediaCategory._id.toString() !== mediaCaetgory._id.toString()),
+        medias.filter(media => media.mediaCategory._id.toString() !== mediaCategory._id.toString()),
         session);
     }
     catch (err) {
