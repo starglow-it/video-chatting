@@ -175,10 +175,11 @@ export class MediaController {
 
                 const userTemplate = await this.userTemplateService.findUserTemplateById({
                     id: userTemplateId,
+                    populatePaths: ['user'],
                     session
                 });
 
-                if(!userTemplate){
+                if (!userTemplate) {
                     throw new RpcException({
                         message: 'User Template not found',
                         ctx: MEDIA_SERVICE
@@ -188,7 +189,9 @@ export class MediaController {
                 const query = {
                     mediaCategory: mediaCategory._id,
                     userTemplate: {
-                        $in: [userTemplateId,null]
+                        $in: mediaCategory.key === 'myrooms' ?
+                            userTemplate.user.templates :
+                            [userTemplateId, null]
                     }
                 };
 
