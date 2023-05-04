@@ -311,6 +311,8 @@ export class MediaService {
     }
 
     async deleteMediaFolders(keyFolder: string) {
+        console.log(keyFolder);
+        
         await this.awsService.deleteFolder(`media/${keyFolder}`);
     }
 
