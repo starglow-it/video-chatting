@@ -32,7 +32,6 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 // services
 import { CommonTemplatesService } from './common-templates.service';
 import { UsersService } from '../users/users.service';
-import { MeetingsService } from '../meetings/meetings.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { BusinessCategoriesService } from '../business-categories/business-categories.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
@@ -42,8 +41,9 @@ import { PaymentsService } from '../../services/payments/payments.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
 // helpers
-import { withTransaction } from '../../helpers/mongo/withTransaction';
+import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
 import { MediaService } from '../medias/medias.service';
+import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -61,12 +61,39 @@ export class CommonTemplatesController {
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
     private mediaService: MediaService
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.vultrUploadBucket = await this.configService.get<string>(
       'vultrUploadBucket',
     );
+  }
+
+
+  private async getMyRoomMediaCategory(session: ITransactionSession): Promise<MediaCategoryDocument> {
+    try {
+      const mediaCategory = await this.mediaService.findMediaCategory({
+        query: {
+          key: 'myrooms'
+        },
+        session
+      });
+
+      if (!mediaCategory) {
+        throw new RpcException({
+          message: 'Media category not found',
+          ctx: TEMPLATES_SERVICE
+        });
+      }
+
+      return mediaCategory;
+    }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE
+      });
+    }
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
@@ -309,6 +336,19 @@ export class CommonTemplatesController {
           },
         });
 
+        const mediaCategory = await this.getMyRoomMediaCategory(session);
+
+        await this.mediaService.createMedia({
+          data: {
+            userTemplate,
+            url: userTemplate.url,
+            previewUrls: userTemplate.previewUrls,
+            mediaCategory,
+            type: userTemplate.templateType
+          },
+          session
+        });
+
         return plainToInstance(UserTemplateDTO, userTemplate, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
@@ -548,17 +588,14 @@ export class CommonTemplatesController {
           return;
         }
 
-        await this.commonTemplatesService.deleteCommonTemplate({
-          query: {
-            _id: template._id,
-          },
-          session,
+        const query = { templateId: template.templateId };
+        
+        const userTemplates = await this.userTemplatesService.findUserTemplates({
+          query,
+          session
         });
-
-        await this.userTemplatesService.deleteUserTemplates({
-          query: { templateId: template.templateId },
-          session,
-        });
+        
+        await this.mediaService.deleteMedias({query: {userTemplate: {$in: userTemplates }}});
 
         await this.roomStatisticService.delete({
           query: {
@@ -567,13 +604,35 @@ export class CommonTemplatesController {
           session,
         });
 
+        await this.userTemplatesService.deleteUserTemplates({
+          query,
+          session,
+        });
+
+        await this.commonTemplatesService.deleteCommonTemplate({
+          query: {
+            _id: template._id,
+          },
+          session,
+        });
+        
         if (template.stripeProductId) {
           this.paymentService.deleteTemplateStripeProduct({
             productId: template.stripeProductId,
           });
         }
 
-        await this.awsService.deleteFolder(`templates/${template.id}`);
+        const countTemplateUseCommon = await this.userTemplatesService
+        .countUserTemplates({
+          url: {
+            $regex: `templates/videos/${template.id}`
+          }
+        });
+        
+
+        if(countTemplateUseCommon) return;
+
+        await this.awsService.deleteFolder(`templates/videos/${template.id}`);
       });
     } catch (err) {
       throw new RpcException({
