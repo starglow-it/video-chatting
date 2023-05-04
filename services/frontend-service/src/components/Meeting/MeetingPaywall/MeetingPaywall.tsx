@@ -16,6 +16,8 @@ import {
 	$paymentIntent,
 	togglePaymentFormEvent,
 } from '../../../store/roomStores';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // types
 
@@ -49,7 +51,21 @@ const Component = ({onPaymentSuccess}: Props) => {
 		initStripe()
 	}, []) 
 	return (
-		<PaymentForm onClose={onPaymentSuccess} templateType='black'/>
+		<CustomBox>
+			<CustomTypography
+				nameSpace="subscriptions"
+				translation="paywall.title"
+				textAlign="center"
+				marginBottom={1}
+				variant='body1bold'
+				component="div"
+			/>
+			<CustomTypography
+				nameSpace="subscriptions"
+				translation="paywall.labelForm"
+			/>
+			<PaymentForm onClose={onPaymentSuccess} templateType='black'/>
+		</CustomBox>
   );
 }
 

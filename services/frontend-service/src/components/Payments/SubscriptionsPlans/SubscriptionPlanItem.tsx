@@ -1,7 +1,6 @@
 import React, { useMemo, ForwardedRef, memo, forwardRef, useCallback } from 'react';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
-import {PlanKeys} from "shared-types";
 
 // hooks
 import { useLocalization } from '@hooks/useTranslation';
@@ -136,13 +135,6 @@ const Component = (
                 </List>
 
                 <CustomGrid container direction="column" className={styles.buttons}>
-                    <CustomTypography
-                        variant={product.name === PlanKeys.Business ? "body1bold" : "body1"}
-                        className={styles.commissionFee}
-                        dangerouslySetInnerHTML={{
-                            __html: translation('limits.time', { fee: templateFeaturesText.comissionFee }),
-                        }}
-                    />
                     <ConditionalRender condition={withTrial}>
                         <CustomTooltip
                             arrow

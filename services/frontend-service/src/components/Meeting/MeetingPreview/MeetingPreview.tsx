@@ -17,9 +17,6 @@ import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAvatarsCounter';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
-// shared
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { $authStore } from '../../../store';
@@ -70,9 +67,6 @@ const Component = ({ isAllowBack = true }) => {
         );
     }, []);
 
-    const previewImage = (meetingTemplate?.previewUrls || []).find(
-        image => image.resolution === 240,
-    );
 
     const renderUserAvatar = useCallback(
         (user: MeetingUser) => (
@@ -121,16 +115,7 @@ const Component = ({ isAllowBack = true }) => {
                 className={styles.meetingPreviewWrapper}
                 wrap="nowrap"
             >
-                <CustomBox className={styles.imageWrapper}>
-                    <ConditionalRender condition={Boolean(previewImage?.url)}>
-                        <CustomImage
-                            src={previewImage?.url || ''}
-                            layout="fill"
-                            objectFit="cover"
-                            objectPosition="center"
-                        />
-                    </ConditionalRender>
-                </CustomBox>
+                <CustomBox className={styles.imageWrapper} />
                 <ProfileAvatar
                     className={clsx(styles.profileAvatar, {
                         [styles.mobile]: isMobile,
