@@ -36,7 +36,8 @@
     "pages": {
       "statistics": "Statistics",
       "users": "Users",
-      "rooms": "Rooms"
+      "rooms": "Rooms",
+      "backgrounds": "Backgrounds"
     },
     "users": {
       "delete": "Delete",
