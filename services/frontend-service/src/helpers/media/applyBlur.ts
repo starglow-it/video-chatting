@@ -1,10 +1,9 @@
 import { getBrowserData } from 'shared-utils';
 import { CustomMediaStream } from '../../types';
 import { BROWSER_NAMES } from '../../types/browsers';
+import { VIDEO_CONSTRAINTS } from 'src/const/media/VIDEO_CONSTRAINTS';
 
 class BackgroundManagerInstance {
-    image: string;
-
     supportedBrowsers: string[];
 
     browserData: ReturnType<typeof getBrowserData> | undefined;
@@ -15,8 +14,9 @@ class BackgroundManagerInstance {
 
     videoEffects: unknown;
 
-    constructor(image: string) {
-        this.image = image;
+    segmentation: any;
+
+    constructor() {
         this.effectBackground = null;
         this.videoEffects = null;
         this.isBackgroundSupported = false;
@@ -43,12 +43,18 @@ class BackgroundManagerInstance {
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
                             this.effectBackground = new Module.EffectBlur();
-                            await this.effectBackground.setEffects({
-                                blurStrength: 10,
-                                fixSegmentationBlurStrength: 15,
-                                fixSegmentationIterations: 15,
-                                fixSegmentation: 0,
+                        }
+
+                        if (!this.segmentation) {
+                            this.segmentation = new Module.Segmentation({
+                                onFrame: (data: any) =>
+                                    this.effectBackground.draw(data),
+                                onReady: () =>
+                                    console.log('Segmentation is ready'),
+                                onError: () =>
+                                    console.log('Segmentation error'),
                             });
+                            this.segmentation.createModel();
                         }
 
                         if (!this.videoEffects) {
@@ -62,16 +68,12 @@ class BackgroundManagerInstance {
         }
     }
 
-    async applyBlur(
-        stream: CustomMediaStream,
-        isCameraActive: boolean,
-        isAuraActive: boolean,
-    ) {
+    async onBlur(stream: CustomMediaStream, isAuraActive: boolean) {
         if (stream) {
-            const videoTrack = stream?.getVideoTracks()[0];
+            const videoTrack = stream.getVideoTracks()[0];
             let blurTrack;
 
-            if (videoTrack && isAuraActive && this.videoEffects) {
+            if (videoTrack && this.videoEffects && isAuraActive) {
                 videoTrack.enabled = true;
 
                 blurTrack = await this.videoEffects.setEffect(
@@ -82,8 +84,24 @@ class BackgroundManagerInstance {
                 stream.removeTrack(videoTrack);
                 stream.addTrack(blurTrack);
             }
+        }
+        return stream;
+    }
 
-            return stream;
+    applyBlur(stream: CustomMediaStream) {
+        if (stream) {
+            const canvasEl = new OffscreenCanvas(
+                VIDEO_CONSTRAINTS.width.ideal,
+                VIDEO_CONSTRAINTS.height.ideal,
+            );
+            const ctx = canvasEl.getContext('2d');
+            ctx?.clearRect(0, 0, canvasEl.width, canvasEl.height);
+
+            if (ctx) {
+                ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+                ctx.globalCompositeOperation = 'source-atop';
+            }
+            this.segmentation.requestSegmentation(canvasEl);
         }
     }
 
@@ -93,9 +111,11 @@ class BackgroundManagerInstance {
             this.videoEffects = null;
             this.effectBackground = null;
         }
+
+        if (this.segmentation) {
+            this.segmentation?.destroy();
+        }
     }
 }
 
-export const BackgroundManager = new BackgroundManagerInstance(
-    '/images/orange.webp',
-);
+export const BackgroundManager = new BackgroundManagerInstance();
