@@ -1,5 +1,5 @@
 import React, {
-	memo, useCallback
+	memo, useCallback, useEffect
 } from 'react';
 import {
 	useStore
@@ -64,6 +64,7 @@ import {
 
 // styles
 import styles from './EnterMeetingName.module.scss';
+import { useRouter } from 'next/router';
 
 const validationSchema = yup.object({
 	fullName: fullNameSchema().required('required'),
@@ -71,6 +72,7 @@ const validationSchema = yup.object({
 
 const Component = () => {
     const { isAuthenticated } = useStore($authStore);
+		const router = useRouter();
     const profile = useStore($profileStore);
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
@@ -79,7 +81,7 @@ const Component = () => {
     const isJoinWaitingRoomPending = useStore(sendJoinWaitingRoomSocketEvent.pending);
 
     const isOwner = useStore($isOwner);
-
+		const nameOnUrl = router.query?.participantName as (string | undefined)
 	const resolver = useYupValidationResolver<{
         fullName: string;
     }>(validationSchema);
@@ -100,7 +102,7 @@ const Component = () => {
 		defaultValues: {
 			fullName: isOwner
 				? meetingTemplate.fullName
-				: localUser.username || profile.fullName,
+				: nameOnUrl || localUser.username || profile.fullName,
 		},
 	});
 
@@ -118,6 +120,14 @@ const Component = () => {
 
 	const fullNameError = errors.fullName?.[0]?.message;
 
+	useEffect(() => {
+		if(!!nameOnUrl){
+			updateLocalUserEvent({
+				username: nameOnUrl,
+				accessStatus: MeetingAccessStatusEnum.Settings,
+			});
+		}
+	}, [])
 	return (
 		<CustomGrid
 			container
