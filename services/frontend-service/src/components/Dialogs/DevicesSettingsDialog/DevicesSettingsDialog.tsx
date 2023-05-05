@@ -214,9 +214,9 @@ const Component = () => {
             if (isAuraEnabled) {
                 const clonedStream = changeStream?.clone();
 
-                const streamWithBackground = await BackgroundManager.applyBlur(
+                BackgroundManager.applyBlur(clonedStream);
+                const streamWithBackground = await BackgroundManager.onBlur(
                     clonedStream,
-                    isNewCameraSettingActive,
                     isAuraEnabled,
                 );
 

@@ -100,6 +100,12 @@ export const MEDIA_CATEGORIES = [
         value: 'Rain',
         emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/rain_1.webp',
         type: 'sound'
+    },
+    {
+        key: 'myrooms',
+        value: 'My Rooms',
+        emojiUrl: 'https://ewr1.vultrobjects.com/theliveoffice-prod/emoji/images/myrooms_1.webp',
+        type: 'background'
     }
 ];
 
