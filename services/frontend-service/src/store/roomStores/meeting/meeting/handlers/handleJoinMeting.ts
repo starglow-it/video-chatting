@@ -1,12 +1,21 @@
-import {updateLocalUserEvent} from '../../../users/localUser/model';
-import {sendEnterMeetingRequestSocketEvent, sendStartMeetingSocketEvent,} from '../../sockets/init';
-import {emitEnterWaitingRoom} from '../../sockets/model';
-import {setBackgroundAudioActive, setBackgroundAudioVolume} from '../../../audio/model';
-import {StorageKeysEnum, WebStorage} from '../../../../../controllers/WebStorageController';
-import {setActiveStreamEvent} from '../../../videoChat/localMedia/model';
-import {JoinMeetingFxPayload} from '../types';
-import {BackgroundManager} from '../../../../../helpers/media/applyBlur';
-import {MeetingAccessStatusEnum} from "shared-types";
+import { updateLocalUserEvent } from '../../../users/localUser/model';
+import {
+    sendEnterMeetingRequestSocketEvent,
+    sendStartMeetingSocketEvent,
+} from '../../sockets/init';
+import { emitEnterWaitingRoom } from '../../sockets/model';
+import {
+    setBackgroundAudioActive,
+    setBackgroundAudioVolume,
+} from '../../../audio/model';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from '../../../../../controllers/WebStorageController';
+import { setActiveStreamEvent } from '../../../videoChat/localMedia/model';
+import { JoinMeetingFxPayload } from '../types';
+import { BackgroundManager } from '../../../../../helpers/media/applyBlur';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 export const handleJoinMeting = async ({
     needToRememberSettings,
@@ -59,9 +68,10 @@ export const handleJoinMeting = async ({
 
     const clonedStream = changeStream?.clone();
 
-    const streamWithBackground = await BackgroundManager.applyBlur(
+    BackgroundManager.applyBlur(clonedStream);
+
+    const streamWithBackground = await BackgroundManager.onBlur(
         clonedStream,
-        isCameraActive,
         isAuraActive,
     );
 
