@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from 'src/services/config/config.module';
 import { ConfigClientService } from 'src/services/config/config.service';
 import { JWT_ACCESS_EXPIRE } from 'shared-const';
+import { AdminMediasController } from './admin-medias.controller';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { JWT_ACCESS_EXPIRE } from 'shared-const';
     }),
   ],
   providers: [MediasService],
-  controllers: [MediasController],
+  controllers: [MediasController, AdminMediasController],
   exports: [MediasService],
 })
 export class MediasModule {}

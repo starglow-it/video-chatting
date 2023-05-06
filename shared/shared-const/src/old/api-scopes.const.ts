@@ -7,4 +7,6 @@ export const MEETINGS_SCOPE = 'meetings/';
 export const CORE_SCOPE = 'core/';
 export const PAYMENTS_SCOPE = 'payments/';
 export const SOCKET_SCOPE = 'socket/';
-export const USER_TEMPLATE_SCOPE = 'user-templates/'
+export const USER_TEMPLATE_SCOPE = 'user-templates/';
+export const MEDIAS_SCOPE = 'medias/';
+export const MEDIAS_ADMIN_SCOPE = 'admin-medias/';

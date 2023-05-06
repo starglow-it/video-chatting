@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, PipelineStage, QueryOptions } from 'mongoose';
 
-import { IMedia, IMediaCategory, IUserTemplateMedia } from 'shared-types';
+import { IMedia, IMediaCategory } from 'shared-types';
 
 import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
@@ -12,9 +12,8 @@ import { PreviewImage, PreviewImageDocument } from '../../schemas/preview-image.
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
 import * as fsPromises from 'fs/promises';
-import { getScreenShots } from 'src/utils/images/getScreenShots';
+import { getScreenShots } from '../../utils/images/getScreenShots';
 import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
-import { UserTemplateMedia, UserTemplateMediaDocument } from 'src/schemas/user-template-media.schema';
 
 @Injectable()
 export class MediaService {
@@ -26,8 +25,6 @@ export class MediaService {
         private media: Model<MediaDocument>,
         @InjectModel(PreviewImage.name)
         private previewImage: Model<PreviewImageDocument>,
-        @InjectModel(UserTemplateMedia.name)
-        private userTemplateMedia: Model<UserTemplateMediaDocument>
     ) { }
 
 
@@ -85,7 +82,7 @@ export class MediaService {
         data,
         session,
     }: {
-        data: Omit<IMediaCategory, 'emojiUrl'>;
+        data: IMediaCategory;
         session?: ITransactionSession;
     }): Promise<MediaCategoryDocument> {
         const [newTag] = await this.mediaCategory.create([data], {
@@ -93,20 +90,6 @@ export class MediaService {
         });
 
         return newTag;
-    }
-
-    async createUserTemplateMedia({
-        data,
-        session,
-    }: {
-        data: Partial<UserTemplateMediaDocument>;
-        session?: ITransactionSession;
-    }) {
-        const [newMedia] = await this.userTemplateMedia.create([data], {
-            session: session?.session,
-        });
-
-        return newMedia;
     }
 
     async createMedias({
@@ -150,26 +133,6 @@ export class MediaService {
                     skip: options?.skip,
                     limit: options?.limit,
                     session: session?.session,
-                },
-            )
-            .exec();
-    }
-
-    async findUserTemplateMedias({
-        query,
-        options,
-        session,
-        populatePaths
-    }: GetModelQuery<UserTemplateMediaDocument>): Promise<UserTemplateMediaDocument[]> {
-        return this.userTemplateMedia
-            .find(
-                query,
-                {},
-                {
-                    skip: options?.skip,
-                    limit: options?.limit,
-                    session: session?.session,
-                    populate: populatePaths
                 },
             )
             .exec();
@@ -237,22 +200,6 @@ export class MediaService {
         });
     }
 
-    async updateUserTemplateMedia({
-        query,
-        data,
-        session,
-        populatePaths,
-    }: UpdateModelQuery<
-        UserTemplateMediaDocument,
-        IUserTemplateMedia
-    >): Promise<UserTemplateMediaDocument> {
-        return this.userTemplateMedia.findOneAndUpdate(query, data, {
-            session: session?.session,
-            populate: populatePaths,
-            new: true,
-        });
-    }
-
     async existCategories(query: FilterQuery<MediaCategoryDocument>): Promise<boolean> {
         const existedDocument = await this.mediaCategory.exists(query).exec();
 
@@ -265,10 +212,6 @@ export class MediaService {
 
     async countMedias(query: FilterQuery<MediaDocument>): Promise<number> {
         return this.media.count(query).exec();
-    }
-
-    async countUserTemplateMedias(query: FilterQuery<UserTemplateMediaDocument>): Promise<number> {
-        return this.userTemplateMedia.count(query).exec();
     }
 
     async deleteMedias({
@@ -284,6 +227,18 @@ export class MediaService {
     }
 
 
+    async deleteMediaCategories({
+        query,
+        session,
+    }: {
+        query: FilterQuery<MediaCategoryDocument>;
+        session?: ITransactionSession;
+    }): Promise<any> {
+        return this.mediaCategory.deleteMany(query, {
+            session: session?.session,
+        });
+    }
+
     async deletePreviewImages({
         query,
         session,
@@ -293,19 +248,6 @@ export class MediaService {
     }): Promise<any> {
 
         return this.previewImage.deleteMany(query, {
-            session: session?.session,
-        });
-    }
-
-    async deleteUserTemplateMedias({
-        query,
-        session,
-    }: {
-        query: FilterQuery<UserTemplateMediaDocument>;
-        session?: ITransactionSession;
-    }): Promise<any> {
-
-        return this.userTemplateMedia.deleteMany(query, {
             session: session?.session,
         });
     }

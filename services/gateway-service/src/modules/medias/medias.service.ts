@@ -3,13 +3,15 @@ import { CoreService } from '../../services/core/core.service';
 import { CoreBrokerPatterns } from 'shared-const';
 import {
   CreateMediaCategoryPayload,
-  CreateUserTemplateMediaPayload,
+  CreateMediaPayload,
+  DeleteMediaCategoriesPayload,
+  DeleteMediasPayload,
+  GetAdminMediaCategoriesPayload,
   GetMediaCategoriesPayload,
   GetMediasPayload,
-  GetUserTemplateMediasPayload,
   UpdateMediaCategoryPayload,
   UploadMediaCategoryFile,
-  UploadUserTemplateMediaFilePayload
+  UploadMediaFilePayload,
 } from 'shared-types';
 
 @Injectable()
@@ -19,6 +21,11 @@ export class MediasService {
   async getMediaCategories(payload: GetMediaCategoriesPayload) {
     const pattern = { cmd: CoreBrokerPatterns.GetMediaCategories };
 
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async getAdminMediaCategories(payload: GetAdminMediaCategoriesPayload) {
+    const pattern = { cmd: CoreBrokerPatterns.GetAdminMediaCategories };
     return this.coreService.sendCustom(pattern, payload);
   }
 
@@ -34,23 +41,14 @@ export class MediasService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-
-  async getUserTemplateMedias(payload: GetUserTemplateMediasPayload) {
-    console.log(payload);
-
-    const pattern = { cmd: CoreBrokerPatterns.GetUserTemplateMedias };
+  async createMedia(payload: CreateMediaPayload) {
+    const pattern = { cmd: CoreBrokerPatterns.CreateMedia };
 
     return this.coreService.sendCustom(pattern, payload);
   }
 
-  async createUserTemplateMedia(payload: CreateUserTemplateMediaPayload) {
-    const pattern = { cmd: CoreBrokerPatterns.CreateUserTemplateMedia };
-
-    return this.coreService.sendCustom(pattern, payload);
-  }
-
-  async uploadUserTemplateMediaFile(payload: UploadUserTemplateMediaFilePayload) {
-    const pattern = { cmd: CoreBrokerPatterns.UploadUserTemplateMediaFile };
+  async uploadMediaFile(payload: UploadMediaFilePayload) {
+    const pattern = { cmd: CoreBrokerPatterns.UploadMediaFile };
 
     return this.coreService.sendCustom(pattern, payload);
   }
@@ -65,6 +63,17 @@ export class MediasService {
   async uploadMediaCategoryFile(payload: UploadMediaCategoryFile) {
     const pattern = { cmd: CoreBrokerPatterns.UploadMediaCategoryFile };
 
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async deleteMedias(payload: DeleteMediasPayload): Promise<boolean>{
+    const pattern = { cmd: CoreBrokerPatterns.DeleteMedias };
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+
+  async deleteMediaCategories(payload: DeleteMediaCategoriesPayload): Promise<boolean>{
+    const pattern = { cmd: CoreBrokerPatterns.DeleteMediaCategories };
     return this.coreService.sendCustom(pattern, payload);
   }
 

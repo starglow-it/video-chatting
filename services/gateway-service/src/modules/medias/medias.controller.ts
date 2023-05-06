@@ -5,7 +5,6 @@ import {
     Get,
     Logger,
     Param,
-    ParseIntPipe,
     Patch,
     Post,
     Query,
@@ -19,10 +18,9 @@ import {
     ApiForbiddenResponse,
     ApiOkResponse,
     ApiOperation,
-    ApiParam,
     ApiTags,
 } from '@nestjs/swagger';
-import { EntityList, ResponseSumType, IMedia, IMediaCategory, IUserTemplateMedia, MediaCategoryType } from 'shared-types';
+import { EntityList, ResponseSumType, IMedia, IMediaCategory, MediaCategoryType } from 'shared-types';
 import { CreateUserTemplateMediaRequest } from '../../dtos/requests/create-user-template-media.request';
 import { MediaCategoryRestDTO } from '../../dtos/response/common-media-category.dto';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
@@ -30,19 +28,17 @@ import { MediasService } from './medias.service';
 import { v4 as uuidv4 } from 'uuid';
 import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
-import { UserTemplateMediaRestDto } from '../../dtos/response/common-user-template-media.dto';
 import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
 import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategories.dto';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
-import { JwtAdminAuthGuard } from 'src/guards/jwt-admin.guard';
-import { CreateMediaCategoryRequest } from 'src/dtos/requests/create-media-category.request';
-import { CreateMediaCategorySwaggerProperty, CreateUserTemplateMediaSwaggerProperty, UpdateMediaCategorySwaggerProperty } from 'src/dtos/swagger-properties/media.swagger-properties';
-import { UpdateMediaCategoryRequest } from 'src/dtos/requests/update-media-category.request';
-import { MediaCategoryQueryDto } from 'src/dtos/query/GetMediaCategory.dto';
-import { CommonResponseDto } from 'src/dtos/response/common-response.dto';
+import {
+    CreateUserTemplateMediaSwaggerProperty,
+} from '../../dtos/swagger-properties/media.swagger-properties';
+import { MEDIAS_SCOPE } from 'shared-const';
+import { CommonMediaRestDto } from 'src/dtos/response/common-media.dto';
 
 @ApiTags('Medias')
-@Controller('medias')
+@Controller(MEDIAS_SCOPE)
 export class MediasController {
     private readonly logger = new Logger();
 
@@ -100,7 +96,7 @@ export class MediasController {
                 });
             if (query.type === MediaCategoryType.Sound) {
                 const mediaSoundTypeCategories = mediaCategories?.list?.map(async (mediaCategory) => {
-                    const medias = await this.mediaService.getUserTemplateMedias({
+                    const medias = await this.mediaService.getMedias({
                         mediaCategoryId: mediaCategory.id,
                         userTemplateId: query.userTemplateId
                     });
@@ -136,7 +132,7 @@ export class MediasController {
     @Get('/:categoryId')
     @ApiOperation({ summary: 'Get User Template Medias By Category Id' })
     @ApiOkResponse({
-        type: [UserTemplateMediaRestDto],
+        type: [CommonMediaRestDto],
         description: 'Get User Template Medias',
     })
     @ApiForbiddenResponse({
@@ -150,7 +146,7 @@ export class MediasController {
             const { skip, limit, userTemplateId } = query;
 
             const medias =
-                await this.mediaService.getUserTemplateMedias({
+                await this.mediaService.getMedias({
                     skip,
                     limit,
                     mediaCategoryId: categoryId,
@@ -176,7 +172,7 @@ export class MediasController {
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create User Template Media' })
     @ApiOkResponse({
-        type: UserTemplateMediaRestDto,
+        type: CommonMediaRestDto,
         description: 'Create User Template Media',
     })
     @ApiForbiddenResponse({
@@ -186,14 +182,14 @@ export class MediasController {
     async createUserTemplateMedia(
         @UploadedFile() file: Express.Multer.File,
         @Body() body: CreateUserTemplateMediaRequest
-    ): Promise<ResponseSumType<IUserTemplateMedia>> {
+    ): Promise<ResponseSumType<IMedia>> {
         try {
-            let userTemplateMedia = await this.mediaService.createUserTemplateMedia(body);
+            let userTemplateMedia = await this.mediaService.createMedia(body);
 
             if (file) {
                 const url = await this.uploadFile(file, userTemplateMedia.id);
 
-                userTemplateMedia = await this.mediaService.uploadUserTemplateMediaFile({
+                userTemplateMedia = await this.mediaService.uploadMediaFile({
                     url,
                     id: userTemplateMedia.id,
                     mimeType: file.mimetype,
@@ -204,96 +200,6 @@ export class MediasController {
                 success: true,
                 result: userTemplateMedia
             };
-        }
-        catch (err) {
-            throw new BadRequestException(err);
-        }
-    }
-
-
-    @Post('/category')
-    @UseGuards(JwtAdminAuthGuard)
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Create Media Category' })
-    @ApiOkResponse({
-        type: CommonResponseDto,
-        description: 'Create Media Category',
-    })
-    @ApiForbiddenResponse({
-        description: 'Forbidden',
-    })
-    @ApiFile(CreateMediaCategorySwaggerProperty)
-    async createCategory(
-        @Body() body: CreateMediaCategoryRequest,
-        @UploadedFile() file: Express.Multer.File
-    ): Promise<ResponseSumType<void>> {
-        try {
-
-            const mediaCateogy = await this.mediaService.createMediaCategory(body);
-
-            const url = await this.uploadFile(file, mediaCateogy.id);
-
-            await this.mediaService.uploadMediaCategoryFile({
-                url,
-                id: mediaCateogy.id,
-                mimeType: file.mimetype,
-            });
-            return {
-                success: true,
-                result: null
-            }
-        }
-        catch (err) {
-            throw new BadRequestException(err);
-        }
-    }
-
-
-    @Patch('/category/:mediaCategoryId')
-    @UseGuards(JwtAdminAuthGuard)
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Update Media Category' })
-    @ApiOkResponse({
-        type: CommonResponseDto,
-        description: 'Update Media Category',
-    })
-    @ApiForbiddenResponse({
-        description: 'Forbidden',
-    })
-    @ApiParam({
-        name: 'mediaCategoryId',
-        type: 'string',
-        required: true
-    })
-    @ApiFile(UpdateMediaCategorySwaggerProperty, {
-        isOptionalAllProperties: true
-    })
-    async updateMedia(
-        @Param() query: MediaCategoryQueryDto,
-        @Body() body: UpdateMediaCategoryRequest,
-        @UploadedFile() file: Express.Multer.File
-    ): Promise<ResponseSumType<void>> {
-
-        try {
-            const mediaCateogy = await this.mediaService.updateMediaCategory({
-                id: query.mediaCategoryId,
-                data: body
-            });
-
-            if (file) {
-                const url = await this.uploadFile(file, mediaCateogy.id);
-
-                await this.mediaService.uploadMediaCategoryFile({
-                    url,
-                    id: mediaCateogy.id,
-                    mimeType: file.mimetype,
-                });
-            }
-
-            return {
-                success: true,
-                result: null
-            }
         }
         catch (err) {
             throw new BadRequestException(err);

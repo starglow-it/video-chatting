@@ -2,6 +2,7 @@ import { Expose, Transform, Type } from 'class-transformer';
 import { IMedia } from 'shared-types';
 import { CommonMediaCategoryDTO } from './common-media-categories.dto';
 import { PreviewImageDTO } from './preview-image.dto';
+import { UserTemplateDTO } from './user-template.dto';
 
 export class CommonMediaDTO implements IMedia {
     @Expose()
@@ -24,4 +25,8 @@ export class CommonMediaDTO implements IMedia {
 
     @Expose()
     type: IMedia['type'];
+
+    @Expose()
+    @Type(() => UserTemplateDTO)
+    userTemplate: IMedia['userTemplate'];
 }
