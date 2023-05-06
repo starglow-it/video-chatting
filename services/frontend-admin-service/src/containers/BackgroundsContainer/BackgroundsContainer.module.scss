@@ -7,3 +7,31 @@
   max-width: 100%;
   inset: 0;
 }
+
+.paper {
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.header {
+  margin-bottom: 20px;
+  border-radius: 0px;
+}
+
+.scroll {
+  display: flex;
+  // padding: 16px;
+}
+
+.button {
+  height: rem(28px);
+  padding: rem(3px 8px);
+  background: $primary-white;
+  border: 1px solid rgba(189, 200, 211, 0.4);
+  box-shadow: 0 12px 24px -4px rgba(15, 15, 16, 0.1);
+  border-radius: rem(6px);
+}
+
+.actions {
+  height: 80px;
+}

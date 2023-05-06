@@ -59,7 +59,8 @@
     "shared-types": "workspace:*",
     "shared-utils": "workspace:*",
     "sharp": "0.31.2",
-    "yup": "0.32.11"
+    "yup": "0.32.11",
+    "react-perfect-scrollbar": "1.5.8"
   },
   "devDependencies": {
     "@babel/core": "7.20.5",

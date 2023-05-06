@@ -44,5 +44,8 @@
       "block": "Block",
       "unblock": "Unblock"
     }
+  },
+  "backgrounds": {
+    "title": "Backgrounds"
   }
 }
