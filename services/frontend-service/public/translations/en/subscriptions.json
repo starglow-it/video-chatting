@@ -199,5 +199,9 @@
   "upgradePlan": {
     "title": "Upgrade plan to Create room",
     "description": "Only users with Professional and Business plan can create rooms"
+  },
+  "paywall":{
+    "title": "Payment is required before entering",
+    "labelForm": "Please Pay"
   }
 }

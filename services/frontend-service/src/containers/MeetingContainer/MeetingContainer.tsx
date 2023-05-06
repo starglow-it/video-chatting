@@ -25,6 +25,7 @@ import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -70,7 +71,7 @@ import {
     WebStorage,
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
-import { BackgroundManager } from '../../helpers/media/applyBlur';
+import { BackgroundManager } from '../../helpers/media/applyBlur'
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -225,9 +226,21 @@ const MeetingContainer = memo(() => {
             handleSetSettingsChecked();
         })();
     }, [isMeetingSocketConnected, isOwner]);
-
+    
     return (
         <>
+            <ConditionalRender condition={!!meetingTemplate.url}>
+                <CustomImage
+                    src={meetingTemplate.url || ''}
+                    width="100%"
+                    height="100%"
+                    layout="fill"
+                    objectFit="cover"
+                    style={{
+                        zIndex: -1
+                    }}         
+                />
+            </ConditionalRender>
             {Boolean(meetingTemplate?.id) && (
                 <ConditionalRender
                     condition={
