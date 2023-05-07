@@ -464,7 +464,7 @@ export class SeederService {
       query: { email: adminEmail },
     });
 
-    // if (!admin) {
+    if (!admin) {
       await this.usersService.createUser({
         email: adminEmail,
         password: adminPassword,
@@ -475,7 +475,7 @@ export class SeederService {
         position: 'Administrator',
         contactEmail: adminEmail,
       });
-    // }
+    }
   }
 
 
