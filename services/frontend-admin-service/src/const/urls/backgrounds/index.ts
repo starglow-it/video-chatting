@@ -2,37 +2,43 @@ import { HttpMethods } from 'shared-types';
 import { authScope } from 'shared-const';
 import { serverUrl } from '../common';
 
-export const getCategoriesUrl = {
-    url: `${serverUrl}/${authScope}/admin`,
-    method: HttpMethods.Get,
-};
+const adminMediaUrl = 'admin-medias';
 
-export const getMediasUrl = {
-    url: `${serverUrl}/${authScope}/admin`,
+export const getCategoriesUrl = ({
+    type = 'background',
+    skip = 0,
+    limit = 0,
+}) => ({
+    url: `${serverUrl}/${adminMediaUrl}/categories?type=${type}&skip=${skip}&limit=${limit}`,
     method: HttpMethods.Get,
-};
+});
+
+export const getMediasUrl = ({ categoryId = '', skip = 0, limit = 0 }) => ({
+    url: `${serverUrl}/${adminMediaUrl}/${categoryId}?skip=${skip}&limit=${limit}`,
+    method: HttpMethods.Get,
+});
 
 export const addCategoryUrl = {
-    url: `${serverUrl}/${authScope}/admin`,
+    url: `${serverUrl}/${adminMediaUrl}/category`,
     method: HttpMethods.Post,
 };
 
-export const updateCategoryUrl = {
-    url: `${serverUrl}/${authScope}/admin`,
+export const updateCategoryUrl = ({ categoryId = '' }) => ({
+    url: `${serverUrl}/${adminMediaUrl}/category/${categoryId}`,
     method: HttpMethods.Put,
-};
+});
 
 export const deleteCategoryUrl = {
-    url: `${serverUrl}/${authScope}/admin`,
+    url: `${serverUrl}/${adminMediaUrl}/categories`,
     method: HttpMethods.Delete,
 };
 
 export const addMediaUrl = {
-    url: `${serverUrl}/${authScope}/admin`,
+    url: `${serverUrl}/${adminMediaUrl}`,
     method: HttpMethods.Put,
 };
 
-export const deleteMediaUrl = {
-    url: `${serverUrl}/${authScope}/admin`,
+export const deleteMediaUrl = ({ categoryId = '' }) => ({
+    url: `${serverUrl}/${authScope}/${adminMediaUrl}/${categoryId}`,
     method: HttpMethods.Delete,
-};
+});

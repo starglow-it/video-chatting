@@ -38,11 +38,15 @@ $backgroundsManageStore
     }))
     .on(addCategoryFx.doneData, (state, category) => ({
         ...state,
-        categories: [...state.categories, category],
+        categories: category
+            ? [...state.categories, category]
+            : state.categories,
     }))
-    .on(deleteCategoryFx.doneData, (state, categoryId) => ({
+    .on(deleteCategoryFx.doneData, (state, categoryIds) => ({
         ...state,
-        categories: state.categories.filter(item => item.id !== categoryId),
+        categories: state.categories.filter(
+            item => !categoryIds.includes(item.id),
+        ),
     }))
     .on(updateCategoryFx.doneData, (state, category) => ({
         ...state,
@@ -51,14 +55,6 @@ $backgroundsManageStore
             return item;
         }),
     }))
-    .on(addMediaFx.doneData, (state, media) => ({
-        ...state,
-        medias: [...state.medias, media],
-    }))
-    .on(deleteMediaFx, (state, mediaId) => ({
-        ...state,
-        medias: state.medias.filter(item => item.id !== mediaId),
-    }));
 
 $queryFetchMediasStore.on(setQueryMediasEvent, state => ({
     ...state,
@@ -66,7 +62,7 @@ $queryFetchMediasStore.on(setQueryMediasEvent, state => ({
 }));
 
 sample({
-    clock: $queryFetchMediasStore,
+    clock: setQueryMediasEvent,
     source: combine({
         backgrounds: $backgroundsManageStore,
         query: $queryFetchMediasStore,

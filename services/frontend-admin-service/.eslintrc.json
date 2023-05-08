@@ -53,15 +53,10 @@
       "tag-aligned"
     ],
     "indent": "off",
-    "object-curly-newline": ["error", {
-      "ObjectExpression": "always",
-      "ObjectPattern": "always",
-      "ImportDeclaration": { "multiline": true, "minProperties": 2 },
-      "ExportDeclaration": { "multiline": true, "minProperties": 2 }
-    }],
+    "object-curly-newline": "off",
     "consistent-return": "off",
     "jsx-a11y/media-has-caption": "off",
-    "arrow-body-style": "off"
+    "arrow-body-style": "off",
   },
   "settings": {
     "react": {

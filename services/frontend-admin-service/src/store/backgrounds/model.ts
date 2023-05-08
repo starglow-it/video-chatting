@@ -1,9 +1,17 @@
+import { EntityList, IMediaCategory } from 'shared-types';
 import { backgroundsDomain } from '../domains';
+import {
+    DeleteMediaParams,
+    GetMediasParams,
+    IBackgroundCategory,
+    IBackgroundMedia,
+    UploadMediaParams,
+} from './types';
 
 export const $backgroundsManageStore = backgroundsDomain.createStore<{
-    categories: any[];
-    categorySelected: any;
-    medias: any[];
+    categories: IBackgroundCategory[];
+    categorySelected: IBackgroundCategory | null;
+    medias: IBackgroundMedia[];
     count: number;
 }>({
     categories: [],
@@ -21,30 +29,37 @@ export const setQueryMediasEvent = backgroundsDomain.createEvent(
     'setQueryMediasEvent',
 );
 
-export const getCategoriesFx = backgroundsDomain.createEffect<void, void>(
-    'getCategoriesFx',
-);
+export const getCategoriesFx = backgroundsDomain.createEffect<
+    void,
+    EntityList<IBackgroundCategory>
+>('getCategoriesFx');
 
-export const addCategoryFx = backgroundsDomain.createEffect<void, void>(
-    'addCategoryFx',
-);
+export const addCategoryFx = backgroundsDomain.createEffect<
+    IMediaCategory,
+    IBackgroundCategory | null
+>('addCategoryFx');
 
-export const deleteCategoryFx = backgroundsDomain.createEffect<void, void>(
-    'deleteCategoryFx',
-);
+export const deleteCategoryFx = backgroundsDomain.createEffect<
+    { ids: string[] },
+    string[]
+>('deleteCategoryFx');
 
-export const updateCategoryFx = backgroundsDomain.createEffect<void, void>(
-    'updateCategoryFx',
-);
+export const updateCategoryFx = backgroundsDomain.createEffect<
+    IBackgroundCategory,
+    IBackgroundCategory
+>('updateCategoryFx');
 
-export const getMediasFx = backgroundsDomain.createEffect<void, void>(
-    'getMediasFx',
-);
+export const getMediasFx = backgroundsDomain.createEffect<
+    GetMediasParams,
+    EntityList<IBackgroundMedia>
+>('getMediasFx');
 
-export const addMediaFx = backgroundsDomain.createEffect<void, void>(
-    'addMediaFx',
-);
+export const addMediaFx = backgroundsDomain.createEffect<
+    UploadMediaParams,
+    boolean
+>('addMediaFx');
 
-export const deleteMediaFx = backgroundsDomain.createEffect<void, void>(
-    'deleteMediaFx',
-);
+export const deleteMediaFx = backgroundsDomain.createEffect<
+    DeleteMediaParams,
+    boolean
+>('deleteMediaFx');

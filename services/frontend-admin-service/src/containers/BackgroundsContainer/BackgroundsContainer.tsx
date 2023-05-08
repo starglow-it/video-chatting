@@ -1,5 +1,5 @@
 import { Translation } from '@components/Translation/Translation';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import styles from './BackgroundsContainer.module.scss';
@@ -12,8 +12,15 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { UploadFolderIcon } from 'shared-frontend/icons/OtherIcons/UploadFolderIcon';
+import { $backgroundsManageStore, getCategoriesFx } from 'src/store';
+import { useStore } from 'effector-react';
 
 const Component = () => {
+    const { categories } = useStore($backgroundsManageStore);
+    useEffect(() => {
+        (async () => getCategoriesFx())();
+    }, []);
+
     return (
         <CustomGrid
             container
@@ -38,43 +45,53 @@ const Component = () => {
                     justifyContent="center"
                     alignItems="flex-start"
                 >
-                    <CustomGrid sm={3} marginRight={2}>
+                    <CustomGrid sm={4} marginRight={2}>
                         <CustomPaper className={styles.paper}>
-                            <CustomPaper className={styles.header}>
+                            <CustomGrid className={styles.header}>
                                 <CustomTypography variant="h4" fontSize={16}>
                                     <Translation
                                         nameSpace="common"
                                         translation="backgrounds.title"
                                     />
                                 </CustomTypography>
-                            </CustomPaper>
+                            </CustomGrid>
                             <CustomGrid container>
-                                <CategoryItem />
-                                <CategoryItem />
-                                <CategoryItem />
-                                <CategoryItem />
-                                <CategoryItem />
+                                {categories.map(item => (
+                                    <CategoryItem
+                                        key={item.id}
+                                        category={item}
+                                    />
+                                ))}
                             </CustomGrid>
                         </CustomPaper>
                     </CustomGrid>
-                    <CustomGrid sm={8}>
+                    <CustomGrid sm={7}>
                         <CustomPaper className={styles.paper}>
-                        <CustomGrid className={styles.actions} display="flex" justifyContent="flex-end">
-                            <ActionButton
-                                className={styles.button}
-                                // onAction={handleRoomAction}
-                                variant="decline"
-                                label={
-                                    <CustomTypography variant="body2">
-                                        <Translation
-                                            nameSpace="rooms"
-                                            translation="buttons.revoke"
+                            <CustomGrid
+                                className={styles.actions}
+                                display="flex"
+                                justifyContent="flex-end"
+                            >
+                                <ActionButton
+                                    className={styles.button}
+                                    // onAction={handleRoomAction}
+                                    variant="decline"
+                                    label={
+                                        <CustomTypography variant="body2">
+                                            <Translation
+                                                nameSpace="rooms"
+                                                translation="buttons.revoke"
+                                            />
+                                        </CustomTypography>
+                                    }
+                                    Icon={
+                                        <UploadFolderIcon
+                                            width="22px"
+                                            height="22px"
                                         />
-                                    </CustomTypography>
-                                }
-                                Icon={<UploadFolderIcon width='22px' height='22px' />}
-                            />
-                        </CustomGrid>
+                                    }
+                                />
+                            </CustomGrid>
                             <PerfectScrollbar className={styles.scroll}>
                                 <MediaItem />
                                 <MediaItem />

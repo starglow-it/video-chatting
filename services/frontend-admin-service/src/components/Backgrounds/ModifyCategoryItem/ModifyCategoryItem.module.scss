@@ -1,0 +1,25 @@
+@import "../../../styles/rem.scss";
+@import "../../../styles/variables";
+
+.wrapper {
+    position: absolute;
+    height: 45px;
+    width: 100%;
+    border-radius: 0px;
+    z-index: 10;
+    background-color: $primary-white;
+}
+
+.emoji {
+    font-size: 22px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.textField {
+    height: 10px;
+}
+
+.closeIcon {
+    margin-left: rem(4px);
+}
