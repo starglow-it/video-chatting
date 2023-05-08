@@ -126,7 +126,7 @@ export class AdminMediasController {
 
             const medias =
                 await this.mediaService.getMedias({
-                    mediaCategoryId: categoryId,
+                    categoryId,
                 });
 
             return {
@@ -285,7 +285,7 @@ export class AdminMediasController {
         try {
             await this.mediaService.deleteMedias({
                 ids: body.ids,
-                mediaCategoryId: params.categoryId
+                categoryId: params.categoryId
             });
 
             return {

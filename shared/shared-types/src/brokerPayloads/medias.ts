@@ -5,7 +5,7 @@ export type GetMediaCategoriesPayload = QueryParams;
 export type GetAdminMediaCategoriesPayload = QueryParams;
 
 export type GetMediasPayload = {
-    mediaCategoryId: string;
+    categoryId: string;
     userTemplateId?: IUserTemplate['id']
 } & QueryParams;
 
@@ -17,7 +17,7 @@ export type CreateMediaCategoryPayload = {
 }
 
 export type CreateMediaPayload = {
-    mediaCategoryId: string;
+    categoryId: string;
     userTemplateId?:  IUserTemplate['id'];
 }
 
@@ -49,5 +49,5 @@ export type DeleteMediaCategoriesPayload = {
 
 export type DeleteMediasPayload = {
     ids: string[];
-    mediaCategoryId: string;
+    categoryId: string;
 }

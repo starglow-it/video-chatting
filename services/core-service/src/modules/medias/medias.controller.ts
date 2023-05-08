@@ -179,13 +179,13 @@ export class MediaController {
     async getMedias(@Payload() payload: GetMediasPayload): Promise<EntityList<IMedia>> {
         return withTransaction(this.connection, async session => {
             try {
-                const { skip, limit, mediaCategoryId, userTemplateId } = payload;
+                const { skip, limit, categoryId, userTemplateId } = payload;
 
                 const skipQuery = skip || 0;
                 const limitQuery = limit || 8;
 
                 const mediaCategory = await this.mediaService.findMediaCategory({
-                    query: isValidObjectId(mediaCategoryId) ? { _id: mediaCategoryId } : {},
+                    query: isValidObjectId(categoryId) ? { _id: categoryId } : {},
                     session
                 });
 
@@ -356,7 +356,7 @@ export class MediaController {
 
     @MessagePattern({ cmd: CoreBrokerPatterns.CreateMedia })
     async createUserTemplateMedia(@Payload() {
-        mediaCategoryId,
+        categoryId,
         userTemplateId
     }: CreateMediaPayload) {
         return withTransaction(this.connection, async session => {
@@ -368,7 +368,7 @@ export class MediaController {
 
                 const mediaCategory = await this.mediaService.findMediaCategory({
                     query: {
-                        _id: mediaCategoryId
+                        _id: categoryId
                     },
                     session
                 });
@@ -493,12 +493,12 @@ export class MediaController {
     }
 
     @MessagePattern({ cmd: CoreBrokerPatterns.DeleteMedias })
-    async deleteMedias(@Payload() { ids, mediaCategoryId }: DeleteMediasPayload): Promise<void> {
+    async deleteMedias(@Payload() { ids, categoryId }: DeleteMediasPayload): Promise<void> {
         return withTransaction(this.connection, async (session) => {
             try {
                 const mediaCategory = await this.mediaService.findMediaCategory({
                     query: {
-                        _id: mediaCategoryId
+                        _id: categoryId
                     },
                     session
                 });
