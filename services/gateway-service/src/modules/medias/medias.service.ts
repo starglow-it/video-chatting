@@ -20,8 +20,7 @@ export class MediasService {
   }
 
   async getUserTemplateMedias(payload: GetUserTemplateMediasPayload){
-    console.log(payload);
-    
+
     const pattern = { cmd: CoreBrokerPatterns.GetUserTemplateMedias };
 
     return this.coreService.sendCustom(pattern, payload); 
