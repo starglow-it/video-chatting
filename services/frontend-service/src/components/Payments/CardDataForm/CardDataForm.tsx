@@ -45,12 +45,13 @@ const Component = ({ onSubmit, onError, paymentIntentSecret, colorForm = 'white'
         [stripe, elements],
     );
 
+    const isFormBlack = colorForm === 'black'
     return (
         <form onSubmit={handleSubmit}>
             <CustomGrid container gap={2}>
-                <StripeCardNumber className={clsx(styles.cardField, {[styles.borderFieldBlack]: colorForm === 'black'})} colorForm={colorForm}/>
-                <StripeCardExpiry className={clsx(styles.dateField, {[styles.borderFieldBlack]: colorForm === 'black'})} colorForm={colorForm} />
-                <StripeCardCvc className={clsx(styles.cvcField, {[styles.borderFieldBlack]: colorForm === 'black'})} colorForm={colorForm}/>
+                <StripeCardNumber className={clsx(styles.cardField, {[styles.borderFieldBlack]: isFormBlack})} colorForm={colorForm}/>
+                <StripeCardExpiry className={clsx(styles.dateField, {[styles.borderFieldBlack]: isFormBlack})} colorForm={colorForm} />
+                <StripeCardCvc className={clsx(styles.cvcField, {[styles.borderFieldBlack]: isFormBlack})} colorForm={colorForm}/>
             </CustomGrid>
             <CustomButton
                 type="submit"

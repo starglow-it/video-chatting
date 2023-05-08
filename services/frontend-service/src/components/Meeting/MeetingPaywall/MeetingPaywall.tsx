@@ -51,7 +51,7 @@ const Component = ({onPaymentSuccess}: Props) => {
 		initStripe()
 	}, []) 
 	return (
-		<CustomBox>
+		<CustomBox sx={{width: '100%'}}>
 			<CustomTypography
 				nameSpace="subscriptions"
 				translation="paywall.title"
@@ -67,6 +67,9 @@ const Component = ({onPaymentSuccess}: Props) => {
 					<CustomTypography
 						nameSpace="subscriptions"
 						translation="paywall.labelForm"
+						sx={{
+							marginRight: '5px'
+						}}
 					/>
 				}
 			/>
