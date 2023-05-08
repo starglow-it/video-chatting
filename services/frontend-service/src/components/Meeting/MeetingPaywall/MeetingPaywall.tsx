@@ -20,7 +20,7 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // types
-
+import styles from './MeetingPaywall.module.scss'
 
 interface Props{
 	onPaymentSuccess: () => void
@@ -56,15 +56,20 @@ const Component = ({onPaymentSuccess}: Props) => {
 				nameSpace="subscriptions"
 				translation="paywall.title"
 				textAlign="center"
-				marginBottom={1}
-				variant='body1bold'
+				marginBottom={1}				
 				component="div"
+				className={styles.title}
+			/>			
+			<PaymentForm
+				onClose={onPaymentSuccess}
+				templateType='black'
+				subLabel={
+					<CustomTypography
+						nameSpace="subscriptions"
+						translation="paywall.labelForm"
+					/>
+				}
 			/>
-			<CustomTypography
-				nameSpace="subscriptions"
-				translation="paywall.labelForm"
-			/>
-			<PaymentForm onClose={onPaymentSuccess} templateType='black'/>
 		</CustomBox>
   );
 }

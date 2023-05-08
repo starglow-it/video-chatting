@@ -11,7 +11,7 @@ import { StripeIcon } from 'shared-frontend/icons/OtherIcons/StripeIcon';
 import { StripeCardNumber } from '@components/Stripe/StripeCardNumber/StripeCardNumber';
 import { StripeCardExpiry } from '@components/Stripe/StripeCardExpiry/StripeCardExpiry';
 import { StripeCardCvc } from '@components/Stripe/StripeCardCvc/StripeCardCvc';
-
+import clsx from 'clsx';
 // styles
 import { CardDataFormProps } from './types';
 
@@ -48,9 +48,9 @@ const Component = ({ onSubmit, onError, paymentIntentSecret, colorForm = 'white'
     return (
         <form onSubmit={handleSubmit}>
             <CustomGrid container gap={2}>
-                <StripeCardNumber className={styles.cardField} colorForm={colorForm}/>
-                <StripeCardExpiry className={styles.dateField} colorForm={colorForm} />
-                <StripeCardCvc className={styles.cvcField} colorForm={colorForm}/>
+                <StripeCardNumber className={clsx(styles.cardField, {[styles.borderFieldBlack]: colorForm === 'black'})} colorForm={colorForm}/>
+                <StripeCardExpiry className={clsx(styles.dateField, {[styles.borderFieldBlack]: colorForm === 'black'})} colorForm={colorForm} />
+                <StripeCardCvc className={clsx(styles.cvcField, {[styles.borderFieldBlack]: colorForm === 'black'})} colorForm={colorForm}/>
             </CustomGrid>
             <CustomButton
                 type="submit"
