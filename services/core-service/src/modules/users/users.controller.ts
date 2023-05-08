@@ -77,6 +77,7 @@ import { UserTokenService } from '../user-token/user-token.service';
 import { TasksService } from '../tasks/tasks.service';
 import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
+import { ProfileAvatarDocument } from 'src/schemas/profile-avatar.schema';
 
 @Controller('users')
 export class UsersController {
@@ -140,6 +141,21 @@ export class UsersController {
     });
 
     await Promise.all(usersPromises);
+  }
+
+  private async handleDeleteProfileAvatar({ profileAvatar, loginType, session }:
+    {
+      profileAvatar: ProfileAvatarDocument,
+      loginType: LoginTypes,
+      session: ITransactionSession
+    }) {
+    await this.usersService.deleteProfileAvatar(
+      profileAvatar._id,
+      session,
+    );
+    if (loginType === LoginTypes.Local) {
+      await this.awsService.deleteResource(profileAvatar.key);
+    }
   }
 
   @MessagePattern({ cmd: UserBrokerPatterns.UserExists })
@@ -594,7 +610,7 @@ export class UsersController {
         position: '',
         contactEmail: '',
         maxMeetingTime: 10
-      },session);
+      }, session);
       return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
@@ -769,11 +785,11 @@ export class UsersController {
       await user.populate('profileAvatar');
 
       if (user.profileAvatar) {
-        await this.usersService.deleteProfileAvatar(
-          user.profileAvatar._id,
-          session,
-        );
-        await this.awsService.deleteResource(user.profileAvatar.key);
+        await this.handleDeleteProfileAvatar({
+          profileAvatar: user.profileAvatar,
+          loginType: user.loginType,
+          session
+        });
       }
 
       user.profileAvatar = profileAvatar._id;
@@ -802,11 +818,11 @@ export class UsersController {
       await user.populate('profileAvatar');
 
       if (user.profileAvatar) {
-        await this.usersService.deleteProfileAvatar(
-          user.profileAvatar._id,
-          session,
-        );
-        await this.awsService.deleteResource(user.profileAvatar.key);
+        await this.handleDeleteProfileAvatar({
+          profileAvatar: user.profileAvatar,
+          loginType: user.loginType,
+          session
+        });
       }
 
       user.profileAvatar = null;
