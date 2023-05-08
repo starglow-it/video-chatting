@@ -33,7 +33,7 @@ module.exports = withTM(
             ignoreDuringBuilds: true,
         },
         images: {
-            domains: [process.env.VULTR_STORAGE_HOSTNAME || ''],
+            domains: [process.env.VULTR_STORAGE_HOSTNAME || '','lh3.googleusercontent.com'],
         },
         webpack(config, options) {
             if (!options.isServer) {

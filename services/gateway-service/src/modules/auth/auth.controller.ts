@@ -11,8 +11,6 @@ import {
   Delete,
   OnModuleInit,
   OnApplicationBootstrap,
-  Req,
-  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -39,6 +37,7 @@ import {
   ResponseSumType,
   ICommonUser,
   LoginTypes,
+  HttpMethods,
 } from 'shared-types';
 
 // dtos
@@ -51,7 +50,6 @@ import { UserCredentialsRequest } from '../../dtos/requests/userCredentials.requ
 
 // guards
 import { LocalAuthGuard } from '../../guards/local.guard';
-import { JwtAuthGuard } from '../../guards/jwt.guard';
 
 // services
 import { CoreService } from '../../services/core/core.service';
@@ -59,12 +57,14 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { ResetLinkRequest } from '../../dtos/requests/reset-link.request';
 import { ResetPasswordRequest } from '../../dtos/requests/reset-password.request';
-import { VerifyGoogleAuthRequest } from 'src/dtos/requests/verify-google-auth.request';
-import { ConfigClientService } from 'src/services/config/config.service';
+import { VerifyGoogleAuthRequest } from '../../dtos/requests/verify-google-auth.request';
+import { ConfigClientService } from '../../services/config/config.service';
 import { google, Auth } from 'googleapis';
 import { v4 as uuidv4 } from 'uuid';
-import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
-import { CommonCreateFreeUserDto } from 'src/dtos/response/common-create-free-user.dto';
+import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
+import { CommonCreateFreeUserDto } from '../../dtos/response/common-create-free-user.dto';
+import { UsersService } from '../users/users.service';
+import { sendHttpRequest } from 'src/utils/http/sendHttpRequest';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -137,7 +137,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     description: 'User create successful',
   })
   async createAccountWithoutLogin() {
-    try{
+    try {
       const uuid = uuidv4();
       const user = await this.coreService.createUserWithoutLogin(uuid);
 
@@ -434,6 +434,24 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     return userInfoResponse.data;
   }
 
+  async getImageFromUrl(url: string) {
+    try {
+      const response = await sendHttpRequest({
+        url,
+        method: HttpMethods.Get,
+        responseType: 'arraybuffer'
+      });
+
+      return {
+        buffer: response.data,
+        mimeType: response.headers['content-type']
+      };
+    }
+    catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
   @Post('/google-verify')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({
@@ -454,10 +472,11 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
       let user: ICommonUser;
 
+      const { given_name, picture } = await this.getUserDataFromGoogleToken(
+        body.token,
+      );
+      
       if (!isUserExists) {
-        const { given_name, picture } = await this.getUserDataFromGoogleToken(
-          body.token,
-        );
         user = await this.authService.createUserFromGoogleAccount({
           password: 'default',
           email,
@@ -467,6 +486,18 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       } else {
         user = await this.coreService.findUserByEmail({
           email,
+        });
+      }
+      
+      if(!user.profileAvatar){
+        const image = await this.getImageFromUrl(picture);
+        await this.coreService.findUserAndUpdateAvatar({
+          userId: user.id,
+          data: {
+            mimeType: image.mimeType,
+            size: image.buffer.length,
+            profileAvatar: picture
+          }
         });
       }
 
