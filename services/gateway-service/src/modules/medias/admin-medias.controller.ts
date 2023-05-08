@@ -229,7 +229,7 @@ export class AdminMediasController {
 
         try {
             await this.mediaService.updateMediaCategory({
-                id: param.mediaCategoryId,
+                id: param.categoryId,
                 data: body
             });
 
