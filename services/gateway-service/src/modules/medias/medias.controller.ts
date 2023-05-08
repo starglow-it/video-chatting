@@ -5,13 +5,9 @@ import {
     Get,
     Logger,
     Param,
-    Patch,
     Post,
     Query,
-    Req,
-    Request,
     UploadedFile,
-    UseGuards,
 } from '@nestjs/common';
 import {
     ApiBearerAuth,
@@ -29,7 +25,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
-import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategories.dto';
+import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategoriesQuery.dto';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import {
     CreateUserTemplateMediaSwaggerProperty,
@@ -97,7 +93,7 @@ export class MediasController {
             if (query.type === MediaCategoryType.Sound) {
                 const mediaSoundTypeCategories = mediaCategories?.list?.map(async (mediaCategory) => {
                     const medias = await this.mediaService.getMedias({
-                        mediaCategoryId: mediaCategory.id,
+                        categoryId: mediaCategory.id,
                         userTemplateId: query.userTemplateId
                     });
 
@@ -149,7 +145,7 @@ export class MediasController {
                 await this.mediaService.getMedias({
                     skip,
                     limit,
-                    mediaCategoryId: categoryId,
+                    categoryId,
                     userTemplateId
                 });
 

@@ -21,5 +21,5 @@ export class CreateUserTemplateMediaRequest {
     @IsString({
         message: 'Invalid mediaCategoryId value',
     })
-    mediaCategoryId: string;
+    categoryId: string;
 }

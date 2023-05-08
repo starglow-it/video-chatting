@@ -42,6 +42,7 @@ import { DeleteMediaCategoriesRequest } from '../../dtos/requests/delete-media-c
 import { MediaCategoryParam } from 'src/dtos/params/update-media.param';
 import { CreateMediaRequest } from 'src/dtos/requests/create-media.request';
 import { CommonMediaRestDto } from 'src/dtos/response/common-media.dto';
+import { GetMediasQueryDto } from 'src/dtos/query/GetAdminMediasQuery.dto';
 
 @ApiTags('Admin Medias')
 @Controller(MEDIAS_ADMIN_SCOPE)
@@ -121,12 +122,15 @@ export class AdminMediasController {
     })
     async getUserTemplateMedias(
         @Param('categoryId') categoryId: string,
+        @Query() query: GetMediasQueryDto
     ): Promise<ResponseSumType<EntityList<IMedia>>> {
         try {
-
+            const {skip, limit} = query;
             const medias =
                 await this.mediaService.getMedias({
                     categoryId,
+                    skip,
+                    limit
                 });
 
             return {
