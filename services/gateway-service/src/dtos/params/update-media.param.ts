@@ -11,5 +11,5 @@ export class MediaCategoryParam {
     @IsString({
         message: 'Media Category must be a string'
     })
-    mediaCategoryId: string;
+    categoryId: string;
 }
