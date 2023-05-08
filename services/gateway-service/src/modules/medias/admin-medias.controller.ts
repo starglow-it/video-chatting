@@ -211,7 +211,7 @@ export class AdminMediasController {
     }
 
 
-    @Patch('/category/:mediaCategoryId')
+    @Patch('/category/:categoryId')
     @UseGuards(JwtAdminAuthGuard)
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Update Media Category' })
