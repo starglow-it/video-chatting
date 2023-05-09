@@ -894,13 +894,6 @@ export class UserTemplatesController {
           },
           session,
         });
-
-        await this.deleteMedias({
-          userTemplate: {
-            $nin: templatesIds
-          },
-        }, session);
-
       });
     } catch (err) {
       throw new RpcException({
