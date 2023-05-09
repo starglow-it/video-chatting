@@ -10,6 +10,8 @@ import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
 import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
 import clsx from 'clsx';
+import { hasHttps } from 'shared-frontend/const/regexp';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 const Component = ({
     category,
@@ -41,6 +43,13 @@ const Component = ({
         onDelete(category.id);
     };
 
+    const getEmoji = () => {
+        return String.fromCodePoint.apply(
+            null,
+            category.emojiUrl.split('-').map(item => '0x'.concat(item)),
+        );
+    };
+
     return (
         <>
             <CustomGrid
@@ -53,7 +62,15 @@ const Component = ({
             >
                 <CustomGrid container flexDirection="row" alignItems="center">
                     <CustomGrid className={styles.emoji}>
-                        {String.fromCodePoint('0x1f600')}
+                        {new RegExp(hasHttps).test(category.emojiUrl) ? (
+                            <CustomImage
+                                width={20}
+                                height={20}
+                                src={category.emojiUrl}
+                            />
+                        ) : (
+                            getEmoji()
+                        )}
                     </CustomGrid>
                     <CustomTypography fontSize={13}>
                         {category.value}

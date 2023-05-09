@@ -1,18 +1,24 @@
 import { ErrorState, IMediaCategory } from 'shared-types';
 import { addCategoryUrl } from 'src/const/urls/backgrounds';
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
-import { IBackgroundCategory } from '../types';
+import { IBackgroundCategory, ResultActionBackground } from '../types';
 
 export const handleAddCategory = async (
     category: IMediaCategory,
-): Promise<IBackgroundCategory | null> => {
-    const response = await sendRequestWithCredentials<
+): Promise<ResultActionBackground> => {
+    const { success, result } = await sendRequestWithCredentials<
         IBackgroundCategory,
         ErrorState
     >({ ...addCategoryUrl, data: category });
 
-    if (response.success && response.result) {
-        return response.result;
+    if (success && result) {
+        return {
+            success: success,
+            message: 'backgrounds.addCategorySuccess',
+        };
     }
-    return null;
+    return {
+        success: success,
+        message: 'backgrounds.addCategoryFail',
+    };
 };

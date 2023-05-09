@@ -172,10 +172,21 @@ const Component = () => {
                             variant="decline"
                             onAction={onClick}
                             Icon={
-                                <UploadFolderIcon width="18px" height="18px" />
+                                <CustomGrid>
+                                    <UploadFolderIcon
+                                        width="18px"
+                                        height="18px"
+                                    />
+                                    <ConditionalRender condition={isLoading}>
+                                        <LinearProgress
+                                            classes={{
+                                                root: styles.progressBar,
+                                            }}
+                                        />
+                                    </ConditionalRender>
+                                </CustomGrid>
                             }
                         />
-                        <LinearProgress />
                     </CustomGrid>
                 </CustomGrid>
                 <input {...getInputProps()} />

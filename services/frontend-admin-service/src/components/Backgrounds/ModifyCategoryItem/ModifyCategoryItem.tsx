@@ -36,7 +36,7 @@ const Component = (
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [categoryName, setCategoryName] = useState<string>(category.value);
     const [isPreviewEmoji, setIsPreviewEmoji] = useState<boolean>(false);
-    const [emoji, setEmoji] = useState<string>('1f922');
+    const [emoji, setEmoji] = useState<string>(category.emojiUrl);
 
     useImperativeHandle(ref, () => ({
         open,
@@ -53,6 +53,7 @@ const Component = (
             e.stopPropagation();
         }
         setIsOpen(false);
+        setIsPreviewEmoji(false);
     };
 
     if (!isOpen) return null;
@@ -83,12 +84,13 @@ const Component = (
                 emojiUrl: emoji,
             });
             close();
+            setIsPreviewEmoji(false);
         }
     };
 
     return (
         <CustomGrid
-            className={clsx(styles.wrapper, className)}
+            className={clsx(className, styles.wrapper)}
             container
             flexDirection="row"
             alignItems="center"
@@ -149,6 +151,7 @@ const Component = (
                         height={250}
                         searchDisabled
                         onEmojiClick={handleEmojiClick}
+                        previewConfig={{ showPreview: false }}
                     />
                 </ClickAwayListener>
             </ConditionalRender>

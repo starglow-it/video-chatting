@@ -1,12 +1,12 @@
 import { ErrorState, IMediaCategory } from 'shared-types';
 import { updateCategoryUrl } from 'src/const/urls/backgrounds';
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
-import { IBackgroundCategory } from '../types';
+import { IBackgroundCategory, ResultUpdateCategory } from '../types';
 
 export const handleUpdateCategory = async (
     category: IBackgroundCategory,
-): Promise<IBackgroundCategory> => {
-    const response = await sendRequestWithCredentials<void, ErrorState>({
+): Promise<ResultUpdateCategory> => {
+    const { success } = await sendRequestWithCredentials<void, ErrorState>({
         ...updateCategoryUrl({ categoryId: category.id }),
         data: {
             key: category.key,
@@ -15,8 +15,11 @@ export const handleUpdateCategory = async (
             type: category.type,
         } as IMediaCategory,
     });
-    if (response.success) {
-        return category;
-    }
-    return category;
+    return {
+        category,
+        success,
+        message: success
+            ? 'backgrounds.updateCategorySuccess'
+            : 'backgrounds.updateCategoryFail',
+    };
 };

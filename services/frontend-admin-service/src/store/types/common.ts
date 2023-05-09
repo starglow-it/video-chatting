@@ -10,7 +10,7 @@ export enum AdminDialogsEnum {
     saveRoomChangesDialog = 'saveRoomChangesDialog',
     confirmDeleteRoomDialog = 'confirmDeleteRoomDialog',
     confirmDeleteMediaDialog = 'confirmDeleteMediaDialog',
-    confirmDeleteCategoryDialog = 'confirmDeleteCategoryDialog'
+    confirmDeleteCategoryDialog = 'confirmDeleteCategoryDialog',
 }
 
 export enum NotificationType {
@@ -23,6 +23,7 @@ export enum NotificationType {
     roomRevoked = 'roomPublished',
     validationError = 'validationError',
     BackgroundFileShouldBeUploaded = 'BackgroundFileShouldBeUploaded',
+    manageBackground = 'manageBackground',
 }
 
 export type Notification = {

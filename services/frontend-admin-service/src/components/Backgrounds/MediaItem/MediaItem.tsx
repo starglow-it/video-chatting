@@ -2,7 +2,6 @@ import { memo, useState } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
 import styles from './MediaItem.module.scss';
-import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IBackgroundMedia } from 'src/store/backgrounds/types';
 import { Fade } from '@mui/material';
@@ -22,7 +21,7 @@ const Component = ({
     const hideHover = () => setIsHover(false);
 
     return (
-        <CustomPaper
+        <CustomGrid
             className={styles.wrapper}
             onMouseEnter={showHover}
             onMouseLeave={hideHover}
@@ -51,7 +50,7 @@ const Component = ({
                     />
                 </CustomGrid>
             </Fade>
-        </CustomPaper>
+        </CustomGrid>
     );
 };
 export const MediaItem = memo(Component);

@@ -5,7 +5,10 @@ import {
     GetMediasParams,
     IBackgroundCategory,
     IBackgroundMedia,
+    ResultActionBackground,
+    ResultDeleteCategory,
     ResultGetCategories,
+    ResultUpdateCategory,
     UploadMediaParams,
 } from './types';
 
@@ -41,17 +44,17 @@ export const getCategoriesFx = backgroundsDomain.createEffect<
 
 export const addCategoryFx = backgroundsDomain.createEffect<
     IMediaCategory,
-    IBackgroundCategory | null
+    ResultActionBackground
 >('addCategoryFx');
 
 export const deleteCategoryFx = backgroundsDomain.createEffect<
     { ids: string[] },
-    string[]
+    ResultDeleteCategory
 >('deleteCategoryFx');
 
 export const updateCategoryFx = backgroundsDomain.createEffect<
     IBackgroundCategory,
-    IBackgroundCategory
+    ResultUpdateCategory
 >('updateCategoryFx');
 
 export const getMediasFx = backgroundsDomain.createEffect<
@@ -61,12 +64,12 @@ export const getMediasFx = backgroundsDomain.createEffect<
 
 export const addMediaFx = backgroundsDomain.createEffect<
     UploadMediaParams,
-    boolean
+    ResultActionBackground
 >('addMediaFx');
 
 export const deleteMediaFx = backgroundsDomain.createEffect<
     DeleteMediaParams,
-    boolean
+    ResultActionBackground
 >('deleteMediaFx');
 
 export const deleteMediaEvent =

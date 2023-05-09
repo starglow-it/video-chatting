@@ -6,6 +6,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IMediaCategory } from 'shared-types';
 import styles from './MeetingChangeBackground.module.scss';
+import { hasHttps } from 'shared-frontend/const/regexp';
 
 const Component = ({
     isActive = false,
@@ -16,6 +17,13 @@ const Component = ({
     item: IMediaCategory & { id: string };
     onSelect: (id: string) => void;
 }) => {
+    const getEmoji = () => {
+        return String.fromCodePoint.apply(
+            null,
+            item.emojiUrl.split('-').map(item => '0x'.concat(item)),
+        );
+    };
+
     return (
         <CustomGrid
             className={clsx(styles.barge, { [styles.active]: isActive })}
@@ -27,12 +35,23 @@ const Component = ({
                 alignItems="center"
                 justifyContent="center"
             >
-                <CustomImage
-                    width={13}
-                    height={13}
-                    src={item.emojiUrl}
-                    className={styles.emoji}
-                />
+                {new RegExp(hasHttps).test(item.emojiUrl) ? (
+                    <CustomImage
+                        width={13}
+                        height={13}
+                        src={item.emojiUrl}
+                    />
+                ) : (
+                    <CustomGrid
+                        className={styles.emoji}
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                        {getEmoji()}
+                    </CustomGrid>
+                )}
+
                 <CustomTypography
                     color={
                         isActive

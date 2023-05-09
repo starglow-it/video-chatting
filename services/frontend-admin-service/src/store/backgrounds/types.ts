@@ -27,3 +27,16 @@ export type DeleteMediaParams = {
 export type ResultGetCategories = EntityList<IBackgroundMedia> & {
     isReset: boolean;
 };
+
+export type ResultActionBackground = {
+    message: string;
+    success: boolean;
+};
+
+export type ResultDeleteCategory = {
+    ids: string[];
+} & ResultActionBackground;
+
+export type ResultUpdateCategory = {
+    category: IBackgroundCategory;
+} & ResultActionBackground;

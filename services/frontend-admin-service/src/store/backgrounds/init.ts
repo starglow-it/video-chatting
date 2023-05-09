@@ -1,4 +1,4 @@
-import { combine, sample } from 'effector';
+import { combine, forward, sample } from 'effector';
 import { handleGetCategories } from './handler/handleGetCategories';
 import { handleGetMedias } from './handler/handleGetMedias';
 import {
@@ -15,6 +15,7 @@ import {
     getCategoriesFx,
     getMediasFx,
     selectCategoryEvent,
+    setCategoryIdDeleteEvent,
     setMediaIdDeleteEvent,
     setQueryMediasEvent,
     updateCategoryFx,
@@ -24,6 +25,9 @@ import { handleDeleteCategory } from './handler/handleDeleteCategory';
 import { handleUpdateCategory } from './handler/handleUpdateCategory';
 import { handleAddMedia } from './handler/handleAddMedia';
 import { handleDeleteMedia } from './handler/handleDeleteMedia';
+import { addNotificationEvent } from '../notifications/model';
+import { NotificationType } from '../types';
+import { ResultActionBackground } from './types';
 
 getCategoriesFx.use(handleGetCategories);
 getMediasFx.use(handleGetMedias);
@@ -47,24 +51,20 @@ $backgroundsManageStore
         ...state,
         categorySelected: categoryId,
     }))
-    .on(addCategoryFx.doneData, (state, category) => ({
+    .on(deleteCategoryFx.doneData, (state, { ids, success }) => ({
         ...state,
-        categories: category
-            ? [category, ...state.categories]
+        categories: success
+            ? state.categories.filter(item => !ids.includes(item.id))
             : state.categories,
     }))
-    .on(deleteCategoryFx.doneData, (state, categoryIds) => ({
+    .on(updateCategoryFx.doneData, (state, { category, success }) => ({
         ...state,
-        categories: state.categories.filter(
-            item => !categoryIds.includes(item.id),
-        ),
-    }))
-    .on(updateCategoryFx.doneData, (state, category) => ({
-        ...state,
-        categories: state.categories.map(item => {
-            if (item.id === category.id) return category;
-            return item;
-        }),
+        categories: success
+            ? state.categories.map(item => {
+                  if (item.id === category.id) return category;
+                  return item;
+              })
+            : state.categories,
     }));
 
 $queryFetchMediasStore
@@ -75,6 +75,11 @@ $queryFetchMediasStore
     .reset([selectCategoryEvent, addMediaFx]);
 
 $mediaIdDeleteStore.on(setMediaIdDeleteEvent, (_, mediaId) => mediaId);
+
+$categoryIdDeleteStore.on(
+    setCategoryIdDeleteEvent,
+    (_, categoryId) => categoryId,
+);
 
 sample({
     clock: [
@@ -116,3 +121,21 @@ sample({
     }),
     target: deleteCategoryFx,
 });
+
+sample({
+    clock: [
+        addCategoryFx.doneData,
+        addMediaFx.doneData,
+        deleteMediaFx.doneData,
+        deleteCategoryFx.doneData,
+    ],
+    fn: (_: any, clock: ResultActionBackground) => ({
+        message: clock.message,
+        withErrorIcon: !clock.success,
+        type: NotificationType.manageBackground,
+        withSuccessIcon: clock.success,
+    }),
+    target: addNotificationEvent,
+});
+
+forward({ from: addCategoryFx.doneData, to: getCategoriesFx });
