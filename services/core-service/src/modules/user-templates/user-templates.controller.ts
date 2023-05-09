@@ -894,7 +894,6 @@ export class UserTemplatesController {
           },
           session,
         });
-
       });
     } catch (err) {
       throw new RpcException({

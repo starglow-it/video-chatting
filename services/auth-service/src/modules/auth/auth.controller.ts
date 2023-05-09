@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
-import { AuthBrokerPatterns } from 'shared-const';
+import { AUTH_SERVICE, AuthBrokerPatterns } from 'shared-const';
 
 import {
   SendResetPasswordLinkEmailPayload,
@@ -35,7 +35,7 @@ export class AuthController {
     private coreService: CoreService,
     private notificationService: NotificationsService,
     private configService: ConfigClientService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.frontendUrl = await this.configService.get<string>('frontendUrl');
@@ -118,21 +118,31 @@ export class AuthController {
   async createUserFromGoogleAccount(
     payload: CreateUserFromGoogleAccountPayload,
   ) {
-    const token = await this.authService.generateToken({
-      email: payload.email,
-      type: TokenTypes.Confirm,
-    });
-    const user = await this.coreService.createUser({
-      user: { ...payload, loginType: LoginTypes.Google },
-      token,
-    });
-    await this.coreService.findUserByEmailAndUpdate({
-      data: { fullName: payload.name },
-      email: user.email,
-    });
-    await this.coreService.findUserByEmailAndUpdate({data: {fullName: payload.name}, email: user.email});
+    try {
+      const token = await this.authService.generateToken({
+        email: payload.email,
+        type: TokenTypes.Confirm,
+      });
+      const user = await this.coreService.createUser({
+        user: { ...payload, loginType: LoginTypes.Google },
+        token,
+      });
+      await this.coreService.findUserByEmailAndUpdate({
+        data: {
+          fullName: payload.name,
+          isConfirmed: true
+        },
+        email: user.email,
+      });
 
-    return user;
+      return user;
+    }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: AUTH_SERVICE
+      })
+    }
   }
 
   @MessagePattern({ cmd: AuthBrokerPatterns.LoginUser })

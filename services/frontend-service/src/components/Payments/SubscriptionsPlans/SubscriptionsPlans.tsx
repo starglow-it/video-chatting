@@ -64,9 +64,11 @@ const Component = ({
         [onChooseSubscription],
     );
     
+    const productFiltered = useMemo(() => products.filter(item => item?.product?.name !== activePlanKey), [products])
+
     const renderSubscriptionPlans = useMemo(
         () => {
-            return products
+            return productFiltered
                 .map((product, i) => {
                     return (
                         !is1320Media ? (
@@ -103,7 +105,7 @@ const Component = ({
                 })
         },
         [
-            products,
+            productFiltered,
             is1320Media,
             isDisabled,
             activePlanKey,
@@ -131,7 +133,7 @@ const Component = ({
             <ConditionalRender condition={isProductsLoading}>
                 <CustomLoader />
             </ConditionalRender>
-            <ConditionalRender condition={Boolean(products.length) && isSubscriptionStep}>
+            <ConditionalRender condition={Boolean(productFiltered.length) && isSubscriptionStep}>
                 <ClickAwayListener onClickAway={handleClose}>
                     <CustomGrid container direction="column" justifyContent="center" gap={4}>
                         <CustomGrid container justifyContent="center" alignItems="center" gap={1}>
@@ -160,7 +162,7 @@ const Component = ({
                         >
                             {is1320Media
                                 ? (
-                                    <SubscriptionPlansWrapper products={products}>
+                                    <SubscriptionPlansWrapper products={productFiltered}>
                                         {renderSubscriptionPlans}
                                     </SubscriptionPlansWrapper>
                                 )
