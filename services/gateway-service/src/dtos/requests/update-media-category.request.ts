@@ -12,7 +12,7 @@ export class UpdateMediaCategoryRequest {
     @IsString({
         message: 'Invalid Key value'
     })
-    @Matches(/^[a-z]+$/, {
+    @Matches(/^[a-z0-9\W]+$/, {
         message: 'Invalid Key format'
     })
     key: IMediaCategory['key'];
