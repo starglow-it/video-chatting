@@ -161,14 +161,12 @@ export class AdminMediasController {
     })
     async createCategory(
         @Body() body: CreateMediaCategoryRequest
-    ): Promise<ResponseSumType<void>> {
+    ): Promise<ResponseSumType<IMediaCategory>> {
         try {
-
-            await this.mediaService.createMediaCategory(body);
-
+            const category = await this.mediaService.createMediaCategory(body);
             return {
                 success: true,
-                result: null
+                result: category
             }
         }
         catch (err) {

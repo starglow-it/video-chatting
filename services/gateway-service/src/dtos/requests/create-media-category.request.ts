@@ -6,7 +6,8 @@ export class CreateMediaCategoryRequest {
 
     @ApiProperty({
         type: String,
-        example: 'onichan'
+        example: 'onichan',
+        description: 'Key is lower case charators'
     })
     @IsNotEmpty({
         message: 'Key must be present'
@@ -14,7 +15,7 @@ export class CreateMediaCategoryRequest {
     @IsString({
         message: 'Invalid Key value'
     })
-    @Matches(/^[a-z]+$/, {
+    @Matches(/^[a-z0-9\W]+$/, {
         message: 'Invalid Key format'
     })
     key: IMediaCategory['key'];
