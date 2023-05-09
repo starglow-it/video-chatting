@@ -80,7 +80,7 @@
     "max": "Maximum room price is 999,999",
     "min": "Minimum room price is 5"
   },
-  "paywall": {
+  "paywallPrice": {
     "max": "Maximum room price is 999,999",
     "min": "Minimum room price is 5"
   },

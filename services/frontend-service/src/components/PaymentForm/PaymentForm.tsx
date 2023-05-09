@@ -31,7 +31,7 @@ const currencySigns = {
     CAD: 'C$',
 };
 
-const Component = ({ onClose, templateType = 'white', subLabel }: PaymentFormProps) => {
+const Component = ({ onClose, templateType = 'white', subLabel, paymentType = 'in-meeting' }: PaymentFormProps) => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);
@@ -54,6 +54,9 @@ const Component = ({ onClose, templateType = 'white', subLabel }: PaymentFormPro
     }, []);
 
     const colorMain = `colors.${templateType}.primary`
+    const isInMeetingPayment = paymentType === 'in-meeting'
+    const currency = currencySigns[isInMeetingPayment ? meetingTemplate.templateCurrency : meetingTemplate.paywallCurrency]
+    const price = isInMeetingPayment ? meetingTemplate.templatePrice : meetingTemplate.paywallCurrency
     return (
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
@@ -61,8 +64,8 @@ const Component = ({ onClose, templateType = 'white', subLabel }: PaymentFormPro
                     subLabel ? <>{subLabel}{' '}</> : null
                 }
                 <CustomTypography variant="h3bold" color={colorMain}>
-                    {currencySigns[meetingTemplate.templateCurrency]}
-                    {meetingTemplate.templatePrice}
+                    {currency}
+                    {price}
                 </CustomTypography>
                 &nbsp;
                 <CustomTypography
