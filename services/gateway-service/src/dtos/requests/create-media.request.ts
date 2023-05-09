@@ -5,7 +5,7 @@ export class CreateMediaRequest {
         message: 'mediaCategoryId must be present',
     })
     @IsString({
-        message: 'Invalid mediaCategoryId value',
+        message: 'Invalid CategoryId value',
     })
     categoryId: string;
 }

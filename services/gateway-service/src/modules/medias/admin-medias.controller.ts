@@ -185,7 +185,7 @@ export class AdminMediasController {
         description: 'Forbidden',
     })
     @ApiFile(CreateMediaSwaggerProperty)
-    async createUserTemplateMedia(
+    async createMedia(
         @UploadedFile() file: Express.Multer.File,
         @Body() body: CreateMediaRequest
     ): Promise<ResponseSumType<IMedia>> {

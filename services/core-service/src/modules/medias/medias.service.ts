@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, PipelineStage, QueryOptions } from 'mongoose';
+import { FilterQuery, Model, PipelineStage } from 'mongoose';
 
 import { IMedia, IMediaCategory } from 'shared-types';
 
@@ -14,6 +14,8 @@ import * as path from 'path';
 import * as fsPromises from 'fs/promises';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
+import { RpcException } from '@nestjs/microservices';
+import { MEDIA_SERVICE } from 'shared-const';
 
 @Injectable()
 export class MediaService {
@@ -37,45 +39,54 @@ export class MediaService {
         id: string;
         mimeType: string;
         url: string;
-    }) {
-        const outputPath = path.join(__dirname, '../../../../images', id);
-        await mkdirp(outputPath);
+    }): Promise<PreviewImageDocument[]> {
+        try {
+            const outputPath = path.join(__dirname, '../../../../images', id);
+            await mkdirp(outputPath);
 
-        const fileType = mimeType.split('/')[0];
-        await getScreenShots(url, outputPath, fileType);
+            const fileType = mimeType.split('/')[0];
+            await getScreenShots(url, outputPath, fileType);
 
-        const imagesPaths = await fsPromises.readdir(outputPath);
+            const imagesPaths = await fsPromises.readdir(outputPath);
 
-        const keyFolder = `^media/images/${id}`;
-        
-        await this.previewImage.deleteMany({
-            key: new RegExp(keyFolder),
-        });
-        
-        await this.awsService.deleteFolder(keyFolder);
-        
-        const uploadedImagesPromises = imagesPaths.map(async (image) => {
-            const filePath = `${outputPath}/${image}`;
-            const resolution = image.match(/(\d*)p\./);
+            const keyFolder = `^media/images/${id}`;
 
-            const file = await fsPromises.readFile(filePath);
-            const uploadKey = `${keyFolder}/${image}`;
-            const fileStats = await fsPromises.stat(filePath);
-
-            const imageUrl = await this.awsService.uploadFile(file, uploadKey);
-
-            await fsPromises.rm(filePath);
-
-            return this.previewImage.create({
-                url: imageUrl,
-                resolution: resolution?.[1],
-                size: fileStats.size,
-                mimeType: 'image/webp',
-                key: uploadKey,
+            await this.previewImage.deleteMany({
+                key: new RegExp(keyFolder),
             });
-        });
 
-        return Promise.all(uploadedImagesPromises);
+            await this.awsService.deleteFolder(keyFolder);
+
+            const uploadedImagesPromises = imagesPaths.map(async (image) => {
+                const filePath = `${outputPath}/${image}`;
+                const resolution = image.match(/(\d*)p\./);
+
+                const file = await fsPromises.readFile(filePath);
+                const uploadKey = `${keyFolder}/${image}`;
+                const fileStats = await fsPromises.stat(filePath);
+
+                const imageUrl = await this.awsService.uploadFile(file, uploadKey);
+
+                await fsPromises.rm(filePath);
+
+                return this.previewImage.create({
+                    url: imageUrl,
+                    resolution: resolution?.[1],
+                    size: fileStats.size,
+                    mimeType: 'image/webp',
+                    key: uploadKey,
+                });
+            });
+
+            return Promise.all(uploadedImagesPromises);
+        }
+        catch (err) {
+            console.error(`Failed to generate previews for media item "${id}":`, err);
+            throw new RpcException({
+                message: err.message,
+                ctx: MEDIA_SERVICE
+            });
+        }
     }
 
     async createCategory({
@@ -258,5 +269,5 @@ export class MediaService {
 
     async aggregate(aggregationPipeline: PipelineStage[]) {
         return this.media.aggregate(aggregationPipeline).exec();
-      }
+    }
 }

@@ -179,6 +179,8 @@ export class SeederService {
         }
       });
 
+      if(medias.length) return;
+
       const previewImages = medias.map(media => media.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
 
       await this.mediaService.deletePreviewImages({

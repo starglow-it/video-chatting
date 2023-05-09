@@ -31,6 +31,9 @@ import { CommonMediaCategoryDTO } from '../../dtos/common-media-categories.dto';
 import { CommonMediaDTO } from '../../dtos/common-media.dto';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
+import { retry } from '../../utils/common/retry';
+import { PreviewImageDocument } from 'src/schemas/preview-image.schema';
+import { PreviewUrls } from '../../types/media';
 
 @Controller('medias')
 export class MediaController {
@@ -42,14 +45,32 @@ export class MediaController {
 
 
     //#region private method
-    private async generatePreviewUrs({ url, id, mimeType }: { url: string, id: string, mimeType: string }) {
-        const previewImages = await this.mediaService.generatePreviews({
-            url,
-            id,
-            mimeType,
-        });
+    private async generatePreviewUrs({ url, id, mimeType }: { url: string, id: string, mimeType: string }): Promise<PreviewUrls> {
+        try {
+            const mimeTypeList = ['image', 'video', 'audio'];
 
-        return previewImages.map((image) => image._id);
+            const mediaType = mimeTypeList.find(type => mimeType.includes(type));
+            let previewImages: PreviewImageDocument[] = [];
+
+            if (mediaType !== 'audio') {
+                previewImages = await this.mediaService.generatePreviews({
+                    url,
+                    id,
+                    mimeType,
+                });
+            }
+
+            return {
+                previewImages,
+                mediaType
+            };
+        }
+        catch (err) {
+            throw new RpcException({
+                message: err.message,
+                ctx: MEDIA_SERVICE
+            })
+        }
     }
 
     private async getUserTemplate({ userTemplateId, session }:
@@ -235,7 +256,7 @@ export class MediaController {
     }
 
     @MessagePattern({ cmd: CoreBrokerPatterns.UploadMediaFile })
-    async uploadUserTemplateMediaFile(
+    async uploadMediaFile(
         @Payload() {
             id,
             mimeType,
@@ -244,20 +265,22 @@ export class MediaController {
     ): Promise<void> {
         try {
             return withTransaction(this.connection, async () => {
-
-                const imageIds = await this.generatePreviewUrs({
-                    url,
-                    id,
-                    mimeType
-                });
+                const numberOfRetries = 10;
+                const previewUrls = await retry<PreviewUrls>(async () => {
+                    return await this.generatePreviewUrs({
+                        url,
+                        id,
+                        mimeType: mimeType
+                    });
+                },numberOfRetries);
 
                 const media = await this.mediaService.updateMedia({
                     query: {
                         _id: id,
                     },
                     data: {
-                        type: mimeType.includes('image') ? 'image' : 'video',
-                        previewUrls: imageIds,
+                        type: previewUrls.mediaType,
+                        previewUrls: previewUrls.previewImages,
                         url,
                     },
                     populatePaths: [{

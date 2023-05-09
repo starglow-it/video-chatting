@@ -6,14 +6,14 @@ export const CreateUserTemplateMediaSwaggerProperty: SwaggerSchemaProperty = {
         type: 'string',
         format: 'string'
     },
-    mediaCategoryId: {
+    categoryId: {
         type: 'string',
         format: 'string'
     }
 }
 
 export const CreateMediaSwaggerProperty: SwaggerSchemaProperty = {
-    mediaCategoryId: {
+    categoryId: {
         type: 'string',
         format: 'string'
     }
