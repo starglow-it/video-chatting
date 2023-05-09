@@ -1,11 +1,27 @@
 .wrapper {
     height: 45px;
     width: 100%;
-    border-radius: 0px;
+    border-radius: 8px;
     position: relative;
+    cursor: pointer;
+    padding: 10px;
+    
+    &:hover {
+        background-color: #f4f6f9;
+    }
 }
 
 .emoji {
     font-size: 22px;
     margin-right: 8px;
+}
+
+.active {
+     background-color: #f4f6f9;
+}
+
+.editIcon {
+    margin-right: 4px;
+    border-radius: 6px;
+    height: 26px;
 }

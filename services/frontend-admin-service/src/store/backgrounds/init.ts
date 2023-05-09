@@ -10,6 +10,7 @@ import {
     deleteMediaFx,
     getCategoriesFx,
     getMediasFx,
+    selectCategoryEvent,
     setQueryMediasEvent,
     updateCategoryFx,
 } from './model';
@@ -34,7 +35,12 @@ $backgroundsManageStore
     }))
     .on(getMediasFx.doneData, (state, data) => ({
         ...state,
-        medias: data.list,
+        medias: data.isReset ? data.list : [...state.medias, ...data.list],
+        count: data.count,
+    }))
+    .on(selectCategoryEvent, (state, categoryId) => ({
+        ...state,
+        categorySelected: categoryId,
     }))
     .on(addCategoryFx.doneData, (state, category) => ({
         ...state,
@@ -54,15 +60,17 @@ $backgroundsManageStore
             if (item.id === category.id) return category;
             return item;
         }),
-    }))
+    }));
 
-$queryFetchMediasStore.on(setQueryMediasEvent, state => ({
-    ...state,
-    skip: state.skip + 1,
-}));
+$queryFetchMediasStore
+    .on(setQueryMediasEvent, state => ({
+        ...state,
+        skip: state.skip + 1,
+    }))
+    .reset([selectCategoryEvent, addMediaFx]);
 
 sample({
-    clock: setQueryMediasEvent,
+    clock: [setQueryMediasEvent, selectCategoryEvent, addMediaFx.doneData],
     source: combine({
         backgrounds: $backgroundsManageStore,
         query: $queryFetchMediasStore,
@@ -74,3 +82,13 @@ sample({
     }),
     target: getMediasFx,
 });
+
+// sample({
+//     clock: [],
+//     fn: (_, categoryId: string) => ({
+//         categoryId,
+//         skip: 0,
+//         limit: 12,
+//     }),
+//     target: getMediasFx,
+// });

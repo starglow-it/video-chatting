@@ -25,7 +25,7 @@ export const addCategoryUrl = {
 
 export const updateCategoryUrl = ({ categoryId = '' }) => ({
     url: `${serverUrl}/${adminMediaUrl}/category/${categoryId}`,
-    method: HttpMethods.Put,
+    method: HttpMethods.Patch,
 });
 
 export const deleteCategoryUrl = {
@@ -35,7 +35,7 @@ export const deleteCategoryUrl = {
 
 export const addMediaUrl = {
     url: `${serverUrl}/${adminMediaUrl}`,
-    method: HttpMethods.Put,
+    method: HttpMethods.Post,
 };
 
 export const deleteMediaUrl = ({ categoryId = '' }) => ({

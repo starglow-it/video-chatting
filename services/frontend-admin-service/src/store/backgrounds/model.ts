@@ -5,12 +5,13 @@ import {
     GetMediasParams,
     IBackgroundCategory,
     IBackgroundMedia,
+    ResultGetCategories,
     UploadMediaParams,
 } from './types';
 
 export const $backgroundsManageStore = backgroundsDomain.createStore<{
     categories: IBackgroundCategory[];
-    categorySelected: IBackgroundCategory | null;
+    categorySelected: string | null;
     medias: IBackgroundMedia[];
     count: number;
 }>({
@@ -23,7 +24,7 @@ export const $backgroundsManageStore = backgroundsDomain.createStore<{
 export const $queryFetchMediasStore = backgroundsDomain.createStore<{
     skip: number;
     limit: number;
-}>({ skip: 0, limit: 0 });
+}>({ skip: 0, limit: 12 });
 
 export const setQueryMediasEvent = backgroundsDomain.createEvent(
     'setQueryMediasEvent',
@@ -51,7 +52,7 @@ export const updateCategoryFx = backgroundsDomain.createEffect<
 
 export const getMediasFx = backgroundsDomain.createEffect<
     GetMediasParams,
-    EntityList<IBackgroundMedia>
+    ResultGetCategories
 >('getMediasFx');
 
 export const addMediaFx = backgroundsDomain.createEffect<
@@ -63,3 +64,7 @@ export const deleteMediaFx = backgroundsDomain.createEffect<
     DeleteMediaParams,
     boolean
 >('deleteMediaFx');
+
+export const selectCategoryEvent = backgroundsDomain.createEvent<string>(
+    'selectCategoryEvent',
+);

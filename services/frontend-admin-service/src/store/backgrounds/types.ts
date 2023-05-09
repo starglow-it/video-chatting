@@ -1,4 +1,4 @@
-import { IMedia, IMediaCategory } from 'shared-types';
+import { EntityList, IMedia, IMediaCategory } from 'shared-types';
 
 export interface IBackgroundCategory extends IMediaCategory {
     id: string;
@@ -22,4 +22,8 @@ export type UploadMediaParams = {
 export type DeleteMediaParams = {
     categoryId: string;
     ids: string[];
+};
+
+export type ResultGetCategories = EntityList<IBackgroundMedia> & {
+    isReset: boolean;
 };

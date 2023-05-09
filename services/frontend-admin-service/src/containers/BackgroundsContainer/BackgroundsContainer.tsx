@@ -7,19 +7,41 @@ import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 
 import { CategoryItem } from '@components/Backgrounds/CategoryItem/CategoryItem';
 import { MediaItem } from '@components/Backgrounds/MediaItem/MediaItem';
-
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import 'react-perfect-scrollbar/dist/css/styles.css';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { UploadFolderIcon } from 'shared-frontend/icons/OtherIcons/UploadFolderIcon';
-import { $backgroundsManageStore, getCategoriesFx } from 'src/store';
+import {
+    $backgroundsManageStore,
+    getCategoriesFx,
+    getMediasFx,
+    selectCategoryEvent,
+    updateCategoryFx,
+} from 'src/store';
 import { useStore } from 'effector-react';
+import { IBackgroundCategory } from 'src/store/backgrounds/types';
+import { Medias } from '@components/Backgrounds/Medias/Medias';
 
 const Component = () => {
-    const { categories } = useStore($backgroundsManageStore);
+    const { categories, medias, categorySelected } = useStore(
+        $backgroundsManageStore,
+    );
+
     useEffect(() => {
         (async () => getCategoriesFx())();
     }, []);
+
+    useEffect(() => {
+        if (categories.length) {
+            selectCategoryEvent(categories[0].id);
+        }
+    }, [categories.length]);
+
+    const selectCategory = (categoryId: string) => {
+        selectCategoryEvent(categoryId);
+    };
+
+    const handleUpdateCategory = (category: IBackgroundCategory) => {
+        updateCategoryFx(category);
+    };
 
     return (
         <CustomGrid
@@ -45,10 +67,10 @@ const Component = () => {
                     justifyContent="center"
                     alignItems="flex-start"
                 >
-                    <CustomGrid sm={4} marginRight={2}>
+                    <CustomGrid sm={3} marginRight={2}>
                         <CustomPaper className={styles.paper}>
                             <CustomGrid className={styles.header}>
-                                <CustomTypography variant="h4" fontSize={16}>
+                                <CustomTypography variant="h4bold" fontSize={16}>
                                     <Translation
                                         nameSpace="common"
                                         translation="backgrounds.title"
@@ -60,45 +82,15 @@ const Component = () => {
                                     <CategoryItem
                                         key={item.id}
                                         category={item}
+                                        isActive={item.id === categorySelected}
+                                        onClick={selectCategory}
+                                        onSave={handleUpdateCategory}
                                     />
                                 ))}
                             </CustomGrid>
                         </CustomPaper>
                     </CustomGrid>
-                    <CustomGrid sm={7}>
-                        <CustomPaper className={styles.paper}>
-                            <CustomGrid
-                                className={styles.actions}
-                                display="flex"
-                                justifyContent="flex-end"
-                            >
-                                <ActionButton
-                                    className={styles.button}
-                                    // onAction={handleRoomAction}
-                                    variant="decline"
-                                    label={
-                                        <CustomTypography variant="body2">
-                                            <Translation
-                                                nameSpace="rooms"
-                                                translation="buttons.revoke"
-                                            />
-                                        </CustomTypography>
-                                    }
-                                    Icon={
-                                        <UploadFolderIcon
-                                            width="22px"
-                                            height="22px"
-                                        />
-                                    }
-                                />
-                            </CustomGrid>
-                            <PerfectScrollbar className={styles.scroll}>
-                                <MediaItem />
-                                <MediaItem />
-                                <MediaItem />
-                            </PerfectScrollbar>
-                        </CustomPaper>
-                    </CustomGrid>
+                    <Medias />
                 </CustomGrid>
             </CustomGrid>
         </CustomGrid>

@@ -8,7 +8,7 @@ const enhance = withStart(pageLoaded);
 const BackgroundsPage: NextPage = (): JSX.Element => <BackgroundsContainer />;
 
 BackgroundsPage.getInitialProps = async () => ({
-	namespacesRequired: ['common', 'statistics', 'users', 'errors', 'profile'],
+	namespacesRequired: ['common', 'statistics', 'users', 'errors', 'profile', 'rooms'],
 });
 
 export default enhance(BackgroundsPage);

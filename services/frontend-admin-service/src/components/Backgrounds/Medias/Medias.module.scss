@@ -1,13 +1,5 @@
-@import "../../styles/rem";
-@import "../../styles/variables";
-
-.wrapper {
-  margin: rem(85px auto 0);
-  width: rem(1100px);
-  // padding: rem(50px);
-  max-width: 100%;
-  inset: 0;
-}
+@import "../../../styles/rem";
+@import "../../../styles/variables";
 
 .paper {
   border-radius: 8px;
@@ -23,7 +15,7 @@
   display: flex;
   // padding: 16px;
   flex-wrap: wrap;
-  max-height: 300px;
+  max-height: rem(410px);
 }
 
 .button {

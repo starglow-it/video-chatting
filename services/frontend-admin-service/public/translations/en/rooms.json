@@ -95,5 +95,8 @@
     "participants": "Participants",
     "price": "Price",
     "status": "Status"
+  },
+  "medias": {
+    "title": "Medias"
   }
 }

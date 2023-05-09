@@ -3,6 +3,8 @@
 
 .wrapper {
     position: absolute;
+    left: 0;
+    top: 0;
     height: 45px;
     width: 100%;
     border-radius: 0px;
@@ -12,14 +14,18 @@
 
 .emoji {
     font-size: 22px;
-    margin-right: 8px;
     cursor: pointer;
 }
 
 .textField {
     height: 10px;
+    font-size: 13px;
+    color: $primary-black;
 }
 
 .closeIcon {
     margin-left: rem(4px);
+    // width: rem(30px);
+    height: rem(26px);
+    border-radius: rem(6px);
 }
