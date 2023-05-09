@@ -3,14 +3,19 @@ import { handleGetCategories } from './handler/handleGetCategories';
 import { handleGetMedias } from './handler/handleGetMedias';
 import {
     $backgroundsManageStore,
+    $categoryIdDeleteStore,
+    $mediaIdDeleteStore,
     $queryFetchMediasStore,
     addCategoryFx,
     addMediaFx,
+    deleteCategoryEvent,
     deleteCategoryFx,
+    deleteMediaEvent,
     deleteMediaFx,
     getCategoriesFx,
     getMediasFx,
     selectCategoryEvent,
+    setMediaIdDeleteEvent,
     setQueryMediasEvent,
     updateCategoryFx,
 } from './model';
@@ -69,8 +74,15 @@ $queryFetchMediasStore
     }))
     .reset([selectCategoryEvent, addMediaFx]);
 
+$mediaIdDeleteStore.on(setMediaIdDeleteEvent, (_, mediaId) => mediaId);
+
 sample({
-    clock: [setQueryMediasEvent, selectCategoryEvent, addMediaFx.doneData],
+    clock: [
+        setQueryMediasEvent,
+        selectCategoryEvent,
+        addMediaFx.doneData,
+        deleteMediaFx.doneData,
+    ],
     source: combine({
         backgrounds: $backgroundsManageStore,
         query: $queryFetchMediasStore,
@@ -83,12 +95,24 @@ sample({
     target: getMediasFx,
 });
 
-// sample({
-//     clock: [],
-//     fn: (_, categoryId: string) => ({
-//         categoryId,
-//         skip: 0,
-//         limit: 12,
-//     }),
-//     target: getMediasFx,
-// });
+sample({
+    clock: deleteMediaEvent,
+    source: combine({
+        backgrounds: $backgroundsManageStore,
+        mediaIdDelete: $mediaIdDeleteStore,
+    }),
+    fn: ({ backgrounds, mediaIdDelete }) => ({
+        categoryId: backgrounds.categorySelected,
+        ids: [mediaIdDelete],
+    }),
+    target: deleteMediaFx,
+});
+
+sample({
+    clock: deleteCategoryEvent,
+    source: $categoryIdDeleteStore,
+    fn: categoryId => ({
+        ids: [categoryId],
+    }),
+    target: deleteCategoryFx,
+});

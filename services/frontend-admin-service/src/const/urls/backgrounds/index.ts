@@ -39,6 +39,6 @@ export const addMediaUrl = {
 };
 
 export const deleteMediaUrl = ({ categoryId = '' }) => ({
-    url: `${serverUrl}/${authScope}/${adminMediaUrl}/${categoryId}`,
+    url: `${serverUrl}/${adminMediaUrl}/${categoryId}`,
     method: HttpMethods.Delete,
 });

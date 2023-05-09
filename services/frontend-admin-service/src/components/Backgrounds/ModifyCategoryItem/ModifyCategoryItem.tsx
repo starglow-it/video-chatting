@@ -122,8 +122,8 @@ const Component = (
                                 <ActionButton
                                     Icon={
                                         <AcceptIcon
-                                            width="25px"
-                                            height="25px"
+                                            width="20px"
+                                            height="20px"
                                         />
                                     }
                                     className={styles.closeIcon}
@@ -133,7 +133,7 @@ const Component = (
 
                                 <ActionButton
                                     Icon={
-                                        <CloseIcon width="25px" height="25px" />
+                                        <CloseIcon width="20px" height="20px" />
                                     }
                                     className={styles.closeIcon}
                                     onAction={close}

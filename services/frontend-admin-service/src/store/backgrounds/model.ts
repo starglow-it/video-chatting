@@ -26,6 +26,10 @@ export const $queryFetchMediasStore = backgroundsDomain.createStore<{
     limit: number;
 }>({ skip: 0, limit: 12 });
 
+export const $mediaIdDeleteStore = backgroundsDomain.createStore<string>('');
+
+export const $categoryIdDeleteStore = backgroundsDomain.createStore<string>('');
+
 export const setQueryMediasEvent = backgroundsDomain.createEvent(
     'setQueryMediasEvent',
 );
@@ -65,6 +69,21 @@ export const deleteMediaFx = backgroundsDomain.createEffect<
     boolean
 >('deleteMediaFx');
 
+export const deleteMediaEvent =
+    backgroundsDomain.createEvent('deleteMediaEvent');
+
 export const selectCategoryEvent = backgroundsDomain.createEvent<string>(
     'selectCategoryEvent',
+);
+
+export const setMediaIdDeleteEvent = backgroundsDomain.createEvent<string>(
+    'setMediaIdDeleteEvent',
+);
+
+export const deleteCategoryEvent = backgroundsDomain.createEvent(
+    'deleteCategoryEvent',
+);
+
+export const setCategoryIdDeleteEvent = backgroundsDomain.createEvent<string>(
+    'setCategoryIdDeleteEvent',
 );

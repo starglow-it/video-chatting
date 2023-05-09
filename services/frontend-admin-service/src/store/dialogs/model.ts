@@ -26,8 +26,14 @@ export const $confirmDeleteRoomDialogStore =
 
 export const $revokeRoomDialogStore = dialogsDomain.createStore<boolean>(false);
 
+export const $confirmDeleteMediaDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
+export const $confirmDeleteCategoryDialogStore =
+    dialogsDomain.createStore<boolean>(false);
+
 export const openAdminDialogEvent = dialogsDomain.createEvent<AdminDialogsEnum>(
-	'openAdminDialogEvent',
+    'openAdminDialogEvent',
 );
 export const closeAdminDialogEvent =
     dialogsDomain.createEvent<AdminDialogsEnum>('openAdminDialogEvent');
@@ -44,20 +50,20 @@ export const closeDeleteUserDialogEvent =
 
 export const openCancelCreateRoomDialogEvent =
     dialogsDomain.createEvent<AdminDialogsEnum>(
-    	'openCancelCreateRoomDialogEvent',
+        'openCancelCreateRoomDialogEvent',
     );
 export const closeCancelCreateRoomDialogEvent =
     dialogsDomain.createEvent<AdminDialogsEnum>(
-    	'closeCancelCreateRoomDialogEvent',
+        'closeCancelCreateRoomDialogEvent',
     );
 
 export const openConfirmCreateAndPublishRoomDialogEvent =
     dialogsDomain.createEvent<AdminDialogsEnum>(
-    	'openConfirmCreateAndPublishRoomDialogEvent',
+        'openConfirmCreateAndPublishRoomDialogEvent',
     );
 export const closeConfirmCreateAndPublishRoomDialog =
     dialogsDomain.createEvent<AdminDialogsEnum>(
-    	'closeConfirmCreateAndPublishRoomDialog',
+        'closeConfirmCreateAndPublishRoomDialog',
     );
 
 export const openRoomPreviewDialogEvent =
@@ -76,16 +82,46 @@ export const closeRevokeRoomDialogEvent =
     dialogsDomain.createEvent<AdminDialogsEnum>('closeRevokeRoomDialogEvent');
 
 export const openCancelEditRoomDialogEvent =
-    dialogsDomain.createEvent<AdminDialogsEnum>('openCancelEditRoomDialogEvent');
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'openCancelEditRoomDialogEvent',
+    );
 export const closeCancelEditRoomDialogEvent =
-    dialogsDomain.createEvent<AdminDialogsEnum>('closeCancelEditRoomDialogEvent');
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'closeCancelEditRoomDialogEvent',
+    );
 
 export const openSaveRoomChangesDialogEvent =
-    dialogsDomain.createEvent<AdminDialogsEnum>('openSaveRoomChangesDialogEvent');
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'openSaveRoomChangesDialogEvent',
+    );
 export const closeSaveRoomChangesDialogEvent =
-    dialogsDomain.createEvent<AdminDialogsEnum>('closeSaveRoomChangesDialogEvent');
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'closeSaveRoomChangesDialogEvent',
+    );
 
 export const openConfirmDeleteRoomDialogEvent =
-    dialogsDomain.createEvent<AdminDialogsEnum>('openConfirmDeleteRoomDialogEvent');
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'openConfirmDeleteRoomDialogEvent',
+    );
 export const closeConfirmDeleteRoomDialogEvent =
-    dialogsDomain.createEvent<AdminDialogsEnum>('closeConfirmDeleteRoomDialogEvent');
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'closeConfirmDeleteRoomDialogEvent',
+    );
+
+export const openConfirmDeleteMediaDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'openConfirmDeleteMediaDialogEvent',
+    );
+export const closeConfirmDeleteMediaDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'closeConfirmDeleteMediaDialogEvent',
+    );
+
+export const openConfirmDeleteCategoryDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'openConfirmDeleteMediaDialogEvent',
+    );
+export const closeConfirmDeleteCategoryDialogEvent =
+    dialogsDomain.createEvent<AdminDialogsEnum>(
+        'closeConfirmDeleteMediaDialogEvent',
+    );

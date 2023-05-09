@@ -16,11 +16,13 @@ const Component = ({
     isActive,
     onClick,
     onSave,
+    onDelete,
 }: {
     category: IBackgroundCategory;
     isActive: boolean;
     onClick: (categoryId: string) => void;
     onSave: (category: IBackgroundCategory) => void;
+    onDelete: (categoryId: string) => void;
 }) => {
     const refModify = useRef(null);
     const [isHover, setIsHover] = useState<boolean>(false);
@@ -34,9 +36,10 @@ const Component = ({
         refModify.current?.open();
     };
 
-    const deleteCategory = () => {
-        
-    }
+    const deleteCategory = (e: MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        onDelete(category.id);
+    };
 
     return (
         <>
@@ -64,7 +67,7 @@ const Component = ({
                     >
                         <ActionButton
                             variant="decline"
-                            Icon={<EditIcon width="20px" height="20px" />}
+                            Icon={<EditIcon width="17px" height="17px" />}
                             onAction={toggleEdit}
                             className={styles.editIcon}
                         />

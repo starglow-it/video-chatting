@@ -13,12 +13,17 @@ import {
     $backgroundsManageStore,
     getCategoriesFx,
     getMediasFx,
+    openConfirmDeleteCategoryDialogEvent,
     selectCategoryEvent,
+    setCategoryIdDeleteEvent,
     updateCategoryFx,
 } from 'src/store';
 import { useStore } from 'effector-react';
 import { IBackgroundCategory } from 'src/store/backgrounds/types';
 import { Medias } from '@components/Backgrounds/Medias/Medias';
+import { ConfirmDeleteMediaDialog } from '@components/Dialogs/ConfirmDeleteMediaDialog/ConfirmDeleteMediaDialog';
+import { ConfirmDeleteCategoryDialog } from '@components/Dialogs/ConfirmDeleteCategoryDialog/ConfirmDeleteCategoryDialog';
+import { AdminDialogsEnum } from 'src/store/types';
 
 const Component = () => {
     const { categories, medias, categorySelected } = useStore(
@@ -41,6 +46,13 @@ const Component = () => {
 
     const handleUpdateCategory = (category: IBackgroundCategory) => {
         updateCategoryFx(category);
+    };
+
+    const handleDeleteCategory = (categoryId: string) => {
+        setCategoryIdDeleteEvent(categoryId);
+        openConfirmDeleteCategoryDialogEvent(
+            AdminDialogsEnum.confirmDeleteCategoryDialog,
+        );
     };
 
     return (
@@ -70,10 +82,13 @@ const Component = () => {
                     <CustomGrid sm={3} marginRight={2}>
                         <CustomPaper className={styles.paper}>
                             <CustomGrid className={styles.header}>
-                                <CustomTypography variant="h4bold" fontSize={16}>
+                                <CustomTypography
+                                    variant="h4bold"
+                                    fontSize={16}
+                                >
                                     <Translation
-                                        nameSpace="common"
-                                        translation="backgrounds.title"
+                                        nameSpace="rooms"
+                                        translation="backgrounds.categories"
                                     />
                                 </CustomTypography>
                             </CustomGrid>
@@ -85,6 +100,7 @@ const Component = () => {
                                         isActive={item.id === categorySelected}
                                         onClick={selectCategory}
                                         onSave={handleUpdateCategory}
+                                        onDelete={handleDeleteCategory}
                                     />
                                 ))}
                             </CustomGrid>
@@ -93,6 +109,8 @@ const Component = () => {
                     <Medias />
                 </CustomGrid>
             </CustomGrid>
+            <ConfirmDeleteMediaDialog />
+            <ConfirmDeleteCategoryDialog />
         </CustomGrid>
     );
 };

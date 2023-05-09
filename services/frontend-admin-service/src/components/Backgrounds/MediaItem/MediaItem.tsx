@@ -8,7 +8,13 @@ import { IBackgroundMedia } from 'src/store/backgrounds/types';
 import { Fade } from '@mui/material';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
-const Component = ({ media }: { media: IBackgroundMedia }) => {
+const Component = ({
+    media,
+    onDelete,
+}: {
+    media: IBackgroundMedia;
+    onDelete: (mediaId: string) => void;
+}) => {
     const [isHover, setIsHover] = useState<boolean>(false);
 
     const showHover = () => setIsHover(true);
@@ -39,7 +45,7 @@ const Component = ({ media }: { media: IBackgroundMedia }) => {
                 >
                     <ActionButton
                         variant="transparent"
-                        // onAction={handleOpenDeleteDialog}
+                        onAction={() => onDelete(media.id)}
                         className={styles.deleteBtn}
                         Icon={<DeleteIcon width="22px" height="22px" />}
                     />

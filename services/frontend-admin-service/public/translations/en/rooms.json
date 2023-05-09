@@ -96,7 +96,8 @@
     "price": "Price",
     "status": "Status"
   },
-  "medias": {
-    "title": "Medias"
+  "backgrounds" : {
+    "medias": "Medias",
+    "categories": "Categories"
   }
 }

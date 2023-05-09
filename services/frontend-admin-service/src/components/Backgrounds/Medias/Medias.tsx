@@ -14,9 +14,15 @@ import {
     addMediaFx,
     addNotificationEvent,
     getMediasFx,
+    openAdminDialogEvent,
+    setMediaIdDeleteEvent,
     setQueryMediasEvent,
 } from 'src/store';
-import { Notification, NotificationType } from 'src/store/types';
+import {
+    AdminDialogsEnum,
+    Notification,
+    NotificationType,
+} from 'src/store/types';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
@@ -133,11 +139,14 @@ const Component = () => {
     const { onClick, ...rootProps } = getRootProps();
 
     const handleScrollEnd = () => {
-        console.log('#Duy Phan console', isLoadMore, medias, count)
-        if (!isLoadMore && medias.length < count)  {
-            console.log('#Duy Phan console', 'end');
+        if (!isLoadMore && medias.length < count) {
             setQueryMediasEvent();
         }
+    };
+
+    const handleDeleteMedia = (mediaId: string) => {
+        setMediaIdDeleteEvent(mediaId);
+        openAdminDialogEvent(AdminDialogsEnum.confirmDeleteMediaDialog);
     };
 
     return (
@@ -152,7 +161,7 @@ const Component = () => {
                         <CustomTypography variant="h4bold" fontSize={16}>
                             <Translation
                                 nameSpace="rooms"
-                                translation="medias.title"
+                                translation="backgrounds.medias"
                             />
                         </CustomTypography>
                     </CustomGrid>
@@ -171,7 +180,11 @@ const Component = () => {
                         containerRef={el => (refScroll.current = el)}
                     >
                         {medias.map(item => (
-                            <MediaItem key={item.id} media={item} />
+                            <MediaItem
+                                key={item.id}
+                                media={item}
+                                onDelete={handleDeleteMedia}
+                            />
                         ))}
                     </PerfectScrollbar>
                 </ConditionalRender>

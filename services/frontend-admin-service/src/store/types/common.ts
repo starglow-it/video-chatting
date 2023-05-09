@@ -9,6 +9,8 @@ export enum AdminDialogsEnum {
     revokeRoomDialog = 'revokeRoomDialog',
     saveRoomChangesDialog = 'saveRoomChangesDialog',
     confirmDeleteRoomDialog = 'confirmDeleteRoomDialog',
+    confirmDeleteMediaDialog = 'confirmDeleteMediaDialog',
+    confirmDeleteCategoryDialog = 'confirmDeleteCategoryDialog'
 }
 
 export enum NotificationType {
