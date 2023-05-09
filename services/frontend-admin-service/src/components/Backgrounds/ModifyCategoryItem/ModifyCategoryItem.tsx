@@ -8,7 +8,6 @@ import {
 } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import styles from './ModifyCategoryItem.module.scss';
 import { IBackgroundCategory } from 'src/store/backgrounds/types';
 import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
@@ -17,31 +16,31 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import clsx from 'clsx';
 
 const Component = (
     {
         category,
         onSave,
+        className,
     }: {
         category: IBackgroundCategory;
         onSave: (category: IBackgroundCategory) => void;
+        className?: string;
     },
     ref: ForwardedRef<{
         open: () => void;
         close: () => void;
-        getStatus: () => void;
     }>,
 ) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [categoryName, setCategoryName] = useState<string>(category.value);
     const [isPreviewEmoji, setIsPreviewEmoji] = useState<boolean>(false);
     const [emoji, setEmoji] = useState<string>('1f922');
-    console.log();
 
     useImperativeHandle(ref, () => ({
         open,
         close,
-        getStatus: () => isOpen,
     }));
 
     const open = () => {
@@ -67,30 +66,29 @@ const Component = (
     };
 
     const handleEmojiClick = emojiData => {
-        console.log(emojiData);
-        console.log(emojiData.getImageUrl());
-
         setEmoji(emojiData.unified);
     };
 
     const getEmoji = data => {
-        console.log(data);
         return String.fromCodePoint.apply(null, data);
     };
 
     const save = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onSave({
-            ...category,
-            value: categoryName,
-            emojiUrl: emoji,
-        });
-        close();
+        if (categoryName) {
+            onSave({
+                ...category,
+                key: categoryName.toLocaleLowerCase(),
+                value: categoryName,
+                emojiUrl: emoji,
+            });
+            close();
+        }
     };
 
     return (
         <CustomGrid
-            className={styles.wrapper}
+            className={clsx(styles.wrapper, className)}
             container
             flexDirection="row"
             alignItems="center"

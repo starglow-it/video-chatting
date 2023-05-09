@@ -7,12 +7,12 @@ export const handleAddCategory = async (
     category: IMediaCategory,
 ): Promise<IBackgroundCategory | null> => {
     const response = await sendRequestWithCredentials<
-        { id: string },
+        IBackgroundCategory,
         ErrorState
     >({ ...addCategoryUrl, data: category });
 
     if (response.success && response.result) {
-        return { ...category, id: response.result };
+        return response.result;
     }
     return null;
 };

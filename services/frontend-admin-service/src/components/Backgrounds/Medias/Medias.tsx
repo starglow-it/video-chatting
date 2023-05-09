@@ -37,6 +37,7 @@ import {
     MAX_SIZE_VIDEO,
 } from '@components/CreateRoom/UploadBackground/UploadBackground';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CircularProgress, LinearProgress } from '@mui/material';
 
 const Component = () => {
     const { medias, categorySelected, count } = useStore(
@@ -165,12 +166,17 @@ const Component = () => {
                             />
                         </CustomTypography>
                     </CustomGrid>
-                    <ActionButton
-                        className={styles.button}
-                        variant="decline"
-                        onAction={onClick}
-                        Icon={<UploadFolderIcon width="18px" height="18px" />}
-                    />
+                    <CustomGrid>
+                        <ActionButton
+                            className={styles.button}
+                            variant="decline"
+                            onAction={onClick}
+                            Icon={
+                                <UploadFolderIcon width="18px" height="18px" />
+                            }
+                        />
+                        <LinearProgress />
+                    </CustomGrid>
                 </CustomGrid>
                 <input {...getInputProps()} />
                 <ConditionalRender condition={medias.length}>

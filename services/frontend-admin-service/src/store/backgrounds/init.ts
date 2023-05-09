@@ -50,7 +50,7 @@ $backgroundsManageStore
     .on(addCategoryFx.doneData, (state, category) => ({
         ...state,
         categories: category
-            ? [...state.categories, category]
+            ? [category, ...state.categories]
             : state.categories,
     }))
     .on(deleteCategoryFx.doneData, (state, categoryIds) => ({

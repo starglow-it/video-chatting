@@ -3,30 +3,19 @@ import { memo, useEffect } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import styles from './BackgroundsContainer.module.scss';
-import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
-
-import { CategoryItem } from '@components/Backgrounds/CategoryItem/CategoryItem';
-import { MediaItem } from '@components/Backgrounds/MediaItem/MediaItem';
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { UploadFolderIcon } from 'shared-frontend/icons/OtherIcons/UploadFolderIcon';
 import {
     $backgroundsManageStore,
     getCategoriesFx,
-    getMediasFx,
-    openConfirmDeleteCategoryDialogEvent,
     selectCategoryEvent,
-    setCategoryIdDeleteEvent,
-    updateCategoryFx,
 } from 'src/store';
 import { useStore } from 'effector-react';
-import { IBackgroundCategory } from 'src/store/backgrounds/types';
 import { Medias } from '@components/Backgrounds/Medias/Medias';
 import { ConfirmDeleteMediaDialog } from '@components/Dialogs/ConfirmDeleteMediaDialog/ConfirmDeleteMediaDialog';
 import { ConfirmDeleteCategoryDialog } from '@components/Dialogs/ConfirmDeleteCategoryDialog/ConfirmDeleteCategoryDialog';
-import { AdminDialogsEnum } from 'src/store/types';
+import { Categories } from '@components/Backgrounds/Categories/Categories';
 
 const Component = () => {
-    const { categories, medias, categorySelected } = useStore(
+    const { categories } = useStore(
         $backgroundsManageStore,
     );
 
@@ -39,21 +28,6 @@ const Component = () => {
             selectCategoryEvent(categories[0].id);
         }
     }, [categories.length]);
-
-    const selectCategory = (categoryId: string) => {
-        selectCategoryEvent(categoryId);
-    };
-
-    const handleUpdateCategory = (category: IBackgroundCategory) => {
-        updateCategoryFx(category);
-    };
-
-    const handleDeleteCategory = (categoryId: string) => {
-        setCategoryIdDeleteEvent(categoryId);
-        openConfirmDeleteCategoryDialogEvent(
-            AdminDialogsEnum.confirmDeleteCategoryDialog,
-        );
-    };
 
     return (
         <CustomGrid
@@ -79,33 +53,7 @@ const Component = () => {
                     justifyContent="center"
                     alignItems="flex-start"
                 >
-                    <CustomGrid sm={3} marginRight={2}>
-                        <CustomPaper className={styles.paper}>
-                            <CustomGrid className={styles.header}>
-                                <CustomTypography
-                                    variant="h4bold"
-                                    fontSize={16}
-                                >
-                                    <Translation
-                                        nameSpace="rooms"
-                                        translation="backgrounds.categories"
-                                    />
-                                </CustomTypography>
-                            </CustomGrid>
-                            <CustomGrid container>
-                                {categories.map(item => (
-                                    <CategoryItem
-                                        key={item.id}
-                                        category={item}
-                                        isActive={item.id === categorySelected}
-                                        onClick={selectCategory}
-                                        onSave={handleUpdateCategory}
-                                        onDelete={handleDeleteCategory}
-                                    />
-                                ))}
-                            </CustomGrid>
-                        </CustomPaper>
-                    </CustomGrid>
+                   <Categories />
                     <Medias />
                 </CustomGrid>
             </CustomGrid>

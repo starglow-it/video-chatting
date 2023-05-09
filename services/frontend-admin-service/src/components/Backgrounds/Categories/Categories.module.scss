@@ -1,0 +1,23 @@
+.paper {
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.header {
+    margin-bottom: 20px;
+    border-radius: 0px;
+}
+
+.addIcon {
+    cursor: pointer;
+}
+
+.boxAdd {
+    position: relative;
+}
+
+.categories {
+    max-height: 410px;
+    overflow-y: scroll;
+    position: relative;
+}
