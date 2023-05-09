@@ -119,25 +119,6 @@ export class SeederService {
     return url;
   }
 
-
-  //TODO: handle upload emoji (pending)
-  // async uploadEmoji(){
-  //   readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
-
-  //     Promise.all(files.map(async file => {
-
-  //       const filename = file.split('.')[0];
-
-  //       const url = await this.readFileAndUpload({
-  //         filePath: `${FILES_SCOPE}/${EMOJIES_SCOPE}/${file}`,
-  //         key: `emoji/images/${filename}.webp`
-  //       });
-  //       console.log(url);
-  //     })).then(item => item).catch(err => console.log(err));
-
-  //   }); 
-  // }
-
   async generatePreviewUrls({ url, id, mimeType }) {
     const mimeTypeList = ['image', 'video', 'audio'];
 
