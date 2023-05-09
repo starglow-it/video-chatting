@@ -72,6 +72,7 @@ const Component = ({onPaymentSuccess}: Props) => {
 						}}
 					/>
 				}
+				paymentType='paywall'
 			/>
 		</CustomBox>
   );
