@@ -27,7 +27,6 @@ import { AppController } from './app.controller';
 import { MediaCategory, MediaCategorySchema } from './schemas/media-category.schema';
 import { Media, MediaSchema } from './schemas/media.schema';
 import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema';
-import { UserTemplateMedia, UserTemplateMediaSchema } from './schemas/user-template-media.schema';
 
 @Module({
   imports: [
@@ -64,7 +63,6 @@ import { UserTemplateMedia, UserTemplateMediaSchema } from './schemas/user-templ
       { name: MediaCategory.name, schema: MediaCategorySchema},
       { name: Media.name, schema: MediaSchema},
       { name: PreviewImage.name, schema: PreviewImageSchema },
-      { name: UserTemplateMedia.name, schema: UserTemplateMediaSchema }
     ]),
   ],
   controllers: [AppController],

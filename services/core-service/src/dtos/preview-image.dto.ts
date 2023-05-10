@@ -19,5 +19,6 @@ export class PreviewImageDTO implements IPreviewImage {
   @Expose()
   resolution: IPreviewImage['resolution'];
 
+  @Expose()
   key: IPreviewImage['key'];
 }

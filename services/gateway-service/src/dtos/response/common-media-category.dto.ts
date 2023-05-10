@@ -4,19 +4,27 @@ import { IMediaCategory, MediaCategoryType } from 'shared-types';
 
 export class MediaCategoryRestDTO implements IMediaCategory {
   @Expose()
-  @ApiProperty()
+  @ApiProperty({
+    type: String
+  })
   id: string;
 
   @Expose()
-  @ApiProperty()
+  @ApiProperty({
+    type: String
+  })
   key: IMediaCategory['key'];
 
   @Expose()
-  @ApiProperty()
+  @ApiProperty({
+    type: String
+  })
   value: IMediaCategory['value'];
 
   @Expose()
-  @ApiProperty()
+  @ApiProperty({
+    type: String
+  })
   emojiUrl: IMediaCategory['emojiUrl'];
 
   @Expose()
@@ -25,9 +33,5 @@ export class MediaCategoryRestDTO implements IMediaCategory {
     enum: MediaCategoryType
   })
   type: IMediaCategory['type'];
-
-  @Expose()
-  @ApiProperty()
-  audio: string;
   
 }

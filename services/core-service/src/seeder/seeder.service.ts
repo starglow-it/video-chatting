@@ -10,12 +10,11 @@ import {
   TEMPLATES_SERVICE,
   BACKGROUNDS_SCOPE,
   FILES_SCOPE,
-  EMOJIES_SCOPE,
   MEDIA_CATEGORIES,
   SOUNDS_SCOPE,
   USERS_SERVICE
 } from 'shared-const';
-import { Counters, IMedia, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
+import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -48,10 +47,11 @@ import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import { MediaCategoryDocument } from '../schemas/media-category.schema';
-import { CommonMediaDTO } from '../dtos/common-media.dto';
 import { promisify } from 'util';
 import * as mime from 'mime';
-import { MediaDocument } from 'src/schemas/media.schema';
+import { MediaDocument } from '..//schemas/media.schema';
+import { retry } from '../utils/common/retry';
+import { PreviewUrls } from '../types/media';
 
 // utils
 
@@ -119,25 +119,6 @@ export class SeederService {
     return url;
   }
 
-
-  //TODO: handle upload emoji (pending)
-  // async uploadEmoji(){
-  //   readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
-
-  //     Promise.all(files.map(async file => {
-
-  //       const filename = file.split('.')[0];
-
-  //       const url = await this.readFileAndUpload({
-  //         filePath: `${FILES_SCOPE}/${EMOJIES_SCOPE}/${file}`,
-  //         key: `emoji/images/${filename}.webp`
-  //       });
-  //       console.log(url);
-  //     })).then(item => item).catch(err => console.log(err));
-
-  //   }); 
-  // }
-
   async generatePreviewUrls({ url, id, mimeType }) {
     const mimeTypeList = ['image', 'video', 'audio'];
 
@@ -156,19 +137,6 @@ export class SeederService {
       previewImages,
       mediaType
     };
-  }
-
-  private async retry<T>(maxRetries: number, fn: Function): Promise<T> {
-    try {
-      return await fn();
-    }
-    catch (err) {
-      if (maxRetries <= 0) {
-        console.log(err);
-        return;
-      }
-      return await this.retry(maxRetries - 1, fn);
-    }
   }
 
   private async handleFile(file: string, filePath: string) {
@@ -198,22 +166,7 @@ export class SeederService {
         }
       });
 
-      const previewImages = medias.map(media => media.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
-
-      await this.mediaService.deletePreviewImages({
-        query: {
-          _id: {
-            $in: previewImages
-          }
-        }
-      });
-
-      await this.mediaService.deleteMedias({
-        query: {
-          mediaCategory: category._id,
-          userTemplate: null
-        },
-      });
+      if(medias.length) return;
 
       for await (const file of files) {
         const handledFile = await this.handleFile(file, filePath);
@@ -229,18 +182,14 @@ export class SeederService {
           key: `medias/${category.type === MediaCategoryType.Sound ? 'audios' : 'videos'}/${file}`
         });
 
-        const previewUrls = await this.retry<
-          {
-            previewImages: any[];
-            mediaType: string;
-          }
-        >(10, async () => {
+        const previewUrls = await retry<PreviewUrls>(async () => {
           return await this.generatePreviewUrls({
             url,
             id: newMedia._id.toString(),
             mimeType: handledFile.mimeType
           });
-        })
+          
+        },10);
 
         newMedia.url = url;
         newMedia.previewUrls = previewUrls.previewImages;

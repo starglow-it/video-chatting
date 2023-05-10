@@ -5,10 +5,8 @@ import {
     Get,
     Logger,
     Param,
-    ParseIntPipe,
     Post,
     Query,
-    Request,
     UploadedFile,
 } from '@nestjs/common';
 import {
@@ -18,7 +16,7 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
-import { EntityList, ResponseSumType, IMedia, IMediaCategory, IUserTemplateMedia, MediaCategoryType } from 'shared-types';
+import { EntityList, ResponseSumType, IMedia, IMediaCategory, MediaCategoryType } from 'shared-types';
 import { CreateUserTemplateMediaRequest } from '../../dtos/requests/create-user-template-media.request';
 import { MediaCategoryRestDTO } from '../../dtos/response/common-media-category.dto';
 import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
@@ -26,13 +24,17 @@ import { MediasService } from './medias.service';
 import { v4 as uuidv4 } from 'uuid';
 import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
-import { UserTemplateMediaRestDto } from '../../dtos/response/common-user-template-media.dto';
 import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
-import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategories.dto';
+import { GetMediaCategoriesQueryDto } from '../../dtos/query/GetMediaCategoriesQuery.dto';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
+import {
+    CreateUserTemplateMediaSwaggerProperty,
+} from '../../dtos/swagger-properties/media.swagger-properties';
+import { MEDIAS_SCOPE } from 'shared-const';
+import { CommonMediaRestDto } from 'src/dtos/response/common-media.dto';
 
 @ApiTags('Medias')
-@Controller('medias')
+@Controller(MEDIAS_SCOPE)
 export class MediasController {
     private readonly logger = new Logger();
 
@@ -73,8 +75,8 @@ export class MediasController {
                 });
             if (query.type === MediaCategoryType.Sound) {
                 const mediaSoundTypeCategories = mediaCategories?.list?.map(async (mediaCategory) => {
-                    const medias = await this.mediaService.getUserTemplateMedias({
-                        mediaCategoryId: mediaCategory.id,
+                    const medias = await this.mediaService.getMedias({
+                        categoryId: mediaCategory.id,
                         userTemplateId: query.userTemplateId
                     });
 
@@ -109,7 +111,7 @@ export class MediasController {
     @Get('/:categoryId')
     @ApiOperation({ summary: 'Get User Template Medias By Category Id' })
     @ApiOkResponse({
-        type: [UserTemplateMediaRestDto],
+        type: [CommonMediaRestDto],
         description: 'Get User Template Medias',
     })
     @ApiForbiddenResponse({
@@ -123,10 +125,10 @@ export class MediasController {
             const { skip, limit, userTemplateId } = query;
 
             const medias =
-                await this.mediaService.getUserTemplateMedias({
+                await this.mediaService.getMedias({
                     skip,
                     limit,
-                    mediaCategoryId: categoryId,
+                    categoryId,
                     userTemplateId
                 });
 
@@ -149,42 +151,22 @@ export class MediasController {
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create User Template Media' })
     @ApiOkResponse({
-        type: UserTemplateMediaRestDto,
+        type: CommonMediaRestDto,
         description: 'Create User Template Media',
     })
     @ApiForbiddenResponse({
         description: 'Forbidden',
     })
-    @ApiFile({
-        userTemplateId: {
-            type: 'string',
-            format: 'string'
-        }
-    })
+    @ApiFile(CreateUserTemplateMediaSwaggerProperty)
     async createUserTemplateMedia(
         @UploadedFile() file: Express.Multer.File,
         @Body() body: CreateUserTemplateMediaRequest
-    ): Promise<ResponseSumType<IUserTemplateMedia>> {
+    ): Promise<ResponseSumType<IMedia>> {
         try {
-            let userTemplateMedia = await this.mediaService.createUserTemplateMedia(body);
-
-            if (file) {
-                const { extension } = getFileNameAndExtension(file.originalname);
-                const uploadKey = `medias/${userTemplateMedia.id}/videos/${uuidv4()}.${extension}`;
-
-                let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
-
-
-                if (!/^https:\/\/*/.test(url)) {
-                    url = `https://${url}`;
-                }
-
-                userTemplateMedia = await this.mediaService.uploadUserTemplateMediaFile({
-                    url,
-                    id: userTemplateMedia.id,
-                    mimeType: file.mimetype,
-                });
-            }
+            let userTemplateMedia = await this.mediaService.handleCreateMedia({
+                body,
+                file
+            });
 
             return {
                 success: true,
@@ -195,6 +177,4 @@ export class MediasController {
             throw new BadRequestException(err);
         }
     }
-
-
 }
