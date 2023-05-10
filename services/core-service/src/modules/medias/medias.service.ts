@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, QueryOptions } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, QueryOptions } from 'mongoose';
 
 import { IMedia, IMediaCategory, IUserTemplateMedia } from 'shared-types';
 
@@ -313,4 +313,8 @@ export class MediaService {
     async deleteMediaFolders(keyFolder: string) {
         await this.awsService.deleteFolder(`media/${keyFolder}`);
     }
+
+    async aggregate(aggregationPipeline: PipelineStage[]) {
+        return this.media.aggregate(aggregationPipeline).exec();
+      }
 }

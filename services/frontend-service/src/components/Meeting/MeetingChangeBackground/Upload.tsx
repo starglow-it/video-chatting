@@ -14,6 +14,7 @@ import { MAX_SIZE_IMAGE, MAX_SIZE_VIDEO } from 'src/const/templates/file';
 import { $isTrial, $profileStore, addNotificationEvent, getCustomerPortalSessionUrlFx, startCheckoutSessionForSubscriptionFx } from 'src/store';
 import {
     $backgroundMeetingStore,
+    $localUserStore,
     $meetingTemplateStore,
     addBackgroundToCategoryEvent,
     reloadMediasEvent,
@@ -29,6 +30,7 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 import { profileRoute } from 'src/const/client-routes';
 import { useRouter } from 'next/router';
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { getClientMeetingUrl, getClientMeetingUrlWithDomain } from 'src/utils/urls';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
@@ -38,6 +40,14 @@ const Component = () => {
     const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
     const profile = useStore($profileStore)
     const isTrial = useStore($isTrial);
+    const localUser = useStore($localUserStore);
+
+    const meetingLinkText = getClientMeetingUrl(
+        router.query.token as string,
+	);
+
+    const redirectUrl = !!localUser.username ? `${meetingLinkText}?participantName=${localUser.username}` : meetingLinkText
+
     useSubscriptionNotification(profileRoute);
     const {
         value: isSubscriptionsOpen,
@@ -162,7 +172,7 @@ const Component = () => {
         if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
             const response = await startCheckoutSessionForSubscriptionFx({
                 productId,
-                baseUrl: profileRoute,
+                baseUrl: redirectUrl,
                 withTrial: trial,
             });
 
@@ -179,6 +189,7 @@ const Component = () => {
             }
         }
     };
+
 
     return (
         <>
