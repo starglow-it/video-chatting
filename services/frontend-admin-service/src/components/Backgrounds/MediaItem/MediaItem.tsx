@@ -7,6 +7,7 @@ import { IBackgroundMedia } from 'src/store/backgrounds/types';
 import { Fade } from '@mui/material';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 
 const Component = ({
     media,
@@ -15,11 +16,11 @@ const Component = ({
     media: IBackgroundMedia;
     onDelete: (mediaId: string) => void;
 }) => {
-    const [isHover, setIsHover] = useState<boolean>(false);
-
-    const showHover = () => setIsHover(true);
-
-    const hideHover = () => setIsHover(false);
+    const {
+        value: isHover,
+        onSwitchOn: showHover,
+        onSwitchOff: hideHover,
+    } = useToggle(false);
 
     const { url } = media;
 
@@ -33,6 +34,8 @@ const Component = ({
                         width={160}
                         height={150}
                         className={styles.image}
+                        loading="eager"
+                        alt='media-item'
                     />
                 );
             case 'video':

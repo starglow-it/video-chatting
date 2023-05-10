@@ -129,7 +129,7 @@ const Component = () => {
                     <ImageIcon
                         onClick={handleBackgroundsPage}
                         width="22px"
-                        height="28px"
+                        height="22px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isBackgroundsPageActive,
                         })}

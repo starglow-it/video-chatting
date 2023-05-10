@@ -1,8 +1,7 @@
-import { MouseEvent, memo, useRef, useState } from 'react';
+import { MouseEvent, memo, useRef } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import styles from './CategoryItem.module.scss';
-import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
 import { IBackgroundCategory } from 'src/store/backgrounds/types';
 import { ModifyCategoryItem } from '../ModifyCategoryItem/ModifyCategoryItem';
 import { Fade } from '@mui/material';
@@ -13,6 +12,7 @@ import clsx from 'clsx';
 import { hasHttps } from 'shared-frontend/const/regexp';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { mapEmoji, parseEmoji } from 'shared-utils';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 
 const Component = ({
     category,
@@ -29,11 +29,11 @@ const Component = ({
 }) => {
     const { emojiUrl } = category;
     const refModify = useRef(null);
-    const [isHover, setIsHover] = useState<boolean>(false);
-
-    const showActions = () => setIsHover(true);
-
-    const hideActions = () => setIsHover(false);
+    const {
+        value: isHover,
+        onSwitchOn: showActions,
+        onSwitchOff: hideActions,
+    } = useToggle(false);
 
     const toggleEdit = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
@@ -57,7 +57,12 @@ const Component = ({
             <CustomGrid container flexDirection="row" alignItems="center">
                 <CustomGrid className={styles.emoji}>
                     {new RegExp(hasHttps).test(emojiUrl) ? (
-                        <CustomImage width={20} height={20} src={emojiUrl} />
+                        <CustomImage
+                            width={20}
+                            height={20}
+                            src={emojiUrl}
+                            alt="gategory-item"
+                        />
                     ) : (
                         parseEmoji(mapEmoji(emojiUrl))
                     )}
