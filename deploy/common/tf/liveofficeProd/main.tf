@@ -69,15 +69,71 @@ resource "aws_security_group_rule" "egress-sgr" {
 }
 
 resource "aws_security_group_rule" "ingress-01-sgr" {
-  description = "allow almost"
+  description = "allow ssh"
   type = "ingress"
-  from_port = 0
-  to_port = 65535
+  from_port = 22
+  to_port = 22
   protocol = "tcp"
   cidr_blocks = [
     "0.0.0.0/0"]
   security_group_id = "${aws_security_group.sg.id}"
 }
+
+resource "aws_security_group_rule" "ingress-02-sgr" {
+  description = "allow http"
+  type = "ingress"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg.id}"
+}
+
+resource "aws_security_group_rule" "ingress-03-sgr" {
+  description = "allow http"
+  type = "ingress"
+  from_port = 443
+  to_port = 443
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg.id}"
+}
+
+resource "aws_security_group_rule" "ingress-04-sgr" {
+  description = "allow services-livekit-service"
+  type = "ingress"
+  from_port = 7880
+  to_port = 7880
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg.id}"
+}
+
+resource "aws_security_group_rule" "ingress-05-sgr" {
+  description = "allow services-livekit-service"
+  type = "ingress"
+  from_port = 7880
+  to_port = 7882
+  protocol = "all"
+  cidr_blocks = [
+    "0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg.id}"
+}
+
+resource "aws_security_group_rule" "ingress-06-sgr" {
+  description = "allow portainer port"
+  type = "ingress"
+  from_port = 9443
+  to_port = 9443
+  protocol = "all"
+  cidr_blocks = [
+    "0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg.id}"
+}
+
 
 
 // ========================================================================
@@ -91,7 +147,7 @@ resource "aws_instance" "instance" {
     "${aws_security_group.sg.id}"]
   subnet_id = "${data.aws_subnet.subnet.id}"
   private_ip = "10.0.253.21"
-  key_name = ""
+  key_name = "nongdan.dev-keypair"
   root_block_device {
     delete_on_termination = true
     volume_size = "50"
