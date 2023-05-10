@@ -8,6 +8,7 @@ export const roomsDomain = rootDomain.createDomain('roomsDomain');
 export const dialogsDomain = rootDomain.createDomain('dialogsDomain');
 export const templatesDomain = rootDomain.createDomain('templatesDomain');
 export const notificationsDomain = rootDomain.createDomain(
-	'notificationsDomain',
+    'notificationsDomain',
 );
 export const uiDomain = rootDomain.createDomain('uiDomain');
+export const backgroundsDomain = rootDomain.createDomain('backgroundsDomain');

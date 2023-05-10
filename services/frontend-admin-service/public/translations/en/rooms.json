@@ -95,5 +95,18 @@
     "participants": "Participants",
     "price": "Price",
     "status": "Status"
+  },
+  "backgrounds": {
+    "medias": "Medias",
+    "categories": "Categories",
+    "emptyMedias": "Nothing medias. Please click upload to create new media"
+  },
+  "confirmDeleteCategory": {
+    "title": "Delete Category \"{{categoryName}}\"?",
+    "text": "The Category will be deleted from The Live Office library"
+  },
+  "confirmDeleteMedia": {
+    "title": "Delete Media",
+    "text": "The Media will be deleted from The Live Office library"
   }
 }

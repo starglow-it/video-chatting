@@ -12,8 +12,5 @@ export interface IMedia {
     name: string;
     previewUrls: IPreviewImage[];
     type: string;
-}
-
-export interface IUserTemplateMedia extends IMedia {
     userTemplate: IUserTemplate
 }

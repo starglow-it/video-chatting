@@ -1,6 +1,4 @@
-import {
-	memo, useCallback 
-} from 'react';
+import { memo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
@@ -13,6 +11,7 @@ import { DiscoveryIcon } from 'shared-frontend/icons/OtherIcons/DiscoveryIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
 import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
+import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 
 // components
 import { Translation } from '@components/Translation/Translation';
@@ -24,119 +23,140 @@ import { logoutAdminFx } from '../../store';
 import styles from './AdminNavigation.module.scss';
 
 const Component = () => {
-	const router = useRouter();
+    const router = useRouter();
 
-	const handleLogout = useCallback(async () => {
-		logoutAdminFx();
-	}, []);
+    const handleLogout = useCallback(async () => {
+        logoutAdminFx();
+    }, []);
 
-	const isStatisticsPageActive = router.pathname === '/statistics';
-	const isUsersPageActive = router.pathname === '/users';
-	const isRoomsPageActive = router.pathname === '/rooms';
+    const isStatisticsPageActive = router.pathname === '/statistics';
+    const isUsersPageActive = router.pathname === '/users';
+    const isRoomsPageActive = router.pathname === '/rooms';
+    const isBackgroundsPageActive = router.pathname === '/backgrounds';
 
-	const handleStatisticsPage = useCallback(async () => {
-		await router.push('/statistics');
-	}, []);
+    const handleStatisticsPage = useCallback(async () => {
+        await router.push('/statistics');
+    }, []);
 
-	const handleUsersPage = useCallback(async () => {
-		await router.push('/users');
-	}, []);
+    const handleUsersPage = useCallback(async () => {
+        await router.push('/users');
+    }, []);
 
-	const handleRoomsPage = useCallback(async () => {
-		await router.push('/rooms');
-	}, []);
+    const handleRoomsPage = useCallback(async () => {
+        await router.push('/rooms');
+    }, []);
 
-	return (
-		<CustomPaper className={styles.adminNavigation}>
-			<CustomGrid
-				container
-				alignItems="center"
-				justifyContent="center"
-				direction="column"
-				className={styles.iconsWrapper}
-				gap={1}
-			>
-				<CustomTooltip
-					title={
-						<Translation
-							nameSpace="common"
-							translation="tooltips.pages.statistics"
-						/>
-					}
-					placement="right"
-				>
-					<StatisticsIcon
-						onClick={handleStatisticsPage}
-						width="28px"
-						height="28px"
-						className={clsx(styles.linkIcon, {
-							[styles.activeIcon]: isStatisticsPageActive,
-						})}
-					/>
-				</CustomTooltip>
+    const handleBackgroundsPage = () => {
+        router.push('/backgrounds');
+    };
 
-				<CustomTooltip
-					title={
-						<Translation
-							nameSpace="common"
-							translation="tooltips.pages.users"
-						/>
-					}
-					placement="right"
-				>
-					<PeopleIcon
-						onClick={handleUsersPage}
-						width="28px"
-						height="28px"
-						className={clsx(styles.linkIcon, {
-							[styles.activeIcon]: isUsersPageActive,
-						})}
-					/>
-				</CustomTooltip>
+    return (
+        <CustomPaper className={styles.adminNavigation}>
+            <CustomGrid
+                container
+                alignItems="center"
+                justifyContent="center"
+                direction="column"
+                className={styles.iconsWrapper}
+                gap={1}
+            >
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.statistics"
+                        />
+                    }
+                    placement="right"
+                >
+                    <StatisticsIcon
+                        onClick={handleStatisticsPage}
+                        width="28px"
+                        height="28px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isStatisticsPageActive,
+                        })}
+                    />
+                </CustomTooltip>
 
-				<CustomTooltip
-					title={
-						<Translation
-							nameSpace="common"
-							translation="tooltips.pages.rooms"
-						/>
-					}
-					placement="right"
-				>
-					<DiscoveryIcon
-						onClick={handleRoomsPage}
-						width="28px"
-						height="28px"
-						className={clsx(styles.linkIcon, {
-							[styles.activeIcon]: isRoomsPageActive,
-						})}
-					/>
-				</CustomTooltip>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.users"
+                        />
+                    }
+                    placement="right"
+                >
+                    <PeopleIcon
+                        onClick={handleUsersPage}
+                        width="28px"
+                        height="28px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isUsersPageActive,
+                        })}
+                    />
+                </CustomTooltip>
 
-				<CustomDivider
-					className={styles.divider}
-					light
-				/>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.rooms"
+                        />
+                    }
+                    placement="right"
+                >
+                    <DiscoveryIcon
+                        onClick={handleRoomsPage}
+                        width="28px"
+                        height="28px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isRoomsPageActive,
+                        })}
+                    />
+                </CustomTooltip>
 
-				<CustomTooltip
-					title={
-						<Translation
-							nameSpace="common"
-							translation="tooltips.logout"
-						/>
-					}
-					placement="right"
-				>
-					<ExitIcon
-						onClick={handleLogout}
-						className={styles.icon}
-						width="28px"
-						height="28px"
-					/>
-				</CustomTooltip>
-			</CustomGrid>
-		</CustomPaper>
-	);
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.backgrounds"
+                        />
+                    }
+                    placement="right"
+                >
+                    <ImageIcon
+                        onClick={handleBackgroundsPage}
+                        width="22px"
+                        height="22px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isBackgroundsPageActive,
+                        })}
+                    />
+                </CustomTooltip>
+
+                <CustomDivider className={styles.divider} light />
+
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.logout"
+                        />
+                    }
+                    placement="right"
+                >
+                    <ExitIcon
+                        onClick={handleLogout}
+                        className={styles.icon}
+                        width="28px"
+                        height="28px"
+                    />
+                </CustomTooltip>
+            </CustomGrid>
+        </CustomPaper>
+    );
 };
 
 export const AdminNavigation = memo(Component);
