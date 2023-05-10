@@ -105,7 +105,7 @@ resource "aws_security_group_rule" "ingress-04-sgr" {
   description = "allow services-livekit-service"
   type = "ingress"
   from_port = 7880
-  to_port = 7880
+  to_port = 7882
   protocol = "tcp"
   cidr_blocks = [
     "0.0.0.0/0"]
@@ -117,7 +117,7 @@ resource "aws_security_group_rule" "ingress-05-sgr" {
   type = "ingress"
   from_port = 7880
   to_port = 7882
-  protocol = "all"
+  protocol = "udp"
   cidr_blocks = [
     "0.0.0.0/0"]
   security_group_id = "${aws_security_group.sg.id}"
@@ -128,12 +128,22 @@ resource "aws_security_group_rule" "ingress-06-sgr" {
   type = "ingress"
   from_port = 9443
   to_port = 9443
-  protocol = "all"
+  protocol = "tcp"
   cidr_blocks = [
     "0.0.0.0/0"]
   security_group_id = "${aws_security_group.sg.id}"
 }
 
+resource "aws_security_group_rule" "ingress-07-sgr" {
+  description = "allow icmp"
+  type = "ingress"
+  from_port = -1
+  to_port = -1
+  protocol = "icmp"
+  cidr_blocks = [
+    "0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg.id}"
+}
 
 
 // ========================================================================
@@ -152,6 +162,11 @@ resource "aws_instance" "instance" {
     delete_on_termination = true
     volume_size = "50"
     volume_type = "gp2"
+  }
+
+
+  lifecycle {
+    ignore_changes = [security_groups, ami]
   }
 
   volume_tags ={
