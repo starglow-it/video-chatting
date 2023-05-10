@@ -44,23 +44,6 @@ export class MediasController {
         private uploadService: UploadService,
     ) { }
 
-    private async uploadFile(file: Express.Multer.File, key: string) {
-        const { extension } = getFileNameAndExtension(file.originalname);
-        const folderKey = `medias/${key}/videos`
-        const uploadKey = `${folderKey}/${uuidv4()}.${extension}`;
-
-        await this.uploadService.deleteFolder(folderKey);
-
-        let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
-
-
-        if (!/^https:\/\/*/.test(url)) {
-            url = `https://${url}`;
-        }
-
-        return url;
-    }
-
     @Get('/categories')
     @ApiOperation({ summary: 'Get Categories' })
     @ApiOkResponse({
@@ -180,17 +163,10 @@ export class MediasController {
         @Body() body: CreateUserTemplateMediaRequest
     ): Promise<ResponseSumType<IMedia>> {
         try {
-            let userTemplateMedia = await this.mediaService.createMedia(body);
-
-            if (file) {
-                const url = await this.uploadFile(file, userTemplateMedia.id);
-
-                userTemplateMedia = await this.mediaService.uploadMediaFile({
-                    url,
-                    id: userTemplateMedia.id,
-                    mimeType: file.mimetype,
-                });
-            }
+            let userTemplateMedia = await this.mediaService.handleCreateMedia({
+                body,
+                file
+            });
 
             return {
                 success: true,

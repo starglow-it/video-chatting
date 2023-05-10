@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { ConfigClientService } from '../../services/config/config.service';
+import { getFileNameAndExtension } from 'src/utils/getFileNameAndExtension';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UploadService {
@@ -11,7 +13,7 @@ export class UploadService {
   constructor(
     private configService: ConfigClientService,
     @InjectS3() private readonly s3: S3,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.vultrUploadBucket = await this.configService.get<string>(
@@ -44,6 +46,23 @@ export class UploadService {
     }
 
     return response.Location;
+  }
+
+  async handleUploadCommonFile({
+    file,
+    folderKey
+  }: {
+    file: Express.Multer.File,
+    folderKey: string
+  }) {
+    const { extension } = getFileNameAndExtension(file.originalname);
+    const uploadKey = `${folderKey}/${uuidv4()}.${extension}`;
+
+    await this.deleteFolder(folderKey);
+
+    let url = await this.uploadFile(file.buffer, uploadKey);
+
+    return url;
   }
 
   async deleteFolder(keyFolder: string) {

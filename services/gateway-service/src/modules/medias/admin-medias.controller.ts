@@ -21,9 +21,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { EntityList, IMedia, IMediaCategory, ResponseSumType } from 'shared-types';
-import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { MediasService } from './medias.service';
-import { v4 as uuidv4 } from 'uuid';
 import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
@@ -51,25 +49,9 @@ export class AdminMediasController {
 
     constructor(
         private mediaService: MediasService,
-        private uploadService: UploadService,
     ) { }
 
-    private async uploadFile(file: Express.Multer.File, key: string) {
-        const { extension } = getFileNameAndExtension(file.originalname);
-        const folderKey = `medias/${key}/videos`
-        const uploadKey = `${folderKey}/${uuidv4()}.${extension}`;
 
-        await this.uploadService.deleteFolder(folderKey);
-
-        let url = await this.uploadService.uploadFile(file.buffer, uploadKey);
-
-
-        if (!/^https:\/\/*/.test(url)) {
-            url = `https://${url}`;
-        }
-
-        return url;
-    }
 
 
     @Get('/categories')
@@ -125,7 +107,7 @@ export class AdminMediasController {
         @Query() query: GetMediasQueryDto
     ): Promise<ResponseSumType<EntityList<IMedia>>> {
         try {
-            const {skip, limit} = query;
+            const { skip, limit } = query;
             const medias =
                 await this.mediaService.getMedias({
                     categoryId,
@@ -190,22 +172,14 @@ export class AdminMediasController {
         @Body() body: CreateMediaRequest
     ): Promise<ResponseSumType<IMedia>> {
         try {
-            let userTemplateMedia = await this.mediaService.createMedia(body);
-
-            if (file) {
-                const url = await this.uploadFile(file, userTemplateMedia.id);
-
-                userTemplateMedia = await this.mediaService.uploadMediaFile({
-                    url,
-                    id: userTemplateMedia.id,
-                    mimeType: file.mimetype,
-                });
-            }
-
+            const media = await this.mediaService.handleCreateMedia({
+                file,
+                body
+            });
             return {
                 success: true,
-                result: userTemplateMedia
-            };
+                result: media
+            }
         }
         catch (err) {
             throw new BadRequestException(err);
