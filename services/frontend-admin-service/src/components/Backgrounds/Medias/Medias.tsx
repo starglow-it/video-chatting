@@ -37,7 +37,8 @@ import {
     MAX_SIZE_VIDEO,
 } from '@components/CreateRoom/UploadBackground/UploadBackground';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CircularProgress, LinearProgress } from '@mui/material';
+import { LinearProgress } from '@mui/material';
+import { mapEmoji, parseEmoji } from 'shared-utils';
 
 const Component = () => {
     const { medias, categorySelected, count } = useStore(
@@ -204,6 +205,27 @@ const Component = () => {
                             />
                         ))}
                     </PerfectScrollbar>
+                </ConditionalRender>
+                <ConditionalRender condition={!medias.length}>
+                    <CustomGrid
+                        container
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        height="200px"
+                        bgcolor="#f4f6f9"
+                        flexDirection="column"
+                    >
+                        <CustomGrid fontSize={30}>
+                            {parseEmoji(mapEmoji('1f3a5'))}
+                        </CustomGrid>
+                        <CustomTypography variant="h4" fontSize={16}>
+                            <Translation
+                                nameSpace="rooms"
+                                translation="backgrounds.emptyMedias"
+                            />
+                        </CustomTypography>
+                    </CustomGrid>
                 </ConditionalRender>
             </CustomPaper>
         </CustomGrid>
