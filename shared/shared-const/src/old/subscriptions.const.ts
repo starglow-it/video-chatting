@@ -32,7 +32,7 @@ const professionalSubscription: PlanData = {
   priceInCents: 500,
   description: 'Monetize meetings + upload room',
   features: {
-    templatesLimit: 2,
+    templatesLimit: 20,
     timeLimit: null,
     comissionFee: 0.05,
   },
@@ -46,7 +46,7 @@ const businessSubscription: PlanData = {
   priceInCents: 2500,
   description: 'No platform commission + embed link',
   features: {
-    templatesLimit: 10,
+    templatesLimit: 50,
     timeLimit: null,
     comissionFee: 0,
   },
