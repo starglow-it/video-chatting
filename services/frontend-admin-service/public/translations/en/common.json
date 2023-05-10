@@ -36,12 +36,16 @@
     "pages": {
       "statistics": "Statistics",
       "users": "Users",
-      "rooms": "Rooms"
+      "rooms": "Rooms",
+      "backgrounds": "Backgrounds"
     },
     "users": {
       "delete": "Delete",
       "block": "Block",
       "unblock": "Unblock"
     }
+  },
+  "backgrounds": {
+    "title": "Backgrounds"
   }
 }

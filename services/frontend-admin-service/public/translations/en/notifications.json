@@ -33,5 +33,17 @@
   },
   "errors": {
     "invalidUrl": "Entered link is invalid"
-  }
+  },
+  "backgrounds": {
+    "addCategorySuccess": "Category added success",
+    "addCategoryFail": "Category added fail",
+    "updateCategorySuccess": "Category updated success",
+    "updateCategoryFail": "Category updated fail",
+    "deleteCategorySuccess": "Category deleted success",
+    "deleteCategoryFail": "Category deleted fail",
+    "addMediaSuccess": "Media added success",
+    "addMediaFail": "Media added fail",
+    "deleteMediaSuccess": "Media deleted success",
+    "deleteMediaFail": "Media deleted fail"
+   }
 }

@@ -156,10 +156,9 @@ export const DefaultConfigValues: Record<
   supportScaling: false,
   numberOfActiveServers: 0,
   supportEmail: 'theliveofficesupport@gmail.com',
-  adminEmail: 'admin-nongdan.dev@gmail.com',
+  adminEmail: 'admin.nongdan.dev@gmail.com',
   adminPassword: 'admin.theliveoffice',
-  googleClientId:
-    '262625104810-160tsngddev8rlpi729qjnvuukh8vlok.apps.googleusercontent.com',
+  googleClientId: '262625104810-160tsngddev8rlpi729qjnvuukh8vlok.apps.googleusercontent.com',
   googleSecret: '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',
   apiVersion: '0.0.1',
   appVersion: '0.0.1',

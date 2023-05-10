@@ -1,0 +1,41 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.paper {
+  border-radius: rem(8px);
+  padding: rem(16px);
+}
+
+.header {
+  margin-bottom: rem(20px);
+  border-radius: rem(0px);
+}
+
+.scroll {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: rem(410px);
+}
+
+.button {
+  height: rem(28px);
+  padding: rem(3px 8px);
+  background: $primary-white;
+  border: 1px solid rgba(189, 200, 211, 0.4);
+  box-shadow: 0 12px 24px -4px rgba(15, 15, 16, 0.1);
+  border-radius: rem(6px);
+  position: relative;
+}
+
+.actions {
+  height: rem(50px);
+}
+
+.progressBar {
+  height: rem(2px);
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
