@@ -265,14 +265,14 @@ export class MediaController {
     ): Promise<void> {
         try {
             return withTransaction(this.connection, async () => {
-                const numberOfRetries = 10;
+                const maxRetries = 10;
                 const previewUrls = await retry<PreviewUrls>(async () => {
                     return await this.generatePreviewUrs({
                         url,
                         id,
                         mimeType: mimeType
                     });
-                },numberOfRetries);
+                },maxRetries);
 
                 const media = await this.mediaService.updateMedia({
                     query: {

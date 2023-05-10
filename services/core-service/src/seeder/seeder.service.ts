@@ -10,12 +10,11 @@ import {
   TEMPLATES_SERVICE,
   BACKGROUNDS_SCOPE,
   FILES_SCOPE,
-  EMOJIES_SCOPE,
   MEDIA_CATEGORIES,
   SOUNDS_SCOPE,
   USERS_SERVICE
 } from 'shared-const';
-import { Counters, IMedia, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
+import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -48,10 +47,11 @@ import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import { MediaCategoryDocument } from '../schemas/media-category.schema';
-import { CommonMediaDTO } from '../dtos/common-media.dto';
 import { promisify } from 'util';
 import * as mime from 'mime';
-import { MediaDocument } from 'src/schemas/media.schema';
+import { MediaDocument } from '..//schemas/media.schema';
+import { retry } from '../utils/common/retry';
+import { PreviewUrls } from '../types/media';
 
 // utils
 
@@ -139,19 +139,6 @@ export class SeederService {
     };
   }
 
-  private async retry<T>(maxRetries: number, fn: Function): Promise<T> {
-    try {
-      return await fn();
-    }
-    catch (err) {
-      if (maxRetries <= 0) {
-        console.log(err);
-        return;
-      }
-      return await this.retry(maxRetries - 1, fn);
-    }
-  }
-
   private async handleFile(file: string, filePath: string) {
     const splitFilename = file.trim().split('.');
     const mediaName = splitFilename[0].split('_')[1]?.replaceAll('-', ' ') || '';
@@ -181,23 +168,6 @@ export class SeederService {
 
       if(medias.length) return;
 
-      const previewImages = medias.map(media => media.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
-
-      await this.mediaService.deletePreviewImages({
-        query: {
-          _id: {
-            $in: previewImages
-          }
-        }
-      });
-
-      await this.mediaService.deleteMedias({
-        query: {
-          mediaCategory: category._id,
-          userTemplate: null
-        },
-      });
-
       for await (const file of files) {
         const handledFile = await this.handleFile(file, filePath);
         const newMedia = await this.mediaService.createMedia({
@@ -212,18 +182,14 @@ export class SeederService {
           key: `medias/${category.type === MediaCategoryType.Sound ? 'audios' : 'videos'}/${file}`
         });
 
-        const previewUrls = await this.retry<
-          {
-            previewImages: any[];
-            mediaType: string;
-          }
-        >(10, async () => {
+        const previewUrls = await retry<PreviewUrls>(async () => {
           return await this.generatePreviewUrls({
             url,
             id: newMedia._id.toString(),
             mimeType: handledFile.mimeType
           });
-        })
+          
+        },10);
 
         newMedia.url = url;
         newMedia.previewUrls = previewUrls.previewImages;
