@@ -6,6 +6,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IBackgroundMedia } from 'src/store/backgrounds/types';
 import { Fade } from '@mui/material';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 
 const Component = ({
     media,
@@ -20,19 +21,47 @@ const Component = ({
 
     const hideHover = () => setIsHover(false);
 
+    const { url } = media;
+
+    const renderMedia = () => {
+        if (!url) return null;
+        switch (media.type) {
+            case 'image':
+                return (
+                    <CustomImage
+                        src={url}
+                        width={160}
+                        height={150}
+                        className={styles.image}
+                    />
+                );
+            case 'video':
+                return (
+                    <CustomVideoPlayer
+                        src={url}
+                        volume={0}
+                        isPlaying
+                        isMuted={false}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
         <CustomGrid
             className={styles.wrapper}
             onMouseEnter={showHover}
             onMouseLeave={hideHover}
         >
-            <CustomGrid container flexDirection="row" alignItems="center">
-                <CustomImage
-                    src={media.url}
-                    width={160}
-                    height={150}
-                    className={styles.image}
-                />
+            <CustomGrid
+                container
+                flexDirection="row"
+                alignItems="center"
+                height="100%"
+            >
+                {renderMedia()}
             </CustomGrid>
             <Fade in={isHover}>
                 <CustomGrid

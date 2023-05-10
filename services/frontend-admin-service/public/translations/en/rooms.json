@@ -96,8 +96,16 @@
     "price": "Price",
     "status": "Status"
   },
-  "backgrounds" : {
+  "backgrounds": {
     "medias": "Medias",
     "categories": "Categories"
+  },
+  "confirmDeleteCategory": {
+    "title": "Delete Category \"{{categoryName}}\"?",
+    "text": "The Category will be deleted from The Live Office library"
+  },
+  "confirmDeleteMedia": {
+    "title": "Delete Media \"{{mediaName}}\"?",
+    "text": "The Media will be deleted from The Live Office library"
   }
 }

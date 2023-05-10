@@ -17,6 +17,7 @@ import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import clsx from 'clsx';
+import { mapEmoji, parseEmoji } from 'shared-utils';
 
 const Component = (
     {
@@ -70,10 +71,6 @@ const Component = (
         setEmoji(emojiData.unified);
     };
 
-    const getEmoji = data => {
-        return String.fromCodePoint.apply(null, data);
-    };
-
     const save = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         if (categoryName) {
@@ -109,11 +106,7 @@ const Component = (
                                     className={styles.emoji}
                                     onClick={togglePreviewEmoji}
                                 >
-                                    {getEmoji(
-                                        emoji
-                                            .split('-')
-                                            .map(item => '0x'.concat(item)),
-                                    )}
+                                    {parseEmoji(mapEmoji(emoji))}
                                 </CustomGrid>
                             </InputAdornment>
                         ),

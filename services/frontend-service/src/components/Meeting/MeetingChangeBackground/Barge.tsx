@@ -5,8 +5,9 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IMediaCategory } from 'shared-types';
-import styles from './MeetingChangeBackground.module.scss';
 import { hasHttps } from 'shared-frontend/const/regexp';
+import { mapEmoji, parseEmoji } from 'shared-utils';
+import styles from './MeetingChangeBackground.module.scss';
 
 const Component = ({
     isActive = false,
@@ -17,13 +18,7 @@ const Component = ({
     item: IMediaCategory & { id: string };
     onSelect: (id: string) => void;
 }) => {
-    const getEmoji = () => {
-        return String.fromCodePoint.apply(
-            null,
-            item.emojiUrl.split('-').map(item => '0x'.concat(item)),
-        );
-    };
-
+    const { emojiUrl } = item;
     return (
         <CustomGrid
             className={clsx(styles.barge, { [styles.active]: isActive })}
@@ -35,12 +30,8 @@ const Component = ({
                 alignItems="center"
                 justifyContent="center"
             >
-                {new RegExp(hasHttps).test(item.emojiUrl) ? (
-                    <CustomImage
-                        width={13}
-                        height={13}
-                        src={item.emojiUrl}
-                    />
+                {new RegExp(hasHttps).test(emojiUrl) ? (
+                    <CustomImage width={13} height={13} src={emojiUrl} />
                 ) : (
                     <CustomGrid
                         className={styles.emoji}
@@ -48,7 +39,7 @@ const Component = ({
                         justifyContent="center"
                         alignItems="center"
                     >
-                        {getEmoji()}
+                        {parseEmoji(mapEmoji(emojiUrl))}
                     </CustomGrid>
                 )}
 

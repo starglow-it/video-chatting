@@ -128,6 +128,7 @@ sample({
         addMediaFx.doneData,
         deleteMediaFx.doneData,
         deleteCategoryFx.doneData,
+        updateCategoryFx.doneData,
     ],
     fn: (_: any, clock: ResultActionBackground) => ({
         message: clock.message,

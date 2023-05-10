@@ -12,6 +12,7 @@ import { TrashIcon } from 'shared-frontend/icons/OtherIcons/TrashIcon';
 import clsx from 'clsx';
 import { hasHttps } from 'shared-frontend/const/regexp';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { mapEmoji, parseEmoji } from 'shared-utils';
 
 const Component = ({
     category,
@@ -26,6 +27,7 @@ const Component = ({
     onSave: (category: IBackgroundCategory) => void;
     onDelete: (categoryId: string) => void;
 }) => {
+    const { emojiUrl } = category;
     const refModify = useRef(null);
     const [isHover, setIsHover] = useState<boolean>(false);
 
@@ -43,68 +45,53 @@ const Component = ({
         onDelete(category.id);
     };
 
-    const getEmoji = () => {
-        return String.fromCodePoint.apply(
-            null,
-            category.emojiUrl.split('-').map(item => '0x'.concat(item)),
-        );
-    };
-
     return (
-        <>
-            <CustomGrid
-                className={clsx(styles.wrapper, { [styles.active]: isActive })}
-                flexDirection="row"
-                display="flex"
-                onMouseEnter={showActions}
-                onMouseLeave={hideActions}
-                onClick={() => onClick(category.id)}
-            >
-                <CustomGrid container flexDirection="row" alignItems="center">
-                    <CustomGrid className={styles.emoji}>
-                        {new RegExp(hasHttps).test(category.emojiUrl) ? (
-                            <CustomImage
-                                width={20}
-                                height={20}
-                                src={category.emojiUrl}
-                            />
-                        ) : (
-                            getEmoji()
-                        )}
-                    </CustomGrid>
-                    <CustomTypography fontSize={13}>
-                        {category.value}
-                    </CustomTypography>
+        <CustomGrid
+            className={clsx(styles.wrapper, { [styles.active]: isActive })}
+            flexDirection="row"
+            display="flex"
+            onMouseEnter={showActions}
+            onMouseLeave={hideActions}
+            onClick={() => onClick(category.id)}
+        >
+            <CustomGrid container flexDirection="row" alignItems="center">
+                <CustomGrid className={styles.emoji}>
+                    {new RegExp(hasHttps).test(emojiUrl) ? (
+                        <CustomImage width={20} height={20} src={emojiUrl} />
+                    ) : (
+                        parseEmoji(mapEmoji(emojiUrl))
+                    )}
                 </CustomGrid>
-                <Fade in={isHover}>
-                    <CustomGrid
-                        alignItems="center"
-                        flexDirection="row"
-                        display="flex"
-                    >
-                        <ActionButton
-                            variant="decline"
-                            Icon={<EditIcon width="17px" height="17px" />}
-                            onAction={toggleEdit}
-                            className={styles.editIcon}
-                        />
-                        <ActionButton
-                            variant="decline"
-                            Icon={<TrashIcon width="20px" height="20px" />}
-                            className={styles.editIcon}
-                            onAction={deleteCategory}
-                        />
-                    </CustomGrid>
-                </Fade>
-                <ModifyCategoryItem
-                    ref={refModify}
-                    category={category}
-                    onSave={onSave}
-                />
+                <CustomTypography fontSize={13}>
+                    {category.value}
+                </CustomTypography>
             </CustomGrid>
-
-            <CustomDivider style={{ width: '100%' }} />
-        </>
+            <Fade in={isHover}>
+                <CustomGrid
+                    alignItems="center"
+                    flexDirection="row"
+                    display="flex"
+                >
+                    <ActionButton
+                        variant="decline"
+                        Icon={<EditIcon width="17px" height="17px" />}
+                        onAction={toggleEdit}
+                        className={styles.editIcon}
+                    />
+                    <ActionButton
+                        variant="decline"
+                        Icon={<TrashIcon width="20px" height="20px" />}
+                        className={styles.editIcon}
+                        onAction={deleteCategory}
+                    />
+                </CustomGrid>
+            </Fade>
+            <ModifyCategoryItem
+                ref={refModify}
+                category={category}
+                onSave={onSave}
+            />
+        </CustomGrid>
     );
 };
 export const CategoryItem = memo(Component);

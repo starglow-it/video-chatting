@@ -6,15 +6,27 @@ import { Translation } from '@components/Translation/Translation';
 import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import {
+    $backgroundsManageStore,
+    $categoryIdDeleteStore,
     $confirmDeleteCategoryDialogStore,
     closeAdminDialogEvent,
     deleteCategoryEvent,
 } from 'src/store';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { AdminDialogsEnum } from 'src/store/types';
 
 const Component = () => {
-    const confirmDeleteCategoryDialog = useStore($confirmDeleteCategoryDialogStore);
+    const confirmDeleteCategoryDialog = useStore(
+        $confirmDeleteCategoryDialogStore,
+    );
+
+    const categoryId = useStore($categoryIdDeleteStore);
+    const category = useStoreMap({
+        store: $backgroundsManageStore,
+        keys: [categoryId],
+        fn: (state, [categoryId]) =>
+            state.categories.find(item => item.id === categoryId),
+    });
 
     const handleClose = () => {
         closeAdminDialogEvent(AdminDialogsEnum.confirmDeleteCategoryDialog);
@@ -23,7 +35,7 @@ const Component = () => {
     const handleConfirmDelete = () => {
         deleteCategoryEvent();
         handleClose();
-    }
+    };
 
     return (
         <CustomDialog
@@ -33,14 +45,15 @@ const Component = () => {
             <CustomTypography variant="h3bold">
                 <Translation
                     nameSpace="rooms"
-                    translation="confirmDeleteRoom.title"
+                    translation="confirmDeleteCategory.title"
+                    options={{ categoryName: category?.value }}
                 />
             </CustomTypography>
 
             <CustomTypography textAlign="center">
                 <Translation
                     nameSpace="rooms"
-                    translation="confirmDeleteRoom.text"
+                    translation="confirmDeleteCategory.text"
                 />
             </CustomTypography>
             <ButtonsGroup className={styles.buttons}>
