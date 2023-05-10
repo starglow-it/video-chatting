@@ -45,10 +45,10 @@ const Component = () => {
     };
 
     const handleAddCategory = (category: IBackgroundCategory) => {
-        const newCategory = {...category};
+        const newCategory = { ...category };
         delete newCategory.id;
         addCategoryFx(newCategory);
-    }
+    };
 
     return (
         <CustomGrid sm={3} marginRight={2}>
@@ -79,8 +79,8 @@ const Component = () => {
                             id: Date.now().toString(),
                             value: '',
                             key: '',
-                            emojiUrl: '1f922',
-                            type: MediaCategoryType.Background
+                            emojiUrl: '1f47b',
+                            type: MediaCategoryType.Background,
                         }}
                         onSave={handleAddCategory}
                         className={styles.boxAdd}

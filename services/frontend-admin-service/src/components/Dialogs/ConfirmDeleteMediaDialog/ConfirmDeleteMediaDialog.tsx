@@ -6,24 +6,15 @@ import { Translation } from '@components/Translation/Translation';
 import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import {
-    $backgroundsManageStore,
     $confirmDeleteMediaDialogStore,
-    $mediaIdDeleteStore,
     closeAdminDialogEvent,
     deleteMediaEvent,
 } from 'src/store';
-import { useStore, useStoreMap } from 'effector-react';
+import { useStore } from 'effector-react';
 import { AdminDialogsEnum } from 'src/store/types';
 
 const Component = () => {
     const confirmDeleteMediaDialog = useStore($confirmDeleteMediaDialogStore);
-    const mediaId = useStore($mediaIdDeleteStore);
-    const media = useStoreMap({
-        store: $backgroundsManageStore,
-        keys: [mediaId],
-        fn: (state, [mediaId]) =>
-            state.medias.find(item => item.id === mediaId),
-    });
 
     const handleClose = () => {
         closeAdminDialogEvent(AdminDialogsEnum.confirmDeleteMediaDialog);
@@ -43,7 +34,6 @@ const Component = () => {
                 <Translation
                     nameSpace="rooms"
                     translation="confirmDeleteMedia.title"
-                    options={{ mediaName: media?.name }}
                 />
             </CustomTypography>
 

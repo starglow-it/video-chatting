@@ -63,11 +63,13 @@ const Component = (
         setCategoryName(e.target.value);
     };
 
-    const togglePreviewEmoji = () => {
+    const togglePreviewEmoji = (e: MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
         setIsPreviewEmoji(!isPreviewEmoji);
     };
 
-    const handleEmojiClick = emojiData => {
+    const handleEmojiClick = (emojiData: any, e: MouseEvent) => {
+        e.stopPropagation();
         setEmoji(emojiData.unified);
     };
 
