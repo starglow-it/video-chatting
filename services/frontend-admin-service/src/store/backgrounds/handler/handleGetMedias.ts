@@ -1,8 +1,6 @@
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
 import {
     GetMediasParams,
-    IBackgroundCategory,
-    IBackgroundMedia,
     ResultGetCategories,
 } from '../types';
 import { EntityList, ErrorState } from 'shared-types';
@@ -13,18 +11,18 @@ export const handleGetMedias = async ({
     skip = 0,
     limit = 0,
 }: GetMediasParams): Promise<ResultGetCategories> => {
-    const response = await sendRequestWithCredentials<
+    const { success, result } = await sendRequestWithCredentials<
         ResultGetCategories,
         ErrorState
     >(getMediasUrl({ categoryId, skip, limit }));
 
     const isReset = skip === 0;
 
-    if (response.success && response.result) {
-        return {...response.result, isReset};
+    if (success && result) {
+        return { ...result, isReset };
     }
 
-    if (!response.success) {
+    if (!success) {
         return {
             list: [],
             count: 0,

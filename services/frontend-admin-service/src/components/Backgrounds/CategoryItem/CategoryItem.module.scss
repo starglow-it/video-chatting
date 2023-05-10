@@ -1,10 +1,12 @@
+@import '../../../styles/rem.scss';
+
 .wrapper {
-    height: 45px;
+    height: rem(45px);
     width: 100%;
-    border-radius: 8px;
+    border-radius: rem(8px);
     position: relative;
     cursor: pointer;
-    padding: 10px;
+    padding: rem(10px);
     
     &:hover {
         background-color: #f4f6f9;
@@ -12,8 +14,8 @@
 }
 
 .emoji {
-    font-size: 22px;
-    margin-right: 8px;
+    font-size: rem(22px);
+    margin-right: rem(8px);
 }
 
 .active {
@@ -21,7 +23,7 @@
 }
 
 .editIcon {
-    margin-right: 4px;
-    border-radius: 6px;
-    height: 26px;
+    margin-right: rem(4px);
+    border-radius: rem(6px);
+    height: rem(26px);
 }

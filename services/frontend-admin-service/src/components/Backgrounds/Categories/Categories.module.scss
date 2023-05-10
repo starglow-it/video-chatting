@@ -1,11 +1,13 @@
+@import '../../../styles/rem.scss';
+
 .paper {
-    border-radius: 8px;
-    padding: 16px;
+    border-radius: rem(8px);
+    padding: rem(16px);
 }
 
 .header {
-    margin-bottom: 20px;
-    border-radius: 0px;
+    margin-bottom: rem(20px);
+    border-radius: rem(0px);
 }
 
 .addIcon {
@@ -17,7 +19,7 @@
 }
 
 .categories {
-    max-height: 410px;
+    max-height: rem(410px);
     overflow-y: scroll;
     position: relative;
 }
