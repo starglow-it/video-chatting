@@ -89,7 +89,7 @@ const Component: React.FunctionComponent<
         if (event.type === 'mousedown') {
             refTimer.current = setTimeout(() => {
                 handleStartDrag();
-            }, 300);
+            }, 100);
         }
 
         if (event.type === 'mouseup' || event.type === 'touchend') {
