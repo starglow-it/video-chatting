@@ -5,9 +5,6 @@ services:
     build: ./traefik
     container_name: traefik
     restart: always
-    environment:
-      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
-      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}
     ports:
       - "80:80"
       - "443:443"
@@ -32,8 +29,8 @@ services:
       - "traefik.http.routers.proxy.rule=HostRegexp(`{subdomain:.+}.scaling.app.theliveoffice.com`)"
       - "traefik.http.routers.proxy.entrypoints=https"
       - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
-      - "traefik.http.routers.whoami.tls.domains[0].main=scaling.app.theliveoffice.com"
-      - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.app.theliveoffice.com"
+      - "traefik.http.routers.proxy.tls.domains[0].main=scaling.app.theliveoffice.com"
+      - "traefik.http.routers.proxy.tls.domains[0].sans=*.scaling.app.theliveoffice.com"
       - "traefik.http.services.proxy.loadbalancer.server.port=7000"
       - "io.portainer.accesscontrol.public"
     networks:
@@ -44,8 +41,8 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
-      - "traefik.http.routers.whoami.rule=Host(`theliveoffice.com`) && PathPrefix(`/whoami`)"
+      - "traefik.docker.network=liveoffice_traefik"
+      - "traefik.http.routers.whoami.rule=(Host(`app.theliveoffice.com`) || Host(`socket.app.theliveoffice.com`)) && PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami.entrypoints=https"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
@@ -54,3 +51,4 @@ services:
 
 networks:
   traefik:
+    name: liveoffice_traefik
