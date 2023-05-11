@@ -4,6 +4,7 @@ import { EventAttributes } from 'ics';
 import { parseTimestamp } from './dateHelpers/parseTimestamp';
 import { getTimeoutTimestamp } from 'shared-utils';
 import { TimeoutTypesEnum } from 'shared-types';
+import { Attendee } from 'ics';
 
 const ONE_HOUR = getTimeoutTimestamp({
   type: TimeoutTypesEnum.Hours,
@@ -22,6 +23,15 @@ export const generateIcsEventData = async ({
   endAt,
   comment,
   attendees,
+  url
+}: {
+  organizerName: string,
+  organizerEmail: string,
+  startAt: number,
+  endAt: number,
+  comment: string,
+  attendees: Attendee[],
+  url?: string
 }): Promise<string> => {
   const duration = endAt - startAt;
 
@@ -47,6 +57,7 @@ export const generateIcsEventData = async ({
     description: comment,
     status: 'CONFIRMED',
     method: 'REQUEST',
+    url,
     organizer: {
       name: organizerName,
       email: organizerEmail,
