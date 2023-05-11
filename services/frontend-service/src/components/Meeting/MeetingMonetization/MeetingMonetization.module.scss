@@ -89,3 +89,24 @@
 .popoverMonetization{
   background: transparent;
 }
+
+
+
+.confirmButtonsWrapper {
+  margin: rem(40px 0 0 0);
+
+  .baseBtn {
+    width: rem(212px);
+    height: rem(56px);
+  }
+
+  .buttonSubmit {
+    width: rem(212px);
+    height: rem(56px);
+  }
+}
+.dialogTitle{
+  font-size: 20px;
+  font-weight: 600;
+  margin: rem(40px 0 0 0);
+}
