@@ -114,9 +114,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     );
 
     const onSave = async (data: FieldValues) => {
-        const isMonetizationEnabled = data.isInmeetingPayment || data.isPaywallPayment
         await updateMeetingTemplateFxWithData({
-            isMonetizationEnabled,
+            isMonetizationEnabled: data.isInmeetingPayment || data.isPaywallPayment,
             templatePrice: data.isInmeetingPayment ? +data.templatePrice : 0,
             paywallPrice: data.isPaywallPayment ?  +data.paywallPrice : 0,
             templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
