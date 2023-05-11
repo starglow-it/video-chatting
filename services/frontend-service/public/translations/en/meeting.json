@@ -153,5 +153,10 @@
   "schedule": {
     "title": "Schedule",
     "tooltip": "Scheduling"
+  },
+  "confirmPrice": {
+    "description": "Confirm Change Price",
+    "cancel": "Cancel",
+    "save": "Save"
   }
 }
