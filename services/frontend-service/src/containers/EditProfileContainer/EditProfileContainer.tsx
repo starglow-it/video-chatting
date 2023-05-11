@@ -197,7 +197,6 @@ const EditProfileContainer = memo(() => {
                             className={styles.widthWrapper}
                         >
                             <EditCompanyInfo />
-                            <EditPersonalInfo />
                             <EditSocialInfo />
                             <DeleteProfile />
                         </CustomGrid>

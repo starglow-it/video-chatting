@@ -9,9 +9,9 @@
   color: $primary-black;
 }
 
-.contentWrapper {
-  max-width: rem(392px);
-}
+// .contentWrapper {
+//   max-width: rem(392px);
+// }
 
 .title {
   margin: 0 0 rem(45px) 0;
@@ -19,4 +19,13 @@
 
 .tagsWrapper {
   max-height: 300px;
+}
+
+.details {
+  padding: 25px;
+}
+
+.sumary {
+  align-items: center;
+  min-height: rem(40px);
 }

@@ -1,8 +1,8 @@
-import { AccordionDetailsProps, AccordionSummaryProps } from "@mui/material";
+import { AccordionDetailsProps, AccordionSummaryProps } from '@mui/material';
 
 export type CustomAccordionProps = {
-    sumary?: React.ReactNode;
-    detail?: React.ReactNode;
+    sumary?: JSX.Element;
+    detail?: JSX.Element;
     sumaryProps?: AccordionSummaryProps;
     detailProps?: AccordionDetailsProps;
 };

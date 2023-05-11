@@ -1,18 +1,14 @@
 import { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
-import {
-    LoginTypes,
-  } from 'shared-types';
+import { LoginTypes } from 'shared-types';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
 
@@ -28,6 +24,7 @@ import { $profileStore } from '../../../store';
 
 // styles
 import styles from './EditAccountInfo.module.scss';
+import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
 
 const EditAccountInfo = memo(() => {
     const profile = useStore($profileStore);
@@ -47,9 +44,18 @@ const EditAccountInfo = memo(() => {
     const basicComponentLayout = useMemo(
         () => (
             <>
-                <CustomTypography variant="body1">{profile.email}</CustomTypography>
-                <ConditionalRender condition={profile.loginType === LoginTypes.Local}>
-                    <CustomGrid container gap={1} className={styles.buttonsWrapper} wrap="nowrap">
+                <CustomTypography variant="body1">
+                    {profile.email}
+                </CustomTypography>
+                <ConditionalRender
+                    condition={profile.loginType === LoginTypes.Local}
+                >
+                    <CustomGrid
+                        container
+                        gap={1}
+                        className={styles.buttonsWrapper}
+                        wrap="nowrap"
+                    >
                         <CustomButton
                             onClick={handleToggleEditEmail}
                             className={styles.button}
@@ -83,37 +89,38 @@ const EditAccountInfo = memo(() => {
             </>
         ),
         [profile.email],
-    )
+    );
 
     return (
-        <CustomPaper className={styles.paperWrapper}>
-            <CustomBox
-                display="grid"
-                gridTemplateColumns="minmax(110px, 192px) 1fr"
-                gridTemplateRows="repeat(1, 1fr)"
-            >
-                <CustomBox gridArea="1/1/1/1">
-                    <CustomGrid container alignItems="center">
-                        <LockIcon width="24px" height="24px" className={styles.icon} />
-                        <CustomTypography
-                            variant="body1"
-                            fontWeight="600"
-                            nameSpace="profile"
-                            translation="account"
-                        />
-                    </CustomGrid>
-                </CustomBox>
-                <CustomGrid
-                    gridArea="1/2/1/2"
-                    container
-                    wrap="nowrap"
-                    alignItems="flex-start"
-                    className={styles.contentWrapper}
-                >
+        <CustomAccordion
+            sumary={
+                <>
+                    <LockIcon
+                        width="24px"
+                        height="24px"
+                        className={styles.icon}
+                    />
+                    <CustomTypography
+                        variant="body1"
+                        fontWeight="600"
+                        nameSpace="profile"
+                        translation="account"
+                    />
+                </>
+            }
+            sumaryProps={{
+                classes: {
+                    content: styles.sumary,
+                },
+            }}
+            detail={
+                <CustomGrid container className={styles.contentWrapper}>
                     {!(isEmailEdit || isPasswordEdit) && (
-                        <EditProfileAvatar className={styles.editProfileAvatar} />
+                        <EditProfileAvatar
+                            className={styles.editProfileAvatar}
+                        />
                     )}
-                    <CustomGrid container direction="column" gap={1}>
+                    <CustomGrid direction="column" gap={1}>
                         {isEmailEdit || isPasswordEdit ? (
                             <>
                                 {isEmailEdit && !isPasswordEdit && (
@@ -134,8 +141,8 @@ const EditAccountInfo = memo(() => {
                         )}
                     </CustomGrid>
                 </CustomGrid>
-            </CustomBox>
-        </CustomPaper>
+            }
+        />
     );
 });
 

@@ -17,3 +17,12 @@
   height: rem(56px);
   width: rem(56px);
 }
+
+.detail {
+  display: flex;
+  justify-content: center;
+}
+.sumary {
+  align-items: center;
+  min-height: rem(40px);
+}
