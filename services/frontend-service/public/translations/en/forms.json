@@ -4,7 +4,7 @@
   "yourName": "Your name",
   "companyName": "Company Name",
   "contactEmail": "Contact Email",
-  "businessDescription": "Describe your business",
+  "businessDescription": "Describe what you like to do",
   "businessCategories": "Business categories",
   "position": "Position",
   "fullName": "Full name",
@@ -18,5 +18,6 @@
     "profileAvatar": "Upload profile image (optional)",
     "dragAndDrop": "Tap or drag here"
   },
-  "addUserEmail": "Add user email"
+  "addUserEmail": "Add user email",
+  "nameOfYourLive": "Name of your live office"
 }

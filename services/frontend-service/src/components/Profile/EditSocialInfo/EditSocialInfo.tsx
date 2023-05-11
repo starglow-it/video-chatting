@@ -27,7 +27,7 @@ const EditSocialInfo = memo(() => {
                         fontWeight="600"
                         nameSpace="profile"
                         translation="social"
-                        width="240px"
+                        width="253px"
                     />
                     <CustomGrid
                         container

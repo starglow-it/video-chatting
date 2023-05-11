@@ -17,6 +17,7 @@ import { getBusinessCategoriesFx } from '../../../store';
 // styles
 import styles from './EditCompanyInfo.module.scss';
 import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 
 const EditCompanyInfo = memo(() => {
     const {
@@ -41,17 +42,13 @@ const EditCompanyInfo = memo(() => {
         <CustomAccordion
             sumary={
                 <>
-                    <MoneyIcon
-                        width="24px"
-                        height="24px"
-                        className={styles.icon}
-                    />
+                    <PersonIcon width="24px" height="24px" className={styles.icon} />
                     <CustomTypography
                         variant="body1"
                         fontWeight="600"
                         nameSpace="profile"
-                        translation="company"
-                        width="240px"
+                        translation="personal"
+                        width="253px"
                     />
                     <CustomGrid
                         container
@@ -97,7 +94,7 @@ const EditCompanyInfo = memo(() => {
                             />
                             <CustomInput
                                 nameSpace="forms"
-                                translation="companyName"
+                                translation="nameOfYourLive"
                                 error={currentCompanyNameErrorMessage}
                                 {...register('companyName')}
                             />
