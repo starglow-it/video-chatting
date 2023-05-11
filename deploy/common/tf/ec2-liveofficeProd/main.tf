@@ -1,15 +1,15 @@
 terraform {
   backend "s3" {
-    region  = "ap-southeast-1"
-    bucket  = "dcu9375-terraform-state"
-    key     = "nongdan.dev-liveofficeProd.terraformstate"
-    profile = "dcu9375"
+    region  = "us-east-2"
+    bucket  = "tlo-terraform-state"
+    key     = "ec2-liveofficeProd.terraformstate"
+    profile = "nongdan.dev-tlo"
   }
 }
 
 provider "aws" {
   region                  = "us-east-2"
-  profile                 = "dcu9375"
+  profile                 = "nongdan.dev-tlo"
   shared_credentials_files = ["~/.aws/credentials"]
 }
 
@@ -18,7 +18,7 @@ data "aws_vpc" "vpc" {
   filter {
     name = "tag:Name"
     values = [
-      "tlo-vpc"]
+      "tlo"]
   }
 }
 
@@ -26,7 +26,7 @@ data "aws_subnet" "subnet" {
   filter {
     name = "tag:Name"
     values = [
-      "tlo-vpc-public-us-east-2b"]
+      "tlo-public-us-east-2b"]
   }
 }
 
@@ -152,22 +152,31 @@ resource "aws_security_group_rule" "ingress-07-sgr" {
 resource "aws_instance" "instance" {
   // ubuntu
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3a.large"
+  instance_type = "c6a.xlarge"
   security_groups = [
     "${aws_security_group.sg.id}"]
   subnet_id = "${data.aws_subnet.subnet.id}"
   private_ip = "10.0.253.21"
-  key_name = "nongdan.dev-keypair"
+  key_name = "nongdan.dev"
   root_block_device {
     delete_on_termination = true
-    volume_size = "50"
+    volume_size = "100"
     volume_type = "gp2"
   }
 
-
+  user_data_replace_on_change = true
   lifecycle {
     ignore_changes = [security_groups, ami]
   }
+
+
+
+  user_data = <<EOF
+#!/bin/bash
+echo "Changing Hostname"
+hostname "liveofficeProd"
+echo "liveofficeProd" > /etc/hostname
+EOF
 
   volume_tags ={
     Terraform = "true"

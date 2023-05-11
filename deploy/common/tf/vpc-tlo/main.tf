@@ -1,15 +1,15 @@
 terraform {
   backend "s3" {
-    region  = "ap-southeast-1"
-    bucket  = "dcu9375-terraform-state"
-    key     = "nongdan.dev-tlo-vpc.terraformstate"
-    profile = "dcu9375"
+    region  = "us-east-2"
+    bucket  = "tlo-terraform-state"
+    key     = "vpc-tlo.terraformstate"
+    profile = "nongdan.dev-tlo"
   }
 }
 
 provider "aws" {
   region                  = "us-east-2"
-  profile                 = "dcu9375"
+  profile                 = "nongdan.dev-tlo"
   shared_credentials_files = ["~/.aws/credentials"]
 }
 
@@ -17,7 +17,7 @@ provider "aws" {
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "tlo-vpc"
+  name = "tlo"
   cidr = "10.0.0.0/16"
 
   azs             = ["us-east-2a", "us-east-2b", "us-east-2c"]
