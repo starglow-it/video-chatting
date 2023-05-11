@@ -556,6 +556,9 @@ export class UsersController {
       const endAt = parseDateObject(data.endAt);
 
       const tzOffset = getTzOffset(startAt, data.timeZone);
+      const meetingUrl = `${this.frontendUrl}/room/${
+        template.customLink || template.id
+      }`
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
@@ -563,6 +566,7 @@ export class UsersController {
         startAt: startAt - tzOffset,
         endAt: endAt - tzOffset,
         comment: data.comment,
+        url: meetingUrl,
         attendees: data.userEmails.map((email) => ({ name: email, email })),
       });
 
@@ -583,9 +587,7 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${
-                template.customLink || template.id
-              }`,
+              content: meetingUrl,
             },
             { name: 'DATE', content: startAtDate },
             {
@@ -606,9 +608,7 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${
-                template.customLink || template.id
-              }`,
+              content: meetingUrl,
             },
             { name: 'DATE', content: startAtDate },
             { name: 'ROOMNAME', content: template.name },
