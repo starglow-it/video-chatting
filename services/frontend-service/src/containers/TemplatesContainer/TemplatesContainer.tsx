@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 
 // hooks
 import { useTemplateNotification } from '@hooks/useTemplateNotification';
@@ -37,7 +37,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { useLocalization } from '@hooks/useTranslation';
-import { ICommonTemplate } from 'shared-types';
+import { EntityList, ICommonTemplate, IUserTemplate } from 'shared-types';
 import { Translation } from '@library/common/Translation/Translation';
 import {
     $isBusinessSubscription,
@@ -72,11 +72,10 @@ import styles from './TemplatesContainer.module.scss';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
-import { AppDialogsEnum, IUserTemplate } from '../../store/types';
+import { AppDialogsEnum } from '../../store/types';
 
 // utils
 import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
-import { formatCountDown } from '../../utils/time/formatCountdown';
 
 const Component = () => {
     const router = useRouter();
@@ -88,12 +87,29 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfessionalSubscription = useStore($isProfessionalSubscription);
-    const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
+    const { state: profileTemplatesCount } = useStore(
+        $profileTemplatesCountStore,
+    );
     const templateDraft = useStore($templateDraft);
     const isTrial = useStore($isTrial);
+    const freeTemplates = useStoreMap<
+        EntityList<IUserTemplate>,
+        IUserTemplate[],
+        [string]
+    >({
+        store: $profileTemplatesStore,
+        keys: [profile.id],
+        fn: (state, [profileId]) =>
+            state?.list.filter(
+                template =>
+                    template.type === 'free' && template.author !== profileId,
+            ),
+    });
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
-    const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
+    const isSubscriptionPurchasePending = useStore(
+        startCheckoutSessionForSubscriptionFx.pending,
+    );
 
     const { translation } = useLocalization('subscriptions');
 
@@ -113,15 +129,22 @@ const Component = () => {
             skip: 0,
             userId: profile.id,
             sort: 'maxParticipants',
-            direction: 1
+            direction: 1,
         });
     }, []);
 
     useEffect(() => {
         (async () => {
             if (!isTemplateDeleting) {
-                await getProfileTemplatesFx({ limit: skipProfileTemplates, skip: 0 });
-                await getProfileTemplatesCountFx({ limit: 0, skip: 0, templateType: 'free' });
+                await getProfileTemplatesFx({
+                    limit: skipProfileTemplates,
+                    skip: 0,
+                });
+                await getProfileTemplatesCountFx({
+                    limit: 0,
+                    skip: 0,
+                    templateType: 'free',
+                });
             }
         })();
     }, [isTemplateDeleting]);
@@ -130,69 +153,43 @@ const Component = () => {
 
     const isThereProfileTemplates = Boolean(profileTemplates?.list?.length);
 
-    const handleProfileTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getProfileTemplatesFx({ limit: 6 * newPage, skip: 0 });
+    const handleProfileTemplatesPageChange = useCallback(
+        async (newPage: number) => {
+            await getProfileTemplatesFx({ limit: 6 * newPage, skip: 0 });
 
-        setSkipProfileTemplates(6 * newPage);
-    }, []);
-
-    const handleCommonTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getTemplatesFx({
-            draft: false,
-            isPublic: true,
-            limit: 6 * newPage,
-            skip: 0,
-            userId: profile.id,
-            sort: 'maxParticipants',
-            direction: 1,
-        });
-    }, [profile.id]);
-
-    const handleCreateMeeting = useCallback(
-        async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
-            const result = await createMeetingFx({ templateId });
-            
-            if (result.template) {
-                await router.push(
-                    getClientMeetingUrl(result.template?.customLink || result?.template?.id),
-                );
-            }
+            setSkipProfileTemplates(6 * newPage);
         },
         [],
     );
 
-    const handleChooseCommonTemplate = useCallback(
-        async (templateId: ICommonTemplate['id']) => {
-            
-            const targetTemplate = templates?.list?.find(template => template.id === templateId);
+    const handleCommonTemplatesPageChange = useCallback(
+        async (newPage: number) => {
+            await getTemplatesFx({
+                draft: false,
+                isPublic: true,
+                limit: 6 * newPage,
+                skip: 0,
+                userId: profile.id,
+                sort: 'maxParticipants',
+                direction: 1,
+            });
+        },
+        [profile.id],
+    );
 
-            if (targetTemplate?.type === 'paid') {
-                
-                const response = await purchaseTemplateFx({ templateId });
-                
-                router.push(response.url);
-                
-                return;
-            }
-            
-            if (profile.maxTemplatesNumber === profileTemplatesCount.count) {
-                setReplaceTemplateIdEvent(templateId);
-                
-                appDialogsApi.openDialog({
-                    dialogKey: AppDialogsEnum.replaceTemplateConfirmDialog,
-                });
-                
-                return;
-            }
-            
-            const newTemplate = await addTemplateToUserFx({ templateId });
-            
-            if (newTemplate) {
-                
-                await handleCreateMeeting({ templateId: newTemplate.id });
+    const handleCreateMeeting = useCallback(
+        async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
+            const result = await createMeetingFx({ templateId });
+
+            if (result.template) {
+                await router.push(
+                    getClientMeetingUrl(
+                        result.template?.customLink || result?.template?.id,
+                    ),
+                );
             }
         },
-        [templates, profile.maxTemplatesNumber, profileTemplatesCount.count, handleCreateMeeting],
+        [],
     );
 
     const handleReplaceTemplate = useCallback(
@@ -203,7 +200,9 @@ const Component = () => {
             deleteTemplateId: IUserTemplate['id'];
             templateId: ICommonTemplate['id'];
         }) => {
-            const targetTemplate = templates?.list?.find(template => template.id === templateId);
+            const targetTemplate = templates?.list?.find(
+                template => template.id === templateId,
+            );
 
             if (targetTemplate?.type === 'paid') {
                 const response = await purchaseTemplateFx({ templateId });
@@ -220,6 +219,45 @@ const Component = () => {
         [templates, handleCreateMeeting],
     );
 
+    const handleChooseCommonTemplate = useCallback(
+        async (templateId: ICommonTemplate['id']) => {
+            const targetTemplate = templates?.list?.find(
+                template => template.id === templateId,
+            );
+
+            if (targetTemplate?.type === 'paid') {
+                const response = await purchaseTemplateFx({ templateId });
+
+                router.push(response.url);
+
+                return;
+            }
+
+            if (profile.maxTemplatesNumber === profileTemplatesCount.count) {
+                const roomPlace = freeTemplates?.at(-1);
+                if (roomPlace) {
+                    await handleReplaceTemplate({
+                        templateId,
+                        deleteTemplateId: roomPlace.id,
+                    });
+                }
+                return;
+            }
+
+            const newTemplate = await addTemplateToUserFx({ templateId });
+
+            if (newTemplate) {
+                await handleCreateMeeting({ templateId: newTemplate.id });
+            }
+        },
+        [
+            templates,
+            profile.maxTemplatesNumber,
+            profileTemplatesCount.count,
+            handleCreateMeeting,
+        ],
+    );
+
     const handleChooseProfileTemplate = useCallback(
         async (templateId: IUserTemplate['id']) => {
             await handleCreateMeeting({ templateId });
@@ -234,7 +272,9 @@ const Component = () => {
         }
 
         if (isBusinessSubscription || isProfessionalSubscription) {
-            router.push(getCreateRoomUrl(templateDraft?.id ?? response?.id ?? ''));
+            router.push(
+                getCreateRoomUrl(templateDraft?.id ?? response?.id ?? ''),
+            );
             return;
         }
 
@@ -277,8 +317,16 @@ const Component = () => {
     return (
         <MainProfileWrapper>
             <ConditionalRender condition={isThereProfileTemplates}>
-                <CustomGrid container direction="column" justifyContent="center">
-                    <CustomGrid container alignItems="center" justifyContent="center">
+                <CustomGrid
+                    container
+                    direction="column"
+                    justifyContent="center"
+                >
+                    <CustomGrid
+                        container
+                        alignItems="center"
+                        justifyContent="center"
+                    >
                         <CustomBox className={styles.image}>
                             <CustomImage
                                 src="/images/ok-hand.webp"
@@ -297,7 +345,9 @@ const Component = () => {
                         <CustomTypography
                             color="colors.grayscale.semidark"
                             dangerouslySetInnerHTML={{
-                                __html: translation('limits.templates', { templatesLimit }),
+                                __html: translation('limits.templates', {
+                                    templatesLimit,
+                                }),
                             }}
                         />
                     </CustomGrid>
@@ -305,7 +355,10 @@ const Component = () => {
                         active
                         label={
                             <CustomTypography>
-                                <Translation nameSpace="templates" translation="createRoom" />
+                                <Translation
+                                    nameSpace="templates"
+                                    translation="createRoom"
+                                />
                             </CustomTypography>
                         }
                         size="medium"
@@ -330,7 +383,11 @@ const Component = () => {
                 direction="column"
                 justifyContent="center"
             >
-                <CustomGrid container alignItems="center" justifyContent="center">
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <CustomBox className={styles.image}>
                         <CustomImage
                             src="/images/blush-face.webp"
@@ -350,7 +407,10 @@ const Component = () => {
                         active
                         label={
                             <CustomTypography>
-                                <Translation nameSpace="templates" translation="createRoom" />
+                                <Translation
+                                    nameSpace="templates"
+                                    translation="createRoom"
+                                />
                             </CustomTypography>
                         }
                         size="medium"
