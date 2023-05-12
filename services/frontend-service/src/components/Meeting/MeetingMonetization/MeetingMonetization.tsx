@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { FocusEvent, memo, useCallback, useMemo, useRef } from 'react';
 import { FormProvider, Controller, useForm, useWatch, FieldValues } from 'react-hook-form';
 import { InputBase } from '@mui/material';
 import * as yup from 'yup';
@@ -148,8 +148,9 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         }
     }
 
-    const handleBlurInput = () => {
-        if(!confirmPrice){
+    const handleBlurInput = (e: FocusEvent<HTMLInputElement>) => {
+        const isShowPopper = e.relatedTarget && e.relatedTarget?.id !== 'buttonSubmit'
+        if(!confirmPrice && isShowPopper){
             const isChangeTemplatePrice = activeTemplatePrice !== meetingTemplate?.templatePrice
             const isChangePaywallPrice = activePaywallPrice !== meetingTemplate?.paywallPrice
             if(isChangePaywallPrice || isChangeTemplatePrice){
@@ -299,6 +300,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                             disabled={!isConnectStripe}
                             label={<Translation nameSpace="common" translation="buttons.save" />}
                             ref={tooltipRef}
+                            id='buttonSubmit'
                         />
                         <CustomPopper
                             id="audioControl"
