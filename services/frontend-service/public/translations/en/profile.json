@@ -40,7 +40,8 @@
     },
     "submitProfile": {
       "newChanges": "New changes:"
-    }
+    },
+    "signInEmail": "Sign in email"
   },
   "account": "Account",
   "personal": "Personal",

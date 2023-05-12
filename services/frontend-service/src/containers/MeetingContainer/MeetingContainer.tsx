@@ -26,6 +26,7 @@ import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -229,17 +230,18 @@ const MeetingContainer = memo(() => {
     
     return (
         <>
-            <ConditionalRender condition={!!meetingTemplate.url}>
-                <CustomImage
-                    src={meetingTemplate.url || ''}
-                    width="100%"
-                    height="100%"
-                    layout="fill"
-                    objectFit="cover"
-                    style={{
-                        zIndex: -1
-                    }}         
-                />
+            <ConditionalRender condition={(!!meetingTemplate.url && !isOwner && isSettingsChecked)}>
+                <MeetingBackgroundVideo
+                    templateType={meetingTemplate.templateType}
+                    src={meetingTemplate.url}
+                    videoClassName={styles.wrapperBackgroundMedia}
+                >
+                    <CustomImage
+                        src={meetingTemplate.url || ''}
+                        className={styles.wrapperBackgroundMedia}
+                        layout="fill"
+                    />
+                </MeetingBackgroundVideo>
             </ConditionalRender>
             {Boolean(meetingTemplate?.id) && (
                 <ConditionalRender

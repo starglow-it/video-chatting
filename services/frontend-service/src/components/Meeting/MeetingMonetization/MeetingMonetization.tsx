@@ -1,6 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
-import clsx from 'clsx';
-import { FormProvider, Controller, useForm, useWatch } from 'react-hook-form';
+import { FormProvider, Controller, useForm, useWatch, FieldValues } from 'react-hook-form';
 import { InputBase } from '@mui/material';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
@@ -25,6 +24,8 @@ import {ErrorMessage} from "@library/common/ErrorMessage/ErrorMessage";
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { useToggle } from '@hooks/useToggle';
 import { templatePriceSchema, paywallPriceSchema } from '../../../validation/payments/templatePrice';
 import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 
@@ -47,17 +48,13 @@ const validationSchema = yup.object({
 });
 
 const Component = ({ onUpdate }: { onUpdate: () => void }) => {
+    const {
+        value: confirmPrice,
+        onSetSwitch: handleChangeConfirm
+    } = useToggle(false);
     const meetingTemplate = useStore($meetingTemplateStore);
     const profile = useStore($profileStore);
-    const resolver = useYupValidationResolver<{
-        templateCurrency: string;
-        templatePrice: number;
-        paywallPrice: number;
-        paywallCurrency: string;
-        isMonetizationEnabled: boolean;
-        isInmeetingPayment: boolean;
-        isPaywallPayment: boolean;
-    }>(validationSchema);
+    const resolver = useYupValidationResolver<FieldValues>(validationSchema);
 
     const isConnectStripe = Boolean(
         profile.isStripeEnabled &&
@@ -116,21 +113,34 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         [activePaywallCurrency],
     );
 
-    const onSubmit = useCallback(
-        handleSubmit(async data => {
-            const isMonetizationEnabled = data.isInmeetingPayment || data.isPaywallPayment
-            await updateMeetingTemplateFxWithData({
-                isMonetizationEnabled,
-                templatePrice: data.isInmeetingPayment ? data.templatePrice : 0,
-                paywallPrice: data.isPaywallPayment ?  data.paywallPrice : 0,
-                templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
-                paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
-            });
+    const onSave = async (data: FieldValues) => {
+        await updateMeetingTemplateFxWithData({
+            isMonetizationEnabled: data.isInmeetingPayment || data.isPaywallPayment,
+            templatePrice: data.isInmeetingPayment ? +data.templatePrice : 0,
+            paywallPrice: data.isPaywallPayment ?  +data.paywallPrice : 0,
+            templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
+            paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
+        });
+        onUpdate?.();
+    }
 
-            onUpdate?.();
-        }),
-        [],
-    );
+    const onSubmit = useCallback(
+        handleSubmit((data) => {
+            const isChangeTemplatePrice = !!meetingTemplate?.templatePrice && +meetingTemplate.templatePrice !== data.templatePrice
+            const isChangePaywallPrice = !!meetingTemplate?.paywallPrice && +meetingTemplate.paywallPrice !== data.paywallPrice
+            if(isChangePaywallPrice || isChangeTemplatePrice){
+                handleChangeConfirm(true)
+            }else{
+                onSave(data)
+            }
+         
+        }),[]
+    )
+    
+    const handleDialogSubmit = async () => {        
+        onSave(control?._formValues)
+        handleChangeConfirm(false)
+    }
 
     const registerData = register('templatePrice');
     const registerPaywallData = register('paywallPrice');
@@ -270,6 +280,38 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
                 </form>
             </FormProvider>
+            <CustomDialog open={confirmPrice} onClose={() => handleChangeConfirm(false)}>
+                <CustomBox padding={2} textAlign='center' marginTop={2.5}>                    
+                    <CustomTypography
+                        translation="confirmPrice.description" nameSpace="meeting"
+                        className={styles.dialogTitle}
+                    />
+                </CustomBox>
+                <CustomGrid
+                    className={styles.confirmButtonsWrapper}
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+                    gap={2}
+                >
+                    <CustomButton
+                        onClick={() => handleChangeConfirm(false)}
+                        className={styles.baseBtn}
+                        label={
+                            <Translation
+                                nameSpace="meeting"
+                                translation="confirmPrice.cancel"
+                            />
+                        }
+                        variant="custom-cancel"
+                    />
+                    <CustomButton
+                        onClick={handleDialogSubmit}
+                        className={styles.buttonSubmit}
+                        label={<Translation nameSpace="meeting" translation="confirmPrice.save" />}
+                    />
+                </CustomGrid>
+            </CustomDialog>
         </>
     );
 };

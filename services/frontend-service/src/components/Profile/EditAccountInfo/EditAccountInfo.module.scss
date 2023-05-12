@@ -8,15 +8,15 @@
   .icon {
     color: $primary-black;
   }
+}
 
-  .contentWrapper {
-    max-width: rem(392px);
+.contentWrapper {
+  max-width: rem(392px);
 
-    .editProfileAvatar {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-    }
+  .editProfileAvatar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
   }
 }
 
@@ -27,6 +27,12 @@
   }
 }
 
+.sumary {
+  align-items: center;
+  min-height: rem(40px);
+}
 
-
-
+.detail {
+  display: flex;
+  justify-content: center;
+}
