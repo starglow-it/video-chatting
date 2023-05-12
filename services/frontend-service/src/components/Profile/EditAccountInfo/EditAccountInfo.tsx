@@ -44,11 +44,6 @@ const EditAccountInfo = memo(() => {
     const basicComponentLayout = useMemo(
         () => (
             <>
-                <CustomTypography
-                    variant="body1"
-                    nameSpace="profile"
-                    translation="editProfile.signInEmail"
-                />
                 <CustomTypography variant="body1">
                     {profile.email}
                 </CustomTypography>
@@ -110,6 +105,12 @@ const EditAccountInfo = memo(() => {
                         fontWeight="600"
                         nameSpace="profile"
                         translation="account"
+                        width="186px"
+                    />
+                    <CustomTypography
+                        variant="body1"
+                        nameSpace="profile"
+                        translation="editProfile.signInEmail"
                     />
                 </>
             }
@@ -125,7 +126,7 @@ const EditAccountInfo = memo(() => {
                             className={styles.editProfileAvatar}
                         />
                     )}
-                    <CustomGrid display="flex" direction="column" gap={1}>
+                    <CustomGrid display="flex" direction="column" gap={1} flex={1}>
                         {isEmailEdit || isPasswordEdit ? (
                             <>
                                 {isEmailEdit && !isPasswordEdit && (
