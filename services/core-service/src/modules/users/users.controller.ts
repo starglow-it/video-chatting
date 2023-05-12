@@ -605,8 +605,8 @@ export class UsersController {
         password: 'text',
         role: UserRoles.Anonymous,
         isConfirmed: true,
-        fullName: 'Global User',
-        companyName: '',
+        fullName: 'Your logo',
+        companyName: 'Your company',
         position: '',
         contactEmail: '',
         maxMeetingTime: 10

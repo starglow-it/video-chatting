@@ -8,7 +8,6 @@ import clsx from 'clsx';
 import { Box } from '@mui/material';
 
 // custom
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // types
@@ -89,7 +88,7 @@ const Component: React.FunctionComponent<
         if (event.type === 'mousedown') {
             refTimer.current = setTimeout(() => {
                 handleStartDrag();
-            }, 300);
+            }, 100);
         }
 
         if (event.type === 'mouseup' || event.type === 'touchend') {
@@ -117,38 +116,32 @@ const Component: React.FunctionComponent<
             })            
         }
     }, [isScreenSharing, bottom, left, defaultPos, isDragging]);
-    
-    const isRender = (finalTop !== null && finalLeft !== null)
 
     return (
-        <ConditionalRender
-            condition={Boolean(isRender)}
+        <Draggable
+            axis="both"
+            onStart={eventControl}
+            onStop={eventControl}
+            disabled={isScreenSharing}
+            position={{
+                x: finalLeft || 0,
+                y: finalTop || 0
+            }}
         >
-            <Draggable
-                axis="both"
-                onStart={eventControl}
-                onStop={eventControl}
-                disabled={isScreenSharing}
-                position={{
-                    x: finalLeft || 0,
-                    y: finalTop || 0
-                }}
+            <CustomBox
+                className={clsx(styles.boxDraggable, {
+                    [styles.dragSharing]: isScreenSharing,
+                })}
+                ref={contentRef}
             >
-                <CustomBox
-                    className={clsx(styles.boxDraggable, {
-                        [styles.dragSharing]: isScreenSharing,
+                {children}
+                <Box
+                    className={clsx(styles.boxPreventClick, {
+                        [styles.show]: isDragging,
                     })}
-                    ref={contentRef}
-                >
-                    {children}
-                    <Box
-                        className={clsx(styles.boxPreventClick, {
-                            [styles.show]: isDragging,
-                        })}
-                    />
-                </CustomBox>
-            </Draggable>
-        </ConditionalRender>
+                />
+            </CustomBox>
+        </Draggable>
     );
 };
 
