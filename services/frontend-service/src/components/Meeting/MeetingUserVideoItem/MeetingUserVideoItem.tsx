@@ -11,7 +11,6 @@ import { useStore, useStoreMap } from 'effector-react';
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { SharingArrowIcon } from 'shared-frontend/icons/OtherIcons/SharingArrowIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -186,7 +185,6 @@ const Component = ({
     userName,
     localStream,
     userProfileAvatar,
-    onToggleAudio,
     onToggleVideo,
     bottom,
     left,
@@ -251,7 +249,7 @@ const Component = ({
                 <MeetingUserVideoChildCom {...childProps} />
 
                 <ConditionalRender
-                    condition={(isScreenSharing && isLocal) || !isScreenSharing}
+                    condition={!isScreenSharing}
                 >
                     <CustomPaper
                         className={clsx(styles.usernameWrapper, {
@@ -259,22 +257,6 @@ const Component = ({
                         })}
                         variant="black-glass"
                     >
-                        {((isScreenSharing && isLocal) || !isScreenSharing) && (
-                            <MicIcon
-                                isActive={isMicEnabled}
-                                width={
-                                    isScreenSharing && isLocal ? '16px' : '18px'
-                                }
-                                height={
-                                    isScreenSharing && isLocal ? '16px' : '18px'
-                                }
-                                onClick={onToggleAudio}
-                                className={clsx(styles.micIcon, {
-                                    [styles.noAudio]: !isMicEnabled,
-                                    [styles.withAction]: isLocal,
-                                })}
-                            />
-                        )}
                         {!isScreenSharing && (
                             <CustomTypography
                                 color="common.white"

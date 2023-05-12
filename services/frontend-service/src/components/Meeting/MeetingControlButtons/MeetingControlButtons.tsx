@@ -3,7 +3,6 @@ import React, {
     SyntheticEvent,
     useCallback,
     useEffect,
-    useMemo,
 } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
@@ -15,7 +14,6 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 
 // common
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -26,7 +24,6 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
-import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
@@ -34,17 +31,13 @@ import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { $authStore } from '../../../store';
 import {
     $isMeetingHostStore,
-    $isScreenSharingStore,
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
-    $meetingStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
-    startScreenSharing,
-    stopScreenSharing,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
@@ -63,8 +56,6 @@ const Component = () => {
 
     const isMeetingHost = useStore($isMeetingHostStore);
     const localUser = useStore($localUserStore);
-    const meeting = useStore($meetingStore);
-    const isSharingActive = useStore($isScreenSharingStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
@@ -77,11 +68,6 @@ const Component = () => {
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent,
             ),
     });
-
-    const isSharingScreenActive = localUser.id === meeting.sharingUserId;
-
-    const isAbleToToggleSharing =
-        isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
@@ -105,19 +91,6 @@ const Component = () => {
         );
     }, []);
 
-    const handleToggleSharing = useCallback(async () => {
-        if (!meeting.sharingUserId) {
-            startScreenSharing();
-        } else if (isMeetingHost || isSharingScreenActive) {
-            stopScreenSharing();
-        }
-    }, [
-        isSharingScreenActive,
-        meeting.sharingUserId,
-        isMeetingHost,
-        localUser.id,
-    ]);
-
     const handleToggleMic = useCallback(() => {
         if (isMeetingConnected) {
             updateLocalUserEvent({
@@ -134,40 +107,9 @@ const Component = () => {
         toggleUsersPanelEvent();
     };
 
-    const sharingAction = isAbleToToggleSharing
-        ? handleToggleSharing
-        : undefined;
-
-    const tooltipTranslation = useMemo(() => {
-        if (isAbleToToggleSharing) {
-            return `modes.screensharing.${isSharingActive ? 'off' : 'on'}`;
-        }
-        if (!isAbleToToggleSharing && isSharingActive) {
-            return 'modes.screensharing.busy';
-        }
-        return '';
-    }, [isAbleToToggleSharing, isSharingActive]);
-
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-            <CustomPaper
-                variant="black-glass"
-                borderRadius={8}
-                className={styles.deviceButton}
-            >
-                <ActionButton
-                    variant="transparentBlack"
-                    onAction={handleToggleUsersPanel}
-                    className={clsx(styles.actionButton, {
-                        [styles.active]: isUsersOpen,
-                        [styles.newRequests]:
-                            isThereNewRequests && isMeetingHost,
-                        [styles.mobile]: isMobile,
-                    })}
-                    Icon={<PeopleIcon width="22px" height="22px" />}
-                />
-            </CustomPaper>
-            <ConditionalRender condition={isMobile}>
+            <ConditionalRender condition={!isMobile}>
                 <CustomPaper
                     variant="black-glass"
                     borderRadius={8}
@@ -189,32 +131,23 @@ const Component = () => {
                     />
                 </CustomPaper>
             </ConditionalRender>
-            <ConditionalRender condition={!isMobile}>
-                <CustomTooltip
-                    classes={{ tooltip: styles.tooltip }}
-                    nameSpace="meeting"
-                    translation={tooltipTranslation}
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={sharingAction}
-                            className={clsx(styles.sharingButton, {
-                                [styles.active]:
-                                    isSharingActive && isAbleToToggleSharing,
-                                [styles.noRights]:
-                                    isSharingActive && !isAbleToToggleSharing,
-                            })}
-                            Icon={<SharingIcon width="22px" height="22px" />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender>
-
+            <CustomPaper
+                variant="black-glass"
+                borderRadius={8}
+                className={styles.deviceButton}
+            >
+                <ActionButton
+                    variant="transparentBlack"
+                    onAction={handleToggleUsersPanel}
+                    className={clsx(styles.actionButton, {
+                        [styles.active]: isUsersOpen,
+                        [styles.newRequests]:
+                            isThereNewRequests && isMeetingHost,
+                        [styles.mobile]: isMobile,
+                    })}
+                    Icon={<PeopleIcon width="22px" height="22px" />}
+                />
+            </CustomPaper>
             <ActionButton
                 variant="danger"
                 onAction={handleEndVideoChat}
