@@ -56,7 +56,7 @@ const handleUpdateMonetization = useCallback(() => {
 
   return (
     <ConditionalRender
-      condition={isOwner || meetingTemplate.isMonetizationEnabled}
+      condition={isOwner || (meetingTemplate.isMonetizationEnabled && !!meetingTemplate?.templatePrice)}
     >
       <CustomPaper
         variant="black-glass"

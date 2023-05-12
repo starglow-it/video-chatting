@@ -157,6 +157,7 @@
   "confirmPrice": {
     "description": "Confirm Change Price",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "tooltip": "Please Save when done"
   }
 }
