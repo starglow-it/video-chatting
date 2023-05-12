@@ -1,0 +1,6 @@
+.wrapper {
+    border-radius: 16px !important;
+    &::before {
+        display: none;
+    }
+}

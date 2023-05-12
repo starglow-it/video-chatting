@@ -39,6 +39,7 @@
 .editProfileAvatarMenu {
   width: rem(176px);
   padding: rem(8px);
+  z-index: 999;
 
   .listItem {
     padding: rem(12px);

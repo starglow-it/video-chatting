@@ -7,16 +7,16 @@ import { CommonProfileResponse, UpdateProfilePayload } from '../types';
 
 export const handleUpdateProfileInfo = async (
     params: UpdateProfilePayload,
-): Promise<CommonProfileResponse> => {
+): Promise<{ profile: CommonProfileResponse; error: ErrorState }> => {
     const response = await sendRequestWithCredentials<Profile, ErrorState>({
         ...postProfileUrl,
         data: params,
     });
 
     if (response.success) {
-        return response.result;
+        return { profile: response.result, error: response.error };
     }
     if (!response.success) {
-        return response.result;
+        return { profile: response.result, error: response.error };
     }
 };
