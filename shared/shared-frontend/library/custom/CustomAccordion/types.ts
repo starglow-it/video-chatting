@@ -12,7 +12,6 @@ type BaseCustomAccordionProps = {
     onChange: (accordionId: string) => void;
     typographyVariant?: TypographyVariant;
     variant?: CustomAccordionVariants;
-    classesDetails?: string; 
 };
 
 export type CustomAccordionProps = React.PropsWithChildren<BaseCustomAccordionProps> &
