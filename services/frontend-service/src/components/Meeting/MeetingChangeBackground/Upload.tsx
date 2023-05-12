@@ -133,7 +133,7 @@ const Component = () => {
         const media = await uploadNewBackgroundFx({
             file,
             userTemplateId: meetingTemplate.id,
-            mediaCategoryId: backgroundStore.categorySelected,
+            categoryId: backgroundStore.categorySelected,
         });
 
         if (media) {
