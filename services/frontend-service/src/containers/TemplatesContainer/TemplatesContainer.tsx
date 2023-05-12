@@ -50,7 +50,6 @@ import {
     $templateDraft,
     $templatesStore,
     addTemplateToUserFx,
-    appDialogsApi,
     clearTemplateDraft,
     createMeetingFx,
     createTemplateFx,
@@ -60,7 +59,6 @@ import {
     getProfileTemplatesFx,
     getTemplatesFx,
     purchaseTemplateFx,
-    setReplaceTemplateIdEvent,
     setSkipProfileTemplates,
     startCheckoutSessionForSubscriptionFx,
 } from '../../store';
@@ -70,9 +68,6 @@ import styles from './TemplatesContainer.module.scss';
 
 // const
 import { dashboardRoute } from '../../const/client-routes';
-
-// types
-import { AppDialogsEnum } from '../../store/types';
 
 // utils
 import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
@@ -192,32 +187,29 @@ const Component = () => {
         [],
     );
 
-    const handleReplaceTemplate = useCallback(
-        async ({
-            templateId,
-            deleteTemplateId,
-        }: {
-            deleteTemplateId: IUserTemplate['id'];
-            templateId: ICommonTemplate['id'];
-        }) => {
-            const targetTemplate = templates?.list?.find(
-                template => template.id === templateId,
-            );
+    const handleReplaceTemplate = async ({
+        templateId,
+        deleteTemplateId,
+    }: {
+        deleteTemplateId: IUserTemplate['id'];
+        templateId: ICommonTemplate['id'];
+    }) => {
+        const targetTemplate = templates?.list?.find(
+            template => template.id === templateId,
+        );
 
-            if (targetTemplate?.type === 'paid') {
-                const response = await purchaseTemplateFx({ templateId });
+        if (targetTemplate?.type === 'paid') {
+            const response = await purchaseTemplateFx({ templateId });
 
-                router.push(response.url);
+            router.push(response.url);
 
-                return;
-            }
+            return;
+        }
 
-            deleteProfileTemplateFx({ templateId: deleteTemplateId });
+        deleteProfileTemplateFx({ templateId: deleteTemplateId });
 
-            await handleCreateMeeting({ templateId });
-        },
-        [templates, handleCreateMeeting],
-    );
+        await handleCreateMeeting({ templateId });
+    };
 
     const handleChooseCommonTemplate = useCallback(
         async (templateId: ICommonTemplate['id']) => {
@@ -255,6 +247,7 @@ const Component = () => {
             profile.maxTemplatesNumber,
             profileTemplatesCount.count,
             handleCreateMeeting,
+            freeTemplates,
         ],
     );
 
@@ -463,7 +456,6 @@ const Component = () => {
             <DeleteTemplateDialog />
             <ScheduleMeetingDialog />
             <DownloadIcsEventDialog />
-            <ReplaceTemplateDialog onReplaceTemplate={handleReplaceTemplate} />
             <TimeExpiredDialog />
         </MainProfileWrapper>
     );
