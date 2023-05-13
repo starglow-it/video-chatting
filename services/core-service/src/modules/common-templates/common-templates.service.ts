@@ -47,7 +47,7 @@ export class CommonTemplatesService {
     private commonTemplate: Model<CommonTemplateDocument>,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
-  ) {}
+  ) { }
 
   async exists({
     query,
@@ -78,6 +78,64 @@ export class CommonTemplatesService {
         },
       )
       .exec();
+  }
+
+   joinCommonTemplatePropertiesQueries(): PipelineStage[] {
+    const joinBusinessCategories: PipelineStage = {
+      $lookup: {
+        from: 'businesscategories',
+        localField: 'businessCategories',
+        foreignField: '_id',
+        as: 'businessCategories',
+      },
+    };
+    const joinPreviewImages: PipelineStage = {
+      $lookup: {
+        from: 'previewimages',
+        localField: 'previewUrls',
+        foreignField: '_id',
+        as: 'previewUrls',
+      },
+    };
+
+    const joinAuthor: PipelineStage = {
+      $lookup: {
+        from: 'users',
+        localField: 'author',
+        foreignField: '_id',
+        pipeline: [
+          {
+            $lookup: {
+              from: 'profileavatars',
+              localField: 'profileAvatar',
+              foreignField: '_id',
+              as: 'profileAvatar',
+              pipeline: [{
+                $project: {
+                  _id: 0,
+                  __v: 0,
+                }
+              }]
+            },
+          },
+          {
+            $set: {
+              profileAvatar: {
+                $first: "$profileAvatar"
+              }
+            }
+          },
+          {
+            $project: {
+              profileAvatar: 1,
+              role: 1
+            }
+          }
+        ],
+        as: 'author',
+      },
+    }
+    return [joinBusinessCategories, joinPreviewImages, joinAuthor]
   }
 
   async findCommonTemplateById({

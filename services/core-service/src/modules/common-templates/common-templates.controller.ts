@@ -102,43 +102,46 @@ export class CommonTemplatesController {
     { query, options }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
     try {
+      const sort: PipelineStage = { $sort: { ...(options?.sort ?? {}), _id: -1 } };
+
+      const joinDraftPreviewImages: PipelineStage = {
+        $lookup: {
+          from: 'previewimages',
+          localField: 'draftPreviewUrls',
+          foreignField: '_id',
+          as: 'draftPreviewUrls',
+        },
+      }
+
+      const joinUserTemplate = {
+        $lookup: {
+          from: 'usertemplates',
+          localField: 'templateId',
+          foreignField: 'templateId',
+          pipeline: [{ $match: { user: new ObjectId(options.userId) } }],
+          as: 'userTemplate',
+        }
+      }
       return withTransaction(this.connection, async () => {
         const aggregationPipeline: PipelineStage[] = [
-          { $sort: { ...(options?.sort ?? {}), _id: -1 } },
+          sort,
           { $match: query },
+          ...this.commonTemplatesService.joinCommonTemplatePropertiesQueries(),
+          joinDraftPreviewImages,
+          joinUserTemplate,
           {
-            $lookup: {
-              from: 'businesscategories',
-              localField: 'businessCategories',
-              foreignField: '_id',
-              as: 'businessCategories',
-            },
-          },
-          {
-            $lookup: {
-              from: 'previewimages',
-              localField: 'previewUrls',
-              foreignField: '_id',
-              as: 'previewUrls',
-            },
-          },
-          {
-            $lookup: {
-              from: 'previewimages',
-              localField: 'draftPreviewUrls',
-              foreignField: '_id',
-              as: 'draftPreviewUrls',
-            },
-          },
-          {
-            $lookup: {
-              from: 'usertemplates',
-              localField: 'templateId',
-              foreignField: 'templateId',
-              pipeline: [{ $match: { user: new ObjectId(options.userId) } }],
-              as: 'userTemplate',
-            },
-          },
+            $set: {
+              author: {
+                $first: "$author"
+              },
+              authorThumbnail: {
+                $first: "$author.profileAvatar.url"
+              },
+              authorRole: {
+                $first: "$author.role"
+              }
+            }
+          }
         ];
 
         if (options?.skip) {
@@ -615,7 +618,7 @@ export class CommonTemplatesController {
           },
           session,
         });
-        
+
         if (template.stripeProductId) {
           this.paymentService.deleteTemplateStripeProduct({
             productId: template.stripeProductId,
@@ -630,7 +633,7 @@ export class CommonTemplatesController {
         });
         
 
-        if(countTemplateUseCommon) return;
+        if (countTemplateUseCommon) return;
 
         await this.awsService.deleteFolder(`templates/videos/${template.id}`);
       });

@@ -8,7 +8,12 @@ import {
 import { ITemplateUser } from './users';
 import { IMeetingInstance } from './meeting';
 
-export interface ICommonTemplate {
+interface ITemplate{
+  authorThumbnail?: string;
+  authorRole?: string;
+}
+
+export interface ICommonTemplate extends ITemplate {
   id?: string;
   usedAt?: string;
   templateId: number;
@@ -37,7 +42,7 @@ export interface ICommonTemplate {
   isAcceptNoLogin?: boolean;
 }
 
-export interface IUserTemplate {
+export interface IUserTemplate extends ITemplate {
   id: string;
   usedAt?: string;
   templateId: number;

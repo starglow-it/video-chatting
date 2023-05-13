@@ -154,5 +154,11 @@ export class UserTemplateDTO implements IUserTemplate {
   author: IUserTemplate['author'];
 
   @Expose()
+  authorRole: IUserTemplate['authorRole'];
+
+  @Expose()
+  authorThumbnail: IUserTemplate['authorThumbnail'];
+
+  @Expose()
   isAcceptNoLogin?: IUserTemplate['isAcceptNoLogin'];
 }
