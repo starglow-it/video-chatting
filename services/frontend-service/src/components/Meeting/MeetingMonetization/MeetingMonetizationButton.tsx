@@ -1,11 +1,12 @@
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper'
 import { ActionButton } from "shared-frontend/library/common/ActionButton"
 import { useStore } from "effector-react"
-import { MouseEvent, useCallback, useState } from "react"
+import { MouseEvent, useCallback, useEffect, useState } from "react"
 import { MonetizationIcon } from "shared-frontend/icons/OtherIcons/MonetizationIcon"
 import { ConditionalRender } from "shared-frontend/library/common/ConditionalRender"
 import { CustomPopover } from "@library/custom/CustomPopover/CustomPopover"
 import { PaymentForm } from "@components/PaymentForm/PaymentForm"
+import { useToggle } from '@hooks/useToggle'
 import styles from './MeetingMonetization.module.scss'
 import {
   $isTogglePayment,
@@ -27,10 +28,16 @@ export const MeetingMonetizationButton = () => {
   const isPaymentOpen = useStore($isTogglePayment);
   const isCreatePaymentIntentPending = useStore(
     createPaymentIntentWithData.pending,
-);
+  );
+  const {
+    value: togglePopover,
+    onToggleSwitch: handleTogglePopover,
+    onSetSwitch: handleSetPopover
+  } = useToggle(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleTogglePayments = (e: MouseEvent<HTMLElement>) => {
     e.stopPropagation();
+    handleTogglePopover()
     setAnchorEl(anchorEl ? null : e.currentTarget);
     if (!isCreatePaymentIntentPending) {
         if (!isPaymentOpen && !intentId && !isOwner) {
@@ -41,22 +48,31 @@ export const MeetingMonetizationButton = () => {
     }
   };
 
-  const handleClosePayment = useCallback(async () => {
+  const handleClosePayment = useCallback(async () => {    
     setAnchorEl(null)
+    handleSetPopover(false)
     if (paymentIntent?.id) {
         cancelPaymentIntentWithData();
     }
     togglePaymentFormEvent();
-}, [paymentIntent?.id]);
+  }, [paymentIntent?.id]);
 
-const handleUpdateMonetization = useCallback(() => {
-    setAnchorEl(null)
-    togglePaymentFormEvent();
-}, []);
+  const handleUpdateMonetization = useCallback(() => {
+      setAnchorEl(null)
+      handleSetPopover(false)
+      togglePaymentFormEvent();
+  }, []);
+
+
+  useEffect(() => {  
+    if(!isOwner){  
+      handleClosePayment()
+    }
+  },[isOwner, meetingTemplate?.isMonetizationEnabled, meetingTemplate?.templatePrice])
 
   return (
     <ConditionalRender
-      condition={isOwner || meetingTemplate.isMonetizationEnabled}
+      condition={isOwner || (meetingTemplate.isMonetizationEnabled && !!meetingTemplate?.templatePrice)}
     >
       <CustomPaper
         variant="black-glass"
@@ -75,7 +91,7 @@ const handleUpdateMonetization = useCallback(() => {
       </CustomPaper> 
       <CustomPopover
         id='monetization'
-        open={isPaymentOpen}
+        open={togglePopover}
         onClose={handleClosePayment}
         anchorEl={anchorEl}
         anchorOrigin={{

@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo } from 'react';
+import { FocusEvent, memo, useCallback, useMemo, useRef } from 'react';
 import { FormProvider, Controller, useForm, useWatch, FieldValues } from 'react-hook-form';
 import { InputBase } from '@mui/material';
 import * as yup from 'yup';
@@ -24,8 +24,9 @@ import {ErrorMessage} from "@library/common/ErrorMessage/ErrorMessage";
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
-import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
 import { useToggle } from '@hooks/useToggle';
+import { CustomPopper } from 'shared-frontend/library/custom/CustomPopper';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { templatePriceSchema, paywallPriceSchema } from '../../../validation/payments/templatePrice';
 import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 
@@ -48,9 +49,11 @@ const validationSchema = yup.object({
 });
 
 const Component = ({ onUpdate }: { onUpdate: () => void }) => {
+    const tooltipRef = useRef<HTMLButtonElement | null>(null)
+    const timeoutRef = useRef<NodeJS.Timer | null>(null);
     const {
         value: confirmPrice,
-        onSetSwitch: handleChangeConfirm
+        onSetSwitch: handleChangeConfirm,
     } = useToggle(false);
     const meetingTemplate = useStore($meetingTemplateStore);
     const profile = useStore($profileStore);
@@ -107,39 +110,56 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         name: 'paywallCurrency',
     });
 
+    const activeTemplatePrice = useWatch({
+        control,
+        name: 'templatePrice',
+    });
+
+    const activePaywallPrice = useWatch({
+        control,
+        name: 'paywallPrice',
+    });
+
     const targetPaywallCurrency = useMemo(
         () =>
             currencyValues.find(currency => currency.value === activePaywallCurrency) || currencyValues[0],
         [activePaywallCurrency],
     );
 
-    const onSave = async (data: FieldValues) => {
-        await updateMeetingTemplateFxWithData({
-            isMonetizationEnabled: data.isInmeetingPayment || data.isPaywallPayment,
-            templatePrice: data.isInmeetingPayment ? +data.templatePrice : 0,
-            paywallPrice: data.isPaywallPayment ?  +data.paywallPrice : 0,
-            templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
-            paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
-        });
-        onUpdate?.();
-    }
-
     const onSubmit = useCallback(
-        handleSubmit((data) => {
-            const isChangeTemplatePrice = !!meetingTemplate?.templatePrice && +meetingTemplate.templatePrice !== data.templatePrice
-            const isChangePaywallPrice = !!meetingTemplate?.paywallPrice && +meetingTemplate.paywallPrice !== data.paywallPrice
-            if(isChangePaywallPrice || isChangeTemplatePrice){
-                handleChangeConfirm(true)
-            }else{
-                onSave(data)
-            }
-         
+        handleSubmit(async (data) => {     
+            await updateMeetingTemplateFxWithData({
+                isMonetizationEnabled: data.isInmeetingPayment || data.isPaywallPayment,
+                templatePrice: data.isInmeetingPayment ? +data.templatePrice : 0,
+                paywallPrice: data.isPaywallPayment ?  +data.paywallPrice : 0,
+                templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
+                paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
+            });
+            onUpdate?.();       
         }),[]
     )
-    
-    const handleDialogSubmit = async () => {        
-        onSave(control?._formValues)
-        handleChangeConfirm(false)
+
+    const handleFocusInput = () => {
+        if(confirmPrice){
+            handleChangeConfirm(false)
+            if(timeoutRef.current){
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }
+
+    const handleBlurInput = (e: FocusEvent<HTMLInputElement>) => {
+        const isShowPopper = e.relatedTarget && e.relatedTarget?.id !== 'buttonSubmit'
+        if(!confirmPrice && isShowPopper){
+            const isChangeTemplatePrice = activeTemplatePrice !== meetingTemplate?.templatePrice
+            const isChangePaywallPrice = activePaywallPrice !== meetingTemplate?.paywallPrice
+            if(isChangePaywallPrice || isChangeTemplatePrice){
+                handleChangeConfirm(true)
+                timeoutRef.current = setTimeout(() => {
+                    handleChangeConfirm(false)
+                }, 3000);
+            }
+        }
     }
 
     const registerData = register('templatePrice');
@@ -192,6 +212,8 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 input: styles.input,
                                             }}
                                             {...registerData}
+                                            onFocus={handleFocusInput}
+                                            onBlur={handleBlurInput}
                                             disabled={!isInmeetingPaymentEnabled || !isConnectStripe}
                                         />
                                         <ValuesSwitcher
@@ -240,8 +262,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                             classes={{
                                                 root: styles.inputWrapper,
                                                 input: styles.input,
-                                            }}
+                                            }}                                    
                                             {...registerPaywallData}
+                                            onFocus={handleFocusInput}
+                                            onBlur={handleBlurInput}
                                             disabled={!isPaywallPaymentEnabled || !isConnectStripe}
                                         />
                                         <ValuesSwitcher
@@ -275,43 +299,28 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                             className={styles.button}
                             disabled={!isConnectStripe}
                             label={<Translation nameSpace="common" translation="buttons.save" />}
+                            ref={tooltipRef}
+                            id='buttonSubmit'
                         />
+                        <CustomPopper
+                            id="audioControl"
+                            open={confirmPrice}
+                            placement='top'
+                            anchorEl={tooltipRef.current}
+                            className={styles.tooltip}
+                        >
+                            <CustomPaper
+                                variant="black-glass"
+                                className={styles.tooltipContent}
+                                aria-describedby='monetization'
+                            >
+                                <CustomTypography translation="confirmPrice.tooltip" nameSpace="meeting" />                   
+                            </CustomPaper> 
+                        </CustomPopper>
                     </CustomGrid>
 
                 </form>
             </FormProvider>
-            <CustomDialog open={confirmPrice} onClose={() => handleChangeConfirm(false)}>
-                <CustomBox padding={2} textAlign='center' marginTop={2.5}>                    
-                    <CustomTypography
-                        translation="confirmPrice.description" nameSpace="meeting"
-                        className={styles.dialogTitle}
-                    />
-                </CustomBox>
-                <CustomGrid
-                    className={styles.confirmButtonsWrapper}
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={2}
-                >
-                    <CustomButton
-                        onClick={() => handleChangeConfirm(false)}
-                        className={styles.baseBtn}
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation="confirmPrice.cancel"
-                            />
-                        }
-                        variant="custom-cancel"
-                    />
-                    <CustomButton
-                        onClick={handleDialogSubmit}
-                        className={styles.buttonSubmit}
-                        label={<Translation nameSpace="meeting" translation="confirmPrice.save" />}
-                    />
-                </CustomGrid>
-            </CustomDialog>
         </>
     );
 };
