@@ -2,12 +2,14 @@ import {
     BadRequestException,
     Body,
     Controller,
+    Delete,
     Get,
     Logger,
     Param,
     Post,
     Query,
     UploadedFile,
+    UseGuards,
 } from '@nestjs/common';
 import {
     ApiBearerAuth,
@@ -19,9 +21,7 @@ import {
 import { EntityList, ResponseSumType, IMedia, IMediaCategory, MediaCategoryType } from 'shared-types';
 import { CreateUserTemplateMediaRequest } from '../../dtos/requests/create-user-template-media.request';
 import { MediaCategoryRestDTO } from '../../dtos/response/common-media-category.dto';
-import { getFileNameAndExtension } from '../../utils/getFileNameAndExtension';
 import { MediasService } from './medias.service';
-import { v4 as uuidv4 } from 'uuid';
 import { UploadService } from '../upload/upload.service';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { GetUserTemplateMediasQueryDto } from '../../dtos/query/GetUserTemplateMedias.dto';
@@ -31,7 +31,11 @@ import {
     CreateUserTemplateMediaSwaggerProperty,
 } from '../../dtos/swagger-properties/media.swagger-properties';
 import { MEDIAS_SCOPE } from 'shared-const';
-import { CommonMediaRestDto } from 'src/dtos/response/common-media.dto';
+import { CommonMediaRestDto } from '../../dtos/response/common-media.dto';
+import { JwtAuthGuard } from '../../guards/jwt.guard';
+import { CommonResponseDto } from '../../dtos/response/common-response.dto';
+import { DeleteMediasRequest } from '../../dtos/requests/delete-medias.request';
+import { DeleteMediasQueryDto } from '../../dtos/query/DeleteMediasQuery.dto';
 
 @ApiTags('Medias')
 @Controller(MEDIAS_SCOPE)
@@ -41,7 +45,6 @@ export class MediasController {
     constructor(
         private mediaService: MediasService,
         private userTemplateService: UserTemplatesService,
-        private uploadService: UploadService,
     ) { }
 
     @Get('/categories')
@@ -172,6 +175,36 @@ export class MediasController {
                 success: true,
                 result: userTemplateMedia
             };
+        }
+        catch (err) {
+            throw new BadRequestException(err);
+        }
+    }
+
+    @Delete('/')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Delete Medias' })
+    @ApiOkResponse({
+        type: CommonResponseDto,
+        description: 'Delete Medias',
+    })
+    @ApiForbiddenResponse({
+        description: 'Forbidden',
+    })
+    async deleteUserTemplateMedias(@Body() body: DeleteMediasRequest,
+        @Query() query: DeleteMediasQueryDto
+    ): Promise<ResponseSumType<void>> {
+        try {
+            await this.mediaService.deleteMedias({
+                ids: body.ids,
+                categoryId: query.categoryId,
+                userTemplateId: query.userTemplateId
+            });
+
+            return {
+                success: true
+            }
         }
         catch (err) {
             throw new BadRequestException(err);
