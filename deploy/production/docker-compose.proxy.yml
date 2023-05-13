@@ -15,6 +15,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/letsencrypt:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`tlo-traefik.anhtuan57.click`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      # echo $(htpasswd -nb tlo 02HBdnBT2ZPu) | sed -e s/\\$/\\$\\$/g
+      - "traefik.http.middlewares.auth.basicauth.users=tlo:$$apr1$$PdvDQIVp$$UAXSS/z5O5t.VQm7acCfh1"
     networks:
       - traefikpublic
 
@@ -29,11 +38,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.proxy.rule=HostRegexp(`{subdomain:.+}.scaling.app.theliveoffice.com`)"
-      - "traefik.http.routers.proxy.entrypoints=https"
+      - "traefik.http.routers.proxy.rule=HostRegexp(`{subdomain:.+}.scaling.anhtuan57.click`)"
+      - "traefik.http.routers.proxy.entrypoints=websecure"
       - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
-      - "traefik.http.routers.proxy.tls.domains[0].main=scaling.app.theliveoffice.com"
-      - "traefik.http.routers.proxy.tls.domains[0].sans=*.scaling.app.theliveoffice.com"
+      - "traefik.http.routers.proxy.tls.domains[0].main=scaling.anhtuan57.click"
+      - "traefik.http.routers.proxy.tls.domains[0].sans=*.scaling.anhtuan57.click"
       - "traefik.http.services.proxy.loadbalancer.server.port=7000"
       - "io.portainer.accesscontrol.public"
     networks:
@@ -45,8 +54,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.whoami.rule=(Host(`tlo.anhtuan57.click`) || Host(`tlo-meeting-socket.anhtuan57.click`) || Host(`tlo-livekit.anhtuan57.click)) && PathPrefix(`/whoami`)"
-      - "traefik.http.routers.whoami.entrypoints=https"
+      - "traefik.http.routers.whoami.rule=(Host(`tlo.anhtuan57.click`) || Host(`tlo-meeting-socket.anhtuan57.click`) || Host(`tlo-livekit.anhtuan57.click`) || Host(`tlo-traefik.anhtuan57.click`)) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
     networks:
