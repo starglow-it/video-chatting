@@ -7,8 +7,18 @@ api:
 
 providers:
   docker:
-    network: traefik
+    network: traefikpublic
     exposedByDefault: false
+
+
+certificatesResolvers:
+  simple-resolver:
+    acme:
+      httpchallenge:
+        entrypoint: http
+      email: nam@namnm.com
+      storage: /letsencrypt/acme.json
+      tlschallenge: true
 
 entryPoints:
   http:
@@ -19,22 +29,8 @@ entryPoints:
           to: https
           scheme: https
           permanent: true
-  https:
+  websecure:
     address: :443
-
-certificatesResolvers:
-  simple-resolver:
-    acme:
-      httpchallenge:
-        entrypoint: http
-      email: leonid@fora-soft.com
-      storage: /letsencrypt/acme.json
-  wildcard-resolver:
-    acme:
-      dnschallenge:
-        provider: cloudflare
-      email: leonid@fora-soft.com
-      storage: /letsencrypt/acme.json
 
 
 accessLog: {}

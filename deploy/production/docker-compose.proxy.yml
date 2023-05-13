@@ -8,12 +8,14 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:9090:9090"
+      # close or move dashboard port to the save place
+      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/letsencrypt:/letsencrypt
     networks:
-      - traefik
+      - traefikpublic
 
   instance-proxy:
     container_name: instance_proxy
@@ -34,7 +36,7 @@ services:
       - "traefik.http.services.proxy.loadbalancer.server.port=7000"
       - "io.portainer.accesscontrol.public"
     networks:
-      - traefik
+      - traefikpublic
 
   whoami:
     image: "traefik/whoami"
@@ -47,8 +49,20 @@ services:
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
     networks:
-      - traefik
+      - traefikpublic
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - 9443:9443
+    volumes:
+      - data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+#    networks:
+#      - traefikpublic
 networks:
   traefikpublic:
     name: traefikpublic
+volumes:
+  data:

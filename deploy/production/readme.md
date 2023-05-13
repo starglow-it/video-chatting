@@ -16,12 +16,13 @@ docker-compose -f docker-compose.services.yml down --remove-orphans
 
 ###### setup action-runner
 ```shell
+mkdir /srv
 export RUNNER_ALLOW_RUNASROOT="1"
 cd /srv
 mkdir actions-runner && cd actions-runner
 curl -o actions-runner-linux-x64-2.303.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.303.0/actions-runner-linux-x64-2.303.0.tar.gz
 tar xzf ./actions-runner-linux-x64-2.303.0.tar.gz
-./config.sh --url https://github.com/nongdan-dev/tlo --token APVBWULGCJD3FYWD7ZQKHODELURIS --labels liveofficeStaging --name liveofficeProd --runnergroup Default --work _work
+./config.sh --url https://github.com/nongdan-dev/tlo --token APVBWUL5OYU436YSPEOGLG3ELUV3O --labels liveofficeProd --name liveofficeProd --runnergroup Default --work _work
 sudo ./svc.sh install
 
 ```
@@ -37,6 +38,6 @@ sudo ./svc.sh stop
 sudo ./svc.sh uninstall
 
 # remove token of runner
-./config.sh remove --token <APVBWUPUULB7BY67QKNT5CDEEULSG>
+./config.sh remove --token APVBWUL5OYU436YSPEOGLG3ELUV3O
 
 ```
