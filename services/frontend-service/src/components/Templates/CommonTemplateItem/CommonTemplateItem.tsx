@@ -15,28 +15,18 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 
 // stores
 import {
-    $profileStore,
-    $profileTemplatesCountStore,
     addTemplateToUserFx,
-    appDialogsApi,
-    setPreviewTemplate,
 } from '../../../store';
 
 // types
-import { AppDialogsEnum } from '../../../store/types';
 import { CommonTemplateItemProps } from './types';
 
 // styles
 import styles from './CommonTemplateItem.module.scss';
 
 const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
-    
-    const profile = useStore($profileStore);
-    const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
 
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
-
-    const isTemplatesLimitReached = profile.maxTemplatesNumber <= profileTemplatesCount.count;
 
     const [showPreview, setShowPreview] = useState(false);
 
@@ -48,13 +38,6 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
 
     const handleHidePreview = useCallback(() => {
         setShowPreview(false);
-    }, []);
-
-    const handlePreviewTemplate = useCallback(() => {
-        setPreviewTemplate(template);
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.templatePreviewDialog,
-        });
     }, []);
 
     const handleStartMeeting = useCallback(async () => {
@@ -69,10 +52,6 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     }, [onChooseTemplate]);
 
     const isFree = !template.priceInCents;
-
-    const freeTemplateTranslation = isTemplatesLimitReached
-        ? 'buttons.replace'
-        : 'buttons.startMeeting';
 
     const paidTemplateHandler = !(!isFree && isDisabled) ? handleBuyTemplate : undefined;
 
@@ -115,15 +94,9 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                         label={
                             <Translation
                                 nameSpace="templates"
-                                translation={isFree ? freeTemplateTranslation : 'buttons.buy'}
+                                translation={isFree ? 'buttons.startMeeting' : 'buttons.buy'}
                             />
                         }
-                    />
-                    <CustomButton
-                        label={<Translation nameSpace="templates" translation="buttons.preview" />}
-                        className={styles.button}
-                        variant="custom-transparent"
-                        onClick={handlePreviewTemplate}
                     />
                 </CustomGrid>
             </Fade>
