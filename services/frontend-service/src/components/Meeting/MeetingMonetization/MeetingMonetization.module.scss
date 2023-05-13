@@ -57,8 +57,13 @@
 .error {
   position: relative;
 }
-.tooltip {
-  margin: rem(2px 0 0 0) !important;  
+.tooltip {  
+  
+  margin-bottom: rem(6px) !important;
+  .tooltipContent{
+    color: #fff;
+    padding: rem(10px 16px);
+  }
 }
 
 .deviceButton {

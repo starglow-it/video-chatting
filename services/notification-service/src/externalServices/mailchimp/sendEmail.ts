@@ -55,8 +55,6 @@ export const sendEmail = async ({
             template_content: [],
             message: {
                 subject: targetTemplate.name,
-                from_email: smtpUser,
-                from_name: smtpUserName,
                 to: sendTo,
                 merge_language: 'mailchimp',
                 global_merge_vars: [

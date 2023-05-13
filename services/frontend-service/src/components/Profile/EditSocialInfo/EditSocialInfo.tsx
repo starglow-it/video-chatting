@@ -1,56 +1,67 @@
 import React, { memo } from 'react';
 
 // custom
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { SocialIcon } from 'shared-frontend/icons/OtherIcons/SocialIcon';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 // components
 import { Socials } from '@components/Socials/Socials';
 
 // styles
 import styles from './EditSocialInfo.module.scss';
+import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
 
 const EditSocialInfo = memo(() => {
     return (
-        <CustomPaper className={styles.paperWrapper}>
-            <CustomBox
-                display="grid"
-                gridTemplateColumns="minmax(110px, 192px) 1fr"
-                gridTemplateRows="repeat(1, 1fr)"
-            >
-                <CustomBox gridArea="1/1/1/1">
-                    <CustomGrid container alignItems="center">
-                        <SocialIcon width="24px" height="24px" className={styles.icon} />
+        <CustomAccordion
+            sumary={
+                <>
+                    <SocialIcon
+                        width="24px"
+                        height="24px"
+                        className={styles.icon}
+                    />
+                    <CustomTypography
+                        variant="body1"
+                        fontWeight="600"
+                        nameSpace="profile"
+                        translation="social"
+                        width="253px"
+                    />
+                    <CustomGrid
+                        container
+                        display="flex"
+                        justifyContent="flex-start"
+                    >
                         <CustomTypography
                             variant="body1"
-                            fontWeight="600"
                             nameSpace="profile"
-                            translation="social"
+                            translation="editProfile.social.title"
                         />
                     </CustomGrid>
-                </CustomBox>
+                </>
+            }
+            detail={
                 <CustomGrid
-                    gridArea="1/2/1/2"
                     container
                     wrap="nowrap"
+                    justifyContent="center"
+                    alignItems="center"
                     className={styles.contentWrapper}
                 >
-                    <Socials
-                        title={(
-                            <CustomTypography
-                                variant="body1"
-                                nameSpace="profile"
-                                translation="editProfile.social.title"
-                            />
-                        )}
-                        buttonClassName={styles.socialBtn}
-                    />
+                    <Socials buttonClassName={styles.socialBtn} />
                 </CustomGrid>
-            </CustomBox>
-        </CustomPaper>
+            }
+            sumaryProps={{classes:{
+                content: styles.sumary
+            }}}
+            detailProps={{
+                classes: {
+                    root: styles.detail,
+                },
+            }}
+        />
     );
 });
 
