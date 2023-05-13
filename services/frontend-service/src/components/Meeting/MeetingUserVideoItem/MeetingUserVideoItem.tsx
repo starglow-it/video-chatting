@@ -247,25 +247,20 @@ const Component = ({
                 gap={1.625}
             >
                 <MeetingUserVideoChildCom {...childProps} />
-
-                <ConditionalRender
-                    condition={!isScreenSharing}
-                >
+                <ConditionalRender condition={!isScreenSharing}>
                     <CustomPaper
                         className={clsx(styles.usernameWrapper, {
                             [styles.forSharing]: isScreenSharing && isLocal,
                         })}
                         variant="black-glass"
                     >
-                        {!isScreenSharing && (
-                            <CustomTypography
-                                color="common.white"
-                                variant="body3"
-                                className={styles.username}
-                            >
-                                {userName}
-                            </CustomTypography>
-                        )}
+                        <CustomTypography
+                            color="common.white"
+                            variant="body3"
+                            className={styles.username}
+                        >
+                            {userName}
+                        </CustomTypography>
                     </CustomPaper>
                 </ConditionalRender>
             </CustomGrid>
