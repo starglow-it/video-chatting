@@ -42,7 +42,7 @@ const Actions = [
         type: CollapseTypes.Settings,
     },
     {
-        icon: <GoodsIcon width="22px" height="22px" className="" />,
+        icon: <GoodsIcon width="22px" height="22px" />,
         name: 'GoodLinks',
         type: CollapseTypes.GoodLinks,
     },
