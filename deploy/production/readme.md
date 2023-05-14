@@ -41,3 +41,13 @@ sudo ./svc.sh uninstall
 ./config.sh remove --token APVBWUL5OYU436YSPEOGLG3ELUV3O
 
 ```
+
+###### migrate
+```shell
+# backup
+mongodump -d theliveoffice -o /data/db/tlo-backup
+
+
+# restore
+mongorestore -d theliveoffice /data/db/tlo-backup
+```
