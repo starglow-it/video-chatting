@@ -18,12 +18,18 @@ import {
     uploadNewBackgroundFx,
     addBackgroundToCategoryEvent,
     reloadMediasEvent,
+    deleteMediaMeetingFx,
 } from './model';
+import { handleDeleteMediaMeeting } from './handlers/handleDeleteMedia';
+import { addNotificationEvent } from 'src/store/notifications/model';
+import { NotificationType } from 'src/store/types';
+import { ResultDeleteMedia } from './types';
 
 getBackgroundMeetingFx.use(handleGetBackgroundMeeting);
 updateBackgroundMeetingFx.use(handleUpdateBackgroundMeeting);
 getCategoriesMediasFx.use(handleGetCategories);
 uploadNewBackgroundFx.use(handleUploadNewBackground);
+deleteMediaMeetingFx.use(handleDeleteMediaMeeting);
 
 $backgroundMeetingStore
     .on([setCategoryEvent, setMediaEvent], (state, data) => ({
@@ -55,7 +61,7 @@ $queryMediasBackgroundStore
         skip: state.skip + 1,
     }))
     .on(reloadMediasEvent, state => ({ ...state, skip: 0 }))
-    .reset(setCategoryEvent);
+    .reset(setCategoryEvent, deleteMediaMeetingFx.doneData);
 
 $isLoadMoreMediasStore
     .on(setQueryMediasEvent, () => true)
@@ -105,7 +111,11 @@ forward({
 });
 
 sample({
-    clock: [setQueryMediasEvent, reloadMediasEvent],
+    clock: [
+        setQueryMediasEvent,
+        reloadMediasEvent,
+        deleteMediaMeetingFx.doneData,
+    ],
     source: combine({
         backgroundData: $backgroundMeetingStore,
         queryMediasData: $queryMediasBackgroundStore,
@@ -123,4 +133,15 @@ sample({
         userTemplateId: id,
     }),
     target: getBackgroundMeetingFx,
+});
+
+sample({
+    clock: deleteMediaMeetingFx.doneData,
+    fn: (_, clock: ResultDeleteMedia) => ({
+        type: NotificationType.SubscriptionEndDate,
+        message: clock.message,
+        withSuccessIcon: clock.success,
+        withErrorIcon: !clock.success,
+    }),
+    target: addNotificationEvent,
 });

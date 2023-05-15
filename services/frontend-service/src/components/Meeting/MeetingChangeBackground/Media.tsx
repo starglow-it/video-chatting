@@ -14,10 +14,12 @@ const Component = ({
     isActive = false,
     item,
     onSelect,
+    onDelete,
 }: {
     isActive: boolean;
     item: IMediaItem;
     onSelect: (id: string) => void;
+    onDelete: (mediaId: string) => void;
 }) => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const handleLoadEnd = () => {
@@ -30,6 +32,11 @@ const Component = ({
         onSwitchOn: showHover,
         onSwitchOff: hideHover,
     } = useToggle(false);
+
+    const handleDelete = (e: MouseEvent) => {
+        e.stopPropagation();
+        onDelete(item.id);
+    };
 
     return (
         <CustomGrid
@@ -67,11 +74,16 @@ const Component = ({
                         isMuted={false}
                     />
                 )}
-                <Fade in={isHover}>
-                    <CustomGrid className={styles.deleteButton}>
-                        <RoundCloseIcon width="15px" height="15px" />
-                    </CustomGrid>
-                </Fade>
+                <ConditionalRender condition={Boolean(item.userTemplate)}>
+                    <Fade in={isHover}>
+                        <CustomGrid
+                            className={styles.deleteButton}
+                            onClick={handleDelete}
+                        >
+                            <RoundCloseIcon width="15px" height="15px" />
+                        </CustomGrid>
+                    </Fade>
+                </ConditionalRender>
             </ConditionalRender>
         </CustomGrid>
     );

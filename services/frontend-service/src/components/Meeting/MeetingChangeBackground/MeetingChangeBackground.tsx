@@ -18,6 +18,8 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
     $backgroundMeetingStore,
     $isLoadMoreMediasStore,
+    $meetingTemplateStore,
+    deleteMediaMeetingFx,
     setCategoryEvent,
     setMediaEvent,
     setQueryMediasEvent,
@@ -38,6 +40,8 @@ const Component = () => {
     const isHideUpload = categories.some(
         item => item.key === 'myrooms' && item.id === categorySelected,
     );
+    const meetingTemplate = useStore($meetingTemplateStore);
+
     useEffect(() => {
         if (isExpand && categories.length && !categorySelected)
             setCategoryEvent({
@@ -65,6 +69,14 @@ const Component = () => {
 
     const changeExpand = (event: React.SyntheticEvent, expanded: boolean) => {
         setIsExpand(expanded);
+    };
+
+    const handleDeleteMedia = (mediaId: string) => {
+        deleteMediaMeetingFx({
+            categoryId: categorySelected,
+            userTemplateId: meetingTemplate.id,
+            deleteId: mediaId,
+        });
     };
 
     return (
@@ -164,6 +176,7 @@ const Component = () => {
                                         isActive={item.id === mediaSelected}
                                         item={item}
                                         onSelect={handleSelectBackground}
+                                        onDelete={handleDeleteMedia}
                                     />
                                 ))}
                             </CustomScroll>
