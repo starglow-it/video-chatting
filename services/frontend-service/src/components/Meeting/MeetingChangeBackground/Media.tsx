@@ -1,12 +1,14 @@
-import { Skeleton } from '@mui/material';
+import { Fade, Skeleton } from '@mui/material';
 import clsx from 'clsx';
 import { memo, useState } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IMediaItem } from '../../../store/roomStores/meeting/meetingBackground/types';
-import styles from './MeetingChangeBackground.module.scss';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
+import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
+import styles from './MeetingChangeBackground.module.scss';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
 
 const Component = ({
     isActive = false,
@@ -23,6 +25,12 @@ const Component = ({
     };
     const url = item.previewUrls.find(img => img.resolution === 240)?.url || '';
 
+    const {
+        value: isHover,
+        onSwitchOn: showHover,
+        onSwitchOff: hideHover,
+    } = useToggle(false);
+
     return (
         <CustomGrid
             className={clsx(styles.container, {
@@ -31,6 +39,8 @@ const Component = ({
             })}
             item
             onClick={() => onSelect(item.id)}
+            onMouseEnter={showHover}
+            onMouseLeave={hideHover}
         >
             {!isLoaded && (
                 <Skeleton
@@ -57,6 +67,11 @@ const Component = ({
                         isMuted={false}
                     />
                 )}
+                <Fade in={isHover}>
+                    <CustomGrid className={styles.deleteButton}>
+                        <RoundCloseIcon width="15px" height="15px" />
+                    </CustomGrid>
+                </Fade>
             </ConditionalRender>
         </CustomGrid>
     );
