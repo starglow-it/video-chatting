@@ -87,7 +87,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.frontend.rule=Host(`tlo.anhtuan57.click`)"
+      - "traefik.http.routers.frontend.rule=Host(`aws.nongdan.dev`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
@@ -112,7 +112,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.front_admin.rule=Host(`tlo-admin.anhtuan57.click`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_admin.rule=Host(`aws-admin.nongdan.dev`) && PathPrefix(`/`)"
       - "traefik.http.routers.front_admin.entrypoints=websecure"
       - "traefik.http.routers.front_admin.tls=true"
       - "traefik.http.routers.front_admin.tls.certresolver=simple-resolver"
@@ -136,7 +136,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.gateway.rule=Host(`tlo.anhtuan57.click`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/api`)"
       - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls=true"
       - "traefik.http.routers.gateway.middlewares=customcorsheader@docker"
@@ -164,7 +164,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.socket.rule=Host(`tlo.anhtuan57.click`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.socket.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/socket.io`)"
       - "traefik.http.routers.socket.entrypoints=websecure"
       - "traefik.http.routers.socket.tls=true"
       - "traefik.http.services.socket.loadbalancer.server.port=8080"
@@ -187,7 +187,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.meeting_socket.rule=Host(`tlo-meeting-socket.anhtuan57.click`)"
+      - "traefik.http.routers.meeting_socket.rule=Host(`aws-socket.nongdan.dev`)"
       - "traefik.http.routers.meeting_socket.entrypoints=websecure"
       - "traefik.http.routers.meeting_socket.tls=true"
       - "traefik.http.services.meeting_socket.loadbalancer.server.port=8180"
@@ -211,7 +211,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.payments.rule=Host(`tlo.anhtuan57.click`) && PathPrefix(`/payments`)"
+      - "traefik.http.routers.payments.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/payments`)"
       - "traefik.http.routers.payments.entrypoints=websecure"
       - "traefik.http.routers.payments.tls=true"
       - "traefik.http.services.payments.loadbalancer.server.port=5000"

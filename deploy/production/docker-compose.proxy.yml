@@ -54,7 +54,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.whoami.rule=(Host(`tlo.anhtuan57.click`) || Host(`tlo-meeting-socket.anhtuan57.click`) || Host(`tlo-livekit.anhtuan57.click`) || Host(`tlo-traefik.anhtuan57.click`)) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.rule=(Host(`aws.nongdan.dev`) || Host(`aws-socket.nongdan.dev`) || Host(`tlo-livekit.anhtuan57.click`) || Host(`tlo-traefik.anhtuan57.click`)) && PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
