@@ -20,4 +20,8 @@
     &.disabled {
         color: $normal-gray-scale;
     }
+
+    &.active {
+        color: $primary-red;
+      }
 }
