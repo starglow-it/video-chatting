@@ -3,7 +3,9 @@
     "title": "Personal",
     "name": "Name",
     "position": "Position",
-    "languages": "Languages"
+    "languages": "Languages",
+    "your": "Your",
+    "logo": "Logo"
   },
   "monetization": {
     "title": "Monetization",
