@@ -8,4 +8,5 @@ export type ProfileAvatarProps = {
     className?: string;
     onClick?: MouseEventHandler<HTMLDivElement>;
     withoutShadow?: boolean;
+    isAcceptNoLogin?: boolean;
 };
