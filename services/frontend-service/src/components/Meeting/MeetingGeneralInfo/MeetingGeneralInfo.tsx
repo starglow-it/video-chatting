@@ -52,8 +52,10 @@ const Component = () => {
         onSwitchOff: handleCloseMeetingActionNote,
     } = useToggle(false);
 
-    const { value: isMeetingActionOpened, onToggleSwitch: handleToggleAvatarAction } =
-        useToggle(false);
+    const {
+        value: isMeetingActionOpened,
+        onToggleSwitch: handleToggleAvatarAction,
+    } = useToggle(false);
 
     const { control } = useFormContext();
 
@@ -66,7 +68,8 @@ const Component = () => {
 
     const targetSignBoardKey = isOwner ? signBoard : meetingTemplate.signBoard;
 
-    const isThereSignBoard = !isMobile && targetSignBoardKey && targetSignBoardKey !== 'default';
+    const isThereSignBoard =
+        !isMobile && targetSignBoardKey && targetSignBoardKey !== 'default';
 
     const companyName = useWatch({
         control,
@@ -107,7 +110,9 @@ const Component = () => {
         <CustomGrid
             container
             ref={wrapperRef}
-            className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
+            className={clsx(styles.profileInfo, {
+                [styles.withBoard]: isThereSignBoard,
+            })}
         >
             <ConditionalRender condition={isThereSignBoard}>
                 <CustomImage
@@ -134,6 +139,7 @@ const Component = () => {
                         width="60px"
                         height="60px"
                         userName={isOwner ? fullName : meetingTemplate.fullName}
+                        isAcceptNoLogin={meetingTemplate.isAcceptNoLogin}
                     />
                     <Fade in={isMeetingActionOpened}>
                         <CustomGrid
@@ -187,7 +193,9 @@ const Component = () => {
                         nameSpace="meeting"
                         variant="body2"
                         color="colors.white.primary"
-                        translation={`meetingActions.${isOwner ? 'editTemplate' : 'meetingInfo'}`}
+                        translation={`meetingActions.${
+                            isOwner ? 'editTemplate' : 'meetingInfo'
+                        }`}
                     />
                     <RoundErrorIcon
                         className={styles.closeIcon}

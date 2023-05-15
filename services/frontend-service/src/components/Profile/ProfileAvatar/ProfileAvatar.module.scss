@@ -14,4 +14,13 @@
   .text {
     color: $primary-white;
   }
+
+  &.orange {
+    background: $primary-orange;
+  }
+}
+
+.yourText {
+  font-weight: 600;
+  font-size: rem(8px);
 }
