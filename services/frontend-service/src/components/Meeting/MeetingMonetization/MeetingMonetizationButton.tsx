@@ -63,13 +63,6 @@ export const MeetingMonetizationButton = () => {
       togglePaymentFormEvent();
   }, []);
 
-
-  useEffect(() => {  
-    if(!isOwner){  
-      handleClosePayment()
-    }
-  },[isOwner, meetingTemplate?.isMonetizationEnabled, meetingTemplate?.templatePrice])
-
   return (
     <ConditionalRender
       condition={isOwner || (meetingTemplate.isMonetizationEnabled && !!meetingTemplate?.templatePrice)}
