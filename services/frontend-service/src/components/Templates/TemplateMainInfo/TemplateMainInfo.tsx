@@ -27,6 +27,8 @@ const Component = ({
     isNeedToShowBusinessInfo = true,
     isPublic,
     isCommonTemplate,
+    authorRole,
+    authorThumbnail,
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">
@@ -39,10 +41,22 @@ const Component = ({
             />
             <CustomBox className={styles.emptySpace} />
             {isNeedToShowBusinessInfo && (
-                <CustomGrid container alignItems="flex-end" gap={1} className={styles.businessInfo}>
-                    <TemplateParticipants number={maxParticipants} />
+                <CustomGrid
+                    container
+                    alignItems="flex-end"
+                    gap={1}
+                    className={styles.businessInfo}
+                >
+                    <TemplateParticipants
+                        number={maxParticipants}
+                        authorRole={authorRole}
+                        authorThumbnail={authorThumbnail}
+                    />
                     <ConditionalRender condition={Boolean(type)}>
-                        <TemplatePaymentType type={type} priceInCents={priceInCents} />
+                        <TemplatePaymentType
+                            type={type}
+                            priceInCents={priceInCents}
+                        />
                     </ConditionalRender>
                 </CustomGrid>
             )}
