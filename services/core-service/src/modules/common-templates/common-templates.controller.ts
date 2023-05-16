@@ -139,6 +139,9 @@ export class CommonTemplatesController {
               },
               authorRole: {
                 $first: "$author.role"
+              },
+              authorName: {
+                $first: '$author.fullName'
               }
             }
           }

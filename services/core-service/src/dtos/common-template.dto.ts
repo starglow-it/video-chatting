@@ -101,5 +101,8 @@ export class CommonTemplateDTO implements ICommonTemplate {
   authorThumbnail: ICommonTemplate['authorThumbnail'];
 
   @Expose()
+  authorName: ICommonTemplate['authorName'];
+
+  @Expose()
   isAcceptNoLogin: ICommonTemplate['isAcceptNoLogin'];
 }

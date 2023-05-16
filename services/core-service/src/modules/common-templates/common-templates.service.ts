@@ -128,7 +128,8 @@ export class CommonTemplatesService {
           {
             $project: {
               profileAvatar: 1,
-              role: 1
+              role: 1,
+              fullName: 1
             }
           }
         ],

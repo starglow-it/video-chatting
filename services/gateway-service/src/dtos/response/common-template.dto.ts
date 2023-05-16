@@ -72,6 +72,10 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   authorRole: ICommonTemplate['authorRole'];
+  
+  @Expose()
+  @ApiProperty()
+  authorName: ICommonTemplate['authorName'];
 
   @Expose()
   @ApiProperty()

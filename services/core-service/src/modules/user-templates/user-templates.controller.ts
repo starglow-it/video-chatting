@@ -443,7 +443,10 @@ export class UserTemplatesController {
               },
               authorRole: {
                 $first: "$author.role"
-              }
+              },
+              authorName: {
+                $first: "$author.fullName"
+              },
             }
           }
         ];

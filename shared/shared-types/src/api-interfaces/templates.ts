@@ -11,6 +11,7 @@ import { IMeetingInstance } from './meeting';
 interface ITemplate{
   authorThumbnail?: string;
   authorRole?: string;
+  authorName?: string;
 }
 
 export interface ICommonTemplate extends ITemplate {
