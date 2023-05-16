@@ -1,9 +1,4 @@
-import React, {
-    memo,
-    SyntheticEvent,
-    useCallback,
-    useEffect,
-} from 'react';
+import React, { memo, SyntheticEvent, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -34,6 +29,7 @@ import {
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
+    $meetingTemplateStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
@@ -48,6 +44,7 @@ import {
     clientRoutes,
     dashboardRoute,
     loginRoute,
+    registerRoute,
 } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 
@@ -68,6 +65,7 @@ const Component = () => {
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent,
             ),
     });
+    const meetingTemplate = useStore($meetingTemplateStore);
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
@@ -82,13 +80,20 @@ const Component = () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
 
-        await router.push(
-            !isWithoutAuthen
+        await router.push({
+            pathname: !isWithoutAuthen
                 ? localUser.isGenerated
                     ? clientRoutes.welcomeRoute
-                    : dashboardRoute
-                : loginRoute,
-        );
+                    : clientRoutes.dashboardRoute
+                : clientRoutes.registerRoute,
+            query: !isWithoutAuthen
+                ? undefined
+                : {
+                      signUpType: 'endCall',
+                      templateUrl: meetingTemplate.url,
+                      templateType: meetingTemplate.templateType,
+                  },
+        });
     }, []);
 
     const handleToggleMic = useCallback(() => {
