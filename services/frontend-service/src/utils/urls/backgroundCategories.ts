@@ -25,3 +25,11 @@ export const uploadBackgroundToCategory = () => ({
     url: `${serverUrl}/${medias}/user-template`,
     method: HttpMethods.Post,
 });
+
+export const deleteMediaCategory = ({
+    categoryId = '',
+    userTemplateId = '',
+}) => ({
+    url: `${serverUrl}/${medias}?categogyId=${categoryId}&userTemplateId=${userTemplateId}`,
+    method: HttpMethods.Delete,
+});
