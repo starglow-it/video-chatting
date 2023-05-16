@@ -261,7 +261,8 @@ export class AdminMediasController {
         try {
             await this.mediaService.deleteMedias({
                 ids: body.ids,
-                categoryId: params.categoryId
+                categoryId: params.categoryId,
+                userTemplateId: null
             });
 
             return {

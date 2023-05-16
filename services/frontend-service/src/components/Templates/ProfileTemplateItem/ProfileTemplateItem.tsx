@@ -126,6 +126,9 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                 isNeedToShowBusinessInfo
                 isPublic={template.isPublic}
                 isCommonTemplate={profile.id ? profile.id !== template.author : true}
+                authorRole={template.authorRole}
+                authorThumbnail={template.authorThumbnail}
+                authorName={template.authorName}
             />
             <Fade in={showPreview}>
                 <CustomGrid

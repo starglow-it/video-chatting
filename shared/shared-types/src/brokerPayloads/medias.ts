@@ -50,4 +50,5 @@ export type DeleteMediaCategoriesPayload = {
 export type DeleteMediasPayload = {
     ids: string[];
     categoryId: string;
+    userTemplateId: string;
 }
