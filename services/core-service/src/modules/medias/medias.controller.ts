@@ -108,7 +108,7 @@ export class MediaController {
             userTemplateQuery = {
                 $in: mediaCategory.key === 'myrooms' ?
                     userTemplate.user.templates :
-                    [userTemplateId, null]
+                    [userTemplate, null]
             };
 
         };
@@ -272,7 +272,7 @@ export class MediaController {
                         id,
                         mimeType: mimeType
                     });
-                },maxRetries);
+                }, maxRetries);
 
                 const media = await this.mediaService.updateMedia({
                     query: {
@@ -516,7 +516,7 @@ export class MediaController {
     }
 
     @MessagePattern({ cmd: CoreBrokerPatterns.DeleteMedias })
-    async deleteMedias(@Payload() { ids, categoryId }: DeleteMediasPayload): Promise<void> {
+    async deleteMedias(@Payload() { ids, categoryId, userTemplateId }: DeleteMediasPayload): Promise<void> {
         return withTransaction(this.connection, async (session) => {
             try {
                 const mediaCategory = await this.mediaService.findMediaCategory({
@@ -525,6 +525,21 @@ export class MediaController {
                     },
                     session
                 });
+
+                let userTemplate = null;
+
+                if (userTemplateId) {
+                    userTemplate = await this.userTemplateService.findUserTemplateById({
+                        id: userTemplateId,
+                        session
+                    });
+
+                    if (!userTemplate) {
+                        throw new RpcException({
+                            message: 'User template not found'
+                        });
+                    }
+                }
 
                 if (!mediaCategory)
                     throw new RpcException({
@@ -535,6 +550,7 @@ export class MediaController {
                 await this.mediaService.deleteMedias({
                     query: {
                         mediaCategory,
+                        userTemplate,
                         _id: {
                             $in: ids
                         }
