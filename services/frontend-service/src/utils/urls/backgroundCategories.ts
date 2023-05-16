@@ -30,6 +30,6 @@ export const deleteMediaCategory = ({
     categoryId = '',
     userTemplateId = '',
 }) => ({
-    url: `${serverUrl}/${medias}?categogyId=${categoryId}&userTemplateId=${userTemplateId}`,
+    url: `${serverUrl}/${medias}?categoryId=${categoryId}&userTemplateId=${userTemplateId}`,
     method: HttpMethods.Delete,
 });
