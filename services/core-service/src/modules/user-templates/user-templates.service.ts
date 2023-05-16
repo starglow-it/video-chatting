@@ -185,8 +185,10 @@ export class UserTemplatesService {
     return this.userTemplate.updateMany(query, data, options);
   }
 
-  async aggregate(aggregationPipeline: PipelineStage[]) {
-    return this.userTemplate.aggregate(aggregationPipeline).exec();
+  async aggregate(aggregationPipeline: PipelineStage[], session?: ITransactionSession) {
+    return this.userTemplate.aggregate(aggregationPipeline,{
+      session: session?.session
+    }).exec();
   }
 
   async deleteUserTemplates({

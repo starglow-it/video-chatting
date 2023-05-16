@@ -414,26 +414,52 @@ export class UserTemplatesController {
   ): Promise<EntityList<IUserTemplate>> {
     try {
       return withTransaction(this.connection, async (session) => {
-        const userTemplates = await this.userTemplatesService.findUserTemplates(
+        const aggregationPipeline: mongoose.PipelineStage[] = [
           {
-            query: {
-              isDeleted: false,
-              user: new mongoose.Types.ObjectId(userId),
-            },
-            options: {
-              ...(sort ? { sort: { [sort]: direction ?? 1 } } : {}),
-              skip,
-              limit,
-            },
-            populatePaths: [
-              'businessCategories',
-              'user',
-              'previewUrls',
-              'author',
-            ],
-            session,
+            $match: {
+              user: new mongoose.Types.ObjectId(userId)
+            }
           },
-        );
+          { $sort: { ...(sort ? { [sort]: direction as 1 | -1 ?? 1 } : {}) } },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user'
+            }
+          },
+          ...this.commonTemplatesService.joinCommonTemplatePropertiesQueries(),
+          {
+            $set: {
+              author: {
+                $first: "$author"
+              },
+              user: {
+                $first: "$user"
+              },
+              authorThumbnail: {
+                $first: "$author.profileAvatar.url"
+              },
+              authorRole: {
+                $first: "$author.role"
+              },
+              authorName: {
+                $first: "$author.fullName"
+              },
+            }
+          }
+        ];
+        
+        if (skip) {
+          aggregationPipeline.push({ $skip: skip });
+        }
+        
+        if (limit) {
+          aggregationPipeline.push({ $limit: limit });
+        }
+
+        const userTemplates = await this.userTemplatesService.aggregate(aggregationPipeline, session);
 
         const userTemplatesCount =
           await this.userTemplatesService.countUserTemplates({
@@ -489,7 +515,7 @@ export class UserTemplatesController {
           templatePrice: typeof data.templatePrice !== 'undefined' ? (data.templatePrice || '') : template.templatePrice,
           templateCurrency: data.templateCurrency,
           paywallCurrency: data.paywallCurrency,
-          paywallPrice:typeof data.paywallPrice !== 'undefined' ? (data.paywallPrice || '') : template.paywallPrice,
+          paywallPrice: typeof data.paywallPrice !== 'undefined' ? (data.paywallPrice || '') : template.paywallPrice,
           customLink: data.customLink,
           name: data.name,
           isPublic: data.isPublic,
