@@ -75,6 +75,25 @@ export class AuthController {
     }
   }
 
+  private sendWelcomeEmail(email: string){
+    this.notificationService.sendEmail({
+      template: {
+        key: emailTemplates.welcomeEmail,
+        data: [
+          {
+            name: 'FNAME',
+            content: email,
+          },
+        ],
+      },
+      to: [
+        {
+          email,
+          name: email,
+        },
+      ],
+    });
+  }
   @MessagePattern({ cmd: AuthBrokerPatterns.ConfirmRegistration })
   async confirmRegistration(
     @Payload() payload: ConfirmUserRegistrationPayload,
@@ -86,24 +105,7 @@ export class AuthController {
       });
 
       await this.coreService.deleteToken(payload);
-
-      this.notificationService.sendEmail({
-        template: {
-          key: emailTemplates.welcomeEmail,
-          data: [
-            {
-              name: 'FNAME',
-              content: confirmToken?.email,
-            },
-          ],
-        },
-        to: [
-          {
-            email: confirmToken?.email,
-            name: confirmToken.email,
-          },
-        ],
-      });
+      this.sendWelcomeEmail(confirmToken?.email);
 
       return this.coreService.findUserByEmailAndUpdate({
         email: confirmToken?.email,
@@ -127,6 +129,9 @@ export class AuthController {
         user: { ...payload, loginType: LoginTypes.Google },
         token,
       });
+      
+      this.sendWelcomeEmail(payload.email);
+
       await this.coreService.findUserByEmailAndUpdate({
         data: {
           fullName: payload.name,
