@@ -177,6 +177,7 @@ const Component = () => {
                                         item={item}
                                         onSelect={handleSelectBackground}
                                         onDelete={handleDeleteMedia}
+                                        isShowDelete={!isHideUpload}
                                     />
                                 ))}
                             </CustomScroll>

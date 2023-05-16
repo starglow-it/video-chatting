@@ -6,20 +6,22 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IMediaItem } from '../../../store/roomStores/meeting/meetingBackground/types';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
-import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
-import styles from './MeetingChangeBackground.module.scss';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import styles from './MeetingChangeBackground.module.scss';
 
 const Component = ({
     isActive = false,
     item,
     onSelect,
     onDelete,
+    isShowDelete
 }: {
     isActive: boolean;
     item: IMediaItem;
     onSelect: (id: string) => void;
     onDelete: (mediaId: string) => void;
+    isShowDelete: boolean;
 }) => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const handleLoadEnd = () => {
@@ -74,13 +76,17 @@ const Component = ({
                         isMuted={false}
                     />
                 )}
-                <ConditionalRender condition={Boolean(item.userTemplate)}>
+                <ConditionalRender condition={Boolean(item.userTemplate && isShowDelete)}>
                     <Fade in={isHover}>
                         <CustomGrid
                             className={styles.deleteButton}
                             onClick={handleDelete}
                         >
-                            <RoundCloseIcon width="15px" height="15px" />
+                            <CloseIcon
+                                width="14px"
+                                height="14px"
+                                className={styles.icon}
+                            />
                         </CustomGrid>
                     </Fade>
                 </ConditionalRender>
