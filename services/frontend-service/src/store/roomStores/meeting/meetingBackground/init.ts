@@ -138,7 +138,7 @@ sample({
 sample({
     clock: deleteMediaMeetingFx.doneData,
     fn: (_, clock: ResultDeleteMedia) => ({
-        type: NotificationType.SubscriptionEndDate,
+        type: NotificationType.DeleteMedia,
         message: clock.message,
         withSuccessIcon: clock.success,
         withErrorIcon: !clock.success,

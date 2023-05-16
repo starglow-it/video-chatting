@@ -20,5 +20,5 @@ export const handleDeleteMediaMeeting = async ({
         return { success, message: 'meeting.deleteBackgroundSuccess' };
     }
 
-    return { success, message: 'deleteBackgroundError' };
+    return { success, message: 'meeting.deleteBackgroundError' };
 };
