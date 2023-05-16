@@ -29,6 +29,7 @@ const Component = ({
     isCommonTemplate,
     authorRole,
     authorThumbnail,
+    authorName
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">
@@ -51,6 +52,7 @@ const Component = ({
                         number={maxParticipants}
                         authorRole={authorRole}
                         authorThumbnail={authorThumbnail}
+                        authorName={authorName}
                     />
                     <ConditionalRender condition={Boolean(type)}>
                         <TemplatePaymentType

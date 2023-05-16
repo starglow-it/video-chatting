@@ -8,11 +8,16 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { TemplateParticipantsProps } from './types';
 
 import styles from './TemplateParticipants.module.scss';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 const TemplateParticipants = memo(
-    ({ number, authorRole, authorThumbnail }: TemplateParticipantsProps) => (
+    ({
+        number,
+        authorRole,
+        authorThumbnail,
+        authorName,
+    }: TemplateParticipantsProps) => (
         <CustomGrid
             item
             alignItems="center"
@@ -22,15 +27,20 @@ const TemplateParticipants = memo(
                 <AuthorLogo width="18px" height="18px" />
             </ConditionalRender>
             <ConditionalRender
-                condition={authorRole === 'user' && Boolean(authorThumbnail)}
+                condition={authorRole === 'user'}
             >
-                <CustomImage
+                <ProfileAvatar
                     src={authorThumbnail || ''}
-                    width={20}
-                    height={20}
+                    width="18px"
+                    height="18px"
+                    userName={authorName || ''}
                 />
             </ConditionalRender>
-            <CustomTypography variant="body2" color="colors.black.primary">
+            <CustomTypography
+                variant="body2"
+                color="colors.black.primary"
+                marginLeft="3px"
+            >
                 {number}
             </CustomTypography>
         </CustomGrid>

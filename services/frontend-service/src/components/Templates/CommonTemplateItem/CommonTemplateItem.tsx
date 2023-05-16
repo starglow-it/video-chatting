@@ -82,6 +82,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                 isCommonTemplate
                 authorRole={template.authorRole}
                 authorThumbnail={template.authorThumbnail}
+                authorName={template.authorName}
             />
             <Fade in={showPreview}>
                 <CustomGrid

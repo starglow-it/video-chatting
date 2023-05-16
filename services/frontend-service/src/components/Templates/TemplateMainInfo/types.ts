@@ -13,4 +13,5 @@ export type TemplateMainInfoProps = PropsWithClassName<{
     isCommonTemplate?: boolean;
     authorRole: ICommonTemplate['authorRole'];
     authorThumbnail?: ICommonTemplate['authorThumbnail'];
+    authorName: ICommonTemplate['authorName'];
 }>;
