@@ -73,6 +73,9 @@ const OnboardingTemplateItem = memo(({ template }: { template: ICommonTemplate }
                 type={template.type}
                 isNeedToShowBusinessInfo
                 isCommonTemplate
+                authorName={template.authorName}
+                authorRole={template.authorRole}
+                authorThumbnail={template.authorThumbnail}
             />
             <Fade in={showPreview}>
                 <CustomGrid
