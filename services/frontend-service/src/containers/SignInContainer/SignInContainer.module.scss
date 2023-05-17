@@ -1,10 +1,11 @@
-@import "../../styles/rem";
+@import "../../styles/rem.scss";
+@import "../../styles/variables.scss";
 
 .wrapper {
   width: rem(472px);
   max-width: 100%;
   max-height: 100%;
-  padding: rem(40px);
+  padding: rem(24px 40px 24px 40px);
 }
 
 .image {
@@ -18,7 +19,7 @@
 }
 
 .socialsWrapper {
-  margin: rem(38px) 0 0 0;
+  margin: rem(20px) 0 0 0;
   .googleLogin {
     margin: 0 0 rem(12px) 0;
   }
@@ -37,7 +38,7 @@
 }
 
 .signInBtn {
-  margin: rem(50px) 0 0 0;
+  margin: rem(18px) 0 0 0;
   padding: rem(16px) 0;
 }
 .btnGoogle{
@@ -58,4 +59,12 @@
 .errorContainer {
   margin: rem(8px 0 8px 0);
   align-self: flex-start;
+}
+
+.bgContainer {
+  z-index: -1;
+}
+
+.textOr {
+  color: $normal-gray-scale;
 }

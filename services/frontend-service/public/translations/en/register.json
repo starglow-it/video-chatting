@@ -21,6 +21,7 @@
   },
   "signUpEndCall": {
     "title": "Save this free Account",
-    "button": "Sign Up with email"
+    "button": "Sign Up with email",
+    "or": "Or"
   }
 }

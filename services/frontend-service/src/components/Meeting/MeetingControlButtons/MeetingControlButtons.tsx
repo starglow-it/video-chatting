@@ -40,13 +40,12 @@ import {
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
-import {
-    clientRoutes,
-    dashboardRoute,
-    loginRoute,
-    registerRoute,
-} from '../../../const/client-routes';
+import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
 
 const Component = () => {
     const router = useRouter();
@@ -79,21 +78,21 @@ const Component = () => {
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
+        WebStorage.save({
+            key: StorageKeysEnum.bgLastCall,
+            data: {
+                templateUrl: meetingTemplate.url,
+                templateType: meetingTemplate.templateType,
+            },
+        });
 
-        await router.push({
-            pathname: !isWithoutAuthen
+        await router.push(
+            !isWithoutAuthen
                 ? localUser.isGenerated
                     ? clientRoutes.welcomeRoute
                     : clientRoutes.dashboardRoute
-                : clientRoutes.registerRoute,
-            query: !isWithoutAuthen
-                ? undefined
-                : {
-                      signUpType: 'endCall',
-                      templateUrl: meetingTemplate.url,
-                      templateType: meetingTemplate.templateType,
-                  },
-        });
+                : clientRoutes.registerEndCallRoute,
+        );
     }, []);
 
     const handleToggleMic = useCallback(() => {
