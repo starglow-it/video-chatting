@@ -30,7 +30,7 @@ import { CustomCheckbox } from 'shared-frontend/library/custom/CustomCheckbox';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import {
     $registerStore,
-    registerUserFx,
+    registerWithoutTemplateFx,
     resetRegisterErrorEvent,
 } from '../../store';
 
@@ -87,16 +87,11 @@ const Component = () => {
     }, []);
 
     const onSubmit = handleSubmit(async (data: RegisterUserParams) => {
-        const initialTemplateData = WebStorage.get<{ templateId: string }>({
-            key: StorageKeysEnum.templateId,
-        });
-
         resetRegisterErrorEvent();
 
-        registerUserFx({
+        registerWithoutTemplateFx({
             email: data.email.trim().toLowerCase(),
             password: data.password,
-            templateId: initialTemplateData.templateId,
         });
     });
 

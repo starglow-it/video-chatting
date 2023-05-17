@@ -137,10 +137,13 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     if (isWithoutAuthen) {
         if (isLoginRedirectRoutes) redirectTo(nextPageContext, loginRoute);
     } else {
-        if (registerTemplate && !pathName.includes(setUpTemplateRoute)) {
+        if (
+            typeof registerTemplate !== 'undefined' &&
+            !pathName.includes(setUpTemplateRoute)
+        ) {
             redirectTo(
                 nextPageContext,
-                `${setUpTemplateRoute}/${registerTemplate}`,
+                `${setUpTemplateRoute}/${registerTemplate || ''}`,
             );
         } else if (isAuthenticated && isRegisterRedirectRoute) {
             redirectTo(nextPageContext, dashboardRoute);
