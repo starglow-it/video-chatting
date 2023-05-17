@@ -48,13 +48,13 @@ export const MeetingMonetizationButton = () => {
     }
   };
 
-  const handleClosePayment = useCallback(async (flag?: boolean) => {    
+  const handleClosePayment = useCallback(async () => {    
     setAnchorEl(null)
     handleSetPopover(false)
     if (paymentIntent?.id) {
         cancelPaymentIntentWithData();
     }
-    togglePaymentFormEvent(flag);
+    togglePaymentFormEvent(false);
   }, [paymentIntent?.id]);
 
   const handleUpdateMonetization = useCallback(() => {
@@ -65,7 +65,7 @@ export const MeetingMonetizationButton = () => {
 
   useEffect(() => {  
     if(!isOwner){  
-      handleClosePayment(false)
+      handleClosePayment()
     }
   },[isOwner, meetingTemplate?.isMonetizationEnabled, meetingTemplate?.templatePrice])
 
