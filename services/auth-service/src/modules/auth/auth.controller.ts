@@ -129,13 +129,8 @@ export class AuthController {
     payload: CreateUserFromGoogleAccountPayload,
   ) {
     try {
-      const token = await this.authService.generateToken({
-        email: payload.email,
-        type: TokenTypes.Confirm,
-      });
       const user = await this.coreService.createUser({
         user: { ...payload, loginType: LoginTypes.Google },
-        token,
       });
 
       this.sendWelcomeEmail(payload.email);
