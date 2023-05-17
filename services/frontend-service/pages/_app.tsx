@@ -139,7 +139,9 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     } else {
         if (
             typeof registerTemplate !== 'undefined' &&
-            !pathName.includes(setUpTemplateRoute)
+            !pathName.includes(setUpTemplateRoute) &&
+            !user.fullName &&
+            !user.companyName
         ) {
             redirectTo(
                 nextPageContext,

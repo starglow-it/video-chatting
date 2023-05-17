@@ -4,7 +4,9 @@ import { RegisterUserParams } from '../../types';
 import { registerUserUrl } from '../../../utils/urls';
 import frontendConfig from '../../../const/config';
 
-export const handleRegisterWithoutTemplate = async (params: RegisterUserParams) => {
+export const handleRegisterWithoutTemplate = async (
+    params: RegisterUserParams,
+) => {
     const userData = await sendRequest<{ country_name: string }, ErrorState>({
         url: `https://api.ipgeolocation.io/ipgeo?apiKey=${frontendConfig.geolocationApiKey}`,
         method: HttpMethods.Get,
@@ -22,15 +24,14 @@ export const handleRegisterWithoutTemplate = async (params: RegisterUserParams) 
         return {
             isUserRegistered: response.success,
             email: params.email,
-            password: params.password
+            password: params.password,
         };
     }
 
-    if (!response.success) {
-        throw new Error(response?.error?.message)
-    }
-
     return {
-        isUserRegistered: false,
+        isUserRegistered: response.success,
+        email: params.email,
+        password: params.password,
+        error: response.error,
     };
 };

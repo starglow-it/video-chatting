@@ -49,6 +49,7 @@ import { AppDialogsEnum } from '../../store/types';
 
 // utils
 import { getClientMeetingUrl } from '../../utils/urls';
+import { dashboardRoute } from 'src/const/client-routes';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -65,17 +66,24 @@ const Component = () => {
     const routeToChange = useStore($routeToChangeStore);
 
     const isCreateMeetingPending = useStore(createMeetingFx.pending);
-    const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
+    const isSubscriptionPurchasePending = useStore(
+        startCheckoutSessionForSubscriptionFx.pending,
+    );
 
     const forceRef = useRef<boolean>(false);
     const isDataFilled = useRef<boolean>(false);
 
-    const { value: isProfileUpdated, onSwitchOn: handleSetProfileUpdated } = useToggle(false);
+    const { value: isProfileUpdated, onSwitchOn: handleSetProfileUpdated } =
+        useToggle(false);
 
     useEffect(() => {
-        (async () => {
-            await getTemplateFx({ templateId: router.query.templateId as string });
-        })();
+        if (router.query.templateId) {
+            (async () => {
+                await getTemplateFx({
+                    templateId: router.query.templateId as string,
+                });
+            })();
+        }
 
         return () => {
             appDialogsApi.closeDialog({
@@ -137,10 +145,21 @@ const Component = () => {
                     registerTemplate: null,
                 });
 
-                const result = await createMeetingFx({ templateId: setUpTemplate.id });
+                const result = await createMeetingFx({
+                    templateId: setUpTemplate.id,
+                });
 
                 const meetingUrl = getClientMeetingUrl(result?.template?.id);
                 await router.push(`${meetingUrl}?success_house=true`);
+            }
+            if (!router.query.templateId) {
+                await updateProfileFx({
+                    ...data,
+                });
+                if (profileAvatar.file) {
+                    await updateProfilePhotoFx({ file: profileAvatar.file });
+                }
+                await router.push(dashboardRoute);
             }
             // handleSetProfileUpdated();
         }),
@@ -185,12 +204,18 @@ const Component = () => {
         };
     }, [confirmQuitOnboardingDialog]);
 
-    const handleChooseSubscription = async (productId: string, isPaid: boolean, trial: boolean) => {
+    const handleChooseSubscription = async (
+        productId: string,
+        isPaid: boolean,
+        trial: boolean,
+    ) => {
         if (setUpTemplate?.id) {
             updateProfileFx({
                 registerTemplate: null,
             });
-            const result = await createMeetingFx({ templateId: setUpTemplate.id });
+            const result = await createMeetingFx({
+                templateId: setUpTemplate.id,
+            });
 
             if (result.template && isPaid) {
                 const response = await startCheckoutSessionForSubscriptionFx({
@@ -214,7 +239,11 @@ const Component = () => {
     );
 
     return (
-        <CustomGrid container justifyContent="flex-end" className={styles.wrapper}>
+        <CustomGrid
+            container
+            justifyContent="flex-end"
+            className={styles.wrapper}
+        >
             {previewImage?.url && (
                 <CustomGrid container className={styles.imageWrapper}>
                     <CustomImage
@@ -237,12 +266,18 @@ const Component = () => {
                     {!isSubmitSuccessful && <SetUpTemplateInfo />}
                     <SubscriptionsPlans
                         isSubscriptionStep={isProfileUpdated}
-                        isDisabled={isCreateMeetingPending || isSubscriptionPurchasePending}
+                        isDisabled={
+                            isCreateMeetingPending ||
+                            isSubscriptionPurchasePending
+                        }
                         onChooseSubscription={handleChooseSubscription}
                     />
                 </form>
             </FormProvider>
-            <ConfirmQuitOnboardingDialog onConfirm={handleQuit} onCancel={handleCancel} />
+            <ConfirmQuitOnboardingDialog
+                onConfirm={handleQuit}
+                onCancel={handleCancel}
+            />
         </CustomGrid>
     );
 };

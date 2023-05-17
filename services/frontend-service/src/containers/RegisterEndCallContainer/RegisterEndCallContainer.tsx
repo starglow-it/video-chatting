@@ -29,6 +29,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomCheckbox } from 'shared-frontend/library/custom/CustomCheckbox';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import {
+    $authStore,
     $registerStore,
     registerWithoutTemplateFx,
     resetRegisterErrorEvent,
@@ -47,6 +48,8 @@ import {
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
+import { useRouter } from 'next/router';
+import { dashboardRoute } from 'src/const/client-routes';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -56,7 +59,8 @@ const validationSchema = yup.object({
 
 const Component = () => {
     const { error } = useStore($registerStore);
-
+    const router = useRouter();
+    const authState = useStore($authStore);
     const [showHints, setHints] = useState<boolean>(false);
 
     const resolver = useYupValidationResolver<{
@@ -94,6 +98,12 @@ const Component = () => {
             password: data.password,
         });
     });
+
+    useEffect(() => {
+        if (authState.isAuthenticated) {
+            router.push(dashboardRoute);
+        }
+    }, [authState.isAuthenticated]);
 
     useEffect(() => {
         if (!showHints) {

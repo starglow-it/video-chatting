@@ -44,7 +44,11 @@ registerUserFx.doneData.watch(data => {
 });
 
 sample({
-    clock: registerWithoutTemplateFx.doneData,
+    clock: [
+        registerWithoutTemplateFx.doneData,
+        registerWithoutTemplateFx.failData,
+    ],
+    filter: ({ error }) => !error || error.message === 'user.exits',
     fn: (_, clock) => ({ email: clock.email, password: clock.password }),
     target: loginUserFx,
 });
