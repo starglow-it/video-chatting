@@ -46,28 +46,36 @@ export class AuthController {
     @Payload() payload: RegisterUserPayload,
   ): Promise<ICommonUser> {
     try {
-      const token = await this.authService.generateToken({
-        email: payload.email,
-        type: TokenTypes.Confirm,
-      });
+      let user = null;
+      if (payload.templateId) {
+        const token = await this.authService.generateToken({
+          email: payload.email,
+          type: TokenTypes.Confirm,
+        });
 
-      const user = await this.coreService.createUser({
-        user: payload,
-        token,
-      });
+        user = await this.coreService.createUser({
+          user: payload,
+          token,
+        });
 
-      this.notificationService.sendEmail({
-        template: {
-          key: emailTemplates.emailVerification,
-          data: [
-            {
-              name: 'CONFIRMLINK',
-              content: `${this.frontendUrl}/confirm-registration?token=${token.token}`,
-            },
-          ],
-        },
-        to: [{ email: payload.email, name: payload.email }],
-      });
+        this.notificationService.sendEmail({
+          template: {
+            key: emailTemplates.emailVerification,
+            data: [
+              {
+                name: 'CONFIRMLINK',
+                content: `${this.frontendUrl}/confirm-registration?token=${token.token}`,
+              },
+            ],
+          },
+          to: [{ email: payload.email, name: payload.email }],
+        });
+      }
+      else {
+        user = await this.coreService.createUser({
+          user: payload,
+        });
+      }
 
       return user;
     } catch (err) {
@@ -75,7 +83,7 @@ export class AuthController {
     }
   }
 
-  private sendWelcomeEmail(email: string){
+  private sendWelcomeEmail(email: string) {
     this.notificationService.sendEmail({
       template: {
         key: emailTemplates.welcomeEmail,
@@ -129,7 +137,7 @@ export class AuthController {
         user: { ...payload, loginType: LoginTypes.Google },
         token,
       });
-      
+
       this.sendWelcomeEmail(payload.email);
 
       await this.coreService.findUserByEmailAndUpdate({
