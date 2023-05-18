@@ -54,7 +54,7 @@ export const MeetingMonetizationButton = () => {
     if (paymentIntent?.id) {
         cancelPaymentIntentWithData();
     }
-    togglePaymentFormEvent();
+    togglePaymentFormEvent(false);
   }, [paymentIntent?.id]);
 
   const handleUpdateMonetization = useCallback(() => {
@@ -62,7 +62,6 @@ export const MeetingMonetizationButton = () => {
       handleSetPopover(false)
       togglePaymentFormEvent();
   }, []);
-
 
   useEffect(() => {  
     if(!isOwner){  
