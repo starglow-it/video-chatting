@@ -29,7 +29,6 @@ import {
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
-    $meetingTemplateStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
@@ -42,10 +41,6 @@ import {
 import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from 'src/controllers/WebStorageController';
 
 const Component = () => {
     const router = useRouter();
@@ -64,7 +59,6 @@ const Component = () => {
                     user.accessStatus === MeetingAccessStatusEnum.RequestSent,
             ),
     });
-    const meetingTemplate = useStore($meetingTemplateStore);
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
@@ -78,14 +72,6 @@ const Component = () => {
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
-        WebStorage.save({
-            key: StorageKeysEnum.bgLastCall,
-            data: {
-                templateUrl: meetingTemplate.url,
-                templateType: meetingTemplate.templateType,
-            },
-        });
-
         await router.push(
             !isWithoutAuthen
                 ? localUser.isGenerated

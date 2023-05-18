@@ -64,6 +64,7 @@ import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import { StorageKeysEnum, WebStorage } from 'src/controllers/WebStorageController';
 
 // helpers
 
@@ -133,6 +134,14 @@ const Component = () => {
 
     useEffect(() => {
         getCategoriesMediasFx({ userTemplateId: meetingTemplate.id });
+        WebStorage.save({
+            key: StorageKeysEnum.bgLastCall,
+            data: {
+                templateUrl: meetingTemplate.url,
+                templateType: meetingTemplate.templateType,
+            },
+        });
+
     }, []);
 
     useEffect(() => {
