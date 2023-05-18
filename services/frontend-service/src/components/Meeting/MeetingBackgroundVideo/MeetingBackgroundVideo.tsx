@@ -24,7 +24,6 @@ const Component = ({ children, src, templateType, videoClassName = '' }: Meeting
     const isScreenSharing = useStore($isScreenSharingStore);
     const isAudioBackgroundActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
-    console.log('#Duy Phan console', src)
 
     return (
         <ConditionalRender condition={Boolean(src)}>

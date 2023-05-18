@@ -50,6 +50,7 @@ import { AppDialogsEnum } from '../../store/types';
 // utils
 import { getClientMeetingUrl } from '../../utils/urls';
 import { dashboardRoute } from 'src/const/client-routes';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -254,6 +255,9 @@ const Component = () => {
                     />
                 </CustomGrid>
             )}
+            <ConditionalRender condition={!previewImage?.url}>
+                <CustomGrid container bgcolor="#fcfcfc" />
+            </ConditionalRender>
             <FormProvider {...methods}>
                 <form className={styles.form} onSubmit={onSubmit}>
                     <TemplateGeneralInfo
