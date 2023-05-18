@@ -1,6 +1,7 @@
 export enum StorageKeysEnum {
     templateId = 'templateId',
-    meetingSettings = 'meetingSettings'
+    meetingSettings = 'meetingSettings',
+    bgLastCall = 'bgLastCall',
 }
 
 export const WebStorage = {

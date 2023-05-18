@@ -9,14 +9,24 @@ export const initialRegisterState: RegisteredUserState = {
     error: null,
 };
 
-export const $registerStore = registerDomain.store<RegisteredUserState>(initialRegisterState);
+export const $registerStore =
+    registerDomain.store<RegisteredUserState>(initialRegisterState);
 
-export const resetRegisterErrorEvent = registerDomain.event('resetRegisterErrorEvent');
-
-export const registerUserFx = registerDomain.effect<RegisterUserParams, RegisteredUserState>(
-    'registerUserFx',
+export const resetRegisterErrorEvent = registerDomain.event(
+    'resetRegisterErrorEvent',
 );
 
-export const confirmRegistrationUserFx = registerDomain.effect<string, RegisteredUserState>(
-    'confirmRegisterUserFx',
-);
+export const registerUserFx = registerDomain.effect<
+    RegisterUserParams,
+    RegisteredUserState
+>('registerUserFx');
+
+export const confirmRegistrationUserFx = registerDomain.effect<
+    string,
+    RegisteredUserState
+>('confirmRegisterUserFx');
+
+export const registerWithoutTemplateFx = registerDomain.createEffect<
+    RegisterUserParams,
+    RegisteredUserState
+>('registerWithoutTemplateFx');

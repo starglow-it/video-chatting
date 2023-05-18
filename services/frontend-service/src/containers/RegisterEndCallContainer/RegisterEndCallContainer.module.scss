@@ -1,0 +1,70 @@
+@import "../../styles/rem";
+@import "../../styles/variables.scss";
+
+.wrapper {
+  width: rem(472px);
+  max-width: 100%;
+  max-height: 100%;
+  padding: rem(24px 40px 24px 40px);
+}
+
+.image {
+  width: rem(28px);
+  height: rem(28px);
+  margin: 0 rem(12px);
+}
+
+.text {
+  max-height: rem(40px);
+  margin-top: rem(10px);
+}
+
+.googleLogin {
+  margin: 0 0 rem(12px) 0;
+}
+
+.socialsWrapper {
+  margin: rem(20px) 0 0 0;
+}
+
+.createAccountSeparator {
+  margin: rem(36px) 0;
+}
+
+.input {
+  width: 100%;
+  &:first-child {
+    margin: 0 0 rem(24px) 0;
+  }
+}
+
+.termsWrapper {
+  margin: rem(28px) 0;
+}
+
+.checkbox {
+  margin: 0 rem(12px) 0 0;
+}
+
+.label {
+  margin: 0;
+}
+
+.errorContainer {
+  margin: rem(8px) 0 0 0;
+}
+
+.termsText {
+  display: inline-block;
+  &.termsLink {
+    margin: 0 rem(6px);
+  }
+}
+
+.registerButton {
+  padding: rem(16px) 0;
+}
+
+.textOr {
+  color: $normal-gray-scale;
+}
