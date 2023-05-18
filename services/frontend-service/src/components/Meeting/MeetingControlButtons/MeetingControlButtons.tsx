@@ -1,9 +1,4 @@
-import React, {
-    memo,
-    SyntheticEvent,
-    useCallback,
-    useEffect,
-} from 'react';
+import React, { memo, SyntheticEvent, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -44,11 +39,7 @@ import {
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
-import {
-    clientRoutes,
-    dashboardRoute,
-    loginRoute,
-} from '../../../const/client-routes';
+import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 
 const Component = () => {
@@ -81,13 +72,12 @@ const Component = () => {
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
-
         await router.push(
             !isWithoutAuthen
                 ? localUser.isGenerated
                     ? clientRoutes.welcomeRoute
-                    : dashboardRoute
-                : loginRoute,
+                    : clientRoutes.dashboardRoute
+                : clientRoutes.registerEndCallRoute,
         );
     }, []);
 

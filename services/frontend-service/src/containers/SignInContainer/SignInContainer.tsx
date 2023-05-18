@@ -23,7 +23,7 @@ import { CenteredPaper } from 'shared-frontend/library/common/CenteredPaper';
 // components
 import { ForgotPassword } from '@components/ForgotPassword/ForgotPassword';
 import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPasswordDialog/EmailResetPasswordDialog';
-import { UserBlockedDialog } from "@components/Dialogs/UserBlockedDialog/UserBlockedDialog";
+import { UserBlockedDialog } from '@components/Dialogs/UserBlockedDialog/UserBlockedDialog';
 import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 
 // shared
@@ -35,17 +35,28 @@ import { useRouter } from 'next/router';
 import styles from './SignInContainer.module.scss';
 
 // stores
-import { $authStore, loginUserFx, resetAuthErrorEvent, googleLoginFx } from '../../store';
+import {
+    $authStore,
+    loginUserFx,
+    resetAuthErrorEvent,
+    googleLoginFx,
+} from '../../store';
 
 // types
 import { LoginUserParams } from '../../store/types';
 
-import {dashboardRoute} from "../../const/client-routes";
+import { dashboardRoute } from '../../const/client-routes';
 
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
-import {USER_IS_BLOCKED} from "shared-const";
+import { USER_IS_BLOCKED } from 'shared-const';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -56,11 +67,14 @@ const Component = () => {
     const router = useRouter();
 
     const authState = useStore($authStore);
-    const isLoginPending = useStore(loginUserFx.pending || googleVerifyFx.pending);
-
-    const resolver = useYupValidationResolver<{ email: string; password: string }>(
-        validationSchema,
+    const isLoginPending = useStore(
+        loginUserFx.pending || googleVerifyFx.pending,
     );
+
+    const resolver = useYupValidationResolver<{
+        email: string;
+        password: string;
+    }>(validationSchema);
 
     const methods = useForm({
         resolver,
@@ -84,6 +98,12 @@ const Component = () => {
     });
 
     const isCredentialsEntered = password && email;
+
+    const lastTemplate = useMemo(() => {
+        return WebStorage.get<{ templateType: string; templateUrl: string }>({
+            key: StorageKeysEnum.bgLastCall,
+        });
+    }, []);
 
     useEffect(() => {
         if (authState.isAuthenticated) {
@@ -111,9 +131,14 @@ const Component = () => {
     const passwordErrorMessages = useMemo(
         () =>
             errors?.password
-                ?.filter((error: ValidationError) => error.message !== 'required')
+                ?.filter(
+                    (error: ValidationError) => error.message !== 'required',
+                )
                 .map((error: Partial<ValidationError>) => (
-                    <ErrorMessage key={error.message} error={`user.pass.${error.message}`} />
+                    <ErrorMessage
+                        key={error.message}
+                        error={`user.pass.${error.message}`}
+                    />
                 )),
         [errors?.password],
     );
@@ -121,17 +146,48 @@ const Component = () => {
     const emailErrorMessages = useMemo(
         () =>
             errors.email
-                ?.filter((error: ValidationError) => error.message !== 'required')
+                ?.filter(
+                    (error: ValidationError) => error.message !== 'required',
+                )
                 .map((error: Partial<ValidationError>) => (
-                    <ErrorMessage key={error.message} error={`${error.message}`} />
+                    <ErrorMessage
+                        key={error.message}
+                        error={`${error.message}`}
+                    />
                 )),
         [errors.email],
     );
 
     return (
         <>
+            <MeetingBackgroundVideo
+                templateType={lastTemplate?.templateType}
+                src={lastTemplate?.templateUrl}
+                videoClassName={styles.bgContainer}
+            >
+                <CustomImage
+                    className={styles.image}
+                    src={lastTemplate?.templateUrl || ''}
+                    width="100%"
+                    height="100%"
+                    layout="fill"
+                    objectFit="cover"
+                />
+            </MeetingBackgroundVideo>
             <CenteredPaper className={styles.wrapper}>
-                <CustomGrid container alignItems="center" justifyContent="center">
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                    marginBottom="10px"
+                >
+                    <LiveOfficeLogo width="150px" height="50px" />
+                </CustomGrid>
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <CustomBox className={styles.image}>
                         <CustomImage
                             width="28"
@@ -147,6 +203,19 @@ const Component = () => {
                         translation="login.welcome"
                     />
                 </CustomGrid>
+                <SignInGoogle />
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                    marginTop="18px"
+                >
+                    <CustomTypography
+                        className={styles.textOr}
+                        nameSpace="register"
+                        translation="signUpEndCall.or"
+                    />
+                </CustomGrid>
                 <FormProvider {...methods}>
                     <form className={styles.socialsWrapper} onSubmit={onSubmit}>
                         <CustomGrid container>
@@ -156,7 +225,9 @@ const Component = () => {
                                     {...register('email')}
                                 />
                                 {errors?.email?.length && (
-                                    <CustomGrid className={styles.errorContainer}>
+                                    <CustomGrid
+                                        className={styles.errorContainer}
+                                    >
                                         {emailErrorMessages}
                                     </CustomGrid>
                                 )}
@@ -170,30 +241,38 @@ const Component = () => {
                             >
                                 <PasswordInput {...register('password')} />
                                 {errors?.password?.length && (
-                                    <CustomGrid className={styles.errorContainer}>
+                                    <CustomGrid
+                                        className={styles.errorContainer}
+                                    >
                                         {passwordErrorMessages}
                                     </CustomGrid>
                                 )}
                                 <ForgotPassword className={styles.forgotPass} />
                             </CustomGrid>
 
-                            {(authState?.error?.message && authState?.error?.message !== USER_IS_BLOCKED.message) && (
-                                <ErrorMessage
-                                    className={styles.errorContainer}
-                                    error={authState?.error?.message}
-                                />
-                            )}
+                            {authState?.error?.message &&
+                                authState?.error?.message !==
+                                    USER_IS_BLOCKED.message && (
+                                    <ErrorMessage
+                                        className={styles.errorContainer}
+                                        error={authState?.error?.message}
+                                    />
+                                )}
                         </CustomGrid>
 
                         <CustomButton
                             className={styles.signInBtn}
                             disabled={!isCredentialsEntered || isLoginPending}
-                            label={<Translation nameSpace="common" translation="buttons.login" />}
+                            label={
+                                <Translation
+                                    nameSpace="common"
+                                    translation="buttons.login"
+                                />
+                            }
                             type="submit"
                         />
                     </form>
                 </FormProvider>
-                <SignInGoogle />
             </CenteredPaper>
             <EmailResetPasswordDialog />
             <UserBlockedDialog />
@@ -201,4 +280,4 @@ const Component = () => {
     );
 };
 
-export const SignInContainer = memo(Component);
+export default memo(Component);

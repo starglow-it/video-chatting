@@ -65,12 +65,14 @@ export type RegisteredUserState = {
     isUserRegistered?: boolean;
     isUserConfirmed?: boolean;
     error?: ErrorState | null;
+    email?: string;
+    password?: string;
 };
 
 export type RegisterUserParams = {
     email: string;
     password: string;
-    templateId: ICommonTemplate['id'];
+    templateId?: ICommonTemplate['id'];
 };
 
 export type LoginUserResponse = { user: Profile } & TokenPair;
