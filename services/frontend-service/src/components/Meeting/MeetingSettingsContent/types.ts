@@ -6,8 +6,6 @@ export type MeetingSettingsContentProps = {
     onChangeBackgroundVolume: (volume: number) => void;
     isAuraActive: boolean;
     onToggleAura: () => void;
-    isMonetizationEnabled: boolean;
-    isMonetizationAvailable: boolean;
     isAudioActive: boolean;
     stream?: MediaStream | undefined | null;
 };
