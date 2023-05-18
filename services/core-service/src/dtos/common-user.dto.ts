@@ -31,7 +31,7 @@ export class CommonUserDTO implements ICommonUser {
   country: ICommonUser['country'];
 
   @Expose()
-  @Transform((data) => data.obj?.registerTemplate?.['_id'])
+  @Transform((data) => data.obj?.registerTemplate?.['_id'] || null)
   registerTemplate: ICommonUser['registerTemplate'];
 
   @Expose()

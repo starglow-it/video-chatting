@@ -185,21 +185,26 @@ export class UsersController {
           const newUser = await this.usersService.createUser(
             {
               ...createUserPayload.user,
-              registerTemplate: createUserPayload.user.templateId,
               renewSubscriptionTimestampInSeconds,
             },
             session,
           );
 
-          const token = await this.userTokenService.createToken(
-            {
-              user: newUser._id,
-              token: createUserPayload.token,
-            },
-            session,
-          );
-
-          newUser.tokens.push(token);
+          if (!createUserPayload.token) {
+            newUser.registerTemplate = null;
+            newUser.isConfirmed = true;
+          }
+          else {
+            const token = await this.userTokenService.createToken(
+              {
+                user: newUser._id,
+                token: createUserPayload.token,
+              },
+              session,
+            );
+            newUser.tokens.push(token);
+            newUser.registerTemplate = createUserPayload.user.templateId
+          }
 
           await newUser.save();
 
