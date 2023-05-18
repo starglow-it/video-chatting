@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
-import { useStore } from 'effector-react';
 import { useFormContext } from 'react-hook-form';
 
 // hooks
@@ -22,7 +21,6 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 
 // components
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
-import { EditMonetization } from '@components/Meeting/EditMonetization/EditMonetization';
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
@@ -33,7 +31,6 @@ import styles from './MeetingSettingsContent.module.scss';
 
 // types
 import { MeetingSettingsContentProps } from './types';
-import { $isOwner } from '../../../store/roomStores';
 import {BackgroundBlurIcon} from "shared-frontend/icons/OtherIcons/BackgroundBlurIcon";
 import { ArrowIcon } from 'shared-frontend/icons/OtherIcons/ArrowIcon';
 import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
@@ -48,15 +45,9 @@ const Component = ({
     onChangeBackgroundVolume,
     isAuraActive,
     onToggleAura,
-    isMonetizationEnabled,
-    isMonetizationAvailable,
     isAudioActive,
 }: MeetingSettingsContentProps) => {
-    const isOwner = useStore($isOwner);
 
-    const {
-        formState: { errors },
-    } = useFormContext();
 
     const { isSafari, isMobile } = useBrowserDetect();
 
@@ -76,9 +67,6 @@ const Component = ({
         onChangeBackgroundVolume(event.target.value);
     }, []);
 
-    const templatePriceMessage = ['min', 'max'].includes(errors?.templatePrice?.[0]?.type)
-        ? errors?.templatePrice?.[0]?.message
-        : '';
 
     return (
         <CustomGrid container direction="column" className={styles.settingsWrapper}>
@@ -123,14 +111,6 @@ const Component = ({
                                     className={styles.switchWrapper}
                                 />
                             </ConditionalRender>
-                            {/* <ConditionalRender
-                                condition={
-                                    isOwner && isMonetizationEnabled && isMonetizationAvailable
-                                }
-                            >
-                                <EditMonetization />
-                            </ConditionalRender> */}
-                            <ErrorMessage error={templatePriceMessage} />
                         </CustomGrid>
                     </CustomGrid>
                 </Fade>

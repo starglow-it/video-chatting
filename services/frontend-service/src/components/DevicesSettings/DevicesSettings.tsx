@@ -51,8 +51,9 @@ import {
 
 // stores
 import {
-	IUserTemplate, MeetingAccessStatusEnum
+	MeetingAccessStatusEnum
 } from 'shared-types';
+import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 import {
 	$profileStore, addNotificationEvent
 } from '../../store';
@@ -82,7 +83,6 @@ import {
 	setIsCameraActiveEvent,
 	toggleIsAuraActive,
 	updateLocalUserEvent,
-	updateMeetingTemplateFxWithData,
 	updateUserSocketEvent,
 } from '../../store/roomStores';
 
@@ -94,25 +94,6 @@ import {
 // styles
 import styles from './DevicesSettings.module.scss';
 
-import {
-	booleanSchema, simpleStringSchema
-} from '../../validation/common';
-import {
-	templatePriceSchema
-} from '../../validation/payments/templatePrice';
-import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
-
-const validationSchema = yup.object({
-	templatePrice: templatePriceSchema(),
-	isMonetizationEnabled: booleanSchema(),
-	templateCurrency: simpleStringSchema().required('required'),
-});
-
-type MonetizationFormType = {
-    templatePrice: IUserTemplate['templatePrice'];
-    isMonetizationEnabled: IUserTemplate['isMonetizationEnabled'];
-    templateCurrency: IUserTemplate['templateCurrency'];
-};
 
 const Component = () => {
 	const [waitingPaywall, setWaitingPaywall] = useState(false)
@@ -147,25 +128,6 @@ const Component = () => {
 
 	const [settingsBackgroundAudioVolume, setSettingsBackgroundAudioVolume] =
         useState<number>(backgroundAudioVolume);
-
-	const resolver =
-        useYupValidationResolver<MonetizationFormType>(validationSchema);
-
-	const methods = useForm({
-		criteriaMode: 'all',
-		resolver,
-		defaultValues: {
-			isMonetizationEnabled: Boolean(
-				meetingTemplate.isMonetizationEnabled,
-			),
-			templatePrice: meetingTemplate.templatePrice || 10,
-			templateCurrency: meetingTemplate.templateCurrency,
-		},
-	});
-
-	const {
-		handleSubmit
-	} = methods;
 
 	const {
 		value: needToRememberSettings,
@@ -235,14 +197,8 @@ const Component = () => {
 	}, []);
 
 	const onSubmit = useCallback(
-		handleSubmit(async data => {
-			await updateMeetingTemplateFxWithData(
-                data as Partial<IUserTemplate>,
-			);
-
-			await handleJoinMeeting();
-		}),
-		[isOwner, handleJoinMeeting],
+		handleJoinMeeting,
+		[handleJoinMeeting],
 	);
 
 	const handleBack = useCallback(async () => {
@@ -281,7 +237,7 @@ const Component = () => {
 	const joinHandler = isOwner ? onSubmit : functionPaywall;
 
     return (
-        <FormProvider {...methods}>
+        <>
 							<CustomGrid container direction="column" wrap="nowrap">
 									<CustomGrid
 											container
@@ -368,11 +324,9 @@ const Component = () => {
 																		isBackgroundActive={isSettingsAudioBackgroundActive}
 																		backgroundVolume={settingsBackgroundAudioVolume}
 																		isAuraActive={isAuraActive}
-																		isMonetizationEnabled={Boolean(profile?.isStripeEnabled)}
 																		onBackgroundToggle={handleToggleBackgroundAudio}
 																		onChangeBackgroundVolume={setSettingsBackgroundAudioVolume}
 																		onToggleAura={toggleIsAuraActive}
-																		isMonetizationAvailable
 																		isAudioActive={meetingTemplate.isAudioAvailable}
 																		title={
 																				<CustomTypography
@@ -437,7 +391,7 @@ const Component = () => {
 										/>
 									</ConditionalRender>
 							</CustomGrid>
-        </FormProvider>
+        </>
     );
 };
 
