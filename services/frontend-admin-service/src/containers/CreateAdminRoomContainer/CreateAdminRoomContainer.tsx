@@ -406,6 +406,8 @@ const Component = () => {
 
 			setValue('background', URL.createObjectURL(file), { shouldDirty: true });
 
+
+
 			if (commonTemplate?.id) {
 				const response = await uploadTemplateBackgroundFx({
 					file,

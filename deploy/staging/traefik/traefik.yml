@@ -1,0 +1,36 @@
+log:
+  level: DEBUG
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  docker:
+    network: traefikpublic
+    exposedByDefault: false
+
+
+certificatesResolvers:
+  simple-resolver:
+    acme:
+      httpchallenge:
+        entrypoint: http
+      email: nam@namnm.com
+      storage: /letsencrypt/acme.json
+      tlschallenge: true
+
+entryPoints:
+  http:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+          permanent: true
+  websecure:
+    address: :443
+
+
+accessLog: {}

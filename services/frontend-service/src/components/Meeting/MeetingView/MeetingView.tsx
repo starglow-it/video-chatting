@@ -35,7 +35,11 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import styles from './MeetingView.module.scss';
 
 // stores
-import { addNotificationEvent, appDialogsApi, checkIsPortraitLayoutEvent } from '../../../store';
+import {
+    addNotificationEvent,
+    appDialogsApi,
+    checkIsPortraitLayoutEvent,
+} from '../../../store';
 import {
     $isOwner,
     $isScreenSharingStore,
@@ -45,6 +49,7 @@ import {
     $meetingTemplateStore,
     $meetingUsersStore,
     $serverTypeStore,
+    getCategoriesMediasFx,
     initVideoChatEvent,
     joinMeetingFx,
     setMeetingConnectedEvent,
@@ -55,6 +60,9 @@ import {
 
 // types
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
+import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 
 // helpers
 
@@ -71,7 +79,8 @@ const Component = () => {
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
         keys: [meeting.hostUserId],
-        fn: (state, [hostUserId]) => state.find(user => user.id === hostUserId) || null,
+        fn: (state, [hostUserId]) =>
+            state.find(user => user.id === hostUserId) || null,
     });
 
     const prevHostUserId = useRef<string>(meeting.hostUserId);
@@ -92,7 +101,12 @@ const Component = () => {
                         : `${hostUser.username} is host now`,
             });
         }
-    }, [hostUser?.id, hostUser?.username, localUser?.id, hostUser?.accessStatus]);
+    }, [
+        hostUser?.id,
+        hostUser?.username,
+        localUser?.id,
+        hostUser?.accessStatus,
+    ]);
 
     useEffect(() => {
         (async () => {
@@ -115,6 +129,10 @@ const Component = () => {
         serverType,
         isJoinMeetingPending,
     ]);
+
+    useEffect(() => {
+        getCategoriesMediasFx({ userTemplateId: meetingTemplate.id });
+    }, []);
 
     useEffect(() => {
         if (isMobile()) {
@@ -166,9 +184,11 @@ const Component = () => {
                     template={meetingTemplate}
                     onTemplateUpdate={handleUpdateMeetingTemplate}
                 >
-                    <MeetingUsersVideos />
                     <ConditionalRender
-                        condition={Boolean(meetingTemplate?.links?.length) && !isScreenSharingActive}
+                        condition={
+                            Boolean(meetingTemplate?.links?.length) &&
+                            !isScreenSharingActive
+                        }
                     >
                         <MeetingGoodsLinks />
                     </ConditionalRender>
@@ -176,6 +196,12 @@ const Component = () => {
                     <MeetingControlButtons />
                     <MeetingGeneralInfo />
                     <MeetingNotes />
+                    <MeetingUsersVideos />
+                    <ConditionalRender condition={isOwner}>
+                        <MeetingChangeBackground />
+                        <MeetingManageAudio />
+                    </ConditionalRender>
+                    <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
 

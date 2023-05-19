@@ -138,6 +138,7 @@ export const addTemplateToUserFx = templatesDomain.effect<
     void
 >('addTemplateToUserFx');
 
+
 export const clearTemplateDraft = templatesDomain.event('clearTemplateDraft');
 
 export const deleteCommonTemplateFx = templatesDomain.effect<

@@ -36,7 +36,9 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: [
-          `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqCoreHost}:${config.rabbitMqCorePort}`,
+          config.environment == 'local'
+            ? `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqHost}`
+            : `amqp://${config.rabbitMqUser}:${config.rabbitMqPass}@${config.rabbitMqCoreHost}:${config.rabbitMqCorePort}`,
         ],
         queue: config.rabbitMqCoreQueue,
         queueOptions: {
@@ -48,6 +50,7 @@ async function bootstrap() {
 
   await app.listen();
 
+  // await seeder.uploadEmoji();
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
   await seeder.createCounter();
@@ -55,13 +58,20 @@ async function bootstrap() {
   await seeder.seedMonetizationStatistic();
   await seeder.seedRoomStatistic();
   await seeder.seedLinks();
+  await seeder.seedCreateGlobalCommonTemplate();
+  await seeder.seedMedias();
+  await seeder.seedMediasToAvailableTemplates();
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
   dashboardNotificationsController.deleteDashboardNotifications();
-
+  
   return;
 }
+
+process.on('uncaughtException', (err, origin) => console.log(origin));
+
+process.on('unhandledRejection', (reason) => console.log(reason));
 
 bootstrap().then(() => {
   console.log('Core Microservice is listening');

@@ -29,6 +29,7 @@ export type MeetingUser = {
         bottom: number;
         left: number;
     };
+    userSize?: number;
 };
 
 export type Meeting = {
@@ -48,11 +49,16 @@ export type AuthUserState = {
     isAuthenticated: boolean;
     error?: ErrorState | null;
     user?: Profile;
+    isWithoutAuthen?: boolean;
 };
 
 export type LoginUserParams = {
     email: string;
     password: string;
+};
+
+export type GoogleVerfifyParams = {
+    token: string
 };
 
 export type RegisteredUserState = {
@@ -186,6 +192,7 @@ export type ApiError = {
 
 export type ApiParams = {
     token?: string;
+    ctx?: NextPageContext;
 };
 
 export type SuccessResult<Result> = {
@@ -223,6 +230,7 @@ export enum NotificationType {
     BackgroundFileShouldBeUploaded = 'background_file_should_be_uploaded',
     BackgroundFileIsNotUploadedYet = 'background_file_is_not_uploaded_yet',
     validationError = 'validationError',
+    UploadBackgroundSuccess = 'upload_background_success'
 }
 
 export type Notification = {

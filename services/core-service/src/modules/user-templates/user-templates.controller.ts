@@ -6,10 +6,7 @@ import { plainToInstance } from 'class-transformer';
 import * as mongoose from 'mongoose';
 
 // shared
-import {
-  TEMPLATES_SERVICE,
-  UserTemplatesBrokerPatterns,
-} from 'shared-const';
+import { TEMPLATES_SERVICE, UserTemplatesBrokerPatterns } from 'shared-const';
 
 import {
   CreateUserTemplateByIdPayload,
@@ -45,6 +42,7 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 // schemas
 import { UserTemplateDocument } from '../../schemas/user-template.schema';
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
+import { MediaService } from '../medias/medias.service';
 
 @Controller('templates')
 export class UserTemplatesController {
@@ -57,6 +55,7 @@ export class UserTemplatesController {
     private languageService: LanguagesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
+    private mediaService: MediaService
   ) {}
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
@@ -161,6 +160,8 @@ export class UserTemplatesController {
           description: targetTemplate.description,
           shortDescription: targetTemplate.shortDescription,
           usersPosition: targetTemplate.usersPosition,
+          usersSize: targetTemplate.usersPosition.map(() => 0),
+          indexUsers: targetTemplate.usersPosition.map(() => null),
           isAudioAvailable: targetTemplate.isAudioAvailable,
           links: targetTemplate.links,
           isPublic: targetTemplate.isPublic,
@@ -182,7 +183,6 @@ export class UserTemplatesController {
             templateData,
             session,
           );
-
         user.templates.push(userTemplate);
 
         await user.save({ session: session.session });
@@ -230,6 +230,8 @@ export class UserTemplatesController {
           enableImplicitConversion: true,
         });
       } catch (err) {
+        console.log(err);
+
         throw new RpcException({
           message: err.message,
           ctx: TEMPLATES_SERVICE,
@@ -279,7 +281,10 @@ export class UserTemplatesController {
       return withTransaction(this.connection, async (session) => {
         const userTemplates = await this.userTemplatesService.findUserTemplates(
           {
-            query: { isDeleted: false, user: new mongoose.Types.ObjectId(userId) },
+            query: {
+              isDeleted: false,
+              user: new mongoose.Types.ObjectId(userId),
+            },
             options: {
               ...(sort ? { sort: { [sort]: direction ?? 1 } } : {}),
               skip,
@@ -339,6 +344,8 @@ export class UserTemplatesController {
           fullName: data.fullName,
           position: data.position,
           usersPosition: data.usersPosition,
+          usersSize: data.usersSize,
+          indexUsers: data.indexUsers,
           companyName: data.companyName,
           contactEmail: data.contactEmail,
           description: data.description,
@@ -354,6 +361,7 @@ export class UserTemplatesController {
           previewUrls: data.previewUrls,
           draftUrl: data.draftUrl,
           links: data.links,
+          templateType: data.templateType
         } as UpdateQuery<UserTemplateDocument>;
 
         if ('businessCategories' in data) {
@@ -597,6 +605,23 @@ export class UserTemplatesController {
             session,
           });
         }
+
+        const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
+          query: {
+            userTemplate: userTemplate._id
+          }
+        });
+
+        userTemplateMedias.map(async media => {
+          await this.mediaService.deleteFolderMedias(`medias/${media?._id?.toString()}/videos`);
+        });
+        
+        this.mediaService.deleteMedias({
+          query: {
+            userTemplate: userTemplate._id
+          }
+        });
+
         await this.userTemplatesService.deleteUserTemplate(
           { _id: templateId },
           session,
@@ -675,11 +700,11 @@ export class UserTemplatesController {
     try {
       return withTransaction(this.connection, async (session) => {
         await this.userTemplatesService.findUserTemplateByIdAndUpdate(
-            payload.templateId,
-            {
-              $inc: { timesUsed: payload.value },
-            },
-            session,
+          payload.templateId,
+          {
+            $inc: { timesUsed: payload.value },
+          },
+          session,
         );
 
         return {};
@@ -699,32 +724,33 @@ export class UserTemplatesController {
     try {
       return withTransaction(this.connection, async (session) => {
         const leastUsedFreeTemplates =
-            await this.userTemplatesService.findUserTemplates({
-              query: {
-                type: 'free',
-                user: payload.userId,
-                isPublic: true,
-                draft: false,
-              },
-              options: { sort: { usedAt: -1 }, limit: payload.templatesLimit },
-              session,
-            });
-
-        const customTemplates = await this.userTemplatesService.findUserTemplates(
-            {
-              query: {
-                author: payload.userId,
-              },
-              session,
+          await this.userTemplatesService.findUserTemplates({
+            query: {
+              type: 'free',
+              user: payload.userId,
+              isPublic: true,
+              draft: false,
             },
-        );
+            options: { sort: { usedAt: -1 }, limit: payload.templatesLimit },
+            session,
+          });
 
-        const paidTemplates = await this.userTemplatesService.findUserTemplates({
-          query: {
-            type: 'paid',
+        const customTemplates =
+          await this.userTemplatesService.findUserTemplates({
+            query: {
+              author: payload.userId,
+            },
+            session,
+          });
+
+        const paidTemplates = await this.userTemplatesService.findUserTemplates(
+          {
+            query: {
+              type: 'paid',
+            },
+            session,
           },
-          session,
-        });
+        );
 
         const templatesIds = [
           ...paidTemplates,
@@ -740,7 +766,7 @@ export class UserTemplatesController {
           session,
         });
 
-        return {}
+        return {};
       });
     } catch (err) {
       throw new RpcException({

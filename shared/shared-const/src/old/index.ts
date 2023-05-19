@@ -8,3 +8,4 @@ export * from './services.const';
 export * from './subscriptions.const';
 export * from './template-draft-data.const';
 export * from './tokens.const';
+export * from './medias.const';

@@ -5,5 +5,8 @@ export type MeetingUserVideoPositionWrapperProps = Required<
         isScreenSharing?: boolean;
         bottom: number | undefined;
         left: number | undefined;
+        isLocal: boolean;
+        size: number;
+        userId: string;
     }>
 >;

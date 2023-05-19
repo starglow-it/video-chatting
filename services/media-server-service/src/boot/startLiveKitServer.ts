@@ -6,6 +6,7 @@ export const startLiveKitServer = async () => {
         const apiKey = await getConfigVar('livekitApiKey');
         const apiSecret = await getConfigVar('livekitApiSecret');
         const livekitHost = await getConfigVar('livekitHost');
+        
 
         const svc = new RoomServiceClient(livekitHost, apiKey, apiSecret);
 
@@ -18,7 +19,7 @@ export const startLiveKitServer = async () => {
                 });
             })
             .catch((err) => {
-                console.log(err);
+                // console.log(err);
             });
     } catch (e) {
         console.log(e);

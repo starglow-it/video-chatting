@@ -77,6 +77,12 @@ export class MeetingUser {
     },
   })
   userPosition: { bottom: number; left: number };
+
+  @Prop({
+    type: mongoose.Schema.Types.Number,
+    default: 0,
+  })
+  userSize: number;
 }
 
 export type MeetingUserDocument = MeetingUser & Document;

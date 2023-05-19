@@ -192,6 +192,16 @@ export class UserTemplate {
   usersPosition: { bottom: number; left: number }[];
 
   @Prop({
+    type: [mongoose.Schema.Types.Number],
+  })
+  usersSize: number[];
+
+  @Prop({
+    type: [mongoose.Schema.Types.String],
+  })
+  indexUsers: string[];
+
+  @Prop({
     type: [
       {
         item: mongoose.Schema.Types.String,
@@ -230,6 +240,11 @@ export class UserTemplate {
     default: 'video',
   })
   templateType: 'video' | 'image';
+
+  @Prop({
+    type: mongoose.Schema.Types.Boolean
+  })
+  isAcceptNoLogin: boolean;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

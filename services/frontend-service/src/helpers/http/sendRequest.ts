@@ -1,18 +1,18 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { parseCookies } from 'nookies';
 import { ApiParams, FailedResult, SuccessResult } from '../../store/types';
 
 export async function sendRequest<Result, Error>(
     options: ApiParams & AxiosRequestConfig = {},
 ): Promise<SuccessResult<Result> | FailedResult<Error>> {
-    const { url } = options;
-
-    const { token, ...restOptions } = options;
-
+    const { token, url, headers, ctx, ...restOptions } = options;
+    const newHeaders = { ...headers };
     if (token) {
-        restOptions.headers = {
-            ...restOptions.headers,
-            Authorization: `Bearer ${token}`,
-        };
+        newHeaders.Authorization = `Bearer ${token}`;
+    }
+    const { userWithoutLoginId } = parseCookies(ctx);
+    if (userWithoutLoginId) {
+        newHeaders.userWithoutLoginId = userWithoutLoginId;
     }
 
     try {
@@ -20,7 +20,7 @@ export async function sendRequest<Result, Error>(
             result: Result;
             success: boolean;
             statusCode: number;
-        }>({ url, ...restOptions });
+        }>({ url, headers: newHeaders, ...restOptions });
 
         return {
             result: response?.data?.result ?? response.data,
@@ -28,7 +28,7 @@ export async function sendRequest<Result, Error>(
         };
     } catch (err) {
         const typedError = err as any;
-
+        console.log('catch error', err);
         return {
             success: false,
             error: typedError?.response?.data?.error,

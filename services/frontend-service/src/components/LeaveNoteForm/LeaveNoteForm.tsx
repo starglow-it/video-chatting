@@ -1,7 +1,6 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import * as yup from 'yup';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { useStore } from 'effector-react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Theme } from '@mui/system';
 import createStyles from '@mui/styles/createStyles';
 import { makeStyles } from '@mui/styles';
@@ -11,9 +10,6 @@ import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
-import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
 // components
@@ -30,6 +26,11 @@ import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
 
 // styles
 import styles from './LeaveNoteForm.module.scss';
+import { ClickAwayListener } from '@mui/material';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import clsx from 'clsx';
+import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 
 const validationSchema = yup.object({
     note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
@@ -52,20 +53,30 @@ const useStyles = makeStyles((theme: Theme) =>
                         borderColor: theme.palette.colors.white.primary,
                     },
                 },
+                height: '35px',
             },
             '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: theme.palette.colors.white.primary,
+                borderRadius: '8px',
             },
+            '& .MuiFormLabel-root': {
+                top: '-8px',
+                fontSize: '14px',
+            },
+            '& .Mui-focused': {
+                top: 0,
+            },
+            "& .MuiFormLabel-filled": {
+                top: 0
+            }
         },
     }),
 );
 
 type FormType = { note: string };
 
-const Component = ({ onCancel }: { onCancel: () => void }) => {
+const Component = () => {
     const materialStyles = useStyles();
-
-    const isSendNotePending = useStore(sendMeetingNoteSocketEvent.pending);
 
     const resolver = useYupValidationResolver<FormType>(validationSchema);
 
@@ -74,28 +85,20 @@ const Component = ({ onCancel }: { onCancel: () => void }) => {
         defaultValues: { note: '' },
     });
 
-    const { handleSubmit, control, reset, register } = methods;
+    const { reset, register, getValues } = methods;
 
-    const noteText = useWatch({
-        control,
-        name: 'note',
-    });
+    const [isExpand, setIsExpand] = useState<boolean>(true);
 
-    const onSubmit = useCallback(
-        handleSubmit(async data => {
-            sendMeetingNoteSocketEvent(data);
+    const handleKeyDown = (e: any) => {
+        if (e.key === 'Enter' || e.keyCode === '13') {
+            sendMeetingNoteSocketEvent(getValues());
             reset();
-            onCancel();
-        }),
-        [],
-    );
+        }
+    };
 
-    const handleCancelLeaveNote = useCallback(() => {
-        reset();
-        onCancel();
-    }, []);
-
-    const { onChange, ...restRegisterData } = register('note', { maxLength: MAX_NOTE_CONTENT });
+    const { onChange, ...restRegisterData } = register('note', {
+        maxLength: MAX_NOTE_CONTENT,
+    });
 
     const handleChange = useCallback(async event => {
         if (event.target.value.length > MAX_NOTE_CONTENT) {
@@ -107,45 +110,47 @@ const Component = ({ onCancel }: { onCancel: () => void }) => {
         await onChange(event);
     }, []);
 
+    const changeExpand = () => {
+        setIsExpand(!isExpand);
+    };
+
     return (
-        <FormProvider {...methods}>
-            <CustomGrid container direction="column" gap={2.5}>
-                <CustomGrid container alignItems="center">
-                    <CustomTypography
-                        color="colors.white.primary"
-                        variant="h4bold"
-                        nameSpace="meeting"
-                        translation="features.notes.title"
-                    />
-                    <CustomTypography className={styles.textLength} color="colors.white.primary">
-                        {`${noteText.length}/${MAX_NOTE_CONTENT}`}
-                    </CustomTypography>
-                    <ActionButton
-                        onAction={onSubmit}
-                        variant="accept"
-                        disabled={isSendNotePending}
-                        className={styles.submitNote}
-                        Icon={<AcceptIcon width="23px" height="23px" />}
-                    />
-                    <ActionButton
-                        variant="decline"
-                        onAction={handleCancelLeaveNote}
-                        disabled={isSendNotePending}
-                        className={styles.cancelNote}
-                        Icon={<DeleteIcon width="23px" height="23px" />}
-                    />
-                </CustomGrid>
-                <CustomInput
-                    nameSpace="meeting"
-                    translation="features.notes.input"
-                    multiline
-                    rows={4}
-                    className={materialStyles.textField}
-                    {...restRegisterData}
-                    onChange={handleChange}
-                />
-            </CustomGrid>
-        </FormProvider>
+        <ClickAwayListener onClickAway={() => setIsExpand(false)}>
+            <FormProvider {...methods}>
+                <CustomPaper
+                    className={clsx(styles.commonOpenPanel)}
+                    variant="black-glass"
+                >
+                    <CustomGrid
+                        container
+                        alignItems="center"
+                        flexDirection="row"
+                        justifyContent="center"
+                    >
+                        <ActionButton
+                            className={clsx(styles.actionButton)}
+                            Icon={<NotesIcon width="32px" height="32px" />}
+                            onClick={changeExpand}
+                        />
+
+                        <CustomGrid flex={1}>
+                            <CustomInput
+                                nameSpace="meeting"
+                                translation="features.notes.input"
+                                className={clsx(
+                                    materialStyles.textField,
+                                    styles.textField,
+                                    { [styles.expanded]: isExpand },
+                                )}
+                                onKeyDown={handleKeyDown}
+                                {...restRegisterData}
+                                onChange={handleChange}
+                            />
+                        </CustomGrid>
+                    </CustomGrid>
+                </CustomPaper>
+            </FormProvider>
+        </ClickAwayListener>
     );
 };
 

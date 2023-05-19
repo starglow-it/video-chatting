@@ -47,7 +47,10 @@
     "turnOn":"Turn on",
     "turnOff":"Turn off",
     "switchOn":"Switch ON",
-    "switchOff":"Switch OFF"
+    "switchOff":"Switch OFF",
+    "clickToSeeYourself": "Click to see yourself",
+    "selfViewOff": "Self-View Off",
+    "dragAndResize": "Drag & Resize"
   },
   "endMeeting": {
     "forHost": "Leave?",
@@ -113,7 +116,8 @@
     "perSession": "per session",
     "yourCard": "Your card",
     "stripe": "Stripe",
-    "payWith": "Pay with"
+    "payWith": "Pay with",
+    "title": "Payments"
   },
   "customLink": {
     "yourLink": "your meeting link here",
@@ -137,5 +141,11 @@
     "title": "Meeting was finished",
     "text": "The meeting has been finished as the host's account was deleted by TheLiveOffice admin. Sorry for inconvenience",
     "button": "Homepage"
+  },
+  "changeBackground": {
+    "text": "Background"
+  },
+  "manageAudio": {
+    "text": "Sound"
   }
 }

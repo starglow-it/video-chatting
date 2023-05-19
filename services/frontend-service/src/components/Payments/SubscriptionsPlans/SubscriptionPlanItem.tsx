@@ -42,7 +42,7 @@ const Component = (
     }: SubscriptionPlanItemProps,
     ref: ForwardedRef<HTMLDivElement>,
 ) => {
-    const isFree = price.unit_amount === 0;
+    const isFree = price?.unit_amount === 0;
 
     const handleChooseSubscription = useCallback(() => {
         if (product.name !== activePlanKey) {
@@ -57,7 +57,7 @@ const Component = (
     const { translation } = useLocalization('subscriptions');
 
     const priceString = !isFree
-        ? `${currencies[price?.currency]}${price.unit_amount / 100}`
+        ? `${currencies[price?.currency]}${price?.unit_amount / 100}`
         : 'FREE';
 
     const templateFeaturesText = translation(`subscriptions.${product.name}`) as unknown as {

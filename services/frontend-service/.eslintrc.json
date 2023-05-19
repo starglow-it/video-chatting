@@ -29,6 +29,7 @@
   ],
   "rules": {
     "react/prop-types": "off",
+    "react/display-name": "off",
     "react/react-in-jsx-scope": 0,
     "react/require-default-prop": 0,
     "no-shadow": "off",
@@ -44,23 +45,20 @@
     "react/function-component-definition": [1, {
         "namedComponents": "arrow-function"
     }],
-    "react/jsx-max-props-per-line": [2, { "maximum": { "single": 1, "multi": 1 } }],
-    "react/jsx-first-prop-new-line": [2, "multiline"],
-    "react/jsx-indent-props": [2, "tab"],
+    "react/jsx-max-props-per-line": "off",
+    "react/jsx-first-prop-new-line": "off",
+    "react/jsx-indent-props": "off",
     "react/jsx-closing-bracket-location": [
       2,
       "tag-aligned"
     ],
-    "indent": ["error", "tab"],
-    "object-curly-newline": ["error", {
-      "ObjectExpression": "always",
-      "ObjectPattern": "always",
-      "ImportDeclaration": { "multiline": true, "minProperties": 1 },
-      "ExportDeclaration": { "multiline": true, "minProperties": 1 }
-    }],
+    "object-curly-newline": "off",
+    "indent": "off",
     "destructuring-newline/object-property-newline": 1,
     "consistent-return": "off",
-    "jsx-a11y/media-has-caption": "off"
+    "jsx-a11y/media-has-caption": "off",
+    "no-lonely-if": "off",
+    "arrow-body-style": "off"
   },
   "settings": {
     "react": {

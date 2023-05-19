@@ -14,15 +14,45 @@
 }
 
 .submitNote {
-  height: rem(32px);
-  width: rem(32px);
+  height: rem(29px);
+  width: rem(29px);
   border-radius: rem(8px);
+  margin-right: 10px;
 }
 
 .textLength {
   margin: rem(0 12px 0 auto);
 }
 
-.textField {
+.commonOpenPanel {
+  position: absolute;
+  bottom: 1%;
+  right: 35%;
+  width: 430px;
+  border-radius: 6px;
+  padding: 6px 10px;
+
+  &.mobile {
+    left: 50%;
+  }
+
+  &.open {
+    opacity: 1;
+  }
+}
+
+.actionButton {
+  position: relative;
   background: transparent;
+  color: $primary-white;
+  border: none;
+  width: rem(43px);
+  height: rem(41px);
+  border-radius: rem(4px);
+  margin-right: 7px;
+
+  &.active {
+    background: rgba($primary-white, 0.25);
+  }
+
 }

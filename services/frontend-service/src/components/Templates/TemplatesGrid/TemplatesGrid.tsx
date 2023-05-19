@@ -54,7 +54,7 @@ const Component = <TemplateType extends { id: string }>({
     const is1100Media = useMediaQuery('(max-width:1100px)');
 
     const renderTemplates = useMemo(() => {
-        const initialTemplatesRender = list.map(template => ({
+        const initialTemplatesRender = list?.map(template => ({
             id: template.id,
             component: (
                 <TemplateComponent

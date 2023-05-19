@@ -120,8 +120,9 @@ const Component = ({
 	const handleSetFileData = useCallback(
 		async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
 			const totalFiles = acceptedFiles.length + rejectedFiles.length;
-
+			
 			if (rejectedFiles.length || totalFiles > 1) {
+				
 				generateFileUploadError(
 					rejectedFiles,
 					acceptedFiles.length + rejectedFiles.length,
@@ -130,6 +131,10 @@ const Component = ({
 			}
 
 			const file = acceptedFiles[0];
+			console.log(file);
+			
+
+			// return;
 
 			if (ACCEPT_MIMES_IMAGE[file.type] && file.size > MAX_SIZE_IMAGE) {
 				generateFileUploadError(

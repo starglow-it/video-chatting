@@ -11,7 +11,7 @@ import { BusinessCategoriesController } from './business-categories.controller';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: BusinessCategory.name, schema: BusinessCategorySchema },
+      { name: BusinessCategory.name, schema: BusinessCategorySchema,},
     ]),
   ],
   controllers: [BusinessCategoriesController],

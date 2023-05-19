@@ -16,7 +16,8 @@
       "link": "Meeting link copied",
       "notification": "Text copied"
     },
-    "inviteSent": "The invitation has been sent"
+    "inviteSent": "The invitation has been sent",
+    "uploadSuccess": "Upload background success"
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",

@@ -1,10 +1,18 @@
 import { ICommonUser } from './users';
 import { IUserTemplate } from './templates';
+import { MediaCategoryType } from './media';
 
 export interface IBusinessCategory {
   key: string;
   value: string;
   color: string;
+}
+
+export interface IMediaCategory {
+  key: string;
+  value: string;
+  emojiUrl: string;
+  type: MediaCategoryType;
 }
 
 export interface ILanguage {

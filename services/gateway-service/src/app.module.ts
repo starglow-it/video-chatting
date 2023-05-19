@@ -12,6 +12,8 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
 import { UserTemplatesModule } from './modules/user-templates/user-templates.module';
+import { AppController } from './app.controller';
+import { MediasModule } from './modules/medias/medias.module';
 
 @Module({
   imports: [
@@ -27,9 +29,10 @@ import { UserTemplatesModule } from './modules/user-templates/user-templates.mod
     ProfileModule,
     PaymentsModule,
     CategoriesModule,
+    MediasModule,
     StatisticsModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}

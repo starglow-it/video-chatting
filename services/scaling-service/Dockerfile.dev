@@ -18,9 +18,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/scaling-service/package.json ./services/scaling-service
 
-RUN pnpm install
-
 COPY ./services/scaling-service ./services/scaling-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-utils,shared-const,shared-types
 

@@ -1,4 +1,4 @@
-import {Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { ConfigClientService } from '../../services/config/config.service';
@@ -15,15 +15,18 @@ export class UploadService {
 
   async onModuleInit() {
     this.vultrUploadBucket = await this.configService.get<string>(
-        'vultrUploadBucket',
+      'vultrUploadBucket',
     );
     this.vultrStorageHostname = await this.configService.get<string>(
-        'vultrStorageHostname',
+      'vultrStorageHostname',
     );
   }
 
   getUploadKeyFromUrl(url) {
-    return url.replace(`https://${this.vultrStorageHostname}/${this.vultrUploadBucket}/`, '');
+    return url.replace(
+      `https://${this.vultrStorageHostname}/${this.vultrUploadBucket}/`,
+      '',
+    );
   }
 
   async uploadFile(fileData: Buffer, key: string): Promise<string> {
@@ -71,16 +74,16 @@ export class UploadService {
   async deleteResource(key: string) {
     return new Promise((resolve, reject) => {
       this.s3.deleteObject(
-          {
-            Bucket: this.vultrUploadBucket,
-            Key: key,
-          },
-          (err, data) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(data);
-          },
+        {
+          Bucket: this.vultrUploadBucket,
+          Key: key,
+        },
+        (err, data) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(data);
+        },
       );
     });
   }

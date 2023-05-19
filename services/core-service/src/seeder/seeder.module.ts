@@ -20,7 +20,8 @@ import { PaymentsModule } from '../services/payments/payments.module';
 import { CountersModule } from '../modules/counters/counters.module';
 import { MonetizationStatisticModule } from '../modules/monetization-statistic/monetization-statistic.module';
 import { RoomsStatisticsModule } from '../modules/rooms-statistics/rooms-statistics.module';
-import {TranscodeModule} from "../modules/transcode/transcode.module";
+import { TranscodeModule } from '../modules/transcode/transcode.module';
+import { MediasModule } from '../modules/medias/medias.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import {TranscodeModule} from "../modules/transcode/transcode.module";
     UsersModule,
     UserTemplatesModule,
     BusinessCategoriesModule,
+    MediasModule,
     LanguagesModule,
     PaymentsModule,
     AwsConnectorModule,

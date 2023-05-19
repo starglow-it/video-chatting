@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
   FilterQuery,
   Model,
@@ -34,9 +34,9 @@ import {
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
-import {getScreenShots} from "../../utils/images/getScreenShots";
-import {DEFAULT_TEMPLATE_DATA} from "shared-const";
-import {Counters} from "shared-types";
+import { getScreenShots } from '../../utils/images/getScreenShots';
+import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
+import { Counters } from 'shared-types';
 
 @Injectable()
 export class CommonTemplatesService {
@@ -190,10 +190,7 @@ export class CommonTemplatesService {
     query,
     data,
     session,
-  }: UpdateModelQuery<
-    CommonTemplateDocument,
-    CommonTemplate
-  >): Promise<any> {
+  }: UpdateModelQuery<CommonTemplateDocument, CommonTemplate>): Promise<any> {
     const options: QueryOptions = {
       session: session?.session,
     };

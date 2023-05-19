@@ -32,6 +32,7 @@ import { CommonTemplateItemProps } from './types';
 import styles from './CommonTemplateItem.module.scss';
 
 const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
+    
     const profile = useStore($profileStore);
     const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
 
@@ -61,6 +62,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     }, []);
 
     const handleStartMeeting = useCallback(async () => {
+        
         await onChooseTemplate?.(template.id);
     }, [onChooseTemplate]);
 

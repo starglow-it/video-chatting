@@ -3,9 +3,8 @@
 
 .panelWrapper {
   position: absolute;
-  top: rem(27px);
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: rem(27px);
+  right: 0;
   z-index: 1000;
   width: auto;
 
@@ -26,8 +25,7 @@
 }
 
 .controlPanelWrapper {
-  padding: rem(6px);
-
+  position: relative;
   .actionButton {
     position: relative;
     background: transparent;
@@ -82,22 +80,12 @@
   min-width: rem(372px);
   padding: rem(20px);
   opacity: 0;
-  transform: translate(-50%, 0);
+  right: 20px;
+  bottom: 30px;
 
   &.mobile {
     left: 50%;
   }
-
-  &.open {
-    opacity: 1;
-  }
-}
-
-.panelsWrapper {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, rem(8px));
 }
 
 .mobileControlPanelWrapper {

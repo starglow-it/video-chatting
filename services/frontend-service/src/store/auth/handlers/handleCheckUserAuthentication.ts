@@ -1,5 +1,5 @@
 import { NextPageContext } from 'next';
-import { ErrorState } from 'shared-types';
+import { ErrorState, UserRoles } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { Profile } from '../../types';
 import { meUrl } from '../../../utils/urls';
@@ -12,19 +12,23 @@ export const handleCheckUserAuthentication = async (ctx?: NextPageContext) => {
     });
 
     if (response.success) {
+        const isWithoutAuthen = response?.result?.role === UserRoles.Anonymous;
         return {
-            isAuthenticated: response.success,
+            isAuthenticated: !isWithoutAuthen,
             user: response?.result,
+            isWithoutAuthen
         };
     }
     if (!response.success) {
         return {
             isAuthenticated: response.success,
             error: response?.error,
+            isWithoutAuthen: false
         };
     }
 
     return {
         isAuthenticated: false,
+        isWithoutAuthen: false
     };
 };

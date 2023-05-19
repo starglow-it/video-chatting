@@ -8,10 +8,7 @@ import { Types } from 'mongoose';
 const ObjectId = Types.ObjectId;
 
 //  const
-import {
-  TEMPLATES_SERVICE,
-  TemplateBrokerPatterns,
-} from 'shared-const';
+import { TEMPLATES_SERVICE, TemplateBrokerPatterns } from 'shared-const';
 
 // types
 import {
@@ -24,7 +21,8 @@ import {
   EditTemplatePayload,
   UploadTemplateFilePayload,
   DeleteCommonTemplatePayload,
-  GetCommonTemplateByIdPayload, PriceValues,
+  GetCommonTemplateByIdPayload,
+  PriceValues,
 } from 'shared-types';
 
 // dtos
@@ -45,6 +43,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 
 // helpers
 import { withTransaction } from '../../helpers/mongo/withTransaction';
+import { MediaService } from '../medias/medias.service';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -54,7 +53,6 @@ export class CommonTemplatesController {
     @InjectConnection() private connection: Connection,
     private commonTemplatesService: CommonTemplatesService,
     private userTemplatesService: UserTemplatesService,
-    private meetingsService: MeetingsService,
     private usersService: UsersService,
     private businessCategoriesService: BusinessCategoriesService,
     private roomStatisticService: RoomsStatisticsService,
@@ -62,6 +60,7 @@ export class CommonTemplatesController {
     private awsService: AwsConnectorService,
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
+    private mediaService: MediaService
   ) {}
 
   async onModuleInit() {
@@ -169,7 +168,7 @@ export class CommonTemplatesController {
               'previewUrls',
               'draftPreviewUrls',
               'author',
-              'links'
+              'links',
             ],
           });
 
@@ -253,10 +252,13 @@ export class CommonTemplatesController {
           languages: targetUser.languages.map((language) => language._id),
           socials: targetUser.socials.map((social) => social._id),
           usersPosition: targetTemplate.usersPosition,
+          usersSize: targetTemplate.usersPosition.map(() => 0),
+          indexUsers: targetTemplate.usersPosition.map(() => null),
           isAudioAvailable: targetTemplate.isAudioAvailable,
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,
           author: targetTemplate.author,
+          isAcceptNoLogin: targetTemplate.isAcceptNoLogin
         };
 
         const [userTemplate] =
@@ -328,11 +330,12 @@ export class CommonTemplatesController {
       return withTransaction(this.connection, async () => {
         const { url, id, mimeType } = payload;
 
-        const previewImages = await this.commonTemplatesService.generatePreviews({
-          url,
-          id,
-          mimeType,
-        });
+        const previewImages =
+          await this.commonTemplatesService.generatePreviews({
+            url,
+            id,
+            mimeType,
+          });
 
         const imageIds = previewImages.map((image) => image._id);
 
@@ -389,11 +392,12 @@ export class CommonTemplatesController {
       return withTransaction(this.connection, async (session) => {
         const { businessCategories, ...restData } = data;
 
-        const template = await this.commonTemplatesService.findCommonTemplateById({
-          templateId,
-          populatePaths: ['previewUrls'],
-          session,
-        });
+        const template =
+          await this.commonTemplatesService.findCommonTemplateById({
+            templateId,
+            populatePaths: ['previewUrls'],
+            session,
+          });
 
         const updateData: Parameters<
           typeof this.commonTemplatesService.updateCommonTemplate
@@ -436,14 +440,15 @@ export class CommonTemplatesController {
                 name: updateData.name,
                 description: updateData.desciption,
                 priceInCents: updateData.priceInCents,
-              }
+              },
             });
           } else {
-            const stripeProduct = await this.paymentService.createTemplateStripeProduct({
-              name: updateData.name,
-              priceInCents: updateData.priceInCents,
-              description: updateData.description,
-            });
+            const stripeProduct =
+              await this.paymentService.createTemplateStripeProduct({
+                name: updateData.name,
+                priceInCents: updateData.priceInCents,
+                description: updateData.description,
+              });
 
             updateData.stripeProductId = stripeProduct.id;
           }
@@ -458,32 +463,33 @@ export class CommonTemplatesController {
         }
 
         if (updateData.url && template.url !== updateData.url) {
-          const deletePreviewImagesPromises = template.previewUrls.map(async (preview) => {
-            if (preview._id) {
-              await this.commonTemplatesService.deletePreview({
-                id: preview._id,
-                session
-              });
+          const deletePreviewImagesPromises = template.previewUrls.map(
+            async (preview) => {
+              if (preview._id) {
+                await this.commonTemplatesService.deletePreview({
+                  id: preview._id,
+                  session,
+                });
 
-              if (preview.key) {
-                await this.awsService.deleteResource(preview.key);
+                if (preview.key) {
+                  await this.awsService.deleteResource(preview.key);
+                }
               }
-            }
-          })
+            },
+          );
 
           await deletePreviewImagesPromises;
         }
 
-        const updatedTemplate = await this.commonTemplatesService.updateCommonTemplate(
-          {
+        const updatedTemplate =
+          await this.commonTemplatesService.updateCommonTemplate({
             query: {
               _id: templateId,
             },
             data: updateData,
             session,
             populatePaths: ['links'],
-          },
-        );
+          });
 
         await this.userTemplatesService.updateUserTemplates({
           query: {
@@ -526,8 +532,6 @@ export class CommonTemplatesController {
   ): Promise<undefined> {
     try {
       return withTransaction(this.connection, async (session) => {
-        console.log('templateId', templateId);
-
         const template =
           await this.commonTemplatesService.findCommonTemplateById({
             templateId,
@@ -553,7 +557,7 @@ export class CommonTemplatesController {
 
         await this.userTemplatesService.deleteUserTemplates({
           query: { templateId: template.templateId },
-          session
+          session,
         });
 
         await this.roomStatisticService.delete({

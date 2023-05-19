@@ -1,42 +1,75 @@
-import {IsBoolean, IsNumber, IsOptional, IsString} from "class-validator";
-import {toNumber} from "../../utils/parsers/toNumber";
-import {Transform} from "class-transformer";
-import {toBoolean} from "../../utils/parsers/toBoolean";
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { toNumber } from '../../utils/parsers/toNumber';
+import { Transform } from 'class-transformer';
+import { toBoolean } from '../../utils/parsers/toBoolean';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class GetTemplatesQueryDto {
-    @Transform(({ value }) => toNumber(value, 0))
-    @IsOptional()
-    @IsNumber()
-    public skip;
+  @ApiProperty({
+    type: Number,
+    required: false,
+  })
+  @Transform(({ value }) => toNumber(value, 0))
+  @IsOptional()
+  @IsNumber()
+  public skip;
 
-    @Transform(({ value }) => toNumber(value, 0))
-    @IsOptional()
-    @IsNumber()
-    public limit;
+  @ApiProperty({
+    type: Number,
+    required: false,
+  })
+  @Transform(({ value }) => toNumber(value, 0))
+  @IsOptional()
+  @IsNumber()
+  public limit;
 
-    @IsOptional()
-    public userId;
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  @IsOptional()
+  public userId;
 
-    @Transform(({ value }) => toBoolean(value))
-    @IsOptional()
-    @IsBoolean()
-    public draft;
+  @ApiProperty({
+    type: Boolean,
+    required: false,
+  })
+  @Transform(({ value }) => toBoolean(value))
+  @IsOptional()
+  @IsBoolean()
+  public draft;
 
-    @Transform(({ value }) => toBoolean(value))
-    @IsOptional()
-    @IsBoolean()
-    public isPublic;
+  @ApiProperty({
+    type: Boolean,
+    required: false,
+  })
+  @Transform(({ value }) => toBoolean(value))
+  @IsOptional()
+  @IsBoolean()
+  public isPublic;
 
-    @IsOptional()
-    @IsString()
-    public type;
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  public type;
 
-    @IsOptional()
-    @IsString()
-    public sort;
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  public sort;
 
-    @Transform(({ value }) => toNumber(value, 1))
-    @IsOptional()
-    @IsNumber()
-    public direction;
+  @ApiProperty({
+    type: Number,
+    required: false,
+  })
+  @Transform(({ value }) => toNumber(value, 1))
+  @IsOptional()
+  @IsNumber()
+  public direction;
 }

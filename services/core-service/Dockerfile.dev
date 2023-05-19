@@ -21,9 +21,9 @@ RUN pnpm add nx -D -w
 
 COPY ./services/core-service/package.json ./services/core-service
 
-RUN pnpm install
-
 COPY ./services/core-service ./services/core-service
+
+RUN pnpm install
 
 RUN npx nx run-many --target=build --projects=shared-types,shared-const,shared-utils
 

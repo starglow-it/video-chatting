@@ -47,6 +47,10 @@ export interface IConfig {
   supportEmail: string;
   adminEmail: string;
   adminPassword: string;
+  googleClientId: string;
+  googleSecret: string;
+  apiVersion: string;
+  appVersion: string;
 }
 
 export type ConfigKeysType = keyof IConfig;
@@ -100,6 +104,10 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
   'supportEmail',
   'adminEmail',
   'adminPassword',
+  'googleClientId',
+  'googleSecret',
+  'apiVersion',
+  'appVersion'
 ];
 
 export const DefaultConfigValues: Record<
@@ -135,7 +143,7 @@ export const DefaultConfigValues: Record<
   vultrApiKey: '',
   livekitApiKey: 'apikey',
   livekitApiSecret: 'apisecret',
-  livekitHost: 'http://localhost:7890',
+  livekitHost: 'http://localhost:7880',
   stripeApiKey: '',
   stripeWebhookSecret: '',
   stripeExpressWebhookSecret: '',
@@ -150,4 +158,8 @@ export const DefaultConfigValues: Record<
   supportEmail: 'foratestqa+liveofficesupport@gmail.com',
   adminEmail: 'foratestqa+admin@gmail.com',
   adminPassword: 'liveoffice12admin34',
+  googleClientId: '262625104810-160tsngddev8rlpi729qjnvuukh8vlok.apps.googleusercontent.com',
+  googleSecret: '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',
+  apiVersion: '0.0.1',
+  appVersion: '0.0.1'
 };

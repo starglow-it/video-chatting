@@ -17,6 +17,15 @@ async function bootstrap() {
   const configService = app.get(ConfigClientService);
   const config: IConfig = await configService.getAll();
 
+  process.on('unhandledRejection', (rea, promise) => {
+    console.log(rea);
+  })
+
+  process.on('uncaughtException', (err) => {
+    console.log(err);
+    
+  })
+
   await app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
@@ -49,6 +58,6 @@ async function bootstrap() {
   );
 
   await app.startAllMicroservices();
-  await app.listen(8080);
+  await app.listen(8080, () => console.log('Socket service running'));
 }
 bootstrap();

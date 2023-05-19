@@ -24,6 +24,7 @@ import { CenteredPaper } from 'shared-frontend/library/common/CenteredPaper';
 import { ForgotPassword } from '@components/ForgotPassword/ForgotPassword';
 import { EmailResetPasswordDialog } from '@components/Dialogs/EmailResetPasswordDialog/EmailResetPasswordDialog';
 import { UserBlockedDialog } from "@components/Dialogs/UserBlockedDialog/UserBlockedDialog";
+import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 
 // shared
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
@@ -34,7 +35,7 @@ import { useRouter } from 'next/router';
 import styles from './SignInContainer.module.scss';
 
 // stores
-import { $authStore, loginUserFx, resetAuthErrorEvent } from '../../store';
+import { $authStore, loginUserFx, resetAuthErrorEvent, googleLoginFx } from '../../store';
 
 // types
 import { LoginUserParams } from '../../store/types';
@@ -55,7 +56,7 @@ const Component = () => {
     const router = useRouter();
 
     const authState = useStore($authStore);
-    const isLoginPending = useStore(loginUserFx.pending);
+    const isLoginPending = useStore(loginUserFx.pending || googleVerifyFx.pending);
 
     const resolver = useYupValidationResolver<{ email: string; password: string }>(
         validationSchema,
@@ -192,6 +193,7 @@ const Component = () => {
                         />
                     </form>
                 </FormProvider>
+                <SignInGoogle />
             </CenteredPaper>
             <EmailResetPasswordDialog />
             <UserBlockedDialog />

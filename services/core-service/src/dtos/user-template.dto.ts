@@ -117,6 +117,12 @@ export class UserTemplateDTO implements IUserTemplate {
   usersPosition: IUserTemplate['usersPosition'];
 
   @Expose()
+  usersSize: IUserTemplate['usersSize'];
+
+  @Expose()
+  indexUsers: IUserTemplate['indexUsers'];
+
+  @Expose()
   @Transform((data) =>
     data.obj?.links?.map((link) => ({
       id: link._id,
@@ -138,4 +144,7 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   @Transform((data) => data.obj?.author?.['_id'])
   author: IUserTemplate['author'];
+
+  @Expose()
+  isAcceptNoLogin?: IUserTemplate['isAcceptNoLogin'];
 }

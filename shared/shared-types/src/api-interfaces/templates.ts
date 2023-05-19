@@ -34,6 +34,7 @@ export interface ICommonTemplate {
   isDeleted?: boolean;
   templateType: 'image' | 'video';
   isTemplatePurchased?: boolean;
+  isAcceptNoLogin?: boolean;
 }
 
 export interface IUserTemplate {
@@ -64,11 +65,14 @@ export interface IUserTemplate {
   socials: ISocialLink[];
   user: ITemplateUser;
   usersPosition: { bottom: number; left: number }[];
+  usersSize: number[];
+  indexUsers: string[];
   links?: { item: string; position: { top: number; left: number } }[];
   meetingInstance: IMeetingInstance;
   draft: boolean;
   isPublic: boolean;
   author?: string;
+  isAcceptNoLogin?: boolean;
   templateType: 'video' | 'image';
 }
 
@@ -86,6 +90,8 @@ export interface IUpdateTemplate {
   customLink?: string;
   businessCategories?: IBusinessCategory[];
   usersPosition?: { bottom: number; left: number }[];
+  usersSize?: number[];
+  indexUsers?: string[];
   maxParticipants?: number;
   languages?: string[];
   isMonetizationEnabled?: boolean;
@@ -102,6 +108,7 @@ export interface IUpdateTemplate {
     twitter?: string;
     custom?: string;
   };
+  templateType?: string;
 }
 
 export interface IUploadTemplateFile {

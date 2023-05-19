@@ -13,7 +13,7 @@ import { UploadModule } from '../upload/upload.module';
 import { PaymentsModule } from '../payments/payments.module';
 import { SocketModule } from '../../services/socket/socket.module';
 import { UserTemplatesModule } from '../user-templates/user-templates.module';
-import {MeetingsModule} from "../meetings/meetings.module";
+import { MeetingsModule } from '../meetings/meetings.module';
 
 @Module({
   imports: [

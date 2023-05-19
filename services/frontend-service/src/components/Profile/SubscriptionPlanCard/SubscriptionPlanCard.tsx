@@ -38,10 +38,10 @@ const Component = ({
     priceLabel,
     isTrial = false,
 }: SubscriptionPlanCardProps) => {
-    const isFree = price.unit_amount === 0;
+    const isFree = price?.unit_amount === 0;
 
     const priceString = !isFree
-        ? `${currencies[price?.currency]}${price.unit_amount / 100}`
+        ? `${currencies[price?.currency]}${price?.unit_amount / 100}`
         : 'Free';
 
     const { translation } = useLocalization('subscriptions');

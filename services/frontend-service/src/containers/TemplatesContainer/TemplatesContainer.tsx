@@ -151,7 +151,7 @@ const Component = () => {
     const handleCreateMeeting = useCallback(
         async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
             const result = await createMeetingFx({ templateId });
-
+            
             if (result.template) {
                 await router.push(
                     getClientMeetingUrl(result.template?.customLink || result?.template?.id),
@@ -163,29 +163,32 @@ const Component = () => {
 
     const handleChooseCommonTemplate = useCallback(
         async (templateId: ICommonTemplate['id']) => {
+            
             const targetTemplate = templates?.list?.find(template => template.id === templateId);
 
             if (targetTemplate?.type === 'paid') {
+                
                 const response = await purchaseTemplateFx({ templateId });
-
+                
                 router.push(response.url);
-
+                
                 return;
             }
-
+            
             if (profile.maxTemplatesNumber === profileTemplatesCount.count) {
                 setReplaceTemplateIdEvent(templateId);
-
+                
                 appDialogsApi.openDialog({
                     dialogKey: AppDialogsEnum.replaceTemplateConfirmDialog,
                 });
-
+                
                 return;
             }
-
+            
             const newTemplate = await addTemplateToUserFx({ templateId });
-
+            
             if (newTemplate) {
+                
                 await handleCreateMeeting({ templateId: newTemplate.id });
             }
         },

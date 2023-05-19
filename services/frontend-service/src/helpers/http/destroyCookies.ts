@@ -12,3 +12,8 @@ export function deleteAuthCookies(ctx: NextPageContext | undefined) {
         expires: undefined,
     });
 }
+
+export function deleteUserAnonymousCookies() {
+    destroyCookie(undefined, 'userTemplateId');
+    destroyCookie(undefined, 'userWithoutLoginId');
+}

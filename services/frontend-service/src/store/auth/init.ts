@@ -1,18 +1,21 @@
 import { forward, sample } from 'effector-next';
-import {USER_IS_BLOCKED} from "shared-const";
-import Router from "next/router";
+import { USER_IS_BLOCKED } from 'shared-const';
+import Router from 'next/router';
 
 import {
     $authStore,
     checkAuthFx,
+    initUserWithoutTokenFx,
+    googleVerifyFx,
     loginUserFx,
-    logoutUserFx, refreshAuthFx,
+    logoutUserFx,
+    refreshAuthFx,
     resetAuthErrorEvent,
     resetAuthStateEvent,
     setUserCountryFx,
 } from './model';
 import { clearProfileEvent, setProfileEvent } from '../profile/profile/model';
-import {appDialogsApi} from "../dialogs/init";
+import { appDialogsApi } from '../dialogs/init';
 
 // handlers
 import { handleLoginUser } from './handlers/handleLoginUser';
@@ -22,20 +25,27 @@ import { handleLogoutUser } from './handlers/handleLogoutUser';
 import { handleSetUserCountry } from './handlers/handleSetUserCountry';
 
 // types
-import {AppDialogsEnum} from "../types";
+import { AppDialogsEnum } from '../types';
 
 // const
-import {clientRoutes} from "../../const/client-routes";
+import { clientRoutes } from '../../const/client-routes';
+import { handleGoogleVerify } from './handlers/handleGoogleVerify';
+import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToken';
+import { getClientMeetingUrl } from '../../utils/urls';
+import { createMeetingFx } from '../meetings/model';
+import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
 refreshAuthFx.use(handleRefreshUserAuthentication);
 logoutUserFx.use(handleLogoutUser);
 setUserCountryFx.use(handleSetUserCountry);
+googleVerifyFx.use(handleGoogleVerify);
+initUserWithoutTokenFx.use(handleInitUserWithoutToken);
 
 sample({
     clock: loginUserFx.doneData,
-    filter: (payload) => payload.isAuthenticated,
+    filter: payload => payload.isAuthenticated,
     target: setProfileEvent,
 });
 
@@ -46,29 +56,48 @@ forward({
 
 sample({
     clock: loginUserFx.doneData,
-    filter: (payload) => payload.isAuthenticated && !payload?.user?.country,
+    filter: payload => payload.isAuthenticated && !payload?.user?.country,
     target: setUserCountryFx,
 });
 
-loginUserFx.doneData.watch((payload) => {
-    if (payload?.error?.message === USER_IS_BLOCKED.message)  {
+loginUserFx.doneData.watch(payload => {
+    if (payload?.error?.message === USER_IS_BLOCKED.message) {
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.userBlockedDialog,
-        })
+        });
     }
+    deleteUserAnonymousCookies();
+});
+
+googleVerifyFx.doneData.watch(() => {
+    deleteUserAnonymousCookies();
 });
 
 logoutUserFx.doneData.watch(() => {
-    Router.push(clientRoutes.loginRoute)
-    clearProfileEvent()
+    Router.push(clientRoutes.loginRoute);
+    clearProfileEvent();
+});
+
+initUserWithoutTokenFx.doneData.watch(async ({ user, userTemplateId }) => {
+    if (!user || !userTemplateId) return;
+    const { template } = await createMeetingFx({
+        templateId: userTemplateId,
+    });
+
+    if (template)
+        Router.push(getClientMeetingUrl(template?.customLink || template?.id));
 });
 
 $authStore
-    .on([
-        loginUserFx.doneData,
-        checkAuthFx.doneData,
-        logoutUserFx.doneData
-    ], (state, data) => data)
+    .on(
+        [
+            loginUserFx.doneData,
+            checkAuthFx.doneData,
+            logoutUserFx.doneData,
+            googleVerifyFx.doneData,
+        ],
+        (state, data) => data,
+    )
     .on(resetAuthStateEvent, () => ({
         isAuthenticated: false,
     }))

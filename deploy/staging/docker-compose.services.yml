@@ -1,0 +1,302 @@
+version: '3.8'
+name: services
+networks:
+  traefikpublic:
+    name: traefikpublic
+    external: true
+  internal:
+
+services:
+  mongo:
+    image: mongo:5.0
+    command: [ "--replSet", "rs0", "--bind_ip_all" ]
+    hostname: mongo
+    healthcheck:
+      test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:56100:27017'
+    volumes:
+      - /data/liveoffice/mongo:/data/db
+    networks:
+      - internal
+
+  rabbit:
+    
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbituser
+      - RABBITMQ_DEFAULT_PASS=rabbitpass
+      - RABBITMQ_DEFAULT_HOST=rabbitmq
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management path_prefix "/rabbit"
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - /data/liveoffice/rabbit:/var/lib/rabbitmq
+    networks:
+      - internal
+
+  livekit-service:
+    env_file:
+      - env
+    build:
+      context: ../../services/
+      dockerfile: ./livekit-service/Dockerfile
+      args:
+        - LIVEKIT_IP=108.61.203.79
+        - LIVEKIT_API_KEY=APIwj2xEkRuhwY9
+        - LIVEKIT_API_SECRET=qZJdMzPHyHAOnYlyqZeaHlJmyqpJYgHmIksXxzOTtbY
+    restart: unless-stopped
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+      - "6789:6789"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.livekit.rule=Host(`tlo-livekit.nongdan.dev`)"
+      - "traefik.http.routers.livekit.entrypoints=websecure"
+      - "traefik.http.routers.livekit.tls=true"
+      - "traefik.http.services.livekit.loadbalancer.server.port=7880"
+    networks:
+      - internal
+      - traefikpublic
+
+
+  gateway-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/gateway-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - '3000:3000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.gateway.rule=Host(`tlo.nongdan.dev`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway.entrypoints=websecure"
+      - "traefik.http.routers.gateway.tls=true"
+      - "traefik.http.routers.gateway.middlewares=customcorsheader@docker"
+      - "traefik.http.services.gateway.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.gateway.headers.accesscontrolallowmethods=GET,POST,OPTIONS,PUT,DELETE"
+      - "traefik.http.middlewares.customcorsheader.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.customcorsheader.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.customcorsheader.headers.addvaryheader=true"
+    networks:
+      - traefikpublic
+      - internal
+
+  frontend-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: services/frontend-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+    depends_on:
+      - gateway-service
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+    environment:
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.frontend.rule=Host(`tlo.nongdan.dev`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.services.frontend.loadbalancer.server.port=8000"
+    networks:
+      - traefikpublic
+      - internal
+
+  frontend-admin-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: services/frontend-admin-service/Dockerfile
+      args:
+        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+    restart: unless-stopped
+    environment:
+      - WAIT_HOSTS=gateway-service:3000
+      - WAIT_TIMEOUT=60000
+    ports:
+      - '9010:9000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.front_admin.rule=Host(`tlo-admin.nongdan.dev`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_admin.entrypoints=websecure"
+      - "traefik.http.routers.front_admin.tls=true"
+      - "traefik.http.routers.front_admin.tls.certresolver=simple-resolver"
+      - "traefik.http.services.front_admin.loadbalancer.server.port=9000"
+    networks:
+      - internal
+      - traefikpublic
+
+
+  socket-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/socket-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - '8082:8080'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.socket.rule=Host(`tlo.nongdan.dev`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.socket.entrypoints=websecure"
+      - "traefik.http.routers.socket.tls=true"
+      - "traefik.http.services.socket.loadbalancer.server.port=8080"
+    networks:
+      - traefikpublic
+      - internal
+
+  core-service:
+    env_file:
+      - env
+    
+    build:
+      context: ../../
+      dockerfile: ./services/core-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - internal
+
+  auth-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/auth-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - internal
+
+  meeting-socket-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/meeting-socket-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - '8180:8180'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.meeting_socket.rule=Host(`tlo-meeting-socket.nongdan.dev`)"
+      - "traefik.http.routers.meeting_socket.entrypoints=websecure"
+      - "traefik.http.routers.meeting_socket.tls=true"
+      - "traefik.http.services.meeting_socket.loadbalancer.server.port=8180"
+      - "io.portainer.accesscontrol.public"
+    networks:
+      - internal
+      - traefikpublic
+
+  payment-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/payment-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    ports:
+      - "5000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.payments.rule=Host(`tlo.nongdan.dev`) && PathPrefix(`/payments`)"
+      - "traefik.http.routers.payments.entrypoints=websecure"
+      - "traefik.http.routers.payments.tls=true"
+      - "traefik.http.services.payments.loadbalancer.server.port=5000"
+    networks:
+      - internal
+      - traefikpublic
+
+  notification-service:
+    env_file:
+      - env
+    
+    build:
+      context: ../../
+      dockerfile: ./services/notification-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - internal
+
+  media-server-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/media-server-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - internal
+
+  scaling-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/scaling-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAIT_HOSTS: config-service:4000,rabbitmq:5672
+      WAIT_TIMEOUT: 60000
+    networks:
+      - internal
+
+  config-service:
+    env_file:
+      - env
+    build:
+      context: ../../
+      dockerfile: ./services/config-service/Dockerfile
+    restart: always
+    depends_on:
+      - mongo
+      - rabbit
+    networks:
+      - internal

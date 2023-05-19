@@ -1,7 +1,13 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, {
+    memo,
+    SyntheticEvent,
+    useCallback,
+    useEffect,
+    useMemo,
+} from 'react';
 import clsx from 'clsx';
-import { useStore } from 'effector-react';
-import {useRouter} from "next/router";
+import { useStore, useStoreMap } from 'effector-react';
+import { useRouter } from 'next/router';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
@@ -16,36 +22,49 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 
 // components
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { BackgroundAudioControl } from '@components/Meeting/BackgroundAudioControl/BackgroundAudioControl';
+import { MeetingAccessStatusEnum } from 'shared-types';
 
 // icons
 import { HangUpIcon } from 'shared-frontend/icons/OtherIcons/HangUpIcon';
-import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
-import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // stores
-import { $isGoodsVisible, appDialogsApi, toggleIsGoodsVisible } from '../../../store';
+import { $authStore, $profileStore } from '../../../store';
 import {
     $isMeetingHostStore,
+    $isOwner,
     $isScreenSharingStore,
+    $isTogglePayment,
+    $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
     $meetingStore,
-    $meetingTemplateStore, disconnectFromVideoChatEvent, sendLeaveMeetingSocketEvent,
+    $meetingTemplateStore,
+    $meetingUsersStore,
+    $paymentIntent,
+    cancelPaymentIntentWithData,
+    createPaymentIntentWithData,
+    disconnectFromVideoChatEvent,
+    sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     startScreenSharing,
     stopScreenSharing,
+    togglePaymentFormEvent,
+    toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
 
-// types
-import { AppDialogsEnum } from '../../../store/types';
-
 // styles
 import styles from './MeetingControlButtons.module.scss';
-import {clientRoutes, dashboardRoute} from "../../../const/client-routes";
+import {
+    clientRoutes,
+    dashboardRoute,
+    loginRoute,
+} from '../../../const/client-routes';
+import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
+import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 
 const Component = () => {
     const router = useRouter();
@@ -54,31 +73,52 @@ const Component = () => {
     const localUser = useStore($localUserStore);
     const meeting = useStore($meetingStore);
     const isSharingActive = useStore($isScreenSharingStore);
-    const isGoodsVisible = useStore($isGoodsVisible);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isMeetingConnected = useStore($meetingConnectedStore);
+    const { isWithoutAuthen } = useStore($authStore);
+    const isUsersOpen = useStore($isToggleUsersPanel);
+    const isThereNewRequests = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.some(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSent,
+            ),
+    });
+    const profile = useStore($profileStore);
+    const isOwner = useStore($isOwner);
+    const isPaymentOpen = useStore($isTogglePayment);
+    const paymentIntent = useStore($paymentIntent);
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
+    const intentId = paymentIntent?.id;
 
     const isSharingScreenActive = localUser.id === meeting.sharingUserId;
 
-    const isAbleToToggleSharing = isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
-
-    const handleOpenDeviceSettings = useCallback(() => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.devicesSettingsDialog,
-        });
-    }, []);
+    const isAbleToToggleSharing =
+        isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
 
     const isMicActive = localUser.micStatus === 'active';
     const isCamActive = localUser.cameraStatus === 'active';
 
     const { isMobile } = useBrowserDetect();
 
+    useEffect(() => {
+        if (isMeetingHost && isThereNewRequests) toggleUsersPanelEvent(true);
+    }, [isMeetingHost, isThereNewRequests]);
+
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
-        await router.push(localUser.isGenerated
-            ? clientRoutes.welcomeRoute
-            : dashboardRoute
+
+        await router.push(
+            !isWithoutAuthen
+                ? localUser.isGenerated
+                    ? clientRoutes.welcomeRoute
+                    : dashboardRoute
+                : loginRoute,
         );
     }, []);
 
@@ -88,7 +128,12 @@ const Component = () => {
         } else if (isMeetingHost || isSharingScreenActive) {
             stopScreenSharing();
         }
-    }, [isSharingScreenActive, meeting.sharingUserId, isMeetingHost, localUser.id]);
+    }, [
+        isSharingScreenActive,
+        meeting.sharingUserId,
+        isMeetingHost,
+        localUser.id,
+    ]);
 
     const handleToggleMic = useCallback(() => {
         if (isMeetingConnected) {
@@ -101,7 +146,14 @@ const Component = () => {
         }
     }, [isMeetingConnected, isMicActive, isCamActive]);
 
-    const sharingAction = isAbleToToggleSharing ? handleToggleSharing : undefined;
+    const handleToggleUsersPanel = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleUsersPanelEvent();
+    };
+
+    const sharingAction = isAbleToToggleSharing
+        ? handleToggleSharing
+        : undefined;
 
     const tooltipTranslation = useMemo(() => {
         if (isAbleToToggleSharing) {
@@ -113,37 +165,55 @@ const Component = () => {
         return '';
     }, [isAbleToToggleSharing, isSharingActive]);
 
+    const handleTogglePayments = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        if (!isCreatePaymentIntentPending) {
+            if (!isPaymentOpen && !intentId && !isOwner) {
+                createPaymentIntentWithData();
+            }
+            if (intentId) cancelPaymentIntentWithData();
+            togglePaymentFormEvent();
+        }
+    };
+
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-            <ConditionalRender condition={Boolean(meetingTemplate?.links?.length)}>
-                <CustomTooltip
-                    classes={{ tooltip: styles.tooltip }}
-                    nameSpace="meeting"
-                    translation={isGoodsVisible ? 'links.offGoods' : 'links.onGoods'}
-                >
-                    <CustomPaper
-                        variant="black-glass"
-                        borderRadius={8}
-                        className={styles.deviceButton}
-                    >
-                        <ActionButton
-                            variant="transparentBlack"
-                            onAction={toggleIsGoodsVisible}
-                            className={clsx(styles.goodsButton, {
-                                [styles.disabled]: !isGoodsVisible,
-                            })}
-                            Icon={<GoodsIcon width="22px" height="22px" />}
-                        />
-                    </CustomPaper>
-                </CustomTooltip>
-            </ConditionalRender>
+            <CustomPaper
+                variant="black-glass"
+                borderRadius={8}
+                className={styles.deviceButton}
+            >
+                <ActionButton
+                    variant="transparentBlack"
+                    onAction={handleToggleUsersPanel}
+                    className={clsx(styles.actionButton, {
+                        [styles.active]: isUsersOpen,
+                        [styles.newRequests]:
+                            isThereNewRequests && isMeetingHost,
+                        [styles.mobile]: isMobile,
+                    })}
+                    Icon={<PeopleIcon width="22px" height="22px" />}
+                />
+            </CustomPaper>
             <ConditionalRender condition={isMobile}>
-                <CustomPaper variant="black-glass" borderRadius={8} className={styles.deviceButton}>
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
+                >
                     <ActionButton
                         variant="transparentBlack"
                         onAction={handleToggleMic}
-                        className={clsx(styles.deviceButton, { [styles.inactive]: !isMicActive })}
-                        Icon={<MicIcon isActive={isMicActive} width="22px" height="22px" />}
+                        className={clsx(styles.deviceButton, {
+                            [styles.inactive]: !isMicActive,
+                        })}
+                        Icon={
+                            <MicIcon
+                                isActive={isMicActive}
+                                width="22px"
+                                height="22px"
+                            />
+                        }
                     />
                 </CustomPaper>
             </ConditionalRender>
@@ -162,8 +232,10 @@ const Component = () => {
                             variant="transparentBlack"
                             onAction={sharingAction}
                             className={clsx(styles.sharingButton, {
-                                [styles.active]: isSharingActive && isAbleToToggleSharing,
-                                [styles.noRights]: isSharingActive && !isAbleToToggleSharing,
+                                [styles.active]:
+                                    isSharingActive && isAbleToToggleSharing,
+                                [styles.noRights]:
+                                    isSharingActive && !isAbleToToggleSharing,
                             })}
                             Icon={<SharingIcon width="22px" height="22px" />}
                         />
@@ -171,19 +243,34 @@ const Component = () => {
                 </CustomTooltip>
             </ConditionalRender>
 
-            <ConditionalRender condition={meetingTemplate.isAudioAvailable}>
-                <BackgroundAudioControl />
-            </ConditionalRender>
-
-            <ConditionalRender condition={!isMobile}>
-                <CustomPaper variant="black-glass" borderRadius={8} className={styles.deviceButton}>
+            <ConditionalRender
+                condition={
+                    isOwner
+                        ? Boolean(
+                              profile.isStripeEnabled &&
+                                  profile.stripeAccountId,
+                          )
+                        : meetingTemplate.isMonetizationEnabled
+                }
+            >
+            <CustomTooltip
+                classes={{ tooltip: styles.tooltip }}
+                nameSpace="meeting"
+                translation="payments.title"
+            >
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.deviceButton}
+                >
                     <ActionButton
                         variant="transparentBlack"
-                        onAction={handleOpenDeviceSettings}
-                        className={styles.settingsButton}
-                        Icon={<SettingsIcon width="22px" height="22px" />}
+                        onAction={handleTogglePayments}
+                        className={styles.deviceButton}
+                        Icon={<MonetizationIcon width="22px" height="22px" />}
                     />
                 </CustomPaper>
+            </CustomTooltip>
             </ConditionalRender>
 
             <ActionButton
@@ -192,6 +279,7 @@ const Component = () => {
                 className={styles.hangUpButton}
                 Icon={<HangUpIcon width="22px" height="22px" />}
             />
+            <MeetingControlCollapse />
         </CustomGrid>
     );
 };
