@@ -21,6 +21,8 @@ export const initialProfileTemplateState: IUserTemplate = {
     signBoard: 'default',
     templatePrice: 10,
     templateCurrency: 'USD',
+    paywallPrice: null,
+    paywallCurrency: 'USD',
     customLink: '',
     isAudioAvailable: false,
     usersPosition: [],

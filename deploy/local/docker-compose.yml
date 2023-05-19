@@ -37,6 +37,7 @@ services:
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management path_prefix "/rabbit"
     ports:
       - '5672:5672'
+      - '15672:15672'
     networks:
       - liveoffice_local
 
@@ -76,7 +77,7 @@ services:
       - MEETING_SOCKET_URL=ws://localhost:8180
       - DEFAULT_SERVER_IP=localhost
       - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
-      - STRIPE_PUBLIC_API_KEY=pk_test_51Lj5RzA8qS7v6KtFb4bkA0G60cMp7LYVPYZzLpv6OiWHptom6UcUJgfYJph5DAhiLCXs6WlxKaWqGWdKv3stMXBY00yZ9J8PjX
+      - STRIPE_PUBLIC_API_KEY=pk_test_51Lfm3wEZHTtCzRsJB6lEgBCnvU1S4UNnaIQ2sDmYRN4olRKSF7IjPn5NF81yDxwhRCMfqNW4I4UK4HOGFDYctKLv00Cv9txG6J
       - BASE_ENV_DOMAIN=liveoffice.forasoft.com
       - SUPPORT_EMAIL
       - GEOLOCATION_API_KEY=8938b4b594c74e39bd845d380ffe99fd

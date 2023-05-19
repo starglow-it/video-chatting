@@ -8,7 +8,13 @@ import {
 import { ITemplateUser } from './users';
 import { IMeetingInstance } from './meeting';
 
-export interface ICommonTemplate {
+interface ITemplate{
+  authorThumbnail?: string;
+  authorRole?: string;
+  authorName?: string;
+}
+
+export interface ICommonTemplate extends ITemplate {
   id?: string;
   usedAt?: string;
   templateId: number;
@@ -37,7 +43,7 @@ export interface ICommonTemplate {
   isAcceptNoLogin?: boolean;
 }
 
-export interface IUserTemplate {
+export interface IUserTemplate extends ITemplate {
   id: string;
   usedAt?: string;
   templateId: number;
@@ -58,7 +64,9 @@ export interface IUserTemplate {
   isMonetizationEnabled: boolean;
   isAudioAvailable: boolean;
   templatePrice: number;
-  templateCurrency: string;
+  templateCurrency: string;  
+  paywallPrice: number | null,
+  paywallCurrency: string,
   customLink: string;
   businessCategories: IBusinessCategory[];
   languages: ILanguage[];
@@ -98,6 +106,8 @@ export interface IUpdateTemplate {
   isPublic?: boolean;
   templatePrice?: number;
   templateCurrency?: string;
+  paywallCurrency?: string;
+  paywallPrice?: number;
   meetingInstance?: IMeetingInstance;
   links?: { item: string; position: { top: number; left: number } }[];
   socials: {

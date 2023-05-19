@@ -59,6 +59,7 @@ import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
 import { generateIcsEventData } from '../../utils/generateIcsEventData';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { MeetingsService } from '../meetings/meetings.service';
+import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
 @Controller('/users')
 export class UsersController {
@@ -76,7 +77,7 @@ export class UsersController {
     private paymentsService: PaymentsService,
     private socketService: SocketService,
     private meetingService: MeetingsService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.frontendUrl = await this.configService.get<string>('frontendUrl');
@@ -452,7 +453,7 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Post('/invite/email')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Invite Attendee By Email' })
@@ -470,6 +471,13 @@ export class UsersController {
       const user = await this.coreService.findUserById({
         userId: req.user.userId,
       });
+      let senderEmail = user.email;
+      let senderName = user.fullName;
+
+      if (user.role === UserRoles.Anonymous) {
+        senderEmail = 'anonymous@gmail.com';
+        senderName = 'Anonymous';
+      }
 
       this.notificationService.sendEmail({
         to: data.userEmails.map((email) => ({ email, name: email })),
@@ -480,7 +488,7 @@ export class UsersController {
               name: 'MEETINGURL',
               content: `${this.frontendUrl}/room/${data.meetingId}`,
             },
-            { name: 'SENDER', content: `${user.fullName} (${user.email})` },
+            { name: 'SENDER', content: `${senderName} (${senderEmail})` },
           ],
         },
       });
@@ -556,6 +564,8 @@ export class UsersController {
       const endAt = parseDateObject(data.endAt);
 
       const tzOffset = getTzOffset(startAt, data.timeZone);
+      const meetingUrl = `${this.frontendUrl}/room/${template.customLink || template.id
+        }`
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
@@ -563,6 +573,7 @@ export class UsersController {
         startAt: startAt - tzOffset,
         endAt: endAt - tzOffset,
         comment: data.comment,
+        url: meetingUrl,
         attendees: data.userEmails.map((email) => ({ name: email, email })),
       });
 
@@ -583,9 +594,7 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${
-                template.customLink || template.id
-              }`,
+              content: meetingUrl,
             },
             { name: 'DATE', content: startAtDate },
             {
@@ -598,7 +607,7 @@ export class UsersController {
         },
         to: data.userEmails.map((email) => ({ email, name: email })),
         icsEventLink: icsLink,
-        icalEventContent: content,
+        icalEventContent: content
       });
       this.notificationService.sendEmail({
         template: {
@@ -606,9 +615,7 @@ export class UsersController {
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${
-                template.customLink || template.id
-              }`,
+              content: meetingUrl,
             },
             { name: 'DATE', content: startAtDate },
             { name: 'ROOMNAME', content: template.name },
@@ -616,7 +623,7 @@ export class UsersController {
         },
         to: [{ email: senderUser.email, name: senderUser.email }],
         icsEventLink: icsLink,
-        icalEventContent: content,
+        icalEventContent: content
       });
 
       await this.meetingService.assignMeetingInstance({

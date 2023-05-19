@@ -41,6 +41,7 @@
     "logout": "Logout",
     "login": "Sign in",
     "loginGoogle": "Login with google",
+    "registerGoogle": "Register with google",
     "save": "Save",
     "cancel": "Cancel",
     "close": "Close",

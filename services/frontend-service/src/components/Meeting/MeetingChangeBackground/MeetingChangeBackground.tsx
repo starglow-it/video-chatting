@@ -18,6 +18,8 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
     $backgroundMeetingStore,
     $isLoadMoreMediasStore,
+    $meetingTemplateStore,
+    deleteMediaMeetingFx,
     setCategoryEvent,
     setMediaEvent,
     setQueryMediasEvent,
@@ -27,15 +29,22 @@ import { Barge } from './Barge';
 import { Media } from './Media';
 import styles from './MeetingChangeBackground.module.scss';
 import { UploadBackground } from './Upload';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
 
 const Component = () => {
     const { medias, categorySelected, mediaSelected, categories, count } =
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
     const isLoading = useStore(uploadNewBackgroundFx.pending);
-
     const [isExpand, setIsExpand] = useState<boolean>(true);
+    const [isAnimation, setIsAnimation] = useState<boolean>(false);
     const refScroll = useRef<HTMLElement>();
+    const isHideUpload = categories.some(
+        item => item.key === 'myrooms' && item.id === categorySelected,
+    );
+    const meetingTemplate = useStore($meetingTemplateStore);
+
     useEffect(() => {
         if (isExpand && categories.length && !categorySelected)
             setCategoryEvent({
@@ -65,109 +74,142 @@ const Component = () => {
         setIsExpand(expanded);
     };
 
+    const handleDeleteMedia = (mediaId: string) => {
+        deleteMediaMeetingFx({
+            categoryId: categorySelected,
+            userTemplateId: meetingTemplate.id,
+            deleteId: mediaId,
+        });
+    };
+
     return (
-        <CustomPaper
-            className={clsx(styles.commonOpenPanel, {
-                [styles.expanded]: isExpand,
-            })}
-            variant="black-glass"
+        <CustomTooltip
+            title={
+                !isExpand && isAnimation ? (
+                    <Translation
+                        nameSpace="meeting"
+                        translation="changeBackground.text"
+                    />
+                ) : (
+                    ''
+                )
+            }
+            placement="left"
+            disableHoverListener={isExpand}
         >
-            <Accordion
-                expanded={isExpand}
-                onChange={changeExpand}
-                className={clsx(styles.accordion)}
-                TransitionProps={{
-                    timeout: {
-                        appear: 600,
-                        enter: 700,
-                        exit: 500,
-                    },
-                }}
+            <CustomPaper
+                className={clsx(styles.commonOpenPanel, {
+                    [styles.expanded]: isExpand,
+                })}
+                variant="black-glass"
             >
-                {isLoading && <LinearProgress color="secondary" />}
-                <AccordionSummary
-                    className={styles.summary}
-                    classes={{
-                        content: clsx(styles.content, {
-                            [styles.expanded]: isExpand,
-                        }),
+                <Accordion
+                    expanded={isExpand}
+                    onChange={changeExpand}
+                    className={clsx(styles.accordion)}
+                    TransitionProps={{
+                        timeout: {
+                            appear: 600,
+                            enter: 700,
+                            exit: 500,
+                        },
+                        onExited: () => setIsAnimation(true),
+                        onEntered: () => setIsAnimation(false)
                     }}
                 >
-                    <CustomBox
-                        display="flex"
-                        className={styles.headers}
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="flex-start"
+                    {isLoading && <LinearProgress color="secondary" />}
+                    <AccordionSummary
+                        className={styles.summary}
+                        classes={{
+                            content: clsx(styles.content, {
+                                [styles.expanded]: isExpand,
+                            }),
+                        }}
                     >
-                        <CustomBox color="white" height={18}>
-                            <ImageIcon width="16px" height="16px" />
+                        <CustomBox
+                            display="flex"
+                            className={styles.headers}
+                            flexDirection="row"
+                            alignItems="center"
+                            justifyContent="flex-start"
+                        >
+                            <CustomBox color="white" height={18}>
+                                <ImageIcon width="22px" height="20px" />
+                            </CustomBox>
+                            <ConditionalRender condition={isExpand}>
+                                <CustomTypography
+                                    nameSpace="meeting"
+                                    translation="changeBackground.text"
+                                    color="colors.white.primary"
+                                    variant="h4bold"
+                                    flex={1}
+                                    paddingLeft={1}
+                                    fontSize="15px"
+                                />
+
+                                <RoundCloseIcon
+                                    className={styles.closeIcon}
+                                    isActive
+                                    width="22px"
+                                    height="22px"
+                                />
+                            </ConditionalRender>
                         </CustomBox>
-                        <ConditionalRender condition={isExpand}>
-                            <CustomTypography
-                                nameSpace="meeting"
-                                translation="changeBackground.text"
-                                color="colors.white.primary"
-                                variant="h4bold"
-                                flex={1}
-                                paddingLeft={1}
-                                fontSize="15px"
-                            />
+                    </AccordionSummary>
+                    <AccordionDetails classes={{ root: styles.detail }}>
+                        <CustomBox
+                            flex={25}
+                            display="flex"
+                            flexDirection="row"
+                            flexWrap="wrap"
+                            paddingTop={1}
+                        >
+                            {categories.map(item => (
+                                <Barge
+                                    key={item.key}
+                                    isActive={item.id === categorySelected}
+                                    onSelect={handleSelectType}
+                                    item={item}
+                                />
+                            ))}
+                        </CustomBox>
 
-                            <RoundCloseIcon
-                                className={styles.closeIcon}
-                                isActive
-                                width="22px"
-                                height="22px"
-                            />
-                        </ConditionalRender>
-                    </CustomBox>
-                </AccordionSummary>
-                <AccordionDetails classes={{ root: styles.detail }}>
-                    <CustomBox
-                        flex={25}
-                        display="flex"
-                        flexDirection="row"
-                        flexWrap="wrap"
-                        paddingTop={1}
-                    >
-                        {categories.map(item => (
-                            <Barge
-                                key={item.key}
-                                isActive={item.id === categorySelected}
-                                onSelect={handleSelectType}
-                                item={item}
-                            />
-                        ))}
-                    </CustomBox>
-
-                    <CustomGrid
-                        container
-                        flex={75}
-                        paddingTop={3}
-                        paddingLeft="6px"
-                    >
-                        <ConditionalRender condition={medias.length > 0}>
-                            <CustomScroll
-                                className={styles.scroll}
-                                onYReachEnd={handleScrollEnd}
-                                containerRef={el => (refScroll.current = el)}
-                            >
-                                <UploadBackground />
-                                {medias.map(item => (
-                                    <Media
-                                        key={item.id}
-                                        isActive={item.id === mediaSelected}
-                                        item={item}
-                                        onSelect={handleSelectBackground}
-                                    />
-                                ))}
-                            </CustomScroll>
-                        </ConditionalRender>
-                    </CustomGrid>
-                </AccordionDetails>
-            </Accordion>
-        </CustomPaper>
+                        <CustomGrid
+                            container
+                            flex={75}
+                            paddingTop={3}
+                            paddingLeft="6px"
+                        >
+                            <ConditionalRender condition={medias.length > 0}>
+                                <CustomScroll
+                                    className={styles.scroll}
+                                    onYReachEnd={handleScrollEnd}
+                                    containerRef={el =>
+                                        (refScroll.current = el)
+                                    }
+                                >
+                                    <ConditionalRender
+                                        condition={!isHideUpload}
+                                    >
+                                        <UploadBackground />
+                                    </ConditionalRender>
+                                    {medias.map(item => (
+                                        <Media
+                                            key={item.id}
+                                            isActive={item.id === mediaSelected}
+                                            item={item}
+                                            onSelect={handleSelectBackground}
+                                            onDelete={handleDeleteMedia}
+                                            isShowDelete={!isHideUpload}
+                                        />
+                                    ))}
+                                </CustomScroll>
+                            </ConditionalRender>
+                        </CustomGrid>
+                    </AccordionDetails>
+                </Accordion>
+            </CustomPaper>
+        </CustomTooltip>
     );
 };
 

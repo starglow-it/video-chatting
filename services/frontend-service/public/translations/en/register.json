@@ -18,5 +18,10 @@
     "title": "Confirm Registration Process",
     "success": "Successful user confirmation",
     "redirect": "You will be redirected to login page"
+  },
+  "signUpEndCall": {
+    "title": "Save this free Account",
+    "button": "Sign Up with email",
+    "or": "Or"
   }
 }

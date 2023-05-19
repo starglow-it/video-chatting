@@ -71,7 +71,11 @@ export class DashboardGateway extends BaseGateway {
         userId: targetTemplate.user.id,
       });
 
-      if (!user.maxMeetingTime && user.subscriptionPlanKey !== PlanKeys.Business) {
+      const isHandleTimeLimit =
+              ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
+                .includes(user.subscriptionPlanKey);
+
+      if (!user.maxMeetingTime && isHandleTimeLimit) {
         return {
           success: false,
           message: 'meeting.timeLimit',

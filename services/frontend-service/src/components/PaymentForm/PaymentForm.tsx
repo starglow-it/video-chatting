@@ -31,13 +31,13 @@ const currencySigns = {
     CAD: 'C$',
 };
 
-const Component = ({ onClose }: PaymentFormProps) => {
+const Component = ({ onClose, templateType = 'white', subLabel, paymentType = 'in-meeting' }: PaymentFormProps) => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const paymentIntent = useStore($paymentIntent);
     const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);
 
     const handleSubmit = useCallback(async () => {
-        onClose();
+        onClose?.();
         addNotificationEvent({
             type: NotificationType.PaymentSuccess,
             message: 'payments.paymentSuccess',
@@ -53,28 +53,41 @@ const Component = ({ onClose }: PaymentFormProps) => {
         });
     }, []);
 
+    const colorMain = `colors.${templateType}.primary`
+    const isInMeetingPayment = paymentType === 'in-meeting'
+    const currency = currencySigns[isInMeetingPayment ? meetingTemplate.templateCurrency : meetingTemplate.paywallCurrency]
+    const price = isInMeetingPayment ? meetingTemplate.templatePrice : meetingTemplate.paywallPrice
     return (
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
-                <CustomTypography variant="h3bold" color="colors.white.primary">
-                    {currencySigns[meetingTemplate.templateCurrency]}
-                    {meetingTemplate.templatePrice}
+                {
+                    subLabel ? <>{subLabel}{' '}</> : null
+                }
+                <CustomTypography variant="h3bold" color={colorMain}>
+                    {currency}
+                    {price}
                 </CustomTypography>
                 &nbsp;
-                <CustomTypography className={styles.transparentWhite}>&#8226;</CustomTypography>
+                <CustomTypography
+                    sx={{
+                        color: `rgba(${colorMain}, 0.6)`
+                    }}
+                >&#8226;</CustomTypography>
                 &nbsp;
                 <CustomTypography
-                    className={styles.transparentWhite}
                     nameSpace="meeting"
                     translation="payments.perSession"
+                    sx={{
+                        color: `rgba(${colorMain}, 0.6)`
+                    }}
                 />
             </CustomGrid>
             <CustomDivider light flexItem />
-            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+            {(!isCreatePaymentIntentPending && paymentIntent.clientSecret) ? (
                 <CustomGrid container direction="column" className={styles.paymentForm}>
                     <CustomTypography
                         variant="body1bold"
-                        color="colors.white.primary"
+                        color={colorMain}
                         nameSpace="meeting"
                         translation="payments.yourCard"
                         className={styles.title}
@@ -84,6 +97,7 @@ const Component = ({ onClose }: PaymentFormProps) => {
                             onSubmit={handleSubmit}
                             onError={handleSubmitError}
                             paymentIntentSecret={paymentIntent.clientSecret}
+                            colorForm={templateType}
                         />
                     </StripeElement>
                 </CustomGrid>

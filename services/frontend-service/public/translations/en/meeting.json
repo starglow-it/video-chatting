@@ -25,7 +25,8 @@
   "meetingInfo": {
     "title": "Meeting info",
     "company": "Company",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "tooltip": "Click to edit"
   },
   "meetingActions": {
     "editTemplate": "Click avatar to edit profile",
@@ -50,21 +51,24 @@
     "switchOff":"Switch OFF",
     "clickToSeeYourself": "Click to see yourself",
     "selfViewOff": "Self-View Off",
-    "dragAndResize": "Drag & Resize"
+    "dragAndResize": "Drag & Resize",
+    "microphone": "Mic on/off"
   },
   "endMeeting": {
     "forHost": "Leave?",
     "forAttendee": "Leave?",
-    "hint": "When you Leave callers can still look around and\nsend payments"
+    "hint": "When you Leave callers can still look around and\nsend payments",
+    "tooltip": "Exit"
   },
   "invite": {
-    "title": "Invite attendees",
+    "title": "Invite now",
     "emailTitle": "Email invitation",
     "copyLink": "Copy link",
     "sendInvite": "Send invite email",
     "copyMeetingInfo": "Copy meeting info",
     "inviteButton": "Invite with email",
-    "sendInvitation": "Send invitations"
+    "sendInvitation": "Send invitations",
+    "tooltip": "Add Callers"
   },
   "enterName": {
     "title": "Welcome",
@@ -105,18 +109,21 @@
     "faceTracking": "Face detection",
     "audioBackground": "Background audio",
     "monetization": "Monetization",
+    "inMeeting": "In-meeting",
+    "payWall": "Paywall",
     "audioBackgroundDisabled": "Background audio disabled",
     "notes": {
       "title": "Leave a note",
       "input": "Type here",
       "unpin": "Unpin"
-    }
+    },
+    "getPaid": "Get Paid"
   },
   "payments": {
     "perSession": "per session",
     "yourCard": "Your card",
     "stripe": "Stripe",
-    "payWith": "Pay with",
+    "payWith": "Secure Pay with",
     "title": "Payments"
   },
   "customLink": {
@@ -143,9 +150,19 @@
     "button": "Homepage"
   },
   "changeBackground": {
-    "text": "Background"
+    "text": "Backgrounds"
   },
   "manageAudio": {
-    "text": "Sound"
+    "text": "Music"
+  },
+  "schedule": {
+    "title": "Schedule",
+    "tooltip": "Scheduling"
+  },
+  "confirmPrice": {
+    "description": "Confirm Change Price",
+    "cancel": "Cancel",
+    "save": "Save",
+    "tooltip": "Please Save when done"
   }
 }

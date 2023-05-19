@@ -50,7 +50,6 @@ async function bootstrap() {
 
   await app.listen();
 
-  // await seeder.uploadEmoji();
   await seeder.seedBusinessCategories();
   await seeder.seedLanguages();
   await seeder.createCounter();
@@ -58,9 +57,10 @@ async function bootstrap() {
   await seeder.seedMonetizationStatistic();
   await seeder.seedRoomStatistic();
   await seeder.seedLinks();
+  await seeder.seedUpdateMaxMeetingTimeUser();
   await seeder.seedCreateGlobalCommonTemplate();
   await seeder.seedMedias();
-  await seeder.seedMediasToAvailableTemplates();
+  await seeder.seedMyRoomMediasByUserTemplateAmount();
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();

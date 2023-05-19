@@ -1,16 +1,15 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
 
+.wrapperForm{
+  height: rem(200px);
+}
+
 .monetization {
   background: transparent;
-  border-radius: rem(10px);
-  height: rem(50px);
+  border-radius: rem(10px);  
   color: $primary-white;
-
-  overflow: hidden;
-
-  transition: height 200ms linear;
-
+  
   .labelWrapper {
     margin: rem(0 0 20px 0);
   }
@@ -18,11 +17,7 @@
   .switcher {
     max-width: rem(112px);
     width: 100%;
-  }
-
-  &.active {
-    height: rem(115px);
-  }
+  }  
 
   .amountInput {
     position: relative;
@@ -57,8 +52,66 @@
 }
 
 .button {
-  margin: rem(20px 0 0 0);
+  margin: 0;
 }
 .error {
   position: relative;
+}
+.tooltip {  
+  
+  margin-bottom: rem(6px) !important;
+  .tooltipContent{
+    color: #fff;
+    padding: rem(10px 16px);
+  }
+}
+
+.deviceButton {
+  width: rem(42px);
+  height: rem(42px);
+  border-radius: 22.5%;
+
+  &.inactive {
+    color: rgba($primary-white, 0.25);
+  }
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 30%;
+  right: rem(20px);
+  button{
+    width: 100%;
+    height: 100%;
+  }
+}
+.commonOpenPanel {
+  max-width: rem(480px);
+  min-width: rem(420px);
+  padding: rem(20px);  
+}
+.popoverMonetization{
+  background: transparent;
+}
+
+
+
+.confirmButtonsWrapper {
+  margin: rem(40px 0 0 0);
+
+  .baseBtn {
+    width: rem(212px);
+    height: rem(56px);
+  }
+
+  .buttonSubmit {
+    width: rem(212px);
+    height: rem(56px);
+  }
+}
+.dialogTitle{
+  font-size: rem(20px);
+  font-weight: 600;
+  margin: rem(40px 0 0 0);
 }

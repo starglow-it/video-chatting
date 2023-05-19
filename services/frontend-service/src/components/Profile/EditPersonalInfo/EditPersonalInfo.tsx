@@ -22,7 +22,7 @@ const EditPersonalInfo = memo(() => {
         register,
     } = useFormContext();
 
-    const currentFullNameErrorMessage: string = errors?.fullName?.[0]?.message || '';
+    
     const currentPositionErrorMessage: string = errors?.position?.[0]?.message || '';
 
     return (
@@ -50,17 +50,7 @@ const EditPersonalInfo = memo(() => {
                     className={styles.contentWrapper}
                 >
                     <CustomGrid container direction="column" justifyContent="center" gap={4}>
-                        <CustomTypography
-                            variant="body1"
-                            nameSpace="profile"
-                            translation="editProfile.personal.title"
-                        />
-                        <CustomInput
-                            nameSpace="forms"
-                            translation="fullName"
-                            error={currentFullNameErrorMessage}
-                            {...register('fullName')}
-                        />
+                       
                         <CustomInput
                             nameSpace="forms"
                             translation="position"

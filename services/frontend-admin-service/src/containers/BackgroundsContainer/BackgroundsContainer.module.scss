@@ -1,0 +1,38 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.wrapper {
+  margin: rem(85px auto 0);
+  width: rem(1100px);
+  max-width: 100%;
+  inset: 0;
+}
+
+.paper {
+  border-radius: rem(8px);
+  padding: rem(16px);
+}
+
+.header {
+  margin-bottom: rem(20px);
+  border-radius: rem(0px);
+}
+
+.scroll {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: rem(300px);
+}
+
+.button {
+  height: rem(28px);
+  padding: rem(3px 8px);
+  background: $primary-white;
+  border: 1px solid rgba(189, 200, 211, 0.4);
+  box-shadow: 0 12px 24px -4px rgba(15, 15, 16, 0.1);
+  border-radius: rem(6px);
+}
+
+.actions {
+  height: rem(50px);
+}

@@ -164,6 +164,23 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @IsString({ message: 'Currency must be string' })
   templateCurrency: string;
 
+
+  @ApiProperty({
+    type: String,
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: 'Paywall Currency must be string' })
+  paywallCurrency: string;
+
+  @ApiProperty({
+    required: false,
+    type: Number
+  })
+  @IsOptional()
+  @IsNumber({}, { message: 'Paywall Price must be number' })
+  paywallPrice: number;
+
   @ApiProperty({
     required: false,
     type: [BusinessCategoryDTO]

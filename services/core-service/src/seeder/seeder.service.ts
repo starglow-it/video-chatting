@@ -10,11 +10,11 @@ import {
   TEMPLATES_SERVICE,
   BACKGROUNDS_SCOPE,
   FILES_SCOPE,
-  EMOJIES_SCOPE,
   MEDIA_CATEGORIES,
-  SOUNDS_SCOPE
+  SOUNDS_SCOPE,
+  USERS_SERVICE
 } from 'shared-const';
-import { Counters, MediaCategoryType, UserRoles } from 'shared-types';
+import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
 
 // services
 import { UsersService } from '../modules/users/users.service';
@@ -47,9 +47,11 @@ import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import { MediaCategoryDocument } from '../schemas/media-category.schema';
-import { CommonMediaDTO } from '../dtos/common-media.dto';
 import { promisify } from 'util';
 import * as mime from 'mime';
+import { MediaDocument } from '..//schemas/media.schema';
+import { retry } from '../utils/common/retry';
+import { PreviewUrls } from '../types/media';
 
 // utils
 
@@ -62,7 +64,6 @@ export class SeederService {
     private businessCategoriesService: BusinessCategoriesService,
     private mediaService: MediaService,
     private languagesService: LanguagesService,
-    private paymentsService: PaymentsService,
     private awsService: AwsConnectorService,
     private countersService: CountersService,
     private configService: ConfigClientService,
@@ -118,25 +119,6 @@ export class SeederService {
     return url;
   }
 
-
-  //TODO: handle upload emoji (pending)
-  // async uploadEmoji(){
-  //   readdir(join(process.cwd(), `${FILES_SCOPE}/${EMOJIES_SCOPE}`), (err, files) => {
-
-  //     Promise.all(files.map(async file => {
-
-  //       const filename = file.split('.')[0];
-
-  //       const url = await this.readFileAndUpload({
-  //         filePath: `${FILES_SCOPE}/${EMOJIES_SCOPE}/${file}`,
-  //         key: `emoji/images/${filename}.webp`
-  //       });
-  //       console.log(url);
-  //     })).then(item => item).catch(err => console.log(err));
-
-  //   }); 
-  // }
-
   async generatePreviewUrls({ url, id, mimeType }) {
     const mimeTypeList = ['image', 'video', 'audio'];
 
@@ -155,19 +137,6 @@ export class SeederService {
       previewImages,
       mediaType
     };
-  }
-
-  private async retry<T>(maxRetries: number, fn: Function): Promise<T> {
-    try {
-      return await fn();
-    }
-    catch (err) {
-      if (maxRetries <= 0) {
-        console.log(err);
-        return;
-      }
-      return await this.retry(maxRetries - 1, fn);
-    }
   }
 
   private async handleFile(file: string, filePath: string) {
@@ -197,22 +166,7 @@ export class SeederService {
         }
       });
 
-      const previewImages = medias.map(media => media.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
-
-      await this.mediaService.deletePreviewImages({
-        query: {
-          _id: {
-            $in: previewImages
-          }
-        }
-      });
-
-      await this.mediaService.deleteMedias({
-        query: {
-          mediaCategory: category._id,
-          userTemplate: null
-        },
-      });
+      if(medias.length) return;
 
       for await (const file of files) {
         const handledFile = await this.handleFile(file, filePath);
@@ -228,18 +182,14 @@ export class SeederService {
           key: `medias/${category.type === MediaCategoryType.Sound ? 'audios' : 'videos'}/${file}`
         });
 
-        const previewUrls = await this.retry<
-          {
-            previewImages: any[];
-            mediaType: string;
-          }
-        >(10, async () => {
+        const previewUrls = await retry<PreviewUrls>(async () => {
           return await this.generatePreviewUrls({
             url,
             id: newMedia._id.toString(),
             mimeType: handledFile.mimeType
           });
-        })
+          
+        },10);
 
         newMedia.url = url;
         newMedia.previewUrls = previewUrls.previewImages;
@@ -256,6 +206,7 @@ export class SeederService {
 
   async createMediasByScopes(scopes: string[], category: MediaCategoryDocument) {
     try {
+      if (category.key.includes('myrooms')) return;
       const promise = scopes.map(async (scope) => {
 
         const filePath = `${FILES_SCOPE}/${scope}`;
@@ -280,6 +231,7 @@ export class SeederService {
           query: { key: mediaCategory.key },
         });
 
+
         if (!existCategory) {
           const newCategory = await this.mediaService.createCategory(
             {
@@ -292,7 +244,6 @@ export class SeederService {
           await this.createMediasByScopes(scopes, newCategory);
         }
         else {
-
           await this.createMediasByScopes(scopes, existCategory);
         }
       });
@@ -303,6 +254,66 @@ export class SeederService {
       console.log(err);
       return;
     }
+  }
+
+  async seedMyRoomMediasByUserTemplateAmount() {
+    return withTransaction(this.connection, async session => {
+
+      const mediaCategory = await this.mediaService.findMediaCategory({
+        query: {
+          key: 'myrooms'
+        },
+        session
+      });
+
+      if (!mediaCategory) {
+        throw new RpcException({
+          message: 'My room category not found',
+          ctx: TEMPLATES_SERVICE
+        });
+      }
+
+      const userTemplates = await this.userTemplatesService.aggregate([
+        {
+          $lookup: {
+            from: "media",
+            localField: "_id",
+            foreignField: "userTemplate",
+            as: "medias"
+          }
+        },
+        {
+          $lookup: {
+            from: "mediacategories",
+            localField: "medias.mediaCategory",
+            foreignField: "_id",
+            as: "mediaCategories"
+          }
+        },
+        {
+          $match: {
+            "mediaCategories.key": {
+              $ne: "myrooms"
+            }
+          },
+        }
+
+      ]);
+
+      const data = userTemplates.map(userTemplate => ({
+        mediaCategory,
+        url: userTemplate.url,
+        type: userTemplate.templateType,
+        userTemplate,
+        previewUrls: userTemplate.previewUrls
+      })) as Partial<MediaDocument>[];
+
+      await this.mediaService.createMedias({
+        data,
+        session
+      })
+
+    });
   }
 
   async seedBusinessCategories(): Promise<void> {
@@ -321,54 +332,6 @@ export class SeederService {
     return;
   }
 
-  async seedMediasToAvailableTemplates() {
-    return withTransaction(this.connection, async (session) => {
-      try {
-        const templates = await this.userTemplatesService.findUserTemplates({
-          query: {},
-          session
-        });
-
-        await Promise.all(templates.map(async (template) => {
-          const userTemplateMedias = await this.mediaService.findUserTemplateMedias({
-            query: {
-              userTemplate: template._id
-            },
-            session
-          });
-
-          const medias = await this.mediaService.findMedias({
-            query: {
-              url: {
-                $nin: userTemplateMedias.map(item => item.url)
-              }
-            },
-            session
-          });
-
-          const data = await Promise.all(medias.map(media => (
-            {
-              userTemplate: template._id,
-              mediaCategory: media.mediaCategory,
-              url: media.url,
-              name: media.name,
-              previewUrls: media.previewUrls,
-              type: media.type
-            }
-          )));
-
-          await this.mediaService.createUserTemplateMedias({
-            data,
-            session
-          });
-        }));
-      }
-      catch (err) {
-        console.log(err);
-      }
-    });
-  }
-
   async seedLanguages() {
     const promises = LANGUAGES_TAGS.map(async (language) => {
       const isExists = await this.languagesService.exists({
@@ -383,6 +346,31 @@ export class SeederService {
     await Promise.all(promises);
 
     return;
+  }
+
+  async seedUpdateMaxMeetingTimeUser() {
+    try {
+      const plans = [PlanKeys.Business, PlanKeys.House, PlanKeys.Professional];
+      await this.usersService.updateUsers({
+        query: {
+          subscriptionPlanKey: {
+            $in: plans
+          },
+          maxMeetingTime: {
+            $ne: null
+          }
+        },
+        data: {
+          maxMeetingTime: null
+        }
+      });
+    }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: USERS_SERVICE,
+      });
+    }
   }
 
   async createCounter() {

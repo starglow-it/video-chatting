@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
@@ -25,9 +25,6 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
-// components
-import { MeetingTimer } from '@components/Meeting/MeetingTimer/MeetingTimer';
-
 // shared
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
@@ -42,6 +39,8 @@ import {
     $meetingTemplateStore,
 } from '../../../store/roomStores';
 import { SIGN_BOARDS } from '../../../const/signBoards';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -55,8 +54,10 @@ const Component = () => {
         onSwitchOff: handleCloseMeetingActionNote,
     } = useToggle(false);
 
-    const { value: isMeetingActionOpened, onToggleSwitch: handleToggleAvatarAction } =
-        useToggle(false);
+    const {
+        value: isMeetingActionOpened,
+        onToggleSwitch: handleToggleAvatarAction,
+    } = useToggle(false);
 
     const { control } = useFormContext();
 
@@ -69,7 +70,8 @@ const Component = () => {
 
     const targetSignBoardKey = isOwner ? signBoard : meetingTemplate.signBoard;
 
-    const isThereSignBoard = !isMobile && targetSignBoardKey && targetSignBoardKey !== 'default';
+    const isThereSignBoard =
+        !isMobile && targetSignBoardKey && targetSignBoardKey !== 'default';
 
     const companyName = useWatch({
         control,
@@ -110,7 +112,9 @@ const Component = () => {
         <CustomGrid
             container
             ref={wrapperRef}
-            className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
+            className={clsx(styles.profileInfo, {
+                [styles.withBoard]: isThereSignBoard,
+            })}
         >
             <ConditionalRender condition={isThereSignBoard}>
                 <CustomImage
@@ -127,33 +131,47 @@ const Component = () => {
                 justifyContent={isThereSignBoard ? 'center' : 'flex-start'}
                 alignItems="center"
             >
-                <CustomBox
-                    onMouseEnter={handleToggleAvatarAction}
-                    onMouseLeave={handleToggleAvatarAction}
-                    className={styles.profileAvatar}
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="meetingInfo.tooltip"
+                        />
+                    }
+                    placement="right"
                 >
-                    <ProfileAvatar
-                        src={meetingTemplate?.user?.profileAvatar?.url}
-                        width="60px"
-                        height="60px"
-                        userName={isOwner ? fullName : meetingTemplate.fullName}
-                    />
-                    <Fade in={isMeetingActionOpened}>
-                        <CustomGrid
-                            onClick={handleMeetingAction}
-                            className={styles.meetingActionWrapper}
-                            container
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            {isOwner ? (
-                                <EditIcon width="36px" height="36px" />
-                            ) : (
-                                <InfoIcon width="36px" height="36px" />
-                            )}
-                        </CustomGrid>
-                    </Fade>
-                </CustomBox>
+                    <CustomBox
+                        onMouseEnter={handleToggleAvatarAction}
+                        onMouseLeave={handleToggleAvatarAction}
+                        className={styles.profileAvatar}
+                    >
+                        <ProfileAvatar
+                            src={meetingTemplate?.user?.profileAvatar?.url}
+                            width="60px"
+                            height="60px"
+                            userName={
+                                isOwner ? fullName : meetingTemplate.fullName
+                            }
+                            isAcceptNoLogin={meetingTemplate.isAcceptNoLogin}
+                        />
+
+                        <Fade in={isMeetingActionOpened}>
+                            <CustomGrid
+                                onClick={handleMeetingAction}
+                                className={styles.meetingActionWrapper}
+                                container
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                {isOwner ? (
+                                    <EditIcon width="36px" height="36px" />
+                                ) : (
+                                    <InfoIcon width="36px" height="36px" />
+                                )}
+                            </CustomGrid>
+                        </Fade>
+                    </CustomBox>
+                </CustomTooltip>
 
                 <CustomGrid
                     container
@@ -170,7 +188,6 @@ const Component = () => {
                     >
                         {isOwner ? companyName : meetingTemplate.companyName}
                     </CustomTypography>
-                    <MeetingTimer />
                 </CustomGrid>
             </CustomGrid>
             <CustomPopper
@@ -191,7 +208,9 @@ const Component = () => {
                         nameSpace="meeting"
                         variant="body2"
                         color="colors.white.primary"
-                        translation={`meetingActions.${isOwner ? 'editTemplate' : 'meetingInfo'}`}
+                        translation={`meetingActions.${
+                            isOwner ? 'editTemplate' : 'meetingInfo'
+                        }`}
                     />
                     <RoundErrorIcon
                         className={styles.closeIcon}

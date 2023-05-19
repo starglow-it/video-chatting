@@ -17,11 +17,14 @@
       "notification": "Text copied"
     },
     "inviteSent": "The invitation has been sent",
-    "uploadSuccess": "Upload background success"
+    "uploadSuccess": "Upload background success",
+    "deleteBackgroundSuccess": "Delete background success",
+    "deleteBackgroundError": "Delete background error"
   },
   "profile": {
     "passwordChanged": "Your password has been changed successfully",
-    "emailChanged": "Your email has been changed successfully"
+    "emailChanged": "Your email has been changed successfully",
+    "updateProfileSuccess": "Update profile success"
   },
   "payments": {
     "paymentSuccess": "Your payment was successful!",

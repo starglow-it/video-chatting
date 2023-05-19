@@ -30,4 +30,5 @@ export type TranslationFeatureItem = {
     key: string;
     text: string;
     subText: string;
+    type?: string
 };

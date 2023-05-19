@@ -77,6 +77,7 @@ import { UserTokenService } from '../user-token/user-token.service';
 import { TasksService } from '../tasks/tasks.service';
 import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
+import { ProfileAvatarDocument } from 'src/schemas/profile-avatar.schema';
 
 @Controller('users')
 export class UsersController {
@@ -142,6 +143,21 @@ export class UsersController {
     await Promise.all(usersPromises);
   }
 
+  private async handleDeleteProfileAvatar({ profileAvatar, loginType, session }:
+    {
+      profileAvatar: ProfileAvatarDocument,
+      loginType: LoginTypes,
+      session: ITransactionSession
+    }) {
+    await this.usersService.deleteProfileAvatar(
+      profileAvatar._id,
+      session,
+    );
+    if (loginType === LoginTypes.Local) {
+      await this.awsService.deleteResource(profileAvatar.key);
+    }
+  }
+
   @MessagePattern({ cmd: UserBrokerPatterns.UserExists })
   async checkIfUserExists(@Payload() { email }: UserExistsPayload) {
     try {
@@ -169,21 +185,26 @@ export class UsersController {
           const newUser = await this.usersService.createUser(
             {
               ...createUserPayload.user,
-              registerTemplate: createUserPayload.user.templateId,
               renewSubscriptionTimestampInSeconds,
             },
             session,
           );
 
-          const token = await this.userTokenService.createToken(
-            {
-              user: newUser._id,
-              token: createUserPayload.token,
-            },
-            session,
-          );
-
-          newUser.tokens.push(token);
+          if (!createUserPayload.token) {
+            newUser.registerTemplate = null;
+            newUser.isConfirmed = true;
+          }
+          else {
+            const token = await this.userTokenService.createToken(
+              {
+                user: newUser._id,
+                token: createUserPayload.token,
+              },
+              session,
+            );
+            newUser.tokens.push(token);
+            newUser.registerTemplate = createUserPayload.user.templateId
+          }
 
           await newUser.save();
 
@@ -589,12 +610,12 @@ export class UsersController {
         password: 'text',
         role: UserRoles.Anonymous,
         isConfirmed: true,
-        fullName: 'Global User',
-        companyName: '',
+        fullName: 'Your logo',
+        companyName: 'Your company',
         position: '',
         contactEmail: '',
         maxMeetingTime: 10
-      },session);
+      }, session);
       return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
@@ -769,11 +790,11 @@ export class UsersController {
       await user.populate('profileAvatar');
 
       if (user.profileAvatar) {
-        await this.usersService.deleteProfileAvatar(
-          user.profileAvatar._id,
-          session,
-        );
-        await this.awsService.deleteResource(user.profileAvatar.key);
+        await this.handleDeleteProfileAvatar({
+          profileAvatar: user.profileAvatar,
+          loginType: user.loginType,
+          session
+        });
       }
 
       user.profileAvatar = profileAvatar._id;
@@ -802,11 +823,11 @@ export class UsersController {
       await user.populate('profileAvatar');
 
       if (user.profileAvatar) {
-        await this.usersService.deleteProfileAvatar(
-          user.profileAvatar._id,
-          session,
-        );
-        await this.awsService.deleteResource(user.profileAvatar.key);
+        await this.handleDeleteProfileAvatar({
+          profileAvatar: user.profileAvatar,
+          loginType: user.loginType,
+          session
+        });
       }
 
       user.profileAvatar = null;

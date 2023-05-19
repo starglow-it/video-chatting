@@ -22,10 +22,11 @@ import { MeetingPreview } from '@components/Meeting/MeetingPreview/MeetingPrevie
 import { DevicesSettings } from '@components/DevicesSettings/DevicesSettings';
 import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog/HostTimeExpiredDialog';
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
-
 // stores
 import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -71,7 +72,7 @@ import {
     WebStorage,
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
-import { BackgroundManager } from '../../helpers/media/applyBlur';
+import { BackgroundManager } from '../../helpers/media/applyBlur'
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -192,7 +193,6 @@ const MeetingContainer = memo(() => {
 
             if (isMeetingSocketConnected) {
                 await initDevicesEventFxWithStore();
-
                 await sendJoinWaitingRoomSocketEvent();
 
                 if (isOwner) {
@@ -227,9 +227,22 @@ const MeetingContainer = memo(() => {
             handleSetSettingsChecked();
         })();
     }, [isMeetingSocketConnected, isOwner]);
-
+    
     return (
         <>
+            <ConditionalRender condition={(!!meetingTemplate.url && !isOwner && isSettingsChecked)}>
+                <MeetingBackgroundVideo
+                    templateType={meetingTemplate.templateType}
+                    src={meetingTemplate.url}
+                    videoClassName={styles.wrapperBackgroundMedia}
+                >
+                    <CustomImage
+                        src={meetingTemplate.url || ''}
+                        className={styles.wrapperBackgroundMedia}
+                        layout="fill"
+                    />
+                </MeetingBackgroundVideo>
+            </ConditionalRender>
             {Boolean(meetingTemplate?.id) && (
                 <ConditionalRender
                     condition={
@@ -261,7 +274,7 @@ const MeetingContainer = memo(() => {
                             MeetingAccessStatusEnum.InMeeting
                         }
                     >
-                        <MeetingView />
+                        <MeetingView /> 
                     </ConditionalRender>
                 </ConditionalRender>
             )}

@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 
 import { PAYMENTS_SCOPE } from 'shared-const';
-import { ResponseSumType } from 'shared-types';
+import { ResponseSumType, UserRoles } from 'shared-types';
 
 import { PaymentsService } from './payments.service';
 import { CoreService } from '../../services/core/core.service';
 import { TemplatesService } from '../templates/templates.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 
-import { JwtAuthGuard } from '../../guards/jwt.guard';
+import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
@@ -27,6 +27,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
+import { CreatePaymentRequest } from 'src/dtos/requests/create-payment.request';
 
 @Controller(PAYMENTS_SCOPE)
 export class PaymentsController {
@@ -39,7 +40,7 @@ export class PaymentsController {
     private userTemplatesService: UserTemplatesService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Post('/stripe')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Stripe Account' })
@@ -57,11 +58,16 @@ export class PaymentsController {
         userId: req.user.userId,
       });
 
+      let email = user.email;
+      if(user.role === UserRoles.Anonymous){
+        email = 'anonymous@gmail.com'
+      }
+
       if (!user.stripeAccountId) {
         const { accountId, accountLink, accountEmail } =
           await this.paymentsService.createStripeExpressAccount({
             accountId: user.stripeAccountId,
-            email: user.contactEmail || user.email,
+            email: user.contactEmail || email,
           });
 
         await this.coreService.findUserAndUpdate({
@@ -99,7 +105,7 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/stripe')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Login Stripe Account' })
@@ -149,7 +155,7 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Delete('/stripe')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete Stripe Account' })
@@ -204,7 +210,7 @@ export class PaymentsController {
     description: 'Forbidden',
   })
   async createPaymentIntent(
-    @Body() body: { templateId: string },
+    @Body() body: CreatePaymentRequest,
   ): Promise<
     ResponseSumType<{ paymentIntent: { id: string; clientSecret: string } }>
   > {
@@ -223,9 +229,12 @@ export class PaymentsController {
         userId: userTemplate.user.id,
       });
 
+      const price = body.isPaymentPaywall ? userTemplate.paywallPrice : userTemplate.templatePrice;
+      const currency = body.isPaymentPaywall ? userTemplate.paywallCurrency : userTemplate.templateCurrency;
+
       const paymentIntent = await this.paymentsService.createPaymentIntent({
-        templatePrice: userTemplate.templatePrice,
-        templateCurrency: userTemplate.templateCurrency?.toLowerCase(),
+        templatePrice: price,
+        templateCurrency: currency?.toLowerCase(),
         stripeAccountId: user.stripeAccountId,
         templateId: userTemplate.id,
       });
@@ -281,7 +290,7 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/products')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Products' })
@@ -311,7 +320,7 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Post('/products/:productId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Buy Products' })
@@ -365,7 +374,7 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/portal/:subscriptionId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Portal Session Url' })
@@ -401,7 +410,7 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/subscriptions/:subscriptionId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Subscription' })
@@ -435,7 +444,7 @@ export class PaymentsController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Get('/templates/:templateId')
   @ApiOperation({ summary: 'Purchase Template' })
   @ApiOkResponse({

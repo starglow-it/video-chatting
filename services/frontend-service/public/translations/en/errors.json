@@ -78,7 +78,11 @@
   },
   "templatePrice": {
     "max": "Maximum room price is 999,999",
-    "min": "Minimum room price is 0.5"
+    "min": "Minimum room price is 5"
+  },
+  "paywallPrice": {
+    "max": "Maximum room price is 999,999",
+    "min": "Minimum room price is 5"
   },
   "required": "This field is required",
   "url": {

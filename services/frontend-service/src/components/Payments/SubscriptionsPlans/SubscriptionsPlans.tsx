@@ -1,14 +1,11 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import Backdrop from '@mui/material/Backdrop';
-import { ListItemIcon, Slide, useMediaQuery} from '@mui/material';
+import { Slide, useMediaQuery} from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
-import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { RoundCheckIcon } from 'shared-frontend/icons/RoundIcons/RoundCheckIcon';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
@@ -22,20 +19,17 @@ import { SubscriptionPlanItem } from '@components/Payments/SubscriptionsPlans/Su
 import { SubscriptionPlansWrapper } from "@components/Payments/SubscriptionsPlans/SubscritionPlansWrapper";
 
 // types
+import {PlanKeys} from "shared-types";
 import {
     SubscriptionsPlansProps,
-    TranslationFeatureItem,
 } from './types';
 
 // hooks
-import { useLocalization } from '@hooks/useTranslation';
 
 // stores
 import { $productsStore, $profileStore, getStripeProductsFx } from '../../../store';
 
 // styles
-import styles from './SubscriptionsPlans.module.scss';
-import {PlanKeys} from "shared-types";
 
 const Component = ({
     isSubscriptionStep,
@@ -47,13 +41,11 @@ const Component = ({
     withActivePlan = true,
     onClose,
     buttonTranslation,
-    onlyPaidPlans = false,
+    onlyPaidPlans = true,
 }: SubscriptionsPlansProps) => {
     const products = useStore($productsStore);
     const profile = useStore($profileStore);
     const isProductsLoading = useStore(getStripeProductsFx.pending);
-
-    const { translation } = useLocalization('subscriptions');
 
     const is1320Media = useMediaQuery('(max-width:1320px)');
 
@@ -71,16 +63,12 @@ const Component = ({
         },
         [onChooseSubscription],
     );
-
-    const productsToRender = useMemo(() => products.filter(
-        product =>
-            (withActivePlan || product?.product?.name !== activePlanKey) &&
-            (!onlyPaidPlans || (onlyPaidPlans && product?.price?.unit_amount)),
-    ), [products]);
+    
+    const productFiltered = useMemo(() => products.filter(item => item?.product?.name !== activePlanKey), [products])
 
     const renderSubscriptionPlans = useMemo(
         () => {
-            return productsToRender
+            return productFiltered
                 .map((product, i) => {
                     return (
                         !is1320Media ? (
@@ -112,12 +100,12 @@ const Component = ({
                                     product?.product?.name === PlanKeys.Professional &&
                                     profile.isProfessionalTrialAvailable
                                 }
-                            />
+                              />
                     )
                 })
         },
         [
-            productsToRender,
+            productFiltered,
             is1320Media,
             isDisabled,
             activePlanKey,
@@ -128,62 +116,6 @@ const Component = ({
             profile.isProfessionalTrialAvailable,
         ],
     );
-
-    const commonFeatures = useMemo(() => {
-        const translationsObject = translation('subscriptions.AllPlans') as unknown as {
-            featuresPlans: TranslationFeatureItem[][];
-        };
-
-        const renderFeature = (featuresChunk, index) => (
-            <CustomGrid
-                key={index}
-                item
-                container
-                flexWrap="nowrap"
-                flex="28%"
-                direction="column"
-                className={styles.column}
-            >
-                {featuresChunk.map(({ text }, index) => (
-                    <CustomGrid key={index} item container gap={1} flexWrap="nowrap">
-                        <ListItemIcon classes={{ root: styles.listIcon }}>
-                            <RoundCheckIcon width="16px" height="16px" />
-                        </ListItemIcon>
-                        <CustomTypography color="colors.white.primary">{text}</CustomTypography>
-                    </CustomGrid>
-                ))}
-            </CustomGrid>
-        );
-
-        return (
-            <CustomGrid
-                container
-                direction="column"
-                className={clsx(styles.allFeaturesCard, {
-                    [styles.fullWidth]: renderSubscriptionPlans.length >= 3 && !is1320Media,
-                })}
-            >
-                <CustomBox className={styles.productName}>
-                    <CustomTypography
-                        variant="body2bold"
-                        color="colors.white.primary"
-                        nameSpace="subscriptions"
-                        translation="subscriptions.AllPlans.plan"
-                    />
-                </CustomBox>
-                <CustomTypography
-                    variant="body2bold"
-                    color="colors.white.primary"
-                    nameSpace="subscriptions"
-                    translation="subscriptions.AllPlans.label"
-                    className={styles.price}
-                />
-                <CustomGrid container direction="column" gap={1.75} className={styles.listWrapper}>
-                    {translationsObject.featuresPlans.map(renderFeature)}
-                </CustomGrid>
-            </CustomGrid>
-        );
-    }, [renderSubscriptionPlans.length, translation, is1320Media]);
 
     const handleClose = useCallback(() => {
         onClose?.();
@@ -201,7 +133,7 @@ const Component = ({
             <ConditionalRender condition={isProductsLoading}>
                 <CustomLoader />
             </ConditionalRender>
-            <ConditionalRender condition={Boolean(products.length) && isSubscriptionStep}>
+            <ConditionalRender condition={Boolean(productFiltered.length) && isSubscriptionStep}>
                 <ClickAwayListener onClickAway={handleClose}>
                     <CustomGrid container direction="column" justifyContent="center" gap={4}>
                         <CustomGrid container justifyContent="center" alignItems="center" gap={1}>
@@ -228,21 +160,15 @@ const Component = ({
                             wrap="nowrap"
                             alignItems="stretch"
                         >
-                            <ConditionalRender condition={renderSubscriptionPlans.length < 3 || is1320Media}>
-                                {commonFeatures}
-                            </ConditionalRender>
                             {is1320Media
                                 ? (
-                                    <SubscriptionPlansWrapper products={productsToRender}>
+                                    <SubscriptionPlansWrapper products={productFiltered}>
                                         {renderSubscriptionPlans}
                                     </SubscriptionPlansWrapper>
                                 )
                                 : renderSubscriptionPlans
                             }
                         </CustomGrid>
-                        <ConditionalRender condition={renderSubscriptionPlans.length >= 3 && !is1320Media}>
-                            {commonFeatures}
-                        </ConditionalRender>
                     </CustomGrid>
                 </ClickAwayListener>
             </ConditionalRender>

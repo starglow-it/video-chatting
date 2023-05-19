@@ -106,6 +106,14 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   templateCurrency: IUserTemplate['templateCurrency'];
 
+
+  @Expose()
+  paywallCurrency: IUserTemplate['paywallCurrency'];
+
+
+  @Expose()
+  paywallPrice: IUserTemplate['paywallPrice'];
+
   @Expose()
   isAudioAvailable: IUserTemplate['isAudioAvailable'];
 
@@ -144,6 +152,15 @@ export class UserTemplateDTO implements IUserTemplate {
   @Expose()
   @Transform((data) => data.obj?.author?.['_id'])
   author: IUserTemplate['author'];
+
+  @Expose()
+  authorRole: IUserTemplate['authorRole'];
+
+  @Expose()
+  authorThumbnail: IUserTemplate['authorThumbnail'];
+
+  @Expose()
+  authorName: IUserTemplate['authorName'];
 
   @Expose()
   isAcceptNoLogin?: IUserTemplate['isAcceptNoLogin'];

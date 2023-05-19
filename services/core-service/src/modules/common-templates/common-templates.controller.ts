@@ -32,7 +32,6 @@ import { UserTemplateDTO } from '../../dtos/user-template.dto';
 // services
 import { CommonTemplatesService } from './common-templates.service';
 import { UsersService } from '../users/users.service';
-import { MeetingsService } from '../meetings/meetings.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { BusinessCategoriesService } from '../business-categories/business-categories.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
@@ -42,8 +41,9 @@ import { PaymentsService } from '../../services/payments/payments.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
 // helpers
-import { withTransaction } from '../../helpers/mongo/withTransaction';
+import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
 import { MediaService } from '../medias/medias.service';
+import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -61,12 +61,39 @@ export class CommonTemplatesController {
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
     private mediaService: MediaService
-  ) {}
+  ) { }
 
   async onModuleInit() {
     this.vultrUploadBucket = await this.configService.get<string>(
       'vultrUploadBucket',
     );
+  }
+
+
+  private async getMyRoomMediaCategory(session: ITransactionSession): Promise<MediaCategoryDocument> {
+    try {
+      const mediaCategory = await this.mediaService.findMediaCategory({
+        query: {
+          key: 'myrooms'
+        },
+        session
+      });
+
+      if (!mediaCategory) {
+        throw new RpcException({
+          message: 'Media category not found',
+          ctx: TEMPLATES_SERVICE
+        });
+      }
+
+      return mediaCategory;
+    }
+    catch (err) {
+      throw new RpcException({
+        message: err.message,
+        ctx: TEMPLATES_SERVICE
+      });
+    }
   }
 
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
@@ -75,43 +102,49 @@ export class CommonTemplatesController {
     { query, options }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
     try {
+      const sort: PipelineStage = { $sort: { ...(options?.sort ?? {}), _id: -1 } };
+
+      const joinDraftPreviewImages: PipelineStage = {
+        $lookup: {
+          from: 'previewimages',
+          localField: 'draftPreviewUrls',
+          foreignField: '_id',
+          as: 'draftPreviewUrls',
+        },
+      }
+
+      const joinUserTemplate = {
+        $lookup: {
+          from: 'usertemplates',
+          localField: 'templateId',
+          foreignField: 'templateId',
+          pipeline: [{ $match: { user: new ObjectId(options.userId) } }],
+          as: 'userTemplate',
+        }
+      }
       return withTransaction(this.connection, async () => {
         const aggregationPipeline: PipelineStage[] = [
-          { $sort: { ...(options?.sort ?? {}), _id: -1 } },
+          sort,
           { $match: query },
+          ...this.commonTemplatesService.joinCommonTemplatePropertiesQueries(),
+          joinDraftPreviewImages,
+          joinUserTemplate,
           {
-            $lookup: {
-              from: 'businesscategories',
-              localField: 'businessCategories',
-              foreignField: '_id',
-              as: 'businessCategories',
-            },
-          },
-          {
-            $lookup: {
-              from: 'previewimages',
-              localField: 'previewUrls',
-              foreignField: '_id',
-              as: 'previewUrls',
-            },
-          },
-          {
-            $lookup: {
-              from: 'previewimages',
-              localField: 'draftPreviewUrls',
-              foreignField: '_id',
-              as: 'draftPreviewUrls',
-            },
-          },
-          {
-            $lookup: {
-              from: 'usertemplates',
-              localField: 'templateId',
-              foreignField: 'templateId',
-              pipeline: [{ $match: { user: new ObjectId(options.userId) } }],
-              as: 'userTemplate',
-            },
-          },
+            $set: {
+              author: {
+                $first: "$author"
+              },
+              authorThumbnail: {
+                $first: "$author.profileAvatar.url"
+              },
+              authorRole: {
+                $first: "$author.role"
+              },
+              authorName: {
+                $first: '$author.fullName'
+              }
+            }
+          }
         ];
 
         if (options?.skip) {
@@ -307,6 +340,19 @@ export class CommonTemplatesController {
           data: {
             $inc: { roomsUsed: 1 },
           },
+        });
+
+        const mediaCategory = await this.getMyRoomMediaCategory(session);
+
+        await this.mediaService.createMedia({
+          data: {
+            userTemplate,
+            url: userTemplate.url,
+            previewUrls: userTemplate.previewUrls,
+            mediaCategory,
+            type: userTemplate.templateType
+          },
+          session
         });
 
         return plainToInstance(UserTemplateDTO, userTemplate, {
@@ -548,21 +594,30 @@ export class CommonTemplatesController {
           return;
         }
 
-        await this.commonTemplatesService.deleteCommonTemplate({
+        const query = { templateId: template.templateId };
+        
+        const userTemplates = await this.userTemplatesService.findUserTemplates({
+          query,
+          session
+        });
+        
+        await this.mediaService.deleteMedias({query: {userTemplate: {$in: userTemplates }}});
+
+        await this.roomStatisticService.delete({
           query: {
-            _id: template._id,
+            template: template._id,
           },
           session,
         });
 
         await this.userTemplatesService.deleteUserTemplates({
-          query: { templateId: template.templateId },
+          query,
           session,
         });
 
-        await this.roomStatisticService.delete({
+        await this.commonTemplatesService.deleteCommonTemplate({
           query: {
-            template: template._id,
+            _id: template._id,
           },
           session,
         });
@@ -573,7 +628,17 @@ export class CommonTemplatesController {
           });
         }
 
-        await this.awsService.deleteFolder(`templates/${template.id}`);
+        const countTemplateUseCommon = await this.userTemplatesService
+        .countUserTemplates({
+          url: {
+            $regex: `templates/videos/${template.id}`
+          }
+        });
+        
+
+        if (countTemplateUseCommon) return;
+
+        await this.awsService.deleteFolder(`templates/videos/${template.id}`);
       });
     } catch (err) {
       throw new RpcException({

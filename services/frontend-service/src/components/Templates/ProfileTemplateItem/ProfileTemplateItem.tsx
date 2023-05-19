@@ -48,8 +48,6 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
     const isBusinessSubscription = useStore($isBusinessSubscription);
     const isProfSubscription = useStore($isProfessionalSubscription);
 
-    const isDisabled = profile.maxMeetingTime === 0 && !isBusinessSubscription;
-
     const isHouseSubscription = !isBusinessSubscription && !isProfSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
@@ -128,6 +126,9 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                 isNeedToShowBusinessInfo
                 isPublic={template.isPublic}
                 isCommonTemplate={profile.id ? profile.id !== template.author : true}
+                authorRole={template.authorRole}
+                authorThumbnail={template.authorThumbnail}
+                authorName={template.authorName}
             />
             <Fade in={showPreview}>
                 <CustomGrid
@@ -145,12 +146,8 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
                     />
                     <CustomGrid container wrap="nowrap" gap={1.5}>
                         <CustomButton
-                            onMouseEnter={isDisabled ? handleShowToast : undefined}
-                            onClick={!isDisabled ? handleCreateMeeting : undefined}
-                            className={clsx(styles.startMeetingBtn, {
-                                [styles.disabled]: isDisabled,
-                            })}
-                            disableRipple={isDisabled}
+                            onClick={handleCreateMeeting}
+                            className={styles.startMeetingBtn}
                             label={
                                 <Translation
                                     nameSpace="templates"

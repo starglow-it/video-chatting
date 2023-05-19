@@ -13,6 +13,8 @@ import styles from './ProfileAvatar.module.scss';
 
 // types
 import { ProfileAvatarProps } from './types';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { Translation } from '@library/common/Translation/Translation';
 
 const Component = (
     {
@@ -23,6 +25,7 @@ const Component = (
         height,
         userName,
         withoutShadow,
+        isAcceptNoLogin,
         ...rest
     }: ProfileAvatarProps,
     ref: ForwardedRef<HTMLDivElement>,
@@ -39,7 +42,10 @@ const Component = (
             container
             justifyContent="center"
             alignItems="center"
-            className={clsx(className, styles.wrapper, { [styles.shadow]: !withoutShadow })}
+            className={clsx(className, styles.wrapper, {
+                [styles.shadow]: !withoutShadow,
+                [styles.orange]: isAcceptNoLogin,
+            })}
             sx={{ width, height }}
             onClick={onClick}
             {...rest}
@@ -54,17 +60,55 @@ const Component = (
                     alt="profile-image"
                 />
             ) : (
-                <svg className={styles.text} width="100%" height="100%" viewBox="0 0 38 38">
-                    <text
-                        dominantBaseline="middle"
-                        fill="currentColor"
-                        x="50%"
-                        y="55%"
-                        textAnchor="middle"
-                        style={{ fontWeight: 600 }}
-                    >
-                        {splitName}
-                    </text>
+                <svg
+                    className={styles.text}
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 38 38"
+                >
+                    <ConditionalRender condition={!isAcceptNoLogin}>
+                        <text
+                            dominantBaseline="middle"
+                            fill="currentColor"
+                            x="50%"
+                            y="55%"
+                            textAnchor="middle"
+                            style={{
+                                fontWeight: 600,
+                            }}
+                        >
+                            {splitName}
+                        </text>
+                    </ConditionalRender>
+
+                    <ConditionalRender condition={isAcceptNoLogin}>
+                        <text
+                            dominantBaseline="middle"
+                            textAnchor="middle"
+                            x="50%"
+                            y="43%"
+                            className={styles.yourText}
+                            fill="currentColor"
+                        >
+                            <Translation
+                                nameSpace="profile"
+                                translation="personalInfo.your"
+                            />
+                        </text>
+                        <text
+                            dominantBaseline="middle"
+                            textAnchor="middle"
+                            x="50%"
+                            y="63%"
+                            className={styles.yourText}
+                            fill="currentColor"
+                        >
+                            <Translation
+                                nameSpace="profile"
+                                translation="personalInfo.logo"
+                            />
+                        </text>
+                    </ConditionalRender>
                 </svg>
             )}
         </CustomGrid>

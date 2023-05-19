@@ -14,16 +14,25 @@ import {
     toggleIsGoodsVisible,
 } from 'src/store';
 import {
-    $isOwner,
+    $isMeetingHostStore,
+    $isScreenSharingStore,
+    $localUserStore,
+    $meetingStore,
     $meetingTemplateStore,
+    startScreenSharing,
+    stopScreenSharing,
 } from 'src/store/roomStores';
 import { AppDialogsEnum } from 'src/store/types';
 import styles from './MeetingControlCollapse.module.scss';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
+import clsx from 'clsx';
 
 enum CollapseTypes {
     Settings = 'settings',
     Payments = 'payments',
     GoodLinks = 'good_links',
+    Sharing = 'sharing',
 }
 
 const Actions = [
@@ -37,12 +46,32 @@ const Actions = [
         name: 'GoodLinks',
         type: CollapseTypes.GoodLinks,
     },
+    {
+        icon: <SharingIcon width="22px" height="22px" />,
+        name: 'Sharing',
+        type: CollapseTypes.Sharing,
+    },
 ];
 
 const Component = () => {
-    const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isGoodsVisible = useStore($isGoodsVisible);
+    const isMeetingHost = useStore($isMeetingHostStore);
+    const localUser = useStore($localUserStore);
+    const meeting = useStore($meetingStore);
+    const isSharingActive = useStore($isScreenSharingStore);
+    const { isMobile } = useBrowserDetect();
+    const isSharingScreenActive = localUser.id === meeting.sharingUserId;
+    const isAbleToToggleSharing =
+        isMeetingHost || isSharingScreenActive || !meeting.sharingUserId;
+
+    const handleToggleSharing = () => {
+        if (!meeting.sharingUserId) {
+            startScreenSharing();
+        } else if (isMeetingHost || isSharingScreenActive) {
+            stopScreenSharing();
+        }
+    };
 
     const handleActions = (action: string) => {
         switch (action) {
@@ -54,6 +83,11 @@ const Component = () => {
             case CollapseTypes.GoodLinks:
                 toggleIsGoodsVisible();
                 break;
+            case CollapseTypes.Sharing:
+                if (isAbleToToggleSharing) {
+                    handleToggleSharing();
+                }
+                break;
             default:
                 break;
         }
@@ -62,9 +96,19 @@ const Component = () => {
     const checkHideAction = (action: string) => {
         switch (action) {
             case CollapseTypes.Settings:
-                return !isOwner;
+            case CollapseTypes.Sharing:
+                return isMobile;
             case CollapseTypes.GoodLinks:
                 return !meetingTemplate?.links?.length;
+            default:
+                return false;
+        }
+    };
+
+    const getActiveButton = (action: string) => {
+        switch (action) {
+            case CollapseTypes.Sharing:
+                return isSharingActive && isAbleToToggleSharing;
             default:
                 return false;
         }
@@ -89,6 +133,20 @@ const Component = () => {
                         }
                     />
                 );
+            case CollapseTypes.Sharing: {
+                let tooltip = '';
+                if (isAbleToToggleSharing) {
+                    tooltip = `modes.screensharing.${
+                        isSharingActive ? 'off' : 'on'
+                    }`;
+                }
+                if (!isAbleToToggleSharing && isSharingActive) {
+                    tooltip = 'modes.screensharing.busy';
+                }
+                return (
+                    <Translation nameSpace="meeting" translation={tooltip} />
+                );
+            }
             default:
                 return '';
         }
@@ -97,13 +155,16 @@ const Component = () => {
     const renderActions = () => {
         return Actions.map(item => {
             if (checkHideAction(item.type)) return null;
+            const active = getActiveButton(item.type);
             return (
                 <SpeedDialAction
                     key={item.name}
                     icon={item.icon}
                     tooltipTitle={getTooltip(item.type)}
                     onClick={() => handleActions(item.type)}
-                    classes={{ fab: styles.root }}
+                    classes={{
+                        fab: clsx(styles.root, { [styles.active]: active }),
+                    }}
                 />
             );
         });

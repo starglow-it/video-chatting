@@ -14,33 +14,16 @@ import { Translation } from '@library/common/Translation/Translation';
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
 // stores
-import {
-    $isBusinessSubscription,
-    $profileStore,
-    $profileTemplatesCountStore,
-    addNotificationEvent,
-    addTemplateToUserFx,
-    appDialogsApi,
-    setPreviewTemplate,
-} from '../../../store';
+import { addTemplateToUserFx } from '../../../store';
 
 // types
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { CommonTemplateItemProps } from './types';
 
 // styles
 import styles from './CommonTemplateItem.module.scss';
 
 const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
-    
-    const profile = useStore($profileStore);
-    const { state: profileTemplatesCount } = useStore($profileTemplatesCountStore);
-
-    const isBusinessSubscription = useStore($isBusinessSubscription);
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
-
-    const isTemplatesLimitReached = profile.maxTemplatesNumber <= profileTemplatesCount.count;
-    const isTimeLimitReached = profile.maxMeetingTime === 0 && !isBusinessSubscription;
 
     const [showPreview, setShowPreview] = useState(false);
 
@@ -54,26 +37,13 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         setShowPreview(false);
     }, []);
 
-    const handlePreviewTemplate = useCallback(() => {
-        setPreviewTemplate(template);
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.templatePreviewDialog,
-        });
-    }, []);
-
     const handleStartMeeting = useCallback(async () => {
-        
         await onChooseTemplate?.(template.id);
     }, [onChooseTemplate]);
 
-    const previewImage = (template?.previewUrls || []).find(image => image.resolution === 240);
-
-    const handleShowToast = () => {
-        addNotificationEvent({
-            type: NotificationType.NoTimeLeft,
-            message: `subscriptions.noTimeLeft`,
-        });
-    };
+    const previewImage = (template?.previewUrls || []).find(
+        image => image.resolution === 240,
+    );
 
     const handleBuyTemplate = useCallback(async () => {
         await onChooseTemplate?.(template.id);
@@ -81,14 +51,9 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
 
     const isFree = !template.priceInCents;
 
-    const freeTemplateTranslation = isTemplatesLimitReached
-        ? 'buttons.replace'
-        : 'buttons.startMeeting';
-
-    const freeTemplateHandler = !isTimeLimitReached ? handleStartMeeting : undefined;
-    const paidTemplateHandler = !(!isFree && isDisabled) ? handleBuyTemplate : undefined;
-
-    const freeTemplateHover = isTimeLimitReached ? handleShowToast : undefined;
+    const paidTemplateHandler = !(!isFree && isDisabled)
+        ? handleBuyTemplate
+        : undefined;
 
     return (
         <CustomGrid
@@ -100,7 +65,11 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <CustomImage src={previewImage?.url || ''} width="334px" height="190px" />
+                <CustomImage
+                    src={previewImage?.url || ''}
+                    width="334px"
+                    height="190px"
+                />
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}
@@ -111,6 +80,9 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                 priceInCents={template.priceInCents}
                 isNeedToShowBusinessInfo
                 isCommonTemplate
+                authorRole={template.authorRole}
+                authorThumbnail={template.authorThumbnail}
+                authorName={template.authorName}
             />
             <Fade in={showPreview}>
                 <CustomGrid
@@ -120,26 +92,24 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                     className={styles.templateButtons}
                 >
                     <CustomButton
-                        onMouseEnter={isFree ? freeTemplateHover : undefined}
-                        onClick={isFree ? freeTemplateHandler : paidTemplateHandler}
+                        onClick={
+                            isFree ? handleStartMeeting : paidTemplateHandler
+                        }
                         className={clsx(styles.button, {
-                            [styles.disabled]:
-                                (isFree && isTimeLimitReached) || (!isFree && isDisabled),
+                            [styles.disabled]: !isFree && isDisabled,
                         })}
-                        disableRipple={(isFree && isTimeLimitReached) || (!isFree && isDisabled)}
+                        disableRipple={!isFree && isDisabled}
                         disabled={isAddTemplateInProgress}
                         label={
                             <Translation
                                 nameSpace="templates"
-                                translation={isFree ? freeTemplateTranslation : 'buttons.buy'}
+                                translation={
+                                    isFree
+                                        ? 'buttons.startMeeting'
+                                        : 'buttons.buy'
+                                }
                             />
                         }
-                    />
-                    <CustomButton
-                        label={<Translation nameSpace="templates" translation="buttons.preview" />}
-                        className={styles.button}
-                        variant="custom-transparent"
-                        onClick={handlePreviewTemplate}
                     />
                 </CustomGrid>
             </Fade>

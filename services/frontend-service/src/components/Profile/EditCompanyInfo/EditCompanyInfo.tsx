@@ -2,11 +2,9 @@ import React, { memo, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { MoneyIcon } from 'shared-frontend/icons/OtherIcons/MoneyIcon';
 
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 
@@ -18,6 +16,8 @@ import { getBusinessCategoriesFx } from '../../../store';
 
 // styles
 import styles from './EditCompanyInfo.module.scss';
+import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 
 const EditCompanyInfo = memo(() => {
     const {
@@ -25,49 +25,76 @@ const EditCompanyInfo = memo(() => {
         register,
     } = useFormContext();
 
-    const currentEmailErrorMessage: string = errors?.contactEmail?.[0]?.message || '';
-    const currentCompanyNameErrorMessage: string = errors?.companyName?.[0]?.message || '';
-    const currentDescriptionErrorMessage: string = errors?.description?.[0]?.message || '';
+    const currentEmailErrorMessage: string =
+        errors?.contactEmail?.[0]?.message || '';
+    const currentCompanyNameErrorMessage: string =
+        errors?.companyName?.[0]?.message || '';
+    const currentDescriptionErrorMessage: string =
+        errors?.description?.[0]?.message || '';
+    const currentFullNameErrorMessage: string =
+        errors?.fullName?.[0]?.message || '';
 
     useEffect(() => {
         getBusinessCategoriesFx({});
     }, []);
 
     return (
-        <CustomPaper className={styles.paperWrapper}>
-            <CustomBox
-                display="grid"
-                gridTemplateColumns="minmax(110px, 192px) 1fr"
-                gridTemplateRows="repeat(1, 1fr)"
-            >
-                <CustomBox gridArea="1/1/1/1">
-                    <CustomGrid container alignItems="center">
-                        <MoneyIcon width="24px" height="24px" className={styles.icon} />
+        <CustomAccordion
+            sumary={
+                <>
+                    <PersonIcon width="24px" height="24px" className={styles.icon} />
+                    <CustomTypography
+                        variant="body1"
+                        fontWeight="600"
+                        nameSpace="profile"
+                        translation="personal"
+                        width="253px"
+                    />
+                    <CustomGrid
+                        container
+                        display="flex"
+                        justifyContent="flex-start"
+                    >
                         <CustomTypography
                             variant="body1"
-                            fontWeight="600"
                             nameSpace="profile"
-                            translation="company"
+                            translation="editProfile.personal.title"
                         />
                     </CustomGrid>
-                </CustomBox>
+                </>
+            }
+            sumaryProps={{
+                classes: {
+                    content: styles.sumary,
+                },
+            }}
+            detail={
                 <CustomGrid
-                    gridArea="1/2/1/2"
                     container
                     wrap="nowrap"
                     className={styles.contentWrapper}
                 >
-                    <CustomGrid container direction="column">
-                        <CustomTypography
-                            variant="body1"
-                            nameSpace="profile"
-                            translation="editProfile.company.title"
-                            className={styles.title}
-                        />
-                        <CustomGrid container direction="column" justifyContent="center" gap={4}>
+                    <CustomGrid
+                        container
+                        direction="column"
+                        alignItems="center"
+                    >
+                        <CustomGrid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            gap={4}
+                            width="400px"
+                        >
                             <CustomInput
                                 nameSpace="forms"
-                                translation="companyName"
+                                translation="fullName"
+                                error={currentFullNameErrorMessage}
+                                {...register('fullName')}
+                            />
+                            <CustomInput
+                                nameSpace="forms"
+                                translation="nameOfYourLive"
                                 error={currentCompanyNameErrorMessage}
                                 {...register('companyName')}
                             />
@@ -90,8 +117,8 @@ const EditCompanyInfo = memo(() => {
                         </CustomGrid>
                     </CustomGrid>
                 </CustomGrid>
-            </CustomBox>
-        </CustomPaper>
+            }
+        />
     );
 });
 

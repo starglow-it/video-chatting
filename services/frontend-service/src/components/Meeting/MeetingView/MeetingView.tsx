@@ -37,7 +37,6 @@ import styles from './MeetingView.module.scss';
 // stores
 import {
     addNotificationEvent,
-    appDialogsApi,
     checkIsPortraitLayoutEvent,
 } from '../../../store';
 import {
@@ -59,10 +58,13 @@ import {
 } from '../../../store/roomStores';
 
 // types
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import { StorageKeysEnum, WebStorage } from 'src/controllers/WebStorageController';
 
 // helpers
 
@@ -132,15 +134,19 @@ const Component = () => {
 
     useEffect(() => {
         getCategoriesMediasFx({ userTemplateId: meetingTemplate.id });
+        WebStorage.save({
+            key: StorageKeysEnum.bgLastCall,
+            data: {
+                templateUrl: meetingTemplate.url,
+                templateType: meetingTemplate.templateType,
+            },
+        });
+
     }, []);
 
     useEffect(() => {
         if (isMobile()) {
             checkIsPortraitLayoutEvent();
-        } else {
-            appDialogsApi.openDialog({
-                dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
-            });
         }
     }, []);
 
@@ -198,9 +204,10 @@ const Component = () => {
                     <MeetingNotes />
                     <MeetingUsersVideos />
                     <ConditionalRender condition={isOwner}>
-                        <MeetingChangeBackground />
-                        <MeetingManageAudio />
+                        <MeetingChangeBackground />                        
                     </ConditionalRender>
+                    <MeetingMonetizationButton />
+                    <MeetingManageAudio />
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
@@ -212,6 +219,7 @@ const Component = () => {
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
             <MobilePortraitStub />
+            <ScheduleMeetingDialog />
         </CustomGrid>
     );
 };

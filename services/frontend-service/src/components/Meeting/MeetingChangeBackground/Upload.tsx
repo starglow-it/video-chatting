@@ -1,5 +1,5 @@
 import { useStore } from 'effector-react';
-import { memo } from 'react';
+import { MouseEvent, MouseEventHandler, memo } from 'react';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import {
     ACCEPT_MIMES,
@@ -11,22 +11,49 @@ import {
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { MAX_SIZE_IMAGE, MAX_SIZE_VIDEO } from 'src/const/templates/file';
-import { addNotificationEvent } from 'src/store';
+import { $isTrial, $profileStore, addNotificationEvent, getCustomerPortalSessionUrlFx, startCheckoutSessionForSubscriptionFx } from 'src/store';
 import {
     $backgroundMeetingStore,
+    $localUserStore,
     $meetingTemplateStore,
     addBackgroundToCategoryEvent,
     reloadMediasEvent,
-    uploadNewBackgroundFx,
+    uploadNewBackgroundFx,    
 } from 'src/store/roomStores';
 import { Notification, NotificationType } from 'src/store/types';
 import { UploadImageIcon } from 'shared-frontend/icons/OtherIcons/UploadImageIcon';
 import clsx from 'clsx';
+import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
+import { useToggle } from '@hooks/useToggle';
+import {PlanKeys} from "shared-types";
+import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
+import { profileRoute } from 'src/const/client-routes';
+import { useRouter } from 'next/router';
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { getClientMeetingUrl, getClientMeetingUrlWithDomain } from 'src/utils/urls';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {
+    const router = useRouter();
     const meetingTemplate = useStore($meetingTemplateStore);
     const backgroundStore = useStore($backgroundMeetingStore);
+    const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
+    const profile = useStore($profileStore)
+    const isTrial = useStore($isTrial);
+    const localUser = useStore($localUserStore);
+
+    const meetingLinkText = getClientMeetingUrl(
+        router.query.token as string,
+	);
+
+    const redirectUrl = !!localUser.username ? `${meetingLinkText}?participantName=${localUser.username}` : meetingLinkText
+
+    useSubscriptionNotification(profileRoute);
+    const {
+        value: isSubscriptionsOpen,
+        onSwitchOn: handleOpenSubscriptionPlans,
+        onSwitchOff: handleCloseSubscriptionPlans,
+    } = useToggle(false);
 
     const generateFileUploadError = (
         rejectedFiles: FileRejection[],
@@ -106,7 +133,7 @@ const Component = () => {
         const media = await uploadNewBackgroundFx({
             file,
             userTemplateId: meetingTemplate.id,
-            mediaCategoryId: backgroundStore.categorySelected,
+            categoryId: backgroundStore.categorySelected,
         });
 
         if (media) {
@@ -133,22 +160,67 @@ const Component = () => {
 
     const { onClick, ...rootProps } = getRootProps();
 
+    const handleOpenSelect = (e: MouseEvent<HTMLDivElement>) => {
+        if(profile.subscriptionPlanKey === PlanKeys.Professional || profile.subscriptionPlanKey === PlanKeys.Business){
+            onClick?.(e)
+        }else{
+            handleOpenSubscriptionPlans()
+        }
+    }
+
+    const handleChooseSubscription = async (productId: string, isPaid: boolean, trial: boolean) => {
+        if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
+            const response = await startCheckoutSessionForSubscriptionFx({
+                productId,
+                baseUrl: redirectUrl,
+                withTrial: trial,
+            });
+
+            if (response?.url) {
+                return router.push(response.url);
+            }
+        } else if (profile.stripeSubscriptionId) {
+            const response = await getCustomerPortalSessionUrlFx({
+                subscriptionId: profile.stripeSubscriptionId,
+            });
+
+            if (response?.url) {
+                return router.push(response.url);
+            }
+        }
+    };
+
+
     return (
-        <CustomGrid
-            {...rootProps}
-            onClick={onClick}
-            className={clsx(styles.container, styles.upload)}
-        >
-            <input {...getInputProps()} />
-            <CustomBox
-                display="flex"
-                flexDirection="row"
-                alignItems="center"
-                justifyContent="center"
+        <>
+            <CustomGrid
+                {...rootProps}
+                onClick={e => handleOpenSelect(e)}
+                className={clsx(styles.container, styles.upload)}
             >
-                <UploadImageIcon width="32px" height="32px" />
-            </CustomBox>
-        </CustomGrid>
+                <input {...getInputProps()} />
+                <CustomBox
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <UploadImageIcon width="32px" height="32px" />
+                </CustomBox>
+            </CustomGrid>
+            <CustomDialog open={isSubscriptionsOpen} hideBackdrop>
+                <SubscriptionsPlans
+                    withBackgroundBlur
+                    isSubscriptionStep
+                    isDisabled={isSubscriptionPurchasePending}
+                    withActivePlan={false}
+                    activePlanKey={profile.subscriptionPlanKey}
+                    onChooseSubscription={handleChooseSubscription}
+                    buttonTranslation="buttons.upgradeTo"
+                    onClose={handleCloseSubscriptionPlans}
+                />
+            </CustomDialog>
+        </>
     );
 };
 export const UploadBackground = memo(Component);

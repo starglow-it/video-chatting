@@ -125,17 +125,6 @@ const Component = () => {
     const resolver =
         useYupValidationResolver<MonetizationFormType>(validationSchema);
 
-    const methods = useForm({
-        criteriaMode: 'all',
-        resolver,
-        defaultValues: {
-            isMonetizationEnabled: Boolean(
-                meetingTemplate.isMonetizationEnabled,
-            ),
-            templatePrice: meetingTemplate.templatePrice || 10,
-            templateCurrency: meetingTemplate.templateCurrency || 'USD',
-        },
-    });
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -145,7 +134,6 @@ const Component = () => {
         handleSetBackgroundAudio(isBackgroundAudioActive);
         handleSetAura(isAuraActive);
         setVolume(backgroundAudioVolume);
-        methods.reset();
         resetMediaStoreEvent();
     }, [isBackgroundAudioActive, backgroundAudioVolume, isAuraActive]);
 
@@ -214,9 +202,9 @@ const Component = () => {
             if (isAuraEnabled) {
                 const clonedStream = changeStream?.clone();
 
-                const streamWithBackground = await BackgroundManager.applyBlur(
+                BackgroundManager.applyBlur(clonedStream);
+                const streamWithBackground = await BackgroundManager.onBlur(
                     clonedStream,
-                    isNewCameraSettingActive,
                     isAuraEnabled,
                 );
 
@@ -253,91 +241,72 @@ const Component = () => {
         isAuraActive,
     ]);
 
-    const onSubmit = useCallback(
-        methods.handleSubmit(async data => {
-            if (isOwner) {
-                await updateMeetingTemplateFxWithData(data);
-            }
-
-            await handleSaveSettings();
-        }),
-        [handleSaveSettings, isOwner],
-    );
-
     return (
         <CustomDialog
             open={devicesSettingsDialog}
             contentClassName={styles.wrapper}
             onClose={handleClose}
         >
-            <FormProvider {...methods}>
-                <form onSubmit={onSubmit}>
-                    <CustomGrid container direction="column">
-                        <CustomGrid container wrap="nowrap">
-                            <MediaPreview
-                                videoError={videoError}
-                                audioError={audioError}
-                                videoDevices={videoDevices}
-                                audioDevices={audioDevices}
-                                isCameraActive={isNewCameraSettingActive}
-                                isMicActive={isNewMicSettingActive}
-                                onToggleVideo={handleToggleCamera}
-                                onToggleAudio={handleToggleMic}
-                                stream={changeStream}
-                                profileAvatar={profile.profileAvatar?.url}
-                                userName={localUser?.username}
-                            />
-                            <CustomDivider orientation="vertical" flexItem />
-                            <CustomGrid
-                                className={styles.devicesWrapper}
-                                container
-                                direction="column"
-                                wrap="nowrap"
-                                gap={2}
-                            >
-                                <MeetingSettingsContent
-                                    stream={changeStream}
-                                    isBackgroundActive={
-                                        isSettingsAudioBackgroundActive
-                                    }
-                                    onBackgroundToggle={
-                                        handleToggleBackgroundAudio
-                                    }
-                                    backgroundVolume={volume}
-                                    isMonetizationEnabled={Boolean(
-                                        profile?.isStripeEnabled,
-                                    )}
-                                    isMonetizationAvailable={false}
-                                    onChangeBackgroundVolume={setVolume}
-                                    isAuraActive={isAuraEnabled}
-                                    onToggleAura={handleToggleAura}
-                                    isAudioActive={
-                                        meetingTemplate.isAudioAvailable
-                                    }
-                                    title={
-                                        <CustomTypography
-                                            className={styles.title}
-                                            variant="h3bold"
-                                            nameSpace="meeting"
-                                            translation="settings.main"
-                                        />
-                                    }
-                                />
-                            </CustomGrid>
-                        </CustomGrid>
-                    </CustomGrid>
-                    <CustomButton
-                        onClick={onSubmit}
-                        className={styles.saveSettings}
-                        label={
-                            <Translation
-                                nameSpace="meeting"
-                                translation="buttons.saveSettings"
-                            />
-                        }
+           <CustomGrid container direction="column">
+                <CustomGrid container wrap="nowrap">
+                    <MediaPreview
+                        videoError={videoError}
+                        audioError={audioError}
+                        videoDevices={videoDevices}
+                        audioDevices={audioDevices}
+                        isCameraActive={isNewCameraSettingActive}
+                        isMicActive={isNewMicSettingActive}
+                        onToggleVideo={handleToggleCamera}
+                        onToggleAudio={handleToggleMic}
+                        stream={changeStream}
+                        profileAvatar={profile.profileAvatar?.url}
+                        userName={localUser?.username}
                     />
-                </form>
-            </FormProvider>
+                    <CustomDivider orientation="vertical" flexItem />
+                    <CustomGrid
+                        className={styles.devicesWrapper}
+                        container
+                        direction="column"
+                        wrap="nowrap"
+                        gap={2}
+                    >
+                        <MeetingSettingsContent
+                            stream={changeStream}
+                            isBackgroundActive={
+                                isSettingsAudioBackgroundActive
+                            }
+                            onBackgroundToggle={
+                                handleToggleBackgroundAudio
+                            }
+                            backgroundVolume={volume}
+                            onChangeBackgroundVolume={setVolume}
+                            isAuraActive={isAuraEnabled}
+                            onToggleAura={handleToggleAura}
+                            isAudioActive={
+                                meetingTemplate.isAudioAvailable
+                            }
+                            title={
+                                <CustomTypography
+                                    className={styles.title}
+                                    variant="h3bold"
+                                    nameSpace="meeting"
+                                    translation="settings.main"
+                                />
+                            }
+                        />
+                    </CustomGrid>
+                </CustomGrid>
+            </CustomGrid>
+            <CustomButton
+                onClick={handleSaveSettings}
+                className={styles.saveSettings}
+                label={
+                    <Translation
+                        nameSpace="meeting"
+                        translation="buttons.saveSettings"
+                    />
+                }
+            />
         </CustomDialog>
     );
 };
