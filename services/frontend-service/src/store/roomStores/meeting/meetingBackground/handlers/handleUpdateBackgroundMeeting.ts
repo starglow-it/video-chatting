@@ -1,6 +1,7 @@
 import { EntityList, IMediaCategory, IUserTemplate } from 'shared-types';
 import sendRequestWithCredentials from '../../../../../helpers/http/sendRequestWithCredentials';
 import { updateUserTemplateUrl } from '../../../../../utils/urls';
+import { StorageKeysEnum, WebStorage } from 'src/controllers/WebStorageController';
 
 export const handleUpdateBackgroundMeeting = async ({
     templateId,
@@ -12,5 +13,12 @@ export const handleUpdateBackgroundMeeting = async ({
     await sendRequestWithCredentials<EntityList<IMediaCategory>, void>({
         ...updateUserTemplateUrl({ templateId }),
         data,
+    });
+    WebStorage.save({
+        key: StorageKeysEnum.bgLastCall,
+        data: {
+            templateUrl: data.url,
+            templateType: data.templateType,
+        },
     });
 };
