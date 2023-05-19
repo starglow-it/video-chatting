@@ -55,7 +55,7 @@ export const MeetingMonetizationButton = () => {
         if (paymentIntent?.id) {
             cancelPaymentIntentWithData();
         }
-        togglePaymentFormEvent();
+        togglePaymentFormEvent(false);
     }, [paymentIntent?.id]);
 
     const handleUpdateMonetization = useCallback(() => {
