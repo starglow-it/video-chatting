@@ -41,6 +41,26 @@ export class AuthController {
     this.frontendUrl = await this.configService.get<string>('frontendUrl');
   }
 
+  private sendWelcomeEmail(email: string) {
+    this.notificationService.sendEmail({
+      template: {
+        key: emailTemplates.welcomeEmail,
+        data: [
+          {
+            name: 'FNAME',
+            content: email,
+          },
+        ],
+      },
+      to: [
+        {
+          email,
+          name: email,
+        },
+      ],
+    });
+  }
+
   @MessagePattern({ cmd: AuthBrokerPatterns.RegisterUserPattern })
   async register(
     @Payload() payload: RegisterUserPayload,
@@ -82,26 +102,6 @@ export class AuthController {
     } catch (err) {
       throw new RpcException(err);
     }
-  }
-
-  private sendWelcomeEmail(email: string) {
-    this.notificationService.sendEmail({
-      template: {
-        key: emailTemplates.welcomeEmail,
-        data: [
-          {
-            name: 'FNAME',
-            content: email,
-          },
-        ],
-      },
-      to: [
-        {
-          email,
-          name: email,
-        },
-      ],
-    });
   }
   @MessagePattern({ cmd: AuthBrokerPatterns.ConfirmRegistration })
   async confirmRegistration(
