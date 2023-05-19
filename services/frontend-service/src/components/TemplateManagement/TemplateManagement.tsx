@@ -30,7 +30,7 @@ import { EditTemplateDescription } from '@components/TemplateManagement/EditTemp
 import { EditAttendeesPosition } from '@components/TemplateManagement/EditAttendeesPosition/EditAttendeesPosition';
 import { TemplatePreview } from '@components/TemplateManagement/TemplatePreview/TemplatePreview';
 import { EditPrivacy } from '@components/TemplateManagement/EditPrivacy/EditPrivacy';
-import {TemplateLinks} from "@components/TemplateManagement/TemplateLinks/TemplateLinks";
+import { TemplateLinks } from '@components/TemplateManagement/TemplateLinks/TemplateLinks';
 
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
@@ -40,8 +40,14 @@ import { usePrevious } from '@hooks/usePrevious';
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
 import { TemplateManagementProps } from '@components/TemplateManagement/TemplateManagement.types';
-import {customTemplateLinkSchema, templatesLinksSchema} from 'shared-frontend/validation';
-import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from '../../const/templates/info';
+import {
+    customTemplateLinkSchema,
+    templatesLinksSchema,
+} from 'shared-frontend/validation';
+import {
+    MAX_DESCRIPTION_LENGTH,
+    MAX_NAME_LENGTH,
+} from '../../const/templates/info';
 import { dashboardRoute } from '../../const/client-routes';
 import {
     $isBusinessSubscription,
@@ -52,7 +58,10 @@ import {
 import { AppDialogsEnum, NotificationType } from '../../store/types';
 
 // validation
-import { booleanSchema, simpleStringSchemaWithLength } from '../../validation/common';
+import {
+    booleanSchema,
+    simpleStringSchemaWithLength,
+} from '../../validation/common';
 import {
     participantsNumberSchema,
     participantsPositionsSchema,
@@ -65,7 +74,8 @@ import styles from './TemplateManagement.module.scss';
 // utils
 import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 import { parseBase64 } from '../../utils/string/parseBase64';
-import {ValuesSwitcherItem} from "shared-frontend/types";
+import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { Translation } from '@library/common/Translation/Translation';
 
 enum TabsValues {
     Background = 1,
@@ -79,18 +89,26 @@ enum TabsValues {
 const tabs: ValuesSwitcherItem<number>[] = [
     { id: 1, value: TabsValues.Background, label: 'Background' },
     { id: 2, value: TabsValues.Settings, label: 'Settings' },
-    { id: 3, value: TabsValues.Attendees, label: 'Attendees' },
+    {
+        id: 3,
+        value: TabsValues.Links,
+        label: 'Links',
+        disabled: true,
+        tooltip: (
+            <Translation
+                nameSpace="createRoom"
+                translation="tooltips.upgradeToBusiness"
+            />
+        ),
+    },
     { id: 4, value: TabsValues.Privacy, label: 'Privacy' },
-    { id: 5, value: TabsValues.Preview, label: 'Preview' },
 ];
 
 const businessUserTabs: ValuesSwitcherItem<number>[] = [
     { id: 1, value: TabsValues.Background, label: 'Background' },
     { id: 2, value: TabsValues.Settings, label: 'Settings' },
-    { id: 3, value: TabsValues.Attendees, label: 'Attendees' },
-    { id: 4, value: TabsValues.Links, label: 'Links' },
-    { id: 5, value: TabsValues.Privacy, label: 'Privacy' },
-    { id: 6, value: TabsValues.Preview, label: 'Preview' },
+    { id: 3, value: TabsValues.Links, label: 'Links' },
+    { id: 4, value: TabsValues.Privacy, label: 'Privacy' },
 ];
 
 const defaultValues: IUploadTemplateFormData = {
@@ -102,17 +120,19 @@ const defaultValues: IUploadTemplateFormData = {
     tags: [],
     templateLinks: [],
     participantsNumber: 1,
-    participantsPositions: [{
-        left: 0.5,
-        top: 0.5,
-        id: '1',
-    }],
+    participantsPositions: [
+        {
+            left: 0.5,
+            top: 0.5,
+            id: '1',
+        },
+    ],
     isPublic: false,
 };
 
 const validationSchema = yup.object({
     name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
-    description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH).required('required'),
+    description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH),
     participantsNumber: participantsNumberSchema().required('required'),
     tags: tagsSchema(),
     isPublic: booleanSchema().required('required'),
@@ -134,9 +154,12 @@ const Component = ({
 
     const router = useRouter();
 
-    const resolver = useYupValidationResolver<IUploadTemplateFormData>(validationSchema, {
-        reduceArrayErrors: true,
-    });
+    const resolver = useYupValidationResolver<IUploadTemplateFormData>(
+        validationSchema,
+        {
+            reduceArrayErrors: true,
+        },
+    );
 
     const methods = useForm<IUploadTemplateFormData>({
         defaultValues,
@@ -144,10 +167,22 @@ const Component = ({
         mode: 'onBlur',
     });
 
-    const { control, setValue, trigger, handleSubmit: onSubmitForm, reset } = methods;
+    const {
+        control,
+        setValue,
+        trigger,
+        handleSubmit: onSubmitForm,
+        reset,
+    } = methods;
 
-    const participantsNumber = useWatch({ control, name: 'participantsNumber' });
-    const participantsPositions = useWatch({ control, name: 'participantsPositions' });
+    const participantsNumber = useWatch({
+        control,
+        name: 'participantsNumber',
+    });
+    const participantsPositions = useWatch({
+        control,
+        name: 'participantsPositions',
+    });
     const name = useWatch({ control, name: 'name' });
     const isPublic = useWatch({ control, name: 'isPublic' });
     const background = useWatch({ control, name: 'background' });
@@ -164,11 +199,16 @@ const Component = ({
 
     const targetTab = isBusinessSubscription ? businessUserTabs : tabs;
 
-    const { activeValue, activeItem, onValueChange, onNextValue, onPreviousValue } =
-        useValueSwitcher({
-            values: targetTab,
-            initialValue: targetTab[0].value,
-        });
+    const {
+        activeValue,
+        activeItem,
+        onValueChange,
+        onNextValue,
+        onPreviousValue,
+    } = useValueSwitcher({
+        values: targetTab,
+        initialValue: targetTab[0].value,
+    });
 
     const {
         value: isFileUploadRequested,
@@ -180,7 +220,8 @@ const Component = ({
         onSwitchOn: onPreventNextParticipantsPositionsUpdate,
         onSwitchOff: onResetPreventNextParticipantsPositionsUpdate,
     } = useToggle(false);
-    const { value: isTemplateDataWasSet, onSwitchOn: onSetTemplateData } = useToggle(false);
+    const { value: isTemplateDataWasSet, onSwitchOn: onSetTemplateData } =
+        useToggle(false);
 
     useEffect(() => {
         if (!isBusinessSubscription && !isProfessionalSubscription) {
@@ -226,7 +267,12 @@ const Component = ({
                 setValue('url', response.draftUrl);
             }
         })();
-    }, [background, onUploadFile, isFileUploadRequested, onResetRequestFileUpload]);
+    }, [
+        background,
+        onUploadFile,
+        isFileUploadRequested,
+        onResetRequestFileUpload,
+    ]);
 
     useEffect(() => {
         if (isTemplateDataWasSet || !template) {
@@ -238,7 +284,10 @@ const Component = ({
             url: template.url,
             description: template.description,
             customLink: template.customLink ?? '',
-            tags: template?.businessCategories?.map(item => ({ ...item, label: item.value })),
+            tags: template?.businessCategories?.map(item => ({
+                ...item,
+                label: item.value,
+            })),
             participantsNumber: template.maxParticipants,
             participantsPositions: template.usersPosition.length
                 ? template.usersPosition.map(({ bottom, left }) => ({
@@ -249,11 +298,12 @@ const Component = ({
                 : defaultValues.participantsPositions,
             previewUrls: template.previewUrls.map(({ id }) => id),
             isPublic: template.isPublic,
-            templateLinks: template.links?.map((link) => ({
-                value: link.item,
-                top: link.position.top,
-                left: link.position.left,
-            })) || [],
+            templateLinks:
+                template.links?.map(link => ({
+                    value: link.item,
+                    top: link.position.top,
+                    left: link.position.left,
+                })) || [],
         });
         if (template.maxParticipants > 1) {
             onPreventNextParticipantsPositionsUpdate();
@@ -262,34 +312,60 @@ const Component = ({
     }, [template, isTemplateDataWasSet]);
 
     useEffect(() => {
-        if (!previousParticipantsNumber || participantsNumber === previousParticipantsNumber) {
-            return;
-        }
-        if (preventNextParticipantsPositionsUpdate) {
-            onResetPreventNextParticipantsPositionsUpdate();
-            return;
-        }
-
-        if (previousParticipantsNumber > participantsNumber) {
-            setValue('participantsPositions', participantsPositions.slice(0, participantsNumber));
-            return;
-        }
-
-        const newPositions = [...participantsPositions];
-        for (let i = 0; i < participantsNumber - previousParticipantsNumber; i += 1) {
-            newPositions.push({
-                left: 0.5,
-                top: 0.5,
+        const newPositions = [
+            {
                 id: getRandomNumber(10000).toString(),
-            });
-        }
+                top: 0.27,
+                left: 0.59,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.42,
+                left: 0.67,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.62,
+                left: 0.65,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.21,
+                left: 0.49,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.8,
+                left: 0.59,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.79,
+                left: 0.39,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.85,
+                left: 0.49,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.63,
+                left: 0.33,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.42,
+                left: 0.31,
+            },
+            {
+                id: getRandomNumber(10000).toString(),
+                top: 0.26,
+                left: 0.39,
+            },
+        ];
         setValue('participantsPositions', newPositions);
-    }, [
-        participantsNumber,
-        previousParticipantsNumber,
-        participantsPositions,
-        preventNextParticipantsPositionsUpdate,
-    ]);
+    }, []);
 
     useEffect(() => {
         if (!router.isReady) {
@@ -299,7 +375,9 @@ const Component = ({
             typeof router.query.step === 'string' &&
             activeItem.label.toLowerCase() !== router.query.step
         ) {
-            const tab = targetTab.find(({ label }) => label.toLowerCase() === router.query.step);
+            const tab = targetTab.find(
+                ({ label }) => label.toLowerCase() === router.query.step,
+            );
             if (tab) {
                 onValueChange(tab);
             }
@@ -327,11 +405,12 @@ const Component = ({
             participantsPositions: savedProgress.participantsPositions,
             previewUrls: savedProgress.previewUrls,
             isPublic: savedProgress.isPublic,
-            templateLinks: savedProgress.links?.map((link) => ({
-                value: link.item,
-                top: link.position.top,
-                left: link.position.left,
-            })) || [],
+            templateLinks:
+                savedProgress.links?.map(link => ({
+                    value: link.item,
+                    top: link.position.top,
+                    left: link.position.left,
+                })) || [],
         });
         if (savedProgress.participantsNumber > 1) {
             onPreventNextParticipantsPositionsUpdate();
@@ -368,7 +447,10 @@ const Component = ({
 
     const handleValueChange = useCallback(
         async (item: ValuesSwitcherItem<number>) => {
-            if (item.value > TabsValues.Background && !(background || previewUrl)) {
+            if (
+                item.value > TabsValues.Background &&
+                !(background || previewUrl)
+            ) {
                 addNotificationEvent({
                     type: NotificationType.BackgroundFileShouldBeUploaded,
                     message: 'uploadBackground.shouldBeUploaded',
@@ -394,7 +476,7 @@ const Component = ({
                         withErrorIcon: true,
                         type: NotificationType.validationError,
                     });
-                    onValueChange(tabs[3]);
+                    onValueChange(tabs[2]);
                     return;
                 }
             }
@@ -410,39 +492,62 @@ const Component = ({
         });
     }, []);
 
+    const handleNextStep = () => {
+        if (isBusinessSubscription) onNextValue();
+        else onValueChange(tabs[3]);
+    };
+
+    const handlePreviousStep = () => {
+        if(activeValue === TabsValues.Privacy  &&!isBusinessSubscription) {
+            onValueChange(tabs[1])
+        } else onPreviousValue();
+    }
+
     return (
         <CustomGrid container className={styles.wrapper}>
             <FormProvider {...methods}>
                 <form>
-                    <TemplateBackgroundPreview isFileUploading={isFileUploading}>
-                        <ConditionalRender condition={activeValue === TabsValues.Background}>
-                            <UploadTemplateFile onNextStep={onNextValue} />
+                    <TemplateBackgroundPreview
+                        isFileUploading={isFileUploading}
+                    >
+                        <ConditionalRender
+                            condition={activeValue === TabsValues.Background}
+                        >
+                            <UploadTemplateFile onNextStep={handleNextStep} />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === TabsValues.Settings}>
+                        <ConditionalRender
+                            condition={activeValue === TabsValues.Settings}
+                        >
                             <EditTemplateDescription
                                 template={template}
-                                onNextStep={onNextValue}
-                                onPreviousStep={onPreviousValue}
+                                onNextStep={handleNextStep}
+                                onPreviousStep={handlePreviousStep}
                             />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === TabsValues.Attendees}>
+                        <ConditionalRender
+                            condition={activeValue === TabsValues.Attendees}
+                        >
                             <EditAttendeesPosition
-                                onNextStep={onNextValue}
-                                onPreviousStep={onPreviousValue}
+                                onNextStep={handleNextStep}
+                                onPreviousStep={handlePreviousStep}
                             />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === TabsValues.Preview}>
+                        <ConditionalRender
+                            condition={activeValue === TabsValues.Preview}
+                        >
                             <TemplatePreview
-                                onPreviousStep={onPreviousValue}
+                                onPreviousStep={handlePreviousStep}
                                 onSubmit={handleSubmit}
                                 controlPanelRef={controlPanelRef}
                                 templateId={template?.id}
                             />
                         </ConditionalRender>
-                        <ConditionalRender condition={activeValue === TabsValues.Privacy}>
+                        <ConditionalRender
+                            condition={activeValue === TabsValues.Privacy}
+                        >
                             <EditPrivacy
-                                onNextStep={onNextValue}
-                                onPreviousStep={onPreviousValue}
+                                onSubmit={handleSubmit}
+                                onPreviousStep={handlePreviousStep}
                                 onUpgradePlan={handleUpgradePlanClick}
                             />
                         </ConditionalRender>
@@ -452,8 +557,8 @@ const Component = ({
                         >
                             <TemplateLinks
                                 links={templateLinks}
-                                onNextStep={onNextValue}
-                                onPreviousStep={onPreviousValue}
+                                onNextStep={handleNextStep}
+                                onPreviousStep={handlePreviousStep}
                             />
                         </ConditionalRender>
 
@@ -482,11 +587,20 @@ const Component = ({
                                     justifyContent="center"
                                     className={styles.iconPlaceholder}
                                 >
-                                    <ImagePlaceholderIcon width="34px" height="34px" />
+                                    <ImagePlaceholderIcon
+                                        width="34px"
+                                        height="34px"
+                                    />
                                 </CustomGrid>
                                 <CustomGrid item>
-                                    <CustomPaper variant="black-glass" className={styles.mainInfo}>
-                                        <CustomGrid container direction="column">
+                                    <CustomPaper
+                                        variant="black-glass"
+                                        className={styles.mainInfo}
+                                    >
+                                        <CustomGrid
+                                            container
+                                            direction="column"
+                                        >
                                             {name ? (
                                                 <CustomTypography
                                                     color="colors.white.primary"
@@ -503,18 +617,27 @@ const Component = ({
                                                 />
                                             )}
 
-                                            <CustomGrid container wrap="nowrap" alignItems="center" gap={0.5}>
+                                            <CustomGrid
+                                                container
+                                                wrap="nowrap"
+                                                alignItems="center"
+                                                gap={0.5}
+                                            >
                                                 {isPublic ? (
                                                     <PeopleIcon
                                                         width="16px"
                                                         height="16px"
-                                                        className={styles.privacyIcon}
+                                                        className={
+                                                            styles.privacyIcon
+                                                        }
                                                     />
                                                 ) : (
                                                     <LockIcon
                                                         width="16px"
                                                         height="16px"
-                                                        className={styles.privacyIcon}
+                                                        className={
+                                                            styles.privacyIcon
+                                                        }
                                                     />
                                                 )}
                                                 <CustomTypography
@@ -532,7 +655,12 @@ const Component = ({
                                     </CustomPaper>
                                 </CustomGrid>
                             </CustomGrid>
-                            <CustomGrid item container flex={2} justifyContent="center">
+                            <CustomGrid
+                                item
+                                container
+                                flex={2}
+                                justifyContent="center"
+                            >
                                 <CustomPaper
                                     variant="black-glass"
                                     className={styles.navigationPaper}
@@ -552,9 +680,14 @@ const Component = ({
                                 width="100%"
                                 justifyContent="flex-end"
                             >
-                                <CustomTooltip nameSpace="createRoom" translation="tooltips.cancel">
+                                <CustomTooltip
+                                    nameSpace="createRoom"
+                                    translation="tooltips.cancel"
+                                >
                                     <ActionButton
-                                        onAction={handleOpenCancelConfirmationDialog}
+                                        onAction={
+                                            handleOpenCancelConfirmationDialog
+                                        }
                                         Icon={
                                             <CloseIcon
                                                 className={styles.closeIcon}
