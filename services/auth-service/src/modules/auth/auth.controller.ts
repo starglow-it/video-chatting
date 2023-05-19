@@ -75,6 +75,7 @@ export class AuthController {
         user = await this.coreService.createUser({
           user: payload,
         });
+        this.sendWelcomeEmail(payload.email);
       }
 
       return user;
