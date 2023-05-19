@@ -177,7 +177,7 @@ const Component = () => {
                         alt="hi-hand"
                     />
                 </CustomGrid>
-                <SignInGoogle />
+                <SignInGoogle buttonText="buttons.registerGoogle" />
                 <CustomGrid
                     container
                     alignItems="center"
@@ -291,4 +291,4 @@ const Component = () => {
     );
 };
 
-export default  memo(Component);
+export default memo(Component);
