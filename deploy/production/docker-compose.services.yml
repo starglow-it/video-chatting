@@ -75,7 +75,7 @@ services:
       context: ../../
       dockerfile: services/frontend-service/Dockerfile
       args:
-        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+        - VULTR_STORAGE_HOSTNAME=theliveoffice-prod.s3.us-east-2.amazonaws.com
     depends_on:
       - gateway-service
     restart: unless-stopped
