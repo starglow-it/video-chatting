@@ -41,41 +41,7 @@ export class AuthController {
     this.frontendUrl = await this.configService.get<string>('frontendUrl');
   }
 
-  @MessagePattern({ cmd: AuthBrokerPatterns.RegisterUserPattern })
-  async register(
-    @Payload() payload: RegisterUserPayload,
-  ): Promise<ICommonUser> {
-    try {
-      const token = await this.authService.generateToken({
-        email: payload.email,
-        type: TokenTypes.Confirm,
-      });
-
-      const user = await this.coreService.createUser({
-        user: payload,
-        token,
-      });
-
-      this.notificationService.sendEmail({
-        template: {
-          key: emailTemplates.emailVerification,
-          data: [
-            {
-              name: 'CONFIRMLINK',
-              content: `${this.frontendUrl}/confirm-registration?token=${token.token}`,
-            },
-          ],
-        },
-        to: [{ email: payload.email, name: payload.email }],
-      });
-
-      return user;
-    } catch (err) {
-      throw new RpcException(err);
-    }
-  }
-
-  private sendWelcomeEmail(email: string){
+  private sendWelcomeEmail(email: string) {
     this.notificationService.sendEmail({
       template: {
         key: emailTemplates.welcomeEmail,
@@ -93,6 +59,49 @@ export class AuthController {
         },
       ],
     });
+  }
+
+  @MessagePattern({ cmd: AuthBrokerPatterns.RegisterUserPattern })
+  async register(
+    @Payload() payload: RegisterUserPayload,
+  ): Promise<ICommonUser> {
+    try {
+      let user = null;
+      if (payload.templateId) {
+        const token = await this.authService.generateToken({
+          email: payload.email,
+          type: TokenTypes.Confirm,
+        });
+
+        user = await this.coreService.createUser({
+          user: payload,
+          token,
+        });
+
+        this.notificationService.sendEmail({
+          template: {
+            key: emailTemplates.emailVerification,
+            data: [
+              {
+                name: 'CONFIRMLINK',
+                content: `${this.frontendUrl}/confirm-registration?token=${token.token}`,
+              },
+            ],
+          },
+          to: [{ email: payload.email, name: payload.email }],
+        });
+      }
+      else {
+        user = await this.coreService.createUser({
+          user: payload,
+        });
+        this.sendWelcomeEmail(payload.email);
+      }
+
+      return user;
+    } catch (err) {
+      throw new RpcException(err);
+    }
   }
   @MessagePattern({ cmd: AuthBrokerPatterns.ConfirmRegistration })
   async confirmRegistration(
@@ -121,15 +130,10 @@ export class AuthController {
     payload: CreateUserFromGoogleAccountPayload,
   ) {
     try {
-      const token = await this.authService.generateToken({
-        email: payload.email,
-        type: TokenTypes.Confirm,
-      });
       const user = await this.coreService.createUser({
         user: { ...payload, loginType: LoginTypes.Google },
-        token,
       });
-      
+
       this.sendWelcomeEmail(payload.email);
 
       await this.coreService.findUserByEmailAndUpdate({

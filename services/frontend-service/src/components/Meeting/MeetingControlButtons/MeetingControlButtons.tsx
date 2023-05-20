@@ -1,9 +1,4 @@
-import React, {
-    memo,
-    SyntheticEvent,
-    useCallback,
-    useEffect,
-} from 'react';
+import React, { memo, SyntheticEvent, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -44,12 +39,10 @@ import {
 
 // styles
 import styles from './MeetingControlButtons.module.scss';
-import {
-    clientRoutes,
-    dashboardRoute,
-    loginRoute,
-} from '../../../const/client-routes';
+import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
 
 const Component = () => {
     const router = useRouter();
@@ -81,13 +74,12 @@ const Component = () => {
     const handleEndVideoChat = useCallback(async () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
-
         await router.push(
             !isWithoutAuthen
                 ? localUser.isGenerated
                     ? clientRoutes.welcomeRoute
-                    : dashboardRoute
-                : loginRoute,
+                    : clientRoutes.dashboardRoute
+                : clientRoutes.registerEndCallRoute,
         );
     }, []);
 
@@ -110,6 +102,46 @@ const Component = () => {
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
             <ConditionalRender condition={!isMobile}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="devices.microphone"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleMic}
+                            className={clsx(styles.deviceButton, {
+                                [styles.inactive]: !isMicActive,
+                            })}
+                            Icon={
+                                <MicIcon
+                                    isActive={isMicActive}
+                                    width="22px"
+                                    height="22px"
+                                />
+                            }
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+            <CustomTooltip
+                title={
+                    <Translation
+                        nameSpace="meeting"
+                        translation="invite.tooltip"
+                    />
+                }
+                placement="top"
+            >
                 <CustomPaper
                     variant="black-glass"
                     borderRadius={8}
@@ -117,43 +149,33 @@ const Component = () => {
                 >
                     <ActionButton
                         variant="transparentBlack"
-                        onAction={handleToggleMic}
-                        className={clsx(styles.deviceButton, {
-                            [styles.inactive]: !isMicActive,
+                        onAction={handleToggleUsersPanel}
+                        className={clsx(styles.actionButton, {
+                            [styles.active]: isUsersOpen,
+                            [styles.newRequests]:
+                                isThereNewRequests && isMeetingHost,
+                            [styles.mobile]: isMobile,
                         })}
-                        Icon={
-                            <MicIcon
-                                isActive={isMicActive}
-                                width="22px"
-                                height="22px"
-                            />
-                        }
+                        Icon={<PeopleIcon width="22px" height="22px" />}
                     />
                 </CustomPaper>
-            </ConditionalRender>
-            <CustomPaper
-                variant="black-glass"
-                borderRadius={8}
-                className={styles.deviceButton}
+            </CustomTooltip>
+            <CustomTooltip
+                title={
+                    <Translation
+                        nameSpace="meeting"
+                        translation="endMeeting.tooltip"
+                    />
+                }
+                placement="top"
             >
                 <ActionButton
-                    variant="transparentBlack"
-                    onAction={handleToggleUsersPanel}
-                    className={clsx(styles.actionButton, {
-                        [styles.active]: isUsersOpen,
-                        [styles.newRequests]:
-                            isThereNewRequests && isMeetingHost,
-                        [styles.mobile]: isMobile,
-                    })}
-                    Icon={<PeopleIcon width="22px" height="22px" />}
+                    variant="danger"
+                    onAction={handleEndVideoChat}
+                    className={styles.hangUpButton}
+                    Icon={<HangUpIcon width="22px" height="22px" />}
                 />
-            </CustomPaper>
-            <ActionButton
-                variant="danger"
-                onAction={handleEndVideoChat}
-                className={styles.hangUpButton}
-                Icon={<HangUpIcon width="22px" height="22px" />}
-            />
+            </CustomTooltip>
             <MeetingControlCollapse />
         </CustomGrid>
     );

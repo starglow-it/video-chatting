@@ -8,7 +8,7 @@ import {
 
 export type CreateUserPayload = {
   user: IUserCredentials;
-  token: TokenPayloadType;
+  token?: TokenPayloadType;
 };
 export type FindUserByEmailPayload = { email: ICommonUser['email'] };
 export type FindUserByEmailAndUpdatePayload = {

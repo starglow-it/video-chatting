@@ -39,6 +39,8 @@ import {
     $meetingTemplateStore,
 } from '../../../store/roomStores';
 import { SIGN_BOARDS } from '../../../const/signBoards';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
 
 const Component = () => {
     const isOwner = useStore($isOwner);
@@ -129,34 +131,47 @@ const Component = () => {
                 justifyContent={isThereSignBoard ? 'center' : 'flex-start'}
                 alignItems="center"
             >
-                <CustomBox
-                    onMouseEnter={handleToggleAvatarAction}
-                    onMouseLeave={handleToggleAvatarAction}
-                    className={styles.profileAvatar}
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="meetingInfo.tooltip"
+                        />
+                    }
+                    placement="right"
                 >
-                    <ProfileAvatar
-                        src={meetingTemplate?.user?.profileAvatar?.url}
-                        width="60px"
-                        height="60px"
-                        userName={isOwner ? fullName : meetingTemplate.fullName}
-                        isAcceptNoLogin={meetingTemplate.isAcceptNoLogin}
-                    />
-                    <Fade in={isMeetingActionOpened}>
-                        <CustomGrid
-                            onClick={handleMeetingAction}
-                            className={styles.meetingActionWrapper}
-                            container
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            {isOwner ? (
-                                <EditIcon width="36px" height="36px" />
-                            ) : (
-                                <InfoIcon width="36px" height="36px" />
-                            )}
-                        </CustomGrid>
-                    </Fade>
-                </CustomBox>
+                    <CustomBox
+                        onMouseEnter={handleToggleAvatarAction}
+                        onMouseLeave={handleToggleAvatarAction}
+                        className={styles.profileAvatar}
+                    >
+                        <ProfileAvatar
+                            src={meetingTemplate?.user?.profileAvatar?.url}
+                            width="60px"
+                            height="60px"
+                            userName={
+                                isOwner ? fullName : meetingTemplate.fullName
+                            }
+                            isAcceptNoLogin={meetingTemplate.isAcceptNoLogin}
+                        />
+
+                        <Fade in={isMeetingActionOpened}>
+                            <CustomGrid
+                                onClick={handleMeetingAction}
+                                className={styles.meetingActionWrapper}
+                                container
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                {isOwner ? (
+                                    <EditIcon width="36px" height="36px" />
+                                ) : (
+                                    <InfoIcon width="36px" height="36px" />
+                                )}
+                            </CustomGrid>
+                        </Fade>
+                    </CustomBox>
+                </CustomTooltip>
 
                 <CustomGrid
                     container
