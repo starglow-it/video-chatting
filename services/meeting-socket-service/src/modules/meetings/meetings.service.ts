@@ -1,16 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Meeting, MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from '../../types/common';
+import { CustomPopulateOptions, UpdateIndexParams, UpdateIndexUser } from '../../types/common';
+import { IUserTemplate } from 'shared-types';
+import { CoreService } from 'src/services/core/core.service';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class MeetingsService {
   constructor(
     @InjectModel(Meeting.name) private meeting: Model<MeetingDocument>,
-  ) {}
+    private coreService: CoreService
+  ) { }
+
+  private logger = new Logger(MeetingsService.name);
 
   async createMeeting(
     data: any,
@@ -107,5 +113,51 @@ export class MeetingsService {
         new: true,
       })
       .exec();
+  }
+
+  async updateIndexUsers({
+    userTemplate,
+    user,
+    event,
+  }: {
+    userTemplate: IUserTemplate,
+    user: MeetingUserDocument,
+    event: UpdateIndexUser,
+  }) {
+    try {
+      const userId = user._id.toString();
+      const updateIndexParams: UpdateIndexParams = {
+        [UpdateIndexUser.Join]: {
+          condition: null,
+          replaceItem: userId
+        },
+        [UpdateIndexUser.Leave]: {
+          condition: userId,
+          replaceItem: null
+        }
+      }
+
+      const params = updateIndexParams[event];
+
+      const index = userTemplate.indexUsers.indexOf(params.condition);
+      if ((index + 1)) {
+        userTemplate.indexUsers[index] = params.replaceItem;
+      }
+
+      await this.coreService.updateUserTemplate({
+        templateId: userTemplate.id,
+        userId: user.id.toString(),
+        data: {
+          indexUsers: userTemplate.indexUsers,
+        },
+      });
+
+    } catch (err) {
+      this.logger.error({
+        message: err.message,
+        event
+      });
+      return;
+    }
   }
 }
