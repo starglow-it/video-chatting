@@ -45,9 +45,19 @@ sudo ./svc.sh uninstall
 ###### migrate
 ```shell
 # backup
-mongodump -d theliveoffice -o /data/db/tlo-backup
+docker exec production_mongodb rm -rf /data/db/tlo-backup
+docker exec production_mongodb mongodump -d theliveoffice -o /data/db/tlo-backup
+scp -r /data/liveoffice/mongo/tlo-backup root@18.118.59.1:/data/liveoffice/mongo/tlo-backup
 
+
+production_mongodb
+# drop db
+docker exec services-mongo-1 mongo --eval 'db.dropDatabase();' theliveoffice 
 
 # restore
-mongorestore -d theliveoffice /data/db/tlo-backup
+#mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
+docker exec services-mongo-1 mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
+
+
+
 ```
