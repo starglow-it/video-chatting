@@ -140,17 +140,17 @@ export class MeetingsService {
       const params = updateIndexParams[event];
 
       const index = userTemplate.indexUsers.indexOf(params.condition);
-      if ((index + 1)) {
+      if (index + 1) {
         userTemplate.indexUsers[index] = params.replaceItem;
-      }
 
-      await this.coreService.updateUserTemplate({
-        templateId: userTemplate.id,
-        userId: user.id.toString(),
-        data: {
-          indexUsers: userTemplate.indexUsers,
-        },
-      });
+        await this.coreService.updateUserTemplate({
+          templateId: userTemplate.id,
+          userId: user.id.toString(),
+          data: {
+            indexUsers: userTemplate.indexUsers,
+          },
+        });
+      }
 
     } catch (err) {
       this.logger.error({
