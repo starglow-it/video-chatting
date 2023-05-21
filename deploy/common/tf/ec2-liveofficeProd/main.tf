@@ -145,7 +145,16 @@ resource "aws_security_group_rule" "ingress-07-sgr" {
   security_group_id = "${aws_security_group.sg.id}"
 }
 
-
+resource "aws_security_group_rule" "ingress-08-sgr" {
+  description = "allow openvpn udp"
+  type = "ingress"
+  from_port = 1194
+  to_port = 1194
+  protocol = "udp"
+  cidr_blocks = [
+    "0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg.id}"
+}
 // ========================================================================
 
 

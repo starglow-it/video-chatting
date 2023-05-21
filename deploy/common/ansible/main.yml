@@ -1,0 +1,8 @@
+
+# ansible-playbook main.yml -i inventory.yml -l production -e "need_reboot=true"
+- hosts: p-queue
+  become: true
+  post_tasks:
+    - name: Install rabbitmq for Ubuntu
+      ansible.builtin.script: ./files/install-rabbitmq.sh
+
