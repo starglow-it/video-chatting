@@ -8,6 +8,7 @@ import Router, { useRouter } from 'next/router';
 import {
     participantsNumberSchema,
     participantsPositionsSchema,
+    simpleNumberSchema,
     simpleStringSchema,
     simpleStringSchemaWithLength,
     tagsSchema,
@@ -137,11 +138,17 @@ const validationSchema = yup.object({
     name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
     description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH),
     tags: tagsSchema(),
-    participantsNumber: participantsNumberSchema().required('required'),
     participantsPositions: participantsPositionsSchema(),
     templateLinks: templatesLinksSchema(),
     type: simpleStringSchema(),
-    templatePrice: templatePriceSchema(0.99, 999999),
+    templatePrice: simpleNumberSchema().when('type', {
+        is: (value: string) => value === 'paid',
+        then: templatePriceSchema(0.99, 999999),
+        otherwise: simpleNumberSchema()
+            .notRequired()
+            .nullable(true)
+            .transform(value => (isNaN(value) ? undefined : value)),
+    }),
     draft: yup.bool(),
 });
 

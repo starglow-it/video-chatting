@@ -47,6 +47,7 @@ const TemplatePrice = memo(
             control,
             trigger,
             formState: { errors },
+            clearErrors,
         } = useFormContext();
 
         const priceType = useWatch({
@@ -75,6 +76,9 @@ const TemplatePrice = memo(
         const handleChangePriceType = useCallback(
             (item: ValuesSwitcherItem<PriceValues, PriceLabels>) => {
                 setValue('type', item.value);
+                if (item.value === PriceValues.Free) {
+                    clearErrors();
+                }
             },
             [],
         );
@@ -82,16 +86,6 @@ const TemplatePrice = memo(
         const priceValueData = useMemo(() => register('templatePrice'), []);
 
         const templatePriceError = errors?.templatePrice?.[0]?.message || '';
-
-        const handleCheckTemplatePrice = useCallback(async () => {
-            const isPriceValid = await trigger('templatePrice');
-
-            if (isPriceValid) {
-                onNextStep();
-            } else {
-                setFocus('templatePrice');
-            }
-        }, []);
 
         return (
             <CustomGrid container justifyContent="center" alignItems="center">
