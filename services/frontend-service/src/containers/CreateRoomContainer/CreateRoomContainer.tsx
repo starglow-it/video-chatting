@@ -112,7 +112,7 @@ const Component = () => {
                 description: data.description,
                 customLink: data.customLink,
                 isPublic: data.isPublic,
-                maxParticipants: 10,
+                maxParticipants: data.participantsNumber,
                 usersPosition: adjustUserPositions(data.participantsPositions),
                 businessCategories: data.tags,
                 draft: false,

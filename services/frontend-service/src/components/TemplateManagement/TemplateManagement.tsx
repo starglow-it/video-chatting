@@ -35,7 +35,6 @@ import { TemplateLinks } from '@components/TemplateManagement/TemplateLinks/Temp
 // hooks
 import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useValueSwitcher } from '@hooks/useValueSwitcher';
-import { usePrevious } from '@hooks/usePrevious';
 
 // types
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
@@ -76,6 +75,7 @@ import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 import { parseBase64 } from '../../utils/string/parseBase64';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 import { Translation } from '@library/common/Translation/Translation';
+import { PARTICIPANT_POSITIONS } from 'shared-const';
 
 enum TabsValues {
     Background = 1,
@@ -119,14 +119,11 @@ const defaultValues: IUploadTemplateFormData = {
     customLink: '',
     tags: [],
     templateLinks: [],
-    participantsNumber: 1,
-    participantsPositions: [
-        {
-            left: 0.5,
-            top: 0.5,
-            id: '1',
-        },
-    ],
+    participantsNumber: 10,
+    participantsPositions: PARTICIPANT_POSITIONS.map(item => ({
+        ...item,
+        id: getRandomNumber(10000).toString(),
+    })),
     isPublic: false,
 };
 
@@ -175,14 +172,6 @@ const Component = ({
         reset,
     } = methods;
 
-    const participantsNumber = useWatch({
-        control,
-        name: 'participantsNumber',
-    });
-    const participantsPositions = useWatch({
-        control,
-        name: 'participantsPositions',
-    });
     const name = useWatch({ control, name: 'name' });
     const isPublic = useWatch({ control, name: 'isPublic' });
     const background = useWatch({ control, name: 'background' });
@@ -191,8 +180,6 @@ const Component = ({
         control,
         name: 'templateLinks',
     });
-
-    const previousParticipantsNumber = usePrevious(participantsNumber);
 
     const controlPanelRef = useRef<HTMLDivElement | null>(null);
     const savedTemplateProgress = useRef<IUploadTemplateFormData | null>(null);
@@ -310,62 +297,6 @@ const Component = ({
         }
         onSetTemplateData();
     }, [template, isTemplateDataWasSet]);
-
-    useEffect(() => {
-        const newPositions = [
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.27,
-                left: 0.59,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.42,
-                left: 0.67,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.62,
-                left: 0.65,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.21,
-                left: 0.49,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.8,
-                left: 0.59,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.79,
-                left: 0.39,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.85,
-                left: 0.49,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.63,
-                left: 0.33,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.42,
-                left: 0.31,
-            },
-            {
-                id: getRandomNumber(10000).toString(),
-                top: 0.26,
-                left: 0.39,
-            },
-        ];
-        setValue('participantsPositions', newPositions);
-    }, []);
 
     useEffect(() => {
         if (!router.isReady) {
@@ -498,10 +429,10 @@ const Component = ({
     };
 
     const handlePreviousStep = () => {
-        if(activeValue === TabsValues.Privacy  &&!isBusinessSubscription) {
-            onValueChange(tabs[1])
+        if (activeValue === TabsValues.Privacy && !isBusinessSubscription) {
+            onValueChange(tabs[1]);
         } else onPreviousValue();
-    }
+    };
 
     return (
         <CustomGrid container className={styles.wrapper}>

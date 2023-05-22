@@ -20,7 +20,7 @@
   },
   "editDescription": {
     "form": {
-      "nameAndAttendees": "Name & Attendees",
+      "roomName": "Room Name",
       "description": "Description",
       "tags": "Tags (Up to 6)",
       "link": "Custom link"
@@ -42,7 +42,8 @@
   },
   "monetization": {
     "title": "Room monetization",
-    "minimal": "Minimal price $0,99"
+    "minimal": "Minimal price $0,99",
+    "userPay": "User pay you to use this room"
   },
   "preview": {
     "roomName": "Roomname",
