@@ -275,14 +275,8 @@ const Component = ({
                 ...item,
                 label: item.value,
             })),
-            participantsNumber: template.maxParticipants,
-            participantsPositions: template.usersPosition.length
-                ? template.usersPosition.map(({ bottom, left }) => ({
-                      top: 1 - bottom,
-                      left,
-                      id: getRandomNumber(10000).toString(),
-                  }))
-                : defaultValues.participantsPositions,
+            participantsNumber: defaultValues.participantsNumber,
+            participantsPositions: defaultValues.participantsPositions,
             previewUrls: template.previewUrls.map(({ id }) => id),
             isPublic: template.isPublic,
             templateLinks:
@@ -350,6 +344,7 @@ const Component = ({
 
     const handleSubmit = useCallback(
         onSubmitForm(async data => {
+            console.log('#Duy Phan console', data);
             if (isFileUploading) {
                 addNotificationEvent({
                     type: NotificationType.BackgroundFileIsNotUploadedYet,
@@ -424,8 +419,9 @@ const Component = ({
     }, []);
 
     const handleNextStep = () => {
-        if (isBusinessSubscription) onNextValue();
-        else onValueChange(tabs[3]);
+        if (activeValue === TabsValues.Settings && !isBusinessSubscription)
+            onValueChange(tabs[3]);
+        else onNextValue();
     };
 
     const handlePreviousStep = () => {

@@ -276,6 +276,7 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
+            console.log('#Duy Phan console', data, commonTemplate);
             if (commonTemplate?.id) {
                 const templatePrice =
                     data.type === 'paid' ? data.templatePrice * 100 : 0;
