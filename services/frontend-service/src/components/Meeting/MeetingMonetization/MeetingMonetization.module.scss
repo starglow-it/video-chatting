@@ -1,15 +1,15 @@
 @import "../../../styles/rem";
 @import "../../../styles/variables";
 
-.wrapperForm{
+.wrapperForm {
   height: rem(200px);
 }
 
 .monetization {
   background: transparent;
-  border-radius: rem(10px);  
+  border-radius: rem(10px);
   color: $primary-white;
-  
+
   .labelWrapper {
     margin: rem(0 0 20px 0);
   }
@@ -17,7 +17,7 @@
   .switcher {
     max-width: rem(112px);
     width: 100%;
-  }  
+  }
 
   .amountInput {
     position: relative;
@@ -53,14 +53,49 @@
 
 .button {
   margin: 0;
+
+  &.animate {
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
 }
+
+
+@keyframes shake {
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
 .error {
   position: relative;
 }
-.tooltip {  
-  
+
+.tooltip {
+
   margin-bottom: rem(6px) !important;
-  .tooltipContent{
+
+  .tooltipContent {
     color: #fff;
     padding: rem(10px 16px);
   }
@@ -81,17 +116,20 @@
   position: absolute;
   bottom: 30%;
   right: rem(20px);
-  button{
+
+  button {
     width: 100%;
     height: 100%;
   }
 }
+
 .commonOpenPanel {
   max-width: rem(480px);
   min-width: rem(420px);
-  padding: rem(20px);  
+  padding: rem(20px);
 }
-.popoverMonetization{
+
+.popoverMonetization {
   background: transparent;
 }
 
@@ -110,7 +148,8 @@
     height: rem(56px);
   }
 }
-.dialogTitle{
+
+.dialogTitle {
   font-size: rem(20px);
   font-weight: 600;
   margin: rem(40px 0 0 0);
