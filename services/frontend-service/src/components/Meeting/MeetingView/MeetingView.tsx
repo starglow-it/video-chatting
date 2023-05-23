@@ -30,7 +30,6 @@ import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortrai
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
-import { isMobile } from 'shared-utils';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import styles from './MeetingView.module.scss';
 
@@ -64,7 +63,11 @@ import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
-import { StorageKeysEnum, WebStorage } from 'src/controllers/WebStorageController';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // helpers
 
@@ -77,6 +80,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const serverType = useStore($serverTypeStore);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
+    const { isMobile } = useBrowserDetect();
 
     const hostUser = useStoreMap({
         store: $meetingUsersStore,
@@ -141,11 +145,10 @@ const Component = () => {
                 templateType: meetingTemplate.templateType,
             },
         });
-
     }, []);
 
     useEffect(() => {
-        if (isMobile()) {
+        if (isMobile) {
             checkIsPortraitLayoutEvent();
         }
     }, []);
@@ -204,10 +207,12 @@ const Component = () => {
                     <MeetingNotes />
                     <MeetingUsersVideos />
                     <ConditionalRender condition={isOwner}>
-                        <MeetingChangeBackground />                        
+                        <MeetingChangeBackground />
                     </ConditionalRender>
                     <MeetingMonetizationButton />
-                    <MeetingManageAudio />
+                    <ConditionalRender condition={!isMobile}>
+                        <MeetingManageAudio />
+                    </ConditionalRender>
                     <LeaveNoteForm />
                 </MeetingSettingsPanel>
             )}
