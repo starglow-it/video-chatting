@@ -344,7 +344,6 @@ const Component = ({
 
     const handleSubmit = useCallback(
         onSubmitForm(async data => {
-            console.log('#Duy Phan console', data);
             if (isFileUploading) {
                 addNotificationEvent({
                     type: NotificationType.BackgroundFileIsNotUploadedYet,
