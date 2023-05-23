@@ -4,7 +4,10 @@ tlo:
       hosts:
         liveofficeProd:
           ansible_host: 18.118.59.1
-
+    Staging:
+      hosts:
+        liveofficeStaging-aws:
+          ansible_host: 18.190.108.231
 
 all:
   vars:
