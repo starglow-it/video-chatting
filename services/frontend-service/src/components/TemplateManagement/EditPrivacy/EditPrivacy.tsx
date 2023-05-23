@@ -21,16 +21,17 @@ import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { RoundInfoIcon } from 'shared-frontend/icons/RoundIcons/RoundInfoIcon';
-import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // const
 import frontendConfig from '../../../const/config';
 
 // store
-import {$isTrial } from '../../../store';
+import { $isTrial } from '../../../store';
 
 // styles
 import styles from './EditPrivacy.module.scss';
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 const options = [
     {
@@ -51,7 +52,11 @@ const options = [
     },
 ];
 
-const Component = ({ onNextStep, onPreviousStep, onUpgradePlan }: EditPrivacyProps) => {
+const Component = ({
+    onSubmit,
+    onPreviousStep,
+    onUpgradePlan,
+}: EditPrivacyProps) => {
     const isTrial = useStore($isTrial);
 
     const { setValue, watch } = useFormContext();
@@ -78,7 +83,14 @@ const Component = ({ onNextStep, onPreviousStep, onUpgradePlan }: EditPrivacyPro
     const optionItems = useMemo(
         () =>
             options.map(
-                ({ id, value, translationKey, Icon, availableWithTrial, withUpgradeButton }) => (
+                ({
+                    id,
+                    value,
+                    translationKey,
+                    Icon,
+                    availableWithTrial,
+                    withUpgradeButton,
+                }) => (
                     <OptionItem
                         key={id}
                         onClick={() => handleChangeActiveOption(value)}
@@ -121,7 +133,12 @@ const Component = ({ onNextStep, onPreviousStep, onUpgradePlan }: EditPrivacyPro
                     />
                     {optionItems}
                 </CustomGrid>
-                <CustomGrid container gap={0.25} flexWrap="nowrap" className={styles.policiesLink}>
+                <CustomGrid
+                    container
+                    gap={0.25}
+                    flexWrap="nowrap"
+                    className={styles.policiesLink}
+                >
                     <CustomGrid item flex={0}>
                         <RoundInfoIcon width="24px" height="24px" />
                     </CustomGrid>
@@ -148,11 +165,15 @@ const Component = ({ onNextStep, onPreviousStep, onUpgradePlan }: EditPrivacyPro
                     className={styles.actionButton}
                     onAction={onPreviousStep}
                 />
-                <ActionButton
-                    variant="accept"
-                    Icon={<ArrowRightIcon width="32px" height="32px" />}
-                    className={styles.actionButton}
-                    onAction={onNextStep}
+                <CustomButton
+                    label={
+                        <Translation
+                            nameSpace="createRoom"
+                            translation="actions.submit"
+                        />
+                    }
+                    onClick={onSubmit}
+                    className={styles.button}
                 />
             </CustomGrid>
         </CustomGrid>
