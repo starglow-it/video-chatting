@@ -30,9 +30,6 @@ import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
-import { useToggle } from '@hooks/useToggle';
-import { CustomPopper } from 'shared-frontend/library/custom/CustomPopper';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import {
     templatePriceSchema,
     paywallPriceSchema,
@@ -61,10 +58,7 @@ const validationSchema = yup.object({
 });
 
 const Component = ({ onUpdate }: { onUpdate: () => void }) => {
-    const tooltipRef = useRef<HTMLButtonElement | null>(null);
-    const timeoutRef = useRef<NodeJS.Timer | null>(null);
-    const { value: confirmPrice, onSetSwitch: handleChangeConfirm } =
-        useToggle(false);
+    const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const meetingTemplate = useStore($meetingTemplateStore);
     const profile = useStore($profileStore);
     const resolver = useYupValidationResolver<FieldValues>(validationSchema);
@@ -135,16 +129,6 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         name: 'paywallCurrency',
     });
 
-    const activeTemplatePrice = useWatch({
-        control,
-        name: 'templatePrice',
-    });
-
-    const activePaywallPrice = useWatch({
-        control,
-        name: 'paywallPrice',
-    });
-
     const targetPaywallCurrency = useMemo(
         () =>
             currencyValues.find(
@@ -154,8 +138,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     );
 
     const onSubmit = useCallback(
-        handleSubmit(async (data, e) => {
-            console.log('#Duy Phan console', e);
+        handleSubmit(async (data) => {
             await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled:
                     data.isInmeetingPayment || data.isPaywallPayment,
@@ -170,21 +153,17 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                     ? data.paywallCurrency
                     : undefined,
             });
-            // onUpdate?.();
+            onUpdate?.();
         }),
         [],
     );
 
     const handleFocusInput = () => {
-        // if (!confirmPrice) {
-        // handleChangeConfirm(true);
-        tooltipRef.current?.classList.add(styles.animate);
-
-        // }
+        buttonSaveRef.current?.classList.add(styles.animate);
     };
 
     const handleEndAnimation = () => {
-        tooltipRef.current?.classList.remove(styles.animate);
+        buttonSaveRef.current?.classList.remove(styles.animate);
     };
 
     const registerData = register('templatePrice');
@@ -399,28 +378,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                     translation="buttons.save"
                                 />
                             }
-                            ref={tooltipRef}
+                            ref={buttonSaveRef}
                             id="buttonSubmit"
                             onAnimationEnd={handleEndAnimation}
                         />
-                        {/* <CustomPopper
-                            id="audioControl"
-                            open={confirmPrice}
-                            placement="top"
-                            anchorEl={tooltipRef.current}
-                            className={styles.tooltip}
-                        >
-                            <CustomPaper
-                                variant="black-glass"
-                                className={styles.tooltipContent}
-                                aria-describedby="monetization"
-                            >
-                                <CustomTypography
-                                    translation="confirmPrice.tooltip"
-                                    nameSpace="meeting"
-                                />
-                            </CustomPaper>
-                        </CustomPopper> */}
                     </CustomGrid>
                 </form>
             </FormProvider>
