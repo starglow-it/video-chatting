@@ -32,4 +32,7 @@ export const BUSINESS_CATEGORIES = [
   { key: 'professional', value: 'Professional', color: '#517f60' },
   { key: 'sales', value: 'Sales', color: '#5ba555' },
   { key: 'wellness', value: 'Wellness', color: '#1ee510' },
+  { key: 'breathing', value: 'Breathing', color: '#5ba555' },
+  { key: 'teen', value: 'Teen', color: '#517f60' },
+  { key: 'office', value: 'Office', color: '#7a785b' },
 ];

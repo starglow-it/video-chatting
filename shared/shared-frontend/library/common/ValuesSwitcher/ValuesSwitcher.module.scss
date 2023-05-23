@@ -56,6 +56,9 @@
     &.active {
       color: $primary-black;
     }
+    &.disabled {
+      color: $normal-gray-scale;
+    }
   }
 
   .transition {
