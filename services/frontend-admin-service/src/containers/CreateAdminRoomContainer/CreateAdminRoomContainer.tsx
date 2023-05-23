@@ -121,7 +121,6 @@ const defaultValues = {
     background: '',
     name: '',
     description: '',
-    tags: [],
     participantsNumber: 10,
     participantsPositions: PARTICIPANT_POSITIONS.map(item => ({
         ...item,
@@ -170,7 +169,6 @@ const Component = () => {
     const resolver = useYupValidationResolver(validationSchema, {
         reduceArrayErrors: true,
     });
-
     const methods = useForm({
         criteriaMode: 'all',
         defaultValues,
@@ -283,7 +281,6 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            console.log('#Duy Phan console', data, commonTemplate);
             if (commonTemplate?.id) {
                 const templatePrice =
                     data.type === 'paid' ? data.templatePrice * 100 : 0;

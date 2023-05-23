@@ -1,51 +1,51 @@
-import {memo, useCallback, useEffect, useRef} from 'react';
-import {FormProvider, useForm, useWatch} from 'react-hook-form';
+import { memo, useCallback, useEffect, useRef } from 'react';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
-import {useStore} from 'effector-react';
-import Router, {useRouter} from 'next/router';
+import { useStore } from 'effector-react';
+import Router, { useRouter } from 'next/router';
 
 // shared
 import {
     participantsNumberSchema,
     participantsPositionsSchema,
+    simpleNumberSchema,
     simpleStringSchema,
     simpleStringSchemaWithLength,
     tagsSchema,
     templatePriceSchema,
     templatesLinksSchema,
 } from 'shared-frontend/validation';
-import {adjustUserPositions, getRandomNumber} from 'shared-utils';
-import {MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH} from 'shared-const';
+import { adjustUserPositions, getRandomNumber } from 'shared-utils';
+import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from 'shared-const';
 
-import {CustomGrid} from 'shared-frontend/library/custom/CustomGrid';
-import {CustomPaper} from 'shared-frontend/library/custom/CustomPaper';
-import {CustomTooltip} from 'shared-frontend/library/custom/CustomTooltip';
-import {ActionButton} from 'shared-frontend/library/common/ActionButton';
-import {ValuesSwitcher} from 'shared-frontend/library/common/ValuesSwitcher';
-import {CustomFade} from 'shared-frontend/library/custom/CustomFade';
-import {CustomTypography} from 'shared-frontend/library/custom/CustomTypography';
-import {CloseIcon} from 'shared-frontend/icons/OtherIcons/CloseIcon';
-import {ImagePlaceholderIcon} from 'shared-frontend/icons/OtherIcons/ImagePlaceholderIcon';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
+import { CustomFade } from 'shared-frontend/library/custom/CustomFade';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import { ImagePlaceholderIcon } from 'shared-frontend/icons/OtherIcons/ImagePlaceholderIcon';
 
-import {useYupValidationResolver} from 'shared-frontend/hooks/useYupValidationResolver';
-import {useValueSwitcher} from 'shared-frontend/hooks/useValuesSwitcher';
-import {usePrevious} from 'shared-frontend/hooks/usePrevious';
+import { useYupValidationResolver } from 'shared-frontend/hooks/useYupValidationResolver';
+import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
+import { usePrevious } from 'shared-frontend/hooks/usePrevious';
 
 // components
-import {TemplateBackground} from '@components/CreateRoom/TemplateBackground/TemplateBackground';
-import {Translation} from '@components/Translation/Translation';
-import {UploadBackground} from '@components/CreateRoom/UploadBackground/UploadBackground';
-import {CommonTemplateSettings} from '@components/CreateRoom/CommonTemplateSettings/CommonTemplateSettings';
-import {AttendeesPositions} from '@components/CreateRoom/AttendeesPositions/AttendeesPositions';
-import {TemplateLinks} from '@components/CreateRoom/TemplateLinks/TemplateLinks';
-import {TemplatePrice} from '@components/CreateRoom/TemplatePrice/TemplatePrice';
-import {TemplatePreview} from '@components/CreateRoom/TemplatePreview/TemplatePreview';
-import {CustomButton} from "shared-frontend/library/custom/CustomButton";
-import {ConfirmSaveChangesDialog} from "@components/Dialogs/ConfirmSaveChangesDialog/ConfirmSaveChangesDialog";
-import {CancelEditRoomDialog} from "@components/Dialogs/CancelEditRoomDialog/CancelEditRoomDialog";
+import { TemplateBackground } from '@components/CreateRoom/TemplateBackground/TemplateBackground';
+import { Translation } from '@components/Translation/Translation';
+import { UploadBackground } from '@components/CreateRoom/UploadBackground/UploadBackground';
+import { CommonTemplateSettings } from '@components/CreateRoom/CommonTemplateSettings/CommonTemplateSettings';
+import { AttendeesPositions } from '@components/CreateRoom/AttendeesPositions/AttendeesPositions';
+import { TemplateLinks } from '@components/CreateRoom/TemplateLinks/TemplateLinks';
+import { TemplatePrice } from '@components/CreateRoom/TemplatePrice/TemplatePrice';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { ConfirmSaveChangesDialog } from '@components/Dialogs/ConfirmSaveChangesDialog/ConfirmSaveChangesDialog';
+import { CancelEditRoomDialog } from '@components/Dialogs/CancelEditRoomDialog/CancelEditRoomDialog';
 
 // stores
-import {ValuesSwitcherItem} from 'shared-frontend/types';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
 import {
     $businessCategoriesStore,
     $commonTemplateStore,
@@ -65,8 +65,8 @@ import {
 import styles from './EditAdminRoomContainer.module.scss';
 
 // types
-import {AdminDialogsEnum, NotificationType} from '../../store/types';
-import {PriceValues} from "shared-types";
+import { AdminDialogsEnum, NotificationType } from '../../store/types';
+import { PriceValues } from 'shared-types';
 
 enum TabsValues {
     Background = 1,
@@ -101,23 +101,13 @@ const tabs: ValuesSwitcherAlias[] = [
     },
     {
         id: 3,
-        value: TabsValues.Attendees,
-        label: TabsLabels.Attendees,
-    },
-    {
-        id: 5,
         value: TabsValues.Links,
         label: TabsLabels.Links,
     },
     {
-        id: 6,
+        id: 4,
         value: TabsValues.Monetization,
         label: TabsLabels.Monetization,
-    },
-    {
-        id: 7,
-        value: TabsValues.Preview,
-        label: TabsLabels.Preview,
     },
 ];
 
@@ -137,41 +127,42 @@ const defaultValues = {
 const validationSchema = yup.object({
     background: simpleStringSchema(),
     name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
-    description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH).required(
-        'required',
-    ),
+    description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH),
     tags: tagsSchema(),
     participantsNumber: participantsNumberSchema().required('required'),
     participantsPositions: participantsPositionsSchema(),
     templateLinks: templatesLinksSchema(),
     type: simpleStringSchema(),
-    templatePrice: templatePriceSchema(0.99, 999999),
+    templatePrice: simpleNumberSchema().when('type', {
+        is: (value: string) => value === 'paid',
+        then: templatePriceSchema(0.99, 999999),
+        otherwise: simpleNumberSchema()
+            .notRequired()
+            .nullable(true)
+            .transform(value => (isNaN(value) ? undefined : value)),
+    }),
 });
 
 const Component = () => {
     const router = useRouter();
 
-    const {
-        state: commonTemplate
-    } = useStore($commonTemplateStore);
+    const { state: commonTemplate } = useStore($commonTemplateStore);
 
-    const {
-        state: categories
-    } = useStore($businessCategoriesStore);
+    const { state: categories } = useStore($businessCategoriesStore);
 
     const isFileUploading = useStore(uploadTemplateBackgroundFx.pending);
 
     const templateTypeRef = useRef('');
 
-    const {
-        activeItem, onValueChange, onNextValue, onPreviousValue
-    } =
+    const { activeItem, onValueChange, onNextValue, onPreviousValue } =
         useValueSwitcher<TabsValues, TabsLabels>({
             values: tabs,
             initialValue: tabs[0].value,
         });
 
-    const resolver = useYupValidationResolver(validationSchema, { reduceArrayErrors: true });
+    const resolver = useYupValidationResolver(validationSchema, {
+        reduceArrayErrors: true,
+    });
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -180,7 +171,12 @@ const Component = () => {
     });
 
     const {
-        reset, control, handleSubmit, setValue, trigger, formState: { dirtyFields }
+        reset,
+        control,
+        handleSubmit,
+        setValue,
+        trigger,
+        formState: { dirtyFields },
     } = methods;
 
     const background = useWatch({
@@ -245,18 +241,20 @@ const Component = () => {
 
     useEffect(() => {
         if (commonTemplate) {
-            const templateLinks = commonTemplate?.links?.map(({ item, position }) => ({
-                value: item,
-                top: position.top,
-                left: position.left,
-            }));
+            const templateLinks = commonTemplate?.links?.map(
+                ({ item, position }) => ({
+                    value: item,
+                    top: position.top,
+                    left: position.left,
+                }),
+            );
 
             const userPositions = commonTemplate.usersPosition?.length
                 ? commonTemplate.usersPosition.map(({ bottom, left }) => ({
-                    top: 1 - bottom,
-                    left,
-                    id: getRandomNumber(10000).toString(),
-                }))
+                      top: 1 - bottom,
+                      left,
+                      id: getRandomNumber(10000).toString(),
+                  }))
                 : defaultValues.participantsPositions;
 
             reset({
@@ -265,10 +263,15 @@ const Component = () => {
                 type: commonTemplate.type,
                 background: commonTemplate.url,
                 templateLinks,
-                templatePrice: commonTemplate.priceInCents ? commonTemplate.priceInCents / 100 : undefined,
+                templatePrice: commonTemplate.priceInCents
+                    ? commonTemplate.priceInCents / 100
+                    : undefined,
                 participantsNumber: commonTemplate.maxParticipants,
                 participantsPositions: userPositions,
-                tags: commonTemplate?.businessCategories?.map(item => ({ ...item, label: item.value })),
+                tags: commonTemplate?.businessCategories?.map(item => ({
+                    ...item,
+                    label: item.value,
+                })),
             });
 
             updateCommonTemplateDataEvent({
@@ -295,7 +298,7 @@ const Component = () => {
         }
 
         const createdPositions = new Array(
-            (participantsNumber - participantsPositions?.length) || 0,
+            participantsNumber - participantsPositions?.length || 0,
         )
             .fill(null)
             .map(() => ({
@@ -353,9 +356,8 @@ const Component = () => {
     const onSubmit = useCallback(
         handleSubmit(async data => {
             if (commonTemplate?.id) {
-                const templatePrice = data.type === 'paid'
-                    ? data.templatePrice * 100
-                    : 0;
+                const templatePrice =
+                    data.type === 'paid' ? data.templatePrice * 100 : 0;
 
                 const updateData = {
                     name: data.name,
@@ -381,7 +383,8 @@ const Component = () => {
                     updateData.draftUrl = '';
                     updateData.draftPreviewUrls = [];
                     updateData.url = commonTemplate?.draftUrl;
-                    updateData.previewUrls = commonTemplate?.draftPreviewUrls?.map(({ id }) => id);
+                    updateData.previewUrls =
+                        commonTemplate?.draftPreviewUrls?.map(({ id }) => id);
                 }
 
                 await updateCommonTemplateFx({
@@ -413,11 +416,12 @@ const Component = () => {
             updateCommonTemplateDataEvent({
                 draftUrl: '',
                 draftPreviewUrls: [],
-                templateType:
-                    file.type.split('/')[0],
+                templateType: file.type.split('/')[0],
             });
 
-            setValue('background', URL.createObjectURL(file), { shouldDirty: true });
+            setValue('background', URL.createObjectURL(file), {
+                shouldDirty: true,
+            });
 
             if (commonTemplate?.id) {
                 const response = await uploadTemplateBackgroundFx({
@@ -442,7 +446,7 @@ const Component = () => {
                 draftUrl: '',
                 draftPreviewUrls: [],
                 templateType: templateTypeRef.current,
-            }
+            },
         });
         router.push('/rooms');
     }, [commonTemplate?.id]);
@@ -456,15 +460,9 @@ const Component = () => {
     }, []);
 
     return (
-        <CustomGrid
-            container
-            className={styles.wrapper}
-        >
+        <CustomGrid container className={styles.wrapper}>
             <FormProvider {...methods}>
-                <form
-                    className={styles.form}
-                    onSubmit={onSubmit}
-                >
+                <form className={styles.form} onSubmit={onSubmit}>
                     <TemplateBackground
                         templateType={commonTemplate?.templateType ?? 'video'}
                         url={commonTemplate?.draftUrl || background}
@@ -500,10 +498,7 @@ const Component = () => {
                                 variant="black-glass"
                                 className={styles.mainInfo}
                             >
-                                <CustomGrid
-                                    container
-                                    direction="column"
-                                >
+                                <CustomGrid container direction="column">
                                     {templateName ? (
                                         <CustomTypography
                                             color="colors.white.primary"
@@ -519,23 +514,21 @@ const Component = () => {
                                             />
                                         </CustomTypography>
                                     )}
-                                    {type
-                                        ? (
-                                            <CustomTypography
-                                                variant="body2"
-                                                color={type === PriceValues.Paid
-                                                    ? "colors.blue.primary"
-                                                    : "colors.green.primary"
-                                                }
-                                                className={styles.type}
-                                            >
-                                                {type === PriceValues.Paid
-                                                    ? `${templatePrice ?? 0}$`
-                                                    : type}
-                                            </CustomTypography>
-                                        )
-                                        : null
-                                    }
+                                    {type ? (
+                                        <CustomTypography
+                                            variant="body2"
+                                            color={
+                                                type === PriceValues.Paid
+                                                    ? 'colors.blue.primary'
+                                                    : 'colors.green.primary'
+                                            }
+                                            className={styles.type}
+                                        >
+                                            {type === PriceValues.Paid
+                                                ? `${templatePrice ?? 0}$`
+                                                : type}
+                                        </CustomTypography>
+                                    ) : null}
                                 </CustomGrid>
                             </CustomPaper>
                         </CustomGrid>
@@ -564,12 +557,7 @@ const Component = () => {
                         >
                             <ActionButton
                                 onAction={handleOpenCancelEditDialog}
-                                Icon={
-                                    <CloseIcon
-                                        width="40px"
-                                        height="40px"
-                                    />
-                                }
+                                Icon={<CloseIcon width="40px" height="40px" />}
                                 className={styles.closeButton}
                                 variant="gray"
                             />
@@ -640,22 +628,7 @@ const Component = () => {
                             <TemplatePrice
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
-                            />
-                        </CustomFade>
-
-                        <CustomFade
-                            key={TabsLabels.Preview}
-                            open={activeItem.label === TabsLabels.Preview}
-                            unmountOnExit
-                            className={styles.componentItem}
-                        >
-                            <TemplatePreview
-                                participantsPositions={participantsPositions}
-                                templateTags={tags}
-                                description={description}
-                                templateLinks={templateLinks}
-                                onPreviousStep={onPreviousValue}
-                                submitButtons={(
+                                submitButtons={
                                     <>
                                         <CustomButton
                                             className={styles.createButton}
@@ -669,18 +642,14 @@ const Component = () => {
                                             }
                                         />
                                     </>
-                                )}
+                                }
                             />
                         </CustomFade>
                     </CustomGrid>
                 </form>
             </FormProvider>
-            <CancelEditRoomDialog
-                onConfirm={handleConfirmCancelEditRoom}
-            />
-            <ConfirmSaveChangesDialog
-                onConfirm={handleConfirmSaveChanges}
-            />
+            <CancelEditRoomDialog onConfirm={handleConfirmCancelEditRoom} />
+            <ConfirmSaveChangesDialog onConfirm={handleConfirmSaveChanges} />
         </CustomGrid>
     );
 };

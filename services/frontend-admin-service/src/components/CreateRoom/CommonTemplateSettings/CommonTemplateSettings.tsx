@@ -1,20 +1,15 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { generateKeyByLabel, getRandomHexColor } from 'shared-utils';
-import { MenuItem } from '@mui/material';
-
 import { IBusinessCategory } from 'shared-types';
 
 // shred
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
 import { CustomAutocomplete } from 'shared-frontend/library/custom/CustomAutocomplete';
-import { CustomDropdown } from 'shared-frontend/library/custom/CustomDropdown';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
-import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 import { AutocompleteType } from 'shared-frontend/types';
@@ -22,25 +17,11 @@ import { AutocompleteType } from 'shared-frontend/types';
 // components
 import { Translation } from '@components/Translation/Translation';
 
-import {
-    MAX_DESCRIPTION_LENGTH,
-    MAX_NAME_LENGTH,
-    MAX_PARTICIPANTS_NUMBER,
-} from 'shared-const';
+import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from 'shared-const';
 
 import { CommonTemplateSettingsProps } from './CommonTemplateSettings.types';
 
 import styles from './CommonTemplateSettings.module.scss';
-
-const participantsNumberValues = Array.from(
-    {
-        length: MAX_PARTICIPANTS_NUMBER - 1,
-    },
-    (_, i) => ({
-        id: `${i + 2}`,
-        value: i + 2,
-    }),
-);
 
 const Component = ({
     onNextStep,
@@ -53,6 +34,7 @@ const Component = ({
         trigger,
         setError,
         setValue,
+        getValues,
         clearErrors,
         formState: { errors },
     } = useFormContext();
@@ -66,42 +48,40 @@ const Component = ({
         name: 'tags',
     });
 
-    const participantsNumber = useWatch({
-        control,
-        name: 'participantsNumber',
-    });
-
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string =
         errors?.description?.[0]?.message || '';
     const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
 
-    useEffect(() => {
-        (async () => {
-            if (
-                !tags.find(
-                    (value: AutocompleteType<IBusinessCategory> | string) =>
-                        typeof value === 'string',
-                )
-            ) {
-                return;
-            }
+    const businessCategoriesOptions = useMemo(
+        () =>
+            categories.map(item => ({
+                ...item,
+                label: item.value,
+            })),
+        [categories],
+    );
 
-            setValue(
-                'tags',
-                tags.map((item: AutocompleteType<IBusinessCategory> | string) =>
-                    typeof item === 'string'
-                        ? {
-                              label: item,
-                              key: generateKeyByLabel(item),
-                              value: item,
-                              color: getRandomHexColor(50, 220),
-                          }
-                        : item,
-                ),
-            );
-        })();
-    }, [tags]);
+    const defaultBusiness = useMemo(() => {
+        return businessCategoriesOptions.filter(
+            ({ key }) =>
+                key === 'office' ||
+                key === 'breathing' ||
+                key === 'energizing' ||
+                key === 'calming' ||
+                key === 'teen' ||
+                key === 'coaching' ||
+                key === 'therapy',
+        );
+    }, [categories]);
+
+    useEffect(() => {
+        if (!defaultBusiness.length) {
+            return;
+        }
+
+        setValue('tags', defaultBusiness);
+    }, [defaultBusiness]);
 
     const handleClickNextStep = useCallback(async () => {
         const isNextClickValidation = await trigger([
@@ -118,10 +98,6 @@ const Component = ({
 
     const { onChange: onChangeName, ...nameProps } = useMemo(
         () => register('name'),
-        [],
-    );
-    const participantsNumberProps = useMemo(
-        () => register('participantsNumber'),
         [],
     );
     const { onChange: onChangeDescription, ...descriptionProps } = useMemo(
@@ -177,25 +153,6 @@ const Component = ({
 
         onChangeName(event);
     }, []);
-
-    const participantsNumberList = useMemo(
-        () =>
-            participantsNumberValues.map(({ id, value }) => (
-                <MenuItem key={id} value={value}>
-                    <CustomTypography>{value}</CustomTypography>
-                </MenuItem>
-            )),
-        [],
-    );
-
-    const businessCategoriesOptions = useMemo(
-        () =>
-            categories.map(item => ({
-                ...item,
-                label: item.value,
-            })),
-        [categories],
-    );
 
     return (
         <CustomGrid container justifyContent="center" alignItems="center">
@@ -306,6 +263,7 @@ const Component = ({
                                     />
                                 </ErrorMessage>
                             }
+                            defaultValue={defaultBusiness}
                         />
                     </CustomGrid>
                 </CustomGrid>
