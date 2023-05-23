@@ -142,7 +142,6 @@ const Component = ({
         () => register('description', { required: false }),
         [],
     );
-    console.log('#Duy Phan console', descriptionProps)
 
     const handleChangeDescription = useCallback(event => {
         if (event.target.value.length > MAX_DESCRIPTION_LENGTH) {

@@ -64,7 +64,6 @@ const Component = () => {
     const { onSetUpdateUrl } = useSubscriptionNotification();
 
     useEffect(() => {
-        console.log('#Duy Phan console', router.isReady);
         (async () => {
             if (!router.isReady) {
                 return;
@@ -104,7 +103,6 @@ const Component = () => {
 
     const handleSubmit = useCallback(
         async (data: IUploadTemplateFormData) => {
-            console.log('#Duy Phan console', data)
             if (!template?.templateId) {
                 return;
             }
