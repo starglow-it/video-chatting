@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { IBusinessCategory } from 'shared-types';
 
@@ -33,8 +33,6 @@ const Component = ({
         control,
         trigger,
         setError,
-        setValue,
-        getValues,
         clearErrors,
         formState: { errors },
     } = useFormContext();
@@ -42,10 +40,6 @@ const Component = ({
     const description = useWatch({
         control,
         name: 'description',
-    });
-    const tags = useWatch({
-        control,
-        name: 'tags',
     });
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
@@ -61,27 +55,6 @@ const Component = ({
             })),
         [categories],
     );
-
-    const defaultBusiness = useMemo(() => {
-        return businessCategoriesOptions.filter(
-            ({ key }) =>
-                key === 'office' ||
-                key === 'breathing' ||
-                key === 'energizing' ||
-                key === 'calming' ||
-                key === 'teen' ||
-                key === 'coaching' ||
-                key === 'therapy',
-        );
-    }, [categories]);
-
-    useEffect(() => {
-        if (!defaultBusiness.length) {
-            return;
-        }
-
-        setValue('tags', defaultBusiness);
-    }, [defaultBusiness]);
 
     const handleClickNextStep = useCallback(async () => {
         const isNextClickValidation = await trigger([
@@ -263,7 +236,7 @@ const Component = ({
                                     />
                                 </ErrorMessage>
                             }
-                            defaultValue={defaultBusiness}
+                            // defaultValue={defaultBusiness}
                         />
                     </CustomGrid>
                 </CustomGrid>

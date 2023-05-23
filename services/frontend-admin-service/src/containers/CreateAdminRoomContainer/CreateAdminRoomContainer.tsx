@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
@@ -127,6 +127,7 @@ const defaultValues = {
         id: getRandomNumber(10000).toString(),
     })),
     templateLinks: [],
+    tags: [],
     type: 'free',
     templatePrice: undefined,
     draft: true,
@@ -175,7 +176,7 @@ const Component = () => {
         resolver,
     });
 
-    const { control, handleSubmit, setValue, trigger } = methods;
+    const { control, handleSubmit, setValue, trigger, resetField } = methods;
 
     const background = useWatch({
         control,
@@ -200,21 +201,6 @@ const Component = () => {
     const participantsNumber = useWatch({
         control,
         name: 'participantsNumber',
-    });
-
-    const participantsPositions = useWatch({
-        control,
-        name: 'participantsPositions',
-    });
-
-    const tags = useWatch({
-        control,
-        name: 'tags',
-    });
-
-    const description = useWatch({
-        control,
-        name: 'description',
     });
 
     const templatePrice = useWatch({
@@ -378,6 +364,32 @@ const Component = () => {
     const handleOpenCancelConfirmationDialog = useCallback(() => {
         openAdminDialogEvent(AdminDialogsEnum.cancelCreateRoomDialog);
     }, []);
+
+    const businessCategoriesOptions = useMemo(
+        () =>
+            categories.list.map(item => ({
+                ...item,
+                label: item.value,
+            })),
+        [categories],
+    );
+
+    const defaultBusiness = useMemo(() => {
+        return businessCategoriesOptions.filter(
+            ({ key }) =>
+                key === 'office' ||
+                key === 'breathing' ||
+                key === 'energizing' ||
+                key === 'calming' ||
+                key === 'teen' ||
+                key === 'coaching' ||
+                key === 'therapy',
+        );
+    }, [categories]);
+
+    useEffect(() => {
+        if (defaultBusiness.length) setValue('tags', defaultBusiness);
+    }, [defaultBusiness]);
 
     return (
         <CustomGrid container className={styles.wrapper}>

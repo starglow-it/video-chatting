@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
-import { MenuItem } from '@mui/material';
 
 import { IBusinessCategory } from 'shared-types';
 import { AutocompleteType } from 'shared-frontend/types';
@@ -11,7 +10,6 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
