@@ -381,7 +381,6 @@ const Component = () => {
                 key === 'breathing' ||
                 key === 'energizing' ||
                 key === 'calming' ||
-                key === 'teen' ||
                 key === 'coaching' ||
                 key === 'therapy',
         );
