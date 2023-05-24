@@ -232,7 +232,9 @@ export class PaymentsService {
       metadata: {
         type: productData.type,
       },
-      description: productData.description,
+      ...(productData.description && {
+        description: productData.description
+      }),
     });
 
     await this.stripeClient.prices.create({
