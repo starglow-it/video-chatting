@@ -16,7 +16,6 @@ import { Translation } from '@library/common/Translation/Translation';
 import { SetUpCompanyName } from './SetUpCompanyName';
 import { SetUpFullName } from './SetUpFullName';
 import { SetUpProfileAvatar } from './SetUpProfileAvatar';
-import { SetUpProfileSign } from './SetUpProfileSign';
 import { SetUpTemplateProgress } from './SetUpTemplateProgress';
 
 // styles
@@ -27,14 +26,12 @@ enum TemplateSetUpSteps {
     companyName = 'companyName',
     fullName = 'fullName',
     profileAvatar = 'profileAvatar',
-    profileSign = 'profileSign',
 }
 
 const STEPS = {
     [TemplateSetUpSteps.companyName]: SetUpCompanyName,
     [TemplateSetUpSteps.fullName]: SetUpFullName,
     [TemplateSetUpSteps.profileAvatar]: SetUpProfileAvatar,
-    [TemplateSetUpSteps.profileSign]: SetUpProfileSign,
 };
 
 const SetUpTemplateInfo = memo(() => {
