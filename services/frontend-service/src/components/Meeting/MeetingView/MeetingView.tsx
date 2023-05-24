@@ -223,7 +223,6 @@ const Component = () => {
             <UserToKickDialog />
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
-            <MobilePortraitStub />
             <ScheduleMeetingDialog />
         </CustomGrid>
     );
