@@ -34,12 +34,15 @@ import { Translation } from '@library/common/Translation/Translation';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useToggle } from '@hooks/useToggle';
+import { $isPortraitLayout } from 'src/store';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 const Component = () => {
     const { medias, categorySelected, mediaSelected, categories, count } =
         useStore($backgroundMeetingStore);
     const isLoadMore = useStore($isLoadMoreMediasStore);
     const isLoading = useStore(uploadNewBackgroundFx.pending);
+    const isPortraitLayout = useStore($isPortraitLayout);
     const [isExpand, setIsExpand] = useState<boolean>(true);
     const [isAnimation, setIsAnimation] = useState<boolean>(false);
     const refScroll = useRef<HTMLElement>();
@@ -234,18 +237,18 @@ const Component = () => {
                 </ConditionalRender>
             </CustomTooltip>
             <ConditionalRender condition={isMobile}>
-                <CustomBox
-                    display="flex"
-                    className={styles.commonOpenPanel}
-                    flexDirection="row"
-                    alignItems="center"
-                    justifyContent="center"
-                    onClick={onDrawer}
+                <CustomPaper
+                    variant="black-glass"
+                    borderRadius={8}
+                    className={styles.buttonBgMobile}
                 >
-                    <CustomBox color="white" height={18}>
-                        <ImageIcon width="22px" height="20px" />
-                    </CustomBox>
-                </CustomBox>
+                    <ActionButton
+                        variant="transparentBlack"
+                        onAction={onDrawer}
+                        className={styles.deviceButton}
+                        Icon={<ImageIcon width="22px" height="20px" />}
+                    />
+                </CustomPaper>
                 <SwipeableDrawer
                     anchor="right"
                     open={isOpenDrawer}
@@ -253,7 +256,9 @@ const Component = () => {
                     onOpen={onDrawer}
                 >
                     <CustomPaper
-                        className={clsx(styles.drawer)}
+                        className={clsx(styles.drawer, {
+                            [styles.portrait]: isPortraitLayout,
+                        })}
                         variant="black-glass"
                     >
                         {isLoading && <LinearProgress color="secondary" />}
@@ -281,13 +286,18 @@ const Component = () => {
 
                                 <RoundCloseIcon
                                     className={styles.closeIcon}
+                                    onClick={offDrawer}
                                     isActive
                                     width="22px"
                                     height="22px"
                                 />
                             </ConditionalRender>
                         </CustomBox>
-                        <CustomBox className={styles.detail}>
+                        <CustomBox
+                            className={clsx(styles.detail, {
+                                [styles.portrait]: isPortraitLayout,
+                            })}
+                        >
                             <CustomBox
                                 flex={30}
                                 display="flex"

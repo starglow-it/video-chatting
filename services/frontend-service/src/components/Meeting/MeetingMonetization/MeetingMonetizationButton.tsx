@@ -1,7 +1,7 @@
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { useStore } from 'effector-react';
-import { MouseEvent, useCallback, useEffect, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
@@ -20,6 +20,8 @@ import {
 import { MeetingMonetization } from './MeetingMonetization';
 import { Translation } from '@library/common/Translation/Translation';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import clsx from 'clsx';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 export const MeetingMonetizationButton = () => {
     const paymentIntent = useStore($paymentIntent);
@@ -35,6 +37,8 @@ export const MeetingMonetizationButton = () => {
         onToggleSwitch: handleTogglePopover,
         onSetSwitch: handleSetPopover,
     } = useToggle(false);
+    const { isMobile } = useBrowserDetect();
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const handleTogglePayments = (e: MouseEvent<HTMLElement>) => {
         e.stopPropagation();
@@ -74,6 +78,11 @@ export const MeetingMonetizationButton = () => {
         meetingTemplate?.templatePrice,
     ]);
 
+    const styleIcon = useMemo(() => {
+        if (isMobile) return { width: '26px', height: '26px' };
+        return { width: '32px', height: '32px' };
+    }, [isMobile]);
+
     return (
         <ConditionalRender
             condition={
@@ -93,13 +102,15 @@ export const MeetingMonetizationButton = () => {
             >
                 <CustomPaper
                     variant="black-glass"
-                    className={styles.deviceButton}
+                    className={clsx(styles.deviceButton, {
+                        [styles.mobile]: isMobile,
+                    })}
                     aria-describedby="monetization"
                 >
                     <ActionButton
                         variant="transparentBlack"
                         onAction={handleTogglePayments}
-                        Icon={<MonetizationIcon width="32px" height="32px" />}
+                        Icon={<MonetizationIcon {...styleIcon} />}
                         style={{
                             borderRadius: 12,
                         }}

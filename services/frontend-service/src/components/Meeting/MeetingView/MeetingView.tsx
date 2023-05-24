@@ -151,7 +151,7 @@ const Component = () => {
         if (isMobile) {
             checkIsPortraitLayoutEvent();
         }
-    }, []);
+    }, [isMobile]);
 
     const handleUpdateMeetingTemplate = useCallback(async updateData => {
         if (updateData) {
