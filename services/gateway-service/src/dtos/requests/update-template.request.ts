@@ -64,21 +64,16 @@ class BusinessCategoryDTO {
   @ApiProperty({
     type: String
   })
+  @IsOptional()
   @IsString({ message: 'Key must be string ' })
   key: string;
 
   @ApiProperty({
     type: String
   })
+  @IsOptional()
   @IsString({ message: 'Value must be string ' })
   value: string;
-
-
-  @ApiProperty({
-    type: String
-  })
-  @IsString({ message: 'Color must be string ' })
-  emojiUrl: string;
 }
 
 export class UpdateTemplateRequest implements IUpdateTemplate {

@@ -25,12 +25,6 @@ class BusinessCategory {
     type: String
   })
   value: string;
-
-  @Expose()
-  @ApiProperty({
-    type: String
-  })
-  emojiUrl: string;
 }
 
 class Language {
