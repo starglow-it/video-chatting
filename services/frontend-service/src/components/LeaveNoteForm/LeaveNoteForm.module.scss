@@ -33,7 +33,11 @@
   padding: 6px 10px;
 
   &.mobile {
-    left: 50%;
+    left: 2%;
+  }
+
+  &.portrait {
+    display: none;
   }
 
   &.open {
