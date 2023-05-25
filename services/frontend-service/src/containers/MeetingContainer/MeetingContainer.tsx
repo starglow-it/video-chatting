@@ -72,7 +72,8 @@ import {
     WebStorage,
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
-import { BackgroundManager } from '../../helpers/media/applyBlur'
+import { BackgroundManager } from '../../helpers/media/applyBlur';
+import { Typography } from '@mui/material';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -194,14 +195,12 @@ const MeetingContainer = memo(() => {
             if (isMeetingSocketConnected) {
                 await initDevicesEventFxWithStore();
                 await sendJoinWaitingRoomSocketEvent();
-
                 if (isOwner) {
                     if (isHasSettings) {
                         updateLocalUserEvent({
                             isAuraActive: savedSettings.auraSetting,
                             accessStatus: MeetingAccessStatusEnum.InMeeting,
                         });
-
                         joinMeetingEvent({
                             isSettingsAudioBackgroundActive:
                                 savedSettings.backgroundAudioSetting,
@@ -227,10 +226,50 @@ const MeetingContainer = memo(() => {
             handleSetSettingsChecked();
         })();
     }, [isMeetingSocketConnected, isOwner]);
-    
+
+    const LoadingWaitingRoom = useMemo(() => {
+        return (
+            <CustomGrid className={styles.loadingRoom}>
+                <div className={styles.loading}>
+                    <div className={styles['loading-text']}>
+                        <span className={styles['loading-text-words']}>W</span>
+                        <span className={styles['loading-text-words']}>e</span>
+                        <span className={styles['loading-text-words']}>&apos;</span>
+                        <span className={styles['loading-text-words']}>r</span>
+                        <span className={styles['loading-text-words']}>e</span>
+                        <span className={styles['loading-text-words']}> </span>
+                        <span className={styles['loading-text-words']}>S</span>
+                        <span className={styles['loading-text-words']}>e</span>
+                        <span className={styles['loading-text-words']}>t</span>
+                        <span className={styles['loading-text-words']}>t</span>
+                        <span className={styles['loading-text-words']}>i</span>
+                        <span className={styles['loading-text-words']}>n</span>
+                        <span className={styles['loading-text-words']}>g</span>
+                        <span className={styles['loading-text-words']}> </span>
+                        <span className={styles['loading-text-words']}>u</span>
+                        <span className={styles['loading-text-words']}>p</span>
+                        <span className={styles['loading-text-words']}> </span>
+                        <span className={styles['loading-text-words']}>y</span>
+                        <span className={styles['loading-text-words']}>o</span>
+                        <span className={styles['loading-text-words']}>u</span>
+                        <span className={styles['loading-text-words']}>r</span>
+                        <span className={styles['loading-text-words']}> </span>
+                        <span className={styles['loading-text-words']}>R</span>
+                        <span className={styles['loading-text-words']}>o</span>
+                        <span className={styles['loading-text-words']}>o</span>
+                        <span className={styles['loading-text-words']}>m</span>
+                    </div>
+                </div>
+            </CustomGrid>
+        );
+    }, []);
+    console.log('#Duy Phan console', localUser.accessStatus);
+
     return (
         <>
-            <ConditionalRender condition={(!!meetingTemplate.url && !isOwner && isSettingsChecked)}>
+            <ConditionalRender
+                condition={!!meetingTemplate.url && isSettingsChecked}
+            >
                 <MeetingBackgroundVideo
                     templateType={meetingTemplate.templateType}
                     src={meetingTemplate.url}
@@ -242,6 +281,14 @@ const MeetingContainer = memo(() => {
                         layout="fill"
                     />
                 </MeetingBackgroundVideo>
+            </ConditionalRender>
+            <ConditionalRender
+                condition={
+                    isOwner &&
+                    MeetingAccessStatusEnum.EnterName === localUser.accessStatus
+                }
+            >
+                {LoadingWaitingRoom}
             </ConditionalRender>
             {Boolean(meetingTemplate?.id) && (
                 <ConditionalRender
@@ -274,7 +321,7 @@ const MeetingContainer = memo(() => {
                             MeetingAccessStatusEnum.InMeeting
                         }
                     >
-                        <MeetingView /> 
+                        <MeetingView />
                     </ConditionalRender>
                 </ConditionalRender>
             )}
