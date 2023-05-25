@@ -77,66 +77,40 @@ const Component = () => {
         togglePaymentFormEvent();
     }, []);
 
-    const handleCloseMobilePanel = useCallback((e: MouseEvent | TouchEvent) => {
-        e.preventDefault();
-        togglePaymentFormEvent();
-    }, []);
+    const handleCloseMobilePanel = () => {
+        toggleUsersPanelEvent();
+    };
 
     const toggleOutsideUserPanel = (e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
+        e.preventDefault();
         toggleUsersPanelEvent(false);
-    };
-
-    const toggleOutsidePaymentsPanel = (e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        togglePaymentFormEvent(false);
     };
 
     const commonContent = useMemo(
         () => (
-            <>
-                <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
-                    <Fade in={isUsersOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile && isPortraitLayout,
-                            })}
-                        >
-                            <CustomScroll>
-                                {isMeetingHost && <MeetingAccessRequests />}
-                                <MeetingUsersList />
-                                <MeetingInviteParticipants
-                                    onAction={
-                                        isMobile
-                                            ? handleCloseMobilePanel
-                                            : undefined
-                                    }
-                                />
-                            </CustomScroll>
-                        </CustomPaper>
-                    </Fade>
-                </ClickAwayListener>
-                {/* <ClickAwayListener onClickAway={toggleOutsidePaymentsPanel}>
-                    <Fade in={isPaymentOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile,
-                            })}
-                        >
-                            <ConditionalRender condition={!isOwner}>
-                                <PaymentForm onClose={handleClosePayment} />
-                            </ConditionalRender>
-                            <ConditionalRender condition={isOwner}>
-                                <MeetingMonetization
-                                    onUpdate={handleUpdateMonetization}
-                                />
-                            </ConditionalRender>
-                        </CustomPaper>
-                    </Fade>
-                </ClickAwayListener> */}
-            </>
+            <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
+                <Fade in={isUsersOpen}>
+                    <CustomPaper
+                        variant="black-glass"
+                        className={clsx(styles.commonOpenPanel, {
+                            [styles.mobile]: isMobile && isPortraitLayout,
+                        })}
+                    >
+                        <CustomScroll>
+                            {isMeetingHost && <MeetingAccessRequests />}
+                            <MeetingUsersList />
+                            <MeetingInviteParticipants
+                                onAction={
+                                    isMobile
+                                        ? handleCloseMobilePanel
+                                        : undefined
+                                }
+                            />
+                        </CustomScroll>
+                    </CustomPaper>
+                </Fade>
+            </ClickAwayListener>
         ),
         [
             isOwner,
@@ -177,15 +151,16 @@ const Component = () => {
                 {!isMobile ? (
                     <> {commonContent}</>
                 ) : (
-                    <ConditionalRender condition={isUsersOpen || isPaymentOpen}>
+                    <ConditionalRender condition={isUsersOpen}>
                         <CustomGrid className={styles.mobilePanelsWrapper}>
                             <CustomScroll>
-                                <CloseIcon
+                                <CustomGrid
                                     onClick={handleCloseMobilePanel}
                                     className={styles.closeIcon}
-                                    width="40px"
-                                    height="40px"
-                                />
+                                >
+                                    <CloseIcon width="40px" height="40px" />
+                                </CustomGrid>
+
                                 {commonContent}
                             </CustomScroll>
                         </CustomGrid>

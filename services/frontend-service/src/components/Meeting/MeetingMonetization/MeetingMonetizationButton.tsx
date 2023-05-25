@@ -22,6 +22,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import clsx from 'clsx';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { $isPortraitLayout } from 'src/store';
 
 export const MeetingMonetizationButton = () => {
     const paymentIntent = useStore($paymentIntent);
@@ -32,6 +33,7 @@ export const MeetingMonetizationButton = () => {
     const isCreatePaymentIntentPending = useStore(
         createPaymentIntentWithData.pending,
     );
+    const isPortraitLayout = useStore($isPortraitLayout);
     const {
         value: togglePopover,
         onToggleSwitch: handleTogglePopover,
@@ -131,7 +133,10 @@ export const MeetingMonetizationButton = () => {
                     horizontal: 'right',
                 }}
                 PaperProps={{
-                    className: styles.popoverMonetization,
+                    className: clsx(styles.popoverMonetization, {
+                        [styles.portrait]: isPortraitLayout,
+                        [styles.landscape]: !isPortraitLayout && isMobile,
+                    }),
                 }}
             >
                 <CustomPaper

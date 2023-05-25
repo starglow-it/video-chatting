@@ -31,8 +31,6 @@ import clsx from 'clsx';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { useStore } from 'effector-react';
-import { $isPortraitLayout } from 'src/store';
 
 const validationSchema = yup.object({
     note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
@@ -79,7 +77,6 @@ type FormType = { note: string };
 
 const Component = () => {
     const { isMobile } = useBrowserDetect();
-    const isPortraitLayout = useStore($isPortraitLayout);
     const materialStyles = useStyles();
 
     const resolver = useYupValidationResolver<FormType>(validationSchema);
@@ -124,7 +121,6 @@ const Component = () => {
                 <CustomPaper
                     className={clsx(styles.commonOpenPanel, {
                         [styles.mobile]: isMobile,
-                        [styles.portrait]: isMobile && isPortraitLayout
                     })}
                     variant="black-glass"
                 >
