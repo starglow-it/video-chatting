@@ -189,22 +189,6 @@ const Component = ({
         [businessCategories.list],
     );
 
-    const defaultBusiness = useMemo(() => {
-        return businessCategoriesOptions.filter(
-            ({ key }) =>
-                key === 'office' ||
-                key === 'breathing' ||
-                key === 'energizing' ||
-                key === 'calming' ||
-                key === 'coaching' ||
-                key === 'therapy',
-        );
-    }, [businessCategories]);
-
-    useEffect(() => {
-        if (defaultBusiness.length && template?.draft) setValue('tags', defaultBusiness);
-    }, [defaultBusiness]);
-
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string =
         errors?.description?.[0]?.message || '';
