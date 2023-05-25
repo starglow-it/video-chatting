@@ -133,23 +133,6 @@ const Component = ({
                     />
                     {optionItems}
                 </CustomGrid>
-                <CustomGrid
-                    container
-                    gap={0.25}
-                    flexWrap="nowrap"
-                    className={styles.policiesLink}
-                >
-                    <CustomGrid item flex={0}>
-                        <RoundInfoIcon width="24px" height="24px" />
-                    </CustomGrid>
-                    <CustomTypography
-                        variant="body2"
-                        dangerouslySetInnerHTML={{
-                            __html: textWithLinks,
-                        }}
-                        className={styles.text}
-                    />
-                </CustomGrid>
             </CustomPaper>
 
             <CustomGrid

@@ -374,22 +374,6 @@ const Component = () => {
         [categories],
     );
 
-    const defaultBusiness = useMemo(() => {
-        return businessCategoriesOptions.filter(
-            ({ key }) =>
-                key === 'office' ||
-                key === 'breathing' ||
-                key === 'energizing' ||
-                key === 'calming' ||
-                key === 'coaching' ||
-                key === 'therapy',
-        );
-    }, [categories]);
-
-    useEffect(() => {
-        if (defaultBusiness.length) setValue('tags', defaultBusiness);
-    }, [defaultBusiness]);
-
     return (
         <CustomGrid container className={styles.wrapper}>
             <FormProvider {...methods}>
