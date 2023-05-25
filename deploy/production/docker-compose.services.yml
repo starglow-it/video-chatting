@@ -1,14 +1,13 @@
-version: '3.7'
-
+version: '3.8'
+name: services
 networks:
-  traefik:
-    external:
-      name: liveoffice_traefik
-  liveoffice_production:
+  traefikpublic:
+    name: traefikpublic
+    external: true
+  internal:
 
 services:
   mongo:
-    container_name: production_mongodb
     image: mongo:5.0
     command: [ "--replSet", "rs0", "--bind_ip_all" ]
     hostname: mongo
@@ -16,16 +15,16 @@ services:
       test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --quiet) -eq 1
       interval: 10s
       start_period: 30s
-    restart: always
+    restart: unless-stopped
     ports:
-      - '127.0.0.1:56100:27017'
+      - '27017:27017'
     volumes:
       - /data/liveoffice/mongo:/data/db
     networks:
-      - liveoffice_production
+      - internal
 
   rabbit:
-    container_name: production_rabbitmq
+
     image: rabbitmq:3-management
     restart: unless-stopped
     hostname: rabbitmq
@@ -40,17 +39,18 @@ services:
     volumes:
       - /data/liveoffice/rabbit:/var/lib/rabbitmq
     networks:
-      - liveoffice_production
+      - internal
 
   livekit-service:
-    container_name: production_livekit
+    env_file:
+      - env
     build:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
       args:
-        - LIVEKIT_IP
-        - LIVEKIT_API_KEY
-        - LIVEKIT_API_SECRET
+        - LIVEKIT_IP=108.61.203.79
+        - LIVEKIT_API_KEY=APIwj2xEkRuhwY9
+        - LIVEKIT_API_SECRET=qZJdMzPHyHAOnYlyqZeaHlJmyqpJYgHmIksXxzOTtbY
     restart: unless-stopped
     ports:
       - "7880:7880"
@@ -59,22 +59,23 @@ services:
       - "6789:6789"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=liveoffice_traefik"
-      - "traefik.http.routers.livekit.rule=Host(`livekit.app.theliveoffice.com`)"
-      - "traefik.http.routers.livekit.entrypoints=https"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.livekit.rule=Host(`tlo-livekit.anhtuan57.click`)"
+      - "traefik.http.routers.livekit.entrypoints=websecure"
       - "traefik.http.routers.livekit.tls=true"
       - "traefik.http.services.livekit.loadbalancer.server.port=7880"
     networks:
-      - liveoffice_production
-      - traefik
+      - internal
+      - traefikpublic
 
   frontend-service:
-    container_name: production_frontend
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: services/frontend-service/Dockerfile
       args:
-        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+        - VULTR_STORAGE_HOSTNAME=theliveoffice-prod.s3.us-east-2.amazonaws.com
     depends_on:
       - gateway-service
     restart: unless-stopped
@@ -83,34 +84,20 @@ services:
     environment:
       - WAIT_HOSTS=gateway-service:3000
       - WAIT_TIMEOUT=60000
-      - FRONTEND_URL
-      - GATEWAY_PORT=3000
-      - GATEWAY_HOST=gateway-service
-      - TURN_URL
-      - TURN_PASSWORD
-      - TURN_USERNAME
-      - TURN_PORT
-      - LIVEKIT_WSS
-      - MEETING_SOCKET_URL
-      - DEFAULT_SERVER_IP
-      - VULTR_STORAGE_HOSTNAME
-      - STRIPE_PUBLIC_API_KEY
-      - BASE_ENV_DOMAIN
-      - SUPPORT_EMAIL
-      - GEOLOCATION_API_KEY
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=liveoffice_traefik"
-      - "traefik.http.routers.frontend.rule=Host(`app.theliveoffice.com`)"
-      - "traefik.http.routers.frontend.entrypoints=https"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.frontend.rule=Host(`aws.nongdan.dev`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
     networks:
-      - traefik
-      - liveoffice_production
+      - traefikpublic
+      - internal
 
   frontend-admin-service:
-    container_name: production_frontend-admin
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: services/frontend-admin-service/Dockerfile
@@ -120,26 +107,23 @@ services:
     environment:
       - WAIT_HOSTS=gateway-service:3000
       - WAIT_TIMEOUT=60000
-      - FRONTEND_URL=https://admin.app.theliveoffice.com
-      - GATEWAY_PORT=3000
-      - GATEWAY_HOST=gateway-service
-      - DEFAULT_SERVER_IP
-      - VULTR_STORAGE_HOSTNAME
     ports:
       - '9000:9000'
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=liveoffice_traefik"
-      - "traefik.http.routers.front_admin.rule=Host(`admin.app.theliveoffice.com`) && PathPrefix(`/`)"
-      - "traefik.http.routers.front_admin.entrypoints=https"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.front_admin.rule=Host(`aws-admin.nongdan.dev`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_admin.entrypoints=websecure"
       - "traefik.http.routers.front_admin.tls=true"
+      - "traefik.http.routers.front_admin.tls.certresolver=simple-resolver"
       - "traefik.http.services.front_admin.loadbalancer.server.port=9000"
     networks:
-      - liveoffice_production
-      - traefik
+      - internal
+      - traefikpublic
 
   gateway-service:
-    container_name: production_gateway
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/gateway-service/Dockerfile
@@ -149,22 +133,25 @@ services:
       WAIT_TIMEOUT: 60000
     ports:
       - '3000:3000'
-    depends_on:
-      - mongo
-      - rabbit
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=liveoffice_traefik"
-      - "traefik.http.routers.gateway.rule=Host(`app.theliveoffice.com`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.gateway.entrypoints=https"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.gateway.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls=true"
+      - "traefik.http.routers.gateway.middlewares=customcorsheader@docker"
       - "traefik.http.services.gateway.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.gateway.headers.accesscontrolallowmethods=GET,POST,OPTIONS,PUT,DELETE"
+      - "traefik.http.middlewares.customcorsheader.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.customcorsheader.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.customcorsheader.headers.addvaryheader=true"
     networks:
-      - traefik
-      - liveoffice_production
+      - traefikpublic
+      - internal
 
   socket-service:
-    container_name: production_socket
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/socket-service/Dockerfile
@@ -176,17 +163,18 @@ services:
       - '8082:8080'
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=liveoffice_traefik"
-      - "traefik.http.routers.socket.rule=Host(`app.theliveoffice.com`) && PathPrefix(`/socket.io`)"
-      - "traefik.http.routers.socket.entrypoints=https"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.socket.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.socket.entrypoints=websecure"
       - "traefik.http.routers.socket.tls=true"
       - "traefik.http.services.socket.loadbalancer.server.port=8080"
     networks:
-      - traefik
-      - liveoffice_production
+      - traefikpublic
+      - internal
 
   meeting-socket-service:
-    container_name: production_meeting-socket
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/meeting-socket-service/Dockerfile
@@ -198,18 +186,19 @@ services:
       - '8180:8180'
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=liveoffice_traefik"
-      - "traefik.http.routers.meeting_socket.rule=Host(`socket.app.theliveoffice.com`)"
-      - "traefik.http.routers.meeting_socket.entrypoints=https"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.meeting_socket.rule=Host(`aws-socket.nongdan.dev`)"
+      - "traefik.http.routers.meeting_socket.entrypoints=websecure"
       - "traefik.http.routers.meeting_socket.tls=true"
       - "traefik.http.services.meeting_socket.loadbalancer.server.port=8180"
       - "io.portainer.accesscontrol.public"
     networks:
-      - liveoffice_production
-      - traefik
+      - internal
+      - traefikpublic
 
   payment-service:
-    container_name: production_payment
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/payment-service/Dockerfile
@@ -221,17 +210,20 @@ services:
       - "5000:5000"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=liveoffice_traefik"
-      - "traefik.http.routers.payments.rule=Host(`app.theliveoffice.com`) && PathPrefix(`/payments`)"
-      - "traefik.http.routers.payments.entrypoints=https"
+      - "traefik.docker.network=traefikpublic"
+      - "traefik.http.routers.payments.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/payments`)"
+      - "traefik.http.routers.payments.entrypoints=websecure"
       - "traefik.http.routers.payments.tls=true"
       - "traefik.http.services.payments.loadbalancer.server.port=5000"
     networks:
-      - traefik
-      - liveoffice_production
+      - internal
+      - traefikpublic
+
 
   core-service:
-    container_name: production_core
+    env_file:
+      - env
+
     build:
       context: ../../
       dockerfile: ./services/core-service/Dockerfile
@@ -240,10 +232,11 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     networks:
-      - liveoffice_production
+      - internal
 
   auth-service:
-    container_name: production_auth
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/auth-service/Dockerfile
@@ -252,10 +245,12 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     networks:
-      - liveoffice_production
+      - internal
 
   notification-service:
-    container_name: production_notification
+    env_file:
+      - env
+
     build:
       context: ../../
       dockerfile: ./services/notification-service/Dockerfile
@@ -264,10 +259,11 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     networks:
-      - liveoffice_production
+      - internal
 
   media-server-service:
-    container_name: production_media-server
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/media-server-service/Dockerfile
@@ -276,10 +272,11 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     networks:
-      - liveoffice_production
+      - internal
 
   scaling-service:
-    container_name: production_scaling
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/scaling-service/Dockerfile
@@ -288,10 +285,11 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     networks:
-      - liveoffice_production
+      - internal
 
   config-service:
-    container_name: production_config
+    env_file:
+      - env
     build:
       context: ../../
       dockerfile: ./services/config-service/Dockerfile
@@ -299,50 +297,5 @@ services:
     depends_on:
       - mongo
       - rabbit
-    environment:
-      - RABBIT_MQ_CORE_QUEUE=rabbitMqCoreQueue
-      - RABBIT_MQ_SOCKET_QUEUE=rabbitMqSocketQueue
-      - RABBIT_MQ_AUTH_QUEUE=rabbitMqAuthQueue
-      - RABBIT_MQ_PAYMENT_QUEUE=rabbitMqPaymentQueue
-      - RABBIT_MQ_NOTIFICATIONS_QUEUE=rabbitMqNotificationsQueue
-      - RABBIT_MQ_MEDIA_SERVER_QUEUE=rabbitMqMediaServerQueue
-      - RABBIT_MQ_SCALING_QUEUE=rabbitMqScalingQueue
-      - RABBIT_MQ_USER
-      - RABBIT_MQ_PASS
-      - RABBIT_MQ_HOST
-      - RABBIT_MQ_CORE_HOST=${DEFAULT_SERVER_IP}
-      - RABBIT_MQ_CORE_PORT
-      - VULTR_UPLOAD_BUCKET
-      - VULTR_STORAGE_HOSTNAME
-      - VULTR_SECRET_ACCESS_KEY
-      - VULTR_ACCESS_KEY
-      - VULTR_SNAPSHOT_ID
-      - VULTR_API_KEY
-      - STRIPE_API_KEY
-      - STRIPE_WEBHOOK_SECRET
-      - STRIPE_EXPRESS_WEBHOOK_SECRET
-      - LIVEKIT_API_KEY
-      - LIVEKIT_API_SECRET
-      - LIVEKIT_HOST
-      - NODE_ENV=production
-      - PORT=4000
-      - EMAIL_SERVICE
-      - ENVIRONMENT=production
-      - GATEWAY_PORT=3000
-      - FRONTEND_URL
-      - JWT_SECRET
-      - MONGO_URI
-      - SMTP_HOST
-      - SMTP_PORT
-      - SMTP_USER
-      - SMTP_PASS
-      - DEFAULT_SERVER_IP
-      - DEFAULT_DOMAIN
-      - MANDRILL_API_KEY
-      - SUPPORT_SCALING
-      - NUMBER_OF_ACTIVE_SERVERS
-      - SUPPORT_EMAIL
-      - ADMIN_EMAIL
-      - ADMIN_PASSWORD
     networks:
-      - liveoffice_production
+      - internal

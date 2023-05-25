@@ -38,8 +38,8 @@ import { CoreModule } from '../../services/core/core.module';
           config: {
             accessKeyId: allConfig.vultrAccessKey,
             secretAccessKey: allConfig.vultrSecretAccessKey,
-            endpoint: `https://${allConfig.vultrStorageHostname}`,
-            s3ForcePathStyle: true,
+            // endpoint: `https://${allConfig.vultrStorageHostname}`,
+            // s3ForcePathStyle: true,
           },
         };
       },

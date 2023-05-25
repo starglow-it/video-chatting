@@ -65,3 +65,24 @@ sudo ./svc.sh uninstall
 ./config.sh remove --token <APVBWUPUULB7BY67QKNT5CDEEULSG>
 
 ```
+
+
+###### migrate
+```shell
+# backup
+docker exec services-mongo-1 rm -rf /data/db/tlo-backup
+docker exec services-mongo-1 mongodump -d theliveoffice -o /data/db/tlo-backup
+scp -r /data/liveoffice/mongo/tlo-backup root@18.190.108.231:/data/liveoffice/mongo/tlo-backup
+
+
+new mongodb
+# drop db
+docker exec services-mongo-1 mongo --eval 'db.dropDatabase();' theliveoffice 
+
+# restore
+#mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
+docker exec services-mongo-1 mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
+
+
+
+```

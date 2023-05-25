@@ -29,7 +29,7 @@ export class AwsConnectorService {
 
   getUploadKeyFromUrl(url) {
     return url.replace(
-      `https://${this.vultrStorageHostname}/${this.vultrUploadBucket}/`,
+      `https://${this.vultrStorageHostname}/`,
       '',
     );
   }
