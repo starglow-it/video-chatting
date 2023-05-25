@@ -11,9 +11,9 @@ import { ConfigClientService } from "../services/config/config.service";
             imports: [ConfigModule],
             inject: [ConfigClientService],
             useFactory: async (config: ConfigClientService) => {
-              const allConfig = await config.getAll();
+              const uri = await config.get('mongoUri');
               return {
-                uri: allConfig.mongoUri,
+                uri,
               };
             },
           }),

@@ -118,20 +118,20 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
 
     private async syncDataLocal() {
         const entities = [
-            'User',
-            'CommonTemplate',
-            'UserTemplate',
+            'MeetingUser',
+            'Meeting',
         ];
 
         const collections = await this.getRecords(entities);
+        collections.map(item => console.log(item.name, item.records))
         await this.handleUpdateData(collections);
+
     }
 
     private async syncDataDemo() {
         const entities = [
-            'User',
-            'CommonTemplate',
-            'UserTemplate',
+            'MeetingUser',
+            'Meeting',
         ];
 
         const collections = await this.getRecords(entities);
@@ -140,9 +140,8 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
 
     private async syncDataProd() {
         const entities = [
-            'User',
-            'CommonTemplate',
-            'UserTemplate',
+            'MeetingUser',
+            'Meeting',
         ];
 
         const collections = await this.getRecords(entities);

@@ -7,16 +7,11 @@ import { TasksModule } from './modules/tasks/tasks.module';
 import { TemplatesModule } from './modules/templates/templates.module';
 import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module';
 import { ConfigModule } from './services/config/config.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://mongo:27017/theliveoffice', {
-      keepAlive: true,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      retryWrites: true,
-      w: 'majority',
-    }),
+    DatabaseModule,
     ScheduleModule.forRoot(),
     MeetingsModule,
     UsersModule,
