@@ -10,18 +10,9 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 // types
 import { OptionItemProps } from '@components/TemplateManagement/EditPrivacy/OptionItem/types';
 
-// icons
-import { SuccessIcon } from 'shared-frontend/icons/OtherIcons/SuccessIcon';
-
 // styles
 import { Translation } from '@library/common/Translation/Translation';
 import styles from './OptionItem.module.scss';
-
-const statementsKeys = [
-    { id: '1', key: 'availability' },
-    { id: '2', key: 'editable' },
-    { id: '3', key: 'changePrivacyPossibility' },
-];
 
 const Component = ({
     isActive,
@@ -33,22 +24,17 @@ const Component = ({
     onUpgradeClick,
 }: OptionItemProps) => {
     const statements = useMemo(
-        () =>
-            statementsKeys.map(({ id, key }) => (
-                <CustomGrid key={id} item container gap={1} alignItems="center">
-                    <SuccessIcon
-                        width="16px"
-                        height="16px"
-                        className={clsx(styles.successIcon, { [styles.disabled]: disabled })}
-                    />
-                    <CustomTypography
-                        variant="body2"
-                        nameSpace={nameSpace}
-                        translation={`${translationKey}.${key}`}
-                        className={styles.statement}
-                    />
-                </CustomGrid>
-            )),
+        () => (
+            <CustomGrid item container gap={1} alignItems="center">
+                <CustomTypography
+                    variant="body2"
+                    nameSpace={nameSpace}
+                    translation={`${translationKey}.availability`}
+                    className={styles.statement}
+                />
+            </CustomGrid>
+        ),
+
         [translationKey, disabled],
     );
 

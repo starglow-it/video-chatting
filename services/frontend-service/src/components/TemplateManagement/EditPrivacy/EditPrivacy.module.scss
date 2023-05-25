@@ -34,6 +34,7 @@
   bottom: rem(28px);
   left: 50%;
   transform: translate(-50%);
+  z-index: 999;
 
   .button {
       max-width: rem(160px);

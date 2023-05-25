@@ -94,25 +94,6 @@ const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
                         >
                             <Socials buttonClassName={styles.socialBtn} />
                         </CustomAccordion>
-                        <CustomAccordion
-                            AccordionIcon={<SignBoardIcon width="24px" height="24px" />}
-                            currentAccordionId={currentAccordionId}
-                            accordionId="signboard"
-                            onChange={handleChangeAccordion}
-                            label={
-                                <Translation
-                                    nameSpace="meeting"
-                                    translation="templates.signBoard"
-                                />
-                            }
-                        >
-                            <ChooseSignBoard
-                                key={currentAccordionId}
-                                formKey="signBoard"
-                                optionWidth={145}
-                                optionHeight={98}
-                            />
-                        </CustomAccordion>
                     </CustomGrid>
                 </CustomScroll>
             </CustomGrid>
