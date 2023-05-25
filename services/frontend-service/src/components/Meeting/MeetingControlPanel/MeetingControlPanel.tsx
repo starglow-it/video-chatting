@@ -16,8 +16,6 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 
 // components
-import { MeetingMonetization } from '@components/Meeting/MeetingMonetization/MeetingMonetization';
-import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
 import { MeetingUsersList } from '@components/Meeting/MeetingUsersList/MeetingUsersList';
@@ -26,7 +24,7 @@ import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAv
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
-import { setIsSideUsersOpenEvent } from '../../../store';
+import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
     $isMeetingHostStore,
     $isOwner,
@@ -56,6 +54,7 @@ const Component = () => {
     const users = useStore($meetingUsersStore);
     const isPaymentOpen = useStore($isTogglePayment);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     useEffect(() => {
         (async () => {
@@ -78,7 +77,8 @@ const Component = () => {
         togglePaymentFormEvent();
     }, []);
 
-    const handleCloseMobilePanel = useCallback(() => {
+    const handleCloseMobilePanel = useCallback((e: MouseEvent | TouchEvent) => {
+        e.preventDefault();
         togglePaymentFormEvent();
     }, []);
 
@@ -100,7 +100,7 @@ const Component = () => {
                         <CustomPaper
                             variant="black-glass"
                             className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile,
+                                [styles.mobile]: isMobile && isPortraitLayout,
                             })}
                         >
                             <CustomScroll>

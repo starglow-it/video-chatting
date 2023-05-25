@@ -254,6 +254,7 @@ const Component = () => {
                     open={isOpenDrawer}
                     onClose={offDrawer}
                     onOpen={onDrawer}
+                    className={styles.mainDrawer}
                 >
                     <CustomPaper
                         className={clsx(styles.drawer, {
