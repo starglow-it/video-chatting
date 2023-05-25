@@ -2,6 +2,14 @@
 - hosts: tlo
   become: true
   tasks:
+    - name: Install net packages
+      shell: |
+        apt-get update
+        apt-get -y net-tools
+      tags:
+        - install
+    # ==================================================================
+
     - name: Check /etc/rc.local exists
       stat:
         path: /etc/rc.local
@@ -66,7 +74,7 @@
       ansible.builtin.cron:
         name: "clean up old images if disk almost full"
         minute: "0"
-        job: sh -c "if [ $(df / --output='pcent' | grep -o "[0-9]*") -gt 90 ]; then docker system prune -af; fi"
+        job: sh -c "if [ $(df / --output='pcent' | grep -o "[0-9]*") -gt 90 ]; then docker system prune -f; fi"
       tags:
         - cronjob
         - all
