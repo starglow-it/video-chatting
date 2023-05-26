@@ -764,7 +764,6 @@ export class UserTemplatesController {
               },
               session,
             });
-          console.log(1);
           await this.roomStatisticService.delete({
             query: {
               template: commonTemplate._id,
@@ -772,10 +771,8 @@ export class UserTemplatesController {
             session,
           });
         }
-        console.log(2);
 
         await this.deleteMedias({ userTemplate }, session);
-        console.log(3);
 
         await this.userTemplatesService.deleteUserTemplate(
           { _id: templateId },
