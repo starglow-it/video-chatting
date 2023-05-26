@@ -119,14 +119,17 @@ export class AwsConnectorService {
     const objects = await this.s3.listObjects(params).promise();
     console.log("deleteFolder objects ", objects);
 
-    await this.s3
-      .deleteObjects({
-        Bucket: this.vultrUploadBucket,
-        Delete: {
-          Objects: objects.Contents?.map(({ Key }) => ({ Key })) ?? [],
-        },
-      })
-      .promise();
+    // make sure objects.Contents have objects, if not the function will be failed
+    if (objects.Contents.length === 0) {
+      await this.s3
+        .deleteObjects({
+          Bucket: this.vultrUploadBucket,
+          Delete: {
+            Objects: objects.Contents?.map(({ Key }) => ({ Key })) ?? [],
+          },
+        })
+        .promise();
+    }
 
     console.log("deleteFolder keyFolder ", keyFolder);
 
