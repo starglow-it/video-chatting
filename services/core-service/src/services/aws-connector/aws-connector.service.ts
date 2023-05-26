@@ -120,7 +120,7 @@ export class AwsConnectorService {
     console.log("deleteFolder objects ", objects);
 
     // make sure objects.Contents have objects, if not the function will be failed
-    if (objects.Contents.length === 0) {
+    if (objects.Contents.length > 0) {
       await this.s3
         .deleteObjects({
           Bucket: this.vultrUploadBucket,
