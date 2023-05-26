@@ -5,3 +5,4 @@ export * from './users';
 export * from './meeting';
 export * from './config';
 export * from './media';
+export * from './migration';
