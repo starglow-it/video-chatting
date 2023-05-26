@@ -205,11 +205,13 @@ export class UserTemplate {
 
   @Prop({
     type: [mongoose.Schema.Types.Number],
+    default: []
   })
   usersSize: number[];
 
   @Prop({
     type: [mongoose.Schema.Types.String],
+    default: []
   })
   indexUsers: string[];
 
@@ -254,7 +256,8 @@ export class UserTemplate {
   templateType: 'video' | 'image';
 
   @Prop({
-    type: mongoose.Schema.Types.Boolean
+    type: mongoose.Schema.Types.Boolean,
+    default: false
   })
   isAcceptNoLogin: boolean;
 }

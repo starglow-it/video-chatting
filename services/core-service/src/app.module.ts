@@ -27,22 +27,12 @@ import { AppController } from './app.controller';
 import { MediaCategory, MediaCategorySchema } from './schemas/media-category.schema';
 import { Media, MediaSchema } from './schemas/media.schema';
 import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
     ConfigModule,
     ScheduleModule.forRoot(),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigClientService],
-      useFactory: async (config: ConfigClientService) => {
-        const allConfig = await config.getAll();
-
-        return {
-          uri: allConfig.mongoUri,
-        };
-      },
-    }),
     UsersModule,
     UserTokenModule,
     MeetingsModule,
@@ -59,6 +49,7 @@ import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema
     CountryStatisticsModule,
     RoomsStatisticsModule,
     TranscodeModule,
+    DatabaseModule,
     MongooseModule.forFeature([
       { name: MediaCategory.name, schema: MediaCategorySchema},
       { name: Media.name, schema: MediaSchema},
