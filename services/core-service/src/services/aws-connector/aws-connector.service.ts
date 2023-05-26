@@ -117,7 +117,7 @@ export class AwsConnectorService {
     } as S3.Types.ListObjectsRequest;
 
     const objects = await this.s3.listObjects(params).promise();
-    logger.info("deleteFolder objects" + objects);
+    this.logger.info("deleteFolder objects" + objects);
 
     await this.s3
       .deleteObjects({
@@ -128,7 +128,7 @@ export class AwsConnectorService {
       })
       .promise();
 
-    logger.info("deleteFolder keyFolder" + keyFolder);
+    this.logger.info("deleteFolder keyFolder" + keyFolder);
 
     return this.s3
       .deleteObject({
