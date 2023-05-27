@@ -73,14 +73,16 @@ export class UploadService {
 
     const objects = await this.s3.listObjects(params).promise();
 
-    await this.s3
-      .deleteObjects({
-        Bucket: this.vultrUploadBucket,
-        Delete: {
-          Objects: objects.Contents?.map(({ Key }) => ({ Key })) ?? [],
-        },
-      })
-      .promise();
+    if (objects.Contents.length > 0) {
+      await this.s3
+        .deleteObjects({
+          Bucket: this.vultrUploadBucket,
+          Delete: {
+            Objects: objects.Contents?.map(({Key}) => ({Key})) ?? [],
+          },
+        })
+        .promise();
+    }
 
     return this.s3
       .deleteObject({
