@@ -1,80 +1,33 @@
 # ansible-playbook main.yml -i inventory.yml -l liveofficeStaging-aws -t "all"
-- hosts: tlo
+- hosts: production
   become: true
+  roles:
+    - role: common
+
+- hosts: Staging
+  become: true
+  roles:
+    - role: common
+
+- hosts: turn-server
+  become: true
+  roles:
+    - role: common
   tasks:
-    - name: Install net packages
-      shell: |
-        apt-get update
-        apt-get -y net-tools
+    - name: copy turn-server
+      ansible.builtin.copy:
+        src: files/turn-server
+        dest: /srv/
+        follow: yes
       tags:
-        - install
-    # ==================================================================
-
-    - name: Check /etc/rc.local exists
-      stat:
-        path: /etc/rc.local
-      register: rc_local_exist
-      tags:
-        - rc.local
+        - turn-server
         - all
-
-    - name: enable /etc/rc.local
-      ansible.builtin.shell: |
-        echo '#!/bin/bash' > /etc/rc.local
-        chmod +x /etc/rc.local
-        systemctl start rc-local
-      when: not rc_local_exist.stat.exists
+    - name: docker-compose up
+      shell:
+        cmd: |
+          cd /srv/turn-server
+          docker-compose up -d
+        warn: False
       tags:
-        - rc.local
-        - all
-    # ==================================================================
-
-    - name: Check docker-compose exists
-      stat:
-        path: /usr/bin/docker-compose
-      register: docker_compose_exist
-      tags:
-        - docker-compose
-        - all
-
-    - name: Install docker compose
-      ansible.builtin.shell: |
-        curl -SL https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-        chmod +x /usr/local/bin/docker-compose
-        ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-      when: not docker_compose_exist.stat.exists
-      tags:
-        - docker-compose
-        - all
-
-    # ==================================================================
-    - name: Check swap exists
-      stat:
-        path: /swap
-      register: swap_exist
-      tags:
-        - swap
-        - all
-
-    - name: Setup swap
-      ansible.builtin.shell: |
-        dd if=/dev/zero of=/swap count=4096 bs=1MiB
-        chmod 600 /swap
-        mkswap /swap
-        swapon /swap
-        echo "swapon /swap" >> /etc/rc.local
-        cat /etc/rc.local
-      when: not swap_exist.stat.exists
-      tags:
-        - swap
-        - all
-    # ==================================================================
-
-    - name: Ensure clean up old images if disk almost full job exists.
-      ansible.builtin.cron:
-        name: "clean up old images if disk almost full"
-        minute: "0"
-        job: sh -c "if [ $(df / --output='pcent' | grep -o "[0-9]*") -gt 90 ]; then docker system prune -f; fi"
-      tags:
-        - cronjob
+        - turn-server
         - all
