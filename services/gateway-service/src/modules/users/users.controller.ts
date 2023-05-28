@@ -552,11 +552,9 @@ export class UsersController {
     },
   ) {
     try {
-      console.log("1");
       const senderUser = await this.coreService.findUserById({
         userId: req.user.userId,
       });
-      console.log("2");
 
       const template = await this.userTemplatesService.getUserTemplateById({
         id: data.templateId,
@@ -568,7 +566,6 @@ export class UsersController {
       const tzOffset = getTzOffset(startAt, data.timeZone);
       const meetingUrl = `${this.frontendUrl}/room/${template.customLink || template.id
         }`
-      console.log("3");
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
@@ -588,7 +585,6 @@ export class UsersController {
         Buffer.from(content),
         key,
       );
-      console.log("4");
 
       const startAtDate = formatDate(startAt, data.timeZone);
 
@@ -613,7 +609,6 @@ export class UsersController {
         icsEventLink: icsLink,
         icalEventContent: content
       });
-      console.log("5");
 
       this.notificationService.sendEmail({
         template: {
@@ -636,7 +631,6 @@ export class UsersController {
         userId: req.user.userId,
         templateId: template.id,
       });
-      console.log("6");
 
       return {
         success: true,

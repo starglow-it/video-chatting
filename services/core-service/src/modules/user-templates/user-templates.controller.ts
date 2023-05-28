@@ -764,7 +764,6 @@ export class UserTemplatesController {
               },
               session,
             });
-
           await this.roomStatisticService.delete({
             query: {
               template: commonTemplate._id,

@@ -307,35 +307,27 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   async login(
     @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
-    console.log('1');
     const isUserExists = await this.coreService.checkIfUserExists({
       email: body.email,
     });
-    console.log('2');
-
 
     if (!isUserExists) {
       throw new DataValidationException(USER_NOT_FOUND);
     }
-    console.log('3');
 
     const user = await this.coreService.findUserByEmail({
       email: body.email,
     });
-    console.log('4');
 
     if (!user.isConfirmed || user.isResetPasswordActive) {
       throw new DataValidationException(USER_NOT_CONFIRMED);
     }
-    console.log('5');
 
     if (user.isBlocked) {
       throw new DataValidationException(USER_IS_BLOCKED);
     }
-    console.log('6');
 
     const result = await this.authService.loginUser(body);
-    console.log('7');
 
     return {
       success: true,
