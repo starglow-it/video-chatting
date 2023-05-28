@@ -109,10 +109,7 @@ export class SeederService {
   }
 
   async readFileAndUpload({ filePath, key }: { filePath: string, key: string }) {
-    console.log("filePath", filePath);
-    console.log("key", key);
     const buf = readFileSync(join(process.cwd(), filePath));
-    console.log("buf", join(process.cwd(), filePath));
 
     const uploadKey = key;
     await this.awsService.deleteResource(uploadKey);
