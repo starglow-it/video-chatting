@@ -115,7 +115,7 @@ export class SeederService {
     console.log("buf", join(process.cwd(), filePath));
 
     const uploadKey = key;
-    this.awsService.deleteResource(uploadKey);
+    await this.awsService.deleteResource(uploadKey);
     const url = await this.awsService.uploadFile(
       buf,
       uploadKey
