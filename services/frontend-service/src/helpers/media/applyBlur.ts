@@ -76,7 +76,7 @@ class BackgroundManagerInstance {
             if (videoTrack && this.videoEffects && isAuraActive) {
                 videoTrack.enabled = true;
 
-                blurTrack = this.videoEffects.setEffect(
+                blurTrack = await this.videoEffects.setEffect(
                     this.effectBackground,
                     videoTrack,
                 );
