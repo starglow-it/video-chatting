@@ -231,39 +231,38 @@ const MeetingContainer = memo(() => {
         return (
             <CustomGrid className={styles.loadingRoom}>
                 <div className={styles.loading}>
-                    <div className={styles['loading-text']}>
-                        <span className={styles['loading-text-words']}>W</span>
-                        <span className={styles['loading-text-words']}>e</span>
-                        <span className={styles['loading-text-words']}>&apos;</span>
-                        <span className={styles['loading-text-words']}>r</span>
-                        <span className={styles['loading-text-words']}>e</span>
-                        <span className={styles['loading-text-words']}> </span>
-                        <span className={styles['loading-text-words']}>S</span>
-                        <span className={styles['loading-text-words']}>e</span>
-                        <span className={styles['loading-text-words']}>t</span>
-                        <span className={styles['loading-text-words']}>t</span>
-                        <span className={styles['loading-text-words']}>i</span>
-                        <span className={styles['loading-text-words']}>n</span>
-                        <span className={styles['loading-text-words']}>g</span>
-                        <span className={styles['loading-text-words']}> </span>
-                        <span className={styles['loading-text-words']}>u</span>
-                        <span className={styles['loading-text-words']}>p</span>
-                        <span className={styles['loading-text-words']}> </span>
-                        <span className={styles['loading-text-words']}>y</span>
-                        <span className={styles['loading-text-words']}>o</span>
-                        <span className={styles['loading-text-words']}>u</span>
-                        <span className={styles['loading-text-words']}>r</span>
-                        <span className={styles['loading-text-words']}> </span>
-                        <span className={styles['loading-text-words']}>R</span>
-                        <span className={styles['loading-text-words']}>o</span>
-                        <span className={styles['loading-text-words']}>o</span>
-                        <span className={styles['loading-text-words']}>m</span>
+                    <div className={styles.loadingText}>
+                        <span>W</span>
+                        <span>e</span>
+                        <span>&apos;</span>
+                        <span>r</span>
+                        <span>e</span>
+                        <span> </span>
+                        <span>S</span>
+                        <span>e</span>
+                        <span>t</span>
+                        <span>t</span>
+                        <span>i</span>
+                        <span>n</span>
+                        <span>g</span>
+                        <span> </span>
+                        <span>u</span>
+                        <span>p</span>
+                        <span> </span>
+                        <span>y</span>
+                        <span>o</span>
+                        <span>u</span>
+                        <span>r</span>
+                        <span> </span>
+                        <span>R</span>
+                        <span>o</span>
+                        <span>o</span>
+                        <span>m</span>
                     </div>
                 </div>
             </CustomGrid>
         );
     }, []);
-    console.log('#Duy Phan console', localUser.accessStatus);
 
     return (
         <>
