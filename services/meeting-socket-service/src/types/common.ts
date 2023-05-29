@@ -5,3 +5,17 @@ export type CustomPopulateOptions =
   | string[]
   | PopulateOptions
   | PopulateOptions[];
+
+
+export enum UserActionInMeeting {
+  Leave = 'leave',
+  Join = 'join',
+}
+
+export type UserActionInMeetingParams = {
+  [K in UserActionInMeeting]?: {
+    condition: string | null;
+    replaceItem: string | null;
+  };
+}
+
