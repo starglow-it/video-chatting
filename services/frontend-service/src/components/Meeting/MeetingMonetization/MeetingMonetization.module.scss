@@ -111,11 +111,11 @@
   }
 
   &.mobile {
-    top: 55px;
-    right: 20px;
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
+    top: rem(55px);
+    right: rem(20px);
+    width: rem(34px);
+    height: rem(34px);
+    border-radius: rem(8px);
   }
 
   display: flex;
