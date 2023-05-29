@@ -7,13 +7,13 @@ export type CustomPopulateOptions =
   | PopulateOptions[];
 
 
-export enum UpdateIndexUser {
+export enum UserActionInMeeting {
   Leave = 'leave',
   Join = 'join',
 }
 
-export type UpdateIndexParams = {
-  [K in UpdateIndexUser]?: {
+export type UserActionInMeetingParams = {
+  [K in UserActionInMeeting]?: {
     condition: string | null;
     replaceItem: string | null;
   };

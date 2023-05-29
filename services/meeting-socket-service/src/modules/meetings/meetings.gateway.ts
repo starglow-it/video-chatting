@@ -57,7 +57,7 @@ import {
 import { MeetingsCommonService } from './meetings.common';
 import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
 import { isNumber } from 'class-validator';
-import { UpdateIndexUser } from 'src/types/common';
+import { UserActionInMeeting } from 'src/types/common';
 
 type SendOfferPayload = {
   type: string;
@@ -276,7 +276,7 @@ export class MeetingsGateway
         await this.meetingsService.updateIndexUsers({
           userTemplate,
           user,
-          event: UpdateIndexUser.Leave,
+          event: UserActionInMeeting.Leave,
         });
 
         const commonTemplate =
@@ -677,7 +677,7 @@ export class MeetingsGateway
         await this.meetingsService.updateIndexUsers({
           userTemplate,
           user,
-          event: UpdateIndexUser.Join
+          event: UserActionInMeeting.Join
         });
 
         await meeting.populate('users');

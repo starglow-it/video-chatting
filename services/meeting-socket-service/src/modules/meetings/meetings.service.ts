@@ -4,11 +4,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Meeting, MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions, UpdateIndexParams, UpdateIndexUser } from '../../types/common';
+import { CustomPopulateOptions, UserActionInMeeting, UserActionInMeetingParams } from '../../types/common';
 import { IUserTemplate } from 'shared-types';
-import { CoreService } from 'src/services/core/core.service';
-import { WsException } from '@nestjs/websockets';
-
+import { CoreService } from '../../services/core/core.service';
 @Injectable()
 export class MeetingsService {
   constructor(
@@ -122,16 +120,16 @@ export class MeetingsService {
   }: {
     userTemplate: IUserTemplate,
     user: MeetingUserDocument,
-    event: UpdateIndexUser,
+    event: UserActionInMeeting,
   }) {
     try {
       const userId = user._id.toString();
-      const updateIndexParams: UpdateIndexParams = {
-        [UpdateIndexUser.Join]: {
+      const updateIndexParams: UserActionInMeetingParams = {
+        [UserActionInMeeting.Join]: {
           condition: null,
           replaceItem: userId
         },
-        [UpdateIndexUser.Leave]: {
+        [UserActionInMeeting.Leave]: {
           condition: userId,
           replaceItem: null
         }
@@ -145,7 +143,7 @@ export class MeetingsService {
 
         await this.coreService.updateUserTemplate({
           templateId: userTemplate.id,
-          userId: user.id.toString(),
+          userId,
           data: {
             indexUsers: userTemplate.indexUsers,
           },
