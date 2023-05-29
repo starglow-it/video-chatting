@@ -84,7 +84,9 @@
   bottom: 30px;
 
   &.mobile {
-    left: 50%;
+    left: 0%;
+    width: 100%;
+    min-width: 100%;
   }
 }
 
