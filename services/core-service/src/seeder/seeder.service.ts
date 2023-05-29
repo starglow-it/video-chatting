@@ -256,6 +256,34 @@ export class SeederService {
     }
   }
 
+  async seedIndexsDataByUserTemplates(){
+    await this.userTemplatesService.updateUserTemplates({
+      query: {
+        indexUsers: []
+      },
+      data: [{
+        $set: {
+          indexUsers: {
+            "$map": {
+              input: {
+                $range: [0, "$maxParticipants"]
+              },
+              in: null
+            }
+          },
+          usersSize: {
+            "$map": {
+              input: {
+                $range: [0, "$maxParticipants"]
+              },
+              in: 0
+            }
+          }
+        }
+      }]
+    });
+  }
+
   async seedMyRoomMediasByUserTemplateAmount() {
     return withTransaction(this.connection, async session => {
 
@@ -297,7 +325,6 @@ export class SeederService {
             }
           },
         }
-
       ]);
 
       const data = userTemplates.map(userTemplate => ({

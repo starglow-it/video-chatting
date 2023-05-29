@@ -14,6 +14,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigClientService);
   const frontendUrl = await configService.get('frontendUrl');
+  const port = 8180;
 
   app.useGlobalFilters(
     new AllExceptionsFilter(),
@@ -37,6 +38,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(8180);
+  await app.listen(port, () => console.log(`Meeting Socket Service listening at port: ${port}`));
 }
 bootstrap();

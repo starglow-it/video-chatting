@@ -3,6 +3,7 @@ import {
   PopulateOptions,
   QueryOptions,
   UpdateQuery,
+  UpdateWithAggregationPipeline,
 } from 'mongoose';
 import { ITransactionSession } from '../helpers/mongo/withTransaction';
 import { QueryParams } from 'shared-types';
@@ -22,7 +23,7 @@ export type GetModelQuery<Document> = {
 
 export type UpdateModelQuery<Document, Interface> = {
   query: FilterQuery<Document>;
-  data: UpdateQuery<Interface>;
+  data: UpdateQuery<Interface> | UpdateWithAggregationPipeline;
   session?: ITransactionSession;
   options?: QueryParams;
   populatePaths?: QueryOptions['populate'];
