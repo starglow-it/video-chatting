@@ -16,8 +16,6 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
 
 // components
-import { MeetingMonetization } from '@components/Meeting/MeetingMonetization/MeetingMonetization';
-import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { MeetingAccessRequests } from '@components/Meeting/MeetingAccessRequests/MeetingAccessRequests';
 import { MeetingUsersList } from '@components/Meeting/MeetingUsersList/MeetingUsersList';
@@ -26,7 +24,7 @@ import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAv
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 // stores
-import { setIsSideUsersOpenEvent } from '../../../store';
+import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
     $isMeetingHostStore,
     $isOwner,
@@ -56,6 +54,7 @@ const Component = () => {
     const users = useStore($meetingUsersStore);
     const isPaymentOpen = useStore($isTogglePayment);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     useEffect(() => {
         (async () => {
@@ -78,65 +77,40 @@ const Component = () => {
         togglePaymentFormEvent();
     }, []);
 
-    const handleCloseMobilePanel = useCallback(() => {
-        togglePaymentFormEvent();
-    }, []);
+    const handleCloseMobilePanel = () => {
+        toggleUsersPanelEvent();
+    };
 
     const toggleOutsideUserPanel = (e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
+        e.preventDefault();
         toggleUsersPanelEvent(false);
-    };
-
-    const toggleOutsidePaymentsPanel = (e: MouseEvent | TouchEvent) => {
-        e.stopPropagation();
-        togglePaymentFormEvent(false);
     };
 
     const commonContent = useMemo(
         () => (
-            <>
-                <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
-                    <Fade in={isUsersOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile,
-                            })}
-                        >
-                            <CustomScroll>
-                                {isMeetingHost && <MeetingAccessRequests />}
-                                <MeetingUsersList />
-                                <MeetingInviteParticipants
-                                    onAction={
-                                        isMobile
-                                            ? handleCloseMobilePanel
-                                            : undefined
-                                    }
-                                />
-                            </CustomScroll>
-                        </CustomPaper>
-                    </Fade>
-                </ClickAwayListener>
-                {/* <ClickAwayListener onClickAway={toggleOutsidePaymentsPanel}>
-                    <Fade in={isPaymentOpen}>
-                        <CustomPaper
-                            variant="black-glass"
-                            className={clsx(styles.commonOpenPanel, {
-                                [styles.mobile]: isMobile,
-                            })}
-                        >
-                            <ConditionalRender condition={!isOwner}>
-                                <PaymentForm onClose={handleClosePayment} />
-                            </ConditionalRender>
-                            <ConditionalRender condition={isOwner}>
-                                <MeetingMonetization
-                                    onUpdate={handleUpdateMonetization}
-                                />
-                            </ConditionalRender>
-                        </CustomPaper>
-                    </Fade>
-                </ClickAwayListener> */}
-            </>
+            <ClickAwayListener onClickAway={toggleOutsideUserPanel}>
+                <Fade in={isUsersOpen}>
+                    <CustomPaper
+                        variant="black-glass"
+                        className={clsx(styles.commonOpenPanel, {
+                            [styles.mobile]: isMobile && isPortraitLayout,
+                        })}
+                    >
+                        <CustomScroll>
+                            {isMeetingHost && <MeetingAccessRequests />}
+                            <MeetingUsersList />
+                            <MeetingInviteParticipants
+                                onAction={
+                                    isMobile
+                                        ? handleCloseMobilePanel
+                                        : undefined
+                                }
+                            />
+                        </CustomScroll>
+                    </CustomPaper>
+                </Fade>
+            </ClickAwayListener>
         ),
         [
             isOwner,
@@ -177,15 +151,16 @@ const Component = () => {
                 {!isMobile ? (
                     <> {commonContent}</>
                 ) : (
-                    <ConditionalRender condition={isUsersOpen || isPaymentOpen}>
+                    <ConditionalRender condition={isUsersOpen}>
                         <CustomGrid className={styles.mobilePanelsWrapper}>
                             <CustomScroll>
-                                <CloseIcon
+                                <CustomGrid
                                     onClick={handleCloseMobilePanel}
                                     className={styles.closeIcon}
-                                    width="40px"
-                                    height="40px"
-                                />
+                                >
+                                    <CloseIcon width="40px" height="40px" />
+                                </CustomGrid>
+
                                 {commonContent}
                             </CustomScroll>
                         </CustomGrid>
