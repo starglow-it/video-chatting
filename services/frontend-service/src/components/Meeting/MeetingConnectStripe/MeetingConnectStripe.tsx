@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // icons
@@ -16,6 +16,7 @@ import styles from './MeetingConnectStripe.module.scss';
 
 // stores
 import {
+    $isPortraitLayout,
     $profileStore,
     connectStripeAccountFx,
     deleteStripeAccountFx,
@@ -27,6 +28,7 @@ export const MeetingConnectStripe = () => {
   const profile = useStore($profileStore);
     const isConnectStripeAccountPending = useStore(connectStripeAccountFx.pending);
     const isDeleteStripeAccountPending = useStore(deleteStripeAccountFx.pending);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     const handleSetUpPayments = useCallback(async () => {
       if (!isConnectStripeAccountPending) {
@@ -39,6 +41,12 @@ export const MeetingConnectStripe = () => {
         await deleteStripeAccountFx({});
     }      
   }, []);
+
+  const fontSize = useMemo(() => {
+    if(isPortraitLayout) return 12;
+    return undefined;
+  },[isPortraitLayout])
+
   return (
         profile.isStripeEnabled && profile.stripeAccountId ? (
             <CustomButton className={styles.buttonWrapper} onClick={handleDeletePaymentSetUp}>
@@ -66,12 +74,14 @@ export const MeetingConnectStripe = () => {
                                         ? 'monetization.setUp'
                                         : 'monetization.connectWith'
                                 }
+                                fontSize={fontSize}
                             />
                             &nbsp;
                             <CustomTypography
                                 variant="body1bold"
                                 nameSpace="profile"
                                 translation="monetization.stripe"
+                                fontSize={fontSize}
                             />
                         </>
                     ) : (
