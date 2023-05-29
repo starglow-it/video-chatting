@@ -60,7 +60,7 @@ async function bootstrap() {
   await seeder.seedUpdateMaxMeetingTimeUser();
   await seeder.seedIndexsDataByUserTemplates()
   await seeder.seedCreateGlobalCommonTemplate();
-  await seeder.seedMedias();
+  await seeder.seedMediaCategories();
   await seeder.seedMyRoomMediasByUserTemplateAmount();
 
   usersController.startCheckSubscriptions();
