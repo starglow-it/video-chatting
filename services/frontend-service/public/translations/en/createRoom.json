@@ -12,7 +12,8 @@
   },
   "tooltips": {
     "cancel": "Cancel",
-    "addLinkDisabled": "Add Link disabled"
+    "addLinkDisabled": "Add Link disabled",
+    "upgradeToBusiness": "Upgrade to Business"
   },
   "uploadBackground": {
     "title": "Upload your Room background",
@@ -30,7 +31,7 @@
   },
   "editDescription": {
     "form": {
-      "nameAndAttendees": "Name & Attendees",
+      "roomName": "Room Name",
       "description": "Description",
       "tags": "Tags (Up to 6)",
       "link": "Custom link"

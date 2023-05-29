@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
-import { MenuItem } from '@mui/material';
 
 import { IBusinessCategory } from 'shared-types';
 import { AutocompleteType } from 'shared-frontend/types';
@@ -11,17 +10,15 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import {ErrorMessage} from "shared-frontend/library/common/ErrorMessage";
-import {CustomAutocomplete} from "shared-frontend/library/custom/CustomAutocomplete";
+import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
+import { CustomAutocomplete } from 'shared-frontend/library/custom/CustomAutocomplete';
 import { Translation } from '@library/common/Translation/Translation';
 
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon';
-import { ArrowDownIcon } from 'shared-frontend/icons/OtherIcons/ArrowDownIcon';
 import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // types
@@ -49,12 +46,11 @@ import styles from './EditTemplateDescription.module.scss';
 // utils
 import { generateKeyByLabel } from '../../../utils/businessCategories/generateKeyByLabel';
 
-const participantsNumberValues = Array.from({ length: MAX_PARTICIPANTS_NUMBER }, (_, i) => ({
-    id: `${i + 1}`,
-    value: i + 1,
-}));
-
-const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescriptionProps) => {
+const Component = ({
+    onNextStep,
+    onPreviousStep,
+    template,
+}: EditTemplateDescriptionProps) => {
     const businessCategories = useStore($businessCategoriesStore);
 
     const {
@@ -71,11 +67,6 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
     const customLink = useWatch({ control, name: 'customLink' });
     const tags = useWatch({ control, name: 'tags' });
 
-    const participantsNumber = useWatch({
-        control,
-        name: 'participantsNumber',
-    });
-
     useEffect(() => {
         (() => {
             getBusinessCategoriesFx({});
@@ -87,7 +78,8 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
 
         if (
             !tags.find(
-                (value: AutocompleteType<IBusinessCategory> | string) => typeof value === 'string',
+                (value: AutocompleteType<IBusinessCategory> | string) =>
+                    typeof value === 'string',
             )
         ) {
             return;
@@ -108,7 +100,12 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
     }, [tags]);
 
     const handleClickNextStep = useCallback(async () => {
-        const response = await trigger(['name', 'description', 'tags', 'customLink']);
+        const response = await trigger([
+            'name',
+            'description',
+            'tags',
+            'customLink',
+        ]);
 
         if (customLink) {
             const isBusy = await checkCustomLinkFx({
@@ -118,7 +115,10 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
 
             if (isBusy) {
                 setError('customLink', [
-                    { type: 'focus', message: 'meeting.settings.customLink.busy' },
+                    {
+                        type: 'focus',
+                        message: 'meeting.settings.customLink.busy',
+                    },
                 ]);
                 return;
             }
@@ -131,20 +131,28 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
         }
     }, [onNextStep, customLink, template?.id]);
 
-    const { onChange: onChangeName, ...nameProps } = useMemo(() => register('name'), []);
+    const { onChange: onChangeName, ...nameProps } = useMemo(
+        () => register('name'),
+        [],
+    );
     const customLinkProps = useMemo(() => register('customLink'), []);
-    const participantsNumberProps = useMemo(() => register('participantsNumber'), []);
     const { onChange: onChangeDescription, ...descriptionProps } = useMemo(
-        () => register('description'),
+        () => register('description', { required: false }),
         [],
     );
 
     const handleChangeDescription = useCallback(event => {
         if (event.target.value.length > MAX_DESCRIPTION_LENGTH) {
             // eslint-disable-next-line no-param-reassign
-            event.target.value = event.target.value.slice(0, MAX_DESCRIPTION_LENGTH);
+            event.target.value = event.target.value.slice(
+                0,
+                MAX_DESCRIPTION_LENGTH,
+            );
             setError('description', [
-                { type: 'focus', message: `maxLength.${MAX_DESCRIPTION_LENGTH}` },
+                {
+                    type: 'focus',
+                    message: `maxLength.${MAX_DESCRIPTION_LENGTH}`,
+                },
             ]);
         } else {
             setError('description', [{ message: '', type: 'focus' }]);
@@ -156,22 +164,14 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
         if (event.target.value.length > MAX_NAME_LENGTH) {
             // eslint-disable-next-line no-param-reassign
             event.target.value = event.target.value.slice(0, MAX_NAME_LENGTH);
-            setError('name', [{ type: 'focus', message: `maxLength.${MAX_NAME_LENGTH}` }]);
+            setError('name', [
+                { type: 'focus', message: `maxLength.${MAX_NAME_LENGTH}` },
+            ]);
         } else {
             setError('name', [{ message: '', type: 'focus' }]);
         }
         onChangeName(event);
     }, []);
-
-    const participantsNumberList = useMemo(
-        () =>
-            participantsNumberValues.map(({ id, value }) => (
-                <MenuItem key={id} value={value}>
-                    <CustomTypography>{value}</CustomTypography>
-                </MenuItem>
-            )),
-        [],
-    );
 
     const customLinkInputProps = useMemo(
         () => ({
@@ -181,14 +181,20 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
     );
 
     const businessCategoriesOptions = useMemo(
-        () => businessCategories.list.map(item => ({ ...item, label: item.value })),
+        () =>
+            businessCategories.list.map(item => ({
+                ...item,
+                label: item.value,
+            })),
         [businessCategories.list],
     );
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
-    const descriptionErrorMessage: string = errors?.description?.[0]?.message || '';
+    const descriptionErrorMessage: string =
+        errors?.description?.[0]?.message || '';
     const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
-    const customLinkErrorMessage: string = errors?.customLink?.[0]?.message || '';
+    const customLinkErrorMessage: string =
+        errors?.customLink?.[0]?.message || '';
 
     return (
         <CustomGrid
@@ -203,11 +209,16 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
                         variant="body3"
                         color="colors.white.primary"
                         nameSpace="createRoom"
-                        translation="editDescription.form.nameAndAttendees"
+                        translation="editDescription.form.roomName"
                         className={styles.label}
                     />
-                    <CustomGrid container flexWrap="nowrap" gap={2} columns={10}>
-                        <CustomGrid item xs={8}>
+                    <CustomGrid
+                        container
+                        flexWrap="nowrap"
+                        gap={2}
+                        columns={10}
+                    >
+                        <CustomGrid container>
                             <CustomInput
                                 autoComplete="off"
                                 color="secondary"
@@ -216,25 +227,22 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
                                 {...nameProps}
                             />
                         </CustomGrid>
-                        <CustomGrid item xs={2}>
-                            <CustomDropdown
-                                selectId="1"
-                                variant="transparent"
-                                value={participantsNumber}
-                                list={participantsNumberList}
-                                IconComponent={ArrowDownIcon}
-                                {...participantsNumberProps}
-                            />
-                        </CustomGrid>
                     </CustomGrid>
-                    <CustomGrid container justifyContent="space-between" className={styles.label}>
+                    <CustomGrid
+                        container
+                        justifyContent="space-between"
+                        className={styles.label}
+                    >
                         <CustomTypography
                             variant="body3"
                             color="colors.white.primary"
                             nameSpace="createRoom"
                             translation="editDescription.form.description"
                         />
-                        <CustomTypography variant="body3" color="colors.white.primary">
+                        <CustomTypography
+                            variant="body3"
+                            color="colors.white.primary"
+                        >
                             {`${description.length}/${MAX_DESCRIPTION_LENGTH}`}
                         </CustomTypography>
                     </CustomGrid>
@@ -266,7 +274,9 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
                         autoComplete
                         error={tagsErrorMessage}
                         errorComponent={
-                            <ConditionalRender condition={Boolean(tagsErrorMessage)}>
+                            <ConditionalRender
+                                condition={Boolean(tagsErrorMessage)}
+                            >
                                 <ErrorMessage error={Boolean(tagsErrorMessage)}>
                                     <Translation
                                         nameSpace="errors"
@@ -290,7 +300,10 @@ const Component = ({ onNextStep, onPreviousStep, template }: EditTemplateDescrip
                             translation="editDescription.form.link"
                             className={styles.linkLabel}
                         />
-                        <CustomTypography variant="body3" className={styles.customLinkPreview}>
+                        <CustomTypography
+                            variant="body3"
+                            className={styles.customLinkPreview}
+                        >
                             {`${frontendConfig.frontendUrl}/.../${customLink}`}
                         </CustomTypography>
                     </CustomGrid>

@@ -1,5 +1,11 @@
-import { FocusEvent, memo, useCallback, useMemo, useRef } from 'react';
-import { FormProvider, Controller, useForm, useWatch, FieldValues } from 'react-hook-form';
+import { memo, useCallback, useMemo, useRef } from 'react';
+import {
+    FormProvider,
+    Controller,
+    useForm,
+    useWatch,
+    FieldValues,
+} from 'react-hook-form';
 import { InputBase } from '@mui/material';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
@@ -20,22 +26,25 @@ import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 
 // validation
 import { Translation } from '@library/common/Translation/Translation';
-import {ErrorMessage} from "@library/common/ErrorMessage/ErrorMessage";
+import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
-import { useToggle } from '@hooks/useToggle';
-import { CustomPopper } from 'shared-frontend/library/custom/CustomPopper';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
-import { templatePriceSchema, paywallPriceSchema } from '../../../validation/payments/templatePrice';
+import {
+    templatePriceSchema,
+    paywallPriceSchema,
+} from '../../../validation/payments/templatePrice';
 import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 
 // styles
 import styles from './MeetingMonetization.module.scss';
 
 // stores
-import {$profileStore} from '../../../store'
-import { $meetingTemplateStore, updateMeetingTemplateFxWithData } from '../../../store/roomStores';
+import { $profileStore } from '../../../store';
+import {
+    $meetingTemplateStore,
+    updateMeetingTemplateFxWithData,
+} from '../../../store/roomStores';
 
 // const
 import { currencyValues } from '../../../const/profile/subscriptions';
@@ -49,20 +58,14 @@ const validationSchema = yup.object({
 });
 
 const Component = ({ onUpdate }: { onUpdate: () => void }) => {
-    const tooltipRef = useRef<HTMLButtonElement | null>(null)
-    const timeoutRef = useRef<NodeJS.Timer | null>(null);
-    const {
-        value: confirmPrice,
-        onSetSwitch: handleChangeConfirm,
-    } = useToggle(false);
+    const buttonSaveRef = useRef<HTMLButtonElement | null>(null);
     const meetingTemplate = useStore($meetingTemplateStore);
     const profile = useStore($profileStore);
     const resolver = useYupValidationResolver<FieldValues>(validationSchema);
 
     const isConnectStripe = Boolean(
-        profile.isStripeEnabled &&
-        profile.stripeAccountId,
-    )
+        profile.isStripeEnabled && profile.stripeAccountId,
+    );
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -70,7 +73,9 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         defaultValues: {
             isInmeetingPayment: Boolean(meetingTemplate.templatePrice),
             isPaywallPayment: Boolean(meetingTemplate.paywallPrice),
-            isMonetizationEnabled: isConnectStripe ? Boolean(meetingTemplate.isMonetizationEnabled) : false,
+            isMonetizationEnabled: isConnectStripe
+                ? Boolean(meetingTemplate.isMonetizationEnabled)
+                : false,
             templatePrice: meetingTemplate.templatePrice || 5,
             paywallPrice: meetingTemplate.paywallPrice || 5,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
@@ -78,11 +83,23 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         },
     });
 
-    const { register, setValue, control, handleSubmit, formState: { errors } } = methods;
+    const {
+        register,
+        setValue,
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = methods;
 
-    const handleValueChanged = useCallback((newValue: ValuesSwitcherItem<"USD" | "CAD", string>, type: 'templateCurrency' | 'paywallCurrency') => {
-        setValue(type, newValue.value);
-    }, []);
+    const handleValueChanged = useCallback(
+        (
+            newValue: ValuesSwitcherItem<'USD' | 'CAD', string>,
+            type: 'templateCurrency' | 'paywallCurrency',
+        ) => {
+            setValue(type, newValue.value);
+        },
+        [],
+    );
 
     const isInmeetingPaymentEnabled = useWatch({
         control,
@@ -101,7 +118,9 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const targetTemplateCurrency = useMemo(
         () =>
-            currencyValues.find(currency => currency.value === activeTemplateCurrency) || currencyValues[0],
+            currencyValues.find(
+                currency => currency.value === activeTemplateCurrency,
+            ) || currencyValues[0],
         [activeTemplateCurrency],
     );
 
@@ -110,83 +129,94 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         name: 'paywallCurrency',
     });
 
-    const activeTemplatePrice = useWatch({
-        control,
-        name: 'templatePrice',
-    });
-
-    const activePaywallPrice = useWatch({
-        control,
-        name: 'paywallPrice',
-    });
-
     const targetPaywallCurrency = useMemo(
         () =>
-            currencyValues.find(currency => currency.value === activePaywallCurrency) || currencyValues[0],
+            currencyValues.find(
+                currency => currency.value === activePaywallCurrency,
+            ) || currencyValues[0],
         [activePaywallCurrency],
     );
 
     const onSubmit = useCallback(
-        handleSubmit(async (data) => {     
+        handleSubmit(async (data) => {
             await updateMeetingTemplateFxWithData({
-                isMonetizationEnabled: data.isInmeetingPayment || data.isPaywallPayment,
-                templatePrice: data.isInmeetingPayment ? +data.templatePrice : 0,
-                paywallPrice: data.isPaywallPayment ?  +data.paywallPrice : 0,
-                templateCurrency: data.isInmeetingPayment ? data.templateCurrency : undefined,
-                paywallCurrency: data.isPaywallPayment ? data.paywallCurrency : undefined,
+                isMonetizationEnabled:
+                    data.isInmeetingPayment || data.isPaywallPayment,
+                templatePrice: data.isInmeetingPayment
+                    ? +data.templatePrice
+                    : 0,
+                paywallPrice: data.isPaywallPayment ? +data.paywallPrice : 0,
+                templateCurrency: data.isInmeetingPayment
+                    ? data.templateCurrency
+                    : undefined,
+                paywallCurrency: data.isPaywallPayment
+                    ? data.paywallCurrency
+                    : undefined,
             });
-            onUpdate?.();       
-        }),[]
-    )
+            onUpdate?.();
+        }),
+        [],
+    );
 
     const handleFocusInput = () => {
-        if(confirmPrice){
-            handleChangeConfirm(false)
-            if(timeoutRef.current){
-                clearTimeout(timeoutRef.current)
-            }
-        }
-    }
+        buttonSaveRef.current?.classList.add(styles.animate);
+    };
 
-    const handleBlurInput = (e: FocusEvent<HTMLInputElement>) => {
-        const isShowPopper = e.relatedTarget && e.relatedTarget?.id !== 'buttonSubmit'
-        if(!confirmPrice && isShowPopper){
-            const isChangeTemplatePrice = activeTemplatePrice !== meetingTemplate?.templatePrice
-            const isChangePaywallPrice = activePaywallPrice !== meetingTemplate?.paywallPrice
-            if(isChangePaywallPrice || isChangeTemplatePrice){
-                handleChangeConfirm(true)
-                timeoutRef.current = setTimeout(() => {
-                    handleChangeConfirm(false)
-                }, 3000);
-            }
-        }
-    }
+    const handleEndAnimation = () => {
+        buttonSaveRef.current?.classList.remove(styles.animate);
+    };
 
     const registerData = register('templatePrice');
     const registerPaywallData = register('paywallPrice');
 
-    const templatePriceMessage = ['min', 'max'].includes(errors?.templatePrice?.[0]?.type)
+    const templatePriceMessage = ['min', 'max'].includes(
+        errors?.templatePrice?.[0]?.type,
+    )
         ? errors?.templatePrice?.[0]?.message
         : '';
-    const paywallPriceMessage = ['min', 'max'].includes(errors?.paywallPrice?.[0]?.type)
-        ? errors?.paywallPrice?.[0]?.message : '';
+    const paywallPriceMessage = ['min', 'max'].includes(
+        errors?.paywallPrice?.[0]?.type,
+    )
+        ? errors?.paywallPrice?.[0]?.message
+        : '';
 
     return (
         <>
-            <CustomGrid container columnGap={4} direction='row' alignItems='center' marginBottom={2}>
-                <CustomGrid display='flex' alignItems='center' color="colors.white.primary" >
+            <CustomGrid
+                container
+                columnGap={4}
+                direction="row"
+                alignItems="center"
+                marginBottom={2}
+            >
+                <CustomGrid
+                    display="flex"
+                    alignItems="center"
+                    color="colors.white.primary"
+                >
                     <MonetizationIcon width="24px" height="24px" />
-                    <CustomTypography translation="features.monetization" nameSpace="meeting"/>
-                </CustomGrid>                
-                <CustomBox style={{flex: 1}}>
+                    <CustomTypography
+                        translation="features.monetization"
+                        nameSpace="meeting"
+                    />
+                </CustomGrid>
+                <CustomBox style={{ flex: 1 }}>
                     <MeetingConnectStripe />
                 </CustomBox>
-            </CustomGrid>            
+            </CustomGrid>
             <FormProvider {...methods}>
                 <form onSubmit={onSubmit}>
-                    <CustomGrid container direction="column" wrap="nowrap" gap={2}>
+                    <CustomGrid
+                        container
+                        direction="column"
+                        wrap="nowrap"
+                        gap={2}
+                    >
                         <CustomGrid
-                            container direction="column" wrap="nowrap" gap={2}
+                            container
+                            direction="column"
+                            wrap="nowrap"
+                            gap={2}
                             className={styles.wrapperForm}
                         >
                             <CustomGrid
@@ -194,9 +224,12 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                 wrap="nowrap"
                                 className={styles.monetization}
                                 gap={2}
-                            >                                                        
+                            >
                                 <CustomGrid container flex={1}>
-                                    <CustomTypography translation="features.inMeeting" nameSpace="meeting"/>
+                                    <CustomTypography
+                                        translation="features.inMeeting"
+                                        nameSpace="meeting"
+                                    />
                                     <CustomGrid
                                         container
                                         className={styles.amountInput}
@@ -206,30 +239,49 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                         <InputBase
                                             type="number"
                                             placeholder="Amount"
-                                            inputProps={{ 'aria-label': 'amount' }}
+                                            inputProps={{
+                                                'aria-label': 'amount',
+                                            }}
                                             classes={{
                                                 root: styles.inputWrapper,
                                                 input: styles.input,
                                             }}
                                             {...registerData}
                                             onFocus={handleFocusInput}
-                                            onBlur={handleBlurInput}
-                                            disabled={!isInmeetingPaymentEnabled || !isConnectStripe}
+                                            disabled={
+                                                !isInmeetingPaymentEnabled ||
+                                                !isConnectStripe
+                                            }
                                         />
                                         <ValuesSwitcher
                                             values={currencyValues}
                                             activeValue={targetTemplateCurrency}
-                                            onValueChanged={(value) => handleValueChanged(value, 'templateCurrency')}
+                                            onValueChanged={value =>
+                                                handleValueChanged(
+                                                    value,
+                                                    'templateCurrency',
+                                                )
+                                            }
                                             className={styles.switcher}
                                         />
                                     </CustomGrid>
-                                    <ErrorMessage error={templatePriceMessage} className={styles.error} />                               
+                                    <ErrorMessage
+                                        error={templatePriceMessage}
+                                        className={styles.error}
+                                    />
                                 </CustomGrid>
                                 <CustomBox marginTop={4.5}>
                                     <Controller
                                         control={control}
                                         name="isInmeetingPayment"
-                                        render={({ field: { onChange, value, name, ref } }) => (
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref,
+                                            },
+                                        }) => (
                                             <CustomSwitch
                                                 name={name}
                                                 onChange={onChange}
@@ -238,7 +290,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 disabled={!isConnectStripe}
                                             />
                                         )}
-                                    />   
+                                    />
                                 </CustomBox>
                             </CustomGrid>
                             <CustomGrid
@@ -246,9 +298,12 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                 wrap="nowrap"
                                 className={styles.monetization}
                                 gap={2}
-                            >                                                  
+                            >
                                 <CustomGrid container flex={1}>
-                                    <CustomTypography translation="features.payWall" nameSpace="meeting"/>                                  
+                                    <CustomTypography
+                                        translation="features.payWall"
+                                        nameSpace="meeting"
+                                    />
                                     <CustomGrid
                                         container
                                         className={styles.amountInput}
@@ -258,30 +313,49 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                         <InputBase
                                             type="number"
                                             placeholder="Amount"
-                                            inputProps={{ 'aria-label': 'amount' }}
+                                            inputProps={{
+                                                'aria-label': 'amount',
+                                            }}
                                             classes={{
                                                 root: styles.inputWrapper,
                                                 input: styles.input,
-                                            }}                                    
+                                            }}
                                             {...registerPaywallData}
                                             onFocus={handleFocusInput}
-                                            onBlur={handleBlurInput}
-                                            disabled={!isPaywallPaymentEnabled || !isConnectStripe}
+                                            disabled={
+                                                !isPaywallPaymentEnabled ||
+                                                !isConnectStripe
+                                            }
                                         />
                                         <ValuesSwitcher
                                             values={currencyValues}
                                             activeValue={targetPaywallCurrency}
-                                            onValueChanged={(value) => handleValueChanged(value, 'paywallCurrency')}
+                                            onValueChanged={value =>
+                                                handleValueChanged(
+                                                    value,
+                                                    'paywallCurrency',
+                                                )
+                                            }
                                             className={styles.switcher}
                                         />
                                     </CustomGrid>
-                                    <ErrorMessage error={paywallPriceMessage} className={styles.error} />                               
+                                    <ErrorMessage
+                                        error={paywallPriceMessage}
+                                        className={styles.error}
+                                    />
                                 </CustomGrid>
                                 <CustomBox marginTop={4.5}>
                                     <Controller
                                         control={control}
                                         name="isPaywallPayment"
-                                        render={({ field: { onChange, value, name, ref } }) => (
+                                        render={({
+                                            field: {
+                                                onChange,
+                                                value,
+                                                name,
+                                                ref,
+                                            },
+                                        }) => (
                                             <CustomSwitch
                                                 name={name}
                                                 onChange={onChange}
@@ -290,35 +364,25 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 disabled={!isConnectStripe}
                                             />
                                         )}
-                                    />   
+                                    />
                                 </CustomBox>
-                            </CustomGrid>                                
+                            </CustomGrid>
                         </CustomGrid>
                         <CustomButton
                             type="submit"
                             className={styles.button}
                             disabled={!isConnectStripe}
-                            label={<Translation nameSpace="common" translation="buttons.save" />}
-                            ref={tooltipRef}
-                            id='buttonSubmit'
+                            label={
+                                <Translation
+                                    nameSpace="common"
+                                    translation="buttons.save"
+                                />
+                            }
+                            ref={buttonSaveRef}
+                            id="buttonSubmit"
+                            onAnimationEnd={handleEndAnimation}
                         />
-                        <CustomPopper
-                            id="audioControl"
-                            open={confirmPrice}
-                            placement='top'
-                            anchorEl={tooltipRef.current}
-                            className={styles.tooltip}
-                        >
-                            <CustomPaper
-                                variant="black-glass"
-                                className={styles.tooltipContent}
-                                aria-describedby='monetization'
-                            >
-                                <CustomTypography translation="confirmPrice.tooltip" nameSpace="meeting" />                   
-                            </CustomPaper> 
-                        </CustomPopper>
                     </CustomGrid>
-
                 </form>
             </FormProvider>
         </>

@@ -2,6 +2,13 @@ import { ICommonUser } from './users';
 import { IUserTemplate } from './templates';
 import { MediaCategoryType } from './media';
 
+
+export enum Environmens {
+  Local = 'local',
+  Demo = 'demo',
+  Production = 'production'
+}
+
 export interface IBusinessCategory {
   key: string;
   value: string;
