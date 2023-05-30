@@ -132,19 +132,16 @@ export class UserTemplatesController {
         },
         session
       });
-      console.log(1);
 
       await this.mediaService.deleteMedias({
         query,
         session
       });
 
-      console.log(2);
 
       await Promise.all(
         medias.map(async media => await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`))
       );
-      console.log(3);
 
       await this.deletePreviewUrls(
         medias.filter(media => media.mediaCategory._id.toString() !== mediaCategory._id.toString()),
