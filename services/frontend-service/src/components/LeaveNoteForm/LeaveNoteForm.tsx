@@ -27,10 +27,10 @@ import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
 // styles
 import styles from './LeaveNoteForm.module.scss';
 import { ClickAwayListener } from '@mui/material';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import clsx from 'clsx';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 const validationSchema = yup.object({
     note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),
@@ -66,9 +66,9 @@ const useStyles = makeStyles((theme: Theme) =>
             '& .Mui-focused': {
                 top: 0,
             },
-            "& .MuiFormLabel-filled": {
-                top: 0
-            }
+            '& .MuiFormLabel-filled': {
+                top: 0,
+            },
         },
     }),
 );
@@ -76,6 +76,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type FormType = { note: string };
 
 const Component = () => {
+    const { isMobile } = useBrowserDetect();
     const materialStyles = useStyles();
 
     const resolver = useYupValidationResolver<FormType>(validationSchema);
@@ -118,7 +119,9 @@ const Component = () => {
         <ClickAwayListener onClickAway={() => setIsExpand(false)}>
             <FormProvider {...methods}>
                 <CustomPaper
-                    className={clsx(styles.commonOpenPanel)}
+                    className={clsx(styles.commonOpenPanel, {
+                        [styles.mobile]: isMobile,
+                    })}
                     variant="black-glass"
                 >
                     <CustomGrid

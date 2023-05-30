@@ -170,6 +170,8 @@ const Component = () => {
         });
     };
 
+    if (isMobile) return null;
+
     return (
         <CustomGrid container className={styles.controlCollapse}>
             <SpeedDial

@@ -118,6 +118,3 @@ export const MEDIA_CATEGORIES = [
 ];
 
 export const FILES_SCOPE = './src/public';
-export const EMOJIES_SCOPE = 'emojies';
-export const BACKGROUNDS_SCOPE = 'backgrounds';
-export const SOUNDS_SCOPE = 'sounds';

@@ -1,9 +1,4 @@
-import React, {
-    memo,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Box } from '@mui/material';
 
@@ -19,9 +14,7 @@ import { MeetingUserVideoPositionWrapperProps } from './types';
 // styles
 import styles from './MeetingUserVideoPositionWrapper.module.scss';
 import { $windowSizeStore } from '../../../store';
-import {
-    updateUserSocketEvent,
-} from '../../../store/roomStores';
+import { updateUserSocketEvent } from '../../../store/roomStores';
 
 const Component: React.FunctionComponent<
     MeetingUserVideoPositionWrapperProps
@@ -32,20 +25,19 @@ const Component: React.FunctionComponent<
     left,
     userId,
 }: MeetingUserVideoPositionWrapperProps) => {
-    const {
-        width,
-        height
-    } = useStore($windowSizeStore);
+    const { width, height } = useStore($windowSizeStore);
     const refTimer = useRef<NodeJS.Timeout | null>(null);
     const {
         value: isDragging,
         onSwitchOn: handleOnDragging,
         onSwitchOff: handleOffDragging,
     } = useToggle(false);
-    const [defaultPos, setDefaultPos] = useState<Record<string, number | null>>({
-        left: null,
-        bottom: null
-    })
+    const [defaultPos, setDefaultPos] = useState<Record<string, number | null>>(
+        {
+            left: null,
+            bottom: null,
+        },
+    );
     const [finalLeft, setLeft] = useState<number | null>(null);
     const [finalTop, setTop] = useState<number | null>(null);
 
@@ -54,21 +46,21 @@ const Component: React.FunctionComponent<
     const handleStopDrag = (data: DraggableData) => {
         if (isDragging) {
             const contentRect = contentRef.current?.getBoundingClientRect();
-            const leftRect = contentRect?.left || 0
-            const bottomRect = contentRect?.bottom || 0
+            const leftRect = contentRect?.left || 0;
+            const bottomRect = contentRect?.bottom || 0;
 
             const percentLeft = roundNumberToPrecision(leftRect / width, 2);
             const percentTop = roundNumberToPrecision(
                 bottomRect / height, // use bottom instead of top , it include height of element, make easy to convert offset bottom
                 2,
             );
-            const percentBottom = roundNumberToPrecision(1 - percentTop, 2)
-            setLeft(data.x)
-            setTop(data.y)
+            const percentBottom = roundNumberToPrecision(1 - percentTop, 2);
+            setLeft(data.x);
+            setTop(data.y);
             setDefaultPos({
                 left: percentLeft,
-                bottom: percentBottom
-            })
+                bottom: percentBottom,
+            });
             updateUserSocketEvent({
                 id: userId,
                 userPosition: {
@@ -77,7 +69,7 @@ const Component: React.FunctionComponent<
                 },
             }).then(() => {
                 handleOffDragging();
-            })
+            });
         }
     };
     const handleStartDrag = () => {
@@ -85,14 +77,14 @@ const Component: React.FunctionComponent<
     };
 
     const eventControl = (event: DraggableEvent, data: DraggableData) => {
-        if (event.type === 'mousedown') {
+        if (event.type === 'mousedown' || event.type === 'touchstart') {
             refTimer.current = setTimeout(() => {
                 handleStartDrag();
             }, 100);
         }
 
         if (event.type === 'mouseup' || event.type === 'touchend') {
-            if(refTimer?.current){
+            if (refTimer?.current) {
                 clearTimeout(refTimer.current);
             }
             handleStopDrag(data);
@@ -100,20 +92,27 @@ const Component: React.FunctionComponent<
     };
 
     useEffect(() => {
-        if (!isScreenSharing && (defaultPos.left !== left || defaultPos.bottom !== bottom) && !isDragging) {
+        if (
+            !isScreenSharing &&
+            (defaultPos.left !== left || defaultPos.bottom !== bottom) &&
+            !isDragging
+        ) {
             const percentLeft = roundNumberToPrecision((left || 0) * width, 2);
-            const rect = contentRef.current?.getBoundingClientRect()
+            const rect = contentRef.current?.getBoundingClientRect();
             const subTopPercentage = roundNumberToPrecision(
                 (rect?.height || 0) / height,
                 2,
             );
-            const percentTop = roundNumberToPrecision(Math.abs(1 - (bottom || 0) - subTopPercentage) * height, 2)
-            setLeft(prev => prev !== percentLeft ? percentLeft : prev);
-            setTop(prev => prev !== percentTop ? percentTop : prev)
+            const percentTop = roundNumberToPrecision(
+                Math.abs(1 - (bottom || 0) - subTopPercentage) * height,
+                2,
+            );
+            setLeft(prev => (prev !== percentLeft ? percentLeft : prev));
+            setTop(prev => (prev !== percentTop ? percentTop : prev));
             setDefaultPos({
                 left: left !== undefined ? left : null,
-                bottom: bottom !== undefined ? bottom : null
-            })            
+                bottom: bottom !== undefined ? bottom : null,
+            });
         }
     }, [isScreenSharing, bottom, left, defaultPos, isDragging]);
 
@@ -125,7 +124,7 @@ const Component: React.FunctionComponent<
             disabled={isScreenSharing}
             position={{
                 x: finalLeft || 0,
-                y: finalTop || 0
+                y: finalTop || 0,
             }}
         >
             <CustomBox

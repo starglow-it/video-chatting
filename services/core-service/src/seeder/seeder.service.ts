@@ -8,10 +8,8 @@ import {
   BUSINESS_CATEGORIES,
   monetizationStatisticsData,
   TEMPLATES_SERVICE,
-  BACKGROUNDS_SCOPE,
   FILES_SCOPE,
   MEDIA_CATEGORIES,
-  SOUNDS_SCOPE,
   USERS_SERVICE
 } from 'shared-const';
 import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
@@ -46,12 +44,7 @@ import { InjectS3 } from 'nestjs-s3';
 import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
-import { MediaCategoryDocument } from '../schemas/media-category.schema';
-import { promisify } from 'util';
-import * as mime from 'mime';
 import { MediaDocument } from '..//schemas/media.schema';
-import { retry } from '../utils/common/retry';
-import { PreviewUrls } from '../types/media';
 
 // utils
 
@@ -75,38 +68,6 @@ export class SeederService {
     private previewImage: Model<PreviewImageDocument>,
     @InjectS3() private readonly s3: S3,
   ) { }
-
-  async updateMedia(data: { url: string; id: string; mimeType: string }) {
-    return withTransaction(this.connection, async () => {
-      const { url, id, mimeType } = data;
-
-      const mimeTypeList = ['image', 'video', 'audio'];
-
-      const mediaType = mimeTypeList.find(type => mimeType.includes(type));
-      let previewImages = [];
-
-      if (mediaType !== 'audio') {
-        previewImages = await this.commonTemplatesService.generatePreviews({
-          url,
-          id,
-          mimeType,
-        });
-      }
-
-      await this.mediaService.updateMedia({
-        query: {
-          _id: id,
-        },
-        data: {
-          type: mediaType || 'unknow',
-          previewUrls: previewImages.map((image) => image._id),
-          url
-        },
-      });
-
-      return;
-    });
-  }
 
   async readFileAndUpload({ filePath, key }: { filePath: string, key: string }) {
     const buf = readFileSync(join(process.cwd(), filePath));
@@ -139,93 +100,8 @@ export class SeederService {
     };
   }
 
-  private async handleFile(file: string, filePath: string) {
-    const splitFilename = file.trim().split('.');
-    const mediaName = splitFilename[0].split('_')[1]?.replaceAll('-', ' ') || '';
-    const ext = splitFilename.pop();
-
-    const mimeType = mime.getType(`${filePath}/${file}`);
-
-    return {
-      name: mediaName,
-      ext,
-      mimeType
-    }
-  }
-
-  private async createMedias(category: MediaCategoryDocument, filePath: string) {
+  async seedMediaCategories() {
     try {
-      const fullPath = join(process.cwd(), filePath);
-
-      const files = (await promisify(readdir)(fullPath)).filter(file => file.includes(category.key));
-
-      const medias = await this.mediaService.findMedias({
-        query: {
-          mediaCategory: category._id,
-          userTemplate: null
-        }
-      });
-
-      if(medias.length) return;
-
-      for await (const file of files) {
-        const handledFile = await this.handleFile(file, filePath);
-        const newMedia = await this.mediaService.createMedia({
-          data: {
-            mediaCategory: category._id,
-            name: handledFile.name
-          },
-        });
-
-        const url = await this.readFileAndUpload({
-          filePath: `${filePath}/${file}`,
-          key: `medias/${category.type === MediaCategoryType.Sound ? 'audios' : 'videos'}/${file}`
-        });
-
-        const previewUrls = await retry<PreviewUrls>(async () => {
-          return await this.generatePreviewUrls({
-            url,
-            id: newMedia._id.toString(),
-            mimeType: handledFile.mimeType
-          });
-          
-        },10);
-
-        newMedia.url = url;
-        newMedia.previewUrls = previewUrls.previewImages;
-        newMedia.type = previewUrls.mediaType;
-        await newMedia.save();
-      }
-    }
-    catch (err) {
-      console.log(err);
-      return;
-    }
-
-  }
-
-  async createMediasByScopes(scopes: string[], category: MediaCategoryDocument) {
-    try {
-      if (category.key.includes('myrooms')) return;
-      const promise = scopes.map(async (scope) => {
-
-        const filePath = `${FILES_SCOPE}/${scope}`;
-        if (!scope.includes(category.type)) return;
-
-        await this.createMedias(category, filePath);
-
-      });
-      await Promise.all(promise);
-    }
-    catch (err) {
-      console.log(err);
-      return;
-    }
-  }
-
-  async seedMedias() {
-    try {
-      const scopes = [BACKGROUNDS_SCOPE, SOUNDS_SCOPE];
       const promise = MEDIA_CATEGORIES.map(async (mediaCategory) => {
         const existCategory = await this.mediaService.findMediaCategory({
           query: { key: mediaCategory.key },
@@ -233,7 +109,7 @@ export class SeederService {
 
 
         if (!existCategory) {
-          const newCategory = await this.mediaService.createCategory(
+          await this.mediaService.createCategory(
             {
               data: {
                 ...mediaCategory,
@@ -241,10 +117,6 @@ export class SeederService {
               },
             }
           );
-          await this.createMediasByScopes(scopes, newCategory);
-        }
-        else {
-          await this.createMediasByScopes(scopes, existCategory);
         }
       });
 
@@ -254,6 +126,34 @@ export class SeederService {
       console.log(err);
       return;
     }
+  }
+
+  async seedIndexsDataByUserTemplates(){
+    await this.userTemplatesService.updateUserTemplates({
+      query: {
+        indexUsers: []
+      },
+      data: [{
+        $set: {
+          indexUsers: {
+            "$map": {
+              input: {
+                $range: [0, "$maxParticipants"]
+              },
+              in: null
+            }
+          },
+          usersSize: {
+            "$map": {
+              input: {
+                $range: [0, "$maxParticipants"]
+              },
+              in: 0
+            }
+          }
+        }
+      }]
+    });
   }
 
   async seedMyRoomMediasByUserTemplateAmount() {
@@ -297,7 +197,6 @@ export class SeederService {
             }
           },
         }
-
       ]);
 
       const data = userTemplates.map(userTemplate => ({
@@ -518,7 +417,7 @@ export class SeederService {
     });
 
     const url = await this.readFileAndUpload({
-      filePath: './src/public/default/global_template.jpeg',
+      filePath: './src/public/global_template.jpeg',
       key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.webp`
     })
 
