@@ -72,7 +72,8 @@ import {
     WebStorage,
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
-import { BackgroundManager } from '../../helpers/media/applyBlur'
+import { BackgroundManager } from '../../helpers/media/applyBlur';
+import { Typography } from '@mui/material';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -194,14 +195,12 @@ const MeetingContainer = memo(() => {
             if (isMeetingSocketConnected) {
                 await initDevicesEventFxWithStore();
                 await sendJoinWaitingRoomSocketEvent();
-
                 if (isOwner) {
                     if (isHasSettings) {
                         updateLocalUserEvent({
                             isAuraActive: savedSettings.auraSetting,
                             accessStatus: MeetingAccessStatusEnum.InMeeting,
                         });
-
                         joinMeetingEvent({
                             isSettingsAudioBackgroundActive:
                                 savedSettings.backgroundAudioSetting,
@@ -227,10 +226,47 @@ const MeetingContainer = memo(() => {
             handleSetSettingsChecked();
         })();
     }, [isMeetingSocketConnected, isOwner]);
-    
+
+    const LoadingWaitingRoom = useMemo(() => {
+        return (
+            <CustomGrid className={styles.loadingRoom}>
+                <div className={styles.loadingText}>
+                    <span>W</span>
+                    <span>e</span>
+                    <span>&apos;</span>
+                    <span>r</span>
+                    <span>e</span>
+                    <span> </span>
+                    <span>S</span>
+                    <span>e</span>
+                    <span>t</span>
+                    <span>t</span>
+                    <span>i</span>
+                    <span>n</span>
+                    <span>g</span>
+                    <span> </span>
+                    <span>u</span>
+                    <span>p</span>
+                    <span> </span>
+                    <span>y</span>
+                    <span>o</span>
+                    <span>u</span>
+                    <span>r</span>
+                    <span> </span>
+                    <span>R</span>
+                    <span>o</span>
+                    <span>o</span>
+                    <span>m</span>
+                </div>
+            </CustomGrid>
+        );
+    }, []);
+
     return (
         <>
-            <ConditionalRender condition={(!!meetingTemplate.url && !isOwner && isSettingsChecked)}>
+            <ConditionalRender
+                condition={!!meetingTemplate.url && isSettingsChecked}
+            >
                 <MeetingBackgroundVideo
                     templateType={meetingTemplate.templateType}
                     src={meetingTemplate.url}
@@ -242,6 +278,14 @@ const MeetingContainer = memo(() => {
                         layout="fill"
                     />
                 </MeetingBackgroundVideo>
+            </ConditionalRender>
+            <ConditionalRender
+                condition={
+                    isOwner &&
+                    MeetingAccessStatusEnum.EnterName === localUser.accessStatus
+                }
+            >
+                {LoadingWaitingRoom}
             </ConditionalRender>
             {Boolean(meetingTemplate?.id) && (
                 <ConditionalRender
@@ -274,7 +318,7 @@ const MeetingContainer = memo(() => {
                             MeetingAccessStatusEnum.InMeeting
                         }
                     >
-                        <MeetingView /> 
+                        <MeetingView />
                     </ConditionalRender>
                 </ConditionalRender>
             )}
