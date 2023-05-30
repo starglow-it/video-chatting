@@ -68,7 +68,7 @@ const Component = () => {
                         nameSpace="common"
                         variant="body2"
                         translation="register.text"
-                        href=""
+                        href={welcomeRoute}
                     />
                 </>
             )}
