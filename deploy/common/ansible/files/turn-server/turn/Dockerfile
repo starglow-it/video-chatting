@@ -12,3 +12,4 @@ COPY ./turnserver.conf ./etc/turnserver.conf
 # RUN sed -i "s/externalipstub/$externalIp/g" /etc/turnserver.conf
 
 CMD turnserver -c etc/turnserver.conf
+

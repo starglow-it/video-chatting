@@ -29,7 +29,7 @@ export class AwsConnectorService {
 
   getUploadKeyFromUrl(url) {
     return url.replace(
-      `https://${this.vultrStorageHostname}/`,
+      `https://${this.vultrStorageHostname}/${this.vultrUploadBucket}/`,
       '',
     );
   }
@@ -117,7 +117,6 @@ export class AwsConnectorService {
     } as S3.Types.ListObjectsRequest;
 
     const objects = await this.s3.listObjects(params).promise();
-    console.log("deleteFolder objects ", objects);
 
     // make sure objects.Contents have objects, if not the function will be failed
     if (objects.Contents.length > 0) {
@@ -130,8 +129,6 @@ export class AwsConnectorService {
         })
         .promise();
     }
-
-    console.log("deleteFolder keyFolder ", keyFolder);
 
     return this.s3
       .deleteObject({
