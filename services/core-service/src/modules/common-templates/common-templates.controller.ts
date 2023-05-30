@@ -576,7 +576,7 @@ export class CommonTemplatesController {
   async deleteCommonTemplate(
     @Payload() { templateId }: DeleteCommonTemplatePayload,
   ): Promise<undefined> {
-    try {
+    // try {
       return withTransaction(this.connection, async (session) => {
         const template =
           await this.commonTemplatesService.findCommonTemplateById({
@@ -640,11 +640,11 @@ export class CommonTemplatesController {
 
         await this.awsService.deleteFolder(`templates/videos/${template.id}`);
       });
-    } catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: TEMPLATES_SERVICE,
-      });
-    }
+    // } catch (err) {
+    //   throw new RpcException({
+    //     message: err.message,
+    //     ctx: TEMPLATES_SERVICE,
+    //   });
+    // }
   }
 }
