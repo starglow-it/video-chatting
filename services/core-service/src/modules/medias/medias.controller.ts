@@ -287,6 +287,7 @@ export class MediaController {
                         path: 'previewUrls'
                     }]
                 });
+                console.log("uploadMediaFile: ", media);
                 return plainToInstance(CommonMediaDTO, media, {
                     excludeExtraneousValues: true,
                     enableImplicitConversion: true
