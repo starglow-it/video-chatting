@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { toNumber } from '../../utils/parsers/toNumber';
 import { Transform } from 'class-transformer';
 import { toBoolean } from '../../utils/parsers/toBoolean';
@@ -55,6 +55,15 @@ export class GetTemplatesQueryDto {
   @IsOptional()
   @IsString()
   public type;
+
+  @ApiProperty({
+    type: Array,
+    required: false,
+  })
+  @IsOptional()
+  @IsArray()
+  public businessCategories: string[];
+
 
   @ApiProperty({
     type: String,
