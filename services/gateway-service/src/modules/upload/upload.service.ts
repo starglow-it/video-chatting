@@ -26,7 +26,7 @@ export class UploadService {
 
   getUploadKeyFromUrl(url) {
     return url.replace(
-      `https://${this.vultrStorageHostname}/`,
+      `https://${this.vultrStorageHostname}/${this.vultrUploadBucket}/`,
       '',
     );
   }
