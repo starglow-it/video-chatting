@@ -739,7 +739,7 @@ export class UserTemplatesController {
   async deleteUserTemplate(
     @Payload() { templateId, userId }: DeleteUsersTemplatesPayload,
   ): Promise<undefined> {
-    try {
+    // try {
       return withTransaction(this.connection, async (session) => {
         const userTemplate =
           await this.userTemplatesService.findUserTemplateById({
@@ -771,22 +771,24 @@ export class UserTemplatesController {
             session,
           });
         }
-
+        console.log(2);
         await this.deleteMedias({ userTemplate }, session);
+        console.log(3);
 
         await this.userTemplatesService.deleteUserTemplate(
           { _id: templateId },
           session,
         );
+        console.log(3);
 
         return;
       });
-    } catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: TEMPLATES_SERVICE,
-      });
-    }
+    // } catch (err) {
+    //   throw new RpcException({
+    //     message: err.message,
+    //     ctx: TEMPLATES_SERVICE,
+    //   });
+    // }
   }
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.CountUserTemplates })
