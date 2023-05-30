@@ -117,9 +117,7 @@ export class AwsConnectorService {
     } as S3.Types.ListObjectsRequest;
 
     console.log("deleteFolder params: ", params);
-    console.log(1);
     const objects = await this.s3.listObjects(params).promise();
-    console.log(2);
 
     // make sure objects.Contents have objects, if not the function will be failed
     if (objects.Contents.length > 0) {
@@ -132,7 +130,6 @@ export class AwsConnectorService {
         })
         .promise();
     }
-    console.log(3);
 
     return this.s3
       .deleteObject({
