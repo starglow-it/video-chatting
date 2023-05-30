@@ -11,6 +11,9 @@ import styles from './AuthenticationLink.module.scss';
 
 // const
 import { clientRoutes, welcomeRoute } from '../../const/client-routes';
+import { initUserWithoutTokenFx } from 'src/store';
+import { parseCookies } from 'nookies';
+import { getClientMeetingUrl } from 'src/utils/urls';
 
 const Component = () => {
     const router = useRouter();
@@ -30,6 +33,14 @@ const Component = () => {
         [isNotLoginPage],
     );
 
+    const linkTo = async () => {
+        if (!isNotLoginPage) {
+            const { userWithoutLoginId, userTemplateId } = parseCookies();
+            if (!userWithoutLoginId) await initUserWithoutTokenFx();
+            else router.push(getClientMeetingUrl(userTemplateId));
+        }
+    };
+
     return (
         <CustomGrid container alignItems="center" className={styles.wrapper}>
             <CustomTypography
@@ -42,7 +53,8 @@ const Component = () => {
                 nameSpace="common"
                 variant="body2"
                 translation={customLinkProps.link}
-                href={customLinkProps.href}
+                href={isNotLoginPage ? customLinkProps.href : ''}
+                onClick={linkTo}
             />
             {!isNotLoginPage && (
                 <>
@@ -56,7 +68,7 @@ const Component = () => {
                         nameSpace="common"
                         variant="body2"
                         translation="register.text"
-                        href={welcomeRoute}
+                        href=""
                     />
                 </>
             )}

@@ -18,6 +18,7 @@ const CustomLink = memo(
         className,
         children,
         isExternal,
+        onClick,
         ...rest
     }: PropsWithClassName<CustomLinkProps> &
         TypographyProps &
@@ -25,7 +26,7 @@ const CustomLink = memo(
         React.PropsWithChildren<LinkProps>) => (
         <Link href={href} {...(isExternal ? { legacyBehavior: true, target: "_blank" } : {})}>
             {nameSpace && translation ? (
-                <a className={styles.link}>
+                <a className={styles.link} onClick={onClick}>
                     <CustomTypography
                         nameSpace={nameSpace}
                         translation={translation}
