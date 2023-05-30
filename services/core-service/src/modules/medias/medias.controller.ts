@@ -265,6 +265,7 @@ export class MediaController {
     ): Promise<void> {
         try {
             return withTransaction(this.connection, async () => {
+                console.log("uploadMediaFile: url", url);
                 const maxRetries = 10;
                 const previewUrls = await retry<PreviewUrls>(async () => {
                     return await this.generatePreviewUrs({
@@ -287,7 +288,8 @@ export class MediaController {
                         path: 'previewUrls'
                     }]
                 });
-                console.log("uploadMediaFile: ", media);
+
+                console.log("uploadMediaFile: media", media);
                 return plainToInstance(CommonMediaDTO, media, {
                     excludeExtraneousValues: true,
                     enableImplicitConversion: true
