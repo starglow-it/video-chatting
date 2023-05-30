@@ -45,6 +45,8 @@ export class UploadService {
       return `https://${response.Location}`;
     }
 
+    console.log("uploadFile response.Location", response.Location);
+
     return response.Location;
   }
 
