@@ -1,14 +1,14 @@
 import { BadRequestException, Body, Controller, Delete, Get, Post, Query, Req, UploadedFile, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { FEATURED_BACKGROUND_SCOPE } from 'shared-const';
-import { EntityList, IFeatureBackground, IMedia, ResponseSumType } from 'shared-types';
+import { EntityList, IFeaturedBackground, IMedia, ResponseSumType } from 'shared-types';
 import { GetMediasQueryDto } from '../../dtos/query/GetAdminMediasQuery.dto';
 import { DeleteMediasRequest } from '../../dtos/requests/delete-medias.request';
-import { CommonFeatureBackgroundDto } from '../../dtos/response/common-featured-background.dto';
 import { CommonMediaRestDto } from '../../dtos/response/common-media.dto';
 import { CommonResponseDto } from '../../dtos/response/common-response.dto';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { FeaturedBackgroundService } from './featured-background.service';
+import { FEATURED_BACKGROUND_SCOPE } from 'shared-const';
+import { CommonFeatureBackgroundDto } from '../../dtos/response/common-featured-background.dto';
 
 @ApiTags('featured-backgrounds')
 @Controller(FEATURED_BACKGROUND_SCOPE)
@@ -53,7 +53,7 @@ export class FeaturedBackgroundController {
   })
   async getFeaturedBackgroundList(
     @Query() query: GetMediasQueryDto):
-    Promise<ResponseSumType<EntityList<IFeatureBackground>>> {
+    Promise<ResponseSumType<EntityList<IFeaturedBackground>>> {
     try {
       const { skip, limit } = query;
       const medias =

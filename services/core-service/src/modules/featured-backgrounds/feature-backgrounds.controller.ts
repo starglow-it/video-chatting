@@ -46,7 +46,7 @@ export class FeaturedBackgroundsController {
     catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: MEDIA_SERVICE
+        ctx: FEATURED_SERVICE
       })
     }
   }
@@ -136,7 +136,7 @@ export class FeaturedBackgroundsController {
     } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: MEDIA_SERVICE,
+        ctx: FEATURED_SERVICE,
       });
     }
   }
@@ -177,7 +177,7 @@ export class FeaturedBackgroundsController {
       catch (err) {
         throw new RpcException({
           message: err.message,
-          ctx: MEDIA_SERVICE
+          ctx: FEATURED_SERVICE
         });
       }
     });
@@ -200,7 +200,7 @@ export class FeaturedBackgroundsController {
       catch (err) {
         throw new RpcException({
           message: err.message,
-          ctx: MEDIA_SERVICE
+          ctx: FEATURED_SERVICE
         });
       }
     });
