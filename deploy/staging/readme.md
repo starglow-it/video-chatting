@@ -1,14 +1,10 @@
 
 ```shell
-docker-compose -f docker-compose.proxy.yml up -d --build --force-recreate --remove-orphans
-
-rsync -av env /srv/tlo/services/config-service/.env
-docker-compose -f docker-compose.services.yml up -d --build --remove-orphans
-
 # down
-docker-compose --compatibility -p liveoffice -f docker-compose.traefik.yml down
+docker-compose -f docker-compose.proxy.yml down --remove-orphans
 
-docker-compose --compatibility -p liveoffice_staging -f docker-compose.staging.yml down
+docker-compose -f docker-compose.services.yml down --remove-orphans
+
 
 ```
 
@@ -67,5 +63,26 @@ sudo ./svc.sh uninstall
 
 # remove token of runner
 ./config.sh remove --token <APVBWUPUULB7BY67QKNT5CDEEULSG>
+
+```
+
+
+###### migrate
+```shell
+# backup
+docker exec services-mongo-1 rm -rf /data/db/tlo-backup
+docker exec services-mongo-1 mongodump -d theliveoffice -o /data/db/tlo-backup
+scp -r /data/liveoffice/mongo/tlo-backup root@18.190.108.231:/data/liveoffice/mongo/tlo-backup
+
+
+new mongodb
+# drop db
+docker exec services-mongo-1 mongo --eval 'db.dropDatabase();' theliveoffice 
+
+# restore
+#mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
+docker exec services-mongo-1 mongorestore -d theliveoffice /data/db/tlo-backup/theliveoffice
+
+
 
 ```

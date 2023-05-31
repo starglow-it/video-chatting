@@ -771,7 +771,7 @@ export class UsersController {
       );
 
       const uploadKey = data.profileAvatar.replace(
-        `https://${vultrStorageHostname}/${vultrUploadBucket}/`,
+        `https://${vultrStorageHostname}/`,
         '',
       );
 

@@ -54,7 +54,6 @@ class BackgroundManagerInstance {
                                 onError: () =>
                                     console.log('Segmentation error'),
                             });
-                            this.segmentation.createModel();
                         }
 
                         if (!this.videoEffects) {

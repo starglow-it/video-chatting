@@ -1,0 +1,23 @@
+tlo:
+  children:
+    production:
+      hosts:
+        liveofficeProd:
+          ansible_host: 18.118.59.1
+    Staging:
+      hosts:
+        liveofficeStaging-aws:
+          ansible_host: 18.190.108.231
+    turn-server:
+      hosts:
+        turn-server-aws:
+          ansible_host: 3.139.207.115
+
+all:
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_private_key_file: /root/.ssh/nongdan.dev
+    ansible_ssh_common_args: -o StrictHostKeyChecking=no
+    scp_if_ssh: true
+    ansible_connection: ssh
+    command_warnings: False
