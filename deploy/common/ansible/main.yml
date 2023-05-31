@@ -1,0 +1,50 @@
+# ansible-playbook main.yml -i inventory.yml -l liveofficeProd -t "all"
+- hosts: production
+  become: true
+  roles:
+    - role: common
+  tasks:
+    - name: copy /etc/openvpn/server.conf
+      ansible.builtin.copy:
+        src: files/liveofficeProd/server.conf
+        dest: /etc/openvpn/server.conf
+        follow: yes
+      tags:
+        - openvpn
+        - all
+    - name: Restart service openvpn in all cases
+      ansible.builtin.service:
+        name: openvpn@server.service
+        state: restarted
+      tags:
+        - openvpn
+        - all
+
+# ansible-playbook main.yml -i inventory.yml -l liveofficeStaging-aws -t "all"
+- hosts: Staging
+  become: true
+  roles:
+    - role: common
+
+- hosts: turn-server
+  become: true
+  roles:
+    - role: common
+  tasks:
+    - name: copy turn-server
+      ansible.builtin.copy:
+        src: files/turn-server
+        dest: /srv/
+        follow: yes
+      tags:
+        - turn-server
+        - all
+    - name: docker-compose up
+      shell:
+        cmd: |
+          cd /srv/turn-server
+          docker-compose up -d
+        warn: False
+      tags:
+        - turn-server
+        - all

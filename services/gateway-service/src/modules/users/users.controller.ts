@@ -609,6 +609,7 @@ export class UsersController {
         icsEventLink: icsLink,
         icalEventContent: content
       });
+
       this.notificationService.sendEmail({
         template: {
           key: emailTemplates.scheduledMeeting,
