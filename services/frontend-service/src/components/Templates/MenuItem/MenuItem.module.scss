@@ -8,10 +8,12 @@
 
     &:hover {
         border: 1px solid $primary-orange;
+        background-color: #f4f6f9;
     }
 
     &.active {
         border: 1px solid $primary-orange;
+        background-color: #f4f6f9;
     }
 
     .menu {

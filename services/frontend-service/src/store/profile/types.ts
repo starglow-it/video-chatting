@@ -31,7 +31,6 @@ export type UpdateTemplatePayload = {
 };
 export type GetProfileTemplatesPayload = QueryParams & {
     userId: string;
-    businessCategories: string[];
 };
 export type GetProfileTemplatesCountPayload = QueryParams & {
     userId: string;

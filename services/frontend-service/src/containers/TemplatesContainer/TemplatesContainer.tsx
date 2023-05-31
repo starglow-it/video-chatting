@@ -133,7 +133,7 @@ const Component = () => {
             limit: 6,
             skip: 0,
             userId: profile.id,
-            sort: ['maxParticipants', 'cc'],
+            sort: 'maxParticipants',
             direction: 1,
         });
     }, []);
