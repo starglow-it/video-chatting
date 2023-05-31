@@ -1,4 +1,4 @@
-import {ICommonTemplate, IUserTemplate, QueryParams} from 'shared-types';
+import { ICommonTemplate, IUserTemplate, QueryParams } from 'shared-types';
 import { HttpMethods } from '../../store/types';
 import { authScope, profileScope, serverUrl, uploadScope } from './baseData';
 
@@ -34,12 +34,20 @@ export const postProfileAvatarUrl = {
     method: HttpMethods.Post,
 };
 
-export const profileTemplatesUrl = ({ skip, limit }: QueryParams) => ({
-    url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}`,
+export const profileTemplatesUrl = ({
+    skip,
+    limit,
+    businessCategories = [],
+}: QueryParams & { businessCategories: string[] }) => ({
+    url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}&businessCategories=${businessCategories}`,
     method: HttpMethods.Get,
 });
 
-export const profileTemplatesCountUrl = ({ skip, limit, templateType }: QueryParams) => ({
+export const profileTemplatesCountUrl = ({
+    skip,
+    limit,
+    templateType,
+}: QueryParams) => ({
     url: `${baseProfileUrl}/templates/count?skip=${skip}&limit=${limit}&templateType=${templateType}`,
     method: HttpMethods.Get,
 });
@@ -53,22 +61,38 @@ export const profileTemplateByTemplateIdUrl = ({
     method: HttpMethods.Get,
 });
 
-export const getProfileTemplateUrl = ({ templateId }: { templateId?: string }) => ({
+export const getProfileTemplateUrl = ({
+    templateId,
+}: {
+    templateId?: string;
+}) => ({
     url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Get,
 });
 
-export const postProfileTemplatesUrl = ({ templateId }: { templateId?: string }) => ({
+export const postProfileTemplatesUrl = ({
+    templateId,
+}: {
+    templateId?: string;
+}) => ({
     url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Post,
 });
 
-export const deleteProfileTemplatesUrl = ({ templateId }: { templateId?: string }) => ({
+export const deleteProfileTemplatesUrl = ({
+    templateId,
+}: {
+    templateId?: string;
+}) => ({
     url: `${baseProfileUrl}/templates/${templateId || ''}`,
     method: HttpMethods.Delete,
 });
 
-export const addTemplateToUserUrl = ({ templateId }: { templateId: IUserTemplate['id'] }) => ({
+export const addTemplateToUserUrl = ({
+    templateId,
+}: {
+    templateId: IUserTemplate['id'];
+}) => ({
     url: `${baseProfileUrl}/templates/add/${templateId}`,
     method: HttpMethods.Post,
 });

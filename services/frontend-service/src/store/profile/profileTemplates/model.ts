@@ -1,5 +1,5 @@
 import { attach } from 'effector-next';
-import {ICommonTemplate, IUserTemplate} from 'shared-types';
+import { ICommonTemplate, IUserTemplate } from 'shared-types';
 import { profileDomain } from '../../domains';
 
 import { $profileStore } from '../profile/model';
@@ -16,24 +16,31 @@ import {
 } from '../types';
 
 import { templatesDomain } from '../../templates/domain/model';
-import {EditUserTemplatePayload, EditUserTemplateResponse} from "../../templates/types";
+import {
+    EditUserTemplatePayload,
+    EditUserTemplateResponse,
+} from '../../templates/types';
 
-export const $profileTemplatesStore = profileDomain.createStore<EntityList<IUserTemplate>>(
-    initialProfileTemplatesStore,
-);
+export const $profileTemplatesStore = profileDomain.createStore<
+    EntityList<IUserTemplate>
+>(initialProfileTemplatesStore);
 export const $skipProfileTemplates = profileDomain.createStore<number>(6);
-export const $deleteProfileTemplateId = profileDomain.createStore<IUserTemplate['id']>('');
-export const $profileTemplatesCountStore = profileDomain.createStore<ProfileTemplatesCountState>({
-    state: {
-        count: 0,
-    },
-    error: null,
-});
+export const $deleteProfileTemplateId =
+    profileDomain.createStore<IUserTemplate['id']>('');
+export const $profileTemplatesCountStore =
+    profileDomain.createStore<ProfileTemplatesCountState>({
+        state: {
+            count: 0,
+        },
+        error: null,
+    });
 
-export const setSkipProfileTemplates = profileDomain.createEvent<number>('setSkipProfileTemplates');
-export const setDeleteTemplateIdEvent = profileDomain.createEvent<IUserTemplate['id']>(
-    'setDeleteTemplateIdEvent',
+export const setSkipProfileTemplates = profileDomain.createEvent<number>(
+    'setSkipProfileTemplates',
 );
+export const setDeleteTemplateIdEvent = profileDomain.createEvent<
+    IUserTemplate['id']
+>('setDeleteTemplateIdEvent');
 
 export const getProfileTemplatesBase = profileDomain.createEffect<
     GetProfileTemplatesPayload,
@@ -62,7 +69,12 @@ export const getProfileTemplateByTemplateIdFx = templatesDomain.effect<
 export const getProfileTemplatesFx = attach({
     effect: getProfileTemplatesBase,
     source: $profileStore,
-    mapParams: ({ limit, skip }, profile: Profile) => ({ userId: profile.id, limit, skip }),
+    mapParams: ({ limit, skip, businessCategories }, profile: Profile) => ({
+        userId: profile.id,
+        limit,
+        skip,
+        businessCategories,
+    }),
 });
 
 export const getProfileTemplatesCountFx = attach({

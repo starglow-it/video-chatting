@@ -13,7 +13,7 @@ const Component = () => {
     const { list } = useStore($businessCategoriesStore);
 
     useEffect(() => {
-        getProfileTemplatesFx({ skip: 0, limit: 6 });
+        getProfileTemplatesFx({ skip: 0, limit: 6, businessCategories: ids });
     }, [ids]);
 
     const selectMenu = (id: string) => {
@@ -33,7 +33,12 @@ const Component = () => {
             alignItems="center"
             className={styles.wrapper}
         >
-            <CustomGrid container direction="row" alignItems="center" justifyContent="flex-end">
+            <CustomGrid
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="flex-end"
+            >
                 {list.map(item => (
                     <MenuItemTemplate
                         key={item.id}
@@ -50,7 +55,7 @@ const Component = () => {
                         onClick={selectMenu}
                     >
                         <CustomTypography fontSize={15}>Clear</CustomTypography>
-                        <CloseIcon width='22px' height='22px'/>
+                        <CloseIcon width="22px" height="22px" />
                     </CustomGrid>
                 </CustomPaper>
             </CustomGrid>

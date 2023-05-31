@@ -7,9 +7,10 @@ import { GetProfileTemplatesPayload, GetProfileTemplatesResponse } from '../type
 export const handleFetchProfileTemplates = async ({
     limit,
     skip,
+    businessCategories
 }: GetProfileTemplatesPayload): Promise<GetProfileTemplatesResponse> => {
     const response = await sendRequestWithCredentials<GetProfileTemplatesResponse, ErrorState>(
-        profileTemplatesUrl({ limit, skip }),
+        profileTemplatesUrl({ limit, skip, businessCategories }),
     );
 
     if (response.success) {
