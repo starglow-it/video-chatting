@@ -1,0 +1,54 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.featuredWrapper {
+    margin: rem(40px) 0 0 0;
+}
+
+.featuredContent {
+    max-width: rem(1054px);
+    width: 100%;
+    justify-items: center;
+
+    @media (max-width: 1100px) {
+        max-width: rem(705px);
+    }
+}
+
+.slider {
+  position: absolute;
+  bottom: -62px;
+  display: flex;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: rem(12px);
+  justify-content: center;
+  width: min-content;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+}
+
+%arrow {
+    position: absolute;
+    display: block;
+    bottom: -62px;
+    cursor: pointer;
+    opacity: 0.4;
+  
+    &:hover {
+      opacity: 1
+    }
+  }
+  .prevArrow {
+    @extend %arrow;
+    left: calc(50% - var(--offset));
+    transform: translateY(13px) rotate(90deg);
+  }
+  
+  .nextArrow {
+    @extend %arrow;
+    left: calc(50% + var(--offset));
+    transform: translateY(13px) rotate(-90deg);
+  }

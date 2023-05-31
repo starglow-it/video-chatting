@@ -54,6 +54,7 @@ import {
     createMeetingFx,
     createTemplateFx,
     deleteProfileTemplateFx,
+    getBusinessCategoriesFx,
     getCustomerPortalSessionUrlFx,
     getProfileTemplatesCountFx,
     getProfileTemplatesFx,
@@ -71,6 +72,8 @@ import { dashboardRoute } from '../../const/client-routes';
 
 // utils
 import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
+import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
+import { MenusTemplate } from '@components/Templates/Menus/Menus';
 
 const Component = () => {
     const router = useRouter();
@@ -115,6 +118,12 @@ const Component = () => {
     } = useToggle(false);
 
     useTemplateNotification(dashboardRoute);
+
+    useEffect(() => {
+        (() => {
+            getBusinessCategoriesFx({});
+        })();
+    }, []);
 
     useEffect(() => {
         getTemplatesFx({
@@ -309,6 +318,7 @@ const Component = () => {
 
     return (
         <MainProfileWrapper>
+            <FeaturedBackground />
             <ConditionalRender condition={isThereProfileTemplates}>
                 <CustomGrid
                     container
@@ -376,25 +386,7 @@ const Component = () => {
                 direction="column"
                 justifyContent="center"
             >
-                <CustomGrid
-                    container
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <CustomBox className={styles.image}>
-                        <CustomImage
-                            src="/images/blush-face.webp"
-                            width="40px"
-                            height="40px"
-                            alt="blush-face"
-                        />
-                    </CustomBox>
-                    <CustomTypography
-                        variant="h1"
-                        nameSpace="templates"
-                        translation="selectTemplates"
-                    />
-                </CustomGrid>
+                <MenusTemplate />
                 <ConditionalRender condition={!isThereProfileTemplates}>
                     <CustomChip
                         active

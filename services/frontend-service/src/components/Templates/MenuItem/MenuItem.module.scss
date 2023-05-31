@@ -1,0 +1,21 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/rem.scss";
+
+.menuWrapper {
+    margin-left: rem(5px);
+    cursor: pointer;
+    border-radius: rem(6px);
+
+    &:hover {
+        border: 1px solid $primary-orange;
+    }
+
+    &.active {
+        border: 1px solid $primary-orange;
+    }
+
+    .menu {
+        width: max-content;
+        padding: rem(6px);
+    }
+}

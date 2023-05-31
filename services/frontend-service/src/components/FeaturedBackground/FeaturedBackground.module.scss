@@ -1,0 +1,14 @@
+@import "../../styles/variables";
+@import "../../styles/rem";
+
+.image {
+//   width: rem(30px);
+//   height: rem(30px);
+//   display: block;
+  margin: 0 rem(12px) 0 0;
+}
+
+.featuredWrapper {
+  max-width: rem(1054px);
+  width: 100%;
+}
