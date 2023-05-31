@@ -54,7 +54,6 @@ class BackgroundManagerInstance {
                                 onError: () =>
                                     console.log('Segmentation error'),
                             });
-                            this.segmentation.createModel();
                         }
 
                         if (!this.videoEffects) {
@@ -76,7 +75,7 @@ class BackgroundManagerInstance {
             if (videoTrack && this.videoEffects && isAuraActive) {
                 videoTrack.enabled = true;
 
-                blurTrack = this.videoEffects.setEffect(
+                blurTrack = await this.videoEffects.setEffect(
                     this.effectBackground,
                     videoTrack,
                 );
