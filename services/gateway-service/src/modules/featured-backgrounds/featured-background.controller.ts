@@ -7,14 +7,13 @@ import { CommonMediaRestDto } from '../../dtos/response/common-media.dto';
 import { CommonResponseDto } from '../../dtos/response/common-response.dto';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { FeaturedBackgroundService } from './featured-background.service';
-import { FEATURED_BACKGROUND_SCOPE } from 'shared-const';
 import { CommonFeatureBackgroundDto } from '../../dtos/response/common-featured-background.dto';
+import { FEATURED_BACKGROUND_SCOPE } from 'shared-const';
 
-@ApiTags('featured-backgrounds')
+@ApiTags('Featured Backgrounds')
 @Controller(FEATURED_BACKGROUND_SCOPE)
 export class FeaturedBackgroundController {
   constructor(private readonly featuredBackgroundService: FeaturedBackgroundService) { }
-
 
   @Delete('')
   @ApiBearerAuth()
@@ -75,20 +74,23 @@ export class FeaturedBackgroundController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Upload featured background' })
   @ApiOkResponse({
-    type: CommonMediaRestDto,
+    type: CommonFeatureBackgroundDto,
     description: 'Upload featured background'
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async updateBackground(@Req() req, @UploadedFile() file: Express.Multer.File): Promise<ResponseSumType<IMedia>> {
+  async updateBackground(
+    @Req() req,
+    @UploadedFile() file: Express.Multer.File):
+    Promise<ResponseSumType<IFeaturedBackground>> {
     try {
       const { userId } = req.user
-      const media = await this.featuredBackgroundService.handleUploadBackground({ file, userId});
+      const featuredBackgrounds = await this.featuredBackgroundService.handleUploadBackground({ file, userId });
 
       return {
         success: true,
-        result: media
+        result: featuredBackgrounds
       }
     } catch (error) {
       throw new BadRequestException(error)

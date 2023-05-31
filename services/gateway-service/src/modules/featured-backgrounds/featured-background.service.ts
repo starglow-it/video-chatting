@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CoreBrokerPatterns } from 'shared-const';
-import { CreateFeaturedBackgroundPayload, DeleteFeaturedBackgroundPayload, GetFeaturedBackgroundPayload, IMedia, UploadFeaturedBackgroundPayload } from 'shared-types';
+import { CreateFeaturedBackgroundPayload, DeleteFeaturedBackgroundPayload, GetFeaturedBackgroundPayload, IFeaturedBackground, IMedia, UploadFeaturedBackgroundPayload } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 import { UploadService } from '../upload/upload.service';
 
@@ -27,12 +27,15 @@ export class FeaturedBackgroundService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-  async handleUploadBackground({ file, userId }: { file: Express.Multer.File, userId: string }): Promise<IMedia> {
+  async handleUploadBackground(
+    { file, userId }:
+      { file: Express.Multer.File, userId: string }):
+    Promise<IFeaturedBackground> {
     let featuredBackground = await this.createFeatureBackground({ userId });
     if (file) {
       const url = await this.uploadService.handleUploadCommonFile({
         file,
-        folderKey: `featured-backgrounds/${featuredBackground.id}/videos`,
+        folderKey: `featured-backgrounds/images/${featuredBackground.id}`,
       });
 
       featuredBackground = await this.uploadFeatureBackgroundFile({

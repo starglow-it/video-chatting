@@ -45,7 +45,7 @@ export class FeaturedBackgroundsService {
 
             const imagesPaths = await fsPromises.readdir(outputPath);
 
-            const keyFolder = `^featured-backgrounds/images/${id}`;
+            const keyFolder = `^featured-backgrounds/preivews/${id}`;
 
             await this.previewImage.deleteMany({
                 key: new RegExp(keyFolder),

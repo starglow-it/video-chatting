@@ -3,7 +3,7 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { InjectConnection } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Connection } from 'mongoose';
-import { CoreBrokerPatterns, FEATURED_SERVICE, MEDIA_SERVICE, USER_NOT_FOUND } from 'shared-const';
+import { CoreBrokerPatterns, FEATURED_BACKGROUND_SERVICE, MEDIA_SERVICE, USER_NOT_FOUND } from 'shared-const';
 import { CreateFeaturedBackgroundPayload, DeleteFeaturedBackgroundPayload, EntityList, GetFeaturedBackgroundPayload, IFeaturedBackground, UploadFeaturedBackgroundPayload } from 'shared-types';
 import { CommonFeatureBackgroundDTO } from '../../dtos/common-featured-background.dto';
 import { withTransaction } from '../../helpers/mongo/withTransaction';
@@ -12,6 +12,7 @@ import { PreviewUrls } from '../../types/media';
 import { retry } from '../../utils/common/retry';
 import { FeaturedBackgroundsService } from './featured-backgrounds.service';
 import { UsersService } from '../users/users.service';
+import { UserDocument } from 'src/schemas/user.schema';
 
 @Controller('featured-background')
 export class FeaturedBackgroundsController {
@@ -19,7 +20,6 @@ export class FeaturedBackgroundsController {
     @InjectConnection() private connection: Connection,
     private readonly featuredBackgroundService: FeaturedBackgroundsService,
     private readonly usersService: UsersService,
-
   ) { }
 
   //#region private method
@@ -46,7 +46,7 @@ export class FeaturedBackgroundsController {
     catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: FEATURED_SERVICE
+        ctx: FEATURED_BACKGROUND_SERVICE
       })
     }
   }
@@ -58,17 +58,12 @@ export class FeaturedBackgroundsController {
     return withTransaction(this.connection, async session => {
       try {
 
-        let user = null
+        let user: UserDocument = null
         if (userId) {
-          user = await this.usersService.findById(userId, session, [
-            'businessCategories',
-            'socials',
-            'languages',
-            'profileAvatar',
-          ]);
+          user = await this.usersService.findById(userId, session);
 
           if (!user) {
-            throw new RpcException({ ...USER_NOT_FOUND, ctx: FEATURED_SERVICE });
+            throw new RpcException({ ...USER_NOT_FOUND, ctx: FEATURED_BACKGROUND_SERVICE });
           }
         }
 
@@ -90,7 +85,7 @@ export class FeaturedBackgroundsController {
       catch (err) {
         throw new RpcException({
           message: err.message,
-          ctx: FEATURED_SERVICE
+          ctx: FEATURED_BACKGROUND_SERVICE
         });
       }
     });
@@ -136,7 +131,7 @@ export class FeaturedBackgroundsController {
     } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: FEATURED_SERVICE,
+        ctx: FEATURED_BACKGROUND_SERVICE,
       });
     }
   }
@@ -177,7 +172,7 @@ export class FeaturedBackgroundsController {
       catch (err) {
         throw new RpcException({
           message: err.message,
-          ctx: FEATURED_SERVICE
+          ctx: FEATURED_BACKGROUND_SERVICE
         });
       }
     });
@@ -200,7 +195,7 @@ export class FeaturedBackgroundsController {
       catch (err) {
         throw new RpcException({
           message: err.message,
-          ctx: FEATURED_SERVICE
+          ctx: FEATURED_BACKGROUND_SERVICE
         });
       }
     });
