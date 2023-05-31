@@ -9,6 +9,7 @@ import {
     $profileTemplatesStore,
     $templatesStore,
     addTemplateToUserFx,
+    createMeetingFx,
     deleteProfileTemplateFx,
     getTemplatesFx,
     purchaseTemplateFx,
@@ -16,8 +17,8 @@ import {
 import { useStore, useStoreMap } from 'effector-react';
 import { EntityList, ICommonTemplate, IUserTemplate } from 'shared-types';
 import { useRouter } from 'next/router';
-import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
 import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
+import { getClientMeetingUrl } from 'src/utils/urls';
 
 const Component = () => {
     const router = useRouter();
@@ -39,6 +40,21 @@ const Component = () => {
                     template.type === 'free' && template.author !== profileId,
             ),
     });
+
+    const handleCreateMeeting = useCallback(
+        async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
+            const result = await createMeetingFx({ templateId });
+
+            if (result.template) {
+                await router.push(
+                    getClientMeetingUrl(
+                        result.template?.customLink || result?.template?.id,
+                    ),
+                );
+            }
+        },
+        [],
+    );
 
     const handleReplaceTemplate = async ({
         templateId,
