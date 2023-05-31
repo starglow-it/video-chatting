@@ -501,9 +501,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
 
-      if (user.loginType !== LoginTypes.Google)
-        throw new DataValidationException(USER_NOT_GOOGLE_ACCOUNT);
-
       if (user.isBlocked) {
         throw new DataValidationException(USER_IS_BLOCKED);
       }
