@@ -38,10 +38,12 @@ export const profileTemplatesUrl = ({
     skip,
     limit,
     businessCategories = [],
-}: QueryParams & { businessCategories: string[] }) => ({
-    url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}&businessCategories=${businessCategories}`,
-    method: HttpMethods.Get,
-});
+}: QueryParams & { businessCategories: string[] }) => {
+    return {
+        url: `${baseProfileUrl}/templates?skip=${skip}&limit=${limit}&businessCategories=${businessCategories}`,
+        method: HttpMethods.Get,
+    };
+};
 
 export const profileTemplatesCountUrl = ({
     skip,

@@ -74,6 +74,7 @@ import { dashboardRoute } from '../../const/client-routes';
 import { getClientMeetingUrl, getCreateRoomUrl } from '../../utils/urls';
 import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
 import { MenusTemplate } from '@components/Templates/Menus/Menus';
+import { MainTemplates } from '@components/Templates/MainTemplates/MainTemplates';
 
 const Component = () => {
     const router = useRouter();
@@ -132,7 +133,7 @@ const Component = () => {
             limit: 6,
             skip: 0,
             userId: profile.id,
-            sort: 'maxParticipants',
+            sort: ['maxParticipants', 'cc'],
             direction: 1,
         });
     }, []);
@@ -164,21 +165,6 @@ const Component = () => {
             setSkipProfileTemplates(6 * newPage);
         },
         [],
-    );
-
-    const handleCommonTemplatesPageChange = useCallback(
-        async (newPage: number) => {
-            await getTemplatesFx({
-                draft: false,
-                isPublic: true,
-                limit: 6 * newPage,
-                skip: 0,
-                userId: profile.id,
-                sort: 'maxParticipants',
-                direction: 1,
-            });
-        },
-        [profile.id],
     );
 
     const handleCreateMeeting = useCallback(
@@ -319,7 +305,7 @@ const Component = () => {
     return (
         <MainProfileWrapper>
             <FeaturedBackground />
-            <ConditionalRender condition={isThereProfileTemplates}>
+            {/* <ConditionalRender condition={isThereProfileTemplates}>
                 <CustomGrid
                     container
                     direction="column"
@@ -377,41 +363,9 @@ const Component = () => {
                         TemplateComponent={ProfileTemplateItem}
                     />
                 </CustomGrid>
-            </ConditionalRender>
-            <CustomGrid
-                className={clsx(styles.commonTemplates, {
-                    [styles.noProfileTemplates]: !isThereProfileTemplates,
-                })}
-                container
-                direction="column"
-                justifyContent="center"
-            >
-                <MenusTemplate />
-                <ConditionalRender condition={!isThereProfileTemplates}>
-                    <CustomChip
-                        active
-                        label={
-                            <CustomTypography>
-                                <Translation
-                                    nameSpace="templates"
-                                    translation="createRoom"
-                                />
-                            </CustomTypography>
-                        }
-                        size="medium"
-                        onClick={handleCreateRoom}
-                        icon={<PlusIcon width="24px" height="24px" />}
-                        className={styles.createRoomButton}
-                    />
-                </ConditionalRender>
-                <TemplatesGrid<ICommonTemplate>
-                    list={templates.list}
-                    count={templates.count}
-                    onPageChange={handleCommonTemplatesPageChange}
-                    onChooseTemplate={handleChooseCommonTemplate}
-                    TemplateComponent={CommonTemplateItem}
-                />
-            </CustomGrid>
+            </ConditionalRender> */}
+            <MainTemplates />
+           
             <SubscriptionsPlans
                 withBackgroundBlur
                 isSubscriptionStep={isSubscriptionsOpen}

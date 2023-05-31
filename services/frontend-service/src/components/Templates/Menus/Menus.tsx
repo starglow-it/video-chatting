@@ -7,6 +7,7 @@ import styles from './Menus.module.scss';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import { mapEmoji, parseEmoji } from 'shared-utils';
 
 const Component = () => {
     const [ids, setIds] = useState<string[]>([]);
@@ -33,11 +34,20 @@ const Component = () => {
             alignItems="center"
             className={styles.wrapper}
         >
+            <CustomPaper className={styles.barge}>
+                <CustomGrid container direction="row" alignItems="center">
+                    <CustomGrid className={styles.emoji}>
+                        {parseEmoji(mapEmoji('1f6d6'))}
+                    </CustomGrid>
+                    <CustomTypography fontSize={13}>My Rooms</CustomTypography>
+                </CustomGrid>
+            </CustomPaper>
             <CustomGrid
                 container
                 direction="row"
                 alignItems="center"
                 justifyContent="flex-end"
+                flex={1}
             >
                 {list.map(item => (
                     <MenuItemTemplate
@@ -47,7 +57,7 @@ const Component = () => {
                         onSelect={selectMenu}
                     />
                 ))}
-                <CustomPaper className={styles.clearButton}>
+                <CustomPaper className={styles.barge}>
                     <CustomGrid
                         container
                         direction="row"

@@ -7,10 +7,15 @@
     padding: 0px 100px;
 }
 
-.clearButton {
-    margin-left: rem(20px);
+.barge {
     cursor: pointer;
     border-radius: rem(6px);
     width: max-content;
     padding: rem(6px);
+    margin-left: rem(5px);
+}
+
+.emoji {
+    font-size: rem(22px);
+    margin-right: rem(8px);
 }
