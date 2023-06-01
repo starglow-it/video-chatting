@@ -327,6 +327,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       throw new DataValidationException(USER_IS_BLOCKED);
     }
 
+    if(user.loginType !== LoginTypes.Local){
+      throw new DataValidationException(USER_EXISTS);
+    }
+
     const result = await this.authService.loginUser(body);
 
     return {
@@ -489,7 +493,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
       
-      if(!user.profileAvatar){
+      if(!user.profileAvatar && user.loginType === LoginTypes.Google){
         const image = await this.getImageFromUrl(picture);
         await this.coreService.findUserAndUpdateAvatar({
           userId: user.id,
