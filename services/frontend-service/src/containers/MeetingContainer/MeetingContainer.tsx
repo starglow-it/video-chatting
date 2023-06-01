@@ -230,34 +230,16 @@ const MeetingContainer = memo(() => {
     const LoadingWaitingRoom = useMemo(() => {
         return (
             <CustomGrid className={styles.loadingRoom}>
-                <div className={styles.loadingText}>
-                    <span>W</span>
-                    <span>e</span>
-                    <span>&apos;</span>
-                    <span>r</span>
-                    <span>e</span>
-                    <span> </span>
-                    <span>S</span>
-                    <span>e</span>
-                    <span>t</span>
-                    <span>t</span>
-                    <span>i</span>
-                    <span>n</span>
-                    <span>g</span>
-                    <span> </span>
-                    <span>u</span>
-                    <span>p</span>
-                    <span> </span>
-                    <span>y</span>
-                    <span>o</span>
-                    <span>u</span>
-                    <span>r</span>
-                    <span> </span>
-                    <span>R</span>
-                    <span>o</span>
-                    <span>o</span>
-                    <span>m</span>
-                </div>
+                <CustomGrid className={styles.loadingWrapper}>
+                    <Typography className={styles.loadingText}>
+                        We&apos;re setting up your Room
+                    </Typography>
+                    <div className={styles.lds}>
+                        <div />
+                        <div />
+                        <div />
+                    </div>
+                </CustomGrid>
             </CustomGrid>
         );
     }, []);
