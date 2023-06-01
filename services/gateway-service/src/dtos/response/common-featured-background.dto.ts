@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { ICommonUser, IFeaturedBackground, IPreviewImage } from "shared-types";
 import { PreviewImageDTO } from "./common.dto";
+import { UserFeaturedBackground } from "./common-user.dto";
 
 export class CommonFeatureBackgroundDto implements IFeaturedBackground {
     @Expose()
@@ -9,7 +10,9 @@ export class CommonFeatureBackgroundDto implements IFeaturedBackground {
     id: string;
     
     @Expose()
-    @ApiProperty()
+    @ApiProperty({
+        type: UserFeaturedBackground
+    })
     createdBy: IFeaturedBackground['createdBy'];
 
     @Expose()
