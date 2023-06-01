@@ -44,6 +44,7 @@ import {
 
 // styles
 import styles from './Layout.module.scss';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 const SubscriptionExpiredNotification = dynamic(
     () =>
@@ -116,55 +117,71 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             </ConditionalRender>
 
             <CustomBox className={styles.bgImage} />
-
-            <CustomGrid
-                container
-                direction="column"
-                flex={1}
-                flexWrap="nowrap"
-                className={clsx(styles.contentWrapper, {
-                    [styles.meetingLayout]: isMeetingRoute,
-                    [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
-                })}
+            <CustomScroll
+                onYReachEnd={() => console.log('#Duy Phan console', 'end')}
+                options={{
+                    // swipeEasing: true,
+                    // wheelSpeed: 800,
+                    wheelPropagation: true,
+                    // suppressScrollY: true,
+                }}
             >
                 <CustomGrid
-                    item
+                    container
+                    direction="column"
                     flex={1}
-                    className={clsx({ [styles.mobileContent]: isMobile })}
+                    flexWrap="nowrap"
+                    className={clsx(styles.contentWrapper, {
+                        [styles.meetingLayout]: isMeetingRoute,
+                        [styles.relativeLayout]:
+                            isMeetingRoute || isDashboardRoute,
+                    })}
                 >
-                    <ConditionalRender condition={!isMobile}>
-                        <CustomBox className={styles.header}>
-                            <CustomGrid
-                                container
-                                justifyContent="space-between"
-                                alignItems="center"
-                            >
-                                <CustomLink
-                                    href={isAuthenticated ? dashboardRoute : ''}
+                    <CustomGrid
+                        item
+                        flex={1}
+                        className={clsx({ [styles.mobileContent]: isMobile })}
+                    >
+                        <ConditionalRender condition={!isMobile}>
+                            <CustomBox className={styles.header}>
+                                <CustomGrid
+                                    container
+                                    justifyContent="space-between"
+                                    alignItems="center"
                                 >
-                                    <LiveOfficeLogo
-                                        className={clsx(isAuthenticated, {
-                                            [styles.link]: isAuthenticated,
-                                        })}
-                                        width="210px"
-                                        height="44px"
-                                    />
-                                </CustomLink>
-                                <CustomGrid>
-                                    {!isAuthenticated && <AuthenticationLink />}
+                                    <CustomLink
+                                        href={
+                                            isAuthenticated
+                                                ? dashboardRoute
+                                                : ''
+                                        }
+                                    >
+                                        <LiveOfficeLogo
+                                            className={clsx(isAuthenticated, {
+                                                [styles.link]: isAuthenticated,
+                                            })}
+                                            width="210px"
+                                            height="44px"
+                                        />
+                                    </CustomLink>
+                                    <CustomGrid>
+                                        {!isAuthenticated && (
+                                            <AuthenticationLink />
+                                        )}
+                                    </CustomGrid>
                                 </CustomGrid>
-                            </CustomGrid>
-                        </CustomBox>
-                    </ConditionalRender>
-                    {children}
-                    <MeetingFinishedDialog />
-                </CustomGrid>
-                <ConditionalRender condition={shouldShowFooter}>
-                    <CustomGrid item>
-                        <Footer />
+                            </CustomBox>
+                        </ConditionalRender>
+                        {children}
+                        <MeetingFinishedDialog />
                     </CustomGrid>
-                </ConditionalRender>
-            </CustomGrid>
+                    <ConditionalRender condition={shouldShowFooter}>
+                        <CustomGrid item>
+                            <Footer />
+                        </CustomGrid>
+                    </ConditionalRender>
+                </CustomGrid>
+            </CustomScroll>
         </CustomBox>
     );
 };

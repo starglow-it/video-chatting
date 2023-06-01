@@ -2,18 +2,14 @@
 @import "../../../styles/rem.scss";
 
 .menuWrapper {
-    margin-left: rem(5px);
+    margin-left: rem(10px);
     cursor: pointer;
     border-radius: rem(6px);
-
-    &:hover {
-        border: 1px solid $primary-orange;
-        background-color: #f4f6f9;
-    }
+    color: var(--color);
 
     &.active {
-        border: 1px solid $primary-orange;
-        background-color: #f4f6f9;
+        background-color: $primary-black;
+        color: $primary-white;
     }
 
     .menu {

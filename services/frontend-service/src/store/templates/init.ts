@@ -1,7 +1,11 @@
-import { forward } from 'effector';
+import { combine, forward, sample, split } from 'effector';
 
 import {
-    $discoveryTemplatesStore, $isUploadTemplateBackgroundInProgress,
+    $discoveryTemplatesStore,
+    $isUploadTemplateBackgroundInProgress,
+    $modeTemplateStore,
+    $queryProfileTemplatesStore,
+    $queryTemplatesStore,
     $replaceTemplateIdStore,
     $scheduleEventLinkStore,
     $scheduleTemplateIdStore,
@@ -20,9 +24,14 @@ import {
     getUsersTemplatesFx,
     getUserTemplateByIdFx,
     getUserTemplateFx,
+    loadmoreCommonTemplates,
+    loadmoreMetaTemplates,
+    loadmoreUserTemplates,
     purchaseTemplateFx,
     sendScheduleInviteFx,
     setPreviewTemplate,
+    setQueryProfileTemplatesEvent,
+    setQueryTemplatesEvent,
     setReplaceTemplateIdEvent,
     setScheduleEventLinkEvent,
     setScheduleTemplateIdEvent,
@@ -31,11 +40,11 @@ import {
 } from './model';
 
 import { appDialogsApi } from '../dialogs/init';
-import {clearProfileEvent} from "../profile/profile/model";
+import { $profileStore, clearProfileEvent } from '../profile/profile/model';
 
 // types
 import { AppDialogsEnum } from '../types';
-import {ICommonTemplate} from "shared-types";
+import { ICommonTemplate } from 'shared-types';
 
 // handlers
 import { handleFetchUsersTemplates } from './handlers/handleFetchUsersTemplates';
@@ -51,7 +60,11 @@ import { handleUploadUserTemplateFile } from './handlers/handleUploadUserTemplat
 import { handleAddTemplateToUser } from './handlers/handleAddTemplateToUser';
 import { handleDeleteCommonTemplate } from './handlers/handleDeleteCommonTemplate';
 import { handleGetUserTemplate } from './handlers/handleGetUserTemplate';
-import {editUserTemplateFx} from "../profile/profileTemplates/model";
+import {
+    editUserTemplateFx,
+    getProfileTemplatesFx,
+} from '../profile/profileTemplates/model';
+import { $profileTemplateStore } from '../profile/profileTemplate/model';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -69,10 +82,21 @@ addTemplateToUserFx.use(handleAddTemplateToUser);
 deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 
 $templatesStore
-    .on(getTemplatesFx.doneData, (state, data) => ({...data, list: data.list.filter(item => !item.isAcceptNoLogin)}))
+    .on(getTemplatesFx.doneData, (state, data) => ({
+        ...data,
+        list: data.isReset
+            ? data.list
+            : [
+                  ...state.list,
+                  ...data.list.filter(item => !item.isAcceptNoLogin),
+              ],
+    }))
     .reset(clearProfileEvent);
 
-$templatePreviewStore.on(setPreviewTemplate, (_state, data: ICommonTemplate | null) => data);
+$templatePreviewStore.on(
+    setPreviewTemplate,
+    (_state, data: ICommonTemplate | null) => data,
+);
 $setUpTemplateStore.on(getTemplateFx.doneData, (state, data) => data);
 $discoveryTemplatesStore.on(getUsersTemplatesFx.doneData, (state, data) => ({
     ...state,
@@ -109,7 +133,65 @@ $replaceTemplateIdStore.on(setReplaceTemplateIdEvent, (state, data) => data);
 
 $isUploadTemplateBackgroundInProgress.reset(clearTemplateDraft);
 
+$queryTemplatesStore
+    .on(setQueryTemplatesEvent, (state, data) => ({
+        ...state,
+        ...data,
+    }))
+    .on(loadmoreCommonTemplates, state => ({
+        ...state,
+        skip: (state.skip || 0) + 1,
+    }))
+    .reset(setQueryProfileTemplatesEvent);
+
+$queryProfileTemplatesStore
+    .on(setQueryProfileTemplatesEvent, (state, data) => ({ ...state, ...data }))
+    .on(loadmoreUserTemplates, state => ({
+        ...state,
+        skip: (state.skip || 0) + 1,
+    }))
+    .reset(setQueryTemplatesEvent);
+
+$modeTemplateStore
+    .on(setQueryTemplatesEvent, () => 'common')
+    .on(setQueryProfileTemplatesEvent, () => 'private');
+
 forward({
     from: sendScheduleInviteFx.doneData,
     to: setScheduleEventLinkEvent,
+});
+
+sample({
+    clock: $queryTemplatesStore,
+    source: combine({
+        profile: $profileStore,
+        query: $queryTemplatesStore,
+    }),
+    fn: ({ profile: { id }, query }) => ({ ...query, userId: id }),
+    target: getTemplatesFx,
+});
+
+sample({
+    clock: $queryProfileTemplatesStore,
+    source: $queryTemplatesStore,
+    target: getProfileTemplatesFx,
+});
+
+split({
+    clock: loadmoreMetaTemplates,
+    source: combine({
+        mode: $modeTemplateStore,
+        common: $templatesStore,
+        private: $profileTemplateStore,
+    }),
+    match: {
+        private: ({ mode, common: { count, list } }) =>
+            mode === 'private' && list.length < count,
+        common: ({ mode, private: { count, list } }) =>
+            mode === 'common' && list.length < count,
+    },
+    cases: {
+        private: loadmoreCommonTemplates,
+        common: loadmoreUserTemplates,
+    },
 });

@@ -22,8 +22,12 @@ import { TemplateGridProps } from './types';
 
 // styles
 import styles from './TemplatesGrid.module.scss';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 
-const DotsComponent = (dotsRef: React.MutableRefObject<HTMLUListElement | null>) =>
+const DotsComponent = (
+    dotsRef: React.MutableRefObject<HTMLUListElement | null>,
+) =>
     function render(dots: React.ReactNode) {
         return <ul ref={dotsRef}>{dots}</ul>;
     };
@@ -31,7 +35,11 @@ const DotsComponent = (dotsRef: React.MutableRefObject<HTMLUListElement | null>)
 const PagingComponent = (activeSlider: number) =>
     function render(i: number) {
         return (
-            <div className={clsx(styles.dotSlider, { [styles.activeDot]: activeSlider === i })} />
+            <div
+                className={clsx(styles.dotSlider, {
+                    [styles.activeDot]: activeSlider === i,
+                })}
+            />
         );
     };
 
@@ -45,6 +53,8 @@ const Component = <TemplateType extends { id: string }>({
     innerClassName,
     itemWidth = 334,
     itemGap = 3,
+    allowCreate = false,
+    onCreate
 }: TemplateGridProps<TemplateType>) => {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
@@ -65,27 +75,52 @@ const Component = <TemplateType extends { id: string }>({
             ),
         }));
 
+        if (allowCreate) {
+            initialTemplatesRender.unshift({
+                id: 'create',
+                component: (
+                    <CustomGrid
+                        className={styles.addItem}
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        onClick={onCreate}
+                    >
+                        <PlusIcon width="22px" height="22px" />
+                        <CustomTypography>Create room</CustomTypography>
+                    </CustomGrid>
+                ),
+            });
+        }
+
         if (count <= 6) {
             return initialTemplatesRender.map(element => element.component);
         }
 
         const skeletonCount = count - initialTemplatesRender.length;
 
-        const allSkeletonTemplates = [...new Array(skeletonCount).fill(0).keys()].map(item => ({
+        const allSkeletonTemplates = [
+            ...new Array(skeletonCount).fill(0).keys(),
+        ].map(item => ({
             id: `${item}`,
             component: <SkeletonTemplate key={item} />,
         }));
 
-        const commonComponentsArray = [...initialTemplatesRender, ...allSkeletonTemplates];
+        const commonComponentsArray = [
+            ...initialTemplatesRender,
+            ...allSkeletonTemplates,
+        ];
 
-        const unflattedArray = unflatArray<{ id: string; component: JSX.Element }>(
-            commonComponentsArray,
-            6,
-        );
+        const unflattedArray = unflatArray<{
+            id: string;
+            component: JSX.Element;
+        }>(commonComponentsArray, 6);
 
         if (unflattedArray) {
             return unflattedArray.map(slideComponents => {
-                const elements = slideComponents.map(element => element.component);
+                const elements = slideComponents.map(
+                    element => element.component,
+                );
                 const key = slideComponents
                     .map(element => element.id)
                     .reduce((acc, b) => `${acc}${b}`, '');
@@ -120,9 +155,12 @@ const Component = <TemplateType extends { id: string }>({
         });
     }, []);
 
-    const handleChangeActiveSlider = useCallback((oldIndex: number, newIndex: number) => {
-        setActiveSlider(newIndex);
-    }, []);
+    const handleChangeActiveSlider = useCallback(
+        (oldIndex: number, newIndex: number) => {
+            setActiveSlider(newIndex);
+        },
+        [],
+    );
 
     const sliderSettings = useMemo(
         () => ({
@@ -132,8 +170,18 @@ const Component = <TemplateType extends { id: string }>({
             beforeChange: handleChangeActiveSlider,
             appendDots: DotsComponent(dotsRef),
             customPaging: PagingComponent(activeSlider),
-            nextArrow: <NextSliderArrow customClassName={styles.nextArrow} dotsRef={dotsRef} />,
-            prevArrow: <PrevSliderArrow customClassName={styles.prevArrow} dotsRef={dotsRef} />,
+            nextArrow: (
+                <NextSliderArrow
+                    customClassName={styles.nextArrow}
+                    dotsRef={dotsRef}
+                />
+            ),
+            prevArrow: (
+                <PrevSliderArrow
+                    customClassName={styles.prevArrow}
+                    dotsRef={dotsRef}
+                />
+            ),
         }),
         [handleLoadTemplates, activeSlider, handleChangeActiveSlider],
     );
@@ -147,13 +195,15 @@ const Component = <TemplateType extends { id: string }>({
             className={outerClassName || styles.templatesWrapper}
         >
             <CustomBox className={innerClassName || styles.templatesContent}>
-                {count > 6 ? (
-                    <CustomSlider sliderSettings={sliderSettings}>{renderTemplates}</CustomSlider>
-                ) : (
+                {/* {count > 6 ? (
+                    <CustomSlider sliderSettings={sliderSettings}>
+                        {renderTemplates}
+                    </CustomSlider>
+                ) : ( */}
                     <CustomGrid container gap={3} justifyContent="center">
                         {renderTemplates}
                     </CustomGrid>
-                )}
+                {/* )} */}
             </CustomBox>
         </CustomGrid>
     );

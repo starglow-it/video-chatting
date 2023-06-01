@@ -1,4 +1,9 @@
-import { ICommonTemplate, IUserTemplate } from 'shared-types';
+import {
+    EntityList,
+    ICommonTemplate,
+    IUserTemplate,
+    QueryParams,
+} from 'shared-types';
 import { ParsedTimeStamp } from '../../types';
 
 export type EditUserTemplatePayload = {
@@ -12,8 +17,14 @@ export type EditTemplatePayload = {
 };
 export type EditTemplateResponse = ICommonTemplate | null;
 export type CreateTemplateResponse = ICommonTemplate | null | undefined;
-export type UploadTemplateFilePayload = { templateId: ICommonTemplate['id']; file: File };
-export type UploadUserTemplateFilePayload = { templateId: IUserTemplate['id']; file: File };
+export type UploadTemplateFilePayload = {
+    templateId: ICommonTemplate['id'];
+    file: File;
+};
+export type UploadUserTemplateFilePayload = {
+    templateId: IUserTemplate['id'];
+    file: File;
+};
 export type UploadTemplateFileResponse = ICommonTemplate | null;
 export type UploadUserTemplateFileResponse = IUserTemplate | null;
 export type GetEditingTemplatePayload = {
@@ -31,7 +42,10 @@ export type SendScheduleInvitePayload = {
 };
 
 export type PurchaseTemplatePayload = { templateId: ICommonTemplate['id'] };
-export type GetUserTemplatePayload = { templateId: ICommonTemplate['id']; withCredentials: false };
+export type GetUserTemplatePayload = {
+    templateId: ICommonTemplate['id'];
+    withCredentials: false;
+};
 export type GetUserTemplateByIdPayload = { templateId: ICommonTemplate['id'] };
 export type AddTemplateToUserEffectPayload = {
     templateId: ICommonTemplate['id'];
@@ -39,3 +53,13 @@ export type AddTemplateToUserEffectPayload = {
 export type AddTemplateToUserEffectResponse = IUserTemplate | null;
 
 export type DeleteCommonTemplatePayload = { templateId: ICommonTemplate['id'] };
+
+export type QueryGetTemplates = QueryParams & {
+    draft?: boolean;
+    isPublic?: boolean;
+    businessCategories?: string[];
+};
+
+export type ResultGetTemplates = EntityList<ICommonTemplate> & {
+    isReset: boolean;
+};

@@ -2,20 +2,27 @@ import { ErrorState } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { profileTemplatesUrl } from '../../../utils/urls';
 import { initialProfileTemplatesStore } from '../profileTemplates/const';
-import { GetProfileTemplatesPayload, GetProfileTemplatesResponse } from '../types';
+import {
+    GetProfileTemplatesPayload,
+    GetProfileTemplatesResponse,
+} from '../types';
 
 export const handleFetchProfileTemplates = async ({
     limit,
     skip,
-    businessCategories
 }: GetProfileTemplatesPayload): Promise<GetProfileTemplatesResponse> => {
-    const response = await sendRequestWithCredentials<GetProfileTemplatesResponse, ErrorState>(
-        profileTemplatesUrl({ limit, skip, businessCategories }),
-    );
+    const { result, success } = await sendRequestWithCredentials<
+        GetProfileTemplatesResponse,
+        ErrorState
+    >(profileTemplatesUrl({ limit, skip }));
 
-    if (response.success) {
-        return response.result;
+    if (success) {
+        return {
+            list: result?.list || [],
+            count: result?.count || 0,
+            isReset: !skip,
+        };
     }
 
-    return initialProfileTemplatesStore;
+    return { ...initialProfileTemplatesStore, isReset: true };
 };

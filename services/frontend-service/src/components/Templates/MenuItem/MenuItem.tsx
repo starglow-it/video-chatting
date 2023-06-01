@@ -1,5 +1,5 @@
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { memo } from 'react';
+import { CSSProperties, memo } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { IBusinessCategory } from 'shared-types';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -19,11 +19,16 @@ const Component = ({
         onSelect(item.id);
     };
 
+    const style = {
+        '--color': item.color,
+    } as React.CSSProperties;
+
     return (
         <CustomPaper
             className={clsx(styles.menuWrapper, {
                 [styles.active]: isActive,
             })}
+            style={style}
         >
             <CustomGrid
                 container
@@ -32,7 +37,7 @@ const Component = ({
                 onClick={selectMenu}
                 className={styles.menu}
             >
-                <CustomTypography fontSize={15} color={item.color}>
+                <CustomTypography fontSize={15}>
                     {item.value}
                 </CustomTypography>
             </CustomGrid>

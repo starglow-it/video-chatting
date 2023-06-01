@@ -126,25 +126,25 @@ const Component = () => {
         })();
     }, []);
 
-    useEffect(() => {
-        getTemplatesFx({
-            draft: false,
-            isPublic: true,
-            limit: 6,
-            skip: 0,
-            userId: profile.id,
-            sort: 'maxParticipants',
-            direction: 1,
-        });
-    }, []);
+    // useEffect(() => {
+    //     getTemplatesFx({
+    //         draft: false,
+    //         isPublic: true,
+    //         limit: 6,
+    //         skip: 0,
+    //         userId: profile.id,
+    //         sort: 'maxParticipants',
+    //         direction: 1,
+    //     });
+    // }, []);
 
     useEffect(() => {
         (async () => {
             if (!isTemplateDeleting) {
-                await getProfileTemplatesFx({
-                    limit: skipProfileTemplates,
-                    skip: 0,
-                });
+                // await getProfileTemplatesFx({
+                //     limit: skipProfileTemplates,
+                //     skip: 0,
+                // });
                 await getProfileTemplatesCountFx({
                     limit: 0,
                     skip: 0,

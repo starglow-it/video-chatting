@@ -43,5 +43,7 @@ export type CheckResetPasswordLinkResponse = {
     error?: ErrorState;
 };
 export type CommonProfileResponse = Profile | null | undefined;
-export type GetProfileTemplatesResponse = EntityList<IUserTemplate> | undefined;
+export type GetProfileTemplatesResponse =
+    | (EntityList<IUserTemplate> & { isReset: boolean })
+    | undefined;
 export type GetProfileTemplatesCountResponse = { count: number };
