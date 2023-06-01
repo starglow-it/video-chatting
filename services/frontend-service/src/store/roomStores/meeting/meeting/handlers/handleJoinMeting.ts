@@ -70,10 +70,12 @@ export const handleJoinMeting = async ({
 
     BackgroundManager.applyBlur(clonedStream);
 
-    const streamWithBackground = await BackgroundManager.onBlur(
+    BackgroundManager.onBlur(
         clonedStream,
         isAuraActive,
+        (stream) => {
+            setActiveStreamEvent(stream);
+        }
     );
 
-    setActiveStreamEvent(streamWithBackground);
 };
