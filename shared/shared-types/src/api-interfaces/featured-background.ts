@@ -1,8 +1,8 @@
 import { IPreviewImage } from "./common";
-import { ICommonUser } from "./users";
+import { ICommonUser, IFeaturedBackgroundUser } from "./users";
 
 export interface IFeaturedBackground {
-    createdBy: ICommonUser;
+    createdBy: IFeaturedBackgroundUser;
     url: string;
     previewUrls: IPreviewImage[];
     type: string;

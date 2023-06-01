@@ -10,7 +10,7 @@ export class CommonFeatureBackgroundDto implements IFeaturedBackground {
     
     @Expose()
     @ApiProperty()
-    createdBy: ICommonUser;
+    createdBy: IFeaturedBackground['createdBy'];
 
     @Expose()
     @ApiProperty({

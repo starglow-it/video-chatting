@@ -2,7 +2,7 @@ import { ICommonUser, IFeaturedBackground } from "../api-interfaces";
 import { QueryParams } from "../common";
 
 
-export type GetFeaturedBackgroundPayload = QueryParams;
+export type GetFeaturedBackgroundsPayload = QueryParams;
 
 
 export type UploadFeaturedBackgroundPayload = {
@@ -11,7 +11,7 @@ export type UploadFeaturedBackgroundPayload = {
     mimeType: string;
 };
 
-export type DeleteFeaturedBackgroundPayload = {
+export type DeleteFeaturedBackgroundsPayload = {
     ids: string[];
 }
 

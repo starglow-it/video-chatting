@@ -1,6 +1,7 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { ICommonUser, IFeaturedBackground } from 'shared-types';
+import { ICommonUser, IFeaturedBackground, IFeaturedBackgroundUser, ITemplateUser } from 'shared-types';
 import { PreviewImageDTO } from './preview-image.dto';
+import { FeaturedBackgroundUserDto } from './featured-background-user.dto';
 
 export class CommonFeatureBackgroundDTO implements IFeaturedBackground {
     @Expose()
@@ -18,6 +19,7 @@ export class CommonFeatureBackgroundDTO implements IFeaturedBackground {
     type: IFeaturedBackground['type'];
 
     @Expose()
-    createdBy: IFeaturedBackground['createdBy'];
+    @Type(() => FeaturedBackgroundUserDto)
+    createdBy: IFeaturedBackgroundUser;
 
 }

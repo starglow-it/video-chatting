@@ -9,6 +9,7 @@ import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { FeaturedBackgroundService } from './featured-background.service';
 import { CommonFeatureBackgroundDto } from '../../dtos/response/common-featured-background.dto';
 import { FEATURED_BACKGROUND_SCOPE } from 'shared-const';
+import { ApiFile } from 'src/utils/decorators/api-file.decorator';
 
 @ApiTags('Featured Backgrounds')
 @Controller(FEATURED_BACKGROUND_SCOPE)
@@ -72,6 +73,7 @@ export class FeaturedBackgroundController {
 
   @Post('')
   @ApiBearerAuth()
+  @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Upload featured background' })
   @ApiOkResponse({
     type: CommonFeatureBackgroundDto,
@@ -80,12 +82,13 @@ export class FeaturedBackgroundController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
+  @ApiFile()
   async updateBackground(
     @Req() req,
     @UploadedFile() file: Express.Multer.File):
     Promise<ResponseSumType<IFeaturedBackground>> {
     try {
-      const { userId } = req.user
+      const { userId } = req.user;
       const featuredBackgrounds = await this.featuredBackgroundService.handleUploadBackground({ file, userId });
 
       return {

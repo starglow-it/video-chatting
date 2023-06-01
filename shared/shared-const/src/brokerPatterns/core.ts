@@ -3,7 +3,7 @@ export enum CoreBrokerPatterns {
   GetCountryStatistics = 'get_country_statistics',
   GetMediaCategories = 'get_media_categories',
   GetAdminMediaCategories = 'get_admin_media_categories',
-  GetFeaturedBackground = 'get_featured_background',
+  GetFeaturedBackgrounds = 'get_featured_background',
   GetMedias = 'get_medias',
   CreateMediaCategory = 'create_media_category',
   CreateMedia = 'create_media',
@@ -17,5 +17,5 @@ export enum CoreBrokerPatterns {
   DeleteMedias = 'delete_medias',
   DeleteMediaCategories = 'delete_media_categories',
   DeleteBusinessCategories = 'delete_business_categories',
-  DeleteFeatureBackground = 'delete_featured_background',
+  DeleteFeatureBackgrounds = 'delete_featured_background',
 }

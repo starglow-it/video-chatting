@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CoreBrokerPatterns } from 'shared-const';
-import { CreateFeaturedBackgroundPayload, DeleteFeaturedBackgroundPayload, GetFeaturedBackgroundPayload, IFeaturedBackground, IMedia, UploadFeaturedBackgroundPayload } from 'shared-types';
+import { CreateFeaturedBackgroundPayload, DeleteFeaturedBackgroundsPayload, GetFeaturedBackgroundsPayload, IFeaturedBackground, IMedia, UploadFeaturedBackgroundPayload } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 import { UploadService } from '../upload/upload.service';
 
@@ -22,8 +22,8 @@ export class FeaturedBackgroundService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-  async deleteFeaturedBackground(payload: DeleteFeaturedBackgroundPayload): Promise<boolean> {
-    const pattern = { cmd: CoreBrokerPatterns.DeleteFeatureBackground };
+  async deleteFeaturedBackground(payload: DeleteFeaturedBackgroundsPayload): Promise<boolean> {
+    const pattern = { cmd: CoreBrokerPatterns.DeleteFeatureBackgrounds };
     return this.coreService.sendCustom(pattern, payload);
   }
 
@@ -48,8 +48,8 @@ export class FeaturedBackgroundService {
     return featuredBackground;
   }
 
-  async getFeatureBackground(payload: GetFeaturedBackgroundPayload) {
-    const pattern = { cmd: CoreBrokerPatterns.GetFeaturedBackground };
+  async getFeatureBackground(payload: GetFeaturedBackgroundsPayload) {
+    const pattern = { cmd: CoreBrokerPatterns.GetFeaturedBackgrounds };
 
     return this.coreService.sendCustom(pattern, payload);
   }

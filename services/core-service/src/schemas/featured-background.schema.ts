@@ -16,7 +16,7 @@ export class FeaturedBackground {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true
+    default: ''
   })
   url: string;
 
@@ -28,7 +28,7 @@ export class FeaturedBackground {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true
+    default: '',
   })
   type: string;
 

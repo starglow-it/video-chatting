@@ -117,6 +117,7 @@ export class FeaturedBackgroundsService {
     async findFeaturedBackgrounds({
         query,
         options,
+        populatePaths,
         session,
     }: GetModelQuery<FeaturedBackgroundDocument>): Promise<FeaturedBackgroundDocument[]> {
         return this.featuredBackground
@@ -127,6 +128,7 @@ export class FeaturedBackgroundsService {
                     skip: options?.skip,
                     limit: options?.limit,
                     session: session?.session,
+                    populate: populatePaths,
                 },
             )
             .exec();
@@ -186,7 +188,7 @@ export class FeaturedBackgroundsService {
     async deleteFeaturedBackgroundFolders(keyFolder: string) {
         await this.awsService.deleteFolder(`featured-backgrounds/${keyFolder}`);
     }
-
+    
     async aggregate(aggregationPipeline: PipelineStage[]) {
         return this.featuredBackground.aggregate(aggregationPipeline).exec();
     }

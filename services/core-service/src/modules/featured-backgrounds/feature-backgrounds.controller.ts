@@ -3,16 +3,16 @@ import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { InjectConnection } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Connection } from 'mongoose';
-import { CoreBrokerPatterns, FEATURED_BACKGROUND_SERVICE, MEDIA_SERVICE, USER_NOT_FOUND } from 'shared-const';
-import { CreateFeaturedBackgroundPayload, DeleteFeaturedBackgroundPayload, EntityList, GetFeaturedBackgroundPayload, IFeaturedBackground, UploadFeaturedBackgroundPayload } from 'shared-types';
+import { CoreBrokerPatterns, FEATURED_BACKGROUND_SERVICE, USER_NOT_FOUND } from 'shared-const';
+import { CreateFeaturedBackgroundPayload, DeleteFeaturedBackgroundsPayload, EntityList, GetFeaturedBackgroundsPayload, IFeaturedBackground, UploadFeaturedBackgroundPayload } from 'shared-types';
 import { CommonFeatureBackgroundDTO } from '../../dtos/common-featured-background.dto';
 import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { PreviewImageDocument } from '../../schemas/preview-image.schema';
-import { PreviewUrls } from '../../types/media';
 import { retry } from '../../utils/common/retry';
 import { FeaturedBackgroundsService } from './featured-backgrounds.service';
 import { UsersService } from '../users/users.service';
-import { UserDocument } from 'src/schemas/user.schema';
+import { UserDocument } from '../../schemas/user.schema';
+import { PreviewUrls } from '../../types/featured-background';
 
 @Controller('featured-background')
 export class FeaturedBackgroundsController {
@@ -25,22 +25,18 @@ export class FeaturedBackgroundsController {
   //#region private method
   private async generatePreviewUrs({ url, id, mimeType }: { url: string, id: string, mimeType: string }): Promise<PreviewUrls> {
     try {
-      const mimeTypeList = ['image', 'video', 'audio'];
-
-      const mediaType = mimeTypeList.find(type => mimeType.includes(type));
+      const type = mimeType.includes('image') ? 'image' : '';
       let previewImages: PreviewImageDocument[] = [];
 
-      if (mediaType !== 'audio') {
-        previewImages = await this.featuredBackgroundService.generatePreviews({
-          url,
-          id,
-          mimeType,
-        });
-      }
+      previewImages = await this.featuredBackgroundService.generatePreviews({
+        url,
+        id,
+        mimeType,
+      });
 
       return {
         previewImages,
-        mediaType
+        type
       };
     }
     catch (err) {
@@ -58,21 +54,16 @@ export class FeaturedBackgroundsController {
     return withTransaction(this.connection, async session => {
       try {
 
-        let user: UserDocument = null
-        if (userId) {
-          user = await this.usersService.findById(userId, session);
+        const user = await this.usersService.findById(userId, session);
 
-          if (!user) {
-            throw new RpcException({ ...USER_NOT_FOUND, ctx: FEATURED_BACKGROUND_SERVICE });
-          }
-        }
+        if (!user) throw new RpcException({ ...USER_NOT_FOUND, ctx: FEATURED_BACKGROUND_SERVICE });
 
         const newBackground = await this.featuredBackgroundService.createFeaturedBackground({
           data: {
             url: '',
             type: '',
             previewUrls: [],
-            createdBy : user
+            createdBy: user
           },
           session
         });
@@ -115,7 +106,7 @@ export class FeaturedBackgroundsController {
             _id: id,
           },
           data: {
-            type: previewUrls.mediaType,
+            type: previewUrls.type,
             previewUrls: previewUrls.previewImages,
             url,
           },
@@ -137,9 +128,10 @@ export class FeaturedBackgroundsController {
   }
 
 
-  @MessagePattern({ cmd: CoreBrokerPatterns.GetFeaturedBackground })
-  async getMedias(@Payload() payload: GetFeaturedBackgroundPayload): Promise<EntityList<IFeaturedBackground>> {
+  @MessagePattern({ cmd: CoreBrokerPatterns.GetFeaturedBackgrounds })
+  async getFeatureBackgrounds(@Payload() payload: GetFeaturedBackgroundsPayload): Promise<EntityList<IFeaturedBackground>> {
     return withTransaction(this.connection, async session => {
+
       try {
         const { skip, limit } = payload;
 
@@ -155,8 +147,17 @@ export class FeaturedBackgroundsController {
             limit: limitQuery
           },
           session,
-          populatePaths: ['previewUrls']
+          populatePaths: [{
+            path: 'previewUrls'
+          },
+          {
+            path: 'createdBy',
+            populate: 'profileAvatar'
+          }]
         });
+
+        console.log(featureBackground);
+
 
 
         const plainFeaturedBackground = plainToInstance(CommonFeatureBackgroundDTO, featureBackground, {
@@ -178,8 +179,8 @@ export class FeaturedBackgroundsController {
     });
   }
 
-  @MessagePattern({ cmd: CoreBrokerPatterns.DeleteFeatureBackground })
-  async deleteFeaturedBackground(@Payload() payload: DeleteFeaturedBackgroundPayload): Promise<void> {
+  @MessagePattern({ cmd: CoreBrokerPatterns.DeleteFeatureBackgrounds })
+  async deleteFeaturedBackground(@Payload() payload: DeleteFeaturedBackgroundsPayload): Promise<void> {
     return withTransaction(this.connection, async (session) => {
       try {
         const { ids } = payload;
@@ -191,6 +192,8 @@ export class FeaturedBackgroundsController {
           },
           session
         });
+
+        await this.featuredBackgroundService.deleteFeaturedBackgroundFolders('images');
       }
       catch (err) {
         throw new RpcException({
