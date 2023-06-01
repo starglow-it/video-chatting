@@ -493,7 +493,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
       
-      if(!user.profileAvatar && user.loginType === LoginTypes.Google){
+      if(!user.profileAvatar && (user.loginType === LoginTypes.Google)){
         const image = await this.getImageFromUrl(picture);
         await this.coreService.findUserAndUpdateAvatar({
           userId: user.id,
