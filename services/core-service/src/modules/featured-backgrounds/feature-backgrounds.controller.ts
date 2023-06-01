@@ -155,11 +155,7 @@ export class FeaturedBackgroundsController {
             populate: 'profileAvatar'
           }]
         });
-
-        console.log(featureBackground);
-
-
-
+        
         const plainFeaturedBackground = plainToInstance(CommonFeatureBackgroundDTO, featureBackground, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true
