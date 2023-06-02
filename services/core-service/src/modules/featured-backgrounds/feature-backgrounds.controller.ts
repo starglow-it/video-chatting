@@ -25,7 +25,6 @@ export class FeaturedBackgroundsController {
   //#region private method
   private async generatePreviewUrs({ url, id, mimeType }: { url: string, id: string, mimeType: string }): Promise<PreviewUrls> {
     try {
-      const type = mimeType.includes('image') ? 'image' : '';
       let previewImages: PreviewImageDocument[] = [];
 
       previewImages = await this.featuredBackgroundService.generatePreviews({
@@ -36,7 +35,7 @@ export class FeaturedBackgroundsController {
 
       return {
         previewImages,
-        type
+        type : mimeType
       };
     }
     catch (err) {
