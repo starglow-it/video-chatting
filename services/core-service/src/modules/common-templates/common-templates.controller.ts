@@ -112,7 +112,7 @@ export class CommonTemplatesController {
         }
       }
       return withTransaction(this.connection, async () => {
-        const aggregationPipeline: PipelineStage[] = [
+        const facetPipline = [
           sort,
           {
             $match: {
@@ -144,20 +144,38 @@ export class CommonTemplatesController {
                 $first: '$author.fullName'
               }
             }
-          }
+          },
+        ];
+        const aggregationPipeline: PipelineStage[] = [
+          {
+            $facet: {
+              data: facetPipline,
+              total: [{
+                $group: {
+                  _id: null,
+                  totalRecords: { $sum: 1 }
+                }
+              }]
+            }
+          },
+
         ];
 
         if (options?.skip) {
-          aggregationPipeline.push({ $skip: options.skip });
+          facetPipline.push({ $skip: options.skip });
         }
 
         if (options?.limit) {
-          aggregationPipeline.push({ $limit: options.limit });
+          facetPipline.push({ $limit: options.limit });
         }
 
-        const commonTemplates = await this.commonTemplatesService.aggregate(
+        const data = await this.commonTemplatesService.aggregate(
           aggregationPipeline,
         );
+
+        const commonTemplates = data[0]?.data as any[];
+        const total = data[0].total[0]?.totalRecords as any;
+
 
         const parsedTemplates = plainToInstance(
           CommonTemplateDTO,
@@ -170,7 +188,7 @@ export class CommonTemplatesController {
 
         return {
           list: parsedTemplates,
-          count: parsedTemplates.length,
+          count: total,
         };
       });
     } catch (err) {
