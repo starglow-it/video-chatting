@@ -92,6 +92,7 @@ const Component = () => {
 
     const handleKeyDown = (e: any) => {
         if (e.key === 'Enter' || e.keyCode === '13') {
+            console.log('#Duy Phan console', 'keydown')
             sendMeetingNoteSocketEvent(getValues());
             reset();
         }

@@ -33,6 +33,7 @@ const Component = () => {
     const isUsersPageActive = router.pathname === '/users';
     const isRoomsPageActive = router.pathname === '/rooms';
     const isBackgroundsPageActive = router.pathname === '/backgrounds';
+    const isFeaturedBackgroundPageActive = router.pathname === '/backgrounds';
 
     const handleStatisticsPage = useCallback(async () => {
         await router.push('/statistics');
@@ -47,7 +48,11 @@ const Component = () => {
     }, []);
 
     const handleBackgroundsPage = () => {
-        router.push('/backgrounds');
+        router.push('/background');
+    };
+
+    const handleFeaturedBackgroundPage = () => {
+        router.push('/featured-background');
     };
 
     return (
@@ -132,6 +137,25 @@ const Component = () => {
                         height="22px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isBackgroundsPageActive,
+                        })}
+                    />
+                </CustomTooltip>
+
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.backgrounds"
+                        />
+                    }
+                    placement="right"
+                >
+                    <ImageIcon
+                        onClick={handleFeaturedBackgroundPage}
+                        width="22px"
+                        height="22px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isFeaturedBackgroundPageActive,
                         })}
                     />
                 </CustomTooltip>
