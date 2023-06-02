@@ -112,7 +112,7 @@ export class CommonTemplatesController {
         }
       }
       return withTransaction(this.connection, async () => {
-        const facetPipline = [
+        const facetPipeline = [
           sort,
           {
             $match: {
@@ -149,7 +149,7 @@ export class CommonTemplatesController {
         const aggregationPipeline: PipelineStage[] = [
           {
             $facet: {
-              data: facetPipline,
+              data: facetPipeline,
               total: [{
                 $group: {
                   _id: null,
@@ -162,11 +162,11 @@ export class CommonTemplatesController {
         ];
 
         if (options?.skip) {
-          facetPipline.push({ $skip: options.skip });
+          facetPipeline.push({ $skip: options.skip });
         }
 
         if (options?.limit) {
-          facetPipline.push({ $limit: options.limit });
+          facetPipeline.push({ $limit: options.limit });
         }
 
         const data = await this.commonTemplatesService.aggregate(
