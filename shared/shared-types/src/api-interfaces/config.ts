@@ -42,7 +42,7 @@ export interface IConfig {
   port: string;
   emailService: string;
   environment: string;
-  supportScaling: boolean;
+  supportScaling: boolean;Em 
   numberOfActiveServers: number;
   supportEmail: string;
   adminEmail: string;
