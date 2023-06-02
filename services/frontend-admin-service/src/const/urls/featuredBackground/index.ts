@@ -13,7 +13,7 @@ export const createFeaturedBackgroundUrl = () => ({
     method: HttpMethods.Post,
 });
 
-export const deleteFeaturedBackgroundUrl = (id: string) => ({
-    url: `${featuredBackgroundUrl}/${id}`,
+export const deleteFeaturedBackgroundUrl = () => ({
+    url: `${featuredBackgroundUrl}`,
     method: HttpMethods.Delete,
 });

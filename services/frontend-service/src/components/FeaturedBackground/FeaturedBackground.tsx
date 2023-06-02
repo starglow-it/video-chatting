@@ -1,11 +1,16 @@
 import { memo } from 'react';
+import { useStore } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import styles from './FeaturedBackground.module.scss';
 import { FeaturedList } from './FeaturedList/FeaturedList';
+import { $featuredBackgroundStore } from 'src/store';
+import styles from './FeaturedBackground.module.scss';
 
 const Component = () => {
+    const { list, count } = useStore($featuredBackgroundStore);
+    console.log('#Duy Phan console', list)
+
     return (
         <CustomGrid
             container
@@ -30,27 +35,7 @@ const Component = () => {
                 nameSpace="templates"
                 translation="featuredBackground.description"
             />
-            <FeaturedList
-                count={8}
-                list={[
-                    {
-                        id: 1,
-                        url: 'https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/646ed26d437b2fba5d4834ca/06db5770-4b23-4ebd-b40e-60a5075bbd8f_540p.webp',
-                    },
-                    {
-                        id: 2,
-                        url: 'https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/646ed26d437b2fba5d4834ca/06db5770-4b23-4ebd-b40e-60a5075bbd8f_540p.webp',
-                    },
-                    {
-                        id: 3,
-                        url: 'https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/646ed26d437b2fba5d4834ca/06db5770-4b23-4ebd-b40e-60a5075bbd8f_540p.webp',
-                    },
-                    {
-                        id: 4,
-                        url: 'https://ewr1.vultrobjects.com/theliveoffice-prod/templates/images/646ed26d437b2fba5d4834ca/06db5770-4b23-4ebd-b40e-60a5075bbd8f_540p.webp',
-                    },
-                ]}
-            />
+            <FeaturedList count={count} list={list} />
         </CustomGrid>
     );
 };

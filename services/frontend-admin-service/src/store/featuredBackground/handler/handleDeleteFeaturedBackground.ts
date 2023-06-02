@@ -5,6 +5,9 @@ export const handleDeleteFeaturedBackground = async (
     id: string,
 ): Promise<void> => {
     await sendRequestWithCredentials<void, void>({
-        ...deleteFeaturedBackgroundUrl(id),
+        ...deleteFeaturedBackgroundUrl(),
+        data: {
+            ids: [id],
+        },
     });
 };

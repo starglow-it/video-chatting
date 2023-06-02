@@ -2,13 +2,14 @@ import { memo } from 'react';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { IFeaturedBackground } from 'shared-types';
 import styles from './FeaturedItem.module.scss';
 
-const Component = ({ item }: { item: any }) => {
-    // const previewImage = (item?.previewUrls || []).find(
-    //     image => image.resolution === 240,
-    // );
-
+const Component = ({ item }: { item: IFeaturedBackground }) => {
+    const previewImage = (item?.previewUrls || []).find(
+        image => image.resolution === 240,
+    );
+console.log('#Duy Phan console', item)
     return (
         <CustomGrid
             className={styles.templateContent}
@@ -16,9 +17,9 @@ const Component = ({ item }: { item: any }) => {
             justifyContent="center"
             alignItems="center"
         >
-            <ConditionalRender condition={Boolean(item?.url)}>
+            <ConditionalRender condition={Boolean(previewImage?.url)}>
                 <CustomImage
-                    src={item?.url || ''}
+                    src={previewImage?.url || ''}
                     width="334px"
                     height="190px"
                 />

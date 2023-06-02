@@ -11,8 +11,18 @@
 .paper {
   border-radius: rem(8px);
   padding: rem(16px);
+  width: 100%;
 }
 
 .actions {
-  height: rem(50px);
+  height: rem(40px);
+}
+
+.scroll {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: rem(410px);
+  background-color: #f4f6f9;
+  padding-top: rem(12px);
+  border-radius: rem(10px);
 }

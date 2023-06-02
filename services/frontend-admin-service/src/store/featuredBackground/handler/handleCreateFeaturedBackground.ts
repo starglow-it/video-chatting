@@ -6,7 +6,7 @@ export const handleCreateFeaturedBackground = async (
     file: File,
 ): Promise<void> => {
     await sendRequestWithCredentials<void, void>({
-        ...createFeaturedBackgroundUrl,
+        ...createFeaturedBackgroundUrl(),
         data: generateFormData({
             file,
         }),

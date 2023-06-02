@@ -30,7 +30,10 @@ import {
     $authStore,
     $isSocketConnected,
     getAppVersionFx,
+    getProfileTemplatesFx,
+    getTemplatesFx,
     initiateSocketConnectionEvent,
+    loadmoreMetaTemplates,
     sendJoinDashboardSocketEvent,
 } from '../../store';
 
@@ -65,6 +68,8 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
 const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const { isAuthenticated } = useStore($authStore);
     const isSocketConnected = useStore($isSocketConnected);
+    const isLoadingTemplates = useStore(getTemplatesFx.pending);
+    const isLoadingCommonTemplates = useStore(getProfileTemplatesFx.pending);
 
     const router = useRouter();
 
@@ -105,6 +110,14 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         router.pathname.includes('room') ||
         router.pathname.includes('dashboard/templates/setup');
 
+    const handleScrollToEnd = () => {
+        console.log('#Duy Phan console', 'end');
+
+        if (isDashboardRoute && !isLoadingTemplates && !isLoadingTemplates) {
+            loadmoreMetaTemplates();
+        }
+    };
+
     return (
         <CustomBox
             className={clsx(styles.main, {
@@ -118,7 +131,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
             <CustomBox className={styles.bgImage} />
             <CustomScroll
-                onYReachEnd={() => console.log('#Duy Phan console', 'end')}
+                onYReachEnd={handleScrollToEnd}
                 options={{
                     // swipeEasing: true,
                     // wheelSpeed: 800,

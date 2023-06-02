@@ -9,6 +9,7 @@ import { PrevSliderArrow } from 'shared-frontend/icons/OtherIcons/PrevSliderArro
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { FeaturedItem } from '../FeaturedItem/FeaturedItem';
 import styles from './FeaturedList.module.scss';
+import { IFeaturedBackground } from 'shared-types';
 
 const Component = ({
     count = 3,
@@ -17,7 +18,7 @@ const Component = ({
     itemGap = 3,
 }: {
     count: number;
-    list: any[];
+    list: IFeaturedBackground[];
     itemWidth?: number;
     itemGap?: number;
 }) => {
@@ -25,6 +26,7 @@ const Component = ({
     const is1100Media = useMediaQuery('(max-width:1100px)');
 
     const renderTemplates = useMemo(() => {
+        console.log('#Duy Phan console', list);
         const initialTemplatesRender = list.map(item => ({
             id: item.id,
             component: <FeaturedItem key={item.id} item={item} />,
@@ -78,7 +80,7 @@ const Component = ({
         }
 
         return [];
-    }, []);
+    }, [list.length]);
 
     const sliderSettings = useMemo(
         () => ({

@@ -56,6 +56,7 @@ import {
     deleteProfileTemplateFx,
     getBusinessCategoriesFx,
     getCustomerPortalSessionUrlFx,
+    getFeaturedBackgroundFx,
     getProfileTemplatesCountFx,
     getProfileTemplatesFx,
     getTemplatesFx,
@@ -126,17 +127,9 @@ const Component = () => {
         })();
     }, []);
 
-    // useEffect(() => {
-    //     getTemplatesFx({
-    //         draft: false,
-    //         isPublic: true,
-    //         limit: 6,
-    //         skip: 0,
-    //         userId: profile.id,
-    //         sort: 'maxParticipants',
-    //         direction: 1,
-    //     });
-    // }, []);
+    useEffect(() => {
+        getFeaturedBackgroundFx({skip: 0, limit: 6})
+    }, []);
 
     useEffect(() => {
         (async () => {

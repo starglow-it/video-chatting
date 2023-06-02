@@ -202,7 +202,6 @@ const Component = () => {
     ]);
 
     const renderTemplates = useMemo(() => {
-        console.log('#Duy Phan console', profileTemplates, mode);
         switch (mode) {
             case 'private':
                 return (
@@ -230,7 +229,7 @@ const Component = () => {
             default:
                 return null;
         }
-    }, [mode]);
+    }, [mode, templates, profileTemplates]);
 
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean, trial: boolean) => {

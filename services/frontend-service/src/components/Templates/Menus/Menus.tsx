@@ -32,7 +32,10 @@ const Component = () => {
     }, []);
 
     const selectMenu = (id: string) => {
-        setQueryTemplatesEvent({ businessCategories: [id], skip: 0 });
+        setQueryTemplatesEvent({
+            businessCategories: id === 'all' ? undefined : [id],
+            skip: 0,
+        });
     };
 
     const selectMyRooms = () => {
@@ -44,6 +47,7 @@ const Component = () => {
             container
             direction="row"
             alignItems="center"
+            justifyContent="center"
             className={styles.wrapper}
         >
             <CustomPaper
@@ -61,23 +65,25 @@ const Component = () => {
                     </CustomTypography>
                 </CustomGrid>
             </CustomPaper>
-            <CustomGrid
-                container
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-start"
-                flex={1}
-                marginLeft={1}
+            <CustomPaper
+                className={clsx(styles.barge, {
+                    [styles.active]: !businessCategories.length && mode === 'common',
+                })}
+                onClick={() => selectMenu('all')}
             >
-                {list.map(item => (
-                    <MenuItemTemplate
-                        key={item.id}
-                        isActive={businessCategories.includes(item.id)}
-                        item={item}
-                        onSelect={selectMenu}
-                    />
-                ))}
-            </CustomGrid>
+                <CustomGrid container direction="row" alignItems="center">
+                    <CustomTypography fontSize={13}>All</CustomTypography>
+                </CustomGrid>
+            </CustomPaper>
+
+            {list.map(item => (
+                <MenuItemTemplate
+                    key={item.id}
+                    isActive={businessCategories.includes(item.id)}
+                    item={item}
+                    onSelect={selectMenu}
+                />
+            ))}
         </CustomGrid>
     );
 };

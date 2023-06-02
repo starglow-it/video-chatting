@@ -1,4 +1,9 @@
 import { handleGetFeaturedBackground } from './handler/handleGetFeaturedBackground';
-import { getFeaturedBackgroundFx } from './model';
+import { $featuredBackgroundStore, getFeaturedBackgroundFx } from './model';
 
 getFeaturedBackgroundFx.use(handleGetFeaturedBackground);
+
+$featuredBackgroundStore.on(
+    getFeaturedBackgroundFx.doneData,
+    (_, data) => data,
+);

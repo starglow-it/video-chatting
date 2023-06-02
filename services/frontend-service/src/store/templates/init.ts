@@ -64,7 +64,7 @@ import {
     editUserTemplateFx,
     getProfileTemplatesFx,
 } from '../profile/profileTemplates/model';
-import { $profileTemplateStore } from '../profile/profileTemplate/model';
+import { $profileTemplatesStore } from '../profile/profileTemplates/model';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -162,7 +162,7 @@ forward({
 });
 
 sample({
-    clock: $queryTemplatesStore,
+    clock: setQueryTemplatesEvent,
     source: combine({
         profile: $profileStore,
         query: $queryTemplatesStore,
@@ -172,7 +172,7 @@ sample({
 });
 
 sample({
-    clock: $queryProfileTemplatesStore,
+    clock: setQueryProfileTemplatesEvent,
     source: $queryTemplatesStore,
     target: getProfileTemplatesFx,
 });
@@ -182,12 +182,15 @@ split({
     source: combine({
         mode: $modeTemplateStore,
         common: $templatesStore,
-        private: $profileTemplateStore,
+        privateTemplates: $profileTemplatesStore,
     }),
     match: {
-        private: ({ mode, common: { count, list } }) =>
-            mode === 'private' && list.length < count,
-        common: ({ mode, private: { count, list } }) =>
+        private: ({ mode, privateTemplates: {list, count} }) => {
+            console.log('#Duy Phan console', list, count);
+            return mode === 'private' && list.length < count;
+        },
+
+        common: ({ mode, common: { count, list } }) =>
             mode === 'common' && list.length < count,
     },
     cases: {
