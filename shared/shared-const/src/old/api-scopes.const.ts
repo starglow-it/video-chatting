@@ -10,3 +10,4 @@ export const SOCKET_SCOPE = 'socket/';
 export const USER_TEMPLATE_SCOPE = 'user-templates/';
 export const MEDIAS_SCOPE = 'medias/';
 export const MEDIAS_ADMIN_SCOPE = 'admin-medias/';
+export const FEATURED_BACKGROUND_SCOPE = 'featured-background/';

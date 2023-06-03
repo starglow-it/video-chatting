@@ -104,6 +104,12 @@ export interface IUpdateProfileAvatar {
   mimeType: string;
 }
 
+export interface IFeaturedBackgroundUser {
+  id: ICommonUser['id'];
+  profileAvatar: ICommonUser['profileAvatar'];
+  role: ICommonUser['role'];
+}
+
 export interface ITemplateUser {
   id: string;
   profileAvatar: IProfileAvatar;
