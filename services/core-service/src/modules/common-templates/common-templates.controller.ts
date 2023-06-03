@@ -90,6 +90,8 @@ export class CommonTemplatesController {
     @Payload()
     { query, options, filter }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
+    const skipQuery = options?.skip || 0;
+    const limitQuery = options?.limit || 6;
     try {
       const sort: PipelineStage = { $sort: { ...(options?.sort ?? {}), _id: -1 } };
 
@@ -147,15 +149,13 @@ export class CommonTemplatesController {
               }
             }
           },
+          {
+            $skip: skipQuery * limitQuery
+          },
+          {
+            $limit: limitQuery
+          }
         ];
-
-        if (options?.skip) {
-          aggregationPipeline.push({ $skip: options.skip });
-        }
-
-        if (options?.limit) {
-          aggregationPipeline.push({ $limit: options.limit });
-        }
 
         const commonTemplates = await this.commonTemplatesService.aggregate(
           aggregationPipeline,
@@ -525,7 +525,7 @@ export class CommonTemplatesController {
             },
           );
 
-          await deletePreviewImagesPromises;
+          await Promise.all(deletePreviewImagesPromises);
         }
 
         const updatedTemplate =
