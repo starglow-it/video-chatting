@@ -4,11 +4,12 @@ import {
   IUpdateTemplate,
   IUserTemplate,
 } from '../api-interfaces';
-import { QueryParams } from '../common';
+import { FilterQuery, QueryParams } from '../common';
 
 export type GetCommonTemplatesPayload = {
   query: Partial<ICommonTemplate>;
   options: QueryParams & { userId?: string };
+  filter?: FilterQuery<ICommonTemplate>;
 };
 
 export type GetUserTemplatesPayload = {

@@ -5,6 +5,10 @@ export type SuccessResult<Result> = {
   success: true;
 };
 
+export type FilterQuery<T> = {
+  [K in keyof T]?: any;
+}
+
 export type AuthToken = {
   token: string;
   expiresAt?: Date;
