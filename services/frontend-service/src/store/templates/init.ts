@@ -64,7 +64,6 @@ import {
     editUserTemplateFx,
     getProfileTemplatesFx,
 } from '../profile/profileTemplates/model';
-import { $profileTemplatesStore } from '../profile/profileTemplates/model';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -162,7 +161,7 @@ forward({
 });
 
 sample({
-    clock: setQueryTemplatesEvent,
+    clock: [setQueryTemplatesEvent, loadmoreCommonTemplates],
     source: combine({
         profile: $profileStore,
         query: $queryTemplatesStore,
@@ -172,7 +171,7 @@ sample({
 });
 
 sample({
-    clock: setQueryProfileTemplatesEvent,
+    clock: [setQueryProfileTemplatesEvent, loadmoreUserTemplates],
     source: $queryTemplatesStore,
     target: getProfileTemplatesFx,
 });
@@ -188,14 +187,4 @@ split({
         private: loadmoreUserTemplates,
         common: loadmoreCommonTemplates,
     },
-});
-
-forward({
-    from: loadmoreCommonTemplates,
-    to: setQueryTemplatesEvent,
-});
-
-forward({
-    from: loadmoreUserTemplates,
-    to: setQueryProfileTemplatesEvent,
 });

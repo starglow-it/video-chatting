@@ -71,7 +71,7 @@ const Component = () => {
                 })}
                 onClick={() => selectMenu('all')}
             >
-                <CustomGrid container direction="row" alignItems="center">
+                <CustomGrid container direction="row" alignItems="center" justifyContent="center">
                     <CustomTypography fontSize={13}>All</CustomTypography>
                 </CustomGrid>
             </CustomPaper>

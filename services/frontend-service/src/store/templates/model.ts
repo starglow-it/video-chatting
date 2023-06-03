@@ -60,7 +60,7 @@ export const $queryTemplatesStore =
     templatesDomain.createStore<QueryGetTemplates>({
         draft: false,
         isPublic: true,
-        limit: 6,
+        limit: 9,
         skip: 0,
         sort: 'maxParticipants',
         direction: 1,
@@ -68,7 +68,7 @@ export const $queryTemplatesStore =
 
 export const $queryProfileTemplatesStore =
     templatesDomain.createStore<QueryParams>({
-        limit: 6,
+        limit: 9,
         skip: 0,
     });
 
