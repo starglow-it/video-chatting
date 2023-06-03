@@ -143,10 +143,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             <CustomScroll
                 onYReachEnd={handleScrollToEnd}
                 options={{
-                    // swipeEasing: true,
-                    // wheelSpeed: 800,
                     wheelPropagation: true,
-                    // suppressScrollY: true,
                 }}
             >
                 <CustomGrid
