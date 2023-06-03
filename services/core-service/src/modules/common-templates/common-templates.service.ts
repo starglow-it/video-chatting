@@ -77,7 +77,7 @@ export class CommonTemplatesService {
       .exec();
   }
 
-   joinCommonTemplatePropertiesQueries(): any[] {
+   joinCommonTemplatePropertiesQueries(): PipelineStage[] {
     const joinBusinessCategories: PipelineStage = {
       $lookup: {
         from: 'businesscategories',

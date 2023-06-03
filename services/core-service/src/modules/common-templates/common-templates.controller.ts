@@ -112,19 +112,21 @@ export class CommonTemplatesController {
         }
       }
       return withTransaction(this.connection, async () => {
-        const facetPipeline = [
+        const matchQuery = {
+          ...query,
+          ...(filter?.businessCategories && {
+            businessCategories: {
+              $elemMatch: {
+                $in: filter?.businessCategories?.map(item => new ObjectId(item))
+              }
+            }
+          })
+        };
+
+        const aggregationPipeline: PipelineStage[] = [
           sort,
           {
-            $match: {
-              ...query,
-              ...(filter?.businessCategories && {
-                businessCategories: {
-                  $elemMatch: {
-                    $in: filter?.businessCategories?.map(item => new ObjectId(item))
-                  }
-                }
-              })
-            }
+            $match: matchQuery
           },
           ...this.commonTemplatesService.joinCommonTemplatePropertiesQueries(),
           joinDraftPreviewImages,
@@ -146,36 +148,22 @@ export class CommonTemplatesController {
             }
           },
         ];
-        const aggregationPipeline: PipelineStage[] = [
-          {
-            $facet: {
-              data: facetPipeline,
-              total: [{
-                $group: {
-                  _id: null,
-                  totalRecords: { $sum: 1 }
-                }
-              }]
-            }
-          },
-
-        ];
 
         if (options?.skip) {
-          facetPipeline.push({ $skip: options.skip });
+          aggregationPipeline.push({ $skip: options.skip });
         }
 
         if (options?.limit) {
-          facetPipeline.push({ $limit: options.limit });
+          aggregationPipeline.push({ $limit: options.limit });
         }
 
-        const data = await this.commonTemplatesService.aggregate(
+        const commonTemplates = await this.commonTemplatesService.aggregate(
           aggregationPipeline,
         );
 
-        const commonTemplates = data[0]?.data as any[];
-        const total = data[0].total[0]?.totalRecords as any;
-
+        const total = await this.commonTemplatesService.countCommonTemplates({
+          query: matchQuery
+        });
 
         const parsedTemplates = plainToInstance(
           CommonTemplateDTO,
