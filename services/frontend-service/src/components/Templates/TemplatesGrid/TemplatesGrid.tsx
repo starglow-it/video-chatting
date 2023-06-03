@@ -54,7 +54,7 @@ const Component = <TemplateType extends { id: string }>({
     itemWidth = 334,
     itemGap = 3,
     allowCreate = false,
-    onCreate
+    onCreate,
 }: TemplateGridProps<TemplateType>) => {
     const [activeSlider, setActiveSlider] = useState(0);
     const [skip, setSkip] = useState(0);
@@ -93,98 +93,56 @@ const Component = <TemplateType extends { id: string }>({
             });
         }
 
-        if (count <= 6) {
-            return initialTemplatesRender.map(element => element.component);
-        }
+        return initialTemplatesRender.map(element => element.component);
 
-        const skeletonCount = count - initialTemplatesRender.length;
+        // const skeletonCount = count - initialTemplatesRender.length;
 
-        const allSkeletonTemplates = [
-            ...new Array(skeletonCount).fill(0).keys(),
-        ].map(item => ({
-            id: `${item}`,
-            component: <SkeletonTemplate key={item} />,
-        }));
+        // const allSkeletonTemplates = [
+        //     ...new Array(skeletonCount).fill(0).keys(),
+        // ].map(item => ({
+        //     id: `${item}`,
+        //     component: <SkeletonTemplate key={item} />,
+        // }));
 
-        const commonComponentsArray = [
-            ...initialTemplatesRender,
-            ...allSkeletonTemplates,
-        ];
+        // const commonComponentsArray = [
+        //     ...initialTemplatesRender,
+        //     ...allSkeletonTemplates,
+        // ];
 
-        const unflattedArray = unflatArray<{
-            id: string;
-            component: JSX.Element;
-        }>(commonComponentsArray, 6);
+        // const unflattedArray = unflatArray<{
+        //     id: string;
+        //     component: JSX.Element;
+        // }>(commonComponentsArray, 6);
 
-        if (unflattedArray) {
-            return unflattedArray.map(slideComponents => {
-                const elements = slideComponents.map(
-                    element => element.component,
-                );
-                const key = slideComponents
-                    .map(element => element.id)
-                    .reduce((acc, b) => `${acc}${b}`, '');
+        // if (unflattedArray) {
+        //     return unflattedArray.map(slideComponents => {
+        //         const elements = slideComponents.map(
+        //             element => element.component,
+        //         );
+        //         const key = slideComponents
+        //             .map(element => element.id)
+        //             .reduce((acc, b) => `${acc}${b}`, '');
 
-                return (
-                    <CustomBox
-                        key={key}
-                        display="grid"
-                        gap={itemGap}
-                        gridTemplateColumns={`repeat(${
-                            is1100Media ? 'auto-fit' : '3'
-                        }, minmax(${itemWidth}px, 1fr))`}
-                    >
-                        {elements}
-                    </CustomBox>
-                );
-            });
-        }
+        //         return (
+        //             <CustomBox
+        //                 key={key}
+        //                 display="grid"
+        //                 gap={itemGap}
+        //                 gridTemplateColumns={`repeat(${
+        //                     is1100Media ? 'auto-fit' : '3'
+        //                 }, minmax(${itemWidth}px, 1fr))`}
+        //             >
+        //                 {elements}
+        //             </CustomBox>
+        //         );
+        //     });
+        // }
 
         return [];
     }, [list, skip, count, is1100Media, onChooseTemplate, TemplateComponent]);
 
-    const handleLoadTemplates = useCallback((data: number) => {
-        setSkip(prev => {
-            const newSkip = prev > data ? prev : data;
 
-            if (prev !== newSkip) {
-                onPageChange(newSkip + 1);
-            }
 
-            return newSkip;
-        });
-    }, []);
-
-    const handleChangeActiveSlider = useCallback(
-        (oldIndex: number, newIndex: number) => {
-            setActiveSlider(newIndex);
-        },
-        [],
-    );
-
-    const sliderSettings = useMemo(
-        () => ({
-            infinite: true,
-            dotsClass: styles.slider,
-            afterChange: handleLoadTemplates,
-            beforeChange: handleChangeActiveSlider,
-            appendDots: DotsComponent(dotsRef),
-            customPaging: PagingComponent(activeSlider),
-            nextArrow: (
-                <NextSliderArrow
-                    customClassName={styles.nextArrow}
-                    dotsRef={dotsRef}
-                />
-            ),
-            prevArrow: (
-                <PrevSliderArrow
-                    customClassName={styles.prevArrow}
-                    dotsRef={dotsRef}
-                />
-            ),
-        }),
-        [handleLoadTemplates, activeSlider, handleChangeActiveSlider],
-    );
 
     return (
         <CustomGrid
@@ -200,9 +158,9 @@ const Component = <TemplateType extends { id: string }>({
                         {renderTemplates}
                     </CustomSlider>
                 ) : ( */}
-                    <CustomGrid container gap={3} justifyContent="center">
-                        {renderTemplates}
-                    </CustomGrid>
+                <CustomGrid container gap={3} justifyContent="center">
+                    {renderTemplates}
+                </CustomGrid>
                 {/* )} */}
             </CustomBox>
         </CustomGrid>

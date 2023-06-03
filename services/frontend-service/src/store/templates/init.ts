@@ -179,22 +179,23 @@ sample({
 
 split({
     clock: loadmoreMetaTemplates,
-    source: combine({
-        mode: $modeTemplateStore,
-        common: $templatesStore,
-        privateTemplates: $profileTemplatesStore,
-    }),
+    source: $modeTemplateStore,
     match: {
-        private: ({ mode, privateTemplates: {list, count} }) => {
-            console.log('#Duy Phan console', list, count);
-            return mode === 'private' && list.length < count;
-        },
-
-        common: ({ mode, common: { count, list } }) =>
-            mode === 'common' && list.length < count,
+        private: mode => mode === 'private',
+        common: mode => mode === 'common',
     },
     cases: {
-        private: loadmoreCommonTemplates,
-        common: loadmoreUserTemplates,
+        private: loadmoreUserTemplates,
+        common: loadmoreCommonTemplates,
     },
+});
+
+forward({
+    from: loadmoreCommonTemplates,
+    to: setQueryTemplatesEvent,
+});
+
+forward({
+    from: loadmoreUserTemplates,
+    to: setQueryProfileTemplatesEvent,
 });

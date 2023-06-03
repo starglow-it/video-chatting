@@ -29,6 +29,8 @@ import { LayoutProps } from './types';
 import {
     $authStore,
     $isSocketConnected,
+    $profileTemplatesStore,
+    $templatesStore,
     getAppVersionFx,
     getProfileTemplatesFx,
     getTemplatesFx,
@@ -70,6 +72,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const isSocketConnected = useStore($isSocketConnected);
     const isLoadingTemplates = useStore(getTemplatesFx.pending);
     const isLoadingCommonTemplates = useStore(getProfileTemplatesFx.pending);
+    const templates = useStore($templatesStore);
+    const profileTemplates = useStore($profileTemplatesStore);
 
     const router = useRouter();
 
@@ -111,9 +115,15 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         router.pathname.includes('dashboard/templates/setup');
 
     const handleScrollToEnd = () => {
-        console.log('#Duy Phan console', 'end');
-
-        if (isDashboardRoute && !isLoadingTemplates && !isLoadingTemplates) {
+        if (
+            (isDashboardRoute &&
+                !isLoadingTemplates &&
+                !isLoadingCommonTemplates &&
+                templates.list.length &&
+                templates.list.length < templates.count) ||
+            (profileTemplates.list.length &&
+                profileTemplates.list.length < profileTemplates.count)
+        ) {
             loadmoreMetaTemplates();
         }
     };
