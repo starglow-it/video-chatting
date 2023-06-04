@@ -21,6 +21,7 @@ import { logoutAdminFx } from '../../store';
 
 // styles
 import styles from './AdminNavigation.module.scss';
+import { StarIcon } from 'shared-frontend/icons/OtherIcons/StarIcon';
 
 const Component = () => {
     const router = useRouter();
@@ -33,6 +34,7 @@ const Component = () => {
     const isUsersPageActive = router.pathname === '/users';
     const isRoomsPageActive = router.pathname === '/rooms';
     const isBackgroundsPageActive = router.pathname === '/backgrounds';
+    const isFeaturedBackgroundPageActive = router.pathname === '/featured-background';
 
     const handleStatisticsPage = useCallback(async () => {
         await router.push('/statistics');
@@ -48,6 +50,10 @@ const Component = () => {
 
     const handleBackgroundsPage = () => {
         router.push('/backgrounds');
+    };
+
+    const handleFeaturedBackgroundPage = () => {
+        router.push('/featured-background');
     };
 
     return (
@@ -132,6 +138,25 @@ const Component = () => {
                         height="22px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isBackgroundsPageActive,
+                        })}
+                    />
+                </CustomTooltip>
+
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.backgrounds"
+                        />
+                    }
+                    placement="right"
+                >
+                    <StarIcon
+                        onClick={handleFeaturedBackgroundPage}
+                        width="32px"
+                        height="32px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isFeaturedBackgroundPageActive,
                         })}
                     />
                 </CustomTooltip>

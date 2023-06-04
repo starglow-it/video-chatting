@@ -1,4 +1,9 @@
-import {ICommonTemplate, ICommonUser, IUserTemplate, QueryParams} from 'shared-types';
+import {
+    ICommonTemplate,
+    ICommonUser,
+    IUserTemplate,
+    QueryParams,
+} from 'shared-types';
 import { EntityList } from '../types';
 import { templatesDomain } from './domain/model';
 import {
@@ -13,6 +18,8 @@ import {
     GetUserTemplateByIdPayload,
     GetUserTemplatePayload,
     PurchaseTemplatePayload,
+    QueryGetTemplates,
+    ResultGetTemplates,
     SendScheduleInvitePayload,
     UploadTemplateFilePayload,
     UploadTemplateFileResponse,
@@ -31,18 +38,43 @@ const initialUserTemplatesStore: EntityList<IUserTemplate> = {
 };
 
 // stores
-export const $templatesStore =
-    templatesDomain.createStore<EntityList<ICommonTemplate>>(initialTemplatesStore);
-export const $setUpTemplateStore = templatesDomain.createStore<ICommonTemplate | null>(null);
-export const $templatePreviewStore = templatesDomain.createStore<ICommonTemplate | null>(null);
-export const $discoveryTemplatesStore =
-    templatesDomain.createStore<EntityList<IUserTemplate>>(initialUserTemplatesStore);
-export const $scheduleTemplateIdStore = templatesDomain.createStore<IUserTemplate['id']>('');
+export const $templatesStore = templatesDomain.createStore<
+    EntityList<ICommonTemplate>
+>(initialTemplatesStore);
+export const $setUpTemplateStore =
+    templatesDomain.createStore<ICommonTemplate | null>(null);
+export const $templatePreviewStore =
+    templatesDomain.createStore<ICommonTemplate | null>(null);
+export const $discoveryTemplatesStore = templatesDomain.createStore<
+    EntityList<IUserTemplate>
+>(initialUserTemplatesStore);
+export const $scheduleTemplateIdStore =
+    templatesDomain.createStore<IUserTemplate['id']>('');
 export const $scheduleEventLinkStore = templatesDomain.createStore<string>('');
-export const $replaceTemplateIdStore = templatesDomain.createStore<ICommonTemplate['id']>('');
-export const $templateDraft = templatesDomain.createStore<ICommonTemplate | IUserTemplate | null>(
-    null,
-);
+export const $replaceTemplateIdStore =
+    templatesDomain.createStore<ICommonTemplate['id']>('');
+export const $templateDraft = templatesDomain.createStore<
+    ICommonTemplate | IUserTemplate | null
+>(null);
+export const $queryTemplatesStore =
+    templatesDomain.createStore<QueryGetTemplates>({
+        draft: false,
+        isPublic: true,
+        limit: 9,
+        skip: 0,
+        sort: 'maxParticipants',
+        direction: 1,
+    });
+
+export const $queryProfileTemplatesStore =
+    templatesDomain.createStore<QueryParams>({
+        limit: 9,
+        skip: 0,
+    });
+
+export const $modeTemplateStore = templatesDomain.createStore<
+    'private' | 'common'
+>('private');
 
 // events
 export const setPreviewTemplate = templatesDomain.event<ICommonTemplate | null>(
@@ -51,18 +83,42 @@ export const setPreviewTemplate = templatesDomain.event<ICommonTemplate | null>(
 export const setScheduleTemplateIdEvent = templatesDomain.event<string>(
     'setScheduleTemplateIdEvent',
 );
-export const setScheduleEventLinkEvent = templatesDomain.event<string | undefined>(
-    'setScheduleEventLinkEvent',
-);
+export const setScheduleEventLinkEvent = templatesDomain.event<
+    string | undefined
+>('setScheduleEventLinkEvent');
 
-export const setReplaceTemplateIdEvent = templatesDomain.event<string | undefined>(
-    'setReplaceTemplateIdEvent',
+export const setReplaceTemplateIdEvent = templatesDomain.event<
+    string | undefined
+>('setReplaceTemplateIdEvent');
+
+export const setQueryTemplatesEvent =
+    templatesDomain.createEvent<QueryGetTemplates>('setQueryTemplatesEvent');
+
+export const setQueryProfileTemplatesEvent =
+    templatesDomain.createEvent<QueryParams>('setQueryProfileTemplatesEvent');
+
+export const setModeTemplatesEvent = templatesDomain.createEvent<
+    'private' | 'common'
+>('setModeTemplatesEvent');
+
+export const loadmoreMetaTemplates = templatesDomain.createEvent(
+    'loadmoreMetaTemplates',
+);
+export const loadmoreCommonTemplates = templatesDomain.createEvent(
+    'loadmoreCommonTemplates',
+);
+export const loadmoreUserTemplates = templatesDomain.createEvent(
+    'loadmoreUserTemplates',
 );
 
 // effect
 export const getTemplatesFx = templatesDomain.effect<
-    QueryParams & { userId?: ICommonUser['id']; draft: boolean; isPublic: boolean },
-    EntityList<ICommonTemplate>,
+    QueryParams & {
+        userId?: ICommonUser['id'];
+        draft: boolean;
+        isPublic: boolean;
+    },
+    ResultGetTemplates,
     void
 >('getTemplatesFx');
 
@@ -114,11 +170,11 @@ export const uploadUserTemplateFileFx = templatesDomain.effect<
     void
 >('uploadUserTemplateFile');
 
-
-
-export const createTemplateFx = templatesDomain.effect<void, CreateTemplateResponse, void>(
-    'createTemplate',
-);
+export const createTemplateFx = templatesDomain.effect<
+    void,
+    CreateTemplateResponse,
+    void
+>('createTemplate');
 
 export const editTemplateFx = templatesDomain.effect<
     EditTemplatePayload,
@@ -138,7 +194,6 @@ export const addTemplateToUserFx = templatesDomain.effect<
     void
 >('addTemplateToUserFx');
 
-
 export const clearTemplateDraft = templatesDomain.event('clearTemplateDraft');
 
 export const deleteCommonTemplateFx = templatesDomain.effect<
@@ -147,5 +202,5 @@ export const deleteCommonTemplateFx = templatesDomain.effect<
     void
 >('deleteCommonTemplateFx');
 
-export const $isUploadTemplateBackgroundInProgress = uploadTemplateFileFx.pending;
-
+export const $isUploadTemplateBackgroundInProgress =
+    uploadTemplateFileFx.pending;
