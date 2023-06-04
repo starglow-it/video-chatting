@@ -47,5 +47,8 @@
   },
   "backgrounds": {
     "title": "Backgrounds"
+  },
+  "featuredBackground": {
+    "title": "Featured Background"
   }
 }

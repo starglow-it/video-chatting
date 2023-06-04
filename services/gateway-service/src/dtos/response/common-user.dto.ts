@@ -11,6 +11,27 @@ import {
   LoginTypes,
 } from 'shared-types';
 
+export class UserFeaturedBackground {
+  @Expose()
+  @ApiProperty({
+    type: String
+  })
+  id: string;
+
+  @Expose()
+  @ApiProperty({
+    type: String
+  })
+  profileAvatar: string;
+
+  @Expose()
+  @ApiProperty({
+    type: String
+  })
+  role: string;
+
+}
+
 
 class BusinessCategory {
   

@@ -1,6 +1,6 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { toNumber } from '../../utils/parsers/toNumber';
-import { Transform } from 'class-transformer';
+import { Transform, TransformFnParams } from 'class-transformer';
 import { toBoolean } from '../../utils/parsers/toBoolean';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -55,6 +55,16 @@ export class GetTemplatesQueryDto {
   @IsOptional()
   @IsString()
   public type;
+
+  @ApiProperty({
+    type: [String],
+    required: false,
+  })
+  @IsOptional()
+  @Transform(({value}: TransformFnParams) => value.split(','))
+  @IsArray()
+  public businessCategories: string[];
+
 
   @ApiProperty({
     type: String,

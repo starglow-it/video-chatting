@@ -55,7 +55,7 @@ export class TemplatesController {
     @Query() query: GetTemplatesQueryDto,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
-      const { skip, limit, userId, draft, isPublic, type, sort, direction } =
+      const { skip, limit, userId, draft, isPublic, businessCategories, type, sort, direction } =
         query;
 
       const templatesData = await this.templatesService.getCommonTemplates({
@@ -64,6 +64,9 @@ export class TemplatesController {
           ...(draft !== undefined ? { draft } : {}),
           ...(isPublic !== undefined ? { isPublic } : {}),
           ...(type ? { type } : {}),
+        },
+        filter: {
+          businessCategories
         },
         options: {
           ...(sort ? { sort: { [sort]: direction } } : {}),

@@ -7,8 +7,8 @@ import { BusinessCategoryDocument } from './business-category.schema';
 import { UserDocument } from './user.schema';
 import { LanguageDocument } from './language.schema';
 import { SocialLinkDocument } from './social-link.schema';
-import { MeetingInstanceDocument } from './meeting-instance.schema';
 import { PreviewImageDocument } from './preview-image.schema';
+import { MeetingInstanceDocument } from './meeting-instance.schema';
 
 @Schema()
 export class UserTemplate {
