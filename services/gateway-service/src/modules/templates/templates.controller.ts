@@ -73,7 +73,8 @@ export class TemplatesController {
           ...(draft !== undefined ? { draft } : {}),
           ...(isPublic !== undefined ? { isPublic } : {}),
           ...(type ? { type } : {}),
-          roomType
+          roomType,
+          isAcceptNoLogin: false
         },
         filter: {
           businessCategories
