@@ -164,4 +164,7 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   isAcceptNoLogin?: IUserTemplate['isAcceptNoLogin'];
+
+  @Expose()
+  roomType: IUserTemplate['roomType'];
 }

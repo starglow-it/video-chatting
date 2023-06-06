@@ -14,7 +14,6 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
 import { UserTemplatesModule } from './modules/user-templates/user-templates.module';
 import { AppController } from './app.controller';
 import { MediasModule } from './modules/medias/medias.module';
-import { FeaturedBackgroundModule } from './modules/featured-backgrounds/featured-background.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { FeaturedBackgroundModule } from './modules/featured-backgrounds/feature
     CategoriesModule,
     MediasModule,
     StatisticsModule,
-    FeaturedBackgroundModule
   ],
   controllers: [AppController],
   providers: [],

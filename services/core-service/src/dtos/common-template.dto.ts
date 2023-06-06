@@ -105,4 +105,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   isAcceptNoLogin: ICommonTemplate['isAcceptNoLogin'];
+
+  @Expose()
+  roomType: ICommonTemplate['roomType'];
 }

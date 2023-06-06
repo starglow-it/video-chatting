@@ -298,6 +298,7 @@ export class UserTemplatesController {
           socials: user.socials.map((social) => social._id),
           signBoard: user.signBoard,
           templateType: targetTemplate.templateType,
+          roomType: targetTemplate.roomType
         };
 
         const [userTemplate] =
@@ -544,6 +545,7 @@ export class UserTemplatesController {
                 key: category.key,
                 value: category.value,
                 color: category.color,
+                icon: category.icon
               },
               session,
             });

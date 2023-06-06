@@ -84,4 +84,8 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   isTemplatePurchased: boolean;
+
+  @Expose()
+  @ApiProperty()
+  roomType: ICommonTemplate['roomType'];
 }
