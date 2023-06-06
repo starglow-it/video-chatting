@@ -35,7 +35,7 @@ const Component = ({
                 direction="row"
                 alignItems="center"
                 onClick={selectMenu}
-                className={styles.menu}
+                justifyContent="center"
             >
                 <CustomTypography fontSize={15}>
                     {item.value}

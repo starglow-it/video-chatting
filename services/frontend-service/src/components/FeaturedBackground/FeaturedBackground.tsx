@@ -1,15 +1,17 @@
 import { memo } from 'react';
 import { useStore } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { FeaturedList } from './FeaturedList/FeaturedList';
 import { $featuredBackgroundStore } from 'src/store';
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
+import { mapEmoji, parseEmoji } from 'shared-utils';
+import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
+import { ICommonTemplate } from 'shared-types';
 import styles from './FeaturedBackground.module.scss';
+import { CommonTemplateItem } from '../Templates/CommonTemplateItem/CommonTemplateItem';
 
 const Component = () => {
     const { list, count } = useStore($featuredBackgroundStore);
-    console.log('#Duy Phan console', list)
 
     return (
         <CustomGrid
@@ -17,25 +19,32 @@ const Component = () => {
             direction="column"
             className={styles.featuredWrapper}
         >
-            <CustomGrid className={styles.image}>
-                <CustomImage
-                    src="/images/ok-hand.webp"
-                    width="30px"
-                    height="30px"
-                    alt="ok-hand"
-                />
-                <CustomTypography
-                    variant="h5"
-                    nameSpace="templates"
-                    translation="featuredBackground.title"
-                />
-            </CustomGrid>
-            <CustomTypography
-                color="colors.grayscale.semidark"
-                nameSpace="templates"
-                translation="featuredBackground.description"
+            <CustomPaper className={styles.barge}>
+                <CustomGrid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <CustomGrid fontSize={20} paddingRight={1}>
+                        {parseEmoji(mapEmoji('2728'))}
+                    </CustomGrid>
+                    <CustomTypography
+                        fontSize={15}
+                        nameSpace="templates"
+                        translation="featuredBackground.title"
+                    />
+                </CustomGrid>
+            </CustomPaper>
+
+            {/* <FeaturedList count={count} list={list} /> */}
+            <TemplatesGrid<ICommonTemplate>
+                list={list}
+                count={count}
+                // onPageChange={handleProfileTemplatesPageChange}
+                // onChooseTemplate={handleChooseProfileTemplate}
+                TemplateComponent={CommonTemplateItem}
             />
-            <FeaturedList count={count} list={list} />
         </CustomGrid>
     );
 };

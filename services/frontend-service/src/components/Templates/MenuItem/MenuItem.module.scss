@@ -4,16 +4,13 @@
 .menuWrapper {
     margin-left: rem(10px);
     cursor: pointer;
-    border-radius: rem(6px);
+    border-radius: rem(10px);
     color: var(--color);
+    padding: rem(6px 10px);
+    min-width: rem(110px);
 
     &.active {
         background-color: $primary-black;
         color: $primary-white;
-    }
-
-    .menu {
-        width: max-content;
-        padding: rem(6px);
     }
 }

@@ -418,8 +418,8 @@ export class SeederService {
     });
 
     const url = await this.readFileAndUpload({
-      filePath: './src/public/global_template.jpeg',
-      key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.webp`
+      filePath: './src/public/global_template.mp4',
+      key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.mp4`
     })
 
     //update url to temlate

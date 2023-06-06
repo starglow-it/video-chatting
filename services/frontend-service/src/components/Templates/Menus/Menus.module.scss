@@ -4,17 +4,17 @@
 .wrapper {
     max-width: rem(1054px);
     width: 100%;
-    justify-content: center;
-    height: 60px;
+    justify-content: flex-start;
+    height: rem(60px);
 }
 
 .barge {
     cursor: pointer;
     border-radius: rem(6px);
     width: max-content;
-    padding: rem(6px);
+    padding: rem(10px);
     margin-left: rem(5px);
-    min-width: rem(70px);
+    min-width: rem(110px);
 
     &.active {
         background-color: $primary-black;

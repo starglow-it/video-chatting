@@ -10,4 +10,14 @@
   width: 100%;
   display: flex;
   align-items: center;
+  margin-top: rem(30px);
+}
+
+.barge {
+  cursor: pointer;
+  border-radius: rem(10px);
+  width: max-content;
+  padding: rem(10px);
+  min-width: rem(70px);
+  align-self: flex-start;
 }

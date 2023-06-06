@@ -67,11 +67,18 @@ const Component = () => {
             </CustomPaper>
             <CustomPaper
                 className={clsx(styles.barge, {
-                    [styles.active]: !businessCategories.length && mode === 'common',
+                    [styles.active]:
+                        !businessCategories.length && mode === 'common',
                 })}
                 onClick={() => selectMenu('all')}
             >
-                <CustomGrid container direction="row" alignItems="center" justifyContent="center">
+                <CustomGrid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <CustomGrid fontSize={20} marginRight={1}>{parseEmoji(mapEmoji('1f52d'))}</CustomGrid>
                     <CustomTypography fontSize={13}>All</CustomTypography>
                 </CustomGrid>
             </CustomPaper>
