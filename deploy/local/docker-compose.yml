@@ -62,7 +62,7 @@ services:
       context: ../../
       dockerfile: ./services/frontend-service/Dockerfile.dev
       args:
-        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     ports:
       - '8000:8000'
     environment:
@@ -76,7 +76,7 @@ services:
       - LIVEKIT_WSS=wss://livekit.demo.theliveoffice.com
       - MEETING_SOCKET_URL=ws://localhost:8180
       - DEFAULT_SERVER_IP=localhost
-      - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+      - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
       - STRIPE_PUBLIC_API_KEY=pk_test_51Lfm3wEZHTtCzRsJB6lEgBCnvU1S4UNnaIQ2sDmYRN4olRKSF7IjPn5NF81yDxwhRCMfqNW4I4UK4HOGFDYctKLv00Cv9txG6J
       - BASE_ENV_DOMAIN=liveoffice.forasoft.com
       - SUPPORT_EMAIL
@@ -97,7 +97,7 @@ services:
       context: ../../
       dockerfile: ./services/frontend-admin-service/Dockerfile.dev
       args:
-        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     ports:
       - '9000:9000'
     environment:
@@ -105,7 +105,7 @@ services:
       - GATEWAY_HOST=gateway-service
       - FRONTEND_URL=http://localhost:9000
       - DEFAULT_SERVER_IP=localhost
-      - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+      - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
       - SUPPORT_EMAIL
     volumes:
       - ../../services/frontend-admin-service/pages:/app/services/frontend-admin-service/pages
