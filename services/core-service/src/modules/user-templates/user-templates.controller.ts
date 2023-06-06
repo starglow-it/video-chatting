@@ -156,30 +156,6 @@ export class UserTemplatesController {
 
   }
 
-  private async updateMediaByUserTemplate(userTemplate: UserTemplateDocument, session: ITransactionSession) {
-    try {
-      const mediaCategory = await this.getMyRoomMediaCategory(session);
-      await this.mediaService.updateMedia({
-        query: {
-          userTemplate,
-          mediaCategory
-        },
-        data: {
-          url: userTemplate.url,
-          type: userTemplate.templateType,
-          previewUrls: userTemplate.previewUrls
-        },
-        session
-      });
-    }
-    catch (err) {
-      throw new RpcException({
-        message: err.message,
-        ctx: TEMPLATES_SERVICE
-      });
-    }
-  }
-
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
   async getUserTemplate(
     @Payload()
@@ -596,10 +572,6 @@ export class UserTemplatesController {
             ],
           );
 
-        if (data.url) {
-          await this.updateMediaByUserTemplate(userTemplate, session);
-        }
-
         if (userTemplate?.author?._id?.toString?.() === userId) {
           const updateCommonTemplateData = {
             ...filteredData,
@@ -829,7 +801,7 @@ export class UserTemplatesController {
 
       const imageIds = previewImages.map((image) => image._id);
 
-      const updatedUserTemplate = await this.userTemplatesService.updateUserTemplate({
+      await this.userTemplatesService.updateUserTemplate({
         query: {
           _id: id,
         },
@@ -841,7 +813,6 @@ export class UserTemplatesController {
         session,
       });
 
-      await this.updateMediaByUserTemplate(updatedUserTemplate, session);
     });
   }
 
