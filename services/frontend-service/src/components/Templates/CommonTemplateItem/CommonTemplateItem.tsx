@@ -21,6 +21,7 @@ import { CommonTemplateItemProps } from './types';
 
 // styles
 import styles from './CommonTemplateItem.module.scss';
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 
 const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
@@ -55,6 +56,30 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         ? handleBuyTemplate
         : undefined;
 
+    const renderPreview = () => {
+        switch (template?.templateType) {
+            case 'image':
+                return (
+                    <CustomImage
+                        src={previewImage?.url || ''}
+                        width="334px"
+                        height="190px"
+                    />
+                );
+            case 'video':
+                return (
+                    <CustomVideoPlayer
+                        src={template?.url || ''}
+                        volume={0}
+                        isPlaying
+                        isMuted={false}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
         <CustomGrid
             className={styles.templateContent}
@@ -65,11 +90,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <CustomImage
-                    src={previewImage?.url || ''}
-                    width="334px"
-                    height="190px"
-                />
+                {renderPreview()}
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}

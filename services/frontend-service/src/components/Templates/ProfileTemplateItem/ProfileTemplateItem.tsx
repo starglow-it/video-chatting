@@ -42,6 +42,7 @@ import styles from './ProfileTemplateItem.module.scss';
 // types
 import { ProfileTemplateProps } from './types';
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 
 const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplateProps) => {
     const profile = useStore($profileStore);
@@ -106,6 +107,30 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
         });
     }, []);
 
+    const renderPreview = () => {
+        switch (template?.templateType) {
+            case 'image':
+                return (
+                    <CustomImage
+                        src={previewImage?.url || ''}
+                        width="334px"
+                        height="190px"
+                    />
+                );
+            case 'video':
+                return (
+                    <CustomVideoPlayer
+                        src={template?.url || ''}
+                        volume={0}
+                        isPlaying
+                        isMuted={false}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
         <CustomGrid
             className={styles.templateContent}
@@ -116,7 +141,7 @@ const ProfileTemplateItem = memo(({ template, onChooseTemplate }: ProfileTemplat
             onMouseLeave={handleHidePreview}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <CustomImage src={previewImage?.url || ''} width="334px" height="190px" />
+                {renderPreview()}
             </ConditionalRender>
             <TemplateMainInfo
                 show={!showPreview}

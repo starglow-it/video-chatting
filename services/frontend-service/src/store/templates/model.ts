@@ -3,6 +3,7 @@ import {
     ICommonUser,
     IUserTemplate,
     QueryParams,
+    RoomType,
 } from 'shared-types';
 import { EntityList } from '../types';
 import { templatesDomain } from './domain/model';
@@ -64,6 +65,7 @@ export const $queryTemplatesStore =
         skip: 0,
         sort: 'maxParticipants',
         direction: 1,
+        roomType: RoomType.Normal
     });
 
 export const $queryProfileTemplatesStore =

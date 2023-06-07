@@ -2,7 +2,6 @@
 @import '../../../styles/variables.scss';
 
 .wrapper {
-    max-width: rem(1054px);
     width: 100%;
     justify-content: flex-start;
     height: rem(60px);
@@ -10,9 +9,9 @@
 
 .barge {
     cursor: pointer;
-    border-radius: rem(6px);
+    border-radius: rem(10px);
     width: max-content;
-    padding: rem(10px);
+    padding: rem(6px 10px);
     margin-left: rem(5px);
     min-width: rem(110px);
 

@@ -46,8 +46,8 @@
     "downloadIcs": "Download ICS"
   },
   "createRoom": "Create room",
-  "featuredBackground": {
-    "title": "Featured Background",
+  "featuredRooms": {
+    "title": "Featured Rooms",
     "description": "Black ethan and then he retueneum"
   }
 }

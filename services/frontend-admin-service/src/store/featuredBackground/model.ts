@@ -1,8 +1,15 @@
-import { EntityList, IFeaturedBackground, QueryParams } from 'shared-types';
+import {
+    EntityList,
+    ICommonTemplate,
+    IFeaturedBackground,
+    QueryParams,
+    RoomType,
+} from 'shared-types';
 import { templatesDomain } from '../domains';
+import { CommonTemplatesListState } from '../types';
 
 export const $featuredBackgroundStore = templatesDomain.createStore<
-    EntityList<IFeaturedBackground>
+    EntityList<ICommonTemplate>
 >({
     list: [],
     count: 0,
@@ -22,3 +29,9 @@ export const deleteFeaturedBackground = templatesDomain.createEffect<
     string,
     void
 >('deleteFeaturedBackground');
+
+export const getFeaturedTemplatesFx = templatesDomain.createEffect<
+    QueryParams & { roomType: RoomType },
+    CommonTemplatesListState,
+    void
+>('getFeaturedTemplatesFx');

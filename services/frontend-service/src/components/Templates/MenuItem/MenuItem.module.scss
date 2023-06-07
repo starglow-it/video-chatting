@@ -2,10 +2,9 @@
 @import "../../../styles/rem.scss";
 
 .menuWrapper {
-    margin-left: rem(10px);
+    margin-left: rem(5px);
     cursor: pointer;
     border-radius: rem(10px);
-    color: var(--color);
     padding: rem(6px 10px);
     min-width: rem(110px);
 

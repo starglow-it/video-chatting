@@ -163,7 +163,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         className={clsx({ [styles.mobileContent]: isMobile })}
                     >
                         <ConditionalRender condition={!isMobile}>
-                            <CustomBox className={styles.header}>
+                            <CustomBox
+                                className={clsx(styles.header, {
+                                    [styles.dashboard]: isDashboardRoute,
+                                })}
+                            >
                                 <CustomGrid
                                     container
                                     justifyContent="space-between"

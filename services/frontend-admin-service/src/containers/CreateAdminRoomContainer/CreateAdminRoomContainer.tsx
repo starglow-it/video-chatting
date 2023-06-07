@@ -71,7 +71,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
-import { PriceValues } from 'shared-types';
+import { PriceValues, RoomType } from 'shared-types';
 
 // utils
 enum TabsValues {
@@ -300,8 +300,11 @@ const Component = () => {
                         draftUrl: '',
                     },
                 });
-
-                Router.push('/rooms');
+                if (commonTemplate.roomType === RoomType.Normal) {
+                    Router.push('/rooms');
+                } else {
+                    Router.push('/featured-background');
+                }
 
                 addNotificationEvent({
                     type: NotificationType.roomPublished,
