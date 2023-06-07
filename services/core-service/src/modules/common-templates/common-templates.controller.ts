@@ -292,7 +292,8 @@ export class CommonTemplatesController {
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,
           author: targetTemplate.author,
-          isAcceptNoLogin: targetTemplate.isAcceptNoLogin
+          isAcceptNoLogin: targetTemplate.isAcceptNoLogin,
+          roomType: targetTemplate.roomType
         };
 
         const [userTemplate] =
@@ -411,10 +412,14 @@ export class CommonTemplatesController {
   async createTemplate(@Payload() data: CreateTemplatePayload) {
     try {
       return withTransaction(this.connection, async (session) => {
+        const { userId, roomType } = data;
         const template = await this.commonTemplatesService.createCommonTemplate(
           {
             data: {
-              author: data.userId,
+              author: userId,
+              ...(roomType && {
+                roomType
+              })
             },
             session,
           },
@@ -468,6 +473,7 @@ export class CommonTemplatesController {
                   key: category.key,
                   value: category.value,
                   color: category.color,
+                  icon: category.icon
                 },
                 session,
               });

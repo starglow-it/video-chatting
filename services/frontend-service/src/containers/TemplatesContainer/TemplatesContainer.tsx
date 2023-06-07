@@ -15,8 +15,12 @@ import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExpiredDialog';
 
-
-import { EntityList, ICommonTemplate, IUserTemplate } from 'shared-types';
+import {
+    EntityList,
+    ICommonTemplate,
+    IUserTemplate,
+    RoomType,
+} from 'shared-types';
 import {
     $profileStore,
     $profileTemplatesCountStore,
@@ -73,7 +77,11 @@ const Component = () => {
     }, []);
 
     useEffect(() => {
-        getFeaturedBackgroundFx({skip: 0, limit: 6})
+        getFeaturedBackgroundFx({
+            skip: 0,
+            limit: 9,
+            roomType: RoomType.Featured,
+        });
     }, []);
 
     useEffect(() => {

@@ -14,4 +14,7 @@ export class CommonBusinessCategoryDTO implements IBusinessCategory {
 
   @Expose()
   color: string;
+
+  @Expose()
+  icon: string;
 }

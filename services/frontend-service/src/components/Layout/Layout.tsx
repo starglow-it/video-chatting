@@ -1,4 +1,10 @@
-import React, { memo, PropsWithChildren, useEffect, useMemo } from 'react';
+import React, {
+    memo,
+    PropsWithChildren,
+    useEffect,
+    useMemo,
+    useRef,
+} from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -76,6 +82,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const profileTemplates = useStore($profileTemplatesStore);
 
     const router = useRouter();
+    const scrollRef = useRef<HTMLElement | null>(null);
 
     const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(
         router.pathname,
@@ -128,6 +135,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         }
     };
 
+    const handleScrollUp = () => {
+        if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    };
+
     return (
         <CustomBox
             className={clsx(styles.main, {
@@ -145,6 +156,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                 options={{
                     wheelPropagation: true,
                 }}
+                containerRef={el => (scrollRef.current = el)}
             >
                 <CustomGrid
                     container
@@ -163,7 +175,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         className={clsx({ [styles.mobileContent]: isMobile })}
                     >
                         <ConditionalRender condition={!isMobile}>
-                            <CustomBox className={styles.header}>
+                            <CustomBox
+                                className={clsx(styles.header, {
+                                    [styles.dashboard]: isDashboardRoute,
+                                })}
+                            >
                                 <CustomGrid
                                     container
                                     justifyContent="space-between"
@@ -197,7 +213,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     </CustomGrid>
                     <ConditionalRender condition={shouldShowFooter}>
                         <CustomGrid item>
-                            <Footer />
+                            <Footer onScrollUp={handleScrollUp} />
                         </CustomGrid>
                     </ConditionalRender>
                 </CustomGrid>

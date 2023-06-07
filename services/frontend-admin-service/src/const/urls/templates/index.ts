@@ -25,6 +25,11 @@ export const createCommonTemplateUrl = {
 	method: HttpMethods.Post,
 };
 
+export const createFeaturedTemplateUrl = {
+	url: `${templatesUrl}/add/featured`,
+	method: HttpMethods.Post,
+};
+
 export const updateCommonTemplateUrl = ({
 	templateId,
 }: {

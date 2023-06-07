@@ -1,9 +1,19 @@
 export const BUSINESS_CATEGORIES = [
-  { key: 'therapy', value: 'Therapy', color: '#914b50' },
-  { key: 'calming', value: 'Calming', color: '#a698c0' },
-  { key: 'energizing', value: 'Energizing', color: '#b4c9e0' },
-  { key: 'coaching', value: 'Coaching', color: '#603f50' },
-  { key: 'breathing', value: 'Breathing', color: '#5ba555' },
-  { key: 'teen', value: 'Teen', color: '#517f60' },
-  { key: 'office', value: 'Office', color: '#7a785b' },
+  { key: 'howto', value: 'How-to', color: '#a698c0', icon: '1f527' },
+  {
+    key: 'celebrations',
+    value: 'Celebrations',
+    color: '#914b50',
+    icon: '1f389',
+  },
+  { key: 'work', value: 'Work', color: '#b4c9e0', icon: '1f23a' },
+  { key: 'sports', value: 'Sports', color: '#603f50', icon: '1f3c6' },
+  {
+    key: 'lgbtq',
+    value: 'LGBTQ+',
+    color: '#5ba555',
+    icon: '1f3f3-fe0f-200d-1f308',
+  },
+  { key: 'arts', value: 'Arts', color: '#517f60', icon: '1f3a8' },
+  { key: 'ai', value: 'AI', color: '#7a785b', icon: '1f916' },
 ];

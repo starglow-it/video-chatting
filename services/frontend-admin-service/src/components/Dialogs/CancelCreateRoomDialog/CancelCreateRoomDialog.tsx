@@ -24,6 +24,7 @@ import {
 	closeAdminDialogEvent,
 	deleteCommonTemplateFx,
 } from '../../../store';
+import { RoomType } from 'shared-types';
 
 const Component = () => {
 	const router = useRouter();
@@ -43,7 +44,12 @@ const Component = () => {
 		deleteCommonTemplateFx({
 			templateId: commonTemplate?.id,
 		});
-		router.push('/rooms');
+		if(commonTemplate?.roomType === RoomType.Normal) {
+			router.push('/rooms');
+		} else {
+			router.push('/featured-background');
+		}
+		
 	}, [commonTemplate?.id]);
 
 	return (

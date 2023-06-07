@@ -66,7 +66,7 @@ import styles from './EditAdminRoomContainer.module.scss';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
-import { PriceValues } from 'shared-types';
+import { PriceValues, RoomType } from 'shared-types';
 
 enum TabsValues {
     Background = 1,
@@ -392,7 +392,11 @@ const Component = () => {
                     data: updateData,
                 });
 
-                await Router.push('/rooms');
+                if (commonTemplate.roomType === RoomType.Normal) {
+                    await Router.push('/rooms');
+                } else {
+                    await Router.push('/featured-background');
+                }
 
                 addNotificationEvent({
                     type: NotificationType.roomChangesSaved,
@@ -448,7 +452,12 @@ const Component = () => {
                 templateType: templateTypeRef.current,
             },
         });
-        router.push('/rooms');
+
+        if (commonTemplate?.roomType === RoomType.Normal) {
+            router.push('/rooms');
+        } else {
+            router.push('/featured-background');
+        }
     }, [commonTemplate?.id]);
 
     const handleConfirmSaveChanges = useCallback(() => {

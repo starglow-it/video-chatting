@@ -8,10 +8,16 @@ import {
 import { ITemplateUser } from './users';
 import { IMeetingInstance } from './meeting';
 
+export enum RoomType {
+  Normal = 'normal',
+  Featured = 'featured'
+}
+
 interface ITemplate{
   authorThumbnail?: string;
   authorRole?: string;
   authorName?: string;
+  roomType: RoomType;
 }
 
 export interface ICommonTemplate extends ITemplate {

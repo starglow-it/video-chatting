@@ -5,6 +5,7 @@ import { IBusinessCategory } from 'shared-types';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import clsx from 'clsx';
 import styles from './MenuItem.module.scss';
+import { mapEmoji, parseEmoji } from 'shared-utils';
 
 const Component = ({
     onSelect,
@@ -19,27 +20,23 @@ const Component = ({
         onSelect(item.id);
     };
 
-    const style = {
-        '--color': item.color,
-    } as React.CSSProperties;
-
     return (
         <CustomPaper
             className={clsx(styles.menuWrapper, {
                 [styles.active]: isActive,
             })}
-            style={style}
         >
             <CustomGrid
                 container
                 direction="row"
                 alignItems="center"
                 onClick={selectMenu}
-                className={styles.menu}
+                justifyContent="center"
             >
-                <CustomTypography fontSize={15}>
-                    {item.value}
-                </CustomTypography>
+                <CustomGrid fontSize={20} marginRight={1}>
+                    {parseEmoji(mapEmoji(item.icon))}
+                </CustomGrid>
+                <CustomTypography fontSize={13}>{item.value}</CustomTypography>
             </CustomGrid>
         </CustomPaper>
     );

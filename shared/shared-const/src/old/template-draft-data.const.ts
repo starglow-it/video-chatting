@@ -1,6 +1,6 @@
 import { ICommonTemplate } from 'shared-types';
 
-export const DEFAULT_TEMPLATE_DATA: Omit<ICommonTemplate, 'templateId'> = {
+export const DEFAULT_TEMPLATE_DATA: Partial<ICommonTemplate> = {
   url: '',
   name: '',
   maxParticipants: 1,
@@ -13,5 +13,5 @@ export const DEFAULT_TEMPLATE_DATA: Omit<ICommonTemplate, 'templateId'> = {
   draft: true,
   isPublic: false,
   templateType: 'video',
-  isAcceptNoLogin: false
+  isAcceptNoLogin: false,
 };

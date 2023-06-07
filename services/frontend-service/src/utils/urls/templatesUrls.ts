@@ -57,7 +57,6 @@ export const getTemplatesUrl = (data: QueryParams) => {
     const urlHref = new URL(`${frontendConfig.frontendUrl}${templatesUrl}`);
 
     Object.entries(data).forEach(entry => {
-        console.log('#Duy Phan console', entry);
         if (entry[1]!== undefined) urlHref.searchParams.append(entry[0], entry[1]);
     });
 

@@ -94,6 +94,7 @@ export type UpdateCommonTemplatePayload = {
 
 export type CreateTemplatePayload = {
   userId: ICommonTemplate['id'];
+  roomType?: ICommonTemplate['roomType']
 };
 
 export type EditTemplatePayload = {
