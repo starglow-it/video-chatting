@@ -6,6 +6,7 @@ import {
 	$activeTemplateIdStore,
 	$commonTemplates,
 	$commonTemplateStore, $isUploadTemplateBackgroundInProgress,
+	createFeaturedTemplateFx,
 	createTemplateFx,
 	deleteCommonTemplateFx,
 	getCommonTemplateEvent,
@@ -24,6 +25,7 @@ import { handleGetCommonTemplates } from './handlers/handleGetCommonTemplates';
 import { handleCreateCommonTemplate } from './handlers/handleCreateCommonTemplate';
 import { handleUploadCommonTemplateBackground } from './handlers/handleUploadCommonTemplateBackground';
 import { handleGetCommonTemplate } from './handlers/handleGetCommonTemplate';
+import { handleCreateFeaturedTemplate } from './handlers/handleCreateFeaturedTemplate';
 
 getCommonTemplatesFx.use(handleGetCommonTemplates);
 createTemplateFx.use(handleCreateCommonTemplate);
@@ -31,6 +33,7 @@ getCommonTemplateFx.use(handleGetCommonTemplate);
 deleteCommonTemplateFx.use(handleDeleteCommonTemplate);
 updateCommonTemplateFx.use(handleUpdateCommonTemplate);
 uploadTemplateBackgroundFx.use(handleUploadCommonTemplateBackground);
+createFeaturedTemplateFx.use(handleCreateFeaturedTemplate)
 
 $commonTemplates
 	.on(getCommonTemplatesFx.doneData, (state, data) => data)
@@ -59,6 +62,7 @@ $commonTemplateStore
 			createTemplateFx.doneData,
 			getCommonTemplateFx.doneData,
 			uploadTemplateBackgroundFx.doneData,
+			createFeaturedTemplateFx.doneData
 		],
 		(state, data) =>
 			data.state
@@ -82,6 +86,12 @@ $isUploadTemplateBackgroundInProgress.reset(resetCommonTemplateStore);
 $activeTemplateIdStore.on(setActiveTemplateIdEvent, (state, data) => data);
 
 createTemplateFx.doneData.watch(data => {
+	if (data.state?.id) {
+		Router.push(`rooms/create/${data.state?.id}`);
+	}
+});
+
+createFeaturedTemplateFx.doneData.watch(data => {
 	if (data.state?.id) {
 		Router.push(`rooms/create/${data.state?.id}`);
 	}

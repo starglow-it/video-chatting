@@ -1,15 +1,15 @@
-import { EntityList, IFeaturedBackground, QueryParams } from 'shared-types';
+import { EntityList, ICommonTemplate, IFeaturedBackground, QueryParams } from 'shared-types';
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
-import { getFeatruedBackgroundUrl } from 'src/utils/urls';
+import { getTemplatesUrl } from 'src/utils/urls';
 
 export const handleGetFeaturedBackground = async (
     payload: QueryParams,
-): Promise<EntityList<IFeaturedBackground>> => {
+): Promise<EntityList<ICommonTemplate>> => {
     const { success, result } = await sendRequestWithCredentials<
-        EntityList<IFeaturedBackground>,
+        EntityList<ICommonTemplate>,
         void
     >({
-        ...getFeatruedBackgroundUrl(payload),
+        ...getTemplatesUrl(payload),
     });
 
     if (success) return { list: result?.list || [], count: result?.count || 0 };

@@ -22,7 +22,7 @@ import { RoomPreviewDialog } from '@components/Dialogs/RoomPreviewDialog/RoomPre
 import { ConfirmDeleteRoomDialog } from '@components/Dialogs/ConfirmDeleteRoomDialog/ConfirmDeleteRoomDialog';
 
 // styles
-import { ICommonTemplate } from 'shared-types';
+import { ICommonTemplate, RoomType } from 'shared-types';
 import { PublishRoomDialog } from '@components/Dialogs/PublishRoomDialog/PublishRoomDialog';
 import { RevokeRoomDialog } from '@components/Dialogs/RevokeRoomDialog/RevokeRoomDialog';
 
@@ -83,6 +83,7 @@ const Component = () => {
             draft: false,
             limit: ROOMS_LIMIT,
             skip: 0,
+            roomType: RoomType.Normal
         });
     }, []);
 
@@ -147,6 +148,7 @@ const Component = () => {
                         draft: false,
                         skip: newPage - 1,
                         limit: ROOMS_LIMIT,
+                        roomType: RoomType.Normal
                     });
                 },
                 500,

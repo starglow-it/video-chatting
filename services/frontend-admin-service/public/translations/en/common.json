@@ -48,7 +48,7 @@
   "backgrounds": {
     "title": "Backgrounds"
   },
-  "featuredBackground": {
-    "title": "Featured Background"
+  "featuredRooms": {
+    "title": "Featured Rooms"
   }
 }

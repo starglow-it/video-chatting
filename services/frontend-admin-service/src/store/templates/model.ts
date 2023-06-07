@@ -59,6 +59,12 @@ export const deleteCommonTemplateFx = templatesDomain.createEffect<
     void
 >('deleteCommonTemplateFx');
 
+export const createFeaturedTemplateFx = templatesDomain.createEffect<
+    void,
+    CommonTemplateState,
+    void
+>('createFeaturedTemplateFx');
+
 export const getCommonTemplateFx = templatesDomain.createEffect<
     GetCommonTemplateByIdPayload,
     CommonTemplateState,

@@ -3,6 +3,7 @@ import {
     ICommonTemplate,
     IUserTemplate,
     QueryParams,
+    RoomType,
 } from 'shared-types';
 import { ParsedTimeStamp } from '../../types';
 
@@ -58,6 +59,7 @@ export type QueryGetTemplates = QueryParams & {
     draft?: boolean;
     isPublic?: boolean;
     businessCategories?: string[];
+    roomType?: RoomType;
 };
 
 export type ResultGetTemplates = EntityList<ICommonTemplate> & {

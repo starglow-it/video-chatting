@@ -269,7 +269,7 @@ const Component = () => {
                 className={styles.commonTemplates}
                 container
                 direction="column"
-                justifyContent="center"
+                justifyContent="flex-start"
             >
                 <MenusTemplate />
                 {renderTemplates}

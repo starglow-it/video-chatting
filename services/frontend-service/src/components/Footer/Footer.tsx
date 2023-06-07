@@ -11,14 +11,7 @@ import styles from './Footer.module.scss';
 import { $appVersionStore } from 'src/store';
 import { useStore } from 'effector-react';
 
-const Component = () => {
-    const handleScrollUp = () => {
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth',
-        });
-    };
+const Component = ({ onScrollUp }: { onScrollUp: () => void }) => {
     const version = useStore($appVersionStore);
 
     return (
@@ -33,7 +26,7 @@ const Component = () => {
                 variant="body3"
                 nameSpace="common"
                 translation="footer.company"
-				options={{ version: version.appVersion }}
+                options={{ version: version.appVersion }}
                 color="colors.grayscale.semidark"
             />
             <CustomGrid container gap={4.5} className={styles.links}>
@@ -74,7 +67,7 @@ const Component = () => {
             <ActionButton
                 variant="decline"
                 className={styles.scrollButton}
-                onAction={handleScrollUp}
+                onAction={onScrollUp}
                 Icon={<DoubleArrowIcon width="24px" height="24px" />}
             />
         </CustomGrid>

@@ -48,12 +48,12 @@ const Component = () => {
         await router.push('/rooms');
     }, []);
 
-    const handleBackgroundsPage = () => {
-        router.push('/backgrounds');
+    const handleBackgroundsPage = async () => {
+        await router.push('/backgrounds');
     };
 
-    const handleFeaturedBackgroundPage = () => {
-        router.push('/featured-background');
+    const handleFeaturedBackgroundPage = async () => {
+        await router.push('/featured-background');
     };
 
     return (
