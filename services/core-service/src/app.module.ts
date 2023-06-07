@@ -28,7 +28,6 @@ import { MediaCategory, MediaCategorySchema } from './schemas/media-category.sch
 import { Media, MediaSchema } from './schemas/media.schema';
 import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema';
 import { DatabaseModule } from './database/database.module';
-import { FeaturedBackgroundsModule } from './modules/featured-backgrounds/feature-backgrounds.module';
 
 @Module({
   imports: [
@@ -49,7 +48,6 @@ import { FeaturedBackgroundsModule } from './modules/featured-backgrounds/featur
     PaymentsModule,
     CountryStatisticsModule,
     RoomsStatisticsModule,
-    FeaturedBackgroundsModule,
     TranscodeModule,
     DatabaseModule,
     MongooseModule.forFeature([

@@ -18,4 +18,8 @@ export class CategoryRestDTO implements IBusinessCategory {
   @Expose()
   @ApiProperty()
   color: IBusinessCategory['color'];
+
+  @Expose()
+  @ApiProperty()
+  icon: IBusinessCategory['icon'];
 }

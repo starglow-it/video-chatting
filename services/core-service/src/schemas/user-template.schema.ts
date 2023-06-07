@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { ICommonUser } from 'shared-types';
+import { ICommonUser, RoomType } from 'shared-types';
 
 import { BusinessCategoryDocument } from './business-category.schema';
 import { UserDocument } from './user.schema';
@@ -260,6 +260,12 @@ export class UserTemplate {
     default: false
   })
   isAcceptNoLogin: boolean;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: RoomType.Normal
+  })
+  roomType: RoomType;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;

@@ -21,6 +21,12 @@ export class BusinessCategory {
     required: true,
   })
   color: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: '1f527'
+  })
+  icon: string;
 }
 
 export type BusinessCategoryDocument = BusinessCategory & Document;
