@@ -34,7 +34,9 @@ const Component = () => {
                 skip: 0,
                 limit: 9,
                 roomType: RoomType.Featured,
+                draft: false
             }))();
+            console.log('#Duy Phan console', 1111)
     }, []);
 
     const handleDeleteMedia = (id: string) => {

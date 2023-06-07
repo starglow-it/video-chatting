@@ -31,7 +31,7 @@ export const deleteFeaturedBackground = templatesDomain.createEffect<
 >('deleteFeaturedBackground');
 
 export const getFeaturedTemplatesFx = templatesDomain.createEffect<
-    QueryParams & { roomType: RoomType },
+    QueryParams & { roomType: RoomType; draft?: boolean },
     CommonTemplatesListState,
     void
 >('getFeaturedTemplatesFx');

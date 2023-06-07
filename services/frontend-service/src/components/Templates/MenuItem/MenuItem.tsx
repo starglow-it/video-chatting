@@ -36,7 +36,7 @@ const Component = ({
                 <CustomGrid fontSize={20} marginRight={1}>
                     {parseEmoji(mapEmoji(item.icon))}
                 </CustomGrid>
-                <CustomTypography fontSize={14}>{item.value}</CustomTypography>
+                <CustomTypography fontSize={13}>{item.value}</CustomTypography>
             </CustomGrid>
         </CustomPaper>
     );

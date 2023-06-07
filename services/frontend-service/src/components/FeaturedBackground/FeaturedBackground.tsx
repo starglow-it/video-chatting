@@ -75,10 +75,10 @@ const Component = () => {
 
     const handleChooseCommonTemplate = useCallback(
         async (templateId: ICommonTemplate['id']) => {
-            const targetTemplate = templates?.list?.find(
+            
+            const targetTemplate = list?.find(
                 template => template.id === templateId,
             );
-
             if (targetTemplate?.type === 'paid') {
                 const response = await purchaseTemplateFx({ templateId });
 

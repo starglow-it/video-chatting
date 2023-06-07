@@ -68,12 +68,14 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                 );
             case 'video':
                 return (
-                    <CustomVideoPlayer
-                        src={template?.url || ''}
-                        volume={0}
-                        isPlaying
-                        isMuted={false}
-                    />
+                    <CustomGrid width="334px" height="190px">
+                        <CustomVideoPlayer
+                            src={template?.url || ''}
+                            volume={0}
+                            isPlaying
+                            isMuted={false}
+                        />
+                    </CustomGrid>
                 );
             default:
                 return null;

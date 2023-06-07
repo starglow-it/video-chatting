@@ -6,10 +6,10 @@
 }
 
 .featuredWrapper {
-  max-width: rem(1125px);
+  max-width: rem(1054px);
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-top: rem(30px);
 }
 
@@ -17,7 +17,7 @@
   cursor: pointer;
   border-radius: rem(10px);
   width: max-content;
-  padding: rem(8px 22px);
+  padding: rem(6px 22px);
   min-width: rem(70px);
   align-self: flex-start;
 }
