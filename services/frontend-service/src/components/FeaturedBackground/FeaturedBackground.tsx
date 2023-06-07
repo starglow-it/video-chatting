@@ -34,6 +34,21 @@ const Component = () => {
             ),
     });
 
+    const handleCreateMeeting = useCallback(
+        async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
+            const result = await createMeetingFx({ templateId });
+
+            if (result.template) {
+                await router.push(
+                    getClientMeetingUrl(
+                        result.template?.customLink || result?.template?.id,
+                    ),
+                );
+            }
+        },
+        [],
+    );
+
     const handleReplaceTemplate = async ({
         templateId,
         deleteTemplateId,
@@ -41,7 +56,7 @@ const Component = () => {
         deleteTemplateId: IUserTemplate['id'];
         templateId: ICommonTemplate['id'];
     }) => {
-        const targetTemplate = templates?.list?.find(
+        const targetTemplate = list?.find(
             template => template.id === templateId,
         );
 
@@ -57,21 +72,6 @@ const Component = () => {
 
         await handleCreateMeeting({ templateId });
     };
-
-    const handleCreateMeeting = useCallback(
-        async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
-            const result = await createMeetingFx({ templateId });
-
-            if (result.template) {
-                await router.push(
-                    getClientMeetingUrl(
-                        result.template?.customLink || result?.template?.id,
-                    ),
-                );
-            }
-        },
-        [],
-    );
 
     const handleChooseCommonTemplate = useCallback(
         async (templateId: ICommonTemplate['id']) => {
