@@ -11,16 +11,19 @@ import {
 } from './model';
 import { handleGetFeaturedTemplates } from './handler/handleGetFeaturedTemplates';
 import { RoomType } from 'shared-types';
+import { deleteCommonTemplateFx } from '../templates/model';
 
 getFeaturedBackgroundFx.use(handleGetFeaturedBackground);
 createFeaturedBackgroundFx.use(handleCreateFeaturedBackground);
 deleteFeaturedBackground.use(handleDeleteFeaturedBackground);
 getFeaturedTemplatesFx.use(handleGetFeaturedTemplates);
 
-$featuredBackgroundStore.on(
-    getFeaturedTemplatesFx.doneData,
-    (_, data) => data.state,
-);
+$featuredBackgroundStore
+    .on(getFeaturedTemplatesFx.doneData, (_, data) => data.state)
+    .on(deleteCommonTemplateFx.done, (state, { params }) => ({
+        count: state.count - 1,
+        list: state.list.filter(template => template?.id !== params.templateId),
+    }));
 
 sample({
     clock: [
