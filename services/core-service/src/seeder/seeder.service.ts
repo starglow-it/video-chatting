@@ -45,6 +45,7 @@ import { S3 } from 'aws-sdk';
 import { RpcException } from '@nestjs/microservices';
 import { MediaService } from '../modules/medias/medias.service';
 import { MediaDocument } from '..//schemas/media.schema';
+import * as mime from 'mime';
 
 // utils
 
@@ -420,13 +421,15 @@ export class SeederService {
     const url = await this.readFileAndUpload({
       filePath: './src/public/global_template.mp4',
       key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.mp4`
-    })
+    });
+
+    const mimeType = mime.getType(url);
 
     //update url to temlate
     await this.updateGlobalTemplateFile({
       url,
       id: newCommonTemplate.id.toString(),
-      mimeType: 'image/webp',
+      mimeType,
     });
   }
 
