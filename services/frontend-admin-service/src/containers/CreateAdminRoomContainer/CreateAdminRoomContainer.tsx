@@ -368,7 +368,7 @@ const Component = () => {
         openAdminDialogEvent(AdminDialogsEnum.cancelCreateRoomDialog);
     }, []);
 
-    const renderButtons = useMemo(() => {
+    const renderButtons = () => {
         if (commonTemplate?.roomType === RoomType.Featured)
             return (
                 <CustomButton
@@ -409,7 +409,7 @@ const Component = () => {
                 />
             </>
         );
-    }, []);
+    };
 
     return (
         <CustomGrid container className={styles.wrapper}>
@@ -568,7 +568,7 @@ const Component = () => {
                             <TemplatePrice
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
-                                submitButtons={renderButtons}
+                                submitButtons={renderButtons()}
                             />
                         </CustomFade>
                     </CustomGrid>

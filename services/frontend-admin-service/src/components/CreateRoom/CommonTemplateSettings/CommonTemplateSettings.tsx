@@ -1,6 +1,6 @@
 import { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { IBusinessCategory } from 'shared-types';
+import { IBusinessCategory, RoomType } from 'shared-types';
 
 // shred
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
@@ -22,6 +22,9 @@ import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from 'shared-const';
 import { CommonTemplateSettingsProps } from './CommonTemplateSettings.types';
 
 import styles from './CommonTemplateSettings.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { useStore } from 'effector-react';
+import { $commonTemplateStore } from 'src/store';
 
 const Component = ({
     onNextStep,
@@ -41,6 +44,7 @@ const Component = ({
         control,
         name: 'description',
     });
+    const { state: commonTemplate } = useStore($commonTemplateStore);
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
     const descriptionErrorMessage: string =
@@ -205,40 +209,47 @@ const Component = ({
                         </ErrorMessage>
                     </CustomGrid>
 
-                    <CustomGrid container direction="column" gap={0.5}>
-                        <CustomTypography
-                            variant="body3"
-                            color="colors.white.primary"
-                            className={styles.label}
-                        >
-                            <Translation
-                                nameSpace="rooms"
-                                translation="editDescription.form.tags"
+                    <ConditionalRender
+                        condition={commonTemplate?.roomType === RoomType.Normal}
+                    >
+                        <CustomGrid container direction="column" gap={0.5}>
+                            <CustomTypography
+                                variant="body3"
+                                color="colors.white.primary"
+                                className={styles.label}
+                            >
+                                <Translation
+                                    nameSpace="rooms"
+                                    translation="editDescription.form.tags"
+                                />
+                            </CustomTypography>
+                            <CustomAutocomplete<
+                                AutocompleteType<IBusinessCategory>
+                            >
+                                multiple
+                                withInputValue
+                                freeSolo
+                                includeInputInList
+                                disableClearable
+                                autoHighlight
+                                options={businessCategoriesOptions}
+                                control={control}
+                                name="tags"
+                                autoComplete
+                                error={tagsErrorMessage}
+                                errorComponent={
+                                    <ErrorMessage
+                                        error={Boolean(tagsErrorMessage)}
+                                    >
+                                        <Translation
+                                            nameSpace="errors"
+                                            translation={tagsErrorMessage}
+                                        />
+                                    </ErrorMessage>
+                                }
                             />
-                        </CustomTypography>
-                        <CustomAutocomplete<AutocompleteType<IBusinessCategory>>
-                            multiple
-                            withInputValue
-                            freeSolo
-                            includeInputInList
-                            disableClearable
-                            autoHighlight
-                            options={businessCategoriesOptions}
-                            control={control}
-                            name="tags"
-                            autoComplete
-                            error={tagsErrorMessage}
-                            errorComponent={
-                                <ErrorMessage error={Boolean(tagsErrorMessage)}>
-                                    <Translation
-                                        nameSpace="errors"
-                                        translation={tagsErrorMessage}
-                                    />
-                                </ErrorMessage>
-                            }
-                            // defaultValue={defaultBusiness}
-                        />
-                    </CustomGrid>
+                        </CustomGrid>
+                    </ConditionalRender>
                 </CustomGrid>
             </CustomPaper>
 
