@@ -26,7 +26,6 @@ const Component: React.FunctionComponent<
     userId,
 }: MeetingUserVideoPositionWrapperProps) => {
     const { width, height } = useStore($windowSizeStore);
-    const refTimer = useRef<NodeJS.Timeout | null>(null);
     const {
         value: isDragging,
         onSwitchOn: handleOnDragging,
@@ -42,9 +41,11 @@ const Component: React.FunctionComponent<
     const [finalTop, setTop] = useState<number | null>(null);
 
     const contentRef = useRef<HTMLDivElement>(null);
+    const refPreventBox = useRef<HTMLDivElement>(null);
+    const isDrag = useRef(false);
 
     const handleStopDrag = (data: DraggableData) => {
-        if (isDragging) {
+        if (isDrag.current) {
             const contentRect = contentRef.current?.getBoundingClientRect();
             const leftRect = contentRect?.left || 0;
             const bottomRect = contentRect?.bottom || 0;
@@ -68,25 +69,23 @@ const Component: React.FunctionComponent<
                     left: percentLeft,
                 },
             }).then(() => {
+                isDrag.current = false;
+                refPreventBox.current?.classList.remove(styles.show);
                 handleOffDragging();
             });
         }
     };
     const handleStartDrag = () => {
-        handleOnDragging();
+        if (!isDrag.current) {
+            isDrag.current = true;
+            refPreventBox.current?.classList.add(styles.show);
+            handleOnDragging();
+        }
     };
 
     const eventControl = (event: DraggableEvent, data: DraggableData) => {
-        if (event.type === 'mousedown' || event.type === 'touchstart') {
-            refTimer.current = setTimeout(() => {
-                handleStartDrag();
-            }, 100);
-        }
-
         if (event.type === 'mouseup' || event.type === 'touchend') {
-            if (refTimer?.current) {
-                clearTimeout(refTimer.current);
-            }
+            console.log('#Duy Phan console', 'stop');
             handleStopDrag(data);
         }
     };
@@ -119,8 +118,8 @@ const Component: React.FunctionComponent<
     return (
         <Draggable
             axis="both"
-            onStart={eventControl}
             onStop={eventControl}
+            onDrag={handleStartDrag}
             disabled={isScreenSharing}
             position={{
                 x: finalLeft || 0,
@@ -134,11 +133,7 @@ const Component: React.FunctionComponent<
                 ref={contentRef}
             >
                 {children}
-                <Box
-                    className={clsx(styles.boxPreventClick, {
-                        [styles.show]: isDragging,
-                    })}
-                />
+                <Box ref={refPreventBox} className={styles.boxPreventClick} />
             </CustomBox>
         </Draggable>
     );
