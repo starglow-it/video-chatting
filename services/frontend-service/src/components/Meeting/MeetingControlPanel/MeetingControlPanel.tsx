@@ -83,7 +83,6 @@ const Component = () => {
 
     const toggleOutsideUserPanel = (e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
-        e.preventDefault();
         toggleUsersPanelEvent(false);
     };
 
