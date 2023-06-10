@@ -199,7 +199,6 @@ const Component = ({
                         width={20}
                         height={20}
                         src="/images/link.png"
-                        style={{ pointerEvents: 'none' }}
                     />
                 </CustomBox>
             </CustomTooltip>
