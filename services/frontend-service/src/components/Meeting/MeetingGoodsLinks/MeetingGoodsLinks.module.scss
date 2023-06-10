@@ -12,19 +12,11 @@
   position: fixed;
   top: var(--top);
   left: var(--left);
-
   cursor: pointer;
-
   transform: translate(-50%, -50%);
-
-  width: rem(9px);
-  height: rem(9px);
-  border-radius: 50%;
-
-  background: $primary-blue;
-  border: 1px solid $primary-white;
+  width: rem(20px);
+  height: rem(20px);
   opacity: 0.5;
-
   z-index: 200;
 
   &:hover {

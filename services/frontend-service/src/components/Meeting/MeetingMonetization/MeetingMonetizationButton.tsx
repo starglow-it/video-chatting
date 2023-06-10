@@ -97,7 +97,9 @@ export const MeetingMonetizationButton = () => {
                 title={
                     <Translation
                         nameSpace="meeting"
-                        translation="features.getPaid"
+                        translation={
+                            isOwner ? 'features.getPaid' : 'features.sendMoney'
+                        }
                     />
                 }
                 placement="left"
