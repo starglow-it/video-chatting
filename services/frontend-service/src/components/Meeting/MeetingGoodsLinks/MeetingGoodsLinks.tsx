@@ -11,6 +11,7 @@ import { $meetingTemplateStore } from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingGoodsLinks.module.scss';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 const Component = () => {
     const isGoodsVisible = useStore($isGoodsVisible);
@@ -39,7 +40,7 @@ const Component = () => {
                         {...(isGoodsVisible ? { open: true } : {})}
                         key={`${link.id}_${isGoodsVisible}`}
                         nameSpace="meeting"
-                        translation="links.buyItem"
+                        translation="links.title"
                         placement="bottom"
                         arrow
                         popperClassName={styles.itemTooltip}
@@ -50,11 +51,15 @@ const Component = () => {
                         }}
                     >
                         <CustomBox
+                            style={style}
                             className={styles.linkItem}
                             onClick={handleOpenLink}
-                            style={style}
                         >
-                            {' '}
+                            <CustomImage
+                                width={20}
+                                height={20}
+                                src="/images/link.png"
+                            />
                         </CustomBox>
                     </CustomTooltip>
                 );

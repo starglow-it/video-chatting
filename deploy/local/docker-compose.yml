@@ -73,7 +73,7 @@ services:
       - TURN_PASSWORD=liveofficeturnpassword
       - TURN_USERNAME=liveofficeturn
       - TURN_PORT=443
-      - LIVEKIT_WSS=wss://livekit.demo.theliveoffice.com
+      - LIVEKIT_WSS=wss://tlo-livekit.nongdan.dev
       - MEETING_SOCKET_URL=ws://localhost:8180
       - DEFAULT_SERVER_IP=localhost
       - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
