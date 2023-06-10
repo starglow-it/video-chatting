@@ -47,11 +47,6 @@ const StartRoomWithoutTokenContainer = memo(() => {
                     translation="settingUpRoom"
                 />
             </CustomGrid>
-            <CustomTypography
-                variant="h4"
-                nameSpace="welcome"
-                translation="pleaseWaiting"
-            />
         </CustomGrid>
     );
 });

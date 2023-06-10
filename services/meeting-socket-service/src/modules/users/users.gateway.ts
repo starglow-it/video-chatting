@@ -33,7 +33,7 @@ import { RemoveUserRequestDTO } from '../../dtos/requests/users/remove-user.dto'
 import { CommonMeetingDTO } from '../../dtos/response/common-meeting.dto';
 
 // helpers
-import { withTransaction } from '../../helpers/mongo/withTransaction';
+import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
 
 // const
 import {
@@ -42,6 +42,8 @@ import {
 } from '../../const/socket-events/emitters';
 import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
+import { UserActionInMeeting } from '../../types/common';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -54,39 +56,27 @@ export class UsersGateway extends BaseGateway {
     private meetingsService: MeetingsService,
     private usersService: UsersService,
     private coreService: CoreService,
-    private taskService: TasksService,
-    private meetingHostTimeService: MeetingTimeService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
   }
 
-  async updateIndexUsers(userTemplateId: string, user: MeetingUserDocument) {
-    try {
-      const userTemplate = await this.coreService.findMeetingTemplateById({
-        id: userTemplateId,
-      });
-      const updateIndexUsers = userTemplate.indexUsers.map((userId) => {
-        if (user.id.toString() === userId) return null;
-        return userId;
-      });
-
-      await this.coreService.updateUserTemplate({
-        userId: user.id,
-        templateId: userTemplate.id,
-        data: { indexUsers: updateIndexUsers },
-      });
-    } catch (err) {
-      console.log(err);
-      return;
-    }
-  }
+  private logger = new Logger(UsersGateway.name);
 
   private async handleUpdateUsersTemplateVideoContainer(
-    userTemplateId: string,
-    meetingUserId: string,
-    data: Partial<MeetingUserDocument>,
-    session,
+    {
+      userTemplateId,
+      meetingUserId,
+      data,
+      client,
+      session
+    }: {
+      userTemplateId: string,
+      meetingUserId: string,
+      data: Partial<MeetingUserDocument>,
+      client: Socket,
+      session: ITransactionSession,
+    }
   ) {
     try {
       const usersTemplate = await this.coreService.findMeetingTemplateById({
@@ -100,25 +90,27 @@ export class UsersGateway extends BaseGateway {
         session,
       });
 
-      let updateUsersPosistion = usersTemplate.usersPosition;
-      let updateUsersSize = usersTemplate.usersSize;
+      const updateUsersPosistion = usersTemplate.usersPosition;
+      const updateUsersSize = usersTemplate.usersSize;
+
+      const index = usersTemplate.indexUsers.indexOf(meetingUserId);
+      if (!(index + 1)) {
+        this.logger.error({
+          message: 'Meeting user not found',
+          ctx: client
+        });
+        return;
+      }
 
       if (data?.userPosition) {
         updateUser.userPosition = data.userPosition;
 
-        updateUsersPosistion = usersTemplate.usersPosition.map((userPosition, index) => {
-            if (usersTemplate.indexUsers[index] !== meetingUserId) return userPosition;
-            return data?.userPosition;
-          },
-        );
+        updateUsersPosistion[index] = data.userPosition;
       }
 
       if (data?.userSize) {
         updateUser.userSize = data.userSize;
-        updateUsersSize = usersTemplate.usersSize.map((userSize, index) => {
-          if (usersTemplate.indexUsers[index] !== meetingUserId) return userSize;
-          return data?.userSize;
-        });
+        updateUsersSize[index] = data.userSize;
       }
 
       updateUser.save();
@@ -132,7 +124,10 @@ export class UsersGateway extends BaseGateway {
         },
       });
     } catch (err) {
-      console.log(err);
+      this.logger.error({
+        message: err.message,
+        ctx: client.id
+      })
       return;
     }
   }
@@ -140,31 +135,38 @@ export class UsersGateway extends BaseGateway {
   @SubscribeMessage(UsersSubscribeEvents.OnUpdateUser)
   async updateUser(
     @MessageBody() message: UpdateUserRequestDTO,
-    @ConnectedSocket() socket: Socket,
+    @ConnectedSocket() client: Socket,
   ): Promise<ResponseSumType<{ user: CommonUserDTO }>> {
     return withTransaction(this.connection, async (session) => {
       const user = await this.usersService.findOneAndUpdate(
-        message.id ? { _id: message.id } : {socketId: socket.id},
+        message.id ? { _id: message.id } : { socketId: client.id },
         message,
         session,
       );
-      
-      if (!user) return;
+
+      if (!user){
+        this.logger.error({
+          message: 'Meeting user not found',
+          ctx: client.id
+        });
+        return;
+      };
 
       const meeting = await this.meetingsService.findById(
         user.meeting._id,
         session,
       );
 
-      await this.handleUpdateUsersTemplateVideoContainer(
-        meeting.templateId,
-        user.id.toString(),
-        {
+      await this.handleUpdateUsersTemplateVideoContainer({
+        userTemplateId: meeting.templateId,
+        meetingUserId: user.id.toString(),
+        data: {
           userPosition: message?.userPosition,
           userSize: message?.userSize,
         },
+        client,
         session,
-      );
+      });
 
       await meeting.populate('users');
 
@@ -187,7 +189,7 @@ export class UsersGateway extends BaseGateway {
             message.id == user.id && { userPosition: message.userPosition }),
         })),
       });
-      
+
       return {
         success: true,
         result: {
@@ -205,12 +207,21 @@ export class UsersGateway extends BaseGateway {
 
   @SubscribeMessage(UsersSubscribeEvents.OnRemoveUser)
   async removeUser(
+    @ConnectedSocket() client: Socket,
     @MessageBody() message: RemoveUserRequestDTO,
   ): Promise<ResponseSumType<void>> {
     return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findById(message.id, session);
+      try {
+        const user = await this.usersService.findById(message.id, session);
 
-      if (user) {
+        if (!user) {
+          this.logger.error({
+            message: 'Meeting user not found',
+            ctx: client.id
+          });
+          return;
+        }
+
         await user.populate('meeting');
 
         if (user.meeting) {
@@ -254,8 +265,16 @@ export class UsersGateway extends BaseGateway {
             },
           );
 
+          const userTemplate = await this.coreService.findMeetingTemplateById({
+            id: meeting.templateId,
+          });
+
           this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
-          await this.updateIndexUsers(meeting.templateId, user);
+          await this.meetingsService.updateIndexUsers({
+            userTemplate,
+            user,
+            event: UserActionInMeeting.Leave
+          });
         }
 
         await this.usersService.updateOne(
@@ -263,6 +282,13 @@ export class UsersGateway extends BaseGateway {
           { accessStatus: MeetingAccessStatusEnum.Left },
           session,
         );
+      }
+      catch (err) {
+        this.logger.error({
+          message: err.message,
+          ctx: client.id
+        });
+        return;
       }
     });
   }

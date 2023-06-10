@@ -58,7 +58,7 @@ export class UploadController {
       'vultrStorageHostname',
     );
 
-    const uploadUrl = `https://${vultrStorageHostname}/${key}`;
+    const uploadUrl = `https://${vultrStorageHostname}/${vultrUploadBucket}/${key}`;
 
     return {
       success: true,

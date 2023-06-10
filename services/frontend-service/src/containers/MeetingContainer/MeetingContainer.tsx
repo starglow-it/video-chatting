@@ -72,7 +72,8 @@ import {
     WebStorage,
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
-import { BackgroundManager } from '../../helpers/media/applyBlur'
+import { BackgroundManager } from '../../helpers/media/applyBlur';
+import { Typography } from '@mui/material';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -194,14 +195,12 @@ const MeetingContainer = memo(() => {
             if (isMeetingSocketConnected) {
                 await initDevicesEventFxWithStore();
                 await sendJoinWaitingRoomSocketEvent();
-
                 if (isOwner) {
                     if (isHasSettings) {
                         updateLocalUserEvent({
                             isAuraActive: savedSettings.auraSetting,
                             accessStatus: MeetingAccessStatusEnum.InMeeting,
                         });
-
                         joinMeetingEvent({
                             isSettingsAudioBackgroundActive:
                                 savedSettings.backgroundAudioSetting,
@@ -227,10 +226,29 @@ const MeetingContainer = memo(() => {
             handleSetSettingsChecked();
         })();
     }, [isMeetingSocketConnected, isOwner]);
-    
+
+    const LoadingWaitingRoom = useMemo(() => {
+        return (
+            <CustomGrid className={styles.loadingRoom}>
+                <CustomGrid className={styles.loadingWrapper}>
+                    <Typography className={styles.loadingText}>
+                        We&apos;re setting up your Room
+                    </Typography>
+                    <div className={styles.lds}>
+                        <div />
+                        <div />
+                        <div />
+                    </div>
+                </CustomGrid>
+            </CustomGrid>
+        );
+    }, []);
+
     return (
         <>
-            <ConditionalRender condition={(!!meetingTemplate.url && !isOwner && isSettingsChecked)}>
+            <ConditionalRender
+                condition={!!meetingTemplate.url && isSettingsChecked}
+            >
                 <MeetingBackgroundVideo
                     templateType={meetingTemplate.templateType}
                     src={meetingTemplate.url}
@@ -242,6 +260,14 @@ const MeetingContainer = memo(() => {
                         layout="fill"
                     />
                 </MeetingBackgroundVideo>
+            </ConditionalRender>
+            <ConditionalRender
+                condition={
+                    isOwner &&
+                    MeetingAccessStatusEnum.EnterName === localUser.accessStatus
+                }
+            >
+                {LoadingWaitingRoom}
             </ConditionalRender>
             {Boolean(meetingTemplate?.id) && (
                 <ConditionalRender
@@ -274,7 +300,7 @@ const MeetingContainer = memo(() => {
                             MeetingAccessStatusEnum.InMeeting
                         }
                     >
-                        <MeetingView /> 
+                        <MeetingView />
                     </ConditionalRender>
                 </ConditionalRender>
             )}

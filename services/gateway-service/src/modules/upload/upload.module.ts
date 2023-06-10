@@ -39,7 +39,7 @@ import { CoreModule } from '../../services/core/core.module';
             accessKeyId: allConfig.vultrAccessKey,
             secretAccessKey: allConfig.vultrSecretAccessKey,
             // endpoint: `https://${allConfig.vultrStorageHostname}`,
-            // s3ForcePathStyle: true,
+            s3ForcePathStyle: true,
           },
         };
       },

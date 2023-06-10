@@ -54,7 +54,6 @@ class BackgroundManagerInstance {
                                 onError: () =>
                                     console.log('Segmentation error'),
                             });
-                            this.segmentation.createModel();
                         }
 
                         if (!this.videoEffects) {
@@ -68,7 +67,11 @@ class BackgroundManagerInstance {
         }
     }
 
-    async onBlur(stream: CustomMediaStream, isAuraActive: boolean) {
+    async onBlur(
+        stream: CustomMediaStream,
+        isAuraActive: boolean,
+        callback?: (stream: CustomMediaStream) => void,
+    ) {
         if (stream) {
             const videoTrack = stream.getVideoTracks()[0];
             let blurTrack;
@@ -84,6 +87,7 @@ class BackgroundManagerInstance {
                 stream.removeTrack(videoTrack);
                 stream.addTrack(blurTrack);
             }
+            callback?.(stream);
         }
         return stream;
     }
