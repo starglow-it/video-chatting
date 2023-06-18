@@ -10,21 +10,6 @@ const ObjectId = Types.ObjectId;
 //  const
 import { TEMPLATES_SERVICE, TemplateBrokerPatterns } from 'shared-const';
 
-// types
-import {
-  ICommonTemplate,
-  EntityList,
-  AddTemplateToUserPayload,
-  GetCommonTemplatePayload,
-  GetCommonTemplatesPayload,
-  CreateTemplatePayload,
-  EditTemplatePayload,
-  UploadTemplateFilePayload,
-  DeleteCommonTemplatePayload,
-  GetCommonTemplateByIdPayload,
-  PriceValues,
-} from 'shared-types';
-
 // dtos
 import { CommonTemplateDTO } from '../../dtos/common-template.dto';
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
@@ -44,6 +29,10 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
+import { AddTemplateToUserPayload, CreateTemplatePayload, DeleteCommonTemplatePayload, EditTemplatePayload, GetCommonTemplateByIdPayload, GetCommonTemplatePayload, GetCommonTemplatesPayload, UploadTemplateFilePayload } from 'shared-types';
+import { ICommonTemplate } from 'shared-types';
+import { EntityList } from 'shared-types';
+import { PriceValues } from 'shared-types';
 
 @Controller('common-templates')
 export class CommonTemplatesController {
@@ -99,8 +88,10 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
   async getCommonTemplates(
     @Payload()
-    { query, options }: GetCommonTemplatesPayload,
+    { query, options, filter }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
+    const skipQuery = options?.skip || 0;
+    const limitQuery = options?.limit || 6;
     try {
       const sort: PipelineStage = { $sort: { ...(options?.sort ?? {}), _id: -1 } };
 
@@ -123,9 +114,22 @@ export class CommonTemplatesController {
         }
       }
       return withTransaction(this.connection, async () => {
+        const matchQuery = {
+          ...query,
+          ...(filter?.businessCategories && {
+            businessCategories: {
+              $elemMatch: {
+                $in: filter?.businessCategories?.map(item => new ObjectId(item))
+              }
+            }
+          })
+        };
+
         const aggregationPipeline: PipelineStage[] = [
           sort,
-          { $match: query },
+          {
+            $match: matchQuery
+          },
           ...this.commonTemplatesService.joinCommonTemplatePropertiesQueries(),
           joinDraftPreviewImages,
           joinUserTemplate,
@@ -144,25 +148,22 @@ export class CommonTemplatesController {
                 $first: '$author.fullName'
               }
             }
+          },
+          {
+            $skip: skipQuery * limitQuery
+          },
+          {
+            $limit: limitQuery
           }
         ];
-
-        if (options?.skip) {
-          aggregationPipeline.push({ $skip: options.skip });
-        }
-
-        if (options?.limit) {
-          aggregationPipeline.push({ $limit: options.limit });
-        }
 
         const commonTemplates = await this.commonTemplatesService.aggregate(
           aggregationPipeline,
         );
 
-        const commonTemplatesCount =
-          await this.commonTemplatesService.countCommonTemplates({
-            query: query,
-          });
+        const total = await this.commonTemplatesService.countCommonTemplates({
+          query: matchQuery
+        });
 
         const parsedTemplates = plainToInstance(
           CommonTemplateDTO,
@@ -175,7 +176,7 @@ export class CommonTemplatesController {
 
         return {
           list: parsedTemplates,
-          count: commonTemplatesCount,
+          count: total,
         };
       });
     } catch (err) {
@@ -291,7 +292,8 @@ export class CommonTemplatesController {
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,
           author: targetTemplate.author,
-          isAcceptNoLogin: targetTemplate.isAcceptNoLogin
+          isAcceptNoLogin: targetTemplate.isAcceptNoLogin,
+          roomType: targetTemplate.roomType
         };
 
         const [userTemplate] =
@@ -410,10 +412,14 @@ export class CommonTemplatesController {
   async createTemplate(@Payload() data: CreateTemplatePayload) {
     try {
       return withTransaction(this.connection, async (session) => {
+        const { userId, roomType } = data;
         const template = await this.commonTemplatesService.createCommonTemplate(
           {
             data: {
-              author: data.userId,
+              author: userId,
+              ...(roomType && {
+                roomType
+              })
             },
             session,
           },
@@ -467,6 +473,7 @@ export class CommonTemplatesController {
                   key: category.key,
                   value: category.value,
                   color: category.color,
+                  icon: category.icon
                 },
                 session,
               });
@@ -524,7 +531,7 @@ export class CommonTemplatesController {
             },
           );
 
-          await deletePreviewImagesPromises;
+          await Promise.all(deletePreviewImagesPromises);
         }
 
         const updatedTemplate =
@@ -595,13 +602,13 @@ export class CommonTemplatesController {
         }
 
         const query = { templateId: template.templateId };
-        
+
         const userTemplates = await this.userTemplatesService.findUserTemplates({
           query,
           session
         });
-        
-        await this.mediaService.deleteMedias({query: {userTemplate: {$in: userTemplates }}});
+
+        await this.mediaService.deleteMedias({ query: { userTemplate: { $in: userTemplates } } });
 
         await this.roomStatisticService.delete({
           query: {
@@ -629,12 +636,12 @@ export class CommonTemplatesController {
         }
 
         const countTemplateUseCommon = await this.userTemplatesService
-        .countUserTemplates({
-          url: {
-            $regex: `templates/videos/${template.id}`
-          }
-        });
-        
+          .countUserTemplates({
+            url: {
+              $regex: `templates/videos/${template.id}`
+            }
+          });
+
 
         if (countTemplateUseCommon) return;
 

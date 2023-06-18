@@ -1,4 +1,10 @@
-import React, { memo, PropsWithChildren, useEffect, useMemo } from 'react';
+import React, {
+    memo,
+    PropsWithChildren,
+    useEffect,
+    useMemo,
+    useRef,
+} from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -29,8 +35,13 @@ import { LayoutProps } from './types';
 import {
     $authStore,
     $isSocketConnected,
+    $profileTemplatesStore,
+    $templatesStore,
     getAppVersionFx,
+    getProfileTemplatesFx,
+    getTemplatesFx,
     initiateSocketConnectionEvent,
+    loadmoreMetaTemplates,
     sendJoinDashboardSocketEvent,
 } from '../../store';
 
@@ -44,6 +55,7 @@ import {
 
 // styles
 import styles from './Layout.module.scss';
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 const SubscriptionExpiredNotification = dynamic(
     () =>
@@ -64,8 +76,13 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
 const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const { isAuthenticated } = useStore($authStore);
     const isSocketConnected = useStore($isSocketConnected);
+    const isLoadingTemplates = useStore(getTemplatesFx.pending);
+    const isLoadingCommonTemplates = useStore(getProfileTemplatesFx.pending);
+    const templates = useStore($templatesStore);
+    const profileTemplates = useStore($profileTemplatesStore);
 
     const router = useRouter();
+    const scrollRef = useRef<HTMLElement | null>(null);
 
     const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(
         router.pathname,
@@ -104,6 +121,24 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         router.pathname.includes('room') ||
         router.pathname.includes('dashboard/templates/setup');
 
+    const handleScrollToEnd = () => {
+        if (
+            (isDashboardRoute &&
+                !isLoadingTemplates &&
+                !isLoadingCommonTemplates &&
+                templates.list.length &&
+                templates.list.length < templates.count) ||
+            (profileTemplates.list.length &&
+                profileTemplates.list.length < profileTemplates.count)
+        ) {
+            loadmoreMetaTemplates();
+        }
+    };
+
+    const handleScrollUp = () => {
+        if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    };
+
     return (
         <CustomBox
             className={clsx(styles.main, {
@@ -116,55 +151,73 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             </ConditionalRender>
 
             <CustomBox className={styles.bgImage} />
-
-            <CustomGrid
-                container
-                direction="column"
-                flex={1}
-                flexWrap="nowrap"
-                className={clsx(styles.contentWrapper, {
-                    [styles.meetingLayout]: isMeetingRoute,
-                    [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
-                })}
+            <CustomScroll
+                onYReachEnd={handleScrollToEnd}
+                options={{
+                    wheelPropagation: true,
+                }}
+                containerRef={el => (scrollRef.current = el)}
             >
                 <CustomGrid
-                    item
+                    container
+                    direction="column"
                     flex={1}
-                    className={clsx({ [styles.mobileContent]: isMobile })}
+                    flexWrap="nowrap"
+                    className={clsx(styles.contentWrapper, {
+                        [styles.meetingLayout]: isMeetingRoute,
+                        [styles.relativeLayout]:
+                            isMeetingRoute || isDashboardRoute,
+                    })}
                 >
-                    <ConditionalRender condition={!isMobile}>
-                        <CustomBox className={styles.header}>
-                            <CustomGrid
-                                container
-                                justifyContent="space-between"
-                                alignItems="center"
+                    <CustomGrid
+                        item
+                        flex={1}
+                        className={clsx({ [styles.mobileContent]: isMobile })}
+                    >
+                        <ConditionalRender condition={!isMobile}>
+                            <CustomBox
+                                className={clsx(styles.header, {
+                                    [styles.dashboard]: isDashboardRoute,
+                                })}
                             >
-                                <CustomLink
-                                    href={isAuthenticated ? dashboardRoute : ''}
+                                <CustomGrid
+                                    container
+                                    justifyContent="space-between"
+                                    alignItems="center"
                                 >
-                                    <LiveOfficeLogo
-                                        className={clsx(isAuthenticated, {
-                                            [styles.link]: isAuthenticated,
-                                        })}
-                                        width="210px"
-                                        height="44px"
-                                    />
-                                </CustomLink>
-                                <CustomGrid>
-                                    {!isAuthenticated && <AuthenticationLink />}
+                                    <CustomLink
+                                        href={
+                                            isAuthenticated
+                                                ? dashboardRoute
+                                                : ''
+                                        }
+                                    >
+                                        <LiveOfficeLogo
+                                            className={clsx(isAuthenticated, {
+                                                [styles.link]: isAuthenticated,
+                                            })}
+                                            width="210px"
+                                            height="44px"
+                                        />
+                                    </CustomLink>
+                                    <CustomGrid>
+                                        {!isAuthenticated && (
+                                            <AuthenticationLink />
+                                        )}
+                                    </CustomGrid>
                                 </CustomGrid>
-                            </CustomGrid>
-                        </CustomBox>
-                    </ConditionalRender>
-                    {children}
-                    <MeetingFinishedDialog />
-                </CustomGrid>
-                <ConditionalRender condition={shouldShowFooter}>
-                    <CustomGrid item>
-                        <Footer />
+                            </CustomBox>
+                        </ConditionalRender>
+                        {children}
+                        <MeetingFinishedDialog />
                     </CustomGrid>
-                </ConditionalRender>
-            </CustomGrid>
+                    <ConditionalRender condition={shouldShowFooter}>
+                        <CustomGrid item>
+                            <Footer onScrollUp={handleScrollUp} />
+                        </CustomGrid>
+                    </ConditionalRender>
+                </CustomGrid>
+            </CustomScroll>
         </CustomBox>
     );
 };

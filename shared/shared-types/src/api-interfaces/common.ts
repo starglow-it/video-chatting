@@ -13,6 +13,7 @@ export interface IBusinessCategory {
   key: string;
   value: string;
   color: string;
+  icon: string;
 }
 
 export interface IMediaCategory {

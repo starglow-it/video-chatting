@@ -52,16 +52,14 @@
   position: fixed;
   top: 0;
   left: 0;
-
   cursor: pointer;
-
-  width: rem(9px);
-  height: rem(9px);
-  border-radius: 50%;
-
-  background: $primary-blue;
-  border: 1px solid $primary-white;
+  width: rem(20px);
+  height: rem(20px);
   z-index: 200;
+
+  img {
+    pointer-events: none;
+  }
 }
 
 .tooltipContent {

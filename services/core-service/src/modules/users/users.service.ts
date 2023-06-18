@@ -14,15 +14,13 @@ import {
   SocialLink,
   SocialLinkDocument,
 } from '../../schemas/social-link.schema';
-import {
-  ProfileAvatar,
-  ProfileAvatarDocument,
-} from '../../schemas/profile-avatar.schema';
+
 import {
   CustomPopulateOptions,
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
+import { ProfileAvatar, ProfileAvatarDocument } from 'src/schemas/profile-avatar.schema';
 
 @Injectable()
 export class UsersService {

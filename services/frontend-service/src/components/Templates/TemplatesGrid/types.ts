@@ -17,4 +17,6 @@ export type TemplateGridProps<TemplateType extends { id: string }> = {
     innerClassName?: string;
     itemWidth?: number;
     itemGap?: number;
+    allowCreate?: boolean;
+    onCreate?: () => void;
 };

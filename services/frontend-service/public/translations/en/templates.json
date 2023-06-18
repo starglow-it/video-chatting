@@ -45,5 +45,9 @@
     "downloadIcsTitle": "An email reminder was sent to you and the other party",
     "downloadIcs": "Download ICS"
   },
-  "createRoom": "Create room"
+  "createRoom": "Create room",
+  "featuredRooms": {
+    "title": "Featured Rooms",
+    "description": "Black ethan and then he retueneum"
+  }
 }

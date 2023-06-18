@@ -117,7 +117,8 @@
       "input": "Type here",
       "unpin": "Unpin"
     },
-    "getPaid": "Get Paid"
+    "getPaid": "Get Paid",
+    "sendMoney": "Send Money"
   },
   "payments": {
     "perSession": "per session",
@@ -133,7 +134,8 @@
   "links": {
     "onGoods": "Show all the items",
     "offGoods": "Hide all the items",
-    "buyItem": "Buy this item"
+    "buyItem": "Buy this item",
+    "title": "Link"
   },
   "rooms": "Rooms",
   "portraitLayout": {

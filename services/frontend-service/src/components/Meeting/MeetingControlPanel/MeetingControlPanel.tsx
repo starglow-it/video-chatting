@@ -83,8 +83,8 @@ const Component = () => {
 
     const toggleOutsideUserPanel = (e: MouseEvent | TouchEvent) => {
         e.stopPropagation();
-        e.preventDefault();
         toggleUsersPanelEvent(false);
+        console.log('#Duy Phan console', 'close');
     };
 
     const commonContent = useMemo(

@@ -1,0 +1,60 @@
+@import "../../../styles/rem";
+@import "../../../styles/variables";
+
+.wrapper {
+    width: rem(250px);
+    height: rem(150px);
+    border-radius: rem(10px);
+    margin-left: rem(12px);
+    margin-bottom: rem(10px);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.image {
+    object-fit: cover;
+    object-position: left;
+}
+
+.blur {
+    position: absolute;
+    inset: 0;
+    padding: rem(18px 15px);
+    background: rgba($primary-black, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 11;
+    border-radius: rem(10px);
+}
+
+.deleteBtn {
+    cursor: pointer;
+    width: rem(34px);
+    height: rem(34px);
+    border-radius: rem(10px);
+}
+
+.menuButton {
+    position: absolute;
+    top: rem(16px);
+    right: rem(16px);
+    width: rem(38px);
+    height: rem(38px);
+    border-radius: rem(10px);
+}
+
+.menu {
+    width: rem(127px);
+    border-radius: rem(6px);
+
+    .item {
+        height: rem(34px);
+        padding: rem(6px 8px);
+
+        &.disabled {
+            cursor: default;
+            color: $normal-gray-scale;
+        }
+    }
+}

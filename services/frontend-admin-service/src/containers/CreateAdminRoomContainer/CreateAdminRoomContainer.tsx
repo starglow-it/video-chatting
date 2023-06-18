@@ -71,7 +71,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
-import { PriceValues } from 'shared-types';
+import { PriceValues, RoomType } from 'shared-types';
 
 // utils
 enum TabsValues {
@@ -300,8 +300,11 @@ const Component = () => {
                         draftUrl: '',
                     },
                 });
-
-                Router.push('/rooms');
+                if (commonTemplate.roomType === RoomType.Normal) {
+                    Router.push('/rooms');
+                } else {
+                    Router.push('/featured-background');
+                }
 
                 addNotificationEvent({
                     type: NotificationType.roomPublished,
@@ -365,14 +368,48 @@ const Component = () => {
         openAdminDialogEvent(AdminDialogsEnum.cancelCreateRoomDialog);
     }, []);
 
-    const businessCategoriesOptions = useMemo(
-        () =>
-            categories.list.map(item => ({
-                ...item,
-                label: item.value,
-            })),
-        [categories],
-    );
+    const renderButtons = () => {
+        if (commonTemplate?.roomType === RoomType.Featured)
+            return (
+                <CustomButton
+                    className={styles.createAndPublishButton}
+                    onClick={handleCreateAndPublishRoom}
+                    disabled={isFileUploading}
+                    label={
+                        <Translation
+                            nameSpace="rooms"
+                            translation="buttons.create"
+                        />
+                    }
+                />
+            );
+        return (
+            <>
+                <CustomButton
+                    className={styles.createButton}
+                    disabled={isFileUploading}
+                    onClick={handleCreateRoom}
+                    label={
+                        <Translation
+                            nameSpace="rooms"
+                            translation="buttons.create"
+                        />
+                    }
+                />
+                <CustomButton
+                    className={styles.createAndPublishButton}
+                    onClick={handleOpenConfirmDialog}
+                    disabled={isFileUploading}
+                    label={
+                        <Translation
+                            nameSpace="rooms"
+                            translation="buttons.createAndPublish"
+                        />
+                    }
+                />
+            </>
+        );
+    };
 
     return (
         <CustomGrid container className={styles.wrapper}>
@@ -531,34 +568,7 @@ const Component = () => {
                             <TemplatePrice
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
-                                submitButtons={
-                                    <>
-                                        <CustomButton
-                                            className={styles.createButton}
-                                            disabled={isFileUploading}
-                                            onClick={handleCreateRoom}
-                                            label={
-                                                <Translation
-                                                    nameSpace="rooms"
-                                                    translation="buttons.create"
-                                                />
-                                            }
-                                        />
-                                        <CustomButton
-                                            className={
-                                                styles.createAndPublishButton
-                                            }
-                                            onClick={handleOpenConfirmDialog}
-                                            disabled={isFileUploading}
-                                            label={
-                                                <Translation
-                                                    nameSpace="rooms"
-                                                    translation="buttons.createAndPublish"
-                                                />
-                                            }
-                                        />
-                                    </>
-                                }
+                                submitButtons={renderButtons()}
                             />
                         </CustomFade>
                     </CustomGrid>

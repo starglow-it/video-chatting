@@ -68,3 +68,16 @@
   left: calc(50% + var(--offset));
   transform: translateY(13px) rotate(-90deg);
 }
+
+.addItem{ 
+  border: 1px dashed;
+  position: relative;
+  border-radius: rem(8px);
+  overflow: hidden;
+  max-width: rem(334px);
+  align-self: center;
+  justify-self: center;
+  z-index: 10;
+  height: rem(190px);
+  cursor: pointer;
+}

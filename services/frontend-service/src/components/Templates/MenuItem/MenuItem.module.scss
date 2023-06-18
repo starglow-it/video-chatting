@@ -1,0 +1,15 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/rem.scss";
+
+.menuWrapper {
+    margin-left: rem(5px);
+    cursor: pointer;
+    border-radius: rem(10px);
+    padding: rem(6px 10px);
+    min-width: rem(100px);
+
+    &.active {
+        background-color: $primary-black;
+        color: $primary-white;
+    }
+}

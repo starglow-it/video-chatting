@@ -13,10 +13,6 @@ import * as fsPromises from 'fs/promises';
 
 // schemas
 import {
-  CommonTemplate,
-  CommonTemplateDocument,
-} from '../../schemas/common-template.schema';
-import {
   PreviewImage,
   PreviewImageDocument,
 } from '../../schemas/preview-image.schema';
@@ -37,6 +33,7 @@ import {
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
 import { Counters } from 'shared-types';
+import { CommonTemplate, CommonTemplateDocument } from '../../schemas/common-template.schema';
 
 @Injectable()
 export class CommonTemplatesService {

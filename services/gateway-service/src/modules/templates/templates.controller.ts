@@ -21,7 +21,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { EntityList, ResponseSumType, ICommonTemplate } from 'shared-types';
+import { EntityList, ResponseSumType, ICommonTemplate, RoomType } from 'shared-types';
 import { TemplatesService } from './templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '../upload/upload.service';
@@ -39,7 +39,7 @@ export class TemplatesController {
     private templatesService: TemplatesService,
     private uploadService: UploadService,
     private coreService: CoreService,
-  ) {}
+  ) { }
 
   @Get('/')
   @ApiOperation({ summary: 'Get Templates' })
@@ -55,8 +55,17 @@ export class TemplatesController {
     @Query() query: GetTemplatesQueryDto,
   ): Promise<ResponseSumType<EntityList<ICommonTemplate>>> {
     try {
-      const { skip, limit, userId, draft, isPublic, type, sort, direction } =
-        query;
+      const {
+        skip,
+        limit,
+        userId,
+        draft,
+        isPublic,
+        roomType,
+        businessCategories,
+        type,
+        sort,
+        direction } = query;
 
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
@@ -64,6 +73,11 @@ export class TemplatesController {
           ...(draft !== undefined ? { draft } : {}),
           ...(isPublic !== undefined ? { isPublic } : {}),
           ...(type ? { type } : {}),
+          roomType,
+          isAcceptNoLogin: false
+        },
+        filter: {
+          businessCategories
         },
         options: {
           ...(sort ? { sort: { [sort]: direction } } : {}),
@@ -89,6 +103,40 @@ export class TemplatesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('/add/featured')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create Featured Template' })
+  @ApiOkResponse({
+    description: 'Create Featured Template',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async createFeaturedTemplate(
+    @Request() req,
+  ): Promise<ResponseSumType<ICommonTemplate>> {
+    try {
+      const templateData = await this.templatesService.createTemplate({
+        userId: req.user.userId,
+        roomType: RoomType.Featured
+      });
+
+      return {
+        success: true,
+        result: templateData,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while create featured template`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('/')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Template' })
@@ -100,7 +148,7 @@ export class TemplatesController {
   })
   async postCreateTemplate(
     @Request() req,
-  ): Promise<ResponseSumType<IUserTemplate>> {
+  ): Promise<ResponseSumType<ICommonTemplate>> {
     try {
       const templateData = await this.templatesService.createTemplate({
         userId: req.user.userId,
