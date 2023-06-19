@@ -85,9 +85,10 @@ export class MediasService {
   async handleCreateMedia({ file, body }: { file: Express.Multer.File, body: CreateMediaPayload }): Promise<IMedia> {
     let media = await this.createMedia(body);
     if (file) {
+      const type = file.mimetype.includes('audio') ? 'sound' : 'video';
       const url = await this.uploadService.handleUploadCommonFile({
         file,
-        folderKey: `medias/${media.id}/videos`
+        folderKey: `medias/${media.id}/${type}`
       });
 
       media = await this.uploadMediaFile({
