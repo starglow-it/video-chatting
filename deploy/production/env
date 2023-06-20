@@ -31,7 +31,7 @@ ENVIRONMENT=production
 # I don't see it is used in source
 IS_LOCAL=true
 PORT=4000
-NODE_ENV=development
+NODE_ENV=production
 DEFAULT_SERVER_IP=18.118.59.1
 DEFAULT_DOMAIN=app.theliveoffice.com
 FRONTEND_URL=https://app.theliveoffice.com
