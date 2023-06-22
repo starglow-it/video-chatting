@@ -715,11 +715,11 @@ export class PaymentsController {
       },
     });
     
-    console.log(user, subscription.status);
     if (
       Boolean(user.isSubscriptionActive) === false &&
       ['active', 'trialing'].includes(subscription.status)
     ) {
+      console.log('send email');
       
       this.notificationsService.sendEmail({
         template: {
