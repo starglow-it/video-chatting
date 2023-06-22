@@ -50,6 +50,7 @@ export type AuthUserState = {
     error?: ErrorState | null;
     user?: Profile;
     isWithoutAuthen?: boolean;
+    isFirstLogin?: boolean;
 };
 
 export type LoginUserParams = {
@@ -58,7 +59,7 @@ export type LoginUserParams = {
 };
 
 export type GoogleVerfifyParams = {
-    token: string
+    token: string;
 };
 
 export type RegisteredUserState = {
@@ -75,10 +76,16 @@ export type RegisterUserParams = {
     templateId?: ICommonTemplate['id'];
 };
 
-export type LoginUserResponse = { user: Profile } & TokenPair;
+export type LoginUserResponse = { user: Profile } & TokenPair & {
+        isFirstLogin: boolean;
+    };
 export type LoginUserPayload = { email: string; password: string };
 
-export type JoinMeetingResult = { user?: MeetingUser; meeting?: Meeting; users?: MeetingUser[] };
+export type JoinMeetingResult = {
+    user?: MeetingUser;
+    meeting?: Meeting;
+    users?: MeetingUser[];
+};
 
 export enum DashboardNotificationTypes {
     enterWaitingRoom = 0,
@@ -233,7 +240,7 @@ export enum NotificationType {
     BackgroundFileIsNotUploadedYet = 'background_file_is_not_uploaded_yet',
     validationError = 'validationError',
     UploadBackgroundSuccess = 'upload_background_success',
-    DeleteMedia = 'DeleteMedia'
+    DeleteMedia = 'DeleteMedia',
 }
 
 export type Notification = {
@@ -247,8 +254,8 @@ export type Notification = {
 
 export type PaymentIntentStore = { clientSecret: string; id: string };
 export type PaymentIntentParams = {
-    isPaymentPaywall?: boolean
-}
+    isPaymentPaywall?: boolean;
+};
 export enum SocialLinkKeysEnum {
     Youtube = 'youtube',
     Facebook = 'facebook',
