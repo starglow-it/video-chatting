@@ -50,6 +50,7 @@ import {
     registerRoute,
     setUpTemplateRoute,
     welcomeRoute,
+    indexRoute,
 } from '../src/const/client-routes';
 import { SpinnerLoading } from '@components/Spinner/Spinner';
 const { publicRuntimeConfig } = getConfig();
@@ -133,9 +134,11 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const isLoginRedirectRoutes = LOGIN_REDIRECT_ROUTES.some(route =>
         new RegExp(route).test(pathName),
     );
+    const isBaseRoute = pathName === indexRoute;
 
     if (isWithoutAuthen) {
-        if (isLoginRedirectRoutes) redirectTo(nextPageContext, loginRoute);
+        if (isLoginRedirectRoutes || isBaseRoute)
+            redirectTo(nextPageContext, loginRoute);
     } else {
         if (
             typeof registerTemplate !== 'undefined' &&
@@ -147,9 +150,12 @@ CustomApp.getInitialProps = async (context: AppContext) => {
                 nextPageContext,
                 `${setUpTemplateRoute}/${registerTemplate || ''}`,
             );
-        } else if (isAuthenticated && isRegisterRedirectRoute) {
+        } else if (
+            isAuthenticated &&
+            (isRegisterRedirectRoute || isBaseRoute)
+        ) {
             redirectTo(nextPageContext, dashboardRoute);
-        } else if (!isAuthenticated && isLoginRedirectRoutes) {
+        } else if (!isAuthenticated && (isLoginRedirectRoutes || isBaseRoute)) {
             redirectTo(nextPageContext, loginRoute);
         }
     }

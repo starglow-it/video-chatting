@@ -123,7 +123,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
     const handleScrollToEnd = () => {
         if (
-            (isDashboardRoute &&
+            (router.pathname === dashboardRoute &&
                 !isLoadingTemplates &&
                 !isLoadingCommonTemplates &&
                 templates.list.length &&
