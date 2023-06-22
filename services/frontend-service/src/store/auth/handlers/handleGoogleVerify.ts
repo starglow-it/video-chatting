@@ -12,10 +12,15 @@ export const handleGoogleVerify = async (params: GoogleVerfifyParams) => {
     });
 
     if (response.success) {
-        setAuthCookies(undefined, response?.result?.accessToken, response?.result?.refreshToken);
+        setAuthCookies(
+            undefined,
+            response?.result?.accessToken,
+            response?.result?.refreshToken,
+        );
         return {
             isAuthenticated: response.success,
             user: response?.result?.user,
+            isFirstLogin: response?.result.isFirstLogin,
         };
     }
 
@@ -23,10 +28,12 @@ export const handleGoogleVerify = async (params: GoogleVerfifyParams) => {
         return {
             isAuthenticated: false,
             error: response?.error,
+            isFirstLogin: false,
         };
     }
 
     return {
         isAuthenticated: false,
+        isFirstLogin: false,
     };
 };
