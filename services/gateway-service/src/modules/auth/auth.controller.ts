@@ -464,7 +464,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   })
   async googleAuthRedirect(
     @Body() body: VerifyGoogleAuthRequest,
-  ): Promise<ResponseSumType<TokenPairWithUserType>> {
+  ): Promise<ResponseSumType<TokenPairWithUserType & {isFirstLogin: boolean}>> {
     try {
       const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
 
@@ -475,12 +475,14 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       });
 
       let user: ICommonUser;
+      let isFirstLogin: boolean;
 
       const { given_name, picture } = await this.getUserDataFromGoogleToken(
         body.token,
       );
       
       if (!isUserExists) {
+        isFirstLogin = true;
         user = await this.authService.createUserFromGoogleAccount({
           password: 'default',
           email,
@@ -488,6 +490,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
           name: given_name,
         });
       } else {
+        isFirstLogin = false;
         user = await this.coreService.findUserByEmail({
           email,
         });
@@ -513,7 +516,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
       return {
         success: true,
-        result,
+        result: {
+          ...result,
+          isFirstLogin
+        },
       };
     } catch (err) {
       this.logger.error(
