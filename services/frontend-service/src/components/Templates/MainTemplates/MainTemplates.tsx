@@ -229,13 +229,7 @@ const Component = () => {
             default:
                 return null;
         }
-    }, [
-        mode,
-        templates.count,
-        templates.list.length,
-        profileTemplates.list.length,
-        profileTemplates.count,
-    ]);
+    }, [mode, templates, profileTemplates]);
 
     const handleChooseSubscription = useCallback(
         async (productId: string, isPaid: boolean, trial: boolean) => {

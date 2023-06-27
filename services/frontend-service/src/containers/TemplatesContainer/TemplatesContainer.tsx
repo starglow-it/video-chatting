@@ -81,6 +81,7 @@ const Component = () => {
             skip: 0,
             limit: 9,
             roomType: RoomType.Featured,
+            draft: false,
         });
     }, []);
 
