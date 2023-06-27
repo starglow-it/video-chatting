@@ -40,6 +40,7 @@ class BackgroundManagerInstance {
                         this.supportedBrowsers.includes(
                             this.browserData.browser.name || '',
                         );
+                        console.log('#Duy Phan console',this.browserData.browser.name)
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
                             this.effectBackground = new Module.EffectBlur();

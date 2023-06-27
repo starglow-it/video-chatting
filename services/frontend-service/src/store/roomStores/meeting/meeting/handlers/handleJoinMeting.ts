@@ -16,6 +16,7 @@ import { setActiveStreamEvent } from '../../../videoChat/localMedia/model';
 import { JoinMeetingFxPayload } from '../types';
 import { BackgroundManager } from '../../../../../helpers/media/applyBlur';
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { isMobile } from 'shared-utils';
 
 export const handleJoinMeting = async ({
     needToRememberSettings,
@@ -67,15 +68,13 @@ export const handleJoinMeting = async ({
     }
 
     const clonedStream = changeStream?.clone();
+    if (!isMobile()) {
+        BackgroundManager.applyBlur(clonedStream);
 
-    BackgroundManager.applyBlur(clonedStream);
-
-    BackgroundManager.onBlur(
-        clonedStream,
-        isAuraActive,
-        (stream) => {
+        BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
             setActiveStreamEvent(stream);
-        }
-    );
-
+        });
+    } else {
+        setActiveStreamEvent(clonedStream);
+    }
 };
