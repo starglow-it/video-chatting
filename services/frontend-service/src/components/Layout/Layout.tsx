@@ -172,7 +172,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     <CustomGrid
                         item
                         flex={1}
-                        className={clsx({ [styles.mobileContent]: isMobile })}
+                        className={clsx({
+                            [styles.mobileContent]:
+                                isMobile && !isDashboardRoute,
+                        })}
                     >
                         <ConditionalRender condition={!isMobile}>
                             <CustomBox

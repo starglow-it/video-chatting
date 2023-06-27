@@ -24,6 +24,7 @@ class BackgroundManagerInstance {
             BROWSER_NAMES.chrome,
             BROWSER_NAMES.chromium,
             BROWSER_NAMES.edge,
+            BROWSER_NAMES.safari
         ];
     }
 
@@ -38,8 +39,7 @@ class BackgroundManagerInstance {
                     this.isBackgroundSupported =
                         this.supportedBrowsers.includes(
                             this.browserData.browser.name || '',
-                        ) && this.browserData.platform.type === 'desktop';
-
+                        );
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
                             this.effectBackground = new Module.EffectBlur();
