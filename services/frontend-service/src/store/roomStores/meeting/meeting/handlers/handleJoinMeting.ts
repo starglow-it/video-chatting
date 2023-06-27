@@ -68,20 +68,15 @@ export const handleJoinMeting = async ({
     }
 
     const clonedStream = changeStream?.clone();
-    // Todo
-    // if (!isMobile()) {
-    //     BackgroundManager.applyBlur(clonedStream);
 
-    //     BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
-    //         setActiveStreamEvent(stream);
-    //     });
-    // } else {
-    //     setActiveStreamEvent(clonedStream);
-    // }
+    if (!isMobile()) {
+        BackgroundManager.applyBlur(clonedStream);
 
-    BackgroundManager.applyBlur(clonedStream);
+        BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
+            setActiveStreamEvent(stream);
+        });
+    } else {
+        setActiveStreamEvent(clonedStream);
+    }
 
-    BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
-        setActiveStreamEvent(stream);
-    });
 };
