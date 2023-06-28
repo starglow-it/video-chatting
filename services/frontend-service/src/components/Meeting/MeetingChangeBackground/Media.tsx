@@ -3,19 +3,20 @@ import clsx from 'clsx';
 import { memo, useState } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { IMediaItem } from '../../../store/roomStores/meeting/meetingBackground/types';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
+import { isSafari } from 'shared-utils';
 import styles from './MeetingChangeBackground.module.scss';
+import { IMediaItem } from '../../../store/roomStores/meeting/meetingBackground/types';
 
 const Component = ({
     isActive = false,
     item,
     onSelect,
     onDelete,
-    isShowDelete
+    isShowDelete,
 }: {
     isActive: boolean;
     item: IMediaItem;
@@ -60,7 +61,7 @@ const Component = ({
                 />
             )}
             <ConditionalRender condition={url !== ''}>
-                {item.type === 'image' ? (
+                {item.type === 'image' || isSafari() ? (
                     <CustomImage
                         src={url}
                         width={63}
@@ -76,7 +77,9 @@ const Component = ({
                         isMuted={false}
                     />
                 )}
-                <ConditionalRender condition={Boolean(item.userTemplate && isShowDelete)}>
+                <ConditionalRender
+                    condition={Boolean(item.userTemplate && isShowDelete)}
+                >
                     <Fade in={isHover}>
                         <CustomGrid
                             className={styles.deleteButton}
