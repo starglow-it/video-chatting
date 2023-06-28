@@ -37,7 +37,7 @@ const Component = ({
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >
                 <ConditionalRender
-                    condition={templateType === 'video' && !isSafari()}
+                    condition={templateType === 'video'}
                 >
                     <CustomVideoPlayer
                         isPlaying={!isScreenSharing}
