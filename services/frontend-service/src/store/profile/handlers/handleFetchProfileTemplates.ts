@@ -21,8 +21,9 @@ export const handleFetchProfileTemplates = async ({
             list: result?.list || [],
             count: result?.count || 0,
             isReset: !skip,
+            skip: skip || 0,
         };
     }
 
-    return { ...initialProfileTemplatesStore, isReset: true };
+    return { ...initialProfileTemplatesStore, isReset: true, skip: skip || 0 };
 };

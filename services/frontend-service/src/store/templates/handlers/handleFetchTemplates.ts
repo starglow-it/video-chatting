@@ -19,10 +19,11 @@ const handleFetchTemplates = async (
             list: result?.list || [],
             count: result?.count || 0,
             isReset,
+            skip: payload.skip,
         };
     }
     if (!success) {
-        return { list: [], count: 0, isReset };
+        return { list: [], count: 0, isReset, skip: payload.skip };
     }
 };
 
