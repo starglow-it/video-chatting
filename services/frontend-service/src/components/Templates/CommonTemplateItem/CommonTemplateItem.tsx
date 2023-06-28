@@ -59,14 +59,6 @@ onChooseTemplate }: CommonTemplateItemProps) => {
         : undefined;
 
     const renderPreview = () => {
-        if (isSafari())
-            return (
-                <CustomImage
-                    src={previewImage?.url || ''}
-                    width="334px"
-                    height="190px"
-                />
-            );
         switch (template?.templateType) {
             case 'image':
                 return (

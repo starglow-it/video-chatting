@@ -61,7 +61,7 @@ const Component = ({
                 />
             )}
             <ConditionalRender condition={url !== ''}>
-                {item.type === 'image' || isSafari() ? (
+                {item.type === 'image' ? (
                     <CustomImage
                         src={url}
                         width={63}
