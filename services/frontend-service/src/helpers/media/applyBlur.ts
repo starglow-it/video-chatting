@@ -39,11 +39,8 @@ class BackgroundManagerInstance {
                     this.isBackgroundSupported =
                         this.supportedBrowsers.includes(
                             this.browserData.browser.name || '',
-                        );
-                    console.log(
-                        '#Duy Phan console',
-                        this.browserData.browser.name,
-                    );
+                        ) && Module.isSupported();
+
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
                             this.effectBackground =
@@ -112,7 +109,7 @@ class BackgroundManagerInstance {
             this.effectBackground = null;
         }
 
-        this.segmentation = null
+        this.segmentation = null;
     }
 }
 

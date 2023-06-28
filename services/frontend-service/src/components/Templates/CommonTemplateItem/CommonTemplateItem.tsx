@@ -14,6 +14,8 @@ import { Translation } from '@library/common/Translation/Translation';
 import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/TemplateMainInfo';
 
 // stores
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
+import { isSafari } from 'shared-utils';
 import { addTemplateToUserFx } from '../../../store';
 
 // types
@@ -21,9 +23,9 @@ import { CommonTemplateItemProps } from './types';
 
 // styles
 import styles from './CommonTemplateItem.module.scss';
-import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 
-const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
+const Component = ({ template, 
+onChooseTemplate }: CommonTemplateItemProps) => {
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
 
     const [showPreview, setShowPreview] = useState(false);
@@ -57,6 +59,14 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
         : undefined;
 
     const renderPreview = () => {
+        if (isSafari())
+            return (
+                <CustomImage
+                    src={previewImage?.url || ''}
+                    width="334px"
+                    height="190px"
+                />
+            );
         switch (template?.templateType) {
             case 'image':
                 return (
@@ -73,7 +83,7 @@ const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
                             src={template?.url || ''}
                             volume={0}
                             isPlaying
-                            isMuted={false}
+                            isMuted
                         />
                     </CustomGrid>
                 );
