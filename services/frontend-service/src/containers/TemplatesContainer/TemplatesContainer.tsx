@@ -88,7 +88,6 @@ const Component = () => {
     useEffect(() => {
         (async () => {
             if (!isTemplateDeleting) {
-                setQueryProfileTemplatesEvent({ skip: 0 });
                 await getProfileTemplatesCountFx({
                     limit: 0,
                     skip: 0,
