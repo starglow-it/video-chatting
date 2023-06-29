@@ -1,3 +1,5 @@
+import { MeetingAccessStatusEnum } from 'shared-types';
+import { isMobile } from 'shared-utils';
 import { updateLocalUserEvent } from '../../../users/localUser/model';
 import {
     sendEnterMeetingRequestSocketEvent,
@@ -15,7 +17,6 @@ import {
 import { setActiveStreamEvent } from '../../../videoChat/localMedia/model';
 import { JoinMeetingFxPayload } from '../types';
 import { BackgroundManager } from '../../../../../helpers/media/applyBlur';
-import { MeetingAccessStatusEnum } from 'shared-types';
 
 export const handleJoinMeting = async ({
     needToRememberSettings,
@@ -43,7 +44,7 @@ export const handleJoinMeting = async ({
     } else {
         updateLocalUserEvent({
             accessStatus: MeetingAccessStatusEnum.Waiting,
-            isAuraActive: isAuraActive,
+            isAuraActive,
         });
         emitEnterWaitingRoom();
     }
@@ -68,14 +69,14 @@ export const handleJoinMeting = async ({
 
     const clonedStream = changeStream?.clone();
 
-    BackgroundManager.applyBlur(clonedStream);
+    if (!isMobile()) {
+        BackgroundManager.applyBlur(clonedStream);
 
-    BackgroundManager.onBlur(
-        clonedStream,
-        isAuraActive,
-        (stream) => {
+        BackgroundManager.onBlur(clonedStream, isAuraActive, stream => {
             setActiveStreamEvent(stream);
-        }
-    );
+        });
+    } else {
+        setActiveStreamEvent(clonedStream);
+    }
 
 };

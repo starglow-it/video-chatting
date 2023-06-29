@@ -137,17 +137,17 @@ $queryTemplatesStore
         ...state,
         ...data,
     }))
-    .on(loadmoreCommonTemplates, state => ({
+    .on(getTemplatesFx.doneData, (state, data) => ({
         ...state,
-        skip: (state.skip || 0) + 1,
+        skip: data.skip,
     }))
     .reset(setQueryProfileTemplatesEvent);
 
 $queryProfileTemplatesStore
     .on(setQueryProfileTemplatesEvent, (state, data) => ({ ...state, ...data }))
-    .on(loadmoreUserTemplates, state => ({
+    .on(getProfileTemplatesFx.doneData, (state, data) => ({
         ...state,
-        skip: (state.skip || 0) + 1,
+        skip: data?.skip || 0,
     }))
     .reset(setQueryTemplatesEvent);
 
@@ -161,7 +161,28 @@ forward({
 });
 
 sample({
-    clock: [setQueryTemplatesEvent, loadmoreCommonTemplates],
+    clock: loadmoreCommonTemplates,
+    source: $queryTemplatesStore,
+    fn: query => ({ ...query, skip: (query.skip || 0) + 1 }),
+    target: getTemplatesFx,
+});
+
+sample({
+    clock: loadmoreUserTemplates,
+    source: combine({
+        profile: $profileStore,
+        query: $queryTemplatesStore,
+    }),
+    fn: ({ profile: { id }, query }) => ({
+        ...query,
+        skip: (query.skip || 0) + 1,
+        userId: id,
+    }),
+    target: getProfileTemplatesFx,
+});
+
+sample({
+    clock: setQueryTemplatesEvent,
     source: combine({
         profile: $profileStore,
         query: $queryTemplatesStore,
@@ -171,20 +192,7 @@ sample({
 });
 
 sample({
-    clock: [setQueryProfileTemplatesEvent, loadmoreUserTemplates],
+    clock: setQueryProfileTemplatesEvent,
     source: $queryTemplatesStore,
     target: getProfileTemplatesFx,
-});
-
-split({
-    clock: loadmoreMetaTemplates,
-    source: $modeTemplateStore,
-    match: {
-        private: mode => mode === 'private',
-        common: mode => mode === 'common',
-    },
-    cases: {
-        private: loadmoreUserTemplates,
-        common: loadmoreCommonTemplates,
-    },
 });

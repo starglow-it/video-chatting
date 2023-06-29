@@ -19,6 +19,7 @@ import { handleDeleteProfileTemplate } from '../handlers/handleDeleteProfileTemp
 import { handleFetchProfileTemplateByTemplateId } from '../handlers/handleFetchProfileTemplateByTemplateId';
 import { handleEditUserTemplate } from '../handlers/handleEditUserTemplate';
 import { setQueryProfileTemplatesEvent } from 'src/store/templates/model';
+import { clearProfileEvent } from '../profile/model';
 
 getProfileTemplatesBase.use(handleFetchProfileTemplates);
 getProfileTemplatesCountBase.use(handleFetchProfileTemplatesCount);
@@ -39,13 +40,12 @@ $profileTemplatesStore
             template.id === data?.id ? data : template,
         ),
     }))
-    .reset(setQueryProfileTemplatesEvent);
+    .reset([setQueryProfileTemplatesEvent, clearProfileEvent]);
 
 $deleteProfileTemplateId.on(setDeleteTemplateIdEvent, (state, data) => data);
 
 $skipProfileTemplates.on(setSkipProfileTemplates, (state, data) => data);
 
-$profileTemplatesCountStore.on(
-    getProfileTemplatesCountFx.doneData,
-    (state, data) => data,
-);
+$profileTemplatesCountStore
+    .on(getProfileTemplatesCountFx.doneData, (state, data) => data)
+    .reset(clearProfileEvent);

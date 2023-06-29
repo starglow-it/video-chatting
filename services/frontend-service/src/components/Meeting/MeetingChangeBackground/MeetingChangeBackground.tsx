@@ -127,7 +127,7 @@ const Component = () => {
                                 timeout: {
                                     appear: 600,
                                     enter: 700,
-                                    exit: 500,
+                                    exit: 0,
                                 },
                                 onExited: () => setIsAnimation(true),
                                 onEntered: () => setIsAnimation(false),

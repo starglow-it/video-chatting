@@ -89,7 +89,7 @@ const OnboardingTemplateItem = memo(({ template }: { template: ICommonTemplate }
                     <CustomButton
                         onClick={handleSetUpTemplate}
                         className={styles.button}
-                        disaabled={template.type === 'paid'}
+                        disabled={template.type === 'paid'}
                         label={
                             <Translation nameSpace="templates" translation="buttons.getStarted" />
                         }
