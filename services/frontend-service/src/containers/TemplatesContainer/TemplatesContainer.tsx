@@ -81,13 +81,13 @@ const Component = () => {
             skip: 0,
             limit: 9,
             roomType: RoomType.Featured,
+            draft: false,
         });
     }, []);
 
     useEffect(() => {
         (async () => {
             if (!isTemplateDeleting) {
-                setQueryProfileTemplatesEvent({ skip: 0 });
                 await getProfileTemplatesCountFx({
                     limit: 0,
                     skip: 0,

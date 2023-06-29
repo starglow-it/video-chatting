@@ -44,6 +44,6 @@ export type CheckResetPasswordLinkResponse = {
 };
 export type CommonProfileResponse = Profile | null | undefined;
 export type GetProfileTemplatesResponse =
-    | (EntityList<IUserTemplate> & { isReset: boolean })
+    | (EntityList<IUserTemplate> & { isReset: boolean; skip: number })
     | undefined;
 export type GetProfileTemplatesCountResponse = { count: number };
