@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useStore, useStoreMap } from 'effector-react';
 
@@ -65,6 +65,7 @@ const Component = () => {
                     template.type === 'free' && template.author !== profileId,
             ),
     });
+    const isFirstTime = useRef(true);
 
     const isTemplateDeleting = useStore(deleteProfileTemplateFx.pending);
 
@@ -87,7 +88,8 @@ const Component = () => {
 
     useEffect(() => {
         (async () => {
-            if (!isTemplateDeleting) {
+            if (!isTemplateDeleting && !isFirstTime.current) {
+                setQueryProfileTemplatesEvent({ skip: 0 });
                 await getProfileTemplatesCountFx({
                     limit: 0,
                     skip: 0,
@@ -97,7 +99,10 @@ const Component = () => {
         })();
     }, [isTemplateDeleting]);
 
-    useEffect(() => () => clearTemplateDraft(), []);
+    useEffect(() => {
+        isFirstTime.current = false;
+        return () => clearTemplateDraft();
+    }, []);
 
     const handleCreateMeeting = useCallback(
         async ({ templateId }: { templateId: ICommonTemplate['id'] }) => {
