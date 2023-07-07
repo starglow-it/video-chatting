@@ -89,7 +89,7 @@ const Component = () => {
     }, [router.isReady]);
 
     useEffect(() => {
-        getSubscriptionWithDataFx();
+        getSubscriptionWithDataFx({ subscriptionId: '' });
         initWindowListeners();
 
         return () => {
@@ -123,7 +123,7 @@ const Component = () => {
                         left: link.left,
                     },
                 })),
-            };
+            } as any;
 
             await editUserTemplateFx({
                 templateId: template.id,

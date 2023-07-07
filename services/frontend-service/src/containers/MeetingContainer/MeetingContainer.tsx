@@ -135,7 +135,7 @@ const MeetingContainer = memo(() => {
         (async () => {
             BackgroundManager.init();
 
-            getSubscriptionWithDataFx();
+            getSubscriptionWithDataFx({ subscriptionId: '' });
 
             await getMeetingTemplateFx({
                 templateId: router.query.token as string,

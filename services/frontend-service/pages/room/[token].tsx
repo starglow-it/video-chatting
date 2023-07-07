@@ -1,4 +1,3 @@
-import React from 'react';
 import { withStart } from 'effector-next';
 import dynamic from 'next/dynamic';
 

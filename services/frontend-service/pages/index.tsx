@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-import React from 'react';
 import { withStart } from 'effector-next';
 
 import { pageLoaded } from '../src/store';

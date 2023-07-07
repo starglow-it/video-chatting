@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import linkify from 'linkify-string';
 import Router, { useRouter } from 'next/router';
 

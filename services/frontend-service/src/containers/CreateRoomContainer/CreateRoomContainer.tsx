@@ -79,7 +79,7 @@ const Component = () => {
 
                 if (response) {
                     onSetUpdateUrl(
-                        `${getCreateRoomUrl(response?.id)}?step=privacy`,
+                        `${getCreateRoomUrl(response?.id || '')}?step=privacy`,
                     );
 
                     setTemplate(response);
@@ -89,7 +89,7 @@ const Component = () => {
     }, [router.isReady]);
 
     useEffect(() => {
-        getSubscriptionWithDataFx();
+        getSubscriptionWithDataFx({ subscriptionId: '' });
         initWindowListeners();
 
         return () => {
@@ -131,7 +131,7 @@ const Component = () => {
                         left: link.left,
                     },
                 })),
-            };
+            } as any;
 
             await editTemplateFx({
                 templateId: template.id,
@@ -198,7 +198,7 @@ const Component = () => {
 
             await editTemplateFx({
                 templateId: template.id,
-                data: payload,
+                data: payload as any,
             });
 
             onShowSubscriptions();

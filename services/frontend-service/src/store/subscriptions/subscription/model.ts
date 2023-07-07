@@ -24,6 +24,6 @@ export const getSubscriptionWithDataFx = attach<
     effect: getSubscriptionFx,
     source: $profileStore,
     mapParams: (params, profile) => ({
-        subscriptionId: profile?.stripeSubscriptionId,
+        subscriptionId: profile?.stripeSubscriptionId || '',
     }),
 });
