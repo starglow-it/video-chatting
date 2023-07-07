@@ -21,6 +21,8 @@ import {
     IUserTemplate,
     RoomType,
 } from 'shared-types';
+import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
+import { MainTemplates } from '@components/Templates/MainTemplates/MainTemplates';
 import {
     $profileStore,
     $profileTemplatesCountStore,
@@ -42,8 +44,6 @@ import { dashboardRoute } from '../../const/client-routes';
 
 // utils
 import { getClientMeetingUrl } from '../../utils/urls';
-import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
-import { MainTemplates } from '@components/Templates/MainTemplates/MainTemplates';
 
 const Component = () => {
     const router = useRouter();
