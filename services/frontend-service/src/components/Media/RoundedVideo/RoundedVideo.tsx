@@ -30,7 +30,7 @@ const Component = ({
     isLocal = false,
     isScreenSharing = false,
     isSelfView = false,
-    isVideoSelfView = false
+    isVideoSelfView = false,
 }: RoundedVideoProps) => {
     const [isVideoActive, setIsVideoActive] = useState(false);
 
@@ -73,9 +73,7 @@ const Component = ({
                     justifyContent="center"
                     alignItems="center"
                 >
-                    <ConditionalRender
-                        condition={isSelfView && size > 105}
-                    >
+                    <ConditionalRender condition={isSelfView && size > 105}>
                         <CustomTypography
                             variant="body3"
                             nameSpace="meeting"

@@ -36,9 +36,7 @@ const Component = ({
             <CustomGrid
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >
-                <ConditionalRender
-                    condition={templateType === 'video'}
-                >
+                <ConditionalRender condition={templateType === 'video'}>
                     <CustomVideoPlayer
                         isPlaying={!isScreenSharing}
                         isMuted={!isAudioBackgroundActive}

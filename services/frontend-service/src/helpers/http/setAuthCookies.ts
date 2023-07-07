@@ -12,7 +12,11 @@ function updateAppContextCookie(
 ) {
     const parsed = parse(ctx?.req?.headers.cookie?.toString() ?? '');
     if (!parsed[path] && ctx?.req) {
-        ctx.req.headers.cookie = `${ctx?.req?.headers.cookie}; ${serialize(path, value, options)}`;
+        ctx.req.headers.cookie = `${ctx?.req?.headers.cookie}; ${serialize(
+            path,
+            value,
+            options,
+        )}`;
     }
 
     setCookie(ctx, path, value, options);
@@ -36,7 +40,10 @@ export default function setAuthCookies(
     }
 }
 
-export function setUserWithoutTokenCookies(userWithoutLoginId: string, userTemplateId: string) :void{
+export function setUserWithoutTokenCookies(
+    userWithoutLoginId: string,
+    userTemplateId: string,
+): void {
     setCookie(undefined, 'userWithoutLoginId', userWithoutLoginId);
     setCookie(undefined, 'userTemplateId', userTemplateId);
 }

@@ -12,5 +12,7 @@ $meetingNotesStore
         ...state,
         ...(meetingNotes || []),
     ])
-    .on(removeLocalMeetingNoteEvent, (state, data) => state.filter(note => note.id !== data))
+    .on(removeLocalMeetingNoteEvent, (state, data) =>
+        state.filter(note => note.id !== data),
+    )
     .reset(resetRoomStores);

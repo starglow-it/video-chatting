@@ -31,16 +31,18 @@ const TemplateGeneralInfo = memo(
 
         const targetSignBoard = useMemo(
             () =>
-                SIGN_BOARDS.find(signs => signs.find(board => board.value === signBoard))?.find(
-                    board => board.value === signBoard,
-                ),
+                SIGN_BOARDS.find(signs =>
+                    signs.find(board => board.value === signBoard),
+                )?.find(board => board.value === signBoard),
             [signBoard],
         );
 
         return (
             <CustomGrid
                 container
-                className={clsx(styles.profileInfo, { [styles.withBoard]: isThereSignBoard })}
+                className={clsx(styles.profileInfo, {
+                    [styles.withBoard]: isThereSignBoard,
+                })}
             >
                 <ConditionalRender condition={isThereSignBoard}>
                     <CustomImage

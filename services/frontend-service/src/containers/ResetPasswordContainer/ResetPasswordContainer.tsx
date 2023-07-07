@@ -27,9 +27,11 @@ const Component = () => {
 
     const [error, setError] = useState('');
 
-    const { value: isUserConfirmed, onSwitchOn: handleSetUserConfirmed } = useToggle(false);
+    const { value: isUserConfirmed, onSwitchOn: handleSetUserConfirmed } =
+        useToggle(false);
 
-    const { value: isResetSuccessful, onSwitchOn: handleShowResetSuccessful } = useToggle(false);
+    const { value: isResetSuccessful, onSwitchOn: handleShowResetSuccessful } =
+        useToggle(false);
 
     useEffect(() => {
         (async () => {
@@ -54,7 +56,9 @@ const Component = () => {
     return (
         <CustomPaper className={styles.wrapper}>
             <ConditionalRender
-                condition={isUserConfirmed && !isConfirmPending && !isResetSuccessful}
+                condition={
+                    isUserConfirmed && !isConfirmPending && !isResetSuccessful
+                }
             >
                 <ResetPassword onSuccessfulReset={handleShowSuccess} />
             </ConditionalRender>

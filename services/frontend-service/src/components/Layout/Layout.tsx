@@ -29,6 +29,7 @@ import { MeetingFinishedDialog } from '@components/Dialogs/MeetingFinishedDialog
 import { Footer } from '@components/Footer/Footer';
 
 // types
+import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { LayoutProps } from './types';
 
 // stores
@@ -58,7 +59,6 @@ import {
 
 // styles
 import styles from './Layout.module.scss';
-import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 
 const SubscriptionExpiredNotification = dynamic(
     () =>

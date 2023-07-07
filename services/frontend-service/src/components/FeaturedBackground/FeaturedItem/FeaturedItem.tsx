@@ -9,7 +9,7 @@ const Component = ({ item }: { item: IFeaturedBackground }) => {
     const previewImage = (item?.previewUrls || []).find(
         image => image.resolution === 240,
     );
- 
+
     return (
         <CustomGrid
             className={styles.templateContent}

@@ -7,9 +7,9 @@ import { CustomLink } from '@library/custom/CustomLink/CustomLink';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { DoubleArrowIcon } from 'shared-frontend/icons/OtherIcons/DoubleArrowIcon';
 
-import styles from './Footer.module.scss';
 import { $appVersionStore } from 'src/store';
 import { useStore } from 'effector-react';
+import styles from './Footer.module.scss';
 
 const Component = ({ onScrollUp }: { onScrollUp: () => void }) => {
     const version = useStore($appVersionStore);

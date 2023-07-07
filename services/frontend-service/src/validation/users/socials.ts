@@ -73,7 +73,8 @@ export const validateSocialLink = () =>
             }),
         })
         .when({
-            is: (data: ISocialLink) => data.key === SocialLinkKeysEnum.Instagram,
+            is: (data: ISocialLink) =>
+                data.key === SocialLinkKeysEnum.Instagram,
             then: object({
                 key: simpleStringSchema(),
                 value: baseUrlSchema(),

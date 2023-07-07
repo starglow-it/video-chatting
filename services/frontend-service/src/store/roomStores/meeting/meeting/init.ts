@@ -32,7 +32,9 @@ $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
     .reset(resetRoomStores);
 
-$meetingConnectedStore.on(setMeetingConnectedEvent, (state, data) => data).reset(resetRoomStores);
+$meetingConnectedStore
+    .on(setMeetingConnectedEvent, (state, data) => data)
+    .reset(resetRoomStores);
 
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);

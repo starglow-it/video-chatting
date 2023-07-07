@@ -125,7 +125,6 @@ const Component = () => {
     const resolver =
         useYupValidationResolver<MonetizationFormType>(validationSchema);
 
-
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
             dialogKey: AppDialogsEnum.devicesSettingsDialog,
@@ -247,7 +246,7 @@ const Component = () => {
             contentClassName={styles.wrapper}
             onClose={handleClose}
         >
-           <CustomGrid container direction="column">
+            <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
                     <MediaPreview
                         videoError={videoError}
@@ -272,19 +271,13 @@ const Component = () => {
                     >
                         <MeetingSettingsContent
                             stream={changeStream}
-                            isBackgroundActive={
-                                isSettingsAudioBackgroundActive
-                            }
-                            onBackgroundToggle={
-                                handleToggleBackgroundAudio
-                            }
+                            isBackgroundActive={isSettingsAudioBackgroundActive}
+                            onBackgroundToggle={handleToggleBackgroundAudio}
                             backgroundVolume={volume}
                             onChangeBackgroundVolume={setVolume}
                             isAuraActive={isAuraEnabled}
                             onToggleAura={handleToggleAura}
-                            isAudioActive={
-                                meetingTemplate.isAudioAvailable
-                            }
+                            isAudioActive={meetingTemplate.isAudioAvailable}
                             title={
                                 <CustomTypography
                                     className={styles.title}

@@ -26,19 +26,23 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // validations
 import { MAX_CONTACT_US_MESSAGE_LENGTH } from 'src/const/general';
+import frontendConfig from 'src/const/config';
 import { fullNameSchema } from '../../../validation/users/fullName';
 import { simpleStringSchemaWithLength } from '../../../validation/common';
 import { emailSchema } from '../../../validation/users/email';
 
 // const
 import { dashboardRoute } from '../../../const/client-routes';
-import frontendConfig from 'src/const/config';
 
 // types
 import { ContactFormPayload } from '../../../store/types';
 
 // store
-import { $contactForm, changeContactFormData, sendContactFormFx } from '../../../store/other/contactUs/model';
+import {
+    $contactForm,
+    changeContactFormData,
+    sendContactFormFx,
+} from '../../../store/other/contactUs/model';
 import { $profileStore } from '../../../store';
 
 // styles
@@ -47,7 +51,9 @@ import styles from './ContactUsForm.module.scss';
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
     name: fullNameSchema().required('required'),
-    message: simpleStringSchemaWithLength(MAX_CONTACT_US_MESSAGE_LENGTH).required('required'),
+    message: simpleStringSchemaWithLength(
+        MAX_CONTACT_US_MESSAGE_LENGTH,
+    ).required('required'),
 });
 
 const Component = () => {
@@ -55,7 +61,8 @@ const Component = () => {
     const profile = useStore($profileStore);
     const contactFormData = useStore($contactForm);
 
-    const resolver = useYupValidationResolver<ContactFormPayload>(validationSchema);
+    const resolver =
+        useYupValidationResolver<ContactFormPayload>(validationSchema);
 
     const methods = useForm<ContactFormPayload>({
         resolver,
@@ -81,8 +88,10 @@ const Component = () => {
     const nameProps = useMemo(() => register('name'), []);
     const emailProps = useMemo(() => register('email'), []);
 
-    const { value: isSubmitButtonEnabled, onToggleSwitch: onToggleSubmitButtonEnabled } =
-        useToggle(false);
+    const {
+        value: isSubmitButtonEnabled,
+        onToggleSwitch: onToggleSubmitButtonEnabled,
+    } = useToggle(false);
 
     const { value: isAppealSent, onSwitchOn: onAppealSent } = useToggle(false);
 
@@ -91,7 +100,10 @@ const Component = () => {
     const handleChangeMessage = useCallback(async event => {
         if (event.target.value.length > MAX_CONTACT_US_MESSAGE_LENGTH) {
             /* eslint-disable no-param-reassign */
-            event.target.value = event.target.value.slice(0, MAX_CONTACT_US_MESSAGE_LENGTH);
+            event.target.value = event.target.value.slice(
+                0,
+                MAX_CONTACT_US_MESSAGE_LENGTH,
+            );
             /* eslint-enable no-param-reassign */
         }
 
@@ -121,21 +133,28 @@ const Component = () => {
     const errorEmail: string = errors?.email?.[0]?.message ?? '';
     const errorMessage: string = errors?.message?.[0]?.message ?? '';
 
-    useEffect(() => () => {
-        const [name, email, message] = watch(['name', 'email', 'message']);
-        changeContactFormData({
-            name,
-            email,
-            message,
-        });
-    }, [contactFormData]);
+    useEffect(
+        () => () => {
+            const [name, email, message] = watch(['name', 'email', 'message']);
+            changeContactFormData({
+                name,
+                email,
+                message,
+            });
+        },
+        [contactFormData],
+    );
 
     return (
         <CustomPaper className={styles.wrapper}>
             <FormProvider {...methods}>
                 <form onSubmit={onSubmit}>
                     <ConditionalRender condition={!isAppealSent}>
-                        <CustomGrid container direction="column" alignItems="center">
+                        <CustomGrid
+                            container
+                            direction="column"
+                            alignItems="center"
+                        >
                             <CustomTypography
                                 nameSpace="static"
                                 translation="contacts.form.title"
@@ -148,7 +167,9 @@ const Component = () => {
                                     translation="contacts.form.description"
                                     className={styles.description}
                                 />
-                                <CustomLink href={`mailto:${frontendConfig.supportEmail}`}>
+                                <CustomLink
+                                    href={`mailto:${frontendConfig.supportEmail}`}
+                                >
                                     {frontendConfig.supportEmail}
                                 </CustomLink>
                             </CustomGrid>
@@ -201,7 +222,10 @@ const Component = () => {
                                         />
                                         &nbsp;
                                         <CustomLink
-                                            className={clsx(styles.termsText, styles.termsLink)}
+                                            className={clsx(
+                                                styles.termsText,
+                                                styles.termsLink,
+                                            )}
                                             href="/agreements"
                                             variant="body2"
                                             nameSpace="common"
@@ -216,7 +240,10 @@ const Component = () => {
                                         />
                                         &nbsp;
                                         <CustomLink
-                                            className={clsx(styles.termsText, styles.termsLink)}
+                                            className={clsx(
+                                                styles.termsText,
+                                                styles.termsLink,
+                                            )}
                                             href="/agreements?section=privacy"
                                             variant="body2"
                                             nameSpace="common"
@@ -251,7 +278,11 @@ const Component = () => {
                             justifyContent="center"
                             className={styles.success}
                         >
-                            <DoneIcon width="48px" height="48px" className={styles.icon} />
+                            <DoneIcon
+                                width="48px"
+                                height="48px"
+                                className={styles.icon}
+                            />
                             <CustomTypography
                                 nameSpace="static"
                                 translation="contacts.success.title"
@@ -261,7 +292,10 @@ const Component = () => {
                             <CustomTypography
                                 nameSpace="static"
                                 translation="contacts.success.description"
-                                className={clsx(styles.text, styles.description)}
+                                className={clsx(
+                                    styles.text,
+                                    styles.description,
+                                )}
                             />
                             <CustomButton
                                 label={

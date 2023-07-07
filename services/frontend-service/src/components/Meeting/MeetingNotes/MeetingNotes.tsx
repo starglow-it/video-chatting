@@ -8,7 +8,10 @@ import { MeetingNoteItem } from '@components/Meeting/MeetingNoteItem/MeetingNote
 // stores
 import { isMobile } from 'shared-utils';
 import { $windowSizeStore } from '../../../store';
-import { $meetingNotesStore, getMeetingNotesSocketEvent } from '../../../store/roomStores';
+import {
+    $meetingNotesStore,
+    getMeetingNotesSocketEvent,
+} from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingNotes.module.scss';
@@ -49,7 +52,9 @@ const Component = () => {
 
         return spreadNotesInGrid.map((elementsData, i) =>
             elementsData.map((note, n) => {
-                const dragIndex = [...lastDraggedSet].findIndex(noteId => noteId === note.id);
+                const dragIndex = [...lastDraggedSet].findIndex(
+                    noteId => noteId === note.id,
+                );
 
                 return (
                     <MeetingNoteItem
@@ -65,7 +70,11 @@ const Component = () => {
         );
     }, [meetingNotes, lastDraggedSet]);
 
-    return <CustomGrid className={styles.notesWrapper}>{renderMeetingNotes}</CustomGrid>;
+    return (
+        <CustomGrid className={styles.notesWrapper}>
+            {renderMeetingNotes}
+        </CustomGrid>
+    );
 };
 
 export const MeetingNotes = memo(Component);

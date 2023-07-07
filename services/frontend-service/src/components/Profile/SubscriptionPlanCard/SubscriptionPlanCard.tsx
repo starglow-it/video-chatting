@@ -18,8 +18,8 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 
 // const
+import { planColors } from 'shared-const';
 import { currencies } from '../../../const/profile/subscriptions';
-import {planColors} from "shared-const";
 
 // styles
 import styles from './SubscriptionPlanCard.module.scss';
@@ -64,7 +64,10 @@ const Component = ({
                                 __html: feature.text,
                             }}
                         />
-                        <CustomTypography variant="body2" color="colors.grayscale.normal">
+                        <CustomTypography
+                            variant="body2"
+                            color="colors.grayscale.normal"
+                        >
                             {feature.subText}
                         </CustomTypography>
                     </CustomGrid>
@@ -81,7 +84,13 @@ const Component = ({
         };
 
         const columns = translationsObject?.features.map(column => (
-            <CustomGrid container item flex={1} direction="column" className={styles.column}>
+            <CustomGrid
+                container
+                item
+                flex={1}
+                direction="column"
+                className={styles.column}
+            >
                 {renderListItem(column)}
             </CustomGrid>
         ));
@@ -118,7 +127,9 @@ const Component = ({
                         {priceLabel ? translation(priceLabel) : priceString}
                     </CustomTypography>
                     <ConditionalRender condition={!isFree}>
-                        <CustomTypography>/ {price?.recurring?.interval}</CustomTypography>
+                        <CustomTypography>
+                            / {price?.recurring?.interval}
+                        </CustomTypography>
                     </ConditionalRender>
                 </CustomGrid>
                 <CustomGrid
@@ -126,9 +137,15 @@ const Component = ({
                     container
                     alignItems="center"
                     className={styles.productName}
-                    sx={{ backgroundColor: planColors[product.name.replace(' ', '') as string] }}
+                    sx={{
+                        backgroundColor:
+                            planColors[product.name.replace(' ', '') as string],
+                    }}
                 >
-                    <CustomTypography variant="body3bold" color="colors.white.primary">
+                    <CustomTypography
+                        variant="body3bold"
+                        color="colors.white.primary"
+                    >
                         {product.name}
                     </CustomTypography>
                 </CustomGrid>
@@ -137,7 +154,9 @@ const Component = ({
             {renderFeaturesListItems}
             <ConditionalRender condition={(!isFree && !isActive) || isTrial}>
                 <CustomGrid container gap={1.5} className={styles.buttons}>
-                    <ConditionalRender condition={(!isFree && !isActive) || isTrial}>
+                    <ConditionalRender
+                        condition={(!isFree && !isActive) || isTrial}
+                    >
                         <CustomButton
                             disabled={isDisabled}
                             onClick={handleChooseSubscription}

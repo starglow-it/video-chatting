@@ -5,11 +5,11 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 import { TemplateParticipantsProps } from './types';
 
 import styles from './TemplateParticipants.module.scss';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 
 const TemplateParticipants = memo(
     ({
@@ -26,9 +26,7 @@ const TemplateParticipants = memo(
             <ConditionalRender condition={authorRole === 'admin'}>
                 <AuthorLogo width="18px" height="18px" />
             </ConditionalRender>
-            <ConditionalRender
-                condition={authorRole === 'user'}
-            >
+            <ConditionalRender condition={authorRole === 'user'}>
                 <ProfileAvatar
                     src={authorThumbnail || ''}
                     width="18px"

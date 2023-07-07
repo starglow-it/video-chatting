@@ -18,6 +18,7 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // types
 import { ParticipantPosition } from '@containers/CreateRoomContainer/types';
+import { TemplateLinkItem } from '@components/TemplateManagement/TemplateLinks/TemplateLinkItem';
 import { TemplatePreviewProps } from './types';
 
 // store
@@ -28,34 +29,42 @@ import styles from './TemplatePreview.module.scss';
 
 // const
 import frontendConfig from '../../../const/config';
-import {TemplateLinkItem} from "@components/TemplateManagement/TemplateLinks/TemplateLinkItem";
 
-const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePreviewProps) => {
+const Component = ({
+    onPreviousStep,
+    onSubmit,
+    controlPanelRef,
+}: TemplatePreviewProps) => {
     const { control } = useFormContext();
 
     const description = useWatch({ control, name: 'description' });
     const customLink = useWatch({ control, name: 'customLink' });
     const templateLinks = useWatch({ control, name: 'templateLinks' });
     const tags = useWatch({ control, name: 'tags' });
-    const participantsPositions = useWatch({ control, name: 'participantsPositions' });
+    const participantsPositions = useWatch({
+        control,
+        name: 'participantsPositions',
+    });
 
     const { width } = useStore($windowSizeStore);
 
     const participantStubs = useMemo(
         () =>
-            participantsPositions.map(({ id, top, left }: ParticipantPosition, index: number) => (
-                <UserVideoStub
-                    isDraggable={false}
-                    stubId={id}
-                    index={index}
-                    position={{ top, left }}
-                />
-            )),
+            participantsPositions.map(
+                ({ id, top, left }: ParticipantPosition, index: number) => (
+                    <UserVideoStub
+                        isDraggable={false}
+                        stubId={id}
+                        index={index}
+                        position={{ top, left }}
+                    />
+                ),
+            ),
         [participantsPositions],
     );
 
     const tagsChips = useMemo(
-        () => tags.map(tag => <TagItem color={tag.color} label={tag.label}/>),
+        () => tags.map(tag => <TagItem color={tag.color} label={tag.label} />),
         [tags],
     );
 
@@ -86,7 +95,11 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
             <CustomGrid container className={styles.participants}>
                 {participantStubs}
             </CustomGrid>
-            <CustomPaper variant="black-glass" style={tooltipStyle} className={styles.paper}>
+            <CustomPaper
+                variant="black-glass"
+                style={tooltipStyle}
+                className={styles.paper}
+            >
                 <CustomGrid container direction="column">
                     <CustomTypography
                         variant="body2bold"
@@ -94,7 +107,10 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
                         translation="preview.about"
                         className={styles.title}
                     />
-                    <CustomTypography className={styles.description} variant="body2">
+                    <CustomTypography
+                        className={styles.description}
+                        variant="body2"
+                    >
                         {description}
                     </CustomTypography>
                     <CustomDivider className={styles.divider} />
@@ -121,7 +137,12 @@ const Component = ({ onPreviousStep, onSubmit, controlPanelRef }: TemplatePrevie
                     onAction={onPreviousStep}
                 />
                 <CustomButton
-                    label={<Translation nameSpace="createRoom" translation="actions.submit" />}
+                    label={
+                        <Translation
+                            nameSpace="createRoom"
+                            translation="actions.submit"
+                        />
+                    }
                     onClick={onSubmit}
                     className={styles.button}
                 />

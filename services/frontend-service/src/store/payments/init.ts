@@ -1,6 +1,10 @@
 import Router from 'next/router';
 
-import { connectStripeAccountFx, deleteStripeAccountFx, loginStripeAccountFx } from './model';
+import {
+    connectStripeAccountFx,
+    deleteStripeAccountFx,
+    loginStripeAccountFx,
+} from './model';
 
 import { handleConnectStripeAccount } from './handlers/handleConnectStripeAccount';
 import { handleLoginStripeAccount } from './handlers/handleLoginStripeAccount';

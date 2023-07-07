@@ -19,6 +19,10 @@
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./"
+  },
   "plugins": [
     "jsx-a11y",
     "react",
@@ -42,9 +46,12 @@
     "react/jsx-filename-extension": "off",
     "react-hooks/exhaustive-deps": "off",
     "react/jsx-props-no-spreading": "off",
-    "react/function-component-definition": [1, {
+    "react/function-component-definition": [
+      1,
+      {
         "namedComponents": "arrow-function"
-    }],
+      }
+    ],
     "react/jsx-max-props-per-line": "off",
     "react/jsx-first-prop-new-line": "off",
     "react/jsx-indent-props": "off",
@@ -73,4 +80,3 @@
     }
   }
 }
-

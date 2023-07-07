@@ -43,6 +43,9 @@ import {
     customTemplateLinkSchema,
     templatesLinksSchema,
 } from 'shared-frontend/validation';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { Translation } from '@library/common/Translation/Translation';
+import { PARTICIPANT_POSITIONS } from 'shared-const';
 import {
     MAX_DESCRIPTION_LENGTH,
     MAX_NAME_LENGTH,
@@ -73,9 +76,6 @@ import styles from './TemplateManagement.module.scss';
 // utils
 import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 import { parseBase64 } from '../../utils/string/parseBase64';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
-import { Translation } from '@library/common/Translation/Translation';
-import { PARTICIPANT_POSITIONS } from 'shared-const';
 
 enum TabsValues {
     Background = 1,

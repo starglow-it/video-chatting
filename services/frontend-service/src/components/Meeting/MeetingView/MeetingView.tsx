@@ -31,6 +31,13 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -59,15 +66,8 @@ import {
 // types
 import { NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
-import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
-import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from 'src/controllers/WebStorageController';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // helpers
 

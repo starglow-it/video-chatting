@@ -5,7 +5,9 @@ import { getProfileUrl } from '../../../utils/urls';
 import { CommonProfileResponse } from '../types';
 
 export const handleGetProfile = async (): Promise<CommonProfileResponse> => {
-    const response = await sendRequestWithCredentials<Profile, ErrorState>(getProfileUrl);
+    const response = await sendRequestWithCredentials<Profile, ErrorState>(
+        getProfileUrl,
+    );
 
     if (response.success) {
         return response.result;

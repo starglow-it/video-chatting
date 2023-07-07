@@ -15,12 +15,16 @@ export const createMeetingFx = meetingsDomain.createEffect<
     CreateMeetingResponse
 >('createMeetingFx');
 
-export const deleteMeetingFx = meetingsDomain.createEffect<DeleteMeetingPayload, void>(
-    'deleteMeetingFx',
-);
+export const deleteMeetingFx = meetingsDomain.createEffect<
+    DeleteMeetingPayload,
+    void
+>('deleteMeetingFx');
 
 export const checkCustomLinkFx = meetingsDomain.createEffect<
-    { templateId: IUserTemplate['id']; customLink: IUserTemplate['customLink'] },
+    {
+        templateId: IUserTemplate['id'];
+        customLink: IUserTemplate['customLink'];
+    },
     boolean,
     ErrorState
 >('checkCustomLinkFx');

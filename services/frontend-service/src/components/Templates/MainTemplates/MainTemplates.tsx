@@ -1,8 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
-import styles from './MainTemplates.module.scss';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { MenusTemplate } from '../Menus/Menus';
-import { TemplatesGrid } from '../TemplatesGrid/TemplatesGrid';
 import {
     $isBusinessSubscription,
     $isProfessionalSubscription,
@@ -27,13 +24,16 @@ import {
 import { useStore, useStoreMap } from 'effector-react';
 import { EntityList, ICommonTemplate, IUserTemplate } from 'shared-types';
 import { useRouter } from 'next/router';
-import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
 import { getClientMeetingUrl, getCreateRoomUrl } from 'src/utils/urls';
-import { ProfileTemplateItem } from '../ProfileTemplateItem/ProfileTemplateItem';
 import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/SubscriptionsPlans';
 import { useToggle } from '@hooks/useToggle';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { dashboardRoute } from 'src/const/client-routes';
+import { ProfileTemplateItem } from '../ProfileTemplateItem/ProfileTemplateItem';
+import { CommonTemplateItem } from '../CommonTemplateItem/CommonTemplateItem';
+import { TemplatesGrid } from '../TemplatesGrid/TemplatesGrid';
+import { MenusTemplate } from '../Menus/Menus';
+import styles from './MainTemplates.module.scss';
 
 const Component = () => {
     const router = useRouter();

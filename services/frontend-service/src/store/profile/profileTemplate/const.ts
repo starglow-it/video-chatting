@@ -1,4 +1,4 @@
-import {IUserTemplate} from "shared-types";
+import { IUserTemplate } from 'shared-types';
 
 export const initialProfileTemplateState: IUserTemplate = {
     id: '',

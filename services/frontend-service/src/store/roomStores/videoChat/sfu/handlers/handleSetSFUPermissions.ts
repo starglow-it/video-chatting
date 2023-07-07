@@ -14,11 +14,13 @@ export const handleSetSFUPermissions = async (
     const updateData = {
         userId: data.userId,
         video: data.isCameraActive,
-        audio:data.isMicActive,
+        audio: data.isMicActive,
     };
 
     if (data.room) {
-        const videoTrackPub = data.room.localParticipant.getTrack(Track.Source.Camera);
+        const videoTrackPub = data.room.localParticipant.getTrack(
+            Track.Source.Camera,
+        );
 
         if (videoTrackPub) {
             if (updateData.video) {
@@ -28,7 +30,9 @@ export const handleSetSFUPermissions = async (
             }
         }
 
-        const audioTrackPub = data.room.localParticipant.getTrack(Track.Source.Microphone);
+        const audioTrackPub = data.room.localParticipant.getTrack(
+            Track.Source.Microphone,
+        );
 
         if (audioTrackPub) {
             if (updateData.audio) {

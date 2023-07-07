@@ -18,7 +18,10 @@ import { isVideoFile } from '../../../utils/files/isVideoFile';
 // styles
 import styles from './TemplateBackgroundPreview.module.scss';
 
-const Component = ({ children, isFileUploading }: TemplateBackgroundPreviewProps) => {
+const Component = ({
+    children,
+    isFileUploading,
+}: TemplateBackgroundPreviewProps) => {
     const { control } = useFormContext();
 
     const url = useWatch({ control, name: 'url' });

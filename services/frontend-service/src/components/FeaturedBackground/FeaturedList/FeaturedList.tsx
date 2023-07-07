@@ -1,4 +1,4 @@
-import { memo, useMemo, } from 'react';
+import { memo, useMemo } from 'react';
 import { IFeaturedBackground } from 'shared-types';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';

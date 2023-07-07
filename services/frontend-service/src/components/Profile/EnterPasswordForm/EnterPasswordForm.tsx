@@ -9,10 +9,16 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { PasswordInput } from '@library/common/PasswordInput/PasswordInput';
 import { Translation } from '@library/common/Translation/Translation';
 
-import styles from './EnterPasswordForm.module.scss'
+import styles from './EnterPasswordForm.module.scss';
 
 const EnterPasswordForm = memo(
-    ({ onPasswordEntered, onCancel }: { onPasswordEntered: () => void; onCancel: () => void }) => {
+    ({
+        onPasswordEntered,
+        onCancel,
+    }: {
+        onPasswordEntered: () => void;
+        onCancel: () => void;
+    }) => {
         const {
             register,
             trigger,
@@ -39,11 +45,21 @@ const EnterPasswordForm = memo(
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
                         variant="custom-cancel"
-                        label={<Translation nameSpace="common" translation="buttons.cancel" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.cancel"
+                            />
+                        }
                         onClick={onCancel}
                     />
                     <CustomButton
-                        label={<Translation nameSpace="common" translation="buttons.continue" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.continue"
+                            />
+                        }
                         onClick={handleContinueStep}
                     />
                 </CustomGrid>

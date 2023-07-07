@@ -15,7 +15,12 @@ const LocalVideoPreview = memo(() => {
         name: 'fullName',
     });
 
-    return <LocalVideoMock userName={fullName} userProfileAvatar={profile?.profileAvatar?.url} />;
+    return (
+        <LocalVideoMock
+            userName={fullName}
+            userProfileAvatar={profile?.profileAvatar?.url}
+        />
+    );
 });
 
 export { LocalVideoPreview };

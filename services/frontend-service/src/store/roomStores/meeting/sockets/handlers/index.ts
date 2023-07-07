@@ -16,68 +16,79 @@ type SocketHandlerData = {
     handler: (...args: any[]) => void;
 };
 
-type MeetingSocketHandlerDataMap = Map<MeetingSubscribeEvents, SocketHandlerData>;
+type MeetingSocketHandlerDataMap = Map<
+    MeetingSubscribeEvents,
+    SocketHandlerData
+>;
 
-const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap = new Map([
-    [MeetingSubscribeEvents.OnMeetingEnterRequest, { handler: handleMeetingEnterRequest }],
-    [MeetingSubscribeEvents.OnUserAccepted, { handler: handleMeetingUserAccepted }],
-    [
-        MeetingSubscribeEvents.OnUpdateMeeting,
-        {
-            handler: handleUpdateMeeting,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnUpdateMeetingTemplate,
-        {
-            handler: handleUpdateMeetingTemplate,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnSendMeetingNote,
-        {
-            handler: handleSendMeetingNote,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnRemoveMeetingNote,
-        {
-            handler: handleRemoveMeetingNote,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnGetMeetingNotes,
-        {
-            handler: handleGetMeetingNotes,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnMeetingError,
-        {
-            handler: handleMeetingError,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnPlaySound,
-        {
-            handler: handlePlaySound,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnFinishMeeting,
-        {
-            handler: handleMeetingFinished,
-        },
-    ],
-    [
-        MeetingSubscribeEvents.OnMeetingTimeLimit,
-        {
-            handler: handleMeetingTimeLimit,
-        },
-    ],
-]);
+const MEETING_SUBSCRIBE_HANDLERS_REGISTRY: MeetingSocketHandlerDataMap =
+    new Map([
+        [
+            MeetingSubscribeEvents.OnMeetingEnterRequest,
+            { handler: handleMeetingEnterRequest },
+        ],
+        [
+            MeetingSubscribeEvents.OnUserAccepted,
+            { handler: handleMeetingUserAccepted },
+        ],
+        [
+            MeetingSubscribeEvents.OnUpdateMeeting,
+            {
+                handler: handleUpdateMeeting,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnUpdateMeetingTemplate,
+            {
+                handler: handleUpdateMeetingTemplate,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnSendMeetingNote,
+            {
+                handler: handleSendMeetingNote,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnRemoveMeetingNote,
+            {
+                handler: handleRemoveMeetingNote,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnGetMeetingNotes,
+            {
+                handler: handleGetMeetingNotes,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnMeetingError,
+            {
+                handler: handleMeetingError,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnPlaySound,
+            {
+                handler: handlePlaySound,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnFinishMeeting,
+            {
+                handler: handleMeetingFinished,
+            },
+        ],
+        [
+            MeetingSubscribeEvents.OnMeetingTimeLimit,
+            {
+                handler: handleMeetingTimeLimit,
+            },
+        ],
+    ]);
 
 export const getMeetingSocketSubscribeHandler = (
     eventName: MeetingSubscribeEvents,
 ): SocketHandlerData['handler'] =>
-    MEETING_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler || emptyFunction;
+    MEETING_SUBSCRIBE_HANDLERS_REGISTRY.get(eventName)?.handler ||
+    emptyFunction;

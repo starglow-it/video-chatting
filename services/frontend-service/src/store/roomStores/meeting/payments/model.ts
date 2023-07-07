@@ -40,7 +40,7 @@ export const createPaymentIntentWithData = attach<
     source: $meetingTemplateStore,
     mapParams: (params, meetingTemplate) => ({
         templateId: meetingTemplate.id,
-        isPaymentPaywall: Boolean(params?.isPaymentPaywall)
+        isPaymentPaywall: Boolean(params?.isPaymentPaywall),
     }),
 });
 
@@ -53,6 +53,6 @@ export const cancelPaymentIntentWithData = attach<
     source: $paymentIntent,
     mapParams: (params, paymentIntent) => ({
         paymentIntentId: paymentIntent.id,
-        isPaymentPaywall: Boolean(params?.isPaymentPaywall)
+        isPaymentPaywall: Boolean(params?.isPaymentPaywall),
     }),
 });

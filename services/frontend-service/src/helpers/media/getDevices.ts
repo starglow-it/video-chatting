@@ -1,4 +1,7 @@
-import { DeviceInputKindEnum, INPUT_KIND_ARRAY } from '../../const/media/DEVICE_KINDS';
+import {
+    DeviceInputKindEnum,
+    INPUT_KIND_ARRAY,
+} from '../../const/media/DEVICE_KINDS';
 import { MediaStreamOptions } from './types';
 
 export const getDevices = async (): Promise<{

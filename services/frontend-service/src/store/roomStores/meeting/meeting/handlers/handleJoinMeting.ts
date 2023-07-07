@@ -78,5 +78,4 @@ export const handleJoinMeting = async ({
     } else {
         setActiveStreamEvent(clonedStream);
     }
-
 };

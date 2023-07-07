@@ -67,7 +67,6 @@ const Component = ({ isAllowBack = true }) => {
         );
     }, []);
 
-
     const renderUserAvatar = useCallback(
         (user: MeetingUser) => (
             <ProfileAvatar

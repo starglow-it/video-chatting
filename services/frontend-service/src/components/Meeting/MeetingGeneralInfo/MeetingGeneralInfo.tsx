@@ -20,6 +20,8 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // styles
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
 import styles from './MeetingGeneralInfo.module.scss';
 
 // store
@@ -29,8 +31,6 @@ import {
     toggleMeetingInfoOpen,
     $meetingTemplateStore,
 } from '../../../store/roomStores';
-import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
-import { Translation } from '@library/common/Translation/Translation';
 
 const Component = () => {
     const isOwner = useStore($isOwner);

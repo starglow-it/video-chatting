@@ -53,6 +53,7 @@ import {
     indexRoute,
 } from '../src/const/client-routes';
 import { SpinnerLoading } from '@components/Spinner/Spinner';
+
 const { publicRuntimeConfig } = getConfig();
 
 const clientSideEmotionCache = createEmotionCache();

@@ -53,7 +53,9 @@ const Component = (
                 }}
                 {...rest}
             />
-            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
+            {error && (
+                <ErrorMessage className={styles.errorContainer} error={error} />
+            )}
         </CustomGrid>
     );
 };

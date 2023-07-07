@@ -1,4 +1,8 @@
-import { $contactForm, changeContactFormData, sendContactFormFx } from './model';
+import {
+    $contactForm,
+    changeContactFormData,
+    sendContactFormFx,
+} from './model';
 import { handleSendContactForm } from './handlers/handleSendContactForm';
 
 sendContactFormFx.use(handleSendContactForm);

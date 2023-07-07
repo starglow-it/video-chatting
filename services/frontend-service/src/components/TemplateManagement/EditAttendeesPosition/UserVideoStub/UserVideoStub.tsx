@@ -1,5 +1,16 @@
-import React, { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import Draggable, { ControlPosition, DraggableData, DraggableEvent } from 'react-draggable';
+import React, {
+    memo,
+    useCallback,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
+import Draggable, {
+    ControlPosition,
+    DraggableData,
+    DraggableEvent,
+} from 'react-draggable';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
@@ -19,11 +30,11 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { UserVideoStubProps } from '@components/TemplateManagement/EditAttendeesPosition/UserVideoStub/types';
 
 // store
+import { roundNumberToPrecision } from 'shared-utils';
 import { $windowSizeStore } from '../../../../store';
 
 // styles
 import styles from './UserVideoStub.module.scss';
-import {roundNumberToPrecision} from "shared-utils";
 
 const Component = ({
     stubId,
@@ -46,7 +57,9 @@ const Component = ({
 
     const { width, height } = useStore($windowSizeStore);
 
-    const [draggablePosition, setDraggablePosition] = useState<ControlPosition>({ x: 0, y: 0 });
+    const [draggablePosition, setDraggablePosition] = useState<ControlPosition>(
+        { x: 0, y: 0 },
+    );
 
     const contentRef = useRef<HTMLDivElement>(null);
 
@@ -123,7 +136,9 @@ const Component = ({
                 gap={1.625}
                 onMouseEnter={onShowTooltip}
                 onMouseLeave={onHideTooltip}
-                className={clsx(styles.wrapper, { [styles.disabled]: !isDraggable })}
+                className={clsx(styles.wrapper, {
+                    [styles.disabled]: !isDraggable,
+                })}
             >
                 <CustomGrid
                     container
@@ -131,7 +146,11 @@ const Component = ({
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <PersonIcon width="60px" height="60px" className={styles.icon} />
+                    <PersonIcon
+                        width="60px"
+                        height="60px"
+                        className={styles.icon}
+                    />
                 </CustomGrid>
                 <CustomTooltip
                     arrow

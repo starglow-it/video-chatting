@@ -8,7 +8,12 @@ export const formatCountDown = (
         minutes,
         seconds,
         numeric = true,
-    }: { hours?: boolean; minutes?: boolean; seconds?: boolean; numeric?: boolean },
+    }: {
+        hours?: boolean;
+        minutes?: boolean;
+        seconds?: boolean;
+        numeric?: boolean;
+    },
 ) => {
     const hoursNumber = time / ONE_HOUR;
     const minutesNumber = time % ONE_HOUR;
@@ -28,7 +33,9 @@ export const formatCountDown = (
         }${minutes && seconds ? ':' : ''}${seconds ? finalSeconds : ''}`;
     }
 
-    return `${hours ? finalHours : ''}${hours ? 'h ' : ''}${minutes ? finalMinutes : ''}${
-        minutes ? 'm ' : ''
-    }${seconds ? finalSeconds : ''}${seconds ? 'sec' : ''}`;
+    return `${hours ? finalHours : ''}${hours ? 'h ' : ''}${
+        minutes ? finalMinutes : ''
+    }${minutes ? 'm ' : ''}${seconds ? finalSeconds : ''}${
+        seconds ? 'sec' : ''
+    }`;
 };

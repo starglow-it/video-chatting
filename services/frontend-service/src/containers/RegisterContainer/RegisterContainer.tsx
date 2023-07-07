@@ -24,6 +24,27 @@ import { SuccessfulRegisterDialog } from '@components/Dialogs/SuccessfulRegister
 // stores
 import { RegisterUserParams } from 'src/store/types';
 import { Translation } from '@library/common/Translation/Translation';
+
+// styles
+
+// validations
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { CustomCheckbox } from 'shared-frontend/library/custom/CustomCheckbox';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
+import { getClientMeetingUrl } from 'src/utils/urls';
+import { useRouter } from 'next/router';
+import { EntityList, IUserTemplate } from 'shared-types';
+import { dashboardRoute } from 'src/const/client-routes';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from '../../controllers/WebStorageController';
+import { passwordSchema } from '../../validation/users/password';
+import { emailSchema } from '../../validation/users/email';
+import styles from './RegisterContainer.module.scss';
 import {
     $authStore,
     $profileStore,
@@ -35,27 +56,6 @@ import {
     registerUserFx,
     resetRegisterErrorEvent,
 } from '../../store';
-
-// styles
-import styles from './RegisterContainer.module.scss';
-
-// validations
-import { emailSchema } from '../../validation/users/email';
-import { passwordSchema } from '../../validation/users/password';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from '../../controllers/WebStorageController';
-import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { CustomCheckbox } from 'shared-frontend/library/custom/CustomCheckbox';
-import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
-import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
-import { getClientMeetingUrl } from 'src/utils/urls';
-import { useRouter } from 'next/router';
-import { EntityList, IUserTemplate } from 'shared-types';
-import { dashboardRoute } from 'src/const/client-routes';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),

@@ -15,7 +15,11 @@ import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // stores
-import { $profileStore, $profileTemplatesStore, getProfileTemplatesFx } from '../../../store';
+import {
+    $profileStore,
+    $profileTemplatesStore,
+    getProfileTemplatesFx,
+} from '../../../store';
 
 // styles
 import styles from './MainInfo.module.scss';
@@ -28,7 +32,9 @@ const MainInfo = memo(() => {
         keys: [],
         fn: state =>
             state?.list?.sort?.((a, b) =>
-                new Date(a.usedAt).getTime() < new Date(b.usedAt).getTime() ? 1 : 0,
+                new Date(a.usedAt).getTime() < new Date(b.usedAt).getTime()
+                    ? 1
+                    : 0,
             )?.[0],
     });
 
@@ -77,7 +83,10 @@ const MainInfo = memo(() => {
                         flexWrap="nowrap"
                         className={styles.descriptionWrapper}
                     >
-                        <CustomTypography className={styles.companyName} variant="h4bold">
+                        <CustomTypography
+                            className={styles.companyName}
+                            variant="h4bold"
+                        >
                             {profileState?.companyName}
                         </CustomTypography>
                         <CustomTypography

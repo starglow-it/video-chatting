@@ -1,6 +1,6 @@
+import { createEvent } from 'effector-next';
 import { otherStoresDomain, supportDomain } from '../../domains';
 import { ContactFormPayload, ContactFormResponse } from '../../types';
-import { createEvent } from 'effector-next';
 
 export const $contactForm = supportDomain.createStore<ContactFormPayload>({
     name: '',
@@ -14,4 +14,3 @@ export const sendContactFormFx = otherStoresDomain.createEffect<
     ContactFormPayload,
     ContactFormResponse
 >('sendContactFormFx');
-

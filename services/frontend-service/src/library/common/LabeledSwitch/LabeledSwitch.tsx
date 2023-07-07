@@ -28,9 +28,15 @@ const Component = ({
     >
         <CustomGrid container wrap="nowrap">
             {Icon}
-            <CustomTypography color={color} nameSpace={nameSpace} translation={translation} />
+            <CustomTypography
+                color={color}
+                nameSpace={nameSpace}
+                translation={translation}
+            />
         </CustomGrid>
-        {SwitchComponent || <CustomSwitch checked={checked} onChange={onChange} {...rest} />}
+        {SwitchComponent || (
+            <CustomSwitch checked={checked} onChange={onChange} {...rest} />
+        )}
     </CustomGrid>
 );
 

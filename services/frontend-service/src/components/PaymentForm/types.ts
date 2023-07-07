@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 export type PaymentFormProps = {
     onClose?: () => void;
-    templateType?: string
-    subLabel?: ReactNode
-    paymentType?: 'in-meeting' | 'paywall'
+    templateType?: string;
+    subLabel?: ReactNode;
+    paymentType?: 'in-meeting' | 'paywall';
 };

@@ -16,19 +16,19 @@ export const handleCheckUserAuthentication = async (ctx?: NextPageContext) => {
         return {
             isAuthenticated: !isWithoutAuthen,
             user: response?.result,
-            isWithoutAuthen
+            isWithoutAuthen,
         };
     }
     if (!response.success) {
         return {
             isAuthenticated: response.success,
             error: response?.error,
-            isWithoutAuthen: false
+            isWithoutAuthen: false,
         };
     }
 
     return {
         isAuthenticated: false,
-        isWithoutAuthen: false
+        isWithoutAuthen: false,
     };
 };

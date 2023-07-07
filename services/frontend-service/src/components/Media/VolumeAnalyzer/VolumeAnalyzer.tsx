@@ -19,7 +19,8 @@ import { $changeStreamStore } from '../../../store/roomStores';
 const Component = ({ indicatorsNumber = 6 }: { indicatorsNumber: number }) => {
     const changeStream = useStore($changeStreamStore);
 
-    const { volume, onStartVolumeIndicator } = useAudioVolumeMeter(changeStream);
+    const { volume, onStartVolumeIndicator } =
+        useAudioVolumeMeter(changeStream);
 
     useEffect(() => {
         onStartVolumeIndicator();
@@ -27,8 +28,9 @@ const Component = ({ indicatorsNumber = 6 }: { indicatorsNumber: number }) => {
 
     const indicatorSteps = useMemo(
         () =>
-            [...new Array(indicatorsNumber).fill(0).keys()].map((indicator, index, arr) =>
-                Math.ceil((100 / arr.length) * index),
+            [...new Array(indicatorsNumber).fill(0).keys()].map(
+                (indicator, index, arr) =>
+                    Math.ceil((100 / arr.length) * index),
             ),
         [indicatorsNumber],
     );
@@ -36,7 +38,9 @@ const Component = ({ indicatorsNumber = 6 }: { indicatorsNumber: number }) => {
     const renderVolumeIndicator = useMemo(
         () =>
             indicatorSteps.map((indicator, i) => {
-                const targetStepIndex = indicatorSteps.findIndex(step => volume <= step);
+                const targetStepIndex = indicatorSteps.findIndex(
+                    step => volume <= step,
+                );
 
                 const targetStepValue = indicatorSteps[targetStepIndex];
 
@@ -50,15 +54,22 @@ const Component = ({ indicatorsNumber = 6 }: { indicatorsNumber: number }) => {
                 const handleActiveIndicator =
                     i < targetStepIndex || i !== 0 ? 1 : volumeRangePercent;
 
-                const currentOpacity = i > targetStepIndex ? 0 : handleActiveIndicator;
+                const currentOpacity =
+                    i > targetStepIndex ? 0 : handleActiveIndicator;
 
-                return <VolumeIndicator key={indicator} opacity={currentOpacity} />;
+                return (
+                    <VolumeIndicator key={indicator} opacity={currentOpacity} />
+                );
             }),
         [indicatorSteps, volume],
     );
 
     return (
-        <CustomGrid container justifyContent="space-between" className={styles.volumeWrapper}>
+        <CustomGrid
+            container
+            justifyContent="space-between"
+            className={styles.volumeWrapper}
+        >
             {renderVolumeIndicator}
         </CustomGrid>
     );

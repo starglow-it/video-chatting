@@ -16,21 +16,21 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // const
-import { MAX_NOTE_CONTENT } from '../../const/general';
 
 // validation
-import { simpleStringSchemaWithLength } from '../../validation/common';
 
 // stores
-import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
 
 // styles
-import styles from './LeaveNoteForm.module.scss';
 import { ClickAwayListener } from '@mui/material';
 import clsx from 'clsx';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import styles from './LeaveNoteForm.module.scss';
+import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
+import { simpleStringSchemaWithLength } from '../../validation/common';
+import { MAX_NOTE_CONTENT } from '../../const/general';
 
 const validationSchema = yup.object({
     note: simpleStringSchemaWithLength(MAX_NOTE_CONTENT).required('required'),

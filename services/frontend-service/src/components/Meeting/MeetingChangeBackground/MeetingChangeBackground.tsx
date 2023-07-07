@@ -15,6 +15,17 @@ import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon'
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { useToggle } from '@hooks/useToggle';
+import { $isPortraitLayout } from 'src/store';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { UploadBackground } from './Upload';
+import styles from './MeetingChangeBackground.module.scss';
+import { Media } from './Media';
+import { Barge } from './Barge';
 import {
     $backgroundMeetingStore,
     $isLoadMoreMediasStore,
@@ -25,17 +36,6 @@ import {
     setQueryMediasEvent,
     uploadNewBackgroundFx,
 } from '../../../store/roomStores';
-import { Barge } from './Barge';
-import { Media } from './Media';
-import styles from './MeetingChangeBackground.module.scss';
-import { UploadBackground } from './Upload';
-import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
-import { Translation } from '@library/common/Translation/Translation';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { useToggle } from '@hooks/useToggle';
-import { $isPortraitLayout } from 'src/store';
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 const Component = () => {
     const { medias, categorySelected, mediaSelected, categories, count } =

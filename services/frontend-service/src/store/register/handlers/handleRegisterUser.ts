@@ -25,7 +25,7 @@ export const handleRegisterUser = async (params: RegisterUserParams) => {
     }
 
     if (!response.success) {
-        throw new Error(response?.error?.message)
+        throw new Error(response?.error?.message);
     }
 
     return {

@@ -59,7 +59,10 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
         // eslint-disable-next-line
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-        const fieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(reduceValuesNumber, 0);
+        const fieldsCount = Object.values(dirtyFieldsWithOutSocials).reduce(
+            reduceValuesNumber,
+            0,
+        );
 
         const paddedNextSocials = padArray<ISocialLink>(
             nextSocials,
@@ -74,7 +77,9 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
             const targetSocial = paddedNextSocials?.find(
                 currentSocial => currentSocial?.key === social?.key,
             );
-            const isBothEmpty = targetSocial?.value === undefined && social?.value === undefined;
+            const isBothEmpty =
+                targetSocial?.value === undefined &&
+                social?.value === undefined;
 
             const isExistedNotChanged =
                 targetSocial?.value && targetSocial?.value === social?.value;
@@ -92,7 +97,9 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
             })
             .filter(Boolean);
 
-        const numberOfChangedFields = changedFields.filter(value => !value).length;
+        const numberOfChangedFields = changedFields.filter(
+            value => !value,
+        ).length;
 
         return fieldsCount + numberOfChangedFields + changedNewFields.length;
     }, [Object.keys(dirtyFields).length, nextSocials, profile.socials]);
@@ -139,11 +146,18 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
                     translation="editProfile.submitProfile.newChanges"
                 />
                 &nbsp;
-                <CustomTypography fontWeight={600}>{dirtyFieldsCount}</CustomTypography>
+                <CustomTypography fontWeight={600}>
+                    {dirtyFieldsCount}
+                </CustomTypography>
                 <CustomButton
                     className={styles.confirmButton}
                     type="submit"
-                    label={<Translation nameSpace="common" translation="buttons.save" />}
+                    label={
+                        <Translation
+                            nameSpace="common"
+                            translation="buttons.save"
+                        />
+                    }
                     typographyProps={{
                         variant: 'body2',
                     }}
@@ -151,7 +165,12 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
                 <CustomButton
                     className={styles.cancelButton}
                     onClick={handleResetForm}
-                    label={<Translation nameSpace="common" translation="buttons.cancel" />}
+                    label={
+                        <Translation
+                            nameSpace="common"
+                            translation="buttons.cancel"
+                        />
+                    }
                     variant="custom-cancel"
                     typographyProps={{
                         variant: 'body2',

@@ -2,7 +2,12 @@ import { useStore } from 'effector-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NotificationType } from '../store/types';
-import { $isTrial, $profileStore, $subscriptionStore, addNotificationEvent } from '../store';
+import {
+    $isTrial,
+    $profileStore,
+    $subscriptionStore,
+    addNotificationEvent,
+} from '../store';
 
 export const useSubscriptionNotification = (url?: string) => {
     const router = useRouter();
@@ -15,9 +20,13 @@ export const useSubscriptionNotification = (url?: string) => {
 
     useEffect(() => {
         if (updateUrl) {
-            const isHouseSubscriptionSuccess = router.query.success_house === 'true';
+            const isHouseSubscriptionSuccess =
+                router.query.success_house === 'true';
 
-            if ((!subscription?.id && !isHouseSubscriptionSuccess) || router.asPath === updateUrl) {
+            if (
+                (!subscription?.id && !isHouseSubscriptionSuccess) ||
+                router.asPath === updateUrl
+            ) {
                 return;
             }
 

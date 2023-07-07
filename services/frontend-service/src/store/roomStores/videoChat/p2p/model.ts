@@ -20,11 +20,16 @@ export const removeConnectionsFx = videoChatDomain.createEffect<
     ConnectionsStore,
     IWebRtcConnection['connectionId'][]
 >('removeConnectionsFx');
-export const getOfferFx = videoChatDomain.createEffect<GetOfferPayload, void>('getOfferFx');
-export const getAnswerFx = videoChatDomain.createEffect<GetAnswerPayload, void>('getAnswerFx');
-export const getIceCandidateFx = videoChatDomain.createEffect<GetIceCandidatePayload, void>(
-    'getIceCandidateFx',
+export const getOfferFx = videoChatDomain.createEffect<GetOfferPayload, void>(
+    'getOfferFx',
 );
+export const getAnswerFx = videoChatDomain.createEffect<GetAnswerPayload, void>(
+    'getAnswerFx',
+);
+export const getIceCandidateFx = videoChatDomain.createEffect<
+    GetIceCandidatePayload,
+    void
+>('getIceCandidateFx');
 export const startP2PSharingFx = videoChatDomain.createEffect<
     CreatePeerConnectionsPayload,
     ConnectionsStore
@@ -39,10 +44,18 @@ export const changeP2PActiveStreamFx = videoChatDomain.createEffect<
 >('changeP2PActiveStreamFx');
 
 // events
-export const removePeerConnection = videoChatDomain.createEvent<{ connectionId: string }>(
-    'removePeerConnection',
+export const removePeerConnection = videoChatDomain.createEvent<{
+    connectionId: string;
+}>('removePeerConnection');
+export const startP2PSharingEvent = videoChatDomain.createEvent(
+    'startP2PSharingEvent',
 );
-export const startP2PSharingEvent = videoChatDomain.createEvent('startP2PSharingEvent');
-export const stopP2PSharingEvent = videoChatDomain.createEvent('stopP2PSharingEvent');
-export const disconnectFromP2PEvent = videoChatDomain.createEvent('disconnectFromP2PEvent');
-export const changeP2PActiveStreamEvent = videoChatDomain.createEvent('changeP2PActiveStreamEvent');
+export const stopP2PSharingEvent = videoChatDomain.createEvent(
+    'stopP2PSharingEvent',
+);
+export const disconnectFromP2PEvent = videoChatDomain.createEvent(
+    'disconnectFromP2PEvent',
+);
+export const changeP2PActiveStreamEvent = videoChatDomain.createEvent(
+    'changeP2PActiveStreamEvent',
+);

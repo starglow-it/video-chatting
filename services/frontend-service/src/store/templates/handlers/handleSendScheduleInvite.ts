@@ -10,7 +10,10 @@ export const handleSendScheduleInvite = async (data: {
     startAt: ParsedTimeStamp;
     endAt: ParsedTimeStamp;
 }): Promise<string | undefined> => {
-    const response = await sendRequestWithCredentials<{ icsLink: string }, ErrorState>({
+    const response = await sendRequestWithCredentials<
+        { icsLink: string },
+        ErrorState
+    >({
         ...sendScheduleInviteUrl,
         data,
     });

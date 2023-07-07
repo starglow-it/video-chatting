@@ -19,7 +19,14 @@ export const handleCreatePeerConnections = async ({
     options,
 }: CreatePeerConnectionsPayload): Promise<ConnectionsStore> => {
     const connectionPromises = connectionsData.map(
-        async ({ connectionType, streamType, isInitial, userId, senderId, socketId }) => {
+        async ({
+            connectionType,
+            streamType,
+            isInitial,
+            userId,
+            senderId,
+            socketId,
+        }) => {
             const connectionId = getConnectionKey({
                 connectionType,
                 userId,
@@ -38,7 +45,9 @@ export const handleCreatePeerConnections = async ({
                 onGotStream: setConnectionStream,
                 onTrackEnded: options?.onTrackEnded,
                 onIceConnectionStateDisconnected: options?.onDisconnected,
-                onGotOffer: (data: OfferExchangePayload | AnswerExchangePayload) => {
+                onGotOffer: (
+                    data: OfferExchangePayload | AnswerExchangePayload,
+                ) => {
                     if (data.type === 'offer') {
                         sendOfferSocketEvent(data);
                     }
@@ -77,7 +86,10 @@ export const handleCreatePeerConnections = async ({
     const data = await Promise.all(connectionPromises);
 
     return data.reduce(
-        (acc, b) => (b?.connectionId ? { ...acc, [b.connectionId]: { connection: b } } : acc),
+        (acc, b) =>
+            b?.connectionId
+                ? { ...acc, [b.connectionId]: { connection: b } }
+                : acc,
         {},
     );
 };

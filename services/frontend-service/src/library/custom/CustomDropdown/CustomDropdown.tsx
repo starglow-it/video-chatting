@@ -34,7 +34,10 @@ const Component: React.FunctionComponent<CustomDropdownProps> = (
 
     const t = useLocalization(nameSpace);
 
-    const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
+    const label = useMemo(
+        () => (translation ? t.translation(translation) : ''),
+        [translation],
+    );
 
     return (
         <FormControl className={styles.select} error={Boolean(error)}>
@@ -68,7 +71,9 @@ const Component: React.FunctionComponent<CustomDropdownProps> = (
             >
                 {list}
             </Select>
-            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
+            {error && (
+                <ErrorMessage className={styles.errorContainer} error={error} />
+            )}
         </FormControl>
     );
 };

@@ -25,7 +25,9 @@ export class DatabaseService implements OnModuleInit, OnApplicationBootstrap {
             if (this.connection.readyState !== 1) return;
             this.models = this.connection.models;
 
-            await this.syncDataMultipleEnvs();
+            if (await this.configService.get('isSyncData')) {
+                await this.syncDataMultipleEnvs();
+            }
         }
         catch (err) {
             this.logger.error(err.message);

@@ -6,8 +6,11 @@ export const $windowSizeStore = uiDomain.createStore({
 });
 
 export const initWindowListeners = uiDomain.createEvent('initWindowListeners');
-export const removeWindowListeners = uiDomain.createEvent('removeWindowListeners');
-
-export const setWindowSizeEvent = uiDomain.createEvent<{ width: number; height: number }>(
-    'setWindowSizeEvent',
+export const removeWindowListeners = uiDomain.createEvent(
+    'removeWindowListeners',
 );
+
+export const setWindowSizeEvent = uiDomain.createEvent<{
+    width: number;
+    height: number;
+}>('setWindowSizeEvent');

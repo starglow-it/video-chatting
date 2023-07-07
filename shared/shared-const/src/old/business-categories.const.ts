@@ -14,6 +14,6 @@ export const BUSINESS_CATEGORIES = [
     color: '#5ba555',
     icon: '1f3f3-fe0f-200d-1f308',
   },
-  { key: 'arts', value: 'Arts', color: '#517f60', icon: '1f3a8' },
+  { key: 'art', value: 'Art', color: '#517f60', icon: '1f3a8' },
   { key: 'ai', value: 'AI', color: '#7a785b', icon: '1f916' },
 ];

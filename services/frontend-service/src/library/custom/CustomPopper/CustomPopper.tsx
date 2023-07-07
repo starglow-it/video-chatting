@@ -10,7 +10,14 @@ import styles from './CustomPopper.module.scss';
 import { CustomPopperProps } from './types';
 
 const CustomPopper = memo(
-    ({ id, open, anchorEl, children, className, ...rest }: CustomPopperProps) => (
+    ({
+        id,
+        open,
+        anchorEl,
+        children,
+        className,
+        ...rest
+    }: CustomPopperProps) => (
         <Popper
             id={id}
             open={open}

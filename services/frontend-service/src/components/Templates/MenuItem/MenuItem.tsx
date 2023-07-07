@@ -4,8 +4,8 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { IBusinessCategory } from 'shared-types';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import clsx from 'clsx';
-import styles from './MenuItem.module.scss';
 import { mapEmoji, parseEmoji } from 'shared-utils';
+import styles from './MenuItem.module.scss';
 
 const Component = ({
     onSelect,

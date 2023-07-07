@@ -14,7 +14,11 @@ import { removeConnectionStream, setConnectionStream } from '../../model';
 import { getLiveKitTokenFx } from '../model';
 import { ConnectToSFUPayload } from '../../types';
 import { MeetingUser } from '../../../../types';
-import { ConnectionType, StreamType, TrackKind } from '../../../../../const/webrtc';
+import {
+    ConnectionType,
+    StreamType,
+    TrackKind,
+} from '../../../../../const/webrtc';
 
 import { updateMeetingSocketEvent } from '../../../meeting/sockets/model';
 import frontendConfig from '../../../../../const/config';
@@ -31,7 +35,9 @@ const getConnectionIdHelper = ({
     getConnectionKey({
         userId,
         streamType:
-            source === Track.Source.ScreenShare ? StreamType.SCREEN_SHARING : StreamType.VIDEO_CHAT,
+            source === Track.Source.ScreenShare
+                ? StreamType.SCREEN_SHARING
+                : StreamType.VIDEO_CHAT,
         connectionType: ConnectionType.VIEW,
     });
 
@@ -132,7 +138,11 @@ const handleParticipantConnected = (participant: RemoteParticipant) => {
     console.log(RoomEvent.ParticipantConnected, participant);
 };
 
-export const handleConnectToSFU = async ({ templateId, userId, serverIp }: ConnectToSFUPayload) => {
+export const handleConnectToSFU = async ({
+    templateId,
+    userId,
+    serverIp,
+}: ConnectToSFUPayload) => {
     const token = await getLiveKitTokenFx({
         templateId,
         userId,
@@ -156,7 +166,10 @@ export const handleConnectToSFU = async ({ templateId, userId, serverIp }: Conne
         .on(RoomEvent.TrackUnpublished, handleRemoteTrackUnpublished)
         .on(RoomEvent.TrackSubscribed, handleTrackSubscribed)
         .on(RoomEvent.ConnectionStateChanged, (...args) => {
-            console.log('RoomEvent.ConnectionStateChanged', RoomEvent.ConnectionStateChanged);
+            console.log(
+                'RoomEvent.ConnectionStateChanged',
+                RoomEvent.ConnectionStateChanged,
+            );
             console.log(args);
         })
         .on(RoomEvent.Disconnected, (...args) => {
@@ -165,7 +178,10 @@ export const handleConnectToSFU = async ({ templateId, userId, serverIp }: Conne
         })
         .on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed);
 
-    const livekitWssUrl = ['localhost', frontendConfig.defaultServerIp].includes(serverIp)
+    const livekitWssUrl = [
+        'localhost',
+        frontendConfig.defaultServerIp,
+    ].includes(serverIp)
         ? frontendConfig.livekitWss
         : getMeetingInstanceLivekitUrl(serverIp);
 

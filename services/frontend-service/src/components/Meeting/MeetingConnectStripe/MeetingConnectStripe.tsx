@@ -22,73 +22,77 @@ import {
     deleteStripeAccountFx,
 } from '../../../store';
 
-
-
 export const MeetingConnectStripe = () => {
-  const profile = useStore($profileStore);
-    const isConnectStripeAccountPending = useStore(connectStripeAccountFx.pending);
-    const isDeleteStripeAccountPending = useStore(deleteStripeAccountFx.pending);
+    const profile = useStore($profileStore);
+    const isConnectStripeAccountPending = useStore(
+        connectStripeAccountFx.pending,
+    );
+    const isDeleteStripeAccountPending = useStore(
+        deleteStripeAccountFx.pending,
+    );
     const isPortraitLayout = useStore($isPortraitLayout);
 
     const handleSetUpPayments = useCallback(async () => {
-      if (!isConnectStripeAccountPending) {
-          await connectStripeAccountFx({});
-      }
-  }, [isConnectStripeAccountPending]);
+        if (!isConnectStripeAccountPending) {
+            await connectStripeAccountFx({});
+        }
+    }, [isConnectStripeAccountPending]);
 
-  const handleDeletePaymentSetUp = useCallback(async () => {
-    if(!isDeleteStripeAccountPending){
-        await deleteStripeAccountFx({});
-    }      
-  }, []);
+    const handleDeletePaymentSetUp = useCallback(async () => {
+        if (!isDeleteStripeAccountPending) {
+            await deleteStripeAccountFx({});
+        }
+    }, []);
 
-  const fontSize = useMemo(() => {
-    if(isPortraitLayout) return 12;
-    return undefined;
-  },[isPortraitLayout])
+    const fontSize = useMemo(() => {
+        if (isPortraitLayout) return 12;
+        return undefined;
+    }, [isPortraitLayout]);
 
-  return (
-        profile.isStripeEnabled && profile.stripeAccountId ? (
-            <CustomButton className={styles.buttonWrapper} onClick={handleDeletePaymentSetUp}>
-                <CustomTypography
-                    className={styles.disconnect}
-                    color={
-                        !isDeleteStripeAccountPending
-                            ? 'colors.red.primary'
-                            : 'colors.grayscale.normal'
-                    }
-                    nameSpace="profile"
-                    translation="monetization.disconnect"
-                />
+    return profile.isStripeEnabled && profile.stripeAccountId ? (
+        <CustomButton
+            className={styles.buttonWrapper}
+            onClick={handleDeletePaymentSetUp}
+        >
+            <CustomTypography
+                className={styles.disconnect}
+                color={
+                    !isDeleteStripeAccountPending
+                        ? 'colors.red.primary'
+                        : 'colors.grayscale.normal'
+                }
+                nameSpace="profile"
+                translation="monetization.disconnect"
+            />
+        </CustomButton>
+    ) : (
+        <CustomGrid container gap={2} direction="column">
+            <CustomButton onClick={handleSetUpPayments}>
+                {!isConnectStripeAccountPending ? (
+                    <>
+                        &nbsp;
+                        <CustomTypography
+                            nameSpace="profile"
+                            translation={
+                                !profile.isStripeEnabled &&
+                                profile.stripeAccountId
+                                    ? 'monetization.setUp'
+                                    : 'monetization.connectWith'
+                            }
+                            fontSize={fontSize}
+                        />
+                        &nbsp;
+                        <CustomTypography
+                            variant="body1bold"
+                            nameSpace="profile"
+                            translation="monetization.stripe"
+                            fontSize={fontSize}
+                        />
+                    </>
+                ) : (
+                    <CustomLoader />
+                )}
             </CustomButton>
-        ) : (
-            <CustomGrid container gap={2} direction="column">
-                <CustomButton onClick={handleSetUpPayments} >
-                    {!isConnectStripeAccountPending ? (
-                        <>
-                            &nbsp;
-                            <CustomTypography
-                                nameSpace="profile"
-                                translation={
-                                    !profile.isStripeEnabled && profile.stripeAccountId
-                                        ? 'monetization.setUp'
-                                        : 'monetization.connectWith'
-                                }
-                                fontSize={fontSize}
-                            />
-                            &nbsp;
-                            <CustomTypography
-                                variant="body1bold"
-                                nameSpace="profile"
-                                translation="monetization.stripe"
-                                fontSize={fontSize}
-                            />
-                        </>
-                    ) : (
-                        <CustomLoader />
-                    )}
-                </CustomButton>
-            </CustomGrid>
-        )
-  )
-}
+        </CustomGrid>
+    );
+};

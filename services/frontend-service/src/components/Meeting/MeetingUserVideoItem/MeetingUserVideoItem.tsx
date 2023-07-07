@@ -24,6 +24,10 @@ import { MeetingUserAudioItem } from '@components/Meeting/MeetingUserAudioItem/M
 import { MeetingUserVideoPositionWrapper } from '@components/Meeting/MeetingUserVideoPositionWrapper/MeetingUserVideoPositionWrapper';
 
 // stores
+import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable';
+import { ResizeCallbackData } from 'react-resizable';
+import { $windowSizeStore } from 'src/store';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { $tracksStore } from '../../../store/roomStores';
 
 // types
@@ -33,10 +37,6 @@ import { ConnectionType, StreamType } from '../../../const/webrtc';
 // styles
 import styles from './MeetingUserVideoItem.module.scss';
 import { getConnectionKey } from '../../../helpers/media/getConnectionKey';
-import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable';
-import { ResizeCallbackData } from 'react-resizable';
-import { $windowSizeStore } from 'src/store';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // utils
 
