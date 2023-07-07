@@ -29,7 +29,7 @@ const Component = ({
     isCommonTemplate,
     authorRole,
     authorThumbnail,
-    authorName
+    authorName,
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">

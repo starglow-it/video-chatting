@@ -10,6 +10,9 @@ import { handleUpdateProfileTemplate } from '../handlers/handleUpdateProfileTemp
 getProfileTemplateBaseEffect.use(handleFetchProfileTemplate);
 updateProfileTemplateBaseEffect.use(handleUpdateProfileTemplate);
 
-$profileTemplateStore.on(getProfileTemplateBaseEffect.doneData, (state, data) => data);
+$profileTemplateStore.on(
+    getProfileTemplateBaseEffect.doneData,
+    (state, data) => data,
+);
 
 $profileTemplateStore.reset(resetProfileTemplateEvent);

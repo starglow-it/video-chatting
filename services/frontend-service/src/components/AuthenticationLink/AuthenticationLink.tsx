@@ -7,13 +7,13 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // styles
-import styles from './AuthenticationLink.module.scss';
 
 // const
-import { clientRoutes, welcomeRoute } from '../../const/client-routes';
 import { initUserWithoutTokenFx } from 'src/store';
 import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
+import { clientRoutes, welcomeRoute } from '../../const/client-routes';
+import styles from './AuthenticationLink.module.scss';
 
 const Component = () => {
     const router = useRouter();

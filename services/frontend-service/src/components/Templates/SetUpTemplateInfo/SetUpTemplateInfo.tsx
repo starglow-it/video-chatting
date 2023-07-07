@@ -93,15 +93,29 @@ const SetUpTemplateInfo = memo(() => {
                     {renderStepsComponents}
                 </CustomBox>
                 <CustomButton
-                    className={clsx(styles.button, { [styles.hide]: isTheLastStep })}
+                    className={clsx(styles.button, {
+                        [styles.hide]: isTheLastStep,
+                    })}
                     onClick={handleNextStep}
-                    label={<Translation nameSpace="templates" translation="buttons.continue" />}
+                    label={
+                        <Translation
+                            nameSpace="templates"
+                            translation="buttons.continue"
+                        />
+                    }
                 />
                 <CustomButton
                     type="submit"
                     disabled={isUpdatePending}
-                    className={clsx(styles.button, { [styles.hide]: !isTheLastStep })}
-                    label={<Translation nameSpace="templates" translation="buttons.done" />}
+                    className={clsx(styles.button, {
+                        [styles.hide]: !isTheLastStep,
+                    })}
+                    label={
+                        <Translation
+                            nameSpace="templates"
+                            translation="buttons.done"
+                        />
+                    }
                 />
             </CustomBox>
         </CustomPaper>

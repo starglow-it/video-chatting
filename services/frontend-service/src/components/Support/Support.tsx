@@ -23,7 +23,11 @@ const Component = () => {
     }, [router.back]);
 
     return (
-        <CustomGrid className={styles.wrapper} container justifyContent="center">
+        <CustomGrid
+            className={styles.wrapper}
+            container
+            justifyContent="center"
+        >
             <CustomGrid
                 container
                 justifyContent="space-between"
@@ -40,9 +44,22 @@ const Component = () => {
                 >
                     <ArrowLeftIcon width="32px" height="32px" />
                 </CustomGrid>
-                <CustomGrid container alignItems="center" justifyContent="center" gap={1.5}>
-                    <CustomImage src="/images/handshake.webp" width="40px" height="40px" />
-                    <CustomTypography variant="h1" nameSpace="static" translation="support.title" />
+                <CustomGrid
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                    gap={1.5}
+                >
+                    <CustomImage
+                        src="/images/handshake.webp"
+                        width="40px"
+                        height="40px"
+                    />
+                    <CustomTypography
+                        variant="h1"
+                        nameSpace="static"
+                        translation="support.title"
+                    />
                 </CustomGrid>
             </CustomGrid>
             <CustomGrid container className={styles.content}>

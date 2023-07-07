@@ -33,9 +33,13 @@ import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 const MonetizationInfo = memo(() => {
     const profile = useStore($profileStore);
-    const isConnectStripeAccountPending = useStore(connectStripeAccountFx.pending);
+    const isConnectStripeAccountPending = useStore(
+        connectStripeAccountFx.pending,
+    );
     const isLoginStripeAccountPending = useStore(loginStripeAccountFx.pending);
-    const isDeleteStripeAccountPending = useStore(deleteStripeAccountFx.pending);
+    const isDeleteStripeAccountPending = useStore(
+        deleteStripeAccountFx.pending,
+    );
 
     const handleSetUpPayments = useCallback(async () => {
         if (!isConnectStripeAccountPending) {
@@ -73,7 +77,11 @@ const MonetizationInfo = memo(() => {
             gap={2}
         >
             <CustomGrid container alignItems="center" wrap="nowrap">
-                <MonetizationIcon className={styles.monetizationIcon} width="24px" height="24px" />
+                <MonetizationIcon
+                    className={styles.monetizationIcon}
+                    width="24px"
+                    height="24px"
+                />
                 <CustomTypography
                     fontWeight={600}
                     nameSpace="profile"
@@ -83,7 +91,9 @@ const MonetizationInfo = memo(() => {
                     <CustomTypography
                         className={styles.disconnect}
                         onClick={
-                            !isDeleteStripeAccountPending ? handleDeletePaymentSetUp : emptyFunction
+                            !isDeleteStripeAccountPending
+                                ? handleDeletePaymentSetUp
+                                : emptyFunction
                         }
                         color={
                             !isDeleteStripeAccountPending
@@ -96,7 +106,9 @@ const MonetizationInfo = memo(() => {
                 </ConditionalRender>
             </CustomGrid>
             <ConditionalRender
-                condition={!profile.isStripeEnabled && Boolean(profile.stripeAccountId)}
+                condition={
+                    !profile.isStripeEnabled && Boolean(profile.stripeAccountId)
+                }
             >
                 <CustomTypography
                     color="colors.grayscale.normal"
@@ -106,7 +118,10 @@ const MonetizationInfo = memo(() => {
             </ConditionalRender>
             <CustomGrid container gap={6}>
                 {profile.isStripeEnabled && profile.stripeAccountId ? (
-                    <SocialLogin className={styles.buttonWrapper} onClick={handleLoginStripe}>
+                    <SocialLogin
+                        className={styles.buttonWrapper}
+                        onClick={handleLoginStripe}
+                    >
                         <CustomTypography
                             variant="body1bold"
                             nameSpace="profile"
@@ -117,18 +132,26 @@ const MonetizationInfo = memo(() => {
                             &nbsp;
                             {profile.stripeEmail}
                         </CustomTypography>
-                        <ArrowIcon width="28px" height="28px" className={styles.icon} />
+                        <ArrowIcon
+                            width="28px"
+                            height="28px"
+                            className={styles.icon}
+                        />
                     </SocialLogin>
                 ) : (
                     <CustomGrid container gap={2} direction="column">
-                        <SocialLogin Icon={StripeIcon} onClick={handleSetUpPayments}>
+                        <SocialLogin
+                            Icon={StripeIcon}
+                            onClick={handleSetUpPayments}
+                        >
                             {!isConnectStripeAccountPending ? (
                                 <>
                                     &nbsp;
                                     <CustomTypography
                                         nameSpace="profile"
                                         translation={
-                                            !profile.isStripeEnabled && profile.stripeAccountId
+                                            !profile.isStripeEnabled &&
+                                            profile.stripeAccountId
                                                 ? 'monetization.setUp'
                                                 : 'monetization.connectWith'
                                         }

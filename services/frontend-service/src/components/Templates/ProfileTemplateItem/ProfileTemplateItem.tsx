@@ -47,8 +47,7 @@ import { ProfileTemplateProps } from './types';
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 const ProfileTemplateItem = memo(
-    ({ template, 
-onChooseTemplate }: ProfileTemplateProps) => {
+    ({ template, onChooseTemplate }: ProfileTemplateProps) => {
         const profile = useStore($profileStore);
         const isBusinessSubscription = useStore($isBusinessSubscription);
         const isProfSubscription = useStore($isProfessionalSubscription);

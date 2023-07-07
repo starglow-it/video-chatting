@@ -1,4 +1,4 @@
-import {ErrorState, ICommonTemplate, IUserTemplate} from 'shared-types';
+import { ErrorState, ICommonTemplate, IUserTemplate } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { userTemplateUrl } from '../../../utils/urls';
 import { sendRequest } from '../../../helpers/http/sendRequest';
@@ -17,7 +17,9 @@ export const handleFetchUserTemplate = async ({
             userTemplateUrl({ templateId }),
         );
     } else {
-        response = await sendRequest<IUserTemplate, ErrorState>(userTemplateUrl({ templateId }));
+        response = await sendRequest<IUserTemplate, ErrorState>(
+            userTemplateUrl({ templateId }),
+        );
     }
 
     if (!response.success) {

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import {ValuesSwitcherItem} from "shared-frontend/types";
+import { ValuesSwitcherItem } from 'shared-frontend/types';
 
 type ValueType = string | number;
 
@@ -27,19 +27,27 @@ export const useValueSwitcher = <T extends ValueType>({
         [values, activeValue],
     );
 
-    const handleValueChange = useCallback(({ value }: ValuesSwitcherItem<T>) => {
-        setActiveValue(value);
-    }, []);
+    const handleValueChange = useCallback(
+        ({ value }: ValuesSwitcherItem<T>) => {
+            setActiveValue(value);
+        },
+        [],
+    );
 
     const handleNextValue = useCallback(() => {
-        const currentInd = values.findIndex(({ value }) => activeValue === value);
-        const newInd = currentInd + 1 === values.length ? currentInd : currentInd + 1;
+        const currentInd = values.findIndex(
+            ({ value }) => activeValue === value,
+        );
+        const newInd =
+            currentInd + 1 === values.length ? currentInd : currentInd + 1;
 
         setActiveValue(values[newInd].value);
     }, [activeValue]);
 
     const handlePreviousValue = useCallback(() => {
-        const currentInd = values.findIndex(({ value }) => activeValue === value);
+        const currentInd = values.findIndex(
+            ({ value }) => activeValue === value,
+        );
         const newInd = currentInd - 1 === -1 ? currentInd : currentInd - 1;
 
         setActiveValue(values[newInd].value);

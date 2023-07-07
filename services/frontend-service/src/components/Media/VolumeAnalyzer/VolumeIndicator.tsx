@@ -10,7 +10,8 @@ const VolumeIndicator = memo(({ opacity }: { opacity: number }) => (
     <CustomGrid
         className={styles.indicator}
         sx={{
-            background: theme => `${alpha(theme.palette.success.main, opacity)}`,
+            background: theme =>
+                `${alpha(theme.palette.success.main, opacity)}`,
         }}
     >
         <CustomBox className={styles.inactiveIndicator} />

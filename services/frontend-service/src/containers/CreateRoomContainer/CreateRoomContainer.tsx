@@ -22,6 +22,7 @@ import { useToggle } from '@hooks/useToggle';
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
 
 // store
+import { adjustUserPositions } from 'shared-utils';
 import {
     $isUploadTemplateBackgroundInProgress,
     $profileStore,
@@ -44,11 +45,14 @@ import { getCreateRoomUrl } from '../../utils/urls';
 
 // styles
 import styles from './CreateRoomContainer.module.scss';
-import {adjustUserPositions} from "shared-utils";
 
 const Component = () => {
-    const isGetTemplateRequestIsPending = useStore(getEditingTemplateFx.pending);
-    const isTemplatePreviewPending = useStore($isUploadTemplateBackgroundInProgress);
+    const isGetTemplateRequestIsPending = useStore(
+        getEditingTemplateFx.pending,
+    );
+    const isTemplatePreviewPending = useStore(
+        $isUploadTemplateBackgroundInProgress,
+    );
     const profile = useStore($profileStore);
 
     const router = useRouter();
@@ -74,7 +78,9 @@ const Component = () => {
                 const response = await getTemplateFx({ templateId });
 
                 if (response) {
-                    onSetUpdateUrl(`${getCreateRoomUrl(response?.id)}?step=privacy`);
+                    onSetUpdateUrl(
+                        `${getCreateRoomUrl(response?.id)}?step=privacy`,
+                    );
 
                     setTemplate(response);
                 }

@@ -19,5 +19,8 @@ function initializeScope(domain: Domain, initialData: unknown) {
 }
 
 export function useScope(domain: Domain, initialState: unknown) {
-    return useMemo(() => initializeScope(domain, initialState), [domain, initialState]);
+    return useMemo(
+        () => initializeScope(domain, initialState),
+        [domain, initialState],
+    );
 }

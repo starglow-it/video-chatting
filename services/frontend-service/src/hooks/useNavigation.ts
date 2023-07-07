@@ -14,12 +14,16 @@ type UseChipsNavigationReturn = {
     onChange: (value: string) => void;
 };
 
-export const useNavigation = ({ tabs }: UseChipsNavigationArgs): UseChipsNavigationReturn => {
+export const useNavigation = ({
+    tabs,
+}: UseChipsNavigationArgs): UseChipsNavigationReturn => {
     const [activeTab, setActiveTab] = useState(tabs[0]);
 
     const handleChange = useCallback(
         (value: string) => {
-            const newTab = tabs.find(({ value: tabValue }) => tabValue === value);
+            const newTab = tabs.find(
+                ({ value: tabValue }) => tabValue === value,
+            );
             if (!newTab) {
                 return;
             }

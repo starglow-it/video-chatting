@@ -31,22 +31,38 @@ export const getProductsUrl = {
     method: HttpMethods.Get,
 };
 
-export const getCustomerPortalSessionUrl = ({ subscriptionId }: { subscriptionId: string }) => ({
+export const getCustomerPortalSessionUrl = ({
+    subscriptionId,
+}: {
+    subscriptionId: string;
+}) => ({
     url: `${serverUrl}/${paymentsScope}/portal/${subscriptionId}`,
     method: HttpMethods.Get,
 });
 
-export const getSubscriptionUrl = ({ subscriptionId }: { subscriptionId: string }) => ({
+export const getSubscriptionUrl = ({
+    subscriptionId,
+}: {
+    subscriptionId: string;
+}) => ({
     url: `${serverUrl}/${paymentsScope}/subscriptions/${subscriptionId}`,
     method: HttpMethods.Get,
 });
 
-export const startCheckoutSessionUrl = ({ productId }: { productId: string }) => ({
+export const startCheckoutSessionUrl = ({
+    productId,
+}: {
+    productId: string;
+}) => ({
     url: `${serverUrl}/${paymentsScope}/products/${productId}`,
     method: HttpMethods.Post,
 });
 
-export const purchaseTemplateUrl = ({ templateId }: { templateId: string }) => ({
+export const purchaseTemplateUrl = ({
+    templateId,
+}: {
+    templateId: string;
+}) => ({
     url: `${serverUrl}/${paymentsScope}/templates/${templateId}`,
     method: HttpMethods.Get,
 });

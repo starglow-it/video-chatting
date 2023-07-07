@@ -16,12 +16,16 @@ const SetUpCompanyName = memo(() => {
         formState: { errors },
     } = useFormContext();
 
-    const currentCompanyNameErrorMessage: string = errors?.companyName?.[0]?.message || '';
+    const currentCompanyNameErrorMessage: string =
+        errors?.companyName?.[0]?.message || '';
 
     return (
         <CustomGrid container direction="column" gap={1.75}>
             <CustomBox>
-                <CustomTypography className={styles.companyNameTitle} variant="body1bold">
+                <CustomTypography
+                    className={styles.companyNameTitle}
+                    variant="body1bold"
+                >
                     1.
                 </CustomTypography>
                 &nbsp;
@@ -32,7 +36,10 @@ const SetUpCompanyName = memo(() => {
                     translation="labels.companyName"
                 />
             </CustomBox>
-            <CustomInput error={currentCompanyNameErrorMessage} {...register('companyName')} />
+            <CustomInput
+                error={currentCompanyNameErrorMessage}
+                {...register('companyName')}
+            />
         </CustomGrid>
     );
 });

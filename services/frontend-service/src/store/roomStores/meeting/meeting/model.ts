@@ -15,7 +15,8 @@ const initialMeetingState: Meeting = {
     hostUserId: '',
 };
 
-export const $meetingStore = meetingDomain.createStore<Meeting>(initialMeetingState);
+export const $meetingStore =
+    meetingDomain.createStore<Meeting>(initialMeetingState);
 export const $meetingConnectedStore = meetingDomain.createStore<boolean>(false);
 
 export const $isMeetingHostStore = combine({
@@ -23,22 +24,26 @@ export const $isMeetingHostStore = combine({
     meeting: $meetingStore,
 }).map(({ localUser, meeting }) => localUser.id === meeting.hostUserId);
 
-export const $isScreenSharingStore = $meetingStore.map(meeting => Boolean(meeting.sharingUserId));
-
-export const updateMeetingEvent = meetingDomain.createEvent<{ meeting?: Meeting }>(
-    'updateMeetingEvent',
+export const $isScreenSharingStore = $meetingStore.map(meeting =>
+    Boolean(meeting.sharingUserId),
 );
+
+export const updateMeetingEvent = meetingDomain.createEvent<{
+    meeting?: Meeting;
+}>('updateMeetingEvent');
 
 export const setMeetingConnectedEvent = meetingDomain.createEvent<boolean>(
     'setMeetingConnectedEvent',
 );
 
-export const joinMeetingFx = meetingDomain.createEffect<JoinMeetingFxPayload, void>(
-    'joinMeetingFx',
-);
+export const joinMeetingFx = meetingDomain.createEffect<
+    JoinMeetingFxPayload,
+    void
+>('joinMeetingFx');
 
-export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<void, void>(
-    'joinMeetingInWaitingRoomFx',
-);
+export const joinMeetingInWaitingRoomFx = meetingDomain.createEffect<
+    void,
+    void
+>('joinMeetingInWaitingRoomFx');
 export const joinMeetingEvent =
     meetingDomain.createEvent<JoinMeetingEventPayload>('joinMeetingEvent');

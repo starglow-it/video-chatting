@@ -23,7 +23,11 @@ import { CustomList } from '@library/custom/CustomList/CustomList';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
 
 // stores
-import { $profileStore, deleteProfilePhotoFx, updateProfilePhotoFx } from '../../../store';
+import {
+    $profileStore,
+    deleteProfilePhotoFx,
+    updateProfilePhotoFx,
+} from '../../../store';
 
 // styles
 import styles from './EditProfileAvatar.module.scss';
@@ -72,7 +76,10 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
     }, [fileTypeError]);
 
     const handleUploadFiles = useCallback(async file => {
-        const twoMb = getFileSizeValue({ amount: 2, sizeType: FileSizeTypesEnum.megabyte });
+        const twoMb = getFileSizeValue({
+            amount: 2,
+            sizeType: FileSizeTypesEnum.megabyte,
+        });
 
         const isFileTypeCorrect = ACCEPT_MIMES.includes(file.type);
 
@@ -96,14 +103,21 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
     const listElements = useMemo(
         () => [
             {
-                key: profile?.profileAvatar?.url ? 'editAvatar' : 'uploadAvatar',
+                key: profile?.profileAvatar?.url
+                    ? 'editAvatar'
+                    : 'uploadAvatar',
                 element: (
                     <CustomGrid container className={styles.listItem}>
-                        <ChooseFile onChoose={handleUploadFiles} accept={ACCEPT_MIMES}>
+                        <ChooseFile
+                            onChoose={handleUploadFiles}
+                            accept={ACCEPT_MIMES}
+                        >
                             <CustomTypography
                                 nameSpace="profile"
                                 translation={
-                                    profile?.profileAvatar?.url ? 'avatar.edit' : 'avatar.upload'
+                                    profile?.profileAvatar?.url
+                                        ? 'avatar.edit'
+                                        : 'avatar.upload'
                                 }
                             />
                         </ChooseFile>
@@ -118,7 +132,10 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
                         className={styles.listItem}
                         onClick={handleDeleteProfilePhoto}
                     >
-                        <CustomTypography nameSpace="profile" translation="avatar.delete" />
+                        <CustomTypography
+                            nameSpace="profile"
+                            translation="avatar.delete"
+                        />
                     </CustomGrid>
                 ),
             },
@@ -175,11 +192,17 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
                             {commonAvatarLayout}
                         </CustomBox>
                     ) : (
-                        <ChooseFile onChoose={handleUploadFiles} accept={ACCEPT_MIMES}>
+                        <ChooseFile
+                            onChoose={handleUploadFiles}
+                            accept={ACCEPT_MIMES}
+                        >
                             {commonAvatarLayout}
                         </ChooseFile>
                     )}
-                    <HiddenPaper className={styles.invalidTypeWrapper} open={fileTypeError}>
+                    <HiddenPaper
+                        className={styles.invalidTypeWrapper}
+                        open={fileTypeError}
+                    >
                         <CustomTypography
                             textAlign="center"
                             variant="body3"
@@ -199,7 +222,9 @@ const EditProfileAvatar = memo(({ className }: EditProfileAvatarProps) => {
             <CustomTypography
                 variant="body3"
                 className={styles.uploadSizeHint}
-                color={`colors.${fileSizeError ? 'red.primary' : 'grayscale.normal'}`}
+                color={`colors.${
+                    fileSizeError ? 'red.primary' : 'grayscale.normal'
+                }`}
                 nameSpace="profile"
                 translation="upload.profileAvatar.maxSize"
             />

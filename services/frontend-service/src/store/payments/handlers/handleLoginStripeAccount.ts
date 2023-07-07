@@ -3,9 +3,10 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { loginStripeAccountUrl } from '../../../utils/urls';
 
 export const handleLoginStripeAccount = async () => {
-    const response = await sendRequestWithCredentials<{ url: string }, ErrorState>(
-        loginStripeAccountUrl,
-    );
+    const response = await sendRequestWithCredentials<
+        { url: string },
+        ErrorState
+    >(loginStripeAccountUrl);
 
     if (response.success) {
         return response.result;

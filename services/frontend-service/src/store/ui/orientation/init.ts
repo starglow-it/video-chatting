@@ -7,7 +7,8 @@ import {
 } from './model';
 
 const handleChangeLayout = () => {
-    const absoluteOrientation = window.orientation ?? window?.screen?.orientation?.angle;
+    const absoluteOrientation =
+        window.orientation ?? window?.screen?.orientation?.angle;
 
     setIsPortraitLayoutEvent(absoluteOrientation === 0);
 };

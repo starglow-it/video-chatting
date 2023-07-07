@@ -1,7 +1,10 @@
 import { ErrorState } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { checkResetPasswordLinkUrl } from '../../../utils/urls';
-import { CheckResetPasswordLinkPayload, CheckResetPasswordLinkResponse } from '../types';
+import {
+    CheckResetPasswordLinkPayload,
+    CheckResetPasswordLinkResponse,
+} from '../types';
 
 export const handleCheckResetPasswordLink = async (
     params: CheckResetPasswordLinkPayload,

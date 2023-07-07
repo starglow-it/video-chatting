@@ -1,5 +1,5 @@
 export default {
-	html: {
-		scrollBehavior: 'smooth',
-	},
+    html: {
+        scrollBehavior: 'smooth',
+    },
 };

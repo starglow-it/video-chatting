@@ -2,7 +2,17 @@ import { memo, useCallback } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { $featuredBackgroundStore, $profileStore, $profileTemplatesCountStore, $profileTemplatesStore, $templatesStore, addTemplateToUserFx, createMeetingFx, deleteProfileTemplateFx, purchaseTemplateFx } from 'src/store';
+import {
+    $featuredBackgroundStore,
+    $profileStore,
+    $profileTemplatesCountStore,
+    $profileTemplatesStore,
+    $templatesStore,
+    addTemplateToUserFx,
+    createMeetingFx,
+    deleteProfileTemplateFx,
+    purchaseTemplateFx,
+} from 'src/store';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
@@ -75,7 +85,6 @@ const Component = () => {
 
     const handleChooseCommonTemplate = useCallback(
         async (templateId: ICommonTemplate['id']) => {
-            
             const targetTemplate = list?.find(
                 template => template.id === templateId,
             );

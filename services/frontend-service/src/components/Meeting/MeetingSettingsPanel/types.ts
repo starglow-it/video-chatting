@@ -1,5 +1,10 @@
 import React from 'react';
-import {IBusinessCategory, ILanguage, ISocialLink, IUserTemplate} from 'shared-types';
+import {
+    IBusinessCategory,
+    ILanguage,
+    ISocialLink,
+    IUserTemplate,
+} from 'shared-types';
 
 export type SettingsData = {
     companyName: string;
@@ -16,5 +21,8 @@ export type SettingsData = {
 
 export type MeetingSettingsPanelProps = React.PropsWithChildren<{
     template: IUserTemplate;
-    onTemplateUpdate: (updateData?: { templateId: IUserTemplate['id']; data: SettingsData }) => void;
+    onTemplateUpdate: (updateData?: {
+        templateId: IUserTemplate['id'];
+        data: SettingsData;
+    }) => void;
 }>;

@@ -1,4 +1,4 @@
-import {forward, sample} from 'effector-next';
+import { forward, sample } from 'effector-next';
 import {
     $profileStore,
     clearProfileEvent,
@@ -15,7 +15,7 @@ import {
     deleteProfileFx,
 } from './model';
 import { initialProfileState } from './const';
-import {refreshAuthFx, resetAuthStateEvent} from '../../auth/model';
+import { refreshAuthFx, resetAuthStateEvent } from '../../auth/model';
 import { deleteStripeAccountFx } from '../../payments/model';
 
 // handlers
@@ -83,5 +83,5 @@ $profileStore
 sample({
     clock: updateProfileEmailFx.doneData,
     fn: () => {},
-    target: refreshAuthFx
-})
+    target: refreshAuthFx,
+});

@@ -31,11 +31,17 @@ export const useAudioVolumeMeter = (stream: CustomMediaStream): ReturnT => {
                 sourceRef.current.disconnect();
             }
 
-            sourceRef.current = audioContextRef?.current?.createMediaStreamSource(stream);
+            sourceRef.current =
+                audioContextRef?.current?.createMediaStreamSource(stream);
 
-            await audioContextRef.current.audioWorklet.addModule('/workers/volume-meter.js');
+            await audioContextRef.current.audioWorklet.addModule(
+                '/workers/volume-meter.js',
+            );
 
-            const volumeMeterNode = new AudioWorkletNode(audioContextRef.current, 'volume-meter');
+            const volumeMeterNode = new AudioWorkletNode(
+                audioContextRef.current,
+                'volume-meter',
+            );
 
             volumeMeterNode.port.onmessage = event => {
                 if (event.data.volume) {
@@ -43,7 +49,9 @@ export const useAudioVolumeMeter = (stream: CustomMediaStream): ReturnT => {
                 }
             };
 
-            sourceRef.current.connect(volumeMeterNode).connect(audioContextRef.current.destination);
+            sourceRef.current
+                .connect(volumeMeterNode)
+                .connect(audioContextRef.current.destination);
         }
     };
 

@@ -65,7 +65,7 @@ export const $queryTemplatesStore =
         skip: 0,
         sort: 'maxParticipants',
         direction: 1,
-        roomType: RoomType.Normal
+        roomType: RoomType.Normal,
     });
 
 export const $queryProfileTemplatesStore =

@@ -1,6 +1,10 @@
 import { attach, combine, sample, Store } from 'effector-next';
 import { isMobile } from 'shared-utils';
-import {ICommonUser, IUserTemplate, MeetingAccessStatusEnum} from 'shared-types';
+import {
+    ICommonUser,
+    IUserTemplate,
+    MeetingAccessStatusEnum,
+} from 'shared-types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
     $isOwner,
@@ -8,7 +12,10 @@ import {
     $meetingTemplateStore,
     setIsUserSendEnterRequest,
 } from '../meetingTemplate/model';
-import { $localUserStore, updateLocalUserEvent } from '../../users/localUser/model';
+import {
+    $localUserStore,
+    updateLocalUserEvent,
+} from '../../users/localUser/model';
 import { $profileStore } from '../../../profile/profile/model';
 import {
     emitEnterMeetingEvent,
@@ -59,7 +66,11 @@ export const sendEnterWaitingRoomSocketEvent = attach({
 
 export const sendJoinWaitingRoomSocketEvent = attach<
     void,
-    Store<{ profile: ICommonUser; template: IUserTemplate; localUser: MeetingUser }>,
+    Store<{
+        profile: ICommonUser;
+        template: IUserTemplate;
+        localUser: MeetingUser;
+    }>,
     typeof joinWaitingRoomSocketEvent
 >({
     effect: joinWaitingRoomSocketEvent,
@@ -70,7 +81,11 @@ export const sendJoinWaitingRoomSocketEvent = attach<
     }),
     mapParams: (
         data,
-        source: { profile: Profile; template: IUserTemplate; localUser: MeetingUser },
+        source: {
+            profile: Profile;
+            template: IUserTemplate;
+            localUser: MeetingUser;
+        },
     ) => ({
         profileId: source.profile?.id,
         profileUserName: source?.profile?.fullName,
@@ -95,7 +110,10 @@ export const sendStartMeetingSocketEvent = attach<
         meeting: $meetingStore,
         user: $localUserStore,
     }),
-    mapParams: (params, { meeting, user }) => ({ meetingId: meeting?.id, user }),
+    mapParams: (params, { meeting, user }) => ({
+        meetingId: meeting?.id,
+        user,
+    }),
 });
 
 export const sendEnterMeetingRequestSocketEvent = attach<
@@ -121,7 +139,10 @@ export const sendEndMeetingSocketEvent = attach<
 >({
     effect: endMeetingSocketEvent,
     source: combine({ meeting: $meetingStore }),
-    mapParams: (params, { meeting }) => ({ meetingId: meeting?.id, ...(params ? params : {}) }),
+    mapParams: (params, { meeting }) => ({
+        meetingId: meeting?.id,
+        ...(params || {}),
+    }),
 });
 
 export const sendLeaveMeetingSocketEvent = attach<
@@ -163,12 +184,17 @@ export const sendUpdateMeetingTemplateSocketEvent = attach<
 >({
     effect: updateMeetingTemplateSocketEvent,
     source: combine({ template: $meetingTemplateStore }),
-    mapParams: (params, { template }) => ({ templateId: template.customLink || template.id }),
+    mapParams: (params, { template }) => ({
+        templateId: template.customLink || template.id,
+    }),
 });
 
 sample({
     clock: sendJoinWaitingRoomSocketEvent.doneData,
-    source: combine({ meetingTemplate: $meetingTemplateStore, isOwner: $isOwner }),
+    source: combine({
+        meetingTemplate: $meetingTemplateStore,
+        isOwner: $isOwner,
+    }),
     filter: source => source.isOwner,
     fn: source => ({
         templateId: source.meetingTemplate.id,
@@ -179,7 +205,8 @@ sample({
 sample({
     clock: emitEnterMeetingEvent,
     source: $localUserStore,
-    filter: localUser => localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
+    filter: localUser =>
+        localUser.accessStatus === MeetingAccessStatusEnum.Waiting,
     target: sendEnterMeetingRequestSocketEvent,
 });
 
@@ -212,7 +239,9 @@ answerAccessMeetingRequestSocketEvent.failData.watch(handleMeetingEventsError);
 joinWaitingRoomSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 startMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendEnterMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
-cancelAccessMeetingRequestSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+cancelAccessMeetingRequestSocketEvent.doneData.watch(
+    handleUpdateMeetingEntities,
+);
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 
 sample({
@@ -236,7 +265,9 @@ sample({
 initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     socketInstance?.on(
         MeetingSubscribeEvents.OnMeetingEnterRequest,
-        getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnMeetingEnterRequest),
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnMeetingEnterRequest,
+        ),
     );
 
     socketInstance?.on(
@@ -245,29 +276,41 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     );
     socketInstance?.on(
         MeetingSubscribeEvents.OnUpdateMeeting,
-        getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnUpdateMeeting),
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnUpdateMeeting,
+        ),
     );
     socketInstance?.on(
         MeetingSubscribeEvents.OnUpdateMeetingTemplate,
-        getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnUpdateMeetingTemplate),
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnUpdateMeetingTemplate,
+        ),
     );
     socketInstance?.on(
         MeetingSubscribeEvents.OnFinishMeeting,
-        getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnFinishMeeting),
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnFinishMeeting,
+        ),
     );
 
     if (!isMobile()) {
         socketInstance?.on(
             MeetingSubscribeEvents.OnGetMeetingNotes,
-            getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnGetMeetingNotes),
+            getMeetingSocketSubscribeHandler(
+                MeetingSubscribeEvents.OnGetMeetingNotes,
+            ),
         );
         socketInstance?.on(
             MeetingSubscribeEvents.OnRemoveMeetingNote,
-            getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnRemoveMeetingNote),
+            getMeetingSocketSubscribeHandler(
+                MeetingSubscribeEvents.OnRemoveMeetingNote,
+            ),
         );
         socketInstance?.on(
             MeetingSubscribeEvents.OnSendMeetingNote,
-            getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnSendMeetingNote),
+            getMeetingSocketSubscribeHandler(
+                MeetingSubscribeEvents.OnSendMeetingNote,
+            ),
         );
     }
 
@@ -282,6 +325,8 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     );
     socketInstance?.on(
         MeetingSubscribeEvents.OnMeetingTimeLimit,
-        getMeetingSocketSubscribeHandler(MeetingSubscribeEvents.OnMeetingTimeLimit),
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnMeetingTimeLimit,
+        ),
     );
 });

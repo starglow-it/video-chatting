@@ -27,6 +27,7 @@ import { useToggle } from '@hooks/useToggle';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import { Typography } from '@mui/material';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -73,7 +74,6 @@ import {
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
-import { Typography } from '@mui/material';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);

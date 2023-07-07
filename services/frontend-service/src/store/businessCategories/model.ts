@@ -7,8 +7,9 @@ const initialCategoriesStore: EntityList<IBusinessCategory> = {
     count: 0,
 };
 
-export const $businessCategoriesStore =
-    rootDomain.createStore<EntityList<IBusinessCategory>>(initialCategoriesStore);
+export const $businessCategoriesStore = rootDomain.createStore<
+    EntityList<IBusinessCategory>
+>(initialCategoriesStore);
 
 export const getBusinessCategoriesFx = rootDomain.createEffect<
     QueryParams,

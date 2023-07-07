@@ -1,4 +1,4 @@
-import {ErrorState, IUserTemplate} from 'shared-types';
+import { ErrorState, IUserTemplate } from 'shared-types';
 
 import { postProfileTemplatesUrl } from '../../../utils/urls';
 
@@ -9,7 +9,10 @@ export const handleUpdateProfileTemplate = async ({
     templateId,
     data,
 }: UpdateTemplatePayload): Promise<IUserTemplate | null> => {
-    const response = await sendRequestWithCredentials<IUserTemplate, ErrorState>({
+    const response = await sendRequestWithCredentials<
+        IUserTemplate,
+        ErrorState
+    >({
         ...postProfileTemplatesUrl({ templateId }),
         data,
     });

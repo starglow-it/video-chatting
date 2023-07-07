@@ -13,16 +13,28 @@ export const handleChangeSFUStream = async ({
         const { localParticipant } = room;
 
         const oldVideoTrack = localParticipant.getTrack(Track.Source.Camera);
-        const oldAudioTrack = localParticipant.getTrack(Track.Source.Microphone);
+        const oldAudioTrack = localParticipant.getTrack(
+            Track.Source.Microphone,
+        );
 
         if (oldVideoTrack?.videoTrack) {
-            localParticipant.unpublishTrack(oldVideoTrack.videoTrack.mediaStreamTrack);
+            localParticipant.unpublishTrack(
+                oldVideoTrack.videoTrack.mediaStreamTrack,
+            );
         }
 
         if (oldAudioTrack?.audioTrack) {
-            localParticipant.unpublishTrack(oldAudioTrack.audioTrack.mediaStreamTrack);
+            localParticipant.unpublishTrack(
+                oldAudioTrack.audioTrack.mediaStreamTrack,
+            );
         }
 
-        await publishTracksFx({ room, stream, localUser, isCameraActive, isMicActive });
+        await publishTracksFx({
+            room,
+            stream,
+            localUser,
+            isCameraActive,
+            isMicActive,
+        });
     }
 };

@@ -9,7 +9,9 @@ import { handleStartCheckoutSessionForSubscription } from '../handlers/handleSta
 import { handleGetCustomerPortalSessionUrl } from '../handlers/handleGetCustomerPortalSessionUrl';
 
 getStripeProductsFx.use(handleGetStripeProducts);
-startCheckoutSessionForSubscriptionFx.use(handleStartCheckoutSessionForSubscription);
+startCheckoutSessionForSubscriptionFx.use(
+    handleStartCheckoutSessionForSubscription,
+);
 getCustomerPortalSessionUrlFx.use(handleGetCustomerPortalSessionUrl);
 
 $productsStore.on(getStripeProductsFx.doneData, (state, data) => data);

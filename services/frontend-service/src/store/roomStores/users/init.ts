@@ -19,12 +19,14 @@ export const sendInviteEmailFx = meetingUsersDomain.effect({
         }),
 });
 
-export const updateUserSocketEvent = createMeetingSocketEvent<Partial<MeetingUser>, unknown>(
-    UsersSocketEmitters.UpdateUser,
-);
-export const removeUserSocketEvent = createMeetingSocketEvent<{ id: MeetingUser['id'] }, unknown>(
-    UsersSocketEmitters.RemoveUser,
-);
+export const updateUserSocketEvent = createMeetingSocketEvent<
+    Partial<MeetingUser>,
+    unknown
+>(UsersSocketEmitters.UpdateUser);
+export const removeUserSocketEvent = createMeetingSocketEvent<
+    { id: MeetingUser['id'] },
+    unknown
+>(UsersSocketEmitters.RemoveUser);
 export const changeHostSocketEvent = createMeetingSocketEvent<
     { userId: MeetingUser['id'] },
     unknown

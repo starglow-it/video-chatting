@@ -1,4 +1,4 @@
-import React, {useMemo, memo, useEffect} from 'react';
+import React, { useMemo, memo, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -21,13 +21,15 @@ import { Translation } from '@library/common/Translation/Translation';
 import { SubscriptionPlanCard } from '@components/Profile/SubscriptionPlanCard/SubscriptionPlanCard';
 
 // store
+import { PlanKeys } from 'shared-types';
 import {
     $isTrial,
     $productsStore,
     $profileStore,
     $subscriptionStore,
     getCustomerPortalSessionUrlFx,
-    getStripeProductsFx, getSubscriptionFx,
+    getStripeProductsFx,
+    getSubscriptionFx,
     startCheckoutSessionForSubscriptionFx,
 } from '../../../store';
 
@@ -42,7 +44,6 @@ import { profileRoute } from '../../../const/client-routes';
 
 // utils
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
-import {PlanKeys} from "shared-types";
 
 const Component = () => {
     const router = useRouter();
@@ -51,7 +52,9 @@ const Component = () => {
     const products = useStore($productsStore);
     const isTrial = useStore($isTrial);
 
-    const isSubscriptionPurchasePending = useStore(startCheckoutSessionForSubscriptionFx.pending);
+    const isSubscriptionPurchasePending = useStore(
+        startCheckoutSessionForSubscriptionFx.pending,
+    );
     const isGetProductsPending = useStore(getStripeProductsFx.pending);
 
     const { translation } = useLocalization('subscriptions');
@@ -64,7 +67,11 @@ const Component = () => {
         });
     }, [profile.stripeSubscriptionId, profile.subscriptionPlanKey]);
 
-    const handleChooseSubscription = async (productId: string, isPaid: boolean, trial: boolean) => {
+    const handleChooseSubscription = async (
+        productId: string,
+        isPaid: boolean,
+        trial: boolean,
+    ) => {
         if (isPaid && (!profile.stripeSubscriptionId || isTrial)) {
             const response = await startCheckoutSessionForSubscriptionFx({
                 productId,
@@ -87,7 +94,10 @@ const Component = () => {
     };
 
     const nextPaymentDate = subscription?.current_period_end
-        ? formatDate((subscription?.current_period_end || Date.now()) * 1000, 'dd MMM, yyyy')
+        ? formatDate(
+              (subscription?.current_period_end || Date.now()) * 1000,
+              'dd MMM, yyyy',
+          )
         : '';
 
     const handleOpenSubscriptionPortal = async () => {
@@ -105,8 +115,13 @@ const Component = () => {
             products.map(product => (
                 <SubscriptionPlanCard
                     key={product?.product?.id}
-                    isActive={profile.subscriptionPlanKey === product?.product?.name}
-                    isTrial={profile.subscriptionPlanKey === product?.product?.name && isTrial}
+                    isActive={
+                        profile.subscriptionPlanKey === product?.product?.name
+                    }
+                    isTrial={
+                        profile.subscriptionPlanKey ===
+                            product?.product?.name && isTrial
+                    }
                     product={product?.product}
                     price={product?.price}
                     onChooseSubscription={handleChooseSubscription}
@@ -126,9 +141,13 @@ const Component = () => {
         ],
     );
 
-    const shouldShowManageButton = Boolean(profile.stripeSubscriptionId) && !isTrial;
-    const shouldShowNextRenewalDate = Boolean(nextPaymentDate) && !isGetProductsPending;
-    const planTranslation = `${profile.subscriptionPlanKey || PlanKeys.House}${isTrial ? ' (Trial)' : ''}`;
+    const shouldShowManageButton =
+        Boolean(profile.stripeSubscriptionId) && !isTrial;
+    const shouldShowNextRenewalDate =
+        Boolean(nextPaymentDate) && !isGetProductsPending;
+    const planTranslation = `${profile.subscriptionPlanKey || PlanKeys.House}${
+        isTrial ? ' (Trial)' : ''
+    }`;
 
     return (
         <CustomPaper className={styles.paperWrapper}>
@@ -137,10 +156,24 @@ const Component = () => {
                 <CustomGrid
                     container
                     alignItems="center"
-                    justifyContent={shouldShowNextRenewalDate ? 'space-between' : 'flex-start'}
+                    justifyContent={
+                        shouldShowNextRenewalDate
+                            ? 'space-between'
+                            : 'flex-start'
+                    }
                 >
-                    <CustomGrid item container alignItems="center" gap={1} width="fit-content">
-                        <ShopIcon width="25px" height="24px" className={styles.icon} />
+                    <CustomGrid
+                        item
+                        container
+                        alignItems="center"
+                        gap={1}
+                        width="fit-content"
+                    >
+                        <ShopIcon
+                            width="25px"
+                            height="24px"
+                            className={styles.icon}
+                        />
                         <CustomTypography
                             dangerouslySetInnerHTML={{
                                 __html: translation('subscriptions.current', {

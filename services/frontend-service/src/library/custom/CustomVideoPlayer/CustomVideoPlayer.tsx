@@ -6,7 +6,13 @@ import { CustomVideoPlayerProps } from './types';
 
 import styles from './CustomVideoPlayer.module.scss';
 
-const Component = ({ isPlaying, isMuted, volume, options, className }: CustomVideoPlayerProps) => {
+const Component = ({
+    isPlaying,
+    isMuted,
+    volume,
+    options,
+    className,
+}: CustomVideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {

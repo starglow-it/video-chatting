@@ -45,7 +45,7 @@ const Component = ({
         axis="x"
         draggableOpts={{
             disabled,
-            offsetParent: document.body
+            offsetParent: document.body,
         }}
         className={styles['react-resizable']}
         handle={<MyHandle disabled={disabled} />}

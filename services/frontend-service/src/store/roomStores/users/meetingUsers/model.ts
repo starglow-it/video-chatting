@@ -8,7 +8,8 @@ import {
 } from '../../meetingSocket/types';
 
 export const $meetingUsersStore = meetingUsersDomain.store<MeetingUser[]>([]);
-export const $isToggleUsersPanel = meetingUsersDomain.createStore<boolean>(false);
+export const $isToggleUsersPanel =
+    meetingUsersDomain.createStore<boolean>(false);
 
 export const updateMeetingUsersEvent =
     meetingUsersDomain.event<UpdateMeetingUsersPayload>(
@@ -21,7 +22,6 @@ export const updateMeetingUserEvent =
         'updateMeetingUserEvent',
     );
 
-export const toggleUsersPanelEvent = meetingUsersDomain.createEvent<boolean | undefined>(
-    'toggleUsersPanelEvent',
-);
-
+export const toggleUsersPanelEvent = meetingUsersDomain.createEvent<
+    boolean | undefined
+>('toggleUsersPanelEvent');

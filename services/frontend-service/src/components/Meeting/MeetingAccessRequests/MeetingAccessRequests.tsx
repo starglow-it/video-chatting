@@ -10,7 +10,10 @@ import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/Meeti
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
-import { $meetingUsersStore, sendAnswerAccessMeetingRequestEvent } from '../../../store/roomStores';
+import {
+    $meetingUsersStore,
+    sendAnswerAccessMeetingRequestEvent,
+} from '../../../store/roomStores';
 
 // types
 import { MeetingUser } from '../../../store/types';
@@ -23,16 +26,33 @@ const Component = () => {
         store: $meetingUsersStore,
         keys: [],
         fn: state =>
-            state.filter(user => user.accessStatus === MeetingAccessStatusEnum.RequestSent),
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSent,
+            ),
     });
 
     const renderRequestUsers = useMemo(() => {
-        const handleAcceptUser = ({ userId }: { userId: MeetingUser['id'] }) => {
-            sendAnswerAccessMeetingRequestEvent({ isUserAccepted: true, userId });
+        const handleAcceptUser = ({
+            userId,
+        }: {
+            userId: MeetingUser['id'];
+        }) => {
+            sendAnswerAccessMeetingRequestEvent({
+                isUserAccepted: true,
+                userId,
+            });
         };
 
-        const handleRejectUser = ({ userId }: { userId: MeetingUser['id'] }) => {
-            sendAnswerAccessMeetingRequestEvent({ isUserAccepted: false, userId });
+        const handleRejectUser = ({
+            userId,
+        }: {
+            userId: MeetingUser['id'];
+        }) => {
+            sendAnswerAccessMeetingRequestEvent({
+                isUserAccepted: false,
+                userId,
+            });
         };
 
         return requestUsers.map(user => (
@@ -49,7 +69,12 @@ const Component = () => {
     if (requestUsers.length) {
         return (
             <>
-                <CustomGrid className={styles.usersWrapper} container direction="column" gap={1}>
+                <CustomGrid
+                    className={styles.usersWrapper}
+                    container
+                    direction="column"
+                    gap={1}
+                >
                     {renderRequestUsers}
                 </CustomGrid>
                 <CustomDivider className={styles.divider} />

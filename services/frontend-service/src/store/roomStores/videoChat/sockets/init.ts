@@ -6,17 +6,23 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     if (socketInstance) {
         socketInstance.on(
             VideoChatSocketSubscribers.OnGetOffer,
-            getVideoChatSocketSubscribeHandler(VideoChatSocketSubscribers.OnGetOffer),
+            getVideoChatSocketSubscribeHandler(
+                VideoChatSocketSubscribers.OnGetOffer,
+            ),
         );
 
         socketInstance.on(
             VideoChatSocketSubscribers.OnGetAnswer,
-            getVideoChatSocketSubscribeHandler(VideoChatSocketSubscribers.OnGetAnswer),
+            getVideoChatSocketSubscribeHandler(
+                VideoChatSocketSubscribers.OnGetAnswer,
+            ),
         );
 
         socketInstance.on(
             VideoChatSocketSubscribers.OnGetIceCandidate,
-            getVideoChatSocketSubscribeHandler(VideoChatSocketSubscribers.OnGetIceCandidate),
+            getVideoChatSocketSubscribeHandler(
+                VideoChatSocketSubscribers.OnGetIceCandidate,
+            ),
         );
     }
 });

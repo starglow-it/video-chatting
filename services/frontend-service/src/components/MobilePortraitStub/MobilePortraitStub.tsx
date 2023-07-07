@@ -30,8 +30,16 @@ const Component = () => {
                     }}
                     open
                 >
-                    <CustomPaper variant="black-glass" className={styles.stubWrapper}>
-                        <CustomGrid container direction="column" alignItems="center" gap={1.5}>
+                    <CustomPaper
+                        variant="black-glass"
+                        className={styles.stubWrapper}
+                    >
+                        <CustomGrid
+                            container
+                            direction="column"
+                            alignItems="center"
+                            gap={1.5}
+                        >
                             <PortraitIcon width="33px" height="32px" />
                             <CustomTypography
                                 textAlign="center"

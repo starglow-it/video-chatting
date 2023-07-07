@@ -48,77 +48,95 @@ import styles from './UploadTemplateFile.module.scss';
 const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     const { setValue, control } = useFormContext<IUploadTemplateFormData>();
 
-    const background = useWatch<IUploadTemplateFormData>({ control, name: 'background' });
+    const background = useWatch<IUploadTemplateFormData>({
+        control,
+        name: 'background',
+    });
     const url = useWatch<IUploadTemplateFormData>({ control, name: 'url' });
 
-    const isUploadTemplateFilePending = useStore($isUploadTemplateBackgroundInProgress);
-    const isUpdateMeetingTemplateFilePending = useStore(uploadUserTemplateFileFx.pending);
+    const isUploadTemplateFilePending = useStore(
+        $isUploadTemplateBackgroundInProgress,
+    );
+    const isUpdateMeetingTemplateFilePending = useStore(
+        uploadUserTemplateFileFx.pending,
+    );
 
-    const generateFileUploadError = useCallback((rejectedFiles: FileRejection[], total: number) => {
-        if (!rejectedFiles.length) {
-            return;
-        }
+    const generateFileUploadError = useCallback(
+        (rejectedFiles: FileRejection[], total: number) => {
+            if (!rejectedFiles.length) {
+                return;
+            }
 
-        if (total > 1) {
-            addNotificationEvent({
+            if (total > 1) {
+                addNotificationEvent({
+                    type: NotificationType.UploadFileFail,
+                    message: 'createRoom.uploadBackground.manyFiles',
+                    withErrorIcon: true,
+                });
+                return;
+            }
+
+            const rejectedFile = rejectedFiles[0]?.file;
+
+            if (!rejectedFile) {
+                return;
+            }
+
+            const fileType = rejectedFile.type.split('/')[0];
+
+            if (fileType !== 'image' && fileType !== 'video') {
+                return;
+            }
+
+            const maxSize =
+                fileType === 'image' ? MAX_SIZE_IMAGE : MAX_SIZE_VIDEO;
+            const maxSizeMB =
+                fileType === 'image' ? MAX_SIZE_IMAGE_MB : MAX_SIZE_VIDEO_MB;
+            const isSizeExceeded = rejectedFile.size > maxSize;
+            const isAcceptedMIME =
+                fileType === 'image'
+                    ? ACCEPT_MIMES_IMAGE[rejectedFile.type]
+                    : ACCEPT_MIMES_VIDEO[rejectedFile.type];
+
+            const notification: Notification = {
                 type: NotificationType.UploadFileFail,
-                message: 'createRoom.uploadBackground.manyFiles',
+                messageOptions: { max: maxSizeMB },
                 withErrorIcon: true,
-            });
-            return;
-        }
+                message: '',
+            };
 
-        const rejectedFile = rejectedFiles[0]?.file;
+            if (isAcceptedMIME) {
+                notification.message = `createRoom.uploadBackground.${fileType}.maxSize`;
+            } else if (!isAcceptedMIME && isSizeExceeded) {
+                notification.message = `createRoom.uploadBackground.${fileType}.general`;
+            } else {
+                notification.message = `createRoom.uploadBackground.${fileType}.invalidFormat`;
+            }
 
-        if (!rejectedFile) {
-            return;
-        }
-
-        const fileType = rejectedFile.type.split('/')[0];
-
-        if (fileType !== 'image' && fileType !== 'video') {
-            return;
-        }
-
-        const maxSize = fileType === 'image' ? MAX_SIZE_IMAGE : MAX_SIZE_VIDEO;
-        const maxSizeMB = fileType === 'image' ? MAX_SIZE_IMAGE_MB : MAX_SIZE_VIDEO_MB;
-        const isSizeExceeded = rejectedFile.size > maxSize;
-        const isAcceptedMIME =
-            fileType === 'image'
-                ? ACCEPT_MIMES_IMAGE[rejectedFile.type]
-                : ACCEPT_MIMES_VIDEO[rejectedFile.type];
-
-        const notification: Notification = {
-            type: NotificationType.UploadFileFail,
-            messageOptions: { max: maxSizeMB },
-            withErrorIcon: true,
-            message: '',
-        };
-
-        if (isAcceptedMIME) {
-            notification.message = `createRoom.uploadBackground.${fileType}.maxSize`;
-        } else if (!isAcceptedMIME && isSizeExceeded) {
-            notification.message = `createRoom.uploadBackground.${fileType}.general`;
-        } else {
-            notification.message = `createRoom.uploadBackground.${fileType}.invalidFormat`;
-        }
-
-        addNotificationEvent(notification);
-    }, []);
+            addNotificationEvent(notification);
+        },
+        [],
+    );
 
     const handleSetFileData = useCallback(
         async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
             const totalFiles = acceptedFiles.length + rejectedFiles.length;
 
             if (rejectedFiles.length || totalFiles > 1) {
-                generateFileUploadError(rejectedFiles, acceptedFiles.length + rejectedFiles.length);
+                generateFileUploadError(
+                    rejectedFiles,
+                    acceptedFiles.length + rejectedFiles.length,
+                );
                 return;
             }
 
             const file = acceptedFiles[0];
 
             if (ACCEPT_MIMES_IMAGE[file.type] && file.size > MAX_SIZE_IMAGE) {
-                generateFileUploadError([{ file }], acceptedFiles.length + rejectedFiles.length);
+                generateFileUploadError(
+                    [{ file }],
+                    acceptedFiles.length + rejectedFiles.length,
+                );
                 return;
             }
 
@@ -140,7 +158,9 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
     return (
         <CustomGrid
             container
-            className={clsx(styles.container, { [styles.active]: isDragActive })}
+            className={clsx(styles.container, {
+                [styles.active]: isDragActive,
+            })}
             {...rootProps}
         >
             <input {...getInputProps()} />
@@ -154,7 +174,11 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                     className={styles.content}
                 >
                     <CustomGrid item container className={styles.iconWrapper}>
-                        <ArrowUp width="20px" height="25px" className={styles.icon} />
+                        <ArrowUp
+                            width="20px"
+                            height="25px"
+                            className={styles.icon}
+                        />
                     </CustomGrid>
                     <CustomTypography
                         variant="h2bold"
@@ -191,13 +215,23 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                         placement="bottom"
                         variant="black-glass"
                         title={
-                            <CustomGrid container direction="column" alignItems="center" gap={1}>
+                            <CustomGrid
+                                container
+                                direction="column"
+                                alignItems="center"
+                                gap={1}
+                            >
                                 <CustomTypography
                                     variant="body2bold"
                                     nameSpace="createRoom"
                                     translation="uploadBackground.tip.title"
                                 />
-                                <CustomGrid item container direction="column" alignItems="center">
+                                <CustomGrid
+                                    item
+                                    container
+                                    direction="column"
+                                    alignItems="center"
+                                >
                                     <CustomTypography
                                         variant="body2"
                                         nameSpace="createRoom"
@@ -244,7 +278,8 @@ const Component = ({ onNextStep }: UploadTemplateFileProps) => {
                 >
                     <ConditionalRender
                         condition={
-                            !isUploadTemplateFilePending && !isUpdateMeetingTemplateFilePending
+                            !isUploadTemplateFilePending &&
+                            !isUpdateMeetingTemplateFilePending
                         }
                     >
                         <CustomButton

@@ -2,6 +2,7 @@ import { forward, sample } from 'effector-next';
 import { USER_IS_BLOCKED } from 'shared-const';
 import Router from 'next/router';
 
+import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import {
     $authStore,
     checkAuthFx,
@@ -33,7 +34,6 @@ import { handleGoogleVerify } from './handlers/handleGoogleVerify';
 import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToken';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { createMeetingFx } from '../meetings/model';
-import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);

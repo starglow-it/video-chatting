@@ -12,7 +12,11 @@ export const handleLoginUser = async (params: LoginUserPayload) => {
     });
 
     if (response.success) {
-        setAuthCookies(undefined, response?.result?.accessToken, response?.result?.refreshToken);
+        setAuthCookies(
+            undefined,
+            response?.result?.accessToken,
+            response?.result?.refreshToken,
+        );
         return {
             isAuthenticated: response.success,
             user: response?.result?.user,

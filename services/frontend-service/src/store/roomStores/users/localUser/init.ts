@@ -27,19 +27,27 @@ $localUserStore
         username: user.username || state.username,
     }))
     .on(leaveMeetingEvent, state => {
-        Router.push(state.isGenerated ? clientRoutes.welcomeRoute : clientRoutes.dashboardRoute);
+        Router.push(
+            state.isGenerated
+                ? clientRoutes.welcomeRoute
+                : clientRoutes.dashboardRoute,
+        );
 
         return state;
     })
     .on(leaveMeetingAsHost, state => {
         Router.push(clientRoutes.dashboardRoute).then(() => {
-            appDialogsApi.openDialog({ dialogKey: AppDialogsEnum.timeExpiredDialog });
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.timeExpiredDialog,
+            });
         });
 
         return state;
     })
     .on(leaveMeetingAsGuest, state => {
-        appDialogsApi.openDialog({ dialogKey: AppDialogsEnum.hostTimeExpiredDialog });
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.hostTimeExpiredDialog,
+        });
 
         return state;
     })

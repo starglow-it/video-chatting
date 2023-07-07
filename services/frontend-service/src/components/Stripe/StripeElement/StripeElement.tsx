@@ -11,7 +11,10 @@ const { publicRuntimeConfig } = getConfig();
 
 const stripePromise = loadStripe(publicRuntimeConfig.stripePublicKey);
 
-const Component = ({ secret, children }: React.PropsWithChildren<StripeElementProps>) => {
+const Component = ({
+    secret,
+    children,
+}: React.PropsWithChildren<StripeElementProps>) => {
     const options = {
         clientSecret: secret,
         locale: 'en',

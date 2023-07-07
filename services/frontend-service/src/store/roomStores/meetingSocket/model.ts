@@ -1,16 +1,18 @@
 import { attach, combine, Effect, sample, Store } from 'effector-next';
 
+import { IUserTemplate } from 'shared-types';
 import { EmitSocketEventPayload, SocketState } from '../../types';
 import { rootDomain } from '../../domains';
 import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
 import { createSocketEvent } from '../../socket/model';
 import { JoinRoomBeforeMeetingPayload } from '../../socket/types';
 import { DashboardSocketEmitters } from '../../../const/socketEvents/emitters';
-import {IUserTemplate} from "shared-types";
 
 export const meetingSocketDomain = rootDomain.createDomain('socketDomain');
 
-export const $meetingSocketStore = meetingSocketDomain.store<SocketState>({ socketInstance: null });
+export const $meetingSocketStore = meetingSocketDomain.store<SocketState>({
+    socketInstance: null,
+});
 export const $isMeetingSocketConnected = $meetingSocketStore.map(data =>
     Boolean(data.socketInstance?.id),
 );
@@ -33,14 +35,25 @@ export const initiateMeetingSocketConnectionFx = meetingSocketDomain.effect<
     SocketState
 >('initiateMeetingSocketConnectionFx');
 
-export const createMeetingSocketEvent = <Payload, Response>(eventName: string) =>
-    attach<Payload, Store<SocketState>, Effect<EmitSocketEventPayload, Response, string>>({
-        effect: meetingSocketEventRequest as Effect<EmitSocketEventPayload, Response, string>,
+export const createMeetingSocketEvent = <Payload, Response>(
+    eventName: string,
+) =>
+    attach<
+        Payload,
+        Store<SocketState>,
+        Effect<EmitSocketEventPayload, Response, string>
+    >({
+        effect: meetingSocketEventRequest as Effect<
+            EmitSocketEventPayload,
+            Response,
+            string
+        >,
         source: $meetingSocketStore,
         mapParams: (data, socketStore) => ({ eventName, data, socketStore }),
     });
 
-export const $isMeetingSocketConnecting = initiateMeetingSocketConnectionFx.pending;
+export const $isMeetingSocketConnecting =
+    initiateMeetingSocketConnectionFx.pending;
 
 sample({
     clock: initiateMeetingSocketConnectionEvent,
@@ -51,7 +64,9 @@ sample({
     }),
     filter: ({ isSocketConnecting, isSocketConnected }) =>
         !isSocketConnecting && !isSocketConnected,
-    fn: ({ meetingTemplate }) => ({ serverIp: meetingTemplate.meetingInstance.serverIp }),
+    fn: ({ meetingTemplate }) => ({
+        serverIp: meetingTemplate.meetingInstance.serverIp,
+    }),
     target: initiateMeetingSocketConnectionFx,
 });
 

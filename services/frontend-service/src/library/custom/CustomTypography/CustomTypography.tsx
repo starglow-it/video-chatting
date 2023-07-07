@@ -30,7 +30,11 @@ const Component = (
         className={clsx(className, transform && styles[transform])}
     >
         {nameSpace && translation ? (
-            <Translation nameSpace={nameSpace} translation={translation} options={options} />
+            <Translation
+                nameSpace={nameSpace}
+                translation={translation}
+                options={options}
+            />
         ) : (
             children
         )}

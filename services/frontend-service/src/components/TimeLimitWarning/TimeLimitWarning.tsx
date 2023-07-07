@@ -1,13 +1,13 @@
-import React, {memo, useEffect} from 'react';
-import {useRouter} from 'next/router';
-import {useStore} from 'effector-react';
+import React, { memo, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useStore } from 'effector-react';
 import Snackbar from '@mui/material/Snackbar';
 
-import {getTimeoutTimestamp} from "shared-utils";
-import {TimeoutTypesEnum} from "shared-types";
+import { getTimeoutTimestamp } from 'shared-utils';
+import { TimeoutTypesEnum } from 'shared-types';
 
 // hooks
-import {useTimer} from '@hooks/useTimer';
+import { useTimer } from '@hooks/useTimer';
 
 // icons
 import { WarningIcon } from 'shared-frontend/icons/OtherIcons/WarningIcon';
@@ -19,29 +19,28 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // utils
-import {Translation} from '@library/common/Translation/Translation';
-import {formatDate} from '../../utils/time/formatDate';
+import { Translation } from '@library/common/Translation/Translation';
+import { formatDate } from '../../utils/time/formatDate';
 
 // stores
-import {$profileStore} from '../../store';
-import {$timeLimitWarningStore} from '../../store/roomStores';
+import { $profileStore } from '../../store';
+import { $timeLimitWarningStore } from '../../store/roomStores';
 
 // styles
 import styles from './TimeLimitWarning.module.scss';
 
 // utils
-import {formatCountDown} from '../../utils/time/formatCountdown';
+import { formatCountDown } from '../../utils/time/formatCountdown';
 
 // const
-import {profileRoute} from '../../const/client-routes';
-
+import { profileRoute } from '../../const/client-routes';
 
 type ComponentProps = unknown;
 
 const _20_minutes = getTimeoutTimestamp({
     value: 20,
     type: TimeoutTypesEnum.Minutes,
-})
+});
 
 const Component: React.FunctionComponent<ComponentProps> = () => {
     const router = useRouter();
@@ -57,7 +56,10 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
 
     useEffect(() => {
         if (timeLimitWarning) {
-            handleStartMeetingEnd(Math.min(profile.maxMeetingTime, _20_minutes), 0);
+            handleStartMeetingEnd(
+                Math.min(profile.maxMeetingTime, _20_minutes),
+                0,
+            );
         } else {
             handleStopMeetingEnd();
         }
@@ -96,10 +98,17 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                     wrap="nowrap"
                     className={styles.wrapper}
                 >
-                    <CustomGrid container wrap="nowrap" className={styles.timeWrapper}>
+                    <CustomGrid
+                        container
+                        wrap="nowrap"
+                        className={styles.timeWrapper}
+                    >
                         <ClockIcon width="24px" height="24px" />
                         <CustomTypography variant="body1bold">
-                            {formatCountDown(currentTime, { seconds: true, minutes: true })}
+                            {formatCountDown(currentTime, {
+                                seconds: true,
+                                minutes: true,
+                            })}
                         </CustomTypography>
                     </CustomGrid>
                     <CustomGrid
@@ -120,7 +129,12 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                     <CustomButton
                         variant="custom-common"
                         onClick={handleOpenProfile}
-                        label={<Translation nameSpace="common" translation="buttons.update" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.update"
+                            />
+                        }
                         className={styles.button}
                         typographyProps={{
                             variant: 'body2',

@@ -12,12 +12,12 @@ import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 import { EmailInput } from '@library/common/EmailInput/EmailInput';
 
 // store
+import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 import { getBusinessCategoriesFx } from '../../../store';
 
 // styles
 import styles from './EditCompanyInfo.module.scss';
-import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
-import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 
 const EditCompanyInfo = memo(() => {
     const {
@@ -42,7 +42,11 @@ const EditCompanyInfo = memo(() => {
         <CustomAccordion
             sumary={
                 <>
-                    <PersonIcon width="24px" height="24px" className={styles.icon} />
+                    <PersonIcon
+                        width="24px"
+                        height="24px"
+                        className={styles.icon}
+                    />
                     <CustomTypography
                         variant="body1"
                         fontWeight="600"

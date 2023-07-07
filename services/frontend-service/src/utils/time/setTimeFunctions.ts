@@ -9,4 +9,10 @@ export const setDayTime = (
         milliseconds: 0,
     },
 ): Date =>
-    setHours(setMinutes(setSeconds(setMilliseconds(date, milliseconds), seconds), minutes), hours);
+    setHours(
+        setMinutes(
+            setSeconds(setMilliseconds(date, milliseconds), seconds),
+            minutes,
+        ),
+        hours,
+    );

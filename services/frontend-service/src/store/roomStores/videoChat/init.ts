@@ -53,12 +53,16 @@ $tracksStore
     })
     .on(removeConnectionStream, (state, data) =>
         Object.fromEntries(
-            Object.entries(state).filter(([connectionId]) => connectionId !== data.connectionId),
+            Object.entries(state).filter(
+                ([connectionId]) => connectionId !== data.connectionId,
+            ),
         ),
     )
     .on(removeConnectionsFx.doneData, (state, data) =>
         Object.fromEntries(
-            Object.entries(state).filter(([connectionId]) => !data.includes(connectionId)),
+            Object.entries(state).filter(
+                ([connectionId]) => !data.includes(connectionId),
+            ),
         ),
     );
 

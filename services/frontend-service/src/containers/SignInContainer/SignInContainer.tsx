@@ -32,6 +32,13 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 // styles
 import { Translation } from '@library/common/Translation/Translation';
 import { useRouter } from 'next/router';
+import { USER_IS_BLOCKED } from 'shared-const';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 import styles from './SignInContainer.module.scss';
 
 // stores
@@ -50,13 +57,6 @@ import { dashboardRoute } from '../../const/client-routes';
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
-import { USER_IS_BLOCKED } from 'shared-const';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from 'src/controllers/WebStorageController';
-import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),

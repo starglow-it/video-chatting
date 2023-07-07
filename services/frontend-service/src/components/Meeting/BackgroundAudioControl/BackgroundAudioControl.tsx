@@ -35,8 +35,10 @@ const Component = () => {
 
     const buttonRef = useRef(null);
 
-    const { value: isAudioControlOpen, onToggleSwitch: handleToggleAudioControl } =
-        useToggle(false);
+    const {
+        value: isAudioControlOpen,
+        onToggleSwitch: handleToggleAudioControl,
+    } = useToggle(false);
 
     const { isMobile } = useBrowserDetect();
 
@@ -100,7 +102,9 @@ const Component = () => {
                 >
                     <CustomPaper
                         variant="black-glass"
-                        className={clsx(styles.audioControl, { [styles.mobile]: isMobile })}
+                        className={clsx(styles.audioControl, {
+                            [styles.mobile]: isMobile,
+                        })}
                     >
                         <CustomRange
                             className={styles.range}

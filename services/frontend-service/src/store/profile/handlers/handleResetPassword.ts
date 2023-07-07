@@ -6,7 +6,10 @@ import { ResetPasswordPayload } from '../types';
 export const handleResetPassword = async (
     params: ResetPasswordPayload,
 ): Promise<ErrorState | null | undefined> => {
-    const response = await sendRequestWithCredentials<null | undefined, ErrorState>({
+    const response = await sendRequestWithCredentials<
+        null | undefined,
+        ErrorState
+    >({
         ...resetPasswordUrl,
         data: params,
     });

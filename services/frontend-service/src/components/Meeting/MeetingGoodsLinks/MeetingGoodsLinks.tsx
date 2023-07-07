@@ -6,12 +6,12 @@ import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 
 // stores
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { $isGoodsVisible } from '../../../store';
 import { $meetingTemplateStore } from '../../../store/roomStores';
 
 // styles
 import styles from './MeetingGoodsLinks.module.scss';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 const Component = () => {
     const isGoodsVisible = useStore($isGoodsVisible);
@@ -29,7 +29,7 @@ const Component = () => {
                     let url = link.item;
 
                     if (!url.match(/^https?:\/\//i)) {
-                        url = 'http://' + url;
+                        url = `http://${url}`;
                     }
 
                     return window.open(url, '_blank');

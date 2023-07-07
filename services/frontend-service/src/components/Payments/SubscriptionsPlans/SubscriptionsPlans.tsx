@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import Backdrop from '@mui/material/Backdrop';
-import { Slide, useMediaQuery} from '@mui/material';
+import { Slide, useMediaQuery } from '@mui/material';
 import { ClickAwayListener } from '@mui/base';
 
 // custom
@@ -16,18 +16,20 @@ import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // components
 import { SubscriptionPlanItem } from '@components/Payments/SubscriptionsPlans/SubscriptionPlanItem';
-import { SubscriptionPlansWrapper } from "@components/Payments/SubscriptionsPlans/SubscritionPlansWrapper";
+import { SubscriptionPlansWrapper } from '@components/Payments/SubscriptionsPlans/SubscritionPlansWrapper';
 
 // types
-import {PlanKeys} from "shared-types";
-import {
-    SubscriptionsPlansProps,
-} from './types';
+import { PlanKeys } from 'shared-types';
+import { SubscriptionsPlansProps } from './types';
 
 // hooks
 
 // stores
-import { $productsStore, $profileStore, getStripeProductsFx } from '../../../store';
+import {
+    $productsStore,
+    $profileStore,
+    getStripeProductsFx,
+} from '../../../store';
 
 // styles
 
@@ -63,59 +65,57 @@ const Component = ({
         },
         [onChooseSubscription],
     );
-    
-    const productFiltered = useMemo(() => products.filter(item => item?.product?.name !== activePlanKey), [products])
 
-    const renderSubscriptionPlans = useMemo(
-        () => {
-            return productFiltered
-                .map((product, i) => {
-                    return (
-                        !is1320Media ? (
-                                <Slide key={product?.product?.name} in timeout={i * 200}>
-                                    <SubscriptionPlanItem
-                                        activePlanKey={activePlanKey}
-                                        product={product?.product}
-                                        price={product?.price}
-                                        onChooseSubscription={handleChosenSubscription}
-                                        isDisabled={isDisabled}
-                                        buttonTranslation={buttonTranslation}
-                                        withTrial={
-                                            product?.product?.name === PlanKeys.Professional &&
-                                            profile.isProfessionalTrialAvailable
-                                        }
-                                    />
-                                </Slide>
-                            )
-                            : <SubscriptionPlanItem
-                                withoutTitle
-                                key={product?.product?.name}
-                                activePlanKey={activePlanKey}
-                                product={product?.product}
-                                price={product?.price}
-                                onChooseSubscription={handleChosenSubscription}
-                                isDisabled={isDisabled}
-                                buttonTranslation={buttonTranslation}
-                                withTrial={
-                                    product?.product?.name === PlanKeys.Professional &&
-                                    profile.isProfessionalTrialAvailable
-                                }
-                              />
-                    )
-                })
-        },
-        [
-            productFiltered,
-            is1320Media,
-            isDisabled,
-            activePlanKey,
-            onlyPaidPlans,
-            withActivePlan,
-            buttonTranslation,
-            handleChosenSubscription,
-            profile.isProfessionalTrialAvailable,
-        ],
+    const productFiltered = useMemo(
+        () => products.filter(item => item?.product?.name !== activePlanKey),
+        [products],
     );
+
+    const renderSubscriptionPlans = useMemo(() => {
+        return productFiltered.map((product, i) => {
+            return !is1320Media ? (
+                <Slide key={product?.product?.name} in timeout={i * 200}>
+                    <SubscriptionPlanItem
+                        activePlanKey={activePlanKey}
+                        product={product?.product}
+                        price={product?.price}
+                        onChooseSubscription={handleChosenSubscription}
+                        isDisabled={isDisabled}
+                        buttonTranslation={buttonTranslation}
+                        withTrial={
+                            product?.product?.name === PlanKeys.Professional &&
+                            profile.isProfessionalTrialAvailable
+                        }
+                    />
+                </Slide>
+            ) : (
+                <SubscriptionPlanItem
+                    withoutTitle
+                    key={product?.product?.name}
+                    activePlanKey={activePlanKey}
+                    product={product?.product}
+                    price={product?.price}
+                    onChooseSubscription={handleChosenSubscription}
+                    isDisabled={isDisabled}
+                    buttonTranslation={buttonTranslation}
+                    withTrial={
+                        product?.product?.name === PlanKeys.Professional &&
+                        profile.isProfessionalTrialAvailable
+                    }
+                />
+            );
+        });
+    }, [
+        productFiltered,
+        is1320Media,
+        isDisabled,
+        activePlanKey,
+        onlyPaidPlans,
+        withActivePlan,
+        buttonTranslation,
+        handleChosenSubscription,
+        profile.isProfessionalTrialAvailable,
+    ]);
 
     const handleClose = useCallback(() => {
         onClose?.();
@@ -133,10 +133,24 @@ const Component = ({
             <ConditionalRender condition={isProductsLoading}>
                 <CustomLoader />
             </ConditionalRender>
-            <ConditionalRender condition={Boolean(productFiltered.length) && isSubscriptionStep}>
+            <ConditionalRender
+                condition={
+                    Boolean(productFiltered.length) && isSubscriptionStep
+                }
+            >
                 <ClickAwayListener onClickAway={handleClose}>
-                    <CustomGrid container direction="column" justifyContent="center" gap={4}>
-                        <CustomGrid container justifyContent="center" alignItems="center" gap={1}>
+                    <CustomGrid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        gap={4}
+                    >
+                        <CustomGrid
+                            container
+                            justifyContent="center"
+                            alignItems="center"
+                            gap={1}
+                        >
                             {title ?? (
                                 <>
                                     <CustomImage
@@ -160,14 +174,15 @@ const Component = ({
                             wrap="nowrap"
                             alignItems="stretch"
                         >
-                            {is1320Media
-                                ? (
-                                    <SubscriptionPlansWrapper products={productFiltered}>
-                                        {renderSubscriptionPlans}
-                                    </SubscriptionPlansWrapper>
-                                )
-                                : renderSubscriptionPlans
-                            }
+                            {is1320Media ? (
+                                <SubscriptionPlansWrapper
+                                    products={productFiltered}
+                                >
+                                    {renderSubscriptionPlans}
+                                </SubscriptionPlansWrapper>
+                            ) : (
+                                renderSubscriptionPlans
+                            )}
                         </CustomGrid>
                     </CustomGrid>
                 </ClickAwayListener>

@@ -14,7 +14,10 @@ export const useMultipleToggle = <Keys>(
     const [values, setValues] = useState(() => {
         const initialState = {} as Values<Keys>;
 
-        return keys.reduce((acc, b) => ({ ...acc, [b]: defaultKey === b }), initialState);
+        return keys.reduce(
+            (acc, b) => ({ ...acc, [b]: defaultKey === b }),
+            initialState,
+        );
     });
 
     const handleSwitchOn = useCallback((key: keyof Keys) => {
@@ -23,7 +26,10 @@ export const useMultipleToggle = <Keys>(
 
             const initialState = {} as Values<Keys>;
 
-            return prevEntries.reduce((acc, b) => ({ ...acc, [b[0]]: b[0] === key }), initialState);
+            return prevEntries.reduce(
+                (acc, b) => ({ ...acc, [b[0]]: b[0] === key }),
+                initialState,
+            );
         });
     }, []);
 
@@ -33,7 +39,10 @@ export const useMultipleToggle = <Keys>(
 
             const initialState = {} as Values<Keys>;
 
-            return prevEntries.reduce((acc, b) => ({ ...acc, [b[0]]: false }), initialState);
+            return prevEntries.reduce(
+                (acc, b) => ({ ...acc, [b[0]]: false }),
+                initialState,
+            );
         });
     }, []);
 

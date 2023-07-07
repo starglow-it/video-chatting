@@ -7,10 +7,13 @@ import { deleteProfileAvatarUrl } from '../../../utils/urls';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 
-export const handleDeleteProfilePhoto = async (): Promise<CommonProfileResponse> => {
-    const response = await sendRequestWithCredentials<Profile, ErrorState>(deleteProfileAvatarUrl);
+export const handleDeleteProfilePhoto =
+    async (): Promise<CommonProfileResponse> => {
+        const response = await sendRequestWithCredentials<Profile, ErrorState>(
+            deleteProfileAvatarUrl,
+        );
 
-    if (response.success) {
-        return response.result;
-    }
-};
+        if (response.success) {
+            return response.result;
+        }
+    };

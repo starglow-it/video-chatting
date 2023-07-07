@@ -1,11 +1,11 @@
 import { attach, combine, Store } from 'effector-next';
-import {ErrorState, IUserTemplate} from 'shared-types';
+import { ErrorState, IUserTemplate } from 'shared-types';
 import { meetingDomain } from '../../../domains';
 
 import { $profileStore } from '../../../profile/profile/model';
 import { $meetingUsersStore } from '../../users/meetingUsers/model';
 
-import {MeetingUser, Profile} from '../../../types';
+import { MeetingUser, Profile } from '../../../types';
 import { UpdateTemplatePayload } from '../../../profile/types';
 
 export const initialTemplateState: IUserTemplate = {
@@ -44,26 +44,37 @@ export const initialTemplateState: IUserTemplate = {
     },
 };
 
-export const $meetingTemplateStore = meetingDomain.createStore<IUserTemplate>(initialTemplateState);
+export const $meetingTemplateStore =
+    meetingDomain.createStore<IUserTemplate>(initialTemplateState);
 
-export const $isUserSendEnterRequest = meetingDomain.createStore<boolean>(false);
+export const $isUserSendEnterRequest =
+    meetingDomain.createStore<boolean>(false);
 export const $isMeetingInstanceExists = $meetingTemplateStore.map(state =>
     Boolean(state?.meetingInstance?.id),
 );
 
-export const $isOwner = combine<{ meetingTemplate: IUserTemplate; profile: Profile }>({
+export const $isOwner = combine<{
+    meetingTemplate: IUserTemplate;
+    profile: Profile;
+}>({
     meetingTemplate: $meetingTemplateStore,
     profile: $profileStore,
 }).map(
     ({ meetingTemplate, profile }) =>
-        Boolean(profile.id) && meetingTemplate?.meetingInstance?.owner === profile.id,
+        Boolean(profile.id) &&
+        meetingTemplate?.meetingInstance?.owner === profile.id,
 );
 
-export const $isOwnerInMeeting = combine<{ template: IUserTemplate; users: MeetingUser[] }>({
+export const $isOwnerInMeeting = combine<{
+    template: IUserTemplate;
+    users: MeetingUser[];
+}>({
     users: $meetingUsersStore,
     template: $meetingTemplateStore,
 }).map(({ users, template }) =>
-    Boolean(users.find(user => user.profileId === template?.meetingInstance?.owner)),
+    Boolean(
+        users.find(user => user.profileId === template?.meetingInstance?.owner),
+    ),
 );
 
 export const setIsUserSendEnterRequest = meetingDomain.createEvent<boolean>(

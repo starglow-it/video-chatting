@@ -1,6 +1,10 @@
-import {KickUserReasons} from "shared-types";
+import { KickUserReasons } from 'shared-types';
 
-import { leaveMeetingEvent, leaveDeletedUserMeetingEvent, leaveExpiredMeetingEvent } from '../../../users/localUser/model';
+import {
+    leaveMeetingEvent,
+    leaveDeletedUserMeetingEvent,
+    leaveExpiredMeetingEvent,
+} from '../../../users/localUser/model';
 import { resetMeetingTemplateStoreEvent } from '../../meetingTemplate/model';
 
 export const handleMeetingFinished = ({ reason }: { reason: string }) => {

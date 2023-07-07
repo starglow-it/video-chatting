@@ -14,6 +14,7 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 import { DashboardNotifications } from '@components/Dashboard/DashboardNotifications/DashboardNotifications';
 
 // styles
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import styles from './ProfileNotifications.module.scss';
 
 // stores
@@ -25,7 +26,6 @@ import {
 
 // types
 import { DashboardNotificationReadStatus } from '../../../store/types';
-import {ActionButton} from "shared-frontend/library/common/ActionButton";
 
 const ProfileNotifications = memo(() => {
     const isMainSocketConnected = useStore($isSocketConnected);
@@ -36,7 +36,9 @@ const ProfileNotifications = memo(() => {
     const isThereUnreadNotifications = useMemo(
         () =>
             dashboardNotifications.some(
-                notification => notification.status === DashboardNotificationReadStatus.active,
+                notification =>
+                    notification.status ===
+                    DashboardNotificationReadStatus.active,
             ),
         [dashboardNotifications],
     );
@@ -70,7 +72,9 @@ const ProfileNotifications = memo(() => {
                 anchorEl={notificationsButtonRef.current}
                 placement="bottom-end"
             >
-                <DashboardNotifications onClickAway={handleCloseNotifications} />
+                <DashboardNotifications
+                    onClickAway={handleCloseNotifications}
+                />
             </CustomPopper>
         </CustomBox>
     );

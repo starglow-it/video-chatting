@@ -1,7 +1,7 @@
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
-import { IAudioCategory } from '../types';
 import { EntityList, MediaCategoryType } from 'shared-types';
 import { getBackgroundCategories } from 'src/utils/urls';
+import { IAudioCategory } from '../types';
 
 export const handleGetMeetingAudio = async ({
     type = MediaCategoryType.Sound,

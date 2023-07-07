@@ -31,10 +31,17 @@ const currencySigns = {
     CAD: 'C$',
 };
 
-const Component = ({ onClose, templateType = 'white', subLabel, paymentType = 'in-meeting' }: PaymentFormProps) => {
+const Component = ({
+    onClose,
+    templateType = 'white',
+    subLabel,
+    paymentType = 'in-meeting',
+}: PaymentFormProps) => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const paymentIntent = useStore($paymentIntent);
-    const isCreatePaymentIntentPending = useStore(createPaymentIntentWithData.pending);
+    const isCreatePaymentIntentPending = useStore(
+        createPaymentIntentWithData.pending,
+    );
 
     const handleSubmit = useCallback(async () => {
         onClose?.();
@@ -53,16 +60,21 @@ const Component = ({ onClose, templateType = 'white', subLabel, paymentType = 'i
         });
     }, []);
 
-    const colorMain = `colors.${templateType}.primary`
-    const isInMeetingPayment = paymentType === 'in-meeting'
-    const currency = currencySigns[isInMeetingPayment ? meetingTemplate.templateCurrency : meetingTemplate.paywallCurrency]
-    const price = isInMeetingPayment ? meetingTemplate.templatePrice : meetingTemplate.paywallPrice
+    const colorMain = `colors.${templateType}.primary`;
+    const isInMeetingPayment = paymentType === 'in-meeting';
+    const currency =
+        currencySigns[
+            isInMeetingPayment
+                ? meetingTemplate.templateCurrency
+                : meetingTemplate.paywallCurrency
+        ];
+    const price = isInMeetingPayment
+        ? meetingTemplate.templatePrice
+        : meetingTemplate.paywallPrice;
     return (
         <CustomGrid container direction="column">
             <CustomGrid container className={styles.title} alignItems="center">
-                {
-                    subLabel ? <>{subLabel}{' '}</> : null
-                }
+                {subLabel ? <>{subLabel} </> : null}
                 <CustomTypography variant="h3bold" color={colorMain}>
                     {currency}
                     {price}
@@ -70,21 +82,27 @@ const Component = ({ onClose, templateType = 'white', subLabel, paymentType = 'i
                 &nbsp;
                 <CustomTypography
                     sx={{
-                        color: `rgba(${colorMain}, 0.6)`
+                        color: `rgba(${colorMain}, 0.6)`,
                     }}
-                >&#8226;</CustomTypography>
+                >
+                    &#8226;
+                </CustomTypography>
                 &nbsp;
                 <CustomTypography
                     nameSpace="meeting"
                     translation="payments.perSession"
                     sx={{
-                        color: `rgba(${colorMain}, 0.6)`
+                        color: `rgba(${colorMain}, 0.6)`,
                     }}
                 />
             </CustomGrid>
             <CustomDivider light flexItem />
-            {(!isCreatePaymentIntentPending && paymentIntent.clientSecret) ? (
-                <CustomGrid container direction="column" className={styles.paymentForm}>
+            {!isCreatePaymentIntentPending && paymentIntent.clientSecret ? (
+                <CustomGrid
+                    container
+                    direction="column"
+                    className={styles.paymentForm}
+                >
                     <CustomTypography
                         variant="body1bold"
                         color={colorMain}

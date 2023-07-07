@@ -1,5 +1,6 @@
 import { combine, forward, sample, split } from 'effector';
 
+import { ICommonTemplate } from 'shared-types';
 import {
     $discoveryTemplatesStore,
     $isUploadTemplateBackgroundInProgress,
@@ -44,7 +45,6 @@ import { $profileStore, clearProfileEvent } from '../profile/profile/model';
 
 // types
 import { AppDialogsEnum } from '../types';
-import { ICommonTemplate } from 'shared-types';
 
 // handlers
 import { handleFetchUsersTemplates } from './handlers/handleFetchUsersTemplates';

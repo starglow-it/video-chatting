@@ -16,6 +16,8 @@ import { CustomLoader } from 'shared-frontend/library/custom/CustomLoader';
 
 // const
 import { IUploadTemplateFormData } from '@containers/CreateRoomContainer/types';
+import { IUserTemplate } from 'shared-types';
+import { adjustUserPositions } from 'shared-utils';
 import { dashboardRoute } from '../../const/client-routes';
 
 // types
@@ -38,13 +40,15 @@ import { convertToBase64 } from '../../utils/string/convertToBase64';
 
 // styles
 import styles from './EditRoomContainer.module.scss';
-import {IUserTemplate} from "shared-types";
-import {adjustUserPositions} from "shared-utils";
 
 const Component = () => {
     const prevTemplateDataRef = useRef<IUserTemplate | null>(null);
-    const isGetTemplateRequestIsPending = useStore(getEditingTemplateFx.pending);
-    const isUpdateMeetingTemplateFilePending = useStore(uploadUserTemplateFileFx.pending);
+    const isGetTemplateRequestIsPending = useStore(
+        getEditingTemplateFx.pending,
+    );
+    const isUpdateMeetingTemplateFilePending = useStore(
+        uploadUserTemplateFileFx.pending,
+    );
 
     const [template, setTemplate] = useState<IUserTemplate | null>(null);
 
@@ -59,7 +63,9 @@ const Component = () => {
     const router = useRouter();
 
     useSubscriptionNotification(
-        `${getEditRoomUrl((template?.customLink || template?.id) ?? '')}?step=privacy`,
+        `${getEditRoomUrl(
+            (template?.customLink || template?.id) ?? '',
+        )}?step=privacy`,
     );
 
     useEffect(() => {
@@ -69,7 +75,10 @@ const Component = () => {
             }
             const { templateId } = router.query;
             if (templateId && typeof templateId === 'string') {
-                const response = await getEditingTemplateFx({ templateId, withCredentials: true });
+                const response = await getEditingTemplateFx({
+                    templateId,
+                    withCredentials: true,
+                });
 
                 if (response) {
                     prevTemplateDataRef.current = response;
@@ -170,7 +179,8 @@ const Component = () => {
 
             let data = '';
             if (savedTemplateProgress.current) {
-                const { background, ...dataToSave } = savedTemplateProgress.current;
+                const { background, ...dataToSave } =
+                    savedTemplateProgress.current;
                 data = convertToBase64(dataToSave);
             }
             const dataParam = data ? `&data=${data}` : '';

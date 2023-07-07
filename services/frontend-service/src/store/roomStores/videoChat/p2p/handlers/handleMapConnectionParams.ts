@@ -9,19 +9,27 @@ import { ConnectionType, StreamType } from '../../../../../const/webrtc';
 import { getConnectionKey } from '../../../../../helpers/media/getConnectionKey';
 
 export const handleMapConnectionParams = (
-    data: OfferExchangePayload | AnswerExchangePayload | IceCandidatesExchangePayload,
+    data:
+        | OfferExchangePayload
+        | AnswerExchangePayload
+        | IceCandidatesExchangePayload,
     {
         connections,
         localUser,
         meeting,
-    }: { connections: ConnectionsStore; localUser: MeetingUser; meeting: Meeting },
+    }: {
+        connections: ConnectionsStore;
+        localUser: MeetingUser;
+        meeting: Meeting;
+    },
 ) => {
     const [, streamType] = data.connectionId.split('_');
 
     const connectionId = getConnectionKey({
         userId: data.senderId,
         connectionType:
-            localUser.id === meeting.sharingUserId && streamType === StreamType.SCREEN_SHARING
+            localUser.id === meeting.sharingUserId &&
+            streamType === StreamType.SCREEN_SHARING
                 ? ConnectionType.PUBLISH
                 : ConnectionType.VIEW,
         streamType: streamType as StreamType,

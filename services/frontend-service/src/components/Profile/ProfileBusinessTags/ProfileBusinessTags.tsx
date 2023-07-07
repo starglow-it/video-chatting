@@ -14,7 +14,7 @@ import { CustomPopper } from '@library/custom/CustomPopper/CustomPopper';
 
 // components
 import { TagWrapper } from 'shared-frontend/library/common/TagWrapper';
-import {BusinessCategoryItem} from "shared-frontend/library/common/BusinessCategoryItem";
+import { BusinessCategoryItem } from 'shared-frontend/library/common/BusinessCategoryItem';
 
 // stores
 import { IBusinessCategory } from 'shared-types';
@@ -32,12 +32,14 @@ type TagLineType = {
 const Component = () => {
     const profileState = useStore($profileStore);
 
-    const [isNeedToRenderSeeAllTags, setIsNeedToRenderSeeAllTags] = useState<boolean>(false);
+    const [isNeedToRenderSeeAllTags, setIsNeedToRenderSeeAllTags] =
+        useState<boolean>(false);
 
     const businessTagsRef = useRef<HTMLDivElement>();
     const hiddenBusinessTagsRef = useRef<HTMLDivElement>();
 
-    const { value: openMoreTags, onToggleSwitch: handleToggleMoreTags } = useToggle(false);
+    const { value: openMoreTags, onToggleSwitch: handleToggleMoreTags } =
+        useToggle(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -46,7 +48,9 @@ const Component = () => {
     }, []);
 
     const hideData = useMemo(() => {
-        const initialArray = [...(hiddenBusinessTagsRef?.current?.children || [])];
+        const initialArray = [
+            ...(hiddenBusinessTagsRef?.current?.children || []),
+        ];
 
         const [firstTag, ...restTags] = profileState.businessCategories;
 
@@ -58,7 +62,10 @@ const Component = () => {
         const initialReduceArray: TagLineType[] = [
             { elements: [], overallWidth: 0, id: 1 },
             {
-                elements: firstTag && profileState.businessCategories.length < 3 ? [firstTag] : [],
+                elements:
+                    firstTag && profileState.businessCategories.length < 3
+                        ? [firstTag]
+                        : [],
                 overallWidth: 0,
                 id: 2,
             },
@@ -66,13 +73,17 @@ const Component = () => {
         ];
 
         return initialArray?.reduce((acc: TagLineType[], element, index) => {
-            const targetCategory = searchArray.find((_, categoryIndex) => categoryIndex === index);
+            const targetCategory = searchArray.find(
+                (_, categoryIndex) => categoryIndex === index,
+            );
 
             if (!targetCategory) return acc;
 
             const rect = element.getBoundingClientRect();
 
-            const findLineIndex = acc.findIndex(line => line.overallWidth + rect.width < 300 - 32);
+            const findLineIndex = acc.findIndex(
+                line => line.overallWidth + rect.width < 300 - 32,
+            );
 
             return acc.map((line, indexLine) => {
                 if (indexLine === findLineIndex) {
@@ -97,9 +108,14 @@ const Component = () => {
 
     const renderInitialProfileTags = useMemo(
         () =>
-            profileState?.businessCategories.map((category: IBusinessCategory) => (
-                <BusinessCategoryItem key={category.key} category={category} />
-            )),
+            profileState?.businessCategories.map(
+                (category: IBusinessCategory) => (
+                    <BusinessCategoryItem
+                        key={category.key}
+                        category={category}
+                    />
+                ),
+            ),
         [profileState?.businessCategories],
     );
 
@@ -114,16 +130,20 @@ const Component = () => {
                     alignContent="flex-start"
                     gap={1.25}
                 >
-                    {elementsData.elements.map((category: IBusinessCategory) => (
-                        <BusinessCategoryItem
-                            className={clsx({
-                                [styles.businessTag]:
-                                    index === 1 && profileState?.businessCategories.length < 3,
-                            })}
-                            key={category.key}
-                            category={category}
-                        />
-                    ))}
+                    {elementsData.elements.map(
+                        (category: IBusinessCategory) => (
+                            <BusinessCategoryItem
+                                className={clsx({
+                                    [styles.businessTag]:
+                                        index === 1 &&
+                                        profileState?.businessCategories
+                                            .length < 3,
+                                })}
+                                key={category.key}
+                                category={category}
+                            />
+                        ),
+                    )}
                     {index === 1 && Boolean(hideData[2]?.elements?.length) && (
                         <TagWrapper
                             ref={businessTagsRef}
@@ -131,7 +151,9 @@ const Component = () => {
                             onMouseEnter={handleToggleMoreTags}
                             onMouseLeave={handleToggleMoreTags}
                         >
-                            <CustomTypography className={styles.numberOfHiddenTags}>
+                            <CustomTypography
+                                className={styles.numberOfHiddenTags}
+                            >
                                 + {hideData[2]?.elements?.length}
                             </CustomTypography>
                         </TagWrapper>
@@ -153,13 +175,15 @@ const Component = () => {
                     gap={1.25}
                     className={styles.moreTags}
                 >
-                    {elementsData?.elements?.map((category: IBusinessCategory) => (
-                        <BusinessCategoryItem
-                            className={styles.hiddenBusinessTag}
-                            key={category.key}
-                            category={category}
-                        />
-                    ))}
+                    {elementsData?.elements?.map(
+                        (category: IBusinessCategory) => (
+                            <BusinessCategoryItem
+                                className={styles.hiddenBusinessTag}
+                                key={category.key}
+                                category={category}
+                            />
+                        ),
+                    )}
                 </CustomGrid>
             )),
         [hideData],
@@ -188,7 +212,11 @@ const Component = () => {
             >
                 {renderTagsWithOutHidden}
             </CustomGrid>
-            <CustomPopper id="businessTags" open={openMoreTags} anchorEl={businessTagsRef.current}>
+            <CustomPopper
+                id="businessTags"
+                open={openMoreTags}
+                anchorEl={businessTagsRef.current}
+            >
                 <CustomPaper className={styles.hiddenTags}>
                     <CustomGrid container gap={1.25}>
                         {renderHiddenTags}

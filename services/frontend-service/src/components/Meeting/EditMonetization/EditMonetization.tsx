@@ -39,7 +39,9 @@ const Component = () => {
 
     const targetCurrency = useMemo(
         () =>
-            currencyValues.find(currency => currency.value === activeCurrency) || currencyValues[0],
+            currencyValues.find(
+                currency => currency.value === activeCurrency,
+            ) || currencyValues[0],
         [activeCurrency],
     );
 

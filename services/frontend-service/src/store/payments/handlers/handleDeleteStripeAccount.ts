@@ -3,5 +3,7 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { deleteStripeAccountUrl } from '../../../utils/urls';
 
 export const handleDeleteStripeAccount = async (): Promise<void> => {
-    await sendRequestWithCredentials<{ url: string }, ErrorState>(deleteStripeAccountUrl);
+    await sendRequestWithCredentials<{ url: string }, ErrorState>(
+        deleteStripeAccountUrl,
+    );
 };

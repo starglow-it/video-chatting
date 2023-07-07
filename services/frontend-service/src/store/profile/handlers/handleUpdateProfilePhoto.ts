@@ -1,7 +1,10 @@
 import { ErrorState } from 'shared-types';
 
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
-import { postProfileAvatarUrl, uploadProfileAvatarUrl } from '../../../utils/urls';
+import {
+    postProfileAvatarUrl,
+    uploadProfileAvatarUrl,
+} from '../../../utils/urls';
 import { sendRequest } from '../../../helpers/http/sendRequest';
 
 import { Profile, UpdateProfileAvatar } from '../../types';
