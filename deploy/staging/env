@@ -58,3 +58,4 @@ GOOGLE_CLIENT_ID=262625104810-160tsngddev8rlpi729qjnvuukh8vlok.apps.googleuserco
 GOOGLE_SECRET=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
 BASE_ENV_DOMAIN=tlo.nongdan.dev
 LIVEKIT_IP=108.61.203.79
+IS_SYNC_DATA=false
