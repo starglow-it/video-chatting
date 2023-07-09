@@ -29,11 +29,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.proxy.rule=Host(`{subdomain:.+}.scaling.demo.theliveoffice.com`)"
+      - "traefik.http.routers.proxy.rule=Host(`{subdomain:.+}.scaling.demo.chatruume.com`)"
       - "traefik.http.routers.proxy.entrypoints=websecure"
       # - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
-      # - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.theliveoffice.com"
-      # - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.theliveoffice.com"
+      # - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.chatruume.com"
+      # - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.chatruume.com"
       - "traefik.http.services.proxy.loadbalancer.server.port=7000"
       - "io.portainer.accesscontrol.public"
     networks:
@@ -45,10 +45,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.whoami.rule=(Host(`stg-livekit.theliveoffice.com`) || Host(`stg-socket.theliveoffice.com`) || Host(`stg.theliveoffice.com`) || Host(`stg-admin.theliveoffice.com`)) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.rule=(Host(`stg-livekit.chatruume.com`) || Host(`stg-socket.chatruume.com`) || Host(`stg-my.chatruume.com`) || Host(`stg-admin.chatruume.com`)) && PathPrefix(`/whoami`)"
       - traefik.http.routers.whoami.entrypoints=https
-      # - traefik.http.routers.whoami.tls.domains[1].main=demo.theliveoffice.com
-      # - traefik.http.routers.whoami.tls.domains[1].sans=*.demo.theliveoffice.com
+      # - traefik.http.routers.whoami.tls.domains[1].main=demo.chatruume.com
+      # - traefik.http.routers.whoami.tls.domains[1].sans=*.demo.chatruume.com
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
