@@ -181,7 +181,11 @@ const Component = () => {
                     justifyContent="center"
                     marginBottom="10px"
                 >
-                    <LiveOfficeLogo width="150px" height="50px" />
+                    <CustomImage
+                        src="/images/Ruume.svg"
+                        width="150px"
+                        height="35px"
+                    />
                 </CustomGrid>
                 <CustomGrid
                     container

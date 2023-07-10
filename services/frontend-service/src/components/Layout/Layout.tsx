@@ -59,6 +59,7 @@ import {
 
 // styles
 import styles from './Layout.module.scss';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 const SubscriptionExpiredNotification = dynamic(
     () =>
@@ -212,12 +213,13 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                                 : ''
                                         }
                                     >
-                                        <LiveOfficeLogo
+                                        <CustomImage
+                                            src="/images/Ruume.svg"
+                                            width="210px"
+                                            height="44px"
                                             className={clsx(isAuthenticated, {
                                                 [styles.link]: isAuthenticated,
                                             })}
-                                            width="210px"
-                                            height="44px"
                                         />
                                     </CustomLink>
                                     <CustomGrid>
