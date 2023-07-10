@@ -28,7 +28,7 @@
   "dialogs": {
     "meetingFinished": {
       "title": "The meeting has been finished",
-      "text": "The meeting has been finished as the host’s account was deleted by TheLiveOffice admin. \n Sorry for inconvenience"
+      "text": "The meeting has been finished as the host’s account was deleted by Ruume admin. \n Sorry for inconvenience"
     }
   }
 }
