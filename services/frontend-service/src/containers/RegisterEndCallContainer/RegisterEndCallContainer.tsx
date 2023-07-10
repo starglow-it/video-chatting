@@ -157,7 +157,11 @@ const Component = () => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <LiveOfficeLogo width="150px" height="50px" />
+                    <CustomImage
+                        src="/images/Ruume.svg"
+                        width="150px"
+                        height="35px"
+                    />
                     <CustomTypography
                         variant="h2bold"
                         className={styles.text}
