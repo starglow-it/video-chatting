@@ -24,6 +24,8 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 
 // stores
+import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
+import { isSafari } from 'shared-utils';
 import {
     $isBusinessSubscription,
     $isProfessionalSubscription,
@@ -43,10 +45,10 @@ import styles from './ProfileTemplateItem.module.scss';
 // types
 import { ProfileTemplateProps } from './types';
 import { AppDialogsEnum, NotificationType } from '../../../store/types';
-import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 
 const ProfileTemplateItem = memo(
-    ({ template, onChooseTemplate }: ProfileTemplateProps) => {
+    ({ template, 
+onChooseTemplate }: ProfileTemplateProps) => {
         const profile = useStore($profileStore);
         const isBusinessSubscription = useStore($isBusinessSubscription);
         const isProfSubscription = useStore($isProfessionalSubscription);
@@ -135,7 +137,7 @@ const ProfileTemplateItem = memo(
                                 src={template?.url || ''}
                                 volume={0}
                                 isPlaying
-                                isMuted={false}
+                                isMuted
                             />
                         </CustomGrid>
                     );

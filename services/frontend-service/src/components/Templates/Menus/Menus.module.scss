@@ -4,7 +4,7 @@
 .wrapper {
     width: 100%;
     justify-content: flex-start;
-    height: rem(60px);
+    min-height: rem(60px);
 }
 
 .barge {

@@ -24,6 +24,7 @@ class BackgroundManagerInstance {
             BROWSER_NAMES.chrome,
             BROWSER_NAMES.chromium,
             BROWSER_NAMES.edge,
+            BROWSER_NAMES.safari,
         ];
     }
 
@@ -38,22 +39,15 @@ class BackgroundManagerInstance {
                     this.isBackgroundSupported =
                         this.supportedBrowsers.includes(
                             this.browserData.browser.name || '',
-                        ) && this.browserData.platform.type === 'desktop';
+                        ) && Module.isSupported();
 
                     if (this.isBackgroundSupported) {
                         if (!this.effectBackground) {
-                            this.effectBackground = new Module.EffectBlur();
-                        }
-
-                        if (!this.segmentation) {
-                            this.segmentation = new Module.Segmentation({
-                                onFrame: (data: any) =>
-                                    this.effectBackground.draw(data),
-                                onReady: () =>
-                                    console.log('Segmentation is ready'),
-                                onError: () =>
-                                    console.log('Segmentation error'),
-                            });
+                            this.effectBackground =
+                                new Module.EffectBackground();
+                            this.effectBackground.setBackgroundImage(
+                                this.segmentation,
+                            );
                         }
 
                         if (!this.videoEffects) {
@@ -94,10 +88,9 @@ class BackgroundManagerInstance {
 
     applyBlur(stream: CustomMediaStream) {
         if (stream) {
-            const canvasEl = new OffscreenCanvas(
-                VIDEO_CONSTRAINTS.width.ideal,
-                VIDEO_CONSTRAINTS.height.ideal,
-            );
+            const canvasEl = document.createElement('canvas');
+            canvasEl.width = VIDEO_CONSTRAINTS.width.ideal;
+            canvasEl.height = VIDEO_CONSTRAINTS.height.ideal;
             const ctx = canvasEl.getContext('2d');
             ctx?.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
@@ -105,7 +98,7 @@ class BackgroundManagerInstance {
                 ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
                 ctx.globalCompositeOperation = 'source-atop';
             }
-            this.segmentation.requestSegmentation(canvasEl);
+            this.segmentation = canvasEl.toDataURL();
         }
     }
 
@@ -116,9 +109,7 @@ class BackgroundManagerInstance {
             this.effectBackground = null;
         }
 
-        if (this.segmentation) {
-            this.segmentation?.destroy();
-        }
+        this.segmentation = null;
     }
 }
 

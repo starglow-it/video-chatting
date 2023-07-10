@@ -638,7 +638,7 @@ export class MeetingsGateway
           userId: template.user.id,
         });
 
-        const userTemplate = await this.coreService.findMeetingTemplate({
+        const userTemplate = await this.coreService.findMeetingTemplateById({
           id: meeting.templateId,
         });
 

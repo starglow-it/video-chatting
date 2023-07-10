@@ -35,13 +35,16 @@ import { LayoutProps } from './types';
 import {
     $authStore,
     $isSocketConnected,
+    $modeTemplateStore,
     $profileTemplatesStore,
     $templatesStore,
     getAppVersionFx,
     getProfileTemplatesFx,
     getTemplatesFx,
     initiateSocketConnectionEvent,
+    loadmoreCommonTemplates,
     loadmoreMetaTemplates,
+    loadmoreUserTemplates,
     sendJoinDashboardSocketEvent,
 } from '../../store';
 
@@ -76,10 +79,11 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
 const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const { isAuthenticated } = useStore($authStore);
     const isSocketConnected = useStore($isSocketConnected);
-    const isLoadingTemplates = useStore(getTemplatesFx.pending);
-    const isLoadingCommonTemplates = useStore(getProfileTemplatesFx.pending);
+    const isLoadingCommonTemplates = useStore(getTemplatesFx.pending);
+    const isLoadingTemplates = useStore(getProfileTemplatesFx.pending);
     const templates = useStore($templatesStore);
     const profileTemplates = useStore($profileTemplatesStore);
+    const mode = useStore($modeTemplateStore);
 
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
@@ -122,16 +126,29 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         router.pathname.includes('dashboard/templates/setup');
 
     const handleScrollToEnd = () => {
-        if (
-            (isDashboardRoute &&
-                !isLoadingTemplates &&
-                !isLoadingCommonTemplates &&
-                templates.list.length &&
-                templates.list.length < templates.count) ||
-            (profileTemplates.list.length &&
-                profileTemplates.list.length < profileTemplates.count)
-        ) {
-            loadmoreMetaTemplates();
+        if (router.pathname === dashboardRoute) {
+            switch (mode) {
+                case 'private':
+                    if (
+                        !isLoadingTemplates &&
+                        profileTemplates.list.length &&
+                        profileTemplates.list.length < profileTemplates.count
+                    ) {
+                        loadmoreUserTemplates();
+                    }
+                    break;
+                case 'common':
+                    if (
+                        !isLoadingCommonTemplates &&
+                        templates.list.length &&
+                        templates.list.length < templates.count
+                    ) {
+                        loadmoreCommonTemplates();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     };
 
@@ -172,7 +189,10 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     <CustomGrid
                         item
                         flex={1}
-                        className={clsx({ [styles.mobileContent]: isMobile })}
+                        className={clsx({
+                            [styles.mobileContent]:
+                                isMobile && !isDashboardRoute,
+                        })}
                     >
                         <ConditionalRender condition={!isMobile}>
                             <CustomBox

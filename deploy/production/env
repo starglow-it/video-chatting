@@ -25,13 +25,13 @@ LIVEKIT_HOST=https://livekit.theliveoffice.com
 LIVEKIT_WSS=wss://livekit.theliveoffice.com
 STRIPE_API_KEY=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
 STRIPE_PUBLIC_API_KEY=pk_live_51Lfm3wEZHTtCzRsJlFmLDds8y34LOlFu2BXjixB6vwrMRcJJlDg19Fvgngi8FxDrjIxhjxRrluonzzPU83s1k0VR00qYCp29g7
-STRIPE_WEBHOOK_SECRET=whsec_saCLnLuTY6uw8ivRufLw7KISKsLeiU9y
-STRIPE_EXPRESS_WEBHOOK_SECRET=whsec_MiZcCv4VjHupyvWiHyRidj7WJNjQQ27K
-ENVIRONMENT=local
+STRIPE_WEBHOOK_SECRET=whsec_FKfBwK490EyISyXClJ0UtByXYJfBMEoi
+STRIPE_EXPRESS_WEBHOOK_SECRET=whsec_EADweVsTwzwqWEdXFS4M37lK5OruesIW
+ENVIRONMENT=production
 # I don't see it is used in source
 IS_LOCAL=true
 PORT=4000
-NODE_ENV=development
+NODE_ENV=production
 DEFAULT_SERVER_IP=18.118.59.1
 DEFAULT_DOMAIN=app.theliveoffice.com
 FRONTEND_URL=https://app.theliveoffice.com

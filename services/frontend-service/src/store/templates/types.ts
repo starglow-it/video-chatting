@@ -64,4 +64,5 @@ export type QueryGetTemplates = QueryParams & {
 
 export type ResultGetTemplates = EntityList<ICommonTemplate> & {
     isReset: boolean;
+    skip: number;
 };
