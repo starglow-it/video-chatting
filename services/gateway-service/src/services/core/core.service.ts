@@ -43,6 +43,7 @@ import {
   UpdateCountryStatisticsPayload,
   UploadTemplateFilePayload,
   ICommonTemplate,
+  DeleteCommonUserPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -186,6 +187,11 @@ export class CoreService {
   async createUserWithoutLogin(uuid: string): Promise<ICommonUser>{
     const pattern = { cmd: UserBrokerPatterns.CreateUserWithoutLogin }; 
     return await this.client.send(pattern, {uuid}).toPromise();
+  }
+
+  async deleteGlobalUser(payload: DeleteCommonUserPayload){
+    const pattern = { cmd: UserBrokerPatterns.DeleteGlobalUser };
+    return firstValueFrom(this.client.send(pattern, payload));
   }
 
   async uploadUserTemplateFile(payload) {
