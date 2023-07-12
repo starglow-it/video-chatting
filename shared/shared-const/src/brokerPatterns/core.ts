@@ -1,5 +1,7 @@
 export enum CoreBrokerPatterns {
+  //Business categories
   GetBusinessCategories = 'get_business_categories',
+  UpdateBusinessCategory = 'update_business_category',
   GetCountryStatistics = 'get_country_statistics',
   GetMediaCategories = 'get_media_categories',
   GetAdminMediaCategories = 'get_admin_media_categories',
@@ -9,7 +11,6 @@ export enum CoreBrokerPatterns {
   CreateMedia = 'create_media',
   CreateFeaturedBackground = 'create_featured_background',
   UploadMediaCategoryFile = 'upload_media_category_file',
-  UpdateBusinessCategory = 'update_business_category',
   UploadMediaFile = 'upload_media_file',
   UpdateMediaCategory = 'update_media_category',
   UploadFeaturedBackgroundFile = 'update_featured_background',

@@ -109,11 +109,15 @@ export class BusinessCategoriesController {
 
   @MessagePattern({ cmd: CoreBrokerPatterns.DeleteBusinessCategories })
   async deleteBusinessCategories({
-    query
+    ids
   }: DeletesBusinessCategoriesPayload){
     try{
       await this.businessCategoriesService.deleteAll({
-        query
+        query: {
+          _id: {
+            $in: ids
+          }
+        }
       });
       return true; 
     }

@@ -10,5 +10,5 @@ export type UpdateBusinessCategoryPayload = {
 }
 
 export type DeletesBusinessCategoriesPayload = {
-    query: Partial<IBusinessCategory>
+    ids: string[];
 }
