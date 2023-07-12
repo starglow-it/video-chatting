@@ -17,7 +17,11 @@ import { ICommonTemplate } from 'shared-types';
 import { AppDialogsEnum } from '../../../store/types';
 
 // stores
-import { setPreviewTemplate, appDialogsApi } from '../../../store';
+import {
+    setPreviewTemplate,
+    appDialogsApi,
+    initUserWithoutTokenFx,
+} from '../../../store';
 
 // styles
 import styles from './OnboardingTemplateItem.module.scss';
@@ -27,6 +31,8 @@ import {
     WebStorage,
 } from '../../../controllers/WebStorageController';
 import { clientRoutes } from '../../../const/client-routes';
+import { parseCookies } from 'nookies';
+import { getClientMeetingUrl } from 'src/utils/urls';
 
 const OnboardingTemplateItem = memo(
     ({ template }: { template: ICommonTemplate }) => {
@@ -49,13 +55,15 @@ const OnboardingTemplateItem = memo(
             });
         }, []);
 
-        const handleSetUpTemplate = useCallback(() => {
+        const handleSetUpTemplate = useCallback(async () => {
             WebStorage.save({
                 key: StorageKeysEnum.templateId,
                 data: { templateId: template.id },
             });
 
-            router.push(clientRoutes.registerRoute);
+            const { userWithoutLoginId, userTemplateId } = parseCookies();
+            if (!userWithoutLoginId) await initUserWithoutTokenFx();
+            else router.push(getClientMeetingUrl(userTemplateId));
         }, []);
 
         const previewImage = (template?.previewUrls || []).find(

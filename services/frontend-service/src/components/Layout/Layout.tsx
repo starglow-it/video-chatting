@@ -55,6 +55,7 @@ import {
     dashboardRoute,
     editRoomRoute,
     roomRoute,
+    welcomeRoute,
 } from '../../const/client-routes';
 
 // styles
@@ -77,6 +78,8 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     editRoomRoute,
 ];
 
+const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];
+
 const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const { isAuthenticated } = useStore($authStore);
     const isSocketConnected = useStore($isSocketConnected);
@@ -89,8 +92,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
 
-    const isDashboardRoute = new RegExp(`${dashboardRoute}`).test(
-        router.pathname,
+    const isDashboardRoute = ROUTES_MAIN_HEADER.some(route =>
+        new RegExp(route).test(router.pathname),
     );
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
 

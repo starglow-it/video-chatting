@@ -1,0 +1,29 @@
+@import '../../../styles/rem.scss';
+@import '../../../styles/variables.scss';
+
+.wrapper {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: rem(60px);
+    max-width: rem(1054px);
+    margin-top: rem(30px);
+}
+
+.barge {
+    cursor: pointer;
+    border-radius: rem(6px 10px);
+    width: max-content;
+    padding: rem(6px 10px);
+    margin-left: rem(5px);
+    min-width: rem(100px);
+
+    &.active {
+        background-color: $primary-black;
+        color: $primary-white;
+    }
+}
+
+.emoji {
+    font-size: rem(20px);
+    margin-right: rem(8px);
+}
