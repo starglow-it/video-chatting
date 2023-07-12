@@ -1,8 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString, Matches } from "class-validator";
 import { IBusinessCategory } from "shared-types";
 
 export class UpdateBusinessCategoryRequest {
+    @ApiProperty({
+        type: String,
+        description: 'Key is lower case charators'
+    })
+    @IsOptional({
+        message: 'Key must be present'
+    })
+    @IsString({
+        message: 'Invalid Key value'
+    })
+    @Matches(/^[a-z0-9\W]+$/, {
+        message: 'Invalid Key format'
+    })
+    key: IBusinessCategory['key'];
+
     @ApiProperty({
         type: String
     })
