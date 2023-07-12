@@ -34,7 +34,9 @@ const Component = () => {
     const isUsersPageActive = router.pathname === '/users';
     const isRoomsPageActive = router.pathname === '/rooms';
     const isBackgroundsPageActive = router.pathname === '/backgrounds';
-    const isFeaturedBackgroundPageActive = router.pathname === '/featured-background';
+    const isFeaturedBackgroundPageActive =
+        router.pathname === '/featured-background';
+    const isBusinessActive = router.pathname === '/business';
 
     const handleStatisticsPage = useCallback(async () => {
         await router.push('/statistics');
@@ -54,6 +56,10 @@ const Component = () => {
 
     const handleFeaturedBackgroundPage = async () => {
         await router.push('/featured-background');
+    };
+
+    const handleBusinessPage = async () => {
+        await router.push('/business');
     };
 
     return (
@@ -157,6 +163,25 @@ const Component = () => {
                         height="32px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isFeaturedBackgroundPageActive,
+                        })}
+                    />
+                </CustomTooltip>
+
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.backgrounds"
+                        />
+                    }
+                    placement="right"
+                >
+                    <StarIcon
+                        onClick={handleBusinessPage}
+                        width="32px"
+                        height="32px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isBusinessActive,
                         })}
                     />
                 </CustomTooltip>
