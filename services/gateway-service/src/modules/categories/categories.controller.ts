@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Post,
   Query,
   Request,
   UseGuards,
@@ -26,6 +27,7 @@ import { CommonResponseDto } from '../../dtos/response/common-response.dto';
 import { UpdateBusinessCategoryParam } from '../../dtos/params/update-business-category.param';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { DeleteBusinessCategoriesRequest } from '../../dtos/requests/delete-business-categories.request';
+import { CreateBusinessCategoryRequest } from 'src/dtos/requests/create-business-category.request';
 
 @Controller('categories')
 export class CategoriesController {
@@ -67,6 +69,32 @@ export class CategoriesController {
       );
       throw new BadRequestException(err);
     }
+  }
+
+  @Post('/')
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create Business Category' })
+  @ApiOkResponse({
+      type: CommonResponseDto,
+      description: 'Create Business Category',
+  })
+  @ApiForbiddenResponse({
+      description: 'Forbidden',
+  })
+  async createBusinessCategory(
+      @Body() body: CreateBusinessCategoryRequest
+  ): Promise<ResponseSumType<IBusinessCategory>> {
+      try {
+          const bc = await this.categoriesService.createBusinessCategory(body);
+          return {
+              success: true,
+              result: bc
+          }
+      }
+      catch (err) {
+          throw new BadRequestException(err);
+      }
   }
 
 

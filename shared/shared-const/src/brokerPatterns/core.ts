@@ -1,6 +1,7 @@
 export enum CoreBrokerPatterns {
   //Business categories
   GetBusinessCategories = 'get_business_categories',
+  CreateBusinessCategory = 'create_business_category',
   UpdateBusinessCategory = 'update_business_category',
   GetCountryStatistics = 'get_country_statistics',
   GetMediaCategories = 'get_media_categories',
