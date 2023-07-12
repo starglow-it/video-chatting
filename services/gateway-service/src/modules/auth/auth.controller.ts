@@ -496,9 +496,11 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     description: 'User logged in',
   })
   async googleAuthRedirect(
+    @Request() req,
     @Body() body: VerifyGoogleAuthRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType & { isFirstLogin: boolean }>> {
     try {
+      await this.delGlobalUser(req);
       const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
 
       const { email } = tokenVerified;
