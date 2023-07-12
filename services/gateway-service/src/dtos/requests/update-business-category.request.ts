@@ -29,6 +29,9 @@ export class UpdateBusinessCategoryRequest {
     })
     value: IBusinessCategory['value'];
 
+    @ApiProperty({
+        type: String
+    })
     @IsOptional({
         message: 'Color must be present',
     })
@@ -37,6 +40,9 @@ export class UpdateBusinessCategoryRequest {
     })
     color: string;
 
+    @ApiProperty({
+        type: String
+    })
     @IsOptional({
         message: 'Icon must be present',
     })
