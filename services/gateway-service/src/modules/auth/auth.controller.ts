@@ -141,8 +141,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const id = <string>(c['userWithoutLoginId'] || h['userwithoutloginid']);
       if (!id) return;
       const u = await this.coreService.findUserById({ userId: id });
-      if (!u.id) return;
+      if (!u) return;
       await this.coreService.deleteGlobalUser({ id });
+      
       if (u.stripeSubscriptionId) {
         await this.paymentsService.cancelUserSubscription({
           subscriptionId: u.stripeSubscriptionId,
