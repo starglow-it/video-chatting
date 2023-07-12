@@ -52,6 +52,7 @@ export interface IConfig {
   apiVersion: string;
   appVersion: string;
   isSyncData: boolean;
+  isSeed: boolean;
 }
 
 export type ConfigKeysType = keyof IConfig;
@@ -109,7 +110,8 @@ export const ConfigKeys: readonly ConfigKeysType[] = [
   'googleSecret',
   'apiVersion',
   'appVersion',
-  'isSyncData'
+  'isSyncData',
+  'isSeed'
 ];
 
 export const DefaultConfigValues: Record<
@@ -164,5 +166,6 @@ export const DefaultConfigValues: Record<
   googleSecret: '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',
   apiVersion: '0.0.1',
   appVersion: '0.0.1',
-  isSyncData: false
+  isSyncData: false,
+  isSeed: false
 };
