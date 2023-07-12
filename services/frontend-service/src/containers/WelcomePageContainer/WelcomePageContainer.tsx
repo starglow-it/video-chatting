@@ -2,13 +2,10 @@ import React, { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
-import { ICommonTemplate } from 'shared-types';
+import { ICommonTemplate, RoomType } from 'shared-types';
 
 // custom
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
 import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
@@ -23,7 +20,15 @@ import {
 import styles from './WelcomePageContainer.module.scss';
 
 // stores
-import { $templatesStore, getTemplatesFx } from '../../store';
+import {
+    $templatesStore,
+    getBusinessCategoriesFx,
+    getFeaturedBackgroundFx,
+    getTemplatesFx,
+    setQueryTemplatesEvent,
+} from '../../store';
+import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
+import { MenusWelcome } from '@components/Templates/MenusWelcome/MenusWelcome';
 
 const baseTemplateParams = {
     type: 'free',
@@ -39,13 +44,25 @@ const WelcomePageContainer = memo(() => {
     const templates = useStore($templatesStore);
 
     useEffect(() => {
-        (async () => {
-            await getTemplatesFx({
-                limit: 6,
-                skip: 0,
-                ...baseTemplateParams,
-            });
+        setQueryTemplatesEvent({
+            skip: 0,
+            ...baseTemplateParams,
+        });
+    }, []);
+
+    useEffect(() => {
+        (() => {
+            getBusinessCategoriesFx({});
         })();
+    }, []);
+
+    useEffect(() => {
+        getFeaturedBackgroundFx({
+            skip: 0,
+            limit: 9,
+            roomType: RoomType.Featured,
+            draft: false,
+        });
     }, []);
 
     const handleStartOnboarding = useCallback(
@@ -81,31 +98,8 @@ const WelcomePageContainer = memo(() => {
                     padding: '94px 20px 100px 20px',
                 }}
             >
-                <CustomGrid
-                    className={styles.wrapper}
-                    container
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <CustomBox className={styles.image}>
-                        <CustomImage
-                            src="/images/winking-face.webp"
-                            width="40px"
-                            height="40px"
-                            alt="winking-face"
-                        />
-                    </CustomBox>
-                    <CustomTypography
-                        variant="h1"
-                        nameSpace="welcome"
-                        translation="title"
-                    />
-                </CustomGrid>
-                <CustomTypography
-                    variant="h4"
-                    nameSpace="welcome"
-                    translation="text"
-                />
+                <FeaturedBackground />
+                <MenusWelcome />
                 <TemplatesGrid<ICommonTemplate>
                     list={templates.list}
                     count={templates.count}

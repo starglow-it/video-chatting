@@ -15,7 +15,7 @@ const enhance = withEffectorReactAliases();
 module.exports = withTM(
     enhance({
         publicRuntimeConfig: {
-            applicationName: 'The LiveOffice Admin',
+            applicationName: 'Ruume Admin',
             frontendUrl: process.env.FRONTEND_URL,
             gatewayUrl: process.env.GATEWAY_URL,
             gatewayPort: process.env.GATEWAY_PORT,

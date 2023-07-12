@@ -150,7 +150,7 @@ const Component = () => {
                     templateId: setUpTemplate.id,
                 });
 
-                const meetingUrl = getClientMeetingUrl(result?.template?.id);
+                const meetingUrl = getClientMeetingUrl(result?.template?.id || '');
                 await router.push(`${meetingUrl}?success_house=true`);
             }
             if (!router.query.templateId) {

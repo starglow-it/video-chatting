@@ -321,7 +321,7 @@ export class SeederService {
         role: UserRoles.Admin,
         isConfirmed: true,
         fullName: 'LiveOffice Admin',
-        companyName: 'The LiveOffice',
+        companyName: 'Ruume',
         position: 'Administrator',
         contactEmail: adminEmail,
       });

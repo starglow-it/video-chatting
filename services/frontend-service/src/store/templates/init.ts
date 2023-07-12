@@ -153,7 +153,7 @@ $queryProfileTemplatesStore
 
 $modeTemplateStore
     .on(setQueryTemplatesEvent, () => 'common')
-    .on(setQueryProfileTemplatesEvent, () => 'private');
+    .on(setQueryProfileTemplatesEvent, () => 'private')
 
 forward({
     from: sendScheduleInviteFx.doneData,
