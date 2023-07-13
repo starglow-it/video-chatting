@@ -180,7 +180,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
       const template = await this.coreService.findCommonTemplateByTemplate({
         ...(templateId ? {
-          templateId
+          id: templateId
         } : {
           isAcceptNoLogin: true
         })
