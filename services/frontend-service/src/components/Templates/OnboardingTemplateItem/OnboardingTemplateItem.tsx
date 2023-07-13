@@ -35,7 +35,13 @@ import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
 
 const OnboardingTemplateItem = memo(
-    ({ template }: { template: ICommonTemplate }) => {
+    ({
+        template,
+        onChooseTemplate,
+    }: {
+        template: ICommonTemplate;
+        onChooseTemplate: (templateId?: string) => void;
+    }) => {
         const router = useRouter();
 
         const [showPreview, setShowPreview] = useState(false);
@@ -61,9 +67,7 @@ const OnboardingTemplateItem = memo(
                 data: { templateId: template.id },
             });
 
-            const { userWithoutLoginId, userTemplateId } = parseCookies();
-            if (!userWithoutLoginId) await initUserWithoutTokenFx();
-            else router.push(getClientMeetingUrl(userTemplateId));
+            onChooseTemplate(template.id);
         }, []);
 
         const previewImage = (template?.previewUrls || []).find(

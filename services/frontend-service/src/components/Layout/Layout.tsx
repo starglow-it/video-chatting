@@ -154,6 +154,15 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                     break;
             }
         }
+        if (router.pathname === welcomeRoute) {
+            if (
+                !isLoadingCommonTemplates &&
+                templates.list.length &&
+                templates.list.length < templates.count
+            ) {
+                loadmoreCommonTemplates();
+            }
+        }
     };
 
     const handleScrollUp = () => {

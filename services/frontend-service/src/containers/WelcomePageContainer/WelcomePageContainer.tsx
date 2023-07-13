@@ -22,6 +22,7 @@ import styles from './WelcomePageContainer.module.scss';
 // stores
 import {
     $templatesStore,
+    addTemplateToUserFx,
     getBusinessCategoriesFx,
     getFeaturedBackgroundFx,
     getTemplatesFx,
@@ -32,6 +33,7 @@ import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackg
 import { MenusWelcome } from '@components/Templates/MenusWelcome/MenusWelcome';
 import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
+import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
 
 const baseTemplateParams = {
     type: 'free',
@@ -93,8 +95,18 @@ const WelcomePageContainer = memo(() => {
 
     const handleChooseTemplate = async (templateId: string) => {
         const { userWithoutLoginId, userTemplateId } = parseCookies();
-        if (!userWithoutLoginId) await initUserWithoutTokenFx();
-        else router.push(getClientMeetingUrl(userTemplateId));
+        if (!userWithoutLoginId) {
+            await initUserWithoutTokenFx(templateId);
+        } else {
+            if (templateId !== userTemplateId) {
+                const newTemplate = await addTemplateToUserFx({ templateId });
+
+                if (newTemplate) {
+                    await handleCreateMeeting({ templateId: newTemplate.id });
+                }
+            }
+            router.push(getClientMeetingUrl(userTemplateId));
+        }
     };
 
     return (
@@ -114,6 +126,7 @@ const WelcomePageContainer = memo(() => {
                     count={templates.count}
                     onPageChange={handleCommonTemplatesPageChange}
                     TemplateComponent={OnboardingTemplateItem}
+                    onChooseTemplate={handleChooseTemplate}
                 />
             </CustomGrid>
             <TemplatePreviewDialog

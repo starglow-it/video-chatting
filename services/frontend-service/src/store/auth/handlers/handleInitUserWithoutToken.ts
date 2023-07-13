@@ -4,12 +4,15 @@ import { Profile } from '../../types';
 import { initUserWithoutTokenUrl } from '../../../utils/urls';
 import { setUserWithoutTokenCookies } from '../../../helpers/http/setAuthCookies';
 
-export const handleInitUserWithoutToken = async () => {
+export const handleInitUserWithoutToken = async (templateId?: string) => {
     const response = await sendRequest<
         { user: Profile; userTemplateId: string },
         ErrorState
     >({
         ...initUserWithoutTokenUrl,
+        data: {
+            templateId,
+        },
     });
     const { result, success } = response;
 

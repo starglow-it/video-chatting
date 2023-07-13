@@ -100,6 +100,11 @@ const Component = () => {
     }, [isTemplateDeleting]);
 
     useEffect(() => {
+        getProfileTemplatesCountFx({
+            limit: 0,
+            skip: 0,
+            templateType: 'free',
+        });
         isFirstTime.current = false;
         return () => clearTemplateDraft();
     }, []);
