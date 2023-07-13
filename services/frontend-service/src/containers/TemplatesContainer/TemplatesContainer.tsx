@@ -185,7 +185,7 @@ const Component = () => {
 
     return (
         <MainProfileWrapper>
-            <FeaturedBackground />
+            <FeaturedBackground onChooseTemplate={handleChooseCommonTemplate} />
             <MainTemplates />
             <TemplatePreviewDialog
                 isNeedToRenderTemplateInfo

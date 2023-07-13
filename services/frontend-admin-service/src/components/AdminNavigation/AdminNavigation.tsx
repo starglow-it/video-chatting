@@ -12,6 +12,7 @@ import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
 import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
 import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
+import { BusinessIcon } from 'shared-frontend/icons/OtherIcons/BusinessIcon';
 
 // components
 import { Translation } from '@components/Translation/Translation';
@@ -152,15 +153,15 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="common"
-                            translation="tooltips.pages.backgrounds"
+                            translation="tooltips.pages.featuredRooms"
                         />
                     }
                     placement="right"
                 >
                     <StarIcon
                         onClick={handleFeaturedBackgroundPage}
-                        width="32px"
-                        height="32px"
+                        width="34px"
+                        height="34px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isFeaturedBackgroundPageActive,
                         })}
@@ -171,15 +172,15 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="common"
-                            translation="tooltips.pages.backgrounds"
+                            translation="tooltips.pages.business"
                         />
                     }
                     placement="right"
                 >
-                    <StarIcon
+                    <BusinessIcon
                         onClick={handleBusinessPage}
-                        width="32px"
-                        height="32px"
+                        width="24px"
+                        height="24px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isBusinessActive,
                         })}
