@@ -34,6 +34,7 @@ import { MenusWelcome } from '@components/Templates/MenusWelcome/MenusWelcome';
 import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
 import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
+import { setUserWithoutTokenCookies } from 'src/helpers/http/setAuthCookies';
 
 const baseTemplateParams = {
     type: 'free',
@@ -99,13 +100,14 @@ const WelcomePageContainer = memo(() => {
             await initUserWithoutTokenFx(templateId);
         } else {
             if (templateId !== userTemplateId) {
+                setUserWithoutTokenCookies(userWithoutLoginId, templateId);
                 const newTemplate = await addTemplateToUserFx({ templateId });
 
                 if (newTemplate) {
                     await handleCreateMeeting({ templateId: newTemplate.id });
                 }
             }
-            router.push(getClientMeetingUrl(userTemplateId));
+            router.push(getClientMeetingUrl(templateId));
         }
     };
 
