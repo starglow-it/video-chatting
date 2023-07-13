@@ -152,8 +152,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
       const { list: uts } = await this.userTemplateService.getUserTemplates({
-        userId: u.id,
-        sort: 1,
+        userId: u.id
       });
 
       Promise.all(uts.map(async ({ id }) => await this.userTemplateService.deleteUserTemplate({ templateId: id, userId: u.id })));
