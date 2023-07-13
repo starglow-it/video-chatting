@@ -186,9 +186,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         })
       });
 
-      console.log(template);
-      
-
       if (!template) return;
       const userTemplate = await this.coreService.addTemplateToUser({
         templateId: template.id,
