@@ -180,11 +180,14 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
       const template = await this.coreService.findCommonTemplateByTemplate({
         ...(templateId ? {
-          id: templateId
+          _id: templateId
         } : {
           isAcceptNoLogin: true
         })
       });
+
+      console.log(template);
+      
 
       if (!template) return;
       const userTemplate = await this.coreService.addTemplateToUser({

@@ -268,7 +268,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findCommonTemplateByTemplate(payload: Partial<ICommonTemplate>): Promise<ICommonTemplate> {
+  async findCommonTemplateByTemplate(payload: Partial<ICommonTemplate & {_id: string}>): Promise<ICommonTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
 
     return firstValueFrom(this.client.send(pattern, payload));
