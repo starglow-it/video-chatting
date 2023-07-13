@@ -320,7 +320,7 @@ export class SeederService {
         password: adminPassword,
         role: UserRoles.Admin,
         isConfirmed: true,
-        fullName: 'LiveOffice Admin',
+        fullName: 'Ruume Admin',
         companyName: 'Ruume',
         position: 'Administrator',
         contactEmail: adminEmail,
