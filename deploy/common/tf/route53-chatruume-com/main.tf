@@ -129,3 +129,19 @@ resource "aws_route53_record" "stg-livekit" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_route53_record" "txt-record" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "chatruume.com"
+  type    = "TXT"
+  ttl     = 86400
+  records = ["v=spf1 include:spf.mandrillapp.com ?all"]
+}
+
+resource "aws_route53_record" "mandrill" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "mandrill._domainkey.chatruume.com"
+  type    = "TXT"
+  ttl     = 86400
+  records = ["v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrLHiExVd55zd/IQ/J/mRwSRMAocV/hMB3jXwaHH36d9NaVynQFYV8NaWi69c1veUtRzGt7yAioXqLj7Z4TeEUoOLgrKsn8YnckGs9i3B3tVFB+Ch/4mPhXWiNfNdynHWBcPcbJ8kjEQ2U8y78dHZj1YeRXXVvWob2OaKynO8/lQIDAQAB;"]
+}
