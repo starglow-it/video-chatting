@@ -44,7 +44,7 @@
       shell:
         cmd: |
           cd /srv/turn-server
-          docker-compose up -d
+          docker-compose up -d --force-recreate --remove-orphans
         warn: False
       tags:
         - turn-server
