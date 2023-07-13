@@ -67,6 +67,7 @@ import { UsersService } from '../users/users.service';
 import { sendHttpRequest } from 'src/utils/http/sendHttpRequest';
 import { CreateUserFreeRequest } from 'src/dtos/requests/create-user-free.request';
 import { PaymentsService } from '../payments/payments.service';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -78,6 +79,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     private coreService: CoreService,
     private configService: ConfigClientService,
     private paymentsService: PaymentsService,
+    private userTemplateService: UserTemplatesService
   ) { }
 
   private googleClientId: string;
@@ -143,12 +145,19 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const u = await this.coreService.findUserById({ userId: id });
       if (!u) return;
       await this.coreService.deleteGlobalUser({ id });
-      
+
       if (u.stripeSubscriptionId) {
         await this.paymentsService.cancelUserSubscription({
           subscriptionId: u.stripeSubscriptionId,
         });
       }
+      const { list: uts } = await this.userTemplateService.getUserTemplates({
+        userId: u.id,
+        sort: 1,
+      });
+
+      Promise.all(uts.map(async ({ id }) => await this.userTemplateService.deleteUserTemplate({ templateId: id, userId: u.id })));
+
     }
     catch (err) {
       console.log(err);
@@ -516,7 +525,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const { given_name, picture } = await this.getUserDataFromGoogleToken(
         body.token,
       );
-      
+
       if (!isUserExists) {
         isFirstLogin = true;
         user = await this.authService.createUserFromGoogleAccount({

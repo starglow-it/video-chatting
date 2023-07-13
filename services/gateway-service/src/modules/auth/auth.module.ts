@@ -25,6 +25,7 @@ import { JWT_ACCESS_EXPIRE, AUTH_PROVIDER } from 'shared-const';
 // strategy
 import { LocalStrategy } from '../../strategy/local.strategy';
 import { PaymentsModule } from '../payments/payments.module';
+import { UserTemplatesModule } from '../user-templates/user-templates.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { PaymentsModule } from '../payments/payments.module';
     CoreModule,
     PassportModule,
     PaymentsModule,
+    UserTemplatesModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],
