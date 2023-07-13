@@ -297,7 +297,7 @@ export class ProfileTemplatesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthAnonymousGuard)
   @Post('/add/:templateId')
   @ApiOperation({ summary: 'Add Template to profile' })
   @ApiOkResponse({
