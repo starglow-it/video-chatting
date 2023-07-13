@@ -25,10 +25,13 @@ import {
     getBusinessCategoriesFx,
     getFeaturedBackgroundFx,
     getTemplatesFx,
+    initUserWithoutTokenFx,
     setQueryTemplatesEvent,
 } from '../../store';
 import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
 import { MenusWelcome } from '@components/Templates/MenusWelcome/MenusWelcome';
+import { parseCookies } from 'nookies';
+import { getClientMeetingUrl } from 'src/utils/urls';
 
 const baseTemplateParams = {
     type: 'free',
@@ -88,6 +91,12 @@ const WelcomePageContainer = memo(() => {
         [],
     );
 
+    const handleChooseTemplate = async (templateId: string) => {
+        const { userWithoutLoginId, userTemplateId } = parseCookies();
+        if (!userWithoutLoginId) await initUserWithoutTokenFx();
+        else router.push(getClientMeetingUrl(userTemplateId));
+    };
+
     return (
         <>
             <CustomGrid
@@ -98,7 +107,7 @@ const WelcomePageContainer = memo(() => {
                     padding: '94px 20px 100px 20px',
                 }}
             >
-                <FeaturedBackground />
+                <FeaturedBackground onChooseTemplate={handleChooseTemplate} />
                 <MenusWelcome />
                 <TemplatesGrid<ICommonTemplate>
                     list={templates.list}

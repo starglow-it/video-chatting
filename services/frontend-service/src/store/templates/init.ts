@@ -153,7 +153,7 @@ $queryProfileTemplatesStore
 
 $modeTemplateStore
     .on(setQueryTemplatesEvent, () => 'common')
-    .on(setQueryProfileTemplatesEvent, () => 'private')
+    .on(setQueryProfileTemplatesEvent, () => 'private');
 
 forward({
     from: sendScheduleInviteFx.doneData,
@@ -187,7 +187,7 @@ sample({
         profile: $profileStore,
         query: $queryTemplatesStore,
     }),
-    fn: ({ profile: { id }, query }) => ({ ...query, userId: id }),
+    fn: ({ profile: { id }, query }) => (!id ? query : { ...query, userId: id }),
     target: getTemplatesFx,
 });
 

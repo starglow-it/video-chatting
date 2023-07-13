@@ -37,7 +37,9 @@
       "statistics": "Statistics",
       "users": "Users",
       "rooms": "Rooms",
-      "backgrounds": "Backgrounds"
+      "backgrounds": "Backgrounds",
+      "featuredRooms": "Featured rooms",
+      "business": "Business"
     },
     "users": {
       "delete": "Delete",
