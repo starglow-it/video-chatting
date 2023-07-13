@@ -105,9 +105,11 @@ const WelcomePageContainer = memo(() => {
 
                 if (newTemplate) {
                     await handleCreateMeeting({ templateId: newTemplate.id });
+                    router.push(getClientMeetingUrl(newTemplate.id));
                 }
+            } else {
+                router.push(getClientMeetingUrl(templateId));
             }
-            router.push(getClientMeetingUrl(templateId));
         }
     };
 
@@ -134,7 +136,7 @@ const WelcomePageContainer = memo(() => {
             <TemplatePreviewDialog
                 isNeedToRenderTemplateInfo
                 chooseButtonKey="chooseTemplate"
-                onChooseTemplate={handleStartOnboarding}
+                onChooseTemplate={handleChooseTemplate}
             />
         </>
     );
