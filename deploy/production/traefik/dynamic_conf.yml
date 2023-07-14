@@ -1,9 +1,6 @@
 http:
   routers:
     router0:
-      entryPoints:
-        - "http"
-        - "websecure"
       service: "chatruume"
       rule: "Host(`chatruume.com`)"
       tls:
