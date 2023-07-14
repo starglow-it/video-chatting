@@ -39,7 +39,7 @@ http:
         - "http"
         - "websecure"
       service: chatruume-tilda
-      rule: "host(`chatruume.com`)"
+      rule: "Host(`chatruume.com`)"
       tls:
         cert-resolver: "simple-resolver"
 
