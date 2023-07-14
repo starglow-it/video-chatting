@@ -3,7 +3,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // services
-import { ConfigClientService } from './services/config/config.service';
+import { ConfigClientService } from './services/config/config.service'
 
 // modules
 import { UsersModule } from './modules/users/users.module';
@@ -23,7 +23,6 @@ import { CountryStatisticsModule } from './modules/country-statistics/country-st
 import { RoomsStatisticsModule } from './modules/rooms-statistics/rooms-statistics.module';
 import {TranscodeModule} from "./modules/transcode/transcode.module";
 import { MediasModule } from './modules/medias/medias.module';
-import { AppController } from './app.controller';
 import { MediaCategory, MediaCategorySchema } from './schemas/media-category.schema';
 import { Media, MediaSchema } from './schemas/media.schema';
 import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema';
@@ -56,7 +55,6 @@ import { DatabaseModule } from './database/database.module';
       { name: PreviewImage.name, schema: PreviewImageSchema },
     ]),
   ],
-  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
