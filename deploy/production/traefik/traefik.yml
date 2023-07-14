@@ -33,4 +33,5 @@ entryPoints:
   websecure:
     address: :443
 
-accessLog: {}
+accessLog:
+  format: json
