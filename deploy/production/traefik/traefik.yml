@@ -36,12 +36,12 @@ http:
   routers:
     router0:
       entryPoints:
-        - http
-        - websecure
+        - "http"
+        - "websecure"
       service: chatruume-tilda
-      rule: host(`chatruume.com`)
+      rule: "host(`chatruume.com`)"
       tls:
-        cert-resolver: simple-resolver
+        cert-resolver: "simple-resolver"
 
   services:
     chatruume-tilda:
