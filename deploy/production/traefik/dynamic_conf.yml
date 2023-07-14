@@ -3,8 +3,8 @@ http:
     router0:
       service: "chatruume"
       rule: "Host(`chatruume.com`)"
-      tls:
-        cert-resolver: "simple-resolver"
+#      tls:
+#        cert-resolver: "simple-resolver"
 
   services:
     chatruume:
