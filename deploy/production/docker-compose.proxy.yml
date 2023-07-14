@@ -27,10 +27,6 @@ services:
       - "traefik.http.middlewares.auth.basicauth.users=tlo:$$apr1$$PdvDQIVp$$UAXSS/z5O5t.VQm7acCfh1"
       - "traefik.http.routers.chatruume.rule=Host(`chatruume.com`)"
       - "traefik.http.routers.chatruume.service=chatruume"
-      - "traefik.http.routers.chatruume.entrypoints=websecure"
-      - "traefik.http.routers.chatruume.tls=true"
-      - "traefik.http.services.chatruume.loadBalancer.servers=true"
-
     networks:
       - traefikpublic
 
