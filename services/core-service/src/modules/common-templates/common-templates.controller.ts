@@ -29,7 +29,7 @@ import { ConfigClientService } from '../../services/config/config.service';
 import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
-import { AddTemplateToUserPayload, CreateTemplatePayload, DeleteCommonTemplatePayload, EditTemplatePayload, GetCommonTemplateByIdPayload, GetCommonTemplatePayload, GetCommonTemplatesPayload, UploadTemplateFilePayload } from 'shared-types';
+import { AddTemplateToUserPayload, CreateTemplatePayload, DeleteCommonTemplatePayload, EditTemplatePayload, GetCommonTemplateByIdPayload, GetCommonTemplatePayload, GetCommonTemplatesPayload, UploadTemplateFilePayload, UserRoles } from 'shared-types';
 import { ICommonTemplate } from 'shared-types';
 import { EntityList } from 'shared-types';
 import { PriceValues } from 'shared-types';
@@ -292,7 +292,9 @@ export class CommonTemplatesController {
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,
           author: targetTemplate.author,
-          isAcceptNoLogin: targetTemplate.isAcceptNoLogin,
+          isAcceptNoLogin: targetUser.role === UserRoles.Anonymous
+            ? true
+            : targetTemplate.isAcceptNoLogin,
           roomType: targetTemplate.roomType
         };
 
