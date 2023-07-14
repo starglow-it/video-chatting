@@ -43,6 +43,7 @@ import {
   UpdateCountryStatisticsPayload,
   UploadTemplateFilePayload,
   ICommonTemplate,
+  DeleteCommonUserPayload,
 } from 'shared-types';
 
 @Injectable()
@@ -188,6 +189,11 @@ export class CoreService {
     return await this.client.send(pattern, {uuid}).toPromise();
   }
 
+  async deleteGlobalUser(payload: DeleteCommonUserPayload){
+    const pattern = { cmd: UserBrokerPatterns.DeleteGlobalUser };
+    return firstValueFrom(this.client.send(pattern, payload));
+  }
+
   async uploadUserTemplateFile(payload) {
     const pattern = { cmd: UserTemplatesBrokerPatterns.UploadUserTemplateFile };
 
@@ -262,7 +268,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findCommonTemplateByTemplate(payload: Partial<ICommonTemplate>): Promise<ICommonTemplate> {
+  async findCommonTemplateByTemplate(payload: Partial<ICommonTemplate & {_id: string}>): Promise<ICommonTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
 
     return firstValueFrom(this.client.send(pattern, payload));

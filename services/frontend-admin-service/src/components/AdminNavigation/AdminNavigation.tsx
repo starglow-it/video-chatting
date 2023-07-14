@@ -12,6 +12,7 @@ import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon';
 import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
 import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
+import { BusinessIcon } from 'shared-frontend/icons/OtherIcons/BusinessIcon';
 
 // components
 import { Translation } from '@components/Translation/Translation';
@@ -34,7 +35,9 @@ const Component = () => {
     const isUsersPageActive = router.pathname === '/users';
     const isRoomsPageActive = router.pathname === '/rooms';
     const isBackgroundsPageActive = router.pathname === '/backgrounds';
-    const isFeaturedBackgroundPageActive = router.pathname === '/featured-background';
+    const isFeaturedBackgroundPageActive =
+        router.pathname === '/featured-background';
+    const isBusinessActive = router.pathname === '/business';
 
     const handleStatisticsPage = useCallback(async () => {
         await router.push('/statistics');
@@ -54,6 +57,10 @@ const Component = () => {
 
     const handleFeaturedBackgroundPage = async () => {
         await router.push('/featured-background');
+    };
+
+    const handleBusinessPage = async () => {
+        await router.push('/business');
     };
 
     return (
@@ -146,17 +153,36 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="common"
-                            translation="tooltips.pages.backgrounds"
+                            translation="tooltips.pages.featuredRooms"
                         />
                     }
                     placement="right"
                 >
                     <StarIcon
                         onClick={handleFeaturedBackgroundPage}
-                        width="32px"
-                        height="32px"
+                        width="34px"
+                        height="34px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isFeaturedBackgroundPageActive,
+                        })}
+                    />
+                </CustomTooltip>
+
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.business"
+                        />
+                    }
+                    placement="right"
+                >
+                    <BusinessIcon
+                        onClick={handleBusinessPage}
+                        width="24px"
+                        height="24px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isBusinessActive,
                         })}
                     />
                 </CustomTooltip>

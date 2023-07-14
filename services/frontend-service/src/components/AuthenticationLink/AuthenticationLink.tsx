@@ -1,19 +1,17 @@
 import React, { useMemo, memo } from 'react';
 import { useRouter } from 'next/router';
 
-// custom
-import { CustomLink } from '@library/custom/CustomLink/CustomLink';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-
-// styles
-
-// const
 import { initUserWithoutTokenFx } from 'src/store';
 import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
-import { clientRoutes, welcomeRoute } from '../../const/client-routes';
+import {
+    clientRoutes,
+    loginRoute,
+    welcomeRoute,
+} from '../../const/client-routes';
 import styles from './AuthenticationLink.module.scss';
+import clsx from 'clsx';
 
 const Component = () => {
     const router = useRouter();
@@ -21,57 +19,54 @@ const Component = () => {
     const isNotLoginPage = !router.pathname.includes(clientRoutes.loginRoute);
 
     const customLinkProps = useMemo(
-        () => ({
-            text: `${isNotLoginPage ? 'signIn' : 'signUp'}.${
-                isNotLoginPage ? 'haveAccount' : 'dontHaveAccount'
-            }`,
-            link: `${isNotLoginPage ? 'signIn' : 'signUp'}.label`,
-            href: isNotLoginPage
-                ? clientRoutes.loginRoute
-                : clientRoutes.getStartedRoute,
-        }),
+        () => [
+            {
+                id: 0,
+                name: 'FAQ',
+                onAction: () => {},
+            },
+            {
+                id: 1,
+                name: 'Membership',
+                onAction: () => {},
+            },
+            {
+                id: 2,
+                name: isNotLoginPage ? 'Login' : 'Welcome',
+                onAction: () =>
+                    isNotLoginPage
+                        ? router.push(loginRoute)
+                        : router.push(welcomeRoute),
+            },
+            {
+                id: 4,
+                name: 'Start Calling for Free',
+                onAction: async () => {
+                    const { userWithoutLoginId, userTemplateId } =
+                        parseCookies();
+                    if (!userWithoutLoginId)
+                        await initUserWithoutTokenFx(undefined);
+                    else router.push(getClientMeetingUrl(userTemplateId));
+                },
+            },
+        ],
+
         [isNotLoginPage],
     );
 
-    const linkTo = async () => {
-        if (!isNotLoginPage) {
-            const { userWithoutLoginId, userTemplateId } = parseCookies();
-            if (!userWithoutLoginId) await initUserWithoutTokenFx();
-            else router.push(getClientMeetingUrl(userTemplateId));
-        }
-    };
-
     return (
         <CustomGrid container alignItems="center" className={styles.wrapper}>
-            <CustomTypography
-                className={styles.text}
-                variant="body2"
-                nameSpace="common"
-                translation={customLinkProps.text}
-            />
-            <CustomLink
-                nameSpace="common"
-                variant="body2"
-                translation={customLinkProps.link}
-                href={isNotLoginPage ? customLinkProps.href : ''}
-                onClick={linkTo}
-            />
-            {!isNotLoginPage && (
-                <>
-                    <CustomTypography
-                        className={styles.rightText}
-                        variant="body2"
-                        nameSpace="common"
-                        translation="|"
-                    />
-                    <CustomLink
-                        nameSpace="common"
-                        variant="body2"
-                        translation="register.text"
-                        href={welcomeRoute}
-                    />
-                </>
-            )}
+            {customLinkProps.map(item => (
+                <CustomGrid
+                    key={item.id}
+                    className={clsx(styles.button, {
+                        [styles.bgBlack]: item.id === 4,
+                    })}
+                    onClick={item.onAction}
+                >
+                    {item.name}
+                </CustomGrid>
+            ))}
         </CustomGrid>
     );
 };

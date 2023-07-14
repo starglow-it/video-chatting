@@ -72,7 +72,7 @@
   },
   "confirmDeleteRoom": {
     "title": "Delete Room {{roomName}}?",
-    "text": "The Room will be deleted from The Live Office library and will become unavailable for all users who purchased it or added to the list of their rooms"
+    "text": "The Room will be deleted from Ruume library and will become unavailable for all users who purchased it or added to the list of their rooms"
   },
   "publishRoomDialog": {
     "title": "Publish Room {{templateName}}?",
@@ -104,10 +104,10 @@
   },
   "confirmDeleteCategory": {
     "title": "Delete Category \"{{categoryName}}\"?",
-    "text": "The Category will be deleted from The Live Office library"
+    "text": "The Category will be deleted from Ruume library"
   },
   "confirmDeleteMedia": {
     "title": "Delete Media",
-    "text": "The Media will be deleted from The Live Office library"
+    "text": "The Media will be deleted from Ruume library"
   }
 }

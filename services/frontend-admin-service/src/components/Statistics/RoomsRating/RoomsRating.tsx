@@ -201,7 +201,7 @@ const Component = () => {
 						label:
                             roomTypeKey === 'custom'
                             	? authorName
-                            	: 'The LiveOffice Admin',
+                            	: 'Ruume Admin',
 					},
 					[basedOnKey]: {
 						label: formatTableValue(

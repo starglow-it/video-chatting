@@ -1,4 +1,5 @@
 @import '../../styles/rem';
+@import '../../styles/variables.scss';
 
 .wrapper {
   margin: rem(0 34px 0 0);
@@ -7,6 +8,24 @@
 .text {
   margin: rem(0 4px 0 0);
 }
+
 .rightText {
   margin: rem(2px 7px 0px 7px)
+}
+
+.button {
+  border-radius: 20px;
+  color: $primary-black;
+  background: transparent;
+  font-size: 14px;
+  padding: 8px 12px;
+  margin-right: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bgBlack {
+  background: $primary-black;
+  color: $primary-white;
+  font-size: 12px;
 }

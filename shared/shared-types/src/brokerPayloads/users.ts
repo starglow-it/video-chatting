@@ -35,6 +35,10 @@ export type UpdateCountryStatisticsPayload = {
   value: number;
 };
 
+export type DeleteCommonUserPayload = {
+  id: string;
+}
+
 export type FindUsersByIdPayload = {
   userIds: ICommonUser['id'][];
 };
