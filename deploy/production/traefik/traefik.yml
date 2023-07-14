@@ -32,5 +32,22 @@ entryPoints:
   websecure:
     address: :443
 
+http:
+  routers:
+    router0:
+      entryPoints:
+        - http
+        - websecure
+      service: chatruume-tilda
+      rule: host(`chatruume.com`)
+      tls:
+        cert-resolver: simple-resolver
+
+  services:
+    chatruume-tilda:
+      loadBalancer:
+        servers:
+          - url: http://5.181.161.73/
+        passHostHeader: true
 
 accessLog: {}
