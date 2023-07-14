@@ -93,7 +93,11 @@ const ScrollParent = ({
     containerRef: any;
 }) => {
     if (isAgreements)
-        return <CustomBox style={{ overflow: 'scroll' }}>{children}</CustomBox>;
+        return (
+            <CustomBox ref={containerRef} style={{ overflow: 'scroll' }}>
+                {children}
+            </CustomBox>
+        );
     return (
         <CustomScroll
             onYReachEnd={handleScrollToEnd}
@@ -193,7 +197,15 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     };
 
     const handleScrollUp = () => {
-        if (scrollRef.current) scrollRef.current.scrollTop = 0;
+        if (router.pathname === agreementsRoute) {
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'smooth',
+            });
+        } else {
+            if (scrollRef.current) scrollRef.current.scrollTop = 0;
+        }
     };
 
     return (
