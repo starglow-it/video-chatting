@@ -15,7 +15,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/letsencrypt:/letsencrypt
-      - $PWD/traefik/traefik.yml:/etc/traefik/traefik.yml
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`tlo-traefik.anhtuan57.click`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
