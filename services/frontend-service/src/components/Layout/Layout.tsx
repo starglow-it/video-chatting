@@ -51,6 +51,7 @@ import {
 
 // const
 import {
+    agreementsRoute,
     createRoomRoute,
     dashboardRoute,
     editRoomRoute,
@@ -79,6 +80,32 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
 ];
 
 const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];
+
+const ScrollParent = ({
+    children,
+    isAgreements,
+    handleScrollToEnd,
+    containerRef,
+}: {
+    children: any;
+    isAgreements: boolean;
+    handleScrollToEnd(): void;
+    containerRef: any;
+}) => {
+    if (isAgreements)
+        return <CustomBox style={{ overflow: 'scroll' }}>{children}</CustomBox>;
+    return (
+        <CustomScroll
+            onYReachEnd={handleScrollToEnd}
+            options={{
+                wheelPropagation: true,
+            }}
+            containerRef={containerRef}
+        >
+            {children}
+        </CustomScroll>
+    );
+};
 
 const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const { isAuthenticated } = useStore($authStore);
@@ -181,11 +208,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             </ConditionalRender>
 
             <CustomBox className={styles.bgImage} />
-            <CustomScroll
-                onYReachEnd={handleScrollToEnd}
-                options={{
-                    wheelPropagation: true,
-                }}
+            <ScrollParent
+                isAgreements={router.pathname === agreementsRoute}
+                handleScrollToEnd={handleScrollToEnd}
                 containerRef={el => (scrollRef.current = el)}
             >
                 <CustomGrid
@@ -251,7 +276,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                         </CustomGrid>
                     </ConditionalRender>
                 </CustomGrid>
-            </CustomScroll>
+            </ScrollParent>
         </CustomBox>
     );
 };

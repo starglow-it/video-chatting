@@ -23,7 +23,7 @@
     "warning": "Meeting time is running out. Update to increase the limit"
   },
   "trialExpired": {
-    "text": "Your subscription for Professional Free Trial plan has expired. You are subscribed to free House plan now.\nYou can upgrade your subscription any time in Profile to continue creating own rooms and using other extended LiveOffice features"
+    "text": "Your subscription for Professional Free Trial plan has expired. You are subscribed to free House plan now.\nTo keep and upload backgrounds"
   },
   "comissionFee":{
     "text": "Platform commission {{fee}}"
