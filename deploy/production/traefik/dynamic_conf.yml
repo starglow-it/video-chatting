@@ -1,10 +1,13 @@
 http:
   routers:
     router0:
+      entryPoints:
+        - "http"
+        - "websecure"
       service: "chatruume"
       rule: "Host(`chatruume.com`)"
-  #      tls:
-  #        cert-resolver: "simple-resolver"
+      tls:
+        cert-resolver: "simple-resolver"
 
   services:
     chatruume:
