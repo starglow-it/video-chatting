@@ -1,0 +1,14 @@
+http:
+  routers:
+    router0:
+      service: "chatruume"
+      rule: "Host(`chatruume.com`)"
+  #      tls:
+  #        cert-resolver: "simple-resolver"
+
+  services:
+    chatruume:
+      loadBalancer:
+        servers:
+          - url: http://5.181.161.73:80/
+        passHostHeader: true
