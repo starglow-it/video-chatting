@@ -2,8 +2,8 @@ log:
   level: DEBUG
 
 api:
-  dashboard: false
-  insecure: false
+  dashboard: true
+  insecure: true
 
 providers:
   docker:
