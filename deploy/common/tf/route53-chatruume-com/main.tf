@@ -153,3 +153,11 @@ resource "aws_route53_record" "turn" {
   ttl     = 86400
   records = ["3.139.207.115"]
 }
+
+resource "aws_route53_record" "www" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "www.chatruume.com"
+  type    = "A"
+  ttl     = 300
+  records = ["5.181.161.73"]
+}
