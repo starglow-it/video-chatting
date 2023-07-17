@@ -714,11 +714,13 @@ export class PaymentsController {
         renewSubscriptionTimestampInSeconds: subscription.current_period_end,
       },
     });
-
+    
     if (
       Boolean(user.isSubscriptionActive) === false &&
       ['active', 'trialing'].includes(subscription.status)
     ) {
+      console.log('send email');
+      
       this.notificationsService.sendEmail({
         template: {
           key: emailTemplates.subscriptionSuccessful,

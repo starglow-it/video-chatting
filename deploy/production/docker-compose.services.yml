@@ -48,7 +48,7 @@ services:
       context: ../../services/
       dockerfile: ./livekit-service/Dockerfile
       args:
-        - LIVEKIT_IP=108.61.203.79
+        - LIVEKIT_IP=18.118.59.1
         - LIVEKIT_API_KEY=APIwj2xEkRuhwY9
         - LIVEKIT_API_SECRET=qZJdMzPHyHAOnYlyqZeaHlJmyqpJYgHmIksXxzOTtbY
     restart: unless-stopped
@@ -60,7 +60,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.livekit.rule=Host(`tlo-livekit.anhtuan57.click`)"
+      - "traefik.http.routers.livekit.rule=Host(`livekit.chatruume.com`)"
       - "traefik.http.routers.livekit.entrypoints=websecure"
       - "traefik.http.routers.livekit.tls=true"
       - "traefik.http.services.livekit.loadbalancer.server.port=7880"
@@ -75,7 +75,7 @@ services:
       context: ../../
       dockerfile: services/frontend-service/Dockerfile
       args:
-        - VULTR_STORAGE_HOSTNAME=theliveoffice-prod.s3.us-east-2.amazonaws.com
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     depends_on:
       - gateway-service
     restart: unless-stopped
@@ -87,7 +87,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.frontend.rule=Host(`aws.nongdan.dev`)"
+      - "traefik.http.routers.frontend.rule=Host(`my.chatruume.com`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
@@ -102,7 +102,7 @@ services:
       context: ../../
       dockerfile: services/frontend-admin-service/Dockerfile
       args:
-        - VULTR_STORAGE_HOSTNAME=ewr1.vultrobjects.com
+        - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     restart: unless-stopped
     environment:
       - WAIT_HOSTS=gateway-service:3000
@@ -112,7 +112,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.front_admin.rule=Host(`aws-admin.nongdan.dev`) && PathPrefix(`/`)"
+      - "traefik.http.routers.front_admin.rule=Host(`admin.chatruume.com`) && PathPrefix(`/`)"
       - "traefik.http.routers.front_admin.entrypoints=websecure"
       - "traefik.http.routers.front_admin.tls=true"
       - "traefik.http.routers.front_admin.tls.certresolver=simple-resolver"
@@ -136,7 +136,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.gateway.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway.rule=Host(`my.chatruume.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls=true"
       - "traefik.http.routers.gateway.middlewares=customcorsheader@docker"
@@ -164,7 +164,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.socket.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.socket.rule=Host(`my.chatruume.com`) && PathPrefix(`/socket.io`)"
       - "traefik.http.routers.socket.entrypoints=websecure"
       - "traefik.http.routers.socket.tls=true"
       - "traefik.http.services.socket.loadbalancer.server.port=8080"
@@ -187,7 +187,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.meeting_socket.rule=Host(`aws-socket.nongdan.dev`)"
+      - "traefik.http.routers.meeting_socket.rule=Host(`socket.chatruume.com`)"
       - "traefik.http.routers.meeting_socket.entrypoints=websecure"
       - "traefik.http.routers.meeting_socket.tls=true"
       - "traefik.http.services.meeting_socket.loadbalancer.server.port=8180"
@@ -211,7 +211,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.payments.rule=Host(`aws.nongdan.dev`) && PathPrefix(`/payments`)"
+      - "traefik.http.routers.payments.rule=Host(`my.chatruume.com`) && PathPrefix(`/payments`)"
       - "traefik.http.routers.payments.entrypoints=websecure"
       - "traefik.http.routers.payments.tls=true"
       - "traefik.http.services.payments.loadbalancer.server.port=5000"

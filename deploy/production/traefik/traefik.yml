@@ -9,7 +9,8 @@ providers:
   docker:
     network: traefikpublic
     exposedByDefault: false
-
+  file:
+    filename: /traefik/dynamic_conf.yml
 
 certificatesResolvers:
   simple-resolver:
@@ -32,5 +33,5 @@ entryPoints:
   websecure:
     address: :443
 
-
-accessLog: {}
+accessLog:
+  format: json
