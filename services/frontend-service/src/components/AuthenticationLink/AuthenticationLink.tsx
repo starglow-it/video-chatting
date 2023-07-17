@@ -23,12 +23,14 @@ const Component = () => {
             {
                 id: 0,
                 name: 'FAQ',
-                onAction: () => {},
+                onAction: () =>
+                    (window.location.href = 'https://chatruume.com/faq'),
             },
             {
                 id: 1,
                 name: 'Membership',
-                onAction: () => {},
+                onAction: () =>
+                    (window.location.href = 'https://chatruume.com/membership'),
             },
             {
                 id: 2,
