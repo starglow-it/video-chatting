@@ -50,7 +50,7 @@ const Component = ({ onScrollUp }: { onScrollUp: () => void }) => {
                     nameSpace="common"
                     color="colors.grayscale.semidark"
                     translation="footer.howTo"
-                    href="https://theliveoffice.com/howto"
+                    href="https://chatruume.com/howto"
                     isExternal
                 />
 
@@ -59,7 +59,7 @@ const Component = ({ onScrollUp }: { onScrollUp: () => void }) => {
                     nameSpace="common"
                     color="colors.grayscale.semidark"
                     translation="footer.faq"
-                    href="https://theliveoffice.com/faq"
+                    href="https://chatruume.com/faq"
                     isExternal
                 />
             </CustomGrid>
