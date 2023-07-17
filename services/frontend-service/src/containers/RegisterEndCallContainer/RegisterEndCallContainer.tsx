@@ -28,6 +28,11 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomCheckbox } from 'shared-frontend/library/custom/CustomCheckbox';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
+import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
+import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
+import { useRouter } from 'next/router';
+import { dashboardRoute } from 'src/const/client-routes';
 import {
     $authStore,
     $registerStore,
@@ -45,11 +50,6 @@ import {
     StorageKeysEnum,
     WebStorage,
 } from '../../controllers/WebStorageController';
-import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
-import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
-import { useRouter } from 'next/router';
-import { dashboardRoute } from 'src/const/client-routes';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -157,7 +157,11 @@ const Component = () => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <LiveOfficeLogo width="150px" height="50px" />
+                    <CustomImage
+                        src="/images/Ruume.svg"
+                        width="150px"
+                        height="35px"
+                    />
                     <CustomTypography
                         variant="h2bold"
                         className={styles.text}

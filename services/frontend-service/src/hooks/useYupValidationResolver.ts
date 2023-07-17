@@ -40,12 +40,14 @@ export const useYupValidationResolver = <Values>(
                 if (error instanceof ValidationError) {
                     const err = error?.inner;
 
-                    const initialReduceState: ParsedValidationErrors<Values> = {};
+                    const initialReduceState: ParsedValidationErrors<Values> =
+                        {};
 
                     return {
                         values: {},
                         errors: err?.reduce((allErrors, currentError) => {
-                            let errorKey = `${currentError.path}` as keyof Values;
+                            let errorKey =
+                                `${currentError.path}` as keyof Values;
                             if (
                                 hasArrayIndex.test(errorKey as string) &&
                                 options?.reduceArrayErrors
@@ -56,7 +58,9 @@ export const useYupValidationResolver = <Values>(
                                 ) as keyof Values;
                             }
 
-                            const keyErrors = allErrors[errorKey] as ValidationError[];
+                            const keyErrors = allErrors[
+                                errorKey
+                            ] as ValidationError[];
 
                             if (allErrors[errorKey]) {
                                 return {
@@ -64,7 +68,9 @@ export const useYupValidationResolver = <Values>(
                                     [errorKey]: [
                                         ...keyErrors,
                                         {
-                                            type: currentError.type ?? 'validation',
+                                            type:
+                                                currentError.type ??
+                                                'validation',
                                             message: currentError.message,
                                         },
                                     ],

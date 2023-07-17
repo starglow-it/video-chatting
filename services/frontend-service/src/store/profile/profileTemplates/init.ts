@@ -1,3 +1,4 @@
+import { setQueryProfileTemplatesEvent } from 'src/store/templates/model';
 import {
     $deleteProfileTemplateId,
     $profileTemplatesCountStore,
@@ -18,7 +19,6 @@ import { handleFetchProfileTemplatesCount } from '../handlers/handleFetchProfile
 import { handleDeleteProfileTemplate } from '../handlers/handleDeleteProfileTemplate';
 import { handleFetchProfileTemplateByTemplateId } from '../handlers/handleFetchProfileTemplateByTemplateId';
 import { handleEditUserTemplate } from '../handlers/handleEditUserTemplate';
-import { setQueryProfileTemplatesEvent } from 'src/store/templates/model';
 import { clearProfileEvent } from '../profile/model';
 
 getProfileTemplatesBase.use(handleFetchProfileTemplates);

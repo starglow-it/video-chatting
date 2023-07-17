@@ -65,6 +65,9 @@ import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { CommonCreateFreeUserDto } from '../../dtos/response/common-create-free-user.dto';
 import { UsersService } from '../users/users.service';
 import { sendHttpRequest } from 'src/utils/http/sendHttpRequest';
+import { CreateUserFreeRequest } from 'src/dtos/requests/create-user-free.request';
+import { PaymentsService } from '../payments/payments.service';
+import { UserTemplatesService } from '../user-templates/user-templates.service';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -75,6 +78,8 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     private authService: AuthService,
     private coreService: CoreService,
     private configService: ConfigClientService,
+    private paymentsService: PaymentsService,
+    private userTemplateService: UserTemplatesService
   ) { }
 
   private googleClientId: string;
@@ -130,24 +135,59 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     }
   }
 
+  private delGlobalUser = async (req: Request) => {
+    try {
+      const c = req['cookies'];
+      const h = req['headers'];
+
+      const id = <string>(c['userWithoutLoginId'] || h['userwithoutloginid']);
+      if (!id) return;
+      const u = await this.coreService.findUserById({ userId: id });
+      if (!u) return;
+      await this.coreService.deleteGlobalUser({ id });
+
+      if (u.stripeSubscriptionId) {
+        await this.paymentsService.cancelUserSubscription({
+          subscriptionId: u.stripeSubscriptionId,
+        });
+      }
+      const { list: uts } = await this.userTemplateService.getUserTemplates({
+        userId: u.id
+      });
+
+      Promise.all(uts.map(async ({ id }) => await this.userTemplateService.deleteUserTemplate({ templateId: id, userId: u.id })));
+
+    }
+    catch (err) {
+      console.log(err);
+      return;
+    }
+  }
+
   @Post('/create-free-user')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
   @ApiCreatedResponse({
     type: CommonCreateFreeUserDto,
     description: 'User create successful',
   })
-  async createAccountWithoutLogin() {
+  async createAccountWithoutLogin(
+    @Body() { templateId }: CreateUserFreeRequest
+  ) {
     try {
       const uuid = uuidv4();
       const user = await this.coreService.createUserWithoutLogin(uuid);
 
-      const globalCommonTemplate = await this.coreService.findCommonTemplateByTemplate({
-        isAcceptNoLogin: true
+      const template = await this.coreService.findCommonTemplateByTemplate({
+        ...(templateId ? {
+          _id: templateId
+        } : {
+          isAcceptNoLogin: true
+        })
       });
 
-      if (!globalCommonTemplate) return;
+      if (!template) return;
       const userTemplate = await this.coreService.addTemplateToUser({
-        templateId: globalCommonTemplate.id,
+        templateId: template.id,
         userId: user.id
       });
 
@@ -305,8 +345,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     description: 'User logged in',
   })
   async login(
+    @Request() req: Request,
     @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
+    await this.delGlobalUser(req);
     const isUserExists = await this.coreService.checkIfUserExists({
       email: body.email,
     });
@@ -327,7 +369,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       throw new DataValidationException(USER_IS_BLOCKED);
     }
 
-    if(user.loginType !== LoginTypes.Local){
+    if (user.loginType !== LoginTypes.Local) {
       throw new DataValidationException(USER_EXISTS);
     }
 
@@ -463,9 +505,11 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     description: 'User logged in',
   })
   async googleAuthRedirect(
+    @Request() req,
     @Body() body: VerifyGoogleAuthRequest,
-  ): Promise<ResponseSumType<TokenPairWithUserType & {isFirstLogin: boolean}>> {
+  ): Promise<ResponseSumType<TokenPairWithUserType & { isFirstLogin: boolean }>> {
     try {
+      await this.delGlobalUser(req);
       const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
 
       const { email } = tokenVerified;
@@ -480,7 +524,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const { given_name, picture } = await this.getUserDataFromGoogleToken(
         body.token,
       );
-      
+
       if (!isUserExists) {
         isFirstLogin = true;
         user = await this.authService.createUserFromGoogleAccount({
@@ -495,8 +539,8 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
           email,
         });
       }
-      
-      if(!user.profileAvatar && (user.loginType === LoginTypes.Google)){
+
+      if (!user.profileAvatar && (user.loginType === LoginTypes.Google)) {
         const image = await this.getImageFromUrl(picture);
         await this.coreService.findUserAndUpdateAvatar({
           userId: user.id,

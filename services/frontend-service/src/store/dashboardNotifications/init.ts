@@ -7,7 +7,11 @@ import {
     setDashboardNotifications,
 } from './model';
 import { $profileStore } from '../profile/profile/model';
-import { DashboardNotification, DashboardNotificationReadStatus, Profile } from '../types';
+import {
+    DashboardNotification,
+    DashboardNotificationReadStatus,
+    Profile,
+} from '../types';
 
 export const sendGetDashboardNotificationsSocketEvent = attach<
     void,
@@ -21,7 +25,10 @@ export const sendGetDashboardNotificationsSocketEvent = attach<
 
 export const sendReadDashboardNotificationsSocketEvent = attach<
     void,
-    Store<{ profile: Profile; dashboardNotifications: DashboardNotification[] }>,
+    Store<{
+        profile: Profile;
+        dashboardNotifications: DashboardNotification[];
+    }>,
     typeof readDashboardNotificationsSocketEvent
 >({
     effect: readDashboardNotificationsSocketEvent,
@@ -32,7 +39,11 @@ export const sendReadDashboardNotificationsSocketEvent = attach<
     mapParams: (_, { profile, dashboardNotifications }) => ({
         profileId: profile.id,
         notifications: dashboardNotifications
-            .filter(notification => notification.status === DashboardNotificationReadStatus.active)
+            .filter(
+                notification =>
+                    notification.status ===
+                    DashboardNotificationReadStatus.active,
+            )
             .map(notification => notification.id),
     }),
 });
@@ -52,8 +63,12 @@ $dashboardNotificationsStore.on(
 
         return uniqueIds
             .map(notificationId =>
-                allNotifications.find(notification => notification.id === notificationId),
+                allNotifications.find(
+                    notification => notification.id === notificationId,
+                ),
             )
-            .filter(notification => notification?.id) as DashboardNotification[];
+            .filter(
+                notification => notification?.id,
+            ) as DashboardNotification[];
     },
 );

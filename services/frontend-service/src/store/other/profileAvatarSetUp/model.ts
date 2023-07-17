@@ -8,9 +8,12 @@ const initialProfileAvatarState: UploadProfileAvatar = {
 };
 
 export const $profileAvatarImage =
-    otherStoresDomain.createStore<UploadProfileAvatar>(initialProfileAvatarState);
+    otherStoresDomain.createStore<UploadProfileAvatar>(
+        initialProfileAvatarState,
+    );
 
 export const setProfileAvatarEvent =
     otherStoresDomain.createEvent<UploadProfileAvatar>('setProfileAvatarEvent');
-export const resetProfileAvatarEvent =
-    otherStoresDomain.createEvent<void>('resetProfileAvatarEvent');
+export const resetProfileAvatarEvent = otherStoresDomain.createEvent<void>(
+    'resetProfileAvatarEvent',
+);

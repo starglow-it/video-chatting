@@ -22,7 +22,11 @@ import styles from './TimeLimitNotification.module.scss';
 import { formatDate } from '../../utils/time/formatDate';
 
 // stores
-import { $authStore, $isBusinessSubscription, $profileStore } from '../../store';
+import {
+    $authStore,
+    $isBusinessSubscription,
+    $profileStore,
+} from '../../store';
 import { $isOwner, $localUserStore } from '../../store/roomStores';
 
 // types
@@ -67,7 +71,13 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
         ) {
             setOpenState(true);
         }
-    }, [minutesLeft, isBusinessSubscription, isOwner, isDashboardRoute, isAuthenticated]);
+    }, [
+        minutesLeft,
+        isBusinessSubscription,
+        isOwner,
+        isDashboardRoute,
+        isAuthenticated,
+    ]);
 
     useEffect(() => {
         if (localUser.accessStatus === MeetingAccessStatusEnum.InMeeting) {
@@ -108,7 +118,9 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                         nameSpace="subscriptions"
                         translation="timeLimit.text"
                         options={{
-                            minutesLeft: `${minutesLeft} minute${minutesLeft === 1 ? '' : 's'}`,
+                            minutesLeft: `${minutesLeft} minute${
+                                minutesLeft === 1 ? '' : 's'
+                            }`,
                             renewTime,
                         }}
                     />
@@ -116,7 +128,12 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                         variant="custom-common"
                         onClick={handleOpenProfile}
                         className={styles.button}
-                        label={<Translation nameSpace="common" translation="buttons.update" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.update"
+                            />
+                        }
                         typographyProps={{
                             variant: 'body2',
                         }}

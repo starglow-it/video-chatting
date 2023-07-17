@@ -20,11 +20,11 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // stores
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
 import { $profileStore } from '../../../store';
 
 // styles
 import styles from './EditAccountInfo.module.scss';
-import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
 
 const EditAccountInfo = memo(() => {
     const profile = useStore($profileStore);
@@ -126,7 +126,12 @@ const EditAccountInfo = memo(() => {
                             className={styles.editProfileAvatar}
                         />
                     )}
-                    <CustomGrid display="flex" direction="column" gap={1} flex={1}>
+                    <CustomGrid
+                        display="flex"
+                        direction="column"
+                        gap={1}
+                        flex={1}
+                    >
                         {isEmailEdit || isPasswordEdit ? (
                             <>
                                 {isEmailEdit && !isPasswordEdit && (

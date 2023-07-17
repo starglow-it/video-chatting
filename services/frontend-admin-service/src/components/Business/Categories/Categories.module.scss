@@ -1,0 +1,25 @@
+@import '../../../styles/rem.scss';
+
+.paper {
+    border-radius: rem(22px);
+    padding: rem(20px);
+}
+
+.header {
+    margin-bottom: rem(20px);
+    border-radius: rem(0px);
+}
+
+.addIcon {
+    cursor: pointer;
+}
+
+.boxAdd {
+    position: relative !important;
+}
+
+.categories {
+    max-height: rem(410px);
+    overflow-y: scroll;
+    position: relative;
+}

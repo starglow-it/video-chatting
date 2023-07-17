@@ -23,10 +23,10 @@ import {
     stopScreenSharing,
 } from 'src/store/roomStores';
 import { AppDialogsEnum } from 'src/store/types';
-import styles from './MeetingControlCollapse.module.scss';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
 import clsx from 'clsx';
+import styles from './MeetingControlCollapse.module.scss';
 
 enum CollapseTypes {
     Settings = 'settings',

@@ -1,5 +1,10 @@
 import 'webrtc-adapter';
-import { ConnectionType, iceServers, StreamType, TrackKind } from '../../const/webrtc';
+import {
+    ConnectionType,
+    iceServers,
+    StreamType,
+    TrackKind,
+} from '../../const/webrtc';
 import {
     AnswerExchangePayload,
     IceCandidatesExchangePayload,
@@ -48,7 +53,11 @@ export class WebRtcConnection implements IWebRtcConnection {
 
     onGotOffer: (args: OfferExchangePayload | AnswerExchangePayload) => void;
 
-    onGotStream: (args: { connectionId: string; type: TrackKind; track: MediaStreamTrack }) => void;
+    onGotStream: (args: {
+        connectionId: string;
+        type: TrackKind;
+        track: MediaStreamTrack;
+    }) => void;
 
     onGotCandidate: (args: IceCandidatesExchangePayload) => void;
 
@@ -67,7 +76,8 @@ export class WebRtcConnection implements IWebRtcConnection {
         this.onGotStream = data.onGotStream;
         this.onGotOffer = data.onGotOffer;
         this.onGotCandidate = data.onGotCandidate;
-        this.onIceConnectionStateDisconnected = data.onIceConnectionStateDisconnected;
+        this.onIceConnectionStateDisconnected =
+            data.onIceConnectionStateDisconnected;
         this.onIceConnectionStateFailed = data.onIceConnectionStateFailed;
 
         this.candidateQueue = [];
@@ -180,7 +190,9 @@ export class WebRtcConnection implements IWebRtcConnection {
         }
         await this.peerConnection.setRemoteDescription(offer);
 
-        await Promise.all(this.candidateQueue.map(c => this.addIceCandidate(c)));
+        await Promise.all(
+            this.candidateQueue.map(c => this.addIceCandidate(c)),
+        );
         this.candidateQueue = [];
 
         const answer = await this.peerConnection.createAnswer();
@@ -205,7 +217,9 @@ export class WebRtcConnection implements IWebRtcConnection {
         const answer = new RTCSessionDescription({ type: 'answer', sdp });
         this.sdpAnswerSet = true;
         await this.peerConnection.setRemoteDescription(answer);
-        await Promise.all(this.candidateQueue.map(c => this.addIceCandidate(c)));
+        await Promise.all(
+            this.candidateQueue.map(c => this.addIceCandidate(c)),
+        );
         this.candidateQueue = [];
     }
 
@@ -214,7 +228,9 @@ export class WebRtcConnection implements IWebRtcConnection {
             return;
         }
         if (this.sdpAnswerSet) {
-            await this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+            await this.peerConnection.addIceCandidate(
+                new RTCIceCandidate(candidate),
+            );
         } else {
             this.candidateQueue.push(candidate);
         }
@@ -241,7 +257,10 @@ export class WebRtcConnection implements IWebRtcConnection {
     }
 
     applyDeviceSettings(
-        devicePermissions: { video?: boolean; audio?: boolean } = { video: false, audio: false },
+        devicePermissions: { video?: boolean; audio?: boolean } = {
+            video: false,
+            audio: false,
+        },
     ) {
         if (!this.stream || !this.stream.active || this.isScreenSharing()) {
             return;
@@ -257,7 +276,10 @@ export class WebRtcConnection implements IWebRtcConnection {
         });
     }
 
-    updateDevicePermissions(devicePermissions: { audio: boolean; video: boolean }) {
+    updateDevicePermissions(devicePermissions: {
+        audio: boolean;
+        video: boolean;
+    }) {
         if (this.isScreenSharing()) {
             return;
         }

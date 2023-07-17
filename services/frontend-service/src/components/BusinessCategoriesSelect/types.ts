@@ -1,6 +1,4 @@
-import {
-	TranslationProps 
-} from '@library/common/Translation/types';
+import { TranslationProps } from '@library/common/Translation/types';
 
 export type BusinessCategoriesSelectProps = TranslationProps & {
     formKey: string;

@@ -24,8 +24,7 @@ import { CommonTemplateItemProps } from './types';
 // styles
 import styles from './CommonTemplateItem.module.scss';
 
-const Component = ({ template, 
-onChooseTemplate }: CommonTemplateItemProps) => {
+const Component = ({ template, onChooseTemplate }: CommonTemplateItemProps) => {
     const isAddTemplateInProgress = useStore(addTemplateToUserFx.pending);
 
     const [showPreview, setShowPreview] = useState(false);

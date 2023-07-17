@@ -1,4 +1,10 @@
-import React, { ForwardedRef, forwardRef, memo, useCallback, useMemo } from 'react';
+import React, {
+    ForwardedRef,
+    forwardRef,
+    memo,
+    useCallback,
+    useMemo,
+} from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 import clsx from 'clsx';
@@ -41,7 +47,8 @@ const Component = (
     }: ComponentProps,
     ref: ForwardedRef<HTMLInputElement>,
 ) => {
-    const { value: showPass, onToggleSwitch: handleTogglePassword } = useToggle(false);
+    const { value: showPass, onToggleSwitch: handleTogglePassword } =
+        useToggle(false);
 
     const { control } = useFormContext();
 
@@ -49,7 +56,10 @@ const Component = (
 
     const t = useLocalization(nameSpace);
 
-    const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
+    const label = useMemo(
+        () => (translation ? t.translation(translation) : ''),
+        [translation],
+    );
 
     const handleBlur = useCallback(
         e => {

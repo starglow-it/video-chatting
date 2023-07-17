@@ -7,11 +7,15 @@ import { PropsWithClassName } from 'shared-frontend/types';
 
 import styles from '../StripeCommon.module.scss';
 
-interface Props extends CardCvcElementProps{
-    colorForm?: string
+interface Props extends CardCvcElementProps {
+    colorForm?: string;
 }
 
-const Component = ({ className, colorForm = 'white', ...rest }: PropsWithClassName<Props>) => (
+const Component = ({
+    className,
+    colorForm = 'white',
+    ...rest
+}: PropsWithClassName<Props>) => (
     <CardCvcElement
         className={clsx(styles.cardField, className)}
         options={{

@@ -28,4 +28,5 @@ export const initialDialogsState: AppDialogsState = {
     meetingFinishedDialog: false,
 };
 
-export const $appDialogsStore = dialogsDomain.createStore<AppDialogsState>(initialDialogsState);
+export const $appDialogsStore =
+    dialogsDomain.createStore<AppDialogsState>(initialDialogsState);

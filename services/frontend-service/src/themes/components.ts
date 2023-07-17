@@ -55,7 +55,10 @@ export const componentsTheme = (theme: Theme) =>
                         padding: '12px',
 
                         '&:hover': {
-                            background: alpha(theme.designSystemColors.grayscale.normal, 0.25),
+                            background: alpha(
+                                theme.designSystemColors.grayscale.normal,
+                                0.25,
+                            ),
                         },
                         '&.Mui-selected': {
                             color: theme.designSystemColors.orange.primary,
@@ -71,7 +74,10 @@ export const componentsTheme = (theme: Theme) =>
                                 background: "url('/images/check-icon.svg')",
                             },
                             '&:hover': {
-                                background: alpha(theme.designSystemColors.grayscale.normal, 0.25),
+                                background: alpha(
+                                    theme.designSystemColors.grayscale.normal,
+                                    0.25,
+                                ),
                             },
                         },
                     },
@@ -81,13 +87,17 @@ export const componentsTheme = (theme: Theme) =>
                 styleOverrides: {
                     root: {
                         '& .MuiSlider-rail': {
-                            backgroundColor: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                            backgroundColor: alpha(
+                                theme.designSystemColors.grayscale.normal,
+                                0.4,
+                            ),
                             opacity: 1,
                         },
                         '& .MuiSlider-thumb': {
                             width: '24px',
                             height: '24px',
-                            backgroundColor: theme.designSystemColors.white.primary,
+                            backgroundColor:
+                                theme.designSystemColors.white.primary,
                             border: '3px solid currentColor',
                         },
                     },
@@ -96,7 +106,10 @@ export const componentsTheme = (theme: Theme) =>
             MuiRadio: {
                 styleOverrides: {
                     root: {
-                        color: alpha(theme.designSystemColors.grayscale.normal, 0.6),
+                        color: alpha(
+                            theme.designSystemColors.grayscale.normal,
+                            0.6,
+                        ),
                         '&.Mui-checked': {
                             color: theme.designSystemColors.orange.primary,
                         },
@@ -121,10 +134,14 @@ export const componentsTheme = (theme: Theme) =>
                             background: theme.palette.buttons.cancel.main,
                             color: theme.palette.common.black,
                             '&:hover': {
-                                background: alpha(theme.palette.buttons.cancel.hover, 0.4),
+                                background: alpha(
+                                    theme.palette.buttons.cancel.hover,
+                                    0.4,
+                                ),
                             },
                             '&.Mui-disabled': {
-                                background: theme.palette.buttons.cancel.disabled,
+                                background:
+                                    theme.palette.buttons.cancel.disabled,
                             },
                         },
                     },
@@ -134,10 +151,14 @@ export const componentsTheme = (theme: Theme) =>
                             background: theme.designSystemColors.red.primary,
                             color: theme.palette.common.white,
                             '&:hover': {
-                                background: alpha(theme.designSystemColors.red.primary, 0.6),
+                                background: alpha(
+                                    theme.designSystemColors.red.primary,
+                                    0.6,
+                                ),
                             },
                             '&.Mui-disabled': {
-                                background: theme.palette.buttons.cancel.disabled,
+                                background:
+                                    theme.palette.buttons.cancel.disabled,
                             },
                         },
                     },
@@ -151,10 +172,14 @@ export const componentsTheme = (theme: Theme) =>
                                 0.4,
                             )}`,
                             '&:hover': {
-                                background: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                                background: alpha(
+                                    theme.designSystemColors.grayscale.normal,
+                                    0.4,
+                                ),
                             },
                             '&.Mui-disabled': {
-                                background: theme.palette.buttons.cancel.disabled,
+                                background:
+                                    theme.palette.buttons.cancel.disabled,
                             },
                         },
                     },
@@ -167,7 +192,8 @@ export const componentsTheme = (theme: Theme) =>
                                 background: theme.palette.buttons.primary.hover,
                             },
                             '&.Mui-disabled': {
-                                background: theme.palette.buttons.primary.disabled,
+                                background:
+                                    theme.palette.buttons.primary.disabled,
                             },
                         },
                     },
@@ -193,7 +219,8 @@ export const componentsTheme = (theme: Theme) =>
                                 background: theme.designSystemColors.red.dark,
                             },
                             '&.Mui-disabled': {
-                                background: theme.palette.buttons.primary.disabled,
+                                background:
+                                    theme.palette.buttons.primary.disabled,
                             },
                         },
                     },
@@ -215,11 +242,17 @@ export const componentsTheme = (theme: Theme) =>
                             background: theme.palette.common.black,
                             color: theme.palette.common.white,
                             '&:hover': {
-                                background: alpha(theme.palette.common.black, 0.6),
+                                background: alpha(
+                                    theme.palette.common.black,
+                                    0.6,
+                                ),
                                 color: theme.palette.common.white,
                             },
                             '&.Mui-disabled': {
-                                background: alpha(theme.palette.common.black, 0.6),
+                                background: alpha(
+                                    theme.palette.common.black,
+                                    0.6,
+                                ),
                                 color: theme.palette.common.white,
                             },
                         },
@@ -262,10 +295,15 @@ export const componentsTheme = (theme: Theme) =>
                                 content: "''",
                                 position: 'absolute',
                                 inset: 0,
-                                borderRadius: `${ownerState.borderRadius || 12}px`,
+                                borderRadius: `${
+                                    ownerState.borderRadius || 12
+                                }px`,
                                 backdropFilter: 'blur(28px)',
                                 zIndex: -1,
-                                background: alpha(theme.designSystemColors.black.primary, 0.6),
+                                background: alpha(
+                                    theme.designSystemColors.black.primary,
+                                    0.6,
+                                ),
                                 overflow: 'hidden',
                             },
                         }),
@@ -274,7 +312,10 @@ export const componentsTheme = (theme: Theme) =>
                 styleOverrides: {
                     root: {
                         borderRadius: '16px',
-                        boxShadow: `0px 12px 24px -4px ${alpha(theme.palette.shadow.primary, 0.1)}`,
+                        boxShadow: `0px 12px 24px -4px ${alpha(
+                            theme.palette.shadow.primary,
+                            0.1,
+                        )}`,
                     },
                 },
             },
@@ -291,7 +332,10 @@ export const componentsTheme = (theme: Theme) =>
                 styleOverrides: {
                     root: {
                         '&:hover': {
-                            background: alpha(theme.palette.background.default, 0.5),
+                            background: alpha(
+                                theme.palette.background.default,
+                                0.5,
+                            ),
                         },
                     },
                 },
@@ -377,7 +421,10 @@ export const componentsTheme = (theme: Theme) =>
                         padding: 0,
                     },
                     track: {
-                        background: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                        background: alpha(
+                            theme.designSystemColors.grayscale.normal,
+                            0.4,
+                        ),
                         opacity: 1,
                     },
                     switchBase: {
@@ -390,7 +437,8 @@ export const componentsTheme = (theme: Theme) =>
                             color: theme.designSystemColors.white.primary,
                         },
                         '&.Mui-checked + .MuiSwitch-track': {
-                            backgroundColor: theme.designSystemColors.orange.primary,
+                            backgroundColor:
+                                theme.designSystemColors.orange.primary,
                             opacity: 1,
                         },
                     },
@@ -401,7 +449,10 @@ export const componentsTheme = (theme: Theme) =>
                     {
                         props: { light: true },
                         style: {
-                            backgroundColor: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                            backgroundColor: alpha(
+                                theme.designSystemColors.grayscale.normal,
+                                0.4,
+                            ),
                         },
                     },
                 ],
@@ -447,7 +498,8 @@ export const componentsTheme = (theme: Theme) =>
 
                         '&:hover': {
                             boxShadow: `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
-                            backgroundColor: theme.designSystemColors.white.primary,
+                            backgroundColor:
+                                theme.designSystemColors.white.primary,
                             color: theme.designSystemColors.black.primary,
                         },
                     },

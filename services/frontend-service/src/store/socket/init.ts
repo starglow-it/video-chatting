@@ -35,7 +35,9 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
     if (socketInstance) {
         socketInstance.on(
             DashboardSubscribeEvents.OnMeetingAvailable,
-            getDashboardSocketSubscribeHandler(DashboardSubscribeEvents.OnMeetingAvailable),
+            getDashboardSocketSubscribeHandler(
+                DashboardSubscribeEvents.OnMeetingAvailable,
+            ),
         );
         socketInstance.on(
             DashboardSubscribeEvents.OnSendDashboardNotification,
@@ -45,12 +47,16 @@ initiateSocketConnectionFx.doneData.watch(({ socketInstance }) => {
         );
         socketInstance.on(
             DashboardSubscribeEvents.OnTrialExpired,
-            getDashboardSocketSubscribeHandler(DashboardSubscribeEvents.OnTrialExpired),
+            getDashboardSocketSubscribeHandler(
+                DashboardSubscribeEvents.OnTrialExpired,
+            ),
         );
 
         socketInstance.on(
             DashboardSubscribeEvents.OnKickUser,
-            getDashboardSocketSubscribeHandler(DashboardSubscribeEvents.OnKickUser),
+            getDashboardSocketSubscribeHandler(
+                DashboardSubscribeEvents.OnKickUser,
+            ),
         );
     }
 });

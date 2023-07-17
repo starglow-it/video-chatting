@@ -9,7 +9,11 @@ export const getMeetingUrl = (templateId: string) => ({
     method: HttpMethods.Get,
 });
 
-export const getMeetingTemplateUrl = ({ templateId }: { templateId: string }) => ({
+export const getMeetingTemplateUrl = ({
+    templateId,
+}: {
+    templateId: string;
+}) => ({
     url: `${serverUrl}/meetings/templates/${templateId}`,
     method: HttpMethods.Get,
 });

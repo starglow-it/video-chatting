@@ -11,7 +11,7 @@ const Component = ({
     color,
     orientation,
     size,
-    classes
+    classes,
 }: SliderProps & PropsWithClassName<{ Icon?: ReactElement }>) => (
     <Stack
         spacing={2}

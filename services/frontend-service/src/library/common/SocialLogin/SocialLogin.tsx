@@ -18,10 +18,12 @@ const sxStyles = {
     wrapper: {
         background: (theme: Theme) => theme.palette.common.white,
         border: (theme: Theme) => `1px solid ${theme.palette.stroke.primary}`,
-        boxShadow: (theme: Theme) => `0px 12px 24px -4px ${theme.palette.shadow.normal}`,
+        boxShadow: (theme: Theme) =>
+            `0px 12px 24px -4px ${theme.palette.shadow.normal}`,
         borderRadius: (theme: Theme) => theme.borderRadius.medium,
         '&:hover': {
-            boxShadow: (theme: Theme) => `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
+            boxShadow: (theme: Theme) =>
+                `0px 12px 24px -4px ${theme.palette.shadow.hover}`,
         },
     },
 };
@@ -33,7 +35,9 @@ const Component = ({
     className,
     onClick,
     children,
-}: PropsWithChildren<PropsWithClassName<SocialLoginProps & TranslationProps>>) => (
+}: PropsWithChildren<
+    PropsWithClassName<SocialLoginProps & TranslationProps>
+>) => (
     <CustomGrid
         container
         alignItems="center"

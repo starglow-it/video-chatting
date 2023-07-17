@@ -23,6 +23,8 @@ import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { RoundInfoIcon } from 'shared-frontend/icons/RoundIcons/RoundInfoIcon';
 
 // const
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import frontendConfig from '../../../const/config';
 
 // store
@@ -30,8 +32,6 @@ import { $isTrial } from '../../../store';
 
 // styles
 import styles from './EditPrivacy.module.scss';
-import { Translation } from '@library/common/Translation/Translation';
-import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 const options = [
     {

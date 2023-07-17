@@ -1,6 +1,9 @@
 import { GetAnswerPayload } from '../../types';
 
-export const handleGetAnswer = async ({ connection, sdp }: GetAnswerPayload) => {
+export const handleGetAnswer = async ({
+    connection,
+    sdp,
+}: GetAnswerPayload) => {
     if (!connection || !sdp) {
         return;
     }

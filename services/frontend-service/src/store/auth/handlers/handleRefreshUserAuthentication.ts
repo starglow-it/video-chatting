@@ -1,9 +1,9 @@
-import {sendRequest} from "../../../helpers/http/sendRequest";
-import {LoginUserResponse} from "../../types";
-import {ErrorState} from "shared-types";
-import { refreshUrl } from "../../../utils/urls";
-import setAuthCookies from "../../../helpers/http/setAuthCookies";
-import {parseCookies} from "nookies";
+import { ErrorState } from 'shared-types';
+import { parseCookies } from 'nookies';
+import { sendRequest } from '../../../helpers/http/sendRequest';
+import { LoginUserResponse } from '../../types';
+import { refreshUrl } from '../../../utils/urls';
+import setAuthCookies from '../../../helpers/http/setAuthCookies';
 
 export const handleRefreshUserAuthentication = async () => {
     const { refreshToken } = parseCookies();
@@ -11,12 +11,16 @@ export const handleRefreshUserAuthentication = async () => {
     const response = await sendRequest<LoginUserResponse, ErrorState>({
         ...refreshUrl,
         data: {
-            token: refreshToken
-        }
+            token: refreshToken,
+        },
     });
 
     if (response.success) {
-        setAuthCookies(undefined, response?.result?.accessToken, response?.result?.refreshToken);
+        setAuthCookies(
+            undefined,
+            response?.result?.accessToken,
+            response?.result?.refreshToken,
+        );
 
         return {
             isAuthenticated: response.success,
@@ -34,4 +38,4 @@ export const handleRefreshUserAuthentication = async () => {
     return {
         isAuthenticated: false,
     };
-}
+};

@@ -8,7 +8,7 @@ export const handleUploadNewBackground = async (
 ): Promise<IMediaItem | null> => {
     const formData = generateFormData(payload);
     const { success, result } = await sendRequestWithCredentials<
-    IMediaItem | null,
+        IMediaItem | null,
         void
     >({
         ...uploadBackgroundToCategory(),

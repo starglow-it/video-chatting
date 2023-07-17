@@ -23,7 +23,9 @@ const Component = () => {
     const [currentAccordionId, setCurrentAccordionId] = useState('');
 
     const handleChangeAccordion = useCallback((accordionId: string) => {
-        setCurrentAccordionId(prev => (prev === accordionId ? '' : accordionId));
+        setCurrentAccordionId(prev =>
+            prev === accordionId ? '' : accordionId,
+        );
     }, []);
 
     return (
@@ -32,26 +34,45 @@ const Component = () => {
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.IsItFree}
                 onChange={handleChangeAccordion}
-                label={<Translation nameSpace="static" translation="faq.isItFree.title" />}
+                label={
+                    <Translation
+                        nameSpace="static"
+                        translation="faq.isItFree.title"
+                    />
+                }
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={
-                    <ArrowIcon width="32px" height="32px" className={styles.arrowIcon} />
+                    <ArrowIcon
+                        width="32px"
+                        height="32px"
+                        className={styles.arrowIcon}
+                    />
                 }
             >
-                <CustomTypography nameSpace="static" translation="faq.isItFree.description" />
+                <CustomTypography
+                    nameSpace="static"
+                    translation="faq.isItFree.description"
+                />
             </CustomAccordion>
             <CustomAccordion
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.WillThereBeMoreScenes}
                 onChange={handleChangeAccordion}
                 label={
-                    <Translation nameSpace="static" translation="faq.willThereBeMoreScenes.title" />
+                    <Translation
+                        nameSpace="static"
+                        translation="faq.willThereBeMoreScenes.title"
+                    />
                 }
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={
-                    <ArrowIcon width="32px" height="32px" className={styles.arrowIcon} />
+                    <ArrowIcon
+                        width="32px"
+                        height="32px"
+                        className={styles.arrowIcon}
+                    />
                 }
             >
                 <CustomTypography
@@ -63,24 +84,45 @@ const Component = () => {
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.FuturePlans}
                 onChange={handleChangeAccordion}
-                label={<Translation nameSpace="static" translation="faq.futurePlans.title" />}
+                label={
+                    <Translation
+                        nameSpace="static"
+                        translation="faq.futurePlans.title"
+                    />
+                }
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={
-                    <ArrowIcon width="32px" height="32px" className={styles.arrowIcon} />
+                    <ArrowIcon
+                        width="32px"
+                        height="32px"
+                        className={styles.arrowIcon}
+                    />
                 }
             >
-                <CustomTypography nameSpace="static" translation="faq.futurePlans.description" />
+                <CustomTypography
+                    nameSpace="static"
+                    translation="faq.futurePlans.description"
+                />
             </CustomAccordion>
             <CustomAccordion
                 currentAccordionId={currentAccordionId}
                 accordionId={Accordion.CanICreateScene}
                 onChange={handleChangeAccordion}
-                label={<Translation nameSpace="static" translation="faq.canICreateScene.title" />}
+                label={
+                    <Translation
+                        nameSpace="static"
+                        translation="faq.canICreateScene.title"
+                    />
+                }
                 typographyVariant="h2"
                 variant="large"
                 AccordionSummaryIcon={
-                    <ArrowIcon width="32px" height="32px" className={styles.arrowIcon} />
+                    <ArrowIcon
+                        width="32px"
+                        height="32px"
+                        className={styles.arrowIcon}
+                    />
                 }
             >
                 <CustomTypography

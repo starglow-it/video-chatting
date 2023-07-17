@@ -1,5 +1,5 @@
+import { IUserTemplate } from 'shared-types';
 import { EntityList } from '../../types';
-import {IUserTemplate} from "shared-types";
 
 export const initialProfileTemplatesStore: EntityList<IUserTemplate> = {
     list: [],

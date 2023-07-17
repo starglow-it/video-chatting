@@ -65,7 +65,10 @@ const Component = () => {
     const renderAudioDevicesMenuItems = useMemo(
         () =>
             audioDevices.map(audioDevice => (
-                <MenuItem key={audioDevice.deviceId} value={audioDevice.deviceId}>
+                <MenuItem
+                    key={audioDevice.deviceId}
+                    value={audioDevice.deviceId}
+                >
                     {audioDevice.label}
                 </MenuItem>
             )),
@@ -75,7 +78,10 @@ const Component = () => {
     const renderVideoDevicesMenuItems = useMemo(
         () =>
             videoDevices.map(videoDevice => (
-                <MenuItem key={videoDevice.deviceId} value={videoDevice.deviceId}>
+                <MenuItem
+                    key={videoDevice.deviceId}
+                    value={videoDevice.deviceId}
+                >
                     {videoDevice.label}
                 </MenuItem>
             )),
@@ -84,10 +90,23 @@ const Component = () => {
 
     const handleRenderVideoValue = useCallback(
         value => (
-            <CustomGrid className={styles.activeItem} container alignItems="center" wrap="nowrap">
-                <CameraIcon className={styles.activeIcon} isActive width="24px" height="24px" />
+            <CustomGrid
+                className={styles.activeItem}
+                container
+                alignItems="center"
+                wrap="nowrap"
+            >
+                <CameraIcon
+                    className={styles.activeIcon}
+                    isActive
+                    width="24px"
+                    height="24px"
+                />
                 <CustomTypography className={styles.activeValue}>
-                    {videoDevices.find(device => device.deviceId === value)?.label}
+                    {
+                        videoDevices.find(device => device.deviceId === value)
+                            ?.label
+                    }
                 </CustomTypography>
             </CustomGrid>
         ),
@@ -96,10 +115,23 @@ const Component = () => {
 
     const handleRenderAudioValue = useCallback(
         value => (
-            <CustomGrid className={styles.activeItem} container alignItems="center" wrap="nowrap">
-                <MicIcon className={styles.activeIcon} isActive width="24px" height="24px" />
+            <CustomGrid
+                className={styles.activeItem}
+                container
+                alignItems="center"
+                wrap="nowrap"
+            >
+                <MicIcon
+                    className={styles.activeIcon}
+                    isActive
+                    width="24px"
+                    height="24px"
+                />
                 <CustomTypography className={styles.activeValue}>
-                    {audioDevices.find(device => device.deviceId === value)?.label}
+                    {
+                        audioDevices.find(device => device.deviceId === value)
+                            ?.label
+                    }
                 </CustomTypography>
             </CustomGrid>
         ),

@@ -1,5 +1,9 @@
 import React, { memo, useCallback } from 'react';
-import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import {
+    CardNumberElement,
+    useElements,
+    useStripe,
+} from '@stripe/react-stripe-js';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
@@ -19,7 +23,12 @@ import styles from './CardDataForm.module.scss';
 
 // types
 
-const Component = ({ onSubmit, onError, paymentIntentSecret, colorForm = 'white' }: CardDataFormProps) => {
+const Component = ({
+    onSubmit,
+    onError,
+    paymentIntentSecret,
+    colorForm = 'white',
+}: CardDataFormProps) => {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -29,11 +38,14 @@ const Component = ({ onSubmit, onError, paymentIntentSecret, colorForm = 'white'
             console.log('submit card', event);
 
             if (stripe && elements) {
-                const result = await stripe.confirmCardPayment(paymentIntentSecret, {
-                    payment_method: {
-                        card: elements.getElement(CardNumberElement),
+                const result = await stripe.confirmCardPayment(
+                    paymentIntentSecret,
+                    {
+                        payment_method: {
+                            card: elements.getElement(CardNumberElement),
+                        },
                     },
-                });
+                );
 
                 if (result.error) {
                     onError();
@@ -45,13 +57,28 @@ const Component = ({ onSubmit, onError, paymentIntentSecret, colorForm = 'white'
         [stripe, elements],
     );
 
-    const isFormBlack = colorForm === 'black'
+    const isFormBlack = colorForm === 'black';
     return (
         <form onSubmit={handleSubmit}>
             <CustomGrid container gap={2}>
-                <StripeCardNumber className={clsx(styles.cardField, {[styles.borderFieldBlack]: isFormBlack})} colorForm={colorForm}/>
-                <StripeCardExpiry className={clsx(styles.dateField, {[styles.borderFieldBlack]: isFormBlack})} colorForm={colorForm} />
-                <StripeCardCvc className={clsx(styles.cvcField, {[styles.borderFieldBlack]: isFormBlack})} colorForm={colorForm}/>
+                <StripeCardNumber
+                    className={clsx(styles.cardField, {
+                        [styles.borderFieldBlack]: isFormBlack,
+                    })}
+                    colorForm={colorForm}
+                />
+                <StripeCardExpiry
+                    className={clsx(styles.dateField, {
+                        [styles.borderFieldBlack]: isFormBlack,
+                    })}
+                    colorForm={colorForm}
+                />
+                <StripeCardCvc
+                    className={clsx(styles.cvcField, {
+                        [styles.borderFieldBlack]: isFormBlack,
+                    })}
+                    colorForm={colorForm}
+                />
             </CustomGrid>
             <CustomButton
                 type="submit"
@@ -60,7 +87,10 @@ const Component = ({ onSubmit, onError, paymentIntentSecret, colorForm = 'white'
                 className={styles.button}
             >
                 &nbsp;
-                <CustomTypography nameSpace="meeting" translation="payments.payWith" />
+                <CustomTypography
+                    nameSpace="meeting"
+                    translation="payments.payWith"
+                />
                 &nbsp;
                 <CustomTypography
                     variant="body1bold"

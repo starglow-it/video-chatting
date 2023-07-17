@@ -9,7 +9,9 @@ import {
     ProductsStore,
 } from './types';
 
-export const $productsStore = subscriptionsDomain.createStore<ProductsStore>([]);
+export const $productsStore = subscriptionsDomain.createStore<ProductsStore>(
+    [],
+);
 
 export const getStripeProductsFx = subscriptionsDomain.createEffect<
     Partial<INextPageContext>,
@@ -23,11 +25,12 @@ export const getStripeProductsWithContextFx = subscriptionsDomain.createEffect<
     ErrorState
 >('getStripeProductsWithContextFx');
 
-export const startCheckoutSessionForSubscriptionFx = subscriptionsDomain.createEffect<
-    GetCheckoutSessionUrlPayload,
-    GetCheckoutSessionUrlResponse,
-    ErrorState
->('startCheckoutSessionForSubscriptionFx');
+export const startCheckoutSessionForSubscriptionFx =
+    subscriptionsDomain.createEffect<
+        GetCheckoutSessionUrlPayload,
+        GetCheckoutSessionUrlResponse,
+        ErrorState
+    >('startCheckoutSessionForSubscriptionFx');
 
 export const getCustomerPortalSessionUrlFx = subscriptionsDomain.createEffect<
     GetPortalSessionUrlPayload,

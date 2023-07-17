@@ -17,7 +17,7 @@ const enhance = withEffectorReactAliases();
 module.exports = withTM(
     enhance({
         publicRuntimeConfig: {
-            applicationName: 'The LiveOffice',
+            applicationName: 'Ruume',
             frontendUrl: process.env.FRONTEND_URL,
             gatewayUrl: process.env.GATEWAY_URL,
             gatewayPort: process.env.GATEWAY_PORT,
@@ -34,7 +34,7 @@ module.exports = withTM(
             baseEnvDomain: process.env.BASE_ENV_DOMAIN,
             supportEmail: process.env.SUPPORT_EMAIL,
             geolocationApiKey: process.env.GEOLOCATION_API_KEY,
-            googleClientId: process.env.GOOGLE_CLIENT_ID
+            googleClientId: process.env.GOOGLE_CLIENT_ID,
         },
         reactStrictMode: false,
         typescript: {
@@ -62,7 +62,7 @@ module.exports = withTM(
             return config;
         },
         devIndicators: {
-            buildActivity: false
-        }
+            buildActivity: false,
+        },
     }),
 );

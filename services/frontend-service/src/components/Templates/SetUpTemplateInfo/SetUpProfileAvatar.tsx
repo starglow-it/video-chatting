@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import {ErrorCode, FileRejection, useDropzone} from 'react-dropzone';
+import { ErrorCode, FileRejection, useDropzone } from 'react-dropzone';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 import { useStore } from 'effector-react';
@@ -19,6 +19,8 @@ import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon'
 
 // helpers
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ErrorMessage } from 'shared-frontend/library/common/ErrorMessage';
+import { Translation } from '@library/common/Translation/Translation';
 import { getFileSizeValue } from '../../../utils/functions/getFileSizeValue';
 
 // const
@@ -38,8 +40,6 @@ import {
     setProfileAvatarEvent,
     resetProfileAvatarEvent,
 } from '../../../store';
-import {ErrorMessage} from "shared-frontend/library/common/ErrorMessage";
-import { Translation } from '@library/common/Translation/Translation';
 
 const SetUpProfileAvatar = memo(() => {
     const profileAvatar = useStore($profileAvatarImage);
@@ -47,34 +47,37 @@ const SetUpProfileAvatar = memo(() => {
 
     const { onFileAvailable } = useFileReader();
 
-    const handleSetFileData = useCallback(async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-        const file = acceptedFiles[0];
+    const handleSetFileData = useCallback(
+        async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+            const file = acceptedFiles[0];
 
-        const rejectedFile = rejectedFiles[0]
+            const rejectedFile = rejectedFiles[0];
 
-        if (rejectedFile) {
-            const error = rejectedFile.errors[0];
+            if (rejectedFile) {
+                const error = rejectedFile.errors[0];
 
-            if (error.code === ErrorCode.FileInvalidType) {
-                return setUploadError('invalidFormat');
+                if (error.code === ErrorCode.FileInvalidType) {
+                    return setUploadError('invalidFormat');
+                }
+
+                if (error.code === ErrorCode.FileTooLarge) {
+                    return setUploadError('maxSize');
+                }
+
+                return setUploadError('general');
             }
 
-            if (error.code === ErrorCode.FileTooLarge) {
-                return setUploadError('maxSize');
-            }
+            setUploadError('');
 
-            return setUploadError('general');
-        }
+            const dataUrl = await onFileAvailable(file);
 
-        setUploadError('');
-
-        const dataUrl = await onFileAvailable(file);
-
-        setProfileAvatarEvent({
-            file,
-            dataUrl,
-        });
-    }, []);
+            setProfileAvatarEvent({
+                file,
+                dataUrl,
+            });
+        },
+        [],
+    );
 
     const handleResetProfileAvatar = useCallback(() => {
         resetProfileAvatarEvent();
@@ -82,7 +85,10 @@ const SetUpProfileAvatar = memo(() => {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         maxFiles: 1,
-        maxSize: getFileSizeValue({ sizeType: FileSizeTypesEnum.megabyte, amount: 2 }),
+        maxSize: getFileSizeValue({
+            sizeType: FileSizeTypesEnum.megabyte,
+            amount: 2,
+        }),
         accept: {
             'image/jpeg': ['.jpg', '.jpeg'],
             'image/png': ['.png'],
@@ -92,7 +98,10 @@ const SetUpProfileAvatar = memo(() => {
     });
 
     const formatNames = useMemo(
-        () => `${ACCEPT_MIMES_NAMES.map(format => format.toUpperCase()).join(', ')} up to 2mb`,
+        () =>
+            `${ACCEPT_MIMES_NAMES.map(format => format.toUpperCase()).join(
+                ', ',
+            )} up to 2mb`,
         [],
     );
 
@@ -148,7 +157,10 @@ const SetUpProfileAvatar = memo(() => {
                             {isDragActive ? (
                                 <UploadArrowIcon width="40px" height="40px" />
                             ) : (
-                                <ImagePlaceholderIcon width="40px" height="40px" />
+                                <ImagePlaceholderIcon
+                                    width="40px"
+                                    height="40px"
+                                />
                             )}
                             <CustomTypography
                                 className={styles.uploadTitle}
@@ -156,7 +168,10 @@ const SetUpProfileAvatar = memo(() => {
                                 nameSpace="forms"
                                 translation="labels.dragAndDrop"
                             />
-                            <CustomTypography variant="body3" color="colors.grayscale.normal">
+                            <CustomTypography
+                                variant="body3"
+                                color="colors.grayscale.normal"
+                            >
                                 {formatNames}
                             </CustomTypography>
                         </CustomGrid>

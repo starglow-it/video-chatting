@@ -8,7 +8,13 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { Translation } from '@library/common/Translation/Translation';
 
 const EnterEmailForm = memo(
-    ({ onEmailEntered, onCancel }: { onEmailEntered: () => void; onCancel: () => void }) => {
+    ({
+        onEmailEntered,
+        onCancel,
+    }: {
+        onEmailEntered: () => void;
+        onCancel: () => void;
+    }) => {
         const {
             register,
             trigger,
@@ -34,11 +40,21 @@ const EnterEmailForm = memo(
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
                         variant="custom-cancel"
-                        label={<Translation nameSpace="common" translation="buttons.cancel" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.cancel"
+                            />
+                        }
                         onClick={onCancel}
                     />
                     <CustomButton
-                        label={<Translation nameSpace="common" translation="buttons.continue" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.continue"
+                            />
+                        }
                         onClick={handleContinue}
                     />
                 </CustomGrid>

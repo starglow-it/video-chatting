@@ -15,20 +15,23 @@ export const useTimer = (isForward: boolean) => {
         [],
     );
 
-    const handleStartTimer = useCallback((startValue: number, maxValue: number) => {
-        window.clearInterval(intervalRef.current);
-        setValue(startValue);
+    const handleStartTimer = useCallback(
+        (startValue: number, maxValue: number) => {
+            window.clearInterval(intervalRef.current);
+            setValue(startValue);
 
-        intervalRef.current = window?.setInterval(() => {
-            setValue(prev => {
-                if (isForward ? prev > maxValue : prev < maxValue) {
-                    window.clearInterval(intervalRef.current);
-                    return prev;
-                }
-                return isForward ? prev + ONE_SECOND : prev - ONE_SECOND;
-            });
-        }, ONE_SECOND);
-    }, []);
+            intervalRef.current = window?.setInterval(() => {
+                setValue(prev => {
+                    if (isForward ? prev > maxValue : prev < maxValue) {
+                        window.clearInterval(intervalRef.current);
+                        return prev;
+                    }
+                    return isForward ? prev + ONE_SECOND : prev - ONE_SECOND;
+                });
+            }, ONE_SECOND);
+        },
+        [],
+    );
 
     const handleStopTimer = useCallback(() => {
         window.clearInterval(intervalRef.current);

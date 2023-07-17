@@ -1,7 +1,10 @@
 import { ErrorState } from 'shared-types';
 import { paymentsDomain } from '../domains';
 
-import { ConnectStripeAccountResponse, LoginStripeAccountResponse } from './types';
+import {
+    ConnectStripeAccountResponse,
+    LoginStripeAccountResponse,
+} from './types';
 
 export const connectStripeAccountFx = paymentsDomain.createEffect<
     void,
@@ -13,6 +16,8 @@ export const loginStripeAccountFx = paymentsDomain.effect<
     LoginStripeAccountResponse,
     ErrorState
 >('loginStripeAccountFx');
-export const deleteStripeAccountFx = paymentsDomain.effect<void, void, ErrorState>(
-    'deleteStripeAccountFx',
-);
+export const deleteStripeAccountFx = paymentsDomain.effect<
+    void,
+    void,
+    ErrorState
+>('deleteStripeAccountFx');

@@ -1,10 +1,15 @@
 import { Room } from 'livekit-client';
 
-import {Meeting, MeetingUser} from '../../types';
+import { IUserTemplate } from 'shared-types';
+import { Meeting, MeetingUser } from '../../types';
 import { CustomMediaStream } from '../../../types';
-import { ConnectionType, ServerTypes, StreamType, TrackKind } from '../../../const/webrtc';
+import {
+    ConnectionType,
+    ServerTypes,
+    StreamType,
+    TrackKind,
+} from '../../../const/webrtc';
 import { DeviceInputKindEnum } from '../../../const/media/DEVICE_KINDS';
-import {IUserTemplate} from "shared-types";
 
 export type OfferExchangePayload = {
     type: 'offer';
@@ -33,7 +38,11 @@ export type IceCandidatesExchangePayload = {
     senderId: string;
 };
 
-export type DevicesExchangePayload = { audio: boolean; video: boolean; userId: MeetingUser['id'] };
+export type DevicesExchangePayload = {
+    audio: boolean;
+    video: boolean;
+    userId: MeetingUser['id'];
+};
 
 export interface IWebRtcConnectionData {
     connectionType: ConnectionType;
@@ -44,7 +53,11 @@ export interface IWebRtcConnectionData {
     isInitial: boolean;
     onTrackEnded?: () => void;
     onGotOffer: (args: OfferExchangePayload | AnswerExchangePayload) => void;
-    onGotStream: (args: { connectionId: string; type: TrackKind; track: MediaStreamTrack }) => void;
+    onGotStream: (args: {
+        connectionId: string;
+        type: TrackKind;
+        track: MediaStreamTrack;
+    }) => void;
     onGotCandidate: (args: IceCandidatesExchangePayload) => void;
     peerConnection?: RTCPeerConnection;
     stream?: MediaStream | null;
@@ -76,10 +89,20 @@ export interface IWebRtcConnection {
     addIceCandidate: (candidate: RTCIceCandidate) => void;
     release: () => void;
     changeStream: (stream: MediaStream) => void;
-    applyDeviceSettings: (devicePermissions: { video: boolean; audio: boolean }) => void;
-    updateDevicePermissions: (devicePermissions: { video: boolean; audio: boolean }) => void;
+    applyDeviceSettings: (devicePermissions: {
+        video: boolean;
+        audio: boolean;
+    }) => void;
+    updateDevicePermissions: (devicePermissions: {
+        video: boolean;
+        audio: boolean;
+    }) => void;
     onGotOffer: (args: OfferExchangePayload | AnswerExchangePayload) => void;
-    onGotStream: (args: { connectionId: string; type: TrackKind; track: MediaStreamTrack }) => void;
+    onGotStream: (args: {
+        connectionId: string;
+        type: TrackKind;
+        track: MediaStreamTrack;
+    }) => void;
     onGotCandidate: (args: IceCandidatesExchangePayload) => void;
     onIceConnectionStateFailed: () => void;
     onIceConnectionStateDisconnected?: (data: { connectionId: string }) => void;
@@ -130,11 +153,17 @@ export type CreatePeerConnectionsPayload = {
 };
 
 export type ConnectionsStore = {
-    [key: MeetingUser['id']]: { connection: IWebRtcConnection; stream: CustomMediaStream };
+    [key: MeetingUser['id']]: {
+        connection: IWebRtcConnection;
+        stream: CustomMediaStream;
+    };
 };
 
 export type TracksStore = {
-    [key: MeetingUser['id']]: { audioTrack: MediaStreamTrack; videoTrack: MediaStreamTrack };
+    [key: MeetingUser['id']]: {
+        audioTrack: MediaStreamTrack;
+        videoTrack: MediaStreamTrack;
+    };
 };
 
 export type RoomStore = Room | null;

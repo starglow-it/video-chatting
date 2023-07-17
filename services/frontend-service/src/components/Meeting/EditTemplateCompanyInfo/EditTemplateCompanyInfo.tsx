@@ -15,12 +15,20 @@ const EditTemplateCompanyInfo = memo(() => {
         register,
     } = useFormContext();
 
-    const currentEmailErrorMessage: string = errors?.contactEmail?.[0]?.message || '';
-    const currentCompanyNameErrorMessage: string = errors?.companyName?.[0]?.message || '';
-    const currentDescriptionErrorMessage: string = errors?.description?.[0]?.message || '';
+    const currentEmailErrorMessage: string =
+        errors?.contactEmail?.[0]?.message || '';
+    const currentCompanyNameErrorMessage: string =
+        errors?.companyName?.[0]?.message || '';
+    const currentDescriptionErrorMessage: string =
+        errors?.description?.[0]?.message || '';
 
     return (
-        <CustomGrid container direction="column" justifyContent="center" gap={4}>
+        <CustomGrid
+            container
+            direction="column"
+            justifyContent="center"
+            gap={4}
+        >
             <CustomInput
                 nameSpace="forms"
                 translation="companyName"

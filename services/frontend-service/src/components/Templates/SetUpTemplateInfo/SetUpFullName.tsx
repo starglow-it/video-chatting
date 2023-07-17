@@ -16,12 +16,16 @@ const SetUpFullName = memo(() => {
         formState: { errors },
     } = useFormContext();
 
-    const currentFullNameErrorMessage: string = errors?.fullName?.[0]?.message || '';
+    const currentFullNameErrorMessage: string =
+        errors?.fullName?.[0]?.message || '';
 
     return (
         <CustomGrid container direction="column" gap={1.75}>
             <CustomBox>
-                <CustomTypography className={styles.companyNameTitle} variant="body1bold">
+                <CustomTypography
+                    className={styles.companyNameTitle}
+                    variant="body1bold"
+                >
                     2.
                 </CustomTypography>
                 &nbsp;
@@ -32,7 +36,10 @@ const SetUpFullName = memo(() => {
                     translation="labels.fullName"
                 />
             </CustomBox>
-            <CustomInput error={currentFullNameErrorMessage} {...register('fullName')} />
+            <CustomInput
+                error={currentFullNameErrorMessage}
+                {...register('fullName')}
+            />
         </CustomGrid>
     );
 });

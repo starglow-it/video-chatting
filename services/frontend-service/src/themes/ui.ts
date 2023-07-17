@@ -36,14 +36,23 @@ export const uiTheme = (theme: Theme) =>
                     disabled: alpha(theme.palette.common.black, 0.12),
                 },
                 cancel: {
-                    main: alpha(theme.designSystemColors.grayscale.normal, 0.25),
-                    hover: alpha(theme.designSystemColors.grayscale.normal, 0.4),
+                    main: alpha(
+                        theme.designSystemColors.grayscale.normal,
+                        0.25,
+                    ),
+                    hover: alpha(
+                        theme.designSystemColors.grayscale.normal,
+                        0.4,
+                    ),
                     disabled: alpha(theme.palette.common.black, 0.4),
                 },
                 gray: {
                     main: alpha(theme.designSystemColors.black.primary, 0.6),
                     hover: alpha(theme.designSystemColors.black.primary, 0.75),
-                    disabled: alpha(theme.designSystemColors.black.primary, 0.2),
+                    disabled: alpha(
+                        theme.designSystemColors.black.primary,
+                        0.2,
+                    ),
                 },
             },
             success: {

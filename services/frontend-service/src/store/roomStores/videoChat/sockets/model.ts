@@ -7,13 +7,15 @@ import {
     OfferExchangePayload,
 } from '../types';
 
-export const sendOfferSocketEvent = createMeetingSocketEvent<OfferExchangePayload, void>(
-    VideoChatSocketEmitters.SendOffer,
-);
+export const sendOfferSocketEvent = createMeetingSocketEvent<
+    OfferExchangePayload,
+    void
+>(VideoChatSocketEmitters.SendOffer);
 
-export const sendAnswerSocketEvent = createMeetingSocketEvent<AnswerExchangePayload, void>(
-    VideoChatSocketEmitters.SendAnswer,
-);
+export const sendAnswerSocketEvent = createMeetingSocketEvent<
+    AnswerExchangePayload,
+    void
+>(VideoChatSocketEmitters.SendAnswer);
 
 export const sendIceCandidateSocketEvent = createMeetingSocketEvent<
     IceCandidatesExchangePayload,

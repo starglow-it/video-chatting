@@ -35,7 +35,10 @@ const Component = () => {
                 nameSpace="common"
                 translation="reset.resetSuccessful.title"
             />
-            <CustomTypography nameSpace="common" translation="reset.resetSuccessful.text" />
+            <CustomTypography
+                nameSpace="common"
+                translation="reset.resetSuccessful.text"
+            />
         </CustomGrid>
     );
 };

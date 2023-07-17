@@ -38,9 +38,11 @@ const EnterCodeForm = memo(
             formState: { errors },
         } = useFormContext();
 
-        const { value: isCodeEntered, onSwitchOn: handleSetCodeEntered } = useToggle(false);
+        const { value: isCodeEntered, onSwitchOn: handleSetCodeEntered } =
+            useToggle(false);
 
-        const { value: secondsToNextResendCode, onStartCountDown } = useCountDown(30);
+        const { value: secondsToNextResendCode, onStartCountDown } =
+            useCountDown(30);
 
         const code = useWatch({
             control,
@@ -60,7 +62,10 @@ const EnterCodeForm = memo(
                     handleSetCodeEntered();
                     clearErrors();
                 } else {
-                    setError('code', { type: 'focus', message: 'user.code.incorrect' });
+                    setError('code', {
+                        type: 'focus',
+                        message: 'user.code.incorrect',
+                    });
                     setFocus('code');
                 }
             })();
@@ -91,7 +96,11 @@ const EnterCodeForm = memo(
 
         return (
             <CustomGrid container direction="column" gap={3}>
-                <CustomGrid container direction="column" alignItems="flex-start">
+                <CustomGrid
+                    container
+                    direction="column"
+                    alignItems="flex-start"
+                >
                     <CustomTypography
                         nameSpace="profile"
                         translation="editProfile.verificationCode"
@@ -120,12 +129,22 @@ const EnterCodeForm = memo(
                 />
                 <CustomGrid container gap={2} wrap="nowrap">
                     <CustomButton
-                        label={<Translation nameSpace="common" translation="buttons.cancel" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.cancel"
+                            />
+                        }
                         variant="custom-cancel"
                         onClick={onCancel}
                     />
                     <CustomButton
-                        label={<Translation nameSpace="common" translation="buttons.save" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="buttons.save"
+                            />
+                        }
                         disabled={!isCodeEntered}
                         type="submit"
                     />

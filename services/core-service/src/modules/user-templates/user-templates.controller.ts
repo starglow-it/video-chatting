@@ -397,7 +397,6 @@ export class UserTemplatesController {
               user: new mongoose.Types.ObjectId(userId)
             }
           },
-          { $sort: { ...(sort ? { [sort]: direction as 1 | -1 ?? 1 } : {}) } },
           {
             $lookup: {
               from: 'users',
@@ -427,7 +426,11 @@ export class UserTemplatesController {
             }
           }
         ];
-        
+
+        if(sort){
+          aggregationPipeline.push({$sort: {[sort]: direction as 1 | -1 || 1}});
+        }
+
         if (skip) {
           aggregationPipeline.push({ $skip: skip });
         }

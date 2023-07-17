@@ -1,5 +1,6 @@
 import { combine, forward, sample, split } from 'effector';
 
+import { ICommonTemplate } from 'shared-types';
 import {
     $discoveryTemplatesStore,
     $isUploadTemplateBackgroundInProgress,
@@ -44,7 +45,6 @@ import { $profileStore, clearProfileEvent } from '../profile/profile/model';
 
 // types
 import { AppDialogsEnum } from '../types';
-import { ICommonTemplate } from 'shared-types';
 
 // handlers
 import { handleFetchUsersTemplates } from './handlers/handleFetchUsersTemplates';
@@ -64,6 +64,7 @@ import {
     editUserTemplateFx,
     getProfileTemplatesFx,
 } from '../profile/profileTemplates/model';
+import { googleVerifyFx, loginUserFx } from '../auth/model';
 
 getTemplatesFx.use(handleFetchTemplates);
 getTemplateFx.use(handleFetchCommonTemplate);
@@ -90,7 +91,7 @@ $templatesStore
                   ...data.list.filter(item => !item.isAcceptNoLogin),
               ],
     }))
-    .reset(clearProfileEvent);
+    .reset([clearProfileEvent, loginUserFx.doneData, googleVerifyFx.doneData]);
 
 $templatePreviewStore.on(
     setPreviewTemplate,
@@ -141,7 +142,11 @@ $queryTemplatesStore
         ...state,
         skip: data.skip,
     }))
-    .reset(setQueryProfileTemplatesEvent);
+    .reset([
+        setQueryProfileTemplatesEvent,
+        loginUserFx.doneData,
+        googleVerifyFx.doneData,
+    ]);
 
 $queryProfileTemplatesStore
     .on(setQueryProfileTemplatesEvent, (state, data) => ({ ...state, ...data }))
@@ -187,7 +192,8 @@ sample({
         profile: $profileStore,
         query: $queryTemplatesStore,
     }),
-    fn: ({ profile: { id }, query }) => ({ ...query, userId: id }),
+    fn: ({ profile: { id }, query }) =>
+        !id ? query : { ...query, userId: id },
     target: getTemplatesFx,
 });
 

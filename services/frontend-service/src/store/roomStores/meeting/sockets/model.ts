@@ -24,27 +24,34 @@ import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
 import { createSocketEvent } from '../../../socket/model';
 
-export const emitEnterMeetingEvent = meetingDomain.createEvent('emitEnterMeetingEvent');
-export const emitEnterWaitingRoom = meetingDomain.createEvent('emitEnterWaitingRoom');
+export const emitEnterMeetingEvent = meetingDomain.createEvent(
+    'emitEnterMeetingEvent',
+);
+export const emitEnterWaitingRoom = meetingDomain.createEvent(
+    'emitEnterWaitingRoom',
+);
 
 // socket events
 export const joinWaitingRoomSocketEvent = createMeetingSocketEvent<
     JoinWaitingRoomPayload,
     JoinWaitingRoomResponse
 >(MeetingSocketEmitters.JoinWaitingRoom);
-export const endMeetingSocketEvent = createMeetingSocketEvent<EndMeetingPayload, void>(
-    MeetingSocketEmitters.EndMeeting,
-);
-export const leaveMeetingSocketEvent = createMeetingSocketEvent<LeaveMeetingPayload, void>(
-    MeetingSocketEmitters.LeaveMeeting,
-);
+export const endMeetingSocketEvent = createMeetingSocketEvent<
+    EndMeetingPayload,
+    void
+>(MeetingSocketEmitters.EndMeeting);
+export const leaveMeetingSocketEvent = createMeetingSocketEvent<
+    LeaveMeetingPayload,
+    void
+>(MeetingSocketEmitters.LeaveMeeting);
 export const startMeetingSocketEvent = createMeetingSocketEvent<
     StartMeetingPayload,
     StartMeetingResponse
 >(MeetingSocketEmitters.StartMeeting);
-export const updateMeetingSocketEvent = createMeetingSocketEvent<Partial<Meeting>, Meeting>(
-    MeetingSocketEmitters.UpdateMeeting,
-);
+export const updateMeetingSocketEvent = createMeetingSocketEvent<
+    Partial<Meeting>,
+    Meeting
+>(MeetingSocketEmitters.UpdateMeeting);
 export const enterMeetingRequestSocketEvent = createMeetingSocketEvent<
     EnterMeetingRequestPayload,
     EnterMeetingRequestResponse
@@ -61,6 +68,7 @@ export const updateMeetingTemplateSocketEvent = createMeetingSocketEvent<
     UpdateMeetingTemplatePayload,
     void
 >(TemplatesSocketEmitters.UpdateMeetingTemplate);
-export const enterWaitingRoomSocketEvent = createSocketEvent<EnterWaitingRoomPayload, void>(
-    DashboardSocketEmitters.EnterWaitingRoom,
-);
+export const enterWaitingRoomSocketEvent = createSocketEvent<
+    EnterWaitingRoomPayload,
+    void
+>(DashboardSocketEmitters.EnterWaitingRoom);

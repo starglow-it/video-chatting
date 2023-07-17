@@ -1,39 +1,29 @@
-import {
-	useEffect, useMemo, memo, useCallback
-} from 'react';
-import {
-	useStore
-} from 'effector-react';
+import { useEffect, useMemo, memo, useCallback } from 'react';
+import { useStore } from 'effector-react';
 
 // shared
-import {
-	plans
-} from 'shared-const';
-import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
-import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
-import {CustomButton} from "shared-frontend/library/custom/CustomButton";
+import { plans } from 'shared-const';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
 
 // components
-import {
-	Translation
-} from '@library/common/Translation/Translation';
+import { Translation } from '@library/common/Translation/Translation';
 
 // stores
 import {
     $appDialogsStore,
     $profileStore,
     appDialogsApi,
-    updateProfileFx
+    updateProfileFx,
 } from '../../../store';
 
 // utils
-import {formatDate} from "../../../utils/time/formatDate";
+import { formatDate } from '../../../utils/time/formatDate';
 
 // types
-import {
-	AppDialogsEnum
-} from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './DowngradedSubscriptionDialog.module.scss';
@@ -51,31 +41,57 @@ const Component = () => {
         }
     }, [profile?.isDowngradeMessageShown]);
 
-    const nextTemplatesNumber = useMemo(() => plans[profile.nextSubscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.nextSubscriptionPlanKey]);
-    const prevTemplatesNumber = useMemo(() => plans[profile.prevSubscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.prevSubscriptionPlanKey]);
-    const currentTemplatesNumber = useMemo(() => plans[profile.subscriptionPlanKey]?.features?.templatesLimit ?? 0, [profile.subscriptionPlanKey]);
+    const nextTemplatesNumber = useMemo(
+        () =>
+            plans[profile.nextSubscriptionPlanKey]?.features?.templatesLimit ??
+            0,
+        [profile.nextSubscriptionPlanKey],
+    );
+    const prevTemplatesNumber = useMemo(
+        () =>
+            plans[profile.prevSubscriptionPlanKey]?.features?.templatesLimit ??
+            0,
+        [profile.prevSubscriptionPlanKey],
+    );
+    const currentTemplatesNumber = useMemo(
+        () => plans[profile.subscriptionPlanKey]?.features?.templatesLimit ?? 0,
+        [profile.subscriptionPlanKey],
+    );
 
-	const handleConfirm = useCallback(() => {
-		updateProfileFx({
-			isDowngradeMessageShown: true,
-		});
+    const handleConfirm = useCallback(() => {
+        updateProfileFx({
+            isDowngradeMessageShown: true,
+        });
 
-		appDialogsApi.closeDialog({
-			dialogKey: AppDialogsEnum.downgradedSubscriptionDialog,
-		});
-	}, []);
+        appDialogsApi.closeDialog({
+            dialogKey: AppDialogsEnum.downgradedSubscriptionDialog,
+        });
+    }, []);
 
     const dueDate = profile?.renewSubscriptionTimestampInSeconds
-        ? formatDate((profile?.renewSubscriptionTimestampInSeconds) * 1000, 'dd MMM, yyyy')
+        ? formatDate(
+              profile?.renewSubscriptionTimestampInSeconds * 1000,
+              'dd MMM, yyyy',
+          )
         : '';
 
     return (
-        <CustomDialog open={downgradedSubscriptionDialog} contentClassName={styles.wrapper}>
-            <CustomGrid container direction="column" alignItems="center" justifyContent="center">
+        <CustomDialog
+            open={downgradedSubscriptionDialog}
+            contentClassName={styles.wrapper}
+        >
+            <CustomGrid
+                container
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+            >
                 <CustomTypography variant="h4bold" textAlign="center">
                     <Translation
                         nameSpace="dashboard"
-                        translation={`downgradedSubscription.${profile.nextSubscriptionPlanKey ? 'manual' : 'auto'}.title`}
+                        translation={`downgradedSubscription.${
+                            profile.nextSubscriptionPlanKey ? 'manual' : 'auto'
+                        }.title`}
                         options={{
                             prevPlan: profile.prevSubscriptionPlanKey,
                             nextPlan: profile.nextSubscriptionPlanKey,
@@ -86,7 +102,9 @@ const Component = () => {
                 <CustomTypography textAlign="center">
                     <Translation
                         nameSpace="dashboard"
-                        translation={`downgradedSubscription.${profile.nextSubscriptionPlanKey ? 'manual' : 'auto'}.text`}
+                        translation={`downgradedSubscription.${
+                            profile.nextSubscriptionPlanKey ? 'manual' : 'auto'
+                        }.text`}
                         options={{
                             dueDate,
                             prevTemplatesNumber,
@@ -98,7 +116,12 @@ const Component = () => {
                 <CustomButton
                     className={styles.button}
                     onClick={handleConfirm}
-                    label={<Translation nameSpace="common" translation="buttons.continue" />}
+                    label={
+                        <Translation
+                            nameSpace="common"
+                            translation="buttons.continue"
+                        />
+                    }
                 />
             </CustomGrid>
         </CustomDialog>

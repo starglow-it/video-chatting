@@ -18,7 +18,11 @@ import {
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingTemplateStore } from '../../meeting/meetingTemplate/model';
-import { $activeStreamStore, $isCameraActiveStore, $isMicActiveStore } from '../localMedia/model';
+import {
+    $activeStreamStore,
+    $isCameraActiveStore,
+    $isMicActiveStore,
+} from '../localMedia/model';
 import { $meetingStore } from '../../meeting/meeting/model';
 
 import { handleGetLiveKitToken } from './handlers/handleGetLiveKitToken';
@@ -91,7 +95,7 @@ sample({
         localUser: $localUserStore,
     }),
     fn: ({ isCameraActive, isMicActive, room, localUser }, data) => ({
-        isCameraActive: data.isCamEnabled ?? isCameraActive ,
+        isCameraActive: data.isCamEnabled ?? isCameraActive,
         isMicActive: data.isMicEnabled ?? isMicActive,
         room,
         userId: localUser.id,
@@ -111,8 +115,8 @@ sample({
         room,
         userId: localUser.id,
     }),
-    target: setSFUPermissionsFx
-})
+    target: setSFUPermissionsFx,
+});
 
 sample({
     clock: startSFUSharingEvent,

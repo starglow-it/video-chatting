@@ -37,6 +37,7 @@ import {
   TimeoutTypesEnum,
   PlanKeys,
   LoginTypes,
+  DeleteCommonUserPayload,
 } from 'shared-types';
 
 import {
@@ -620,6 +621,19 @@ export class UsersController {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
       });
+    });
+  }
+
+  @MessagePattern({ cmd: UserBrokerPatterns.DeleteGlobalUser })
+  async delGlobalUser({ id }: DeleteCommonUserPayload) {
+    return withTransaction(this.connection, async (s) => {
+      try{
+        await this.usersService.deleteUser(id, s);  
+        return true;
+      }
+      catch(err){
+        throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+      }
     });
   }
 

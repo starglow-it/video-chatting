@@ -1,4 +1,9 @@
-import { EntityList, ICommonTemplate, IFeaturedBackground, QueryParams } from 'shared-types';
+import {
+    EntityList,
+    ICommonTemplate,
+    IFeaturedBackground,
+    QueryParams,
+} from 'shared-types';
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
 import { getTemplatesUrl } from 'src/utils/urls';
 

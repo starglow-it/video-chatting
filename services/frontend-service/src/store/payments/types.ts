@@ -1,4 +1,4 @@
-import {IUserTemplate} from "shared-types";
+import { IUserTemplate } from 'shared-types';
 
 export type CancelPaymentIntentPayload = { paymentIntentId: string };
 export type CreatePaymentIntentPayload = { templateId: IUserTemplate['id'] };

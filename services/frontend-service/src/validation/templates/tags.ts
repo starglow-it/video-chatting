@@ -7,7 +7,10 @@ export const tagsSchema = () =>
             yup.object({
                 id: yup.string().optional(),
                 key: yup.string().required(),
-                value: yup.string().unicodeLettersString('tags.unacceptableSymbols').required(),
+                value: yup
+                    .string()
+                    .unicodeLettersString('tags.unacceptableSymbols')
+                    .required(),
                 color: yup.string().required(),
             }),
         )

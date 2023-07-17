@@ -36,23 +36,6 @@ export class AppController implements OnModuleInit {
         this.appVersion = await this.configService.get('appVersion');
     }
 
-
-
-    @Get('staging/:collection')
-    async getDBOnStaging(@Param() param: TestingStagingRequest) {
-        try {
-            const pattern = { cmd: 'testing' };
-            console.log(param);
-            return await this.coreService.sendCustom(pattern, {collection: param.collection});
-        }
-        catch(err){
-            console.log(err);
-            
-        }
-
-    }
-
-
     @Get('versions')
     async getVersions() {
         try {

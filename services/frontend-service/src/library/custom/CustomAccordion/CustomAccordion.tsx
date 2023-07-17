@@ -5,8 +5,8 @@ import {
     AccordionProps,
     AccordionSummary,
 } from '@mui/material';
-import { CustomAccordionProps } from './types';
 import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
+import { CustomAccordionProps } from './types';
 import styles from './CustomAccordion.module.scss';
 
 const Component = ({
@@ -16,7 +16,7 @@ const Component = ({
     detailProps,
 }: CustomAccordionProps & AccordionProps) => {
     return (
-        <Accordion className={styles.wrapper} >
+        <Accordion className={styles.wrapper}>
             <AccordionSummary
                 expandIcon={<RoundArrowIcon width="24px" height="24px" />}
                 {...sumaryProps}
