@@ -22,6 +22,9 @@ const Component = ({
             container
             direction="column"
             className={styles.featuredWrapper}
+            sx={{
+                marginTop: { xs: '55px', sm: '30px', md: '30px', xl: '30px' },
+            }}
         >
             <CustomPaper className={styles.barge}>
                 <CustomGrid
