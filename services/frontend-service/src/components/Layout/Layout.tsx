@@ -244,41 +244,93 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                 isMobile && !isDashboardRoute,
                         })}
                     >
-                        <ConditionalRender condition={!isMobile}>
-                            <CustomBox
-                                className={clsx(styles.header, {
-                                    [styles.dashboard]: isDashboardRoute,
-                                })}
+                        <CustomBox
+                            className={clsx(styles.header, {
+                                [styles.dashboard]: isDashboardRoute,
+                            })}
+                        >
+                            <CustomGrid
+                                container
+                                justifyContent="space-between"
+                                alignItems="center"
+                                sx={{
+                                    flexDirection: {
+                                        sm: 'row',
+                                        md: 'row',
+                                        xs: 'column',
+                                        xl: 'row',
+                                    },
+                                }}
                             >
                                 <CustomGrid
                                     container
-                                    justifyContent="space-between"
                                     alignItems="center"
+                                    flex={1}
                                 >
-                                    <CustomLink
-                                        href={
-                                            isAuthenticated
-                                                ? dashboardRoute
-                                                : ''
-                                        }
-                                    >
-                                        <CustomImage
-                                            src="/images/Ruume.svg"
-                                            width="210px"
-                                            height="44px"
-                                            className={clsx(isAuthenticated, {
-                                                [styles.link]: isAuthenticated,
-                                            })}
-                                        />
-                                    </CustomLink>
-                                    <CustomGrid>
-                                        {!isAuthenticated && (
-                                            <AuthenticationLink />
-                                        )}
+                                    <CustomGrid flex={1}>
+                                        <CustomLink
+                                            href={
+                                                isAuthenticated
+                                                    ? dashboardRoute
+                                                    : ''
+                                            }
+                                        >
+                                            <CustomImage
+                                                src="/images/Ruume.svg"
+                                                width={
+                                                    isMobile ? '120px' : '210px'
+                                                }
+                                                height="44px"
+                                                className={clsx(
+                                                    isAuthenticated,
+                                                    {
+                                                        [styles.link]:
+                                                            isAuthenticated,
+                                                    },
+                                                )}
+                                            />
+                                        </CustomLink>
                                     </CustomGrid>
+                                    <ConditionalRender
+                                        condition={!isAuthenticated}
+                                    >
+                                        <CustomGrid
+                                            className={clsx(
+                                                styles.button,
+                                                styles.bgBlack,
+                                            )}
+                                            sx={{
+                                                display: {
+                                                    sm: 'flex',
+                                                    xs: 'flex',
+                                                    md: 'none',
+                                                    xl: 'none',
+                                                },
+                                            }}
+                                        >
+                                            Start Calling for Free
+                                        </CustomGrid>
+                                    </ConditionalRender>
                                 </CustomGrid>
-                            </CustomBox>
-                        </ConditionalRender>
+                                <CustomGrid
+                                    sx={{
+                                        marginTop: {
+                                            xs: '10px',
+                                            md: '0px',
+                                            sm: '0px',
+                                            xl: '0px',
+                                        },
+                                    }}
+                                >
+                                    <ConditionalRender
+                                        condition={!isAuthenticated}
+                                    >
+                                        <AuthenticationLink />
+                                    </ConditionalRender>
+                                </CustomGrid>
+                            </CustomGrid>
+                        </CustomBox>
+
                         {children}
                         <MeetingFinishedDialog />
                     </CustomGrid>
