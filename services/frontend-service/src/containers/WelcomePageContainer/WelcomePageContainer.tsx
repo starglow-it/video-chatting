@@ -20,6 +20,7 @@ import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
 import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
 import { setUserWithoutTokenCookies } from 'src/helpers/http/setAuthCookies';
+import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import {
     $templatesStore,
     addTemplateToUserFx,
