@@ -225,7 +225,7 @@ export class AuthController {
   @MessagePattern({ cmd: AuthBrokerPatterns.SendResetPasswordLink })
   async sendResetPasswordLink(
     @Payload() payload: SendResetPasswordLinkEmailPayload,
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
       const user = await this.coreService.findUserByEmail({
         email: payload.email,
@@ -257,7 +257,7 @@ export class AuthController {
         },
         to: [{ email: payload.email, name: user.fullName }],
       });
-      return;
+      return true;
     } catch (err) {
       console.log('err',err);
       throw new RpcException(err);
