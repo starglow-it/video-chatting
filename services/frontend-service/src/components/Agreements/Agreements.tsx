@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import linkify from 'linkify-string';
 import Router, { useRouter } from 'next/router';
 
@@ -32,10 +32,12 @@ const tabs = [
     {
         value: Tabs.TermsOfService,
         translationKey: 'terms',
+        view: `<iframe src="/terms.html" width="700" height="5000" style="border: none;display: inline-block"></iframe>`,
     },
     {
         value: Tabs.PrivacyPolicy,
         translationKey: 'privacy',
+        view: `<iframe src="/privacy.html" width="700" height="5100" style="border: none;display: inline-block"></iframe>`,
     },
 ];
 
@@ -154,7 +156,7 @@ const Component = () => {
                         variant="body2bold"
                         className={styles.termsText}
                         dangerouslySetInnerHTML={{
-                            __html: textWithLinks,
+                            __html: activeTab.view,
                         }}
                     />
                 </CustomGrid>

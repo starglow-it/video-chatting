@@ -13,6 +13,7 @@ export const editProfileRoute = '/dashboard/profile/edit';
 export const setUpTemplateRoute = '/dashboard/templates/setup';
 export const getStartedRoute = '/get-started';
 export const registerEndCallRoute = '/register-end-call';
+export const agreementsRoute = '/agreements';
 
 export const clientRoutes = {
     loginRoute,
@@ -28,4 +29,5 @@ export const clientRoutes = {
     setUpTemplateRoute,
     getStartedRoute,
     registerEndCallRoute,
+    agreementsRoute,
 };

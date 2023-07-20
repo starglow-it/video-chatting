@@ -23,12 +23,14 @@ const Component = () => {
             {
                 id: 0,
                 name: 'FAQ',
-                onAction: () => {},
+                onAction: () =>
+                    (window.location.href = 'https://chatruume.com/faq'),
             },
             {
                 id: 1,
                 name: 'Membership',
-                onAction: () => {},
+                onAction: () =>
+                    (window.location.href = 'https://chatruume.com/membership'),
             },
             {
                 id: 2,
@@ -55,7 +57,14 @@ const Component = () => {
     );
 
     return (
-        <CustomGrid container alignItems="center" className={styles.wrapper}>
+        <CustomGrid
+            container
+            alignItems="center"
+            className={styles.wrapper}
+            sx={{
+                marginRight: { xs: '0px', sm: '34px', xl: '34px', md: '34px' },
+            }}
+        >
             {customLinkProps.map(item => (
                 <CustomGrid
                     key={item.id}
@@ -63,6 +72,13 @@ const Component = () => {
                         [styles.bgBlack]: item.id === 4,
                     })}
                     onClick={item.onAction}
+                    sx={{
+                        display: {
+                            xs: item.id === 4 ? 'none' : 'flex',
+                            md: 'flex',
+                            sm: 'flex',
+                        },
+                    }}
                 >
                     {item.name}
                 </CustomGrid>
