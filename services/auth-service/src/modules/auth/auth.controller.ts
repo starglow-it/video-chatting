@@ -259,6 +259,7 @@ export class AuthController {
         to: [{ email: payload.email, name: user.fullName }],
       });
     } catch (err) {
+      console.log('err',err);
       throw new RpcException(err);
     }
   }
