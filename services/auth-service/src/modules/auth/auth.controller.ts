@@ -231,6 +231,8 @@ export class AuthController {
         email: payload.email,
       });
 
+      if(!user) return;
+
       const token = await this.authService.generateToken({
         user,
         type: TokenTypes.ResetPassword,
@@ -240,6 +242,9 @@ export class AuthController {
         email: payload.email,
         token,
       });
+
+      console.log('token', token);
+      
 
       this.notificationService.sendEmail({
         template: {
