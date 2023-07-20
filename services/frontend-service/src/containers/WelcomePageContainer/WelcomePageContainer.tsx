@@ -20,7 +20,6 @@ import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
 import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
 import { setUserWithoutTokenCookies } from 'src/helpers/http/setAuthCookies';
-import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import {
     $templatesStore,
     addTemplateToUserFx,
@@ -30,7 +29,6 @@ import {
     initUserWithoutTokenFx,
     setQueryTemplatesEvent,
 } from '../../store';
-import { CircularProgress } from '@mui/material';
 
 const baseTemplateParams = {
     type: 'free',
@@ -42,11 +40,7 @@ const baseTemplateParams = {
 
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
-
     const templates = useStore($templatesStore);
-    const isLoadingCate = useStore(getBusinessCategoriesFx.pending);
-    const isLoadingFeatured = useStore(getFeaturedBackgroundFx.pending);
-    const isLoadingRooms = useStore(getTemplatesFx.pending);
 
     useEffect(() => {
         setQueryTemplatesEvent({
@@ -101,14 +95,6 @@ const WelcomePageContainer = memo(() => {
             }
         }
     };
-
-    if (isLoadingCate || isLoadingFeatured || isLoadingRooms) {
-        return (
-            <CustomGrid container justifyContent="center" alignItems="center">
-                <CircularProgress size="50px" />
-            </CustomGrid>
-        );
-    }
 
     return (
         <>
