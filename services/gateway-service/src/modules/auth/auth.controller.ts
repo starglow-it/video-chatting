@@ -248,11 +248,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     @Body() body: ResetLinkRequest,
   ): Promise<ResponseSumType<void>> {
     try {
-
       await this.authService.sendResetPassword({
         email: body.email,
       });
-      
+
       return {
         success: true,
         result: null,
@@ -264,7 +263,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         },
         JSON.stringify(err),
       );
-
       throw new BadRequestException(err);
     }
   }

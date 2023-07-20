@@ -238,13 +238,12 @@ export class AuthController {
         type: TokenTypes.ResetPassword,
       });
 
+      if(!token) return;
+
       await this.coreService.setResetPasswordToken({
         email: payload.email,
         token,
       });
-
-      console.log('token', token);
-      
 
       this.notificationService.sendEmail({
         template: {
@@ -258,6 +257,7 @@ export class AuthController {
         },
         to: [{ email: payload.email, name: user.fullName }],
       });
+      return;
     } catch (err) {
       console.log('err',err);
       throw new RpcException(err);
