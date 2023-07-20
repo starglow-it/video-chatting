@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import Backdrop from '@mui/material/Backdrop';
 import { Slide, useMediaQuery } from '@mui/material';

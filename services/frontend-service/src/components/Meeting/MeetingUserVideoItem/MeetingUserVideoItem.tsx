@@ -1,10 +1,4 @@
-import React, {
-    memo,
-    SyntheticEvent,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { memo, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 

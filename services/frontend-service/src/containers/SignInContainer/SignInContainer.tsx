@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
@@ -38,15 +38,14 @@ import {
     WebStorage,
 } from 'src/controllers/WebStorageController';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 import styles from './SignInContainer.module.scss';
 
 // stores
 import {
     $authStore,
+    googleVerifyFx,
     loginUserFx,
     resetAuthErrorEvent,
-    googleLoginFx,
 } from '../../store';
 
 // types

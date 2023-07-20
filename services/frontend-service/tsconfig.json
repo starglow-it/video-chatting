@@ -23,6 +23,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "incremental": true,
+    "noUnusedLocals": true,
     "paths": {
       "@components/*": [
         "src/components/*"

@@ -1,5 +1,5 @@
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CSSProperties, memo } from 'react';
+import { memo } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { IBusinessCategory } from 'shared-types';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';

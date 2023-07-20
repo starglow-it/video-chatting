@@ -1,4 +1,4 @@
-import React, { memo, SyntheticEvent, useCallback, useEffect } from 'react';
+import { memo, SyntheticEvent, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';

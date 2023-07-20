@@ -1,10 +1,4 @@
-import React, {
-    memo,
-    PropsWithChildren,
-    useEffect,
-    useMemo,
-    useRef,
-} from 'react';
+import { memo, PropsWithChildren, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -14,7 +8,6 @@ import dynamic from 'next/dynamic';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // library
-import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // custom
@@ -30,6 +23,7 @@ import { Footer } from '@components/Footer/Footer';
 
 // types
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { LayoutProps } from './types';
 
 // stores
@@ -44,7 +38,6 @@ import {
     getTemplatesFx,
     initiateSocketConnectionEvent,
     loadmoreCommonTemplates,
-    loadmoreMetaTemplates,
     loadmoreUserTemplates,
     sendJoinDashboardSocketEvent,
 } from '../../store';
@@ -61,7 +54,6 @@ import {
 
 // styles
 import styles from './Layout.module.scss';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 const SubscriptionExpiredNotification = dynamic(
     () =>
@@ -94,13 +86,17 @@ const ScrollParent = ({
 }) => {
     if (isAgreements)
         return (
-            <CustomBox ref={containerRef} style={{ overflow: 'scroll' }}>
+            <CustomBox
+                ref={containerRef}
+                style={{ overflow: 'scroll', flex: 1 }}
+            >
                 {children}
             </CustomBox>
         );
     return (
         <CustomScroll
             onYReachEnd={handleScrollToEnd}
+            style={{ flex: 1 }}
             options={{
                 wheelPropagation: true,
             }}
@@ -301,7 +297,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                             )}
                                             sx={{
                                                 display: {
-                                                    sm: 'flex',
+                                                    sm: 'none',
                                                     xs: 'flex',
                                                     md: 'none',
                                                     xl: 'none',
@@ -330,7 +326,6 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                 </CustomGrid>
                             </CustomGrid>
                         </CustomBox>
-
                         {children}
                         <MeetingFinishedDialog />
                     </CustomGrid>

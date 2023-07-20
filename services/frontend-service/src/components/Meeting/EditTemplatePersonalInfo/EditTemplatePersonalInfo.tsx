@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';

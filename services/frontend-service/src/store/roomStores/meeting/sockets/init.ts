@@ -133,7 +133,7 @@ export const sendEnterMeetingRequestSocketEvent = attach<
 });
 
 export const sendEndMeetingSocketEvent = attach<
-    void,
+    any,
     Store<{ meeting: Meeting }>,
     typeof endMeetingSocketEvent
 >({

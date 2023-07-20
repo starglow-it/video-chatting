@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import { ErrorIcon } from 'shared-frontend/icons/OtherIcons/ErrorIcon';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';

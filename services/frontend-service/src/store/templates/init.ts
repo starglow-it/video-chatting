@@ -1,4 +1,4 @@
-import { combine, forward, sample, split } from 'effector';
+import { combine, forward, sample } from 'effector';
 
 import { ICommonTemplate } from 'shared-types';
 import {
@@ -26,7 +26,6 @@ import {
     getUserTemplateByIdFx,
     getUserTemplateFx,
     loadmoreCommonTemplates,
-    loadmoreMetaTemplates,
     loadmoreUserTemplates,
     purchaseTemplateFx,
     sendScheduleInviteFx,

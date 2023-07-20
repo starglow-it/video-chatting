@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -142,7 +142,8 @@ const Component = () => {
                 templateId: template.id,
             });
 
-            const { businessCategories, ...newPayload } = payload;
+            const newPayload = { ...payload };
+            delete newPayload?.businessCategories;
 
             if (userTemplate?.id) {
                 await editUserTemplateFx({

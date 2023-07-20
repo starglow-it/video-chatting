@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { MenuItem, Select } from '@mui/material';
 import { useStore } from 'effector-react';
 

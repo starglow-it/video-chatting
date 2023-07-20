@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, memo } from 'react';
+import { useRef, useCallback, memo } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 

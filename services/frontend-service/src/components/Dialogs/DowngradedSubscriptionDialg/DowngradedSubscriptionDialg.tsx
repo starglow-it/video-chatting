@@ -70,7 +70,7 @@ const Component = () => {
 
     const dueDate = profile?.renewSubscriptionTimestampInSeconds
         ? formatDate(
-              profile?.renewSubscriptionTimestampInSeconds * 1000,
+              (profile?.renewSubscriptionTimestampInSeconds || 0) * 1000,
               'dd MMM, yyyy',
           )
         : '';

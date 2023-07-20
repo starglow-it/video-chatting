@@ -1,11 +1,8 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
-import * as yup from 'yup';
-import { FormProvider, useForm } from 'react-hook-form';
 import clsx from 'clsx';
 
 // hooks
-import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 import { useToggle } from '@hooks/useToggle';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 

@@ -1,4 +1,5 @@
-import React, { memo, useCallback } from 'react';
+/* eslint-disable react/require-default-props */
+import { memo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useStore } from 'effector-react';
@@ -79,7 +80,9 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
                     translation="invite.title"
                 />
                 <CopyToClipboard
-                    text={getClientMeetingUrlWithDomain(router.query.token)}
+                    text={getClientMeetingUrlWithDomain(
+                        router.query.token as string,
+                    )}
                     onCopy={handleLinkCopied}
                 >
                     <CustomTooltip
