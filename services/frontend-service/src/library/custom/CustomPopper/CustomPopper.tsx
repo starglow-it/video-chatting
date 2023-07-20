@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Fade from '@mui/material/Fade';
 import { Popper } from '@mui/material';
 import clsx from 'clsx';

@@ -1,7 +1,7 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import * as yup from 'yup';
-import { useStore, useStoreMap } from 'effector-react';
+import { useStore } from 'effector-react';
 import { useForm, useWatch, FormProvider } from 'react-hook-form';
 import { useMediaQuery } from '@mui/material';
 
@@ -36,7 +36,6 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { SignInGoogle } from '@components/SignIn/SignInGoogle/SignInGoogle';
 import { getClientMeetingUrl } from 'src/utils/urls';
 import { useRouter } from 'next/router';
-import { EntityList, IUserTemplate } from 'shared-types';
 import { dashboardRoute } from 'src/const/client-routes';
 import {
     StorageKeysEnum,
@@ -47,9 +46,6 @@ import { emailSchema } from '../../validation/users/email';
 import styles from './RegisterContainer.module.scss';
 import {
     $authStore,
-    $profileStore,
-    $profileTemplatesCountStore,
-    $profileTemplatesStore,
     $registerStore,
     createMeetingFx,
     googleVerifyFx,
@@ -68,23 +64,6 @@ const Component = () => {
     const { error } = useStore($registerStore);
     const authState = useStore($authStore);
     const isVerifying = useStore(googleVerifyFx.pending);
-    const profile = useStore($profileStore);
-    const { state: profileTemplatesCount } = useStore(
-        $profileTemplatesCountStore,
-    );
-    const freeTemplates = useStoreMap<
-        EntityList<IUserTemplate>,
-        IUserTemplate[],
-        [string]
-    >({
-        store: $profileTemplatesStore,
-        keys: [profile.id],
-        fn: (state, [profileId]) =>
-            state?.list.filter(
-                template =>
-                    template.type === 'free' && template.author !== profileId,
-            ),
-    });
 
     const [showHints, setHints] = useState<boolean>(false);
 

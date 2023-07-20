@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // icon
 import { WarningIcon } from 'shared-frontend/icons/OtherIcons/WarningIcon';

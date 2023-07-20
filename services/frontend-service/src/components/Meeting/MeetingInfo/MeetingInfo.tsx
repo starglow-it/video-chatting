@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, memo, useMemo } from 'react';
+import { ForwardedRef, forwardRef, memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom

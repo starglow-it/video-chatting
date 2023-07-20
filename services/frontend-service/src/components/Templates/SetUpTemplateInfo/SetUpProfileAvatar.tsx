@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { ErrorCode, FileRejection, useDropzone } from 'react-dropzone';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';

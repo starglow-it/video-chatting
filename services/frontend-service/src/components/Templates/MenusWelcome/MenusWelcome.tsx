@@ -1,12 +1,10 @@
 import { useStore } from 'effector-react';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
     $businessCategoriesStore,
     $modeTemplateStore,
     $queryTemplatesStore,
-    setModeTemplatesEvent,
-    setQueryProfileTemplatesEvent,
     setQueryTemplatesEvent,
 } from 'src/store';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';

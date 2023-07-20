@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import { AuthorLogo } from 'shared-frontend/icons/OtherIcons/AuthorLogo';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';

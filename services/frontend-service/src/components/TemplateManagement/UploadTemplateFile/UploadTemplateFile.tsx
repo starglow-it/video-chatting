@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
@@ -36,7 +36,6 @@ import {
 import {
     MAX_DESCRIPTION_LENGTH,
     MAX_NAME_LENGTH,
-    MAX_PARTICIPANTS_NUMBER,
 } from '../../../const/templates/info';
 import frontendConfig from '../../../const/config';
 
@@ -109,7 +108,7 @@ const Component = ({
 
         if (customLink) {
             const isBusy = await checkCustomLinkFx({
-                templateId: template?.id!,
+                templateId: template?.id,
                 customLink,
             });
 

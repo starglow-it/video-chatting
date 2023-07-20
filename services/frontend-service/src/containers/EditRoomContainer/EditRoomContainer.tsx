@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
@@ -179,8 +179,8 @@ const Component = () => {
 
             let data = '';
             if (savedTemplateProgress.current) {
-                const { background, ...dataToSave } =
-                    savedTemplateProgress.current;
+                const dataToSave = { ...savedTemplateProgress.current };
+                delete dataToSave.background;
                 data = convertToBase64(dataToSave);
             }
             const dataParam = data ? `&data=${data}` : '';

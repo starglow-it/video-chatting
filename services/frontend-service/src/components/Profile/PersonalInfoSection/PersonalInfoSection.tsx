@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import { SplitView } from '@components/SplitView/SplitView';
 import { PersonalInfo } from '@components/Profile/PersonalInfo/PersonalInfo';

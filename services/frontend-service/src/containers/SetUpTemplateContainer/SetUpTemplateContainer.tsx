@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
@@ -74,8 +74,7 @@ const Component = () => {
     const forceRef = useRef<boolean>(false);
     const isDataFilled = useRef<boolean>(false);
 
-    const { value: isProfileUpdated, onSwitchOn: handleSetProfileUpdated } =
-        useToggle(false);
+    const { value: isProfileUpdated } = useToggle(false);
 
     useEffect(() => {
         if (router.query.templateId) {
@@ -150,7 +149,9 @@ const Component = () => {
                     templateId: setUpTemplate.id,
                 });
 
-                const meetingUrl = getClientMeetingUrl(result?.template?.id || '');
+                const meetingUrl = getClientMeetingUrl(
+                    result?.template?.id || '',
+                );
                 await router.push(`${meetingUrl}?success_house=true`);
             }
             if (!router.query.templateId) {
@@ -162,7 +163,6 @@ const Component = () => {
                 }
                 await router.push(dashboardRoute);
             }
-            // handleSetProfileUpdated();
         }),
         [profileAvatar.file, setUpTemplate?.id],
     );

@@ -1,17 +1,17 @@
-import React, { useMemo, memo } from 'react';
+import { useMemo, memo } from 'react';
 import { useRouter } from 'next/router';
 
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { initUserWithoutTokenFx } from 'src/store';
 import { parseCookies } from 'nookies';
 import { getClientMeetingUrl } from 'src/utils/urls';
+import clsx from 'clsx';
 import {
     clientRoutes,
     loginRoute,
     welcomeRoute,
 } from '../../const/client-routes';
 import styles from './AuthenticationLink.module.scss';
-import clsx from 'clsx';
 
 const Component = () => {
     const router = useRouter();

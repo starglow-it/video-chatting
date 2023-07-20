@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
@@ -8,18 +8,19 @@ import { ICommonTemplate, RoomType } from 'shared-types';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
-import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from '../../controllers/WebStorageController';
 
 // styles
-import styles from './WelcomePageContainer.module.scss';
 
 // stores
+import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
+import { MenusWelcome } from '@components/Templates/MenusWelcome/MenusWelcome';
+import { parseCookies } from 'nookies';
+import { getClientMeetingUrl } from 'src/utils/urls';
+import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
+import { setUserWithoutTokenCookies } from 'src/helpers/http/setAuthCookies';
+import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import {
     $templatesStore,
     addTemplateToUserFx,
@@ -29,12 +30,7 @@ import {
     initUserWithoutTokenFx,
     setQueryTemplatesEvent,
 } from '../../store';
-import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
-import { MenusWelcome } from '@components/Templates/MenusWelcome/MenusWelcome';
-import { parseCookies } from 'nookies';
-import { getClientMeetingUrl } from 'src/utils/urls';
-import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
-import { setUserWithoutTokenCookies } from 'src/helpers/http/setAuthCookies';
+import { CircularProgress } from '@mui/material';
 
 const baseTemplateParams = {
     type: 'free',
@@ -48,6 +44,9 @@ const WelcomePageContainer = memo(() => {
     const router = useRouter();
 
     const templates = useStore($templatesStore);
+    const isLoadingCate = useStore(getBusinessCategoriesFx.pending);
+    const isLoadingFeatured = useStore(getFeaturedBackgroundFx.pending);
+    const isLoadingRooms = useStore(getTemplatesFx.pending);
 
     useEffect(() => {
         setQueryTemplatesEvent({
@@ -70,18 +69,6 @@ const WelcomePageContainer = memo(() => {
             draft: false,
         });
     }, []);
-
-    const handleStartOnboarding = useCallback(
-        (templateId: ICommonTemplate['id']) => {
-            WebStorage.save({
-                key: StorageKeysEnum.templateId,
-                data: { templateId },
-            });
-
-            router.push(`/register`);
-        },
-        [],
-    );
 
     const handleCommonTemplatesPageChange = useCallback(
         async (newPage: number) => {
@@ -115,6 +102,14 @@ const WelcomePageContainer = memo(() => {
         }
     };
 
+    if (isLoadingCate || isLoadingFeatured || isLoadingRooms) {
+        return (
+            <CustomGrid container justifyContent="center" alignItems="center">
+                <CircularProgress size="50px" />
+            </CustomGrid>
+        );
+    }
+
     return (
         <>
             <CustomGrid
@@ -124,6 +119,7 @@ const WelcomePageContainer = memo(() => {
                 sx={{
                     padding: '94px 20px 100px 20px',
                 }}
+                height="100%"
             >
                 <FeaturedBackground onChooseTemplate={handleChooseTemplate} />
                 <MenusWelcome />

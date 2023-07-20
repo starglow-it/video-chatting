@@ -1,4 +1,4 @@
-import React, { useRef, memo, useEffect } from 'react';
+import { useRef, memo, useEffect } from 'react';
 import clsx from 'clsx';
 
 // types
@@ -26,7 +26,7 @@ const Component = ({
     useEffect(() => {
         const video = videoRef.current;
 
-        if (video && !isNaN(volume)) {
+        if (video && !Number.isNaN(volume)) {
             video.volume = volume / 100;
         }
     }, [volume]);

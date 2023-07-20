@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import { Popover, PopoverProps } from '@mui/material';
 

@@ -60,8 +60,8 @@ export const useSubscriptionNotification = (url?: string) => {
         }
     }, [subscription?.id, updateUrl]);
 
-    const handleSetUpdateUrl = useCallback((url: string) => {
-        setUpdateUrl(url);
+    const handleSetUpdateUrl = useCallback((newUrl: string) => {
+        setUpdateUrl(newUrl);
     }, []);
 
     return {

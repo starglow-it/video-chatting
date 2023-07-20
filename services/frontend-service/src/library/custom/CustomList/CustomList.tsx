@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { List, ListItem } from '@mui/material';
 import { CustomListProps } from './types';

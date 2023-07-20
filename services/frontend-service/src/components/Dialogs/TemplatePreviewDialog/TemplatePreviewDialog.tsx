@@ -1,6 +1,5 @@
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import clsx from 'clsx';
 
 // custom
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
@@ -30,15 +29,12 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { Translation } from '@library/common/Translation/Translation';
 import {
     $appDialogsStore,
-    $profileStore,
-    addNotificationEvent,
     appDialogsApi,
     $templatePreviewStore,
-    $isBusinessSubscription,
 } from '../../../store';
 
 // types
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 import { TemplatePreviewDialogProps } from './types';
 
 // styles
@@ -82,13 +78,6 @@ const Component = ({
     const previewImage = (previewTemplate?.previewUrls || []).find(
         preview => preview.resolution === 1080,
     );
-
-    const handleShowToast = () => {
-        addNotificationEvent({
-            type: NotificationType.NoTimeLeft,
-            message: `subscriptions.noTimeLeft`,
-        });
-    };
 
     return (
         <CustomDialog

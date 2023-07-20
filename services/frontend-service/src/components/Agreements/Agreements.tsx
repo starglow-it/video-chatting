@@ -1,5 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import linkify from 'linkify-string';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import Router, { useRouter } from 'next/router';
 
 // hooks
@@ -11,16 +10,13 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { Translation } from '@library/common/Translation/Translation';
 
 // icons
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 
-// const
-import frontendConfig from '../../const/config';
-
 // styles
+import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import styles from './Agreements.module.scss';
 
 enum Tabs {
@@ -60,22 +56,11 @@ const Component = () => {
         }
     }, [router.query]);
 
-    const textWithLinks = useMemo(() => {
-        const { translationKey } = activeTab;
-        return linkify(
-            translation(`${translationKey}.text`, {
-                domainLink: frontendConfig.frontendUrl,
-            }),
-            {
-                target: '_blank',
-            },
-        );
-    }, [activeTab.translationKey]);
-
     const chips = useMemo(
         () =>
             tabs.map(({ value, translationKey }) => (
                 <CustomChip
+                    key={translationKey}
                     active={value === activeTab.value}
                     label={
                         <CustomTypography>

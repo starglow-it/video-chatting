@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';

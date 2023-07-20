@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // custom
@@ -39,7 +39,7 @@ const Component = ({
     const handleChangePosition = useCallback(
         ({ id, top, left }: ParticipantPosition) => {
             const positionIndex = participantsPositions.findIndex(
-                ({ id: stubId }) => stubId === id,
+                ({ id: stubId }: { id: string }) => stubId === id,
             );
             if (positionIndex === -1) {
                 return;

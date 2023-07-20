@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // custom
 import { CustomSwitch } from '@library/custom/CustomSwitch/CustomSwitch';

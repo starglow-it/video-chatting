@@ -1,4 +1,4 @@
-import React, { useMemo, memo, useEffect } from 'react';
+import { useMemo, memo, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -41,9 +41,6 @@ import styles from './SubscriptionInfo.module.scss';
 
 // const
 import { profileRoute } from '../../../const/client-routes';
-
-// utils
-import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 const Component = () => {
     const router = useRouter();
@@ -151,7 +148,6 @@ const Component = () => {
 
     return (
         <CustomPaper className={styles.paperWrapper}>
-            <a id="subscriptions" />
             <CustomGrid container direction="column">
                 <CustomGrid
                     container

@@ -82,6 +82,5 @@ $profileStore
 
 sample({
     clock: updateProfileEmailFx.doneData,
-    fn: () => {},
     target: refreshAuthFx,
 });

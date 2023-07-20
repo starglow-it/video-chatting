@@ -37,7 +37,7 @@ import { profileRoute } from '../../const/client-routes';
 
 type ComponentProps = unknown;
 
-const _20_minutes = getTimeoutTimestamp({
+const twtMinutes = getTimeoutTimestamp({
     value: 20,
     type: TimeoutTypesEnum.Minutes,
 });
@@ -57,7 +57,7 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     useEffect(() => {
         if (timeLimitWarning) {
             handleStartMeetingEnd(
-                Math.min(profile.maxMeetingTime, _20_minutes),
+                Math.min(profile.maxMeetingTime, twtMinutes),
                 0,
             );
         } else {

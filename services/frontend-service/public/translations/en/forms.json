@@ -13,11 +13,11 @@
   "endAt": "Ends",
   "comment": "Comment",
   "labels": {
-    "companyName": "What should we call your live office? (company, brand or nickname)",
+    "companyName": "What should we call your Ruume? (company, brand or nickname)",
     "fullName": "What is your name?",
     "profileAvatar": "Upload profile image (optional)",
     "dragAndDrop": "Tap or drag here"
   },
   "addUserEmail": "Add user email",
-  "nameOfYourLive": "Name of your live office"
+  "nameOfYourLive": "Name of your Ruume"
 }

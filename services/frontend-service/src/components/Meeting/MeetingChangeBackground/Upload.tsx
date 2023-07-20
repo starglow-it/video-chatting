@@ -1,5 +1,5 @@
 import { useStore } from 'effector-react';
-import { MouseEvent, MouseEventHandler, memo } from 'react';
+import { MouseEvent, memo } from 'react';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import {
     ACCEPT_MIMES,
@@ -36,10 +36,7 @@ import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification'
 import { profileRoute } from 'src/const/client-routes';
 import { useRouter } from 'next/router';
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
-import {
-    getClientMeetingUrl,
-    getClientMeetingUrlWithDomain,
-} from 'src/utils/urls';
+import { getClientMeetingUrl } from 'src/utils/urls';
 import styles from './MeetingChangeBackground.module.scss';
 
 const Component = () => {

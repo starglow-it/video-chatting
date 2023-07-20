@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';

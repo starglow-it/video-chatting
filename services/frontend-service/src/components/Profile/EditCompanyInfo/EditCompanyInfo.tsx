@@ -1,10 +1,8 @@
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { MoneyIcon } from 'shared-frontend/icons/OtherIcons/MoneyIcon';
-
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
 

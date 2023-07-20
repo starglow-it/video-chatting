@@ -60,12 +60,7 @@ const Component = ({
                     style={style}
                 />
             )}
-            <audio
-                ref={container}
-                autoPlay
-                playsInline
-                muted={!isMicEnabled || isLocal}
-            />
+            <audio ref={container} autoPlay muted={!isMicEnabled || isLocal} />
         </>
     );
 };

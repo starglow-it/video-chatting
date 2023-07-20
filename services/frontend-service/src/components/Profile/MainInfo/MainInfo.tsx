@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from 'react';
+import { useEffect, memo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // components

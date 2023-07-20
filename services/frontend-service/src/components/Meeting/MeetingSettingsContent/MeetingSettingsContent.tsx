@@ -1,7 +1,6 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
-import { useFormContext } from 'react-hook-form';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
@@ -22,7 +21,6 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 // components
 import { SelectDevices } from '@components/Media/SelectDevices/SelectDevices';
 import { LabeledSwitch } from '@library/common/LabeledSwitch/LabeledSwitch';
-import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 
 // icons
 
@@ -61,7 +59,7 @@ const Component = ({
         }
     }, [isSafari]);
 
-    const handleChangeVolume = useCallback(event => {
+    const handleChangeVolume = useCallback((event: any) => {
         onChangeBackgroundVolume(event.target.value);
     }, []);
 

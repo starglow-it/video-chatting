@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useStore } from 'effector-react';
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
@@ -15,7 +15,6 @@ import { TemplateMainInfo } from '@components/Templates/TemplateMainInfo/Templat
 
 // stores
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
-import { isSafari } from 'shared-utils';
 import { addTemplateToUserFx } from '../../../store';
 
 // types

@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';

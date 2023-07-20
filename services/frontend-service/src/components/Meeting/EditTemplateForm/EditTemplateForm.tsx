@@ -12,14 +12,12 @@ import { CustomLinkIcon } from 'shared-frontend/icons/OtherIcons/CustomLinkIcon'
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
 import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
 import { MoneyIcon } from 'shared-frontend/icons/OtherIcons/MoneyIcon';
-import { SignBoardIcon } from 'shared-frontend/icons/OtherIcons/SignBoardIcon';
 import { Socials } from '@components/Socials/Socials';
 
 // components
 import { EditTemplatePersonalInfo } from '@components/Meeting/EditTemplatePersonalInfo/EditTemplatePersonalInfo';
 import { EditTemplateCompanyInfo } from '@components/Meeting/EditTemplateCompanyInfo/EditTemplateCompanyInfo';
 import { EditMeetingLink } from '@components/Meeting/EditMeetingLink/EditMeetingLink';
-import { ChooseSignBoard } from '@components/Templates/ChooseSignBoard/ChooseSignBoard';
 
 // styles
 import { Translation } from '@library/common/Translation/Translation';

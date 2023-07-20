@@ -10,9 +10,9 @@ class BackgroundManagerInstance {
 
     isBackgroundSupported: boolean;
 
-    effectBackground: unknown;
+    effectBackground: any;
 
-    videoEffects: unknown;
+    videoEffects: any;
 
     segmentation: any;
 
