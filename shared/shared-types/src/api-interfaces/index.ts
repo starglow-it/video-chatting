@@ -7,3 +7,4 @@ export * from './config';
 export * from './media';
 export * from './migration';
 export * from './featured-background';
+export * from './monitoring';

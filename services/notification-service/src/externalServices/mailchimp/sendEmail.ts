@@ -87,8 +87,8 @@ export const sendEmail = async ({
             },
         };
 
-        await emailClient.messages.sendTemplate(sendTemplateData);
-
+        const s = await emailClient.messages.sendTemplate(sendTemplateData);
+        console.log(s);
         return;
     }
 
