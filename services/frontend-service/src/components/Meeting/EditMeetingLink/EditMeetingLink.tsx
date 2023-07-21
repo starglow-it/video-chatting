@@ -46,9 +46,10 @@ const Component = () => {
         const isBusy = await checkCustomLinkFx(data);
 
         if (isBusy) {
-            setError('customLink', [
-                { type: 'focus', message: 'meeting.settings.customLink.busy' },
-            ]);
+            setError('customLink', {
+                type: 'focus',
+                message: 'meeting.settings.customLink.busy',
+            });
         } else {
             clearErrors('customLink');
         }
@@ -78,7 +79,7 @@ const Component = () => {
 
     const meetingLinkStart = `* /room/`;
 
-    const customLinkError = errors.customLink?.[0]?.message;
+    const customLinkError = errors.customLink?.message;
 
     return (
         <CustomGrid container direction="column">
@@ -120,7 +121,7 @@ const Component = () => {
                     {meetingLink}
                 </CustomTypography>
             </CustomGrid>
-            <ErrorMessage error={customLinkError} />
+            <ErrorMessage error={customLinkError?.toString() ?? ''} />
         </CustomGrid>
     );
 };

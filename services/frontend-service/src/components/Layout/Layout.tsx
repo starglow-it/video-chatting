@@ -219,7 +219,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             <ScrollParent
                 isAgreements={router.pathname === agreementsRoute}
                 handleScrollToEnd={handleScrollToEnd}
-                containerRef={el => (scrollRef.current = el)}
+                containerRef={(el: any) => (scrollRef.current = el)}
             >
                 <CustomGrid
                     container

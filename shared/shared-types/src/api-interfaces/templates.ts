@@ -21,7 +21,7 @@ interface ITemplate{
 }
 
 export interface ICommonTemplate extends ITemplate {
-  id?: string;
+  id: string;
   usedAt?: string;
   templateId: number;
   author?: string;

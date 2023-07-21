@@ -32,7 +32,8 @@ const MainInfo = memo(() => {
         keys: [],
         fn: state =>
             state?.list?.sort?.((a, b) =>
-                new Date(a.usedAt).getTime() < new Date(b.usedAt).getTime()
+                new Date(a.usedAt as string).getTime() <
+                new Date(b.usedAt as string).getTime()
                     ? 1
                     : 0,
             )?.[0],

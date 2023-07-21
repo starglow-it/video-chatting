@@ -74,12 +74,12 @@ const EditProfilePasswordInfo = memo(
         const onSubmit = useCallback(
             handleSubmit(async data => {
                 if (data.newPassword !== data.newPasswordRepeat) {
-                    return setError('newPasswordRepeat', [
+                    return setError('newPasswordRepeat', 
                         { message: 'user.pass.newPassword.notMatch' },
-                    ]);
+                    );
                 }
 
-                const result = await updateProfilePasswordFx(data);
+                const result: any = await updateProfilePasswordFx(data);
 
                 if (result?.message) {
                     const isNewPasswordError =
@@ -119,7 +119,7 @@ const EditProfilePasswordInfo = memo(
 
         const currentPasswordErrorMessage = useMemo(() => {
             if (Array.isArray(errors?.newPassword)) {
-                return errors?.currentPassword?.[0]?.message;
+                return errors?.currentPassword?.message?.toString();
             }
             return errors?.currentPassword?.message;
         }, [errors?.currentPassword]);
@@ -156,7 +156,7 @@ const EditProfilePasswordInfo = memo(
                             fieldKey="newPasswordRepeat"
                             nameSpace="profile"
                             translation="editProfile.newPasswordRepeat"
-                            error={errors?.newPasswordRepeat?.[0]?.message}
+                            error={errors?.newPasswordRepeat?.message?.toString()}
                             errorClassName={styles.error}
                             {...register('newPasswordRepeat')}
                         />

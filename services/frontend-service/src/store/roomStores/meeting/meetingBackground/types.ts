@@ -1,4 +1,4 @@
-import { IMedia } from 'shared-types';
+import { IMedia, IMediaCategory } from 'shared-types';
 
 export interface IMediaItem extends IMedia {
     id: string;
@@ -20,3 +20,7 @@ export type ResultDeleteMedia = {
     success: boolean;
     message: string;
 };
+
+export interface IMediaCategoryItem extends IMediaCategory {
+    id: string;
+}

@@ -19,7 +19,15 @@ import styles from './Socials.module.scss';
 // const
 import { SOCIAL_LINKS, SOCIALS_ICONS } from '../../const/profile/socials';
 
-const SocialInput = ({ social, index, onRemove }) => {
+const SocialInput = ({
+    social,
+    index,
+    onRemove,
+}: {
+    social: any;
+    index: number;
+    onRemove: (index: number) => void;
+}) => {
     const {
         register,
         formState: { errors },
@@ -27,7 +35,7 @@ const SocialInput = ({ social, index, onRemove }) => {
 
     const Icon = SOCIALS_ICONS[social.key];
     const inputKey = `socials[${index}].value`;
-    const fieldError = errors[inputKey]?.[0]?.message;
+    const fieldError = errors[inputKey]?.message;
 
     const { onChange, ...registerData } = register(inputKey);
 
@@ -35,7 +43,7 @@ const SocialInput = ({ social, index, onRemove }) => {
         onRemove(index);
     };
 
-    const handleChange = async event => {
+    const handleChange = async (event: { target: any; type?: any }) => {
         const { value } = event.target;
 
         if (value) {
@@ -49,7 +57,7 @@ const SocialInput = ({ social, index, onRemove }) => {
         }
     };
 
-    const handlePasteLink = async event => {
+    const handlePasteLink = async (event: { target: any; type?: any }) => {
         const { value } = event.target;
 
         if (value) {
@@ -111,7 +119,7 @@ const Component = ({ buttonClassName, title = null }: Props) => {
         name: 'socials',
     });
 
-    const handleRemove = index => {
+    const handleRemove = (index: number | number[] | undefined) => {
         remove(index);
     };
 

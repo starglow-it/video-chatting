@@ -44,7 +44,11 @@ const Component = ({
                         container
                         justifyContent="center"
                         alignItems="center"
-                        style={{ '--bg-color': planColors[tab.translationKey] }}
+                        style={
+                            {
+                                '--bg-color': planColors[tab.translationKey],
+                            } as React.CSSProperties
+                        }
                         className={clsx(styles.tabItem, {
                             [styles.active]: tab.value === activeTab.value,
                         })}

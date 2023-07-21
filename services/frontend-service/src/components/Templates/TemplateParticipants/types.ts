@@ -2,7 +2,7 @@ import { ICommonTemplate } from 'shared-types';
 
 export type TemplateParticipantsProps = {
     number: ICommonTemplate['maxParticipants'];
-    authorRole: ICommonTemplate['authorRole'];
+    authorRole?: ICommonTemplate['authorRole'];
     authorThumbnail?: ICommonTemplate['authorThumbnail'];
-    authorName: ICommonTemplate['authorName'];
+    authorName?: ICommonTemplate['authorName'];
 };

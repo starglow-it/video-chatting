@@ -34,7 +34,7 @@ const EnterEmailForm = memo(
                 <CustomInput
                     nameSpace="profile"
                     translation="editProfile.newEmail"
-                    error={errors?.email?.[0]?.message}
+                    error={errors?.email?.message?.toString()}
                     {...register('email')}
                 />
                 <CustomGrid container gap={2} wrap="nowrap">

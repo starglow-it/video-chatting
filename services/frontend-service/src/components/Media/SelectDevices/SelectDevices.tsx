@@ -43,7 +43,7 @@ const Component = () => {
     const { isMobile } = useBrowserDetect();
 
     const handleChangeCamera = useCallback(
-        ({ target: { value } }) => {
+        ({ target: { value } }: any) => {
             changeStreamFxWithStore({
                 kind: DeviceInputKindEnum.VideoInput,
                 deviceId: value,
@@ -53,7 +53,7 @@ const Component = () => {
     );
 
     const handleChangeMic = useCallback(
-        ({ target: { value } }) => {
+        ({ target: { value } }: any) => {
             changeStreamFxWithStore({
                 kind: DeviceInputKindEnum.AudioInput,
                 deviceId: value,
@@ -89,7 +89,7 @@ const Component = () => {
     );
 
     const handleRenderVideoValue = useCallback(
-        value => (
+        (value: any) => (
             <CustomGrid
                 className={styles.activeItem}
                 container
@@ -114,7 +114,7 @@ const Component = () => {
     );
 
     const handleRenderAudioValue = useCallback(
-        value => (
+        (value: any) => (
             <CustomGrid
                 className={styles.activeItem}
                 container

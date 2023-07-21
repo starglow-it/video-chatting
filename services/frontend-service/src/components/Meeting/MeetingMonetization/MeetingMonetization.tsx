@@ -170,14 +170,14 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const registerPaywallData = register('paywallPrice');
 
     const templatePriceMessage = ['min', 'max'].includes(
-        errors?.templatePrice?.[0]?.type,
+        errors?.templatePrice?.type?.toString() ?? '',
     )
-        ? errors?.templatePrice?.[0]?.message
+        ? errors?.templatePrice?.message?.toString() ?? ''
         : '';
     const paywallPriceMessage = ['min', 'max'].includes(
-        errors?.paywallPrice?.[0]?.type,
+        errors?.paywallPrice?.type?.toString() ?? '',
     )
-        ? errors?.paywallPrice?.[0]?.message
+        ? errors?.paywallPrice?.message?.toString() ?? ''
         : '';
 
     return (

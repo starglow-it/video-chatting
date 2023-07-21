@@ -35,8 +35,8 @@ const Component = () => {
     const [isNeedToRenderSeeAllTags, setIsNeedToRenderSeeAllTags] =
         useState<boolean>(false);
 
-    const businessTagsRef = useRef<HTMLDivElement>();
-    const hiddenBusinessTagsRef = useRef<HTMLDivElement>();
+    const businessTagsRef = useRef<HTMLDivElement | null>(null);
+    const hiddenBusinessTagsRef = useRef<HTMLDivElement | null>(null);
 
     const { value: openMoreTags, onToggleSwitch: handleToggleMoreTags } =
         useToggle(false);

@@ -13,9 +13,9 @@ const Component = () => {
     } = useFormContext();
 
     const currentFullNameErrorMessage: string =
-        errors?.fullName?.[0]?.message || '';
+        errors?.fullName?.message?.toString() || '';
     const currentPositionErrorMessage: string =
-        errors?.position?.[0]?.message || '';
+        errors?.position?.message?.toString() || '';
 
     return (
         <CustomGrid container wrap="nowrap" direction="column" gap={4}>

@@ -25,7 +25,7 @@ import { AudioItem } from './AudioItem';
 import styles from './MeetingManageAudio.module.scss';
 
 const Component = () => {
-    const refToolTip = useRef();
+    const refToolTip = useRef<any>();
     const audioList = useStoreMap({
         store: $meetingAudioStore,
         keys: [],

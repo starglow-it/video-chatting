@@ -87,7 +87,7 @@ const Component = () => {
         [],
     );
 
-    const fullNameError = errors.fullName?.[0]?.message;
+    const fullNameError = errors.fullName?.message;
 
     useEffect(() => {
         if (nameOnUrl) {
@@ -148,7 +148,6 @@ const Component = () => {
                         nameSpace="forms"
                         translation="yourName"
                         autoComplete="given-name"
-                        value={fullNameRegister.value}
                         onChange={fullNameRegister.onChange}
                         onBlur={fullNameRegister.onBlur}
                         ref={fullNameRegister.ref}

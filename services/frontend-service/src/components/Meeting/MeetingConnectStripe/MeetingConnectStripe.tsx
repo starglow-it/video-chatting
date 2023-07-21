@@ -34,13 +34,13 @@ export const MeetingConnectStripe = () => {
 
     const handleSetUpPayments = useCallback(async () => {
         if (!isConnectStripeAccountPending) {
-            await connectStripeAccountFx({});
+            await connectStripeAccountFx();
         }
     }, [isConnectStripeAccountPending]);
 
     const handleDeletePaymentSetUp = useCallback(async () => {
         if (!isDeleteStripeAccountPending) {
-            await deleteStripeAccountFx({});
+            await deleteStripeAccountFx();
         }
     }, []);
 

@@ -38,7 +38,7 @@ const EnterPasswordForm = memo(
                 <PasswordInput
                     nameSpace="profile"
                     translation="editProfile.password"
-                    error={errors?.password?.[0]?.message}
+                    error={errors?.password?.message?.toString()}
                     errorClassName={styles.error}
                     {...register('password')}
                 />

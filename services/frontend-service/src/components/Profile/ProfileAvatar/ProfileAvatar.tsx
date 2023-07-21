@@ -81,7 +81,7 @@ const Component = (
                         </text>
                     </ConditionalRender>
 
-                    <ConditionalRender condition={isAcceptNoLogin}>
+                    <ConditionalRender condition={Boolean(isAcceptNoLogin)}>
                         <text
                             dominantBaseline="middle"
                             textAnchor="middle"

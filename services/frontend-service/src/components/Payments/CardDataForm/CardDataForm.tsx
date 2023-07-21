@@ -33,7 +33,7 @@ const Component = ({
     const elements = useElements();
 
     const handleSubmit = useCallback(
-        async event => {
+        async (event: { preventDefault: () => void; }) => {
             event.preventDefault();
             console.log('submit card', event);
 
@@ -42,7 +42,7 @@ const Component = ({
                     paymentIntentSecret,
                     {
                         payment_method: {
-                            card: elements.getElement(CardNumberElement),
+                            card: elements.getElement(CardNumberElement) ?? {token: ''},
                         },
                     },
                 );

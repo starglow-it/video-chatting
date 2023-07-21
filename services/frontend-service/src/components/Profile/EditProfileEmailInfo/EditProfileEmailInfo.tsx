@@ -111,7 +111,7 @@ const EditProfileEmailInfo = memo(
                         type: NotificationType.PasswordChanged,
                         message: 'profile.emailChanged',
                     });
-                } catch (e) {
+                } catch (e: any) {
                     throw new Error(e.message);
                 }
             }),
@@ -125,9 +125,10 @@ const EditProfileEmailInfo = memo(
             });
 
             if (!result.success) {
-                setError('password', [
-                    { type: 'focus', message: 'user.pass.incorrect' },
-                ]);
+                setError('password', {
+                    type: 'focus',
+                    message: 'user.pass.incorrect',
+                });
                 setFocus('password');
             } else {
                 handleFinishPasswordEnter();
@@ -135,7 +136,7 @@ const EditProfileEmailInfo = memo(
         }, [password]);
 
         const handleEmailEntered = useCallback(async () => {
-            const result = await sendRequestWithCredentials({
+            const result: any = await sendRequestWithCredentials({
                 ...emailVerificationUrl,
                 data: { email },
             });
@@ -143,9 +144,10 @@ const EditProfileEmailInfo = memo(
             if (result.success) {
                 handleFinishEmailEnter();
             } else {
-                setError('email', [
-                    { type: 'focus', message: result?.error?.message },
-                ]);
+                setError('email', {
+                    type: 'focus',
+                    message: result?.error?.message,
+                });
                 setFocus('email');
             }
         }, [email]);

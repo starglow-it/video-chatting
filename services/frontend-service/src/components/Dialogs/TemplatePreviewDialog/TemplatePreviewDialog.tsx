@@ -91,7 +91,7 @@ const Component = ({
             <CustomGrid container wrap="nowrap">
                 <CustomGrid className={styles.templatePreview}>
                     <TemplateGeneralInfo
-                        companyName={previewTemplate?.companyName}
+                        companyName=""
                         userName={previewTemplate?.name}
                     />
                     <ConditionalRender condition={Boolean(previewImage?.id)}>
