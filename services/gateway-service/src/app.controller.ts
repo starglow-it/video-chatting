@@ -1,9 +1,10 @@
-import { BadRequestException, Controller, Get, Logger, OnModuleInit, Param, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Logger, OnModuleInit, Param, Post, Query, Req, Res } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum } from "class-validator";
 import { CoreBrokerPatterns } from "shared-const";
 import { ConfigClientService } from "./services/config/config.service";
 import { CoreService } from "./services/core/core.service";
+import { Response } from "express";
 
 
 enum Collection {
@@ -56,5 +57,15 @@ export class AppController implements OnModuleInit {
             );
             throw new BadRequestException(err);
         }
+    }
+
+    @Post('/mandrill')
+    mandrillCallback(@Req() req, @Res() res: Response) {
+        const events = req.body['mandrill_events'];
+        // console.log(JSON.parse(events));
+        console.log(JSON.parse(events));
+        
+        res.sendStatus(201);
+        return;
     }
 }

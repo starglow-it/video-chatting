@@ -27,6 +27,7 @@ import { MediaCategory, MediaCategorySchema } from './schemas/media-category.sch
 import { Media, MediaSchema } from './schemas/media.schema';
 import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema';
 import { DatabaseModule } from './database/database.module';
+import { MonitoringModule } from './modules/monitoring/monitoring.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { DatabaseModule } from './database/database.module';
     RoomsStatisticsModule,
     TranscodeModule,
     DatabaseModule,
+    MonitoringModule,
     MongooseModule.forFeature([
       { name: MediaCategory.name, schema: MediaCategorySchema},
       { name: Media.name, schema: MediaSchema},

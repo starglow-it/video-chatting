@@ -1,0 +1,25 @@
+import { IMonitoring } from "../api-interfaces"
+
+export type GetMonitoringsPayload = {
+    event: IMonitoring['event'];
+    filter: Partial<
+        {
+            skip: number;
+            limit: number;
+            sortProp: keyof Omit<IMonitoring, 'id'>;
+            atTime: IMonitoring['updatedAt'];
+        }>;
+}
+
+export type CreateMonitoringPayload = {
+    event: IMonitoring['event'];
+}
+
+export type UpdateMonitoringPayload = {
+    id: IMonitoring['id'];
+    processTime: IMonitoring['processTime'];
+}
+
+export type DeleteMonitoringPayload = {
+    atTime: IMonitoring['updatedAt']
+}
