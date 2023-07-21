@@ -2,14 +2,14 @@ import { useLocalization } from '@hooks/useTranslation';
 import { useMemo } from 'react';
 import { intervalToDuration } from 'date-fns';
 import {
-    _24_HOURS,
+    TWF_24_HOURS,
     ONE_HOUR,
     ONE_MINUTE,
     ONE_MONTH,
     ONE_SECOND,
 } from '../const/time/common';
 
-const stages = [ONE_MONTH, _24_HOURS, ONE_HOUR, ONE_MINUTE, ONE_SECOND];
+const stages = [ONE_MONTH, TWF_24_HOURS, ONE_HOUR, ONE_MINUTE, ONE_SECOND];
 const translationKeys = ['months', 'days', 'hours', 'minutes', 'now'];
 
 export const useFormatDistanceDate = (timestamp: number) => {

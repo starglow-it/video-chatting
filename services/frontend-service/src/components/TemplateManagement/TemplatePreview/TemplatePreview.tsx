@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
@@ -53,6 +53,7 @@ const Component = ({
             participantsPositions.map(
                 ({ id, top, left }: ParticipantPosition, index: number) => (
                     <UserVideoStub
+                        key={id}
                         isDraggable={false}
                         stubId={id}
                         index={index}
@@ -64,13 +65,16 @@ const Component = ({
     );
 
     const tagsChips = useMemo(
-        () => tags.map(tag => <TagItem color={tag.color} label={tag.label} />),
+        () =>
+            tags.map((tag: any) => (
+                <TagItem color={tag.color} label={tag.label} key={tag.id} />
+            )),
         [tags],
     );
 
     const renderLinks = useMemo(
         () =>
-            templateLinks?.map((link, index: number) => (
+            templateLinks?.map((link: any, index: number) => (
                 <TemplateLinkItem
                     key={link?.key}
                     index={index}

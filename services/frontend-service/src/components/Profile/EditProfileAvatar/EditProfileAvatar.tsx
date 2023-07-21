@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import { ClickAwayListener } from '@mui/material';

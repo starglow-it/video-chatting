@@ -88,6 +88,7 @@ const Component = ({
                         gap={1}
                         wrap="nowrap"
                         className={styles.emailItem}
+                        key={email}
                     >
                         <CustomTypography
                             variant="body2"

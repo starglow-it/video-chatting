@@ -1,6 +1,5 @@
-import React, { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { Fade } from '@mui/material';
-import { useRouter } from 'next/router';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
@@ -17,11 +16,7 @@ import { ICommonTemplate } from 'shared-types';
 import { AppDialogsEnum } from '../../../store/types';
 
 // stores
-import {
-    setPreviewTemplate,
-    appDialogsApi,
-    initUserWithoutTokenFx,
-} from '../../../store';
+import { setPreviewTemplate, appDialogsApi } from '../../../store';
 
 // styles
 import styles from './OnboardingTemplateItem.module.scss';
@@ -30,9 +25,6 @@ import {
     StorageKeysEnum,
     WebStorage,
 } from '../../../controllers/WebStorageController';
-import { clientRoutes } from '../../../const/client-routes';
-import { parseCookies } from 'nookies';
-import { getClientMeetingUrl } from 'src/utils/urls';
 
 const OnboardingTemplateItem = memo(
     ({
@@ -42,8 +34,6 @@ const OnboardingTemplateItem = memo(
         template: ICommonTemplate;
         onChooseTemplate: (templateId?: string) => void;
     }) => {
-        const router = useRouter();
-
         const [showPreview, setShowPreview] = useState(false);
 
         const handleShowPreview = useCallback(() => {

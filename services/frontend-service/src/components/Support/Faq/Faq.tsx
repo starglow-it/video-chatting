@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';

@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, memo } from 'react';
+import { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
 // shared

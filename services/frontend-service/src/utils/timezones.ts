@@ -1,4 +1,4 @@
-import { _24_HOURS, ONE_HOUR, ONE_MINUTE } from '../const/time/common';
+import { TWF_24_HOURS, ONE_HOUR, ONE_MINUTE } from '../const/time/common';
 import { addZero } from './functions/addZero';
 
 export const getTimestamp = (time: string): number => {
@@ -13,7 +13,7 @@ export const getTimeList = (
     maxIntervals?: number,
     maxValue = '24:00',
 ): string[] => {
-    const intervals = _24_HOURS / interval;
+    const intervals = TWF_24_HOURS / interval;
 
     const timeList = new Array(intervals + 1)
         .fill(0)

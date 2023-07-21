@@ -31,9 +31,9 @@ const Component: React.FunctionComponent<ChooseSignBoardProps> = ({
 
     const renderSignOptions = useMemo(
         () =>
-            SIGN_BOARDS.map((signBoardSet, index) => (
+            SIGN_BOARDS.map(signBoardSet => (
                 <SignBoardOption
-                    key={index}
+                    key={signBoardSet[0]?.id}
                     formKey={formKey}
                     data={signBoardSet}
                     width={optionWidth}

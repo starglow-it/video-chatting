@@ -1,10 +1,4 @@
-import React, {
-    useMemo,
-    ForwardedRef,
-    memo,
-    forwardRef,
-    useCallback,
-} from 'react';
+import { useMemo, ForwardedRef, memo, forwardRef, useCallback } from 'react';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
 
@@ -63,7 +57,7 @@ const Component = (
     const { translation } = useLocalization('subscriptions');
 
     const priceString = !isFree
-        ? `${currencies[price?.currency]}${price?.unit_amount / 100}`
+        ? `${currencies[price?.currency]}${(price?.unit_amount || 0) / 100}`
         : 'FREE';
 
     const templateFeaturesText = translation(

@@ -1,6 +1,6 @@
 import { KickUserReasons } from 'shared-types';
 
-import { logoutUserFx } from '../..';
+import { logoutUserFx } from 'src/store/auth/model';
 import { sendEndMeetingSocketEvent } from '../../roomStores';
 
 export const handleKickDeletedUser = async ({

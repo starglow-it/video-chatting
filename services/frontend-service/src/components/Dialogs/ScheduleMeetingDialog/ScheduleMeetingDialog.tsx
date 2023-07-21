@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
@@ -35,7 +35,6 @@ import {
     $scheduleTemplateIdStore,
     sendScheduleInviteFx,
     setScheduleTemplateIdEvent,
-    $profileStore,
 } from '../../../store';
 
 // types
@@ -85,7 +84,6 @@ type FormType = {
 const Component = () => {
     const { scheduleMeetingDialog } = useStore($appDialogsStore);
     const scheduleTemplateId = useStore($scheduleTemplateIdStore);
-    const profile = useStore($profileStore);
 
     const isScheduleMeetingInProgress = useStore(sendScheduleInviteFx.pending);
 

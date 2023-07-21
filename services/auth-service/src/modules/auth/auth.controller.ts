@@ -225,16 +225,20 @@ export class AuthController {
   @MessagePattern({ cmd: AuthBrokerPatterns.SendResetPasswordLink })
   async sendResetPasswordLink(
     @Payload() payload: SendResetPasswordLinkEmailPayload,
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
       const user = await this.coreService.findUserByEmail({
         email: payload.email,
       });
 
+      if(!user) return;
+
       const token = await this.authService.generateToken({
         user,
         type: TokenTypes.ResetPassword,
       });
+
+      if(!token) return;
 
       await this.coreService.setResetPasswordToken({
         email: payload.email,
@@ -253,7 +257,9 @@ export class AuthController {
         },
         to: [{ email: payload.email, name: user.fullName }],
       });
+      return true;
     } catch (err) {
+      console.log('err',err);
       throw new RpcException(err);
     }
   }

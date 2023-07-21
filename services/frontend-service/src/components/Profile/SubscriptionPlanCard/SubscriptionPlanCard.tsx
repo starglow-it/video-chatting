@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
 
@@ -41,7 +41,7 @@ const Component = ({
     const isFree = price?.unit_amount === 0;
 
     const priceString = !isFree
-        ? `${currencies[price?.currency]}${price?.unit_amount / 100}`
+        ? `${currencies[price?.currency]}${(price?.unit_amount || 0) / 100}`
         : 'Free';
 
     const { translation } = useLocalization('subscriptions');
@@ -90,6 +90,7 @@ const Component = ({
                 flex={1}
                 direction="column"
                 className={styles.column}
+                key={column[0].key}
             >
                 {renderListItem(column)}
             </CustomGrid>

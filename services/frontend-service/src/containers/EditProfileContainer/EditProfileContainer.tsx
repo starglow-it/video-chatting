@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';

@@ -1,14 +1,13 @@
-// subscribe events
 import { DashboardSubscribeEvents } from '../../../const/socketEvents/subscribers';
 
 // handlers
 import { handleMeetingAvailable } from './handleMeetingAvailable';
 import { handleDashboardNotification } from './handleDashboardNotification';
 import { handleTrialExpired } from './handleTrialExpired';
-import { handleKickDeletedUser } from './handleKickDeletedUser';
 
 // utils
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
+import { handleKickDeletedUser } from './handleKickDeletedUser';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;

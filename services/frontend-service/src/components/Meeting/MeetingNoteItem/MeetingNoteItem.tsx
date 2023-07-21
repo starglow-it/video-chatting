@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import Draggable from 'react-draggable';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';

@@ -1,4 +1,5 @@
-import React, { useRef, memo, useEffect, useMemo } from 'react';
+/* eslint-disable react/require-default-props */
+import { useRef, memo, useEffect, useMemo, ReactNode } from 'react';
 import clsx from 'clsx';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -91,10 +92,12 @@ const SocialInput = ({ social, index, onRemove }) => {
     );
 };
 
-const Component: React.FunctionComponent<{
-    buttonClassName?: string;
-    title?: React.ElementType;
-}> = ({ buttonClassName, title }) => {
+type Props = {
+    buttonClassName: string;
+    title?: ReactNode | null;
+};
+
+const Component = ({ buttonClassName, title = null }: Props) => {
     const prevFieldsCount = useRef(0);
 
     const {

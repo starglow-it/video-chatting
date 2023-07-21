@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';

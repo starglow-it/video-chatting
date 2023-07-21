@@ -8,10 +8,6 @@ export type ParsedValidationErrors<Values> = {
     [p in keyof Values]?: Partial<ValidationError>[];
 };
 
-type ValidationValues<Values> = {
-    [p in keyof Values]?: Values[p];
-};
-
 export type ValidationResult<Values> = {
     values: any;
     errors: ParsedValidationErrors<Values>;

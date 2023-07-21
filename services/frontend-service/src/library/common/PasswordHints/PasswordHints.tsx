@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { ValidationError } from 'yup';
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 
 // components
