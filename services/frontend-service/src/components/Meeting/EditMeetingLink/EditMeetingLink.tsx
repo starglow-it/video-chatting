@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, memo } from 'react';
+import { useMemo, useEffect, memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import InputBase from '@mui/material/InputBase';
 import debounce from '@mui/utils/debounce';
@@ -55,7 +55,11 @@ const Component = () => {
     };
 
     const checkCustomLinkRequest = useMemo(
-        () => debounce<(data: UpdateMeetingLink) => Promise<void>>(handleCheckFreeLinkTail, 1000),
+        () =>
+            debounce<(data: UpdateMeetingLink) => Promise<void>>(
+                handleCheckFreeLinkTail,
+                1000,
+            ),
         [],
     );
 
@@ -80,7 +84,9 @@ const Component = () => {
         <CustomGrid container direction="column">
             <CustomGrid
                 container
-                className={clsx(styles.linkWrapper, { [styles.error]: Boolean(customLinkError) })}
+                className={clsx(styles.linkWrapper, {
+                    [styles.error]: Boolean(customLinkError),
+                })}
                 alignItems="center"
                 gap={1}
                 wrap="nowrap"
@@ -97,8 +103,14 @@ const Component = () => {
                     {...registerData}
                 />
             </CustomGrid>
-            <CustomGrid container wrap="nowrap" className={styles.textLinkWrapper}>
-                <CustomTypography className={styles.linkStart}>{meetingLinkStart}</CustomTypography>
+            <CustomGrid
+                container
+                wrap="nowrap"
+                className={styles.textLinkWrapper}
+            >
+                <CustomTypography className={styles.linkStart}>
+                    {meetingLinkStart}
+                </CustomTypography>
                 <CustomTypography
                     color="colors.white.primary"
                     nameSpace={meetingLink ? '' : 'meeting'}

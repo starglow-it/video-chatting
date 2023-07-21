@@ -21,9 +21,8 @@ const Component = ({
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLAudioElement>(null);
 
-    const { volume, onStartVolumeIndicator, onStopVolumeIndicator } = useAudioVolumeMeter(
-        mediaStreamRef.current,
-    );
+    const { volume, onStartVolumeIndicator, onStopVolumeIndicator } =
+        useAudioVolumeMeter(mediaStreamRef.current);
 
     useEffect(() => {
         if (audioTrack) {
@@ -55,8 +54,13 @@ const Component = ({
 
     return (
         <>
-            {!isAuraActive && <CustomBox className={styles.meetingAudioWrapper} style={style} />}
-            <audio ref={container} autoPlay playsInline muted={!isMicEnabled || isLocal} />
+            {!isAuraActive && (
+                <CustomBox
+                    className={styles.meetingAudioWrapper}
+                    style={style}
+                />
+            )}
+            <audio ref={container} autoPlay muted={!isMicEnabled || isLocal} />
         </>
     );
 };

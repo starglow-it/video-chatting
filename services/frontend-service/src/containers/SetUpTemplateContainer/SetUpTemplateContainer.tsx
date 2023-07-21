@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
@@ -22,6 +22,8 @@ import { SubscriptionsPlans } from '@components/Payments/SubscriptionsPlans/Subs
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // store
+import { dashboardRoute } from 'src/const/client-routes';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import {
     $setUpTemplateStore,
     $appDialogsStore,
@@ -49,8 +51,6 @@ import { AppDialogsEnum } from '../../store/types';
 
 // utils
 import { getClientMeetingUrl } from '../../utils/urls';
-import { dashboardRoute } from 'src/const/client-routes';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     companyName: companyNameSchema().required('required'),
@@ -74,8 +74,7 @@ const Component = () => {
     const forceRef = useRef<boolean>(false);
     const isDataFilled = useRef<boolean>(false);
 
-    const { value: isProfileUpdated, onSwitchOn: handleSetProfileUpdated } =
-        useToggle(false);
+    const { value: isProfileUpdated } = useToggle(false);
 
     useEffect(() => {
         if (router.query.templateId) {
@@ -150,7 +149,9 @@ const Component = () => {
                     templateId: setUpTemplate.id,
                 });
 
-                const meetingUrl = getClientMeetingUrl(result?.template?.id);
+                const meetingUrl = getClientMeetingUrl(
+                    result?.template?.id || '',
+                );
                 await router.push(`${meetingUrl}?success_house=true`);
             }
             if (!router.query.templateId) {
@@ -162,7 +163,6 @@ const Component = () => {
                 }
                 await router.push(dashboardRoute);
             }
-            // handleSetProfileUpdated();
         }),
         [profileAvatar.file, setUpTemplate?.id],
     );

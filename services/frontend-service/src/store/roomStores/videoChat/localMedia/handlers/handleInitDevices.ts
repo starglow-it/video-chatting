@@ -11,10 +11,16 @@ import {
     setVideoErrorEvent,
 } from '../model';
 import { stopStream } from '../../../../../helpers/media/stopStream';
-import { StorageKeysEnum, WebStorage } from '../../../../../controllers/WebStorageController';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from '../../../../../controllers/WebStorageController';
 import { SavedSettings } from '../../../../../types';
 import { getMediaStream } from '../../../../../helpers/media/getMediaStream';
-import { getDevices, getDevicesFromStream } from '../../../../../helpers/media/getDevices';
+import {
+    getDevices,
+    getDevicesFromStream,
+} from '../../../../../helpers/media/getDevices';
 import { InitDevicesPayload } from '../../types';
 
 export const handleInitDevices = async ({
@@ -50,14 +56,19 @@ export const handleInitDevices = async ({
     }
 
     if (initialStream) {
-        const { audioDeviceId, videoDeviceId } = getDevicesFromStream(initialStream);
+        const { audioDeviceId, videoDeviceId } =
+            getDevicesFromStream(initialStream);
 
         stopStream(initialStream);
 
         const { audio, video } = await getDevices();
 
-        const videoDevice = video.find(device => device.deviceId === videoDeviceId) || video?.[0];
-        const audioDevice = audio.find(device => device.deviceId === audioDeviceId) || audio?.[0];
+        const videoDevice =
+            video.find(device => device.deviceId === videoDeviceId) ||
+            video?.[0];
+        const audioDevice =
+            audio.find(device => device.deviceId === audioDeviceId) ||
+            audio?.[0];
 
         const {
             stream,
@@ -69,18 +80,29 @@ export const handleInitDevices = async ({
         });
 
         if (stream) {
-            const { videoDeviceId: oldDevice } = getDevicesFromStream(changeStream);
-            const { videoDeviceId: newVideoDeviceId, audioDeviceId: newAudioDeviceId } =
-                getDevicesFromStream(stream);
+            const { videoDeviceId: oldDevice } =
+                getDevicesFromStream(changeStream);
+            const {
+                videoDeviceId: newVideoDeviceId,
+                audioDeviceId: newAudioDeviceId,
+            } = getDevicesFromStream(stream);
 
-            if (oldDevice !== newVideoDeviceId || !changeStream || !changeStream?.active) {
+            if (
+                oldDevice !== newVideoDeviceId ||
+                !changeStream ||
+                !changeStream?.active
+            ) {
                 stopStream(changeStream);
 
                 setIsCameraActiveEvent(isCameraActive);
                 setIsAudioActiveEvent(isMicActive);
 
-                setCurrentAudioDeviceEvent(newAudioDeviceId || currentAudioDevice);
-                setCurrentVideoDeviceEvent(newVideoDeviceId || currentVideoDevice);
+                setCurrentAudioDeviceEvent(
+                    newAudioDeviceId || currentAudioDevice,
+                );
+                setCurrentVideoDeviceEvent(
+                    newVideoDeviceId || currentVideoDevice,
+                );
 
                 setChangeStreamEvent(stream);
             } else {

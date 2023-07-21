@@ -1,4 +1,4 @@
-import { _24_HOURS, ONE_HOUR, ONE_MINUTE } from '../const/time/common';
+import { TWF_24_HOURS, ONE_HOUR, ONE_MINUTE } from '../const/time/common';
 import { addZero } from './functions/addZero';
 
 export const getTimestamp = (time: string): number => {
@@ -13,7 +13,7 @@ export const getTimeList = (
     maxIntervals?: number,
     maxValue = '24:00',
 ): string[] => {
-    const intervals = _24_HOURS / interval;
+    const intervals = TWF_24_HOURS / interval;
 
     const timeList = new Array(intervals + 1)
         .fill(0)
@@ -23,7 +23,8 @@ export const getTimeList = (
             const hours = Math.floor(intervalValue / ONE_HOUR);
 
             const minutes = Math.floor(
-                (intervalValue - (hours > 0 ? hours : 0) * ONE_HOUR) / ONE_MINUTE,
+                (intervalValue - (hours > 0 ? hours : 0) * ONE_HOUR) /
+                    ONE_MINUTE,
             );
 
             return `${hours > 0 ? addZero(hours) : '00'}:${addZero(minutes)}`;
@@ -33,7 +34,10 @@ export const getTimeList = (
             const currentTimestamp = getTimestamp(time);
             const maxTimestamp = getTimestamp(maxValue);
 
-            return currentTimestamp >= startAtTimestamp && currentTimestamp <= maxTimestamp;
+            return (
+                currentTimestamp >= startAtTimestamp &&
+                currentTimestamp <= maxTimestamp
+            );
         });
 
     return timeList.slice(0, maxIntervals || intervals);
@@ -42,10 +46,17 @@ export const getTimeList = (
 export const getTimeString = (timestamp: number): string => {
     const hours = Math.floor(timestamp / ONE_HOUR);
 
-    const minutes = Math.floor((timestamp - (hours > 0 ? hours : 0) * ONE_HOUR) / ONE_MINUTE);
+    const minutes = Math.floor(
+        (timestamp - (hours > 0 ? hours : 0) * ONE_HOUR) / ONE_MINUTE,
+    );
 
     return `${hours > 0 ? addZero(hours) : '00'}:${addZero(minutes)}`;
 };
 
-export const getHourMinutesString = ({ hours, minutes }: { hours: number; minutes: number }) =>
-    `${addZero(hours > 0 ? hours : 0)}:${addZero(minutes)}`;
+export const getHourMinutesString = ({
+    hours,
+    minutes,
+}: {
+    hours: number;
+    minutes: number;
+}) => `${addZero(hours > 0 ? hours : 0)}:${addZero(minutes)}`;

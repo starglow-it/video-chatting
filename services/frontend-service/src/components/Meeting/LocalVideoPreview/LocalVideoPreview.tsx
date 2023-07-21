@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { LocalVideoMock } from '@components/MockComponents/LocalVideoMock/LocalVideoMock';
@@ -15,7 +15,12 @@ const LocalVideoPreview = memo(() => {
         name: 'fullName',
     });
 
-    return <LocalVideoMock userName={fullName} userProfileAvatar={profile?.profileAvatar?.url} />;
+    return (
+        <LocalVideoMock
+            userName={fullName}
+            userProfileAvatar={profile?.profileAvatar?.url}
+        />
+    );
 });
 
 export { LocalVideoPreview };

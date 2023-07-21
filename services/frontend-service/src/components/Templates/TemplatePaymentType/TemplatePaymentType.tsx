@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
 // custom
@@ -12,16 +12,23 @@ import { TemplatePaymentTypeProps } from './types';
 // styles
 import styles from './TemplatePaymentTypeProps.module.scss';
 
-const Component = ({ priceInCents = 0, type = 'free' }: TemplatePaymentTypeProps) => (
+const Component = ({
+    priceInCents = 0,
+    type = 'free',
+}: TemplatePaymentTypeProps) => (
     <CustomGrid
         item
         alignItems="center"
-        className={clsx(styles.templatePayment, { [styles.paid]: Boolean(priceInCents) })}
+        className={clsx(styles.templatePayment, {
+            [styles.paid]: Boolean(priceInCents),
+        })}
     >
         <PaymentIcon width="22px" height="22px" />
         <CustomTypography
             variant="body2"
-            color={priceInCents ? 'colors.blue.primary' : 'colors.green.primary'}
+            color={
+                priceInCents ? 'colors.blue.primary' : 'colors.green.primary'
+            }
         >
             {priceInCents ? priceInCents / 100 : type}
         </CustomTypography>

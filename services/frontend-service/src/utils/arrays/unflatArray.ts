@@ -1,4 +1,7 @@
-export const unflatArray = <Entity>(array: Entity[], arrSize: number): Entity[][] => {
+export const unflatArray = <Entity>(
+    array: Entity[],
+    arrSize: number,
+): Entity[][] => {
     if (!array) return [];
 
     const newArr = [];

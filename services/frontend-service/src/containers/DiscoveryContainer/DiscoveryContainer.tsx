@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
@@ -15,7 +15,7 @@ import { DiscoverTemplateItem } from '@components/Templates/DiscoverTemplateItem
 
 // stores
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import {ICommonTemplate, IUserTemplate} from 'shared-types';
+import { ICommonTemplate, IUserTemplate } from 'shared-types';
 import {
     $discoveryTemplatesStore,
     getUsersTemplatesFx,
@@ -43,13 +43,19 @@ const DiscoveryContainer = memo(() => {
         })();
     }, []);
 
-    const handleEnterWaitingRoom = useCallback((templateId: ICommonTemplate['id']) => {
-        router.push(getClientMeetingUrl(templateId));
-    }, []);
+    const handleEnterWaitingRoom = useCallback(
+        (templateId: ICommonTemplate['id']) => {
+            router.push(getClientMeetingUrl(templateId));
+        },
+        [],
+    );
 
-    const handleUserTemplatesPageChange = useCallback(async (newPage: number) => {
-        await getUsersTemplatesFx({ limit: 6 * newPage, skip: 0 });
-    }, []);
+    const handleUserTemplatesPageChange = useCallback(
+        async (newPage: number) => {
+            await getUsersTemplatesFx({ limit: 6 * newPage, skip: 0 });
+        },
+        [],
+    );
 
     const handleScheduleMeeting = useCallback(
         ({ templateId }: { templateId: ICommonTemplate['id'] }) => {

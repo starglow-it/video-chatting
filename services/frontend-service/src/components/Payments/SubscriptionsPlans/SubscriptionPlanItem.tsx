@@ -1,4 +1,4 @@
-import React, { useMemo, ForwardedRef, memo, forwardRef, useCallback } from 'react';
+import { useMemo, ForwardedRef, memo, forwardRef, useCallback } from 'react';
 import clsx from 'clsx';
 import { List, ListItem, ListItemIcon } from '@mui/material';
 
@@ -21,7 +21,7 @@ import { Translation } from '@library/common/Translation/Translation';
 
 // styles
 import { currencies } from 'src/const/profile/subscriptions';
-import { planColors } from "shared-const";
+import { planColors } from 'shared-const';
 
 // types
 import { SubscriptionPlanItemProps, TranslationFeatureItem } from './types';
@@ -57,13 +57,15 @@ const Component = (
     const { translation } = useLocalization('subscriptions');
 
     const priceString = !isFree
-        ? `${currencies[price?.currency]}${price?.unit_amount / 100}`
+        ? `${currencies[price?.currency]}${(price?.unit_amount || 0) / 100}`
         : 'FREE';
 
-    const templateFeaturesText = translation(`subscriptions.${product.name}`) as unknown as {
+    const templateFeaturesText = translation(
+        `subscriptions.${product.name}`,
+    ) as unknown as {
         features: TranslationFeatureItem[][];
         trialHint?: string;
-        comissionFee: string
+        comissionFee: string;
     };
 
     const renderFeaturesListItems = useMemo(
@@ -75,11 +77,11 @@ const Component = (
                             key={feature.key}
                             alignItems="flex-start"
                             disablePadding
-                            className={clsx(
-                                styles.listItem,{
-                                    [styles.listItemFade] : Boolean(feature?.type ==='fade')
-                                }                                
-                            )}
+                            className={clsx(styles.listItem, {
+                                [styles.listItemFade]: Boolean(
+                                    feature?.type === 'fade',
+                                ),
+                            })}
                         >
                             <ListItemIcon classes={{ root: styles.listIcon }}>
                                 <RoundCheckIcon width="16px" height="16px" />
@@ -93,7 +95,10 @@ const Component = (
                                     fontWeight={600}
                                     className={styles.mainText}
                                 />
-                                <CustomTypography variant="body2" className={styles.subText}>
+                                <CustomTypography
+                                    variant="body2"
+                                    className={styles.subText}
+                                >
                                     {feature.subText}
                                 </CustomTypography>
                             </CustomGrid>
@@ -112,21 +117,33 @@ const Component = (
                 {!withoutTitle && (
                     <CustomBox
                         className={styles.productName}
-                        sx={{backgroundColor: planColors[product.name as string]}}
+                        sx={{
+                            backgroundColor: planColors[product.name as string],
+                        }}
                     >
-                        <CustomTypography variant="body2bold" color="colors.white.primary">
+                        <CustomTypography
+                            variant="body2bold"
+                            color="colors.white.primary"
+                        >
                             {product.name}
                         </CustomTypography>
                     </CustomBox>
                 )}
                 <CustomGrid className={styles.priceWrapper}>
-                    <CustomTypography className={styles.price}>{priceString}</CustomTypography>
+                    <CustomTypography className={styles.price}>
+                        {priceString}
+                    </CustomTypography>
                     <ConditionalRender condition={!isFree}>
-                        <CustomTypography>/ {price?.recurring?.interval}</CustomTypography>
+                        <CustomTypography>
+                            / {price?.recurring?.interval}
+                        </CustomTypography>
                     </ConditionalRender>
                 </CustomGrid>
 
-                <CustomTypography variant="body1" className={styles.description}>
+                <CustomTypography
+                    variant="body1"
+                    className={styles.description}
+                >
                     {product.description}
                 </CustomTypography>
 
@@ -134,14 +151,21 @@ const Component = (
                     <CustomScroll>{renderFeaturesListItems}</CustomScroll>
                 </List>
 
-                <CustomGrid container direction="column" className={styles.buttons}>
+                <CustomGrid
+                    container
+                    direction="column"
+                    className={styles.buttons}
+                >
                     <ConditionalRender condition={withTrial}>
                         <CustomTooltip
                             arrow
                             title={
                                 <CustomTypography
                                     dangerouslySetInnerHTML={{
-                                        __html: translation(templateFeaturesText.trialHint ?? ''),
+                                        __html: translation(
+                                            templateFeaturesText.trialHint ??
+                                                '',
+                                        ),
                                     }}
                                     className={styles.trialText}
                                 />
@@ -173,7 +197,7 @@ const Component = (
                                 }
                             />
                         </CustomTooltip>
-                    </ConditionalRender>                    
+                    </ConditionalRender>
                     <CustomButton
                         label={
                             <Translation
@@ -187,7 +211,9 @@ const Component = (
                         }
                         disabled={isDisabled}
                         onClick={handleChooseSubscription}
-                        className={clsx(styles.button, { [styles.active]: isActive })}
+                        className={clsx(styles.button, {
+                            [styles.active]: isActive,
+                        })}
                     />
                 </CustomGrid>
             </CustomGrid>

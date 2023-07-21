@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
@@ -35,7 +35,10 @@ import styles from './MeetingSettingsPanel.module.scss';
 // validations
 import { companyNameSchema } from '../../../validation/users/companyName';
 import { emailSchema } from '../../../validation/users/email';
-import { simpleStringSchema, simpleStringSchemaWithLength } from '../../../validation/common';
+import {
+    simpleStringSchema,
+    simpleStringSchemaWithLength,
+} from '../../../validation/common';
 import { businessCategoriesSchema } from '../../../validation/users/businessCategories';
 import { languagesSchema } from '../../../validation/users/languagesSchema';
 import { fullNameSchema } from '../../../validation/users/fullName';
@@ -76,7 +79,11 @@ const validationSchema = yup.object({
     customLink: customTemplateLinkSchema(),
 });
 
-const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPanelProps) => {
+const Component = ({
+    template,
+    onTemplateUpdate,
+    children,
+}: MeetingSettingsPanelProps) => {
     const isEditTemplateOpened = useStore($isEditTemplateOpenStore);
     const isMeetingInfoOpened = useStore($isMeetingInfoOpenStore);
     const businessCategories = useStore($businessCategoriesStore);
@@ -88,7 +95,11 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
     const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
     const templateSocialLinks = useMemo<SettingsData['socials']>(
-        () => template.socials.map(social => ({ key: social.key, value: social.value })),
+        () =>
+            template.socials.map(social => ({
+                key: social.key,
+                value: social.value,
+            })),
         [template?.socials],
     );
 
@@ -101,7 +112,9 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             fullName: template.fullName,
             position: template.position,
             signBoard: template.signBoard,
-            businessCategories: template?.businessCategories?.map(category => category.key),
+            businessCategories: template?.businessCategories?.map(
+                category => category.key,
+            ),
             languages: template.languages.map(category => category.key),
             socials: templateSocialLinks,
             customLink: template.customLink,
@@ -130,7 +143,9 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
 
     useEffect(() => {
         (async () => {
-            const roomUrl = getClientMeetingUrlWithDomain(template.customLink || template.id);
+            const roomUrl = getClientMeetingUrlWithDomain(
+                template.customLink || template.id,
+            );
 
             await Router.push(roomUrl, roomUrl, { shallow: true });
         })();
@@ -140,8 +155,9 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-        const values: (boolean | { [key: string]: boolean })[] =
-            Object.values(dirtyFieldsWithOutSocials);
+        const values: (boolean | { [key: string]: boolean })[] = Object.values(
+            dirtyFieldsWithOutSocials,
+        );
 
         const newDirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
 
@@ -158,7 +174,9 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             const targetSocial = paddedNextSocials?.find(
                 currentSocial => currentSocial?.key === social?.key,
             );
-            const isBothEmpty = targetSocial?.value === undefined && social?.value === undefined;
+            const isBothEmpty =
+                targetSocial?.value === undefined &&
+                social?.value === undefined;
 
             const isExistedNotChanged =
                 targetSocial?.value && targetSocial?.value === social?.value;
@@ -176,9 +194,15 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             })
             .filter(Boolean);
 
-        const numberOfChangedFields = changedFields.filter(value => !value).length;
+        const numberOfChangedFields = changedFields.filter(
+            value => !value,
+        ).length;
 
-        return newDirtyFieldsCount + numberOfChangedFields + changedNewFields.length;
+        return (
+            newDirtyFieldsCount +
+            numberOfChangedFields +
+            changedNewFields.length
+        );
     }, [Object.keys(dirtyFields).length, nextSocials, template.socials]);
 
     const handleCloseSettingsPanel = useCallback(() => {
@@ -211,7 +235,8 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             } else {
                 const { socials, ...dataWithoutSocials } = data;
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { socials: dirtySocials, ...dirtyDataWithoutSocials } = dirtyFields;
+                const { socials: dirtySocials, ...dirtyDataWithoutSocials } =
+                    dirtyFields;
 
                 const dirtyFieldsKeys = Object.keys(dirtyDataWithoutSocials);
 
@@ -221,7 +246,10 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                     ),
                 );
 
-                if (filteredData.customLink && template.customLink !== filteredData.customLink) {
+                if (
+                    filteredData.customLink &&
+                    template.customLink !== filteredData.customLink
+                ) {
                     const isBusy = await checkCustomLinkFx({
                         templateId: template.id,
                         customLink: filteredData.customLink as string,
@@ -229,7 +257,10 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
 
                     if (isBusy) {
                         setError('customLink', [
-                            { type: 'focus', message: 'meeting.settings.customLink.busy' },
+                            {
+                                type: 'focus',
+                                message: 'meeting.settings.customLink.busy',
+                            },
                         ]);
                         setFocus('customLink');
                         return;
@@ -242,9 +273,12 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
 
                 let filteredBusinessCategories;
                 if (Array.isArray(filteredData.businessCategories)) {
-                    filteredBusinessCategories = filteredData.businessCategories?.map(category =>
-                        businessCategories.list.find(({ key }) => category === key),
-                    );
+                    filteredBusinessCategories =
+                        filteredData.businessCategories?.map(category =>
+                            businessCategories.list.find(
+                                ({ key }) => category === key,
+                            ),
+                        );
                 }
 
                 onTemplateUpdate({
@@ -263,7 +297,13 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
             }
             setEditTemplateOpenEvent(false);
         }),
-        [dirtyFieldsCount, template.id, template.customLink, errors, businessCategories.list],
+        [
+            dirtyFieldsCount,
+            template.id,
+            template.customLink,
+            errors,
+            businessCategories.list,
+        ],
     );
 
     const handleCancelEditTemplate = useCallback(() => {
@@ -283,7 +323,8 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                 <CustomPaper
                     variant="black-glass"
                     className={clsx(styles.settingsWrapper, {
-                        [styles.open]: isEditTemplateOpened || isMeetingInfoOpened,
+                        [styles.open]:
+                            isEditTemplateOpened || isMeetingInfoOpened,
                     })}
                 >
                     <RoundCloseIcon
@@ -295,8 +336,13 @@ const Component = ({ template, onTemplateUpdate, children }: MeetingSettingsPane
                     {isOwner ? (
                         <Fade in={isEditTemplateOpened} unmountOnExit>
                             <CustomBox className={styles.fadeContentWrapper}>
-                                <form onSubmit={onSubmit} className={styles.form}>
-                                    <EditTemplateForm onCancel={handleCancelEditTemplate} />
+                                <form
+                                    onSubmit={onSubmit}
+                                    className={styles.form}
+                                >
+                                    <EditTemplateForm
+                                        onCancel={handleCancelEditTemplate}
+                                    />
                                 </form>
                             </CustomBox>
                         </Fade>

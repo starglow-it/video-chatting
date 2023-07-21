@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // utils
 
@@ -28,7 +28,11 @@ const Component = () => (
         alignItems="center"
         className={styles.placeholder}
     >
-        <CustomImage src={images[getRandomNumber(3)]} width="40px" height="40px" />
+        <CustomImage
+            src={images[getRandomNumber(3)]}
+            width="40px"
+            height="40px"
+        />
         <CustomTypography
             variant="body2"
             color="colors.white.primary"

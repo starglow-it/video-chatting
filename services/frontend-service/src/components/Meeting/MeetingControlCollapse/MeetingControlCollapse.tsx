@@ -5,7 +5,6 @@ import { useStore } from 'effector-react';
 import { memo } from 'react';
 import { EllipsisIcon } from 'shared-frontend/icons/OtherIcons/EllipsisIcon';
 import { GoodsIcon } from 'shared-frontend/icons/OtherIcons/GoodsIcon';
-import { MonetizationIcon } from 'shared-frontend/icons/OtherIcons/MonetizationIcon';
 import { SettingsIcon } from 'shared-frontend/icons/OtherIcons/SettingsIcon';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import {
@@ -23,10 +22,10 @@ import {
     stopScreenSharing,
 } from 'src/store/roomStores';
 import { AppDialogsEnum } from 'src/store/types';
-import styles from './MeetingControlCollapse.module.scss';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { SharingIcon } from 'shared-frontend/icons/OtherIcons/SharingIcon';
 import clsx from 'clsx';
+import styles from './MeetingControlCollapse.module.scss';
 
 enum CollapseTypes {
     Settings = 'settings',

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // custom
@@ -21,16 +21,25 @@ import { ParticipantPosition } from '@containers/CreateRoomContainer/types';
 // styles
 import styles from './EditAttendeesPosition.module.scss';
 
-const Component = ({ onNextStep, onPreviousStep }: EditAttendeesPositionProps) => {
+const Component = ({
+    onNextStep,
+    onPreviousStep,
+}: EditAttendeesPositionProps) => {
     const { control, setValue } = useFormContext();
 
-    const participantsPositions = useWatch({ control, name: 'participantsPositions' });
-    const participantsNumber = useWatch({ control, name: 'participantsNumber' });
+    const participantsPositions = useWatch({
+        control,
+        name: 'participantsPositions',
+    });
+    const participantsNumber = useWatch({
+        control,
+        name: 'participantsNumber',
+    });
 
     const handleChangePosition = useCallback(
         ({ id, top, left }: ParticipantPosition) => {
             const positionIndex = participantsPositions.findIndex(
-                ({ id: stubId }) => stubId === id,
+                ({ id: stubId }: { id: string }) => stubId === id,
             );
             if (positionIndex === -1) {
                 return;
@@ -49,15 +58,17 @@ const Component = ({ onNextStep, onPreviousStep }: EditAttendeesPositionProps) =
 
     const stubs = useMemo(
         () =>
-            participantsPositions.map(({ id, top, left }: ParticipantPosition, index: number) => (
-                <UserVideoStub
-                    key={id}
-                    stubId={id}
-                    index={index}
-                    position={{ top, left }}
-                    onPositionChange={handleChangePosition}
-                />
-            )),
+            participantsPositions.map(
+                ({ id, top, left }: ParticipantPosition, index: number) => (
+                    <UserVideoStub
+                        key={id}
+                        stubId={id}
+                        index={index}
+                        position={{ top, left }}
+                        onPositionChange={handleChangePosition}
+                    />
+                ),
+            ),
         [participantsPositions],
     );
 

@@ -1,4 +1,4 @@
-import {ErrorState, IUserTemplate} from 'shared-types';
+import { ErrorState, IUserTemplate } from 'shared-types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 
 import { deleteProfileTemplatesUrl } from '../../../utils/urls';

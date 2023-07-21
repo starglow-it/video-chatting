@@ -50,23 +50,25 @@ async function bootstrap() {
 
   await app.listen();
 
-  await seeder.seedBusinessCategories();
-  await seeder.seedLanguages();
-  await seeder.createCounter();
-  await seeder.seedAdminUser();
-  await seeder.seedMonetizationStatistic();
-  await seeder.seedRoomStatistic();
-  await seeder.seedLinks();
-  await seeder.seedUpdateMaxMeetingTimeUser();
-  await seeder.seedIndexsDataByUserTemplates()
-  await seeder.seedCreateGlobalCommonTemplate();
-  await seeder.seedMediaCategories();
-  await seeder.seedMyRoomMediasByUserTemplateAmount();
+  if (config.isSeed) {
+    await seeder.seedBusinessCategories();
+    await seeder.seedLanguages();
+    await seeder.createCounter();
+    await seeder.seedAdminUser();
+    await seeder.seedMonetizationStatistic();
+    await seeder.seedRoomStatistic();
+    await seeder.seedLinks();
+    await seeder.seedUpdateMaxMeetingTimeUser();
+    await seeder.seedIndexsDataByUserTemplates();
+    await seeder.seedCreateGlobalCommonTemplate();
+    await seeder.seedMediaCategories();
+    await seeder.seedMyRoomMediasByUserTemplateAmount();
+  }
 
   usersController.startCheckSubscriptions();
   monetizationController.startCheckLastMonthMonetization();
   dashboardNotificationsController.deleteDashboardNotifications();
-  
+
   return;
 }
 

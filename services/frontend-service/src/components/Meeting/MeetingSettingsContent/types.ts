@@ -1,5 +1,5 @@
 export type MeetingSettingsContentProps = {
-    title: unknown;
+    title: any;
     isBackgroundActive: boolean;
     onBackgroundToggle: () => void;
     backgroundVolume: number;

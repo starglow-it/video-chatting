@@ -3,4 +3,7 @@ import { handleGetBusinessCategories } from './handlers/handleGetBusinessCategor
 
 getBusinessCategoriesFx.use(handleGetBusinessCategories);
 
-$businessCategoriesStore.on(getBusinessCategoriesFx.doneData, (state, payload) => payload ?? state);
+$businessCategoriesStore.on(
+    getBusinessCategoriesFx.doneData,
+    (state, payload) => payload ?? state,
+);

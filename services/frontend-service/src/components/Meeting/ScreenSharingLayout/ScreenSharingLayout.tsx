@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
@@ -9,7 +9,11 @@ import { ScreenSharingVideo } from '@components/Meeting/ScreenSharingVideo/Scree
 import { ScreenSharingPlaceholder } from '@components/Meeting/ScreenSharingPlaceholder/ScreenSharingPlaceholder';
 
 // stores
-import { $localUserStore, $meetingStore, $tracksStore } from '../../../store/roomStores';
+import {
+    $localUserStore,
+    $meetingStore,
+    $tracksStore,
+} from '../../../store/roomStores';
 
 // types
 import { ConnectionType, StreamType } from '../../../const/webrtc';

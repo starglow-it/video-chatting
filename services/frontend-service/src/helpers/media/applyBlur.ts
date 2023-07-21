@@ -1,7 +1,7 @@
 import { getBrowserData } from 'shared-utils';
+import { VIDEO_CONSTRAINTS } from 'src/const/media/VIDEO_CONSTRAINTS';
 import { CustomMediaStream } from '../../types';
 import { BROWSER_NAMES } from '../../types/browsers';
-import { VIDEO_CONSTRAINTS } from 'src/const/media/VIDEO_CONSTRAINTS';
 
 class BackgroundManagerInstance {
     supportedBrowsers: string[];
@@ -10,9 +10,9 @@ class BackgroundManagerInstance {
 
     isBackgroundSupported: boolean;
 
-    effectBackground: unknown;
+    effectBackground: any;
 
-    videoEffects: unknown;
+    videoEffects: any;
 
     segmentation: any;
 

@@ -1,14 +1,3 @@
-export type SubscriptionPlanItemProps = {
-    activePlanKey?: string;
-    isDisabled: boolean;
-    product: unknown;
-    price: unknown;
-    withoutTitle?: boolean;
-    onChooseSubscription: SubscriptionsPlansProps['onChooseSubscription'];
-    buttonTranslation?: string;
-    withTrial?: boolean;
-};
-
 export type SubscriptionsPlansProps = {
     activePlanKey?: string;
     isDisabled: boolean;
@@ -26,9 +15,20 @@ export type SubscriptionsPlansProps = {
     onlyPaidPlans?: boolean;
 };
 
+export type SubscriptionPlanItemProps = {
+    activePlanKey?: string;
+    isDisabled: boolean;
+    product: unknown;
+    price: unknown;
+    withoutTitle?: boolean;
+    onChooseSubscription: SubscriptionsPlansProps['onChooseSubscription'];
+    buttonTranslation?: string;
+    withTrial?: boolean;
+};
+
 export type TranslationFeatureItem = {
     key: string;
     text: string;
     subText: string;
-    type?: string
+    type?: string;
 };

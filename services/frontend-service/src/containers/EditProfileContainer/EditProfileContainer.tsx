@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -24,6 +24,9 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { IBusinessCategory, ILanguage, ISocialLink } from 'shared-types';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { Translation } from '@library/common/Translation/Translation';
+import { dashboardRoute } from 'src/const/client-routes';
 import {
     $profileStore,
     addNotificationEvent,
@@ -46,9 +49,6 @@ import { validateSocialLink } from '../../validation/users/socials';
 import styles from './EditProfileContainer.module.scss';
 
 // types
-import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
-import { Translation } from '@library/common/Translation/Translation';
-import { dashboardRoute } from 'src/const/client-routes';
 import { NotificationType } from '../../store/types';
 
 const validationSchema = yup.object({

@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -40,7 +40,13 @@ const validationSchema = yup.object({
 });
 
 const EditProfileEmailInfo = memo(
-    ({ onCancel, onChanged }: { onCancel: () => void; onChanged: () => void }) => {
+    ({
+        onCancel,
+        onChanged,
+    }: {
+        onCancel: () => void;
+        onChanged: () => void;
+    }) => {
         const resolver = useYupValidationResolver<{
             password: string;
             email: string;
@@ -59,10 +65,13 @@ const EditProfileEmailInfo = memo(
 
         const { handleSubmit, control, setError, setFocus } = methods;
 
-        const { value: isPasswordVerified, onSwitchOn: handleFinishPasswordEnter } =
-            useToggle(false);
+        const {
+            value: isPasswordVerified,
+            onSwitchOn: handleFinishPasswordEnter,
+        } = useToggle(false);
 
-        const { value: isNewEmailEntered, onSwitchOn: handleFinishEmailEnter } = useToggle(false);
+        const { value: isNewEmailEntered, onSwitchOn: handleFinishEmailEnter } =
+            useToggle(false);
 
         const email = useWatch({
             control,
@@ -116,7 +125,9 @@ const EditProfileEmailInfo = memo(
             });
 
             if (!result.success) {
-                setError('password', [{ type: 'focus', message: 'user.pass.incorrect' }]);
+                setError('password', [
+                    { type: 'focus', message: 'user.pass.incorrect' },
+                ]);
                 setFocus('password');
             } else {
                 handleFinishPasswordEnter();
@@ -132,7 +143,9 @@ const EditProfileEmailInfo = memo(
             if (result.success) {
                 handleFinishEmailEnter();
             } else {
-                setError('email', [{ type: 'focus', message: result?.error?.message }]);
+                setError('email', [
+                    { type: 'focus', message: result?.error?.message },
+                ]);
                 setFocus('email');
             }
         }, [email]);

@@ -1,29 +1,35 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useStore } from 'effector-react';
 
-import { ICommonTemplate } from 'shared-types';
+import { ICommonTemplate, RoomType } from 'shared-types';
 
 // custom
-import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 // components
-import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
 import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplatesGrid } from '@components/Templates/TemplatesGrid/TemplatesGrid';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from '../../controllers/WebStorageController';
 
 // styles
-import styles from './WelcomePageContainer.module.scss';
 
 // stores
-import { $templatesStore, getTemplatesFx } from '../../store';
+import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
+import { MenusWelcome } from '@components/Templates/MenusWelcome/MenusWelcome';
+import { parseCookies } from 'nookies';
+import { getClientMeetingUrl } from 'src/utils/urls';
+import { handleCreateMeeting } from 'src/store/meetings/handlers/handleCreateMeeting';
+import { setUserWithoutTokenCookies } from 'src/helpers/http/setAuthCookies';
+import { OnboardingTemplateItem } from '@components/Templates/OnboardingTemplateItem/OnboardingTemplateItem';
+import {
+    $templatesStore,
+    addTemplateToUserFx,
+    getBusinessCategoriesFx,
+    getFeaturedBackgroundFx,
+    getTemplatesFx,
+    initUserWithoutTokenFx,
+    setQueryTemplatesEvent,
+} from '../../store';
 
 const baseTemplateParams = {
     type: 'free',
@@ -35,30 +41,29 @@ const baseTemplateParams = {
 
 const WelcomePageContainer = memo(() => {
     const router = useRouter();
-
     const templates = useStore($templatesStore);
 
     useEffect(() => {
-        (async () => {
-            await getTemplatesFx({
-                limit: 6,
-                skip: 0,
-                ...baseTemplateParams,
-            });
+        setQueryTemplatesEvent({
+            skip: 0,
+            ...baseTemplateParams,
+        });
+    }, []);
+
+    useEffect(() => {
+        (() => {
+            getBusinessCategoriesFx({});
         })();
     }, []);
 
-    const handleStartOnboarding = useCallback(
-        (templateId: ICommonTemplate['id']) => {
-            WebStorage.save({
-                key: StorageKeysEnum.templateId,
-                data: { templateId },
-            });
-
-            router.push(`/register`);
-        },
-        [],
-    );
+    useEffect(() => {
+        getFeaturedBackgroundFx({
+            skip: 0,
+            limit: 9,
+            roomType: RoomType.Featured,
+            draft: false,
+        });
+    }, []);
 
     const handleCommonTemplatesPageChange = useCallback(
         async (newPage: number) => {
@@ -71,6 +76,27 @@ const WelcomePageContainer = memo(() => {
         [],
     );
 
+    const handleChooseTemplate = async (templateId: string) => {
+        const { userWithoutLoginId, userTemplateId } = parseCookies();
+        if (!userWithoutLoginId) {
+            await initUserWithoutTokenFx(templateId);
+        } else {
+            if (templateId !== userTemplateId) {
+                const newTemplate = await addTemplateToUserFx({ templateId });
+                if (newTemplate) {
+                    await handleCreateMeeting({ templateId: newTemplate.id });
+                    router.push(getClientMeetingUrl(newTemplate.id));
+                    setUserWithoutTokenCookies(
+                        userWithoutLoginId,
+                        newTemplate.id,
+                    );
+                }
+            } else {
+                router.push(getClientMeetingUrl(userTemplateId));
+            }
+        }
+    };
+
     return (
         <>
             <CustomGrid
@@ -80,43 +106,22 @@ const WelcomePageContainer = memo(() => {
                 sx={{
                     padding: '94px 20px 100px 20px',
                 }}
+                height="100%"
             >
-                <CustomGrid
-                    className={styles.wrapper}
-                    container
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <CustomBox className={styles.image}>
-                        <CustomImage
-                            src="/images/winking-face.webp"
-                            width="40px"
-                            height="40px"
-                            alt="winking-face"
-                        />
-                    </CustomBox>
-                    <CustomTypography
-                        variant="h1"
-                        nameSpace="welcome"
-                        translation="title"
-                    />
-                </CustomGrid>
-                <CustomTypography
-                    variant="h4"
-                    nameSpace="welcome"
-                    translation="text"
-                />
+                <FeaturedBackground onChooseTemplate={handleChooseTemplate} />
+                <MenusWelcome />
                 <TemplatesGrid<ICommonTemplate>
                     list={templates.list}
                     count={templates.count}
                     onPageChange={handleCommonTemplatesPageChange}
                     TemplateComponent={OnboardingTemplateItem}
+                    onChooseTemplate={handleChooseTemplate}
                 />
             </CustomGrid>
             <TemplatePreviewDialog
                 isNeedToRenderTemplateInfo
                 chooseButtonKey="chooseTemplate"
-                onChooseTemplate={handleStartOnboarding}
+                onChooseTemplate={handleChooseTemplate}
             />
         </>
     );

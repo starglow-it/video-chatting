@@ -32,7 +32,7 @@ export default async function sendRequestWithCredentials<Result, Error>(
         userWithoutLoginId,
     } = cookies;
 
-    if(userWithoutLoginId) {
+    if (userWithoutLoginId) {
         return sendRequest<Result, Error>({
             url: path,
             ctx,

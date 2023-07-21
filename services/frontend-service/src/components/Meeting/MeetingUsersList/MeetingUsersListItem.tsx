@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useStore } from 'effector-react';
 
 // custom
@@ -48,7 +48,12 @@ const Component = ({
     };
 
     return (
-        <CustomGrid className={styles.userItem} container alignItems="center" wrap="nowrap">
+        <CustomGrid
+            className={styles.userItem}
+            container
+            alignItems="center"
+            wrap="nowrap"
+        >
             <ProfileAvatar
                 className={styles.profileAvatar}
                 src={user?.profileAvatar}
@@ -59,7 +64,12 @@ const Component = ({
             <CustomTypography className={styles.userName} color="common.white">
                 {user.username}
             </CustomTypography>
-            <CustomGrid className={styles.btnGroup} gap={1} container wrap="nowrap">
+            <CustomGrid
+                className={styles.btnGroup}
+                gap={1}
+                container
+                wrap="nowrap"
+            >
                 <ConditionalRender condition={isAcceptRequest}>
                     <ActionButton
                         variant="accept"
@@ -71,7 +81,10 @@ const Component = ({
 
                 <ConditionalRender
                     condition={
-                        !isLocalItem && !isAcceptRequest && isMeetingHost && !user.isGenerated
+                        !isLocalItem &&
+                        !isAcceptRequest &&
+                        isMeetingHost &&
+                        !user.isGenerated
                     }
                 >
                     <ActionButton
@@ -83,7 +96,9 @@ const Component = ({
                 </ConditionalRender>
 
                 <ConditionalRender
-                    condition={Boolean(!isLocalItem && onDeleteUser && !isOwnerItem)}
+                    condition={Boolean(
+                        !isLocalItem && onDeleteUser && !isOwnerItem,
+                    )}
                 >
                     <ActionButton
                         variant="decline"

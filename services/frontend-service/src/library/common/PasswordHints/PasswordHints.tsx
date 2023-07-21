@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { ValidationError } from 'yup';
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 
 // components
@@ -46,7 +46,8 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
                         (error: ValidationError) => error.message === hint.type,
                     ) &&
                     !errors?.[fieldKey]?.find?.(
-                        (error: ValidationError) => error.message === 'required',
+                        (error: ValidationError) =>
+                            error.message === 'required',
                     );
 
                 const isPasswordTypeActive =
@@ -83,7 +84,12 @@ const PasswordHints = memo(({ show, fieldKey }: PasswordHintsProps) => {
                     </CustomGrid>
                 );
             }),
-        [errors?.[fieldKey], isPasswordLengthPassed, isPasswordContentPassed, isSubmitted],
+        [
+            errors?.[fieldKey],
+            isPasswordLengthPassed,
+            isPasswordContentPassed,
+            isSubmitted,
+        ],
     );
 
     return (

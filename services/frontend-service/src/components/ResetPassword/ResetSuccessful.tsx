@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 // custom
@@ -10,7 +10,7 @@ import { clientRoutes } from '../../const/client-routes';
 
 const Component = () => {
     const router = useRouter();
-    const timeoutRef = useRef<number | null>(null);
+    const timeoutRef = useRef<any | null>(null);
 
     useEffect(() => {
         timeoutRef.current = setTimeout(() => {
@@ -35,7 +35,10 @@ const Component = () => {
                 nameSpace="common"
                 translation="reset.resetSuccessful.title"
             />
-            <CustomTypography nameSpace="common" translation="reset.resetSuccessful.text" />
+            <CustomTypography
+                nameSpace="common"
+                translation="reset.resetSuccessful.text"
+            />
         </CustomGrid>
     );
 };

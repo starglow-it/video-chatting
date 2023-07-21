@@ -14,7 +14,10 @@ const SetUpTemplateProgress = memo(
 
         return (
             <CustomBox position="relative" className={styles.progress}>
-                <CustomBox className={styles.passedSteps} style={progressStyle} />
+                <CustomBox
+                    className={styles.passedSteps}
+                    style={progressStyle}
+                />
             </CustomBox>
         );
     },

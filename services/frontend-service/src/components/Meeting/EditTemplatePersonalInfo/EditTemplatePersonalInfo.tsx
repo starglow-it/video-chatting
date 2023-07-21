@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { CustomInput } from '@library/custom/CustomInput/CustomInput';
@@ -12,8 +12,10 @@ const Component = () => {
         register,
     } = useFormContext();
 
-    const currentFullNameErrorMessage: string = errors?.fullName?.[0]?.message || '';
-    const currentPositionErrorMessage: string = errors?.position?.[0]?.message || '';
+    const currentFullNameErrorMessage: string =
+        errors?.fullName?.[0]?.message || '';
+    const currentPositionErrorMessage: string =
+        errors?.position?.[0]?.message || '';
 
     return (
         <CustomGrid container wrap="nowrap" direction="column" gap={4}>
@@ -29,7 +31,10 @@ const Component = () => {
                 error={currentPositionErrorMessage}
                 {...register('position')}
             />
-            <LanguagesSelect nameSpace="meeting" translation="templates.languages" />
+            <LanguagesSelect
+                nameSpace="meeting"
+                translation="templates.languages"
+            />
         </CustomGrid>
     );
 };

@@ -1,12 +1,37 @@
 @import '../../styles/rem';
+@import '../../styles/variables.scss';
 
-.wrapper {
-  margin: rem(0 34px 0 0);
-}
 
 .text {
   margin: rem(0 4px 0 0);
 }
+
 .rightText {
   margin: rem(2px 7px 0px 7px)
+}
+
+.button {
+  border-radius: 20px;
+  color: $primary-black;
+  background: transparent;
+  font-size: 14px;
+  padding: 8px 12px;
+  margin-right: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bgBlack {
+  background: $primary-black;
+  color: $primary-white;
+  font-size: 12px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  border: 1px solid transparent;
+
+  &:hover {
+    background: $primary-white;
+    border: 1px solid $primary-black;
+    color: $primary-black;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0);
+  }
 }

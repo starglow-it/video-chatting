@@ -60,7 +60,11 @@ const Component: React.FunctionComponent<SignOptionProps> = ({
     const prevBoardData = data.find(board => board.value === prevBoard.current);
 
     const handleOpenVariantOptions = useCallback(() => {
-        onOpenBoardsType(defaultSetData.type === activeBoardData?.value ? '' : defaultSetData.type);
+        onOpenBoardsType(
+            defaultSetData.type === activeBoardData?.value
+                ? ''
+                : defaultSetData.type,
+        );
     }, []);
 
     const handleChooseSign = useCallback(() => {
@@ -101,8 +105,10 @@ const Component: React.FunctionComponent<SignOptionProps> = ({
         [data, formKey, activeSignBoard],
     );
 
-    const imageType = activeBoardData?.type ?? prevBoardData?.type ?? defaultSetData.type;
-    const imageValue = activeBoardData?.value ?? prevBoardData?.value ?? defaultSetData?.value;
+    const imageType =
+        activeBoardData?.type ?? prevBoardData?.type ?? defaultSetData.type;
+    const imageValue =
+        activeBoardData?.value ?? prevBoardData?.value ?? defaultSetData?.value;
 
     return (
         <CustomGrid
@@ -112,16 +118,28 @@ const Component: React.FunctionComponent<SignOptionProps> = ({
             sx={{ width }}
             gap={1.5}
         >
-            <CustomGrid container justifyContent="space-between" alignItems="center">
+            <CustomGrid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+            >
                 <FormControlLabel
                     value={prevBoardData?.value ?? defaultSetData.value}
                     label={prevBoardData?.type ?? defaultSetData?.type}
                     classes={{
-                        root: clsx(styles.label, { [styles.active]: isActiveSet }),
+                        root: clsx(styles.label, {
+                            [styles.active]: isActiveSet,
+                        }),
                     }}
                     control={
                         <CustomRadio
-                            icon={<RadioIcon className={styles.icon} width="22px" height="22px" />}
+                            icon={
+                                <RadioIcon
+                                    className={styles.icon}
+                                    width="22px"
+                                    height="22px"
+                                />
+                            }
                             checkedIcon={
                                 <RadioIcon
                                     checked

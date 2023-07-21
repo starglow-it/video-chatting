@@ -71,7 +71,7 @@
       "linkedInMobile": "LinkedIn"
     },
     "blocked": {
-      "text": "Your account has been blocked by The Live Office Admin.\nFor details please contact us via email \n <a href=\"mailto:{{supportEmail}}\">{{supportEmail}}</a>"
+      "text": "Your account has been blocked by Ruume Admin.\nFor details please contact us via email \n <a href=\"mailto:{{supportEmail}}\">{{supportEmail}}</a>"
     }
   },
   "forgotPassword": "Forgot password?",
@@ -87,7 +87,7 @@
     "custom": "Custom link"
   },
   "footer": {
-    "company": "© TheLiveOffice, 2023, {{version}}",
+    "company": "© Ruume, 2023, {{version}}",
     "agreements": "Agreements",
     "support": "Support",
     "howTo": "How To",

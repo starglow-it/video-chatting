@@ -13,9 +13,12 @@ export const handleEditTemplate = async ({
     templateId,
     data,
 }: EditTemplatePayload): Promise<EditTemplateResponse> => {
-    const response = await sendRequestWithCredentials<ICommonTemplate | null, ErrorState>({
+    const response = await sendRequestWithCredentials<
+        ICommonTemplate | null,
+        ErrorState
+    >({
         ...updateTemplateUrl({ templateId }),
-        data: data,
+        data,
     });
 
     if (response.success && response.result) {

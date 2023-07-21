@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // custom
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -25,12 +25,27 @@ const Component = ({
 }: PropsWithClassName<TemplateInfoProps>) => (
     <CustomGrid container wrap="nowrap" className={className}>
         <CustomGrid container direction="column" className={styles.textWrapper}>
-            <CustomGrid container flexWrap="nowrap" alignItems="center" gap={0.25}>
-                <ConditionalRender condition={Boolean(isPublic && !isCommonTemplate)}>
-                    <PeopleIcon width="20px" height="20px" className={styles.icon} />
+            <CustomGrid
+                container
+                flexWrap="nowrap"
+                alignItems="center"
+                gap={0.25}
+            >
+                <ConditionalRender
+                    condition={Boolean(isPublic && !isCommonTemplate)}
+                >
+                    <PeopleIcon
+                        width="20px"
+                        height="20px"
+                        className={styles.icon}
+                    />
                 </ConditionalRender>
                 <ConditionalRender condition={!isPublic && !isCommonTemplate}>
-                    <LockIcon width="20px" height="20px" className={styles.icon} />
+                    <LockIcon
+                        width="20px"
+                        height="20px"
+                        className={styles.icon}
+                    />
                 </ConditionalRender>
                 <CustomTypography
                     variant="body1"
@@ -41,7 +56,11 @@ const Component = ({
                     {name}
                 </CustomTypography>
             </CustomGrid>
-            <CustomTypography variant="body3" color="common.white" className={styles.description}>
+            <CustomTypography
+                variant="body3"
+                color="common.white"
+                className={styles.description}
+            >
                 {description}
             </CustomTypography>
         </CustomGrid>

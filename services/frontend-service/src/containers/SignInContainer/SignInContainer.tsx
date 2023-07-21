@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useStore } from 'effector-react';
 import { ValidationError } from 'yup';
@@ -32,14 +32,20 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 // styles
 import { Translation } from '@library/common/Translation/Translation';
 import { useRouter } from 'next/router';
+import { USER_IS_BLOCKED } from 'shared-const';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
+import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import styles from './SignInContainer.module.scss';
 
 // stores
 import {
     $authStore,
+    googleVerifyFx,
     loginUserFx,
     resetAuthErrorEvent,
-    googleLoginFx,
 } from '../../store';
 
 // types
@@ -50,13 +56,6 @@ import { dashboardRoute } from '../../const/client-routes';
 // validations
 import { emailSchema } from '../../validation/users/email';
 import { passwordLoginSchema } from '../../validation/users/password';
-import { USER_IS_BLOCKED } from 'shared-const';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from 'src/controllers/WebStorageController';
-import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { LiveOfficeLogo } from 'shared-frontend/icons/OtherIcons/LiveOfficeLogo';
 
 const validationSchema = yup.object({
     email: emailSchema().required('required'),
@@ -181,7 +180,11 @@ const Component = () => {
                     justifyContent="center"
                     marginBottom="10px"
                 >
-                    <LiveOfficeLogo width="150px" height="50px" />
+                    <CustomImage
+                        src="/images/Ruume.svg"
+                        width="150px"
+                        height="35px"
+                    />
                 </CustomGrid>
                 <CustomGrid
                     container

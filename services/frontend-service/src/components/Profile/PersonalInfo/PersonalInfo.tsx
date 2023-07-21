@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useStore } from 'effector-react';
 
 import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
@@ -18,7 +18,11 @@ const PersonalInfo = memo(() => {
     return (
         <CustomGrid container>
             <CustomGrid container>
-                <PersonIcon className={styles.personIcon} width="24px" height="24px" />
+                <PersonIcon
+                    className={styles.personIcon}
+                    width="24px"
+                    height="24px"
+                />
                 <CustomTypography
                     variant="body1"
                     fontWeight="600"
@@ -51,13 +55,25 @@ const PersonalInfo = memo(() => {
                     nameSpace="profile"
                     translation="personalInfo.languages"
                 />
-                <CustomBox gridArea="1/2/1/4" className={styles.fullNameWrapper}>
-                    <CustomTypography className={styles.fullNameText} color="text.primary">
+                <CustomBox
+                    gridArea="1/2/1/4"
+                    className={styles.fullNameWrapper}
+                >
+                    <CustomTypography
+                        className={styles.fullNameText}
+                        color="text.primary"
+                    >
                         {profile?.fullName}
                     </CustomTypography>
                 </CustomBox>
-                <CustomBox gridArea="2/2/2/4" className={styles.positionWrapper}>
-                    <CustomTypography className={styles.positionText} color="text.primary">
+                <CustomBox
+                    gridArea="2/2/2/4"
+                    className={styles.positionWrapper}
+                >
+                    <CustomTypography
+                        className={styles.positionText}
+                        color="text.primary"
+                    >
                         {profile?.position}
                     </CustomTypography>
                 </CustomBox>

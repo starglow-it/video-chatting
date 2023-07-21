@@ -37,6 +37,7 @@ import {
   TimeoutTypesEnum,
   PlanKeys,
   LoginTypes,
+  DeleteCommonUserPayload,
 } from 'shared-types';
 
 import {
@@ -623,6 +624,19 @@ export class UsersController {
     });
   }
 
+  @MessagePattern({ cmd: UserBrokerPatterns.DeleteGlobalUser })
+  async delGlobalUser({ id }: DeleteCommonUserPayload) {
+    return withTransaction(this.connection, async (s) => {
+      try {
+        await this.usersService.deleteUser(id, s);
+        return true;
+      }
+      catch (err) {
+        throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
+      }
+    });
+  }
+
   @MessagePattern({ cmd: AuthBrokerPatterns.LoginUserByEmail })
   async loginUserByEmail(@Payload() loginData: LoginUserByEmailPayload) {
     const user = await this.usersService.findUser({
@@ -852,35 +866,41 @@ export class UsersController {
     data: SetResetPasswordTokenPayload,
   ) {
     return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findUser({
-        query: { email: data.email },
-        session,
-      });
+      try {
+        const user = await this.usersService.findUser({
+          query: { email: data.email },
+          session,
+        });
 
-      await this.userTokenService.deleteManyTokens(
-        { user: user._id, type: TokenTypes.ResetPassword },
-        session,
-      );
+        await this.userTokenService.deleteManyTokens(
+          { user: user._id, type: TokenTypes.ResetPassword },
+          session,
+        );
 
-      const token = await this.userTokenService.createToken(
-        {
-          user: user._id,
-          token: data.token,
-        },
-        session,
-      );
+        const token = await this.userTokenService.createToken(
+          {
+            user: user._id,
+            token: data.token,
+          },
+          session,
+        );
 
-      await this.usersService.findUserAndUpdate({
-        query: { userId: user.id },
-        data: { isResetPasswordActive: true },
-        session,
-      });
+        await this.usersService.findUserAndUpdate({
+          query: { userId: user.id },
+          data: { isResetPasswordActive: true },
+          session,
+        });
 
-      user.tokens.push(token);
+        user.tokens.push(token);
 
-      await user.save();
+        await user.save();
+        return;
+      }
+      catch (err) {
+        console.log('err', err);
+        throw new RpcException(err);
+      }
 
-      return;
     });
   }
 

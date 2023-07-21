@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useMediaQuery } from '@mui/material';
 
 // custom
@@ -6,12 +6,12 @@ import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // types
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 import { TemplateGridProps } from './types';
 
 // styles
 import styles from './TemplatesGrid.module.scss';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 
 const Component = <TemplateType extends { id: string }>({
     TemplateComponent,

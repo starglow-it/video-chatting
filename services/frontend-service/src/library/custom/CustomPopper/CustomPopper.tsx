@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Fade from '@mui/material/Fade';
 import { Popper } from '@mui/material';
 import clsx from 'clsx';
@@ -10,7 +10,14 @@ import styles from './CustomPopper.module.scss';
 import { CustomPopperProps } from './types';
 
 const CustomPopper = memo(
-    ({ id, open, anchorEl, children, className, ...rest }: CustomPopperProps) => (
+    ({
+        id,
+        open,
+        anchorEl,
+        children,
+        className,
+        ...rest
+    }: CustomPopperProps) => (
         <Popper
             id={id}
             open={open}

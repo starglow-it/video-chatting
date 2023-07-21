@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -25,18 +25,27 @@ const Component = <ItemType,>({
 }>) => {
     const renderCurrentUsers = useMemo(() => users.map(renderItem), [users]);
 
-    const finalUsers = withCounter ? renderCurrentUsers.slice(0, 2) : renderCurrentUsers;
+    const finalUsers = withCounter
+        ? renderCurrentUsers.slice(0, 2)
+        : renderCurrentUsers;
 
     const counter = withCounter ? renderCurrentUsers.slice(2).length : 0;
 
     return (
-        <CustomGrid container alignItems="center" className={className} onClick={onAction}>
+        <CustomGrid
+            container
+            alignItems="center"
+            className={className}
+            onClick={onAction}
+        >
             <CustomGrid container wrap="nowrap" className={styles.users}>
                 {finalUsers}
             </CustomGrid>
             <ConditionalRender condition={withCounter && counter !== 0}>
                 &nbsp;
-                <CustomTypography color="colors.white.primary">+ {counter}</CustomTypography>
+                <CustomTypography color="colors.white.primary">
+                    + {counter}
+                </CustomTypography>
             </ConditionalRender>
         </CustomGrid>
     );

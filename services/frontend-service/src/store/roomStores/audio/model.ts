@@ -2,9 +2,11 @@ import { otherStoresDomain } from '../../domains';
 
 const defaultAudioVolumeState = 50;
 
-export const $backgroundAudioVolume =
-    otherStoresDomain.createStore<number>(defaultAudioVolumeState);
-export const $isBackgroundAudioActive = otherStoresDomain.createStore<boolean>(true);
+export const $backgroundAudioVolume = otherStoresDomain.createStore<number>(
+    defaultAudioVolumeState,
+);
+export const $isBackgroundAudioActive =
+    otherStoresDomain.createStore<boolean>(true);
 export const setBackgroundAudioVolume = otherStoresDomain.createEvent<number>(
     'setBackgroundAudioVolume',
 );

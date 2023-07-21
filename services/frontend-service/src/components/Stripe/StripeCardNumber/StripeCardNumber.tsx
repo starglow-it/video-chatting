@@ -1,15 +1,22 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
-import { CardNumberElement, CardNumberElementProps } from '@stripe/react-stripe-js';
+import {
+    CardNumberElement,
+    CardNumberElementProps,
+} from '@stripe/react-stripe-js';
 
 import { PropsWithClassName } from 'shared-frontend/types';
 import styles from '../StripeCommon.module.scss';
 
-interface Props extends CardNumberElementProps{
-    colorForm?: string
+interface Props extends CardNumberElementProps {
+    colorForm?: string;
 }
-const Component = ({ className, colorForm = 'white', ...rest }: PropsWithClassName<Props>) => (
+const Component = ({
+    className,
+    colorForm = 'white',
+    ...rest
+}: PropsWithClassName<Props>) => (
     <CardNumberElement
         className={clsx(styles.cardField, className)}
         options={{

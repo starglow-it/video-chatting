@@ -7,7 +7,12 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { PaymentForm } from '@components/PaymentForm/PaymentForm';
 import { useToggle } from '@hooks/useToggle';
-import styles from './MeetingMonetization.module.scss';
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import clsx from 'clsx';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { $isPortraitLayout } from 'src/store';
+import { MeetingMonetization } from './MeetingMonetization';
 import {
     $isTogglePayment,
     $paymentIntent,
@@ -17,12 +22,7 @@ import {
     createPaymentIntentWithData,
     togglePaymentFormEvent,
 } from '../../../store/roomStores';
-import { MeetingMonetization } from './MeetingMonetization';
-import { Translation } from '@library/common/Translation/Translation';
-import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
-import clsx from 'clsx';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { $isPortraitLayout } from 'src/store';
+import styles from './MeetingMonetization.module.scss';
 
 export const MeetingMonetizationButton = () => {
     const paymentIntent = useStore($paymentIntent);

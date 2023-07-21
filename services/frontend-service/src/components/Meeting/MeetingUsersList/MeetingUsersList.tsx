@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
@@ -33,7 +33,10 @@ const Component = () => {
     const users = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
-        fn: state => state.filter(user => user.accessStatus === MeetingAccessStatusEnum.InMeeting),
+        fn: state =>
+            state.filter(
+                user => user.accessStatus === MeetingAccessStatusEnum.InMeeting,
+            ),
     });
 
     const handleKickUser = useCallback(({ userId }) => {
@@ -43,9 +46,12 @@ const Component = () => {
         });
     }, []);
 
-    const handleChangeHost = useCallback(async ({ userId }: { userId: MeetingUser['id'] }) => {
-        await changeHostSocketEvent({ userId });
-    }, []);
+    const handleChangeHost = useCallback(
+        async ({ userId }: { userId: MeetingUser['id'] }) => {
+            await changeHostSocketEvent({ userId });
+        },
+        [],
+    );
 
     const renderUsersList = useMemo(
         () =>
@@ -63,7 +69,11 @@ const Component = () => {
     );
 
     return (
-        <CustomGrid className={styles.usersWrapper} container direction="column">
+        <CustomGrid
+            className={styles.usersWrapper}
+            container
+            direction="column"
+        >
             {renderUsersList}
         </CustomGrid>
     );

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
@@ -24,13 +24,19 @@ import { UserToKickDialog } from '@components/Dialogs/UserToKickDialog/UserToKic
 import { ScreenSharingLayout } from '@components/Meeting/ScreenSharingLayout/ScreenSharingLayout';
 import { CopyMeetingLinkDialog } from '@components/Dialogs/CopyMeetingLinkDialog/CopyMeetingLinkDialog';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
-import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 
 // shared
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
+import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
+import {
+    StorageKeysEnum,
+    WebStorage,
+} from 'src/controllers/WebStorageController';
+import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -59,15 +65,8 @@ import {
 // types
 import { NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
-import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
-import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
-import {
-    StorageKeysEnum,
-    WebStorage,
-} from 'src/controllers/WebStorageController';
-import { useBrowserDetect } from '@hooks/useBrowserDetect';
 
 // helpers
 

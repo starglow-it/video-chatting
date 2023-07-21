@@ -7,7 +7,6 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { CloseIcon } from 'shared-frontend/icons/OtherIcons/CloseIcon';
-import { isSafari } from 'shared-utils';
 import styles from './MeetingChangeBackground.module.scss';
 import { IMediaItem } from '../../../store/roomStores/meeting/meetingBackground/types';
 

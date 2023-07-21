@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -9,8 +9,8 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import { Socials } from '@components/Socials/Socials';
 
 // styles
-import styles from './EditSocialInfo.module.scss';
 import { CustomAccordion } from '@library/custom/CustomAccordion/CustomAccordion';
+import styles from './EditSocialInfo.module.scss';
 
 const EditSocialInfo = memo(() => {
     return (
@@ -53,9 +53,11 @@ const EditSocialInfo = memo(() => {
                     <Socials buttonClassName={styles.socialBtn} />
                 </CustomGrid>
             }
-            sumaryProps={{classes:{
-                content: styles.sumary
-            }}}
+            sumaryProps={{
+                classes: {
+                    content: styles.sumary,
+                },
+            }}
             detailProps={{
                 classes: {
                     root: styles.detail,

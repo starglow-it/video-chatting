@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useStore } from 'effector-react';
@@ -33,10 +33,16 @@ import { resetPasswordFx } from '../../store';
 
 const validationSchema = yup.object({
     newPassword: passwordSchema().required('user.pass.newPassword.new'),
-    newPasswordRepeat: simpleStringSchema().required('user.pass.newPassword.newRepeat'),
+    newPasswordRepeat: simpleStringSchema().required(
+        'user.pass.newPassword.newRepeat',
+    ),
 });
 
-const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => {
+const Component = ({
+    onSuccessfulReset,
+}: {
+    onSuccessfulReset: () => void;
+}) => {
     const router = useRouter();
 
     const isResetInProgress = useStore(resetPasswordFx.pending);
@@ -79,7 +85,8 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
 
     const newPasswordErrorMessage = useMemo(() => {
         if (Array.isArray(errors?.newPassword)) {
-            return errors?.newPassword?.find(item => item.type === 'required')?.message;
+            return errors?.newPassword?.find(item => item.type === 'required')
+                ?.message;
         }
         return errors?.newPassword?.message;
     }, [errors?.newPassword]);
@@ -98,7 +105,10 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
             });
 
             if (result?.message) {
-                setError('newPassword', { type: 'focus', message: result?.message });
+                setError('newPassword', {
+                    type: 'focus',
+                    message: result?.message,
+                });
             } else {
                 onSuccessfulReset();
             }
@@ -108,8 +118,17 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
 
     return (
         <CustomGrid container direction="column" alignItems="center">
-            <CustomGrid container alignItems="center" gap={1} justifyContent="center">
-                <CustomImage src="/images/lock.webp" width="28px" height="28px" />
+            <CustomGrid
+                container
+                alignItems="center"
+                gap={1}
+                justifyContent="center"
+            >
+                <CustomImage
+                    src="/images/lock.webp"
+                    width="28px"
+                    height="28px"
+                />
                 <CustomTypography
                     variant="h2bold"
                     nameSpace="common"
@@ -135,7 +154,10 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
                             onCustomBlur={handleBlurInput}
                             errorClassName={styles.error}
                         />
-                        <PasswordHints fieldKey="newPassword" show={showHints} />
+                        <PasswordHints
+                            fieldKey="newPassword"
+                            show={showHints}
+                        />
                     </CustomGrid>
                     <PasswordInput
                         fieldKey="newPasswordRepeat"
@@ -146,7 +168,12 @@ const Component = ({ onSuccessfulReset }: { onSuccessfulReset: () => void }) => 
                     />
                     <CustomButton
                         type="submit"
-                        label={<Translation nameSpace="common" translation="reset.save" />}
+                        label={
+                            <Translation
+                                nameSpace="common"
+                                translation="reset.save"
+                            />
+                        }
                         disabled={isResetInProgress}
                         className={styles.button}
                     />

@@ -2,7 +2,10 @@ import { attach, combine, sample } from 'effector-next';
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
-import { $meetingUsersStore, removeMeetingUsersEvent } from '../../users/meetingUsers/model';
+import {
+    $meetingUsersStore,
+    removeMeetingUsersEvent,
+} from '../../users/meetingUsers/model';
 import {
     changeP2PActiveStreamEvent,
     changeP2PActiveStreamFx,
@@ -18,7 +21,11 @@ import {
     stopP2PSharingEvent,
     stopScreenSharingFx,
 } from './model';
-import { $connectionsStore, $serverTypeStore, initP2PVideoChat } from '../model';
+import {
+    $connectionsStore,
+    $serverTypeStore,
+    initP2PVideoChat,
+} from '../model';
 import { $localUserStore } from '../../users/localUser/model';
 import {
     $activeStreamStore,
@@ -28,7 +35,10 @@ import {
     $sharingStream,
     chooseSharingStreamFx,
 } from '../localMedia/model';
-import { $isScreenSharingStore, $meetingStore } from '../../meeting/meeting/model';
+import {
+    $isScreenSharingStore,
+    $meetingStore,
+} from '../../meeting/meeting/model';
 import { resetRoomStores } from '../../../root';
 
 // handlers
@@ -49,7 +59,11 @@ import {
     OfferExchangePayload,
 } from '../types';
 import { Meeting, MeetingUser } from '../../../types';
-import { ConnectionType, ServerTypes, StreamType } from '../../../../const/webrtc';
+import {
+    ConnectionType,
+    ServerTypes,
+    StreamType,
+} from '../../../../const/webrtc';
 import { CustomMediaStream } from '../../../../types';
 
 // utils
@@ -65,25 +79,32 @@ getAnswerFx.use(handleGetAnswer);
 getIceCandidateFx.use(handleGetIceCandidate);
 
 $connectionsStore
-    .on(createPeerConnectionFx.doneData, (state, data) => ({ ...state, ...data }))
+    .on(createPeerConnectionFx.doneData, (state, data) => ({
+        ...state,
+        ...data,
+    }))
     .on(stopScreenSharingFx.doneData, state =>
         Object.fromEntries(
             Object.entries(state).filter(
-                ([, connection]) => connection.connection.streamType !== StreamType.SCREEN_SHARING,
+                ([, connection]) =>
+                    connection.connection.streamType !==
+                    StreamType.SCREEN_SHARING,
             ),
         ),
     )
     .on([removeConnectionsFx.doneData], (state, data) =>
         Object.fromEntries(
             Object.entries(state).filter(
-                ([, connection]) => !data.includes(connection.connection.connectionId),
+                ([, connection]) =>
+                    !data.includes(connection.connection.connectionId),
             ),
         ),
     )
     .on(removePeerConnection, (state, { connectionId }) =>
         Object.fromEntries(
             Object.entries(state).filter(
-                ([, connection]) => connectionId !== connection.connection.connectionId,
+                ([, connection]) =>
+                    connectionId !== connection.connection.connectionId,
             ),
         ),
     )
@@ -154,7 +175,10 @@ sample({
 });
 
 sample({
-    clock: combine({ meetingUsers: $meetingUsersStore, serverType: $serverTypeStore }),
+    clock: combine({
+        meetingUsers: $meetingUsersStore,
+        serverType: $serverTypeStore,
+    }),
     source: connectionsCommonStore,
     filter: ({ localUser, users, connections, serverType }) =>
         serverType === ServerTypes.P2P &&
@@ -304,7 +328,8 @@ sample({
     clock: $isScreenSharingStore,
     source: sharingCommonStore,
     filter: ({ localUser }, isScreenSharingActive) =>
-        localUser.accessStatus === MeetingAccessStatusEnum.InMeeting && isScreenSharingActive,
+        localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+        isScreenSharingActive,
     fn: mapViewSharingConnections,
     target: createPeerConnectionFx,
 });
@@ -329,7 +354,10 @@ sample({
     This means that local peer connection will wait for connection trigger
 * */
 sample({
-    clock: combine({ isScreenSharing: $isScreenSharingStore, users: $meetingUsersStore }),
+    clock: combine({
+        isScreenSharing: $isScreenSharingStore,
+        users: $meetingUsersStore,
+    }),
     source: sharingCommonStore,
     filter: ({ localUser, meeting }, { isScreenSharing }) =>
         localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
@@ -371,7 +399,9 @@ sample({
     fn: connections =>
         Object.fromEntries(
             Object.entries(connections).filter(
-                ([, connection]) => connection.connection.streamType === StreamType.SCREEN_SHARING,
+                ([, connection]) =>
+                    connection.connection.streamType ===
+                    StreamType.SCREEN_SHARING,
             ),
         ),
     target: stopScreenSharingFx,

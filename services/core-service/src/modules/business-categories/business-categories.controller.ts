@@ -9,6 +9,7 @@ import { CoreBrokerPatterns, BUSINESS_CATEGORIES_SERVICE, CORE_SERVICE } from 's
 
 // types
 import {
+  CreateBusinessCategoryPayload,
   DeletesBusinessCategoriesPayload,
   EntityList,
   GetBusinessCategoriesPayload,
@@ -71,6 +72,33 @@ export class BusinessCategoriesController {
   }
 
 
+  @MessagePattern({ cmd: CoreBrokerPatterns.CreateBusinessCategory })
+  async createBusinessCategory({color,icon,key,value}: CreateBusinessCategoryPayload){
+    try {
+
+      const newbc = await this.businessCategoriesService.create({
+          data: {
+              key,
+              color,
+              value,
+              icon
+          }
+      });
+
+      return plainToInstance(CommonBusinessCategoryDTO, newbc, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true
+      });
+  }
+  catch (err) {
+      throw new RpcException({
+          message: err.message,
+          ctx: BUSINESS_CATEGORIES_SERVICE
+      })
+  }
+  }
+
+
   @MessagePattern({ cmd: CoreBrokerPatterns.UpdateBusinessCategory })
   async updateBusinessCategory({
     id,
@@ -109,11 +137,15 @@ export class BusinessCategoriesController {
 
   @MessagePattern({ cmd: CoreBrokerPatterns.DeleteBusinessCategories })
   async deleteBusinessCategories({
-    query
+    ids
   }: DeletesBusinessCategoriesPayload){
     try{
       await this.businessCategoriesService.deleteAll({
-        query
+        query: {
+          _id: {
+            $in: ids
+          }
+        }
       });
       return true; 
     }

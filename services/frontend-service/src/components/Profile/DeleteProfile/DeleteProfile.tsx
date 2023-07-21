@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -33,7 +33,11 @@ const Component = () => {
                 className={styles.deleteWrapper}
                 onClick={handleOpenDeleteProfileDialog}
             >
-                <DeleteIcon width="24px" height="24px" className={styles.delete} />
+                <DeleteIcon
+                    width="24px"
+                    height="24px"
+                    className={styles.delete}
+                />
                 <CustomTypography
                     variant="body2bold"
                     color="colors.red.primary"

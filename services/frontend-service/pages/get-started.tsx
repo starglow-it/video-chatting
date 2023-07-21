@@ -1,4 +1,3 @@
-import React from 'react';
 import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
 import { StartRoomWithoutTokenContainer } from '@containers/StartRoomWithoutToken/StartRoomWithoutToken';

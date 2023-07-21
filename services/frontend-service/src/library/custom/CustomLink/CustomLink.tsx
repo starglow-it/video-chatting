@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { memo } from 'react';
 import Link from 'next/link';
 import { LinkProps } from 'next/dist/client/link';
@@ -5,10 +6,10 @@ import { TypographyProps } from '@mui/material';
 
 import { TranslationProps } from '@library/common/Translation/types';
 import { CustomLinkProps } from '@library/custom/CustomLink/types';
+import { PropsWithClassName } from 'shared-frontend/types';
 import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 import styles from './CustomLink.module.scss';
-import {PropsWithClassName} from "shared-frontend";
 
 const CustomLink = memo(
     ({
@@ -18,15 +19,17 @@ const CustomLink = memo(
         className,
         children,
         isExternal,
-        onClick,
         ...rest
     }: PropsWithClassName<CustomLinkProps> &
         TypographyProps &
         Partial<TranslationProps> &
         React.PropsWithChildren<LinkProps>) => (
-        <Link href={href} {...(isExternal ? { legacyBehavior: true, target: "_blank" } : {})}>
+        <Link
+            href={href}
+            {...(isExternal ? { legacyBehavior: true, target: '_blank' } : {})}
+        >
             {nameSpace && translation ? (
-                <a className={styles.link} onClick={onClick}>
+                <a className={styles.link}>
                     <CustomTypography
                         nameSpace={nameSpace}
                         translation={translation}

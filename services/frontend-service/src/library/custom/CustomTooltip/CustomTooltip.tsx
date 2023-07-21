@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Tooltip, TooltipProps } from '@mui/material';
 import clsx from 'clsx';
 
@@ -36,7 +36,7 @@ const CustomTooltip = memo(
                     tooltip: clsx(styles.tooltip, tooltipClassName),
                     arrow: styles.arrow,
                 }}
-                title={title ?? t(translation, options)}
+                title={title ?? t(translation ?? '', options)}
                 {...rest}
             >
                 {children}

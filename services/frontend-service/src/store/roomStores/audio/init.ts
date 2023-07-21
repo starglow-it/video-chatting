@@ -8,7 +8,9 @@ import {
 } from './model';
 import { resetRoomStores } from '../../root';
 
-$backgroundAudioVolume.on(setBackgroundAudioVolume, (state, data) => data).reset(resetRoomStores);
+$backgroundAudioVolume
+    .on(setBackgroundAudioVolume, (state, data) => data)
+    .reset(resetRoomStores);
 
 $isBackgroundAudioActive
     .on(toggleBackgroundAudioActive, state => !state)

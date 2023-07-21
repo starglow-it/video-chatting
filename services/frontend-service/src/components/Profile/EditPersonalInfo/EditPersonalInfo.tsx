@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 // custom
@@ -22,8 +22,8 @@ const EditPersonalInfo = memo(() => {
         register,
     } = useFormContext();
 
-    
-    const currentPositionErrorMessage: string = errors?.position?.[0]?.message || '';
+    const currentPositionErrorMessage: string =
+        errors?.position?.[0]?.message || '';
 
     return (
         <CustomPaper className={styles.paperWrapper}>
@@ -34,7 +34,11 @@ const EditPersonalInfo = memo(() => {
             >
                 <CustomBox gridArea="1/1/1/1">
                     <CustomGrid container alignItems="center">
-                        <PersonIcon width="24px" height="24px" className={styles.icon} />
+                        <PersonIcon
+                            width="24px"
+                            height="24px"
+                            className={styles.icon}
+                        />
                         <CustomTypography
                             variant="body1"
                             fontWeight="600"
@@ -49,15 +53,22 @@ const EditPersonalInfo = memo(() => {
                     wrap="nowrap"
                     className={styles.contentWrapper}
                 >
-                    <CustomGrid container direction="column" justifyContent="center" gap={4}>
-                       
+                    <CustomGrid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        gap={4}
+                    >
                         <CustomInput
                             nameSpace="forms"
                             translation="position"
                             error={currentPositionErrorMessage}
                             {...register('position')}
                         />
-                        <LanguagesSelect nameSpace="profile" translation="editProfile.languages" />
+                        <LanguagesSelect
+                            nameSpace="profile"
+                            translation="editProfile.languages"
+                        />
                     </CustomGrid>
                 </CustomGrid>
             </CustomBox>

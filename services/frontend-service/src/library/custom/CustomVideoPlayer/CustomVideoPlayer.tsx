@@ -1,4 +1,4 @@
-import React, { useRef, memo, useEffect } from 'react';
+import { useRef, memo, useEffect } from 'react';
 import clsx from 'clsx';
 
 // types
@@ -6,7 +6,13 @@ import { CustomVideoPlayerProps } from './types';
 
 import styles from './CustomVideoPlayer.module.scss';
 
-const Component = ({ isPlaying, isMuted, volume, options, className }: CustomVideoPlayerProps) => {
+const Component = ({
+    isPlaying,
+    isMuted,
+    volume,
+    options,
+    className,
+}: CustomVideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
@@ -20,7 +26,7 @@ const Component = ({ isPlaying, isMuted, volume, options, className }: CustomVid
     useEffect(() => {
         const video = videoRef.current;
 
-        if (video && !isNaN(volume)) {
+        if (video && !Number.isNaN(volume)) {
             video.volume = volume / 100;
         }
     }, [volume]);

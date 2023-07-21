@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, memo } from 'react';
+import { ForwardedRef, forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
 // shared
@@ -6,6 +6,8 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // helpers
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { Translation } from '@library/common/Translation/Translation';
 import { emptyFunction } from '../../../utils/functions/emptyFunction';
 
 // styles
@@ -13,8 +15,6 @@ import styles from './ProfileAvatar.module.scss';
 
 // types
 import { ProfileAvatarProps } from './types';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { Translation } from '@library/common/Translation/Translation';
 
 const Component = (
     {

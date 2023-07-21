@@ -138,7 +138,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     );
 
     const onSubmit = useCallback(
-        handleSubmit(async (data) => {
+        handleSubmit(async data => {
             await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled:
                     data.isInmeetingPayment || data.isPaywallPayment,

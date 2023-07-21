@@ -10,12 +10,12 @@ import {
     setQueryProfileTemplatesEvent,
     setQueryTemplatesEvent,
 } from 'src/store';
-import { MenuItemTemplate } from '../MenuItem/MenuItem';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { mapEmoji, parseEmoji } from 'shared-utils';
-import styles from './Menus.module.scss';
 import clsx from 'clsx';
+import styles from './Menus.module.scss';
+import { MenuItemTemplate } from '../MenuItem/MenuItem';
 
 const Component = () => {
     const { list } = useStore($businessCategoriesStore);
@@ -78,7 +78,9 @@ const Component = () => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <CustomGrid fontSize={20} marginRight={1}>{parseEmoji(mapEmoji('1f52d'))}</CustomGrid>
+                    <CustomGrid fontSize={20} marginRight={1}>
+                        {parseEmoji(mapEmoji('1f52d'))}
+                    </CustomGrid>
                     <CustomTypography fontSize={13}>All</CustomTypography>
                 </CustomGrid>
             </CustomPaper>

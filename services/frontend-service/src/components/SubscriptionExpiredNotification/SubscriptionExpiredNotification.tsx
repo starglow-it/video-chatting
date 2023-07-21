@@ -16,7 +16,14 @@ import { CustomIconButton } from '@library/custom/CustomIconButton/CustomIconBut
 import styles from './SubscriptionExpiredNotification.module.scss';
 
 // stores
-import { $profileStore, updateProfileFx } from '../../store';
+import {
+    $isTrial,
+    $productsStore,
+    $profileStore,
+    getCustomerPortalSessionUrlFx,
+    startCheckoutSessionForSubscriptionFx,
+    updateProfileFx,
+} from '../../store';
 
 // const
 import { dashboardRoute } from '../../const/client-routes';
@@ -29,7 +36,12 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     const [open, setOpenState] = useState(false);
 
     const profile = useStore($profileStore);
+    const products = useStore($productsStore);
+    const isTrial = useStore($isTrial);
 
+    const productFiltered = products.find(
+        item => item?.product?.name === 'Professional',
+    );
     const { translation } = useLocalization('subscriptions');
 
     const isDashboardRoute = new RegExp(dashboardRoute).test(router.pathname);
@@ -37,6 +49,30 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     const handleClose = useCallback(() => {
         setOpenState(false);
     }, []);
+
+    const handleChooseSubscription = async () => {
+        if (productFiltered) {
+            if (!profile.stripeSubscriptionId || isTrial) {
+                const response = await startCheckoutSessionForSubscriptionFx({
+                    productId: productFiltered.product?.id || '',
+                    baseUrl: dashboardRoute,
+                    withTrial: isTrial,
+                });
+
+                if (response?.url) {
+                    return router.push(response.url);
+                }
+            } else if (profile.stripeSubscriptionId) {
+                const response = await getCustomerPortalSessionUrlFx({
+                    subscriptionId: profile.stripeSubscriptionId,
+                });
+
+                if (response?.url) {
+                    return router.push(response.url);
+                }
+            }
+        }
+    };
 
     useEffect(() => {
         if (isDashboardRoute && profile.shouldShowTrialExpiredNotification) {
@@ -47,6 +83,11 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
     useEffect(() => {
         if (open) {
             updateProfileFx({ shouldShowTrialExpiredNotification: false });
+        }
+
+        const el = document.getElementById('upgrade');
+        if (el) {
+            el.onclick = () => handleChooseSubscription();
         }
     }, [open]);
 
@@ -73,7 +114,9 @@ const Component: React.FunctionComponent<ComponentProps> = () => {
                         variant="body2"
                         className={styles.text}
                         dangerouslySetInnerHTML={{
-                            __html: translation('trialExpired.text'),
+                            __html: `${translation(
+                                'trialExpired.text',
+                            )} <a style="color: blue;cursor: pointer;" id="upgrade">Upgrade to Pro</a>`,
                         }}
                     />
                 </CustomGrid>

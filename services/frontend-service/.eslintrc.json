@@ -7,7 +7,8 @@
   },
   "globals": {
     "__CONFIG__": true,
-    "__ENV__": true
+    "__ENV__": true,
+    "__dirname": true
   },
   "extends": [
     "next/core-web-vitals",
@@ -16,6 +17,7 @@
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -25,7 +27,8 @@
     "react-hooks",
     "@typescript-eslint",
     "prettier",
-    "destructuring-newline"
+    "destructuring-newline",
+    "import"
   ],
   "rules": {
     "react/prop-types": "off",
@@ -35,16 +38,19 @@
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-explicit-any": "off",
     "prefer-const": 1,
     "import/extensions": "off",
     "import/prefer-default-export": "off",
     "react/jsx-filename-extension": "off",
     "react-hooks/exhaustive-deps": "off",
     "react/jsx-props-no-spreading": "off",
-    "react/function-component-definition": [1, {
+    "react/function-component-definition": [
+      1,
+      {
         "namedComponents": "arrow-function"
-    }],
+      }
+    ],
     "react/jsx-max-props-per-line": "off",
     "react/jsx-first-prop-new-line": "off",
     "react/jsx-indent-props": "off",
@@ -54,11 +60,21 @@
     ],
     "object-curly-newline": "off",
     "indent": "off",
-    "destructuring-newline/object-property-newline": 1,
+    "destructuring-newline/object-property-newline": "off",
     "consistent-return": "off",
     "jsx-a11y/media-has-caption": "off",
     "no-lonely-if": "off",
-    "arrow-body-style": "off"
+    "arrow-body-style": "off",
+    "import/no-unresolved": "off",
+    "no-plusplus": "off",
+    "func-names": "off",
+    "no-param-reassign": "off",
+    "no-console": "off",
+    "no-nested-ternary": "off",
+    "no-unused-expressions": "off",
+    "react/no-array-index-key": "off",
+    "no-return-assign": "off",
+    "react/jsx-no-useless-fragment": "off"
   },
   "settings": {
     "react": {
@@ -73,4 +89,3 @@
     }
   }
 }
-

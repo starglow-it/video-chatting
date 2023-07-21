@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 // hooks
@@ -70,7 +70,9 @@ const Component = ({
             container
             direction={isMobile ? 'row' : 'column'}
             wrap="nowrap"
-            className={clsx(styles.previewWrapper, { [styles.mobile]: isMobile })}
+            className={clsx(styles.previewWrapper, {
+                [styles.mobile]: isMobile,
+            })}
         >
             <RoundedVideo
                 isLocal
@@ -84,10 +86,20 @@ const Component = ({
                 onToggleVideo={handleToggleVideo}
             />
             {isNeedToRenderDevices && (
-                <CustomGrid container direction="column" className={styles.mediaWrapper}>
-                    <VolumeAnalyzer key={stream?.id} indicatorsNumber={isMobile ? 9 : 6} />
+                <CustomGrid
+                    container
+                    direction="column"
+                    className={styles.mediaWrapper}
+                >
+                    <VolumeAnalyzer
+                        key={stream?.id}
+                        indicatorsNumber={isMobile ? 9 : 6}
+                    />
                     <CustomGrid container className={styles.controlsWrapper}>
-                        <CustomTooltip nameSpace="errors" translation={audioError}>
+                        <CustomTooltip
+                            nameSpace="errors"
+                            translation={audioError}
+                        >
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(audioError),
@@ -105,7 +117,10 @@ const Component = ({
                                 }
                             />
                         </CustomTooltip>
-                        <CustomTooltip nameSpace="errors" translation={videoError}>
+                        <CustomTooltip
+                            nameSpace="errors"
+                            translation={videoError}
+                        >
                             <ActionButton
                                 className={clsx(styles.controlBtn, {
                                     [styles.withError]: Boolean(videoError),

@@ -1,11 +1,8 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
-import * as yup from 'yup';
-import { FormProvider, useForm } from 'react-hook-form';
 
 // hooks
 import { useToggle } from '@hooks/useToggle';
-import { useYupValidationResolver } from '@hooks/useYupValidationResolver';
 
 // custom components
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
@@ -20,7 +17,6 @@ import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsConte
 
 // store
 import { Translation } from '@library/common/Translation/Translation';
-import { IUserTemplate } from 'shared-types';
 import {
     $appDialogsStore,
     $profileStore,
@@ -36,7 +32,6 @@ import {
     $isBackgroundAudioActive,
     $isCameraActiveStore,
     $isMicActiveStore,
-    $isOwner,
     $isStreamRequestedStore,
     $localUserStore,
     $meetingTemplateStore,
@@ -51,7 +46,6 @@ import {
     setIsAuraActive,
     toggleLocalDeviceEvent,
     updateLocalUserEvent,
-    updateMeetingTemplateFxWithData,
     updateUserSocketEvent,
 } from '../../../store/roomStores';
 
@@ -62,29 +56,14 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import styles from './DevicesSettingsDialog.module.scss';
 
 // validations
-import { booleanSchema, simpleStringSchema } from '../../../validation/common';
-import { templatePriceSchema } from '../../../validation/payments/templatePrice';
 import { BackgroundManager } from '../../../helpers/media/applyBlur';
 import { changeTracksState } from '../../../helpers/media/changeTrackState';
-
-const validationSchema = yup.object({
-    templatePrice: templatePriceSchema(),
-    isMonetizationEnabled: booleanSchema().required('required'),
-    templateCurrency: simpleStringSchema().required('required'),
-});
-
-type MonetizationFormType = {
-    templateCurrency: IUserTemplate['templateCurrency'];
-    templatePrice: IUserTemplate['templatePrice'];
-    isMonetizationEnabled: IUserTemplate['isMonetizationEnabled'];
-};
 
 const Component = () => {
     const { devicesSettingsDialog } = useStore($appDialogsStore);
     const profile = useStore($profileStore);
 
     const localUser = useStore($localUserStore);
-    const isOwner = useStore($isOwner);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
@@ -121,10 +100,6 @@ const Component = () => {
         value: isNewMicSettingActive,
         onToggleSwitch: handleToggleNewMicSetting,
     } = useToggle(isMicActive);
-
-    const resolver =
-        useYupValidationResolver<MonetizationFormType>(validationSchema);
-
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -247,7 +222,7 @@ const Component = () => {
             contentClassName={styles.wrapper}
             onClose={handleClose}
         >
-           <CustomGrid container direction="column">
+            <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
                     <MediaPreview
                         videoError={videoError}
@@ -272,19 +247,13 @@ const Component = () => {
                     >
                         <MeetingSettingsContent
                             stream={changeStream}
-                            isBackgroundActive={
-                                isSettingsAudioBackgroundActive
-                            }
-                            onBackgroundToggle={
-                                handleToggleBackgroundAudio
-                            }
+                            isBackgroundActive={isSettingsAudioBackgroundActive}
+                            onBackgroundToggle={handleToggleBackgroundAudio}
                             backgroundVolume={volume}
                             onChangeBackgroundVolume={setVolume}
                             isAuraActive={isAuraEnabled}
                             onToggleAura={handleToggleAura}
-                            isAudioActive={
-                                meetingTemplate.isAudioAvailable
-                            }
+                            isAudioActive={meetingTemplate.isAudioAvailable}
                             title={
                                 <CustomTypography
                                     className={styles.title}

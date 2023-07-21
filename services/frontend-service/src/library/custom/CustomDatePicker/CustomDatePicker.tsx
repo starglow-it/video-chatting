@@ -1,4 +1,11 @@
-import React, { forwardRef, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+    forwardRef,
+    memo,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 import clsx from 'clsx';
 
 // shared
@@ -31,10 +38,18 @@ import { NotificationType } from '../../../store/types';
 import styles from './CustomDatePicker.module.scss';
 
 const Component = (
-    { selected, startDate, className, onDateSelected, blockedDate }: CustomDatePickerProps,
+    {
+        selected,
+        startDate,
+        className,
+        onDateSelected,
+        blockedDate,
+    }: CustomDatePickerProps,
     ref,
 ) => {
-    const [selectedDate, setSelectedDate] = useState<Date>(selected || new Date());
+    const [selectedDate, setSelectedDate] = useState<Date>(
+        selected || new Date(),
+    );
     const [currentMonthDate, setCurrentMonth] = useState<Date>(new Date());
 
     useEffect(() => {
@@ -88,12 +103,17 @@ const Component = (
 
         return monthData.map(week => {
             const renderWeeks = week.map(weekDay => {
-                const isActiveDate = isCurrentMonthDay(currentMonthDate, weekDay);
+                const isActiveDate = isCurrentMonthDay(
+                    currentMonthDate,
+                    weekDay,
+                );
 
-                const isDateBefore = isBefore(weekDay, startDate) && !isTodayDate(weekDay);
+                const isDateBefore =
+                    isBefore(weekDay, startDate) && !isTodayDate(weekDay);
                 const isEqual = isDatesEqual(weekDay, selectedDate);
                 const isBlockedDate =
-                    isBefore(weekDay, blockedDate) && !isDatesEqual(weekDay, blockedDate);
+                    isBefore(weekDay, blockedDate) &&
+                    !isDatesEqual(weekDay, blockedDate);
 
                 const day = formatDate(weekDay, 'd');
 
@@ -105,7 +125,8 @@ const Component = (
 
                     if (
                         isBlockedDate &&
-                        (!isBefore(weekDay, new Date()) || isDatesEqual(weekDay, new Date()))
+                        (!isBefore(weekDay, new Date()) ||
+                            isDatesEqual(weekDay, new Date()))
                     ) {
                         addNotificationEvent({
                             type: NotificationType.SubscriptionEndDate,
@@ -194,4 +215,6 @@ const Component = (
     );
 };
 
-export const CustomDatePicker = memo<CustomDatePickerProps>(forwardRef(Component));
+export const CustomDatePicker = memo<CustomDatePickerProps>(
+    forwardRef(Component),
+);

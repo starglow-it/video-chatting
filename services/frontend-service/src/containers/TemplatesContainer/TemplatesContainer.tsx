@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useStore, useStoreMap } from 'effector-react';
 
@@ -21,6 +21,8 @@ import {
     IUserTemplate,
     RoomType,
 } from 'shared-types';
+import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
+import { MainTemplates } from '@components/Templates/MainTemplates/MainTemplates';
 import {
     $profileStore,
     $profileTemplatesCountStore,
@@ -42,8 +44,6 @@ import { dashboardRoute } from '../../const/client-routes';
 
 // utils
 import { getClientMeetingUrl } from '../../utils/urls';
-import { FeaturedBackground } from '@components/FeaturedBackground/FeaturedBackground';
-import { MainTemplates } from '@components/Templates/MainTemplates/MainTemplates';
 
 const Component = () => {
     const router = useRouter();
@@ -100,6 +100,11 @@ const Component = () => {
     }, [isTemplateDeleting]);
 
     useEffect(() => {
+        getProfileTemplatesCountFx({
+            limit: 0,
+            skip: 0,
+            templateType: 'free',
+        });
         isFirstTime.current = false;
         return () => clearTemplateDraft();
     }, []);
@@ -185,7 +190,7 @@ const Component = () => {
 
     return (
         <MainProfileWrapper>
-            <FeaturedBackground />
+            <FeaturedBackground onChooseTemplate={handleChooseCommonTemplate} />
             <MainTemplates />
             <TemplatePreviewDialog
                 isNeedToRenderTemplateInfo

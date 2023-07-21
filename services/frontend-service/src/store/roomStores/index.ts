@@ -1,3 +1,22 @@
+import * as meetingSocket from './meetingSocket/init';
+import * as timeLimit from './timeLimit/init';
+import * as videoChat from './videoChat/init';
+import * as videoChatSocket from './videoChat/sockets/init';
+import * as videoChatSFU from './videoChat/sfu/init';
+import * as localUser from './users/localUser/init';
+import * as meetingUsers from './users/meetingUsers/init';
+import * as userToKick from './users/userToKick/init';
+import * as audio from './audio/init';
+import * as meeting from './meeting/meeting/init';
+import * as meetingPayment from './meeting/payments/init';
+import * as meetingError from './meeting/meetingError/init';
+import * as meetingTemplate from './meeting/meetingTemplate/init';
+import * as meetingNotes from './meeting/meetingNotes/init';
+import * as meetingState from './meeting/meetingState/init';
+import * as meetingSounds from './meeting/meetingSounds/init';
+import * as meetingBackground from './meeting/meetingBackground/init';
+import * as meetingAudio from './meeting/meetingAudio/init';
+
 export * from './meetingSocket/model';
 export * from './timeLimit/model';
 export * from './videoChat/model';
@@ -20,25 +39,28 @@ export * from './meeting/meetingSounds/model';
 export * from './meeting/meetingBackground/model';
 export * from './meeting/meetingAudio/model';
 
-export * from './meetingSocket/init';
-export * from './timeLimit/init';
-export * from './videoChat/init';
 export * from './videoChat/p2p/init';
-export * from './videoChat/sockets/init';
 export * from './videoChat/localMedia/init';
-export * from './videoChat/sfu/init';
-export * from './users/localUser/init';
-export * from './users/meetingUsers/init';
-export * from './users/userToKick/init';
 export * from './users/init';
-export * from './audio/init';
-export * from './meeting/meeting/init';
-export * from './meeting/payments/init';
-export * from './meeting/meetingError/init';
-export * from './meeting/meetingTemplate/init';
-export * from './meeting/meetingNotes/init';
-export * from './meeting/meetingState/init';
 export * from './meeting/sockets/init';
-export * from './meeting/meetingSounds/init';
-export * from './meeting/meetingBackground/init';
-export * from './meeting/meetingAudio/init';
+
+export default {
+    meetingSocket,
+    timeLimit,
+    videoChat,
+    videoChatSocket,
+    videoChatSFU,
+    localUser,
+    meetingUsers,
+    userToKick,
+    audio,
+    meeting,
+    meetingPayment,
+    meetingError,
+    meetingTemplate,
+    meetingNotes,
+    meetingState,
+    meetingSounds,
+    meetingBackground,
+    meetingAudio,
+};

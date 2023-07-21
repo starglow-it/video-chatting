@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -22,6 +22,7 @@ import { useToggle } from '@hooks/useToggle';
 import { useSubscriptionNotification } from '@hooks/useSubscriptionNotification';
 
 // store
+import { adjustUserPositions } from 'shared-utils';
 import {
     $isUploadTemplateBackgroundInProgress,
     $profileStore,
@@ -44,11 +45,14 @@ import { getCreateRoomUrl } from '../../utils/urls';
 
 // styles
 import styles from './CreateRoomContainer.module.scss';
-import {adjustUserPositions} from "shared-utils";
 
 const Component = () => {
-    const isGetTemplateRequestIsPending = useStore(getEditingTemplateFx.pending);
-    const isTemplatePreviewPending = useStore($isUploadTemplateBackgroundInProgress);
+    const isGetTemplateRequestIsPending = useStore(
+        getEditingTemplateFx.pending,
+    );
+    const isTemplatePreviewPending = useStore(
+        $isUploadTemplateBackgroundInProgress,
+    );
     const profile = useStore($profileStore);
 
     const router = useRouter();
@@ -74,7 +78,9 @@ const Component = () => {
                 const response = await getTemplateFx({ templateId });
 
                 if (response) {
-                    onSetUpdateUrl(`${getCreateRoomUrl(response?.id)}?step=privacy`);
+                    onSetUpdateUrl(
+                        `${getCreateRoomUrl(response?.id || '')}?step=privacy`,
+                    );
 
                     setTemplate(response);
                 }
@@ -83,7 +89,7 @@ const Component = () => {
     }, [router.isReady]);
 
     useEffect(() => {
-        getSubscriptionWithDataFx();
+        getSubscriptionWithDataFx({ subscriptionId: '' });
         initWindowListeners();
 
         return () => {
@@ -125,7 +131,7 @@ const Component = () => {
                         left: link.left,
                     },
                 })),
-            };
+            } as any;
 
             await editTemplateFx({
                 templateId: template.id,
@@ -136,7 +142,8 @@ const Component = () => {
                 templateId: template.id,
             });
 
-            const { businessCategories, ...newPayload } = payload;
+            const newPayload = { ...payload };
+            delete newPayload?.businessCategories;
 
             if (userTemplate?.id) {
                 await editUserTemplateFx({
@@ -192,7 +199,7 @@ const Component = () => {
 
             await editTemplateFx({
                 templateId: template.id,
-                data: payload,
+                data: payload as any,
             });
 
             onShowSubscriptions();

@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef, memo, ForwardedRef } from 'react';
+import { useMemo, forwardRef, memo, ForwardedRef } from 'react';
 import { TextField } from '@mui/material';
 
 // hooks
@@ -20,12 +20,26 @@ const Component = (
 ) => {
     const t = useLocalization(nameSpace);
 
-    const label = useMemo(() => (translation ? t.translation(translation) : ''), [translation]);
+    const label = useMemo(
+        () => (translation ? t.translation(translation) : ''),
+        [translation],
+    );
 
     return (
-        <CustomGrid container direction="column" className={styles.inputWrapper}>
-            <TextField inputRef={ref} label={label} error={Boolean(error)} {...rest} />
-            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
+        <CustomGrid
+            container
+            direction="column"
+            className={styles.inputWrapper}
+        >
+            <TextField
+                inputRef={ref}
+                label={label}
+                error={Boolean(error)}
+                {...rest}
+            />
+            {error && (
+                <ErrorMessage className={styles.errorContainer} error={error} />
+            )}
         </CustomGrid>
     );
 };

@@ -14,7 +14,10 @@ const DEFAULT_SETTINGS: Settings = {
 };
 
 const CustomSlider = memo(({ children, sliderSettings }: CustomSliderProps) => {
-    const commonSettings = { ...DEFAULT_SETTINGS, ...sliderSettings } as Settings;
+    const commonSettings = {
+        ...DEFAULT_SETTINGS,
+        ...sliderSettings,
+    } as Settings;
 
     return (
         <Slider

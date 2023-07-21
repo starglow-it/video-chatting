@@ -1,8 +1,11 @@
-import React, { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { useStore } from 'effector-react';
 
 // stores
-import { $meetingSoundType, setMeetingSoundType } from '../../../store/roomStores';
+import {
+    $meetingSoundType,
+    setMeetingSoundType,
+} from '../../../store/roomStores';
 
 // types
 import { MeetingSoundsEnum } from '../../../store/types';

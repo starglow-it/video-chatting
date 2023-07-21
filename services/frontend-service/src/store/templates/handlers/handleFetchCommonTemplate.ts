@@ -8,9 +8,10 @@ export const handleFetchCommonTemplate = async ({
 }: {
     templateId: ICommonTemplate['id'];
 }): Promise<ICommonTemplate | undefined> => {
-    const response = await sendRequestWithCredentials<ICommonTemplate, ErrorState>(
-        getCommonTemplateUrl({ templateId }),
-    );
+    const response = await sendRequestWithCredentials<
+        ICommonTemplate,
+        ErrorState
+    >(getCommonTemplateUrl({ templateId }));
 
     return response.result;
 };

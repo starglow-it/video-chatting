@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
@@ -43,6 +43,9 @@ import {
     customTemplateLinkSchema,
     templatesLinksSchema,
 } from 'shared-frontend/validation';
+import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { Translation } from '@library/common/Translation/Translation';
+import { PARTICIPANT_POSITIONS } from 'shared-const';
 import {
     MAX_DESCRIPTION_LENGTH,
     MAX_NAME_LENGTH,
@@ -73,9 +76,6 @@ import styles from './TemplateManagement.module.scss';
 // utils
 import { getRandomNumber } from '../../utils/numbers/getRandomNumber';
 import { parseBase64 } from '../../utils/string/parseBase64';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
-import { Translation } from '@library/common/Translation/Translation';
-import { PARTICIPANT_POSITIONS } from 'shared-const';
 
 enum TabsValues {
     Background = 1,
@@ -202,11 +202,6 @@ const Component = ({
         onSwitchOn: onRequestFileUpload,
         onSwitchOff: onResetRequestFileUpload,
     } = useToggle(false);
-    const {
-        value: preventNextParticipantsPositionsUpdate,
-        onSwitchOn: onPreventNextParticipantsPositionsUpdate,
-        onSwitchOff: onResetPreventNextParticipantsPositionsUpdate,
-    } = useToggle(false);
     const { value: isTemplateDataWasSet, onSwitchOn: onSetTemplateData } =
         useToggle(false);
 
@@ -286,9 +281,6 @@ const Component = ({
                     left: link.position.left,
                 })) || [],
         });
-        if (template.maxParticipants > 1) {
-            onPreventNextParticipantsPositionsUpdate();
-        }
         onSetTemplateData();
     }, [template, isTemplateDataWasSet]);
 
@@ -331,15 +323,12 @@ const Component = ({
             previewUrls: savedProgress.previewUrls,
             isPublic: savedProgress.isPublic,
             templateLinks:
-                savedProgress.links?.map(link => ({
+                savedProgress?.links?.map(link => ({
                     value: link.item,
                     top: link.position.top,
                     left: link.position.left,
                 })) || [],
         });
-        if (savedProgress.participantsNumber > 1) {
-            onPreventNextParticipantsPositionsUpdate();
-        }
     }, [isTemplateDataWasSet]);
 
     const handleSubmit = useCallback(

@@ -1,4 +1,4 @@
-import React, { memo, SyntheticEvent, useCallback, useEffect } from 'react';
+import { memo, SyntheticEvent, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { useStore, useStoreMap } from 'effector-react';
 import { useRouter } from 'next/router';
@@ -23,6 +23,8 @@ import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 
 // stores
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { Translation } from '@library/common/Translation/Translation';
 import { $authStore } from '../../../store';
 import {
     $isMeetingHostStore,
@@ -41,8 +43,6 @@ import {
 import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
-import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
-import { Translation } from '@library/common/Translation/Translation';
 
 const Component = () => {
     const router = useRouter();

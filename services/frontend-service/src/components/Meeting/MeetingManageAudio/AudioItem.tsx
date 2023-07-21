@@ -6,7 +6,6 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { SpeakerIcon } from 'shared-frontend/icons/OtherIcons/SpeakerIcon';
 import { IMediaItem } from 'src/store/roomStores/meeting/meetingBackground/types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { useStore } from 'effector-react';
 import { $isToggleMeetingAudioStore } from 'src/store/roomStores';
 import styles from './MeetingManageAudio.module.scss';

@@ -1,4 +1,5 @@
-import React, { useRef, memo, useEffect, useMemo } from 'react';
+/* eslint-disable react/require-default-props */
+import { useRef, memo, useEffect, useMemo, ReactNode } from 'react';
 import clsx from 'clsx';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -52,7 +53,9 @@ const SocialInput = ({ social, index, onRemove }) => {
         const { value } = event.target;
 
         if (value) {
-            event.target.value = /https?/.test(value) ? value : `https://${value}`;
+            event.target.value = /https?/.test(value)
+                ? value
+                : `https://${value}`;
 
             await onChange(event);
         } else {
@@ -89,10 +92,12 @@ const SocialInput = ({ social, index, onRemove }) => {
     );
 };
 
-const Component: React.FunctionComponent<{
-    buttonClassName?: string;
-    title?: React.ElementType;
-}> = ({ buttonClassName, title }) => {
+type Props = {
+    buttonClassName: string;
+    title?: ReactNode | null;
+};
+
+const Component = ({ buttonClassName, title = null }: Props) => {
     const prevFieldsCount = useRef(0);
 
     const {
@@ -101,7 +106,10 @@ const Component: React.FunctionComponent<{
         formState: { errors },
     } = useFormContext();
 
-    const { fields, remove, append } = useFieldArray({ control, name: 'socials' });
+    const { fields, remove, append } = useFieldArray({
+        control,
+        name: 'socials',
+    });
 
     const handleRemove = index => {
         remove(index);
@@ -110,8 +118,12 @@ const Component: React.FunctionComponent<{
     const renderSocials = useMemo(
         () =>
             SOCIAL_LINKS.map(social => {
-                const isThereField = fields.find(field => social.key === field.key);
-                const fieldIndex = fields.findIndex(field => social.key === field.key);
+                const isThereField = fields.find(
+                    field => social.key === field.key,
+                );
+                const fieldIndex = fields.findIndex(
+                    field => social.key === field.key,
+                );
 
                 const Icon = SOCIALS_ICONS[social.key];
 
@@ -169,7 +181,12 @@ const Component: React.FunctionComponent<{
     );
 
     return (
-        <CustomGrid container direction="column" justifyContent="center" gap={4}>
+        <CustomGrid
+            container
+            direction="column"
+            justifyContent="center"
+            gap={4}
+        >
             {title}
             <CustomGrid container gap={1.25}>
                 {renderSocials}

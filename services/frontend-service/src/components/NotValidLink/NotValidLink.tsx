@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -9,7 +9,12 @@ import { CustomTypography } from '@library/custom/CustomTypography/CustomTypogra
 import styles from './NotValidLink.module.scss';
 
 const Component = () => (
-    <CustomGrid container direction="column" justifyContent="center" alignItems="center">
+    <CustomGrid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+    >
         <CustomImage src="/images/clock.webp" width="52px" height="52px" />
         <CustomTypography
             className={styles.title}
@@ -17,7 +22,11 @@ const Component = () => (
             nameSpace="common"
             translation="linkNotValid.title"
         />
-        <CustomTypography textAlign="center" nameSpace="common" translation="linkNotValid.text" />
+        <CustomTypography
+            textAlign="center"
+            nameSpace="common"
+            translation="linkNotValid.text"
+        />
     </CustomGrid>
 );
 

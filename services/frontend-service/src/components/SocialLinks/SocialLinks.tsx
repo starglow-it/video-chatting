@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -61,7 +61,10 @@ const SocialLinks = memo(() => {
     return (
         <CustomGrid container gap={1} className={styles.socialsWrapper}>
             {socialsLink}
-            <CustomTooltip nameSpace="common" translation="tooltips.editProfile">
+            <CustomTooltip
+                nameSpace="common"
+                translation="tooltips.editProfile"
+            >
                 <ActionButton
                     className={styles.editIcon}
                     onAction={handleEditProfile}

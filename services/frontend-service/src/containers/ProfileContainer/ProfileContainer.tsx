@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import { MainProfileWrapper } from '@components/MainProfileWrapper/MainProfileWrapper';
 import { PersonalInfoSection } from '@components/Profile/PersonalInfoSection/PersonalInfoSection';

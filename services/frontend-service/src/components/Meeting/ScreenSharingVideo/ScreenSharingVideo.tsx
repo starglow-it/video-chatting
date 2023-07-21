@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
@@ -26,7 +26,8 @@ const Component = ({ videoTrack }: ScreenSharingVideoProps) => {
 
             mediaStreamRef.current.addTrack(videoTrack);
 
-            if (videoContainer.current) videoContainer.current.srcObject = mediaStreamRef.current;
+            if (videoContainer.current)
+                videoContainer.current.srcObject = mediaStreamRef.current;
         }
     }, [videoTrack]);
 
@@ -37,7 +38,13 @@ const Component = ({ videoTrack }: ScreenSharingVideoProps) => {
             justifyContent="center"
             alignItems="center"
         >
-            <video ref={videoContainer} className={styles.video} playsInline muted autoPlay />
+            <video
+                ref={videoContainer}
+                className={styles.video}
+                playsInline
+                muted
+                autoPlay
+            />
         </CustomGrid>
     );
 };

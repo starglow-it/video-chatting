@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, memo } from 'react';
+import { ForwardedRef, forwardRef, memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 
@@ -53,7 +53,9 @@ const Component = (
                 }}
                 {...rest}
             />
-            {error && <ErrorMessage className={styles.errorContainer} error={error} />}
+            {error && (
+                <ErrorMessage className={styles.errorContainer} error={error} />
+            )}
         </CustomGrid>
     );
 };

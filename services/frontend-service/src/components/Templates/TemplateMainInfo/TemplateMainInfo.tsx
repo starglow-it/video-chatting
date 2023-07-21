@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Fade } from '@mui/material';
 
 // custom
@@ -29,7 +29,7 @@ const Component = ({
     isCommonTemplate,
     authorRole,
     authorThumbnail,
-    authorName
+    authorName,
 }: TemplateMainInfoProps) => (
     <Fade in={show}>
         <CustomGrid className={styles.templateInfo} display="grid">

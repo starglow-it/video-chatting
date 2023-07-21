@@ -1,42 +1,24 @@
-import React, {
-    memo, useCallback
-} from 'react';
-import {
-    useStore
-} from 'effector-react';
+import { memo, useCallback } from 'react';
+import { useStore } from 'effector-react';
 
 // custom
-import {
-    CustomDialog
-} from 'shared-frontend/library/custom/CustomDialog';
-import {
-    CustomTypography
-} from '@library/custom/CustomTypography/CustomTypography';
-import {
-    CustomButton
-} from 'shared-frontend/library/custom/CustomButton';
-import {
-    Translation
-} from '@library/common/Translation/Translation';
-import {CustomGrid} from "shared-frontend/library/custom/CustomGrid";
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // stores
-import {
-    $appDialogsStore, appDialogsApi
-} from '../../../store';
+import { $appDialogsStore, appDialogsApi } from '../../../store';
 
 // types
-import {
-    AppDialogsEnum
-} from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 
 // styles
 import styles from './MeetingFinishedDialog.module.scss';
 
 const Component = () => {
-    const {
-        meetingFinishedDialog
-    } = useStore($appDialogsStore);
+    const { meetingFinishedDialog } = useStore($appDialogsStore);
 
     const handleClose = useCallback(() => {
         appDialogsApi.closeDialog({
@@ -49,7 +31,12 @@ const Component = () => {
             contentClassName={styles.content}
             open={meetingFinishedDialog}
         >
-            <CustomGrid container direction="column" justifyContent="center" alignItems="center">
+            <CustomGrid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+            >
                 <CustomTypography
                     variant="h3bold"
                     nameSpace="dashboard"

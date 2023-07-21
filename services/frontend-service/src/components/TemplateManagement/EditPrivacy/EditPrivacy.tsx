@@ -1,9 +1,7 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useStore } from 'effector-react';
 
-// hooks
-import { useLocalization } from '@hooks/useTranslation';
 import { useNavigation } from '@hooks/useNavigation';
 
 // custom
@@ -20,18 +18,16 @@ import { OptionItem } from '@components/TemplateManagement/EditPrivacy/OptionIte
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
 import { LockIcon } from 'shared-frontend/icons/OtherIcons/LockIcon';
 import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
-import { RoundInfoIcon } from 'shared-frontend/icons/RoundIcons/RoundInfoIcon';
 
 // const
-import frontendConfig from '../../../const/config';
+import { Translation } from '@library/common/Translation/Translation';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 // store
 import { $isTrial } from '../../../store';
 
 // styles
 import styles from './EditPrivacy.module.scss';
-import { Translation } from '@library/common/Translation/Translation';
-import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 const options = [
     {
@@ -60,8 +56,6 @@ const Component = ({
     const isTrial = useStore($isTrial);
 
     const { setValue, watch } = useFormContext();
-
-    const { translation } = useLocalization('createRoom');
 
     const { activeTab, onChange } = useNavigation({ tabs: options });
 
@@ -110,16 +104,16 @@ const Component = ({
         [options, activeTab, handleChangeActiveOption, isTrial, onUpgradePlan],
     );
 
-    const textWithLinks = useMemo(
-        () =>
-            !isTrial
-                ? translation(`editPrivacy.link`, {
-                      termsLink: `${frontendConfig.frontendUrl}/agreements`,
-                      privacyLink: `https://en.wikipedia.org/wiki/Not_safe_for_work`,
-                  })
-                : translation('editPrivacy.upgradePlan'),
-        [isTrial],
-    );
+    // const textWithLinks = useMemo(
+    //     () =>
+    //         !isTrial
+    //             ? translation(`editPrivacy.link`, {
+    //                   termsLink: `${frontendConfig.frontendUrl}/agreements`,
+    //                   privacyLink: `https://en.wikipedia.org/wiki/Not_safe_for_work`,
+    //               })
+    //             : translation('editPrivacy.upgradePlan'),
+    //     [isTrial],
+    // );
 
     return (
         <CustomGrid container className={styles.wrapper}>

@@ -1,6 +1,6 @@
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
-import { ParamsDeleteMedia, ResultDeleteMedia } from '../types';
 import { deleteMediaCategory } from 'src/utils/urls';
+import { ParamsDeleteMedia, ResultDeleteMedia } from '../types';
 
 export const handleDeleteMediaMeeting = async ({
     categoryId,

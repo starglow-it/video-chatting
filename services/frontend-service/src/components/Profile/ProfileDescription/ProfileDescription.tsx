@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
 
@@ -20,9 +20,11 @@ const DEFAULT_HEIGHT = 44;
 const ProfileDescription = memo(() => {
     const profileState = useStore($profileStore);
 
-    const [descriptionHeight, setDescriptionHeight] = useState<number>(DEFAULT_HEIGHT);
+    const [descriptionHeight, setDescriptionHeight] =
+        useState<number>(DEFAULT_HEIGHT);
     const [showDescription, setShowDescription] = useState(false);
-    const [isShowDescriptionEnabled, setIsShowDescriptionEnabled] = useState(true);
+    const [isShowDescriptionEnabled, setIsShowDescriptionEnabled] =
+        useState(true);
 
     const descriptionRef = useRef<HTMLSpanElement | null>(null);
 
@@ -32,7 +34,9 @@ const ProfileDescription = memo(() => {
         if (rect?.height < DEFAULT_HEIGHT) {
             setIsShowDescriptionEnabled(false);
         }
-        setDescriptionHeight(!showDescription ? DEFAULT_HEIGHT : rect?.height || DEFAULT_HEIGHT);
+        setDescriptionHeight(
+            !showDescription ? DEFAULT_HEIGHT : rect?.height || DEFAULT_HEIGHT,
+        );
     }, [showDescription]);
 
     const handleToggleDescription = useCallback(() => {

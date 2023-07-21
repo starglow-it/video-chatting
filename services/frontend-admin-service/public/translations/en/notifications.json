@@ -25,9 +25,9 @@
     "isPending": "Please wait until file is uploaded"
   },
   "templates": {
-    "published": "Room {{templateName}} published to TheLiveOffice library",
-    "revoked": "Room {{templateName}} removed from TheLiveOffice library",
-    "createdAndPublished": "Room {{templateName}} created and published to TheLiveOffice library",
+    "published": "Room {{templateName}} published to Ruume library",
+    "revoked": "Room {{templateName}} removed from Ruume library",
+    "createdAndPublished": "Room {{templateName}} created and published to Ruume library",
     "created": "Room {{templateName}} created",
     "roomChangesSaved": "Changes in {{templateName}} saved"
   },

@@ -45,6 +45,6 @@ export const resetAuthStateEvent = authDomain.createEvent<void>(
 );
 
 export const initUserWithoutTokenFx = authDomain.createEffect<
-    void,
+    string | undefined,
     { user: Profile | null; userTemplateId: string }
 >('initUserWithoutToken');

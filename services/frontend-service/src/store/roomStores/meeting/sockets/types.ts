@@ -1,5 +1,5 @@
-import {IUserTemplate, MeetingAccessStatusEnum} from 'shared-types';
-import {Meeting, MeetingUser, Profile} from '../../../types';
+import { IUserTemplate, MeetingAccessStatusEnum } from 'shared-types';
+import { Meeting, MeetingUser, Profile } from '../../../types';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
@@ -14,8 +14,14 @@ export type JoinWaitingRoomPayload = {
 
 export type EndMeetingPayload = { meetingId: Meeting['id']; reason: string };
 export type LeaveMeetingPayload = { meetingId: Meeting['id'] };
-export type StartMeetingPayload = { meetingId: Meeting['id']; user: MeetingUser };
-export type EnterMeetingRequestPayload = { meetingId: Meeting['id']; user: MeetingUser };
+export type StartMeetingPayload = {
+    meetingId: Meeting['id'];
+    user: MeetingUser;
+};
+export type EnterMeetingRequestPayload = {
+    meetingId: Meeting['id'];
+    user: MeetingUser;
+};
 export type AnswerAccessMeetingRequestPayload = {
     meetingId: Meeting['id'];
     isUserAccepted: boolean;
@@ -33,7 +39,11 @@ export type JoinWaitingRoomResponse = {
     meeting?: Meeting;
     users?: MeetingUser[];
 };
-export type StartMeetingResponse = { user?: MeetingUser; meeting?: Meeting; users?: MeetingUser[] };
+export type StartMeetingResponse = {
+    user?: MeetingUser;
+    meeting?: Meeting;
+    users?: MeetingUser[];
+};
 export type EnterMeetingRequestResponse = {
     user?: MeetingUser;
     meeting?: Meeting;

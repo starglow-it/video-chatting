@@ -1,4 +1,8 @@
-import { $profileAvatarImage, setProfileAvatarEvent, resetProfileAvatarEvent } from './model';
+import {
+    $profileAvatarImage,
+    setProfileAvatarEvent,
+    resetProfileAvatarEvent,
+} from './model';
 
 $profileAvatarImage.on(setProfileAvatarEvent, (state, data) => data);
 

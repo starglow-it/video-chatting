@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, memo } from 'react';
+import { ForwardedRef, forwardRef, memo } from 'react';
 import { Resizable } from 'react-resizable';
 import clsx from 'clsx';
 import { CustomResizableProps } from './type';
@@ -45,7 +45,7 @@ const Component = ({
         axis="x"
         draggableOpts={{
             disabled,
-            offsetParent: document.body
+            offsetParent: document.body,
         }}
         className={styles['react-resizable']}
         handle={<MyHandle disabled={disabled} />}

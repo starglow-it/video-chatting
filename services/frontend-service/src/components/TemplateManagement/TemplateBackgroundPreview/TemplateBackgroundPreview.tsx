@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 // custom
@@ -18,7 +18,10 @@ import { isVideoFile } from '../../../utils/files/isVideoFile';
 // styles
 import styles from './TemplateBackgroundPreview.module.scss';
 
-const Component = ({ children, isFileUploading }: TemplateBackgroundPreviewProps) => {
+const Component = ({
+    children,
+    isFileUploading,
+}: TemplateBackgroundPreviewProps) => {
     const { control } = useFormContext();
 
     const url = useWatch({ control, name: 'url' });

@@ -11,8 +11,6 @@ import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { MusicIcon } from 'shared-frontend/icons/OtherIcons/MusicIcon';
 import { PauseIcon } from 'shared-frontend/icons/OtherIcons/PauseIcon';
 import { PlayIcon } from 'shared-frontend/icons/OtherIcons/PlayIcon';
-import styles from './MeetingManageAudio.module.scss';
-import { AudioItem } from './AudioItem';
 import { useStore, useStoreMap } from 'effector-react';
 import {
     $isToggleMeetingAudioStore,
@@ -23,6 +21,8 @@ import {
 } from 'src/store/roomStores';
 import { Translation } from '@library/common/Translation/Translation';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
+import { AudioItem } from './AudioItem';
+import styles from './MeetingManageAudio.module.scss';
 
 const Component = () => {
     const refToolTip = useRef();

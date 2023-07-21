@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { Snackbar, SnackbarContent } from '@mui/material';
 import { useStore } from 'effector-react';
 
@@ -67,19 +67,28 @@ const Component = () => {
                 horizontal: isMobile ? 'left' : 'center',
             }}
             open={open}
-            {...(messageInfo?.withManualClose ? {} : { autoHideDuration: AUTO_HIDE_DURATION })}
+            {...(messageInfo?.withManualClose
+                ? {}
+                : { autoHideDuration: AUTO_HIDE_DURATION })}
         >
             <SnackbarContent
                 className={styles.content}
                 message={
                     <CustomGrid container alignItems="center" gap={1}>
-                        <ConditionalRender condition={messageInfo?.withSuccessIcon || false}>
+                        <ConditionalRender
+                            condition={messageInfo?.withSuccessIcon || false}
+                        >
                             <RoundSuccessIcon width="16px" height="16px" />
                         </ConditionalRender>
-                        <ConditionalRender condition={messageInfo?.withErrorIcon || false}>
+                        <ConditionalRender
+                            condition={messageInfo?.withErrorIcon || false}
+                        >
                             <RoundErrorIcon width="16px" height="16px" />
                         </ConditionalRender>
-                        {translation(messageInfo?.message || '', messageInfo?.messageOptions ?? {})}
+                        {translation(
+                            messageInfo?.message || '',
+                            messageInfo?.messageOptions ?? {},
+                        )}
                     </CustomGrid>
                 }
             />

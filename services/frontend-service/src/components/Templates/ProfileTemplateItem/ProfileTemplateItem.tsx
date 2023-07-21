@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Fade, Menu, MenuItem } from '@mui/material';
 import { useStore } from 'effector-react';
 import clsx from 'clsx';
@@ -25,12 +25,10 @@ import { TemplateInfo } from '@components/Templates/TemplateInfo/TemplateInfo';
 
 // stores
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
-import { isSafari } from 'shared-utils';
 import {
     $isBusinessSubscription,
     $isProfessionalSubscription,
     $profileStore,
-    addNotificationEvent,
     appDialogsApi,
     setDeleteTemplateIdEvent,
     setScheduleTemplateIdEvent,
@@ -44,11 +42,10 @@ import styles from './ProfileTemplateItem.module.scss';
 
 // types
 import { ProfileTemplateProps } from './types';
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 
 const ProfileTemplateItem = memo(
-    ({ template, 
-onChooseTemplate }: ProfileTemplateProps) => {
+    ({ template, onChooseTemplate }: ProfileTemplateProps) => {
         const profile = useStore($profileStore);
         const isBusinessSubscription = useStore($isBusinessSubscription);
         const isProfSubscription = useStore($isProfessionalSubscription);
@@ -112,13 +109,6 @@ onChooseTemplate }: ProfileTemplateProps) => {
         const previewImage = (template?.previewUrls || []).find(
             preview => preview.resolution === 240,
         );
-
-        const handleShowToast = useCallback(() => {
-            addNotificationEvent({
-                type: NotificationType.NoTimeLeft,
-                message: `subscriptions.noTimeLeft`,
-            });
-        }, []);
 
         const renderPreview = () => {
             switch (template?.templateType) {

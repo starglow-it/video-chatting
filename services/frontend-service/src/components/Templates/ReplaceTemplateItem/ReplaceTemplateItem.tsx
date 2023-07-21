@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 import { useStore } from 'effector-react';
 import { Fade } from '@mui/material';
@@ -18,10 +18,15 @@ import { $deleteProfileTemplateId } from '../../../store';
 // types
 import { ReplaceTemplateItemProps } from './types';
 
-const Component = ({ template, onChooseTemplate }: ReplaceTemplateItemProps) => {
+const Component = ({
+    template,
+    onChooseTemplate,
+}: ReplaceTemplateItemProps) => {
     const deleteTemplateId = useStore($deleteProfileTemplateId);
 
-    const previewImage = (template?.previewUrls || []).find(preview => preview.resolution === 240);
+    const previewImage = (template?.previewUrls || []).find(
+        preview => preview.resolution === 240,
+    );
 
     const isChosenForReplace = template.id === deleteTemplateId;
 
@@ -31,14 +36,20 @@ const Component = ({ template, onChooseTemplate }: ReplaceTemplateItemProps) => 
 
     return (
         <CustomGrid
-            className={clsx(styles.templateContent, { [styles.active]: isChosenForReplace })}
+            className={clsx(styles.templateContent, {
+                [styles.active]: isChosenForReplace,
+            })}
             container
             justifyContent="center"
             alignItems="center"
             onClick={handleChooseTemplate}
         >
             <ConditionalRender condition={Boolean(previewImage?.url)}>
-                <CustomImage src={previewImage?.url || ''} width="334px" height="190px" />
+                <CustomImage
+                    src={previewImage?.url || ''}
+                    width="334px"
+                    height="190px"
+                />
             </ConditionalRender>
             <Fade in={isChosenForReplace}>
                 <CustomGrid

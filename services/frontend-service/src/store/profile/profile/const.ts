@@ -1,5 +1,5 @@
+import { PlanKeys } from 'shared-types';
 import { Profile } from '../../types';
-import {PlanKeys} from "shared-types";
 
 export const initialProfileState = {
     id: '',

@@ -3,14 +3,18 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { createTemplateUrl } from '../../../utils/urls';
 import { CreateTemplateResponse } from '../types';
 
-export const handleCreateTemplate = async (): Promise<CreateTemplateResponse> => {
-    const response = await sendRequestWithCredentials<ICommonTemplate, ErrorState>({
-        ...createTemplateUrl,
-    });
+export const handleCreateTemplate =
+    async (): Promise<CreateTemplateResponse> => {
+        const response = await sendRequestWithCredentials<
+            ICommonTemplate,
+            ErrorState
+        >({
+            ...createTemplateUrl,
+        });
 
-    if (response.success) {
-        return response.result;
-    }
+        if (response.success) {
+            return response.result;
+        }
 
-    return null;
-};
+        return null;
+    };

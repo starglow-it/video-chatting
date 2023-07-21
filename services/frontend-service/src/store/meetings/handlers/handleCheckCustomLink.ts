@@ -14,7 +14,9 @@ export const handleCheckCustomLink = async ({
     );
 
     if (response.success) {
-        return Boolean(response.result?.id) && response?.result?.id !== templateId;
+        return (
+            Boolean(response.result?.id) && response?.result?.id !== templateId
+        );
     }
 
     return false;

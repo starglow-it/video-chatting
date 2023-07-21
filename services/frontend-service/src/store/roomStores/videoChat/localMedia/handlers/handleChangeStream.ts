@@ -1,16 +1,24 @@
-import { getMediaStream, GetMediaStream } from '../../../../../helpers/media/getMediaStream';
+import {
+    getMediaStream,
+    GetMediaStream,
+} from '../../../../../helpers/media/getMediaStream';
 import { getDevicesFromStream } from '../../../../../helpers/media/getDevices';
 import { DeviceInputKindEnum } from '../../../../../const/media/DEVICE_KINDS';
 import { stopStream } from '../../../../../helpers/media/stopStream';
 import {
     setAudioErrorEvent,
     setChangeStreamEvent,
-    setCurrentAudioDeviceEvent, setCurrentVideoDeviceEvent,
+    setCurrentAudioDeviceEvent,
+    setCurrentVideoDeviceEvent,
     setVideoErrorEvent,
 } from '../model';
 import { ChangeStreamPayload } from '../../types';
 
-export const handleChangeStream = async ({ kind, deviceId, stream }: ChangeStreamPayload) => {
+export const handleChangeStream = async ({
+    kind,
+    deviceId,
+    stream,
+}: ChangeStreamPayload) => {
     let newStream: GetMediaStream = {};
 
     if (stream) {
@@ -31,10 +39,14 @@ export const handleChangeStream = async ({ kind, deviceId, stream }: ChangeStrea
         stopStream(stream);
 
         if (newStream?.stream) {
-            const { videoDeviceId: oldVideoDevice, audioDeviceId: oldAudioDevice } =
-                getDevicesFromStream(stream);
-            const { videoDeviceId: newVideoDevice, audioDeviceId: newAudioDevice } =
-                getDevicesFromStream(newStream?.stream);
+            const {
+                videoDeviceId: oldVideoDevice,
+                audioDeviceId: oldAudioDevice,
+            } = getDevicesFromStream(stream);
+            const {
+                videoDeviceId: newVideoDevice,
+                audioDeviceId: newAudioDevice,
+            } = getDevicesFromStream(newStream?.stream);
 
             if (
                 oldVideoDevice !== newVideoDevice ||
@@ -44,8 +56,12 @@ export const handleChangeStream = async ({ kind, deviceId, stream }: ChangeStrea
             ) {
                 stopStream(stream);
 
-                setCurrentVideoDeviceEvent((newVideoDevice || oldVideoDevice) as string);
-                setCurrentAudioDeviceEvent((newAudioDevice || oldAudioDevice) as string);
+                setCurrentVideoDeviceEvent(
+                    (newVideoDevice || oldVideoDevice) as string,
+                );
+                setCurrentAudioDeviceEvent(
+                    (newAudioDevice || oldAudioDevice) as string,
+                );
 
                 setChangeStreamEvent(newStream?.stream);
             } else {

@@ -1,6 +1,6 @@
 import { meetingDomain } from 'src/store/domains';
-import { IAudioCategory } from './types';
 import { EntityList } from 'shared-types';
+import { IAudioCategory } from './types';
 
 export const $meetingAudioStore = meetingDomain.createStore<{
     audioList: IAudioCategory[];

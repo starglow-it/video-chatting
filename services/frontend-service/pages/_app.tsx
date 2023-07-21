@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import App from 'next/app';
 import type { AppContext, AppProps } from 'next/app';
 import Head from 'next/head';
@@ -8,6 +8,7 @@ import { hydrate } from 'effector';
 import { Provider } from 'effector-react/ssr';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { Layout } from '@components/Layout/Layout';
+import { SpinnerLoading } from '@components/Spinner/Spinner';
 
 // hooks
 import { useScope } from '@hooks/useScope';
@@ -52,7 +53,7 @@ import {
     welcomeRoute,
     indexRoute,
 } from '../src/const/client-routes';
-import { SpinnerLoading } from '@components/Spinner/Spinner';
+
 const { publicRuntimeConfig } = getConfig();
 
 const clientSideEmotionCache = createEmotionCache();
