@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MonitoringService } from './monitoring.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Monitoring, MonitoringSchema } from 'src/schemas/monitoring.schema';
+import { MonitoringController } from './monitoring.controller';
 
 @Module({
     imports: [
@@ -9,6 +10,7 @@ import { Monitoring, MonitoringSchema } from 'src/schemas/monitoring.schema';
             { name: Monitoring.name, schema: MonitoringSchema },
         ]),
     ],
+    controllers: [MonitoringController],
     providers: [MonitoringService],
 })
 export class MonitoringModule { };

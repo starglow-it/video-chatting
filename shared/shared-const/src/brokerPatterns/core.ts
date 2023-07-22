@@ -22,6 +22,7 @@ export enum CoreBrokerPatterns {
   DeleteFeatureBackgrounds = 'delete_featured_background',
 
   GetMonitorings = 'get_monitorings',
+  GetMonitoring = 'get_monitoring',
   CreateMonitoring = 'create_monitoring',
   UpdateMonitoring = 'update_monitoring',
   DeleteMonitorings = 'delete_monitoring'

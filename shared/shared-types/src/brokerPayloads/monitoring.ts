@@ -11,13 +11,20 @@ export type GetMonitoringsPayload = {
         }>;
 }
 
+export type GetMonitoringPayload = {
+    event: IMonitoring['event'];
+    eventId: IMonitoring['eventId'];
+}
+
 export type CreateMonitoringPayload = {
     event: IMonitoring['event'];
+    eventId: IMonitoring['eventId'];
 }
 
 export type UpdateMonitoringPayload = {
     id: IMonitoring['id'];
     processTime: IMonitoring['processTime'];
+    metadata: IMonitoring['metadata'];
 }
 
 export type DeleteMonitoringPayload = {

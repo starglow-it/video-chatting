@@ -10,7 +10,13 @@ export class MonitoringDto implements IMonitoring {
     event: MonitoringEvent;
 
     @Expose()
-    processTime: string;
+    eventId: string;
+
+    @Expose()
+    processTime: number;
+
+    @Expose()
+    metadata: Object;
 
     @Expose()
     createdAt?: Date;

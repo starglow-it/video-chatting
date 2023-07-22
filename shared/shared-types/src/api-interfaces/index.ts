@@ -8,3 +8,4 @@ export * from './media';
 export * from './migration';
 export * from './featured-background';
 export * from './monitoring';
+export * from './notification';
