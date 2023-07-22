@@ -1,4 +1,4 @@
-import { IMonitoring } from "../api-interfaces"
+import { IMonitoring, MonitoringEvent } from "../api-interfaces"
 
 export type GetMonitoringsPayload = {
     event: IMonitoring['event'];
@@ -28,5 +28,6 @@ export type UpdateMonitoringPayload = {
 }
 
 export type DeleteMonitoringPayload = {
-    atTime: IMonitoring['updatedAt']
+    event: MonitoringEvent;
+    atTime: IMonitoring['updatedAt'];
 }

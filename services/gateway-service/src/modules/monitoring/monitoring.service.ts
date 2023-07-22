@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CoreBrokerPatterns } from 'shared-const';
-import { CreateMonitoringPayload, GetMonitoringPayload, GetMonitoringsPayload, IMonitoring, UpdateMonitoringPayload } from 'shared-types';
+import { CreateMonitoringPayload, DeleteMonitoringPayload, EntityList, GetMonitoringPayload, GetMonitoringsPayload, IMonitoring, UpdateMonitoringPayload } from 'shared-types';
 // import { CoreBrokerPatterns } from 'shared-const';
 // import { GetMonitoringPayload } from 'shared-types';
 import { CoreService } from 'src/services/core/core.service';
@@ -11,7 +11,7 @@ export class MonitoringService {
         private coreService: CoreService,
     ) { }
 
-    async getMonitorings(payload: GetMonitoringsPayload) {
+    async getMonitorings(payload: GetMonitoringsPayload): Promise<EntityList<IMonitoring>> {
         const pattern = { cmd: CoreBrokerPatterns.GetMonitorings };
         return this.coreService.sendCustom(pattern, payload);
     }
@@ -30,6 +30,11 @@ export class MonitoringService {
 
     async updateMonitoring(payload: UpdateMonitoringPayload) {
         const pattern = { cmd: CoreBrokerPatterns.UpdateMonitoring };
+        return this.coreService.sendCustom(pattern, payload);
+    }
+
+    async deleteMonitorings(payload: DeleteMonitoringPayload){
+        const pattern = { cmd: CoreBrokerPatterns.DeleteMonitorings };
         return this.coreService.sendCustom(pattern, payload);
     }
 

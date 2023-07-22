@@ -7,7 +7,7 @@ export interface IMonitoring {
     id: string;
     event: MonitoringEvent;
     eventId: string;
-    metadata: Object;
+    metadata: string;
     processTime: number;
     createdAt?: Date;
     updatedAt?: Date;

@@ -29,9 +29,9 @@ export class Monitoring {
 
   @Prop({
     type: mongoose.Schema.Types.Mixed,
-    default: {}
+    default: '{}'
   })
-  metadata: Object;
+  metadata: string;
 
   createdAt?: Date;
 

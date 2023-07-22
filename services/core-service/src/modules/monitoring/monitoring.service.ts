@@ -24,7 +24,8 @@ export class MonitoringService {
                 {
                     skip: options?.skip,
                     limit: options?.limit,
-                    session: session?.session,
+                    sort: options?.sort,
+                    session: session?.session
                 },
             )
             .exec();

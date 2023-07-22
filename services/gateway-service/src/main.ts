@@ -32,10 +32,10 @@ async function bootstrap() {
 
   // Swagger setup
   const options = new DocumentBuilder()
-    .setTitle('The LiveOffice')
-    .setDescription('The LiveOffice gateway api')
+    .setTitle('Chatruume')
+    .setDescription('Chatruume gateway api')
     .setVersion(config.apiVersion)
-    .addTag('liveoffice')
+    .addTag('chatruume')
     .addBearerAuth()
     .build();
 
