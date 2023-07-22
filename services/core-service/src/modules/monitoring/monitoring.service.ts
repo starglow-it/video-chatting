@@ -30,6 +30,17 @@ export class MonitoringService {
             .exec();
     }
 
+    async findOne({
+        query,
+        session,
+        populatePaths,
+    }: GetModelQuery<MonitoringDocument>): Promise<MonitoringDocument> {
+        return this.monitoring
+            .findOne(query, {}, { session: session?.session, populate: populatePaths })
+            .exec();
+    }
+
+
     async create({
         data,
         session,

@@ -28,7 +28,7 @@ export const sendEmail = async ({
     html,
     template,
     icalEventContent,
-}: SendEmailRequest) => {
+}: SendEmailRequest): Promise<any> => {
     const emailClient = await getOrCreateClient();
 
     const smtpUser = await getConfigVar('smtpUser');
@@ -88,8 +88,7 @@ export const sendEmail = async ({
         };
 
         const s = await emailClient.messages.sendTemplate(sendTemplateData);
-        console.log(s);
-        return;
+        return s;
     }
 
     await emailClient.messages.send({

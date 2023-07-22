@@ -58,14 +58,4 @@ export class AppController implements OnModuleInit {
             throw new BadRequestException(err);
         }
     }
-
-    @Post('/mandrill')
-    mandrillCallback(@Req() req, @Res() res: Response) {
-        const events = req.body['mandrill_events'];
-        // console.log(JSON.parse(events));
-        console.log(JSON.parse(events));
-        
-        res.sendStatus(201);
-        return;
-    }
 }

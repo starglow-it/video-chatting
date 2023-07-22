@@ -4,7 +4,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { MonitoringService } from './monitoring.service';
 import { CoreBrokerPatterns } from 'shared-const';
-import { CreateMonitoringPayload, DeleteMonitoringPayload, GetMonitoringsPayload, UpdateMonitoringPayload } from 'shared-types';
+import { CreateMonitoringPayload, DeleteMonitoringPayload, GetMonitoringPayload, GetMonitoringsPayload, UpdateMonitoringPayload } from 'shared-types';
 import { withTransaction } from 'src/helpers/mongo/withTransaction';
 import { plainToInstance } from 'class-transformer';
 import { MonitoringDto } from 'src/dtos/monitoring.dto';
@@ -64,14 +64,41 @@ export class MonitoringController {
         });
     }
 
+    @MessagePattern({ cmd: CoreBrokerPatterns.GetMonitoring })
+    async getMonitoring(payload: GetMonitoringPayload) {
+        return withTransaction(this.connection, async (session) => {
+            const { event, eventId } = payload;
+            try {
+                const m = await this.monitoringService.findOne({
+                    query: {
+                        event,
+                        eventId
+                    },
+                    session
+                });
+                return plainToInstance(MonitoringDto, m, {
+                    excludeExtraneousValues: true,
+                    enableImplicitConversion: true,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                return;
+            }
+        });
+    }
+
     @MessagePattern({ cmd: CoreBrokerPatterns.CreateMonitoring })
     async createMonitoring(@Payload() payload: CreateMonitoringPayload) {
         return withTransaction(this.connection, async (session) => {
-            const { event } = payload;
+            const { event, eventId } = payload;
+            console.log(payload);
+
             try {
                 await this.monitoringService.create({
                     data: {
-                        event
+                        event,
+                        eventId
                     },
                     session
                 });
@@ -86,14 +113,15 @@ export class MonitoringController {
     @MessagePattern({ cmd: CoreBrokerPatterns.UpdateMonitoring })
     async updateMonitoring(@Payload() payload: UpdateMonitoringPayload) {
         return withTransaction(this.connection, async (session) => {
-            const { id, processTime } = payload;
+            const { id, processTime, metadata } = payload;
             try {
                 await this.monitoringService.findOneAndUpdate({
                     query: {
                         _id: id
                     },
                     data: {
-                        processTime
+                        processTime,
+                        metadata
                     },
                     session
                 });

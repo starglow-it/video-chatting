@@ -3,10 +3,10 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 @Schema({
-    timestamps: {
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
-    }
+  timestamps: {
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  }
 })
 export class Monitoring {
   @Prop({
@@ -16,23 +16,25 @@ export class Monitoring {
   event: string;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+    required: true
+  })
+  eventId: string;
+
+  @Prop({
     type: mongoose.Schema.Types.Number,
     default: 0
   })
   processTime: number;
 
   @Prop({
-    type: mongoose.Schema.Types.Date,
-    default: new Date(),
-    required: false
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
   })
+  metadata: Object;
+
   createdAt?: Date;
 
-  @Prop({
-    type: mongoose.Schema.Types.Date,
-    default: new Date(),
-    required: false
-  })
   updatedAt?: Date;
 
 }

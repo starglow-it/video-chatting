@@ -13,9 +13,11 @@ import { ConfigModule } from '../config/config.module';
 // services
 import { ConfigClientService } from '../config/config.service';
 import { NotificationsService } from './notifications.service';
+import { CoreModule } from '../core/core.module';
 
 @Module({
   imports: [
+    CoreModule,
     ClientsModule.registerAsync([
       {
         name: NOTIFICATIONS_PROVIDER,

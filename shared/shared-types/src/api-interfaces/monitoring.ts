@@ -1,11 +1,14 @@
 
 export enum MonitoringEvent {
-    SendEmail = 'sendEamil'
+    SendEmail = 'send_email'
 }
+
 export interface IMonitoring {
     id: string;
     event: MonitoringEvent;
-    processTime: string;
+    eventId: string;
+    metadata: Object;
+    processTime: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
