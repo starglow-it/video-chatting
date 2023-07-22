@@ -1,13 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { MonitoringService } from './monitoring.service';
-import { MonitoringEvent } from 'shared-types';
+import { MonitoringEvent, ResponseSumType } from 'shared-types';
 import * as moment from 'moment';
 import { GetMonitoringParam } from '../../dtos/params/get-monitoring.param';
 import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetMonitoringQueryDto } from '../../dtos/query/GetMonitoringQuery.dto';
 import { MonitoringDto } from '../../dtos/response/monitoring.dto';
 import { DeleteMonitoringRequestDto } from '../../dtos/requests/delete-monitoring.request';
+import { CommonResponseDto } from 'src/dtos/response/common-response.dto';
 
 type MandrillMsg = {
     ts: number,
@@ -37,6 +38,7 @@ export class MonitoringController {
     constructor(private readonly monitoringService: MonitoringService) { }
 
     @Post('/mandrill')
+    @ApiOperation({ summary: 'This is Mandrill webhook, dont\' use' })
     async handleMandrillCallback(@Req() req: Request, @Res() res: Response) {
         const events = JSON.parse(req.body['mandrill_events']) as MandrillWebhookEvents;
         const now = moment();
@@ -92,15 +94,24 @@ export class MonitoringController {
     }
 
     @Delete('/:event')
+    @ApiOperation({ summary: 'Remove Monitoring Records from timestamp' })
+    @ApiOkResponse({
+        type: [CommonResponseDto],
+        description: 'Remove Monitoring Records from timestamp',
+    })
     async deleteMonitorings(
         @Param() params: GetMonitoringParam,
         @Body() body: DeleteMonitoringRequestDto
-    ){
+    ): Promise<ResponseSumType<void>>{
         try{
-            return await this.monitoringService.deleteMonitorings({
+            await this.monitoringService.deleteMonitorings({
                 event: params.event,
                 atTime: body.from
             });
+            return {
+                success: true,
+                result: null
+            }
         }
         catch(err){
             console.log(err);
