@@ -1,10 +1,15 @@
-import { Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { MonitoringService } from './monitoring.service';
 import { MonitoringEvent } from 'shared-types';
 import * as moment from 'moment';
+import { GetMonitoringParam } from '../../dtos/params/get-monitoring.param';
+import { ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetMonitoringQueryDto } from '../../dtos/query/GetMonitoringQuery.dto';
+import { MonitoringDto } from '../../dtos/response/monitoring.dto';
+import { DeleteMonitoringRequestDto } from '../../dtos/requests/delete-monitoring.request';
 
-export type MandrillMsg = {
+type MandrillMsg = {
     ts: number,
     subject: string,
     email: string,
@@ -19,19 +24,20 @@ export type MandrillMsg = {
     _version: string
 }
 
-export type MandrillWebhookEvents = Array<Object & {
+type MandrillWebhookEvents = Array<Object & {
     event: string;
     _id: string;
     ts: number;
     msg: MandrillMsg;
 }>
 
+@ApiTags('Monitoring')
 @Controller('monitoring')
 export class MonitoringController {
     constructor(private readonly monitoringService: MonitoringService) { }
 
     @Post('/mandrill')
-    async mandrillCallback(@Req() req: Request, @Res() res: Response) {
+    async handleMandrillCallback(@Req() req: Request, @Res() res: Response) {
         const events = JSON.parse(req.body['mandrill_events']) as MandrillWebhookEvents;
         const now = moment();
         const promiseArr = events.map(async e => {
@@ -45,7 +51,7 @@ export class MonitoringController {
                 const processTime = now.diff(m.createdAt, 'millisecond');
                 await this.monitoringService.updateMonitoring({
                     id: m.id,
-                    metadata: e,
+                    metadata: JSON.stringify(e),
                     processTime
                 });
             }
@@ -59,4 +65,46 @@ export class MonitoringController {
         return;
     }
 
+    @Get('/:event')
+    @ApiOperation({ summary: 'Get Monitoring Records' })
+    @ApiOkResponse({
+        type: [MonitoringDto],
+        description: 'Get Monitoring Records',
+    })
+    @ApiForbiddenResponse({
+        description: 'Forbidden',
+    })
+    async getMonitorings(
+        @Param() params: GetMonitoringParam,
+        @Query() queries: GetMonitoringQueryDto
+    ) {
+        const { event } = params;
+        try {
+            return await this.monitoringService.getMonitorings({
+                event,
+                filter: queries
+            });
+        }
+        catch (err) {
+            console.log(err);
+            return;
+        }
+    }
+
+    @Delete('/:event')
+    async deleteMonitorings(
+        @Param() params: GetMonitoringParam,
+        @Body() body: DeleteMonitoringRequestDto
+    ){
+        try{
+            return await this.monitoringService.deleteMonitorings({
+                event: params.event,
+                atTime: body.from
+            });
+        }
+        catch(err){
+            console.log(err);
+            return;
+        }
+    }
 }

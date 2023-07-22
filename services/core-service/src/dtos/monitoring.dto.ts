@@ -1,5 +1,6 @@
-import { Expose, Transform, Type } from 'class-transformer';
+import { Expose, Transform, TransformFnParams, Type, TypeHelpOptions, plainToInstance } from 'class-transformer';
 import { IBusinessCategory, IMonitoring, MonitoringEvent } from 'shared-types';
+
 
 export class MonitoringDto implements IMonitoring {
     @Expose()
@@ -16,7 +17,7 @@ export class MonitoringDto implements IMonitoring {
     processTime: number;
 
     @Expose()
-    metadata: Object;
+    metadata: string;
 
     @Expose()
     createdAt?: Date;

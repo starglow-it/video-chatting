@@ -21,18 +21,23 @@ export class MonitoringController {
         return withTransaction(this.connection, async () => {
             try {
                 const { event, filter: { sortProp, atTime, limit = 10, skip = 0 } } = payload;
-
-                const ms = await this.monitoringService.find({
-                    query: {
-                        event,
+                const q = {
+                    event,
+                    ...(atTime && {
                         updatedAt: {
                             $gte: atTime
                         }
-                    },
+                    })
+                };
+
+                const ms = await this.monitoringService.find({
+                    query: q,
                     options: {
-                        sort: {
-                            [sortProp]: -1
-                        },
+                        ...(sortProp && {
+                            sort: {
+                                [sortProp]: -1
+                            },
+                        }),
                         limit,
                         skip: skip * limit
                     },
@@ -45,12 +50,7 @@ export class MonitoringController {
                     }
                 );
 
-                const msCount = await this.monitoringService.count({
-                    event,
-                    updatedAt: {
-                        $gte: atTime
-                    }
-                });
+                const msCount = await this.monitoringService.count(q);
 
                 return {
                     list: msPlain,
@@ -137,15 +137,16 @@ export class MonitoringController {
     @MessagePattern({ cmd: CoreBrokerPatterns.DeleteMonitorings })
     async deleteMonitoring(@Payload() payload: DeleteMonitoringPayload) {
         return withTransaction(this.connection, async session => {
-            const { atTime } = payload;
+            const { atTime, event } = payload;
             await this.monitoringService.delete({
                 query: {
+                    event,
                     updatedAt: {
                         $gte: atTime
                     }
                 },
                 session
-            })
+            });
         });
     }
 
