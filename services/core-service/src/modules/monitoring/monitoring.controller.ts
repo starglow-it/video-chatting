@@ -29,7 +29,6 @@ export class MonitoringController {
                         }
                     })
                 };
-
                 const ms = await this.monitoringService.find({
                     query: q,
                     options: {
@@ -42,16 +41,13 @@ export class MonitoringController {
                         skip: skip * limit
                     },
                 });
-
                 const msPlain = plainToInstance(MonitoringDto, ms,
                     {
                         excludeExtraneousValues: true,
                         enableImplicitConversion: true,
                     }
                 );
-
                 const msCount = await this.monitoringService.count(q);
-
                 return {
                     list: msPlain,
                     count: msCount
