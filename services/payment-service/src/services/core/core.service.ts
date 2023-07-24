@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { CORE_PROVIDER, UserTemplatesBrokerPatterns } from 'shared-const';
+import { CORE_PROVIDER, CoreBrokerPatterns, UserTemplatesBrokerPatterns } from 'shared-const';
 import {
   StatisticBrokerPatterns,
   UserBrokerPatterns,
@@ -21,6 +21,7 @@ import {
   UpdateUserProfileStatisticPayload,
   DeleteLeastUsedTemplatesPayload,
   GetCommonTemplateByIdPayload,
+  CreateMonitoringPayload,
 } from 'shared-types';
 import { firstValueFrom } from 'rxjs';
 
@@ -111,6 +112,11 @@ export class CoreService {
       cmd: UserTemplatesBrokerPatterns.DeleteLeastUsedTemplates,
     };
 
+    return this.client.send(pattern, payload).toPromise();
+  }
+
+  async createMonitoring(payload: CreateMonitoringPayload){
+    const pattern = { cmd: CoreBrokerPatterns.CreateMonitoring };
     return this.client.send(pattern, payload).toPromise();
   }
 }

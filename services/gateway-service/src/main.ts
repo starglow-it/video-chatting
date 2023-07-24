@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
+import * as express from 'express';
 
 // modules
 import { AppModule } from './app.module';
@@ -31,16 +32,18 @@ async function bootstrap() {
 
   // Swagger setup
   const options = new DocumentBuilder()
-    .setTitle('The LiveOffice')
-    .setDescription('The LiveOffice gateway api')
+    .setTitle('Chatruume')
+    .setDescription('Chatruume gateway api')
     .setVersion(config.apiVersion)
-    .addTag('liveoffice')
+    .addTag('chatruume')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
 
   SwaggerModule.setup(`${ROOT_SCOPE}swagger`, app, document);
+
+  app.use('/maindrill', express.raw({type: 'application/json'}));
 
   app.useGlobalFilters(
     new AllExceptionsFilter(),

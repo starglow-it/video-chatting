@@ -19,7 +19,7 @@ const send = (sendEmailData: SendEmailRequest, service: EmailServices) => {
 export const sendEmail = async (sendEmailData: SendEmailRequest) => {
     const service = await getConfigVar('emailService');
 
-    await send(sendEmailData, service);
+    const s =  await send(sendEmailData, service);
 
     logger.info(
         `Email.sendEmail success; ${JSON.stringify({
@@ -27,4 +27,5 @@ export const sendEmail = async (sendEmailData: SendEmailRequest) => {
             service,
         })}`,
     );
+    return s;
 };
