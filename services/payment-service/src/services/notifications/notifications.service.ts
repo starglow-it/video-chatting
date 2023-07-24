@@ -18,17 +18,18 @@ export class NotificationsService {
   }
 
   async sendEmail(payload) {
+    const statuses = ['sent', 'queued'];
     const pattern = { cmd: NotificationsBrokerPatterns.SendEmail };
-
-    const messages = await this.client.send(pattern, payload).toPromise() as MessagesSendResponse[];
-    const m = messages.find ? messages.find(item => item.status === 'sent') : undefined;
+    const messages = await this.client
+      .send(pattern, payload)
+      .toPromise() as MessagesSendResponse[];
+    const m = messages.find ? messages.find(item => statuses.includes(item.status)) : undefined;
     if (m) {
       await this.coreService.createMonitoring({
         event: MonitoringEvent.SendEmail,
         eventId: m._id
       });
     }
-
     return messages;
   }
 }

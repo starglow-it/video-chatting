@@ -16,10 +16,11 @@ export class NotificationsService {
   }
 
   async sendEmail(data) {
+    const statuses = ['sent', 'queued'];
     const messages = await this.client
       .send(NotificationsBrokerPatterns.SendEmail, data)
       .toPromise() as MessagesSendResponse[];
-      const m = messages.find ? messages.find(item => item.status === 'sent') : undefined;
+    const m = messages.find ? messages.find(item => statuses.includes(item.status)) : undefined;
     if (m) {
       await this.monitoringService.createMonitoring({
         event: MonitoringEvent.SendEmail,
