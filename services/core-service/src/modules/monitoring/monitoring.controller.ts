@@ -92,8 +92,6 @@ export class MonitoringController {
     async createMonitoring(@Payload() payload: CreateMonitoringPayload) {
         return withTransaction(this.connection, async (session) => {
             const { event, eventId } = payload;
-            console.log(payload);
-
             try {
                 await this.monitoringService.create({
                     data: {
