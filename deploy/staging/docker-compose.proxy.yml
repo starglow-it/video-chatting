@@ -5,10 +5,10 @@ services:
   traefik:
     build: ./traefik
     environment:
-      - AWS_ACCESS_KEY_ID=AKIAQY5KRUCZSFKRJ4P7
-      - AWS_SECRET_ACCESS_KEY=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
-      - AWS_REGION=us-east-2
-    container_name: traefik
+      - AWS-ACCESS-KEY-ID=AKIAQY5KRUCZSFKRJ4P7
+      - AWS-SECRET-ACCESS-KEY=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
+      - AWS-REGION=us-east-2
+    container-name: traefik
     restart: always
     labels:
       - "traefik.enable=true"
@@ -33,7 +33,7 @@ services:
       - traefikpublic
 
   instance-proxy:
-    container_name: instance_proxy
+    container-name: instance-proxy
     build:
       context: ../../services/instance-proxy
       dockerfile: Dockerfile
@@ -64,12 +64,12 @@ services:
 #      - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
 #      - "traefik.http.services.whoami.loadbalancer.server.port=80"
       # ====================================================================================
-      - "traefik.http.routers.whoami_wildcard_resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.stg.chatruume.com`) && PathPrefix(`/whoami`)"
-      - "traefik.http.routers.whoami_wildcard_resolver.entrypoints=websecure"
-      - "traefik.http.routers.whoami_wildcard_resolver.tls.domains[0].main=stg.chatruume.com"
-      - "traefik.http.routers.whoami_wildcard_resolver.tls.domains[0].sans=*.stg.chatruume.com"
-      - "traefik.http.routers.whoami_wildcard_resolver.tls.certresolver=wildcard-resolver"
-      - "traefik.http.services.whoami_wildcard_resolver.loadbalancer.server.port=80"
+      - "traefik.http.routers.whoami-wildcard-resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.stg.chatruume.com`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami-wildcard-resolver.entrypoints=websecure"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].main=stg.chatruume.com"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].sans=*.stg.chatruume.com"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.certresolver=wildcard-resolver"
+      - "traefik.http.services.whoami-wildcard-resolver.loadbalancer.server.port=80"
     networks:
       - traefikpublic
 
