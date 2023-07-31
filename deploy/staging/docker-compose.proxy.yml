@@ -5,10 +5,10 @@ services:
   traefik:
     build: ./traefik
     environment:
-      - AWS-ACCESS-KEY-ID=AKIAQY5KRUCZSFKRJ4P7
-      - AWS-SECRET-ACCESS-KEY=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
-      - AWS-REGION=us-east-2
-    container-name: traefik
+      - AWS_ACCESS_KEY_ID=AKIAQY5KRUCZSFKRJ4P7
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_REGION=us-east-2
+    container_name: traefik
     restart: always
     labels:
       - "traefik.enable=true"
@@ -33,7 +33,7 @@ services:
       - traefikpublic
 
   instance-proxy:
-    container-name: instance-proxy
+    container_name: instance-proxy
     build:
       context: ../../services/instance-proxy
       dockerfile: Dockerfile
