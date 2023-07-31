@@ -10,6 +10,15 @@ services:
       - AWS_REGION=us-east-2
     container_name: traefik
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`stg-traefik.chatruume.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      # echo $(htpasswd -nb tlo 02HBdnBT2ZPu) | sed -e s/\\$/\\$\\$/g
+      - "traefik.http.middlewares.auth.basicauth.users=tlo:$$apr1$$PdvDQIVp$$UAXSS/z5O5t.VQm7acCfh1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/letsencrypt:/letsencrypt
