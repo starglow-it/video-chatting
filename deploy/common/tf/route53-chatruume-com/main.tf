@@ -161,3 +161,37 @@ resource "aws_route53_record" "www" {
   ttl     = 300
   records = ["5.181.161.73"]
 }
+
+resource "aws_route53_record" "star-stg" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "*.stg.chatruume.com"
+  type    = "A"
+  alias {
+    name                   = aws_route53_record.stg.name
+    zone_id                = data.aws_route53_zone.main.zone_id
+    evaluate_target_health = true
+  }
+}
+
+
+resource "aws_route53_record" "star" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "*.chatruume.com"
+  type    = "A"
+  alias {
+    name                   = aws_route53_record.prod.name
+    zone_id                = data.aws_route53_zone.main.zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "stg-traefik" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "stg-traefik.chatruume.com"
+  type    = "A"
+  alias {
+    name                   = aws_route53_record.stg.name
+    zone_id                = data.aws_route53_zone.main.zone_id
+    evaluate_target_health = true
+  }
+}
