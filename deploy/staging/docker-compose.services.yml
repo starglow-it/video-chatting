@@ -118,7 +118,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
       - "traefik.http.routers.frontend.rule=(Host(`stg-my.chatruume.com`) || HostRegexp(`{sub:[a-zA-Z0-9-]+}.stg.chatruume.com`))"
-      - "traefik.http.routers.frontend.priority=10"
+      - "traefik.http.routers.frontend.priority=100"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
