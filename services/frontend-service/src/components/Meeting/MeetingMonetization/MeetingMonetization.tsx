@@ -6,7 +6,7 @@ import {
     useWatch,
     FieldValues,
 } from 'react-hook-form';
-import { InputBase } from '@mui/material';
+import { InputBase, MenuItem } from '@mui/material';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
 
@@ -22,14 +22,12 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // common
-import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
-
 // validation
 import { Translation } from '@library/common/Translation/Translation';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
 import {
     templatePriceSchema,
     paywallPriceSchema,
@@ -93,10 +91,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const handleValueChanged = useCallback(
         (
-            newValue: ValuesSwitcherItem<'USD' | 'CAD', string>,
+            newValue: 'USD' | 'CAD' | string,
             type: 'templateCurrency' | 'paywallCurrency',
         ) => {
-            setValue(type, newValue.value);
+            setValue(type, newValue);
         },
         [],
     );
@@ -180,6 +178,19 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
         ? errors?.paywallPrice?.message?.toString() ?? ''
         : '';
 
+    const renderTimeValue = useCallback((selected: any) => selected, []);
+
+    const renderTimeList = useMemo(() => {
+        return currencyValues.map(time => (
+            <MenuItem
+                key={time.id}
+                value={time.value}
+            >
+                {time.label}
+            </MenuItem>
+        ));
+    }, []);
+
     return (
         <>
             <CustomGrid
@@ -253,17 +264,24 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 !isConnectStripe
                                             }
                                         />
-                                        <ValuesSwitcher
-                                            values={currencyValues}
-                                            activeValue={targetTemplateCurrency}
-                                            onValueChanged={value =>
-                                                handleValueChanged(
-                                                    value,
-                                                    'templateCurrency',
-                                                )
-                                            }
-                                            className={styles.switcher}
-                                        />
+                                        <CustomGrid>
+                                            <CustomDropdown
+                                                selectId="currencyInMeetingSelect"
+                                                labelId="currencyInMeeting"
+                                                value={[
+                                                    targetTemplateCurrency.value,
+                                                ]}
+                                                className={styles.switcher}
+                                                renderValue={renderTimeValue}
+                                                list={renderTimeList}
+                                                onChange={(event: any) =>
+                                                    handleValueChanged(
+                                                        event.target.value,
+                                                        'templateCurrency',
+                                                    )
+                                                }
+                                            />
+                                        </CustomGrid>
                                     </CustomGrid>
                                     <ErrorMessage
                                         error={templatePriceMessage}
@@ -327,17 +345,24 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 !isConnectStripe
                                             }
                                         />
-                                        <ValuesSwitcher
-                                            values={currencyValues}
-                                            activeValue={targetPaywallCurrency}
-                                            onValueChanged={value =>
-                                                handleValueChanged(
-                                                    value,
-                                                    'paywallCurrency',
-                                                )
-                                            }
-                                            className={styles.switcher}
-                                        />
+                                        <CustomGrid>
+                                            <CustomDropdown
+                                                selectId="currencyPaywallSelect"
+                                                labelId="currencyPaywall"
+                                                value={[
+                                                    targetPaywallCurrency.value,
+                                                ]}
+                                                className={styles.switcher}
+                                                renderValue={renderTimeValue}
+                                                list={renderTimeList}
+                                                onChange={(event: any) =>
+                                                    handleValueChanged(
+                                                        event.target.value,
+                                                        'paywallCurrency',
+                                                    )
+                                                }
+                                            />
+                                        </CustomGrid>
                                     </CustomGrid>
                                     <ErrorMessage
                                         error={paywallPriceMessage}

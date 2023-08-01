@@ -29,6 +29,10 @@ import { NotificationType } from '../../store/types';
 const currencySigns: { [key: string]: string } = {
     USD: '$',
     CAD: 'C$',
+    GBP: '£',
+    EUR: '€',
+    INR: '₹',
+    AUS: 'A$'
 };
 
 const Component = ({
