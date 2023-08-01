@@ -65,7 +65,7 @@ services:
       # ====================================================================================
       - "traefik.http.routers.whoami-wildcard-resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.chatruume.com`) && PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami-wildcard-resolver.entrypoints=websecure"
-      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].main=prod.chatruume.com"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].main=chatruume.com"
       - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].sans=*.chatruume.com"
       - "traefik.http.routers.whoami-wildcard-resolver.tls.certresolver=wildcard-resolver"
       - "traefik.http.routers.whoami-wildcard-resolver.service=whoami"
