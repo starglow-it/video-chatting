@@ -66,6 +66,7 @@ services:
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
       # ====================================================================================
       - "traefik.http.routers.whoami-wildcard-resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.stg.chatruume.com`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami-wildcard-resolver.priority=1000"
       - "traefik.http.routers.whoami-wildcard-resolver.entrypoints=websecure"
       - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].main=stg.chatruume.com"
       - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].sans=*.stg.chatruume.com"
