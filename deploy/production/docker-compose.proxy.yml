@@ -39,16 +39,16 @@ services:
     restart: unless-stopped
     ports:
       - "7000:7000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.proxy.rule=HostRegexp(`{subdomain:.+}.scaling.chatruume.com`)"
-      - "traefik.http.routers.proxy.entrypoints=websecure"
-      - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
-      - "traefik.http.routers.proxy.tls.domains[0].main=scaling.chatruume.com"
-      - "traefik.http.routers.proxy.tls.domains[0].sans=*.scaling.chatruume.com"
-      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
-      - "io.portainer.accesscontrol.public"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.docker.network=traefikpublic"
+#      - "traefik.http.routers.proxy.rule=HostRegexp(`{subdomain:.+}.scaling.chatruume.com`)"
+#      - "traefik.http.routers.proxy.entrypoints=websecure"
+#      - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
+#      - "traefik.http.routers.proxy.tls.domains[0].main=scaling.chatruume.com"
+#      - "traefik.http.routers.proxy.tls.domains[0].sans=*.scaling.chatruume.com"
+#      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
+#      - "io.portainer.accesscontrol.public"
     networks:
       - traefikpublic
 

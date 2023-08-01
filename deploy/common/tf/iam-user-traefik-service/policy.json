@@ -31,7 +31,8 @@
       "Condition": {
         "ForAllValues:StringEquals": {
           "route53:ChangeResourceRecordSetsNormalizedRecordNames": [
-            "_acme-challenge.stg.chatruume.com"
+            "_acme-challenge.stg.chatruume.com",
+            "_acme-challenge.chatruume.com"
           ],
           "route53:ChangeResourceRecordSetsRecordTypes": [
             "TXT"
