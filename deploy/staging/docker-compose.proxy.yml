@@ -32,26 +32,26 @@ services:
     networks:
       - traefikpublic
 
-  instance-proxy:
-    container_name: instance-proxy
-    build:
-      context: ../../services/instance-proxy
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports:
-      - "7000:7000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.proxy.rule=Host(`{subdomain:.+}.scaling.demo.chatruume.com`)"
-      - "traefik.http.routers.proxy.entrypoints=websecure"
-      # - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
-      # - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.chatruume.com"
-      # - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.chatruume.com"
-      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
-      - "io.portainer.accesscontrol.public"
-    networks:
-      - traefikpublic
+#  instance-proxy:
+#    container_name: instance-proxy
+#    build:
+#      context: ../../services/instance-proxy
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    ports:
+#      - "7000:7000"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.docker.network=traefikpublic"
+#      - "traefik.http.routers.proxy.rule=Host(`{subdomain:.+}.scaling.demo.chatruume.com`)"
+#      - "traefik.http.routers.proxy.entrypoints=websecure"
+#      # - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
+#      # - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.chatruume.com"
+#      # - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.chatruume.com"
+#      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
+#      - "io.portainer.accesscontrol.public"
+#    networks:
+#      - traefikpublic
 
   whoami:
     image: "traefik/whoami"
@@ -60,12 +60,13 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
       - "traefik.http.routers.whoami.rule=(Host(`stg-livekit.chatruume.com`) || Host(`stg-socket.chatruume.com`) || Host(`stg-my.chatruume.com`) || Host(`stg-admin.chatruume.com`)) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.priority=1000"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
       - "traefik.http.routers.whoami.service=whoami"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
       # ====================================================================================
-      - "traefik.http.routers.whoami-wildcard-resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.chatruume.com`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami-wildcard-resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.stg.chatruume.com`) && PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami-wildcard-resolver.priority=1000"
       - "traefik.http.routers.whoami-wildcard-resolver.entrypoints=websecure"
       - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].main=stg.chatruume.com"
