@@ -4,6 +4,10 @@ name: proxy
 services:
   traefik:
     build: ./traefik
+    environment:
+      - AWS_ACCESS_KEY_ID=AKIAQY5KRUCZSFKRJ4P7
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_REGION=us-east-2
     container_name: traefik
     restart: always
     ports:
@@ -58,6 +62,13 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
+      # ====================================================================================
+      - "traefik.http.routers.whoami-wildcard-resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.chatruume.com`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami-wildcard-resolver.entrypoints=websecure"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].main=prod.chatruume.com"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].sans=*.chatruume.com"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.certresolver=wildcard-resolver"
+      - "traefik.http.routers.whoami-wildcard-resolver.service=whoami"
     networks:
       - traefikpublic
 
