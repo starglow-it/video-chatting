@@ -72,7 +72,6 @@ services:
       - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].sans=*.stg.chatruume.com"
       - "traefik.http.routers.whoami-wildcard-resolver.tls.certresolver=wildcard-resolver"
       - "traefik.http.routers.whoami-wildcard-resolver.service=whoami"
-      - "traefik.http.routers.whoami-wildcard-resolver.priority=1000"
     networks:
       - traefikpublic
 
