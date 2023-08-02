@@ -140,6 +140,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
       - "traefik.http.routers.gateway.rule=Host(`my.chatruume.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.gateway.priority=1000"
       - "traefik.http.routers.gateway.entrypoints=websecure"
       - "traefik.http.routers.gateway.tls=true"
       - "traefik.http.routers.gateway.middlewares=customcorsheader@docker"
