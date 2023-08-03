@@ -60,7 +60,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
+<<<<<<< HEAD
       - "traefik.http.routers.livekit.rule=Host(`livekit.chatruume.com`)"
+=======
+      - "traefik.http.routers.livekit.rule=Host(`livekit.theliveoffice.com`)"
+>>>>>>> 3a23b8c8 (update new domain)
       - "traefik.http.routers.livekit.entrypoints=websecure"
       - "traefik.http.routers.livekit.tls=true"
       - "traefik.http.services.livekit.loadbalancer.server.port=7880"
@@ -87,7 +91,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
+<<<<<<< HEAD
       - "traefik.http.routers.frontend.rule=Host(`my.chatruume.com`)"
+=======
+      - "traefik.http.routers.frontend.rule=Host(`app.theliveoffice.com`)"
+>>>>>>> 3a23b8c8 (update new domain)
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=8000"
