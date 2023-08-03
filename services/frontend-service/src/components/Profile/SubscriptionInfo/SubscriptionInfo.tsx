@@ -60,7 +60,7 @@ const Component = () => {
 
     useEffect(() => {
         getSubscriptionFx({
-            subscriptionId: profile.stripeSubscriptionId,
+            subscriptionId: profile.stripeSubscriptionId ?? '',
         });
     }, [profile.stripeSubscriptionId, profile.subscriptionPlanKey]);
 
@@ -99,7 +99,7 @@ const Component = () => {
 
     const handleOpenSubscriptionPortal = async () => {
         const response = await getCustomerPortalSessionUrlFx({
-            subscriptionId: profile.stripeSubscriptionId,
+            subscriptionId: profile.stripeSubscriptionId ?? '',
         });
 
         if (response?.url) {

@@ -19,7 +19,7 @@ const Component = () => {
 
     const renderItems = useMemo(
         () =>
-            (meetingTemplate?.links || []).map(link => {
+            (meetingTemplate?.links || []).map((link, index) => {
                 const style = {
                     '--top': `${link.position.top * 100}%`,
                     '--left': `${link.position.left * 100}%`,
@@ -38,7 +38,7 @@ const Component = () => {
                 return (
                     <CustomTooltip
                         {...(isGoodsVisible ? { open: true } : {})}
-                        key={`${link.id}_${isGoodsVisible}`}
+                        key={`${index}_${isGoodsVisible}`}
                         nameSpace="meeting"
                         translation="links.title"
                         placement="bottom"

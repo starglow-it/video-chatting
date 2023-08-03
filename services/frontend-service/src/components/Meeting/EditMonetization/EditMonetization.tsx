@@ -23,7 +23,7 @@ import { currencyValues } from '../../../const/profile/subscriptions';
 const Component = () => {
     const { register, control, setValue } = useFormContext();
 
-    const handleValueChanged = useCallback(newValue => {
+    const handleValueChanged = useCallback((newValue: any) => {
         setValue('templateCurrency', newValue.value);
     }, []);
 

@@ -26,7 +26,7 @@ import styles from './EditTemplateForm.module.scss';
 const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
     const [currentAccordionId, setCurrentAccordionId] = useState('');
 
-    const handleChangeAccordion = useCallback(accordionId => {
+    const handleChangeAccordion = useCallback((accordionId: any) => {
         setCurrentAccordionId(prev =>
             prev === accordionId ? '' : accordionId,
         );

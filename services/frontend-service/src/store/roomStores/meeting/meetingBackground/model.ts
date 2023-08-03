@@ -1,6 +1,7 @@
 import { EntityList, IMediaCategory, IUserTemplate } from 'shared-types';
 import { meetingDomain } from '../../../domains';
 import {
+    IMediaCategoryItem,
     IMediaItem,
     ParamsDeleteMedia,
     ResultDeleteMedia,
@@ -12,7 +13,7 @@ export const $backgroundMeetingStore = meetingDomain.createStore<{
     categorySelected: string;
     mediaSelected: string;
     count: number;
-    categories: IMediaCategory[];
+    categories: IMediaCategoryItem[];
 }>({
     medias: [],
     categorySelected: '',

@@ -35,7 +35,7 @@ const Component = ({
         onSwitchOff: hideHover,
     } = useToggle(false);
 
-    const handleDelete = (e: MouseEvent) => {
+    const handleDelete = (e: any) => {
         e.stopPropagation();
         onDelete(item.id);
     };

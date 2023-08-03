@@ -54,7 +54,7 @@ const Component = ({
     useEffect(() => {
         (async () => {
             if (isSubscriptionStep && !products.length) {
-                await getStripeProductsFx();
+                await getStripeProductsFx({});
             }
         })();
     }, [isSubscriptionStep, products.length]);

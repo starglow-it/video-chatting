@@ -35,7 +35,7 @@ const LanguagesSelect = memo(
             name: 'languages',
         });
 
-        const handleChange = useCallback(event => {
+        const handleChange = useCallback((event: any) => {
             setValue('languages', event.target.value, {
                 shouldValidate: true,
                 shouldDirty: true,
@@ -53,10 +53,10 @@ const LanguagesSelect = memo(
         );
 
         const renderValues = useCallback(
-            (selected: unknown): React.ReactNode => (
+            (selected: any): React.ReactNode => (
                 <CustomScroll className={styles.languagesWrapper}>
                     <CustomGrid container gap={1}>
-                        {selected.map(selectedKey => {
+                        {selected.map((selectedKey: any) => {
                             const selectedLanguage = LANGUAGES_TAGS.find(
                                 tag => tag.key === selectedKey,
                             );

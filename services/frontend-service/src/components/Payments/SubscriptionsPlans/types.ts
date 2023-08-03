@@ -18,8 +18,8 @@ export type SubscriptionsPlansProps = {
 export type SubscriptionPlanItemProps = {
     activePlanKey?: string;
     isDisabled: boolean;
-    product: unknown;
-    price: unknown;
+    product: any;
+    price: any;
     withoutTitle?: boolean;
     onChooseSubscription: SubscriptionsPlansProps['onChooseSubscription'];
     buttonTranslation?: string;

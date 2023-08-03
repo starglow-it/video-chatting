@@ -1,6 +1,6 @@
 export type SubscriptionPlanCardProps = {
-    product: unknown;
-    price: unknown;
+    product: any;
+    price: any;
     onChooseSubscription: (
         productId: string,
         isPaid: boolean,

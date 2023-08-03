@@ -7,6 +7,7 @@ import { MeetingNoteItem } from '@components/Meeting/MeetingNoteItem/MeetingNote
 
 // stores
 import { isMobile } from 'shared-utils';
+import { MeetingNote } from 'src/store/types';
 import { $windowSizeStore } from '../../../store';
 import {
     $meetingNotesStore,
@@ -22,19 +23,19 @@ const Component = () => {
     const meetingNotes = useStore($meetingNotesStore);
     const { height } = useStore($windowSizeStore);
 
-    const [lastDraggedSet, setLastDraggedSet] = useState([]);
+    const [lastDraggedSet, setLastDraggedSet] = useState<string[]>([]);
 
     useEffect(() => {
         if (!isMobile()) getMeetingNotesSocketEvent();
     }, []);
 
-    const handleSetLastDraggedId = useCallback(id => {
+    const handleSetLastDraggedId = useCallback((id: string) => {
         setLastDraggedSet(prev => [...prev.filter(oldId => oldId !== id), id]);
     }, []);
 
     const renderMeetingNotes = useMemo(() => {
         const spreadNotesInGrid = meetingNotes.reduce(
-            (acc, b) => {
+            (acc: any[], b: MeetingNote) => {
                 const currentLineData = acc[acc.length - 1];
                 const currentElementsNumber = currentLineData.length;
 
@@ -51,7 +52,7 @@ const Component = () => {
         );
 
         return spreadNotesInGrid.map((elementsData, i) =>
-            elementsData.map((note, n) => {
+            elementsData.map((note: any, index: number) => {
                 const dragIndex = [...lastDraggedSet].findIndex(
                     noteId => noteId === note.id,
                 );
@@ -60,7 +61,7 @@ const Component = () => {
                     <MeetingNoteItem
                         key={note.id}
                         note={note}
-                        noteIndex={n}
+                        noteIndex={index}
                         lineNumber={i}
                         dragIndex={dragIndex}
                         onSetLastDragged={handleSetLastDraggedId}

@@ -24,13 +24,13 @@ const EditCompanyInfo = memo(() => {
     } = useFormContext();
 
     const currentEmailErrorMessage: string =
-        errors?.contactEmail?.[0]?.message || '';
+        errors?.contactEmail?.message?.toString() || '';
     const currentCompanyNameErrorMessage: string =
-        errors?.companyName?.[0]?.message || '';
+        errors?.companyName?.message?.toString() || '';
     const currentDescriptionErrorMessage: string =
-        errors?.description?.[0]?.message || '';
+        errors?.description?.message?.toString() || '';
     const currentFullNameErrorMessage: string =
-        errors?.fullName?.[0]?.message || '';
+        errors?.fullName?.message?.toString() || '';
 
     useEffect(() => {
         getBusinessCategoriesFx({});

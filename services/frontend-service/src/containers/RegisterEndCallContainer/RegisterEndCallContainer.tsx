@@ -131,7 +131,7 @@ const Component = () => {
     const is480Media = useMediaQuery('(max-width:480px)');
 
     const currentEmailErrorMessage: string =
-        errors?.email?.[0]?.message || error?.message || '';
+        errors.email?.message || error?.message || '';
 
     const isNotRequiredMessage = !currentEmailErrorMessage.includes('required');
 
