@@ -32,8 +32,8 @@ import { UploadService } from '../upload/upload.service';
 import { CoreService } from '../../services/core/core.service';
 import { v4 as uuidv4 } from 'uuid';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
-import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
-import { checkValidCurrency } from 'src/utils/dateHelpers/checkValidCurrency';
+import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
+import { checkValidCurrency } from '../../utils/stripeHelpers/checkValidCurrency';
 
 @Controller('profile/templates')
 export class ProfileTemplatesController {
