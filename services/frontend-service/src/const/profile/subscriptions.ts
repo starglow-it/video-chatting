@@ -13,5 +13,5 @@ export const currencyValues: ValuesSwitcherItem<
     { id: 3, value: 'GBP', label: 'GBP' },
     { id: 4, value: 'EUR', label: 'EUR' },
     { id: 5, value: 'INR', label: 'INR' },
-    { id: 6, value: 'AUS', label: 'AUS' },
+    { id: 6, value: 'AUD', label: 'AUD' },
 ];

@@ -26,7 +26,9 @@ $meetingTemplateStore
         [getUserTemplateByIdFx.doneData, getUserTemplateFx.doneData],
         (state, data) => data || state,
     )
-    .on(updateMeetingTemplateFx.doneData, (state, data) => data)
+    .on(updateMeetingTemplateFx.doneData, (state, data) =>
+        data.success ? data.result : state,
+    )
     .reset([resetRoomStores, resetMeetingTemplateStoreEvent]);
 
 $isUserSendEnterRequest

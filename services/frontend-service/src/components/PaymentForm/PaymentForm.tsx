@@ -32,7 +32,7 @@ const currencySigns: { [key: string]: string } = {
     GBP: '£',
     EUR: '€',
     INR: '₹',
-    AUS: 'A$'
+    AUS: 'A$',
 };
 
 const Component = ({

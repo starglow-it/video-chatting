@@ -155,9 +155,7 @@ const Component = ({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-        const values: any[] = Object.values(
-            dirtyFieldsWithOutSocials,
-        );
+        const values: any[] = Object.values(dirtyFieldsWithOutSocials);
 
         const newDirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
 
@@ -282,8 +280,9 @@ const Component = ({
                 onTemplateUpdate({
                     data: {
                         ...filteredData,
-                        socials: filteredSocials as any || [],
-                        businessCategories: filteredBusinessCategories as any || [],
+                        socials: (filteredSocials as any) || [],
+                        businessCategories:
+                            (filteredBusinessCategories as any) || [],
                     } as any,
                     templateId: template.id,
                 });

@@ -28,6 +28,7 @@ import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
+import { NotificationType } from 'src/store/types';
 import {
     templatePriceSchema,
     paywallPriceSchema,
@@ -38,7 +39,7 @@ import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 import styles from './MeetingMonetization.module.scss';
 
 // stores
-import { $profileStore } from '../../../store';
+import { $profileStore, addNotificationEvent } from '../../../store';
 import {
     $meetingTemplateStore,
     updateMeetingTemplateFxWithData,
@@ -77,7 +78,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
             templatePrice: meetingTemplate.templatePrice || 5,
             paywallPrice: meetingTemplate.paywallPrice || 5,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
-            paywallCurrency: meetingTemplate.templateCurrency || 'USD',
+            paywallCurrency: meetingTemplate.paywallCurrency || 'USD',
         },
     });
 
@@ -137,7 +138,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            await updateMeetingTemplateFxWithData({
+            const res = await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled:
                     data.isInmeetingPayment || data.isPaywallPayment,
                 templatePrice: data.isInmeetingPayment
@@ -151,6 +152,14 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                     ? data.paywallCurrency
                     : undefined,
             });
+            if (!res.success) {
+                addNotificationEvent({
+                    message: res.error?.message ?? '',
+                    withErrorIcon: true,
+                    type: NotificationType.validationError,
+                });
+                return;
+            }
             onUpdate?.();
         }),
         [],
@@ -182,10 +191,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const renderTimeList = useMemo(() => {
         return currencyValues.map(time => (
-            <MenuItem
-                key={time.id}
-                value={time.value}
-            >
+            <MenuItem key={time.id} value={time.value}>
                 {time.label}
             </MenuItem>
         ));

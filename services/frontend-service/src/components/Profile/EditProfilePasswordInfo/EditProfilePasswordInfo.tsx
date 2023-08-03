@@ -74,9 +74,9 @@ const EditProfilePasswordInfo = memo(
         const onSubmit = useCallback(
             handleSubmit(async data => {
                 if (data.newPassword !== data.newPasswordRepeat) {
-                    return setError('newPasswordRepeat', 
-                        { message: 'user.pass.newPassword.notMatch' },
-                    );
+                    return setError('newPasswordRepeat', {
+                        message: 'user.pass.newPassword.notMatch',
+                    });
                 }
 
                 const result: any = await updateProfilePasswordFx(data);
