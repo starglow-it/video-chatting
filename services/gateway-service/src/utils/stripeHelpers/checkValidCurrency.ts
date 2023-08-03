@@ -25,7 +25,7 @@ export const checkValidCurrency = async ({ amount, currency }: Args): Promise<vo
     try {
         if(!amount || !currency) return;
         const c = await convertCurrency(currency, amount);
-        const {new_amount} = await convertCurrency('USD', 0.5, currency);
+        const {new_amount} = await convertCurrency('USD', 0.5, currency.toUpperCase());
         if (c.new_amount <= 0.5) {
             throw new BadRequestException(`Invalid amount, please enter amount > ${new_amount}`);
         }
