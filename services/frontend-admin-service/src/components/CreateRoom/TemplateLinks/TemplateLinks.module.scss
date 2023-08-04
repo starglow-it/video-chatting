@@ -52,8 +52,10 @@
   top: 0;
   left: 0;
   cursor: pointer;
-  width: rem(20px);
-  height: rem(20px);
+  width: rem(40px);
+  height: rem(40px);
+  border-radius: 50%;
+  background: rgba($primary-white, 0.7);
   z-index: 200;
 }
 

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 
 // custom
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
@@ -21,16 +21,34 @@ import { EditMeetingLink } from '@components/Meeting/EditMeetingLink/EditMeeting
 
 // styles
 import { Translation } from '@library/common/Translation/Translation';
+import { useFormContext } from 'react-hook-form';
 import styles from './EditTemplateForm.module.scss';
 
 const Component: React.FunctionComponent<{ onCancel: () => void }> = () => {
     const [currentAccordionId, setCurrentAccordionId] = useState('');
 
+    const {
+        formState: { errors },
+    } = useFormContext();
     const handleChangeAccordion = useCallback((accordionId: any) => {
         setCurrentAccordionId(prev =>
             prev === accordionId ? '' : accordionId,
         );
     }, []);
+
+    useEffect(() => {
+        if (errors) {
+            if (errors.fullName) {
+                if (currentAccordionId !== 'personal') {
+                    handleChangeAccordion('personal');
+                }
+                return;
+            }
+            if (errors.companyName && currentAccordionId !== 'company') {
+                handleChangeAccordion('company');
+            }
+        }
+    }, [errors]);
 
     return (
         <CustomGrid
