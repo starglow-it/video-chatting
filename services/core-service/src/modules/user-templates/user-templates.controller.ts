@@ -40,7 +40,7 @@ import { UserProfileStatisticService } from '../user-profile-statistic/user-prof
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 // schemas
-import { UserTemplateDocument } from '../../schemas/user-template.schema';
+import { UserTemplate, UserTemplateDocument } from '../../schemas/user-template.schema';
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from '../../schemas/media-category.schema';
@@ -159,12 +159,13 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
   async getUserTemplate(
     @Payload()
-    { id }: GetUserTemplatePayload,
+    { id, subdomain = '' }: GetUserTemplatePayload,
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
+        const query = { subdomain } as FilterQuery<UserTemplate>;
         const userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: isValidObjectId(id) ? { _id: id } : { customLink: id },
+          query: Object.assign(query, isValidObjectId(id) ? { _id: id } : { customLink: id }),
           session,
           populatePaths: [
             { path: 'socials' },
@@ -274,7 +275,8 @@ export class UserTemplatesController {
           socials: user.socials.map((social) => social._id),
           signBoard: user.signBoard,
           templateType: targetTemplate.templateType,
-          roomType: targetTemplate.roomType
+          roomType: targetTemplate.roomType,
+          subdomain: targetTemplate.subdomain
         };
 
         const [userTemplate] =
@@ -427,14 +429,14 @@ export class UserTemplatesController {
           }
         ];
 
-        if(sort){
-          aggregationPipeline.push({$sort: {[sort]: direction as 1 | -1 || 1}});
+        if (sort) {
+          aggregationPipeline.push({ $sort: { [sort]: direction as 1 | -1 || 1 } });
         }
 
         if (skip) {
           aggregationPipeline.push({ $skip: skip });
         }
-        
+
         if (limit) {
           aggregationPipeline.push({ $limit: limit });
         }

@@ -21,6 +21,7 @@ export interface ICreateMeeting {
   userId?: ICommonUser['id'];
   serverIp?: string;
   templateId?: ICommonTemplate['id'];
+  subdomain?: ICommonTemplate['subdomain'];
 }
 
 export enum MeetingSoundsEnum {

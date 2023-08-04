@@ -13,4 +13,14 @@ export class CreateUserFreeRequest {
     })
     @IsString()
     readonly templateId: string;
+
+    @ApiProperty({
+        type: String,
+        description: 'This field must be string'
+    })
+    @IsOptional({
+        message: 'subdomain must be present'
+    })
+    @IsString()
+    readonly subdomain: string;
 }

@@ -108,4 +108,7 @@ export class CommonTemplateDTO implements ICommonTemplate {
 
   @Expose()
   roomType: ICommonTemplate['roomType'];
+
+  @Expose()
+  subdomain: ICommonTemplate['subdomain'];
 }

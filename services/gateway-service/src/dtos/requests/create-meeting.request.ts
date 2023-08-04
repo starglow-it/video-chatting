@@ -10,5 +10,5 @@ export class CreateMeetingRequest {
     message: 'Invalid templateId value',
   })
   @ApiProperty()
-  readonly templateId?: ICreateMeeting['templateId'];
+  readonly templateId: ICreateMeeting['templateId'];
 }

@@ -152,6 +152,14 @@ export class CommonTemplate {
     default: RoomType.Normal,
   })
   roomType: RoomType;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: '',
+    required: false,
+    unique: true
+  })
+  subdomain: string;
 }
 
 export type CommonTemplateDocument = CommonTemplate & Document;

@@ -295,7 +295,8 @@ export class CommonTemplatesController {
           isAcceptNoLogin: targetUser.role === UserRoles.Anonymous
             ? true
             : targetTemplate.isAcceptNoLogin,
-          roomType: targetTemplate.roomType
+          roomType: targetTemplate.roomType,
+          subdomain: targetTemplate.subdomain
         };
 
         const [userTemplate] =

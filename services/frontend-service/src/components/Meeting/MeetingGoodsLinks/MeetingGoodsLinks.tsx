@@ -54,6 +54,9 @@ const Component = () => {
                             style={style}
                             className={styles.linkItem}
                             onClick={handleOpenLink}
+                            display="flex"
+                            justifyItems="center"
+                            alignItems="center"
                         >
                             <CustomImage
                                 width={20}

@@ -88,4 +88,8 @@ export class CommonTemplateRestDTO implements ICommonTemplate {
   @Expose()
   @ApiProperty()
   roomType: ICommonTemplate['roomType'];
+
+  @Expose()
+  @ApiProperty()
+  subdomain: ICommonTemplate['subdomain'];
 }

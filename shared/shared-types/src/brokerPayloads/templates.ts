@@ -18,6 +18,7 @@ export type GetUserTemplatesPayload = {
 
 export type GetUserTemplatePayload = {
   id: IUserTemplate['id'];
+  subdomain?: string;
 };
 
 export type GetCommonTemplatePayload = Partial<ICommonTemplate>;
@@ -94,7 +95,7 @@ export type UpdateCommonTemplatePayload = {
 
 export type CreateTemplatePayload = {
   userId: ICommonTemplate['id'];
-  roomType?: ICommonTemplate['roomType']
+  roomType?: ICommonTemplate['roomType'];
 };
 
 export type EditTemplatePayload = {
