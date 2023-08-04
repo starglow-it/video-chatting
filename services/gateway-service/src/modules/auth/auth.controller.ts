@@ -5,12 +5,12 @@ import {
   Logger,
   Post,
   UseGuards,
-  Request,
   Get,
   Put,
   Delete,
   OnModuleInit,
   OnApplicationBootstrap,
+  Request,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -38,6 +38,7 @@ import {
   ICommonUser,
   LoginTypes,
   HttpMethods,
+  ICommonTemplate,
 } from 'shared-types';
 
 // dtos
@@ -68,6 +69,7 @@ import { sendHttpRequest } from 'src/utils/http/sendHttpRequest';
 import { CreateUserFreeRequest } from 'src/dtos/requests/create-user-free.request';
 import { PaymentsService } from '../payments/payments.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
+import { Request as Req } from 'express';
 
 @ApiTags('auth')
 @Controller(AUTH_SCOPE)
@@ -170,20 +172,36 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     type: CommonCreateFreeUserDto,
     description: 'User create successful',
   })
-  async createAccountWithoutLogin(
-    @Body() { templateId }: CreateUserFreeRequest
+  async getOrcreateAccountWithoutLogin(
+    @Body() { templateId, subdomain }: CreateUserFreeRequest,
+    @Request() req: Req
   ) {
     try {
-      const uuid = uuidv4();
-      const user = await this.coreService.createUserWithoutLogin(uuid);
+      let user: ICommonUser;
+      const userId = req['cookies']?.['userWithoutLoginId'] as string | undefined;
+      if (userId) {
+        user = await this.coreService.findUserById({ userId });
+      }
+      else {
+        const uuid = uuidv4();
+        user = await this.coreService.createUserWithoutLogin(uuid);
+      }
 
-      const template = await this.coreService.findCommonTemplateByTemplate({
-        ...(templateId ? {
-          _id: templateId
-        } : {
-          isAcceptNoLogin: true
-        })
-      });
+      let template: ICommonTemplate;
+      if (subdomain) {
+        template = await this.coreService.findCommonTemplateByTemplate({
+          subdomain
+        });
+      }
+      else {
+        template = await this.coreService.findCommonTemplateByTemplate({
+          ...(templateId ? {
+            _id: templateId
+          } : {
+            isAcceptNoLogin: true
+          })
+        });
+      }
 
       if (!template) return;
       const userTemplate = await this.coreService.addTemplateToUser({

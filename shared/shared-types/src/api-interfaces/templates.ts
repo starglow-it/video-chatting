@@ -18,6 +18,7 @@ interface ITemplate{
   authorRole?: string;
   authorName?: string;
   roomType: RoomType;
+  subdomain: string;
 }
 
 export interface ICommonTemplate extends ITemplate {
@@ -125,6 +126,7 @@ export interface IUpdateTemplate {
     custom?: string;
   };
   templateType?: string;
+  subdomain?: string;
 }
 
 export interface IUploadTemplateFile {

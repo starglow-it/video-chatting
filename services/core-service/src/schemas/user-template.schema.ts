@@ -266,6 +266,13 @@ export class UserTemplate {
     default: RoomType.Normal
   })
   roomType: RoomType;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: '',
+    required: false,
+  })
+  subdomain: string;
 }
 
 export type UserTemplateDocument = UserTemplate & Document;
