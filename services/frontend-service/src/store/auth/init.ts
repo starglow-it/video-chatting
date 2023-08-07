@@ -85,14 +85,24 @@ initUserWithoutTokenFx.doneData.watch(
             if (subdomain) window.location.href = frontendConfig.frontendUrl;
             return;
         }
-        const { template } = await createMeetingFx({
-            templateId: userTemplateId,
-        });
+        if (subdomain) {
+            const { template } = await createMeetingFx({
+                subdomain,
+            });
+            if (template)
+                Router.push(
+                    getClientMeetingUrl(template?.customLink || template?.id),
+                );
+        } else {
+            const { template } = await createMeetingFx({
+                templateId: userTemplateId,
+            });
 
-        if (template)
-            Router.push(
-                getClientMeetingUrl(template?.customLink || template?.id),
-            );
+            if (template)
+                Router.push(
+                    getClientMeetingUrl(template?.customLink || template?.id),
+                );
+        }
     },
 );
 
