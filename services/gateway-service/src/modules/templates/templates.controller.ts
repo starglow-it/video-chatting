@@ -65,6 +65,7 @@ export class TemplatesController {
         businessCategories,
         type,
         sort,
+        subdomain,
         direction } = query;
 
       const templatesData = await this.templatesService.getCommonTemplates({
@@ -74,6 +75,7 @@ export class TemplatesController {
           ...(isPublic !== undefined ? { isPublic } : {}),
           ...(type ? { type } : {}),
           roomType,
+          ...(subdomain ? {subdomain}: {}),
           isAcceptNoLogin: false
         },
         filter: {

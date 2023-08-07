@@ -74,6 +74,13 @@ export class GetTemplatesQueryDto {
   @IsNotEmpty()
   roomType: RoomType;
 
+  @ApiProperty({
+    type: String,
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  public subdomain: string;
 
   @ApiProperty({
     type: String,
