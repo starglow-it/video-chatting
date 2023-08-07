@@ -80,7 +80,8 @@ export class GetTemplatesQueryDto {
     default: false
   })
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) => toBoolean(value))
+  @IsBoolean()
   public isHaveSubdomain: boolean;
 
   @ApiProperty({

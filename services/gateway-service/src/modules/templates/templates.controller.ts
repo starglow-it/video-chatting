@@ -68,6 +68,9 @@ export class TemplatesController {
         isHaveSubdomain,
         direction } = query;
 
+        console.log(isHaveSubdomain);
+        
+
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
           isDeleted: false,
