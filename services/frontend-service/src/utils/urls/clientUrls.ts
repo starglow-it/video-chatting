@@ -8,6 +8,8 @@ import {
 export const getClientMeetingUrl = (token: string): string =>
     `${roomRoute}/${token}`;
 
+export const getSubdomainMeetingUrl = (token: string): string => `/${token}`;
+
 export const getClientMeetingUrlWithDomain = (token: string): string =>
     `${frontendConfig.frontendUrl}${getClientMeetingUrl(token)}`;
 

@@ -126,7 +126,7 @@ const defaultValues = {
     draft: true,
 };
 
-const validationSchema = {
+const validationSchema = yup.object({
     background: simpleStringSchema(),
     name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
     description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH),
@@ -143,7 +143,8 @@ const validationSchema = {
             .nullable(true)
             .transform(value => (isNaN(value) ? undefined : value)),
     }),
-};
+    subdomain: yup.string().required(),
+});
 
 const Component = () => {
     const router = useRouter();
@@ -163,19 +164,9 @@ const Component = () => {
             initialValue: tabs[0].value,
         });
 
-    const resolver = useYupValidationResolver(
-        yup.object({
-            ...validationSchema,
-            subdomain: yup.string().when([], {
-                is: () => Boolean(withSubdomain),
-                then: subdomainLinkSchema(),
-                otherwise: yup.string().nullable().notRequired(),
-            }),
-        }),
-        {
-            reduceArrayErrors: true,
-        },
-    );
+    const resolver = useYupValidationResolver(validationSchema, {
+        reduceArrayErrors: true,
+    });
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -285,6 +276,7 @@ const Component = () => {
                     ...item,
                     label: item.value,
                 })),
+                subdomain: commonTemplate.subdomain,
             });
 
             updateCommonTemplateDataEvent({
@@ -407,7 +399,11 @@ const Component = () => {
                 });
 
                 if (commonTemplate.roomType === RoomType.Normal) {
-                    await Router.push('/rooms');
+                    if (Boolean(withSubdomain)) {
+                        await Router.push('/subdomain');
+                    } else {
+                        await Router.push('/rooms');
+                    }
                 } else {
                     await Router.push('/featured-background');
                 }
@@ -468,7 +464,12 @@ const Component = () => {
         });
 
         if (commonTemplate?.roomType === RoomType.Normal) {
-            router.push('/rooms');
+            if(Boolean(withSubdomain)) {
+                router.push('/subdomain');
+            } else {
+                router.push('/rooms');
+            }
+            
         } else {
             router.push('/featured-background');
         }

@@ -211,7 +211,7 @@ export const RoomsWithSubdomainContainer = () => {
                         headCellClassName={styles.headCell}
                         ActionsComponent={RoomTableItemActions}
                         onRowAction={handleOpenRoomPreview}
-                        withSubdomain
+                        withSubdomain={true}
                     />
                 </CustomPaper>
             </CustomGrid>

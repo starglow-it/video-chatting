@@ -27,6 +27,7 @@ export const handleInitUserWithoutToken = async ({
         return {
             user: user || null,
             userTemplateId: userTemplateId || '',
+            subdomain,
         };
     }
 
@@ -34,11 +35,13 @@ export const handleInitUserWithoutToken = async ({
         return {
             user: null,
             userTemplateId: '',
+            subdomain,
         };
     }
 
     return {
         user: null,
         userTemplateId: '',
+        subdomain,
     };
 };

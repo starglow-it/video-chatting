@@ -131,6 +131,7 @@ const defaultValues = {
     type: 'free',
     templatePrice: undefined,
     draft: true,
+    subdomain: undefined,
 };
 
 const validationSchema = yup.object({
@@ -150,6 +151,7 @@ const validationSchema = yup.object({
             .transform(value => (isNaN(value) ? undefined : value)),
     }),
     draft: yup.bool(),
+    subdomain: yup.string().required(),
 });
 
 const Component = () => {

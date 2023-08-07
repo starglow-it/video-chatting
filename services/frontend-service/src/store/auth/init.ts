@@ -32,7 +32,7 @@ import { AppDialogsEnum } from '../types';
 import { clientRoutes } from '../../const/client-routes';
 import { handleGoogleVerify } from './handlers/handleGoogleVerify';
 import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToken';
-import { getClientMeetingUrl } from '../../utils/urls';
+import { getClientMeetingUrl, getSubdomainMeetingUrl } from '../../utils/urls';
 import { createMeetingFx } from '../meetings/model';
 import frontendConfig from '../../const/config';
 
@@ -87,11 +87,14 @@ initUserWithoutTokenFx.doneData.watch(
         }
         if (subdomain) {
             const { template } = await createMeetingFx({
+                templateId: userTemplateId,
                 subdomain,
             });
             if (template)
                 Router.push(
-                    getClientMeetingUrl(template?.customLink || template?.id),
+                    getSubdomainMeetingUrl(
+                        template?.customLink || template?.id,
+                    ),
                 );
         } else {
             const { template } = await createMeetingFx({
