@@ -30,6 +30,7 @@ const Component = ({
     onNextStep,
     onPreviousStep,
     categories,
+    isSubdomain = false,
 }: CommonTemplateSettingsProps) => {
     const {
         register,
@@ -47,6 +48,7 @@ const Component = ({
     const { state: commonTemplate } = useStore($commonTemplateStore);
 
     const nameErrorMessage: string = errors?.name?.[0]?.message || '';
+    const subdomainErrorMessage: string = errors?.subdomain?.[0]?.message || '';
     const descriptionErrorMessage: string =
         errors?.description?.[0]?.message || '';
     const tagsErrorMessage: string = errors?.tags?.[0]?.message || '';
@@ -64,6 +66,7 @@ const Component = ({
         const isNextClickValidation = await trigger([
             'name',
             'description',
+            'subdomain',
             'tags',
         ]);
 
@@ -77,6 +80,12 @@ const Component = ({
         () => register('name'),
         [],
     );
+
+    const { onChange: onChangeSubdomain, ...subdomainProps } = useMemo(
+        () => register('subdomain'),
+        [],
+    );
+
     const { onChange: onChangeDescription, ...descriptionProps } = useMemo(
         () => register('description'),
         [],
@@ -131,10 +140,14 @@ const Component = ({
         onChangeName(event);
     }, []);
 
+    const handleChangeSubdomain = useCallback(event =>
+        onChangeSubdomain(event),
+    );
+
     return (
         <CustomGrid container justifyContent="center" alignItems="center">
             <CustomPaper variant="black-glass" className={styles.paper}>
-                <CustomGrid container direction="column" gap={3}>
+                <CustomGrid container direction="column" gap={2}>
                     <CustomGrid container direction="column" gap={0.5}>
                         <CustomTypography
                             variant="body3"
@@ -170,6 +183,45 @@ const Component = ({
                             </CustomGrid>
                         </CustomGrid>
                     </CustomGrid>
+                    <ConditionalRender condition={isSubdomain}>
+                        <CustomGrid container direction="column" gap={0.5}>
+                            <CustomTypography
+                                variant="body3"
+                                color="colors.white.primary"
+                                className={styles.label}
+                            >
+                                <Translation
+                                    nameSpace="rooms"
+                                    translation="editDescription.form.subdomain"
+                                />
+                            </CustomTypography>
+
+                            <CustomGrid
+                                container
+                                flexWrap="nowrap"
+                                gap={2}
+                                columns={10}
+                            >
+                                <CustomGrid container>
+                                    <CustomInput
+                                        autoComplete="off"
+                                        color="secondary"
+                                        error={subdomainErrorMessage}
+                                        onChange={handleChangeSubdomain}
+                                        {...subdomainProps}
+                                    />
+                                    <ErrorMessage
+                                        error={Boolean(subdomainErrorMessage)}
+                                    >
+                                        <Translation
+                                            nameSpace="errors"
+                                            translation={subdomainErrorMessage}
+                                        />
+                                    </ErrorMessage>
+                                </CustomGrid>
+                            </CustomGrid>
+                        </CustomGrid>
+                    </ConditionalRender>
                     <CustomGrid container direction="column" gap={0.5}>
                         <CustomGrid
                             container

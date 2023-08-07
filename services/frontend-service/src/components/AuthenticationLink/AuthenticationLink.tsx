@@ -46,8 +46,7 @@ const Component = () => {
                 onAction: async () => {
                     const { userWithoutLoginId, userTemplateId } =
                         parseCookies();
-                    if (!userWithoutLoginId)
-                        await initUserWithoutTokenFx(undefined);
+                    if (!userWithoutLoginId) await initUserWithoutTokenFx({});
                     else router.push(getClientMeetingUrl(userTemplateId));
                 },
             },

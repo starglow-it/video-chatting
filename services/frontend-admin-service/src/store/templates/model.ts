@@ -1,31 +1,28 @@
 import {
-	DeleteCommonTemplatePayload,
-	GetCommonTemplateByIdPayload,
-	ICommonTemplate,
-	QueryParams,
-	UpdateCommonTemplatePayload,
-	UploadCommonTemplateFilePayload,
+    DeleteCommonTemplatePayload,
+    GetCommonTemplateByIdPayload,
+    ICommonTemplate,
+    QueryParams,
+    UpdateCommonTemplatePayload,
+    UploadCommonTemplateFilePayload,
 } from 'shared-types';
 
 import { templatesDomain } from '../domains';
-import {
-	CommonTemplatesListState, CommonTemplateState 
-} from '../types';
+import { CommonTemplatesListState, CommonTemplateState } from '../types';
 export const $commonTemplates =
     templatesDomain.createStore<CommonTemplatesListState>({
-    	state: {
-    		count: 0,
-    		list: [],
-    	},
-    	error: null,
+        state: {
+            count: 0,
+            list: [],
+        },
+        error: null,
     });
 
 export const $commonTemplateStore =
     templatesDomain.createStore<CommonTemplateState>({
-    	state: undefined,
-    	error: null,
+        state: undefined,
+        error: null,
     });
-
 
 export const $activeTemplateIdStore = templatesDomain.createStore<
     ICommonTemplate['id'] | null
@@ -35,7 +32,9 @@ export const updateCommonTemplateDataEvent = templatesDomain.createEvent<
     Partial<ICommonTemplate>
 >('updateCommonTemplateDataEvent');
 
-export const resetCommonTemplateStore = templatesDomain.createEvent('resetCommonTemplateStore');
+export const resetCommonTemplateStore = templatesDomain.createEvent(
+    'resetCommonTemplateStore',
+);
 
 export const setActiveTemplateIdEvent = templatesDomain.createEvent<
     ICommonTemplate['id'] | null
@@ -48,8 +47,8 @@ export const getCommonTemplatesFx = templatesDomain.createEffect<
 >('getCommonTemplatesFx');
 
 export const createTemplateFx = templatesDomain.createEffect<
-    void,
-    CommonTemplateState,
+    boolean | undefined,
+    CommonTemplateState & { withSubdomain?: boolean },
     void
 >('createTemplateFx');
 
@@ -71,7 +70,10 @@ export const getCommonTemplateFx = templatesDomain.createEffect<
     void
 >('getCommonTemplateFx');
 
-export const getCommonTemplateEvent = templatesDomain.createEvent<GetCommonTemplateByIdPayload>('getCommonTemplateEvent');
+export const getCommonTemplateEvent =
+    templatesDomain.createEvent<GetCommonTemplateByIdPayload>(
+        'getCommonTemplateEvent',
+    );
 
 export const updateCommonTemplateFx = templatesDomain.createEffect<
     UpdateCommonTemplatePayload,
@@ -85,4 +87,5 @@ export const uploadTemplateBackgroundFx = templatesDomain.createEffect<
     void
 >('uploadTemplateBackgroundFx');
 
-export const $isUploadTemplateBackgroundInProgress = uploadTemplateBackgroundFx.pending;
+export const $isUploadTemplateBackgroundInProgress =
+    uploadTemplateBackgroundFx.pending;

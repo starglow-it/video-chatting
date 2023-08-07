@@ -11,6 +11,7 @@ import {
     simpleNumberSchema,
     simpleStringSchema,
     simpleStringSchemaWithLength,
+    subdomainLinkSchema,
     tagsSchema,
     templatePriceSchema,
     templatesLinksSchema,
@@ -115,6 +116,7 @@ const defaultValues = {
     background: '',
     name: '',
     description: '',
+    subdomain: undefined,
     tags: [],
     participantsNumber: 2,
     participantsPositions: [],
@@ -124,7 +126,7 @@ const defaultValues = {
     draft: true,
 };
 
-const validationSchema = yup.object({
+const validationSchema = {
     background: simpleStringSchema(),
     name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
     description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH),
@@ -141,10 +143,11 @@ const validationSchema = yup.object({
             .nullable(true)
             .transform(value => (isNaN(value) ? undefined : value)),
     }),
-});
+};
 
 const Component = () => {
     const router = useRouter();
+    const [roomId, withSubdomain] = router.query.room as any;
 
     const { state: commonTemplate } = useStore($commonTemplateStore);
 
@@ -160,9 +163,19 @@ const Component = () => {
             initialValue: tabs[0].value,
         });
 
-    const resolver = useYupValidationResolver(validationSchema, {
-        reduceArrayErrors: true,
-    });
+    const resolver = useYupValidationResolver(
+        yup.object({
+            ...validationSchema,
+            subdomain: yup.string().when([], {
+                is: () => Boolean(withSubdomain),
+                then: subdomainLinkSchema(),
+                otherwise: yup.string().nullable().notRequired(),
+            }),
+        }),
+        {
+            reduceArrayErrors: true,
+        },
+    );
 
     const methods = useForm({
         criteriaMode: 'all',
@@ -228,7 +241,7 @@ const Component = () => {
 
     useEffect(() => {
         getCommonTemplateEvent({
-            templateId: router.query.roomId as string,
+            templateId: roomId as string,
         });
         getBusinessCategoriesEvent({});
         initWindowListeners();
@@ -377,6 +390,7 @@ const Component = () => {
                         },
                     })),
                     isAudioAvailable: true,
+                    subdomain: data.subdomain,
                 };
 
                 if (dirtyFields.background) {
@@ -600,6 +614,7 @@ const Component = () => {
                                 categories={categories.list}
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
+                                isSubdomain={Boolean(withSubdomain)}
                             />
                         </CustomFade>
 

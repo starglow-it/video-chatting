@@ -15,4 +15,5 @@ export type CustomTableProps<Data> = {
     ActionsComponent?: any;
     onPageChange?: (pageValue: number) => void;
     onRowAction?: (data: { itemId: string }) => void;
+    withSubdomain?: boolean
 };

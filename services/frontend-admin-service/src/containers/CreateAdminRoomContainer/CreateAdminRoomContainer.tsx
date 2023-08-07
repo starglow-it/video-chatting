@@ -154,6 +154,7 @@ const validationSchema = yup.object({
 
 const Component = () => {
     const router = useRouter();
+    const [roomId, withSubdomain] = router.query.room as any;
 
     const { state: commonTemplate } = useStore($commonTemplateStore);
 
@@ -212,7 +213,7 @@ const Component = () => {
 
     useEffect(() => {
         getCommonTemplateEvent({
-            templateId: router.query.roomId as string,
+            templateId: roomId as string,
         });
         getBusinessCategoriesEvent({});
 
@@ -298,10 +299,15 @@ const Component = () => {
                         ),
                         draftPreviewUrls: [],
                         draftUrl: '',
+                        subdomain: data.subdomain,
                     },
                 });
                 if (commonTemplate.roomType === RoomType.Normal) {
-                    Router.push('/rooms');
+                    if (Boolean(withSubdomain)) {
+                        Router.push('/subdomain');
+                    } else {
+                        Router.push('/rooms');
+                    }
                 } else {
                     Router.push('/featured-background');
                 }
@@ -543,6 +549,7 @@ const Component = () => {
                                 categories={categories.list}
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
+                                isSubdomain={Boolean(withSubdomain)}
                             />
                         </CustomFade>
 

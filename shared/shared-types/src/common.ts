@@ -1,4 +1,4 @@
-import { ICommonUser } from './api-interfaces';
+import { ICommonUser, RoomType } from './api-interfaces';
 
 export type SuccessResult<Result> = {
   result?: Result;
@@ -37,8 +37,10 @@ export type QueryParams = {
   sort?: any;
   direction?: number;
   templateType?: string;
-
+  draft?: boolean;
   type?: string;
+  isHaveSubdomain?: boolean;
+  roomType?: RoomType
 };
 
 export interface IToken {

@@ -13,6 +13,7 @@ import { StatisticsIcon } from 'shared-frontend/icons/OtherIcons/StatisticsIcon'
 import { ExitIcon } from 'shared-frontend/icons/OtherIcons/ExitIcon';
 import { ImageIcon } from 'shared-frontend/icons/OtherIcons/ImageIcon';
 import { BusinessIcon } from 'shared-frontend/icons/OtherIcons/BusinessIcon';
+import { AsterriskIcon } from 'shared-frontend/icons/OtherIcons/AsteriskIcon';
 
 // components
 import { Translation } from '@components/Translation/Translation';
@@ -38,6 +39,7 @@ const Component = () => {
     const isFeaturedBackgroundPageActive =
         router.pathname === '/featured-background';
     const isBusinessActive = router.pathname === '/business';
+    const isSubdomainActive = router.pathname === '/subdomain';
 
     const handleStatisticsPage = useCallback(async () => {
         await router.push('/statistics');
@@ -61,6 +63,10 @@ const Component = () => {
 
     const handleBusinessPage = async () => {
         await router.push('/business');
+    };
+
+    const handleSubdomainPage = async () => {
+        await router.push('/subdomain');
     };
 
     return (
@@ -183,6 +189,25 @@ const Component = () => {
                         height="24px"
                         className={clsx(styles.linkIcon, {
                             [styles.activeIcon]: isBusinessActive,
+                        })}
+                    />
+                </CustomTooltip>
+
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="common"
+                            translation="tooltips.pages.subdomain"
+                        />
+                    }
+                    placement="right"
+                >
+                    <AsterriskIcon
+                        onClick={handleSubdomainPage}
+                        width="22px"
+                        height="22px"
+                        className={clsx(styles.linkIcon, {
+                            [styles.activeIcon]: isSubdomainActive,
                         })}
                     />
                 </CustomTooltip>

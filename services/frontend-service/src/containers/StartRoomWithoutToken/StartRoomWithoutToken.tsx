@@ -14,7 +14,7 @@ const StartRoomWithoutTokenContainer = memo(() => {
 
     useEffect(() => {
         const { userWithoutLoginId, userTemplateId } = parseCookies();
-        if (!userWithoutLoginId) initUserWithoutTokenFx();
+        if (!userWithoutLoginId) initUserWithoutTokenFx({});
         else router.push(getClientMeetingUrl(userTemplateId));
     }, []);
 

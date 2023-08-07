@@ -12,7 +12,8 @@ export type GetMediaServerTokenPayload = {
 };
 
 export type CreateMeetingPayload = {
-  templateId: ICommonTemplate['id'];
+  templateId?: ICommonTemplate['id'];
+  subdomain?: ICommonTemplate['subdomain']
 };
 
 export type DeleteMeetingPayload = {
