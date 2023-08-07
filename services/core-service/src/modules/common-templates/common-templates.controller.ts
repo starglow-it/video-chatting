@@ -88,7 +88,7 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
   async getCommonTemplates(
     @Payload()
-    { query, options, filter }: GetCommonTemplatesPayload,
+    { query: {businessCategories, ...q}, options }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
     const skipQuery = options?.skip || 0;
     const limitQuery = options?.limit || 6;
@@ -115,14 +115,14 @@ export class CommonTemplatesController {
       }
       return withTransaction(this.connection, async () => {
         const matchQuery = {
-          ...query,
-          ...(filter?.businessCategories && {
+          ...q,
+          ...(businessCategories && {
             businessCategories: {
               $elemMatch: {
-                $in: filter?.businessCategories?.map(item => new ObjectId(item))
+                $in: businessCategories?.map(item => new ObjectId(item))
               }
             }
-          })
+          }),
         };
 
         const aggregationPipeline: PipelineStage[] = [

@@ -65,7 +65,7 @@ export class TemplatesController {
         businessCategories,
         type,
         sort,
-        subdomain,
+        isHaveSubdomain,
         direction } = query;
 
       const templatesData = await this.templatesService.getCommonTemplates({
@@ -75,11 +75,13 @@ export class TemplatesController {
           ...(isPublic !== undefined ? { isPublic } : {}),
           ...(type ? { type } : {}),
           roomType,
-          ...(subdomain ? {subdomain}: {}),
+          businessCategories,
+          ...(isHaveSubdomain && {
+            subdomain: {
+              $ne: ''
+            }
+          }),
           isAcceptNoLogin: false
-        },
-        filter: {
-          businessCategories
         },
         options: {
           ...(sort ? { sort: { [sort]: direction } } : {}),
@@ -215,9 +217,9 @@ export class TemplatesController {
         });
       }
 
-      if(templateData.subdomain){
+      if (templateData.subdomain) {
         const rgxSubdomain = /^\/((?!ignoreme|ignoreme2)[a-z0-9])+$/;
-        if(!rgxSubdomain.test(templateData.subdomain)){
+        if (!rgxSubdomain.test(templateData.subdomain)) {
           throw new BadRequestException('Invalid subdomain');
         };
       }

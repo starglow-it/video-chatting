@@ -80,7 +80,7 @@ export class GetTemplatesQueryDto {
   })
   @IsOptional()
   @IsString()
-  public subdomain: string;
+  public isHaveSubdomain: string;
 
   @ApiProperty({
     type: String,
