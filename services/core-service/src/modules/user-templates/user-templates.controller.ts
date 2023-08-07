@@ -159,13 +159,12 @@ export class UserTemplatesController {
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
   async getUserTemplate(
     @Payload()
-    { id, subdomain = '' }: GetUserTemplatePayload,
+    { id}: GetUserTemplatePayload,
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
-        const query = { subdomain } as FilterQuery<UserTemplate>;
         const userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: Object.assign(query, isValidObjectId(id) ? { _id: id } : { customLink: id }),
+          query: isValidObjectId(id) ? { _id: id } : { customLink: id },
           session,
           populatePaths: [
             { path: 'socials' },
