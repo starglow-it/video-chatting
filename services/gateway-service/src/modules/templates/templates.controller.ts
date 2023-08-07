@@ -76,11 +76,7 @@ export class TemplatesController {
           ...(type ? { type } : {}),
           roomType,
           businessCategories,
-          ...(isHaveSubdomain && {
-            subdomain: {
-              $ne: ''
-            }
-          }),
+          subdomain: isHaveSubdomain ? {$ne: ''} : '',
           isAcceptNoLogin: false
         },
         options: {
