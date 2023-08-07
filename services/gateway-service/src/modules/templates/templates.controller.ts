@@ -215,14 +215,7 @@ export class TemplatesController {
           mimeType: file.mimetype,
         });
       }
-
-      if (templateData.subdomain) {
-        const rgxSubdomain = /^\/((?!ignoreme|ignoreme2)[a-z0-9])+$/;
-        if (!rgxSubdomain.test(templateData.subdomain)) {
-          throw new BadRequestException('Invalid subdomain');
-        };
-      }
-
+      
       if (Object.keys(templateData).length >= 1) {
         await this.templatesService.updateTemplate({
           templateId,
