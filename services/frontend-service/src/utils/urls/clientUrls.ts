@@ -5,13 +5,16 @@ import {
     editRoomRoute,
 } from '../../const/client-routes';
 
-export const getClientMeetingUrl = (token: string): string =>
-    `${roomRoute}/${token}`;
+export const getClientMeetingUrl = (token: string): string => {
+    if (window.location.origin === frontendConfig.frontendUrl) {
+        return `${roomRoute}/${token}`;
+    }
+    return token;
+};
 
-export const getSubdomainMeetingUrl = (token: string): string => `/${token}`;
-
-export const getClientMeetingUrlWithDomain = (token: string): string =>
-    `${frontendConfig.frontendUrl}${getClientMeetingUrl(token)}`;
+export const getClientMeetingUrlWithDomain = (token: string): string => {
+    return `${window.location.origin}${getClientMeetingUrl(token)}`;
+};
 
 export const getCreateRoomUrl = (id: string): string =>
     `${createRoomRoute}/${id}`;

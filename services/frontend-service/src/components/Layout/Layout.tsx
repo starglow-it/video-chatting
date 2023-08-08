@@ -48,6 +48,7 @@ import {
     createRoomRoute,
     dashboardRoute,
     editRoomRoute,
+    indexRoute,
     roomRoute,
     welcomeRoute,
 } from '../../const/client-routes';
@@ -69,6 +70,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     roomRoute,
     createRoomRoute,
     editRoomRoute,
+    indexRoute
 ];
 
 const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];

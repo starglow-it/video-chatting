@@ -25,6 +25,8 @@ import styles from './CommonTemplateSettings.module.scss';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { useStore } from 'effector-react';
 import { $commonTemplateStore } from 'src/store';
+import frontendConfig from '../../../const/config';
+console.log('#Duy Phan console', frontendConfig)
 
 const Component = ({
     onNextStep,
@@ -208,6 +210,14 @@ const Component = ({
                                         color="secondary"
                                         error={subdomainErrorMessage}
                                         onChange={handleChangeSubdomain}
+                                        InputProps={{
+                                            startAdornment: <p>https://</p>,
+                                            endAdornment: (
+                                                <p>
+                                                    {`.${frontendConfig.baseDomain}`}
+                                                </p>
+                                            ),
+                                        }}
                                         {...subdomainProps}
                                     />
                                     <ErrorMessage

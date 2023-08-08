@@ -82,7 +82,7 @@ $commonTemplateStore
             ...data,
         } as ICommonTemplate,
     }))
-    .reset([resetCommonTemplateStore, deleteCommonTemplateFx.doneData]);
+    .reset([resetCommonTemplateStore]);
 
 $isUploadTemplateBackgroundInProgress.reset(resetCommonTemplateStore);
 

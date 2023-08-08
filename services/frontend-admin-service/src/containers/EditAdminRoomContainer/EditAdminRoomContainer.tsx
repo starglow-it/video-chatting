@@ -64,6 +64,7 @@ import {
 
 // styles
 import styles from './EditAdminRoomContainer.module.scss';
+import frontendConfig from '../../const/config';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
@@ -261,6 +262,11 @@ const Component = () => {
                   }))
                 : defaultValues.participantsPositions;
 
+            const matches = commonTemplate.subdomain?.match(
+                /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
+            );
+            const domain = matches && matches[1];
+
             reset({
                 name: commonTemplate.name,
                 description: commonTemplate.description || '',
@@ -276,7 +282,7 @@ const Component = () => {
                     ...item,
                     label: item.value,
                 })),
-                subdomain: commonTemplate.subdomain,
+                subdomain: domain?.split('.')[0],
             });
 
             updateCommonTemplateDataEvent({
@@ -382,7 +388,7 @@ const Component = () => {
                         },
                     })),
                     isAudioAvailable: true,
-                    subdomain: data.subdomain,
+                    subdomain: `https://${data.subdomain}.${frontendConfig.baseDomain}`,
                 };
 
                 if (dirtyFields.background) {
@@ -464,12 +470,11 @@ const Component = () => {
         });
 
         if (commonTemplate?.roomType === RoomType.Normal) {
-            if(Boolean(withSubdomain)) {
+            if (Boolean(withSubdomain)) {
                 router.push('/subdomain');
             } else {
                 router.push('/rooms');
             }
-            
         } else {
             router.push('/featured-background');
         }

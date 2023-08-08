@@ -32,7 +32,7 @@ import { AppDialogsEnum } from '../types';
 import { clientRoutes } from '../../const/client-routes';
 import { handleGoogleVerify } from './handlers/handleGoogleVerify';
 import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToken';
-import { getClientMeetingUrl, getSubdomainMeetingUrl } from '../../utils/urls';
+import { getClientMeetingUrl } from '../../utils/urls';
 import { createMeetingFx } from '../meetings/model';
 import frontendConfig from '../../const/config';
 
@@ -85,27 +85,14 @@ initUserWithoutTokenFx.doneData.watch(
             if (subdomain) window.location.href = frontendConfig.frontendUrl;
             return;
         }
-        if (subdomain) {
-            const { template } = await createMeetingFx({
-                templateId: userTemplateId,
-                subdomain,
-            });
-            if (template)
-                Router.push(
-                    getSubdomainMeetingUrl(
-                        template?.customLink || template?.id,
-                    ),
-                );
-        } else {
-            const { template } = await createMeetingFx({
-                templateId: userTemplateId,
-            });
-
-            if (template)
-                Router.push(
-                    getClientMeetingUrl(template?.customLink || template?.id),
-                );
-        }
+        const { template } = await createMeetingFx({
+            templateId: userTemplateId,
+            subdomain,
+        });
+        if (template)
+            Router.push(
+                getClientMeetingUrl(template?.customLink || template?.id),
+            );
     },
 );
 

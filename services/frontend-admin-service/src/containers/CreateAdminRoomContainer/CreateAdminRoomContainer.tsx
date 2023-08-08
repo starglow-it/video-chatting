@@ -72,6 +72,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
 import { PriceValues, RoomType } from 'shared-types';
+import frontendConfig from '../../const/config';
 
 // utils
 enum TabsValues {
@@ -273,7 +274,7 @@ const Component = () => {
             if (commonTemplate?.id) {
                 const templatePrice =
                     data.type === 'paid' ? data.templatePrice * 100 : 0;
-
+                  
                 await updateCommonTemplateFx({
                     templateId: commonTemplate.id,
                     data: {
@@ -301,7 +302,7 @@ const Component = () => {
                         ),
                         draftPreviewUrls: [],
                         draftUrl: '',
-                        subdomain: data.subdomain,
+                        subdomain: `https://${data.subdomain}.${frontendConfig.baseDomain}`,
                     },
                 });
                 if (commonTemplate.roomType === RoomType.Normal) {
