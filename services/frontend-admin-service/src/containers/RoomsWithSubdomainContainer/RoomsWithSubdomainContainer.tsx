@@ -1,45 +1,31 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useStore } from 'effector-react';
-import clsx from 'clsx';
-import debounce from '@mui/utils/debounce';
-
-import { useLocalization } from '@hooks/useTranslation';
-
-// shared
-import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
-import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
-import { CustomTable } from 'shared-frontend/library/custom/CustomTable';
-import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
-
-// components
+import styles from './RoomsWithSubdomainContainer.module.scss';
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
-import { RoomsTablePreviewItem } from '@components/Rooms/RoomsTablePreviewItem/RoomsTablePreviewItem';
-import { RoomTableItemActions } from '@components/Rooms/RoomTableItemActions/RoomTableItemActions';
-import { RoomPreviewDialog } from '@components/Dialogs/RoomPreviewDialog/RoomPreviewDialog';
-import { ConfirmDeleteRoomDialog } from '@components/Dialogs/ConfirmDeleteRoomDialog/ConfirmDeleteRoomDialog';
-
-// styles
-import { ICommonTemplate, RoomType } from 'shared-types';
-import { PublishRoomDialog } from '@components/Dialogs/PublishRoomDialog/PublishRoomDialog';
-import { RevokeRoomDialog } from '@components/Dialogs/RevokeRoomDialog/RevokeRoomDialog';
-
-// styles
-import styles from './RoomsContainer.module.scss';
-
-// store
 import {
     $commonTemplates,
     createTemplateFx,
     getCommonTemplatesFx,
     openAdminDialogEvent,
     setActiveTemplateIdEvent,
-} from '../../store';
-
-// types
-import { AdminDialogsEnum } from '../../store/types';
+} from 'src/store';
+import { useStore } from 'effector-react';
+import { useLocalization } from '@hooks/useTranslation';
+import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
+import { CustomTable } from 'shared-frontend/library/custom/CustomTable';
+import { RoomsTablePreviewItem } from '@components/Rooms/RoomsTablePreviewItem/RoomsTablePreviewItem';
+import clsx from 'clsx';
+import { RoomTableItemActions } from '@components/Rooms/RoomTableItemActions/RoomTableItemActions';
+import { ICommonTemplate, RoomType } from 'shared-types';
+import { AdminDialogsEnum } from 'src/store/types';
+import { RoomPreviewDialog } from '@components/Dialogs/RoomPreviewDialog/RoomPreviewDialog';
+import { PublishRoomDialog } from '@components/Dialogs/PublishRoomDialog/PublishRoomDialog';
+import { RevokeRoomDialog } from '@components/Dialogs/RevokeRoomDialog/RevokeRoomDialog';
+import { ConfirmDeleteRoomDialog } from '@components/Dialogs/ConfirmDeleteRoomDialog/ConfirmDeleteRoomDialog';
 
 type TableCell<LabelType = string> = {
     style?: string;
@@ -50,6 +36,7 @@ type TableCell<LabelType = string> = {
 type RoomsTableDataType = {
     id: string;
     previewAndRoomName: TableCell<JSX.Element>;
+    subdomain: TableCell;
     participants: TableCell;
     price: TableCell;
     status: TableCell;
@@ -62,6 +49,7 @@ type UsersTableHeadType = {
 
 const tableColumnsKeys: UsersTableHeadType['key'][] = [
     'previewAndRoomName',
+    'subdomain',
     'participants',
     'price',
     'status',
@@ -69,7 +57,7 @@ const tableColumnsKeys: UsersTableHeadType['key'][] = [
 
 const ROOMS_LIMIT = 9;
 
-const Component = () => {
+export const RoomsWithSubdomainContainer = () => {
     const { state: commonTemplates } = useStore($commonTemplates);
 
     const isRoomsLoading = useStore(getCommonTemplatesFx.pending);
@@ -83,13 +71,50 @@ const Component = () => {
             draft: false,
             limit: ROOMS_LIMIT,
             skip: 0,
-            roomType: RoomType.Normal
+            roomType: RoomType.Normal,
+            isHaveSubdomain: true
         });
     }, []);
 
     const handleCreateRoom = useCallback(() => {
-        createTemplateFx(undefined);
+        createTemplateFx(true);
     }, []);
+
+    const renderEmpty = () => {
+        return (
+            <CustomGrid
+                className={styles.noRoomWrapper}
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <CustomImage
+                    src="/images/blush_face.webp"
+                    width={40}
+                    height={40}
+                />
+                <CustomTypography variant="body2">
+                    <Translation nameSpace="rooms" translation="noRooms" />
+                </CustomTypography>
+                <CustomChip
+                    active
+                    label={
+                        <CustomTypography>
+                            <Translation
+                                nameSpace="rooms"
+                                translation="createRoom"
+                            />
+                        </CustomTypography>
+                    }
+                    size="medium"
+                    onClick={handleCreateRoom}
+                    icon={<PlusIcon width="24px" height="24px" />}
+                    className={styles.createRoomButton}
+                />
+            </CustomGrid>
+        );
+    };
 
     const tableHeadData = useMemo(
         () =>
@@ -119,6 +144,9 @@ const Component = () => {
                             />
                         ),
                     },
+                    subdomain: {
+                        label:  template.subdomain
+                    },
                     participants: {
                         label: template.maxParticipants,
                     },
@@ -140,28 +168,6 @@ const Component = () => {
         [commonTemplates?.list],
     );
 
-    const roomsRequest = useMemo(
-        () =>
-            debounce<(data: { page: number }) => Promise<void>>(
-                async ({ page: newPage }) => {
-                    getCommonTemplatesFx({
-                        draft: false,
-                        skip: newPage - 1,
-                        limit: ROOMS_LIMIT,
-                        roomType: RoomType.Normal
-                    });
-                },
-                500,
-            ),
-        [],
-    );
-
-    useEffect(() => {
-        roomsRequest({
-            page,
-        });
-    }, [page]);
-
     const handleChangePage = useCallback((newPage: number) => {
         setPage(newPage);
     }, []);
@@ -173,6 +179,44 @@ const Component = () => {
         },
         [],
     );
+
+    const renderContent = () => {
+        return (
+            <CustomGrid container direction="column">
+                <CustomChip
+                    active
+                    label={
+                        <CustomTypography>
+                            <Translation
+                                nameSpace="rooms"
+                                translation="createRoom"
+                            />
+                        </CustomTypography>
+                    }
+                    size="medium"
+                    onClick={handleCreateRoom}
+                    icon={<PlusIcon width="24px" height="24px" />}
+                    className={styles.createRoomButton}
+                />
+                <CustomPaper className={styles.roomsContainer}>
+                    <CustomTable<RoomsTableDataType>
+                        columns={tableHeadData}
+                        data={tableData as any}
+                        count={commonTemplates.count}
+                        rowsPerPage={ROOMS_LIMIT}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        isTableUpdating={isRoomsLoading}
+                        bodyCellClassName={styles.cell}
+                        headCellClassName={styles.headCell}
+                        ActionsComponent={RoomTableItemActions}
+                        onRowAction={handleOpenRoomPreview}
+                        withSubdomain={true}
+                    />
+                </CustomPaper>
+            </CustomGrid>
+        );
+    };
 
     return (
         <CustomGrid
@@ -198,74 +242,8 @@ const Component = () => {
                         label={commonTemplates.count}
                     />
                 ) : null}
+                {!commonTemplates?.count ? renderEmpty() : renderContent()}
             </CustomGrid>
-
-            {commonTemplates.count === 0 ? (
-                <CustomGrid
-                    className={styles.noRoomWrapper}
-                    container
-                    direction="column"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <CustomImage
-                        src="/images/blush_face.webp"
-                        width={40}
-                        height={40}
-                    />
-                    <CustomTypography variant="body2">
-                        <Translation nameSpace="rooms" translation="noRooms" />
-                    </CustomTypography>
-                    <CustomChip
-                        active
-                        label={
-                            <CustomTypography>
-                                <Translation
-                                    nameSpace="rooms"
-                                    translation="createRoom"
-                                />
-                            </CustomTypography>
-                        }
-                        size="medium"
-                        onClick={handleCreateRoom}
-                        icon={<PlusIcon width="24px" height="24px" />}
-                        className={styles.createRoomButton}
-                    />
-                </CustomGrid>
-            ) : (
-                <CustomGrid container direction="column">
-                    <CustomChip
-                        active
-                        label={
-                            <CustomTypography>
-                                <Translation
-                                    nameSpace="rooms"
-                                    translation="createRoom"
-                                />
-                            </CustomTypography>
-                        }
-                        size="medium"
-                        onClick={handleCreateRoom}
-                        icon={<PlusIcon width="24px" height="24px" />}
-                        className={styles.createRoomButton}
-                    />
-                    <CustomPaper className={styles.roomsContainer}>
-                        <CustomTable<RoomsTableDataType>
-                            columns={tableHeadData}
-                            data={tableData}
-                            count={commonTemplates.count}
-                            rowsPerPage={ROOMS_LIMIT}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            isTableUpdating={isRoomsLoading}
-                            bodyCellClassName={styles.cell}
-                            headCellClassName={styles.headCell}
-                            ActionsComponent={RoomTableItemActions}
-                            onRowAction={handleOpenRoomPreview}
-                        />
-                    </CustomPaper>
-                </CustomGrid>
-            )}
             <RoomPreviewDialog />
             <PublishRoomDialog />
             <RevokeRoomDialog />
@@ -273,5 +251,3 @@ const Component = () => {
         </CustomGrid>
     );
 };
-
-export const RoomsContainer = memo(Component);

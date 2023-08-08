@@ -79,7 +79,7 @@ const WelcomePageContainer = memo(() => {
     const handleChooseTemplate = async (templateId: string) => {
         const { userWithoutLoginId, userTemplateId } = parseCookies();
         if (!userWithoutLoginId) {
-            await initUserWithoutTokenFx(templateId);
+            await initUserWithoutTokenFx({ templateId });
         } else {
             if (templateId !== userTemplateId) {
                 const newTemplate = await addTemplateToUserFx({ templateId });

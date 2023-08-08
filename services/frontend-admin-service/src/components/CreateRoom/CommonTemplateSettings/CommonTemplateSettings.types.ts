@@ -4,4 +4,5 @@ export type CommonTemplateSettingsProps = {
     onNextStep: () => void;
     onPreviousStep: () => void;
     categories: IBusinessCategory[];
+    isSubdomain?: boolean;
 };

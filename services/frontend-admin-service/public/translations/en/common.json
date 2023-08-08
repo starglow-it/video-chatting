@@ -39,7 +39,8 @@
       "rooms": "Rooms",
       "backgrounds": "Backgrounds",
       "featuredRooms": "Featured rooms",
-      "business": "Business"
+      "business": "Business",
+      "subdomain": "Rooms with Subdomain"
     },
     "users": {
       "delete": "Delete",

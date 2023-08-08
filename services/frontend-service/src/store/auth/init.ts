@@ -34,6 +34,7 @@ import { handleGoogleVerify } from './handlers/handleGoogleVerify';
 import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToken';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { createMeetingFx } from '../meetings/model';
+import frontendConfig from '../../const/config';
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
@@ -78,15 +79,22 @@ logoutUserFx.doneData.watch(() => {
     clearProfileEvent();
 });
 
-initUserWithoutTokenFx.doneData.watch(async ({ user, userTemplateId }) => {
-    if (!user || !userTemplateId) return;
-    const { template } = await createMeetingFx({
-        templateId: userTemplateId,
-    });
-
-    if (template)
-        Router.push(getClientMeetingUrl(template?.customLink || template?.id));
-});
+initUserWithoutTokenFx.doneData.watch(
+    async ({ user, userTemplateId, subdomain }) => {
+        if (!user || !userTemplateId) {
+            if (subdomain) window.location.href = frontendConfig.frontendUrl;
+            return;
+        }
+        const { template } = await createMeetingFx({
+            templateId: userTemplateId,
+            subdomain,
+        });
+        if (template)
+            Router.push(
+                getClientMeetingUrl(template?.customLink || template?.id),
+            );
+    },
+);
 
 $authStore
     .on(

@@ -1,0 +1,64 @@
+@import "../../styles/rem";
+@import "../../styles/variables";
+
+.wrapper {
+  margin: rem(85px auto 0);
+  width: rem(960px);
+  max-width: 100%;
+  inset: 0;
+}
+
+.createRoomButton {
+  max-width: rem(162px);
+  width: 100%;
+  align-self: center;
+  margin: rem(20px 0 28px 0);
+}
+
+.noRoomWrapper {
+  margin: auto;
+}
+
+.roomsContainer {
+  width: 100%;
+  padding: rem(16px 34px 40px 34px);
+}
+
+.headCell {
+  &:first-child {
+    padding-left: rem(20px);
+  }
+}
+
+.chip {
+  padding: rem(4px 10px);
+  height: rem(32px);
+}
+
+.cell {
+  color: $primary-black;
+  text-align: left;
+
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:first-child {
+    padding-left: rem(20px);
+  }
+
+  &:last-child {
+    width: rem(120px);
+  }
+}
+
+.roomStatus {
+  &.pending {
+    color: $normal-gray-scale;
+  }
+
+  &.published {
+    color: $dark-green;
+  }
+}

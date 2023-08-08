@@ -48,6 +48,7 @@ import {
     createRoomRoute,
     dashboardRoute,
     editRoomRoute,
+    indexRoute,
     roomRoute,
     welcomeRoute,
 } from '../../const/client-routes';
@@ -69,6 +70,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     roomRoute,
     createRoomRoute,
     editRoomRoute,
+    indexRoute
 ];
 
 const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];
@@ -123,6 +125,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         new RegExp(route).test(router.pathname),
     );
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
+    const isBaseRoute = new RegExp(`${indexRoute}`).test(router.pathname);
 
     const shouldShowFooter = useMemo(
         () =>
@@ -134,7 +137,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
     useEffect(() => {
         (async () => {
-            if (isDashboardRoute || isRoomRoute) {
+            if (isDashboardRoute || isRoomRoute || isBaseRoute) {
                 initiateSocketConnectionEvent();
             }
         })();

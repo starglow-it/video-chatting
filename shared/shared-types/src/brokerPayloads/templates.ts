@@ -7,9 +7,8 @@ import {
 import { FilterQuery, QueryParams } from '../common';
 
 export type GetCommonTemplatesPayload = {
-  query: Partial<ICommonTemplate>;
+  query:  FilterQuery<ICommonTemplate>;
   options: QueryParams & { userId?: string };
-  filter?: FilterQuery<ICommonTemplate>;
 };
 
 export type GetUserTemplatesPayload = {
@@ -18,7 +17,6 @@ export type GetUserTemplatesPayload = {
 
 export type GetUserTemplatePayload = {
   id: IUserTemplate['id'];
-  subdomain?: string;
 };
 
 export type GetCommonTemplatePayload = Partial<ICommonTemplate>;
