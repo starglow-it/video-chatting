@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import App from 'next/app';
 import type { AppContext, AppProps } from 'next/app';
+import { NextRequest, NextResponse } from 'next/server';
 import Head from 'next/head';
 import getConfig from 'next/config';
 import { withHydrate } from 'effector-next';
@@ -167,6 +168,12 @@ CustomApp.getInitialProps = async (context: AppContext) => {
             ) {
                 redirectTo(nextPageContext, loginRoute);
             }
+        }
+    } else {
+        console.log('#Duy Phan console', isBaseRoute)
+        if(!isBaseRoute) {
+            NextResponse.redirect('localhost:8000')
+            // redirectTo(nextPageContext, 'localhost:8000')
         }
     }
 

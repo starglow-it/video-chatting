@@ -52,7 +52,12 @@ const Component = () => {
     const isJoinWaitingRoomPending = useStore(
         sendJoinWaitingRoomSocketEvent.pending,
     );
-
+    console.log(
+        '#Duy Phan console',
+        !isSocketConnected,
+        isMeetingSocketConnecting,
+        isJoinWaitingRoomPending,
+    );
     const isOwner = useStore($isOwner);
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{
