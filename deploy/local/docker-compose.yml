@@ -85,13 +85,8 @@ services:
         - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     ports:
       - '9000:9000'
-    environment:
-      - GATEWAY_PORT=3000
-      - GATEWAY_HOST=gateway-service
-      - FRONTEND_URL=http://localhost:9000
-      - DEFAULT_SERVER_IP=localhost
-      - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
-      - SUPPORT_EMAIL
+    env_file:
+      - 'admin.env'
     volumes:
       - ../../services/frontend-admin-service/pages:/app/services/frontend-admin-service/pages
       - ../../services/frontend-admin-service/src:/app/services/frontend-admin-service/src
