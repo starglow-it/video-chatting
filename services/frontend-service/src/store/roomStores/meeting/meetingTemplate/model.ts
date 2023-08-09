@@ -91,7 +91,7 @@ export const resetMeetingTemplateStoreEvent = meetingDomain.createEvent(
 );
 
 export const getMeetingTemplateFx = meetingDomain.createEffect<
-    { templateId: IUserTemplate['id'] },
+    { templateId: IUserTemplate['id']; subdomain?: IUserTemplate['subdomain'] },
     IUserTemplate,
     ErrorState
 >('getMeetingTemplateFx');
