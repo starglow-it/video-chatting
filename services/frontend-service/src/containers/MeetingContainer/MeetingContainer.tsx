@@ -28,6 +28,7 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { Typography } from '@mui/material';
+import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -139,6 +140,7 @@ const MeetingContainer = memo(() => {
 
             await getMeetingTemplateFx({
                 templateId: router.query.token as string,
+                subdomain: isSubdomain() ? window.location.origin : undefined,
             });
 
             updateLocalUserEvent({
