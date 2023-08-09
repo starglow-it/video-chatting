@@ -105,7 +105,7 @@ const SubmitProfileInfo = memo(({ onReset }: SubmitProfileInfoProps) => {
     }, [Object.keys(dirtyFields).length, nextSocials, profile.socials]);
 
     const handleChangeRoute = useCallback(
-        route => {
+        (route: string) => {
             if (dirtyFieldsCount && !confirmChangeRouteDialog) {
                 router.events.emit('routeChangeError');
                 setRouteToChangeEvent(route);

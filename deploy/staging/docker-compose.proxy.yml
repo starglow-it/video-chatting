@@ -4,8 +4,22 @@ name: proxy
 services:
   traefik:
     build: ./traefik
+    environment:
+      - AWS_ACCESS_KEY_ID=AKIAQY5KRUCZSFKRJ4P7
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_REGION=us-east-2
     container_name: traefik
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`stg-traefik.chatruume.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.routers.dashboard.tls.certresolver=simple-resolver"
+      # echo $(htpasswd -nb tlo 02HBdnBT2ZPu) | sed -e s/\\$/\\$\\$/g
+      - "traefik.http.middlewares.auth.basicauth.users=tlo:$$apr1$$PdvDQIVp$$UAXSS/z5O5t.VQm7acCfh1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/letsencrypt:/letsencrypt
@@ -18,26 +32,26 @@ services:
     networks:
       - traefikpublic
 
-  instance-proxy:
-    container_name: instance_proxy
-    build:
-      context: ../../services/instance-proxy
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports:
-      - "7000:7000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefikpublic"
-      - "traefik.http.routers.proxy.rule=Host(`{subdomain:.+}.scaling.demo.chatruume.com`)"
-      - "traefik.http.routers.proxy.entrypoints=websecure"
-      # - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
-      # - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.chatruume.com"
-      # - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.chatruume.com"
-      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
-      - "io.portainer.accesscontrol.public"
-    networks:
-      - traefikpublic
+#  instance-proxy:
+#    container_name: instance-proxy
+#    build:
+#      context: ../../services/instance-proxy
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    ports:
+#      - "7000:7000"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.docker.network=traefikpublic"
+#      - "traefik.http.routers.proxy.rule=Host(`{subdomain:.+}.scaling.demo.chatruume.com`)"
+#      - "traefik.http.routers.proxy.entrypoints=websecure"
+#      # - "traefik.http.routers.proxy.tls.certresolver=wildcard-resolver"
+#      # - "traefik.http.routers.whoami.tls.domains[0].main=scaling.demo.chatruume.com"
+#      # - "traefik.http.routers.whoami.tls.domains[0].sans=*.scaling.demo.chatruume.com"
+#      - "traefik.http.services.proxy.loadbalancer.server.port=7000"
+#      - "io.portainer.accesscontrol.public"
+#    networks:
+#      - traefikpublic
 
   whoami:
     image: "traefik/whoami"
@@ -46,13 +60,19 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefikpublic"
       - "traefik.http.routers.whoami.rule=(Host(`stg-livekit.chatruume.com`) || Host(`stg-socket.chatruume.com`) || Host(`stg-my.chatruume.com`) || Host(`stg-admin.chatruume.com`)) && PathPrefix(`/whoami`)"
-      - traefik.http.routers.whoami.entrypoints=https
-      # - traefik.http.routers.whoami.tls.domains[1].main=demo.chatruume.com
-      # - traefik.http.routers.whoami.tls.domains[1].sans=*.demo.chatruume.com
-      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+      - "traefik.http.routers.whoami.priority=1000"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=simple-resolver"
-      # - traefik.http.routers.whoami.tls.certresolver=wildcard-resolver
+      - "traefik.http.routers.whoami.service=whoami"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+      # ====================================================================================
+      - "traefik.http.routers.whoami-wildcard-resolver.rule=HostRegexp(`{sub:[a-zA-Z0-9-]+}.stg.chatruume.com`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami-wildcard-resolver.priority=1000"
+      - "traefik.http.routers.whoami-wildcard-resolver.entrypoints=websecure"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].main=stg.chatruume.com"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.domains[0].sans=*.stg.chatruume.com"
+      - "traefik.http.routers.whoami-wildcard-resolver.tls.certresolver=wildcard-resolver"
+      - "traefik.http.routers.whoami-wildcard-resolver.service=whoami"
     networks:
       - traefikpublic
 

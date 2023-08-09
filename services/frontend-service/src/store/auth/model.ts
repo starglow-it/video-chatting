@@ -6,6 +6,7 @@ import {
     LoginUserParams,
     Profile,
 } from '../types';
+import { InitUserPayload } from './type';
 
 export const initialAuthState: AuthUserState = {
     isAuthenticated: false,
@@ -45,6 +46,6 @@ export const resetAuthStateEvent = authDomain.createEvent<void>(
 );
 
 export const initUserWithoutTokenFx = authDomain.createEffect<
-    string | undefined,
-    { user: Profile | null; userTemplateId: string }
+    InitUserPayload,
+    { user: Profile | null; userTemplateId: string; subdomain?: string }
 >('initUserWithoutToken');

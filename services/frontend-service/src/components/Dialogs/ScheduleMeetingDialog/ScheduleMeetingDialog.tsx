@@ -59,7 +59,7 @@ const validationSchema = yup.object({
     date: yup.date().required('required'),
 });
 
-const schedulePages: ValuesSwitcherItem[] = [
+const schedulePages: ValuesSwitcherItem<string>[] = [
     {
         id: 1,
         value: 'settings',
@@ -182,7 +182,7 @@ const Component = () => {
     }, []);
 
     const handleChangeSchedulePage = useCallback(
-        async (newValue: ValuesSwitcherItem) => {
+        async (newValue: ValuesSwitcherItem<string>) => {
             const isThereNoErrors = await trigger(['startAt', 'endAt']);
 
             if (isThereNoErrors) {

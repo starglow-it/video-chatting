@@ -101,7 +101,7 @@ const Component = () => {
         maxLength: MAX_NOTE_CONTENT,
     });
 
-    const handleChange = useCallback(async event => {
+    const handleChange = useCallback(async (event: any) => {
         if (event.target.value.length > MAX_NOTE_CONTENT) {
             /* eslint-disable no-param-reassign */
             event.target.value = event.target.value.slice(0, MAX_NOTE_CONTENT);

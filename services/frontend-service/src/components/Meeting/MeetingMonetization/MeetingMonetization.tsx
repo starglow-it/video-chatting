@@ -6,7 +6,7 @@ import {
     useWatch,
     FieldValues,
 } from 'react-hook-form';
-import { InputBase } from '@mui/material';
+import { InputBase, MenuItem } from '@mui/material';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
 
@@ -22,14 +22,13 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // common
-import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
-
 // validation
 import { Translation } from '@library/common/Translation/Translation';
 import { ErrorMessage } from '@library/common/ErrorMessage/ErrorMessage';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
-import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { CustomDropdown } from '@library/custom/CustomDropdown/CustomDropdown';
+import { NotificationType } from 'src/store/types';
 import {
     templatePriceSchema,
     paywallPriceSchema,
@@ -40,7 +39,7 @@ import { booleanSchema, simpleStringSchema } from '../../../validation/common';
 import styles from './MeetingMonetization.module.scss';
 
 // stores
-import { $profileStore } from '../../../store';
+import { $profileStore, addNotificationEvent } from '../../../store';
 import {
     $meetingTemplateStore,
     updateMeetingTemplateFxWithData,
@@ -79,7 +78,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
             templatePrice: meetingTemplate.templatePrice || 5,
             paywallPrice: meetingTemplate.paywallPrice || 5,
             templateCurrency: meetingTemplate.templateCurrency || 'USD',
-            paywallCurrency: meetingTemplate.templateCurrency || 'USD',
+            paywallCurrency: meetingTemplate.paywallCurrency || 'USD',
         },
     });
 
@@ -93,10 +92,10 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const handleValueChanged = useCallback(
         (
-            newValue: ValuesSwitcherItem<'USD' | 'CAD', string>,
+            newValue: 'USD' | 'CAD' | string,
             type: 'templateCurrency' | 'paywallCurrency',
         ) => {
-            setValue(type, newValue.value);
+            setValue(type, newValue);
         },
         [],
     );
@@ -139,7 +138,7 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const onSubmit = useCallback(
         handleSubmit(async data => {
-            await updateMeetingTemplateFxWithData({
+            const res = await updateMeetingTemplateFxWithData({
                 isMonetizationEnabled:
                     data.isInmeetingPayment || data.isPaywallPayment,
                 templatePrice: data.isInmeetingPayment
@@ -153,6 +152,14 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                     ? data.paywallCurrency
                     : undefined,
             });
+            if (!res.success) {
+                addNotificationEvent({
+                    message: res.error?.message ?? '',
+                    withErrorIcon: true,
+                    type: NotificationType.validationError,
+                });
+                return;
+            }
             onUpdate?.();
         }),
         [],
@@ -170,15 +177,25 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
     const registerPaywallData = register('paywallPrice');
 
     const templatePriceMessage = ['min', 'max'].includes(
-        errors?.templatePrice?.[0]?.type,
+        errors?.templatePrice?.type?.toString() ?? '',
     )
-        ? errors?.templatePrice?.[0]?.message
+        ? errors?.templatePrice?.message?.toString() ?? ''
         : '';
     const paywallPriceMessage = ['min', 'max'].includes(
-        errors?.paywallPrice?.[0]?.type,
+        errors?.paywallPrice?.type?.toString() ?? '',
     )
-        ? errors?.paywallPrice?.[0]?.message
+        ? errors?.paywallPrice?.message?.toString() ?? ''
         : '';
+
+    const renderTimeValue = useCallback((selected: any) => selected, []);
+
+    const renderTimeList = useMemo(() => {
+        return currencyValues.map(time => (
+            <MenuItem key={time.id} value={time.value}>
+                {time.label}
+            </MenuItem>
+        ));
+    }, []);
 
     return (
         <>
@@ -253,17 +270,24 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 !isConnectStripe
                                             }
                                         />
-                                        <ValuesSwitcher
-                                            values={currencyValues}
-                                            activeValue={targetTemplateCurrency}
-                                            onValueChanged={value =>
-                                                handleValueChanged(
-                                                    value,
-                                                    'templateCurrency',
-                                                )
-                                            }
-                                            className={styles.switcher}
-                                        />
+                                        <CustomGrid>
+                                            <CustomDropdown
+                                                selectId="currencyInMeetingSelect"
+                                                labelId="currencyInMeeting"
+                                                value={[
+                                                    targetTemplateCurrency.value,
+                                                ]}
+                                                className={styles.switcher}
+                                                renderValue={renderTimeValue}
+                                                list={renderTimeList}
+                                                onChange={(event: any) =>
+                                                    handleValueChanged(
+                                                        event.target.value,
+                                                        'templateCurrency',
+                                                    )
+                                                }
+                                            />
+                                        </CustomGrid>
                                     </CustomGrid>
                                     <ErrorMessage
                                         error={templatePriceMessage}
@@ -327,17 +351,24 @@ const Component = ({ onUpdate }: { onUpdate: () => void }) => {
                                                 !isConnectStripe
                                             }
                                         />
-                                        <ValuesSwitcher
-                                            values={currencyValues}
-                                            activeValue={targetPaywallCurrency}
-                                            onValueChanged={value =>
-                                                handleValueChanged(
-                                                    value,
-                                                    'paywallCurrency',
-                                                )
-                                            }
-                                            className={styles.switcher}
-                                        />
+                                        <CustomGrid>
+                                            <CustomDropdown
+                                                selectId="currencyPaywallSelect"
+                                                labelId="currencyPaywall"
+                                                value={[
+                                                    targetPaywallCurrency.value,
+                                                ]}
+                                                className={styles.switcher}
+                                                renderValue={renderTimeValue}
+                                                list={renderTimeList}
+                                                onChange={(event: any) =>
+                                                    handleValueChanged(
+                                                        event.target.value,
+                                                        'paywallCurrency',
+                                                    )
+                                                }
+                                            />
+                                        </CustomGrid>
                                     </CustomGrid>
                                     <ErrorMessage
                                         error={paywallPriceMessage}

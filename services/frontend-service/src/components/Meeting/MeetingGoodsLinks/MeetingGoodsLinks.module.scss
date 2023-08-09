@@ -14,10 +14,13 @@
   left: var(--left);
   cursor: pointer;
   transform: translate(-50%, -50%);
-  width: rem(20px);
-  height: rem(20px);
+  width: rem(40px);
+  height: rem(40px);
+  border-radius: 50%;
+  background: rgba($primary-white, 0.7);
   opacity: 0.5;
   z-index: 200;
+  padding: 10px;
 
   &:hover {
     opacity: 1;

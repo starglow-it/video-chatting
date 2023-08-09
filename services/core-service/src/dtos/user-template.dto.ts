@@ -167,4 +167,7 @@ export class UserTemplateDTO implements IUserTemplate {
 
   @Expose()
   roomType: IUserTemplate['roomType'];
+
+  @Expose()
+  subdomain: IUserTemplate['subdomain'];
 }

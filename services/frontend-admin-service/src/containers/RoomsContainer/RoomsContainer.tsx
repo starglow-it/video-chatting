@@ -88,7 +88,7 @@ const Component = () => {
     }, []);
 
     const handleCreateRoom = useCallback(() => {
-        createTemplateFx();
+        createTemplateFx(undefined);
     }, []);
 
     const tableHeadData = useMemo(

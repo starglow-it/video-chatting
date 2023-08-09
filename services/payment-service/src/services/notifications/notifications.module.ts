@@ -16,9 +16,11 @@ import { NotificationsService } from './notifications.service';
 
 // controllers
 import { NotificationsController } from './notifications.controller';
+import { CoreModule } from '../core/core.module';
 
 @Module({
   imports: [
+    CoreModule,
     ClientsModule.registerAsync([
       {
         name: NOTIFICATIONS_PROVIDER,

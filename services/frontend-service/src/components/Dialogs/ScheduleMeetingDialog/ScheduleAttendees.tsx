@@ -112,10 +112,8 @@ const Component = ({
         <CustomGrid container className={className} gap={1}>
             <CustomGrid container direction="column">
                 <CustomInput
-                    nameSpace="forms"
-                    translation="addUserEmail"
                     {...register('currentUserEmail')}
-                    error={errors?.currentUserEmail?.[0].message}
+                    error={errors?.currentUserEmail?.message?.toString()}
                     onKeyPress={handleEnterPress}
                     InputProps={{
                         endAdornment: (
@@ -131,7 +129,7 @@ const Component = ({
                     }}
                 />
                 <ErrorMessage
-                    error={errors?.currentUserEmail?.[0].message}
+                    error={errors?.currentUserEmail?.message?.toString() ?? ''}
                     className={styles.error}
                 />
             </CustomGrid>

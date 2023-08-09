@@ -200,13 +200,21 @@ const Component = ({
                     </CustomGrid>
                 }
             >
-                <CustomBox ref={contentRef} className={styles.linkItem}>
-                    <CustomImage
-                        width={20}
-                        height={20}
-                        src="/images/link.png"
-                        style={{ pointerEvents: 'none' }}
-                    />
+                <CustomBox
+                    justifyContent="center"
+                    display="flex"
+                    alignItems="center"
+                    ref={contentRef}
+                    className={styles.linkItem}
+                >
+                    <CustomBox marginTop="4px">
+                        <CustomImage
+                            width={20}
+                            height={20}
+                            src="/images/link.png"
+                            style={{ pointerEvents: 'none' }}
+                        />
+                    </CustomBox>
                 </CustomBox>
             </CustomTooltip>
         </Draggable>

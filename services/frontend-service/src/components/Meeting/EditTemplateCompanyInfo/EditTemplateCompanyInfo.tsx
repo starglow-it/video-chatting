@@ -16,11 +16,11 @@ const EditTemplateCompanyInfo = memo(() => {
     } = useFormContext();
 
     const currentEmailErrorMessage: string =
-        errors?.contactEmail?.[0]?.message || '';
+        errors?.contactEmail?.[0].message?.toString() || '';
     const currentCompanyNameErrorMessage: string =
-        errors?.companyName?.[0]?.message || '';
+        errors?.companyName?.[0].message?.toString() || '';
     const currentDescriptionErrorMessage: string =
-        errors?.description?.[0]?.message || '';
+        errors?.description?.[0].message?.toString() || '';
 
     return (
         <CustomGrid

@@ -9,3 +9,4 @@ export * from './users';
 export * from './subscriptions';
 export * from './medias';
 export * from './featured-background';
+export * from './monitoring';

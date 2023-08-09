@@ -32,7 +32,8 @@ import { UploadService } from '../upload/upload.service';
 import { CoreService } from '../../services/core/core.service';
 import { v4 as uuidv4 } from 'uuid';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
-import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
+import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
+import { checkValidCurrency } from '../../utils/stripeHelpers/checkValidCurrency';
 
 @Controller('profile/templates')
 export class ProfileTemplatesController {
@@ -43,7 +44,7 @@ export class ProfileTemplatesController {
     private userTemplatesService: UserTemplatesService,
     private uploadService: UploadService,
     private coreService: CoreService,
-  ) {}
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
@@ -154,6 +155,21 @@ export class ProfileTemplatesController {
             url,
             id: templateId,
             mimeType: file.mimetype,
+          });
+        }
+
+        const { paywallCurrency, paywallPrice, templateCurrency, templatePrice } = updateTemplateData;
+        if (templatePrice) {
+          await checkValidCurrency({
+            amount: templatePrice,
+            currency: templateCurrency
+          });
+        }
+
+        if (paywallPrice) {
+          await checkValidCurrency({
+            amount: paywallPrice,
+            currency: paywallCurrency
           });
         }
 

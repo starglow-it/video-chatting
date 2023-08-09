@@ -39,7 +39,7 @@ const Component = () => {
             ),
     });
 
-    const handleKickUser = useCallback(({ userId }) => {
+    const handleKickUser = useCallback(({ userId }: { userId: string }) => {
         setUserToKickEvent(userId);
         appDialogsApi.openDialog({
             dialogKey: AppDialogsEnum.userToKickDialog,

@@ -12,10 +12,12 @@ const Component = () => {
         register,
     } = useFormContext();
 
+    console.log('#Duy Phan console', errors)
+
     const currentFullNameErrorMessage: string =
-        errors?.fullName?.[0]?.message || '';
+        errors?.fullName?.[0]?.message?.toString() || '';
     const currentPositionErrorMessage: string =
-        errors?.position?.[0]?.message || '';
+        errors?.position?.[0]?.message?.toString() || '';
 
     return (
         <CustomGrid container wrap="nowrap" direction="column" gap={4}>

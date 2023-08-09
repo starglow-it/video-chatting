@@ -24,6 +24,7 @@ module.exports = withTM(
             vultrStorageHostname: process.env.VULTR_STORAGE_HOSTNAME,
             baseEnvDomain: process.env.BASE_ENV_DOMAIN,
             supportEmail: process.env.SUPPORT_EMAIL,
+            baseDomain: process.env.BASE_DOMAIN
         },
         reactStrictMode: true,
         typescript: {

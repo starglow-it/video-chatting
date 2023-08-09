@@ -1,5 +1,10 @@
 import { attach, combine, Store } from 'effector-next';
-import { ErrorState, IUserTemplate } from 'shared-types';
+import {
+    ErrorState,
+    FailedResult,
+    IUserTemplate,
+    SuccessResult,
+} from 'shared-types';
 import { meetingDomain } from '../../../domains';
 
 import { $profileStore } from '../../../profile/profile/model';
@@ -86,14 +91,14 @@ export const resetMeetingTemplateStoreEvent = meetingDomain.createEvent(
 );
 
 export const getMeetingTemplateFx = meetingDomain.createEffect<
-    { templateId: IUserTemplate['id'] },
+    { templateId: IUserTemplate['id']; subdomain?: IUserTemplate['subdomain'] },
     IUserTemplate,
     ErrorState
 >('getMeetingTemplateFx');
 
 export const updateMeetingTemplateFx = meetingDomain.createEffect<
     UpdateTemplatePayload,
-    IUserTemplate,
+    SuccessResult<IUserTemplate> | FailedResult<ErrorState>,
     ErrorState
 >('updateMeetingTemplateFx');
 

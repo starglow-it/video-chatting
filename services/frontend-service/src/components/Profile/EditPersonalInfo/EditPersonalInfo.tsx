@@ -23,7 +23,7 @@ const EditPersonalInfo = memo(() => {
     } = useFormContext();
 
     const currentPositionErrorMessage: string =
-        errors?.position?.[0]?.message || '';
+        errors?.position?.message?.toString() || '';
 
     return (
         <CustomPaper className={styles.paperWrapper}>

@@ -21,6 +21,7 @@
   "editDescription": {
     "form": {
       "roomName": "Room Name",
+      "subdomain": "Subdomain",
       "description": "Description",
       "tags": "Tags (Up to 6)",
       "link": "Custom link"
@@ -95,7 +96,8 @@
     "previewAndRoomName": "Preview & Roomname",
     "participants": "Participants",
     "price": "Price",
-    "status": "Status"
+    "status": "Status",
+    "subdomain": "Subdomain"
   },
   "backgrounds": {
     "medias": "Medias",

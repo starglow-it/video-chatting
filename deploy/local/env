@@ -1,0 +1,18 @@
+#NextJS env
+GATEWAY_PORT=3000
+GATEWAY_HOST=gateway-service
+FRONTEND_URL=http://localhost:8000
+TURN_URL=turn.theliveoffice.com
+TURN_PASSWORD=liveofficeturnpassword
+TURN_USERNAME=liveofficeturn
+TURN_PORT=443
+LIVEKIT_WSS=wss://tlo-livekit.nongdan.dev
+MEETING_SOCKET_URL=ws://localhost:8180
+DEFAULT_SERVER_IP=localhost
+VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
+STRIPE_PUBLIC_API_KEY=pk_test_51Lfm3wEZHTtCzRsJB6lEgBCnvU1S4UNnaIQ2sDmYRN4olRKSF7IjPn5NF81yDxwhRCMfqNW4I4UK4HOGFDYctKLv00Cv9txG6J
+BASE_ENV_DOMAIN=liveoffice.forasoft.com
+BASE_DOMAIN=localhost:8000
+SUPPORT_EMAIL=
+GEOLOCATION_API_KEY=8938b4b594c74e39bd845d380ffe99fd
+GOOGLE_CLIENT_ID=539436979316-oqfebgmndsqkhv37ch1l0gnnh8hd3e1v.apps.googleusercontent.com

@@ -155,9 +155,7 @@ const Component = ({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { socials, ...dirtyFieldsWithOutSocials } = dirtyFields;
 
-        const values: (boolean | { [key: string]: boolean })[] = Object.values(
-            dirtyFieldsWithOutSocials,
-        );
+        const values: any[] = Object.values(dirtyFieldsWithOutSocials);
 
         const newDirtyFieldsCount = values.reduce(reduceValuesNumber, 0);
 
@@ -256,12 +254,10 @@ const Component = ({
                     });
 
                     if (isBusy) {
-                        setError('customLink', [
-                            {
-                                type: 'focus',
-                                message: 'meeting.settings.customLink.busy',
-                            },
-                        ]);
+                        setError('customLink', {
+                            type: 'focus',
+                            message: 'meeting.settings.customLink.busy',
+                        });
                         setFocus('customLink');
                         return;
                     }
@@ -284,9 +280,10 @@ const Component = ({
                 onTemplateUpdate({
                     data: {
                         ...filteredData,
-                        socials: filteredSocials || {},
-                        businessCategories: filteredBusinessCategories,
-                    },
+                        socials: (filteredSocials as any) || [],
+                        businessCategories:
+                            (filteredBusinessCategories as any) || [],
+                    } as any,
                     templateId: template.id,
                 });
 

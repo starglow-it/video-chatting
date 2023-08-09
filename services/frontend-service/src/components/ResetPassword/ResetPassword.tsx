@@ -94,9 +94,9 @@ const Component = ({
     const onSubmit = useCallback(
         handleSubmit(async data => {
             if (data.newPassword !== data.newPasswordRepeat) {
-                return setError('newPasswordRepeat', [
-                    { message: 'user.pass.newPassword.notMatch' },
-                ]);
+                return setError('newPasswordRepeat', {
+                    message: 'user.pass.newPassword.notMatch',
+                });
             }
 
             const result = await resetPasswordFx({
@@ -163,7 +163,7 @@ const Component = ({
                         fieldKey="newPasswordRepeat"
                         nameSpace="common"
                         translation="reset.newPasswordRepeat"
-                        error={errors?.newPasswordRepeat?.[0]?.message}
+                        error={errors?.newPasswordRepeat?.message?.toString()}
                         {...register('newPasswordRepeat')}
                     />
                     <CustomButton

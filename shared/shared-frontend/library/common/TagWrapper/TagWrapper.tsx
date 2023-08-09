@@ -10,7 +10,7 @@ import styles from './TagWrapper.module.scss';
 
 const Component = (
     { children, className, ...rest }: React.PropsWithChildren<GridProps>,
-    ref: ForwardedRef<HTMLDivElement>,
+    ref: ForwardedRef<HTMLDivElement | null>,
 ) => (
     <CustomGrid
         ref={ref}

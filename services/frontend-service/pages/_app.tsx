@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import App from 'next/app';
 import type { AppContext, AppProps } from 'next/app';
+import { NextRequest, NextResponse } from 'next/server';
 import Head from 'next/head';
 import getConfig from 'next/config';
 import { withHydrate } from 'effector-next';
@@ -137,27 +138,42 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     );
     const isBaseRoute = pathName === indexRoute;
 
-    if (isWithoutAuthen) {
-        if (isLoginRedirectRoutes || isBaseRoute)
-            redirectTo(nextPageContext, loginRoute);
+    const { host } = context?.ctx?.req?.headers || {};
+    console.log('#Duy Phan console', host)
+    console.log('#Duy Phan console', publicRuntimeConfig.frontendUrl)
+
+    if (publicRuntimeConfig.frontendUrl.includes(host)) {
+        if (isWithoutAuthen) {
+            if (isLoginRedirectRoutes || isBaseRoute)
+                redirectTo(nextPageContext, loginRoute);
+        } else {
+            if (
+                typeof registerTemplate !== 'undefined' &&
+                !pathName.includes(setUpTemplateRoute) &&
+                !user.fullName &&
+                !user.companyName
+            ) {
+                redirectTo(
+                    nextPageContext,
+                    `${setUpTemplateRoute}/${registerTemplate || ''}`,
+                );
+            } else if (
+                isAuthenticated &&
+                (isRegisterRedirectRoute || isBaseRoute)
+            ) {
+                redirectTo(nextPageContext, dashboardRoute);
+            } else if (
+                !isAuthenticated &&
+                (isLoginRedirectRoutes || isBaseRoute)
+            ) {
+                redirectTo(nextPageContext, loginRoute);
+            }
+        }
     } else {
-        if (
-            typeof registerTemplate !== 'undefined' &&
-            !pathName.includes(setUpTemplateRoute) &&
-            !user.fullName &&
-            !user.companyName
-        ) {
-            redirectTo(
-                nextPageContext,
-                `${setUpTemplateRoute}/${registerTemplate || ''}`,
-            );
-        } else if (
-            isAuthenticated &&
-            (isRegisterRedirectRoute || isBaseRoute)
-        ) {
-            redirectTo(nextPageContext, dashboardRoute);
-        } else if (!isAuthenticated && (isLoginRedirectRoutes || isBaseRoute)) {
-            redirectTo(nextPageContext, loginRoute);
+        console.log('#Duy Phan console', isBaseRoute)
+        if(!isBaseRoute) {
+            NextResponse.redirect('localhost:8000')
+            // redirectTo(nextPageContext, 'localhost:8000')
         }
     }
 

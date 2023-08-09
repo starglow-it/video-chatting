@@ -11,6 +11,7 @@ import {
     simpleNumberSchema,
     simpleStringSchema,
     simpleStringSchemaWithLength,
+    subdomainLinkSchema,
     tagsSchema,
     templatePriceSchema,
     templatesLinksSchema,
@@ -63,6 +64,7 @@ import {
 
 // styles
 import styles from './EditAdminRoomContainer.module.scss';
+import frontendConfig from '../../const/config';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
@@ -115,6 +117,7 @@ const defaultValues = {
     background: '',
     name: '',
     description: '',
+    subdomain: undefined,
     tags: [],
     participantsNumber: 2,
     participantsPositions: [],
@@ -141,10 +144,12 @@ const validationSchema = yup.object({
             .nullable(true)
             .transform(value => (isNaN(value) ? undefined : value)),
     }),
+    subdomain: yup.string().required(),
 });
 
 const Component = () => {
     const router = useRouter();
+    const [roomId, withSubdomain] = router.query.room as any;
 
     const { state: commonTemplate } = useStore($commonTemplateStore);
 
@@ -228,7 +233,7 @@ const Component = () => {
 
     useEffect(() => {
         getCommonTemplateEvent({
-            templateId: router.query.roomId as string,
+            templateId: roomId as string,
         });
         getBusinessCategoriesEvent({});
         initWindowListeners();
@@ -257,6 +262,11 @@ const Component = () => {
                   }))
                 : defaultValues.participantsPositions;
 
+            const matches = commonTemplate.subdomain?.match(
+                /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
+            );
+            const domain = matches && matches[1];
+
             reset({
                 name: commonTemplate.name,
                 description: commonTemplate.description || '',
@@ -272,6 +282,7 @@ const Component = () => {
                     ...item,
                     label: item.value,
                 })),
+                subdomain: domain?.split('.')[0],
             });
 
             updateCommonTemplateDataEvent({
@@ -377,6 +388,7 @@ const Component = () => {
                         },
                     })),
                     isAudioAvailable: true,
+                    subdomain: `https://${data.subdomain}.${frontendConfig.baseDomain}`,
                 };
 
                 if (dirtyFields.background) {
@@ -393,7 +405,11 @@ const Component = () => {
                 });
 
                 if (commonTemplate.roomType === RoomType.Normal) {
-                    await Router.push('/rooms');
+                    if (Boolean(withSubdomain)) {
+                        await Router.push('/subdomain');
+                    } else {
+                        await Router.push('/rooms');
+                    }
                 } else {
                     await Router.push('/featured-background');
                 }
@@ -454,7 +470,11 @@ const Component = () => {
         });
 
         if (commonTemplate?.roomType === RoomType.Normal) {
-            router.push('/rooms');
+            if (Boolean(withSubdomain)) {
+                router.push('/subdomain');
+            } else {
+                router.push('/rooms');
+            }
         } else {
             router.push('/featured-background');
         }
@@ -600,6 +620,7 @@ const Component = () => {
                                 categories={categories.list}
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
+                                isSubdomain={Boolean(withSubdomain)}
                             />
                         </CustomFade>
 

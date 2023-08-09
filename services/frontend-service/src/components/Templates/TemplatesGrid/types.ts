@@ -11,7 +11,6 @@ export type TemplateGridProps<TemplateType extends { id: string }> = {
     >;
     list: TemplateType[];
     count: number;
-    onPageChange: (page: number) => void;
     onChooseTemplate?: (templateId: TemplateType['id']) => Promise<void> | void;
     outerClassName?: string;
     innerClassName?: string;

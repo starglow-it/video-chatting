@@ -72,6 +72,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
 import { PriceValues, RoomType } from 'shared-types';
+import frontendConfig from '../../const/config';
 
 // utils
 enum TabsValues {
@@ -131,6 +132,7 @@ const defaultValues = {
     type: 'free',
     templatePrice: undefined,
     draft: true,
+    subdomain: undefined,
 };
 
 const validationSchema = yup.object({
@@ -150,10 +152,12 @@ const validationSchema = yup.object({
             .transform(value => (isNaN(value) ? undefined : value)),
     }),
     draft: yup.bool(),
+    subdomain: yup.string().required(),
 });
 
 const Component = () => {
     const router = useRouter();
+    const [roomId, withSubdomain] = router.query.room as any;
 
     const { state: commonTemplate } = useStore($commonTemplateStore);
 
@@ -212,7 +216,7 @@ const Component = () => {
 
     useEffect(() => {
         getCommonTemplateEvent({
-            templateId: router.query.roomId as string,
+            templateId: roomId as string,
         });
         getBusinessCategoriesEvent({});
 
@@ -270,7 +274,7 @@ const Component = () => {
             if (commonTemplate?.id) {
                 const templatePrice =
                     data.type === 'paid' ? data.templatePrice * 100 : 0;
-
+                  
                 await updateCommonTemplateFx({
                     templateId: commonTemplate.id,
                     data: {
@@ -298,10 +302,15 @@ const Component = () => {
                         ),
                         draftPreviewUrls: [],
                         draftUrl: '',
+                        subdomain: `https://${data.subdomain}.${frontendConfig.baseDomain}`,
                     },
                 });
                 if (commonTemplate.roomType === RoomType.Normal) {
-                    Router.push('/rooms');
+                    if (Boolean(withSubdomain)) {
+                        Router.push('/subdomain');
+                    } else {
+                        Router.push('/rooms');
+                    }
                 } else {
                     Router.push('/featured-background');
                 }
@@ -543,6 +552,7 @@ const Component = () => {
                                 categories={categories.list}
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
+                                isSubdomain={Boolean(withSubdomain)}
                             />
                         </CustomFade>
 

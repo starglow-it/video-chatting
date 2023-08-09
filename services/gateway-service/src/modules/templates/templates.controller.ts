@@ -65,7 +65,11 @@ export class TemplatesController {
         businessCategories,
         type,
         sort,
+        isHaveSubdomain,
         direction } = query;
+
+        console.log(isHaveSubdomain);
+        
 
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
@@ -74,10 +78,9 @@ export class TemplatesController {
           ...(isPublic !== undefined ? { isPublic } : {}),
           ...(type ? { type } : {}),
           roomType,
+          businessCategories,
+          subdomain: isHaveSubdomain ? {$ne: ''} : '',
           isAcceptNoLogin: false
-        },
-        filter: {
-          businessCategories
         },
         options: {
           ...(sort ? { sort: { [sort]: direction } } : {}),
@@ -212,7 +215,7 @@ export class TemplatesController {
           mimeType: file.mimetype,
         });
       }
-
+      
       if (Object.keys(templateData).length >= 1) {
         await this.templatesService.updateTemplate({
           templateId,

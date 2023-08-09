@@ -43,7 +43,7 @@ const MonetizationInfo = memo(() => {
 
     const handleSetUpPayments = useCallback(async () => {
         if (!isConnectStripeAccountPending) {
-            await connectStripeAccountFx({});
+            await connectStripeAccountFx();
         }
     }, [isConnectStripeAccountPending]);
 
@@ -52,7 +52,7 @@ const MonetizationInfo = memo(() => {
     }, []);
 
     const handleDeletePaymentSetUp = useCallback(async () => {
-        await deleteStripeAccountFx({});
+        await deleteStripeAccountFx();
     }, []);
 
     useEffect(() => {

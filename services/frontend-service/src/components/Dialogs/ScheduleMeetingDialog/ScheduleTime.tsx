@@ -67,7 +67,7 @@ const Component = ({
         );
 
         const startTime = isTheSameDay
-            ? getHourMinutesString(parseTimestamp(blockedDate))
+            ? getHourMinutesString(parseTimestamp(blockedDate as any))
             : '00:00';
 
         const timeList = getTimeList(startTime, 30 * ONE_MINUTE, 0);
@@ -78,7 +78,7 @@ const Component = ({
         });
     }, [currentDate]);
 
-    const handleChange = useCallback(event => {
+    const handleChange = useCallback((event: any) => {
         setValue('timeZone', event.target.value, {
             shouldValidate: true,
             shouldDirty: true,
@@ -86,7 +86,7 @@ const Component = ({
     }, []);
 
     const handleChangeStartAt = useCallback(
-        event => {
+        (event: any) => {
             if (
                 !isBefore(
                     getDateTimestamp(currentDate, event.target.value),
@@ -107,7 +107,7 @@ const Component = ({
         [currentDate],
     );
 
-    const handleChangeEndAt = useCallback(event => {
+    const handleChangeEndAt = useCallback((event: any) => {
         setValue('endAt', event.target.value, {
             shouldValidate: true,
             shouldDirty: true,
@@ -186,7 +186,7 @@ const Component = ({
 
     const registerStartAt = register('startAt');
 
-    const handleChangeComment = useCallback(async event => {
+    const handleChangeComment = useCallback(async (event: any) => {
         if (event.target.value.length > 500) {
             // eslint-disable-next-line no-param-reassign
             event.target.value = event.target.value.slice(0, 500);
@@ -196,12 +196,12 @@ const Component = ({
     }, []);
 
     const renderTimezonesValue = useCallback(
-        selected =>
+        (selected: any) =>
             TIMEZONES.find(timezone => timezone.tzCode === selected)?.name,
         [],
     );
 
-    const renderTimeValue = useCallback(selected => selected, []);
+    const renderTimeValue = useCallback((selected: any) => selected, []);
 
     useEffect(() => {
         if (startAtValue) {
@@ -240,7 +240,7 @@ const Component = ({
                     renderValue={renderTimeValue}
                     list={renderTimeList}
                     onChange={handleChangeStartAt}
-                    error={errors?.startAt?.[0]?.message}
+                    error={errors?.startAt?.message?.toString()}
                 />
                 <CustomTypography variant="body1bold">&#45;</CustomTypography>
                 <CustomDropdown
@@ -253,7 +253,7 @@ const Component = ({
                     renderValue={renderTimeValue}
                     list={renderEndTimeList}
                     onChange={handleChangeEndAt}
-                    error={errors?.endAt?.[0]?.message}
+                    error={errors?.endAt?.message?.toString()}
                 />
             </CustomGrid>
             <CustomInput

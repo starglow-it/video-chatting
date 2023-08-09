@@ -31,7 +31,7 @@ const ProfileDescription = memo(() => {
     useEffect(() => {
         const rect = descriptionRef?.current?.getBoundingClientRect();
 
-        if (rect?.height < DEFAULT_HEIGHT) {
+        if ((rect?.height ?? 0) < DEFAULT_HEIGHT) {
             setIsShowDescriptionEnabled(false);
         }
         setDescriptionHeight(

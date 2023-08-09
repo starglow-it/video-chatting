@@ -19,6 +19,12 @@ certificatesResolvers:
       email: nam@namnm.com
       storage: /letsencrypt/acme.json
       tlschallenge: true
+  wildcard-resolver:
+    acme:
+      dnschallenge:
+        provider: route53
+      email: nam@namnm.com
+      storage: /letsencrypt/wildcard-resolver.json
 
 entryPoints:
   http:

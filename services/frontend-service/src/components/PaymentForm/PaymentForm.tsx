@@ -26,9 +26,13 @@ import styles from './PaymentForm.module.scss';
 // types
 import { NotificationType } from '../../store/types';
 
-const currencySigns = {
+const currencySigns: { [key: string]: string } = {
     USD: '$',
     CAD: 'C$',
+    GBP: '£',
+    EUR: '€',
+    INR: '₹',
+    AUS: 'A$',
 };
 
 const Component = ({
@@ -62,7 +66,7 @@ const Component = ({
 
     const colorMain = `colors.${templateType}.primary`;
     const isInMeetingPayment = paymentType === 'in-meeting';
-    const currency =
+    const currency: string =
         currencySigns[
             isInMeetingPayment
                 ? meetingTemplate.templateCurrency

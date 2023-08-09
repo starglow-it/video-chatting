@@ -13,6 +13,7 @@ export const handleCreateMeeting = async (
         ...createMeetingUrl,
         data: {
             templateId: data.templateId,
+            subdomain: data.subdomain,
         },
     });
 

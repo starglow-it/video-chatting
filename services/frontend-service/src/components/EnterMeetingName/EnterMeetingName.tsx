@@ -52,7 +52,12 @@ const Component = () => {
     const isJoinWaitingRoomPending = useStore(
         sendJoinWaitingRoomSocketEvent.pending,
     );
-
+    console.log(
+        '#Duy Phan console',
+        !isSocketConnected,
+        isMeetingSocketConnecting,
+        isJoinWaitingRoomPending,
+    );
     const isOwner = useStore($isOwner);
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{
@@ -87,7 +92,7 @@ const Component = () => {
         [],
     );
 
-    const fullNameError = errors.fullName?.[0]?.message;
+    const fullNameError = errors.fullName?.message;
 
     useEffect(() => {
         if (nameOnUrl) {
@@ -148,7 +153,6 @@ const Component = () => {
                         nameSpace="forms"
                         translation="yourName"
                         autoComplete="given-name"
-                        value={fullNameRegister.value}
                         onChange={fullNameRegister.onChange}
                         onBlur={fullNameRegister.onBlur}
                         ref={fullNameRegister.ref}

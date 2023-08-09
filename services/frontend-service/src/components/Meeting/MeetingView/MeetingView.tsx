@@ -152,7 +152,7 @@ const Component = () => {
         }
     }, [isMobile]);
 
-    const handleUpdateMeetingTemplate = useCallback(async updateData => {
+    const handleUpdateMeetingTemplate = useCallback(async (updateData: any) => {
         if (updateData) {
             await updateMeetingTemplateFxWithData(updateData.data);
             updateLocalUserEvent({ username: updateData.data.fullName });
