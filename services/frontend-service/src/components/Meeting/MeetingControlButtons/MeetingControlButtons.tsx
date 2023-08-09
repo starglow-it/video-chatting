@@ -77,7 +77,7 @@ const Component = () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
-            window.location.href = config.frontendURL;
+            window.location.href = config.frontendUrl;
             return;
         }
         await router.push(
