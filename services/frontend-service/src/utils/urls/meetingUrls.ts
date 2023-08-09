@@ -11,10 +11,14 @@ export const getMeetingUrl = (templateId: string) => ({
 
 export const getMeetingTemplateUrl = ({
     templateId,
+    subdomain,
 }: {
     templateId: string;
+    subdomain?: string;
 }) => ({
-    url: `${serverUrl}/meetings/templates/${templateId}`,
+    url: `${serverUrl}/meetings/templates/${templateId}?subdomain=${
+        subdomain ?? ''
+    }`,
     method: HttpMethods.Get,
 });
 

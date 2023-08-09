@@ -5,17 +5,14 @@ import { initialTemplateState } from '../model';
 
 export const handleGetMeetingTemplate = async ({
     templateId,
-    subdomain,
+    subdomain
 }: {
     templateId: IUserTemplate['id'];
     subdomain?: IUserTemplate['subdomain'];
 }): Promise<IUserTemplate> => {
-    const response = await sendRequest<IUserTemplate, ErrorState>({
-        ...getMeetingTemplateUrl({ templateId }),
-        data: {
-            subdomain,
-        },
-    });
+    const response = await sendRequest<IUserTemplate, ErrorState>(
+        {...getMeetingTemplateUrl({ templateId, subdomain })},
+    );
 
     if (response.success) {
         return response.result;
