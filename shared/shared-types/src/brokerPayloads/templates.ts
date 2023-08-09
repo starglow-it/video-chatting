@@ -17,6 +17,7 @@ export type GetUserTemplatesPayload = {
 
 export type GetUserTemplatePayload = {
   id: IUserTemplate['id'];
+  subdomain?: string;
 };
 
 export type GetCommonTemplatePayload = Partial<ICommonTemplate>;

@@ -8,12 +8,14 @@ import {
   Param,
   Get,
   Body,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../../guards/jwt.guard';
@@ -34,8 +36,11 @@ import { GetMeetingTokenRequest } from '../../dtos/requests/get-meeting-token.re
 // dtos
 import { CommonInstanceMeetingRestDTO } from '../../dtos/response/common-instance-meeting.dto';
 import { MeetingsService } from './meetings.service';
-import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
+import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
+import { GetMeetingDetailParams } from '../../dtos/params/get-meeting-detail.param';
+import { GetMeetingDetailQuery } from '../../dtos/query/GetMeetingDetailQuery';
 
+@ApiTags('Meetings')
 @Controller(MEETINGS_SCOPE)
 export class MeetingsController {
   private readonly logger = new Logger();
@@ -149,10 +154,16 @@ export class MeetingsController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async getMeetingTemplate(@Param('templateId') templateId: string) {
+  async getMeetingTemplate(
+    @Param() params: GetMeetingDetailParams,
+    @Query() query: GetMeetingDetailQuery
+    ) {
+    const {subdomain} = query;
+    const {templateId} = params;
     try {
       const meeting = await this.userTemplatesService.getUserTemplate({
         id: templateId,
+        subdomain
       });
 
       return {
