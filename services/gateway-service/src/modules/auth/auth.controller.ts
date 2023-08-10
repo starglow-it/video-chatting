@@ -227,7 +227,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   @Delete('delete-free-user')
   async deleteAnonymousUser(
     @Request() req: Req
-  ){
+  ) {
     await this.delGlobalUser(req);
   }
 
