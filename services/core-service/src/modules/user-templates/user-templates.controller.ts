@@ -163,7 +163,10 @@ export class UserTemplatesController {
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
-        const query = {subdomain} as FilterQuery<UserTemplateDocument>;
+        const query = {subdomain: {
+          $regex: new RegExp(`^${subdomain}$`),
+          $options: 'i'
+        }} as FilterQuery<UserTemplateDocument>;
         const userTemplate = await this.userTemplatesService.findUserTemplate({
           query: Object.assign(query, isValidObjectId(id) ? { _id: id } : { customLink: id }),
           session,

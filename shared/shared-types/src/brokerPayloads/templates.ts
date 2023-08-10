@@ -20,7 +20,7 @@ export type GetUserTemplatePayload = {
   subdomain?: string;
 };
 
-export type GetCommonTemplatePayload = Partial<ICommonTemplate>;
+export type GetCommonTemplatePayload = FilterQuery<ICommonTemplate>;
 
 export type GetUserTemplateByTemplateIdPayload = {
   id: ICommonTemplate['templateId'];

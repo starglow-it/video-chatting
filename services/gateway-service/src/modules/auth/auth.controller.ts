@@ -189,8 +189,12 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
 
       let template: ICommonTemplate;
       if (subdomain) {
+        const regex =  new RegExp(`^${subdomain}$`)
         template = await this.coreService.findCommonTemplateByTemplate({
-          subdomain
+          subdomain: {
+            $regex: regex.source,
+            $options: 'i'
+          }
         });
       }
       else {
