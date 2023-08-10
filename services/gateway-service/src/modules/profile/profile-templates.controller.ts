@@ -16,7 +16,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { UpdateTemplateRequest } from '../../dtos/requests/update-template.request';
 import {
@@ -35,6 +35,7 @@ import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { checkValidCurrency } from '../../utils/stripeHelpers/checkValidCurrency';
 
+@ApiTags('Profile/Templates')
 @Controller('profile/templates')
 export class ProfileTemplatesController {
   private readonly logger = new Logger();

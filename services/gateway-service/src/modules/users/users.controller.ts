@@ -19,6 +19,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -61,6 +62,7 @@ import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { MeetingsService } from '../meetings/meetings.service';
 import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
 
+@ApiTags('Users')
 @Controller('/users')
 export class UsersController {
   private readonly logger = new Logger();

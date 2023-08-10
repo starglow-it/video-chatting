@@ -71,7 +71,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { Request as Req } from 'express';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller(AUTH_SCOPE)
 export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger();
