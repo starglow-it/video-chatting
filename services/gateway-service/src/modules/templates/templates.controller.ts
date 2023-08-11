@@ -19,6 +19,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
 import { EntityList, ResponseSumType, ICommonTemplate, RoomType } from 'shared-types';
@@ -32,6 +33,7 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { v4 as uuidv4 } from 'uuid';
 import { GetTemplatesQueryDto } from '../../dtos/query/GetTemplatesQuery.dto';
 
+@ApiTags('Common Templates')
 @Controller('templates')
 export class TemplatesController {
   private readonly logger = new Logger();
@@ -67,9 +69,6 @@ export class TemplatesController {
         sort,
         isHaveSubdomain,
         direction } = query;
-
-        console.log(isHaveSubdomain);
-        
 
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {

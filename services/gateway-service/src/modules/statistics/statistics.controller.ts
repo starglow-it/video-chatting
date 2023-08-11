@@ -11,6 +11,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import {
   ICommonUserStatistic,
@@ -30,6 +31,7 @@ import { TemplatesService } from '../templates/templates.service';
 import { StatisticsService } from './statistics.service';
 import { UserIdParam } from '../../dtos/params/user-id.param';
 
+@ApiTags('Statitics')
 @Controller('statistics')
 export class StatisticsController {
   private readonly logger = new Logger();

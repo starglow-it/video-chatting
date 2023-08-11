@@ -18,6 +18,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import { EntityList, ResponseSumType, IBusinessCategory } from 'shared-types';
 import { CategoryRestDTO } from '../../dtos/response/common-category.dto';
@@ -29,6 +30,7 @@ import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 import { DeleteBusinessCategoriesRequest } from '../../dtos/requests/delete-business-categories.request';
 import { CreateBusinessCategoryRequest } from 'src/dtos/requests/create-business-category.request';
 
+@ApiTags('Bussiness Categories')
 @Controller('categories')
 export class CategoriesController {
   private readonly logger = new Logger();

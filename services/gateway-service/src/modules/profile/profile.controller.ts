@@ -14,6 +14,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
 // utils
@@ -35,6 +36,7 @@ import { NotificationsService } from '../../services/notifications/notifications
 import { ConfigClientService } from '../../services/config/config.service';
 import { PaymentsService } from '../payments/payments.service';
 
+@ApiTags('Profiles')
 @Controller('profile')
 export class ProfileController {
   private readonly logger = new Logger();

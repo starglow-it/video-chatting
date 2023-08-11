@@ -135,7 +135,7 @@ const defaultValues = {
     subdomain: undefined,
 };
 
-const validationSchema = yup.object({
+const validationSchema = {
     background: simpleStringSchema(),
     name: simpleStringSchemaWithLength(MAX_NAME_LENGTH).required('required'),
     description: simpleStringSchemaWithLength(MAX_DESCRIPTION_LENGTH),
@@ -152,8 +152,7 @@ const validationSchema = yup.object({
             .transform(value => (isNaN(value) ? undefined : value)),
     }),
     draft: yup.bool(),
-    subdomain: yup.string().required(),
-});
+};
 
 const Component = () => {
     const router = useRouter();
@@ -171,9 +170,17 @@ const Component = () => {
             initialValue: tabs[0].value,
         });
 
-    const resolver = useYupValidationResolver(validationSchema, {
-        reduceArrayErrors: true,
-    });
+    const resolver = useYupValidationResolver(
+        yup.object({
+            ...validationSchema,
+            subdomain: Boolean(withSubdomain)
+                ? yup.string().required()
+                : yup.string().notRequired().nullable(true),
+        }),
+        {
+            reduceArrayErrors: true,
+        },
+    );
     const methods = useForm({
         criteriaMode: 'all',
         defaultValues,
@@ -274,7 +281,7 @@ const Component = () => {
             if (commonTemplate?.id) {
                 const templatePrice =
                     data.type === 'paid' ? data.templatePrice * 100 : 0;
-                  
+
                 await updateCommonTemplateFx({
                     templateId: commonTemplate.id,
                     data: {
@@ -302,7 +309,9 @@ const Component = () => {
                         ),
                         draftPreviewUrls: [],
                         draftUrl: '',
-                        subdomain: `https://${data.subdomain}.${frontendConfig.baseDomain}`,
+                        subdomain: Boolean(withSubdomain)
+                            ? `https://${data.subdomain}.${frontendConfig.baseDomain}`
+                            : '',
                     },
                 });
                 if (commonTemplate.roomType === RoomType.Normal) {
