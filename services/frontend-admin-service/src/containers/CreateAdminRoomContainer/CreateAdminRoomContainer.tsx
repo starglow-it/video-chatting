@@ -309,7 +309,9 @@ const Component = () => {
                         ),
                         draftPreviewUrls: [],
                         draftUrl: '',
-                        subdomain: `https://${data.subdomain}.${frontendConfig.baseDomain}`,
+                        subdomain: Boolean(withSubdomain)
+                            ? `https://${data.subdomain}.${frontendConfig.baseDomain}`
+                            : '',
                     },
                 });
                 if (commonTemplate.roomType === RoomType.Normal) {

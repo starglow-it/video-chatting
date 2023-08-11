@@ -396,7 +396,9 @@ const Component = () => {
                         },
                     })),
                     isAudioAvailable: true,
-                    subdomain: `https://${data.subdomain}.${frontendConfig.baseDomain}`,
+                    subdomain: Boolean(withSubdomain)
+                        ? `https://${data.subdomain}.${frontendConfig.baseDomain}`
+                        : '',
                 };
 
                 if (dirtyFields.background) {
