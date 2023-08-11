@@ -11,6 +11,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
 // shared
@@ -27,6 +28,7 @@ import { CoreService } from '../../services/core/core.service';
 import { NotificationsService } from '../../services/notifications/notifications.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
+@ApiTags('Profile Avatar')
 @Controller('profile/avatar')
 export class ProfileAvatarController {
   constructor(

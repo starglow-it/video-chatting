@@ -71,7 +71,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
 import { Request as Req } from 'express';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller(AUTH_SCOPE)
 export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger();
@@ -137,7 +137,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     }
   }
 
-  private delGlobalUser = async (req: Request) => {
+  private delGlobalUser = async (req: Req) => {
     try {
       const c = req['cookies'];
       const h = req['headers'];
@@ -222,6 +222,13 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     catch (err) {
       throw new BadRequestException(err);
     }
+  }
+
+  @Delete('delete-free-user')
+  async deleteAnonymousUser(
+    @Request() req: Req
+  ) {
+    await this.delGlobalUser(req);
   }
 
 
@@ -360,7 +367,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     description: 'User logged in',
   })
   async login(
-    @Request() req: Request,
+    @Request() req: Req,
     @Body() body: UserCredentialsRequest,
   ): Promise<ResponseSumType<TokenPairWithUserType>> {
     await this.delGlobalUser(req);

@@ -1,4 +1,5 @@
 import { IUserTemplate } from 'shared-types';
+import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { getMeetingTemplateFx } from '../../meetingTemplate/model';
 
 export const handleUpdateMeetingTemplate = ({
@@ -6,5 +7,8 @@ export const handleUpdateMeetingTemplate = ({
 }: {
     templateId: IUserTemplate['id'];
 }) => {
-    getMeetingTemplateFx({ templateId });
+    getMeetingTemplateFx({
+        templateId,
+        subdomain: isSubdomain() ? window.location.origin : undefined,
+    });
 };

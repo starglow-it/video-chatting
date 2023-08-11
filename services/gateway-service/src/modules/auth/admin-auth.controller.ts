@@ -47,7 +47,7 @@ import { AuthService } from './auth.service';
 import { DataValidationException } from '../../exceptions/dataValidation.exception';
 import { JwtAdminAuthGuard } from '../../guards/jwt-admin.guard';
 
-@ApiTags('auth/admin')
+@ApiTags('Auth/Admin')
 @Controller('auth/admin')
 export class AdminAuthController {
   private readonly logger = new Logger();
