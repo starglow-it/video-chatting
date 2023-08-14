@@ -7,6 +7,7 @@ export const ME_URL = `${authScope}/me`;
 export const LOGOUT_URL = `${authScope}/logout`;
 export const GOOGLE_VERIFY_URL = `${authScope}/google-verify`;
 export const INIT_USER_WITHOUT_TOKEN_URL = `${authScope}/create-free-user`;
+export const DELETE_DRAFT_USERS_URL = `${authScope}/delete-free-user`;
 
 export const loginUserUrl = {
     url: `${serverUrl}/${LOGIN_USER_URL}`,
@@ -36,4 +37,9 @@ export const googleVerifyUrl = {
 export const initUserWithoutTokenUrl = {
     url: `${serverUrl}/${INIT_USER_WITHOUT_TOKEN_URL}`,
     method: HttpMethods.Post,
+};
+
+export const deleteDraftUsersUrl = {
+    url: `${serverUrl}/${DELETE_DRAFT_USERS_URL}`,
+    method: HttpMethods.Delete,
 };

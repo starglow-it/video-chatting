@@ -14,6 +14,7 @@ import {
     resetAuthErrorEvent,
     resetAuthStateEvent,
     setUserCountryFx,
+    deleteDraftUsers,
 } from './model';
 import { clearProfileEvent, setProfileEvent } from '../profile/profile/model';
 import { appDialogsApi } from '../dialogs/init';
@@ -35,6 +36,7 @@ import { handleInitUserWithoutToken } from './handlers/handleInitUserWithoutToke
 import { getClientMeetingUrl } from '../../utils/urls';
 import { createMeetingFx } from '../meetings/model';
 import frontendConfig from '../../const/config';
+import { handleDeleteDraftUsers } from './handlers/handleDraftUsers';
 
 loginUserFx.use(handleLoginUser);
 checkAuthFx.use(handleCheckUserAuthentication);
@@ -43,6 +45,7 @@ logoutUserFx.use(handleLogoutUser);
 setUserCountryFx.use(handleSetUserCountry);
 googleVerifyFx.use(handleGoogleVerify);
 initUserWithoutTokenFx.use(handleInitUserWithoutToken);
+deleteDraftUsers.use(handleDeleteDraftUsers)
 
 sample({
     clock: loginUserFx.doneData,
