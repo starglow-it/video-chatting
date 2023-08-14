@@ -59,7 +59,7 @@ import {
   USER_TOKEN_NOT_FOUND,
   USERS_SERVICE,
   plans,
-  USER_LOGIN_OTHER_PLATFORM,
+  userLoginOtherPlatform,
 } from 'shared-const';
 
 // mongo
@@ -493,7 +493,7 @@ export class UsersController {
       }
 
       if(user.loginType !== LoginTypes.Local){
-        throw new RpcException({...USER_LOGIN_OTHER_PLATFORM(user.loginType), ctx: USERS_SERVICE})
+        throw new RpcException({...userLoginOtherPlatform(user.loginType), ctx: USERS_SERVICE})
       }
 
       const isPasswordValid = await this.usersService.verifyPassword(

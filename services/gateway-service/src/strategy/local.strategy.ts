@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CoreService } from '../services/core/core.service';
-import { INVALID_CREDENTIALS, USER_LOGIN_OTHER_PLATFORM, USER_NOT_FOUND } from 'shared-const';
+import { INVALID_CREDENTIALS, userLoginOtherPlatform, USER_NOT_FOUND } from 'shared-const';
 import { LoginTypes } from 'shared-types';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       const errMessages = [
         USER_NOT_FOUND.message,
         INVALID_CREDENTIALS.message,
-        ...[LoginTypes.Local, LoginTypes.Google].map(type => USER_LOGIN_OTHER_PLATFORM(type).message)
+        ...[LoginTypes.Local, LoginTypes.Google].map(type => userLoginOtherPlatform(type).message)
       ]
       if (
         errMessages.includes(
