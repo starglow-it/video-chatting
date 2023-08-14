@@ -390,11 +390,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     if (user.isBlocked) {
       throw new DataValidationException(USER_IS_BLOCKED);
     }
-
-    if (user.loginType !== LoginTypes.Local) {
-      throw new DataValidationException(USER_EXISTS);
-    }
-
+    
     const result = await this.authService.loginUser(body);
 
     return {

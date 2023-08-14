@@ -49,3 +49,7 @@ export const initUserWithoutTokenFx = authDomain.createEffect<
     InitUserPayload,
     { user: Profile | null; userTemplateId: string; subdomain?: string }
 >('initUserWithoutToken');
+
+export const deleteDraftUsers = authDomain.createEffect<void, void>(
+    'deleteDraftUsers',
+);
