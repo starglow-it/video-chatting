@@ -31,7 +31,7 @@
       "invalid": "Invalid email or password"
     },
     "register": {
-      "google": "This account is logged in with Google. Please click Login with Google",
+      "google": "This account is register in with Google. Please click Login with Google",
       "local": ""
     }
   },
