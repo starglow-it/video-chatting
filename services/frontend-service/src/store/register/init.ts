@@ -1,5 +1,5 @@
 import { sample } from 'effector';
-import { AppDialogsEnum } from '../types';
+import { AppDialogsEnum, NotificationType } from '../types';
 import { appDialogsApi } from '../dialogs/init';
 import {
     $registerStore,
@@ -16,6 +16,7 @@ import {
 } from '../../controllers/WebStorageController';
 import { handleRegisterWithoutTemplate } from './handlers/handleRegisterWithoutTemplate';
 import { loginUserFx } from '../auth/model';
+import { addNotificationEvent } from '../notifications/model';
 
 registerUserFx.use(handleRegisterUser);
 confirmRegistrationUserFx.use(handleConfirmRegistration);
@@ -44,11 +45,20 @@ registerUserFx.doneData.watch(data => {
 });
 
 sample({
-    clock: [
-        registerWithoutTemplateFx.doneData,
-        registerWithoutTemplateFx.failData,
-    ],
-    filter: ({ error }) => !error || error.message === 'user.exits',
+    clock: registerWithoutTemplateFx.doneData,
+    filter: ({ error }) => !!error,
+    fn: (_, clock: any) => ({
+        message:  clock?.error.message,
+        type: NotificationType.validationError,
+        withErrorIcon: true,
+    }),
+    target: addNotificationEvent,
+});
+
+sample({
+    clock: registerWithoutTemplateFx.doneData,
+    filter: ({ error }) => !error,
     fn: (_, clock) => ({ email: clock.email, password: clock.password }),
     target: loginUserFx,
 });
+

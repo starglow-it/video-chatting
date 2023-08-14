@@ -29,6 +29,10 @@
     },
     "credentials": {
       "invalid": "Invalid email or password"
+    },
+    "register": {
+      "google": "This account is register in with Google. Please click Login with Google",
+      "local": ""
     }
   },
   "media": {

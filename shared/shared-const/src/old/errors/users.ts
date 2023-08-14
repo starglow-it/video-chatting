@@ -1,4 +1,6 @@
-export const USER_NOT_FOUND = { message: 'user.notFound', errorCode: 100 };
+import { LoginTypes } from "shared-types";
+
+export const USER_NOT_FOUND = { message: 'usund', errorCode: 100 };
 export const USER_EXISTS = { message: 'user.exits', errorCode: 101 };
 export const INVALID_CREDENTIALS = {
   message: 'user.credentials.invalid',
@@ -34,3 +36,12 @@ export const USER_NOT_GOOGLE_ACCOUNT = {
   message: 'user.notGoogleAccount',
   errorCode: 110
 }
+
+//#region functionals
+const PlatformErrorCode: { [K in LoginTypes]: number } = {
+  'local': 111,
+  'google': 112
+}
+
+export const userLoginOtherPlatform = (platform: LoginTypes) => ({ message: `user.register.${platform}`, errorCode: PlatformErrorCode[platform] });
+//#endregion

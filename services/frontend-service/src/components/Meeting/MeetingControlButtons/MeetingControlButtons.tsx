@@ -26,7 +26,7 @@ import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
-import { $authStore } from '../../../store';
+import { $authStore, deleteDraftUsers } from '../../../store';
 import {
     $isMeetingHostStore,
     $isToggleUsersPanel,
@@ -77,6 +77,7 @@ const Component = () => {
         sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
+            await deleteDraftUsers();
             window.location.href =
                 config.frontendUrl + clientRoutes.registerEndCallRoute;
             return;
