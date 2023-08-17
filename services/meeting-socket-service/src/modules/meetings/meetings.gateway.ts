@@ -1010,11 +1010,7 @@ export class MeetingsGateway
           id: meeting.templateId,
         });
 
-        const indexUser = usersTemplate.indexUsers.map((item, index) => {
-          if (item) return;
-          return index;
-        }).find(item => item || isNumber(item));
-
+        const indexUser = usersTemplate.indexUsers.indexOf(null);
         if (indexUser === -1) return;
 
         const updatedUser = await this.usersService.findOneAndUpdate(
@@ -1031,19 +1027,13 @@ export class MeetingsGateway
           session,
         );
 
-        let insertIndexUserCount = 0;
-        const updateIndexUsers = usersTemplate.indexUsers.map((item) => {
-          if (item || insertIndexUserCount) return item;
-          item = user.id.toString();
-          insertIndexUserCount++;
-          return item;
-        });
+        usersTemplate.indexUsers[indexUser] = user.id.toString();
 
         await this.coreService.updateUserTemplate({
           templateId: usersTemplate.id,
           userId: user.id.toString(),
           data: {
-            indexUsers: updateIndexUsers,
+            indexUsers: usersTemplate.indexUsers,
           },
         });
 
