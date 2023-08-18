@@ -61,7 +61,6 @@ export class BusinessCategoriesService {
     return this.businessCategory.count(query).exec();
   }
 
-
   async findOneAndUpdate({
     query,
     data,
@@ -84,8 +83,7 @@ export class BusinessCategoriesService {
   }: {
     query: FilterQuery<BusinessCategoryDocument>;
     session?: ITransactionSession;
-  }): Promise<any>{
-
+  }): Promise<any> {
     await this.businessCategory.deleteMany(query, {
       session: session?.session,
     });

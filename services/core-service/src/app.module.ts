@@ -3,7 +3,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // services
-import { ConfigClientService } from './services/config/config.service'
+import { ConfigClientService } from './services/config/config.service';
 
 // modules
 import { UsersModule } from './modules/users/users.module';
@@ -21,11 +21,17 @@ import { AwsConnectorModule } from './services/aws-connector/aws-connector.modul
 import { PaymentsModule } from './services/payments/payments.module';
 import { CountryStatisticsModule } from './modules/country-statistics/country-statistics.module';
 import { RoomsStatisticsModule } from './modules/rooms-statistics/rooms-statistics.module';
-import {TranscodeModule} from "./modules/transcode/transcode.module";
+import { TranscodeModule } from './modules/transcode/transcode.module';
 import { MediasModule } from './modules/medias/medias.module';
-import { MediaCategory, MediaCategorySchema } from './schemas/media-category.schema';
+import {
+  MediaCategory,
+  MediaCategorySchema,
+} from './schemas/media-category.schema';
 import { Media, MediaSchema } from './schemas/media.schema';
-import { PreviewImage, PreviewImageSchema } from './schemas/preview-image.schema';
+import {
+  PreviewImage,
+  PreviewImageSchema,
+} from './schemas/preview-image.schema';
 import { DatabaseModule } from './database/database.module';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
 
@@ -52,8 +58,8 @@ import { MonitoringModule } from './modules/monitoring/monitoring.module';
     DatabaseModule,
     MonitoringModule,
     MongooseModule.forFeature([
-      { name: MediaCategory.name, schema: MediaCategorySchema},
-      { name: Media.name, schema: MediaSchema},
+      { name: MediaCategory.name, schema: MediaCategorySchema },
+      { name: Media.name, schema: MediaSchema },
       { name: PreviewImage.name, schema: PreviewImageSchema },
     ]),
   ],

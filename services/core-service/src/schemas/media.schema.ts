@@ -10,13 +10,13 @@ import { UserTemplate, UserTemplateDocument } from './user-template.schema';
 export class Media {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: MediaCategory.name
+    ref: MediaCategory.name,
   })
   mediaCategory: MediaCategoryDocument;
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: ''
+    default: '',
   })
   name: string;
 
@@ -32,20 +32,18 @@ export class Media {
   previewUrls: PreviewImageDocument[];
 
   @Prop({
-    type: mongoose.Schema.Types.String
+    type: mongoose.Schema.Types.String,
   })
   type: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: UserTemplate.name,
-    default: null
+    default: null,
   })
-  userTemplate: UserTemplateDocument
-
+  userTemplate: UserTemplateDocument;
 }
 
 export type MediaDocument = Media & Document;
 
-export const MediaSchema =
-  SchemaFactory.createForClass(Media);
+export const MediaSchema = SchemaFactory.createForClass(Media);

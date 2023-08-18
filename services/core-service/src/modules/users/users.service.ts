@@ -20,7 +20,10 @@ import {
   GetModelQuery,
   UpdateModelQuery,
 } from '../../types/custom';
-import { ProfileAvatar, ProfileAvatarDocument } from 'src/schemas/profile-avatar.schema';
+import {
+  ProfileAvatar,
+  ProfileAvatarDocument,
+} from 'src/schemas/profile-avatar.schema';
 
 @Injectable()
 export class UsersService {
@@ -193,9 +196,11 @@ export class UsersService {
   }
 
   prepareUserUpdateData(data: Partial<IUpdateProfile>): Partial<ICommonUser> {
-    const isHandleTimeLimit =
-              ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-                .includes(data.subscriptionPlanKey);
+    const isHandleTimeLimit = ![
+      PlanKeys.Business,
+      PlanKeys.House,
+      PlanKeys.Professional,
+    ].includes(data.subscriptionPlanKey);
     return {
       email: data.email,
       fullName: data.fullName,
@@ -213,8 +218,7 @@ export class UsersService {
       prevSubscriptionPlanKey: data.prevSubscriptionPlanKey,
       maxTemplatesNumber: data.maxTemplatesNumber,
       maxMeetingTime:
-        !isHandleTimeLimit &&
-        data.maxMeetingTime === 0
+        !isHandleTimeLimit && data.maxMeetingTime === 0
           ? null
           : data.maxMeetingTime,
       isSubscriptionActive: data.isSubscriptionActive,

@@ -5,41 +5,39 @@ import * as mongoose from 'mongoose';
 @Schema({
   timestamps: {
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  }
+    updatedAt: 'updatedAt',
+  },
 })
 export class Monitoring {
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true
+    required: true,
   })
   event: string;
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true
+    required: true,
   })
   eventId: string;
 
   @Prop({
     type: mongoose.Schema.Types.Number,
-    default: 0
+    default: 0,
   })
   processTime: number;
 
   @Prop({
     type: mongoose.Schema.Types.Mixed,
-    default: '{}'
+    default: '{}',
   })
   metadata: string;
 
   createdAt?: Date;
 
   updatedAt?: Date;
-
 }
 
 export type MonitoringDocument = Monitoring & Document;
 
-export const MonitoringSchema =
-  SchemaFactory.createForClass(Monitoring);
+export const MonitoringSchema = SchemaFactory.createForClass(Monitoring);

@@ -26,10 +26,23 @@ import { PaymentsService } from '../../services/payments/payments.service';
 import { ConfigClientService } from '../../services/config/config.service';
 
 // helpers
-import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
+import {
+  ITransactionSession,
+  withTransaction,
+} from '../../helpers/mongo/withTransaction';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
-import { AddTemplateToUserPayload, CreateTemplatePayload, DeleteCommonTemplatePayload, EditTemplatePayload, GetCommonTemplateByIdPayload, GetCommonTemplatePayload, GetCommonTemplatesPayload, UploadTemplateFilePayload, UserRoles } from 'shared-types';
+import {
+  AddTemplateToUserPayload,
+  CreateTemplatePayload,
+  DeleteCommonTemplatePayload,
+  EditTemplatePayload,
+  GetCommonTemplateByIdPayload,
+  GetCommonTemplatePayload,
+  GetCommonTemplatesPayload,
+  UploadTemplateFilePayload,
+  UserRoles,
+} from 'shared-types';
 import { ICommonTemplate } from 'shared-types';
 import { EntityList } from 'shared-types';
 import { PriceValues } from 'shared-types';
@@ -49,8 +62,8 @@ export class CommonTemplatesController {
     private awsService: AwsConnectorService,
     private configService: ConfigClientService,
     private paymentService: PaymentsService,
-    private mediaService: MediaService
-  ) { }
+    private mediaService: MediaService,
+  ) {}
 
   async onModuleInit() {
     this.vultrUploadBucket = await this.configService.get<string>(
@@ -58,29 +71,29 @@ export class CommonTemplatesController {
     );
   }
 
-
-  private async getMyRoomMediaCategory(session: ITransactionSession): Promise<MediaCategoryDocument> {
+  private async getMyRoomMediaCategory(
+    session: ITransactionSession,
+  ): Promise<MediaCategoryDocument> {
     try {
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myrooms'
+          key: 'myrooms',
         },
-        session
+        session,
       });
 
       if (!mediaCategory) {
         throw new RpcException({
           message: 'Media category not found',
-          ctx: TEMPLATES_SERVICE
+          ctx: TEMPLATES_SERVICE,
         });
       }
 
       return mediaCategory;
-    }
-    catch (err) {
+    } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: TEMPLATES_SERVICE
+        ctx: TEMPLATES_SERVICE,
       });
     }
   }
@@ -88,12 +101,14 @@ export class CommonTemplatesController {
   @MessagePattern({ cmd: TemplateBrokerPatterns.GetCommonTemplates })
   async getCommonTemplates(
     @Payload()
-    { query: {businessCategories, ...q}, options }: GetCommonTemplatesPayload,
+    { query: { businessCategories, ...q }, options }: GetCommonTemplatesPayload,
   ): Promise<EntityList<ICommonTemplate>> {
     const skipQuery = options?.skip || 0;
     const limitQuery = options?.limit || 6;
     try {
-      const sort: PipelineStage = { $sort: { ...(options?.sort ?? {}), _id: -1 } };
+      const sort: PipelineStage = {
+        $sort: { ...(options?.sort ?? {}), _id: -1 },
+      };
 
       const joinDraftPreviewImages: PipelineStage = {
         $lookup: {
@@ -102,7 +117,7 @@ export class CommonTemplatesController {
           foreignField: '_id',
           as: 'draftPreviewUrls',
         },
-      }
+      };
 
       const joinUserTemplate = {
         $lookup: {
@@ -111,24 +126,24 @@ export class CommonTemplatesController {
           foreignField: 'templateId',
           pipeline: [{ $match: { user: new ObjectId(options.userId) } }],
           as: 'userTemplate',
-        }
-      }
+        },
+      };
       return withTransaction(this.connection, async () => {
         const matchQuery = {
           ...q,
           ...(businessCategories && {
             businessCategories: {
               $elemMatch: {
-                $in: businessCategories?.map(item => new ObjectId(item))
-              }
-            }
+                $in: businessCategories?.map((item) => new ObjectId(item)),
+              },
+            },
           }),
         };
 
         const aggregationPipeline: PipelineStage[] = [
           sort,
           {
-            $match: matchQuery
+            $match: matchQuery,
           },
           ...this.commonTemplatesService.joinCommonTemplatePropertiesQueries(),
           joinDraftPreviewImages,
@@ -136,25 +151,25 @@ export class CommonTemplatesController {
           {
             $set: {
               author: {
-                $first: "$author"
+                $first: '$author',
               },
               authorThumbnail: {
-                $first: "$author.profileAvatar.url"
+                $first: '$author.profileAvatar.url',
               },
               authorRole: {
-                $first: "$author.role"
+                $first: '$author.role',
               },
               authorName: {
-                $first: '$author.fullName'
-              }
-            }
+                $first: '$author.fullName',
+              },
+            },
           },
           {
-            $skip: skipQuery * limitQuery
+            $skip: skipQuery * limitQuery,
           },
           {
-            $limit: limitQuery
-          }
+            $limit: limitQuery,
+          },
         ];
 
         const commonTemplates = await this.commonTemplatesService.aggregate(
@@ -162,7 +177,7 @@ export class CommonTemplatesController {
         );
 
         const total = await this.commonTemplatesService.countCommonTemplates({
-          query: matchQuery
+          query: matchQuery,
         });
 
         const parsedTemplates = plainToInstance(
@@ -292,11 +307,12 @@ export class CommonTemplatesController {
           links: targetTemplate.links,
           signBoard: targetUser.signBoard,
           author: targetTemplate.author,
-          isAcceptNoLogin: targetUser.role === UserRoles.Anonymous
-            ? true
-            : targetTemplate.isAcceptNoLogin,
+          isAcceptNoLogin:
+            targetUser.role === UserRoles.Anonymous
+              ? true
+              : targetTemplate.isAcceptNoLogin,
           roomType: targetTemplate.roomType,
-          subdomain: targetTemplate.subdomain
+          subdomain: targetTemplate.subdomain,
         };
 
         const [userTemplate] =
@@ -355,9 +371,9 @@ export class CommonTemplatesController {
             url: userTemplate.url,
             previewUrls: userTemplate.previewUrls,
             mediaCategory,
-            type: userTemplate.templateType
+            type: userTemplate.templateType,
           },
-          session
+          session,
         });
 
         return plainToInstance(UserTemplateDTO, userTemplate, {
@@ -421,8 +437,8 @@ export class CommonTemplatesController {
             data: {
               author: userId,
               ...(roomType && {
-                roomType
-              })
+                roomType,
+              }),
             },
             session,
           },
@@ -476,7 +492,7 @@ export class CommonTemplatesController {
                   key: category.key,
                   value: category.value,
                   color: category.color,
-                  icon: category.icon
+                  icon: category.icon,
                 },
                 session,
               });
@@ -606,12 +622,16 @@ export class CommonTemplatesController {
 
         const query = { templateId: template.templateId };
 
-        const userTemplates = await this.userTemplatesService.findUserTemplates({
-          query,
-          session
-        });
+        const userTemplates = await this.userTemplatesService.findUserTemplates(
+          {
+            query,
+            session,
+          },
+        );
 
-        await this.mediaService.deleteMedias({ query: { userTemplate: { $in: userTemplates } } });
+        await this.mediaService.deleteMedias({
+          query: { userTemplate: { $in: userTemplates } },
+        });
 
         await this.roomStatisticService.delete({
           query: {
@@ -638,13 +658,12 @@ export class CommonTemplatesController {
           });
         }
 
-        const countTemplateUseCommon = await this.userTemplatesService
-          .countUserTemplates({
+        const countTemplateUseCommon =
+          await this.userTemplatesService.countUserTemplates({
             url: {
-              $regex: `templates/videos/${template.id}`
-            }
+              $regex: `templates/videos/${template.id}`,
+            },
           });
-
 
         if (countTemplateUseCommon) return;
 

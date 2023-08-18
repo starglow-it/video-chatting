@@ -10,7 +10,7 @@ import {
   TEMPLATES_SERVICE,
   FILES_SCOPE,
   MEDIA_CATEGORIES,
-  USERS_SERVICE
+  USERS_SERVICE,
 } from 'shared-const';
 import { Counters, MediaCategoryType, PlanKeys, UserRoles } from 'shared-types';
 
@@ -32,8 +32,8 @@ import {
   PreviewImage,
   PreviewImageDocument,
 } from '../schemas/preview-image.schema';
-import { TranscodeService } from "../modules/transcode/transcode.service";
-import { executePromiseQueue } from "shared-utils";
+import { TranscodeService } from '../modules/transcode/transcode.service';
+import { executePromiseQueue } from 'shared-utils';
 import { readdir, readFileSync } from 'fs';
 import { join } from 'path';
 import { plainToInstance } from 'class-transformer';
@@ -68,24 +68,27 @@ export class SeederService {
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
     @InjectS3() private readonly s3: S3,
-  ) { }
+  ) {}
 
-  async readFileAndUpload({ filePath, key }: { filePath: string, key: string }) {
+  async readFileAndUpload({
+    filePath,
+    key,
+  }: {
+    filePath: string;
+    key: string;
+  }) {
     const buf = readFileSync(join(process.cwd(), filePath));
 
     const uploadKey = key;
     await this.awsService.deleteResource(uploadKey);
-    const url = await this.awsService.uploadFile(
-      buf,
-      uploadKey
-    );
+    const url = await this.awsService.uploadFile(buf, uploadKey);
     return url;
   }
 
   async generatePreviewUrls({ url, id, mimeType }) {
     const mimeTypeList = ['image', 'video', 'audio'];
 
-    const mediaType = mimeTypeList.find(type => mimeType.includes(type));
+    const mediaType = mimeTypeList.find((type) => mimeType.includes(type));
     let previewImages = [];
 
     if (mediaType !== 'audio') {
@@ -98,7 +101,7 @@ export class SeederService {
 
     return {
       previewImages,
-      mediaType
+      mediaType,
     };
   }
 
@@ -109,111 +112,107 @@ export class SeederService {
           query: { key: mediaCategory.key },
         });
 
-
         if (!existCategory) {
-          await this.mediaService.createCategory(
-            {
-              data: {
-                ...mediaCategory,
-                type: mediaCategory.type as MediaCategoryType
-              },
-            }
-          );
+          await this.mediaService.createCategory({
+            data: {
+              ...mediaCategory,
+              type: mediaCategory.type as MediaCategoryType,
+            },
+          });
         }
       });
 
       await Promise.all(promise);
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
       return;
     }
   }
 
-  async seedIndexsDataByUserTemplates(){
+  async seedIndexsDataByUserTemplates() {
     await this.userTemplatesService.updateUserTemplates({
       query: {
-        indexUsers: []
+        indexUsers: [],
       },
-      data: [{
-        $set: {
-          indexUsers: {
-            "$map": {
-              input: {
-                $range: [0, "$maxParticipants"]
+      data: [
+        {
+          $set: {
+            indexUsers: {
+              $map: {
+                input: {
+                  $range: [0, '$maxParticipants'],
+                },
+                in: null,
               },
-              in: null
-            }
+            },
+            usersSize: {
+              $map: {
+                input: {
+                  $range: [0, '$maxParticipants'],
+                },
+                in: 0,
+              },
+            },
           },
-          usersSize: {
-            "$map": {
-              input: {
-                $range: [0, "$maxParticipants"]
-              },
-              in: 0
-            }
-          }
-        }
-      }]
+        },
+      ],
     });
   }
 
   async seedMyRoomMediasByUserTemplateAmount() {
-    return withTransaction(this.connection, async session => {
-
+    return withTransaction(this.connection, async (session) => {
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myrooms'
+          key: 'myrooms',
         },
-        session
+        session,
       });
 
       if (!mediaCategory) {
         throw new RpcException({
           message: 'My room category not found',
-          ctx: TEMPLATES_SERVICE
+          ctx: TEMPLATES_SERVICE,
         });
       }
 
       const userTemplates = await this.userTemplatesService.aggregate([
         {
           $lookup: {
-            from: "media",
-            localField: "_id",
-            foreignField: "userTemplate",
-            as: "medias"
-          }
+            from: 'media',
+            localField: '_id',
+            foreignField: 'userTemplate',
+            as: 'medias',
+          },
         },
         {
           $lookup: {
-            from: "mediacategories",
-            localField: "medias.mediaCategory",
-            foreignField: "_id",
-            as: "mediaCategories"
-          }
+            from: 'mediacategories',
+            localField: 'medias.mediaCategory',
+            foreignField: '_id',
+            as: 'mediaCategories',
+          },
         },
         {
           $match: {
-            "mediaCategories.key": {
-              $ne: "myrooms"
-            }
+            'mediaCategories.key': {
+              $ne: 'myrooms',
+            },
           },
-        }
+        },
       ]);
 
-      const data = userTemplates.map(userTemplate => ({
+      const data = userTemplates.map((userTemplate) => ({
         mediaCategory,
         url: userTemplate.url,
         type: userTemplate.templateType,
         userTemplate,
-        previewUrls: userTemplate.previewUrls
+        previewUrls: userTemplate.previewUrls,
       })) as Partial<MediaDocument>[];
 
       await this.mediaService.createMedias({
         data,
-        session
-      })
-
+        session,
+      });
     });
   }
 
@@ -255,18 +254,17 @@ export class SeederService {
       await this.usersService.updateUsers({
         query: {
           subscriptionPlanKey: {
-            $in: plans
+            $in: plans,
           },
           maxMeetingTime: {
-            $ne: null
-          }
+            $ne: null,
+          },
         },
         data: {
-          maxMeetingTime: null
-        }
+          maxMeetingTime: null,
+        },
       });
-    }
-    catch (err) {
+    } catch (err) {
       throw new RpcException({
         message: err.message,
         ctx: USERS_SERVICE,
@@ -328,19 +326,21 @@ export class SeederService {
     }
   }
 
-
-  async updateGlobalTemplateFile(data: { url: string; id: string; mimeType: string }) {
+  async updateGlobalTemplateFile(data: {
+    url: string;
+    id: string;
+    mimeType: string;
+  }) {
     try {
       return withTransaction(this.connection, async () => {
         const { url, id, mimeType } = data;
 
-
-        const previewImages = await this.commonTemplatesService.generatePreviews({
-          url,
-          id,
-          mimeType,
-        });
-
+        const previewImages =
+          await this.commonTemplatesService.generatePreviews({
+            url,
+            id,
+            mimeType,
+          });
 
         await this.commonTemplatesService.updateCommonTemplate({
           query: {
@@ -369,58 +369,56 @@ export class SeederService {
       query: { email: adminEmail },
     });
 
-    const globalCommonTemplate = await this.commonTemplatesService.findCommonTemplate({
-      query: {
-        isAcceptNoLogin: true
-      }
-    });
+    const globalCommonTemplate =
+      await this.commonTemplatesService.findCommonTemplate({
+        query: {
+          isAcceptNoLogin: true,
+        },
+      });
     if (globalCommonTemplate) {
       return;
-    };
+    }
 
-
-    const newCommonTemplate = plainToInstance(CommonTemplateDTO, await this.commonTemplatesService.createCommonTemplate({
-      data: {
-        author: admin._id,
-        draft: false,
-        isPublic: true,
-        maxParticipants: 4,
-        description: 'Global Room',
-        name: 'Global Theliveoffice',
-        isAcceptNoLogin: true,
-        usersPosition: [{
-          bottom:
-            0.57,
-          left:
-            0.44
+    const newCommonTemplate = plainToInstance(
+      CommonTemplateDTO,
+      await this.commonTemplatesService.createCommonTemplate({
+        data: {
+          author: admin._id,
+          draft: false,
+          isPublic: true,
+          maxParticipants: 4,
+          description: 'Global Room',
+          name: 'Global Theliveoffice',
+          isAcceptNoLogin: true,
+          usersPosition: [
+            {
+              bottom: 0.57,
+              left: 0.44,
+            },
+            {
+              bottom: 0.05,
+              left: 0.44,
+            },
+            {
+              bottom: 0.33,
+              left: 0.08,
+            },
+            {
+              bottom: 0.3,
+              left: 0.82,
+            },
+          ],
         },
-        {
-          bottom:
-            0.05,
-          left:
-            0.44
-        },
-        {
-          bottom:
-            0.33,
-          left:
-            0.08
-        },
-        {
-          bottom:
-            0.3,
-          left:
-            0.82
-        }]
-      }
-    }), {
-      excludeExtraneousValues: true,
-      enableImplicitConversion: true,
-    });
+      }),
+      {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      },
+    );
 
     const url = await this.readFileAndUpload({
       filePath: './src/public/global_template.mp4',
-      key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.mp4`
+      key: `templates/${newCommonTemplate.id}/videos/${uuidv4()}.mp4`,
     });
 
     const mimeType = mime.getType(url);
