@@ -13,7 +13,6 @@ import { TemplatePreviewDialog } from '@components/Dialogs/TemplatePreviewDialog
 import { DeleteTemplateDialog } from '@components/Dialogs/DeleteTemplateDialog/DeleteTemplateDialog';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
-import { TimeExpiredDialog } from '@components/Dialogs/TimeExpiredDialog/TimeExpiredDialog';
 
 import {
     EntityList,
@@ -200,7 +199,6 @@ const Component = () => {
             <DeleteTemplateDialog />
             <ScheduleMeetingDialog />
             <DownloadIcsEventDialog />
-            <TimeExpiredDialog />
         </MainProfileWrapper>
     );
 };
