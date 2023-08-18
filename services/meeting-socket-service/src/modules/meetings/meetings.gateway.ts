@@ -711,20 +711,19 @@ export class MeetingsGateway
 
         const isHandleTimeLimit = this.checkHandleTimeLimitByUser(mainUser);
 
-        this.taskService.addTimeout({
-          name: `meeting:finish:${message.meetingId}`,
-          ts:
-            mainUser.maxMeetingTime < finishTime &&
-              isHandleTimeLimit
-              ? mainUser.maxMeetingTime
-              : finishTime,
-          callback: this.endMeeting.bind(this, {
-            meetingId: meeting._id,
-            reason: 'expired',
-          }),
-        });
-
         if (isHandleTimeLimit) {
+          this.taskService.addTimeout({
+            name: `meeting:finish:${message.meetingId}`,
+            ts:
+              mainUser.maxMeetingTime < finishTime
+                ? mainUser.maxMeetingTime
+                : finishTime,
+            callback: this.endMeeting.bind(this, {
+              meetingId: meeting._id,
+              reason: 'expired',
+            }),
+          });
+
           const timeLimitNotificationTimeout = getTimeoutTimestamp({
             value: 20,
             type: TimeoutTypesEnum.Minutes,
