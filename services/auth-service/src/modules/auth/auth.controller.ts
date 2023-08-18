@@ -35,7 +35,7 @@ export class AuthController {
     private coreService: CoreService,
     private notificationService: NotificationsService,
     private configService: ConfigClientService,
-  ) { }
+  ) {}
 
   async onModuleInit() {
     this.frontendUrl = await this.configService.get<string>('frontendUrl');
@@ -90,8 +90,7 @@ export class AuthController {
           },
           to: [{ email: payload.email, name: payload.email }],
         });
-      }
-      else {
+      } else {
         user = await this.coreService.createUser({
           user: payload,
         });
@@ -139,18 +138,17 @@ export class AuthController {
       await this.coreService.findUserByEmailAndUpdate({
         data: {
           fullName: payload.name,
-          isConfirmed: true
+          isConfirmed: true,
         },
         email: user.email,
       });
 
       return user;
-    }
-    catch (err) {
+    } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: AUTH_SERVICE
-      })
+        ctx: AUTH_SERVICE,
+      });
     }
   }
 
@@ -231,14 +229,14 @@ export class AuthController {
         email: payload.email,
       });
 
-      if(!user) return;
+      if (!user) return;
 
       const token = await this.authService.generateToken({
         user,
         type: TokenTypes.ResetPassword,
       });
 
-      if(!token) return;
+      if (!token) return;
 
       await this.coreService.setResetPasswordToken({
         email: payload.email,
@@ -259,7 +257,7 @@ export class AuthController {
       });
       return true;
     } catch (err) {
-      console.log('err',err);
+      console.log('err', err);
       throw new RpcException(err);
     }
   }

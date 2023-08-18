@@ -1,7 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 
-import { CORE_PROVIDER, USER_NOT_FOUND, AUTH_SERVICE, CoreBrokerPatterns } from 'shared-const';
+import {
+  CORE_PROVIDER,
+  USER_NOT_FOUND,
+  AUTH_SERVICE,
+  CoreBrokerPatterns,
+} from 'shared-const';
 
 import { AuthBrokerPatterns, UserBrokerPatterns } from 'shared-const';
 
@@ -84,7 +89,7 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async createMonitoring(payload: CreateMonitoringPayload){
+  async createMonitoring(payload: CreateMonitoringPayload) {
     const pattern = { cmd: CoreBrokerPatterns.CreateMonitoring };
     return this.client.send(pattern, payload).toPromise();
   }
