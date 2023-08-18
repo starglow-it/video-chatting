@@ -13,7 +13,7 @@ export class UploadService {
   constructor(
     private configService: ConfigClientService,
     @InjectS3() private readonly s3: S3,
-  ) { }
+  ) {}
 
   async onModuleInit() {
     this.vultrUploadBucket = await this.configService.get<string>(
@@ -45,17 +45,17 @@ export class UploadService {
       return `https://${response.Location}`;
     }
 
-    console.log("uploadFile response.Location", response.Location);
+    console.log('uploadFile response.Location', response.Location);
 
     return response.Location;
   }
 
   async handleUploadCommonFile({
     file,
-    folderKey
+    folderKey,
   }: {
-    file: Express.Multer.File,
-    folderKey: string
+    file: Express.Multer.File;
+    folderKey: string;
   }) {
     const { extension } = getFileNameAndExtension(file.originalname);
     const uploadKey = `${folderKey}/${uuidv4()}.${extension}`;
@@ -80,7 +80,7 @@ export class UploadService {
         .deleteObjects({
           Bucket: this.vultrUploadBucket,
           Delete: {
-            Objects: objects.Contents?.map(({Key}) => ({Key})) ?? [],
+            Objects: objects.Contents?.map(({ Key }) => ({ Key })) ?? [],
           },
         })
         .promise();

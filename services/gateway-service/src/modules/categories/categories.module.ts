@@ -25,4 +25,4 @@ import { JWT_ACCESS_EXPIRE } from 'shared-const';
   controllers: [CategoriesController],
   exports: [CategoriesService],
 })
-export class CategoriesModule { }
+export class CategoriesModule {}

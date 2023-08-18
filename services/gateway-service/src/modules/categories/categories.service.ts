@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CoreService } from '../../services/core/core.service';
 import { CoreBrokerPatterns } from 'shared-const';
-import { CreateBusinessCategoryPayload, DeletesBusinessCategoriesPayload, UpdateBusinessCategoryPayload } from 'shared-types';
+import {
+  CreateBusinessCategoryPayload,
+  DeletesBusinessCategoriesPayload,
+  UpdateBusinessCategoryPayload,
+} from 'shared-types';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private coreService: CoreService) { }
+  constructor(private coreService: CoreService) {}
 
   async getBusinessCategories(payload) {
     const pattern = { cmd: CoreBrokerPatterns.GetBusinessCategories };

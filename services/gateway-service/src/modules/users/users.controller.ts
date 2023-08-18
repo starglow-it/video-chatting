@@ -79,7 +79,7 @@ export class UsersController {
     private paymentsService: PaymentsService,
     private socketService: SocketService,
     private meetingService: MeetingsService,
-  ) { }
+  ) {}
 
   async onModuleInit() {
     this.frontendUrl = await this.configService.get<string>('frontendUrl');
@@ -566,8 +566,9 @@ export class UsersController {
       const endAt = parseDateObject(data.endAt);
 
       const tzOffset = getTzOffset(startAt, data.timeZone);
-      const meetingUrl = `${this.frontendUrl}/room/${template.customLink || template.id
-        }`
+      const meetingUrl = `${this.frontendUrl}/room/${
+        template.customLink || template.id
+      }`;
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
@@ -609,7 +610,7 @@ export class UsersController {
         },
         to: data.userEmails.map((email) => ({ email, name: email })),
         icsEventLink: icsLink,
-        icalEventContent: content
+        icalEventContent: content,
       });
 
       this.notificationService.sendEmail({
@@ -626,7 +627,7 @@ export class UsersController {
         },
         to: [{ email: senderUser.email, name: senderUser.email }],
         icsEventLink: icsLink,
-        icalEventContent: content
+        icalEventContent: content,
       });
 
       await this.meetingService.assignMeetingInstance({

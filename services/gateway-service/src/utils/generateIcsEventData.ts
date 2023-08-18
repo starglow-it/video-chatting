@@ -23,15 +23,15 @@ export const generateIcsEventData = async ({
   endAt,
   comment,
   attendees,
-  url
+  url,
 }: {
-  organizerName: string,
-  organizerEmail: string,
-  startAt: number,
-  endAt: number,
-  comment: string,
-  attendees: Attendee[],
-  url?: string
+  organizerName: string;
+  organizerEmail: string;
+  startAt: number;
+  endAt: number;
+  comment: string;
+  attendees: Attendee[];
+  url?: string;
 }): Promise<string> => {
   const duration = endAt - startAt;
 

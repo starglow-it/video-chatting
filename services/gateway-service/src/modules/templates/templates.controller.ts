@@ -22,7 +22,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { EntityList, ResponseSumType, ICommonTemplate, RoomType } from 'shared-types';
+import {
+  EntityList,
+  ResponseSumType,
+  ICommonTemplate,
+  RoomType,
+} from 'shared-types';
 import { TemplatesService } from './templates.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '../upload/upload.service';
@@ -41,7 +46,7 @@ export class TemplatesController {
     private templatesService: TemplatesService,
     private uploadService: UploadService,
     private coreService: CoreService,
-  ) { }
+  ) {}
 
   @Get('/')
   @ApiOperation({ summary: 'Get Templates' })
@@ -68,7 +73,8 @@ export class TemplatesController {
         type,
         sort,
         isHaveSubdomain,
-        direction } = query;
+        direction,
+      } = query;
 
       const templatesData = await this.templatesService.getCommonTemplates({
         query: {
@@ -78,8 +84,8 @@ export class TemplatesController {
           ...(type ? { type } : {}),
           roomType,
           businessCategories,
-          subdomain: isHaveSubdomain ? {$ne: ''} : '',
-          isAcceptNoLogin: false
+          subdomain: isHaveSubdomain ? { $ne: '' } : '',
+          isAcceptNoLogin: false,
         },
         options: {
           ...(sort ? { sort: { [sort]: direction } } : {}),
@@ -120,7 +126,7 @@ export class TemplatesController {
     try {
       const templateData = await this.templatesService.createTemplate({
         userId: req.user.userId,
-        roomType: RoomType.Featured
+        roomType: RoomType.Featured,
       });
 
       return {
@@ -214,7 +220,7 @@ export class TemplatesController {
           mimeType: file.mimetype,
         });
       }
-      
+
       if (Object.keys(templateData).length >= 1) {
         await this.templatesService.updateTemplate({
           templateId,

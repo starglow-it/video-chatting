@@ -9,7 +9,7 @@ export class GetMonitoringParam {
   @IsString()
   @ApiProperty({
     enum: MonitoringEvent,
-    default: MonitoringEvent.SendEmail
+    default: MonitoringEvent.SendEmail,
   })
   readonly event: MonitoringEvent;
 }

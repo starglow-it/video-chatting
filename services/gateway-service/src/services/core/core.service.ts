@@ -185,12 +185,12 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async createUserWithoutLogin(uuid: string): Promise<ICommonUser>{
-    const pattern = { cmd: UserBrokerPatterns.CreateUserWithoutLogin }; 
-    return await this.client.send(pattern, {uuid}).toPromise();
+  async createUserWithoutLogin(uuid: string): Promise<ICommonUser> {
+    const pattern = { cmd: UserBrokerPatterns.CreateUserWithoutLogin };
+    return await this.client.send(pattern, { uuid }).toPromise();
   }
 
-  async deleteGlobalUser(payload: DeleteCommonUserPayload){
+  async deleteGlobalUser(payload: DeleteCommonUserPayload) {
     const pattern = { cmd: UserBrokerPatterns.DeleteGlobalUser };
     return firstValueFrom(this.client.send(pattern, payload));
   }
@@ -269,7 +269,9 @@ export class CoreService {
     return this.client.send(pattern, payload).toPromise();
   }
 
-  async findCommonTemplateByTemplate(payload: FilterQuery<ICommonTemplate & {_id: string}>): Promise<ICommonTemplate> {
+  async findCommonTemplateByTemplate(
+    payload: FilterQuery<ICommonTemplate & { _id: string }>,
+  ): Promise<ICommonTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.GetCommonTemplate };
 
     return firstValueFrom(this.client.send(pattern, payload));

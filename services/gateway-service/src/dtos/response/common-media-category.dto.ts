@@ -5,33 +5,32 @@ import { IMediaCategory, MediaCategoryType } from 'shared-types';
 export class MediaCategoryRestDTO implements IMediaCategory {
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   id: string;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   key: IMediaCategory['key'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   value: IMediaCategory['value'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   emojiUrl: IMediaCategory['emojiUrl'];
 
   @Expose()
   @ApiProperty({
     type: String,
-    enum: MediaCategoryType
+    enum: MediaCategoryType,
   })
   type: IMediaCategory['type'];
-  
 }

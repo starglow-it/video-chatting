@@ -45,7 +45,7 @@ export class ProfileTemplatesController {
     private userTemplatesService: UserTemplatesService,
     private uploadService: UploadService,
     private coreService: CoreService,
-  ) { }
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
@@ -159,18 +159,23 @@ export class ProfileTemplatesController {
           });
         }
 
-        const { paywallCurrency, paywallPrice, templateCurrency, templatePrice } = updateTemplateData;
+        const {
+          paywallCurrency,
+          paywallPrice,
+          templateCurrency,
+          templatePrice,
+        } = updateTemplateData;
         if (templatePrice) {
           await checkValidCurrency({
             amount: templatePrice,
-            currency: templateCurrency
+            currency: templateCurrency,
           });
         }
 
         if (paywallPrice) {
           await checkValidCurrency({
             amount: paywallPrice,
-            currency: paywallCurrency
+            currency: paywallCurrency,
           });
         }
 
