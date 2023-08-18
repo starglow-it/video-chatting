@@ -37,6 +37,7 @@ import {
     WebStorage,
 } from 'src/controllers/WebStorageController';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -163,6 +164,7 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
+    console.log('#Duy Phan console', 'portrait')
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>
@@ -223,6 +225,7 @@ const Component = () => {
             <MeetingSounds />
             {isOwner && <CopyMeetingLinkDialog />}
             <ScheduleMeetingDialog />
+            <MobilePortraitStub />
         </CustomGrid>
     );
 };

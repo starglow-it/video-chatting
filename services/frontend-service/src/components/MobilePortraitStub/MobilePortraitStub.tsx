@@ -1,7 +1,5 @@
-import Backdrop from '@mui/material/Backdrop/Backdrop';
 import { useStore } from 'effector-react';
-import { memo } from 'react';
-import { Portal } from '@mui/base';
+import { memo, useState } from 'react';
 
 // custom
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
@@ -13,6 +11,9 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { PortraitIcon } from 'shared-frontend/icons/OtherIcons/PortraitIcon';
 
 // stores
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
+import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { $isPortraitLayout } from '../../store';
 
 // styles
@@ -21,36 +22,50 @@ import styles from './MobilePortraitStub.module.scss';
 const Component = () => {
     const isPortraitLayout = useStore($isPortraitLayout);
 
+    const [isShow, setIsShow] = useState(true);
+
     return (
         <ConditionalRender condition={isPortraitLayout}>
-            <Portal>
-                <Backdrop
-                    sx={{
-                        zIndex: 10001,
-                    }}
-                    open
+            <CustomDialog contentClassName={styles.content} open={isShow}>
+                <CustomPaper
+                    variant="black-glass"
+                    className={styles.stubWrapper}
                 >
-                    <CustomPaper
-                        variant="black-glass"
-                        className={styles.stubWrapper}
+                    <CustomGrid
+                        container
+                        direction="column"
+                        alignItems="center"
+                        gap={1.5}
                     >
                         <CustomGrid
-                            container
-                            direction="column"
-                            alignItems="center"
-                            gap={1.5}
+                            height="30px"
+                            display="flex"
+                            justifyContent="flex-end"
+                            width="100%"
                         >
-                            <PortraitIcon width="33px" height="32px" />
-                            <CustomTypography
-                                textAlign="center"
-                                color="colors.white.primary"
-                                nameSpace="meeting"
-                                translation="portraitLayout.text"
+                            <RoundCloseIcon
+                                isActive
+                                width="22px"
+                                height="22px"
+                                onClick={() => setIsShow(false)}
                             />
                         </CustomGrid>
-                    </CustomPaper>
-                </Backdrop>
-            </Portal>
+                        <PortraitIcon width="33px" height="32px" />
+                        <CustomTypography
+                            textAlign="center"
+                            color="colors.white.primary"
+                            nameSpace="meeting"
+                            translation="portraitLayout.text"
+                        />
+                        <CustomImage
+                            width={28}
+                            height={28}
+                            src="/images/winking-face.webp"
+                            alt="winking-face"
+                        />
+                    </CustomGrid>
+                </CustomPaper>
+            </CustomDialog>
         </ConditionalRender>
     );
 };
