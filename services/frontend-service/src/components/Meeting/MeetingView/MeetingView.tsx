@@ -42,7 +42,6 @@ import styles from './MeetingView.module.scss';
 
 // stores
 import {
-    $windowSizeStore,
     addNotificationEvent,
     checkIsPortraitLayoutEvent,
 } from '../../../store';
@@ -81,7 +80,6 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const serverType = useStore($serverTypeStore);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
-    const { height } = useStore($windowSizeStore);
     const { isMobile } = useBrowserDetect();
 
     const hostUser = useStoreMap({
@@ -167,19 +165,8 @@ const Component = () => {
         image => image.resolution === 1080,
     );
 
-    const heightFull = useMemo(() => {
-        return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
-    }, [height, isMobile]);
-
     return (
-        <CustomGrid
-            className={
-                isMobile
-                    ? styles.mobileMainMeetingWrapper
-                    : styles.mainMeetingWrapper
-            }
-            style={heightFull}
-        >
+        <CustomGrid className={styles.mainMeetingWrapper}>
             <MeetingBackgroundVideo
                 templateType={meetingTemplate.templateType}
                 src={meetingTemplate.url}
