@@ -95,7 +95,7 @@ export class UsersController {
     private countryStatisticsService: CountryStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
     @InjectConnection() private connection: Connection,
-  ) { }
+  ) {}
 
   startCheckSubscriptions() {
     this.tasksService.addInterval({
@@ -145,16 +145,16 @@ export class UsersController {
     await Promise.all(usersPromises);
   }
 
-  private async handleDeleteProfileAvatar({ profileAvatar, loginType, session }:
-    {
-      profileAvatar: ProfileAvatarDocument,
-      loginType: LoginTypes,
-      session: ITransactionSession
-    }) {
-    await this.usersService.deleteProfileAvatar(
-      profileAvatar._id,
-      session,
-    );
+  private async handleDeleteProfileAvatar({
+    profileAvatar,
+    loginType,
+    session,
+  }: {
+    profileAvatar: ProfileAvatarDocument;
+    loginType: LoginTypes;
+    session: ITransactionSession;
+  }) {
+    await this.usersService.deleteProfileAvatar(profileAvatar._id, session);
     if (loginType === LoginTypes.Local) {
       await this.awsService.deleteResource(profileAvatar.key);
     }
@@ -195,8 +195,7 @@ export class UsersController {
           if (!createUserPayload.token) {
             newUser.registerTemplate = null;
             newUser.isConfirmed = true;
-          }
-          else {
+          } else {
             const token = await this.userTokenService.createToken(
               {
                 user: newUser._id,
@@ -205,7 +204,7 @@ export class UsersController {
               session,
             );
             newUser.tokens.push(token);
-            newUser.registerTemplate = createUserPayload.user.templateId
+            newUser.registerTemplate = createUserPayload.user.templateId;
           }
 
           await newUser.save();
@@ -416,12 +415,12 @@ export class UsersController {
         ...query,
         ...(options?.search
           ? {
-            $or: [
-              { companyName: queryRegex },
-              { fullName: queryRegex },
-              { email: queryRegex },
-            ],
-          }
+              $or: [
+                { companyName: queryRegex },
+                { fullName: queryRegex },
+                { email: queryRegex },
+              ],
+            }
           : {}),
       };
 
@@ -492,8 +491,11 @@ export class UsersController {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
 
-      if(user.loginType !== LoginTypes.Local){
-        throw new RpcException({...userLoginOtherPlatform(user.loginType), ctx: USERS_SERVICE})
+      if (user.loginType !== LoginTypes.Local) {
+        throw new RpcException({
+          ...userLoginOtherPlatform(user.loginType),
+          ctx: USERS_SERVICE,
+        });
       }
 
       const isPasswordValid = await this.usersService.verifyPassword(
@@ -607,21 +609,23 @@ export class UsersController {
     }
   }
 
-
   @MessagePattern({ cmd: UserBrokerPatterns.CreateUserWithoutLogin })
   async createUserWithoutlogin({ uuid }) {
-    return withTransaction(this.connection, async session => {
-      const user = await this.usersService.createUser({
-        email: uuid,
-        password: 'text',
-        role: UserRoles.Anonymous,
-        isConfirmed: true,
-        fullName: 'Your logo',
-        companyName: 'Your company',
-        position: '',
-        contactEmail: '',
-        maxMeetingTime: 10
-      }, session);
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.usersService.createUser(
+        {
+          email: uuid,
+          password: 'text',
+          role: UserRoles.Anonymous,
+          isConfirmed: true,
+          fullName: 'Your logo',
+          companyName: 'Your company',
+          position: '',
+          contactEmail: '',
+          maxMeetingTime: 10,
+        },
+        session,
+      );
       return plainToInstance(CommonUserDTO, user, {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
@@ -635,8 +639,7 @@ export class UsersController {
       try {
         await this.usersService.deleteUser(id, s);
         return true;
-      }
-      catch (err) {
+      } catch (err) {
         throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
       }
     });
@@ -651,7 +654,6 @@ export class UsersController {
     if (!user) {
       throw new RpcException({ ...USER_NOT_FOUND, ctx: USERS_SERVICE });
     }
-
 
     return plainToInstance(CommonUserDTO, user, {
       excludeExtraneousValues: true,
@@ -812,7 +814,7 @@ export class UsersController {
         await this.handleDeleteProfileAvatar({
           profileAvatar: user.profileAvatar,
           loginType: user.loginType,
-          session
+          session,
         });
       }
 
@@ -845,7 +847,7 @@ export class UsersController {
         await this.handleDeleteProfileAvatar({
           profileAvatar: user.profileAvatar,
           loginType: user.loginType,
-          session
+          session,
         });
       }
 
@@ -900,12 +902,10 @@ export class UsersController {
 
         await user.save();
         return;
-      }
-      catch (err) {
+      } catch (err) {
         console.log('err', err);
         throw new RpcException(err);
       }
-
     });
   }
 

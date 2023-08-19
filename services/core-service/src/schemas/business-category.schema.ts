@@ -24,7 +24,7 @@ export class BusinessCategory {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: '1f527'
+    default: '1f527',
   })
   icon: string;
 }

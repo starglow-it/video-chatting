@@ -70,10 +70,7 @@ import { UserTemplatesModule } from '../user-templates/user-templates.module';
     }),
   ],
   controllers: [AuthController, AdminAuthController],
-  providers: [
-    AuthService,
-    LocalStrategy
-  ],
+  providers: [AuthService, LocalStrategy],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -143,7 +143,7 @@ export class CommonTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
-    default: false
+    default: false,
   })
   isAcceptNoLogin: boolean;
 
@@ -157,7 +157,7 @@ export class CommonTemplate {
     type: mongoose.Schema.Types.String,
     default: '',
     required: false,
-    unique: true
+    unique: true,
   })
   subdomain: string;
 }

@@ -32,7 +32,7 @@ import { MonitoringModule } from './modules/monitoring/monitoring.module';
     CategoriesModule,
     MediasModule,
     StatisticsModule,
-    MonitoringModule
+    MonitoringModule,
   ],
   controllers: [AppController],
   providers: [],

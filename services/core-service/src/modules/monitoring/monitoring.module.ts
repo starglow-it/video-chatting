@@ -5,12 +5,12 @@ import { Monitoring, MonitoringSchema } from 'src/schemas/monitoring.schema';
 import { MonitoringController } from './monitoring.controller';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([
-            { name: Monitoring.name, schema: MonitoringSchema },
-        ]),
-    ],
-    controllers: [MonitoringController],
-    providers: [MonitoringService],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Monitoring.name, schema: MonitoringSchema },
+    ]),
+  ],
+  controllers: [MonitoringController],
+  providers: [MonitoringService],
 })
-export class MonitoringModule { };
+export class MonitoringModule {}

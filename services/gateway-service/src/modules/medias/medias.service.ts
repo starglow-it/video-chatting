@@ -21,7 +21,7 @@ export class MediasService {
   constructor(
     private coreService: CoreService,
     private uploadService: UploadService,
-  ) { }
+  ) {}
 
   async getMediaCategories(payload: GetMediaCategoriesPayload) {
     const pattern = { cmd: CoreBrokerPatterns.GetMediaCategories };
@@ -58,7 +58,6 @@ export class MediasService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-
   async updateMediaCategory(payload: UpdateMediaCategoryPayload) {
     const pattern = { cmd: CoreBrokerPatterns.UpdateMediaCategory };
 
@@ -76,19 +75,26 @@ export class MediasService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-
-  async deleteMediaCategories(payload: DeleteMediaCategoriesPayload): Promise<boolean> {
+  async deleteMediaCategories(
+    payload: DeleteMediaCategoriesPayload,
+  ): Promise<boolean> {
     const pattern = { cmd: CoreBrokerPatterns.DeleteMediaCategories };
     return this.coreService.sendCustom(pattern, payload);
   }
 
-  async handleCreateMedia({ file, body }: { file: Express.Multer.File, body: CreateMediaPayload }): Promise<IMedia> {
+  async handleCreateMedia({
+    file,
+    body,
+  }: {
+    file: Express.Multer.File;
+    body: CreateMediaPayload;
+  }): Promise<IMedia> {
     let media = await this.createMedia(body);
     if (file) {
       const type = file.mimetype.includes('audio') ? 'sound' : 'video';
       const url = await this.uploadService.handleUploadCommonFile({
         file,
-        folderKey: `medias/${media.id}/${type}`
+        folderKey: `medias/${media.id}/${type}`,
       });
 
       media = await this.uploadMediaFile({
@@ -100,5 +106,4 @@ export class MediasService {
 
     return media;
   }
-
 }

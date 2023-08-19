@@ -5,7 +5,11 @@ import { plainToInstance } from 'class-transformer';
 import { InjectConnection } from '@nestjs/mongoose';
 
 //  const
-import { CoreBrokerPatterns, BUSINESS_CATEGORIES_SERVICE, CORE_SERVICE } from 'shared-const';
+import {
+  CoreBrokerPatterns,
+  BUSINESS_CATEGORIES_SERVICE,
+  CORE_SERVICE,
+} from 'shared-const';
 
 // types
 import {
@@ -31,7 +35,7 @@ export class BusinessCategoriesController {
   constructor(
     @InjectConnection() private connection: Connection,
     private businessCategoriesService: BusinessCategoriesService,
-  ) { }
+  ) {}
 
   @MessagePattern({ cmd: CoreBrokerPatterns.GetBusinessCategories })
   async getBusinessCategories(
@@ -71,90 +75,83 @@ export class BusinessCategoriesController {
     }
   }
 
-
   @MessagePattern({ cmd: CoreBrokerPatterns.CreateBusinessCategory })
-  async createBusinessCategory({color,icon,key,value}: CreateBusinessCategoryPayload){
+  async createBusinessCategory({
+    color,
+    icon,
+    key,
+    value,
+  }: CreateBusinessCategoryPayload) {
     try {
-
       const newbc = await this.businessCategoriesService.create({
-          data: {
-              key,
-              color,
-              value,
-              icon
-          }
+        data: {
+          key,
+          color,
+          value,
+          icon,
+        },
       });
 
       return plainToInstance(CommonBusinessCategoryDTO, newbc, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
       });
-  }
-  catch (err) {
+    } catch (err) {
       throw new RpcException({
-          message: err.message,
-          ctx: BUSINESS_CATEGORIES_SERVICE
-      })
+        message: err.message,
+        ctx: BUSINESS_CATEGORIES_SERVICE,
+      });
+    }
   }
-  }
-
 
   @MessagePattern({ cmd: CoreBrokerPatterns.UpdateBusinessCategory })
-  async updateBusinessCategory({
-    id,
-    data
-  }: UpdateBusinessCategoryPayload) {
-    return withTransaction(this.connection, async session => {
+  async updateBusinessCategory({ id, data }: UpdateBusinessCategoryPayload) {
+    return withTransaction(this.connection, async (session) => {
       try {
-        const businessCategory = await this.businessCategoriesService.findOneAndUpdate({
-          query: {
-            _id: id
-          },
-          data,
-          session
-        });
+        const businessCategory =
+          await this.businessCategoriesService.findOneAndUpdate({
+            query: {
+              _id: id,
+            },
+            data,
+            session,
+          });
 
         if (!businessCategory)
           throw new RpcException({
             message: 'Business category not found',
-            ctx: BUSINESS_CATEGORIES_SERVICE
+            ctx: BUSINESS_CATEGORIES_SERVICE,
           });
 
         return plainToInstance(CommonBusinessCategoryDTO, businessCategory, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
-      }
-      catch (err) {
+      } catch (err) {
         throw new RpcException({
           message: err.message,
-          ctx: BUSINESS_CATEGORIES_SERVICE
-        })
+          ctx: BUSINESS_CATEGORIES_SERVICE,
+        });
       }
     });
   }
 
-
   @MessagePattern({ cmd: CoreBrokerPatterns.DeleteBusinessCategories })
-  async deleteBusinessCategories({
-    ids
-  }: DeletesBusinessCategoriesPayload){
-    try{
+  async deleteBusinessCategories({ ids }: DeletesBusinessCategoriesPayload) {
+    try {
       await this.businessCategoriesService.deleteAll({
         query: {
           _id: {
-            $in: ids
-          }
-        }
+            $in: ids,
+          },
+        },
       });
-      return true; 
-    }
-    catch(err){
+      return true;
+    } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: BUSINESS_CATEGORIES_SERVICE
+        ctx: BUSINESS_CATEGORIES_SERVICE,
       });
     }
   }
-
 }

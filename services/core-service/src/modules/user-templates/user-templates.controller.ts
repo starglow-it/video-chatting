@@ -25,7 +25,10 @@ import {
 } from 'shared-types';
 
 // helpers
-import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
+import {
+  ITransactionSession,
+  withTransaction,
+} from '../../helpers/mongo/withTransaction';
 
 // services
 import { UserTemplatesService } from './user-templates.service';
@@ -40,7 +43,10 @@ import { UserProfileStatisticService } from '../user-profile-statistic/user-prof
 import { UserTemplateDTO } from '../../dtos/user-template.dto';
 
 // schemas
-import { UserTemplate, UserTemplateDocument } from '../../schemas/user-template.schema';
+import {
+  UserTemplate,
+  UserTemplateDocument,
+} from '../../schemas/user-template.schema';
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from '../../schemas/media-category.schema';
@@ -61,114 +67,132 @@ export class UserTemplatesController {
     private languageService: LanguagesService,
     private roomStatisticService: RoomsStatisticsService,
     private userProfileStatisticService: UserProfileStatisticService,
-    private mediaService: MediaService
-  ) { }
+    private mediaService: MediaService,
+  ) {}
 
-
-  private async getMyRoomMediaCategory(session: ITransactionSession): Promise<MediaCategoryDocument> {
+  private async getMyRoomMediaCategory(
+    session: ITransactionSession,
+  ): Promise<MediaCategoryDocument> {
     try {
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myrooms'
+          key: 'myrooms',
         },
-        session
+        session,
       });
 
       if (!mediaCategory) {
         throw new RpcException({
           message: 'Media category not found',
-          ctx: TEMPLATES_SERVICE
+          ctx: TEMPLATES_SERVICE,
         });
       }
 
       return mediaCategory;
-    }
-    catch (err) {
+    } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: TEMPLATES_SERVICE
+        ctx: TEMPLATES_SERVICE,
       });
     }
   }
 
-  private async deletePreviewUrls<T extends { previewUrls: PreviewImageDocument[] }>(list: Array<T>, session: ITransactionSession) {
+  private async deletePreviewUrls<
+    T extends { previewUrls: PreviewImageDocument[] },
+  >(list: Array<T>, session: ITransactionSession) {
     try {
-      const previewImages = list.map(item => item.previewUrls).reduce((prev, cur) => [...prev, ...cur], []);
+      const previewImages = list
+        .map((item) => item.previewUrls)
+        .reduce((prev, cur) => [...prev, ...cur], []);
 
       await this.mediaService.deletePreviewImages({
         query: {
           _id: {
-            $in: previewImages
-          }
+            $in: previewImages,
+          },
         },
-        session
+        session,
       });
 
       await Promise.all(
-        previewImages.map(async previewImage => await this.awsService.deleteResource(previewImage.key))
+        previewImages.map(
+          async (previewImage) =>
+            await this.awsService.deleteResource(previewImage.key),
+        ),
       );
-    }
-    catch (err) {
+    } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: TEMPLATES_SERVICE
+        ctx: TEMPLATES_SERVICE,
       });
     }
-
   }
 
-
-  private async deleteMedias(query: FilterQuery<MediaDocument>, session: ITransactionSession): Promise<void> {
+  private async deleteMedias(
+    query: FilterQuery<MediaDocument>,
+    session: ITransactionSession,
+  ): Promise<void> {
     try {
       const medias = await this.mediaService.findMedias({
         query,
         populatePaths: ['previewUrls'],
-        session
+        session,
       });
 
       const mediaCategory = await this.mediaService.findMediaCategory({
         query: {
-          key: 'myrooms'
+          key: 'myrooms',
         },
-        session
+        session,
       });
 
       await this.mediaService.deleteMedias({
         query,
-        session
+        session,
       });
 
-
       await Promise.all(
-        medias.map(async media => await this.mediaService.deleteMediaFolders(`${media._id.toString()}/videos`))
+        medias.map(
+          async (media) =>
+            await this.mediaService.deleteMediaFolders(
+              `${media._id.toString()}/videos`,
+            ),
+        ),
       );
 
       await this.deletePreviewUrls(
-        medias.filter(media => media.mediaCategory._id.toString() !== mediaCategory._id.toString()),
-        session);
-    }
-    catch (err) {
+        medias.filter(
+          (media) =>
+            media.mediaCategory._id.toString() !== mediaCategory._id.toString(),
+        ),
+        session,
+      );
+    } catch (err) {
       throw new RpcException({
         message: err.message,
-        ctx: TEMPLATES_SERVICE
+        ctx: TEMPLATES_SERVICE,
       });
     }
-
   }
 
   @MessagePattern({ cmd: UserTemplatesBrokerPatterns.GetUserTemplate })
   async getUserTemplate(
     @Payload()
-    { id, subdomain = ''}: GetUserTemplatePayload,
+    { id, subdomain = '' }: GetUserTemplatePayload,
   ): Promise<IUserTemplate> {
     return withTransaction(this.connection, async (session) => {
       try {
-        const query = {subdomain: {
-          $regex: new RegExp(`^${subdomain}$`),
-          $options: 'i'
-        }} as FilterQuery<UserTemplateDocument>;
+        const query = {
+          subdomain: {
+            $regex: new RegExp(`^${subdomain}$`),
+            $options: 'i',
+          },
+        } as FilterQuery<UserTemplateDocument>;
         const userTemplate = await this.userTemplatesService.findUserTemplate({
-          query: Object.assign(query, isValidObjectId(id) ? { _id: id } : { customLink: id }),
+          query: Object.assign(
+            query,
+            isValidObjectId(id) ? { _id: id } : { customLink: id },
+          ),
           session,
           populatePaths: [
             { path: 'socials' },
@@ -279,7 +303,7 @@ export class UserTemplatesController {
           signBoard: user.signBoard,
           templateType: targetTemplate.templateType,
           roomType: targetTemplate.roomType,
-          subdomain: targetTemplate.subdomain
+          subdomain: targetTemplate.subdomain,
         };
 
         const [userTemplate] =
@@ -337,9 +361,9 @@ export class UserTemplatesController {
             url: userTemplate.url,
             previewUrls: userTemplate.previewUrls,
             mediaCategory,
-            type: userTemplate.templateType
+            type: userTemplate.templateType,
           },
-          session
+          session,
         });
 
         return plainToInstance(UserTemplateDTO, userTemplate, {
@@ -399,41 +423,43 @@ export class UserTemplatesController {
         const aggregationPipeline: mongoose.PipelineStage[] = [
           {
             $match: {
-              user: new mongoose.Types.ObjectId(userId)
-            }
+              user: new mongoose.Types.ObjectId(userId),
+            },
           },
           {
             $lookup: {
               from: 'users',
               localField: 'user',
               foreignField: '_id',
-              as: 'user'
-            }
+              as: 'user',
+            },
           },
           ...this.commonTemplatesService.joinCommonTemplatePropertiesQueries(),
           {
             $set: {
               author: {
-                $first: "$author"
+                $first: '$author',
               },
               user: {
-                $first: "$user"
+                $first: '$user',
               },
               authorThumbnail: {
-                $first: "$author.profileAvatar.url"
+                $first: '$author.profileAvatar.url',
               },
               authorRole: {
-                $first: "$author.role"
+                $first: '$author.role',
               },
               authorName: {
-                $first: "$author.fullName"
+                $first: '$author.fullName',
               },
-            }
-          }
+            },
+          },
         ];
 
         if (sort) {
-          aggregationPipeline.push({ $sort: { [sort]: direction as 1 | -1 || 1 } });
+          aggregationPipeline.push({
+            $sort: { [sort]: (direction as 1 | -1) || 1 },
+          });
         }
 
         if (skip) {
@@ -444,7 +470,10 @@ export class UserTemplatesController {
           aggregationPipeline.push({ $limit: limit });
         }
 
-        const userTemplates = await this.userTemplatesService.aggregate(aggregationPipeline, session);
+        const userTemplates = await this.userTemplatesService.aggregate(
+          aggregationPipeline,
+          session,
+        );
 
         const userTemplatesCount =
           await this.userTemplatesService.countUserTemplates({
@@ -497,10 +526,16 @@ export class UserTemplatesController {
           description: data.description,
           signBoard: data.signBoard,
           isMonetizationEnabled: data.isMonetizationEnabled,
-          templatePrice: typeof data.templatePrice !== 'undefined' ? (data.templatePrice || '') : template.templatePrice,
+          templatePrice:
+            typeof data.templatePrice !== 'undefined'
+              ? data.templatePrice || ''
+              : template.templatePrice,
           templateCurrency: data.templateCurrency,
           paywallCurrency: data.paywallCurrency,
-          paywallPrice: typeof data.paywallPrice !== 'undefined' ? (data.paywallPrice || '') : template.paywallPrice,
+          paywallPrice:
+            typeof data.paywallPrice !== 'undefined'
+              ? data.paywallPrice || ''
+              : template.paywallPrice,
           customLink: data.customLink,
           name: data.name,
           isPublic: data.isPublic,
@@ -509,7 +544,7 @@ export class UserTemplatesController {
           previewUrls: data.previewUrls,
           draftUrl: data.draftUrl,
           links: data.links,
-          templateType: data.templateType
+          templateType: data.templateType,
         } as UpdateQuery<UserTemplateDocument>;
 
         if ('businessCategories' in data) {
@@ -529,7 +564,7 @@ export class UserTemplatesController {
                 key: category.key,
                 value: category.value,
                 color: category.color,
-                icon: category.icon
+                icon: category.icon,
               },
               session,
             });
@@ -822,7 +857,6 @@ export class UserTemplatesController {
         },
         session,
       });
-
     });
   }
 

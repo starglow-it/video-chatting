@@ -7,9 +7,10 @@ import { MessagesSendResponse, MonitoringEvent } from 'shared-types';
 
 @Injectable()
 export class NotificationsService {
-  constructor(@Inject(NOTIFICATIONS_PROVIDER) private client: ClientProxy,
-    private readonly monitoringService: MonitoringService
-  ) { }
+  constructor(
+    @Inject(NOTIFICATIONS_PROVIDER) private client: ClientProxy,
+    private readonly monitoringService: MonitoringService,
+  ) {}
 
   async onApplicationBootstrap() {
     await this.client.connect();
@@ -17,14 +18,16 @@ export class NotificationsService {
 
   async sendEmail(data) {
     const statuses = ['sent', 'queued'];
-    const messages = await this.client
+    const messages = (await this.client
       .send(NotificationsBrokerPatterns.SendEmail, data)
-      .toPromise() as MessagesSendResponse[];
-    const m = messages.find ? messages.find(item => statuses.includes(item.status)) : undefined;
+      .toPromise()) as MessagesSendResponse[];
+    const m = messages.find
+      ? messages.find((item) => statuses.includes(item.status))
+      : undefined;
     if (m) {
       await this.monitoringService.createMonitoring({
         event: MonitoringEvent.SendEmail,
-        eventId: m._id
+        eventId: m._id,
       });
     }
     return messages;

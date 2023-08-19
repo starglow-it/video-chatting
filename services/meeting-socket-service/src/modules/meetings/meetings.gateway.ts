@@ -88,7 +88,6 @@ type SendDevicesPermissionsPayload = {
   video: boolean;
 };
 
-
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
@@ -97,7 +96,8 @@ type SendDevicesPermissionsPayload = {
 })
 export class MeetingsGateway
   extends BaseGateway
-  implements OnGatewayDisconnect {
+  implements OnGatewayDisconnect
+{
   private readonly logger = new Logger(MeetingsGateway.name);
   constructor(
     private meetingsService: MeetingsService,
@@ -112,14 +112,14 @@ export class MeetingsGateway
   }
 
   private checkHandleTimeLimitByUser(user: ICommonUser) {
-    return ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional]
-      .includes(user.subscriptionPlanKey);
+    return ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional].includes(
+      user.subscriptionPlanKey,
+    );
   }
 
   async changeUsersPositions({ meetingId, templateId, event }): Promise<void> {
     try {
       return withTransaction(this.connection, async (session) => {
-
         const template = await this.coreService.findMeetingTemplateById({
           id: templateId,
         });
@@ -128,18 +128,20 @@ export class MeetingsGateway
           id: templateId,
         });
 
-        const updateUsersPromise = usersTemplate.indexUsers.map(async (userId, i) => {
-          const user = await this.usersService.findById(userId);
-          if (!user) return;
+        const updateUsersPromise = usersTemplate.indexUsers.map(
+          async (userId, i) => {
+            const user = await this.usersService.findById(userId);
+            if (!user) return;
 
-          const userPosition = template?.usersPosition?.[i];
-          const userSize = template?.usersSize?.[i];
+            const userPosition = template?.usersPosition?.[i];
+            const userSize = template?.usersSize?.[i];
 
-          user.userPosition = userPosition;
-          user.userSize = userSize;
+            user.userPosition = userPosition;
+            user.userSize = userSize;
 
-          return user.save();
-        });
+            return user.save();
+          },
+        );
 
         await Promise.all(updateUsersPromise);
 
@@ -194,18 +196,19 @@ export class MeetingsGateway
     } catch (err) {
       this.logger.error({
         message: err.message,
-        event
+        event,
       });
       return;
     }
   }
 
   private async updateLeaveMeetingForUser({
-    client, session
-  }:
-    {
-      client: Socket, session: ITransactionSession
-    }): Promise<MeetingUserDocument> {
+    client,
+    session,
+  }: {
+    client: Socket;
+    session: ITransactionSession;
+  }): Promise<MeetingUserDocument> {
     try {
       const user = await this.usersService.findOneAndUpdate(
         {
@@ -217,11 +220,10 @@ export class MeetingsGateway
       );
 
       return user;
-    }
-    catch (err) {
+    } catch (err) {
       this.logger.error({
         message: err.message,
-        ctx: client.id
+        ctx: client.id,
       });
       return;
     }
@@ -256,7 +258,7 @@ export class MeetingsGateway
             message: '[handleDisconnect] no meeting found',
             ctx: {
               meetingId: user?.meeting?._id,
-            }
+            },
           });
           return;
         }
@@ -268,7 +270,7 @@ export class MeetingsGateway
         if (!userTemplate) {
           this.logger.error({
             message: 'User template not found',
-            ctx: client.id
+            ctx: client.id,
           });
           return;
         }
@@ -361,7 +363,6 @@ export class MeetingsGateway
               });
             }
           }
-
         } catch (err) {
           this.logger.error('User has been deleted', err.message);
           return;
@@ -376,9 +377,7 @@ export class MeetingsGateway
 
             console.log('timeout', endTimestamp);
 
-
-            const meetingEndTime =
-              (meeting.endsAt || Date.now()) - Date.now();
+            const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
 
             this.taskService.deleteTimeout({
               name: `meeting:finish:${meetingId}`,
@@ -386,8 +385,7 @@ export class MeetingsGateway
 
             this.taskService.addTimeout({
               name: `meeting:finish:${meetingId}`,
-              ts:
-                meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+              ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
               callback: this.endMeeting.bind(this, {
                 meetingId: meeting._id,
               }),
@@ -409,12 +407,12 @@ export class MeetingsGateway
                 this.changeUsersPositions({
                   meetingId: meeting.id,
                   templateId: meeting.templateId,
-                  event
+                  event,
                 });
               } catch (err) {
                 this.logger.error({
                   mesage: err.mesage,
-                  ctx: client.id
+                  ctx: client.id,
                 });
                 return;
               }
@@ -435,7 +433,7 @@ export class MeetingsGateway
     } catch (err) {
       this.logger.error({
         message: err.message,
-        ctx: client.id
+        ctx: client.id,
       });
       return;
     }
@@ -453,7 +451,7 @@ export class MeetingsGateway
     }>
   > {
     return withTransaction(this.connection, async (session) => {
-      const eventName = 'handleJoinWaitingRoom event'
+      const eventName = 'handleJoinWaitingRoom event';
       console.time(eventName);
       this.logger.debug({
         message: eventName,
@@ -645,7 +643,7 @@ export class MeetingsGateway
         if (!userTemplate) {
           this.logger.error({
             message: 'User Template not found',
-            ctx: socket.id
+            ctx: socket.id,
           });
           return;
         }
@@ -654,10 +652,10 @@ export class MeetingsGateway
         if (!(index + 1)) {
           this.logger.error({
             message: 'The meeting has reached its limit of participants',
-            ctx: socket.id
+            ctx: socket.id,
           });
           return;
-        };
+        }
 
         const user = await this.usersService.findOneAndUpdate(
           { socketId: socket.id },
@@ -677,7 +675,7 @@ export class MeetingsGateway
         await this.meetingsService.updateIndexUsers({
           userTemplate,
           user,
-          event: UserActionInMeeting.Join
+          event: UserActionInMeeting.Join,
         });
 
         await meeting.populate('users');
@@ -778,11 +776,10 @@ export class MeetingsGateway
             users: plainUsers,
           },
         };
-      }
-      catch (err) {
+      } catch (err) {
         this.logger.error({
           message: err.message,
-          ctx: socket.id
+          ctx: socket.id,
         });
         return;
       }
@@ -856,7 +853,7 @@ export class MeetingsGateway
         if (
           meeting?.hostUserId?.socketId &&
           meeting?.hostUserId?.accessStatus ===
-          MeetingAccessStatusEnum.InMeeting
+            MeetingAccessStatusEnum.InMeeting
         ) {
           this.emitToSocketId(
             meeting?.hostUserId?.socketId,
@@ -1236,7 +1233,7 @@ export class MeetingsGateway
     @MessageBody() message: LeaveMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-    const event = 'leaveMeeting event'
+    const event = 'leaveMeeting event';
     this.logger.log({
       message: event,
       ctx: message,
@@ -1251,7 +1248,7 @@ export class MeetingsGateway
         if (!user) {
           this.logger.error({
             message: 'User not found',
-            ctx: socket.id
+            ctx: socket.id,
           });
           return;
         }
@@ -1271,9 +1268,13 @@ export class MeetingsGateway
               meeting.sharingUserId = null;
             }
 
-            this.emitToRoom(`meeting:${meeting.id}`, UserEmitEvents.RemoveUsers, {
-              users: [userId],
-            });
+            this.emitToRoom(
+              `meeting:${meeting.id}`,
+              UserEmitEvents.RemoveUsers,
+              {
+                users: [userId],
+              },
+            );
 
             const isMeetingHost = meeting.hostUserId === userId;
 
@@ -1300,11 +1301,10 @@ export class MeetingsGateway
         return {
           success: true,
         };
-      }
-      catch (err) {
+      } catch (err) {
         this.logger.error({
           message: err.message,
-          ctx: socket.id
+          ctx: socket.id,
         });
         return;
       }
@@ -1361,7 +1361,6 @@ export class MeetingsGateway
           userId: prevHostUser.profileId,
         });
 
-
         if (this.checkHandleTimeLimitByUser(prevProfileHostUser)) {
           const hostTimeData = await this.meetingHostTimeService.update({
             query: {
@@ -1403,7 +1402,6 @@ export class MeetingsGateway
       this.taskService.deleteTimeout({
         name: `meeting:timeLimit:${meeting.id}`,
       });
-
 
       if (this.checkHandleTimeLimitByUser(profileUser)) {
         await this.meetingHostTimeService.create({
@@ -1454,7 +1452,6 @@ export class MeetingsGateway
                   endAt: Date.now(),
                 },
               });
-
 
               const newTime =
                 profileUser.maxMeetingTime -
@@ -1561,9 +1558,7 @@ export class MeetingsGateway
 
     const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
-
-    const fallBackTime =
-      this.checkHandleTimeLimitByUser(mainUser) ? null : 0;
+    const fallBackTime = this.checkHandleTimeLimitByUser(mainUser) ? null : 0;
 
     await this.coreService.updateUser({
       query: { _id: mainUser.id },

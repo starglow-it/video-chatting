@@ -14,36 +14,33 @@ import {
 export class UserFeaturedBackground {
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   id: string;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   profileAvatar: string;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   role: string;
-
 }
 
-
 class BusinessCategory {
-  
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   key: string;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   value: string;
 }
@@ -51,39 +48,39 @@ class BusinessCategory {
 class Language {
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   key: string;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   value: string;
 }
 
-class  ProfileAvatar {
+class ProfileAvatar {
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   id: string;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   url: string;
 
   @Expose()
   @ApiProperty({
-    type: Number
+    type: Number,
   })
   size: number;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   mimeType: string;
 }
@@ -97,55 +94,53 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   email: ICommonUser['email'];
-
-
-  @Expose()
-  @ApiProperty({
-    type: String
-  })
-  password: string;
-
 
   @Expose()
   @ApiProperty({
     type: String,
-    enum: UserRoles
+  })
+  password: string;
+
+  @Expose()
+  @ApiProperty({
+    type: String,
+    enum: UserRoles,
   })
   role: ICommonUser['role'];
 
   @Expose()
   @ApiProperty({
     type: String,
-    enum: PlanKeys
+    enum: PlanKeys,
   })
   subscriptionPlanKey: ICommonUser['subscriptionPlanKey'];
 
   @Expose()
   @ApiProperty({
     type: String,
-    enum: PlanKeys
+    enum: PlanKeys,
   })
   nextSubscriptionPlanKey: ICommonUser['nextSubscriptionPlanKey'];
 
   @Expose()
   @ApiProperty({
     type: String,
-    enum: PlanKeys
+    enum: PlanKeys,
   })
   prevSubscriptionPlanKey: ICommonUser['prevSubscriptionPlanKey'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   country: ICommonUser['country'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   registerTemplate: ICommonUser['registerTemplate'];
 
@@ -155,133 +150,133 @@ export class CommonUserRestDTO implements ICommonUser {
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   fullName: ICommonUser['fullName'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   position: ICommonUser['position'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   companyName: ICommonUser['companyName'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   contactEmail: ICommonUser['contactEmail'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   description: ICommonUser['description'];
 
   @Expose()
   @ApiProperty({
-    type: [BusinessCategory]
+    type: [BusinessCategory],
   })
   businessCategories: IBusinessCategory[];
 
   @Expose()
   @ApiProperty({
-    type: [Language]
+    type: [Language],
   })
   languages: ILanguage[];
 
   @Expose()
   @ApiProperty({
-    type: [SocialLink]
+    type: [SocialLink],
   })
   socials: ISocialLink[];
 
   @Expose()
   @ApiProperty({
-    type: ProfileAvatar
+    type: ProfileAvatar,
   })
   profileAvatar: IProfileAvatar;
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   signBoard: ICommonUser['signBoard'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   stripeAccountId: ICommonUser['stripeAccountId'];
 
   @Expose()
   @ApiProperty({
-    type: String
+    type: String,
   })
   stripeEmail: ICommonUser['stripeEmail'];
 
   @Expose()
   @ApiProperty({
-    type: Boolean
+    type: Boolean,
   })
   isStripeEnabled: ICommonUser['isStripeEnabled'];
 
   @Expose()
   @ApiProperty({
-    type: Boolean
+    type: Boolean,
   })
   wasSuccessNotificationShown: ICommonUser['wasSuccessNotificationShown'];
 
   @Expose()
   @ApiProperty({
-    type: Boolean
+    type: Boolean,
   })
   shouldShowTrialExpiredNotification: ICommonUser['shouldShowTrialExpiredNotification'];
 
   @Expose()
   @ApiProperty({
-    type: Boolean
+    type: Boolean,
   })
   isResetPasswordActive: ICommonUser['isResetPasswordActive'];
 
   @Expose()
   @ApiProperty({
-    type: Number
+    type: Number,
   })
   maxTemplatesNumber: ICommonUser['maxTemplatesNumber'];
 
   @Expose()
   @ApiProperty({
-    type: Number
+    type: Number,
   })
   renewSubscriptionTimestampInSeconds: ICommonUser['renewSubscriptionTimestampInSeconds'];
 
   @Expose()
   @ApiProperty({
-    type: Number
+    type: Number,
   })
   maxMeetingTime: ICommonUser['maxMeetingTime'];
 
   @Expose()
   @ApiProperty({
-    type: Boolean
+    type: Boolean,
   })
   isProfessionalTrialAvailable: ICommonUser['isProfessionalTrialAvailable'];
 
   @Expose()
   @ApiProperty({
-    type: Boolean
+    type: Boolean,
   })
   isBlocked: ICommonUser['isBlocked'];
 
   @Expose()
   @ApiProperty({
-    type: Boolean
+    type: Boolean,
   })
   isDowngradeMessageShown: ICommonUser['isBlocked'];
 

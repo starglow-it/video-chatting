@@ -5,30 +5,38 @@ import { SwaggerSchemaProperty } from '../types/swagger';
 
 type Options = {
   isOptionalAllProperties: boolean;
-}
+};
 
-type MultiDecorators = <TFunction extends Function, Y>(target: object | TFunction, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Y>) => void;
+type MultiDecorators = <TFunction extends Function, Y>(
+  target: object | TFunction,
+  propertyKey?: string | symbol,
+  descriptor?: TypedPropertyDescriptor<Y>,
+) => void;
 
-export const ApiFile = (properties?: SwaggerSchemaProperty, options?: Options): MultiDecorators =>
+export const ApiFile = (
+  properties?: SwaggerSchemaProperty,
+  options?: Options,
+): MultiDecorators =>
   applyDecorators(
-    UseInterceptors(FileInterceptor('file', {
-      preservePath: true
-    })),
+    UseInterceptors(
+      FileInterceptor('file', {
+        preservePath: true,
+      }),
+    ),
     ApiConsumes('multipart/form-data'),
     ApiBody({
       schema: {
         type: 'object',
-        ...(
-          !options?.isOptionalAllProperties &&
-          { required: [...Object.keys((properties) || {}), 'file'] }
-        ),
+        ...(!options?.isOptionalAllProperties && {
+          required: [...Object.keys(properties || {}), 'file'],
+        }),
         properties: {
           file: {
             type: 'string',
-            format: 'binary'
+            format: 'binary',
           },
-          ...properties
+          ...properties,
         },
-      }
+      },
     }),
   );

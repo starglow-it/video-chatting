@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
@@ -164,7 +164,6 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
-    console.log('#Duy Phan console', 'portrait')
 
     return (
         <CustomGrid className={styles.mainMeetingWrapper}>

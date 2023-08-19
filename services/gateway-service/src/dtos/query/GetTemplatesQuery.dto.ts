@@ -1,4 +1,11 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { toNumber } from '../../utils/parsers/toNumber';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { toBoolean } from '../../utils/parsers/toBoolean';
@@ -62,13 +69,13 @@ export class GetTemplatesQueryDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({value}: TransformFnParams) => value.split(','))
+  @Transform(({ value }: TransformFnParams) => value.split(','))
   @IsArray()
   public businessCategories: string[];
 
   @ApiProperty({
     type: String,
-    enum: RoomType
+    enum: RoomType,
   })
   @IsOptional()
   @IsNotEmpty()
@@ -77,7 +84,7 @@ export class GetTemplatesQueryDto {
   @ApiProperty({
     type: Boolean,
     required: false,
-    default: false
+    default: false,
   })
   @IsOptional()
   @Transform(({ value }) => toBoolean(value))

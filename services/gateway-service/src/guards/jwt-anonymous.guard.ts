@@ -14,8 +14,8 @@ type TokenDataDto = { userId: string; exp: number };
 export class JwtAuthAnonymousGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
-    private coreService: CoreService
-  ) { }
+    private coreService: CoreService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<Request>();
@@ -26,20 +26,21 @@ export class JwtAuthAnonymousGuard implements CanActivate {
     const cookies = request['cookies'];
     const headers = request['headers'];
 
-    userWithoutLoginId = cookies['userWithoutLoginId'] || headers['userwithoutloginid'];
+    userWithoutLoginId =
+      cookies['userWithoutLoginId'] || headers['userwithoutloginid'];
 
     if (userWithoutLoginId && !cookies.accessToken) {
-      const user = await this.coreService.findUserById({ userId: userWithoutLoginId });
+      const user = await this.coreService.findUserById({
+        userId: userWithoutLoginId,
+      });
       if (user.role === UserRoles.Anonymous) {
         request['user'] = {
           userId: user.id,
-          exp: 1000000000000
+          exp: 1000000000000,
         };
         return true;
       }
     }
-
-
 
     if (cookies && cookies.accessToken) {
       token = cookies.accessToken;

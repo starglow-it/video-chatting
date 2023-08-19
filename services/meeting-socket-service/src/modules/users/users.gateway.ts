@@ -33,7 +33,10 @@ import { RemoveUserRequestDTO } from '../../dtos/requests/users/remove-user.dto'
 import { CommonMeetingDTO } from '../../dtos/response/common-meeting.dto';
 
 // helpers
-import { ITransactionSession, withTransaction } from '../../helpers/mongo/withTransaction';
+import {
+  ITransactionSession,
+  withTransaction,
+} from '../../helpers/mongo/withTransaction';
 
 // const
 import {
@@ -63,21 +66,19 @@ export class UsersGateway extends BaseGateway {
 
   private logger = new Logger(UsersGateway.name);
 
-  private async handleUpdateUsersTemplateVideoContainer(
-    {
-      userTemplateId,
-      meetingUserId,
-      data,
-      client,
-      session
-    }: {
-      userTemplateId: string,
-      meetingUserId: string,
-      data: Partial<MeetingUserDocument>,
-      client: Socket,
-      session: ITransactionSession,
-    }
-  ) {
+  private async handleUpdateUsersTemplateVideoContainer({
+    userTemplateId,
+    meetingUserId,
+    data,
+    client,
+    session,
+  }: {
+    userTemplateId: string;
+    meetingUserId: string;
+    data: Partial<MeetingUserDocument>;
+    client: Socket;
+    session: ITransactionSession;
+  }) {
     try {
       const usersTemplate = await this.coreService.findMeetingTemplateById({
         id: userTemplateId,
@@ -97,7 +98,7 @@ export class UsersGateway extends BaseGateway {
       if (!(index + 1)) {
         this.logger.error({
           message: 'Meeting user not found',
-          ctx: client
+          ctx: client,
         });
         return;
       }
@@ -126,8 +127,8 @@ export class UsersGateway extends BaseGateway {
     } catch (err) {
       this.logger.error({
         message: err.message,
-        ctx: client.id
-      })
+        ctx: client.id,
+      });
       return;
     }
   }
@@ -144,13 +145,13 @@ export class UsersGateway extends BaseGateway {
         session,
       );
 
-      if (!user){
+      if (!user) {
         this.logger.error({
           message: 'Meeting user not found',
-          ctx: client.id
+          ctx: client.id,
         });
         return;
-      };
+      }
 
       const meeting = await this.meetingsService.findById(
         user.meeting._id,
@@ -217,7 +218,7 @@ export class UsersGateway extends BaseGateway {
         if (!user) {
           this.logger.error({
             message: 'Meeting user not found',
-            ctx: client.id
+            ctx: client.id,
           });
           return;
         }
@@ -273,7 +274,7 @@ export class UsersGateway extends BaseGateway {
           await this.meetingsService.updateIndexUsers({
             userTemplate,
             user,
-            event: UserActionInMeeting.Leave
+            event: UserActionInMeeting.Leave,
           });
         }
 
@@ -282,11 +283,10 @@ export class UsersGateway extends BaseGateway {
           { accessStatus: MeetingAccessStatusEnum.Left },
           session,
         );
-      }
-      catch (err) {
+      } catch (err) {
         this.logger.error({
           message: err.message,
-          ctx: client.id
+          ctx: client.id,
         });
         return;
       }

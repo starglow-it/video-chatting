@@ -8,84 +8,82 @@ import { GetModelQuery, UpdateModelQuery } from 'src/types/custom';
 
 @Injectable()
 export class MonitoringService {
-    constructor(
-        @InjectModel(Monitoring.name) private monitoring: Model<MonitoringDocument>
-    ) { }
+  constructor(
+    @InjectModel(Monitoring.name) private monitoring: Model<MonitoringDocument>,
+  ) {}
 
-    async find({
+  async find({ query, options, session }: GetModelQuery<MonitoringDocument>) {
+    return this.monitoring
+      .find(
         query,
-        options,
-        session,
-    }: GetModelQuery<MonitoringDocument>) {
-        return this.monitoring
-            .find(
-                query,
-                {},
-                {
-                    skip: options?.skip,
-                    limit: options?.limit,
-                    sort: options?.sort,
-                    session: session?.session
-                },
-            )
-            .exec();
-    }
+        {},
+        {
+          skip: options?.skip,
+          limit: options?.limit,
+          sort: options?.sort,
+          session: session?.session,
+        },
+      )
+      .exec();
+  }
 
-    async findOne({
+  async findOne({
+    query,
+    session,
+    populatePaths,
+  }: GetModelQuery<MonitoringDocument>): Promise<MonitoringDocument> {
+    return this.monitoring
+      .findOne(
         query,
-        session,
-        populatePaths,
-    }: GetModelQuery<MonitoringDocument>): Promise<MonitoringDocument> {
-        return this.monitoring
-            .findOne(query, {}, { session: session?.session, populate: populatePaths })
-            .exec();
-    }
+        {},
+        { session: session?.session, populate: populatePaths },
+      )
+      .exec();
+  }
 
+  async create({
+    data,
+    session,
+  }: {
+    data: Partial<IMonitoring>;
+    session?: ITransactionSession;
+  }): Promise<MonitoringDocument> {
+    const [newData] = await this.monitoring.create([data], {
+      session: session?.session,
+    });
 
-    async create({
-        data,
-        session,
-    }: {
-        data: Partial<IMonitoring>;
-        session?: ITransactionSession;
-    }): Promise<MonitoringDocument> {
-        const [newData] = await this.monitoring.create([data], {
-            session: session?.session,
-        });
+    return newData;
+  }
 
-        return newData;
-    }
+  async findOneAndUpdate({
+    query,
+    data,
+    session,
+    populatePaths,
+  }: UpdateModelQuery<
+    MonitoringDocument,
+    MonitoringDocument
+  >): Promise<MonitoringDocument> {
+    return this.monitoring.findOneAndUpdate(query, data, {
+      session: session?.session,
+      populate: populatePaths,
+      new: true,
+    });
+  }
 
-    async findOneAndUpdate({
-        query,
-        data,
-        session,
-        populatePaths,
-    }: UpdateModelQuery<
-        MonitoringDocument,
-        MonitoringDocument
-    >): Promise<MonitoringDocument> {
-        return this.monitoring.findOneAndUpdate(query, data, {
-            session: session?.session,
-            populate: populatePaths,
-            new: true,
-        });
-    }
+  async count(query: FilterQuery<MonitoringDocument>): Promise<number> {
+    return this.monitoring.count(query).exec();
+  }
 
-    async count(query: FilterQuery<MonitoringDocument>): Promise<number> {
-        return this.monitoring.count(query).exec();
-    }
-
-    async delete({
-        query,
-        session,
-    }: {
-        query: FilterQuery<MonitoringDocument>;
-        session?: ITransactionSession;
-    }): Promise<any> {
-        return this.monitoring.deleteMany(query, {
-            session: session?.session,
-        });
-    }
-
+  async delete({
+    query,
+    session,
+  }: {
+    query: FilterQuery<MonitoringDocument>;
+    session?: ITransactionSession;
+  }): Promise<any> {
+    return this.monitoring.deleteMany(query, {
+      session: session?.session,
+    });
+  }
 }
