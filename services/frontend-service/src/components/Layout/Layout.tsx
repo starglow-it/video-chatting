@@ -29,10 +29,12 @@ import { LayoutProps } from './types';
 // stores
 import {
     $authStore,
+    $isPortraitLayout,
     $isSocketConnected,
     $modeTemplateStore,
     $profileTemplatesStore,
     $templatesStore,
+    $windowSizeStore,
     getAppVersionFx,
     getProfileTemplatesFx,
     getTemplatesFx,
@@ -70,7 +72,7 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     roomRoute,
     createRoomRoute,
     editRoomRoute,
-    indexRoute
+    indexRoute,
 ];
 
 const ROUTES_MAIN_HEADER: string[] = [dashboardRoute, welcomeRoute];
@@ -117,6 +119,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const templates = useStore($templatesStore);
     const profileTemplates = useStore($profileTemplatesStore);
     const mode = useStore($modeTemplateStore);
+    const { height } = useStore($windowSizeStore);
+    const isPortraitLayout = useStore($isPortraitLayout);
 
     const router = useRouter();
     const scrollRef = useRef<HTMLElement | null>(null);
@@ -207,12 +211,18 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         }
     };
 
+    const heightFull = useMemo(() => {
+        return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
+    }, [height, isMobile, isPortraitLayout, isMeetingRoute]);
+
     return (
         <CustomBox
             className={clsx(styles.main, {
-                [styles.meetingLayout]: isMeetingRoute,
+                [styles.meetingLayout]: isMeetingRoute && !isMobile,
+                [styles.meetingMobileLayout]: isMeetingRoute && isMobile,
                 [styles.relativeLayout]: isMeetingRoute || isDashboardRoute,
             })}
+            style={heightFull}
         >
             <ConditionalRender condition={isDashboardRoute}>
                 <SubscriptionExpiredNotification />
