@@ -64,7 +64,7 @@ export class UserTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: ''
+    default: '',
   })
   description: string;
 
@@ -205,13 +205,13 @@ export class UserTemplate {
 
   @Prop({
     type: [mongoose.Schema.Types.Number],
-    default: []
+    default: [],
   })
   usersSize: number[];
 
   @Prop({
     type: [mongoose.Schema.Types.String],
-    default: []
+    default: [],
   })
   indexUsers: string[];
 
@@ -257,13 +257,13 @@ export class UserTemplate {
 
   @Prop({
     type: mongoose.Schema.Types.Boolean,
-    default: false
+    default: false,
   })
   isAcceptNoLogin: boolean;
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: RoomType.Normal
+    default: RoomType.Normal,
   })
   roomType: RoomType;
 

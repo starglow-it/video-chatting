@@ -35,7 +35,7 @@ import { CreateBusinessCategoryRequest } from 'src/dtos/requests/create-business
 export class CategoriesController {
   private readonly logger = new Logger();
 
-  constructor(private categoriesService: CategoriesService) { }
+  constructor(private categoriesService: CategoriesService) {}
 
   @Get('/')
   @ApiOperation({ summary: 'Get Categories' })
@@ -78,27 +78,25 @@ export class CategoriesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create Business Category' })
   @ApiOkResponse({
-      type: CommonResponseDto,
-      description: 'Create Business Category',
+    type: CommonResponseDto,
+    description: 'Create Business Category',
   })
   @ApiForbiddenResponse({
-      description: 'Forbidden',
+    description: 'Forbidden',
   })
   async createBusinessCategory(
-      @Body() body: CreateBusinessCategoryRequest
+    @Body() body: CreateBusinessCategoryRequest,
   ): Promise<ResponseSumType<IBusinessCategory>> {
-      try {
-          const bc = await this.categoriesService.createBusinessCategory(body);
-          return {
-              success: true,
-              result: bc
-          }
-      }
-      catch (err) {
-          throw new BadRequestException(err);
-      }
+    try {
+      const bc = await this.categoriesService.createBusinessCategory(body);
+      return {
+        success: true,
+        result: bc,
+      };
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
   }
-
 
   @Patch(':id')
   @ApiBearerAuth()
@@ -113,20 +111,19 @@ export class CategoriesController {
   })
   async updateBusinessCategory(
     @Param() { id }: UpdateBusinessCategoryParam,
-    @Body() body: UpdateBusinessCategoryRequest
+    @Body() body: UpdateBusinessCategoryRequest,
   ): Promise<ResponseSumType<void>> {
     try {
       await this.categoriesService.updateBusinessCategory({
         id,
-        data: body
+        data: body,
       });
 
       return {
         success: true,
-        result: null
-      }
-    }
-    catch (err) {
+        result: null,
+      };
+    } catch (err) {
       throw new BadRequestException(err);
     }
   }
@@ -142,17 +139,18 @@ export class CategoriesController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  async deleteMediaCategories(@Body() { ids }: DeleteBusinessCategoriesRequest): Promise<ResponseSumType<void>> {
+  async deleteMediaCategories(
+    @Body() { ids }: DeleteBusinessCategoriesRequest,
+  ): Promise<ResponseSumType<void>> {
     try {
       await this.categoriesService.deleteBusinessCategories({
-        ids
+        ids,
       });
 
       return {
-        success: true
-      }
-    }
-    catch (err) {
+        success: true,
+      };
+    } catch (err) {
       throw new BadRequestException(err);
     }
   }

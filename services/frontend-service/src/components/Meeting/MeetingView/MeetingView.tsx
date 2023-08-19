@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
@@ -42,6 +42,7 @@ import styles from './MeetingView.module.scss';
 
 // stores
 import {
+    $windowSizeStore,
     addNotificationEvent,
     checkIsPortraitLayoutEvent,
 } from '../../../store';
@@ -80,6 +81,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const serverType = useStore($serverTypeStore);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
+    const { height } = useStore($windowSizeStore);
     const { isMobile } = useBrowserDetect();
 
     const hostUser = useStoreMap({
@@ -164,10 +166,20 @@ const Component = () => {
     const previewImage = (meetingTemplate?.previewUrls || []).find(
         image => image.resolution === 1080,
     );
-    console.log('#Duy Phan console', 'portrait')
+
+    const heightFull = useMemo(() => {
+        return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
+    }, [height, isMobile]);
 
     return (
-        <CustomGrid className={styles.mainMeetingWrapper}>
+        <CustomGrid
+            className={
+                isMobile
+                    ? styles.mobileMainMeetingWrapper
+                    : styles.mainMeetingWrapper
+            }
+            style={heightFull}
+        >
             <MeetingBackgroundVideo
                 templateType={meetingTemplate.templateType}
                 src={meetingTemplate.url}

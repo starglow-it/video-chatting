@@ -81,8 +81,8 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     private coreService: CoreService,
     private configService: ConfigClientService,
     private paymentsService: PaymentsService,
-    private userTemplateService: UserTemplatesService
-  ) { }
+    private userTemplateService: UserTemplatesService,
+  ) {}
 
   private googleClientId: string;
   private googleSecret: string;
@@ -154,17 +154,23 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
       const { list: uts } = await this.userTemplateService.getUserTemplates({
-        userId: u.id
+        userId: u.id,
       });
 
-      Promise.all(uts.map(async ({ id }) => await this.userTemplateService.deleteUserTemplate({ templateId: id, userId: u.id })));
-
-    }
-    catch (err) {
+      Promise.all(
+        uts.map(
+          async ({ id }) =>
+            await this.userTemplateService.deleteUserTemplate({
+              templateId: id,
+              userId: u.id,
+            }),
+        ),
+      );
+    } catch (err) {
       console.log(err);
       return;
     }
-  }
+  };
 
   @Post('/create-free-user')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
@@ -174,63 +180,60 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   })
   async getOrcreateAccountWithoutLogin(
     @Body() { templateId, subdomain }: CreateUserFreeRequest,
-    @Request() req: Req
+    @Request() req: Req,
   ) {
     try {
       let user: ICommonUser;
-      const userId = req['cookies']?.['userWithoutLoginId'] as string | undefined;
+      const userId = req['cookies']?.['userWithoutLoginId'] as
+        | string
+        | undefined;
       if (userId) {
         user = await this.coreService.findUserById({ userId });
-      }
-      else {
+      } else {
         const uuid = uuidv4();
         user = await this.coreService.createUserWithoutLogin(uuid);
       }
 
       let template: ICommonTemplate;
       if (subdomain) {
-        const regex =  new RegExp(`^${subdomain}$`)
+        const regex = new RegExp(`^${subdomain}$`);
         template = await this.coreService.findCommonTemplateByTemplate({
           subdomain: {
             $regex: regex.source,
-            $options: 'i'
-          }
+            $options: 'i',
+          },
         });
-      }
-      else {
+      } else {
         template = await this.coreService.findCommonTemplateByTemplate({
-          ...(templateId ? {
-            _id: templateId
-          } : {
-            isAcceptNoLogin: true
-          })
+          ...(templateId
+            ? {
+                _id: templateId,
+              }
+            : {
+                isAcceptNoLogin: true,
+              }),
         });
       }
 
       if (!template) return;
       const userTemplate = await this.coreService.addTemplateToUser({
         templateId: template.id,
-        userId: user.id
+        userId: user.id,
       });
 
       return {
         user,
-        userTemplateId: userTemplate.id
-      }
-
-    }
-    catch (err) {
+        userTemplateId: userTemplate.id,
+      };
+    } catch (err) {
       throw new BadRequestException(err);
     }
   }
 
   @Delete('delete-free-user')
-  async deleteAnonymousUser(
-    @Request() req: Req
-  ) {
+  async deleteAnonymousUser(@Request() req: Req) {
     await this.delGlobalUser(req);
   }
-
 
   @Post('/confirm-registration')
   @ApiUnprocessableEntityResponse({ description: 'Invalid data' })
@@ -390,7 +393,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     if (user.isBlocked) {
       throw new DataValidationException(USER_IS_BLOCKED);
     }
-    
+
     const result = await this.authService.loginUser(body);
 
     return {
@@ -398,8 +401,6 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       result,
     };
   }
-
-
 
   @UseGuards(JwtAuthAnonymousGuard)
   @Get('/me')
@@ -492,7 +493,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     });
 
     const userInfoResponse = await userInfoClient.get({
-      auth: this.oAuth2Client
+      auth: this.oAuth2Client,
     });
 
     return userInfoResponse.data;
@@ -503,15 +504,14 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       const response = await sendHttpRequest({
         url,
         method: HttpMethods.Get,
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
       });
 
       return {
         buffer: response.data,
-        mimeType: response.headers['content-type']
+        mimeType: response.headers['content-type'],
       };
-    }
-    catch (err) {
+    } catch (err) {
       throw new BadRequestException(err);
     }
   }
@@ -525,7 +525,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
   async googleAuthRedirect(
     @Request() req,
     @Body() body: VerifyGoogleAuthRequest,
-  ): Promise<ResponseSumType<TokenPairWithUserType & { isFirstLogin: boolean }>> {
+  ): Promise<
+    ResponseSumType<TokenPairWithUserType & { isFirstLogin: boolean }>
+  > {
     try {
       await this.delGlobalUser(req);
       const tokenVerified = await this.oAuth2Client.getTokenInfo(body.token);
@@ -558,15 +560,15 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
 
-      if (!user.profileAvatar && (user.loginType === LoginTypes.Google)) {
+      if (!user.profileAvatar && user.loginType === LoginTypes.Google) {
         const image = await this.getImageFromUrl(picture);
         await this.coreService.findUserAndUpdateAvatar({
           userId: user.id,
           data: {
             mimeType: image.mimeType,
             size: image.buffer.length,
-            profileAvatar: picture
-          }
+            profileAvatar: picture,
+          },
         });
       }
 
@@ -580,7 +582,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         success: true,
         result: {
           ...result,
-          isFirstLogin
+          isFirstLogin,
         },
       };
     } catch (err) {

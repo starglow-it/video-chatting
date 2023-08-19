@@ -70,7 +70,7 @@ export class MeetingsController {
   ): Promise<ResponseSumType<IUserTemplate>> {
     try {
       let userTemplate = await this.userTemplatesService.getUserTemplateById({
-        id: body.templateId
+        id: body.templateId,
       });
 
       if (!userTemplate) {
@@ -156,14 +156,14 @@ export class MeetingsController {
   })
   async getMeetingTemplate(
     @Param() params: GetMeetingDetailParams,
-    @Query() query: GetMeetingDetailQuery
-    ) {
-    const {subdomain} = query;
-    const {templateId} = params;
+    @Query() query: GetMeetingDetailQuery,
+  ) {
+    const { subdomain } = query;
+    const { templateId } = params;
     try {
       const meeting = await this.userTemplatesService.getUserTemplate({
         id: templateId,
-        subdomain
+        subdomain,
       });
 
       return {

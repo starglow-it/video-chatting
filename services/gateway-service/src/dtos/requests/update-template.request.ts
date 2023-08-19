@@ -14,7 +14,6 @@ import { IUpdateTemplate, IBusinessCategory } from 'shared-types';
 import { ApiProperty } from '@nestjs/swagger';
 
 class SocialsDTO {
-
   @ApiProperty()
   @IsOptional()
   @IsString({ message: 'Url must be string ' })
@@ -53,23 +52,22 @@ class SocialsDTO {
 }
 
 class BusinessCategoryDTO {
-
   @ApiProperty({
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Id must be string ' })
   id?: string;
 
   @ApiProperty({
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Key must be string ' })
   key: string;
 
   @ApiProperty({
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Value must be string ' })
@@ -79,7 +77,7 @@ class BusinessCategoryDTO {
 export class UpdateTemplateRequest implements IUpdateTemplate {
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Company Name must be string' })
@@ -87,7 +85,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @ValidateIf((object, value) => Boolean(value))
@@ -97,7 +95,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'FullName must be string' })
@@ -105,7 +103,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     type: String,
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString({ message: 'Position must be string' })
@@ -113,7 +111,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Description must be string' })
@@ -121,7 +119,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Description must be string' })
@@ -129,7 +127,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Custom link must be string' })
@@ -137,7 +135,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: Boolean
+    type: Boolean,
   })
   @IsOptional()
   @IsBoolean({ message: 'isMonetizationEnabled must be boolean' })
@@ -145,7 +143,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: Number
+    type: Number,
   })
   @IsOptional()
   @IsNumber({}, { message: 'templatePrice must be number' })
@@ -153,16 +151,15 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     type: String,
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString({ message: 'Currency must be string' })
   templateCurrency: string;
 
-
   @ApiProperty({
     type: String,
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString({ message: 'Paywall Currency must be string' })
@@ -170,7 +167,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: Number
+    type: Number,
   })
   @IsOptional()
   @IsNumber({}, { message: 'Paywall Price must be number' })
@@ -178,7 +175,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: [BusinessCategoryDTO]
+    type: [BusinessCategoryDTO],
   })
   @IsOptional()
   @IsObject({ message: 'Business category must be object', each: true })
@@ -188,7 +185,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: [String]
+    type: [String],
   })
   @IsOptional()
   @IsString({ message: 'Language must be string', each: true })
@@ -196,7 +193,7 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: SocialsDTO
+    type: SocialsDTO,
   })
   @IsOptional()
   @IsObject()
@@ -207,16 +204,15 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
   @ApiProperty({
     required: false,
     type: [String],
-    description: 'Preview Urls are ids'
+    description: 'Preview Urls are ids',
   })
   @IsOptional()
   @IsString({ message: 'Preview Url must be string', each: true })
   previewUrls: string[];
 
-
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Url must be string', each: true })
@@ -224,10 +220,9 @@ export class UpdateTemplateRequest implements IUpdateTemplate {
 
   @ApiProperty({
     required: false,
-    type: String
+    type: String,
   })
   @IsOptional()
   @IsString({ message: 'Template type must be string', each: true })
   templateType: string;
-
 }

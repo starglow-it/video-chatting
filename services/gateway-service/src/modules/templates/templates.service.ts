@@ -41,7 +41,9 @@ export class TemplatesService {
     return this.coreService.sendCustom(pattern, payload);
   }
 
-  async createTemplate(payload: CreateTemplatePayload): Promise<ICommonTemplate> {
+  async createTemplate(
+    payload: CreateTemplatePayload,
+  ): Promise<ICommonTemplate> {
     const pattern = { cmd: TemplateBrokerPatterns.CreateTemplate };
 
     return this.coreService.sendCustom(pattern, payload);

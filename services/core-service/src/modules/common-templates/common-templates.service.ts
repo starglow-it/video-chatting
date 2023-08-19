@@ -33,7 +33,10 @@ import {
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { DEFAULT_TEMPLATE_DATA } from 'shared-const';
 import { Counters } from 'shared-types';
-import { CommonTemplate, CommonTemplateDocument } from '../../schemas/common-template.schema';
+import {
+  CommonTemplate,
+  CommonTemplateDocument,
+} from '../../schemas/common-template.schema';
 
 @Injectable()
 export class CommonTemplatesService {
@@ -44,7 +47,7 @@ export class CommonTemplatesService {
     private commonTemplate: Model<CommonTemplateDocument>,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
-  ) { }
+  ) {}
 
   async exists({
     query,
@@ -77,7 +80,7 @@ export class CommonTemplatesService {
       .exec();
   }
 
-   joinCommonTemplatePropertiesQueries(): PipelineStage[] {
+  joinCommonTemplatePropertiesQueries(): PipelineStage[] {
     const joinBusinessCategories: PipelineStage = {
       $lookup: {
         from: 'businesscategories',
@@ -107,33 +110,35 @@ export class CommonTemplatesService {
               localField: 'profileAvatar',
               foreignField: '_id',
               as: 'profileAvatar',
-              pipeline: [{
-                $project: {
-                  _id: 0,
-                  __v: 0,
-                }
-              }]
+              pipeline: [
+                {
+                  $project: {
+                    _id: 0,
+                    __v: 0,
+                  },
+                },
+              ],
             },
           },
           {
             $set: {
               profileAvatar: {
-                $first: "$profileAvatar"
-              }
-            }
+                $first: '$profileAvatar',
+              },
+            },
           },
           {
             $project: {
               profileAvatar: 1,
               role: 1,
-              fullName: 1
-            }
-          }
+              fullName: 1,
+            },
+          },
         ],
         as: 'author',
       },
-    }
-    return [joinBusinessCategories, joinPreviewImages, joinAuthor]
+    };
+    return [joinBusinessCategories, joinPreviewImages, joinAuthor];
   }
 
   async findCommonTemplateById({

@@ -43,7 +43,7 @@ async function bootstrap() {
 
   SwaggerModule.setup(`${ROOT_SCOPE}swagger`, app, document);
 
-  app.use('/maindrill', express.raw({type: 'application/json'}));
+  app.use('/maindrill', express.raw({ type: 'application/json' }));
 
   app.useGlobalFilters(
     new AllExceptionsFilter(),

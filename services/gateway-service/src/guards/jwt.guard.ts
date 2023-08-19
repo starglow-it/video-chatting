@@ -14,7 +14,7 @@ type TokenDataDto = { userId: string; exp: number };
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
-    private coreService: CoreService
+    private coreService: CoreService,
   ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {

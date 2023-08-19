@@ -38,6 +38,8 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(port, () => console.log(`Meeting Socket Service listening at port: ${port}`));
+  await app.listen(port, () =>
+    console.log(`Meeting Socket Service listening at port: ${port}`),
+  );
 }
 bootstrap();

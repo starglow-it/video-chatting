@@ -4,15 +4,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Meeting, MeetingDocument } from '../../schemas/meeting.schema';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions, UserActionInMeeting, UserActionInMeetingParams } from '../../types/common';
+import {
+  CustomPopulateOptions,
+  UserActionInMeeting,
+  UserActionInMeetingParams,
+} from '../../types/common';
 import { IUserTemplate } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 @Injectable()
 export class MeetingsService {
   constructor(
     @InjectModel(Meeting.name) private meeting: Model<MeetingDocument>,
-    private coreService: CoreService
-  ) { }
+    private coreService: CoreService,
+  ) {}
 
   private logger = new Logger(MeetingsService.name);
 
@@ -118,22 +122,22 @@ export class MeetingsService {
     user,
     event,
   }: {
-    userTemplate: IUserTemplate,
-    user: MeetingUserDocument,
-    event: UserActionInMeeting,
+    userTemplate: IUserTemplate;
+    user: MeetingUserDocument;
+    event: UserActionInMeeting;
   }) {
     try {
       const userId = user._id.toString();
       const updateIndexParams: UserActionInMeetingParams = {
         [UserActionInMeeting.Join]: {
           condition: null,
-          replaceItem: userId
+          replaceItem: userId,
         },
         [UserActionInMeeting.Leave]: {
           condition: userId,
-          replaceItem: null
-        }
-      }
+          replaceItem: null,
+        },
+      };
 
       const params = updateIndexParams[event];
 
@@ -149,11 +153,10 @@ export class MeetingsService {
           },
         });
       }
-
     } catch (err) {
       this.logger.error({
         message: err.message,
-        event
+        event,
       });
       return;
     }

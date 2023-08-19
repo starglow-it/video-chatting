@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import {IMediaCategory } from 'shared-types';
+import { IMediaCategory } from 'shared-types';
 
 export class CommonMediaCategoryDTO implements IMediaCategory {
   @Expose()

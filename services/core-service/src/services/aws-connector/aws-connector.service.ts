@@ -116,7 +116,7 @@ export class AwsConnectorService {
       Prefix: keyFolder,
     } as S3.Types.ListObjectsRequest;
 
-    console.log("deleteFolder params: ", params);
+    console.log('deleteFolder params: ', params);
     const objects = await this.s3.listObjects(params).promise();
 
     // make sure objects.Contents have objects, if not the function will be failed

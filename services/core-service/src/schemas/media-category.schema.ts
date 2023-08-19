@@ -23,12 +23,11 @@ export class MediaCategory {
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true
+    required: true,
   })
   type: string;
 }
 
 export type MediaCategoryDocument = MediaCategory & Document;
 
-export const MediaCategorySchema =
-  SchemaFactory.createForClass(MediaCategory);
+export const MediaCategorySchema = SchemaFactory.createForClass(MediaCategory);

@@ -61,8 +61,8 @@ export class PaymentsController {
       });
 
       let email = user.email;
-      if(user.role === UserRoles.Anonymous){
-        email = 'anonymous@gmail.com'
+      if (user.role === UserRoles.Anonymous) {
+        email = 'anonymous@gmail.com';
       }
 
       if (!user.stripeAccountId) {
@@ -231,8 +231,12 @@ export class PaymentsController {
         userId: userTemplate.user.id,
       });
 
-      const price = body.isPaymentPaywall ? userTemplate.paywallPrice : userTemplate.templatePrice;
-      const currency = body.isPaymentPaywall ? userTemplate.paywallCurrency : userTemplate.templateCurrency;
+      const price = body.isPaymentPaywall
+        ? userTemplate.paywallPrice
+        : userTemplate.templatePrice;
+      const currency = body.isPaymentPaywall
+        ? userTemplate.paywallCurrency
+        : userTemplate.templateCurrency;
 
       const paymentIntent = await this.paymentsService.createPaymentIntent({
         templatePrice: price,
