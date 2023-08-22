@@ -136,6 +136,7 @@ export type AppDialogsState = {
     hostUserDeletedDialog: boolean;
     downgradedSubscriptionDialog: boolean;
     meetingFinishedDialog: boolean;
+    inviteGuestsDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -163,6 +164,7 @@ export enum AppDialogsEnum {
     userBlockedDialog = 'userBlockedDialog',
     downgradedSubscriptionDialog = 'downgradedSubscriptionDialog',
     meetingFinishedDialog = 'meetingFinishedDialog',
+    inviteGuestsDialog = 'inviteGuestsDialog',
 }
 
 export type DialogActionPayload = {

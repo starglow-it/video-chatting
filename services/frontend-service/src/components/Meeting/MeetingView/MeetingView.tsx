@@ -38,11 +38,13 @@ import {
 } from 'src/controllers/WebStorageController';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
+import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
 import styles from './MeetingView.module.scss';
 
 // stores
 import {
     addNotificationEvent,
+    appDialogsApi,
     checkIsPortraitLayoutEvent,
 } from '../../../store';
 import {
@@ -64,7 +66,7 @@ import {
 } from '../../../store/roomStores';
 
 // types
-import { NotificationType } from '../../../store/types';
+import { AppDialogsEnum, NotificationType } from '../../../store/types';
 import { MeetingChangeBackground } from '../MeetingChangeBackground/MeetingChangeBackground';
 import { MeetingMonetizationButton } from '../MeetingMonetization/MeetingMonetizationButton';
 import { MeetingManageAudio } from '../MeetingManageAudio/MeetingManageAudio';
@@ -90,6 +92,14 @@ const Component = () => {
     });
 
     const prevHostUserId = useRef<string>(meeting.hostUserId);
+
+    useEffect(() => {
+        if (isOwner && !isMobile) {
+            appDialogsApi.openDialog({
+                dialogKey: AppDialogsEnum.inviteGuestsDialog,
+            });
+        }
+    }, [isOwner, isMobile]);
 
     useEffect(() => {
         if (
@@ -225,6 +235,7 @@ const Component = () => {
             {isOwner && <CopyMeetingLinkDialog />}
             <ScheduleMeetingDialog />
             <MobilePortraitStub />
+            <InviteGuestsDialog />
         </CustomGrid>
     );
 };
