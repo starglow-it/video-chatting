@@ -12,7 +12,7 @@ const Component = () => {
         register,
     } = useFormContext();
 
-    console.log('#Duy Phan console', errors)
+    console.log('#Duy Phan console', errors);
 
     const currentFullNameErrorMessage: string =
         errors?.fullName?.[0]?.message?.toString() || '';

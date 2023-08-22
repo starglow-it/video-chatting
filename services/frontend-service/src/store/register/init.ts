@@ -48,7 +48,7 @@ sample({
     clock: registerWithoutTemplateFx.doneData,
     filter: ({ error }) => !!error,
     fn: (_, clock: any) => ({
-        message:  clock?.error.message,
+        message: clock?.error.message,
         type: NotificationType.validationError,
         withErrorIcon: true,
     }),
@@ -61,4 +61,3 @@ sample({
     fn: (_, clock) => ({ email: clock.email, password: clock.password }),
     target: loginUserFx,
 });
-
