@@ -39,10 +39,10 @@ export const InviteGuestsDialog = () => {
     }, []);
 
     useEffect(() => {
-        // if (currentTime === 30000) {
-        //     handleEndCountDown();
-        //     close();
-        // }
+        if (currentTime === 30000) {
+            handleEndCountDown();
+            close();
+        }
     }, [currentTime]);
 
     const handleLinkCopied = useCallback(() => {
