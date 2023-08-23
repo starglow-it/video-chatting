@@ -45,7 +45,7 @@ logoutUserFx.use(handleLogoutUser);
 setUserCountryFx.use(handleSetUserCountry);
 googleVerifyFx.use(handleGoogleVerify);
 initUserWithoutTokenFx.use(handleInitUserWithoutToken);
-deleteDraftUsers.use(handleDeleteDraftUsers)
+deleteDraftUsers.use(handleDeleteDraftUsers);
 
 sample({
     clock: loginUserFx.doneData,
