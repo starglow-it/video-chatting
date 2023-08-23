@@ -39,10 +39,10 @@ export const InviteGuestsDialog = () => {
     }, []);
 
     useEffect(() => {
-        if (currentTime === 30000) {
-            handleEndCountDown();
-            close();
-        }
+        // if (currentTime === 30000) {
+        //     handleEndCountDown();
+        //     close();
+        // }
     }, [currentTime]);
 
     const handleLinkCopied = useCallback(() => {
@@ -53,15 +53,23 @@ export const InviteGuestsDialog = () => {
     }, []);
 
     const linkToDefault = () => {
-        window.open(`mailto:${frontendConfig.supportEmail}`, '_blank');
+        window.open(
+            `mailto:${
+                frontendConfig.supportEmail
+            }?view=cm&fs=1&subject=Meeting Link
+            &body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
+                router.query.token as string,
+            )}`,
+            '_blank',
+        );
     };
 
     const linkToGmail = () => {
         window.open(
             `
         https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(
-            `Chat my Ruume`,
-        )}&body=${`“Please Join me on Ruume”`}%0A${getClientMeetingUrlWithDomain(
+            `Meeting Link`,
+        )}&body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
                 router.query.token as string,
             )}`,
             '_blank',
@@ -103,9 +111,10 @@ export const InviteGuestsDialog = () => {
                         onClick={linkToDefault}
                     >
                         <CustomImage
-                            src="/images/default-gmail.png"
+                            src="/images/default-gmail.jpg"
                             width={60}
                             height={60}
+                            objectFit='cover'
                         />
                         <span>Default Email</span>
                     </CustomGrid>
@@ -115,8 +124,9 @@ export const InviteGuestsDialog = () => {
                     >
                         <CustomImage
                             src="/images/gmail.png"
-                            width={60}
-                            height={60}
+                            width={52}
+                            height={52}
+                            objectFit='cover'
                         />
                         <span>Gmail</span>
                     </CustomGrid>

@@ -79,3 +79,45 @@
 .devicesError {
   margin: rem(0 0 18px 0);
 }
+
+.titleLeaveMessage {
+  margin-top: 15px;
+  padding-bottom: 10px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  span {
+      font-size: 18px;
+      font-weight: 500;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row;
+  height: 90px;
+}
+
+.actionItem {
+  width: 115px;
+  height: 80px;
+  padding: 4px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+      background-color: #f1f1f1;
+  }
+
+  span {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 14px;
+  }
+}
