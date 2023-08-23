@@ -23,6 +23,7 @@ import { Translation } from '@library/common/Translation/Translation';
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { $profileStore, addNotificationEvent } from '../../store';
 import {
     $activeStreamStore,
@@ -58,6 +59,7 @@ import { NotificationType } from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
+import frontendConfig from '../../const/config';
 
 const Component = () => {
     const [waitingPaywall, setWaitingPaywall] = useState(false);
@@ -198,6 +200,26 @@ const Component = () => {
             : handleJoinMeeting;
     const joinHandler = isOwner ? onSubmit : functionPaywall;
 
+    const linkToDefault = () => {
+        window.open(
+            `mailto:${
+                frontendConfig.supportEmail
+            }?view=cm&fs=1&subject=While you were out
+            &body=${encodeURI('Missed you on Ruume… Shall we re-schedule?')}`,
+            '_blank',
+        );
+    };
+
+    const linkToGmail = () => {
+        window.open(
+            `
+        https://mail.google.com/mail/?view=cm&fs=1&su=While you were out&body=${encodeURI(
+            'Missed you on Ruume… Shall we re-schedule?',
+        )}`,
+            '_blank',
+        );
+    };
+
     return (
         <>
             <CustomGrid container direction="column" wrap="nowrap">
@@ -292,6 +314,47 @@ const Component = () => {
                                                 nameSpace="meeting"
                                                 translation="waitForHost"
                                             />
+                                        </CustomGrid>
+                                    </ConditionalRender>
+                                    <ConditionalRender
+                                        condition={
+                                            localUser.accessStatus ===
+                                            MeetingAccessStatusEnum.Waiting
+                                        }
+                                    >
+                                        <CustomGrid
+                                            className={styles.titleLeaveMessage}
+                                        >
+                                            <span>Leave a Message</span>
+                                        </CustomGrid>
+                                        <CustomGrid
+                                            className={styles.actions}
+                                            gap={2}
+                                        >
+                                            <CustomGrid
+                                                className={styles.actionItem}
+                                                onClick={linkToDefault}
+                                            >
+                                                <CustomImage
+                                                    src="/images/default-gmail.jpg"
+                                                    width={60}
+                                                    height={60}
+                                                    objectFit="cover"
+                                                />
+                                                <span>Default Email</span>
+                                            </CustomGrid>
+                                            <CustomGrid
+                                                className={styles.actionItem}
+                                                onClick={linkToGmail}
+                                            >
+                                                <CustomImage
+                                                    src="/images/gmail.png"
+                                                    width={52}
+                                                    height={52}
+                                                    objectFit="cover"
+                                                />
+                                                <span>Gmail</span>
+                                            </CustomGrid>
                                         </CustomGrid>
                                     </ConditionalRender>
                                 </>
