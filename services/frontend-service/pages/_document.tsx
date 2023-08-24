@@ -23,6 +23,19 @@ class MyDocument extends Document {
     render(): JSX.Element {
         return (
             <Html lang="en">
+                <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-NJ0KJKL2R3"
+                    strategy="lazyOnload"
+                />
+                <Script id="google-analytics-ruume" strategy="lazyOnload">
+                    {`
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-NJ0KJKL2R3', {page_path: window.location.pathname});
+                            
+                    `}
+                </Script>
                 <Head>
                     <link
                         type="image/x-icon"
@@ -54,17 +67,6 @@ class MyDocument extends Document {
                         src="https://accounts.google.com/gsi/client"
                         async
                     />
-
-                    <Script src="https://www.googletagmanager.com/gtag/js?id=G-NJ0KJKL2R3" />
-                    <Script id="google-analytics">
-                        {`
-                            window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-                          
-                            gtag('config', 'G-NJ0KJKL2R3');
-                        `}
-                    </Script>
                 </Head>
                 <body>
                     <Main />
