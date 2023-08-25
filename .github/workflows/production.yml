@@ -4,14 +4,14 @@ name: deploy production
 
 # Controls when the action will run. 
 on:
-#  pull_request:
-#    types:
-#      - closed
-#    branches:
-#      - 'production'
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - 'production'
+#  push:
+#    branches:
+#      - 'production'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
