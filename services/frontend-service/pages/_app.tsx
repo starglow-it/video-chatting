@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import App from 'next/app';
 import type { AppContext, AppProps } from 'next/app';
+import Script from 'next/script';
 import { NextResponse } from 'next/server';
 import Head from 'next/head';
 import getConfig from 'next/config';
@@ -98,6 +99,19 @@ const CustomApp = ({
                     content="initial-scale=1, width=device-width"
                 />
             </Head>
+            <Script
+                src="https://www.googletagmanager.com/gtag/js?id=G-NJ0KJKL2R3"
+                strategy="lazyOnload"
+            />
+            <Script id="google-analytics-ruume" strategy="lazyOnload">
+                {`
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', 'G-NJ0KJKL2R3', {page_path: window.location.pathname});
+                            
+                `}
+            </Script>
             <Provider value={scope}>
                 <ThemeProvider theme={baseTheme}>
                     <ThemeProvider theme={typographyTheme}>
