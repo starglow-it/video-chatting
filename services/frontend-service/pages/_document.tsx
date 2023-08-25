@@ -10,6 +10,7 @@ import Document, {
 import { withFork } from 'effector-next';
 import createEmotionServer from '@emotion/server/create-instance';
 
+import Script from 'next/script';
 import createEmotionCache from '../src/createEmotionCache';
 
 import { baseTheme } from '../src/themes/base';
@@ -22,6 +23,19 @@ class MyDocument extends Document {
     render(): JSX.Element {
         return (
             <Html lang="en">
+                <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-NJ0KJKL2R3"
+                    strategy="lazyOnload"
+                />
+                <Script id="google-analytics-ruume" strategy="lazyOnload">
+                    {`
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'G-NJ0KJKL2R3', {page_path: window.location.pathname});
+                            
+                    `}
+                </Script>
                 <Head>
                     <link
                         type="image/x-icon"

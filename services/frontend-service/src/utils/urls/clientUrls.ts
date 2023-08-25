@@ -9,7 +9,7 @@ export const getClientMeetingUrl = (token: string): string => {
     if (window.location.origin === frontendConfig.frontendUrl) {
         return `${roomRoute}/${token}`;
     }
-    return token;
+    return `/${token}`;
 };
 
 export const getClientMeetingUrlWithDomain = (token: string): string => {
