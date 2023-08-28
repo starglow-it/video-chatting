@@ -168,7 +168,7 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     volumes:
-      - ../../services/socket-service:/app/services/socket-service
+      - ../../services/socket-service/src:/app/services/socket-service/src
       - /app/services/socket-service/dist
       - /app/services/socket-service/node_modules
     networks:
