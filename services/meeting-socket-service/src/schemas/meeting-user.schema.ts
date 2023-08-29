@@ -71,6 +71,12 @@ export class MeetingUser {
   profileAvatar: string;
 
   @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    required: false
+  })
+  meetingAvatar: string;
+
+  @Prop({
     type: {
       bottom: mongoose.Schema.Types.Number,
       left: mongoose.Schema.Types.Number,

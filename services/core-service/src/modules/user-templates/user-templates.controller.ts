@@ -50,10 +50,10 @@ import {
 import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from '../../schemas/media-category.schema';
-import { PreviewImageDocument } from 'src/schemas/preview-image.schema';
-import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
+import { PreviewImageDocument } from '../../schemas/preview-image.schema';
+import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { FilterQuery } from 'mongoose';
-import { MediaDocument } from 'src/schemas/media.schema';
+import { MediaDocument } from '../../schemas/media.schema';
 
 @Controller('templates')
 export class UserTemplatesController {

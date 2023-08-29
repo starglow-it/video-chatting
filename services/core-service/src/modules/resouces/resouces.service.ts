@@ -1,38 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, PipelineStage } from 'mongoose';
-
-import { IMedia, IMediaCategory } from 'shared-types';
-
-import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
-import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import {
-  MediaCategory,
-  MediaCategoryDocument,
-} from '../../schemas/media-category.schema';
-import { Media, MediaDocument } from '../../schemas/media.schema';
-import {
-  PreviewImage,
-  PreviewImageDocument,
-} from '../../schemas/preview-image.schema';
+import { FilterQuery, Model } from 'mongoose';
+import { PreviewImage, PreviewImageDocument } from '../../schemas/preview-image.schema';
+import { Resouce, ResouceDocument } from '../../schemas/resouce.schema';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
 import * as fsPromises from 'fs/promises';
 import { getScreenShots } from '../../utils/images/getScreenShots';
 import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
+import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
+import { IResouce } from 'shared-types';
+import { PipelineStage } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
-import { MEDIA_SERVICE } from 'shared-const';
+import { RESOUCE_SERVICE } from 'shared-const';
 
 @Injectable()
-export class MediaService {
+export class ResoucesService {
   constructor(
     private awsService: AwsConnectorService,
-    @InjectModel(MediaCategory.name)
-    private mediaCategory: Model<MediaCategoryDocument>,
-    @InjectModel(Media.name)
-    private media: Model<MediaDocument>,
     @InjectModel(PreviewImage.name)
     private previewImage: Model<PreviewImageDocument>,
+    @InjectModel(Resouce.name) private resouce: Model<ResouceDocument>,
   ) {}
 
   async generatePreviews({
@@ -87,78 +76,46 @@ export class MediaService {
       console.error(`Failed to generate previews for media item "${id}":`, err);
       throw new RpcException({
         message: err.message,
-        ctx: MEDIA_SERVICE,
+        ctx: RESOUCE_SERVICE,
       });
     }
   }
 
-  async createCategory({
+  async createResouces({
     data,
     session,
   }: {
-    data: IMediaCategory;
-    session?: ITransactionSession;
-  }): Promise<MediaCategoryDocument> {
-    const [newTag] = await this.mediaCategory.create([data], {
-      session: session?.session,
-    });
-
-    return newTag;
-  }
-
-  async createMedias({
-    data,
-    session,
-  }: {
-    data: Partial<MediaDocument>[];
+    data: Partial<ResouceDocument>[];
     session?: ITransactionSession;
   }) {
-    const newMedia = await this.media.insertMany(data, {
+    const newMedia = await this.resouce.insertMany(data, {
       session: session?.session,
     });
 
     return newMedia;
   }
 
-  async createMedia({
+  async createResouce({
     data,
     session,
   }: {
-    data: Partial<MediaDocument>;
+    data: Partial<ResouceDocument>;
     session?: ITransactionSession;
-  }): Promise<MediaDocument> {
-    const [newMedia] = await this.media.create([data], {
+  }): Promise<ResouceDocument> {
+    const [newMedia] = await this.resouce.create([data], {
       session: session?.session,
     });
 
     return newMedia;
   }
 
-  async findCategories({
-    query,
-    options,
-    session,
-  }: GetModelQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument[]> {
-    return this.mediaCategory
-      .find(
-        query,
-        {},
-        {
-          skip: options?.skip,
-          limit: options?.limit,
-          session: session?.session,
-        },
-      )
-      .exec();
-  }
-
-  async findMedias({
+  async find({
     query,
     options,
     session,
     populatePaths,
-  }: GetModelQuery<MediaDocument>) {
-    return this.media
+  }: GetModelQuery<ResouceDocument>) {
+    return this.resouce
       .find(
         query,
         {},
@@ -172,12 +129,12 @@ export class MediaService {
       .exec();
   }
 
-  async findMediaCategory({
+  async findOne({
     query,
     session,
     populatePaths,
-  }: GetModelQuery<MediaCategoryDocument>): Promise<MediaCategoryDocument> {
-    return this.mediaCategory
+  }: GetModelQuery<ResouceDocument>): Promise<ResouceDocument> {
+    return this.resouce
       .findOne(
         query,
         {},
@@ -186,73 +143,33 @@ export class MediaService {
       .exec();
   }
 
-  async updateMediaCategory({
+  async update({
     query,
     data,
     session,
     populatePaths,
-  }: UpdateModelQuery<
-    MediaCategoryDocument,
-    IMediaCategory
-  >): Promise<MediaCategoryDocument> {
-    return this.mediaCategory.findOneAndUpdate(query, data, {
+  }: UpdateModelQuery<ResouceDocument, IResouce>): Promise<ResouceDocument> {
+    return this.resouce.findOneAndUpdate(query, data, {
       session: session?.session,
       populate: populatePaths,
       new: true,
     });
   }
 
-  async updateMedia({
-    query,
-    data,
-    session,
-    populatePaths,
-  }: UpdateModelQuery<MediaDocument, IMedia>): Promise<MediaDocument> {
-    return this.media.findOneAndUpdate(query, data, {
-      session: session?.session,
-      populate: populatePaths,
-      new: true,
-    });
+
+
+  async count(query: FilterQuery<ResouceDocument>): Promise<number> {
+    return this.resouce.count(query).exec();
   }
 
-  async existCategories(
-    query: FilterQuery<MediaCategoryDocument>,
-  ): Promise<boolean> {
-    const existedDocument = await this.mediaCategory.exists(query).exec();
-
-    return Boolean(existedDocument?._id);
-  }
-
-  async countCategories(
-    query: FilterQuery<MediaCategoryDocument>,
-  ): Promise<number> {
-    return this.mediaCategory.count(query).exec();
-  }
-
-  async countMedias(query: FilterQuery<MediaDocument>): Promise<number> {
-    return this.media.count(query).exec();
-  }
-
-  async deleteMedias({
+  async deleteMany({
     query,
     session,
   }: {
-    query: FilterQuery<MediaDocument>;
+    query: FilterQuery<ResouceDocument>;
     session?: ITransactionSession;
   }): Promise<any> {
-    return this.media.deleteMany(query, {
-      session: session?.session,
-    });
-  }
-
-  async deleteMediaCategories({
-    query,
-    session,
-  }: {
-    query: FilterQuery<MediaCategoryDocument>;
-    session?: ITransactionSession;
-  }): Promise<any> {
-    return this.mediaCategory.deleteMany(query, {
+    return this.resouce.deleteMany(query, {
       session: session?.session,
     });
   }
@@ -269,11 +186,11 @@ export class MediaService {
     });
   }
 
-  async deleteMediaFolders(keyFolder: string) {
+  async deleteAwsFolders(keyFolder: string) {
     await this.awsService.deleteFolder(`media/${keyFolder}`);
   }
 
   async aggregate(aggregationPipeline: PipelineStage[]) {
-    return this.media.aggregate(aggregationPipeline).exec();
+    return this.resouce.aggregate(aggregationPipeline).exec();
   }
 }

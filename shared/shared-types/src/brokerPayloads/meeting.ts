@@ -1,3 +1,4 @@
+import { QueryParams } from '../common';
 import {
   IMeetingInstance,
   ICommonTemplate,
@@ -13,7 +14,7 @@ export type GetMediaServerTokenPayload = {
 
 export type CreateMeetingPayload = {
   templateId: ICommonTemplate['id'];
-  subdomain?: ICommonTemplate['subdomain']
+  subdomain?: ICommonTemplate['subdomain'];
 };
 
 export type DeleteMeetingPayload = {
@@ -46,4 +47,10 @@ export type AssignMeetingInstancePayload = {
 export type KickUserFromMeetingPayload = {
   userId: ICommonUser['id'];
   reason: KickUserReasons;
+};
+
+export type GetMeetingAvatarsPayload = QueryParams;
+
+export type CreateMeetingAvatarPayload = {
+  resouceId: string;
 };
