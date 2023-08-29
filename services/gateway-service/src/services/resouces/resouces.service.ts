@@ -12,10 +12,9 @@ export class ResouceService {
     private readonly uploadService: UploadService,
   ) {}
 
-
   private async createResouce(): Promise<IResouce> {
     const pattern = { cmd: CoreBrokerPatterns.CreateResouce };
-    return this.coreService.sendCustom(pattern, null);
+    return this.coreService.sendCustom(pattern, {});
   }
 
   async uploadResouce(payload: UploadResoucePayload) {
@@ -40,7 +39,8 @@ export class ResouceService {
         url,
         id: resouce.id,
         mimeType: file.mimetype,
-        size: file.size
+        size: file.size,
+        key: `http://${this.uploadService.vultrStorageHostname}/`,
       });
     }
 
