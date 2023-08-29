@@ -36,3 +36,8 @@ export const getSFUTokenUrl = {
     url: `${serverUrl}/${meetingScope}/token`,
     method: HttpMethods.Post,
 };
+
+export const getAvatarsMeetingUrl = {
+    url: `${serverUrl}/${CREATE_MEETING_URL}`,
+    method: HttpMethods.Get,
+};
