@@ -22,7 +22,12 @@ import {
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 
 import { MEETINGS_SCOPE } from 'shared-const';
-import { ResponseSumType, IUserTemplate, IMeetingAvatar, EntityList } from 'shared-types';
+import {
+  ResponseSumType,
+  IUserTemplate,
+  IMeetingAvatar,
+  EntityList,
+} from 'shared-types';
 
 // services
 import { CoreService } from '../../services/core/core.service';
@@ -57,7 +62,7 @@ export class MeetingsController {
     private userTemplatesService: UserTemplatesService,
     private mediaServerService: MediaServerService,
     private meetingService: MeetingsService,
-    private resouceService: ResouceService
+    private resouceService: ResouceService,
   ) {}
 
   @UseGuards(JwtAuthAnonymousGuard)
@@ -120,6 +125,68 @@ export class MeetingsController {
         },
         JSON.stringify(err),
       );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/avatars')
+  @ApiOperation({ summary: 'Get meeting avatars' })
+  @ApiOkResponse({
+    type: '',
+    description: 'Get Meeting Avatars Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getMeetingAvatars(
+    @Query() query: GetMeetingAvatarsQueryDto,
+  ): Promise<ResponseSumType<EntityList<IMeetingAvatar>>> {
+    try {
+      console.log(query);
+
+      const result = await this.meetingService.getMeetingAvatars(query);
+      return {
+        success: true,
+        result,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get meeting avatars`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('/avatar')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create Meeting Avatar' })
+  @ApiOkResponse({
+    type: CommonMeetingAvatarResDto,
+    description: 'Create Meeting Avatar',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @ApiFile()
+  async createMeetingAvatar(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ResponseSumType<IMeetingAvatar>> {
+    try {
+      const resouce = await this.resouceService.handleCreateResouce({ file });
+      if (!resouce) {
+        throw new BadRequestException('Resouce not found');
+      }
+      const meetingAvatar = await this.meetingService.createMeetingAvatar({
+        resouceId: resouce.id,
+      });
+      return {
+        success: true,
+        result: meetingAvatar,
+      };
+    } catch (err) {
       throw new BadRequestException(err);
     }
   }
@@ -218,66 +285,6 @@ export class MeetingsController {
         },
         JSON.stringify(err),
       );
-      throw new BadRequestException(err);
-    }
-  }
-
-  @Get('/avatars')
-  @ApiOperation({ summary: 'Get meeting avatars' })
-  @ApiOkResponse({
-    type: '',
-    description: 'Get Meeting Avatars Success',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  async getMeetingAvatars(
-    @Query() query: GetMeetingAvatarsQueryDto
-    ): Promise<ResponseSumType<EntityList<IMeetingAvatar>>> {
-    try {
-      const result = await this.meetingService.getMeetingAvatars(query);
-      return {
-        success: true,
-        result,
-      };
-    } catch (err) {
-      this.logger.error(
-        {
-          message: `An error occurs, while get media server token`,
-        },
-        JSON.stringify(err),
-      );
-      throw new BadRequestException(err);
-    }
-  }
-
-  @Post('/avatar')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create Meeting Avatar' })
-  @ApiOkResponse({
-    type: CommonMeetingAvatarResDto,
-    description: 'Create Meeting Avatar',
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  @ApiFile()
-  async createMeetingAvatar(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<ResponseSumType<IMeetingAvatar>> {
-    try {
-      const resouce = await this.resouceService.handleCreateResouce({file});
-      if(!resouce){
-        throw new BadRequestException('Resouce not found')
-      }
-      const meetingAvatar = await this.meetingService.createMeetingAvatar({
-        resouceId: resouce.id
-      });
-      return {
-        success: true,
-        result: meetingAvatar,
-      };
-    } catch (err) {
       throw new BadRequestException(err);
     }
   }

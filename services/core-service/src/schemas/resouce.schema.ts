@@ -7,31 +7,31 @@ import { PreviewImageDocument } from './preview-image.schema';
 export class Resouce {
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true,
+    default: '',
   })
   url: string;
 
   @Prop({
     type: mongoose.Schema.Types.Number,
-    required: true,
+    default: 0,
   })
   size: number;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PreviewImage' }],
-    required: true,
+    default: []
   })
   previewUrls: PreviewImageDocument[];
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true,
+    default: ''
   })
   mimeType: string;
 
   @Prop({
     type: mongoose.Schema.Types.String,
-    required: true,
+    default: ''
   })
   key: string;
 }

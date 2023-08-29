@@ -9,4 +9,5 @@ export type UploadResoucePayload = {
   id: string;
   mimeType: string;
   size: number;
+  key: string;
 };
