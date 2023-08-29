@@ -390,6 +390,10 @@ const Component = () => {
                                             }
                                         />
                                     }
+                                    isCamera={isCameraActive}
+                                    isMicrophone={isMicActive}
+                                    onToggleCamera={handleToggleCamera}
+                                    onToggleMicrophone={handleToggleMic}
                                 />
                             )}
                             <ConditionalRender condition={isOwner}>

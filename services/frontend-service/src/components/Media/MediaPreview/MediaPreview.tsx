@@ -3,19 +3,11 @@ import clsx from 'clsx';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-
-// custom
-import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
-import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // components
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
 import { VolumeAnalyzer } from '@components/Media/VolumeAnalyzer/VolumeAnalyzer';
-
-// library
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // types
 import { MediaPreviewProps } from './types';
@@ -28,10 +20,8 @@ const Component = ({
     audioError,
     videoDevices,
     audioDevices,
-    isMicActive,
     isCameraActive,
     stream,
-    onToggleAudio,
     onToggleVideo,
     profileAvatar,
     userName,
@@ -52,18 +42,11 @@ const Component = ({
         onToggleVideo?.();
     }, [onToggleVideo]);
 
-    const handleToggleAudio = useCallback(() => {
-        onToggleAudio?.();
-    }, [onToggleAudio]);
-
     const isNeedToRenderDevices =
         (Boolean(videoDevices.length || audioDevices.length) && !audioError) ||
         (!(videoDevices.length || audioDevices.length) && audioError);
 
     const isVideoDisabled = !stream?.id || Boolean(videoError);
-    const isAudioDisabled = !stream?.id || Boolean(audioError);
-
-    const buttonsSize = isMobile ? '22px' : '32px';
 
     return (
         <CustomGrid
@@ -95,50 +78,6 @@ const Component = ({
                         key={stream?.id}
                         indicatorsNumber={isMobile ? 9 : 6}
                     />
-                    <CustomGrid container className={styles.controlsWrapper}>
-                        <CustomTooltip
-                            nameSpace="errors"
-                            translation={audioError}
-                        >
-                            <ActionButton
-                                className={clsx(styles.controlBtn, {
-                                    [styles.withError]: Boolean(audioError),
-                                    [styles.disabled]: isAudioDisabled,
-                                    [styles.mobile]: isMobile,
-                                })}
-                                disabled={isAudioDisabled}
-                                onAction={handleToggleAudio}
-                                Icon={
-                                    <MicIcon
-                                        width={buttonsSize}
-                                        height={buttonsSize}
-                                        isActive={isMicActive}
-                                    />
-                                }
-                            />
-                        </CustomTooltip>
-                        <CustomTooltip
-                            nameSpace="errors"
-                            translation={videoError}
-                        >
-                            <ActionButton
-                                className={clsx(styles.controlBtn, {
-                                    [styles.withError]: Boolean(videoError),
-                                    [styles.disabled]: isVideoDisabled,
-                                    [styles.mobile]: isMobile,
-                                })}
-                                onAction={handleToggleVideo}
-                                disabled={isVideoDisabled}
-                                Icon={
-                                    <CameraIcon
-                                        width={buttonsSize}
-                                        height={buttonsSize}
-                                        isActive={isCameraActive}
-                                    />
-                                }
-                            />
-                        </CustomTooltip>
-                    </CustomGrid>
                 </CustomGrid>
             )}
         </CustomGrid>

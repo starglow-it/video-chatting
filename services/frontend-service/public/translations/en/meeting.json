@@ -118,7 +118,9 @@
       "unpin": "Unpin"
     },
     "getPaid": "Get Paid",
-    "sendMoney": "Send Money"
+    "sendMoney": "Send Money",
+    "peopleSeeMe": "People can see me",
+    "peopleHearMe": "People can hear me"
   },
   "payments": {
     "perSession": "per session",
