@@ -4,13 +4,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   MediaCategory,
   MediaCategorySchema,
-} from 'src/schemas/media-category.schema';
-import { Media, MediaSchema } from 'src/schemas/media.schema';
+} from '../../schemas/media-category.schema';
+import { Media, MediaSchema } from '../../schemas/media.schema';
 import {
   PreviewImage,
   PreviewImageSchema,
-} from 'src/schemas/preview-image.schema';
-import { AwsConnectorModule } from 'src/services/aws-connector/aws-connector.module';
+} from '../../schemas/preview-image.schema';
+import { AwsConnectorModule } from '../../services/aws-connector/aws-connector.module';
 import { UserTemplatesModule } from '../user-templates/user-templates.module';
 import { MediaController } from './medias.controller';
 import { MediaService } from './medias.service';

@@ -33,9 +33,9 @@ import { MediaService } from './medias.service';
 import { CommonMediaCategoryDTO } from '../../dtos/common-media-categories.dto';
 import { CommonMediaDTO } from '../../dtos/common-media.dto';
 import { UserTemplatesService } from '../user-templates/user-templates.service';
-import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
+import { MediaCategoryDocument } from '../../schemas/media-category.schema';
 import { retry } from '../../utils/common/retry';
-import { PreviewImageDocument } from 'src/schemas/preview-image.schema';
+import { PreviewImageDocument } from '../../schemas/preview-image.schema';
 import { PreviewUrls } from '../../types/media';
 
 @Controller('medias')

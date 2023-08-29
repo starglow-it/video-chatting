@@ -9,6 +9,7 @@ import {
   UserBrokerPatterns,
   MeetingBrokerPatterns,
   UserTemplatesBrokerPatterns,
+  CoreBrokerPatterns,
 } from 'shared-const';
 
 import {
@@ -45,6 +46,7 @@ import {
   ICommonTemplate,
   DeleteCommonUserPayload,
   FilterQuery,
+  IResouce,
 } from 'shared-types';
 
 @Injectable()

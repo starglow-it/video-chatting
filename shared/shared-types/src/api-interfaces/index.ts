@@ -9,3 +9,4 @@ export * from './migration';
 export * from './featured-background';
 export * from './monitoring';
 export * from './notification';
+export * from './resouces';

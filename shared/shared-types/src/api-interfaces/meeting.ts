@@ -1,5 +1,6 @@
 import { ICommonUser } from './users';
 import { ICommonTemplate } from './templates';
+import { IResouce } from './resouces';
 
 export enum MeetingInstanceServerStatus {
   Active = 'active',
@@ -38,6 +39,11 @@ export interface IInviteAttendeeEmail {
   meetingId: string;
 }
 
+export enum MeetingAvatarStatus {
+  Active = 'active',
+  Inative = 'inactive',
+}
+
 export enum MeetingAccessStatusEnum {
   Initial = 'Initial',
   EnterName = 'enterName',
@@ -48,4 +54,9 @@ export enum MeetingAccessStatusEnum {
   Rejected = 'rejected',
   Kicked = 'Kicked',
   Left = 'Left',
+}
+export interface IMeetingAvatar {
+  id?: string;
+  resouce: IResouce;
+  status: MeetingAvatarStatus;
 }
