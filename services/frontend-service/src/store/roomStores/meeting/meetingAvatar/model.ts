@@ -1,12 +1,16 @@
+import { EntityList, IMeetingAvatar } from 'shared-types';
 import { meetingDomain } from 'src/store/domains';
 
 export const $avatarsMeetingStore = meetingDomain.createStore<{
-    avatars: any[];
+    avatar: EntityList<IMeetingAvatar>;
 }>({
-    avatars: [],
+    avatar: {
+        list: [],
+        count: 0,
+    },
 });
 
-export const getAvatarsMeetingFx = meetingDomain.createEffect<void, void>(
-    'getAvatarsMeetingFx',
-);
-
+export const getAvatarsMeetingFx = meetingDomain.createEffect<
+    void,
+    EntityList<IMeetingAvatar>
+>('getAvatarsMeetingFx');

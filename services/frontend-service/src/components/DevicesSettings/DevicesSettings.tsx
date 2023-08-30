@@ -24,6 +24,8 @@ import { Translation } from '@library/common/Translation/Translation';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
+import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import { $profileStore, addNotificationEvent } from '../../store';
 import {
     $activeStreamStore,
@@ -81,6 +83,9 @@ const Component = () => {
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
     const isAuraActive = useStore($isAuraActive);
+    const {
+        avatar: { list },
+    } = useStore($avatarsMeetingStore);
 
     const isCameraActiveRef = useRef(isCameraActive);
 
@@ -105,6 +110,10 @@ const Component = () => {
     } = useToggle(isBackgroundAudioActive);
 
     const { isMobile } = useBrowserDetect();
+
+    useEffect(() => {
+        getAvatarsMeetingEvent();
+    }, []);
 
     useEffect(() => {
         updateLocalUserEvent({
@@ -236,7 +245,15 @@ const Component = () => {
                             isCameraActive={isCameraActive}
                             videoDevices={videoDevices}
                             audioDevices={audioDevices}
-                            profileAvatar={profile.profileAvatar?.url}
+                            profileAvatar={
+                                localUser.meetingAvatarId
+                                    ? list.find(
+                                          item =>
+                                              item.id ===
+                                              localUser.meetingAvatarId,
+                                      )?.resouce.url
+                                    : profile.profileAvatar?.url
+                            }
                             userName={localUser?.username}
                             stream={activeStream}
                             onToggleAudio={handleToggleMic}

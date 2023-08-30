@@ -1,0 +1,26 @@
+.item {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    padding: 6px;
+}
+
+.bound {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+
+    &.active {
+        border: 2px solid blue;
+    }
+}
+
+.image {
+    border-radius: 50%;
+    overflow: hidden;
+
+   
+}

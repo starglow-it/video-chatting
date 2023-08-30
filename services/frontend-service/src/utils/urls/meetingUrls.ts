@@ -38,6 +38,6 @@ export const getSFUTokenUrl = {
 };
 
 export const getAvatarsMeetingUrl = {
-    url: `${serverUrl}/${CREATE_MEETING_URL}`,
+    url: `${serverUrl}/${CREATE_MEETING_URL}/avatars?skip=0&limit=20`,
     method: HttpMethods.Get,
 };

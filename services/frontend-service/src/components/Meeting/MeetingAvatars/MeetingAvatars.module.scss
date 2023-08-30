@@ -1,0 +1,14 @@
+@import '../../../styles/variables.scss';
+
+.container {
+    width: 240px;
+    height: 260px;
+    border-radius: 16px;
+    background-color: $primary-white;
+    padding: 12px;
+}
+
+.main {
+    display: flex;
+    flex: 1;
+}
