@@ -1,4 +1,3 @@
-import { UserRoles } from "shared-types";
 import { SwaggerSchemaProperty } from "../../utils/types/swagger";
 
 export const CreateMeetingAvatarSwaggerProperty: SwaggerSchemaProperty = {
