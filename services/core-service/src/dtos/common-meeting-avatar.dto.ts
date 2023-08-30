@@ -1,5 +1,5 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { IMeetingAvatar, MeetingAvatarStatus } from 'shared-types';
+import { IMeetingAvatar, UserRoles } from 'shared-types';
 import { CommonResouceDto } from './common-resouce.dto';
 
 export class CommonMeetingAvatarDto implements IMeetingAvatar {
@@ -13,4 +13,7 @@ export class CommonMeetingAvatarDto implements IMeetingAvatar {
 
   @Expose()
   status: IMeetingAvatar['status'];
+
+  @Expose()
+  roles: IMeetingAvatar['roles'];
 }

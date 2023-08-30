@@ -18,12 +18,20 @@ export class CommonMeetingAvatarResDto implements IMeetingAvatar {
   @ApiProperty({
     type: CommonResouceResDto,
   })
-  resouce: IResouce;
+  resouce: IMeetingAvatar['resouce'];
 
   @Expose()
   @ApiProperty({
     type: String,
     enum: MeetingAvatarStatus,
   })
-  status: MeetingAvatarStatus;
+  status: IMeetingAvatar['status'];
+
+  @Expose()
+  @ApiProperty({
+    type: String,
+    enum: MeetingAvatarStatus,
+  })
+  roles: IMeetingAvatar['roles'];
+
 }

@@ -6,6 +6,7 @@ import {
   IUserTemplate,
   KickUserReasons,
   IMeetingAvatar,
+  UserRoles,
 } from '../api-interfaces';
 
 export type GetMediaServerTokenPayload = {
@@ -54,6 +55,7 @@ export type GetMeetingAvatarsPayload = QueryParams;
 
 export type CreateMeetingAvatarPayload = {
   resouceId: string;
+  roles: UserRoles[];
 };
 
 export type GetMeetingAvatarPayload = {

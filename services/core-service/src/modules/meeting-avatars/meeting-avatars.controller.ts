@@ -103,7 +103,7 @@ export class MeetingAvatarsController {
   }
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.CreateMeetingAvatar })
-  async createUserTemplateMedia(@Payload() {resouceId}: CreateMeetingAvatarPayload) {
+  async createUserTemplateMedia(@Payload() {resouceId, roles}: CreateMeetingAvatarPayload) {
     return withTransaction(this.connection, async (session) => {
       try {
         const resouce = await this.resouceService.findOne({query: {_id: resouceId}});
@@ -117,7 +117,8 @@ export class MeetingAvatarsController {
         const meetingAvatar = await this.meetingAvatarService.create({
           data: {
             resouce,
-            status: MeetingAvatarStatus.Active
+            status: MeetingAvatarStatus.Active,
+            roles
           },
           session,
         });

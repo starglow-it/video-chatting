@@ -15,6 +15,15 @@ export class MeetingAvatar {
     type: mongoose.Schema.Types.String,
   })
   status: string;
+
+  @Prop({
+    type: [
+      {
+        type:  mongoose.Schema.Types.String
+      }
+    ]
+  })
+  roles: string[];
 }
 
 export type MeetingAvatarDocument = MeetingAvatar & mongoose.Document;

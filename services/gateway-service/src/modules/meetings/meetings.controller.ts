@@ -50,6 +50,7 @@ import { CommonMeetingAvatarResDto } from 'src/dtos/response/common-meeting-avat
 import { CreateMeetingAvatarSwaggerProperty } from 'src/dtos/swagger-properties/meeting.swagger-properties';
 import { ApiFile } from '../../utils/decorators/api-file.decorator';
 import { ResouceService } from '../../services/resouces/resouces.service';
+import { CreateMeetingAvatarRequest } from '../../dtos/requests/create-meeting-avatar.request';
 
 @ApiTags('Meetings')
 @Controller(MEETINGS_SCOPE)
@@ -142,8 +143,6 @@ export class MeetingsController {
     @Query() query: GetMeetingAvatarsQueryDto,
   ): Promise<ResponseSumType<EntityList<IMeetingAvatar>>> {
     try {
-      console.log(query);
-
       const result = await this.meetingService.getMeetingAvatars(query);
       return {
         success: true,
@@ -170,17 +169,22 @@ export class MeetingsController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  @ApiFile()
+  @ApiFile(CreateMeetingAvatarSwaggerProperty)
   async createMeetingAvatar(
+    @Body() {roles}: CreateMeetingAvatarRequest,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IMeetingAvatar>> {
     try {
+      console.log(roles);
+      
+      return;
       const resouce = await this.resouceService.handleCreateResouce({ file });
       if (!resouce) {
         throw new BadRequestException('Resouce not found');
       }
       const meetingAvatar = await this.meetingService.createMeetingAvatar({
         resouceId: resouce.id,
+        roles
       });
       return {
         success: true,

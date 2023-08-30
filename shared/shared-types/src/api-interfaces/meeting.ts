@@ -1,4 +1,4 @@
-import { ICommonUser } from './users';
+import { ICommonUser, UserRoles } from './users';
 import { ICommonTemplate } from './templates';
 import { IResouce } from './resouces';
 
@@ -59,4 +59,5 @@ export interface IMeetingAvatar {
   id?: string;
   resouce: IResouce;
   status: MeetingAvatarStatus;
+  roles: UserRoles[];
 }
