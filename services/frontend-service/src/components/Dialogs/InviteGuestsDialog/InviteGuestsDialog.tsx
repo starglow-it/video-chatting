@@ -15,7 +15,6 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { getClientMeetingUrlWithDomain } from 'src/utils/urls';
 import { useRouter } from 'next/router';
 import { useTimer } from '@hooks/useTimer';
-import frontendConfig from '../../../const/config';
 import styles from './InviteGuestsDIalog.module.scss';
 
 export const InviteGuestsDialog = () => {
@@ -54,9 +53,7 @@ export const InviteGuestsDialog = () => {
 
     const linkToDefault = () => {
         window.open(
-            `mailto:${
-                frontendConfig.supportEmail
-            }?view=cm&fs=1&subject=Meeting Link
+            `mailto:?view=cm&fs=1&subject=Meeting Link
             &body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
                 router.query.token as string,
             )}`,
