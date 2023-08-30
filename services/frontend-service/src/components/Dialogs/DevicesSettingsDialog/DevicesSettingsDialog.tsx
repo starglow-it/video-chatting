@@ -273,8 +273,8 @@ const Component = () => {
                                     translation="settings.main"
                                 />
                             }
-                            isCamera={isCameraActive}
-                            isMicrophone={isMicActive}
+                            isCamera={isNewCameraSettingActive}
+                            isMicrophone={isNewMicSettingActive}
                             onToggleCamera={handleToggleCamera}
                             onToggleMicrophone={handleToggleMic}
                         />
