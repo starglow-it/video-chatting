@@ -84,7 +84,7 @@ export class MeetingUser {
   userPosition: { bottom: number; left: number };
 
   @Prop({
-    type: mongoose.Schema.Types.Boolean
+    type: mongoose.Schema.Types.String
   })
   avatarRole: string;
 
