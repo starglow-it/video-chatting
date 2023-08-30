@@ -44,6 +44,11 @@ export enum MeetingAvatarStatus {
   Inative = 'inactive',
 }
 
+export enum MeetingAvatarRole {
+  LoggedIn = 'logged_in',
+  NoLogin = 'no_login'
+}
+
 export enum MeetingAccessStatusEnum {
   Initial = 'Initial',
   EnterName = 'enterName',

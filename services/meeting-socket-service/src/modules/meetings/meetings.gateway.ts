@@ -534,6 +534,7 @@ export class MeetingsGateway
           isAuraActive: message.isAuraActive,
           micStatus: message.micStatus,
           cameraStatus: message.cameraStatus,
+          avatarRole: message.avatarRole
         },
         session,
       );
