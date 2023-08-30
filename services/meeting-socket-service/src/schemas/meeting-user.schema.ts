@@ -71,7 +71,7 @@ export class MeetingUser {
   profileAvatar: string;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.String,
   })
   meetingAvatarId: string;
 
