@@ -44,7 +44,6 @@ function Component<Data extends { id: number | string }>(
       )),
     [columns]
   );
-  console.log('#Duy Phan console 11' , withSubdomain)
 
   const renderBody = useMemo(
     () =>
