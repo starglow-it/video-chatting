@@ -56,9 +56,8 @@ import {
   VideoChatSubscribeEvents,
 } from '../../const/socket-events/subscribers';
 import { MeetingsCommonService } from './meetings.common';
-import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
-import { isNumber } from 'class-validator';
-import { UserActionInMeeting } from 'src/types/common';
+import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
+import { UserActionInMeeting } from '../../types/common';
 
 type SendOfferPayload = {
   type: string;
