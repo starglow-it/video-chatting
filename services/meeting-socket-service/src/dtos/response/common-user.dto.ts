@@ -42,6 +42,9 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
   profileAvatar: ICommonMeetingUserDTO['profileAvatar'];
 
   @Expose()
+  meetingAvatarId: ICommonMeetingUserDTO['meetingAvatarId'];
+
+  @Expose()
   @Transform((data) => {
     return {
       bottom: data.obj?.userPosition?.bottom,
