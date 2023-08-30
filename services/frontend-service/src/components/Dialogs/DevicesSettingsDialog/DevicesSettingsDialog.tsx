@@ -17,6 +17,7 @@ import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsConte
 
 // store
 import { Translation } from '@library/common/Translation/Translation';
+import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import {
     $appDialogsStore,
     $profileStore,
@@ -76,6 +77,9 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const {
+        avatar: { list },
+    } = useStore($avatarsMeetingStore);
 
     const [volume, setVolume] = useState<number>(backgroundAudioVolume);
 
@@ -234,7 +238,14 @@ const Component = () => {
                         onToggleVideo={handleToggleCamera}
                         onToggleAudio={handleToggleMic}
                         stream={changeStream}
-                        profileAvatar={profile.profileAvatar?.url}
+                        profileAvatar={
+                            localUser.meetingAvatarId
+                                ? list.find(
+                                      item =>
+                                          item.id === localUser.meetingAvatarId,
+                                  )?.resouce.url
+                                : profile.profileAvatar?.url
+                        }
                         userName={localUser?.username}
                     />
                     <CustomDivider orientation="vertical" flexItem />
@@ -262,6 +273,10 @@ const Component = () => {
                                     translation="settings.main"
                                 />
                             }
+                            isCamera={isCameraActive}
+                            isMicrophone={isMicActive}
+                            onToggleCamera={handleToggleCamera}
+                            onToggleMicrophone={handleToggleMic}
                         />
                     </CustomGrid>
                 </CustomGrid>

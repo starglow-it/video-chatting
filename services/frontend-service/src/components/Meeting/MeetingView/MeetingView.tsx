@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useStore, useStoreMap } from 'effector-react';
 
 // custom
@@ -39,6 +39,7 @@ import {
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
+import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -100,6 +101,10 @@ const Component = () => {
             });
         }
     }, [isOwner, isMobile]);
+
+    useEffect(() => {
+        getAvatarsMeetingEvent();
+    }, []);
 
     useEffect(() => {
         if (

@@ -7,7 +7,6 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
-import { VolumeAnalyzer } from '@components/Media/VolumeAnalyzer/VolumeAnalyzer';
 
 // types
 
@@ -22,9 +21,6 @@ import { MediaPreviewProps } from './types';
 
 const Component = ({
     videoError,
-    audioError,
-    videoDevices,
-    audioDevices,
     isCameraActive,
     stream,
     onToggleVideo,
@@ -54,10 +50,6 @@ const Component = ({
         setAnchorEl(event.currentTarget);
         onToggleSwitch();
     };
-
-    const isNeedToRenderDevices =
-        (Boolean(videoDevices.length || audioDevices.length) && !audioError) ||
-        (!(videoDevices.length || audioDevices.length) && audioError);
 
     const isVideoDisabled = !stream?.id || Boolean(videoError);
 
@@ -101,7 +93,7 @@ const Component = ({
                     id="choose-avatar"
                     open={value}
                     onClose={onToggleSwitch}
-                    anchorReference='anchorEl'
+                    anchorReference="anchorEl"
                     anchorOrigin={{
                         vertical: 'center',
                         horizontal: 'right',

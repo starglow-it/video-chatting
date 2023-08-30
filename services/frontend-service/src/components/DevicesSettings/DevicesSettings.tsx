@@ -24,7 +24,6 @@ import { Translation } from '@library/common/Translation/Translation';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import { $profileStore, addNotificationEvent } from '../../store';
 import {
@@ -110,10 +109,6 @@ const Component = () => {
     } = useToggle(isBackgroundAudioActive);
 
     const { isMobile } = useBrowserDetect();
-
-    useEffect(() => {
-        getAvatarsMeetingEvent();
-    }, []);
 
     useEffect(() => {
         updateLocalUserEvent({
