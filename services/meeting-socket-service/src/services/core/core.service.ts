@@ -15,6 +15,7 @@ import {
   ICommonTemplate,
   UpdateUserProfileStatisticPayload,
   GetMeetingAvatarPayload,
+  IMeetingAvatar,
 } from 'shared-types';
 import {
   StatisticBrokerPatterns,
@@ -69,7 +70,7 @@ export class CoreService {
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
-  async findMeetingAvatar(payload: GetMeetingAvatarPayload) {
+  async findMeetingAvatar(payload: GetMeetingAvatarPayload): Promise<IMeetingAvatar> {
     const pattern = { cmd: MeetingBrokerPatterns.GetMeetingAvatar };
     return firstValueFrom(this.client.send(pattern, payload));
   }

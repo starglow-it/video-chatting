@@ -73,7 +73,7 @@ export class MeetingAvatarsController {
   @MessagePattern({ cmd: MeetingBrokerPatterns.GetMeetingAvatar })
   async getMeetingAvatar(
     @Payload() { query }: GetMeetingAvatarPayload,
-  ) {
+  ): Promise<IMeetingAvatar> {
     return withTransaction(this.connection, async (session) => {
       try {
         const meetingAvatar = await this.meetingAvatarService.findOne({

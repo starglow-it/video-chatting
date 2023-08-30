@@ -7,12 +7,9 @@ export class CreateMeetingAvatarRequest {
   @IsNotEmpty({
     message: 'Roles must be present',
   })
-  // @IsArray({
-  //   message: 'Invalid Roles value',
-  // })
-  // @Transform(({value}) => {
-  //   console.log(value);
-  //   return 
-  // })
+  @IsArray({
+    message: 'Invalid Roles value',
+  })
+  @Transform(({value}) => value.split(','))
   readonly roles: IMeetingAvatar['roles'];
 }

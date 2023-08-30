@@ -805,100 +805,109 @@ export class MeetingsGateway
     return withTransaction(
       this.connection,
       async (session: ITransactionSession) => {
-        const {
-          user: { meetingAvatarId },
-        } = message;
-        const user = await this.usersService.findOneAndUpdate(
-          { socketId: socket.id },
-          {
-            accessStatus: MeetingAccessStatusEnum.RequestSent,
-            username: message.user.username,
-            isAuraActive: message.user.isAuraActive,
-            micStatus: message.user.micStatus,
-            cameraStatus: message.user.cameraStatus,
-          },
-          session,
-        );
+        try {
+          const {
+            user: { meetingAvatarId },
+          } = message;
 
-        const meetingAvatar = await this.coreService.findMeetingAvatar({
-          query: {
-            id: meetingAvatarId,
-            status: MeetingAvatarStatus.Active
-          },
-        });
+          const meetingAvatar = await this.coreService.findMeetingAvatar({
+            query: {
+              id: meetingAvatarId,
+              status: MeetingAvatarStatus.Active,
+            },
+          });
 
-        if (!meetingAvatar) {
+          if (!meetingAvatar) {
+            this.logger.error({
+              message: 'Meeting Avatar not found',
+              ctx: socket.id,
+            });
+          }
+
+          const user = await this.usersService.findOneAndUpdate(
+            { socketId: socket.id },
+            {
+              accessStatus: MeetingAccessStatusEnum.RequestSent,
+              username: message.user.username,
+              isAuraActive: message.user.isAuraActive,
+              micStatus: message.user.micStatus,
+              cameraStatus: message.user.cameraStatus,
+              meetingAvatarId: meetingAvatar?.id ?? ''
+            },
+            session,
+          );
+
+          const meeting = await this.meetingsService.findById(
+            message.meetingId,
+            session,
+          );
+
+          await meeting.populate(['owner', 'users', 'hostUserId']);
+
+          const activeParticipants = await this.usersService.countMany({
+            meeting: meeting._id,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          });
+
+          if (activeParticipants === meeting.maxParticipants) {
+            return {
+              success: false,
+              message: 'meeting.maxParticipantsNumber',
+            };
+          }
+
+          const plainUser = plainToInstance(CommonUserDTO, user, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          if (
+            meeting?.hostUserId?.socketId &&
+            meeting?.hostUserId?.accessStatus ===
+              MeetingAccessStatusEnum.InMeeting
+          ) {
+            this.emitToSocketId(
+              meeting?.hostUserId?.socketId,
+              MeetingEmitEvents.ReceiveAccessRequest,
+              {
+                user: plainUser,
+              },
+            );
+
+            this.emitToSocketId(
+              meeting?.hostUserId?.socketId,
+              MeetingEmitEvents.PlaySound,
+              {
+                soundType: MeetingSoundsEnum.NewAttendee,
+              },
+            );
+          }
+
+          return {
+            success: true,
+            result: {
+              user: plainUser,
+              meeting: plainMeeting,
+              users: plainUsers,
+            },
+          };
+        } catch (err) {
           this.logger.error({
-            message: 'Meeting Avatar not found',
+            message: err.message,
             ctx: socket.id,
           });
           return;
         }
-
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
-          session,
-        );
-
-        await meeting.populate(['owner', 'users', 'hostUserId']);
-
-        const activeParticipants = await this.usersService.countMany({
-          meeting: meeting._id,
-          accessStatus: MeetingAccessStatusEnum.InMeeting,
-        });
-
-        if (activeParticipants === meeting.maxParticipants) {
-          return {
-            success: false,
-            message: 'meeting.maxParticipantsNumber',
-          };
-        }
-
-        const plainUser = plainToInstance(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        if (
-          meeting?.hostUserId?.socketId &&
-          meeting?.hostUserId?.accessStatus ===
-            MeetingAccessStatusEnum.InMeeting
-        ) {
-          this.emitToSocketId(
-            meeting?.hostUserId?.socketId,
-            MeetingEmitEvents.ReceiveAccessRequest,
-            {
-              user: plainUser,
-            },
-          );
-
-          this.emitToSocketId(
-            meeting?.hostUserId?.socketId,
-            MeetingEmitEvents.PlaySound,
-            {
-              soundType: MeetingSoundsEnum.NewAttendee,
-            },
-          );
-        }
-
-        return {
-          success: true,
-          result: {
-            user: plainUser,
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        };
       },
     );
   }
@@ -920,58 +929,66 @@ export class MeetingsGateway
     });
 
     return withTransaction(this.connection, async (session) => {
-      if (!message.meetingId) return { success: true };
+      try {
+        if (!message.meetingId) return { success: true };
 
-      const meeting = await this.meetingsService.findById(
-        message.meetingId,
-        session,
-      );
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
 
-      const user = await this.usersService.findOneAndUpdate(
-        { socketId: socket.id },
-        { accessStatus: MeetingAccessStatusEnum.Waiting },
-        session,
-      );
+        const user = await this.usersService.findOneAndUpdate(
+          { socketId: socket.id },
+          { accessStatus: MeetingAccessStatusEnum.Waiting },
+          session,
+        );
 
-      await meeting.populate(['owner', 'users']);
+        await meeting.populate(['owner', 'users']);
 
-      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      this.emitToRoom(
-        `meeting:${meeting._id}`,
-        MeetingEmitEvents.UpdateMeeting,
-        {
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
-      );
-
-      if (user?.socketId) {
-        const plainUser = plainToInstance(CommonUserDTO, user, {
+        const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
           excludeExtraneousValues: true,
           enableImplicitConversion: true,
         });
 
-        this.emitToSocketId(user.socketId, UserEmitEvents.UpdateUser, {
-          user: plainUser,
+        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
         });
-      }
 
-      return {
-        success: true,
-        result: {
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
-      };
+        this.emitToRoom(
+          `meeting:${meeting._id}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        );
+
+        if (user?.socketId) {
+          const plainUser = plainToInstance(CommonUserDTO, user, {
+            excludeExtraneousValues: true,
+            enableImplicitConversion: true,
+          });
+
+          this.emitToSocketId(user.socketId, UserEmitEvents.UpdateUser, {
+            user: plainUser,
+          });
+        }
+
+        return {
+          success: true,
+          result: {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        };
+      } catch (err) {
+        this.logger.error({
+          message: err.message,
+          ctx: socket.id,
+        });
+        return;
+      }
     });
   }
 

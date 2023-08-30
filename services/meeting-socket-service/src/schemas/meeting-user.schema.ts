@@ -72,7 +72,6 @@ export class MeetingUser {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    required: false
   })
   meetingAvatarId: string;
 
