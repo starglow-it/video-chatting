@@ -59,7 +59,6 @@ import { NotificationType } from '../../store/types';
 
 // styles
 import styles from './DevicesSettings.module.scss';
-import frontendConfig from '../../const/config';
 
 const Component = () => {
     const [waitingPaywall, setWaitingPaywall] = useState(false);
@@ -202,9 +201,7 @@ const Component = () => {
 
     const linkToDefault = () => {
         window.open(
-            `mailto:${
-                frontendConfig.supportEmail
-            }?view=cm&fs=1&subject=While you were out
+            `mailto:?view=cm&fs=1&subject=While you were out
             &body=${encodeURI('Missed you on Ruume… Shall we re-schedule?')}`,
             '_blank',
         );
