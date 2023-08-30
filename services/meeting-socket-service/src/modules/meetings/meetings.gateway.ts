@@ -812,7 +812,7 @@ export class MeetingsGateway
 
           const meetingAvatar = await this.coreService.findMeetingAvatar({
             query: {
-              id: meetingAvatarId,
+              _id: meetingAvatarId,
               status: MeetingAvatarStatus.Active,
             },
           });
