@@ -5,6 +5,7 @@ import {
   ICommonUser,
   IUserTemplate,
   KickUserReasons,
+  IMeetingAvatar,
 } from '../api-interfaces';
 
 export type GetMediaServerTokenPayload = {
@@ -53,4 +54,8 @@ export type GetMeetingAvatarsPayload = QueryParams;
 
 export type CreateMeetingAvatarPayload = {
   resouceId: string;
+};
+
+export type GetMeetingAvatarPayload = {
+  query: Partial<IMeetingAvatar>
 };

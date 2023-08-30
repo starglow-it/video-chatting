@@ -63,6 +63,22 @@ export class MeetingAvatarsService {
       .exec();
   }
 
+
+  async findOne({
+    query,
+    session,
+    populatePaths,
+  }: GetModelQuery<MeetingAvatarDocument>): Promise<MeetingAvatarDocument> {
+    return this.meetingAvatar
+      .findOne(
+        query,
+        {},
+        { session: session?.session, populate: populatePaths },
+      )
+      .exec();
+  }
+
+
   async update({
     query,
     data,

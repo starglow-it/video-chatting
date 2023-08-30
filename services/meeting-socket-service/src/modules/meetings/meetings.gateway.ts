@@ -22,6 +22,7 @@ import {
   ICommonUser,
   KickUserReasons,
   MeetingAccessStatusEnum,
+  MeetingAvatarStatus,
   MeetingSoundsEnum,
   PlanKeys,
   ResponseSumType,
@@ -804,6 +805,9 @@ export class MeetingsGateway
     return withTransaction(
       this.connection,
       async (session: ITransactionSession) => {
+        const {
+          user: { meetingAvatarId },
+        } = message;
         const user = await this.usersService.findOneAndUpdate(
           { socketId: socket.id },
           {
@@ -815,6 +819,21 @@ export class MeetingsGateway
           },
           session,
         );
+
+        const meetingAvatar = await this.coreService.findMeetingAvatar({
+          query: {
+            id: meetingAvatarId,
+            status: MeetingAvatarStatus.Active
+          },
+        });
+
+        if (!meetingAvatar) {
+          this.logger.error({
+            message: 'Meeting Avatar not found',
+            ctx: socket.id,
+          });
+          return;
+        }
 
         const meeting = await this.meetingsService.findById(
           message.meetingId,

@@ -5,6 +5,7 @@ import { CoreBrokerPatterns, MEETING_AVATAR_SERVICE, MeetingBrokerPatterns } fro
 import {
     CreateMeetingAvatarPayload,
   EntityList,
+  GetMeetingAvatarPayload,
   GetMeetingAvatarsPayload,
   IMeetingAvatar,
   MeetingAvatarStatus,
@@ -26,7 +27,7 @@ export class MeetingAvatarsController {
   ) {}
 
   @MessagePattern({ cmd: MeetingBrokerPatterns.GetMeetingAvatars })
-  async getMedias(
+  async getMeetingAvatars(
     @Payload() payload: GetMeetingAvatarsPayload,
   ): Promise<EntityList<IMeetingAvatar>> {
     return withTransaction(this.connection, async (session) => {
@@ -60,6 +61,38 @@ export class MeetingAvatarsController {
           list,
           count,
         };
+      } catch (err) {
+        throw new RpcException({
+          message: err.message,
+          ctx: MEETING_AVATAR_SERVICE,
+        });
+      }
+    });
+  }
+
+  @MessagePattern({ cmd: MeetingBrokerPatterns.GetMeetingAvatar })
+  async getMeetingAvatar(
+    @Payload() { query }: GetMeetingAvatarPayload,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const meetingAvatar = await this.meetingAvatarService.findOne({
+            query,
+            session,
+            populatePaths: ['resouce']
+        });
+
+        if(!meetingAvatar || !meetingAvatar?.resouce){
+            throw new RpcException({
+                message: 'Meeting Avatar not found',
+                ctx: MEETING_AVATAR_SERVICE
+            });
+        }
+
+        return plainToInstance(CommonMeetingAvatarDto, meetingAvatar, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
       } catch (err) {
         throw new RpcException({
           message: err.message,
