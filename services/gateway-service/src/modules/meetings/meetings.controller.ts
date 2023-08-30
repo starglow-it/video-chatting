@@ -175,9 +175,7 @@ export class MeetingsController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseSumType<IMeetingAvatar>> {
     try {
-      console.log(roles);
       
-      return;
       const resouce = await this.resouceService.handleCreateResouce({ file });
       if (!resouce) {
         throw new BadRequestException('Resouce not found');
