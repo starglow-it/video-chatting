@@ -64,5 +64,5 @@ export interface IMeetingAvatar {
   id?: string;
   resouce: IResouce;
   status: MeetingAvatarStatus;
-  roles: UserRoles[];
+  roles: MeetingAvatarRole[];
 }
