@@ -18,7 +18,7 @@ export const AvatarItem = ({
     return (
         <CustomGrid
             className={styles.item}
-            onClick={() => onSelect(item.id ?? '')}
+            
         >
             <CustomGrid
                 className={clsx(styles.bound, {
@@ -29,6 +29,7 @@ export const AvatarItem = ({
                         ? false
                         : item.roles.includes(MeetingAvatarRole.LoggedIn),
                 })}
+                onClick={() => onSelect(item.id ?? '')}
             >
                 <CustomImage
                     width="100%"

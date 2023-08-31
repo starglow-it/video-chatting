@@ -64,8 +64,6 @@ const Component = () => {
                     localUser.id !== user.id,
             ),
     });
-    console.log('#Duy Phan console users', users);
-    console.log('#Duy Phan console list', list);
 
     const isLocalMicActive = localUser.micStatus === 'active';
     const isLocalCamActive = localUser.cameraStatus === 'active';

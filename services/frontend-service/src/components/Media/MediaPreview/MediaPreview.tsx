@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 // hooks
@@ -15,15 +15,10 @@ import { MeetingAvatars } from '@components/Meeting/MeetingAvatars/MeetingAvatar
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { UnlockAccess } from '@components/Meeting/UnblockAccess/UnlockAccess';
-import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
-import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
-import { AuthorLogo } from 'shared-frontend/icons/OtherIcons/AuthorLogo';
 import { EditRoundIcon } from 'shared-frontend/icons/OtherIcons/EditRoundIcon';
-import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
 import styles from './MediaPreview.module.scss';
 import { MediaPreviewProps } from './types';
 
@@ -35,12 +30,9 @@ const Component = ({
     profileAvatar,
     userName,
     isUnlockAccess = false,
+    devicesSettingsDialog = false,
 }: MediaPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-    const [anchorElUnlock, setAnchorElUnlock] =
-        useState<HTMLButtonElement | null>(null);
-
     const { value, onToggleSwitch } = useToggle(false);
     const { value: isShowUnlock, onToggleSwitch: onToggleUnlock } =
         useToggle(false);
@@ -59,17 +51,9 @@ const Component = ({
         onToggleVideo?.();
     }, [onToggleVideo]);
 
-    const handleAnchor = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-        onToggleSwitch();
-    };
-
-    const handleAnchorUnlock = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorElUnlock(event.currentTarget);
-        onToggleUnlock();
-    };
-
     const isVideoDisabled = !stream?.id || Boolean(videoError);
+
+    const anchor = document.getElementById('anchor-unlock');
 
     return (
         <CustomGrid
@@ -105,7 +89,7 @@ const Component = ({
                     />
                 )} */}
                 <ActionButton
-                    onAction={handleAnchor}
+                    onAction={onToggleSwitch}
                     className={styles.btnEdit}
                     Icon={
                         <>
@@ -126,15 +110,17 @@ const Component = ({
                         vertical: 'top',
                         horizontal: 'right',
                     }}
-                    anchorEl={document.getElementById('anchor-unlock')}
+                    anchorEl={anchor}
                 >
-                    <MeetingAvatars />
+                    <MeetingAvatars
+                        devicesSettingsDialog={devicesSettingsDialog}
+                    />
                 </CustomPopover>
                 <ConditionalRender condition={isUnlockAccess}>
                     <CustomTypography
                         nameSpace="meeting"
                         translation="unlockAccess.link"
-                        onClick={handleAnchorUnlock}
+                        onClick={onToggleUnlock}
                         className={styles.unlockTitle}
                     />
                     <CustomPopover
@@ -149,7 +135,7 @@ const Component = ({
                             vertical: 'top',
                             horizontal: 'right',
                         }}
-                        anchorEl={document.getElementById('anchor-unlock')}
+                        anchorEl={anchor}
                     >
                         <UnlockAccess />
                     </CustomPopover>

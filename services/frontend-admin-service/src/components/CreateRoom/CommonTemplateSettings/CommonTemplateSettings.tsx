@@ -26,7 +26,6 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { useStore } from 'effector-react';
 import { $commonTemplateStore } from 'src/store';
 import frontendConfig from '../../../const/config';
-console.log('#Duy Phan console', frontendConfig)
 
 const Component = ({
     onNextStep,
