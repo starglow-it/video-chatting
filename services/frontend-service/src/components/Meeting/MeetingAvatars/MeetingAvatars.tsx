@@ -7,12 +7,14 @@ import {
 import { CircularProgress } from '@mui/material';
 import { $localUserStore, updateLocalUserEvent } from 'src/store/roomStores';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { $authStore } from 'src/store';
 import styles from './MeetingAvatars.module.scss';
 import { AvatarItem } from './AvatarItem';
 
 export const MeetingAvatars = () => {
     const isLoading = useStore(getAvatarsMeetingFx.pending);
     const localUser = useStore($localUserStore);
+    const { isAuthenticated } = useStore($authStore);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
@@ -30,6 +32,7 @@ export const MeetingAvatars = () => {
                 item={item}
                 onSelect={handleSelectAvatar}
                 isActive={item.id === localUser.meetingAvatarId}
+                isAuthenticated={isAuthenticated}
             />
         ));
     };
@@ -39,7 +42,11 @@ export const MeetingAvatars = () => {
     return (
         <CustomGrid className={styles.container}>
             <CustomGrid className={styles.header}>
-                <CustomTypography fontSize={15}>
+                <CustomTypography
+                    fontSize={16}
+                    fontWeight={600}
+                    marginBottom="10px"
+                >
                     Replace with Avatar
                 </CustomTypography>
             </CustomGrid>

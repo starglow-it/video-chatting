@@ -3,14 +3,14 @@
 
 .container {
     width: 340px;
-    height: 460px;
+    height: 455px;
     padding: 20px;
     border-radius: 16px;
     background-color: $primary-white;
 }
 
 .main {
-    flex: 1;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,12 +19,15 @@
 .desc {
     display: flex;
     flex-direction: column;
+    margin-top: 7px;
+    margin-bottom: 12px;
+    flex: 1;
 }
 
 .descItem {
     display: flex;
     flex-direction: row;
-    height: 35px;
+    height: 30px;
     align-items: center;
 }
 
@@ -32,11 +35,11 @@
     cursor: pointer;
     transition: box-shadow 200ms linear;
     padding: rem(4px 10px) !important;
-    height: rem(40px);
+    height: rem(42px);
     display: flex;
     align-items: center;
     gap: rem(8px);
-    margin-top: rem(16px);
+    margin-top: rem(12px);
 
     &.google {
         background-color: rgb(100, 130, 232);

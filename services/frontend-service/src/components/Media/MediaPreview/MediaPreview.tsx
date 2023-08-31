@@ -19,8 +19,13 @@ import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { UnlockAccess } from '@components/Meeting/UnblockAccess/UnlockAccess';
-import { MediaPreviewProps } from './types';
+import { PersonIcon } from 'shared-frontend/icons/OtherIcons/PersonIcon';
+import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
+import { AuthorLogo } from 'shared-frontend/icons/OtherIcons/AuthorLogo';
+import { EditRoundIcon } from 'shared-frontend/icons/OtherIcons/EditRoundIcon';
+import { RoundArrowIcon } from 'shared-frontend/icons/RoundIcons/RoundArrowIcon';
 import styles from './MediaPreview.module.scss';
+import { MediaPreviewProps } from './types';
 
 const Component = ({
     videoError,
@@ -90,6 +95,7 @@ const Component = ({
             <CustomGrid
                 container
                 direction="column"
+                alignItems="center"
                 className={styles.mediaWrapper}
             >
                 {/* {isNeedToRenderDevices && (
@@ -100,7 +106,13 @@ const Component = ({
                 )} */}
                 <ActionButton
                     onAction={handleAnchor}
-                    Icon={<HostIcon width="22px" height="22px" />}
+                    className={styles.btnEdit}
+                    Icon={
+                        <>
+                            <span style={{ marginRight: 3 }}>Avatar</span>
+                            <EditRoundIcon width="22px" height="22px" />
+                        </>
+                    }
                 />
                 <CustomPopover
                     id="choose-avatar"
@@ -114,7 +126,7 @@ const Component = ({
                         vertical: 'top',
                         horizontal: 'right',
                     }}
-                    anchorEl={document.getElementById('anchor-1')}
+                    anchorEl={document.getElementById('anchor-unlock')}
                 >
                     <MeetingAvatars />
                 </CustomPopover>
@@ -123,6 +135,7 @@ const Component = ({
                         nameSpace="meeting"
                         translation="unlockAccess.link"
                         onClick={handleAnchorUnlock}
+                        className={styles.unlockTitle}
                     />
                     <CustomPopover
                         id="unlock-access"
@@ -136,7 +149,7 @@ const Component = ({
                             vertical: 'top',
                             horizontal: 'right',
                         }}
-                        anchorEl={document.getElementById('anchor-1')}
+                        anchorEl={document.getElementById('anchor-unlock')}
                     >
                         <UnlockAccess />
                     </CustomPopover>

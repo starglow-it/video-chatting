@@ -6,10 +6,17 @@ import { useStore } from 'effector-react';
 import { $meetingTemplateStore } from 'src/store/roomStores';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import clsx from 'clsx';
+import { registerRoute } from 'src/const/client-routes';
 import styles from './UnlockAccess.module.scss';
+import config from '../../../const/config';
 
 export const UnlockAccess = () => {
     const meeting = useStore($meetingTemplateStore);
+
+    const handleStartedEmail = () => {
+        window.open(`${config.frontendUrl}${registerRoute}`);
+    };
+
     const renderDesc = () => {
         return [1, 2, 3].map(item => {
             return (
@@ -67,7 +74,10 @@ export const UnlockAccess = () => {
                     variant="h5"
                 />
                 <CustomGrid className={styles.desc}>{renderDesc()}</CustomGrid>
-                <SocialLogin className={clsx(styles.btn, styles.email)}>
+                <SocialLogin
+                    className={clsx(styles.btn, styles.email)}
+                    onClick={handleStartedEmail}
+                >
                     <CustomImage
                         src="/images/email.webp"
                         width="22px"
@@ -75,12 +85,15 @@ export const UnlockAccess = () => {
                     />
                     <CustomTypography
                         nameSpace="common"
-                        translation="buttons.loginGoogle"
+                        translation="buttons.getStartedEmail"
                         fontSize={13}
                         color="white"
                     />
                 </SocialLogin>
-                <SocialLogin className={clsx(styles.btn, styles.google)}>
+                {/* <SocialLogin
+                    className={clsx(styles.btn, styles.google)}
+                    onClick={handleStartedGoogle}
+                >
                     <CustomImage
                         src="/images/logo_google.svg"
                         width="22px"
@@ -88,11 +101,11 @@ export const UnlockAccess = () => {
                     />
                     <CustomTypography
                         nameSpace="common"
-                        translation="buttons.loginGoogle"
+                        translation="buttons.getStartedGoogle"
                         fontSize={13}
                         color="white"
                     />
-                </SocialLogin>
+                </SocialLogin> */}
             </CustomGrid>
         </CustomGrid>
     );

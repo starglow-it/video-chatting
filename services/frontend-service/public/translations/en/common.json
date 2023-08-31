@@ -59,7 +59,9 @@
     "replace": "Replace",
     "buy": "Buy",
     "leave": "Leave",
-    "homePage": "Homepage"
+    "homePage": "Homepage",
+    "getStartedGoogle": "Get Started with Google",
+    "getStartedEmail": "Get Started with Email"
   },
   "login": {
     "welcome": "Welcome back",

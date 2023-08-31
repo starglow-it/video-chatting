@@ -23,7 +23,7 @@
 }
 
 .previewVideo {
-  margin: rem(0 0 20px 0);
+  margin: rem(0 0 10px 0);
 }
 
 .controlsWrapper {
@@ -54,4 +54,17 @@
       height: rem(40px);
     }
   }
+}
+
+.unlockTitle {
+  text-decoration: underline;
+  color: $primary-blue;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btnEdit{
+  width: 80px;
+  margin-bottom: 4px;
+  border-radius: 4px;
 }

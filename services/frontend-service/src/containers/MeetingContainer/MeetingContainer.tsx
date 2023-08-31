@@ -92,7 +92,7 @@ const NotMeetingComponent = memo(() => {
     }, [localUser.accessStatus]);
 
     return (
-        <CustomPaper className={styles.wrapper} id="anchor-1">
+        <CustomPaper className={styles.wrapper} id="anchor-unlock">
             <CustomScroll className={styles.scroll}>
                 <CustomGrid container direction="column" wrap="nowrap">
                     <ChildComponent />

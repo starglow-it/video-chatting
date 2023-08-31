@@ -1,19 +1,21 @@
 @import '../../../styles/variables.scss';
 
 .container {
-    width: 230px;
-    height: 300px;
+    width: 264px;
+    height: 290px;
     border-radius: 16px;
     background-color: $primary-white;
     padding: 12px;
     display: flex;
     flex-direction: column;
+    padding: 18px 18px 0px 18px;
 }
 
 .main {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 2px;
+    overflow-y: scroll;
 }
 
 .header {
