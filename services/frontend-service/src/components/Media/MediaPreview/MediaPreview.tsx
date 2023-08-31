@@ -16,8 +16,11 @@ import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
-import styles from './MediaPreview.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+import { UnlockAccess } from '@components/Meeting/UnblockAccess/UnlockAccess';
 import { MediaPreviewProps } from './types';
+import styles from './MediaPreview.module.scss';
 
 const Component = ({
     videoError,
@@ -26,11 +29,16 @@ const Component = ({
     onToggleVideo,
     profileAvatar,
     userName,
+    isUnlockAccess = false,
 }: MediaPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [anchorElUnlock, setAnchorElUnlock] =
+        useState<HTMLButtonElement | null>(null);
 
     const { value, onToggleSwitch } = useToggle(false);
+    const { value: isShowUnlock, onToggleSwitch: onToggleUnlock } =
+        useToggle(false);
 
     useEffect(() => {
         (async () => {
@@ -49,6 +57,11 @@ const Component = ({
     const handleAnchor = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
         onToggleSwitch();
+    };
+
+    const handleAnchorUnlock = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorElUnlock(event.currentTarget);
+        onToggleUnlock();
     };
 
     const isVideoDisabled = !stream?.id || Boolean(videoError);
@@ -93,15 +106,41 @@ const Component = ({
                     id="choose-avatar"
                     open={value}
                     onClose={onToggleSwitch}
-                    anchorReference="anchorEl"
                     anchorOrigin={{
-                        vertical: 'center',
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
                         horizontal: 'right',
                     }}
-                    anchorEl={anchorEl}
+                    anchorEl={document.getElementById('anchor-1')}
                 >
                     <MeetingAvatars />
                 </CustomPopover>
+                <ConditionalRender condition={isUnlockAccess}>
+                    <CustomTypography
+                        nameSpace="meeting"
+                        translation="unlockAccess.link"
+                        onClick={handleAnchorUnlock}
+                    />
+                    <CustomPopover
+                        id="unlock-access"
+                        open={isShowUnlock}
+                        onClose={onToggleUnlock}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        anchorEl={document.getElementById('anchor-1')}
+                    >
+                        <UnlockAccess />
+                    </CustomPopover>
+                </ConditionalRender>
             </CustomGrid>
         </CustomGrid>
     );

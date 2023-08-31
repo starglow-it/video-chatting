@@ -1,0 +1,56 @@
+@import '../../../styles//variables.scss';
+@import '../../../styles/rem.scss';
+
+.container {
+    width: 340px;
+    height: 460px;
+    padding: 20px;
+    border-radius: 16px;
+    background-color: $primary-white;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.desc {
+    display: flex;
+    flex-direction: column;
+}
+
+.descItem {
+    display: flex;
+    flex-direction: row;
+    height: 35px;
+    align-items: center;
+}
+
+.btn {
+    cursor: pointer;
+    transition: box-shadow 200ms linear;
+    padding: rem(4px 10px) !important;
+    height: rem(40px);
+    display: flex;
+    align-items: center;
+    gap: rem(8px);
+    margin-top: rem(16px);
+
+    &.google {
+        background-color: rgb(100, 130, 232);
+    }
+
+    &.email {
+        background-color: rgb(29, 29, 29);
+    }
+}
+
+.banner {
+    border-radius: 50%;
+}
+
+.emoji {
+    font-size: 20px;
+}

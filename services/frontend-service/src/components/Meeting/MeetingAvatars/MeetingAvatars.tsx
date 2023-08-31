@@ -6,6 +6,7 @@ import {
 } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import { CircularProgress } from '@mui/material';
 import { $localUserStore, updateLocalUserEvent } from 'src/store/roomStores';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import styles from './MeetingAvatars.module.scss';
 import { AvatarItem } from './AvatarItem';
 
@@ -21,7 +22,6 @@ export const MeetingAvatars = () => {
             meetingAvatarId: id,
         });
     };
-    console.log('#Duy Phan console m11', localUser.meetingAvatarId);
 
     const renderAvatars = () => {
         return list.map(item => (
@@ -38,6 +38,11 @@ export const MeetingAvatars = () => {
 
     return (
         <CustomGrid className={styles.container}>
+            <CustomGrid className={styles.header}>
+                <CustomTypography fontSize={15}>
+                    Replace with Avatar
+                </CustomTypography>
+            </CustomGrid>
             <CustomGrid className={styles.main}>{renderAvatars()}</CustomGrid>
         </CustomGrid>
     );

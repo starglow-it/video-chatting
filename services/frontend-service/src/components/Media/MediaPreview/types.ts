@@ -12,4 +12,5 @@ export type MediaPreviewProps = {
     videoDevices: MediaDeviceInfo[];
     audioDevices: MediaDeviceInfo[];
     stream: CustomMediaStream;
+    isUnlockAccess?: boolean;
 };

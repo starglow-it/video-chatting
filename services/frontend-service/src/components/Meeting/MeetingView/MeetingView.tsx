@@ -39,7 +39,6 @@ import {
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
-import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -101,10 +100,6 @@ const Component = () => {
             });
         }
     }, [isOwner, isMobile]);
-
-    useEffect(() => {
-        getAvatarsMeetingEvent();
-    }, []);
 
     useEffect(() => {
         if (

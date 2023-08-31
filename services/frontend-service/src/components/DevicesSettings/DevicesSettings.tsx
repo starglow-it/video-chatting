@@ -25,7 +25,7 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import { MeetingPaywall } from '@components/Meeting/MeetingPaywall/MeetingPaywall';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
-import { $profileStore, addNotificationEvent } from '../../store';
+import { $authStore, $profileStore, addNotificationEvent } from '../../store';
 import {
     $activeStreamStore,
     $audioDevicesStore,
@@ -85,6 +85,7 @@ const Component = () => {
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
+    const { isAuthenticated } = useStore($authStore);
 
     const isCameraActiveRef = useRef(isCameraActive);
 
@@ -253,6 +254,7 @@ const Component = () => {
                             stream={activeStream}
                             onToggleAudio={handleToggleMic}
                             onToggleVideo={handleToggleCamera}
+                            isUnlockAccess={!isAuthenticated}
                         />
                         <CustomDivider orientation="vertical" flexItem />
                     </ConditionalRender>
