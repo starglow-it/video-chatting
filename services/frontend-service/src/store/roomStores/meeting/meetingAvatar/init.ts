@@ -1,4 +1,5 @@
 import { attach } from 'effector-next';
+import { resetRoomStores } from 'src/store/root';
 import { handleGetAvatars } from './handlers/handleGetAvatars';
 import {
     $avatarsMeetingStore,
@@ -13,7 +14,8 @@ $avatarsMeetingStore
         ...state,
         avatar: data,
     }))
-    .on(setAvatarTmpEvent, (state, data) => ({ ...state, avatarTmp: data }));
+    .on(setAvatarTmpEvent, (state, data) => ({ ...state, avatarTmp: data }))
+    .reset(resetRoomStores);
 
 export const getAvatarsMeetingEvent = attach({
     effect: getAvatarsMeetingFx,
