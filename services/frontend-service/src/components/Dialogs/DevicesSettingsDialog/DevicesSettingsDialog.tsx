@@ -17,6 +17,7 @@ import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsConte
 
 // store
 import { Translation } from '@library/common/Translation/Translation';
+import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import {
     $appDialogsStore,
     $profileStore,
@@ -76,6 +77,10 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const {
+        avatar: { list },
+        avatarTmp
+    } = useStore($avatarsMeetingStore);
 
     const [volume, setVolume] = useState<number>(backgroundAudioVolume);
 
@@ -158,11 +163,16 @@ const Component = () => {
 
     const handleSaveSettings = useCallback(async () => {
         if (changeStream) {
+            console.log('#Duy Phan console', avatarTmp)
             updateLocalUserEvent({
                 isAuraActive: isAuraEnabled,
+                meetingAvatarId: avatarTmp || undefined,
             });
 
-            await updateUserSocketEvent({ isAuraActive: isAuraEnabled });
+            await updateUserSocketEvent({
+                isAuraActive: isAuraEnabled,
+                meetingAvatarId: avatarTmp || undefined,
+            });
 
             toggleLocalDeviceEvent({
                 isCamEnabled: isNewCameraSettingActive,
@@ -214,6 +224,7 @@ const Component = () => {
         isSettingsAudioBackgroundActive,
         isAuraEnabled,
         isAuraActive,
+        avatarTmp
     ]);
 
     return (
@@ -221,6 +232,7 @@ const Component = () => {
             open={devicesSettingsDialog}
             contentClassName={styles.wrapper}
             onClose={handleClose}
+            id="anchor-unlock"
         >
             <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
@@ -234,8 +246,19 @@ const Component = () => {
                         onToggleVideo={handleToggleCamera}
                         onToggleAudio={handleToggleMic}
                         stream={changeStream}
-                        profileAvatar={profile.profileAvatar?.url}
+                        profileAvatar={
+                            avatarTmp
+                                ? list.find(item => item.id === avatarTmp)?.resouce
+                                      ?.url
+                                : localUser.meetingAvatarId
+                                ? list.find(
+                                      item =>
+                                          item.id === localUser.meetingAvatarId,
+                                  )?.resouce?.url
+                                : profile.profileAvatar?.url
+                        }
                         userName={localUser?.username}
+                        devicesSettingsDialog={devicesSettingsDialog}
                     />
                     <CustomDivider orientation="vertical" flexItem />
                     <CustomGrid
@@ -262,6 +285,10 @@ const Component = () => {
                                     translation="settings.main"
                                 />
                             }
+                            isCamera={isNewCameraSettingActive}
+                            isMicrophone={isNewMicSettingActive}
+                            onToggleCamera={handleToggleCamera}
+                            onToggleMicrophone={handleToggleMic}
                         />
                     </CustomGrid>
                 </CustomGrid>

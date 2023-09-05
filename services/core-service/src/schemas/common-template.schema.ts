@@ -157,7 +157,6 @@ export class CommonTemplate {
     type: mongoose.Schema.Types.String,
     default: '',
     required: false,
-    unique: true,
   })
   subdomain: string;
 }

@@ -18,6 +18,7 @@ import { UserTemplatesModule } from '../user-templates/user-templates.module';
 
 // const
 import { JWT_ACCESS_EXPIRE } from 'shared-const';
+import { ResouceModule } from 'src/services/resouces/resouces.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { JWT_ACCESS_EXPIRE } from 'shared-const';
     ScalingModule,
     TemplatesModule,
     UserTemplatesModule,
+    ResouceModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigClientService],

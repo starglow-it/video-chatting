@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { IMonitoring } from 'shared-types';
-import { ITransactionSession } from 'src/helpers/mongo/withTransaction';
-import { Monitoring, MonitoringDocument } from 'src/schemas/monitoring.schema';
-import { GetModelQuery, UpdateModelQuery } from 'src/types/custom';
+import { ITransactionSession } from '../../helpers/mongo/withTransaction';
+import { Monitoring, MonitoringDocument } from '../../schemas/monitoring.schema';
+import { GetModelQuery, UpdateModelQuery } from '../../types/custom';
 
 @Injectable()
 export class MonitoringService {

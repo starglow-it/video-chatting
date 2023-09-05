@@ -7,4 +7,7 @@ export enum MeetingBrokerPatterns {
   GetMeetingInstance = 'get_meeting_instance',
   DeleteMeetingInstance = 'delete_meeting_instance',
   CreateMeetingInstance = 'create_meeting_instance',
+  GetMeetingAvatars = 'get_meeting_avatars',
+  GetMeetingAvatar = 'get_meeting_avatar',
+  CreateMeetingAvatar = 'create_meeting_avatar'
 }

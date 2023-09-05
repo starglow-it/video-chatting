@@ -9,7 +9,7 @@ import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import {
   MediaCategory,
   MediaCategoryDocument,
-} from 'src/schemas/media-category.schema';
+} from '../../schemas/media-category.schema';
 import { Media, MediaDocument } from '../../schemas/media.schema';
 import {
   PreviewImage,
@@ -19,7 +19,7 @@ import * as mkdirp from 'mkdirp';
 import * as path from 'path';
 import * as fsPromises from 'fs/promises';
 import { getScreenShots } from '../../utils/images/getScreenShots';
-import { AwsConnectorService } from 'src/services/aws-connector/aws-connector.service';
+import { AwsConnectorService } from '../../services/aws-connector/aws-connector.service';
 import { RpcException } from '@nestjs/microservices';
 import { MEDIA_SERVICE } from 'shared-const';
 

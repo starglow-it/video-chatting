@@ -30,6 +30,7 @@ export type MeetingUser = {
         left: number;
     };
     userSize?: number;
+    meetingAvatarId?: string;
 };
 
 export type Meeting = {

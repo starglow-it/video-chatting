@@ -1,7 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CoreService } from '../../services/core/core.service';
-import { AssignMeetingInstancePayload, IUserTemplate } from 'shared-types';
-import { MeetingBrokerPatterns } from 'shared-const';
+import {
+  AssignMeetingInstancePayload,
+  CreateMeetingAvatarPayload,
+  EntityList,
+  GetMeetingAvatarsPayload,
+  IMeetingAvatar,
+  IResouce,
+  IUserTemplate,
+} from 'shared-types';
+import { CoreBrokerPatterns, MeetingBrokerPatterns } from 'shared-const';
 
 @Injectable()
 export class MeetingsService {
@@ -14,4 +22,20 @@ export class MeetingsService {
 
     return this.coreService.sendCustom(pattern, payload);
   }
+
+  async getMeetingAvatars(
+    payload: GetMeetingAvatarsPayload,
+  ): Promise<EntityList<IMeetingAvatar>> {
+    const pattern = { cmd: MeetingBrokerPatterns.GetMeetingAvatars };
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async createMeetingAvatar(
+    payload: CreateMeetingAvatarPayload,
+  ): Promise<IMeetingAvatar> {
+    const pattern = { cmd: MeetingBrokerPatterns.CreateMeetingAvatar };
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  
 }

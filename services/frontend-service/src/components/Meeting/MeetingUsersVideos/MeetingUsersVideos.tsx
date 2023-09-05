@@ -15,6 +15,8 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 
 // stores
 import { MeetingAccessStatusEnum } from 'shared-types';
+import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
+import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import {
     $profileStore,
     $isSideUsersOpenStore,
@@ -44,6 +46,9 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const activeStream = useStore($activeStreamStore);
+    const {
+        avatar: { list },
+    } = useStore($avatarsMeetingStore);
 
     const profile = useStore($profileStore);
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
@@ -80,7 +85,10 @@ const Component = () => {
                     userName={user.username}
                     isCameraEnabled={user.cameraStatus === 'active'}
                     isMicEnabled={user.micStatus === 'active'}
-                    userProfileAvatar={user.profileAvatar}
+                    userProfileAvatar={
+                        getAvatarUrlMeeting(user.meetingAvatarId ?? '', list) ??
+                        user.profileAvatar
+                    }
                     isAuraActive={user.isAuraActive}
                     isScreenSharingUser={meeting.sharingUserId === user.id}
                     isScreenSharing={isScreenSharing}
@@ -167,7 +175,14 @@ const Component = () => {
                 userId={localUser.id}
                 key={localUser.id}
                 size={localUser.userSize || 0}
-                userProfileAvatar={profile?.profileAvatar?.url || ''}
+                userProfileAvatar={
+                    getAvatarUrlMeeting(
+                        localUser.meetingAvatarId ?? '',
+                        list,
+                    ) ||
+                    profile?.profileAvatar?.url ||
+                    ''
+                }
                 userName={localUser.username}
                 localStream={activeStream}
                 isCameraEnabled={isLocalCamActive}

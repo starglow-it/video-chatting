@@ -16,6 +16,8 @@ import { AcceptIcon } from 'shared-frontend/icons/OtherIcons/AcceptIcon';
 import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 
 // stores
+import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
+import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import { $isMeetingHostStore } from '../../../store/roomStores';
 
 // types
@@ -34,7 +36,9 @@ const Component = ({
     isOwnerItem,
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
-
+    const {
+        avatar: { list },
+    } = useStore($avatarsMeetingStore);
     const handleAcceptRequest = () => {
         onAcceptUser?.({ userId: user.id });
     };
@@ -56,7 +60,10 @@ const Component = ({
         >
             <ProfileAvatar
                 className={styles.profileAvatar}
-                src={user?.profileAvatar}
+                src={
+                    getAvatarUrlMeeting(user?.meetingAvatarId ?? '', list) ??
+                    user?.profileAvatar
+                }
                 width="32px"
                 height="32px"
                 userName={user.username}

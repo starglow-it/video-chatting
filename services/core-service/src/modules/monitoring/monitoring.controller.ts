@@ -11,9 +11,9 @@ import {
   GetMonitoringsPayload,
   UpdateMonitoringPayload,
 } from 'shared-types';
-import { withTransaction } from 'src/helpers/mongo/withTransaction';
+import { withTransaction } from '../../helpers/mongo/withTransaction';
 import { plainToInstance } from 'class-transformer';
-import { MonitoringDto } from 'src/dtos/monitoring.dto';
+import { MonitoringDto } from '../../dtos/monitoring.dto';
 
 @Controller('monitoring')
 export class MonitoringController {

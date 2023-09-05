@@ -1,9 +1,13 @@
+import { QueryParams } from '../common';
 import {
   IMeetingInstance,
   ICommonTemplate,
   ICommonUser,
   IUserTemplate,
   KickUserReasons,
+  IMeetingAvatar,
+  UserRoles,
+  MeetingAvatarRole,
 } from '../api-interfaces';
 
 export type GetMediaServerTokenPayload = {
@@ -13,7 +17,7 @@ export type GetMediaServerTokenPayload = {
 
 export type CreateMeetingPayload = {
   templateId: ICommonTemplate['id'];
-  subdomain?: ICommonTemplate['subdomain']
+  subdomain?: ICommonTemplate['subdomain'];
 };
 
 export type DeleteMeetingPayload = {
@@ -46,4 +50,15 @@ export type AssignMeetingInstancePayload = {
 export type KickUserFromMeetingPayload = {
   userId: ICommonUser['id'];
   reason: KickUserReasons;
+};
+
+export type GetMeetingAvatarsPayload = QueryParams;
+
+export type CreateMeetingAvatarPayload = {
+  resouceId: string;
+  roles: MeetingAvatarRole[];
+};
+
+export type GetMeetingAvatarPayload = {
+  query: Partial<Omit<IMeetingAvatar, 'id'> & {_id: string}>
 };

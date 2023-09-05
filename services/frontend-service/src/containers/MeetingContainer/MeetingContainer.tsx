@@ -29,6 +29,7 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { Typography } from '@mui/material';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
+import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -91,7 +92,7 @@ const NotMeetingComponent = memo(() => {
     }, [localUser.accessStatus]);
 
     return (
-        <CustomPaper className={styles.wrapper}>
+        <CustomPaper className={styles.wrapper} id="anchor-unlock">
             <CustomScroll className={styles.scroll}>
                 <CustomGrid container direction="column" wrap="nowrap">
                     <ChildComponent />
@@ -153,6 +154,10 @@ const MeetingContainer = memo(() => {
 
             BackgroundManager.destroy();
         };
+    }, []);
+
+    useEffect(() => {
+        getAvatarsMeetingEvent();
     }, []);
 
     useEffect(() => {

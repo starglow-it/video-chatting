@@ -8,4 +8,8 @@ export type MeetingSettingsContentProps = {
     onToggleAura: () => void;
     isAudioActive: boolean;
     stream?: MediaStream | undefined | null;
+    isMicrophone?: boolean;
+    isCamera?: boolean;
+    onToggleMicrophone?(): void;
+    onToggleCamera?(): void;
 };
