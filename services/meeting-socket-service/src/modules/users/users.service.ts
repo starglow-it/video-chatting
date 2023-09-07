@@ -6,7 +6,7 @@ import {
   MeetingUserDocument,
 } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from '../../types/common';
+import { CustomPopulateOptions } from '../../types';
 
 @Injectable()
 export class UsersService {
@@ -98,7 +98,7 @@ export class UsersService {
     return;
   }
 
-  async findUsers(query, { session }: ITransactionSession) {
+  async findUsers(query, { session }: ITransactionSession): Promise<MeetingUserDocument[]> {
     return this.meetingUser.find(query, {}, { session }).exec();
   }
 }

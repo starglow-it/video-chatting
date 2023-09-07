@@ -8,7 +8,7 @@ import {
   CustomPopulateOptions,
   UserActionInMeeting,
   UserActionInMeetingParams,
-} from '../../types/common';
+} from '../../types';
 import { IUserTemplate } from 'shared-types';
 import { CoreService } from '../../services/core/core.service';
 @Injectable()
