@@ -665,9 +665,9 @@ export class MeetingsGateway
           await meeting.populate(['owner', 'users', 'hostUserId']);
 
           if (
-            !(await this.meetingsCommonService.compareActiveWithMaxParicipants(
+            typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
               meeting,
-            ))
+            )) === 'undefined'
           ) {
             return {
               success: false,
@@ -833,16 +833,16 @@ export class MeetingsGateway
       let plainUser: CommonUserDTO;
 
       if (message.isUserAccepted) {
-         if (
-        typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
-          meeting,
-        )) === 'undefined'
-      ) {
-        return {
-          success: false,
-          message: 'meeting.maxParticipantsNumber',
-        };
-      }
+        if (
+          typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+            meeting,
+          )) === 'undefined'
+        ) {
+          return {
+            success: false,
+            message: 'meeting.maxParticipantsNumber',
+          };
+        }
 
         plainUser = await this.meetingsCommonService.acceptUserJoinRoom({
           meeting,
@@ -897,7 +897,6 @@ export class MeetingsGateway
     @MessageBody() message: EndMeetingRequestDTO,
     @ConnectedSocket() socket: Socket,
   ) {
-
     this.logger.debug({
       message: `[${MeetingSubscribeEvents.OnEndMeeting}] event`,
       ctx: message,
@@ -943,7 +942,7 @@ export class MeetingsGateway
         }
 
         try {
-          if(!socket){
+          if (!socket) {
             console.log('socket not found');
           }
           const user = await this.usersService.findOne({
