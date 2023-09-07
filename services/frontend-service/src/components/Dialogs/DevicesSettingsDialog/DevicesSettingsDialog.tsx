@@ -79,7 +79,7 @@ const Component = () => {
     const audioError = useStore($audioErrorStore);
     const {
         avatar: { list },
-        avatarTmp
+        avatarTmp,
     } = useStore($avatarsMeetingStore);
 
     const [volume, setVolume] = useState<number>(backgroundAudioVolume);
@@ -163,7 +163,7 @@ const Component = () => {
 
     const handleSaveSettings = useCallback(async () => {
         if (changeStream) {
-            console.log('#Duy Phan console', avatarTmp)
+            console.log('#Duy Phan console', avatarTmp);
             updateLocalUserEvent({
                 isAuraActive: isAuraEnabled,
                 meetingAvatarId: avatarTmp || undefined,
@@ -224,7 +224,7 @@ const Component = () => {
         isSettingsAudioBackgroundActive,
         isAuraEnabled,
         isAuraActive,
-        avatarTmp
+        avatarTmp,
     ]);
 
     return (
@@ -248,8 +248,8 @@ const Component = () => {
                         stream={changeStream}
                         profileAvatar={
                             avatarTmp
-                                ? list.find(item => item.id === avatarTmp)?.resouce
-                                      ?.url
+                                ? list.find(item => item.id === avatarTmp)
+                                      ?.resouce?.url
                                 : localUser.meetingAvatarId
                                 ? list.find(
                                       item =>
