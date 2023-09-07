@@ -914,9 +914,6 @@ export class MeetingsGateway
         }
 
         try {
-          if (!socket) {
-            console.log('socket not found');
-          }
           const user = await this.usersService.findOne({
             query: { socketId: socket.id },
             session,
