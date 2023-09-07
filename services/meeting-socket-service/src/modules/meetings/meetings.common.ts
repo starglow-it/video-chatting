@@ -16,16 +16,16 @@ import {
 import { MeetingsService } from './meetings.service';
 import { TasksService } from '../tasks/tasks.service';
 import { UsersService } from '../users/users.service';
-import { MeetingDocument } from 'src/schemas/meeting.schema';
-import { userSerialization } from 'src/dtos/response/common-user.dto';
+import { MeetingDocument } from '../../schemas/meeting.schema';
+import { userSerialization } from '../../dtos/response/common-user.dto';
 import { WsException } from '@nestjs/websockets';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
-import { EventEmit } from 'src/types/socket-events';
-import { meetingSerialization } from 'src/dtos/response/common-meeting.dto';
+import { TEventEmitter } from '../../types/socket-events';
+import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { Socket } from 'socket.io';
-import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
+import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 
 @Injectable()
 export class MeetingsCommonService {
@@ -119,7 +119,7 @@ export class MeetingsCommonService {
     templateId: string;
     event: string;
     session: ITransactionSession;
-    emitToRoom: (...args: EventEmit) => void;
+    emitToRoom: (...args: TEventEmitter) => void;
   }): Promise<void> {
     try {
       const template = await this.coreService.findMeetingTemplateById({
@@ -258,7 +258,7 @@ export class MeetingsCommonService {
     emitToSocketId,
   }: {
     userId: string;
-    emitToSocketId: (...args: EventEmit) => void;
+    emitToSocketId: (...args: TEventEmitter) => void;
     session: ITransactionSession;
   }) => {
     const user = await this.usersService.findByIdAndUpdate(
@@ -298,7 +298,7 @@ export class MeetingsCommonService {
     endsAt: number;
     event: string;
     client: Socket;
-    emitToRoom: (...args: EventEmit) => void;
+    emitToRoom: (...args: TEventEmitter) => void;
     callback: () => void;
   }) => {
     const meetingId = meeting._id.toString();

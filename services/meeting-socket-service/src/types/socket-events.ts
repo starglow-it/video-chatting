@@ -1,1 +1,1 @@
-export type EventEmit = [socketId: string, eventName: string, data?: any];
+export type TEventEmitter = [socketId: string, eventName: string, data?: any];

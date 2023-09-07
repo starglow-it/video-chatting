@@ -1,19 +1,19 @@
 import { WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { EventEmit } from 'src/types/socket-events';
+import { TEventEmitter } from '../types/socket-events';
 
 export class BaseGateway {
   @WebSocketServer() server: Server;
 
-  emitToSocketId(...[socketId, eventName, data]: EventEmit) {
+  emitToSocketId(...[socketId, eventName, data]: TEventEmitter) {
     this.server.to(socketId).emit(eventName, data ?? {});
   }
 
-  emitToRoom(...[roomId, eventName, data]: EventEmit) {
+  emitToRoom(...[roomId, eventName, data]: TEventEmitter) {
     this.server.sockets.in(roomId).emit(eventName, data ?? {});
   }
 
-  broadcastToRoom(socket, ...[roomId, eventName, data]: EventEmit) {
+  broadcastToRoom(socket, ...[roomId, eventName, data]: TEventEmitter) {
     socket.broadcast.to(roomId).emit(eventName, data ?? {});
   }
 
