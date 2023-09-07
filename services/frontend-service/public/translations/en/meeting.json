@@ -3,8 +3,9 @@
   "checkDevices": "Check your device settings before you join the meeting",
   "requestSent": "Request sent",
   "unlockAccess": {
-    "link": "Unlock free access",
+    "link": "Register to Access",
     "title": "Unlock Free Access Now",
+    "note": "(Refresh this page after registration)",
     "decs": {
       "1": "Sign up in 10s",
       "2": "Access all avatars",

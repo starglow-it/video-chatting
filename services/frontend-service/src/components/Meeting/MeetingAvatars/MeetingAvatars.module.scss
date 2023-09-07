@@ -13,9 +13,14 @@
 
 .main {
     display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.list {
+    display: flex;
     flex-wrap: wrap;
     gap: 2px;
-    overflow-y: scroll;
 }
 
 .header {
@@ -26,3 +31,10 @@
     align-items: center;
     justify-content: center;
 }
+
+.unlockTitle {
+    text-decoration: underline;
+    color: $primary-blue;
+    font-size: 14px;
+    cursor: pointer;
+  }

@@ -15,9 +15,6 @@ import { MeetingAvatars } from '@components/Meeting/MeetingAvatars/MeetingAvatar
 import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
-import { UnlockAccess } from '@components/Meeting/UnblockAccess/UnlockAccess';
 import { EditRoundIcon } from 'shared-frontend/icons/OtherIcons/EditRoundIcon';
 import styles from './MediaPreview.module.scss';
 import { MediaPreviewProps } from './types';
@@ -29,13 +26,10 @@ const Component = ({
     onToggleVideo,
     profileAvatar,
     userName,
-    isUnlockAccess = false,
     devicesSettingsDialog = false,
 }: MediaPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const { value, onToggleSwitch } = useToggle(false);
-    const { value: isShowUnlock, onToggleSwitch: onToggleUnlock } =
-        useToggle(false);
 
     useEffect(() => {
         (async () => {
@@ -116,7 +110,7 @@ const Component = ({
                         devicesSettingsDialog={devicesSettingsDialog}
                     />
                 </CustomPopover>
-                <ConditionalRender condition={isUnlockAccess}>
+                {/* <ConditionalRender condition={isUnlockAccess}>
                     <CustomTypography
                         nameSpace="meeting"
                         translation="unlockAccess.link"
@@ -139,7 +133,7 @@ const Component = ({
                     >
                         <UnlockAccess />
                     </CustomPopover>
-                </ConditionalRender>
+                </ConditionalRender> */}
             </CustomGrid>
         </CustomGrid>
     );

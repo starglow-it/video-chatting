@@ -1,5 +1,5 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { useStore } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import {
     $avatarsMeetingStore,
     getAvatarsMeetingFx,
@@ -9,8 +9,11 @@ import { CircularProgress } from '@mui/material';
 import { $localUserStore, updateLocalUserEvent } from 'src/store/roomStores';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { $authStore } from 'src/store';
+import { MeetingAvatarRole } from 'shared-types';
+import { registerRoute } from 'src/const/client-routes';
 import styles from './MeetingAvatars.module.scss';
 import { AvatarItem } from './AvatarItem';
+import config from '../../../const/config';
 
 export const MeetingAvatars = ({
     devicesSettingsDialog = false,
@@ -24,6 +27,24 @@ export const MeetingAvatars = ({
         avatar: { list },
         avatarTmp,
     } = useStore($avatarsMeetingStore);
+    const avatarsAccess = useStoreMap({
+        store: $avatarsMeetingStore,
+        keys: [],
+        fn: ({ avatar }) =>
+            avatar.list.filter(
+                item =>
+                    item.roles.includes(MeetingAvatarRole.LoggedIn) &&
+                    item.roles.length === 1,
+            ),
+    });
+    const avatarsFree = useStoreMap({
+        store: $avatarsMeetingStore,
+        keys: [],
+        fn: ({ avatar }) =>
+            avatar.list.filter(item =>
+                item.roles.includes(MeetingAvatarRole.NoLogin),
+            ),
+    });
 
     const handleSelectAvatar = (id: string) => {
         if (devicesSettingsDialog) {
@@ -35,20 +56,74 @@ export const MeetingAvatars = ({
         }
     };
 
+    const handleStartedEmail = () => {
+        window.open(`${config.frontendUrl}${registerRoute}`);
+    };
+
     const renderAvatars = () => {
-        return list.map(item => (
-            <AvatarItem
-                key={item.id}
-                item={item}
-                onSelect={handleSelectAvatar}
-                isActive={
-                    devicesSettingsDialog
-                        ? avatarTmp === item.id
-                        : item.id === localUser.meetingAvatarId
-                }
-                isAuthenticated={isAuthenticated}
-            />
-        ));
+        return (
+            <CustomGrid className={styles.list}>
+                {list.map(item => (
+                    <AvatarItem
+                        key={item.id}
+                        item={item}
+                        onSelect={handleSelectAvatar}
+                        isActive={
+                            devicesSettingsDialog
+                                ? avatarTmp === item.id
+                                : item.id === localUser.meetingAvatarId
+                        }
+                        disabled={false}
+                    />
+                ))}
+            </CustomGrid>
+        );
+    };
+
+    const renderAvatarsNoLogin = () => {
+        return (
+            <>
+                <CustomGrid className={styles.list}>
+                    {avatarsFree.map(item => (
+                        <AvatarItem
+                            key={item.id}
+                            item={item}
+                            onSelect={handleSelectAvatar}
+                            isActive={
+                                devicesSettingsDialog
+                                    ? avatarTmp === item.id
+                                    : item.id === localUser.meetingAvatarId
+                            }
+                            disabled={false}
+                        />
+                    ))}
+                </CustomGrid>
+                <CustomTypography
+                    nameSpace="meeting"
+                    translation="unlockAccess.link"
+                    onClick={handleStartedEmail}
+                    className={styles.unlockTitle}
+                    textAlign="center"
+                />
+                <CustomTypography
+                    nameSpace="meeting"
+                    translation="unlockAccess.note"
+                    textAlign="center"
+                    fontSize={12}
+                />
+                <CustomGrid className={styles.list}>
+                    {avatarsAccess.map(item => (
+                        <AvatarItem
+                            key={item.id}
+                            item={item}
+                            onSelect={handleSelectAvatar}
+                            isActive={false}
+                            disabled
+                        />
+                    ))}
+                </CustomGrid>
+            </>
+        );
     };
 
     if (isLoading) return <CircularProgress variant="determinate" />;
@@ -64,7 +139,9 @@ export const MeetingAvatars = ({
                     Replace with Avatar
                 </CustomTypography>
             </CustomGrid>
-            <CustomGrid className={styles.main}>{renderAvatars()}</CustomGrid>
+            <CustomGrid className={styles.main}>
+                {!isAuthenticated ? renderAvatarsNoLogin() : renderAvatars()}
+            </CustomGrid>
         </CustomGrid>
     );
 };

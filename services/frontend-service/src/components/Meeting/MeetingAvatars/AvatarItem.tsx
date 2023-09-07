@@ -1,6 +1,6 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
-import { IMeetingAvatar, MeetingAvatarRole } from 'shared-types';
+import { IMeetingAvatar } from 'shared-types';
 import clsx from 'clsx';
 import styles from './AvatarItem.module.scss';
 
@@ -8,26 +8,19 @@ export const AvatarItem = ({
     item,
     onSelect,
     isActive,
-    isAuthenticated,
+    disabled = false,
 }: {
     item: IMeetingAvatar;
     onSelect: (id: string) => void;
     isActive: boolean;
-    isAuthenticated: boolean;
+    disabled: boolean;
 }) => {
     return (
-        <CustomGrid
-            className={styles.item}
-            
-        >
+        <CustomGrid className={styles.item}>
             <CustomGrid
                 className={clsx(styles.bound, {
                     [styles.active]: isActive,
-                    [styles.disabled]: isAuthenticated
-                        ? false
-                        : !item.roles.length
-                        ? false
-                        : item.roles.includes(MeetingAvatarRole.LoggedIn),
+                    [styles.disabled]: disabled,
                 })}
                 onClick={() => onSelect(item.id ?? '')}
             >
