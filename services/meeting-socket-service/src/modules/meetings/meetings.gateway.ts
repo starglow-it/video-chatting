@@ -10,7 +10,6 @@ import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
-import { plainToInstance } from 'class-transformer';
 
 import { BaseGateway } from '../../gateway/base.gateway';
 
@@ -561,20 +560,11 @@ export class MeetingsGateway
           }
         }
 
-        const plainUser = plainToInstance(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainUser = userSerialization(user);
 
-        const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainMeeting = meetingSerialization(meeting);
 
-        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainUsers = userSerialization(meeting.users);
 
         socket.join(`meeting:${message.meetingId}`);
 
@@ -675,20 +665,11 @@ export class MeetingsGateway
             };
           }
 
-          const plainUser = plainToInstance(CommonUserDTO, user, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
+          const plainUser = userSerialization(user);
 
-          const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
+          const plainMeeting = meetingSerialization(meeting);
 
-          const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
+          const plainUsers = userSerialization(meeting.users);
 
           if (
             meeting?.hostUserId?.socketId &&
@@ -764,15 +745,9 @@ export class MeetingsGateway
 
         await meeting.populate(['owner', 'users']);
 
-        const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainMeeting = meetingSerialization(meeting);
 
-        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainUsers = userSerialization(meeting.users);
 
         this.emitToRoom(
           `meeting:${meeting._id}`,
@@ -784,10 +759,7 @@ export class MeetingsGateway
         );
 
         if (user?.socketId) {
-          const plainUser = plainToInstance(CommonUserDTO, user, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
+          const plainUser = userSerialization(user);
 
           this.emitToSocketId(user.socketId, UserEmitEvents.UpdateUser, {
             user: plainUser,
@@ -1259,10 +1231,7 @@ export class MeetingsGateway
           });
         }
 
-        const plainMeeting = plainToInstance(CommonMeetingDTO, newMeeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainMeeting = meetingSerialization(newMeeting);
 
         this.emitToRoom(
           `meeting:${meeting._id}`,
@@ -1307,10 +1276,7 @@ export class MeetingsGateway
         session,
       );
 
-      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+      const plainMeeting = meetingSerialization(meeting);
 
       this.emitToRoom(
         `meeting:${meeting._id}`,
@@ -1437,10 +1403,7 @@ export class MeetingsGateway
 
       await user.populate('meeting');
 
-      const plainUser = plainToInstance(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+      const plainUser = userSerialization(user);
 
       this.emitToRoom(
         `meeting:${user.meeting._id}`,
