@@ -48,10 +48,11 @@ export const MeetingAvatars = ({
 
     const handleSelectAvatar = (id: string) => {
         if (devicesSettingsDialog) {
-            setAvatarTmpEvent(id);
+            setAvatarTmpEvent(avatarTmp === id ? '' : id);
         } else {
             updateLocalUserEvent({
-                meetingAvatarId: id,
+                meetingAvatarId: id === localUser.meetingAvatarId ? '' : id,
+                cameraStatus: 'active',
             });
         }
     };
