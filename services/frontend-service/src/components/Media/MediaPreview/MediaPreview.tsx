@@ -87,7 +87,9 @@ const Component = ({
                     className={styles.btnEdit}
                     Icon={
                         <>
-                            <span style={{ marginRight: 3 }}>Avatar</span>
+                            <span className={styles.textAvatar}>
+                                Replace with Avatar
+                            </span>
                             <EditRoundIcon width="22px" height="22px" />
                         </>
                     }

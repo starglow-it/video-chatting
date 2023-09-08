@@ -44,8 +44,8 @@ import {
   UserEmitEvents,
 } from '../../const/socket-events/emitters';
 import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
-import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
-import { UserActionInMeeting } from '../../types/common';
+import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
+import { UserActionInMeeting } from '../../types';
 import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
