@@ -6,7 +6,12 @@ import {
     setAvatarTmpEvent,
 } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import { CircularProgress } from '@mui/material';
-import { $localUserStore, setIsAudioActiveEvent, updateLocalUserEvent } from 'src/store/roomStores';
+import {
+    $localUserStore,
+    setIsAudioActiveEvent,
+    setIsCameraActiveEvent,
+    updateLocalUserEvent,
+} from 'src/store/roomStores';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { $authStore } from 'src/store';
 import { MeetingAvatarRole } from 'shared-types';
@@ -55,7 +60,7 @@ export const MeetingAvatars = ({
                 meetingAvatarId: id === localUser.meetingAvatarId ? '' : id,
                 cameraStatus: 'active',
             });
-
+            setIsCameraActiveEvent(false);
         }
     };
 
