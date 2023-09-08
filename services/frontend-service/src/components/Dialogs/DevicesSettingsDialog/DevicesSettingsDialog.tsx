@@ -181,12 +181,12 @@ const Component = () => {
             console.log('#Duy Phan console', avatarTmp);
             updateLocalUserEvent({
                 isAuraActive: isAuraEnabled,
-                meetingAvatarId: avatarTmp || undefined,
+                meetingAvatarId: avatarTmp ?? undefined,
             });
 
             await updateUserSocketEvent({
                 isAuraActive: isAuraEnabled,
-                meetingAvatarId: avatarTmp || undefined,
+                meetingAvatarId: avatarTmp ?? undefined,
             });
 
             toggleLocalDeviceEvent({
