@@ -9,6 +9,7 @@ import { CircularProgress } from '@mui/material';
 import {
     $localUserStore,
     setIsAudioActiveEvent,
+    setIsCameraActiveEvent,
     updateLocalUserEvent,
 } from 'src/store/roomStores';
 import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
@@ -54,11 +55,11 @@ export const MeetingAvatars = ({
         if (devicesSettingsDialog) {
             setAvatarTmpEvent(avatarTmp === id ? '' : id);
         } else {
-            setIsAudioActiveEvent(true);
             updateLocalUserEvent({
                 meetingAvatarId: id === localUser.meetingAvatarId ? '' : id,
                 cameraStatus: 'active',
             });
+            setIsCameraActiveEvent(false);
         }
     };
 
