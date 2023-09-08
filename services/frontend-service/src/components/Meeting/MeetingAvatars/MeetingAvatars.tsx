@@ -91,7 +91,7 @@ export const MeetingAvatars = ({
         return (
             <>
                 <CustomGrid className={styles.list}>
-                    {list.map(item => (
+                    {avatarsFree.map(item => (
                         <AvatarItem
                             key={item.id}
                             item={item}
