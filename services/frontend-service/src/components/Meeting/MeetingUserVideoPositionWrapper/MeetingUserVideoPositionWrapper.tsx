@@ -85,7 +85,6 @@ const Component: React.FunctionComponent<
 
     const eventControl = (event: DraggableEvent, data: DraggableData) => {
         if (event.type === 'mouseup' || event.type === 'touchend') {
-            console.log('#Duy Phan console', 'stop');
             handleStopDrag(data);
         }
     };

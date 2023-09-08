@@ -3,40 +3,33 @@ import clsx from 'clsx';
 
 // hooks
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-
-// custom
-import { CustomTooltip } from '@library/custom/CustomTooltip/CustomTooltip';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
-import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // components
 import { RoundedVideo } from '@components/Media/RoundedVideo/RoundedVideo';
-import { VolumeAnalyzer } from '@components/Media/VolumeAnalyzer/VolumeAnalyzer';
-
-// library
-import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // types
-import { MediaPreviewProps } from './types';
 
 // styles
+import { MeetingAvatars } from '@components/Meeting/MeetingAvatars/MeetingAvatars';
+import { CustomPopover } from '@library/custom/CustomPopover/CustomPopover';
+import { useToggle } from 'shared-frontend/hooks/useToggle';
+import { ActionButton } from 'shared-frontend/library/common/ActionButton';
+import { EditRoundIcon } from 'shared-frontend/icons/OtherIcons/EditRoundIcon';
 import styles from './MediaPreview.module.scss';
+import { MediaPreviewProps } from './types';
 
 const Component = ({
     videoError,
-    audioError,
-    videoDevices,
-    audioDevices,
-    isMicActive,
     isCameraActive,
     stream,
-    onToggleAudio,
     onToggleVideo,
     profileAvatar,
     userName,
+    devicesSettingsDialog = false,
 }: MediaPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
+    const { value, onToggleSwitch } = useToggle(false);
 
     useEffect(() => {
         (async () => {
@@ -52,18 +45,9 @@ const Component = ({
         onToggleVideo?.();
     }, [onToggleVideo]);
 
-    const handleToggleAudio = useCallback(() => {
-        onToggleAudio?.();
-    }, [onToggleAudio]);
-
-    const isNeedToRenderDevices =
-        (Boolean(videoDevices.length || audioDevices.length) && !audioError) ||
-        (!(videoDevices.length || audioDevices.length) && audioError);
-
     const isVideoDisabled = !stream?.id || Boolean(videoError);
-    const isAudioDisabled = !stream?.id || Boolean(audioError);
 
-    const buttonsSize = isMobile ? '22px' : '32px';
+    const anchor = document.getElementById('anchor-unlock');
 
     return (
         <CustomGrid
@@ -85,62 +69,74 @@ const Component = ({
                 className={styles.previewVideo}
                 onToggleVideo={handleToggleVideo}
             />
-            {isNeedToRenderDevices && (
-                <CustomGrid
-                    container
-                    direction="column"
-                    className={styles.mediaWrapper}
-                >
+
+            <CustomGrid
+                container
+                direction="column"
+                alignItems="center"
+                className={styles.mediaWrapper}
+            >
+                {/* {isNeedToRenderDevices && (
                     <VolumeAnalyzer
                         key={stream?.id}
                         indicatorsNumber={isMobile ? 9 : 6}
                     />
-                    <CustomGrid container className={styles.controlsWrapper}>
-                        <CustomTooltip
-                            nameSpace="errors"
-                            translation={audioError}
-                        >
-                            <ActionButton
-                                className={clsx(styles.controlBtn, {
-                                    [styles.withError]: Boolean(audioError),
-                                    [styles.disabled]: isAudioDisabled,
-                                    [styles.mobile]: isMobile,
-                                })}
-                                disabled={isAudioDisabled}
-                                onAction={handleToggleAudio}
-                                Icon={
-                                    <MicIcon
-                                        width={buttonsSize}
-                                        height={buttonsSize}
-                                        isActive={isMicActive}
-                                    />
-                                }
-                            />
-                        </CustomTooltip>
-                        <CustomTooltip
-                            nameSpace="errors"
-                            translation={videoError}
-                        >
-                            <ActionButton
-                                className={clsx(styles.controlBtn, {
-                                    [styles.withError]: Boolean(videoError),
-                                    [styles.disabled]: isVideoDisabled,
-                                    [styles.mobile]: isMobile,
-                                })}
-                                onAction={handleToggleVideo}
-                                disabled={isVideoDisabled}
-                                Icon={
-                                    <CameraIcon
-                                        width={buttonsSize}
-                                        height={buttonsSize}
-                                        isActive={isCameraActive}
-                                    />
-                                }
-                            />
-                        </CustomTooltip>
-                    </CustomGrid>
-                </CustomGrid>
-            )}
+                )} */}
+                <ActionButton
+                    onAction={onToggleSwitch}
+                    className={styles.btnEdit}
+                    Icon={
+                        <>
+                            <span className={styles.textAvatar}>
+                                Replace with Avatar
+                            </span>
+                            <EditRoundIcon width="22px" height="22px" />
+                        </>
+                    }
+                />
+                <CustomPopover
+                    id="choose-avatar"
+                    open={value}
+                    onClose={onToggleSwitch}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    anchorEl={anchor}
+                >
+                    <MeetingAvatars
+                        devicesSettingsDialog={devicesSettingsDialog}
+                    />
+                </CustomPopover>
+                {/* <ConditionalRender condition={isUnlockAccess}>
+                    <CustomTypography
+                        nameSpace="meeting"
+                        translation="unlockAccess.link"
+                        onClick={onToggleUnlock}
+                        className={styles.unlockTitle}
+                    />
+                    <CustomPopover
+                        id="unlock-access"
+                        open={isShowUnlock}
+                        onClose={onToggleUnlock}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        anchorEl={anchor}
+                    >
+                        <UnlockAccess />
+                    </CustomPopover>
+                </ConditionalRender> */}
+            </CustomGrid>
         </CustomGrid>
     );
 };

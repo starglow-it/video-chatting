@@ -9,6 +9,7 @@ import {
   Get,
   Body,
   Query,
+  UploadedFile,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,7 +22,12 @@ import {
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 
 import { MEETINGS_SCOPE } from 'shared-const';
-import { ResponseSumType, IUserTemplate } from 'shared-types';
+import {
+  ResponseSumType,
+  IUserTemplate,
+  IMeetingAvatar,
+  EntityList,
+} from 'shared-types';
 
 // services
 import { CoreService } from '../../services/core/core.service';
@@ -39,6 +45,12 @@ import { MeetingsService } from './meetings.service';
 import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
 import { GetMeetingDetailParams } from '../../dtos/params/get-meeting-detail.param';
 import { GetMeetingDetailQuery } from '../../dtos/query/GetMeetingDetailQuery';
+import { GetMeetingAvatarsQueryDto } from '../../dtos/query/GetMeetingAvatarsQuery.dto';
+import { CommonMeetingAvatarResDto } from 'src/dtos/response/common-meeting-avatar.dto';
+import { CreateMeetingAvatarSwaggerProperty } from 'src/dtos/swagger-properties/meeting.swagger-properties';
+import { ApiFile } from '../../utils/decorators/api-file.decorator';
+import { ResouceService } from '../../services/resouces/resouces.service';
+import { CreateMeetingAvatarRequest } from '../../dtos/requests/create-meeting-avatar.request';
 
 @ApiTags('Meetings')
 @Controller(MEETINGS_SCOPE)
@@ -51,6 +63,7 @@ export class MeetingsController {
     private userTemplatesService: UserTemplatesService,
     private mediaServerService: MediaServerService,
     private meetingService: MeetingsService,
+    private resouceService: ResouceService,
   ) {}
 
   @UseGuards(JwtAuthAnonymousGuard)
@@ -113,6 +126,69 @@ export class MeetingsController {
         },
         JSON.stringify(err),
       );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Get('/avatars')
+  @ApiOperation({ summary: 'Get meeting avatars' })
+  @ApiOkResponse({
+    type: '',
+    description: 'Get Meeting Avatars Success',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  async getMeetingAvatars(
+    @Query() query: GetMeetingAvatarsQueryDto,
+  ): Promise<ResponseSumType<EntityList<IMeetingAvatar>>> {
+    try {
+      const result = await this.meetingService.getMeetingAvatars(query);
+      return {
+        success: true,
+        result,
+      };
+    } catch (err) {
+      this.logger.error(
+        {
+          message: `An error occurs, while get meeting avatars`,
+        },
+        JSON.stringify(err),
+      );
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Post('/avatar')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create Meeting Avatar' })
+  @ApiOkResponse({
+    type: CommonMeetingAvatarResDto,
+    description: 'Create Meeting Avatar',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @ApiFile(CreateMeetingAvatarSwaggerProperty)
+  async createMeetingAvatar(
+    @Body() {roles}: CreateMeetingAvatarRequest,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ResponseSumType<IMeetingAvatar>> {
+    try {
+      
+      const resouce = await this.resouceService.handleCreateResouce({ file });
+      if (!resouce) {
+        throw new BadRequestException('Resouce not found');
+      }
+      const meetingAvatar = await this.meetingService.createMeetingAvatar({
+        resouceId: resouce.id,
+        roles
+      });
+      return {
+        success: true,
+        result: meetingAvatar,
+      };
+    } catch (err) {
       throw new BadRequestException(err);
     }
   }

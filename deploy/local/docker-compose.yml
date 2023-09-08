@@ -11,7 +11,7 @@ services:
   mongo:
     container_name: mongodb
     image: mongo:5.0
-    command: [ "--replSet", "rs0", "--bind_ip_all" ]
+    command: ["--replSet", "rs0", "--bind_ip_all"]
     hostname: mongo
     healthcheck:
       test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --quiet) -eq 1
@@ -23,7 +23,7 @@ services:
     networks:
       - liveoffice_local
     ports:
-      - '127.0.0.1:56100:27017'
+      - "127.0.0.1:56100:27017"
 
   rabbit:
     container_name: rabbitmq
@@ -36,8 +36,8 @@ services:
       - RABBITMQ_DEFAULT_HOST=rabbitmq
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management path_prefix "/rabbit"
     ports:
-      - '5672:5672'
-      - '15672:15672'
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - liveoffice_local
 
@@ -48,6 +48,8 @@ services:
       dockerfile: ./livekit-service/Dockerfile.dev
       args:
         - LIVEKIT_IP=127.0.0.1
+        - LIVEKIT_API_KEY=APIwj2xEkRuhwY9
+        - LIVEKIT_API_SECRET=qZJdMzPHyHAOnYlyqZeaHlJmyqpJYgHmIksXxzOTtbY
     restart: always
     ports:
       - "7880:7880"
@@ -64,9 +66,9 @@ services:
       args:
         - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     ports:
-      - '8000:8000'
+      - "8000:8000"
     env_file:
-      - env
+      - .env
     volumes:
       - ../../services/frontend-service/pages:/app/services/frontend-service/pages
       - ../../services/frontend-service/src:/app/services/frontend-service/src
@@ -84,9 +86,9 @@ services:
       args:
         - VULTR_STORAGE_HOSTNAME=s3.us-east-2.amazonaws.com
     ports:
-      - '9000:9000'
+      - "9000:9000"
     env_file:
-      - 'admin.env'
+      - .env
     volumes:
       - ../../services/frontend-admin-service/pages:/app/services/frontend-admin-service/pages
       - ../../services/frontend-admin-service/src:/app/services/frontend-admin-service/src
@@ -100,7 +102,7 @@ services:
       context: ../../
       dockerfile: ./services/gateway-service/Dockerfile.dev
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
@@ -168,7 +170,7 @@ services:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000
     volumes:
-      - ../../services/socket-service:/app/services/socket-service
+      - ../../services/socket-service/src:/app/services/socket-service/src
       - /app/services/socket-service/dist
       - /app/services/socket-service/node_modules
     networks:
@@ -243,56 +245,9 @@ services:
     build:
       context: ../../
       dockerfile: services/config-service/Dockerfile.dev
-    environment:
-      - API_VERSION
-      - APP_VERSION
-      - RABBIT_MQ_CORE_QUEUE
-      - RABBIT_MQ_SOCKET_QUEUE
-      - RABBIT_MQ_AUTH_QUEUE
-      - RABBIT_MQ_PAYMENT_QUEUE
-      - RABBIT_MQ_NOTIFICATIONS_QUEUE
-      - RABBIT_MQ_MEDIA_SERVER_QUEUE
-      - RABBIT_MQ_SCALING_QUEUE
-      - RABBIT_MQ_USER
-      - RABBIT_MQ_PASS
-      - RABBIT_MQ_HOST
-      - RABBIT_MQ_CORE_HOST
-      - RABBIT_MQ_CORE_PORT
-      - VULTR_UPLOAD_BUCKET
-      - VULTR_STORAGE_HOSTNAME
-      - VULTR_SECRET_ACCESS_KEY
-      - VULTR_ACCESS_KEY
-      - VULTR_API_KEY
-      - VULTR_SNAPSHOT_ID
-      - LIVEKIT_API_KEY
-      - LIVEKIT_API_SECRET
-      - LIVEKIT_HOST
-      - STRIPE_WEBHOOK_SECRET
-      - STRIPE_EXPRESS_WEBHOOK_SECRET
-      - STRIPE_API_KEY
-      - ENVIRONMENT
-      - IS_LOCAL
-      - PORT
-      - NODE_ENV
-      - DEFAULT_SERVER_IP
-      - DEFAULT_DOMAIN
-      - FRONTEND_URL
-      - GATEWAY_PORT
-      - JWT_SECRET
-      - MONGO_URI
-      - SMTP_USER
-      - SMTP_USER_NAME
-      - MANDRILL_API_KEY
-      - EMAIL_SERVICE
-      - SUPPORT_SCALING
-      - NUMBER_OF_ACTIVE_SERVERS
-      - SUPPORT_EMAIL
-      - ADMIN_EMAIL
-      - ADMIN_PASSWORD
-      - GOOGLE_CLIENT_ID
-      - GOOGLE_SECRET
+    env_file:
+      - .env
     depends_on:
-      - mongo
       - rabbit
     volumes:
       - ../../services/config-service/src:/app/services/config-service/src

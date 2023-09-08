@@ -23,7 +23,7 @@ import {
 import {
   ProfileAvatar,
   ProfileAvatarDocument,
-} from 'src/schemas/profile-avatar.schema';
+} from '../../schemas/profile-avatar.schema';
 
 @Injectable()
 export class UsersService {

@@ -1,6 +1,8 @@
-import { Expose, Transform, Type } from 'class-transformer';
+import { Expose, Transform, Type, plainToInstance } from 'class-transformer';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
+import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
+import { serializeInstance } from '../serialization';
 
 export class CommonUserDTO implements ICommonMeetingUserDTO {
   @Expose()
@@ -42,6 +44,9 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
   profileAvatar: ICommonMeetingUserDTO['profileAvatar'];
 
   @Expose()
+  meetingAvatarId: ICommonMeetingUserDTO['meetingAvatarId'];
+
+  @Expose()
   @Transform((data) => {
     return {
       bottom: data.obj?.userPosition?.bottom,
@@ -53,3 +58,6 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
   @Expose()
   userSize: ICommonMeetingUserDTO['userSize'];
 }
+
+export const userSerialization = <D extends MeetingUserDocument | MeetingUserDocument[]>(user: D) => serializeInstance(user, CommonUserDTO);
+

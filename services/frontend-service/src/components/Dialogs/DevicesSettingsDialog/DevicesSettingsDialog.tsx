@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 
 // hooks
@@ -17,6 +17,10 @@ import { MeetingSettingsContent } from '@components/Meeting/MeetingSettingsConte
 
 // store
 import { Translation } from '@library/common/Translation/Translation';
+import {
+    $avatarsMeetingStore,
+    setAvatarTmpEvent,
+} from 'src/store/roomStores/meeting/meetingAvatar/model';
 import {
     $appDialogsStore,
     $profileStore,
@@ -76,8 +80,13 @@ const Component = () => {
     const audioDevices = useStore($audioDevicesStore);
     const videoError = useStore($videoErrorStore);
     const audioError = useStore($audioErrorStore);
+    const {
+        avatar: { list },
+        avatarTmp,
+    } = useStore($avatarsMeetingStore);
 
     const [volume, setVolume] = useState<number>(backgroundAudioVolume);
+    const isFirstime = useRef(true);
 
     const {
         value: isSettingsAudioBackgroundActive,
@@ -94,6 +103,7 @@ const Component = () => {
     const {
         value: isNewCameraSettingActive,
         onToggleSwitch: handleToggleNewCameraSetting,
+        onSwitchOff: handleOffCamera,
     } = useToggle(isCameraActive);
 
     const {
@@ -110,7 +120,15 @@ const Component = () => {
         handleSetAura(isAuraActive);
         setVolume(backgroundAudioVolume);
         resetMediaStoreEvent();
+        isFirstime.current = true;
     }, [isBackgroundAudioActive, backgroundAudioVolume, isAuraActive]);
+
+    useEffect(() => {
+        if (avatarTmp) {
+            handleOffCamera();
+            if (isFirstime.current) isFirstime.current = false;
+        }
+    }, [avatarTmp]);
 
     useEffect(() => {
         (async () => {
@@ -118,6 +136,8 @@ const Component = () => {
                 await initDevicesEventFxWithStore();
             }
         })();
+        if (devicesSettingsDialog)
+            setAvatarTmpEvent(localUser.meetingAvatarId ?? '');
     }, [devicesSettingsDialog]);
 
     useEffect(() => {
@@ -158,11 +178,16 @@ const Component = () => {
 
     const handleSaveSettings = useCallback(async () => {
         if (changeStream) {
+            console.log('#Duy Phan console', avatarTmp);
             updateLocalUserEvent({
                 isAuraActive: isAuraEnabled,
+                meetingAvatarId: avatarTmp || undefined,
             });
 
-            await updateUserSocketEvent({ isAuraActive: isAuraEnabled });
+            await updateUserSocketEvent({
+                isAuraActive: isAuraEnabled,
+                meetingAvatarId: avatarTmp || undefined,
+            });
 
             toggleLocalDeviceEvent({
                 isCamEnabled: isNewCameraSettingActive,
@@ -214,13 +239,16 @@ const Component = () => {
         isSettingsAudioBackgroundActive,
         isAuraEnabled,
         isAuraActive,
+        avatarTmp,
     ]);
 
+    console.log('#Duy Phan console aid', localUser.meetingAvatarId);
     return (
         <CustomDialog
             open={devicesSettingsDialog}
             contentClassName={styles.wrapper}
             onClose={handleClose}
+            id="anchor-unlock"
         >
             <CustomGrid container direction="column">
                 <CustomGrid container wrap="nowrap">
@@ -234,8 +262,20 @@ const Component = () => {
                         onToggleVideo={handleToggleCamera}
                         onToggleAudio={handleToggleMic}
                         stream={changeStream}
-                        profileAvatar={profile.profileAvatar?.url}
+                        profileAvatar={
+                            avatarTmp
+                                ? list.find(item => item.id === avatarTmp)
+                                      ?.resouce?.url
+                                : isFirstime.current &&
+                                  localUser.meetingAvatarId
+                                ? list.find(
+                                      item =>
+                                          item.id === localUser.meetingAvatarId,
+                                  )?.resouce?.url
+                                : profile.profileAvatar?.url
+                        }
                         userName={localUser?.username}
+                        devicesSettingsDialog={devicesSettingsDialog}
                     />
                     <CustomDivider orientation="vertical" flexItem />
                     <CustomGrid
@@ -262,6 +302,10 @@ const Component = () => {
                                     translation="settings.main"
                                 />
                             }
+                            isCamera={isNewCameraSettingActive}
+                            isMicrophone={isNewMicSettingActive}
+                            onToggleCamera={handleToggleCamera}
+                            onToggleMicrophone={handleToggleMic}
                         />
                     </CustomGrid>
                 </CustomGrid>

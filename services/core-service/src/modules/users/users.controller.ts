@@ -79,7 +79,7 @@ import { UserTokenService } from '../user-token/user-token.service';
 import { TasksService } from '../tasks/tasks.service';
 import { CountryStatisticsService } from '../country-statistics/country-statistics.service';
 import { UserProfileStatisticService } from '../user-profile-statistic/user-profile-statistic.service';
-import { ProfileAvatarDocument } from 'src/schemas/profile-avatar.schema';
+import { ProfileAvatarDocument } from '../../schemas/profile-avatar.schema';
 
 @Controller('users')
 export class UsersController {

@@ -12,4 +12,7 @@ export type MediaPreviewProps = {
     videoDevices: MediaDeviceInfo[];
     audioDevices: MediaDeviceInfo[];
     stream: CustomMediaStream;
+    isUnlockAccess?: boolean;
+    onChangeAvatar?: (avatar: string) => void;
+    devicesSettingsDialog?: boolean;
 };

@@ -13,6 +13,7 @@ export interface ICommonMeetingUserDTO {
   isAuraActive: boolean;
   meeting: ICommonMeetingDTO['id'];
   profileAvatar: string;
+  meetingAvatarId: string;
   userPosition: { bottom: number; left: number };
   userSize: number;
 }

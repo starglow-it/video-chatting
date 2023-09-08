@@ -31,7 +31,7 @@ import {
   withTransaction,
 } from '../../helpers/mongo/withTransaction';
 import { MediaService } from '../medias/medias.service';
-import { MediaCategoryDocument } from 'src/schemas/media-category.schema';
+import { MediaCategoryDocument } from '../../schemas/media-category.schema';
 import {
   AddTemplateToUserPayload,
   CreateTemplatePayload,

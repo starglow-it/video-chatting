@@ -71,12 +71,22 @@ export class MeetingUser {
   profileAvatar: string;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  meetingAvatarId: string;
+
+  @Prop({
     type: {
       bottom: mongoose.Schema.Types.Number,
       left: mongoose.Schema.Types.Number,
     },
   })
   userPosition: { bottom: number; left: number };
+
+  @Prop({
+    type: mongoose.Schema.Types.String
+  })
+  avatarRole: string;
 
   @Prop({
     type: mongoose.Schema.Types.Number,

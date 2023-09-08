@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MonitoringService } from './monitoring.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Monitoring, MonitoringSchema } from 'src/schemas/monitoring.schema';
+import { Monitoring, MonitoringSchema } from '../../schemas/monitoring.schema';
 import { MonitoringController } from './monitoring.controller';
 
 @Module({

@@ -3,7 +3,7 @@
 
 .previewWrapper {
   position: relative;
-  margin: rem(0 40px 0 0);
+  // margin: rem(0 40px 0 0);
   width: auto;
 
   &.mobile {
@@ -23,7 +23,8 @@
 }
 
 .previewVideo {
-  margin: rem(0 0 20px 0);
+  margin: rem(0 0 10px 0);
+  align-self: center;
 }
 
 .controlsWrapper {
@@ -54,4 +55,23 @@
       height: rem(40px);
     }
   }
+}
+
+.unlockTitle {
+  text-decoration: underline;
+  color: $primary-blue;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btnEdit{
+  width: 143px;
+  height: 32px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+}
+
+.textAvatar {
+  margin-right: 3px;
+  font-size: 12px;
 }

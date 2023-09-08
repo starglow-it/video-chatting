@@ -4,12 +4,12 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
+  WsException,
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
-import { plainToInstance } from 'class-transformer';
 
 import { BaseGateway } from '../../gateway/base.gateway';
 
@@ -22,6 +22,7 @@ import {
   ICommonUser,
   KickUserReasons,
   MeetingAccessStatusEnum,
+  MeetingAvatarStatus,
   MeetingSoundsEnum,
   PlanKeys,
   ResponseSumType,
@@ -30,8 +31,14 @@ import {
 
 import { StartMeetingRequestDTO } from '../../dtos/requests/start-meeting.dto';
 import { JoinMeetingRequestDTO } from '../../dtos/requests/join-meeting.dto';
-import { CommonUserDTO } from '../../dtos/response/common-user.dto';
-import { CommonMeetingDTO } from '../../dtos/response/common-meeting.dto';
+import {
+  CommonUserDTO,
+  userSerialization,
+} from '../../dtos/response/common-user.dto';
+import {
+  CommonMeetingDTO,
+  meetingSerialization,
+} from '../../dtos/response/common-meeting.dto';
 import { EnterMeetingRequestDTO } from '../../dtos/requests/enter-meeting.dto';
 import { MeetingAccessAnswerRequestDTO } from '../../dtos/requests/answer-access-meeting.dto';
 import { LeaveMeetingRequestDTO } from '../../dtos/requests/leave-meeting.dto';
@@ -55,38 +62,14 @@ import {
   VideoChatSubscribeEvents,
 } from '../../const/socket-events/subscribers';
 import { MeetingsCommonService } from './meetings.common';
-import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
-import { isNumber } from 'class-validator';
-import { UserActionInMeeting } from 'src/types/common';
-
-type SendOfferPayload = {
-  type: string;
-  sdp: string;
-  userId: string;
-  connectionId: string;
-  socketId: string;
-};
-
-type SendAnswerPayload = {
-  type: string;
-  sdp: string;
-  userId: string;
-  connectionId: string;
-  socketId: string;
-};
-
-type SendIceCandidatePayload = {
-  userId: string;
-  connectionId: string;
-  candidate: unknown;
-  socketId: string;
-};
-
-type SendDevicesPermissionsPayload = {
-  userId: string;
-  audio: boolean;
-  video: boolean;
-};
+import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
+import {
+  SendAnswerPayload,
+  SendDevicesPermissionsPayload,
+  SendIceCandidatePayload,
+  SendOfferPayload,
+  UserActionInMeeting,
+} from '../../types';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -109,97 +92,6 @@ export class MeetingsGateway
     @InjectConnection() private connection: Connection,
   ) {
     super();
-  }
-
-  private checkHandleTimeLimitByUser(user: ICommonUser) {
-    return ![PlanKeys.Business, PlanKeys.House, PlanKeys.Professional].includes(
-      user.subscriptionPlanKey,
-    );
-  }
-
-  async changeUsersPositions({ meetingId, templateId, event }): Promise<void> {
-    try {
-      return withTransaction(this.connection, async (session) => {
-        const template = await this.coreService.findMeetingTemplateById({
-          id: templateId,
-        });
-
-        const usersTemplate = await this.coreService.findMeetingTemplateById({
-          id: templateId,
-        });
-
-        const updateUsersPromise = usersTemplate.indexUsers.map(
-          async (userId, i) => {
-            const user = await this.usersService.findById(userId);
-            if (!user) return;
-
-            const userPosition = template?.usersPosition?.[i];
-            const userSize = template?.usersSize?.[i];
-
-            user.userPosition = userPosition;
-            user.userSize = userSize;
-
-            return user.save();
-          },
-        );
-
-        await Promise.all(updateUsersPromise);
-
-        const meetingUsers = await this.usersService.findUsers(
-          {
-            meeting: meetingId,
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
-          },
-          session,
-        );
-
-        const updatedMeeting = await this.meetingsService.findById(
-          meetingId,
-          session,
-          ['owner', 'users'],
-        );
-
-        if (updatedMeeting) {
-          const plainUsers = plainToInstance(CommonUserDTO, meetingUsers, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
-
-          const plainMeeting = plainToInstance(
-            CommonMeetingDTO,
-            updatedMeeting,
-            {
-              excludeExtraneousValues: true,
-              enableImplicitConversion: true,
-            },
-          );
-
-          this.emitToRoom(
-            `waitingRoom:${templateId}`,
-            MeetingEmitEvents.UpdateMeeting,
-            {
-              meeting: plainMeeting,
-              users: plainUsers,
-            },
-          );
-
-          this.emitToRoom(
-            `meeting:${plainMeeting.id}`,
-            MeetingEmitEvents.UpdateMeeting,
-            {
-              meeting: plainMeeting,
-              users: plainUsers,
-            },
-          );
-        }
-      });
-    } catch (err) {
-      this.logger.error({
-        message: err.message,
-        event,
-      });
-      return;
-    }
   }
 
   private async updateLeaveMeetingForUser({
@@ -268,11 +160,10 @@ export class MeetingsGateway
         });
 
         if (!userTemplate) {
-          this.logger.error({
+          throw new WsException({
             message: 'User template not found',
             ctx: client.id,
           });
-          return;
         }
 
         await this.meetingsService.updateIndexUsers({
@@ -338,97 +229,36 @@ export class MeetingsGateway
           );
         }
 
-        try {
-          let profileUser = null;
-          if (user.profileId) {
-            profileUser = await this.coreService.findUserById({
-              userId: user.profileId,
-            });
-          }
-
-          if (profileUser) {
-            await this.coreService.updateUserProfileStatistic({
-              userId: profileUser.id,
-              statisticKey: 'minutesSpent',
-              value: timeToAdd,
-            });
-
-            if (isMeetingHost && this.checkHandleTimeLimitByUser(profileUser)) {
-              await this.meetingsCommonService.handleTimeLimit({
-                profileId: profileUser.id,
-                meetingId,
-                meetingUserId: userId,
-                maxProfileTime: profileUser.maxMeetingTime,
-                session,
-              });
-            }
-          }
-        } catch (err) {
-          this.logger.error('User has been deleted', err.message);
-          return;
-        }
-
-        if (activeParticipants !== 0) {
-          if (isMeetingHost) {
-            const endTimestamp = getTimeoutTimestamp({
-              type: TimeoutTypesEnum.Minutes,
-              value: 15,
-            });
-
-            console.log('timeout', endTimestamp);
-
-            const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
-
-            this.taskService.deleteTimeout({
-              name: `meeting:finish:${meetingId}`,
-            });
-
-            this.taskService.addTimeout({
-              name: `meeting:finish:${meetingId}`,
-              ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-              callback: this.endMeeting.bind(this, {
-                meetingId: meeting._id,
-              }),
-            });
-          }
-
-          this.taskService.deleteTimeout({
-            name: 'meeting:changeUsersPositions',
-          });
-
-          this.taskService.addTimeout({
-            name: 'meeting:changeUsersPositions',
-            ts: getTimeoutTimestamp({
-              value: 1,
-              type: TimeoutTypesEnum.Seconds,
-            }),
-            callback: async () => {
-              try {
-                this.changeUsersPositions({
-                  meetingId: meeting.id,
-                  templateId: meeting.templateId,
-                  event,
-                });
-              } catch (err) {
-                this.logger.error({
-                  mesage: err.mesage,
-                  ctx: client.id,
-                });
-                return;
-              }
-            },
-          });
-        }
+        await this.meetingsCommonService.handleUserLoggedInDisconnect({
+          isMeetingHost,
+          meetingId,
+          session,
+          timeToAdd,
+          user,
+        });
 
         if (activeParticipants === 0) {
           await this.meetingsCommonService.handleClearMeetingData({
             userId: meeting.owner._id,
             templateId: userTemplate.id,
             instanceId: userTemplate.meetingInstance.instanceId,
-            meetingId: meeting.id,
+            meetingId,
             session,
           });
+          return;
         }
+
+        await this.meetingsCommonService.handleDisconnectWithHaveParticipants({
+          client,
+          event,
+          emitToRoom: this.emitToRoom,
+          isMeetingHost,
+          meeting,
+          endsAt: meeting.endsAt,
+          callback: this.endMeeting.bind(this, {
+            meetingId,
+          }),
+        });
       });
     } catch (err) {
       this.logger.error({
@@ -502,7 +332,7 @@ export class MeetingsGateway
 
         if (
           mainUser.maxMeetingTime === 0 &&
-          this.checkHandleTimeLimitByUser(mainUser)
+          this.meetingsCommonService.checkCurrentUserPlain(mainUser)
         ) {
           return {
             success: false,
@@ -511,12 +341,11 @@ export class MeetingsGateway
         }
       }
 
-      const activeParticipants = await this.usersService.countMany({
-        meeting: meeting._id,
-        accessStatus: MeetingAccessStatusEnum.InMeeting,
-      });
-
-      if (activeParticipants === meeting.maxParticipants) {
+      if (
+        typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+          meeting,
+        )) === 'undefined'
+      ) {
         return {
           success: false,
           message: 'meeting.maxParticipantsNumber',
@@ -534,6 +363,7 @@ export class MeetingsGateway
           isAuraActive: message.isAuraActive,
           micStatus: message.micStatus,
           cameraStatus: message.cameraStatus,
+          avatarRole: message.avatarRole,
         },
         session,
       );
@@ -555,20 +385,9 @@ export class MeetingsGateway
 
       await meeting.populate('users');
 
-      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      const plainUser = plainToInstance(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+      const plainMeeting = meetingSerialization(meeting);
+      const plainUser = userSerialization(user);
+      const plainUsers = userSerialization(meeting.users);
 
       this.emitToRoom(
         `meeting:${plainMeeting.id}`,
@@ -707,7 +526,8 @@ export class MeetingsGateway
           session,
         });
 
-        const isHandleTimeLimit = this.checkHandleTimeLimitByUser(mainUser);
+        const isHandleTimeLimit =
+          this.meetingsCommonService.checkCurrentUserPlain(mainUser);
 
         if (isHandleTimeLimit) {
           this.taskService.addTimeout({
@@ -740,20 +560,11 @@ export class MeetingsGateway
           }
         }
 
-        const plainUser = plainToInstance(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainUser = userSerialization(user);
 
-        const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainMeeting = meetingSerialization(meeting);
 
-        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainUsers = userSerialization(meeting.users);
 
         socket.join(`meeting:${message.meetingId}`);
 
@@ -804,82 +615,99 @@ export class MeetingsGateway
     return withTransaction(
       this.connection,
       async (session: ITransactionSession) => {
-        const user = await this.usersService.findOneAndUpdate(
-          { socketId: socket.id },
-          {
-            accessStatus: MeetingAccessStatusEnum.RequestSent,
-            username: message.user.username,
-            isAuraActive: message.user.isAuraActive,
-            micStatus: message.user.micStatus,
-            cameraStatus: message.user.cameraStatus,
-          },
-          session,
-        );
+        try {
+          const {
+            user: { meetingAvatarId },
+          } = message;
 
-        const meeting = await this.meetingsService.findById(
-          message.meetingId,
-          session,
-        );
+          const meetingAvatar = await this.coreService.findMeetingAvatar({
+            query: {
+              _id: meetingAvatarId,
+              status: MeetingAvatarStatus.Active,
+            },
+          });
 
-        await meeting.populate(['owner', 'users', 'hostUserId']);
+          if (!meetingAvatar) {
+            this.logger.error({
+              message: 'Meeting Avatar not found',
+              ctx: socket.id,
+            });
+          }
 
-        const activeParticipants = await this.usersService.countMany({
-          meeting: meeting._id,
-          accessStatus: MeetingAccessStatusEnum.InMeeting,
-        });
+          const user = await this.usersService.findOneAndUpdate(
+            { socketId: socket.id },
+            {
+              accessStatus: MeetingAccessStatusEnum.RequestSent,
+              username: message.user.username,
+              isAuraActive: message.user.isAuraActive,
+              micStatus: message.user.micStatus,
+              cameraStatus: message.user.cameraStatus,
+              meetingAvatarId: meetingAvatar?.id ?? '',
+            },
+            session,
+          );
 
-        if (activeParticipants === meeting.maxParticipants) {
+          const meeting = await this.meetingsService.findById(
+            message.meetingId,
+            session,
+          );
+
+          await meeting.populate(['owner', 'users', 'hostUserId']);
+
+          if (
+            typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+              meeting,
+            )) === 'undefined'
+          ) {
+            return {
+              success: false,
+              message: 'meeting.maxParticipantsNumber',
+            };
+          }
+
+          const plainUser = userSerialization(user);
+
+          const plainMeeting = meetingSerialization(meeting);
+
+          const plainUsers = userSerialization(meeting.users);
+
+          if (
+            meeting?.hostUserId?.socketId &&
+            meeting?.hostUserId?.accessStatus ===
+              MeetingAccessStatusEnum.InMeeting
+          ) {
+            this.emitToSocketId(
+              meeting?.hostUserId?.socketId,
+              MeetingEmitEvents.ReceiveAccessRequest,
+              {
+                user: plainUser,
+              },
+            );
+
+            this.emitToSocketId(
+              meeting?.hostUserId?.socketId,
+              MeetingEmitEvents.PlaySound,
+              {
+                soundType: MeetingSoundsEnum.NewAttendee,
+              },
+            );
+          }
+
           return {
-            success: false,
-            message: 'meeting.maxParticipantsNumber',
-          };
-        }
-
-        const plainUser = plainToInstance(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        if (
-          meeting?.hostUserId?.socketId &&
-          meeting?.hostUserId?.accessStatus ===
-            MeetingAccessStatusEnum.InMeeting
-        ) {
-          this.emitToSocketId(
-            meeting?.hostUserId?.socketId,
-            MeetingEmitEvents.ReceiveAccessRequest,
-            {
+            success: true,
+            result: {
               user: plainUser,
+              meeting: plainMeeting,
+              users: plainUsers,
             },
-          );
-
-          this.emitToSocketId(
-            meeting?.hostUserId?.socketId,
-            MeetingEmitEvents.PlaySound,
-            {
-              soundType: MeetingSoundsEnum.NewAttendee,
-            },
-          );
+          };
+        } catch (err) {
+          this.logger.error({
+            message: err.message,
+            ctx: socket.id,
+          });
+          return;
         }
-
-        return {
-          success: true,
-          result: {
-            user: plainUser,
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        };
       },
     );
   }
@@ -901,58 +729,57 @@ export class MeetingsGateway
     });
 
     return withTransaction(this.connection, async (session) => {
-      if (!message.meetingId) return { success: true };
+      try {
+        if (!message.meetingId) return { success: true };
 
-      const meeting = await this.meetingsService.findById(
-        message.meetingId,
-        session,
-      );
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
 
-      const user = await this.usersService.findOneAndUpdate(
-        { socketId: socket.id },
-        { accessStatus: MeetingAccessStatusEnum.Waiting },
-        session,
-      );
+        const user = await this.usersService.findOneAndUpdate(
+          { socketId: socket.id },
+          { accessStatus: MeetingAccessStatusEnum.Waiting },
+          session,
+        );
 
-      await meeting.populate(['owner', 'users']);
+        await meeting.populate(['owner', 'users']);
 
-      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+        const plainMeeting = meetingSerialization(meeting);
 
-      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+        const plainUsers = userSerialization(meeting.users);
 
-      this.emitToRoom(
-        `meeting:${meeting._id}`,
-        MeetingEmitEvents.UpdateMeeting,
-        {
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
-      );
+        this.emitToRoom(
+          `meeting:${meeting._id}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        );
 
-      if (user?.socketId) {
-        const plainUser = plainToInstance(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
+        if (user?.socketId) {
+          const plainUser = userSerialization(user);
+
+          this.emitToSocketId(user.socketId, UserEmitEvents.UpdateUser, {
+            user: plainUser,
+          });
+        }
+
+        return {
+          success: true,
+          result: {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        };
+      } catch (err) {
+        this.logger.error({
+          message: err.message,
+          ctx: socket.id,
         });
-
-        this.emitToSocketId(user.socketId, UserEmitEvents.UpdateUser, {
-          user: plainUser,
-        });
+        return;
       }
-
-      return {
-        success: true,
-        result: {
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
-      };
     });
   }
 
@@ -975,147 +802,53 @@ export class MeetingsGateway
         id: meeting.templateId,
       });
 
-      let plainUser;
+      let plainUser: CommonUserDTO;
 
       if (message.isUserAccepted) {
-        const user = await this.usersService.findById(message.userId, session);
-
-        if (!user) return;
-
-        const activeParticipants = await this.usersService.countMany({
-          meeting: meeting._id,
-          accessStatus: MeetingAccessStatusEnum.InMeeting,
-        });
-
-        if (activeParticipants === meeting.maxParticipants) {
-          this.emitToSocketId(
-            user.socketId,
-            MeetingEmitEvents.SendMeetingError,
-            {
-              message: 'meeting.maxParticipantsNumber',
-            },
-          );
-
+        if (
+          typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+            meeting,
+          )) === 'undefined'
+        ) {
           return {
             success: false,
             message: 'meeting.maxParticipantsNumber',
           };
         }
 
-        const usersTemplate = await this.coreService.findMeetingTemplateById({
-          id: meeting.templateId,
-        });
-
-        const indexUser = usersTemplate.indexUsers.indexOf(null);
-        if (indexUser === -1) return;
-
-        const updatedUser = await this.usersService.findOneAndUpdate(
-          {
-            _id: message.userId,
-            accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
-          },
-          {
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
-            joinedAt: Date.now(),
-            userPosition: template?.usersPosition?.[indexUser],
-            userSize: template?.usersSize?.[indexUser],
-          },
+        plainUser = await this.meetingsCommonService.acceptUserJoinRoom({
+          meeting,
           session,
-        );
-
-        usersTemplate.indexUsers[indexUser] = user.id.toString();
-
-        await this.coreService.updateUserTemplate({
-          templateId: usersTemplate.id,
-          userId: user.id.toString(),
-          data: {
-            indexUsers: usersTemplate.indexUsers,
-          },
-        });
-
-        if (activeParticipants + 1 === meeting.maxParticipants) {
-          const requestUsers = await this.usersService.findUsers(
-            {
-              meeting: meeting._id,
-              accessStatus: MeetingAccessStatusEnum.RequestSent,
-            },
-            session,
-          );
-
-          const sendErrorPromises = requestUsers.map((user) => {
-            this.emitToSocketId(
-              user.socketId,
-              MeetingEmitEvents.SendMeetingError,
-              {
-                message: 'meeting.maxParticipantsNumber',
-              },
-            );
-          });
-
-          await Promise.all(sendErrorPromises);
-        }
-
-        plainUser = plainToInstance(CommonUserDTO, updatedUser, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
+          template,
+          userId: message.userId,
         });
       } else if (!message.isUserAccepted) {
-        const user = await this.usersService.findByIdAndUpdate(
-          message.userId,
-          {
-            accessStatus: MeetingAccessStatusEnum.Rejected,
-          },
+        plainUser = await this.meetingsCommonService.rejectUserJoinRoom({
+          userId: message.userId,
           session,
-        );
-
-        if (!user) return;
-
-        plainUser = plainToInstance(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
-
-        this.emitToSocketId(
-          user.socketId,
-          MeetingEmitEvents.ReceiveAccessRequest,
-          {
-            user: plainUser,
-          },
-        );
-
-        this.emitToSocketId(user.socketId, MeetingEmitEvents.SendMeetingError, {
-          message: 'meeting.requestDenied',
+          emitToSocketId: this.emitToSocketId,
         });
       }
 
       await meeting.populate(['owner', 'users']);
 
-      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+      const plainMeeting = meetingSerialization(meeting);
+      const plainUsers = userSerialization(meeting.users);
+      const emitData = {
+        meeting: plainMeeting,
+        users: plainUsers,
+      };
 
       this.emitToRoom(
         `meeting:${meeting._id}`,
         MeetingEmitEvents.UpdateMeeting,
-        {
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
+        emitData,
       );
 
       this.emitToRoom(
         `waitingRoom:${meeting.templateId}`,
         MeetingEmitEvents.UpdateMeeting,
-        {
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
+        emitData,
       );
 
       const userSocket = await this.getSocket(
@@ -1186,6 +919,12 @@ export class MeetingsGateway
             session,
           });
 
+          if (!user) {
+            throw new WsException({
+              message: 'User has been deleted',
+            });
+          }
+
           const userId = user._id.toString();
 
           const isMeetingHost = meeting.hostUserId === userId;
@@ -1195,7 +934,7 @@ export class MeetingsGateway
               userId: user.profileId,
             });
 
-            if (this.checkHandleTimeLimitByUser(profileUser)) {
+            if (this.meetingsCommonService.checkCurrentUserPlain(profileUser)) {
               await this.meetingsCommonService.handleTimeLimit({
                 profileId: profileUser.id,
                 meetingId: meeting._id.toString(),
@@ -1206,7 +945,9 @@ export class MeetingsGateway
             }
           }
         } catch (err) {
-          this.logger.error('User has been deleted', err.message);
+          throw new WsException({
+            message: err.message,
+          });
         }
 
         return {
@@ -1283,7 +1024,9 @@ export class MeetingsGateway
                 userId: user.profileId,
               });
 
-              if (this.checkHandleTimeLimitByUser(profileUser)) {
+              if (
+                this.meetingsCommonService.checkCurrentUserPlain(profileUser)
+              ) {
                 await this.meetingsCommonService.handleTimeLimit({
                   profileId: profileUser.id,
                   meetingId: meeting._id.toString(),
@@ -1361,7 +1104,9 @@ export class MeetingsGateway
           userId: prevHostUser.profileId,
         });
 
-        if (this.checkHandleTimeLimitByUser(prevProfileHostUser)) {
+        if (
+          this.meetingsCommonService.checkCurrentUserPlain(prevProfileHostUser)
+        ) {
           const hostTimeData = await this.meetingHostTimeService.update({
             query: {
               host: new Types.ObjectId(prevHostUser.id),
@@ -1403,7 +1148,7 @@ export class MeetingsGateway
         name: `meeting:timeLimit:${meeting.id}`,
       });
 
-      if (this.checkHandleTimeLimitByUser(profileUser)) {
+      if (this.meetingsCommonService.checkCurrentUserPlain(profileUser)) {
         await this.meetingHostTimeService.create({
           data: {
             host: user.id,
@@ -1457,9 +1202,10 @@ export class MeetingsGateway
                 profileUser.maxMeetingTime -
                 (hostTimeData.endAt - hostTimeData.startAt);
 
-              const fallBackTime = this.checkHandleTimeLimitByUser(profileUser)
-                ? null
-                : 0;
+              const fallBackTime =
+                this.meetingsCommonService.checkCurrentUserPlain(profileUser)
+                  ? null
+                  : 0;
 
               await this.coreService.updateUser({
                 query: { _id: profileUser.id },
@@ -1482,10 +1228,7 @@ export class MeetingsGateway
           });
         }
 
-        const plainMeeting = plainToInstance(CommonMeetingDTO, newMeeting, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainMeeting = meetingSerialization(newMeeting);
 
         this.emitToRoom(
           `meeting:${meeting._id}`,
@@ -1530,10 +1273,7 @@ export class MeetingsGateway
         session,
       );
 
-      const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+      const plainMeeting = meetingSerialization(meeting);
 
       this.emitToRoom(
         `meeting:${meeting._id}`,
@@ -1558,7 +1298,11 @@ export class MeetingsGateway
 
     const newTime = mainUser.maxMeetingTime - (Date.now() - meeting?.startAt);
 
-    const fallBackTime = this.checkHandleTimeLimitByUser(mainUser) ? null : 0;
+    const fallBackTime = this.meetingsCommonService.checkCurrentUserPlain(
+      mainUser,
+    )
+      ? null
+      : 0;
 
     await this.coreService.updateUser({
       query: { _id: mainUser.id },
@@ -1656,10 +1400,7 @@ export class MeetingsGateway
 
       await user.populate('meeting');
 
-      const plainUser = plainToInstance(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+      const plainUser = userSerialization(user);
 
       this.emitToRoom(
         `meeting:${user.meeting._id}`,

@@ -111,7 +111,7 @@ export const InviteGuestsDialog = () => {
                             src="/images/default-gmail.jpg"
                             width={60}
                             height={60}
-                            objectFit='cover'
+                            objectFit="cover"
                         />
                         <span>Default Email</span>
                     </CustomGrid>
@@ -123,7 +123,7 @@ export const InviteGuestsDialog = () => {
                             src="/images/gmail.png"
                             width={52}
                             height={52}
-                            objectFit='cover'
+                            objectFit="cover"
                         />
                         <span>Gmail</span>
                     </CustomGrid>

@@ -16,7 +16,7 @@ module.exports = withTM(
     enhance({
         publicRuntimeConfig: {
             applicationName: 'Ruume Admin',
-            frontendUrl: process.env.FRONTEND_URL,
+            frontendUrl: process.env.FRONTEND_ADMIN_URL,
             gatewayUrl: process.env.GATEWAY_URL,
             gatewayPort: process.env.GATEWAY_PORT,
             gatewayHost: process.env.GATEWAY_HOST,

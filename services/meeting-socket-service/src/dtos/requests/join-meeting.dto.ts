@@ -1,5 +1,6 @@
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { IJoinMeeting } from '../../interfaces/join-meeting.interface';
+import { MeetingAvatarRole } from 'shared-types';
 
 export class JoinMeetingRequestDTO implements IJoinMeeting {
   @IsString({
@@ -38,4 +39,7 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
 
   @IsBoolean()
   readonly cameraStatus: string;
+
+  @IsString()
+  readonly avatarRole: MeetingAvatarRole;
 }

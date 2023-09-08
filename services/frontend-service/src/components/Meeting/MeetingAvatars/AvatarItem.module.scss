@@ -1,0 +1,30 @@
+.item {
+    width: 55px;
+    height: 55px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.bound {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid transparent;
+
+    &.active {
+        border: 2px solid #6f6fba;
+    }
+    &.disabled {
+        opacity: 0.2;
+        pointer-events: none;
+        cursor: none;
+    }
+}
+
+.image {
+    border-radius: 50%;
+    overflow: hidden;  
+}

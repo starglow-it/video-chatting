@@ -2,6 +2,16 @@
   "readyToJoin": "Ready to join?",
   "checkDevices": "Check your device settings before you join the meeting",
   "requestSent": "Request sent",
+  "unlockAccess": {
+    "link": "Register to Access",
+    "title": "Unlock Free Access Now",
+    "note": "(Refresh this page after registration)",
+    "decs": {
+      "1": "Sign up in 10s",
+      "2": "Access all avatars",
+      "3": "Start free & unlimited immersive calls"
+    }
+  },
   "settings": {
     "main": "Settings",
     "audioVideo": "Audio & video",
@@ -118,7 +128,9 @@
       "unpin": "Unpin"
     },
     "getPaid": "Get Paid",
-    "sendMoney": "Send Money"
+    "sendMoney": "Send Money",
+    "peopleSeeMe": "People can see me",
+    "peopleHearMe": "People can hear me"
   },
   "payments": {
     "perSession": "per session",

@@ -25,5 +25,11 @@ export enum CoreBrokerPatterns {
   GetMonitoring = 'get_monitoring',
   CreateMonitoring = 'create_monitoring',
   UpdateMonitoring = 'update_monitoring',
-  DeleteMonitorings = 'delete_monitoring'
+  DeleteMonitorings = 'delete_monitoring',
+
+  CreateResouce = 'create_resouce',
+  GetResouces = 'get_resouces',
+  UpdateResouce = 'update_resouce',
+  DeleteResouces = 'delete_resouce',
+  UploadResouce = 'upload_resouce'
 }
