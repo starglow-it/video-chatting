@@ -261,27 +261,37 @@ export class MeetingsCommonService {
     emitToSocketId: (...args: TEventEmitter) => void;
     session: ITransactionSession;
   }) => {
-    const user = await this.usersService.findByIdAndUpdate(
-      userId,
-      {
-        accessStatus: MeetingAccessStatusEnum.Rejected,
-      },
-      session,
-    );
+    try {
+      const user = await this.usersService.findByIdAndUpdate(
+        userId,
+        {
+          accessStatus: MeetingAccessStatusEnum.Rejected,
+        },
+        session,
+      );
 
-    if (!user) return;
+      if (!user) {
+        throw new WsException({
+          message: 'User not found',
+        });
+      }
 
-    const r = userSerialization(user);
+      const r = userSerialization(user);
 
-    emitToSocketId(user.socketId, MeetingEmitEvents.ReceiveAccessRequest, {
-      user: r,
-    });
+      emitToSocketId(user.socketId, MeetingEmitEvents.ReceiveAccessRequest, {
+        user: r,
+      });
 
-    emitToSocketId(user.socketId, MeetingEmitEvents.SendMeetingError, {
-      message: 'meeting.requestDenied',
-    });
+      emitToSocketId(user.socketId, MeetingEmitEvents.SendMeetingError, {
+        message: 'meeting.requestDenied',
+      });
 
-    return r;
+      return r;
+    } catch (err) {
+      throw new WsException({
+        message: err.message,
+      });
+    }
   };
 
   handleDisconnectWithHaveParticipants = async ({

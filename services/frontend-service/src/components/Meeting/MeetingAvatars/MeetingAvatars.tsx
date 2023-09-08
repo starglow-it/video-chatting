@@ -8,7 +8,6 @@ import {
 import { CircularProgress } from '@mui/material';
 import {
     $localUserStore,
-    setIsAudioActiveEvent,
     setIsCameraActiveEvent,
     updateLocalUserEvent,
 } from 'src/store/roomStores';
