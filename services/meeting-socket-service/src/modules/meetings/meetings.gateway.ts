@@ -620,6 +620,15 @@ export class MeetingsGateway
             user: { meetingAvatarId },
           } = message;
 
+          const updateData = {
+            accessStatus: MeetingAccessStatusEnum.RequestSent,
+            username: message.user.username,
+            isAuraActive: message.user.isAuraActive,
+            micStatus: message.user.micStatus,
+            cameraStatus: message.user.cameraStatus,
+            meetingAvatarId: meetingAvatarId === '' ? '' : undefined,
+          };
+
           if (meetingAvatarId) {
             const meetingAvatar = await this.coreService.findMeetingAvatar({
               query: {
@@ -634,18 +643,16 @@ export class MeetingsGateway
                 ctx: socket.id,
               });
             }
+            Object.assign(updateData, {
+              meetingAvatarId,
+            });
           }
+
+          console.log(updateData);
 
           const user = await this.usersService.findOneAndUpdate(
             { socketId: socket.id },
-            {
-              accessStatus: MeetingAccessStatusEnum.RequestSent,
-              username: message.user.username,
-              isAuraActive: message.user.isAuraActive,
-              micStatus: message.user.micStatus,
-              cameraStatus: message.user.cameraStatus,
-              meetingAvatarId: meetingAvatarId ?? '',
-            },
+            updateData,
             session,
           );
 
@@ -795,75 +802,79 @@ export class MeetingsGateway
     });
 
     return withTransaction(this.connection, async (session) => {
-      const meeting = await this.meetingsService.findById(
-        message.meetingId,
-        session,
-      );
+      try {
+        const meeting = await this.meetingsService.findById(
+          message.meetingId,
+          session,
+        );
 
-      const template = await this.coreService.findMeetingTemplateById({
-        id: meeting.templateId,
-      });
+        const template = await this.coreService.findMeetingTemplateById({
+          id: meeting.templateId,
+        });
 
-      let plainUser: CommonUserDTO;
+        let plainUser: CommonUserDTO;
 
-      if (message.isUserAccepted) {
-        if (
-          typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+        if (message.isUserAccepted) {
+          if (
+            typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+              meeting,
+            )) === 'undefined'
+          ) {
+            return {
+              success: false,
+              message: 'meeting.maxParticipantsNumber',
+            };
+          }
+
+          plainUser = await this.meetingsCommonService.acceptUserJoinRoom({
             meeting,
-          )) === 'undefined'
-        ) {
-          return {
-            success: false,
-            message: 'meeting.maxParticipantsNumber',
-          };
+            session,
+            template,
+            userId: message.userId,
+          });
+        } else if (!message.isUserAccepted) {
+          plainUser = await this.meetingsCommonService.rejectUserJoinRoom({
+            userId: message.userId,
+            session,
+            emitToSocketId: this.emitToSocketId.bind(this),
+          });
         }
 
-        plainUser = await this.meetingsCommonService.acceptUserJoinRoom({
-          meeting,
-          session,
-          template,
-          userId: message.userId,
+        await meeting.populate(['owner', 'users']);
+
+        const plainMeeting = meetingSerialization(meeting);
+        const plainUsers = userSerialization(meeting.users);
+        const emitData = {
+          meeting: plainMeeting,
+          users: plainUsers,
+        };
+
+        this.emitToRoom(
+          `meeting:${meeting._id}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitData,
+        );
+
+        this.emitToRoom(
+          `waitingRoom:${meeting.templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          emitData,
+        );
+
+        const userSocket = await this.getSocket(
+          `waitingRoom:${meeting.templateId}`,
+          plainUser.socketId,
+        );
+
+        userSocket.join(`meeting:${meeting._id}`);
+
+        this.emitToSocketId(plainUser.socketId, 'meeting:userAccepted', {
+          user: plainUser,
         });
-        
-      } else if (!message.isUserAccepted) {
-        plainUser = await this.meetingsCommonService.rejectUserJoinRoom({
-          userId: message.userId,
-          session,
-          emitToSocketId: this.emitToSocketId,
-        });
+      } catch (err) {
+        this.logger.error(err);
+        return;
       }
-
-      await meeting.populate(['owner', 'users']);
-
-      const plainMeeting = meetingSerialization(meeting);
-      const plainUsers = userSerialization(meeting.users);
-      const emitData = {
-        meeting: plainMeeting,
-        users: plainUsers,
-      };
-
-      this.emitToRoom(
-        `meeting:${meeting._id}`,
-        MeetingEmitEvents.UpdateMeeting,
-        emitData,
-      );
-
-      this.emitToRoom(
-        `waitingRoom:${meeting.templateId}`,
-        MeetingEmitEvents.UpdateMeeting,
-        emitData,
-      );
-
-      const userSocket = await this.getSocket(
-        `waitingRoom:${meeting.templateId}`,
-        plainUser.socketId,
-      );
-
-      userSocket.join(`meeting:${meeting._id}`);
-
-      this.emitToSocketId(plainUser.socketId, 'meeting:userAccepted', {
-        user: plainUser,
-      });
     });
   }
 
