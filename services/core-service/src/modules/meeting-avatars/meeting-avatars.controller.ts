@@ -76,7 +76,6 @@ export class MeetingAvatarsController {
   ): Promise<IMeetingAvatar> {
     return withTransaction(this.connection, async (session) => {
       try {
-        console.log(query);
         
         const meetingAvatar = await this.meetingAvatarService.findOne({
             query,

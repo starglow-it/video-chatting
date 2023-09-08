@@ -72,8 +72,6 @@ export class CoreService {
 
   async findMeetingAvatar(payload: GetMeetingAvatarPayload): Promise<IMeetingAvatar> {
     const pattern = { cmd: MeetingBrokerPatterns.GetMeetingAvatar };
-    console.log(payload);
-    
     return firstValueFrom(this.client.send(pattern, payload));
   }
 
