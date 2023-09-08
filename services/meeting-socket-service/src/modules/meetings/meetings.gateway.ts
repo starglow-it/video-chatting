@@ -620,18 +620,20 @@ export class MeetingsGateway
             user: { meetingAvatarId },
           } = message;
 
-          const meetingAvatar = await this.coreService.findMeetingAvatar({
-            query: {
-              _id: meetingAvatarId,
-              status: MeetingAvatarStatus.Active,
-            },
-          });
-
-          if (!meetingAvatar) {
-            this.logger.error({
-              message: 'Meeting Avatar not found',
-              ctx: socket.id,
+          if (meetingAvatarId) {
+            const meetingAvatar = await this.coreService.findMeetingAvatar({
+              query: {
+                _id: meetingAvatarId,
+                status: MeetingAvatarStatus.Active,
+              },
             });
+
+            if (!meetingAvatar) {
+              throw new WsException({
+                message: 'Meeting Avatar not found',
+                ctx: socket.id,
+              });
+            }
           }
 
           const user = await this.usersService.findOneAndUpdate(
@@ -642,7 +644,7 @@ export class MeetingsGateway
               isAuraActive: message.user.isAuraActive,
               micStatus: message.user.micStatus,
               cameraStatus: message.user.cameraStatus,
-              meetingAvatarId: meetingAvatar?.id ?? '',
+              meetingAvatarId: meetingAvatarId ?? '',
             },
             session,
           );
@@ -822,6 +824,7 @@ export class MeetingsGateway
           template,
           userId: message.userId,
         });
+        
       } else if (!message.isUserAccepted) {
         plainUser = await this.meetingsCommonService.rejectUserJoinRoom({
           userId: message.userId,
