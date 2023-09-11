@@ -60,4 +60,4 @@ BASE_ENV_DOMAIN=my.chatruume.com
 BASE_DOMAIN=chatruume.com
 LIVEKIT_IP=18.118.59.1
 IS_SYNC_DATA=true
-IS_SEED=false
+IS_SEED=true
