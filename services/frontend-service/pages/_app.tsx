@@ -112,6 +112,21 @@ const CustomApp = ({
                             
                 `}
             </Script>
+            <Script
+                id="mouse-flow"
+                strategy="lazyOnload"
+                type="text/javascript"
+            >
+            {
+            `window._mfq = window._mfq || [];
+                (function() {
+                    var mf = document.createElement("script");
+                    mf.type = "text/javascript"; mf.defer = true;
+                    mf.src = "//cdn.mouseflow.com/projects/7b0a8458-95f4-4761-98a1-8beade2d0dd4.js";
+                    document.getElementsByTagName("head")[0].appendChild(mf);
+            })();`
+            }
+            </Script>
             <Provider value={scope}>
                 <ThemeProvider theme={baseTheme}>
                     <ThemeProvider theme={typographyTheme}>
@@ -180,7 +195,7 @@ CustomApp.getInitialProps = async (context: AppContext) => {
                 !isAuthenticated &&
                 (isLoginRedirectRoutes || isBaseRoute)
             ) {
-                redirectTo(nextPageContext, loginRoute);
+                redirectTo(nextPageContext, welcomeRoute);
             }
         }
     } else {
