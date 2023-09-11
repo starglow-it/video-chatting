@@ -60,4 +60,4 @@ BASE_ENV_DOMAIN=stg.theliveoffice.com
 BASE_DOMAIN=stg.chatruume.com
 LIVEKIT_IP=18.190.108.231
 IS_SYNC_DATA=true
-IS_SEED=false
+IS_SEED=true
