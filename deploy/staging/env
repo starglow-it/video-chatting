@@ -61,3 +61,4 @@ BASE_DOMAIN=stg.chatruume.com
 LIVEKIT_IP=18.190.108.231
 IS_SYNC_DATA=false
 IS_SEED=false
+FRONTEND_ADMIN_URL=https://stg-my.chatruume.com
