@@ -94,5 +94,11 @@
     "support": "Support",
     "howTo": "How To",
     "faq": "FAQ"
+  },
+  "notFound" : {
+    "title": "What are you looking for?",
+    "decs1": "the url you typed either doesn't exist",
+    "decs2": "or is a rip in the ",
+    "decs3": "continuum"
   }
 }

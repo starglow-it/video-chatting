@@ -21,6 +21,7 @@ export async function sendRequest<Result, Error>(
             success: boolean;
             statusCode: number;
         }>({ url, headers: newHeaders, ...restOptions });
+        console.log('#Duy Phan console request', response);
 
         return {
             result: response?.data?.result ?? response.data,
