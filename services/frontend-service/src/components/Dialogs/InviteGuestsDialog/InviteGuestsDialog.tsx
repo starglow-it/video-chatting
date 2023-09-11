@@ -15,12 +15,13 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { getClientMeetingUrlWithDomain } from 'src/utils/urls';
 import { useRouter } from 'next/router';
 import { useTimer } from '@hooks/useTimer';
+import { isMobile } from 'shared-utils';
 import styles from './InviteGuestsDIalog.module.scss';
 
 export const InviteGuestsDialog = () => {
     const router = useRouter();
     const { inviteGuestsDialog } = useStore($appDialogsStore);
-
+    // const { isMobile } = useBrowserDetect();
     const {
         value: currentTime,
         onStartTimer: handleStartCountDown,
@@ -74,7 +75,10 @@ export const InviteGuestsDialog = () => {
     };
 
     return (
-        <CustomDialog open={inviteGuestsDialog} className={styles.content}>
+        <CustomDialog
+            open={inviteGuestsDialog && !isMobile()}
+            className={styles.content}
+        >
             <CustomGrid className={styles.main}>
                 <CustomGrid className={styles.buttonClose}>
                     <RoundCloseIcon

@@ -166,8 +166,6 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const isBaseRoute = pathName === indexRoute;
 
     const { host } = context?.ctx?.req?.headers || {};
-    console.log('#Duy Phan console', host);
-    console.log('#Duy Phan console', publicRuntimeConfig.frontendUrl);
 
     if (publicRuntimeConfig.frontendUrl.includes(host)) {
         if (isWithoutAuthen) {
@@ -197,7 +195,6 @@ CustomApp.getInitialProps = async (context: AppContext) => {
             }
         }
     } else {
-        console.log('#Duy Phan console', isBaseRoute);
         if (!isBaseRoute) {
             NextResponse.redirect('localhost:8000');
             // redirectTo(nextPageContext, 'localhost:8000')

@@ -143,7 +143,6 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
             ),
         [router.pathname],
     );
-    console.log('#Duy Phan console fi', shouldShowFooter, router.pathname);
 
     useEffect(() => {
         (async () => {

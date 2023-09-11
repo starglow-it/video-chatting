@@ -13,7 +13,6 @@ export const handleGetMeetingTemplate = async ({
     const response = await sendRequest<IUserTemplate, ErrorState>({
         ...getMeetingTemplateUrl({ templateId, subdomain }),
     });
-    console.log('#Duy Phan console respone', response);
     if (response.success) {
         return response.result;
     }
