@@ -178,7 +178,6 @@ const Component = () => {
 
     const handleSaveSettings = useCallback(async () => {
         if (changeStream) {
-            console.log('#Duy Phan console', avatarTmp);
             updateLocalUserEvent({
                 isAuraActive: isAuraEnabled,
                 meetingAvatarId: avatarTmp ?? undefined,
@@ -242,7 +241,6 @@ const Component = () => {
         avatarTmp,
     ]);
 
-    console.log('#Duy Phan console aid', localUser.meetingAvatarId);
     return (
         <CustomDialog
             open={devicesSettingsDialog}

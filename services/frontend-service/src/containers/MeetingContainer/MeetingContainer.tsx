@@ -30,6 +30,7 @@ import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVid
 import { Typography } from '@mui/material';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
+import { NotFoundRoute } from 'src/const/client-routes';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -139,10 +140,12 @@ const MeetingContainer = memo(() => {
 
             getSubscriptionWithDataFx({ subscriptionId: '' });
 
-            await getMeetingTemplateFx({
+            const data: any = await getMeetingTemplateFx({
                 templateId: router.query.token as string,
                 subdomain: isSubdomain() ? window.location.origin : undefined,
             });
+
+            if (!data?.result && !data?.id) router.push(NotFoundRoute);
 
             updateLocalUserEvent({
                 accessStatus: MeetingAccessStatusEnum.EnterName,

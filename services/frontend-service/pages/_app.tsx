@@ -117,15 +117,13 @@ const CustomApp = ({
                 strategy="lazyOnload"
                 type="text/javascript"
             >
-            {
-            `window._mfq = window._mfq || [];
+                {`window._mfq = window._mfq || [];
                 (function() {
                     var mf = document.createElement("script");
                     mf.type = "text/javascript"; mf.defer = true;
                     mf.src = "//cdn.mouseflow.com/projects/7b0a8458-95f4-4761-98a1-8beade2d0dd4.js";
                     document.getElementsByTagName("head")[0].appendChild(mf);
-            })();`
-            }
+            })();`}
             </Script>
             <Provider value={scope}>
                 <ThemeProvider theme={baseTheme}>
@@ -168,8 +166,6 @@ CustomApp.getInitialProps = async (context: AppContext) => {
     const isBaseRoute = pathName === indexRoute;
 
     const { host } = context?.ctx?.req?.headers || {};
-    console.log('#Duy Phan console', host);
-    console.log('#Duy Phan console', publicRuntimeConfig.frontendUrl);
 
     if (publicRuntimeConfig.frontendUrl.includes(host)) {
         if (isWithoutAuthen) {
@@ -199,7 +195,6 @@ CustomApp.getInitialProps = async (context: AppContext) => {
             }
         }
     } else {
-        console.log('#Duy Phan console', isBaseRoute);
         if (!isBaseRoute) {
             NextResponse.redirect('localhost:8000');
             // redirectTo(nextPageContext, 'localhost:8000')

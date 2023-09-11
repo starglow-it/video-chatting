@@ -254,11 +254,12 @@ const Component = () => {
                     open={isOpenDrawer}
                     onClose={offDrawer}
                     onOpen={onDrawer}
-                    className={styles.mainDrawer}
+                    classes={{ paper: styles.mainDrawer }}
                 >
                     <CustomPaper
                         className={clsx(styles.drawer, {
                             [styles.portrait]: isPortraitLayout,
+                            [styles.mobileD]: isMobile && isPortraitLayout,
                         })}
                         variant="black-glass"
                     >

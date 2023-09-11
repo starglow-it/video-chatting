@@ -155,7 +155,7 @@
 }
 
 .mainDrawer {
-    overflow: hidden;
+    background: transparent;
 }
 
 .drawer {
@@ -169,6 +169,10 @@
     &.portrait {
         width: 100%;
         padding: rem(20px);
+    }
+
+    &.mobileD {
+        height: auto;
     }
 
     .headers {
