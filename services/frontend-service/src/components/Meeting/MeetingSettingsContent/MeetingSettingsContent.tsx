@@ -57,13 +57,13 @@ const Component = ({
         value: isAudioVideoSettingsOpened,
         onSwitchOff: handleCloseAudioVideoSettings,
         onSwitchOn: handleOpenAudioVideoSettings,
-    } = useToggle(isMobile || isSafari);
+    } = useToggle(isMobile);
 
-    useEffect(() => {
-        if (isSafari) {
-            handleOpenAudioVideoSettings();
-        }
-    }, [isSafari]);
+    // useEffect(() => {
+    //     if (isSafari) {
+    //         handleOpenAudioVideoSettings();
+    //     }
+    // }, [isSafari]);
 
     const handleChangeVolume = useCallback((event: any) => {
         onChangeBackgroundVolume(event.target.value);
@@ -95,11 +95,7 @@ const Component = ({
                                 container
                                 justifyContent="center"
                                 alignItems="center"
-                                onClick={
-                                    !isSafari
-                                        ? handleOpenAudioVideoSettings
-                                        : undefined
-                                }
+                                onClick={handleOpenAudioVideoSettings}
                                 className={styles.advancedButton}
                             >
                                 <CustomTypography
@@ -155,7 +151,7 @@ const Component = ({
                     <CustomGrid container>
                         <CustomGrid container gap={1.5} alignItems="center">
                             <ConditionalRender
-                                condition={!isMobile && !isSafari}
+                                condition={!isMobile}
                             >
                                 <ArrowIcon
                                     className={styles.arrowIcon}
