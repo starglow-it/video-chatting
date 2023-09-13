@@ -18,6 +18,7 @@ import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // styles
+import clsx from 'clsx';
 import styles from './SelectDevices.module.scss';
 
 // types
@@ -32,7 +33,6 @@ import {
     $videoDevicesStore,
     changeStreamFxWithStore,
 } from '../../../store/roomStores';
-import clsx from 'clsx';
 
 const Component = () => {
     const changeStream = useStore($changeStreamStore);

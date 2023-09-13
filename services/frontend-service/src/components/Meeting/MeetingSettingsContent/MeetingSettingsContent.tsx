@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback } from 'react';
 import clsx from 'clsx';
 import { Fade } from '@mui/material';
 
@@ -220,8 +220,9 @@ const Component = ({
                                     direction="column"
                                     wrap="nowrap"
                                     className={clsx(styles.audioSettings, {
-                                        [styles.withVolume]: isBackgroundActive && !isMobile,
-                                        [styles.mobile]: isMobile
+                                        [styles.withVolume]:
+                                            isBackgroundActive && !isMobile,
+                                        [styles.mobile]: isMobile,
                                     })}
                                 >
                                     <LabeledSwitch
@@ -262,7 +263,6 @@ const Component = ({
                                                 [styles.inactive]:
                                                     !backgroundVolume,
                                             })}
-                                            
                                             Icon={
                                                 <SpeakerIcon
                                                     isActive={Boolean(

@@ -179,8 +179,8 @@ export const handleConnectToSFU = async ({
         .on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
         .on(RoomEvent.Reconnecting, () => console.log(RoomEvent.Reconnecting))
         .on(RoomEvent.Reconnected, (...arg) => {
-            console.log(RoomEvent.Reconnected)
-            console.log('#Duy Phan console', arg)
+            console.log(RoomEvent.Reconnected);
+            console.log('#Duy Phan console', arg);
         });
 
     const livekitWssUrl = [

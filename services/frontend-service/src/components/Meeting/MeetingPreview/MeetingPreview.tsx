@@ -140,7 +140,7 @@ const Component = ({ isAllowBack = true }) => {
                         color="colors.white.primary"
                         className={styles.companyName}
                         fontSize={isMobile ? 15 : 24}
-                        lineHeight={isMobile ? '20px': '36px'}
+                        lineHeight={isMobile ? '20px' : '36px'}
                     >
                         {meetingTemplate.companyName}
                     </CustomTypography>
@@ -151,7 +151,7 @@ const Component = ({ isAllowBack = true }) => {
                             nameSpace="meeting"
                             translation="preview.invitedText"
                             fontSize={isMobile ? 12 : 16}
-                            lineHeight={isMobile ? '18px': '24px'}
+                            lineHeight={isMobile ? '18px' : '24px'}
                         />
                     </ConditionalRender>
                     <CustomTypography
@@ -160,7 +160,7 @@ const Component = ({ isAllowBack = true }) => {
                         color="colors.white.primary"
                         className={styles.description}
                         fontSize={isMobile ? 12 : 16}
-                        lineHeight={isMobile ? '18px': '24px'}
+                        lineHeight={isMobile ? '18px' : '24px'}
                     >
                         {meetingTemplate.shortDescription ||
                             meetingTemplate.description}

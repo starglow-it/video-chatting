@@ -47,7 +47,7 @@ const Component = <TemplateType extends { id: string }>({
                         justifyContent="center"
                         alignItems="center"
                         onClick={onCreate}
-                        key='create-a-template'
+                        key="create-a-template"
                     >
                         <PlusIcon width="22px" height="22px" />
                         <CustomTypography>Create room</CustomTypography>

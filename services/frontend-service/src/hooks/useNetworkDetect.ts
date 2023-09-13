@@ -8,7 +8,9 @@ type Props = {
 };
 
 export const useNetworkDetect = ({ callbackOn, callbackOff }: Props) => {
-    const [status, setStatus] = useState<NetworkStatus>(window.navigator.onLine ? 'on': 'off');
+    const [status, setStatus] = useState<NetworkStatus>(
+        window.navigator.onLine ? 'on' : 'off',
+    );
 
     const handleNetworkOn = () => {
         setStatus('on');

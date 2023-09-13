@@ -31,6 +31,8 @@ import { Typography } from '@mui/material';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
 import { NotFoundRoute } from 'src/const/client-routes';
+import { useNetworkDetect } from '@hooks/useNetworkDetect';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -77,8 +79,6 @@ import {
 } from '../../controllers/WebStorageController';
 import { getClientMeetingUrl } from '../../utils/urls';
 import { BackgroundManager } from '../../helpers/media/applyBlur';
-import { useNetworkDetect } from '@hooks/useNetworkDetect';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 const NotMeetingComponent = memo(() => {
     const localUser = useStore($localUserStore);
@@ -266,9 +266,7 @@ const MeetingContainer = memo(() => {
     return (
         <>
             <ConditionalRender condition={status === 'off'}>
-                <CustomGrid
-                    className={styles.networkStatus}
-                >
+                <CustomGrid className={styles.networkStatus}>
                     <CustomTypography
                         nameSpace="common"
                         translation="network.off"
