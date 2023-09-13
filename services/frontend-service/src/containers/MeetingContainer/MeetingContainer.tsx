@@ -31,6 +31,8 @@ import { Typography } from '@mui/material';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
 import { NotFoundRoute } from 'src/const/client-routes';
+import { useNetworkDetect } from '@hooks/useNetworkDetect';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -114,6 +116,7 @@ const MeetingContainer = memo(() => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
+    console.log('#Duy Phan console', meetingTemplate);
 
     const { isMobile } = useBrowserDetect();
 
@@ -129,6 +132,12 @@ const MeetingContainer = memo(() => {
             removeLandscapeListener();
         };
     }, []);
+
+    const { status } = useNetworkDetect({
+        callbackOff: () => {
+            console.log('#Duy Phan console', 'off');
+        },
+    });
 
     useSubscriptionNotification(
         getClientMeetingUrl(router.query.token as string),
@@ -256,6 +265,17 @@ const MeetingContainer = memo(() => {
 
     return (
         <>
+            <ConditionalRender condition={status === 'off'}>
+                <CustomGrid className={styles.networkStatus}>
+                    <CustomTypography
+                        nameSpace="common"
+                        translation="network.off"
+                        textAlign="center"
+                        color="white"
+                        fontSize={13}
+                    />
+                </CustomGrid>
+            </ConditionalRender>
             <ConditionalRender
                 condition={!!meetingTemplate.url && isSettingsChecked}
             >

@@ -8,6 +8,7 @@ import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPla
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // types
+import { isMobile } from 'shared-utils';
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
@@ -35,7 +36,9 @@ const Component = ({
             <CustomGrid
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >
-                <ConditionalRender condition={templateType === 'video'}>
+                <ConditionalRender
+                    condition={templateType === 'video' && isMobile()}
+                >
                     <CustomVideoPlayer
                         isPlaying={!isScreenSharing}
                         isMuted={!isAudioBackgroundActive}

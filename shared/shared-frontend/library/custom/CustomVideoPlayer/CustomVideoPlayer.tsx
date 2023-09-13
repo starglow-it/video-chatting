@@ -34,7 +34,7 @@ const Component = ({
 
     if (video) {
       if (isPlaying) {
-        video.play();
+  
       } else {
         video.pause();
       }
@@ -62,7 +62,7 @@ const Component = ({
       autoPlay
       loop
       playsInline
-      preload="auto"
+      preload="none"
     />
   );
 };

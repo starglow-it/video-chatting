@@ -73,7 +73,6 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     roomRoute,
     createRoomRoute,
     editRoomRoute,
-    indexRoute,
     NotFoundRoute,
 ];
 
@@ -220,6 +219,8 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         return { '--vh': `${height * 0.01}px` } as React.CSSProperties;
     }, [height, isMobile, isPortraitLayout, isMeetingRoute]);
 
+    console.log('#Duy Phan console', isRoomRoute, isMobile);
+
     return (
         <CustomBox
             className={clsx(styles.main, {
@@ -258,7 +259,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                 isMobile && !isDashboardRoute,
                         })}
                     >
-                        <ConditionalRender condition={!isNotFoundRoute}>
+                        <ConditionalRender
+                            condition={
+                                !isMobile ? !isNotFoundRoute : !isRoomRoute
+                            }
+                        >
                             <CustomBox
                                 className={clsx(styles.header, {
                                     [styles.dashboard]: isDashboardRoute,

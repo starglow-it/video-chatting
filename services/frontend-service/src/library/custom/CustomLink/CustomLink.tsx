@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { memo } from 'react';
+import React, { forwardRef, memo } from 'react';
 import Link from 'next/link';
 import { LinkProps } from 'next/dist/client/link';
 import { TypographyProps } from '@mui/material';
@@ -11,8 +11,29 @@ import { CustomTypography } from '../CustomTypography/CustomTypography';
 
 import styles from './CustomLink.module.scss';
 
-const CustomLink = memo(
-    ({
+const BoundComponent = forwardRef(
+    (
+        { nameSpace, translation, children, className, ...rest }: any,
+        ref: any,
+    ) => {
+        return nameSpace && translation ? (
+            <a className={styles.link} ref={ref}>
+                <CustomTypography
+                    nameSpace={nameSpace}
+                    translation={translation}
+                    color="colors.blue.primary"
+                    className={className}
+                    {...rest}
+                />
+            </a>
+        ) : (
+            children
+        );
+    },
+);
+
+const Component = (
+    {
         href,
         nameSpace,
         translation,
@@ -23,26 +44,23 @@ const CustomLink = memo(
     }: PropsWithClassName<CustomLinkProps> &
         TypographyProps &
         Partial<TranslationProps> &
-        React.PropsWithChildren<LinkProps>) => (
-        <Link
-            href={href}
-            {...(isExternal ? { legacyBehavior: true, target: '_blank' } : {})}
+        React.PropsWithChildren<LinkProps>,
+    ref: any,
+) => (
+    <Link
+        href={href}
+        ref={ref}
+        passHref
+        {...(isExternal ? { legacyBehavior: true, target: '_blank' } : {})}
+    >
+        <BoundComponent
+            nameSpace={nameSpace}
+            translation={translation}
+            className={className}
+            {...rest}
         >
-            {nameSpace && translation ? (
-                <a className={styles.link}>
-                    <CustomTypography
-                        nameSpace={nameSpace}
-                        translation={translation}
-                        color="colors.blue.primary"
-                        className={className}
-                        {...rest}
-                    />
-                </a>
-            ) : (
-                children
-            )}
-        </Link>
-    ),
+            <>{children}</>
+        </BoundComponent>
+    </Link>
 );
-
-export { CustomLink };
+export const CustomLink = memo(forwardRef(Component));
