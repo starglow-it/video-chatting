@@ -278,8 +278,6 @@ export class MeetingsGateway
           ctx: message,
         });
 
-        throw new WsException('Test Error');
-
         this.logger.debug(`User joined meeting ${message.templateId}`);
 
         socket.join(`waitingRoom:${message.templateId}`);
