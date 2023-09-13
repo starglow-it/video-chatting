@@ -121,7 +121,9 @@ const Component = ({
                                 translation="features.peopleSeeMe"
                                 checked={isCamera}
                                 onChange={onToggleCamera}
-                                className={styles.switchWrapper}
+                                className={clsx(styles.switchWrapper, {
+                                    [styles.switchWrapperMobile]: isMobile,
+                                })}
                             />
                             <LabeledSwitch
                                 Icon={
@@ -136,7 +138,9 @@ const Component = ({
                                 translation="features.peopleHearMe"
                                 checked={isMicrophone}
                                 onChange={onToggleMicrophone}
-                                className={styles.switchWrapper}
+                                className={clsx(styles.switchWrapper, {
+                                    [styles.switchWrapperMobile]: isMobile,
+                                })}
                             />
                         </CustomGrid>
                     </CustomGrid>
@@ -150,9 +154,7 @@ const Component = ({
                 <Fade in={isAudioVideoSettingsOpened} unmountOnExit>
                     <CustomGrid container>
                         <CustomGrid container gap={1.5} alignItems="center">
-                            <ConditionalRender
-                                condition={!isMobile}
-                            >
+                            <ConditionalRender condition={!isMobile}>
                                 <ArrowIcon
                                     className={styles.arrowIcon}
                                     width="32px"
@@ -164,6 +166,20 @@ const Component = ({
                                 variant="h3bold"
                                 nameSpace="meeting"
                                 translation="settings.audioVideo"
+                                sx={{
+                                    fontSize: {
+                                        xs: '18px',
+                                        sm: '18px',
+                                        xl: '24px',
+                                        md: '24px',
+                                    },
+                                    lineHeight: {
+                                        xs: '28px',
+                                        sm: '28px',
+                                        xl: '36px',
+                                        md: '36px',
+                                    },
+                                }}
                             />
                         </CustomGrid>
                         <CustomGrid
@@ -171,6 +187,14 @@ const Component = ({
                             direction="column"
                             gap={2}
                             className={styles.selectDevicesWrapper}
+                            sx={{
+                                marginTop: {
+                                    xs: '15px',
+                                    sm: '15px',
+                                    xl: '30px',
+                                    md: '30px',
+                                },
+                            }}
                         >
                             <SelectDevices key={stream?.id} />
                             <ConditionalRender condition={!isSafari}>
@@ -185,7 +209,9 @@ const Component = ({
                                     translation="features.blurBackground"
                                     checked={isAuraActive}
                                     onChange={onToggleAura}
-                                    className={styles.switchWrapper}
+                                    className={clsx(styles.switchWrapper, {
+                                        [styles.switchWrapperMobile]: isMobile,
+                                    })}
                                 />
                             </ConditionalRender>
                             <ConditionalRender condition={isAudioActive}>
@@ -194,7 +220,8 @@ const Component = ({
                                     direction="column"
                                     wrap="nowrap"
                                     className={clsx(styles.audioSettings, {
-                                        [styles.withVolume]: isBackgroundActive,
+                                        [styles.withVolume]: isBackgroundActive && !isMobile,
+                                        [styles.mobile]: isMobile
                                     })}
                                 >
                                     <LabeledSwitch
@@ -208,7 +235,10 @@ const Component = ({
                                         translation="features.audioBackground"
                                         checked={isBackgroundActive}
                                         onChange={onBackgroundToggle}
-                                        className={styles.audioWrapper}
+                                        className={clsx(styles.audioWrapper, {
+                                            [styles.switchWrapperMobile]:
+                                                isMobile,
+                                        })}
                                     />
                                     <CustomFade open={isBackgroundActive}>
                                         <CustomDivider />
@@ -220,10 +250,19 @@ const Component = ({
                                             }
                                             value={backgroundVolume}
                                             onChange={handleChangeVolume}
+                                            sx={{
+                                                padding: {
+                                                    xs: '0px 11px 6px 10px',
+                                                    sm: '0px 11px 6px 10px',
+                                                    xl: '13px 22px 13px 10px',
+                                                    md: '13px 22px 13px 10px',
+                                                },
+                                            }}
                                             className={clsx(styles.audioRange, {
                                                 [styles.inactive]:
                                                     !backgroundVolume,
                                             })}
+                                            
                                             Icon={
                                                 <SpeakerIcon
                                                     isActive={Boolean(

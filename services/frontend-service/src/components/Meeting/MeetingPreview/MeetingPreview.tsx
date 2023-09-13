@@ -82,7 +82,7 @@ const Component = ({ isAllowBack = true }) => {
     );
 
     return (
-        <CustomGrid>
+        <CustomGrid width="100%">
             <ConditionalRender condition={isAllowBack}>
                 <CustomGrid
                     container
@@ -111,7 +111,9 @@ const Component = ({ isAllowBack = true }) => {
             <CustomGrid
                 container
                 alignItems="center"
-                className={styles.meetingPreviewWrapper}
+                className={clsx(styles.meetingPreviewWrapper, {
+                    [styles.mobile]: isMobile,
+                })}
                 wrap="nowrap"
             >
                 <CustomBox className={styles.imageWrapper} />
@@ -137,6 +139,8 @@ const Component = ({ isAllowBack = true }) => {
                         variant="h3bold"
                         color="colors.white.primary"
                         className={styles.companyName}
+                        fontSize={isMobile ? 15 : 24}
+                        lineHeight={isMobile ? '20px': '36px'}
                     >
                         {meetingTemplate.companyName}
                     </CustomTypography>
@@ -146,6 +150,8 @@ const Component = ({ isAllowBack = true }) => {
                             color="colors.white.primary"
                             nameSpace="meeting"
                             translation="preview.invitedText"
+                            fontSize={isMobile ? 12 : 16}
+                            lineHeight={isMobile ? '18px': '24px'}
                         />
                     </ConditionalRender>
                     <CustomTypography
@@ -153,6 +159,8 @@ const Component = ({ isAllowBack = true }) => {
                         textAlign="center"
                         color="colors.white.primary"
                         className={styles.description}
+                        fontSize={isMobile ? 12 : 16}
+                        lineHeight={isMobile ? '18px': '24px'}
                     >
                         {meetingTemplate.shortDescription ||
                             meetingTemplate.description}

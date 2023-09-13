@@ -32,6 +32,7 @@ import {
     $videoDevicesStore,
     changeStreamFxWithStore,
 } from '../../../store/roomStores';
+import clsx from 'clsx';
 
 const Component = () => {
     const changeStream = useStore($changeStreamStore);
@@ -156,7 +157,9 @@ const Component = () => {
             </ConditionalRender>
 
             <Select
-                className={styles.selectDeviceInput}
+                className={clsx(styles.selectDeviceInput, {
+                    [styles.mobile]: isMobile,
+                })}
                 value={currentAudioDevice}
                 onChange={handleChangeMic}
                 IconComponent={RoundArrowIcon}
