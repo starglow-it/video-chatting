@@ -73,7 +73,6 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     roomRoute,
     createRoomRoute,
     editRoomRoute,
-    indexRoute,
     NotFoundRoute,
 ];
 
