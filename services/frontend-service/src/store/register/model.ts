@@ -10,7 +10,7 @@ export const initialRegisterState: RegisteredUserState = {
 };
 
 export const $registerStore =
-    registerDomain.store<RegisteredUserState>(initialRegisterState);
+    registerDomain.createStore<RegisteredUserState>(initialRegisterState);
 
 export const resetRegisterErrorEvent = registerDomain.event(
     'resetRegisterErrorEvent',

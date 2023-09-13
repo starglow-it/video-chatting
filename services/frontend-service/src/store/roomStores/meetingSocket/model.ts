@@ -10,7 +10,7 @@ import { DashboardSocketEmitters } from '../../../const/socketEvents/emitters';
 
 export const meetingSocketDomain = rootDomain.createDomain('socketDomain');
 
-export const $meetingSocketStore = meetingSocketDomain.store<SocketState>({
+export const $meetingSocketStore = meetingSocketDomain.createStore<SocketState>({
     socketInstance: null,
 });
 export const $isMeetingSocketConnected = $meetingSocketStore.map(data =>

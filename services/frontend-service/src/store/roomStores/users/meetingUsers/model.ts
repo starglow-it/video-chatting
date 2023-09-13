@@ -7,7 +7,7 @@ import {
     UpdateMeetingUsersPayload,
 } from '../../meetingSocket/types';
 
-export const $meetingUsersStore = meetingUsersDomain.store<MeetingUser[]>([]);
+export const $meetingUsersStore = meetingUsersDomain.createStore<MeetingUser[]>([]);
 export const $isToggleUsersPanel =
     meetingUsersDomain.createStore<boolean>(false);
 

@@ -5,7 +5,7 @@ import { rootDomain } from '../domains';
 
 export const socketDomain = rootDomain.createDomain('socketDomain');
 
-export const $socketStore = socketDomain.store<SocketState>({
+export const $socketStore = socketDomain.createStore<SocketState>({
     socketInstance: null,
 });
 export const $isSocketConnected = $socketStore.map(data =>
