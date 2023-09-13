@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import {
   ICommonUser,
@@ -29,6 +29,7 @@ import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 
 @Injectable()
 export class MeetingsCommonService {
+  private logger: Logger = new Logger(MeetingsCommonService.name);
   constructor(
     private meetingHostTimeService: MeetingTimeService,
     private meetingsService: MeetingsService,
@@ -51,36 +52,40 @@ export class MeetingsCommonService {
     maxProfileTime: number;
     session: ITransactionSession;
   }) {
-    const hostTimeData = await this.meetingHostTimeService.find({
-      query: {
-        host: meetingUserId,
-        meeting: meetingId,
-        endAt: null,
-      },
-      session,
-    });
+    try {
+      const hostTimeData = await this.meetingHostTimeService.find({
+        query: {
+          host: meetingUserId,
+          meeting: meetingId,
+          endAt: null,
+        },
+        session,
+      });
 
-    const maxTimeToExtract = getTimeoutTimestamp({
-      value: 90,
-      type: TimeoutTypesEnum.Minutes,
-    });
+      const maxTimeToExtract = getTimeoutTimestamp({
+        value: 90,
+        type: TimeoutTypesEnum.Minutes,
+      });
 
-    const timeToExtract = hostTimeData.reduce(
-      (acc, b) =>
-        acc +
-        ((b.endAt ?? Date.now()) - b.startAt > maxTimeToExtract
-          ? maxTimeToExtract
-          : (b.endAt ?? Date.now()) - b.startAt),
-      0,
-    );
+      const timeToExtract = hostTimeData.reduce(
+        (acc, b) =>
+          acc +
+          ((b.endAt ?? Date.now()) - b.startAt > maxTimeToExtract
+            ? maxTimeToExtract
+            : (b.endAt ?? Date.now()) - b.startAt),
+        0,
+      );
 
-    await this.coreService.updateUser({
-      query: { _id: profileId },
-      data: {
-        maxMeetingTime:
-          timeToExtract > maxProfileTime ? 0 : maxProfileTime - timeToExtract,
-      },
-    });
+      await this.coreService.updateUser({
+        query: { _id: profileId },
+        data: {
+          maxMeetingTime:
+            timeToExtract > maxProfileTime ? 0 : maxProfileTime - timeToExtract,
+        },
+      });
+    } catch (err) {
+      throw new WsException(err);
+    }
   }
 
   async handleClearMeetingData({
@@ -90,22 +95,26 @@ export class MeetingsCommonService {
     meetingId,
     session,
   }) {
-    await this.usersService.deleteMany({ meeting: meetingId }, session);
+    try {
+      await this.usersService.deleteMany({ meeting: meetingId }, session);
 
-    await this.meetingsService.deleteById({ meetingId }, session);
+      await this.meetingsService.deleteById({ meetingId }, session);
 
-    await this.coreService.updateMeetingInstance({
-      instanceId,
-      data: {
-        owner: null,
-      },
-    });
+      await this.coreService.updateMeetingInstance({
+        instanceId,
+        data: {
+          owner: null,
+        },
+      });
 
-    await this.coreService.updateUserTemplate({
-      templateId,
-      userId,
-      data: { meetingInstance: null },
-    });
+      await this.coreService.updateUserTemplate({
+        templateId,
+        userId,
+        data: { meetingInstance: null },
+      });
+    } catch (err) {
+      throw new WsException(err);
+    }
   }
 
   async changeUsersPositions({
@@ -271,9 +280,7 @@ export class MeetingsCommonService {
       );
 
       if (!user) {
-        throw new WsException({
-          message: 'User not found',
-        });
+        throw new WsException('User not found');
       }
 
       const r = userSerialization(user);
@@ -288,9 +295,7 @@ export class MeetingsCommonService {
 
       return r;
     } catch (err) {
-      throw new WsException({
-        message: err.message,
-      });
+      throw new WsException(err);
     }
   };
 
@@ -311,61 +316,70 @@ export class MeetingsCommonService {
     emitToRoom: (...args: TEventEmitter) => void;
     callback: () => void;
   }) => {
-    const meetingId = meeting._id.toString();
-    if (isMeetingHost) {
-      const endTimestamp = getTimeoutTimestamp({
-        type: TimeoutTypesEnum.Minutes,
-        value: 15,
-      });
+    try {
+      const meetingId = meeting._id.toString();
+      if (isMeetingHost) {
+        const endTimestamp = getTimeoutTimestamp({
+          type: TimeoutTypesEnum.Minutes,
+          value: 15,
+        });
 
-      console.log('timeout', endTimestamp);
+        console.log('timeout', endTimestamp);
 
-      const meetingEndTime = (endsAt || Date.now()) - Date.now();
+        const meetingEndTime = (endsAt || Date.now()) - Date.now();
+
+        this.taskService.deleteTimeout({
+          name: `meeting:finish:${meetingId}`,
+        });
+
+        this.taskService.addTimeout({
+          name: `meeting:finish:${meetingId}`,
+          ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+          callback,
+        });
+      }
 
       this.taskService.deleteTimeout({
-        name: `meeting:finish:${meetingId}`,
+        name: 'meeting:changeUsersPositions',
       });
 
       this.taskService.addTimeout({
-        name: `meeting:finish:${meetingId}`,
-        ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-        callback,
+        name: 'meeting:changeUsersPositions',
+        ts: getTimeoutTimestamp({
+          value: 1,
+          type: TimeoutTypesEnum.Seconds,
+        }),
+        callback: async () => {
+          return withTransaction(
+            this.connection,
+            async (session: ITransactionSession) => {
+              try {
+                this.changeUsersPositions({
+                  meetingId,
+                  templateId: meeting.templateId,
+                  emitToRoom,
+                  event,
+                  session,
+                });
+              } catch (err) {
+                this.logger.error(
+                  {
+                    message: `An error occurs, while change positions`,
+                    ctx: client.id,
+                  },
+                  JSON.stringify(err),
+                );
+                return {
+                  success: true,
+                };
+              }
+            },
+          );
+        },
       });
+    } catch (err) {
+      throw new WsException(err);
     }
-
-    this.taskService.deleteTimeout({
-      name: 'meeting:changeUsersPositions',
-    });
-
-    this.taskService.addTimeout({
-      name: 'meeting:changeUsersPositions',
-      ts: getTimeoutTimestamp({
-        value: 1,
-        type: TimeoutTypesEnum.Seconds,
-      }),
-      callback: async () => {
-        return withTransaction(
-          this.connection,
-          async (session: ITransactionSession) => {
-            try {
-              this.changeUsersPositions({
-                meetingId,
-                templateId: meeting.templateId,
-                emitToRoom,
-                event,
-                session,
-              });
-            } catch (err) {
-              console.error({
-                mesage: err.mesage,
-                ctx: client.id,
-              });
-              return;
-            }
-          },
-        );
-      },
-    });
   };
 
   handleUserLoggedInDisconnect = async ({
@@ -407,9 +421,7 @@ export class MeetingsCommonService {
         }
       }
     } catch (err) {
-      throw new WsException({
-        message: err.message,
-      });
+      throw new WsException(err);
     }
   };
 }
