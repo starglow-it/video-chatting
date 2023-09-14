@@ -73,7 +73,6 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     roomRoute,
     createRoomRoute,
     editRoomRoute,
-    indexRoute,
     NotFoundRoute,
 ];
 
@@ -258,7 +257,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                 isMobile && !isDashboardRoute,
                         })}
                     >
-                        <ConditionalRender condition={!isNotFoundRoute}>
+                        <ConditionalRender
+                            condition={
+                                !isMobile ? !isNotFoundRoute : !isRoomRoute
+                            }
+                        >
                             <CustomBox
                                 className={clsx(styles.header, {
                                     [styles.dashboard]: isDashboardRoute,

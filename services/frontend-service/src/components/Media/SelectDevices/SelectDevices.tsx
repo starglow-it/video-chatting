@@ -18,6 +18,7 @@ import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // styles
+import clsx from 'clsx';
 import styles from './SelectDevices.module.scss';
 
 // types
@@ -156,7 +157,9 @@ const Component = () => {
             </ConditionalRender>
 
             <Select
-                className={styles.selectDeviceInput}
+                className={clsx(styles.selectDeviceInput, {
+                    [styles.mobile]: isMobile,
+                })}
                 value={currentAudioDevice}
                 onChange={handleChangeMic}
                 IconComponent={RoundArrowIcon}

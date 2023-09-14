@@ -2,7 +2,7 @@
 @import "../../../styles/variables";
 
 .selectDevicesWrapper {
-  margin: rem(30px 0 0 0);
+  // margin: rem(30px 0 0 0);
   width: 100%;
 }
 
@@ -38,7 +38,8 @@
     left: 0;
   }
 
-  .advancedSettings, .settingPosition {
+  .advancedSettings,
+  .settingPosition {
     &.relative {
       pointer-events: all;
       position: relative;
@@ -49,10 +50,10 @@
 }
 
 .switchWrapper {
-    padding: rem(13px 10px);
-    background: $light-gray-scale;
-    border: 1px solid rgba($normal-gray-scale, 0.6);
-    border-radius: rem(10px);
+  padding: rem(13px 10px);
+  background: $light-gray-scale;
+  border: 1px solid rgba($normal-gray-scale, 0.6);
+  border-radius: rem(10px);
 }
 
 .audioSettings {
@@ -69,12 +70,16 @@
     height: rem(113px);
   }
 
+  &.mobile {
+    height: rem(90px);
+  }
+
   .audioWrapper {
     padding: rem(13px 10px);
   }
 
   .audioRange {
-    padding: rem(13px 22px 13px 10px);
+    // padding: rem(13px 22px 13px 10px);
 
     &.inactive {
       color: $normal-gray-scale;
@@ -85,4 +90,8 @@
 .gapIcon {
   margin-top: 2px;
   margin-right: 4px;
+}
+
+.switchWrapperMobile {
+  padding: rem(10px 8px) !important;
 }

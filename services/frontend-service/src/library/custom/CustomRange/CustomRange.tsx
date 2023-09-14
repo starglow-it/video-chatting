@@ -12,12 +12,14 @@ const Component = ({
     orientation,
     size,
     classes,
+    sx,
 }: SliderProps & PropsWithClassName<{ Icon?: ReactElement }>) => (
     <Stack
         spacing={2}
         direction="row"
         className={className}
         alignItems="center"
+        sx={sx}
     >
         {Icon}
         <Slider

@@ -17,7 +17,7 @@ const initialMeetingUserState: MeetingUser = {
     isAuraActive: false,
 };
 
-export const $localUserStore = meetingUsersDomain.store<MeetingUser>(
+export const $localUserStore = meetingUsersDomain.createStore<MeetingUser>(
     initialMeetingUserState,
 );
 
