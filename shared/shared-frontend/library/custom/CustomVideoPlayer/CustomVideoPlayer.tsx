@@ -62,7 +62,6 @@ const Component = ({
       autoPlay
       loop
       playsInline
-      preload="none"
     />
   );
 };

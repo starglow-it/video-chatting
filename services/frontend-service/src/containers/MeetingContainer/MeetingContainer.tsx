@@ -116,7 +116,6 @@ const MeetingContainer = memo(() => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
-    console.log('#Duy Phan console', meetingTemplate);
 
     const { isMobile } = useBrowserDetect();
 
@@ -263,6 +262,10 @@ const MeetingContainer = memo(() => {
         );
     }, []);
 
+    const previewImage = (meetingTemplate?.previewUrls || []).find(
+        image => image.resolution === 240,
+    );
+
     return (
         <>
             <ConditionalRender condition={status === 'off'}>
@@ -285,7 +288,7 @@ const MeetingContainer = memo(() => {
                     videoClassName={styles.wrapperBackgroundMedia}
                 >
                     <CustomImage
-                        src={meetingTemplate.url || ''}
+                        src={previewImage?.url ?? ''}
                         className={styles.wrapperBackgroundMedia}
                         layout="fill"
                     />
