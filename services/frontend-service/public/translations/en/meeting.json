@@ -17,7 +17,7 @@
     "audioVideo": "Audio & video",
     "remember": "Remember my settings"
   },
-  "allowAudio": "Allow access to your microphone",
+  "allowAccess": "Allow access to your microphone & video",
   "preview": {
     "invitedText": "invited you to this special scene"
   },

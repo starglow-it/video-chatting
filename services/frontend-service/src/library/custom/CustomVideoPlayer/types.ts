@@ -1,12 +1,8 @@
-export type CustomVideoPlayerOptions = {
-    src: string;
-    type: string;
-};
-
 export type CustomVideoPlayerProps = {
-    options: CustomVideoPlayerOptions;
+    src: string;
     className?: string;
-    isPlaying: boolean;
+    isPlaying?: boolean;
     isMuted: boolean;
     volume: number;
+    classVideo?: string;
 };

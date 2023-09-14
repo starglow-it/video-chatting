@@ -189,6 +189,7 @@ const Component = () => {
     };
 
     const isAudioError = Boolean(audioError);
+    const isVideoError = Boolean(videoError);
 
     const isEnterMeetingDisabled =
         isAudioError ||
@@ -424,12 +425,12 @@ const Component = () => {
                     </ConditionalRender>
                 </CustomGrid>
             </CustomGrid>
-            <ConditionalRender condition={isMobile && isAudioError}>
+            <ConditionalRender condition={isAudioError || isVideoError}>
                 <CustomTypography
                     textAlign="center"
                     color="colors.red.primary"
                     nameSpace="meeting"
-                    translation="allowAudio"
+                    translation="allowAccess"
                     className={styles.devicesError}
                 />
             </ConditionalRender>
