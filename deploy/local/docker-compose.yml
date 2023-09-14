@@ -183,6 +183,7 @@ services:
       dockerfile: ./services/meeting-socket-service/Dockerfile.dev
     ports:
       - "8180:8180"
+    restart: unless-stopped
     environment:
       WAIT_HOSTS: config-service:4000,rabbitmq:5672
       WAIT_TIMEOUT: 60000

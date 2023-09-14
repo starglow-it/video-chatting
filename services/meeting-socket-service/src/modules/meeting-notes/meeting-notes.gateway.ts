@@ -3,7 +3,6 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
-  WsException,
 } from '@nestjs/websockets';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
@@ -21,6 +20,7 @@ import { plainToInstance } from 'class-transformer';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 import { Logger } from '@nestjs/common';
+import { wsError } from 'src/utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -77,17 +77,7 @@ export class MeetingNotesGateway extends BaseGateway {
           success: true,
         };
       } catch (err) {
-        this.logger.error(
-          {
-            message: `An error occurs, while sending the meeting note`,
-            ctx: socket.id,
-          },
-          JSON.stringify(err),
-        );
-
-        return {
-          success: true,
-        };
+        return wsError(socket, err);
       }
     });
   }
@@ -118,17 +108,7 @@ export class MeetingNotesGateway extends BaseGateway {
           },
         );
       } catch (err) {
-        this.logger.error(
-          {
-            message: `An error occurs, while removing the meeting note`,
-            ctx: socket.id,
-          },
-          JSON.stringify(err),
-        );
-
-        return {
-          success: true,
-        };
+        return wsError(socket, err);
       }
     });
   }
@@ -144,7 +124,9 @@ export class MeetingNotesGateway extends BaseGateway {
         });
 
         if (!user) {
-          throw new WsException('User not found');
+          return wsError(socket, {
+            message: 'No user found',
+          });
         }
 
         const meetingNotes = await this.meetingNotesService.findMany(
@@ -169,17 +151,7 @@ export class MeetingNotesGateway extends BaseGateway {
           },
         };
       } catch (err) {
-        this.logger.error(
-          {
-            message: `An error occurs, while getting meeting notes`,
-            ctx: socket.id,
-          },
-          JSON.stringify(err),
-        );
-
-        return {
-          success: true,
-        };
+        return wsError(socket, err);
       }
     });
   }

@@ -4,7 +4,6 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
-  WsException,
 } from '@nestjs/websockets';
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
@@ -48,6 +47,7 @@ import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../../types';
 import { Logger } from '@nestjs/common';
+import { wsError } from 'src/utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -78,54 +78,48 @@ export class UsersGateway extends BaseGateway {
     data: Partial<MeetingUserDocument>;
     session: ITransactionSession;
   }) {
-    try {
-      const usersTemplate = await this.coreService.findMeetingTemplateById({
-        id: userTemplateId,
-      });
+    const usersTemplate = await this.coreService.findMeetingTemplateById({
+      id: userTemplateId,
+    });
 
-      const updateUser = await this.usersService.findOne({
-        query: {
-          _id: meetingUserId,
-        },
-        session,
-      });
+    const updateUser = await this.usersService.findOne({
+      query: {
+        _id: meetingUserId,
+      },
+      session,
+    });
 
-      const updateUsersPosistion = usersTemplate.usersPosition;
-      const updateUsersSize = usersTemplate.usersSize;
+    const updateUsersPosistion = usersTemplate.usersPosition;
+    const updateUsersSize = usersTemplate.usersSize;
 
-      const index = usersTemplate.indexUsers.indexOf(meetingUserId);
-      if (!(index + 1)) {
-        throw new WsException({
-          message: 'Meeting user not found',
-        });
-      }
-
-      if (data?.userPosition) {
-        updateUser.userPosition = data.userPosition;
-
-        updateUsersPosistion[index] = data.userPosition;
-      }
-
-      if (data?.userSize) {
-        updateUser.userSize = data.userSize;
-        updateUsersSize[index] = data.userSize;
-      }
-
-      updateUser.save();
-
-      this.coreService.updateUserTemplate({
-        templateId: userTemplateId,
-        userId: meetingUserId,
-        data: {
-          usersPosition: updateUsersPosistion,
-          usersSize: updateUsersSize,
-        },
-      });
-    } catch (err) {
-      throw new WsException({
-        message: err.message,
+    const index = usersTemplate.indexUsers.indexOf(meetingUserId);
+    if (!(index + 1)) {
+      return wsError(null, {
+        message: 'Meeting user not found',
       });
     }
+
+    if (data?.userPosition) {
+      updateUser.userPosition = data.userPosition;
+
+      updateUsersPosistion[index] = data.userPosition;
+    }
+
+    if (data?.userSize) {
+      updateUser.userSize = data.userSize;
+      updateUsersSize[index] = data.userSize;
+    }
+
+    updateUser.save();
+
+    this.coreService.updateUserTemplate({
+      templateId: userTemplateId,
+      userId: meetingUserId,
+      data: {
+        usersPosition: updateUsersPosistion,
+        usersSize: updateUsersSize,
+      },
+    });
   }
 
   @SubscribeMessage(UsersSubscribeEvents.OnUpdateUser)
@@ -142,9 +136,8 @@ export class UsersGateway extends BaseGateway {
         );
 
         if (!user) {
-          throw new WsException({
+          return wsError(client, {
             message: 'Meeting user not found',
-            ctx: client.id,
           });
         }
 
@@ -198,17 +191,7 @@ export class UsersGateway extends BaseGateway {
           },
         };
       } catch (err) {
-        this.logger.error(
-          {
-            message: `An error occurs, while update user `,
-            ctx: client.id,
-          },
-          JSON.stringify(err),
-        );
-
-        return {
-          success: true,
-        };
+        return wsError(client, err);
       }
     });
   }
@@ -223,9 +206,8 @@ export class UsersGateway extends BaseGateway {
         const user = await this.usersService.findById(message.id, session);
 
         if (!user) {
-          throw new WsException({
+          return wsError(client, {
             message: 'Meeting user not found',
-            ctx: client.id,
           });
         }
 
@@ -290,17 +272,7 @@ export class UsersGateway extends BaseGateway {
           session,
         );
       } catch (err) {
-        this.logger.error(
-          {
-            message: `An error occurs, while removing meeting user `,
-            ctx: client.id,
-          },
-          JSON.stringify(err),
-        );
-
-        return {
-          success: true,
-        };
+        return wsError(client, err);
       }
     });
   }
