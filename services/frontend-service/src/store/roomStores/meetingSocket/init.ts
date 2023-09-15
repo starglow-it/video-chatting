@@ -31,7 +31,7 @@ const handleDisconnectedSocket = (state: SocketState) => {
     };
 };
 
-$reloadMeetingSocketStore.on(reloadMeetingSocketEvent, () => Date.now());
+$reloadMeetingSocketStore.on(reloadMeetingSocketEvent, () => Date.now()).reset(resetRoomStores);
 
 $meetingSocketStore
     .on(initiateMeetingSocketConnectionFx.doneData, (state, data) => ({
