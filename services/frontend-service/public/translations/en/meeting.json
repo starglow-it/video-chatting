@@ -17,7 +17,10 @@
     "audioVideo": "Audio & video",
     "remember": "Remember my settings"
   },
-  "allowAccess": "Allow access to your microphone & video",
+  "allowAccess": {
+    "desktop": "To Join Reset Your Mic & Cam",
+    "mobile": "Reload & Allow Access to Mic & Cam"
+  },
   "preview": {
     "invitedText": "invited you to this special scene"
   },

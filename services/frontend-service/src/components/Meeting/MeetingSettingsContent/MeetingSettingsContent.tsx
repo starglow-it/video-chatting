@@ -69,7 +69,48 @@ const Component = ({
         onChangeBackgroundVolume(event.target.value);
     }, []);
 
-    const buttonsSize = isMobile ? '12px' : '20px';
+    const buttonsSize = isMobile ? '24px' : '24px';
+
+    const renderManageDevice = () => {
+        return (
+            <CustomGrid container gap={2} direction="column">
+                <LabeledSwitch
+                    Icon={
+                        <CameraIcon
+                            width={buttonsSize}
+                            height={buttonsSize}
+                            className={styles.gapIcon}
+                            isActive
+                        />
+                    }
+                    nameSpace="meeting"
+                    translation="features.peopleSeeMe"
+                    checked={isCamera}
+                    onChange={onToggleCamera}
+                    className={clsx(styles.switchWrapper, {
+                        [styles.switchWrapperMobile]: isMobile,
+                    })}
+                />
+                <LabeledSwitch
+                    Icon={
+                        <MicIcon
+                            width={buttonsSize}
+                            height={buttonsSize}
+                            className={styles.gapIcon}
+                            isActive
+                        />
+                    }
+                    nameSpace="meeting"
+                    translation="features.peopleHearMe"
+                    checked={isMicrophone}
+                    onChange={onToggleMicrophone}
+                    className={clsx(styles.switchWrapper, {
+                        [styles.switchWrapperMobile]: isMobile,
+                    })}
+                />
+            </CustomGrid>
+        );
+    };
 
     return (
         <CustomGrid
@@ -107,42 +148,7 @@ const Component = ({
                                 <NewArrowIcon width="18px" height="18px" />
                             </CustomGrid>
                         </CustomGrid>
-                        <CustomGrid container gap={2} direction="column">
-                            <LabeledSwitch
-                                Icon={
-                                    <CameraIcon
-                                        width={buttonsSize}
-                                        height={buttonsSize}
-                                        className={styles.gapIcon}
-                                        isActive
-                                    />
-                                }
-                                nameSpace="meeting"
-                                translation="features.peopleSeeMe"
-                                checked={isCamera}
-                                onChange={onToggleCamera}
-                                className={clsx(styles.switchWrapper, {
-                                    [styles.switchWrapperMobile]: isMobile,
-                                })}
-                            />
-                            <LabeledSwitch
-                                Icon={
-                                    <MicIcon
-                                        width={buttonsSize}
-                                        height={buttonsSize}
-                                        className={styles.gapIcon}
-                                        isActive
-                                    />
-                                }
-                                nameSpace="meeting"
-                                translation="features.peopleHearMe"
-                                checked={isMicrophone}
-                                onChange={onToggleMicrophone}
-                                className={clsx(styles.switchWrapper, {
-                                    [styles.switchWrapperMobile]: isMobile,
-                                })}
-                            />
-                        </CustomGrid>
+                        {renderManageDevice()}
                     </CustomGrid>
                 </Fade>
             </CustomGrid>
@@ -179,9 +185,18 @@ const Component = ({
                                         xl: '36px',
                                         md: '36px',
                                     },
+                                    marginBottom: {
+                                        xs: '15px',
+                                        sm: '15px',
+                                        xl: '0px',
+                                        md: '0px',
+                                    }
                                 }}
                             />
                         </CustomGrid>
+                        <ConditionalRender condition={isMobile}>
+                            {renderManageDevice()}
+                        </ConditionalRender>
                         <CustomGrid
                             container
                             direction="column"
@@ -203,6 +218,7 @@ const Component = ({
                                         <BackgroundBlurIcon
                                             width="24px"
                                             height="24px"
+                                            className={styles.gapIcon}
                                         />
                                     }
                                     nameSpace="meeting"
@@ -214,7 +230,9 @@ const Component = ({
                                     })}
                                 />
                             </ConditionalRender>
-                            <ConditionalRender condition={isAudioActive}>
+                            <ConditionalRender
+                                condition={isAudioActive && !isMobile}
+                            >
                                 <CustomGrid
                                     container
                                     direction="column"
