@@ -234,7 +234,9 @@ const Component = () => {
                         [styles.mobile]: isMobile,
                     })}
                 >
-                    <ConditionalRender condition={!isPayWallBeforeJoin && !isMobile}>
+                    <ConditionalRender
+                        condition={!isPayWallBeforeJoin && !isMobile}
+                    >
                         <MediaPreview
                             videoError={videoError}
                             audioError={audioError}
@@ -444,6 +446,23 @@ const Component = () => {
                             className={styles.devicesError}
                         />
                     </CustomGrid>
+                </ConditionalRender>
+                <ConditionalRender condition={isMobile}>
+                    <CustomImage
+                        src="/images/reload.svg"
+                        width={10}
+                        height={85}
+                        objectFit="contain"
+                        onClick={() => window.location.reload()}
+                    />
+                    <CustomTypography
+                        textAlign="center"
+                        color="colors.grayscale.normal"
+                        fontSize={14}
+                        nameSpace="meeting"
+                        translation="allowAccess.mobile"
+                        className={styles.devicesError}
+                    />
                 </ConditionalRender>
             </ConditionalRender>
             <CustomGrid
