@@ -15,6 +15,11 @@ export const $meetingSocketStore = meetingSocketDomain.createStore<SocketState>(
         socketInstance: null,
     },
 );
+
+export const $reloadMeetingSocketStore = meetingSocketDomain.createStore(0)
+
+export const reloadMeetingSocketEvent = meetingSocketDomain.createEvent('reloadMeetingSocketEvent')
+
 export const $isMeetingSocketConnected = $meetingSocketStore.map(data =>
     Boolean(data.socketInstance?.id),
 );
