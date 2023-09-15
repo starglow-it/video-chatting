@@ -55,6 +55,7 @@ import {
     $meetingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
+    $reloadMeetingSocketStore,
     $serverTypeStore,
     getCategoriesMediasFx,
     initVideoChatEvent,
@@ -82,6 +83,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const serverType = useStore($serverTypeStore);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
+    const numLoad = useStore($reloadMeetingSocketStore)
     const { isMobile } = useBrowserDetect();
 
     const hostUser = useStoreMap({
@@ -125,7 +127,10 @@ const Component = () => {
     ]);
 
     useEffect(() => {
+        
         (async () => {
+            console.log('#Duy Phan console', localUser.accessStatus)
+            console.log('#Duy Phan console',)
             if (
                 localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&
                 meeting.id &&
@@ -144,6 +149,7 @@ const Component = () => {
         isMeetingConnected,
         serverType,
         isJoinMeetingPending,
+        // numLoad
     ]);
 
     useEffect(() => {

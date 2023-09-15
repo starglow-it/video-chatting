@@ -4,7 +4,7 @@ import frontendConfig from '../../../../const/config';
 import { getMeetingInstanceSocketUrl } from '../../../../utils/functions/getMeetingInstanceSocketUrl';
 import { reloadMeetingSocketEvent } from '../model';
 
-let isFirstime = true
+let isFirstime = true;
 
 export const handleConnectSocket = async ({
     serverIp,
@@ -23,22 +23,21 @@ export const handleConnectSocket = async ({
 
     const connectPromise = new Promise((resolve, reject) => {
         socketInstance.on('connect', async () => {
-            console.log('#Duy Phan console connect', isFirstime)
-            if(!isFirstime) {
-                console.log('#Duy Phan console ', 'Firstime 111!!')
-                reloadMeetingSocketEvent()
+            console.log('meeting socket connected', isFirstime);
+            if (!isFirstime) {
+                reloadMeetingSocketEvent();
             }
-            isFirstime = false
+            isFirstime = false;
             resolve(true);
         });
 
         socketInstance.on('connect_error', async err => {
-            console.log('socket console connect error', err)
+            console.log('meeting socket connect error', err);
             reject(err);
         });
 
         socketInstance.on('error', async err => {
-            console.log('socket console error', err)
+            console.log('meeting socket error', err);
             reject(err);
         });
     });

@@ -50,6 +50,7 @@ import {
     $localUserStore,
     $meetingTemplateStore,
     $reloadMeetingSocketStore,
+    disconnectFromVideoChatEvent,
     getMeetingTemplateFx,
     initDevicesEventFxWithStore,
     initiateMeetingSocketConnectionEvent,
@@ -64,6 +65,7 @@ import {
     setIsAudioActiveEvent,
     setIsAuraActive,
     setIsCameraActiveEvent,
+    setMeetingConnectedEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
 
@@ -131,12 +133,17 @@ const MeetingContainer = memo(() => {
                         key: StorageKeysEnum.meetingSettings,
                     });
                     const isHasSettings = Object.keys(savedSettings)?.length;
+
+                    disconnectFromVideoChatEvent()
         
                     await getMeetingTemplateFx({
                         templateId: router.query.token as string,
                         subdomain: isSubdomain() ? window.location.origin : undefined,
                     });
 
+                    // setMeetingConnectedEvent(false)
+
+                    await sendJoinWaitingRoomSocketEvent();
                     if (isOwner) {
                         if (isHasSettings) {
                             updateLocalUserEvent({
