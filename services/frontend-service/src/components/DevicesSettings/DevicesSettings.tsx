@@ -234,7 +234,7 @@ const Component = () => {
                         [styles.mobile]: isMobile,
                     })}
                 >
-                    <ConditionalRender condition={!isPayWallBeforeJoin}>
+                    <ConditionalRender condition={!isPayWallBeforeJoin && !isMobile}>
                         <MediaPreview
                             videoError={videoError}
                             audioError={audioError}
@@ -426,19 +426,34 @@ const Component = () => {
                 </CustomGrid>
             </CustomGrid>
             <ConditionalRender condition={isAudioError || isVideoError}>
-                <CustomTypography
-                    textAlign="center"
-                    color="colors.red.primary"
-                    nameSpace="meeting"
-                    translation="allowAccess"
-                    className={styles.devicesError}
-                />
+                <ConditionalRender condition={!isMobile}>
+                    <CustomGrid className={styles.blockAccess}>
+                        <CustomImage
+                            src="/images/reset-permission.gif"
+                            width={10}
+                            height={100}
+                            unoptimized={false}
+                            objectFit="contain"
+                        />
+                        <CustomTypography
+                            textAlign="center"
+                            color="colors.grayscale.normal"
+                            fontSize={14}
+                            nameSpace="meeting"
+                            translation="allowAccess.desktop"
+                            className={styles.devicesError}
+                        />
+                    </CustomGrid>
+                </ConditionalRender>
             </ConditionalRender>
             <CustomGrid
                 container
                 gap={1}
                 wrap="nowrap"
-                className={clsx(styles.joinBtn, { [styles.mobile]: isMobile })}
+                className={clsx(styles.joinBtn, {
+                    [styles.mobile]: isMobile,
+                    [styles.accessError]: isAudioError || isVideoError,
+                })}
             >
                 <ConditionalRender
                     condition={!isUserSentEnterRequest && !isPayWallBeforeJoin}
