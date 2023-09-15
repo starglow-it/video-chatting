@@ -1,9 +1,11 @@
 import {
     $meetingSocketStore,
+    $reloadMeetingSocketStore,
     disconnectMeetingSocketEvent,
     initiateMeetingSocketConnectionFx,
     joinRoomBeforeMeetingSocketEvent,
     meetingSocketEventRequest,
+    reloadMeetingSocketEvent,
 } from './model';
 
 import { handleEmitSocketEvent } from './handlers/handleEmitSocketEvent';
@@ -28,6 +30,8 @@ const handleDisconnectedSocket = (state: SocketState) => {
         socketInstance: null,
     };
 };
+
+$reloadMeetingSocketStore.on(reloadMeetingSocketEvent, () => Date.now());
 
 $meetingSocketStore
     .on(initiateMeetingSocketConnectionFx.doneData, (state, data) => ({
