@@ -19,6 +19,7 @@ import {
     CancelAccessMeetingRequestResponse,
     UpdateMeetingTemplatePayload,
     EnterWaitingRoomPayload,
+    SendReconnectMeetingPayload,
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -72,3 +73,7 @@ export const enterWaitingRoomSocketEvent = createSocketEvent<
     EnterWaitingRoomPayload,
     void
 >(DashboardSocketEmitters.EnterWaitingRoom);
+export const sendReconnectMeetingEvent = createSocketEvent<
+    SendReconnectMeetingPayload,
+    EnterMeetingRequestResponse
+>(MeetingSocketEmitters.SendReconnectMeeting);

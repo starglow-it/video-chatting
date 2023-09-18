@@ -30,6 +30,7 @@ import {
     cancelAccessMeetingRequestSocketEvent,
     updateMeetingTemplateSocketEvent,
     enterWaitingRoomSocketEvent,
+    sendReconnectMeetingEvent,
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
@@ -61,6 +62,18 @@ export const sendEnterWaitingRoomSocketEvent = attach({
         meetingUserId: localUser.id,
         templateId: meetingTemplate.id,
         username: localUser.username,
+    }),
+});
+
+export const sendReconnectMeetingSocketEvent = attach<
+    void,
+    Store<MeetingUser>,
+    typeof sendReconnectMeetingEvent
+>({
+    effect: sendReconnectMeetingEvent,
+    source: $localUserStore,
+    mapParams: (_, { id }) => ({
+        meetingUserId: id,
     }),
 });
 
@@ -243,6 +256,7 @@ cancelAccessMeetingRequestSocketEvent.doneData.watch(
     handleUpdateMeetingEntities,
 );
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
 
 sample({
     clock: sendEnterMeetingRequestSocketEvent.doneData,
