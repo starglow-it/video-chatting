@@ -119,60 +119,62 @@ const MeetingContainer = memo(() => {
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
     const isBackgroundAudioActive = useStore($isBackgroundAudioActive);
     const backgroundAudioVolume = useStore($backgroundAudioVolume);
-    const numLoad = useStore($reloadMeetingSocketStore)
+    const numLoad = useStore($reloadMeetingSocketStore);
 
     const { isMobile } = useBrowserDetect();
 
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
 
-        useEffect(() => {
-            if(numLoad) {
-                (async () => {
-                    const savedSettings = WebStorage.get<SavedSettings>({
-                        key: StorageKeysEnum.meetingSettings,
-                    });
-                    const isHasSettings = Object.keys(savedSettings)?.length;
+    useEffect(() => {
+        if (numLoad) {
+            (async () => {
+                const savedSettings = WebStorage.get<SavedSettings>({
+                    key: StorageKeysEnum.meetingSettings,
+                });
+                const isHasSettings = Object.keys(savedSettings)?.length;
 
-                    disconnectFromVideoChatEvent()
-        
-                    await getMeetingTemplateFx({
-                        templateId: router.query.token as string,
-                        subdomain: isSubdomain() ? window.location.origin : undefined,
-                    });
+                disconnectFromVideoChatEvent();
 
-                    // setMeetingConnectedEvent(false)
+                setMeetingConnectedEvent(false);
 
-                    await sendJoinWaitingRoomSocketEvent();
-                    if (isOwner) {
-                        if (isHasSettings) {
-                            updateLocalUserEvent({
-                                isAuraActive: savedSettings.auraSetting,
-                                accessStatus: MeetingAccessStatusEnum.InMeeting,
-                            });
-                            joinMeetingEvent({
-                                isSettingsAudioBackgroundActive:
-                                    savedSettings.backgroundAudioSetting,
-                                settingsBackgroundAudioVolume:
-                                    savedSettings.backgroundAudioVolumeSetting,
-                                needToRememberSettings: false,
-                            });
-                        } else {
-                            updateLocalUserEvent({
-                                accessStatus: MeetingAccessStatusEnum.InMeeting,
-                            });
-                            joinMeetingEvent({
-                                isSettingsAudioBackgroundActive:
-                                    isBackgroundAudioActive,
-                                settingsBackgroundAudioVolume:
-                                    backgroundAudioVolume,
-                                needToRememberSettings: true,
-                            });
-                        }
+                await getMeetingTemplateFx({
+                    templateId: router.query.token as string,
+                    subdomain: isSubdomain()
+                        ? window.location.origin
+                        : undefined,
+                });
+
+                await sendJoinWaitingRoomSocketEvent();
+                if (isOwner) {
+                    if (isHasSettings) {
+                        updateLocalUserEvent({
+                            isAuraActive: savedSettings.auraSetting,
+                            accessStatus: MeetingAccessStatusEnum.InMeeting,
+                        });
+                        joinMeetingEvent({
+                            isSettingsAudioBackgroundActive:
+                                savedSettings.backgroundAudioSetting,
+                            settingsBackgroundAudioVolume:
+                                savedSettings.backgroundAudioVolumeSetting,
+                            needToRememberSettings: false,
+                        });
+                    } else {
+                        updateLocalUserEvent({
+                            accessStatus: MeetingAccessStatusEnum.InMeeting,
+                        });
+                        joinMeetingEvent({
+                            isSettingsAudioBackgroundActive:
+                                isBackgroundAudioActive,
+                            settingsBackgroundAudioVolume:
+                                backgroundAudioVolume,
+                            needToRememberSettings: true,
+                        });
                     }
-                })();
-            }
-        },[numLoad])
+                }
+            })();
+        }
+    }, [numLoad]);
 
     useEffect(() => {
         initWindowListeners();
