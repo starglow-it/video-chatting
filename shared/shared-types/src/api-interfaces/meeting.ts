@@ -59,6 +59,7 @@ export enum MeetingAccessStatusEnum {
   Rejected = 'rejected',
   Kicked = 'Kicked',
   Left = 'Left',
+  Disconnected = 'disconnected'
 }
 export interface IMeetingAvatar {
   id?: string;
