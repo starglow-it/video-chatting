@@ -71,6 +71,7 @@ import {
 } from '../../types';
 import { MeetingDocument } from 'src/schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
+import { ReconnectDto } from 'src/dtos/requests/recconnect.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -95,19 +96,26 @@ export class MeetingsGateway
     super();
   }
 
-  private async updateLeaveMeetingForUser({
+  private async updateAccessStatusForUser({
     client,
     session,
+    status,
   }: {
     client: Socket;
+    status: keyof typeof MeetingAccessStatusEnum;
     session: ITransactionSession;
   }): Promise<MeetingUserDocument> {
     const user = await this.usersService.findOneAndUpdate(
       {
         socketId: client.id,
-        accessStatus: MeetingAccessStatusEnum.InMeeting,
+        accessStatus: {
+          $in: [
+            MeetingAccessStatusEnum.InMeeting,
+            MeetingAccessStatusEnum.Disconnected,
+          ],
+        },
       },
-      { accessStatus: MeetingAccessStatusEnum.Left },
+      { accessStatus: status },
       session,
     );
 
@@ -119,9 +127,11 @@ export class MeetingsGateway
       console.log('disconnect', client.id);
 
       return withTransaction(this.connection, async (session) => {
-        const event = `handleDisconnect event - socketId: ${client.id}`;
-        this.logger.log(event);
-        const user = await this.updateLeaveMeetingForUser({ client, session });
+        const user = await this.updateAccessStatusForUser({
+          client,
+          session,
+          status: 'Disconnected',
+        });
 
         if (!user) {
           console.error('[handleDisconnect] no user found');
@@ -173,7 +183,12 @@ export class MeetingsGateway
         const meetingUsers = await this.usersService.findUsers(
           {
             meeting: meeting.id,
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
+            accessStatus: {
+              $in: [
+                MeetingAccessStatusEnum.InMeeting,
+                MeetingAccessStatusEnum.Disconnected,
+              ],
+            },
           },
           session,
         );
@@ -273,6 +288,16 @@ export class MeetingsGateway
 
         socket.join(`waitingRoom:${message.templateId}`);
 
+        const template = await this.coreService.findMeetingTemplateById({
+          id: message.templateId,
+        });
+
+        if (!template) {
+          return wsError(socket, {
+            message: 'No template found',
+          });
+        }
+
         let meeting = await this.meetingsService.findOne(
           {
             templateId: message.templateId,
@@ -299,18 +324,13 @@ export class MeetingsGateway
           });
         }
 
-        console.log(meeting.id);
-
-        const template = await this.coreService.findMeetingTemplateById({
-          id: meeting.templateId,
-        });
-
         if (template.user) {
           const mainUser = await this.coreService.findUserById({
             userId: template.user.id,
           });
 
           if (
+            mainUser &&
             mainUser.maxMeetingTime === 0 &&
             this.meetingsCommonService.checkCurrentUserPlain(mainUser)
           ) {
@@ -435,17 +455,7 @@ export class MeetingsGateway
           userId: template.user.id,
         });
 
-        const userTemplate = await this.coreService.findMeetingTemplateById({
-          id: meeting.templateId,
-        });
-
-        if (!userTemplate) {
-          return wsError(socket, {
-            message: 'User Template not found',
-          });
-        }
-
-        const index = userTemplate.indexUsers.indexOf(null);
+        const index = template.indexUsers.indexOf(null);
         if (!(index + 1)) {
           return wsError(socket, {
             message: 'The meeting has reached its limit of participants',
@@ -468,7 +478,7 @@ export class MeetingsGateway
         );
 
         await this.meetingsService.updateIndexUsers({
-          userTemplate,
+          userTemplate: template,
           user,
           event: UserActionInMeeting.Join,
         });
@@ -1010,6 +1020,12 @@ export class MeetingsGateway
 
             await meeting.save();
           }
+
+          await this.updateAccessStatusForUser({
+            client: socket,
+            session,
+            status: 'Left',
+          });
         }
 
         return {
@@ -1017,6 +1033,64 @@ export class MeetingsGateway
         };
       } catch (error) {
         return wsError(socket, error);
+      }
+    });
+  }
+
+  @SubscribeMessage(MeetingSubscribeEvents.OnReconnect)
+  async reconnect(
+    @MessageBody() msg: ReconnectDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const { meetingUserId } = msg;
+        const user = await this.usersService.findOneAndUpdate(
+          {
+            _id: meetingUserId,
+            accessStatus: MeetingAccessStatusEnum.Disconnected,
+          },
+          {
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          },
+          session,
+        );
+        if (!user) {
+          return wsError(client, {
+            message: 'No user found',
+          });
+        }
+        await user.populate(['meeting']);
+        if (!user.meeting) {
+          return wsError(client, {
+            message: 'No meeting found',
+          });
+        }
+        await user.meeting.populate(['users']);
+        const users = user.meeting.users?.filter((u) => [
+          MeetingAccessStatusEnum.InMeeting,
+          MeetingAccessStatusEnum.Disconnected,
+        ]);
+        client.join(`meeting:${user.meeting._id.toString()}`);
+        const plainUser = userSerialization(user);
+        const plainMeeting = meetingSerialization(user.meeting);
+        const plainUsers = userSerialization(users);
+        this.emitToRoom(
+          `meeting:${user.meeting._id.toString()}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        );
+
+        return {
+          meeting: plainMeeting,
+          users: plainUsers,
+          user: plainUser,
+        };
+      } catch (err) {
+        return wsError(client, err);
       }
     });
   }

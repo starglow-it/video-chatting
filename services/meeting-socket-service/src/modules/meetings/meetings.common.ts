@@ -185,7 +185,12 @@ export class MeetingsCommonService {
   compareActiveWithMaxParicipants = async (meeting: MeetingDocument) => {
     const c = await this.usersService.countMany({
       meeting: meeting._id,
-      accessStatus: MeetingAccessStatusEnum.InMeeting,
+      accessStatus: {
+        $in: [
+          MeetingAccessStatusEnum.InMeeting,
+          MeetingAccessStatusEnum.Disconnected,
+        ],
+      },
     });
 
     if (c === meeting.maxParticipants) return;
