@@ -1,7 +1,6 @@
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
@@ -106,10 +105,11 @@ export class MeetingsGateway
     statusUpdate,
   }: {
     client: Socket;
-    statusCondition: (keyof typeof MeetingAccessStatusEnum)[];
-    statusUpdate: keyof typeof MeetingAccessStatusEnum;
+    statusCondition: MeetingAccessStatusEnum[];
+    statusUpdate: MeetingAccessStatusEnum;
     session: ITransactionSession;
   }): Promise<MeetingUserDocument> {
+    
     const user = await this.usersService.findOneAndUpdate(
       {
         socketId: client.id,
@@ -132,8 +132,8 @@ export class MeetingsGateway
         await this.convertAccessStatusForUser({
           client,
           session,
-          statusCondition: ['InMeeting'],
-          statusUpdate: 'Disconnected',
+          statusCondition: [MeetingAccessStatusEnum.InMeeting],
+          statusUpdate: MeetingAccessStatusEnum.Disconnected,
         });
       });
     } catch (error) {
@@ -312,6 +312,9 @@ export class MeetingsGateway
         this.taskService.deleteTimeout({
           name: `meeting:finish:${message.meetingId}`,
         });
+
+        console.log(message.user);
+        
 
         const meeting = await this.meetingsService.findById(
           message.meetingId,
@@ -838,13 +841,16 @@ export class MeetingsGateway
     client: Socket;
     meeting: MeetingDocument;
   }) {
+    console.log(client.id, 'ahsgdhjasdgjsahdgh');
+    
     const user = await this.convertAccessStatusForUser({
       client,
       session,
-      statusCondition: ['InMeeting', 'Disconnected'],
-      statusUpdate: 'Left',
+      statusCondition: [MeetingAccessStatusEnum.InMeeting, MeetingAccessStatusEnum.Disconnected],
+      statusUpdate: MeetingAccessStatusEnum.Left,
     });
 
+    
     await meeting.populate(['owner']);
 
     const userId = user?._id.toString();
