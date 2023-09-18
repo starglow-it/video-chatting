@@ -160,8 +160,8 @@ const Component = () => {
                             src="/images/banner-mobile.png"
                             width={10}
                             className={styles.banner}
-                            height={200}
-                            objectFit="contain"
+                            height={250}
+                            objectFit="fill"
                         />
                     </ConditionalRender>
                     <CustomButton
