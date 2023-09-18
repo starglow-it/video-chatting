@@ -158,7 +158,14 @@ const Component = () => {
     const isNotRequiredMessage = !currentEmailErrorMessage.includes('required');
 
     return (
-        <>
+        <CustomGrid width="100%" height="100%" display="flex" justifyContent="center" alignItems="center">
+            <CustomGrid className={styles.background}>
+                <CustomImage
+                    src="/images/background-register.png"
+                    className={styles.wrapperBackgroundMedia}
+                    layout="fill"
+                />
+            </CustomGrid>
             <CenteredPaper className={styles.wrapper}>
                 <CustomGrid
                     container
@@ -290,7 +297,7 @@ const Component = () => {
                 </FormProvider>
             </CenteredPaper>
             <SuccessfulRegisterDialog />
-        </>
+        </CustomGrid>
     );
 };
 
