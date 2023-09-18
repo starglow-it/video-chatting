@@ -61,7 +61,10 @@ import {
   VideoChatSubscribeEvents,
 } from '../../const/socket-events/subscribers';
 import { MeetingsCommonService } from './meetings.common';
-import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
+import {
+  MeetingUser,
+  MeetingUserDocument,
+} from '../../schemas/meeting-user.schema';
 import {
   SendAnswerPayload,
   SendDevicesPermissionsPayload,
@@ -96,26 +99,25 @@ export class MeetingsGateway
     super();
   }
 
-  private async updateAccessStatusForUser({
+  private async convertAccessStatusForUser({
     client,
     session,
-    status,
+    statusCondition,
+    statusUpdate,
   }: {
     client: Socket;
-    status: keyof typeof MeetingAccessStatusEnum;
+    statusCondition: (keyof typeof MeetingAccessStatusEnum)[];
+    statusUpdate: keyof typeof MeetingAccessStatusEnum;
     session: ITransactionSession;
   }): Promise<MeetingUserDocument> {
     const user = await this.usersService.findOneAndUpdate(
       {
         socketId: client.id,
         accessStatus: {
-          $in: [
-            MeetingAccessStatusEnum.InMeeting,
-            MeetingAccessStatusEnum.Disconnected,
-          ],
+          $in: statusCondition,
         },
       },
-      { accessStatus: status },
+      { accessStatus: statusUpdate },
       session,
     );
 
@@ -127,136 +129,11 @@ export class MeetingsGateway
       console.log('disconnect', client.id);
 
       return withTransaction(this.connection, async (session) => {
-        const user = await this.updateAccessStatusForUser({
+        await this.convertAccessStatusForUser({
           client,
           session,
-          status: 'Disconnected',
-        });
-
-        if (!user) {
-          console.error('[handleDisconnect] no user found');
-          return {
-            success: true,
-          };
-        }
-
-        const userId = user?._id.toString();
-        const meeting = await this.meetingsService.findById(
-          user?.meeting?._id,
-          session,
-          'owner',
-        );
-
-        if (!meeting) {
-          return wsError(client, '[handleDisconnect] no meeting found');
-        }
-
-        const userTemplate = await this.coreService.findMeetingTemplateById({
-          id: meeting.templateId,
-        });
-
-        if (!userTemplate) {
-          return wsError(client, {
-            message: 'User template not found',
-          });
-        }
-
-        await this.meetingsService.updateIndexUsers({
-          userTemplate,
-          user,
-          event: UserActionInMeeting.Leave,
-        });
-
-        const commonTemplate =
-          await this.coreService.findCommonTemplateByTemplateId({
-            templateId: userTemplate.templateId,
-          });
-
-        const timeToAdd = Date.now() - user.joinedAt;
-
-        if (meeting?.sharingUserId === userId) {
-          meeting.sharingUserId = null;
-
-          await meeting.save({ session: session.session });
-        }
-
-        const meetingUsers = await this.usersService.findUsers(
-          {
-            meeting: meeting.id,
-            accessStatus: {
-              $in: [
-                MeetingAccessStatusEnum.InMeeting,
-                MeetingAccessStatusEnum.Disconnected,
-              ],
-            },
-          },
-          session,
-        );
-
-        const activeParticipants = meetingUsers.length;
-
-        await this.coreService.updateRoomRatingStatistic({
-          templateId: commonTemplate.id,
-          userId: commonTemplate?.author,
-          ratingKey: 'minutes',
-          value: timeToAdd,
-        });
-
-        this.emitToRoom(
-          `meeting:${user.meeting._id}`,
-          UserEmitEvents.RemoveUsers,
-          {
-            users: [userId],
-          },
-        );
-
-        const meetingId = meeting._id.toString();
-
-        const isOwner = meeting.owner._id.toString() === userId;
-        const isMeetingHost = meeting.hostUserId._id.toString() === userId;
-
-        if (
-          !isOwner &&
-          meeting?.owner?.socketId &&
-          user?.accessStatus === MeetingAccessStatusEnum.RequestSent
-        ) {
-          this.emitToSocketId(
-            meeting?.owner?.socketId,
-            UserEmitEvents.RemoveUsers,
-            {
-              users: [userId],
-            },
-          );
-        }
-
-        await this.meetingsCommonService.handleUserLoggedInDisconnect({
-          isMeetingHost,
-          meetingId,
-          session,
-          timeToAdd,
-          user,
-        });
-
-        if (activeParticipants === 0) {
-          await this.meetingsCommonService.handleClearMeetingData({
-            userId: meeting.owner._id,
-            templateId: userTemplate.id,
-            instanceId: userTemplate.meetingInstance.instanceId,
-            meetingId,
-            session,
-          });
-          return;
-        }
-
-        await this.meetingsCommonService.handleDisconnectWithHaveParticipants({
-          client,
-          emitToRoom: this.emitToRoom.bind(this),
-          isMeetingHost,
-          meeting,
-          endsAt: meeting.endsAt,
-          cb: this.endMeeting.bind(this, {
-            meetingId,
-          }),
+          statusCondition: ['InMeeting'],
+          statusUpdate: 'Disconnected',
         });
       });
     } catch (error) {
@@ -952,6 +829,142 @@ export class MeetingsGateway
     }
   }
 
+  async handleOutRoom({
+    meeting,
+    session,
+    client,
+  }: {
+    session: ITransactionSession;
+    client: Socket;
+    meeting: MeetingDocument;
+  }) {
+    const user = await this.convertAccessStatusForUser({
+      client,
+      session,
+      statusCondition: ['InMeeting', 'Disconnected'],
+      statusUpdate: 'Left',
+    });
+
+    await meeting.populate(['owner']);
+
+    const userId = user?._id.toString();
+
+    const userTemplate = await this.coreService.findMeetingTemplateById({
+      id: meeting.templateId,
+    });
+
+    if (!userTemplate) {
+      return wsError(client, {
+        message: 'User template not found',
+      });
+    }
+
+    await this.meetingsService.updateIndexUsers({
+      userTemplate,
+      user,
+      event: UserActionInMeeting.Leave,
+    });
+
+    const commonTemplate =
+      await this.coreService.findCommonTemplateByTemplateId({
+        templateId: userTemplate.templateId,
+      });
+
+    const timeToAdd = Date.now() - user.joinedAt;
+
+    if (meeting?.sharingUserId === userId) {
+      meeting.sharingUserId = null;
+
+      await meeting.save({ session: session.session });
+    }
+
+    const meetingUsers = await this.usersService.findUsers(
+      {
+        meeting: meeting.id,
+        accessStatus: {
+          $in: [
+            MeetingAccessStatusEnum.InMeeting,
+            MeetingAccessStatusEnum.Disconnected,
+          ],
+        },
+      },
+      session,
+    );
+
+    const activeParticipants = meetingUsers.length;
+
+    await this.coreService.updateRoomRatingStatistic({
+      templateId: commonTemplate.id,
+      userId: commonTemplate?.author,
+      ratingKey: 'minutes',
+      value: timeToAdd,
+    });
+
+    const meetingId = meeting._id.toString();
+    const isOwner = meeting.owner._id.toString() === userId;
+    const isMeetingHost = meeting.hostUserId._id.toString() === userId;
+
+    if (
+      !isOwner &&
+      meeting?.owner?.socketId &&
+      user?.accessStatus === MeetingAccessStatusEnum.RequestSent
+    ) {
+      this.emitToSocketId(
+        meeting?.owner?.socketId,
+        UserEmitEvents.RemoveUsers,
+        {
+          users: [userId],
+        },
+      );
+    }
+
+    await this.meetingsCommonService.handleUserLoggedInDisconnect({
+      isMeetingHost,
+      meetingId,
+      session,
+      timeToAdd,
+      user,
+    });
+
+    if (activeParticipants === 0) {
+      await this.meetingsCommonService.handleClearMeetingData({
+        userId: meeting.owner._id,
+        templateId: userTemplate.id,
+        instanceId: userTemplate.meetingInstance.instanceId,
+        meetingId,
+        session,
+      });
+      return;
+    }
+
+    await this.meetingsCommonService.handleDisconnectWithHaveParticipants({
+      client,
+      emitToRoom: this.emitToRoom.bind(this),
+      isMeetingHost,
+      meeting,
+      endsAt: meeting.endsAt,
+      cb: this.endMeeting.bind(this, {
+        meetingId,
+      }),
+    });
+  }
+
+  async handleTimeLimitForHost({ user, meeting, session }) {
+    const profileUser = await this.coreService.findUserById({
+      userId: user.profileId,
+    });
+
+    if (this.meetingsCommonService.checkCurrentUserPlain(profileUser)) {
+      await this.meetingsCommonService.handleTimeLimit({
+        profileId: profileUser.id,
+        meetingId: meeting._id.toString(),
+        meetingUserId: user.id,
+        maxProfileTime: profileUser.maxMeetingTime,
+        session,
+      });
+    }
+  }
+
   @SubscribeMessage(MeetingSubscribeEvents.OnLeaveMeeting)
   async leaveMeeting(
     @MessageBody() message: LeaveMeetingRequestDTO,
@@ -975,56 +988,35 @@ export class MeetingsGateway
           });
         }
 
+        const meeting = await this.meetingsService.findById(
+          user?.meeting._id.toString(),
+          session,
+        );
+
         const userId = user._id.toString();
 
-        if (user) {
-          const meeting = await this.meetingsService.findById(
-            user?.meeting._id.toString(),
-            session,
-          );
+        if (meeting) {
+          await meeting.populate('owner');
 
-          if (meeting) {
-            await meeting.populate('owner');
-
-            if (meeting?.sharingUserId === user?.id) {
-              meeting.sharingUserId = null;
-            }
-
-            this.emitToRoom(
-              `meeting:${meeting.id}`,
-              UserEmitEvents.RemoveUsers,
-              {
-                users: [userId],
-              },
-            );
-
-            const isMeetingHost = meeting.hostUserId === userId;
-
-            if (isMeetingHost) {
-              const profileUser = await this.coreService.findUserById({
-                userId: user.profileId,
-              });
-
-              if (
-                this.meetingsCommonService.checkCurrentUserPlain(profileUser)
-              ) {
-                await this.meetingsCommonService.handleTimeLimit({
-                  profileId: profileUser.id,
-                  meetingId: meeting._id.toString(),
-                  meetingUserId: userId,
-                  maxProfileTime: profileUser.maxMeetingTime,
-                  session,
-                });
-              }
-            }
-
-            await meeting.save();
+          if (meeting?.sharingUserId === user?.id) {
+            meeting.sharingUserId = null;
           }
 
-          await this.updateAccessStatusForUser({
+          this.emitToRoom(`meeting:${meeting.id}`, UserEmitEvents.RemoveUsers, {
+            users: [userId],
+          });
+
+          const isMeetingHost = meeting.hostUserId === userId;
+
+          if (isMeetingHost) {
+            this.handleTimeLimitForHost({ user, meeting, session });
+          }
+
+          await meeting.save();
+          await this.handleOutRoom({
+            meeting,
             client: socket,
             session,
-            status: 'Left',
           });
         }
 
