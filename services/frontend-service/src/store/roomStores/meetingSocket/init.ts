@@ -1,11 +1,10 @@
 import {
     $meetingSocketStore,
-    $reloadMeetingSocketStore,
     disconnectMeetingSocketEvent,
     initiateMeetingSocketConnectionFx,
     joinRoomBeforeMeetingSocketEvent,
     meetingSocketEventRequest,
-    reloadMeetingSocketEvent,
+    reloadMeetingSocketFx,
 } from './model';
 
 import { handleEmitSocketEvent } from './handlers/handleEmitSocketEvent';
@@ -19,9 +18,11 @@ import { AppDialogsEnum, SocketState } from '../../types';
 import { resetRoomStores } from '../../root';
 import { setMeetingErrorEvent } from '../meeting/meetingError/model';
 import { appDialogsApi } from '../../dialogs/init';
+import { handleReconnectSocket } from './handlers/handleReconnectSocket';
 
 meetingSocketEventRequest.use(handleEmitSocketEvent);
 initiateMeetingSocketConnectionFx.use(handleConnectSocket);
+reloadMeetingSocketFx.use(handleReconnectSocket);
 
 const handleDisconnectedSocket = (state: SocketState) => {
     state.socketInstance?.disconnect();
@@ -30,8 +31,6 @@ const handleDisconnectedSocket = (state: SocketState) => {
         socketInstance: null,
     };
 };
-
-$reloadMeetingSocketStore.on(reloadMeetingSocketEvent, () => Date.now()).reset(resetRoomStores);
 
 $meetingSocketStore
     .on(initiateMeetingSocketConnectionFx.doneData, (state, data) => ({
