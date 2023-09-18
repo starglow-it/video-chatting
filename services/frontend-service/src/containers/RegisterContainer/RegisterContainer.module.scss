@@ -62,3 +62,16 @@
 .registerButton {
   padding: rem(16px) 0;
 }
+
+.wrapperBackgroundMedia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.background {
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}

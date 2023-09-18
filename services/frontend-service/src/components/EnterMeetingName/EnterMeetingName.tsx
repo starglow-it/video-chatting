@@ -19,6 +19,7 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { MeetingAccessStatusEnum } from 'shared-types';
 import { Translation } from '@library/common/Translation/Translation';
 import { useRouter } from 'next/router';
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { fullNameSchema } from '../../validation/users/fullName';
 
 // stores
@@ -36,6 +37,7 @@ import {
 
 // styles
 import styles from './EnterMeetingName.module.scss';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     fullName: fullNameSchema().required('required'),
@@ -153,6 +155,15 @@ const Component = () => {
                         name={fullNameRegister.name}
                         error={fullNameError}
                     />
+                    <ConditionalRender condition={isMobile}>
+                        <CustomImage
+                            src="/images/banner-mobile.png"
+                            width={10}
+                            className={styles.banner}
+                            height={200}
+                            objectFit="contain"
+                        />
+                    </ConditionalRender>
                     <CustomButton
                         disabled={
                             !isSocketConnected ||

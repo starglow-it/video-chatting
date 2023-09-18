@@ -52,6 +52,7 @@ import {
     editRoomRoute,
     indexRoute,
     NotFoundRoute,
+    registerRoute,
     roomRoute,
     welcomeRoute,
 } from '../../const/client-routes';
@@ -132,6 +133,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
     const isBaseRoute = new RegExp(`${indexRoute}`).test(router.pathname);
     const isNotFoundRoute = new RegExp(`${NotFoundRoute}`).test(
+        router.pathname,
+    );
+    const isRegisterRoute = new RegExp(`${registerRoute}`).test(
         router.pathname,
     );
 
@@ -265,6 +269,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                             <CustomBox
                                 className={clsx(styles.header, {
                                     [styles.dashboard]: isDashboardRoute,
+                                    [styles.background]: isRegisterRoute,
                                 })}
                             >
                                 <CustomGrid
