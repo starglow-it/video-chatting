@@ -235,7 +235,7 @@ const Component = () => {
                     })}
                 >
                     <ConditionalRender
-                        condition={!isPayWallBeforeJoin && !isMobile}
+                        condition={!isPayWallBeforeJoin}
                     >
                         <MediaPreview
                             videoError={videoError}
