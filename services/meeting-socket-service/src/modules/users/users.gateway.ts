@@ -47,6 +47,7 @@ import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../../types';
 import { Logger } from '@nestjs/common';
+import { wsError } from 'src/utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -70,67 +71,55 @@ export class UsersGateway extends BaseGateway {
     userTemplateId,
     meetingUserId,
     data,
-    client,
     session,
   }: {
     userTemplateId: string;
     meetingUserId: string;
     data: Partial<MeetingUserDocument>;
-    client: Socket;
     session: ITransactionSession;
   }) {
-    try {
-      const usersTemplate = await this.coreService.findMeetingTemplateById({
-        id: userTemplateId,
+    const usersTemplate = await this.coreService.findMeetingTemplateById({
+      id: userTemplateId,
+    });
+
+    const updateUser = await this.usersService.findOne({
+      query: {
+        _id: meetingUserId,
+      },
+      session,
+    });
+
+    const updateUsersPosistion = usersTemplate.usersPosition;
+    const updateUsersSize = usersTemplate.usersSize;
+
+    const index = usersTemplate.indexUsers.indexOf(meetingUserId);
+    if (!(index + 1)) {
+      return wsError(null, {
+        message: 'Meeting user not found',
       });
-
-      const updateUser = await this.usersService.findOne({
-        query: {
-          _id: meetingUserId,
-        },
-        session,
-      });
-
-      const updateUsersPosistion = usersTemplate.usersPosition;
-      const updateUsersSize = usersTemplate.usersSize;
-
-      const index = usersTemplate.indexUsers.indexOf(meetingUserId);
-      if (!(index + 1)) {
-        this.logger.error({
-          message: 'Meeting user not found',
-          ctx: client,
-        });
-        return;
-      }
-
-      if (data?.userPosition) {
-        updateUser.userPosition = data.userPosition;
-
-        updateUsersPosistion[index] = data.userPosition;
-      }
-
-      if (data?.userSize) {
-        updateUser.userSize = data.userSize;
-        updateUsersSize[index] = data.userSize;
-      }
-
-      updateUser.save();
-
-      this.coreService.updateUserTemplate({
-        templateId: userTemplateId,
-        userId: meetingUserId,
-        data: {
-          usersPosition: updateUsersPosistion,
-          usersSize: updateUsersSize,
-        },
-      });
-    } catch (err) {
-      this.logger.error({
-        message: err.message,
-        ctx: client.id,
-      });
-      return;
     }
+
+    if (data?.userPosition) {
+      updateUser.userPosition = data.userPosition;
+
+      updateUsersPosistion[index] = data.userPosition;
+    }
+
+    if (data?.userSize) {
+      updateUser.userSize = data.userSize;
+      updateUsersSize[index] = data.userSize;
+    }
+
+    updateUser.save();
+
+    this.coreService.updateUserTemplate({
+      templateId: userTemplateId,
+      userId: meetingUserId,
+      data: {
+        usersPosition: updateUsersPosistion,
+        usersSize: updateUsersSize,
+      },
+    });
   }
 
   @SubscribeMessage(UsersSubscribeEvents.OnUpdateUser)
@@ -139,70 +128,71 @@ export class UsersGateway extends BaseGateway {
     @ConnectedSocket() client: Socket,
   ): Promise<ResponseSumType<{ user: CommonUserDTO }>> {
     return withTransaction(this.connection, async (session) => {
-      const user = await this.usersService.findOneAndUpdate(
-        message.id ? { _id: message.id } : { socketId: client.id },
-        message,
-        session,
-      );
+      try {
+        const user = await this.usersService.findOneAndUpdate(
+          message.id ? { _id: message.id } : { socketId: client.id },
+          message,
+          session,
+        );
 
-      if (!user) {
-        this.logger.error({
-          message: 'Meeting user not found',
-          ctx: client.id,
+        if (!user) {
+          return wsError(client, {
+            message: 'Meeting user not found',
+          });
+        }
+
+        const meeting = await this.meetingsService.findById(
+          user.meeting._id,
+          session,
+        );
+
+        await this.handleUpdateUsersTemplateVideoContainer({
+          userTemplateId: meeting.templateId,
+          meetingUserId: user.id.toString(),
+          data: {
+            userPosition: message?.userPosition,
+            userSize: message?.userSize,
+          },
+          session,
         });
-        return;
-      }
 
-      const meeting = await this.meetingsService.findById(
-        user.meeting._id,
-        session,
-      );
+        await meeting.populate('users');
 
-      await this.handleUpdateUsersTemplateVideoContainer({
-        userTemplateId: meeting.templateId,
-        meetingUserId: user.id.toString(),
-        data: {
-          userPosition: message?.userPosition,
-          userSize: message?.userSize,
-        },
-        client,
-        session,
-      });
+        const plainUser = plainToInstance(CommonUserDTO, user, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
 
-      await meeting.populate('users');
+        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
+          excludeExtraneousValues: true,
+          enableImplicitConversion: true,
+        });
 
-      const plainUser = plainToInstance(CommonUserDTO, user, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
+        this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
+          users: plainUsers.map((user) => ({
+            ...user,
+            ...(message.userSize &&
+              message.id == user.id && { userSize: message.userSize }),
+            ...(message.userPosition &&
+              message.id == user.id && { userPosition: message.userPosition }),
+          })),
+        });
 
-      const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-        excludeExtraneousValues: true,
-        enableImplicitConversion: true,
-      });
-
-      this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
-        users: plainUsers.map((user) => ({
-          ...user,
-          ...(message.userSize &&
-            message.id == user.id && { userSize: message.userSize }),
-          ...(message.userPosition &&
-            message.id == user.id && { userPosition: message.userPosition }),
-        })),
-      });
-
-      return {
-        success: true,
-        result: {
-          user: {
-            ...plainUser,
-            userPosition: {
-              ...plainUser.userPosition,
-              ...(message.userSize && { userSize: message?.userSize }),
+        return {
+          success: true,
+          result: {
+            user: {
+              ...plainUser,
+              userPosition: {
+                ...plainUser.userPosition,
+                ...(message.userSize && { userSize: message?.userSize }),
+              },
             },
           },
-        },
-      };
+        };
+      } catch (err) {
+        return wsError(client, err);
+      }
     });
   }
 
@@ -216,11 +206,9 @@ export class UsersGateway extends BaseGateway {
         const user = await this.usersService.findById(message.id, session);
 
         if (!user) {
-          this.logger.error({
+          return wsError(client, {
             message: 'Meeting user not found',
-            ctx: client.id,
           });
-          return;
         }
 
         await user.populate('meeting');
@@ -284,11 +272,7 @@ export class UsersGateway extends BaseGateway {
           session,
         );
       } catch (err) {
-        this.logger.error({
-          message: err.message,
-          ctx: client.id,
-        });
-        return;
+        return wsError(client, err);
       }
     });
   }

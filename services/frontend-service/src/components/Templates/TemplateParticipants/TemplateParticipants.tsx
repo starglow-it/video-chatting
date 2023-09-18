@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { AuthorLogo } from 'shared-frontend/icons/OtherIcons/AuthorLogo';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
+// import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
@@ -13,8 +13,8 @@ import styles from './TemplateParticipants.module.scss';
 
 const TemplateParticipants = memo(
     ({
-        number,
-        authorRole,
+        // number,
+        authorRole = 'admin',
         authorThumbnail,
         authorName,
     }: TemplateParticipantsProps) => (
@@ -34,13 +34,13 @@ const TemplateParticipants = memo(
                     userName={authorName || ''}
                 />
             </ConditionalRender>
-            <CustomTypography
+            {/* <CustomTypography
                 variant="body2"
                 color="colors.black.primary"
                 marginLeft="3px"
             >
                 {number}
-            </CustomTypography>
+            </CustomTypography> */}
         </CustomGrid>
     ),
 );

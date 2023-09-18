@@ -32,7 +32,6 @@ const RoomTableItemActions = memo(
         withSubdomain?: boolean;
     }) => {
         const actionButtonRef = useRef(null);
-console.log('#Duy Phan console', withSubdomain)
         const {
             value: isMenuOpen,
             onSwitchOn: onShowMenu,

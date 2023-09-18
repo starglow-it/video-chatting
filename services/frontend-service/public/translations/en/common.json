@@ -100,5 +100,8 @@
     "decs1": "the url you typed either doesn't exist",
     "decs2": "or is a rip in the ",
     "decs3": "continuum"
+  },
+  "network": {
+    "off": "Network unstable, reconnecting…"
   }
 }

@@ -52,6 +52,7 @@ import {
     editRoomRoute,
     indexRoute,
     NotFoundRoute,
+    registerRoute,
     roomRoute,
     welcomeRoute,
 } from '../../const/client-routes';
@@ -73,7 +74,6 @@ const ROUTES_WITHOUT_FOOTER: string[] = [
     roomRoute,
     createRoomRoute,
     editRoomRoute,
-    indexRoute,
     NotFoundRoute,
 ];
 
@@ -133,6 +133,9 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
     const isRoomRoute = new RegExp(`${roomRoute}`).test(router.pathname);
     const isBaseRoute = new RegExp(`${indexRoute}`).test(router.pathname);
     const isNotFoundRoute = new RegExp(`${NotFoundRoute}`).test(
+        router.pathname,
+    );
+    const isRegisterRoute = new RegExp(`${registerRoute}`).test(
         router.pathname,
     );
 
@@ -258,10 +261,15 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
                                 isMobile && !isDashboardRoute,
                         })}
                     >
-                        <ConditionalRender condition={!isNotFoundRoute}>
+                        <ConditionalRender
+                            condition={
+                                !isMobile ? !isNotFoundRoute : !isRoomRoute
+                            }
+                        >
                             <CustomBox
                                 className={clsx(styles.header, {
                                     [styles.dashboard]: isDashboardRoute,
+                                    [styles.background]: isRegisterRoute,
                                 })}
                             >
                                 <CustomGrid

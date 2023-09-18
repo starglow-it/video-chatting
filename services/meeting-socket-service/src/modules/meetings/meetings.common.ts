@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { getTimeoutTimestamp } from '../../utils/getTimeoutTimestamp';
 import {
   ICommonUser,
@@ -18,7 +18,6 @@ import { TasksService } from '../tasks/tasks.service';
 import { UsersService } from '../users/users.service';
 import { MeetingDocument } from '../../schemas/meeting.schema';
 import { userSerialization } from '../../dtos/response/common-user.dto';
-import { WsException } from '@nestjs/websockets';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 import { TEventEmitter } from '../../types/socket-events';
 import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
@@ -26,9 +25,11 @@ import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { Socket } from 'socket.io';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
+import { wsError } from '../../utils/ws/wsError';
 
 @Injectable()
 export class MeetingsCommonService {
+  private logger: Logger = new Logger(MeetingsCommonService.name);
   constructor(
     private meetingHostTimeService: MeetingTimeService,
     private meetingsService: MeetingsService,
@@ -111,76 +112,74 @@ export class MeetingsCommonService {
   async changeUsersPositions({
     meetingId,
     templateId,
-    event,
-    session,
     emitToRoom,
   }: {
     meetingId: string;
     templateId: string;
-    event: string;
-    session: ITransactionSession;
     emitToRoom: (...args: TEventEmitter) => void;
   }): Promise<void> {
-    try {
-      const template = await this.coreService.findMeetingTemplateById({
-        id: templateId,
-      });
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const template = await this.coreService.findMeetingTemplateById({
+          id: templateId,
+        });
 
-      const usersTemplate = await this.coreService.findMeetingTemplateById({
-        id: templateId,
-      });
+        const usersTemplate = await this.coreService.findMeetingTemplateById({
+          id: templateId,
+        });
 
-      usersTemplate.indexUsers.forEach(async (userId, i) => {
-        const user = await this.usersService.findById(userId);
-        if (!user) return;
+        usersTemplate.indexUsers.forEach(async (userId, i) => {
+          const user = await this.usersService.findById(userId);
+          if (!user) return;
 
-        const userPosition = template?.usersPosition?.[i];
-        const userSize = template?.usersSize?.[i];
+          const userPosition = template?.usersPosition?.[i];
+          const userSize = template?.usersSize?.[i];
 
-        user.userPosition = userPosition;
-        user.userSize = userSize;
+          user.userPosition = userPosition;
+          user.userSize = userSize;
 
-        user.save();
-      });
+          user.save();
+        });
 
-      const meetingUsers = await this.usersService.findUsers(
-        {
-          meeting: meetingId,
-          accessStatus: MeetingAccessStatusEnum.InMeeting,
-        },
-        session,
-      );
+        const meetingUsers = await this.usersService.findUsers(
+          {
+            meeting: meetingId,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          },
+          session,
+        );
 
-      const updatedMeeting = await this.meetingsService.findById(
-        meetingId,
-        session,
-        ['owner', 'users'],
-      );
+        const updatedMeeting = await this.meetingsService.findById(
+          meetingId,
+          session,
+          ['owner', 'users'],
+        );
 
-      if (!updatedMeeting) return;
-      const plainUsers = userSerialization(meetingUsers);
-      const plainMeeting = meetingSerialization(updatedMeeting);
+        if (!updatedMeeting) return;
+        const plainUsers = userSerialization(meetingUsers);
+        const plainMeeting = meetingSerialization(updatedMeeting);
 
-      emitToRoom(`waitingRoom:${templateId}`, MeetingEmitEvents.UpdateMeeting, {
-        meeting: plainMeeting,
-        users: plainUsers,
-      });
+        emitToRoom(
+          `waitingRoom:${templateId}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        );
 
-      emitToRoom(
-        `meeting:${plainMeeting.id}`,
-        MeetingEmitEvents.UpdateMeeting,
-        {
-          meeting: plainMeeting,
-          users: plainUsers,
-        },
-      );
-    } catch (err) {
-      console.error({
-        message: err.message,
-        event,
-      });
-      return;
-    }
+        emitToRoom(
+          `meeting:${plainMeeting.id}`,
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        );
+      } catch (err) {
+        wsError(null, err);
+      }
+    });
   }
 
   compareActiveWithMaxParicipants = async (meeting: MeetingDocument) => {
@@ -210,46 +209,42 @@ export class MeetingsCommonService {
     meeting: MeetingDocument;
     template: IUserTemplate;
   }) => {
-    try {
-      const user = await this.usersService.findById(userId, session);
+    const user = await this.usersService.findById(userId, session);
 
-      if (!user) return;
+    if (!user) return;
 
-      const usersTemplate = await this.coreService.findMeetingTemplateById({
-        id: meeting.templateId,
-      });
+    const usersTemplate = await this.coreService.findMeetingTemplateById({
+      id: meeting.templateId,
+    });
 
-      const indexUser = usersTemplate.indexUsers.indexOf(null);
-      if (indexUser === -1) return;
+    const indexUser = usersTemplate.indexUsers.indexOf(null);
+    if (indexUser === -1) return;
 
-      const updatedUser = await this.usersService.findOneAndUpdate(
-        {
-          _id: userId,
-          accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
-        },
-        {
-          accessStatus: MeetingAccessStatusEnum.InMeeting,
-          joinedAt: Date.now(),
-          userPosition: template?.usersPosition?.[indexUser],
-          userSize: template?.usersSize?.[indexUser],
-        },
-        session,
-      );
+    const updatedUser = await this.usersService.findOneAndUpdate(
+      {
+        _id: userId,
+        accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
+      },
+      {
+        accessStatus: MeetingAccessStatusEnum.InMeeting,
+        joinedAt: Date.now(),
+        userPosition: template?.usersPosition?.[indexUser],
+        userSize: template?.usersSize?.[indexUser],
+      },
+      session,
+    );
 
-      usersTemplate.indexUsers[indexUser] = user.id.toString();
+    usersTemplate.indexUsers[indexUser] = user.id.toString();
 
-      await this.coreService.updateUserTemplate({
-        templateId: usersTemplate.id,
-        userId: user.id.toString(),
-        data: {
-          indexUsers: usersTemplate.indexUsers,
-        },
-      });
+    await this.coreService.updateUserTemplate({
+      templateId: usersTemplate.id,
+      userId: user.id.toString(),
+      data: {
+        indexUsers: usersTemplate.indexUsers,
+      },
+    });
 
-      return userSerialization(updatedUser);
-    } catch (err) {
-      throw new WsException(err);
-    }
+    return userSerialization(updatedUser);
   };
 
   rejectUserJoinRoom = async ({
@@ -261,55 +256,43 @@ export class MeetingsCommonService {
     emitToSocketId: (...args: TEventEmitter) => void;
     session: ITransactionSession;
   }) => {
-    try {
-      const user = await this.usersService.findByIdAndUpdate(
-        userId,
-        {
-          accessStatus: MeetingAccessStatusEnum.Rejected,
-        },
-        session,
-      );
+    const user = await this.usersService.findByIdAndUpdate(
+      userId,
+      {
+        accessStatus: MeetingAccessStatusEnum.Rejected,
+      },
+      session,
+    );
 
-      if (!user) {
-        throw new WsException({
-          message: 'User not found',
-        });
-      }
+    if (!user) return;
 
-      const r = userSerialization(user);
+    const r = userSerialization(user);
 
-      emitToSocketId(user.socketId, MeetingEmitEvents.ReceiveAccessRequest, {
-        user: r,
-      });
+    emitToSocketId(user.socketId, MeetingEmitEvents.ReceiveAccessRequest, {
+      user: r,
+    });
 
-      emitToSocketId(user.socketId, MeetingEmitEvents.SendMeetingError, {
-        message: 'meeting.requestDenied',
-      });
+    emitToSocketId(user.socketId, MeetingEmitEvents.SendMeetingError, {
+      message: 'meeting.requestDenied',
+    });
 
-      return r;
-    } catch (err) {
-      throw new WsException({
-        message: err.message,
-      });
-    }
+    return r;
   };
 
   handleDisconnectWithHaveParticipants = async ({
     isMeetingHost,
     meeting,
     endsAt,
-    event,
     client,
     emitToRoom,
-    callback,
+    cb,
   }: {
     isMeetingHost: boolean;
     meeting: MeetingDocument;
     endsAt: number;
-    event: string;
     client: Socket;
     emitToRoom: (...args: TEventEmitter) => void;
-    callback: () => void;
+    cb: () => void;
   }) => {
     const meetingId = meeting._id.toString();
     if (isMeetingHost) {
@@ -329,9 +312,11 @@ export class MeetingsCommonService {
       this.taskService.addTimeout({
         name: `meeting:finish:${meetingId}`,
         ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-        callback,
+        callback: cb,
       });
     }
+
+    console.log('handleDisconnectWithHaveParticipants');
 
     this.taskService.deleteTimeout({
       name: 'meeting:changeUsersPositions',
@@ -344,26 +329,15 @@ export class MeetingsCommonService {
         type: TimeoutTypesEnum.Seconds,
       }),
       callback: async () => {
-        return withTransaction(
-          this.connection,
-          async (session: ITransactionSession) => {
-            try {
-              this.changeUsersPositions({
-                meetingId,
-                templateId: meeting.templateId,
-                emitToRoom,
-                event,
-                session,
-              });
-            } catch (err) {
-              console.error({
-                mesage: err.mesage,
-                ctx: client.id,
-              });
-              return;
-            }
-          },
-        );
+        try {
+          this.changeUsersPositions({
+            meetingId,
+            templateId: meeting.templateId,
+            emitToRoom,
+          });
+        } catch (err) {
+          wsError(null, err);
+        }
       },
     });
   };
@@ -381,35 +355,29 @@ export class MeetingsCommonService {
     session: ITransactionSession;
     meetingId: string;
   }) => {
-    try {
-      let profileUser = null;
-      if (user.profileId) {
-        profileUser = await this.coreService.findUserById({
-          userId: user.profileId,
-        });
-      }
-
-      if (profileUser) {
-        await this.coreService.updateUserProfileStatistic({
-          userId: profileUser.id,
-          statisticKey: 'minutesSpent',
-          value: timeToAdd,
-        });
-
-        if (isMeetingHost && this.checkCurrentUserPlain(profileUser)) {
-          await this.handleTimeLimit({
-            profileId: profileUser.id,
-            meetingId,
-            meetingUserId: user._id.toString(),
-            maxProfileTime: profileUser.maxMeetingTime,
-            session,
-          });
-        }
-      }
-    } catch (err) {
-      throw new WsException({
-        message: err.message,
+    let profileUser = null;
+    if (user.profileId) {
+      profileUser = await this.coreService.findUserById({
+        userId: user.profileId,
       });
+    }
+
+    if (profileUser) {
+      await this.coreService.updateUserProfileStatistic({
+        userId: profileUser.id,
+        statisticKey: 'minutesSpent',
+        value: timeToAdd,
+      });
+
+      if (isMeetingHost && this.checkCurrentUserPlain(profileUser)) {
+        await this.handleTimeLimit({
+          profileId: profileUser.id,
+          meetingId,
+          meetingUserId: user._id.toString(),
+          maxProfileTime: profileUser.maxMeetingTime,
+          session,
+        });
+      }
     }
   };
 }

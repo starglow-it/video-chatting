@@ -18,6 +18,7 @@ import { CameraIcon } from 'shared-frontend/icons/OtherIcons/CameraIcon';
 import { MicIcon } from 'shared-frontend/icons/OtherIcons/MicIcon';
 
 // styles
+import clsx from 'clsx';
 import styles from './SelectDevices.module.scss';
 
 // types
@@ -26,10 +27,12 @@ import { DeviceInputKindEnum } from '../../../const/media/DEVICE_KINDS';
 // stores
 import {
     $audioDevicesStore,
+    $audioErrorStore,
     $changeStreamStore,
     $currentAudioDeviceStore,
     $currentVideoDeviceStore,
     $videoDevicesStore,
+    $videoErrorStore,
     changeStreamFxWithStore,
 } from '../../../store/roomStores';
 
@@ -39,6 +42,8 @@ const Component = () => {
     const videoDevices = useStore($videoDevicesStore);
     const currentAudioDevice = useStore($currentAudioDeviceStore);
     const currentVideoDevice = useStore($currentVideoDeviceStore);
+    const videoError = useStore($videoErrorStore);
+    const audioError = useStore($audioErrorStore);
 
     const { isMobile } = useBrowserDetect();
 
@@ -140,7 +145,7 @@ const Component = () => {
 
     return (
         <>
-            <ConditionalRender condition={!isMobile}>
+            <ConditionalRender condition={!isMobile && !!!videoError}>
                 <Select
                     className={styles.selectDeviceInput}
                     value={currentVideoDevice}
@@ -154,19 +159,27 @@ const Component = () => {
                     {renderVideoDevicesMenuItems}
                 </Select>
             </ConditionalRender>
-
-            <Select
-                className={styles.selectDeviceInput}
-                value={currentAudioDevice}
-                onChange={handleChangeMic}
-                IconComponent={RoundArrowIcon}
-                MenuProps={{
-                    disableScrollLock: true,
-                }}
-                renderValue={handleRenderAudioValue}
-            >
-                {renderAudioDevicesMenuItems}
-            </Select>
+            <ConditionalRender condition={!!!audioError}>
+                <Select
+                    className={clsx(styles.selectDeviceInput, {
+                        [styles.mobile]: isMobile,
+                    })}
+                    classes={
+                        isMobile
+                            ? { select: styles.audioWrapperMobile }
+                            : undefined
+                    }
+                    value={currentAudioDevice}
+                    onChange={handleChangeMic}
+                    IconComponent={RoundArrowIcon}
+                    MenuProps={{
+                        disableScrollLock: true,
+                    }}
+                    renderValue={handleRenderAudioValue}
+                >
+                    {renderAudioDevicesMenuItems}
+                </Select>
+            </ConditionalRender>
         </>
     );
 };

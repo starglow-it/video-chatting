@@ -9,12 +9,12 @@ import {
 import { PaymentIntentParams, PaymentIntentStore } from '../../../types';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 
-export const $paymentIntent = paymentsDomain.store<PaymentIntentStore>({
+export const $paymentIntent = paymentsDomain.createStore<PaymentIntentStore>({
     id: '',
     clientSecret: '',
 });
 
-export const $isTogglePayment = paymentsDomain.store<boolean>(false);
+export const $isTogglePayment = paymentsDomain.createStore<boolean>(false);
 
 export const togglePaymentFormEvent = paymentsDomain.event<boolean | undefined>(
     'togglePaymentFormEvent',

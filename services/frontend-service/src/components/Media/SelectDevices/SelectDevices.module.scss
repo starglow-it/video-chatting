@@ -5,6 +5,10 @@
   background: #FBFBFC;
   max-width: 100%;
   max-height: rem(50px);
+
+  &.mobile {
+    max-height: rem(45px);
+  }
 }
 
 .activeItem {
@@ -19,4 +23,8 @@
 
 .activeIcon {
   margin: rem(0 12px 0 0);
+}
+
+.audioWrapperMobile {
+  padding: rem(12px 8px);
 }

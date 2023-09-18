@@ -31,6 +31,8 @@ import { Typography } from '@mui/material';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { getAvatarsMeetingEvent } from 'src/store/roomStores/meeting/meetingAvatar/init';
 import { NotFoundRoute } from 'src/const/client-routes';
+import { useNetworkDetect } from '@hooks/useNetworkDetect';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import {
     getSubscriptionWithDataFx,
     initLandscapeListener,
@@ -129,6 +131,12 @@ const MeetingContainer = memo(() => {
             removeLandscapeListener();
         };
     }, []);
+
+    const { status } = useNetworkDetect({
+        callbackOff: () => {
+            console.log('#Duy Phan console', 'off');
+        },
+    });
 
     useSubscriptionNotification(
         getClientMeetingUrl(router.query.token as string),
@@ -254,8 +262,23 @@ const MeetingContainer = memo(() => {
         );
     }, []);
 
+    const previewImage = (meetingTemplate?.previewUrls || []).find(
+        image => image.resolution === 240,
+    );
+
     return (
         <>
+            <ConditionalRender condition={status === 'off'}>
+                <CustomGrid className={styles.networkStatus}>
+                    <CustomTypography
+                        nameSpace="common"
+                        translation="network.off"
+                        textAlign="center"
+                        color="white"
+                        fontSize={13}
+                    />
+                </CustomGrid>
+            </ConditionalRender>
             <ConditionalRender
                 condition={!!meetingTemplate.url && isSettingsChecked}
             >
@@ -265,7 +288,7 @@ const MeetingContainer = memo(() => {
                     videoClassName={styles.wrapperBackgroundMedia}
                 >
                     <CustomImage
-                        src={meetingTemplate.url || ''}
+                        src={previewImage?.url ?? ''}
                         className={styles.wrapperBackgroundMedia}
                         layout="fill"
                     />

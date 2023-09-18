@@ -1,18 +1,11 @@
-import { useRef, memo, useEffect } from 'react';
-import clsx from 'clsx';
+import React, { useRef, memo, useEffect } from 'react';
 
 // types
 import { CustomVideoPlayerProps } from './types';
 
 import styles from './CustomVideoPlayer.module.scss';
 
-const Component = ({
-    isPlaying,
-    isMuted,
-    volume,
-    options,
-    className,
-}: CustomVideoPlayerProps) => {
+const Component = ({ isMuted, volume, src }: CustomVideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
@@ -31,18 +24,6 @@ const Component = ({
         }
     }, [volume]);
 
-    useEffect(() => {
-        const video = videoRef.current;
-
-        if (video) {
-            if (isPlaying) {
-                video.play();
-            } else {
-                video.pause();
-            }
-        }
-    }, [isPlaying]);
-
     useEffect(
         () => () => {
             videoRef.current = null;
@@ -53,23 +34,21 @@ const Component = ({
     useEffect(() => {
         const video = videoRef.current;
         if (video) {
-            video.src = options.src;
+            video.src = src;
         }
-    }, [options.src]);
+    }, [src]);
 
     return (
-        <div className={className}>
-            <video
-                ref={videoRef}
-                className={clsx(styles.video, className)}
-                autoPlay
-                loop
-                playsInline
-            >
-                <source src={options?.src} type={options?.type} />
-            </video>
-        </div>
+        <video
+            ref={videoRef}
+            className={styles.video}
+            autoPlay
+            loop
+            playsInline
+        />
     );
 };
 
-export const CustomVideoPlayer = memo(Component);
+const CustomVideoPlayer = memo(Component);
+
+export default CustomVideoPlayer;

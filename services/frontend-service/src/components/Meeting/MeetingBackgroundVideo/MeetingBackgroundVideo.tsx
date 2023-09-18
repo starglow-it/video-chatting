@@ -4,10 +4,11 @@ import clsx from 'clsx';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // types
+import { isMobile } from 'shared-utils';
+import CustomVideoPlayer from '@library/custom/CustomVideoPlayer/CustomVideoPlayer';
 import { MeetingBackgroundVideoProps } from './types';
 
 // stores
@@ -35,7 +36,9 @@ const Component = ({
             <CustomGrid
                 className={clsx([styles.backgroundVideo, videoClassName])}
             >
-                <ConditionalRender condition={templateType === 'video'}>
+                <ConditionalRender
+                    condition={templateType === 'video' && !isMobile()}
+                >
                     <CustomVideoPlayer
                         isPlaying={!isScreenSharing}
                         isMuted={!isAudioBackgroundActive}
