@@ -66,3 +66,7 @@ export type EnterWaitingRoomPayload = {
     templateId: IUserTemplate['id'];
     username: MeetingUser['username'];
 };
+
+export type SendReconnectMeetingPayload = {
+    meetingUserId: string;
+};
