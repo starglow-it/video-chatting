@@ -18,11 +18,9 @@ import { AppDialogsEnum, SocketState } from '../../types';
 import { resetRoomStores } from '../../root';
 import { setMeetingErrorEvent } from '../meeting/meetingError/model';
 import { appDialogsApi } from '../../dialogs/init';
-import { handleReconnectSocket } from './handlers/handleReconnectSocket';
 
 meetingSocketEventRequest.use(handleEmitSocketEvent);
 initiateMeetingSocketConnectionFx.use(handleConnectSocket);
-reloadMeetingSocketFx.use(handleReconnectSocket);
 
 const handleDisconnectedSocket = (state: SocketState) => {
     state.socketInstance?.disconnect();
