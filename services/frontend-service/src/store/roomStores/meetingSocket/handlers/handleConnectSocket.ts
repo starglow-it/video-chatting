@@ -41,6 +41,12 @@ export const handleConnectSocket = async ({
             console.log('meeting socket error', err);
             reject(err);
         });
+
+        socketInstance.on('disconnect', async () => {
+            console.log('meeting socket disconnect');
+            isFirstime = true
+            resolve(true);
+        });
     });
 
     await connectPromise;
