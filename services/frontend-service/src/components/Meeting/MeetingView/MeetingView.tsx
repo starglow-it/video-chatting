@@ -125,7 +125,6 @@ const Component = () => {
     ]);
 
     useEffect(() => {
-        
         (async () => {
             if (
                 localUser.accessStatus === MeetingAccessStatusEnum.InMeeting &&

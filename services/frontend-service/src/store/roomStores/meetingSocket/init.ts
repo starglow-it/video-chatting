@@ -4,7 +4,6 @@ import {
     initiateMeetingSocketConnectionFx,
     joinRoomBeforeMeetingSocketEvent,
     meetingSocketEventRequest,
-    reloadMeetingSocketFx,
 } from './model';
 
 import { handleEmitSocketEvent } from './handlers/handleEmitSocketEvent';

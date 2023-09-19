@@ -15,7 +15,6 @@ import {
     initSFUVideoChat,
     changeSFUActiveStreamEvent,
     changeSFUActiveStreamFx,
-    replaceConnectionIdSFUEvent,
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingTemplateStore } from '../../meeting/meetingTemplate/model';
@@ -35,8 +34,6 @@ import { handleStartSFUSharing } from './handlers/handleStartSFUSharing';
 import { handleStopSFUSharing } from './handlers/handleStopSFUSharing';
 import { handleChangeSFUStream } from './handlers/handleChangeSFUStream';
 import { updateMeetingSocketEvent } from '../../meeting/sockets/model';
-import { $tracksStore } from '../model';
-import { matchConnectionKey } from 'src/helpers/media/findUserIdWithConnectKey';
 
 getLiveKitTokenFx.use(handleGetLiveKitToken);
 publishTracksFx.use(handlePublishTracks);
@@ -168,13 +165,3 @@ stopSFUSharingFx.done.watch(() => {
         sharingUserId: null,
     });
 });
-
-// sample({
-//     clock: replaceConnectionIdSFUEvent,
-//     source: combine({
-//         tracks: $tracksStore,
-//         localUser: $localUserStore
-//     }),
-//     filter: ({tracks, localUser}) => matchConnectionKey(localUser.id, ),
-//     target: 
-// });

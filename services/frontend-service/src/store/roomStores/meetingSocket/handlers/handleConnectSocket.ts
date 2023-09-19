@@ -2,7 +2,6 @@ import { io } from 'socket.io-client';
 import { IUserTemplate } from 'shared-types';
 import frontendConfig from '../../../../const/config';
 import { getMeetingInstanceSocketUrl } from '../../../../utils/functions/getMeetingInstanceSocketUrl';
-import { reloadMeetingSocketEvent } from '../model';
 import { sendReconnectMeetingSocketEvent } from '../../meeting/sockets/init';
 
 let isFirstime = true;
@@ -44,7 +43,7 @@ export const handleConnectSocket = async ({
 
         socketInstance.on('disconnect', async () => {
             console.log('meeting socket disconnect');
-            isFirstime = true
+            isFirstime = true;
             resolve(true);
         });
     });
