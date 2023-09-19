@@ -10,7 +10,11 @@ import {
     VideoPresets,
 } from 'livekit-client';
 
-import { removeConnectionStream, setConnectionStream } from '../../model';
+import {
+    disconnectFromVideoChatEvent,
+    removeConnectionStream,
+    setConnectionStream,
+} from '../../model';
 import { getLiveKitTokenFx } from '../model';
 import { ConnectToSFUPayload } from '../../types';
 import { MeetingUser } from '../../../../types';
@@ -175,6 +179,7 @@ export const handleConnectToSFU = async ({
         })
         .on(RoomEvent.Disconnected, () => {
             console.log(RoomEvent.Disconnected);
+            disconnectFromVideoChatEvent();
         })
         .on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
         .on(RoomEvent.Reconnecting, () => console.log(RoomEvent.Reconnecting))

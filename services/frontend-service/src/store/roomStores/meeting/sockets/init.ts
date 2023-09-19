@@ -49,6 +49,8 @@ import { SendAnswerMeetingRequestParams } from './types';
 import { MeetingSubscribeEvents } from '../../../../const/socketEvents/subscribers';
 import { getMeetingSocketSubscribeHandler } from './handlers';
 import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
+import { $SFURoom } from '../../videoChat/sfu/model';
+import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
 
 export const sendEnterWaitingRoomSocketEvent = attach({
     effect: enterWaitingRoomSocketEvent,
@@ -257,6 +259,17 @@ cancelAccessMeetingRequestSocketEvent.doneData.watch(
 );
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
+
+sample({
+    clock: sendReconnectMeetingEvent.doneData,
+    source: combine({
+        room: $SFURoom,
+        serverType: $serverTypeStore,
+    }),
+    fn: ({ serverType }) => ({ serverType }),
+    filter: ({ room }) => !room,
+    target: initVideoChatEvent,
+});
 
 sample({
     clock: sendEnterMeetingRequestSocketEvent.doneData,
