@@ -190,7 +190,7 @@ const Component = ({
                                         sm: '15px',
                                         xl: '0px',
                                         md: '0px',
-                                    }
+                                    },
                                 }}
                             />
                         </CustomGrid>

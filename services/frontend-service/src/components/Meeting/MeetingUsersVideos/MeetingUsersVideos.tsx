@@ -48,8 +48,8 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const activeStream = useStore($activeStreamStore);
-    const tracks = useStore($tracksStore)
-    console.log('#Duy Phan console tracks', tracks)
+    const tracks = useStore($tracksStore);
+    console.log('#Duy Phan console tracks', tracks);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);

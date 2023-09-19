@@ -72,7 +72,3 @@ export const changeSFUActiveStreamFx = videoChatDomain.createEffect<
     ChangeTracksPayload,
     void
 >('changeSFUActiveStreamFx');
-
-export const replaceConnectionIdSFUEvent = videoChatDomain.createEvent<{
-    userId: string;
-}>('replaceConnectionIdSFUEvent');
