@@ -163,8 +163,8 @@ const MeetingContainer = memo(() => {
         })();
 
         return () => {
-            resetRoomStores();
             sendLeaveMeetingSocketEvent();
+            resetRoomStores();
             BackgroundManager.destroy();
         };
     }, []);
