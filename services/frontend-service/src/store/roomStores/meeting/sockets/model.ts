@@ -73,7 +73,7 @@ export const enterWaitingRoomSocketEvent = createSocketEvent<
     EnterWaitingRoomPayload,
     void
 >(DashboardSocketEmitters.EnterWaitingRoom);
-export const sendReconnectMeetingEvent = createSocketEvent<
+export const sendReconnectMeetingEvent = createMeetingSocketEvent<
     SendReconnectMeetingPayload,
     EnterMeetingRequestResponse
 >(MeetingSocketEmitters.SendReconnectMeeting);
