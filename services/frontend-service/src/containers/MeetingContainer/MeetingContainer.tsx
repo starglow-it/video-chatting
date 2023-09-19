@@ -123,7 +123,6 @@ const MeetingContainer = memo(() => {
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
 
-
     useEffect(() => {
         initWindowListeners();
         initLandscapeListener();
@@ -163,9 +162,11 @@ const MeetingContainer = memo(() => {
         })();
 
         return () => {
-            sendLeaveMeetingSocketEvent();
-            resetRoomStores();
-            BackgroundManager.destroy();
+            (async () => {
+                sendLeaveMeetingSocketEvent();
+                resetRoomStores();
+                BackgroundManager.destroy();
+            })();
         };
     }, []);
 
