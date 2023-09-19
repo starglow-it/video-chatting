@@ -34,7 +34,7 @@ import {
     $meetingConnectedStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
-    sendLeaveMeetingSocketEvent,
+    // sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
@@ -74,7 +74,7 @@ const Component = () => {
     }, [isMeetingHost, isThereNewRequests]);
 
     const handleEndVideoChat = useCallback(async () => {
-        sendLeaveMeetingSocketEvent();
+        // sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
             await deleteDraftUsers();
