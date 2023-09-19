@@ -109,7 +109,6 @@ export class MeetingsGateway
     statusUpdate: MeetingAccessStatusEnum;
     session: ITransactionSession;
   }): Promise<MeetingUserDocument> {
-    
     const user = await this.usersService.findOneAndUpdate(
       {
         socketId: client.id,
@@ -314,7 +313,6 @@ export class MeetingsGateway
         });
 
         console.log(message.user);
-        
 
         const meeting = await this.meetingsService.findById(
           message.meetingId,
@@ -842,15 +840,17 @@ export class MeetingsGateway
     meeting: MeetingDocument;
   }) {
     console.log(client.id, 'ahsgdhjasdgjsahdgh');
-    
+
     const user = await this.convertAccessStatusForUser({
       client,
       session,
-      statusCondition: [MeetingAccessStatusEnum.InMeeting, MeetingAccessStatusEnum.Disconnected],
+      statusCondition: [
+        MeetingAccessStatusEnum.InMeeting,
+        MeetingAccessStatusEnum.Disconnected,
+      ],
       statusUpdate: MeetingAccessStatusEnum.Left,
     });
 
-    
     await meeting.populate(['owner']);
 
     const userId = user?._id.toString();
@@ -1042,13 +1042,19 @@ export class MeetingsGateway
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
+        console.log('Event Recconnect', {
+          message: msg,
+          ctx: client.id,
+        });
         const { meetingUserId } = msg;
+
         const user = await this.usersService.findOneAndUpdate(
           {
             _id: meetingUserId,
             accessStatus: MeetingAccessStatusEnum.Disconnected,
           },
           {
+            socketId: client.id,
             accessStatus: MeetingAccessStatusEnum.InMeeting,
           },
           session,
@@ -1065,10 +1071,12 @@ export class MeetingsGateway
           });
         }
         await user.meeting.populate(['users']);
-        const users = user.meeting.users?.filter((u) => [
-          MeetingAccessStatusEnum.InMeeting,
-          MeetingAccessStatusEnum.Disconnected,
-        ]);
+        const users = user.meeting.users?.filter((u) =>
+          [
+            MeetingAccessStatusEnum.InMeeting,
+            MeetingAccessStatusEnum.Disconnected,
+          ].includes(u.accessStatus as MeetingAccessStatusEnum),
+        );
         client.join(`meeting:${user.meeting._id.toString()}`);
         const plainUser = userSerialization(user);
         const plainMeeting = meetingSerialization(user.meeting);
