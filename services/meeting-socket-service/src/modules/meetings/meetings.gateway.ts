@@ -238,7 +238,6 @@ export class MeetingsGateway
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
         let isDisconnectStatus = false;
         if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
-          isDisconnectStatus = true;
           accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
         }
 
@@ -249,14 +248,13 @@ export class MeetingsGateway
           { accessStatus: accessStatusUpdate },
           session,
         );
-
-        if (isDisconnectStatus) return;
-
         await this.meetingsService.updateIndexUsers({
           userTemplate,
           user,
           event: UserActionInMeeting.Leave,
         });
+
+        if (isDisconnectStatus) return;
 
         if (
           !isOwner &&
@@ -589,7 +587,6 @@ export class MeetingsGateway
             users: plainUsers,
           },
         );
-
         console.timeEnd(eventName);
 
         return {
@@ -1099,12 +1096,32 @@ export class MeetingsGateway
             message: 'No meeting found',
           });
         }
+        const userTemplate = await this.coreService.findMeetingTemplateById({
+          id: user.meeting.templateId,
+        });
+        if (!userTemplate) {
+          return wsError(client, {
+            message: 'No user template found',
+          });
+        }
         await user.meeting.populate(['users']);
-        const users = user.meeting.users?.filter((u) =>
-          [
-            MeetingAccessStatusEnum.InMeeting,
-            MeetingAccessStatusEnum.Disconnected,
-          ].includes(u.accessStatus as MeetingAccessStatusEnum),
+        await this.meetingsService.updateIndexUsers({
+          userTemplate,
+          user,
+          event: UserActionInMeeting.Join,
+        });
+
+        const users = await this.usersService.findUsers(
+          {
+            meeting: user.meeting.id,
+            accessStatus: {
+              $in: [
+                MeetingAccessStatusEnum.InMeeting,
+                MeetingAccessStatusEnum.Disconnected,
+              ],
+            },
+          },
+          session,
         );
         client.join(`meeting:${user.meeting._id.toString()}`);
         const plainUser = userSerialization(user);
