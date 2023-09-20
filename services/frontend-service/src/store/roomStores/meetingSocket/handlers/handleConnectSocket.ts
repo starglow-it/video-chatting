@@ -4,8 +4,6 @@ import frontendConfig from '../../../../const/config';
 import { getMeetingInstanceSocketUrl } from '../../../../utils/functions/getMeetingInstanceSocketUrl';
 import { sendReconnectMeetingSocketEvent } from '../../meeting/sockets/init';
 
-let isFirstime = true;
-
 export const handleConnectSocket = async ({
     serverIp,
 }: {
@@ -21,10 +19,14 @@ export const handleConnectSocket = async ({
         transports: ['websocket'],
     });
 
+    let isDisconnect = false;
+
     const connectPromise = new Promise((resolve, reject) => {
         socketInstance.on('connect', async () => {
-            console.log('meeting socket connected', isFirstime);
-            if (!isFirstime) {
+            console.log('meeting socket connected', isDisconnect);
+            if (isDisconnect) {
+                console.log('meeting socket connected', 'reload');
+                isDisconnect = false;
                 sendReconnectMeetingSocketEvent();
             }
             resolve(true);
@@ -41,8 +43,8 @@ export const handleConnectSocket = async ({
         });
 
         socketInstance.on('disconnect', async () => {
+            isDisconnect = true;
             console.log('meeting socket disconnect');
-            isFirstime = false;
             resolve(true);
         });
     });
