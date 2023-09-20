@@ -28,9 +28,12 @@ import { TasksService } from '../tasks/tasks.service';
 
 // dtos
 import { UpdateUserRequestDTO } from '../../dtos/requests/users/update-user.dto';
-import { CommonUserDTO } from '../../dtos/response/common-user.dto';
+import {
+  CommonUserDTO,
+  userSerialization,
+} from '../../dtos/response/common-user.dto';
 import { RemoveUserRequestDTO } from '../../dtos/requests/users/remove-user.dto';
-import { CommonMeetingDTO } from '../../dtos/response/common-meeting.dto';
+import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
 
 // helpers
 import {
@@ -203,6 +206,11 @@ export class UsersGateway extends BaseGateway {
   ): Promise<ResponseSumType<void>> {
     return withTransaction(this.connection, async (session) => {
       try {
+        console.log('Kick user event', {
+          message,
+          ctx: client.id,
+        });
+
         const user = await this.usersService.findById(message.id, session);
 
         if (!user) {
@@ -227,16 +235,24 @@ export class UsersGateway extends BaseGateway {
             updateData.hostUserId = null;
           }
 
+          await this.usersService.findOneAndUpdate(
+            {
+              _id: message.id,
+            },
+            {
+              accessStatus: MeetingAccessStatusEnum.Left,
+            },
+            session,
+          );
+
           const meeting = await this.meetingsService.updateMeetingById(
             user.meeting._id,
             updateData,
             session,
           );
-
-          const plainMeeting = plainToInstance(CommonMeetingDTO, meeting, {
-            excludeExtraneousValues: true,
-            enableImplicitConversion: true,
-          });
+          await meeting.populate(['users']);
+          const plainMeeting = meetingSerialization(meeting);
+          const plainUsers = userSerialization(meeting.users);
 
           this.emitToRoom(
             `meeting:${meeting._id}`,
@@ -254,6 +270,15 @@ export class UsersGateway extends BaseGateway {
             },
           );
 
+          this.emitToRoom(
+            `waitingRoom:${meeting.templateId}`,
+            MeetingEmitEvents.UpdateMeeting,
+            {
+              meeting: plainMeeting,
+              users: plainUsers,
+            },
+          );
+
           const userTemplate = await this.coreService.findMeetingTemplateById({
             id: meeting.templateId,
           });
@@ -265,12 +290,6 @@ export class UsersGateway extends BaseGateway {
             event: UserActionInMeeting.Leave,
           });
         }
-
-        await this.usersService.updateOne(
-          { _id: message.id },
-          { accessStatus: MeetingAccessStatusEnum.Left },
-          session,
-        );
       } catch (err) {
         return wsError(client, err);
       }
