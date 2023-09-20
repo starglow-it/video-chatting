@@ -27,7 +27,6 @@ export const handleConnectSocket = async ({
             if (!isFirstime) {
                 sendReconnectMeetingSocketEvent();
             }
-            isFirstime = false;
             resolve(true);
         });
 
@@ -43,7 +42,7 @@ export const handleConnectSocket = async ({
 
         socketInstance.on('disconnect', async () => {
             console.log('meeting socket disconnect');
-            isFirstime = true;
+            isFirstime = false;
             resolve(true);
         });
     });
