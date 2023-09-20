@@ -18,6 +18,7 @@ import { TasksService } from '../tasks/tasks.service';
 import { CoreService } from '../../services/core/core.service';
 
 import {
+  IUserTemplate,
   KickUserReasons,
   MeetingAccessStatusEnum,
   MeetingAvatarStatus,
@@ -74,6 +75,8 @@ import {
 import { MeetingDocument } from 'src/schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { ReconnectDto } from 'src/dtos/requests/recconnect.dto';
+import { TEventEmitter } from 'src/types/socket-events';
+import { notifyParticipantsMeetingInfo } from 'src/providers/socket.provider';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -98,29 +101,103 @@ export class MeetingsGateway
     super();
   }
 
-  private async convertAccessStatusForUser({
-    client,
+  async setTimeoutFinishMeeting(meeting: MeetingDocument) {
+    const meetingId = meeting._id.toString() as string;
+    const endTimestamp = getTimeoutTimestamp({
+      type: TimeoutTypesEnum.Minutes,
+      value: 15,
+    });
+
+    const meetingEndTime = (meeting.endsAt || Date.now()) - Date.now();
+
+    this.taskService.deleteTimeout({
+      name: `meeting:finish:${meetingId}`,
+    });
+
+    this.taskService.addTimeout({
+      name: `meeting:finish:${meetingId}`,
+      ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
+      callback: this.endMeeting.bind(this, {
+        meetingId,
+      }),
+    });
+  }
+
+  async handleOutRoom({
+    meeting,
     session,
-    statusCondition,
-    statusUpdate,
+    user,
+    userTemplate,
   }: {
-    client: Socket;
-    statusCondition: MeetingAccessStatusEnum[];
-    statusUpdate: MeetingAccessStatusEnum;
     session: ITransactionSession;
-  }): Promise<MeetingUserDocument> {
-    const user = await this.usersService.findOneAndUpdate(
+    client: Socket;
+    user: MeetingUserDocument;
+    meeting: MeetingDocument;
+    userTemplate: IUserTemplate;
+  }) {
+    await meeting.populate(['owner', 'users']);
+
+    const userId = user?._id.toString();
+
+    const commonTemplate =
+      await this.coreService.findCommonTemplateByTemplateId({
+        templateId: userTemplate.templateId,
+      });
+
+    const timeToAdd = Date.now() - user.joinedAt;
+
+    if (meeting?.sharingUserId === userId) {
+      meeting.sharingUserId = null;
+
+      await meeting.save({ session: session.session });
+    }
+
+    const meetingUsers = await this.usersService.findUsers(
       {
-        socketId: client.id,
+        meeting: meeting.id,
         accessStatus: {
-          $in: statusCondition,
+          $in: [
+            MeetingAccessStatusEnum.InMeeting,
+            MeetingAccessStatusEnum.Disconnected,
+          ],
         },
       },
-      { accessStatus: statusUpdate },
       session,
     );
 
-    return user;
+    const activeParticipants = meetingUsers.length;
+
+    await this.coreService.updateRoomRatingStatistic({
+      templateId: commonTemplate.id,
+      userId: commonTemplate?.author,
+      ratingKey: 'minutes',
+      value: timeToAdd,
+    });
+
+    const meetingId = meeting._id.toString();
+    const isMeetingHost = meeting.hostUserId._id.toString() === userId;
+
+    await this.meetingsCommonService.handleUserLoggedInDisconnect({
+      isMeetingHost,
+      meetingId,
+      session,
+      timeToAdd,
+      user,
+    });
+
+    if (activeParticipants === 0) {
+      await this.meetingsCommonService.handleClearMeetingData({
+        userId: meeting.owner._id,
+        templateId: userTemplate.id,
+        instanceId: userTemplate.meetingInstance.instanceId,
+        meetingId,
+        session,
+      });
+      return;
+    }
+
+    if (!isMeetingHost) return;
+    await this.setTimeoutFinishMeeting(meeting);
   }
 
   async handleDisconnect(client: Socket) {
@@ -128,11 +205,83 @@ export class MeetingsGateway
       console.log('disconnect', client.id);
 
       return withTransaction(this.connection, async (session) => {
-        await this.convertAccessStatusForUser({
-          client,
+        const user = await this.usersService.findOne({
+          query: { socketId: client.id },
           session,
-          statusCondition: [MeetingAccessStatusEnum.InMeeting],
-          statusUpdate: MeetingAccessStatusEnum.Disconnected,
+          populatePaths: [
+            {
+              path: 'meeting',
+              populate: ['hostUserId', 'owner'],
+            },
+          ],
+        });
+        if (!user) {
+          return wsError(client, {
+            message: 'socket ',
+          });
+        }
+
+        const userId = user._id.toString();
+        const meeting = user.meeting;
+        const isOwner = meeting.owner._id.toString() === userId;
+
+        const userTemplate = await this.coreService.findMeetingTemplateById({
+          id: meeting.templateId,
+        });
+
+        if (!userTemplate) {
+          return wsError(client, {
+            message: 'User template not found',
+          });
+        }
+
+        let accessStatusUpdate = MeetingAccessStatusEnum.Left;
+        let isDisconnectStatus = false;
+        if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+          isDisconnectStatus = true;
+          accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
+        }
+
+        await this.usersService.findOneAndUpdate(
+          {
+            socketId: client.id,
+          },
+          { accessStatus: accessStatusUpdate },
+          session,
+        );
+
+        if (isDisconnectStatus) return;
+
+        await this.meetingsService.updateIndexUsers({
+          userTemplate,
+          user,
+          event: UserActionInMeeting.Leave,
+        });
+
+        if (
+          !isOwner &&
+          meeting.owner.socketId &&
+          user.accessStatus === MeetingAccessStatusEnum.RequestSent
+        ) {
+          this.emitToSocketId(
+            user.meeting.owner.socketId,
+            UserEmitEvents.RemoveUsers,
+            {
+              users: [userId],
+            },
+          );
+        }
+
+        await this.handleOutRoom({
+          client,
+          meeting,
+          session,
+          user,
+          userTemplate,
+        });
+        await notifyParticipantsMeetingInfo({
+          meeting,
+          emitToRoom: this.emitToRoom.bind(this),
         });
       });
     } catch (error) {
@@ -830,131 +979,6 @@ export class MeetingsGateway
     }
   }
 
-  async handleOutRoom({
-    meeting,
-    session,
-    client,
-  }: {
-    session: ITransactionSession;
-    client: Socket;
-    meeting: MeetingDocument;
-  }) {
-    console.log(client.id, 'ahsgdhjasdgjsahdgh');
-
-    const user = await this.convertAccessStatusForUser({
-      client,
-      session,
-      statusCondition: [
-        MeetingAccessStatusEnum.InMeeting,
-        MeetingAccessStatusEnum.Disconnected,
-      ],
-      statusUpdate: MeetingAccessStatusEnum.Left,
-    });
-
-    await meeting.populate(['owner']);
-
-    const userId = user?._id.toString();
-
-    const userTemplate = await this.coreService.findMeetingTemplateById({
-      id: meeting.templateId,
-    });
-
-    if (!userTemplate) {
-      return wsError(client, {
-        message: 'User template not found',
-      });
-    }
-
-    await this.meetingsService.updateIndexUsers({
-      userTemplate,
-      user,
-      event: UserActionInMeeting.Leave,
-    });
-
-    const commonTemplate =
-      await this.coreService.findCommonTemplateByTemplateId({
-        templateId: userTemplate.templateId,
-      });
-
-    const timeToAdd = Date.now() - user.joinedAt;
-
-    if (meeting?.sharingUserId === userId) {
-      meeting.sharingUserId = null;
-
-      await meeting.save({ session: session.session });
-    }
-
-    const meetingUsers = await this.usersService.findUsers(
-      {
-        meeting: meeting.id,
-        accessStatus: {
-          $in: [
-            MeetingAccessStatusEnum.InMeeting,
-            MeetingAccessStatusEnum.Disconnected,
-          ],
-        },
-      },
-      session,
-    );
-
-    const activeParticipants = meetingUsers.length;
-
-    await this.coreService.updateRoomRatingStatistic({
-      templateId: commonTemplate.id,
-      userId: commonTemplate?.author,
-      ratingKey: 'minutes',
-      value: timeToAdd,
-    });
-
-    const meetingId = meeting._id.toString();
-    const isOwner = meeting.owner._id.toString() === userId;
-    const isMeetingHost = meeting.hostUserId._id.toString() === userId;
-
-    if (
-      !isOwner &&
-      meeting?.owner?.socketId &&
-      user?.accessStatus === MeetingAccessStatusEnum.RequestSent
-    ) {
-      this.emitToSocketId(
-        meeting?.owner?.socketId,
-        UserEmitEvents.RemoveUsers,
-        {
-          users: [userId],
-        },
-      );
-    }
-
-    await this.meetingsCommonService.handleUserLoggedInDisconnect({
-      isMeetingHost,
-      meetingId,
-      session,
-      timeToAdd,
-      user,
-    });
-
-    if (activeParticipants === 0) {
-      await this.meetingsCommonService.handleClearMeetingData({
-        userId: meeting.owner._id,
-        templateId: userTemplate.id,
-        instanceId: userTemplate.meetingInstance.instanceId,
-        meetingId,
-        session,
-      });
-      return;
-    }
-
-    await this.meetingsCommonService.handleDisconnectWithHaveParticipants({
-      client,
-      emitToRoom: this.emitToRoom.bind(this),
-      isMeetingHost,
-      meeting,
-      endsAt: meeting.endsAt,
-      cb: this.endMeeting.bind(this, {
-        meetingId,
-      }),
-    });
-  }
-
   async handleTimeLimitForHost({ user, meeting, session }) {
     const profileUser = await this.coreService.findUserById({
       userId: user.profileId,
@@ -1001,6 +1025,16 @@ export class MeetingsGateway
 
         const userId = user._id.toString();
 
+        await this.usersService.findOneAndUpdate(
+          {
+            socketId: socket.id,
+          },
+          {
+            accessStatus: MeetingAccessStatusEnum.Left,
+          },
+          session,
+        );
+
         if (meeting) {
           await meeting.populate('owner');
 
@@ -1019,11 +1053,6 @@ export class MeetingsGateway
           }
 
           await meeting.save();
-          await this.handleOutRoom({
-            meeting,
-            client: socket,
-            session,
-          });
         }
 
         return {
