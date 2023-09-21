@@ -1137,9 +1137,12 @@ export class MeetingsGateway
         );
 
         return {
-          meeting: plainMeeting,
-          users: plainUsers,
-          user: plainUser,
+          success: true,
+          result: {
+            meeting: plainMeeting,
+            user: plainUser,
+            users: plainUsers,
+          },
         };
       } catch (err) {
         return wsError(client, err);
