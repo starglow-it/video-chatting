@@ -271,9 +271,10 @@ export class UsersGateway extends BaseGateway {
           });
 
           this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
-          await this.meetingsService.updateIndexUsers({
+          await this.usersService.updateIndexUsers({
             userTemplate,
             user,
+            session,
             event: UserActionInMeeting.Leave,
           });
         }
