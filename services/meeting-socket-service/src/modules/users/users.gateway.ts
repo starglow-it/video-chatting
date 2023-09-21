@@ -68,7 +68,6 @@ export class UsersGateway extends BaseGateway {
     super();
   }
 
-  private logger = new Logger(UsersGateway.name);
 
   private async handleUpdateUsersTemplateVideoContainer({
     userTemplateId,
