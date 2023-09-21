@@ -10,7 +10,11 @@ import {
     VideoPresets,
 } from 'livekit-client';
 
-import { removeConnectionStream, setConnectionStream } from '../../model';
+import {
+    disconnectFromVideoChatEvent,
+    removeConnectionStream,
+    setConnectionStream,
+} from '../../model';
 import { getLiveKitTokenFx } from '../model';
 import { ConnectToSFUPayload } from '../../types';
 import { MeetingUser } from '../../../../types';
@@ -98,6 +102,7 @@ const handleRemoteTrackUnpublished = (
     remoteTrackPub: RemoteTrackPublication,
     remoteParticipant: RemoteParticipant,
 ) => {
+    console.log('Unpublised track');
     removeConnectionStream({
         connectionId: getConnectionIdHelper({
             userId: remoteParticipant.identity,
@@ -111,6 +116,7 @@ const handleTrackSubscribed = (
     remotePublication: RemoteTrackPublication,
     remoteParticipant: RemoteParticipant,
 ) => {
+    console.log('Unpublised track');
     setConnectionStream(
         setStreamDataHelper({
             type: remoteTrack.kind as unknown as TrackKind,
@@ -126,6 +132,7 @@ const handleTrackUnsubscribed = (
     remotePublication: RemoteTrackPublication,
     remoteParticipant: RemoteParticipant,
 ) => {
+    console.log('Unsubscribed track');
     removeConnectionStream({
         connectionId: getConnectionIdHelper({
             userId: remoteParticipant.identity,
@@ -153,7 +160,7 @@ export const handleConnectToSFU = async ({
         videoCaptureDefaults: {
             resolution: VideoPresets.h360.resolution,
         },
-        stopLocalTrackOnUnpublish: true,
+        stopLocalTrackOnUnpublish: false,
         publishDefaults: {
             videoCodec: 'vp8',
         },
@@ -162,25 +169,23 @@ export const handleConnectToSFU = async ({
     room.on(RoomEvent.LocalTrackPublished, handleLocalTrackPublished)
         .on(RoomEvent.LocalTrackUnpublished, handleLocalTrackUnpublished)
         .on(RoomEvent.ParticipantConnected, handleParticipantConnected)
+        .on(RoomEvent.ParticipantDisconnected, (...data) => {
+            console.log(RoomEvent.ParticipantDisconnected, data);
+        })
         .on(RoomEvent.TrackPublished, handleRemoteTrackPublished)
         .on(RoomEvent.TrackUnpublished, handleRemoteTrackUnpublished)
         .on(RoomEvent.TrackSubscribed, handleTrackSubscribed)
         .on(RoomEvent.ConnectionStateChanged, (...args) => {
-            console.log(
-                'RoomEvent.ConnectionStateChanged',
-                RoomEvent.ConnectionStateChanged,
-            );
-            console.log(args);
+            console.log(RoomEvent.ConnectionStateChanged, args);
         })
-        .on(RoomEvent.Disconnected, (...args) => {
-            console.log('RoomEvent.Disconnected', RoomEvent.Disconnected);
-            console.log(args);
+        .on(RoomEvent.Disconnected, () => {
+            console.log(RoomEvent.Disconnected);
+            disconnectFromVideoChatEvent();
         })
         .on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
         .on(RoomEvent.Reconnecting, () => console.log(RoomEvent.Reconnecting))
-        .on(RoomEvent.Reconnected, (...arg) => {
+        .on(RoomEvent.Reconnected, () => {
             console.log(RoomEvent.Reconnected);
-            console.log('#Duy Phan console', arg);
         });
 
     const livekitWssUrl = [

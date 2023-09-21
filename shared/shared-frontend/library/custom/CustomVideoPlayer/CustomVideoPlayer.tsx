@@ -1,4 +1,4 @@
-import React, { useRef, memo, useEffect } from "react";
+import { useRef, memo, useEffect } from "react";
 
 // types
 import { CustomVideoPlayerProps } from "./types";

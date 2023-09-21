@@ -56,6 +56,7 @@ import {
     joinMeetingFx,
     joinRoomBeforeMeetingSocketEvent,
     sendJoinWaitingRoomSocketEvent,
+    sendLeaveMeetingSocketEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
     setCurrentAudioDeviceEvent,
@@ -161,9 +162,11 @@ const MeetingContainer = memo(() => {
         })();
 
         return () => {
-            resetRoomStores();
-
-            BackgroundManager.destroy();
+            (async () => {
+                await sendLeaveMeetingSocketEvent();
+                resetRoomStores();
+                BackgroundManager.destroy();
+            })();
         };
     }, []);
 

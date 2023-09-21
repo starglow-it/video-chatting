@@ -7,6 +7,9 @@ import {
 } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
 import { CustomPopulateOptions } from '../../types';
+import { MeetingAccessStatusEnum } from 'shared-types';
+import { Socket } from 'socket.io';
+import { ICommonMeetingUserDTO } from 'src/interfaces/common-user.interface';
 
 @Injectable()
 export class UsersService {

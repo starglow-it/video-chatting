@@ -30,6 +30,7 @@ import {
     cancelAccessMeetingRequestSocketEvent,
     updateMeetingTemplateSocketEvent,
     enterWaitingRoomSocketEvent,
+    sendReconnectMeetingEvent,
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
@@ -48,6 +49,8 @@ import { SendAnswerMeetingRequestParams } from './types';
 import { MeetingSubscribeEvents } from '../../../../const/socketEvents/subscribers';
 import { getMeetingSocketSubscribeHandler } from './handlers';
 import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
+import { $SFURoom } from '../../videoChat/sfu/model';
+import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
 
 export const sendEnterWaitingRoomSocketEvent = attach({
     effect: enterWaitingRoomSocketEvent,
@@ -61,6 +64,18 @@ export const sendEnterWaitingRoomSocketEvent = attach({
         meetingUserId: localUser.id,
         templateId: meetingTemplate.id,
         username: localUser.username,
+    }),
+});
+
+export const sendReconnectMeetingSocketEvent = attach<
+    void,
+    Store<MeetingUser>,
+    typeof sendReconnectMeetingEvent
+>({
+    effect: sendReconnectMeetingEvent,
+    source: $localUserStore,
+    mapParams: (_, { id }) => ({
+        meetingUserId: id,
     }),
 });
 
@@ -243,6 +258,21 @@ cancelAccessMeetingRequestSocketEvent.doneData.watch(
     handleUpdateMeetingEntities,
 );
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
+sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
+sendReconnectMeetingEvent.failData.watch((error: any) =>{
+    console.log('console reconnect error', error)
+});
+
+sample({
+    clock: sendReconnectMeetingEvent.doneData,
+    source: combine({
+        room: $SFURoom,
+        serverType: $serverTypeStore,
+    }),
+    filter: ({ room }) => !room,
+    fn: ({ serverType }) => ({ serverType }),
+    target: initVideoChatEvent,
+});
 
 sample({
     clock: sendEnterMeetingRequestSocketEvent.doneData,
