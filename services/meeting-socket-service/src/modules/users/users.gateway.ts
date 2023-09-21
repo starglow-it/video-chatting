@@ -49,8 +49,7 @@ import {
 import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../../types';
-import { Logger } from '@nestjs/common';
-import { wsError } from 'src/utils/ws/wsError';
+import { wsError } from '../../utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],
