@@ -67,7 +67,6 @@ export class UsersGateway extends BaseGateway {
     super();
   }
 
-
   private async handleUpdateUsersTemplateVideoContainer({
     userTemplateId,
     meetingUserId,
@@ -265,15 +264,6 @@ export class UsersGateway extends BaseGateway {
             UserEmitEvents.RemoveUsers,
             {
               users: [user._id],
-            },
-          );
-
-          this.emitToRoom(
-            `waitingRoom:${meeting.templateId}`,
-            MeetingEmitEvents.UpdateMeeting,
-            {
-              meeting: plainMeeting,
-              users: plainUsers,
             },
           );
 
