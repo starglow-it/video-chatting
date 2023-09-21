@@ -1139,6 +1139,12 @@ export class MeetingsGateway
           },
         );
 
+        this.emitToRoom(
+          `meeting:${user.meeting._id}`,
+          MeetingEmitEvents.UpdateMeetingTemplate,
+          { templateId: userTemplate.id },
+        );
+
         return {
           success: true,
           result: {
