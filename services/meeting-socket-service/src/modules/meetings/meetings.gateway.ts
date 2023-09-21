@@ -248,9 +248,10 @@ export class MeetingsGateway
           { accessStatus: accessStatusUpdate },
           session,
         );
-        await this.meetingsService.updateIndexUsers({
+        await this.usersService.updateIndexUsers({
           userTemplate,
           user,
+          session,
           event: UserActionInMeeting.Leave,
         });
 
@@ -502,9 +503,10 @@ export class MeetingsGateway
           session,
         );
 
-        await this.meetingsService.updateIndexUsers({
+        await this.usersService.updateIndexUsers({
           userTemplate: template,
           user,
+          session,
           event: UserActionInMeeting.Join,
         });
 
@@ -1105,9 +1107,10 @@ export class MeetingsGateway
           });
         }
         await user.meeting.populate(['users']);
-        await this.meetingsService.updateIndexUsers({
+        await this.usersService.updateIndexUsers({
           userTemplate,
           user,
+          session,
           event: UserActionInMeeting.Join,
         });
 
