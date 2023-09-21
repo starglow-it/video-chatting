@@ -259,6 +259,9 @@ cancelAccessMeetingRequestSocketEvent.doneData.watch(
 );
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
+sendReconnectMeetingEvent.failData.watch((error: any) =>{
+    console.log('console reconnect error', error)
+});
 
 sample({
     clock: sendReconnectMeetingEvent.doneData,
@@ -266,8 +269,8 @@ sample({
         room: $SFURoom,
         serverType: $serverTypeStore,
     }),
-    fn: ({ serverType }) => ({ serverType }),
     filter: ({ room }) => !room,
+    fn: ({ serverType }) => ({ serverType }),
     target: initVideoChatEvent,
 });
 
