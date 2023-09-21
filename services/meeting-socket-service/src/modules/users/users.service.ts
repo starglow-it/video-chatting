@@ -6,16 +6,22 @@ import {
   MeetingUserDocument,
 } from '../../schemas/meeting-user.schema';
 import { ITransactionSession } from '../../helpers/mongo/withTransaction';
-import { CustomPopulateOptions } from '../../types';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import {
+  CustomPopulateOptions,
+  UserActionInMeeting,
+  UserActionInMeetingParams,
+} from '../../types';
+import { IUserTemplate, MeetingAccessStatusEnum } from 'shared-types';
 import { Socket } from 'socket.io';
 import { ICommonMeetingUserDTO } from 'src/interfaces/common-user.interface';
+import { CoreService } from 'src/services/core/core.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(MeetingUser.name)
     private meetingUser: Model<MeetingUserDocument>,
+    private coreService: CoreService,
   ) {}
 
   async createUser(
@@ -29,7 +35,7 @@ export class UsersService {
 
   async updateOne(
     query,
-    data,
+    data: UpdateQuery<ICommonMeetingUserDTO>,
     { session }: ITransactionSession,
   ): Promise<UpdateWriteOpResult> {
     return this.meetingUser.updateOne(query, data, { new: true, session });
@@ -101,7 +107,70 @@ export class UsersService {
     return;
   }
 
-  async findUsers(query, { session }: ITransactionSession): Promise<MeetingUserDocument[]> {
+  async findUsers(
+    query,
+    { session }: ITransactionSession,
+  ): Promise<MeetingUserDocument[]> {
     return this.meetingUser.find(query, {}, { session }).exec();
+  }
+
+  async updateIndexUsers({
+    userTemplate,
+    user,
+    event,
+    session,
+  }: {
+    userTemplate: IUserTemplate;
+    user: MeetingUserDocument;
+    session: ITransactionSession;
+    event: UserActionInMeeting;
+  }) {
+    try {
+      const userId = user._id.toString();
+      const updateIndexParams: UserActionInMeetingParams = {
+        [UserActionInMeeting.Join]: {
+          condition: null,
+          replaceItem: userId,
+        },
+        [UserActionInMeeting.Leave]: {
+          condition: userId,
+          replaceItem: null,
+        },
+      };
+
+      const params = updateIndexParams[event];
+
+      const index = userTemplate.indexUsers.indexOf(params.condition);
+      if (index === -1) return;
+
+      userTemplate.indexUsers[index] = params.replaceItem;
+
+      await this.coreService.updateUserTemplate({
+        templateId: userTemplate.id,
+        userId,
+        data: {
+          indexUsers: userTemplate.indexUsers,
+        },
+      });
+
+      if (event === UserActionInMeeting.Join) {
+        await this.updateOne(
+          {
+            _id: user._id,
+          },
+          {
+            userPosition: userTemplate.usersPosition[index],
+            userSize: userTemplate.usersSize[index],
+          },
+          session,
+        );
+      }
+    } catch (err) {
+      console.log({
+        message: err.message,
+        event,
+      });
+      return;
+    }
   }
 }
