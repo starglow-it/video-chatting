@@ -187,8 +187,7 @@ export class MeetingsCommonService {
       meeting: meeting._id,
       accessStatus: {
         $in: [
-          MeetingAccessStatusEnum.InMeeting,
-          MeetingAccessStatusEnum.Disconnected,
+          MeetingAccessStatusEnum.InMeeting
         ],
       },
     });
