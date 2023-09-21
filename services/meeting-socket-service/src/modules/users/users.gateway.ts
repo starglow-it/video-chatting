@@ -249,7 +249,6 @@ export class UsersGateway extends BaseGateway {
           );
           await meeting.populate(['users']);
           const plainMeeting = meetingSerialization(meeting);
-          const plainUsers = userSerialization(meeting.users);
 
           this.emitToRoom(
             `meeting:${meeting._id}`,
