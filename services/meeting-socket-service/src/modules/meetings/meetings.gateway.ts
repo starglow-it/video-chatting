@@ -1126,12 +1126,13 @@ export class MeetingsGateway
           },
           session,
         );
-        client.join(`meeting:${user.meeting._id.toString()}`);
+        const meetingId = user.meeting._id.toString();
+        client.join(`meeting:${meetingId}`);
         const plainUser = userSerialization(user);
         const plainMeeting = meetingSerialization(user.meeting);
         const plainUsers = userSerialization(users);
         this.emitToRoom(
-          `meeting:${user.meeting._id.toString()}`,
+          `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeeting,
           {
             meeting: plainMeeting,
@@ -1140,7 +1141,7 @@ export class MeetingsGateway
         );
 
         this.emitToRoom(
-          `meeting:${user.meeting._id}`,
+          `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeetingTemplate,
           { templateId: userTemplate.id },
         );
