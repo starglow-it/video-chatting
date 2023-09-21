@@ -116,6 +116,7 @@ const handleTrackSubscribed = (
     remotePublication: RemoteTrackPublication,
     remoteParticipant: RemoteParticipant,
 ) => {
+    console.log('Unpublised track');
     setConnectionStream(
         setStreamDataHelper({
             type: remoteTrack.kind as unknown as TrackKind,
@@ -159,7 +160,7 @@ export const handleConnectToSFU = async ({
         videoCaptureDefaults: {
             resolution: VideoPresets.h360.resolution,
         },
-        stopLocalTrackOnUnpublish: true,
+        stopLocalTrackOnUnpublish: false,
         publishDefaults: {
             videoCodec: 'vp8',
         },
