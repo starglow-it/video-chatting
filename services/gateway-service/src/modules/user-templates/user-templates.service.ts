@@ -12,6 +12,7 @@ import {
   GetUserTemplatePayload,
   GetUserTemplatesPayload,
   UpdateUserTemplatePayload,
+  DeleteGlobalUserTemplatesPayload,
 } from 'shared-types';
 import { UserTemplatesBrokerPatterns } from 'shared-const';
 
@@ -80,8 +81,15 @@ export class UserTemplatesService {
   async deleteUserTemplate(
     payload: DeleteUsersTemplatesPayload,
   ): Promise<void> {
-    const pattern = { cmd: UserTemplatesBrokerPatterns.DeleteUsersTemplates };
+    const pattern = { cmd: UserTemplatesBrokerPatterns.DeleteUsersTemplate };
 
+    return this.coreService.sendCustom(pattern, payload);
+  }
+
+  async deleteGlobalUserTemplates(payload: DeleteGlobalUserTemplatesPayload) {
+    const pattern = {
+      cmd: UserTemplatesBrokerPatterns.DeleteGlobalUserTemplates,
+    };
     return this.coreService.sendCustom(pattern, payload);
   }
 
