@@ -19,11 +19,11 @@ import { AsterriskIcon } from 'shared-frontend/icons/OtherIcons/AsteriskIcon';
 import { Translation } from '@components/Translation/Translation';
 
 // stores
+import { StarIcon } from 'shared-frontend/icons/OtherIcons/StarIcon';
 import { logoutAdminFx } from '../../store';
 
 // styles
 import styles from './AdminNavigation.module.scss';
-import { StarIcon } from 'shared-frontend/icons/OtherIcons/StarIcon';
 
 const Component = () => {
     const router = useRouter();

@@ -1,5 +1,4 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import styles from './RoomsWithSubdomainContainer.module.scss';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
 import {
@@ -26,6 +25,7 @@ import { RoomPreviewDialog } from '@components/Dialogs/RoomPreviewDialog/RoomPre
 import { PublishRoomDialog } from '@components/Dialogs/PublishRoomDialog/PublishRoomDialog';
 import { RevokeRoomDialog } from '@components/Dialogs/RevokeRoomDialog/RevokeRoomDialog';
 import { ConfirmDeleteRoomDialog } from '@components/Dialogs/ConfirmDeleteRoomDialog/ConfirmDeleteRoomDialog';
+import styles from './RoomsWithSubdomainContainer.module.scss';
 
 type TableCell<LabelType = string> = {
     style?: string;
@@ -211,7 +211,7 @@ export const RoomsWithSubdomainContainer = () => {
                         headCellClassName={styles.headCell}
                         ActionsComponent={RoomTableItemActions}
                         onRowAction={handleOpenRoomPreview}
-                        withSubdomain={true}
+                        withSubdomain
                     />
                 </CustomPaper>
             </CustomGrid>

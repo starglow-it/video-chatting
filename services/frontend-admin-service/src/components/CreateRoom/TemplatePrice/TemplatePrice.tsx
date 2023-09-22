@@ -12,18 +12,17 @@ import { ValuesSwitcher } from 'shared-frontend/library/common/ValuesSwitcher';
 import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { ArrowLeftIcon } from 'shared-frontend/icons/OtherIcons/ArrowLeftIcon';
-import { ArrowRightIcon } from 'shared-frontend/icons/OtherIcons/ArrowRightIcon';
 
 // components
 import { Translation } from '@components/Translation/Translation';
 
 // types
 import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { PriceLabels, PriceValues } from 'shared-types';
 import { TemplatePriceProps } from './TemplatePrice.types';
 
 // styles
 import styles from './TemplatePrice.module.scss';
-import { PriceLabels, PriceValues } from 'shared-types';
 
 const templatePriceTypes: ValuesSwitcherItem<PriceValues, PriceLabels>[] = [
     {
@@ -39,13 +38,11 @@ const templatePriceTypes: ValuesSwitcherItem<PriceValues, PriceLabels>[] = [
 ];
 
 const TemplatePrice = memo(
-    ({ onNextStep, onPreviousStep, submitButtons }: TemplatePriceProps) => {
+    ({ onPreviousStep, submitButtons }: TemplatePriceProps) => {
         const {
             setValue,
-            setFocus,
             register,
             control,
-            trigger,
             formState: { errors },
             clearErrors,
         } = useFormContext();

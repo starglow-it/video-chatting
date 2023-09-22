@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
-import styles from './ConfirmDeleteCategoryDialog.module.scss';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
 import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
@@ -14,6 +13,7 @@ import {
 } from 'src/store';
 import { useStore, useStoreMap } from 'effector-react';
 import { AdminDialogsEnum } from 'src/store/types';
+import styles from './ConfirmDeleteCategoryDialog.module.scss';
 
 const Component = () => {
     const confirmDeleteCategoryDialog = useStore(
@@ -24,8 +24,8 @@ const Component = () => {
     const category = useStoreMap({
         store: $backgroundsManageStore,
         keys: [categoryId],
-        fn: (state, [categoryId]) =>
-            state.categories.find(item => item.id === categoryId),
+        fn: (state, [cateId]) =>
+            state.categories.find(item => item.id === cateId),
     });
 
     const handleClose = () => {

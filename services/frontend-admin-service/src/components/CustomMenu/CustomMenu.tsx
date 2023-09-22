@@ -1,8 +1,7 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
-import { Menu } from '@mui/material';
-import { MenuItem } from '@mui/material';
+import { Menu, MenuItem } from '@mui/material';
 
 import styles from './CustomMenu.module.scss';
 

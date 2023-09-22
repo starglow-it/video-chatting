@@ -1,7 +1,7 @@
 import { deleteMediaUrl } from 'src/const/urls/backgrounds';
-import { DeleteMediaParams, ResultActionBackground } from '../types';
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
 import { ErrorState } from 'shared-types';
+import { DeleteMediaParams, ResultActionBackground } from '../types';
 
 export const handleDeleteMedia = async ({
     categoryId = '',
@@ -13,7 +13,7 @@ export const handleDeleteMedia = async ({
     });
 
     return {
-        success: success,
+        success,
         message: success
             ? 'backgrounds.deleteMediaSuccess'
             : 'backgrounds.deleteMediaFail',

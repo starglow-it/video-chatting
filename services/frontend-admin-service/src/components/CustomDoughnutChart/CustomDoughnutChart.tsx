@@ -177,13 +177,13 @@ const getChartOptions = (
                                     : 0
                             }% - ${model.raw}`;
                         }
-                        return model?.label.map((label, index) => {
-                            const part =
-                                dataSets[model.dataIndex]?.parts?.[index];
-
-                            return `${((part / totalNumber) * 100).toFixed(
-                                2,
-                            )}% - ${label}`;
+                        return model?.label.map((labelItem, index) => {
+                            return `${(
+                                ((dataSets[model.dataIndex]?.parts?.[index] ??
+                                    0) /
+                                    totalNumber) *
+                                100
+                            ).toFixed(2)}% - ${labelItem}`;
                         });
                     },
                 },

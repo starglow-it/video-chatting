@@ -3,13 +3,13 @@ import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 import { ICommonTemplate } from 'shared-types';
-import styles from './FeaturedItem.module.scss';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { Fade, Menu, MenuItem } from '@mui/material';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { EllipsisIcon } from 'shared-frontend/icons/OtherIcons/EllipsisIcon';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
+import styles from './FeaturedItem.module.scss';
 
 const Component = ({
     template,

@@ -30,8 +30,6 @@ import { Translation } from '@components/Translation/Translation';
 import { UploadFolderIcon } from 'shared-frontend/icons/OtherIcons/UploadFolderIcon';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles.css';
-import { MediaItem } from '../MediaItem/MediaItem';
-import styles from './Medias.module.scss';
 import {
     MAX_SIZE_IMAGE,
     MAX_SIZE_VIDEO,
@@ -39,6 +37,8 @@ import {
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { LinearProgress } from '@mui/material';
 import { mapEmoji, parseEmoji } from 'shared-utils';
+import styles from './Medias.module.scss';
+import { MediaItem } from '../MediaItem/MediaItem';
 
 const Component = () => {
     const { medias, categorySelected, count } = useStore(

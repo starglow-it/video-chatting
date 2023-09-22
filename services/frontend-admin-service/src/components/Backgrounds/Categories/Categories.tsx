@@ -1,10 +1,8 @@
 import { memo, useRef } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
-import styles from './Categories.module.scss';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
-import { CategoryItem } from '../CategoryItem/CategoryItem';
 import { useStore } from 'effector-react';
 import {
     $backgroundsManageStore,
@@ -18,8 +16,10 @@ import { IBackgroundCategory } from 'src/store/backgrounds/types';
 import { AdminDialogsEnum } from 'src/store/types';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
-import { ModifyCategoryItem } from '../ModifyCategoryItem/ModifyCategoryItem';
 import { MediaCategoryType } from 'shared-types';
+import { ModifyCategoryItem } from '../ModifyCategoryItem/ModifyCategoryItem';
+import { CategoryItem } from '../CategoryItem/CategoryItem';
+import styles from './Categories.module.scss';
 
 const Component = () => {
     const { categories, categorySelected } = useStore($backgroundsManageStore);

@@ -10,6 +10,7 @@ import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
 
 // types
+import { RoomType } from 'shared-types';
 import { AdminDialogsEnum } from '../../../store/types';
 
 // styles
@@ -22,11 +23,10 @@ import {
     closeAdminDialogEvent,
     deleteCommonTemplateFx,
 } from '../../../store';
-import { RoomType } from 'shared-types';
 
 const Component = () => {
     const router = useRouter();
-    const [_, withSubdomain] = router.query.room as any;
+    const [, withSubdomain] = router.query.room as any;
 
     const { state: commonTemplate } = useStore($commonTemplateStore);
 
@@ -42,7 +42,7 @@ const Component = () => {
             templateId: commonTemplate?.id,
         });
         if (commonTemplate?.roomType === RoomType.Normal) {
-            if (Boolean(withSubdomain)) {
+            if (withSubdomain) {
                 router.push('/subdomain');
             } else {
                 router.push('/rooms');

@@ -1,13 +1,13 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { DeleteIcon } from 'shared-frontend/icons/OtherIcons/DeleteIcon';
-import styles from './MediaItem.module.scss';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { IBackgroundMedia } from 'src/store/backgrounds/types';
 import { Fade } from '@mui/material';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { CustomVideoPlayer } from 'shared-frontend/library/custom/CustomVideoPlayer';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
+import styles from './MediaItem.module.scss';
 
 const Component = ({
     media,

@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
-import { pageLoaded } from '../src/store';
 import { RoomsWithSubdomainContainer } from '@containers/RoomsWithSubdomainContainer/RoomsWithSubdomainContainer';
+import { pageLoaded } from '../src/store';
 
 const enhance = withStart(pageLoaded);
 

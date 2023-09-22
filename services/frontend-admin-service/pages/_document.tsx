@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import React from 'react';
 import Document, {
     Html,
@@ -92,10 +93,9 @@ MyDocument.getInitialProps = async (ctx: DocumentContext) => {
 
     ctx.renderPage = () =>
         originalRenderPage({
-            enhanceApp: App =>
-                function (props) {
-                    return <App emotionCache={cache} {...props} />;
-                },
+            enhanceApp: App => props => {
+                return <App emotionCache={cache} {...props} />;
+            },
         });
 
     const initialProps = await Document.getInitialProps(ctx);

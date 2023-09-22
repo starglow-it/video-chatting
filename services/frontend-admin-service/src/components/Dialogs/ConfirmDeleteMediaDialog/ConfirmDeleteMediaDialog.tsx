@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
-import styles from './ConfirmDeleteMediaDialog.module.scss';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
 import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
@@ -12,6 +11,7 @@ import {
 } from 'src/store';
 import { useStore } from 'effector-react';
 import { AdminDialogsEnum } from 'src/store/types';
+import styles from './ConfirmDeleteMediaDialog.module.scss';
 
 const Component = () => {
     const confirmDeleteMediaDialog = useStore($confirmDeleteMediaDialogStore);

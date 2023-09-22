@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
-import { pageLoaded } from '../src/store';
 import { FeaturedBackgroundContainer } from '@containers/FeaturedBackgroundContainer/FeaturedBackgroundContainer';
+import { pageLoaded } from '../src/store';
 
 const enhance = withStart(pageLoaded);
 
