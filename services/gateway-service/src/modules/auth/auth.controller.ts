@@ -232,6 +232,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         userTemplateId: userTemplate.id,
       };
     } catch (err) {
+      console.error({
+        message: `An error occurs, while confirm register`,
+        err
+      });
       throw new BadRequestException(err);
     }
   }
