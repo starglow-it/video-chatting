@@ -144,7 +144,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         () =>
             !ROUTES_WITHOUT_FOOTER.find(route =>
                 new RegExp(`${route}`).test(router.pathname),
-            ) || !isSubdomain(),
+            ) && router.pathname !== '/[token]',
         [router.pathname],
     );
 
