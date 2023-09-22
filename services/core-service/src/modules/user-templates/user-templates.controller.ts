@@ -22,6 +22,7 @@ import {
   CountUserTemplatesPayload,
   UpdateUserTemplateUsageNumberPayload,
   DeleteLeastUsedTemplatesPayload,
+  DeleteGlobalUserTemplatesPayload,
 } from 'shared-types';
 
 // helpers
@@ -47,7 +48,7 @@ import {
   UserTemplate,
   UserTemplateDocument,
 } from '../../schemas/user-template.schema';
-import { isValidObjectId } from '../../helpers/mongo/isValidObjectId';
+import { ObjectId, isValidObjectId } from '../../helpers/mongo/isValidObjectId';
 import { MediaService } from '../medias/medias.service';
 import { MediaCategoryDocument } from '../../schemas/media-category.schema';
 import { PreviewImageDocument } from '../../schemas/preview-image.schema';
@@ -752,7 +753,49 @@ export class UserTemplatesController {
     }
   }
 
-  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.DeleteUsersTemplates })
+  @MessagePattern({
+    cmd: UserTemplatesBrokerPatterns.DeleteGlobalUserTemplates,
+  })
+  async deleteUserTemplates(
+    @Payload() { userId }: DeleteGlobalUserTemplatesPayload,
+  ) {
+    return withTransaction(
+      this.connection,
+      async (session: ITransactionSession) => {
+        try {
+          const userTemplates =
+            await this.userTemplatesService.findUserTemplates({
+              query: {
+                user: new ObjectId(userId),
+              },
+              session,
+            });
+          await this.deleteMedias(
+            {
+              userTemplate: {
+                $in: userTemplates,
+              },
+            },
+            session,
+          );
+
+          await this.userTemplatesService.deleteUserTemplates({
+            query: {
+              user: new ObjectId(userId),
+            },
+            session,
+          });
+        } catch (err) {
+          throw new RpcException({
+            message: err.message,
+            ctx: TEMPLATES_SERVICE,
+          });
+        }
+      },
+    );
+  }
+
+  @MessagePattern({ cmd: UserTemplatesBrokerPatterns.DeleteUsersTemplate })
   async deleteUserTemplate(
     @Payload() { templateId, userId }: DeleteUsersTemplatesPayload,
   ): Promise<undefined> {

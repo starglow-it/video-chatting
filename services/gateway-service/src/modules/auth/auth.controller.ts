@@ -153,19 +153,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
           subscriptionId: u.stripeSubscriptionId,
         });
       }
-      const { list: uts } = await this.userTemplateService.getUserTemplates({
+      await this.userTemplateService.deleteGlobalUserTemplates({
         userId: u.id,
       });
-
-      Promise.all(
-        uts.map(
-          async ({ id }) =>
-            await this.userTemplateService.deleteUserTemplate({
-              templateId: id,
-              userId: u.id,
-            }),
-        ),
-      );
     } catch (err) {
       console.log(err);
       return;
@@ -187,52 +177,53 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       return await this.coreService.createUserWithoutLogin(uuid);
     };
     try {
-    let user: ICommonUser;
-    const userId = req['cookies']?.['userWithoutLoginId'] as string | undefined;
-    if (userId) {
-      try {
-        user = await this.coreService.findUserById({ userId });
-      } catch (err) {
+      let user: ICommonUser;
+      const userId = req['cookies']?.['userWithoutLoginId'] as
+        | string
+        | undefined;
+      if (userId) {
+        try {
+          user = await this.coreService.findUserById({ userId });
+        } catch (err) {
+          user = await createUser();
+        }
+      } else {
         user = await createUser();
       }
 
-    } else {
-      user = await createUser();
-    }
+      let template: ICommonTemplate;
+      if (subdomain) {
+        const regex = new RegExp(`^${subdomain}$`);
+        template = await this.coreService.findCommonTemplateByTemplate({
+          subdomain: {
+            $regex: regex.source,
+            $options: 'i',
+          },
+        });
+      } else {
+        template = await this.coreService.findCommonTemplateByTemplate({
+          ...(templateId
+            ? {
+                _id: templateId,
+              }
+            : {
+                isAcceptNoLogin: true,
+              }),
+        });
+      }
 
-    let template: ICommonTemplate;
-    if (subdomain) {
-      const regex = new RegExp(`^${subdomain}$`);
-      template = await this.coreService.findCommonTemplateByTemplate({
-        subdomain: {
-          $regex: regex.source,
-          $options: 'i',
-        },
+      if (!template) {
+        throw new BadRequestException('Template not found');
+      }
+      const userTemplate = await this.coreService.addTemplateToUser({
+        templateId: template.id,
+        userId: user.id,
       });
-    } else {
-      template = await this.coreService.findCommonTemplateByTemplate({
-        ...(templateId
-          ? {
-              _id: templateId,
-            }
-          : {
-              isAcceptNoLogin: true,
-            }),
-      });
-    }
 
-    if (!template) {
-      throw new BadRequestException('Template not found');
-    }
-    const userTemplate = await this.coreService.addTemplateToUser({
-      templateId: template.id,
-      userId: user.id,
-    });
-
-    return {
-      user,
-      userTemplateId: userTemplate.id,
-    };
+      return {
+        user,
+        userTemplateId: userTemplate.id,
+      };
     } catch (err) {
       console.error({
         message: `An error occurs, while confirm register`,

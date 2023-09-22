@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-const ObjectId = Types.ObjectId;
+export const ObjectId = Types.ObjectId;
 
 export const isValidObjectId = (id) => {
   if (ObjectId.isValid(id)) {
