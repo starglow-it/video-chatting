@@ -186,9 +186,7 @@ export class MeetingsCommonService {
     const c = await this.usersService.countMany({
       meeting: meeting._id,
       accessStatus: {
-        $in: [
-          MeetingAccessStatusEnum.InMeeting
-        ],
+        $in: [MeetingAccessStatusEnum.InMeeting],
       },
     });
 
@@ -283,8 +281,6 @@ export class MeetingsCommonService {
     return r;
   };
 
-
-
   handleUserLoggedInDisconnect = async ({
     user,
     timeToAdd,
@@ -299,13 +295,12 @@ export class MeetingsCommonService {
     meetingId: string;
   }) => {
     let profileUser = null;
-    if (user.profileId) {
+    if (!user.profileId) return;
+    try {
       profileUser = await this.coreService.findUserById({
         userId: user.profileId,
       });
-    }
 
-    if (profileUser) {
       await this.coreService.updateUserProfileStatistic({
         userId: profileUser.id,
         statisticKey: 'minutesSpent',
@@ -321,6 +316,9 @@ export class MeetingsCommonService {
           session,
         });
       }
+    } catch (err) {
+      console.error('Update meeting user profile error', err);
+      return;
     }
   };
 }

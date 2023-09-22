@@ -187,52 +187,52 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
       return await this.coreService.createUserWithoutLogin(uuid);
     };
     try {
-      let user: ICommonUser;
-      const userId = req['cookies']?.['userWithoutLoginId'] as
-        | string
-        | undefined;
-      if (userId) {
+    let user: ICommonUser;
+    const userId = req['cookies']?.['userWithoutLoginId'] as string | undefined;
+    if (userId) {
+      try {
         user = await this.coreService.findUserById({ userId });
-        if (!user) {
-          user = await createUser();
-        }
-      } else {
+      } catch (err) {
         user = await createUser();
       }
 
-      let template: ICommonTemplate;
-      if (subdomain) {
-        const regex = new RegExp(`^${subdomain}$`);
-        template = await this.coreService.findCommonTemplateByTemplate({
-          subdomain: {
-            $regex: regex.source,
-            $options: 'i',
-          },
-        });
-      } else {
-        template = await this.coreService.findCommonTemplateByTemplate({
-          ...(templateId
-            ? {
-                _id: templateId,
-              }
-            : {
-                isAcceptNoLogin: true,
-              }),
-        });
-      }
+    } else {
+      user = await createUser();
+    }
 
-      if (!template) {
-        throw new BadRequestException('Template not found');
-      }
-      const userTemplate = await this.coreService.addTemplateToUser({
-        templateId: template.id,
-        userId: user.id,
+    let template: ICommonTemplate;
+    if (subdomain) {
+      const regex = new RegExp(`^${subdomain}$`);
+      template = await this.coreService.findCommonTemplateByTemplate({
+        subdomain: {
+          $regex: regex.source,
+          $options: 'i',
+        },
       });
+    } else {
+      template = await this.coreService.findCommonTemplateByTemplate({
+        ...(templateId
+          ? {
+              _id: templateId,
+            }
+          : {
+              isAcceptNoLogin: true,
+            }),
+      });
+    }
 
-      return {
-        user,
-        userTemplateId: userTemplate.id,
-      };
+    if (!template) {
+      throw new BadRequestException('Template not found');
+    }
+    const userTemplate = await this.coreService.addTemplateToUser({
+      templateId: template.id,
+      userId: user.id,
+    });
+
+    return {
+      user,
+      userTemplateId: userTemplate.id,
+    };
     } catch (err) {
       console.error({
         message: `An error occurs, while confirm register`,

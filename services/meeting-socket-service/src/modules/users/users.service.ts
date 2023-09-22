@@ -126,6 +126,8 @@ export class UsersService {
     event: UserActionInMeeting;
   }) {
     try {
+      console.log('update index user');
+      
       const userId = user._id.toString();
       const updateIndexParams: UserActionInMeetingParams = {
         [UserActionInMeeting.Join]: {
