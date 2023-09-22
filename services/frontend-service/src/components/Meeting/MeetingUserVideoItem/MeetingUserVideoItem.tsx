@@ -49,7 +49,7 @@ const MeetingUserVideoChildCom = ({
     isSelfView,
     setScale,
     resizeCoeff,
-    onResizeVideo
+    onResizeVideo,
 }: MeetingUserVideoComProps) => {
     const mediaStreamRef = useRef(new MediaStream());
     const container = useRef<HTMLVideoElement | null>(null);
@@ -190,7 +190,7 @@ const Component = ({
     isScreenSharingUser = false,
     onResizeVideo,
     isSelfView = true,
-    isOwner
+    isOwner,
 }: MeetingUserVideoItemProps) => {
     const { width } = useStore($windowSizeStore);
     const { isMobile } = useBrowserDetect();

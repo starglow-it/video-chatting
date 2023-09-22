@@ -158,7 +158,13 @@ const Component = () => {
     const isNotRequiredMessage = !currentEmailErrorMessage.includes('required');
 
     return (
-        <CustomGrid width="100%" height="100%" display="flex" justifyContent="center" alignItems="center">
+        <CustomGrid
+            width="100%"
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+        >
             <CustomGrid className={styles.background}>
                 <CustomImage
                     src="/images/background-register.png"
