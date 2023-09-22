@@ -1,6 +1,4 @@
-import {
-    memo, useCallback
-} from 'react';
+import { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // shared
@@ -24,9 +22,7 @@ import {
 } from '../../../store';
 
 const Component = ({ onConfirm }: { onConfirm: () => void }) => {
-    const {
-        state: commonTemplate
-    } = useStore($commonTemplateStore);
+    const { state: commonTemplate } = useStore($commonTemplateStore);
 
     const saveChangesDialogStore = useStore($saveRoomChangesDialogStore);
 
@@ -47,24 +43,22 @@ const Component = ({ onConfirm }: { onConfirm: () => void }) => {
             <CustomTypography variant="h3bold">
                 <Translation
                     nameSpace="rooms"
-                    translation={commonTemplate?.isPublic
-                        ? "saveChanges.title"
-                        : "savePublishedChanges.title"
+                    translation={
+                        commonTemplate?.isPublic
+                            ? 'saveChanges.title'
+                            : 'savePublishedChanges.title'
                     }
                 />
             </CustomTypography>
 
-            {!commonTemplate?.isPublic
-                ? (
-                    <CustomTypography textAlign="center">
-                        <Translation
-                            nameSpace="rooms"
-                            translation="savePublishedChanges.text"
-                        />
-                    </CustomTypography>
-                )
-                : null
-            }
+            {!commonTemplate?.isPublic ? (
+                <CustomTypography textAlign="center">
+                    <Translation
+                        nameSpace="rooms"
+                        translation="savePublishedChanges.text"
+                    />
+                </CustomTypography>
+            ) : null}
             <ButtonsGroup className={styles.buttons}>
                 <CustomButton
                     variant="custom-cancel"

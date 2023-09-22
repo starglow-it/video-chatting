@@ -83,7 +83,7 @@ const Component = () => {
             draft: false,
             limit: ROOMS_LIMIT,
             skip: 0,
-            roomType: RoomType.Normal
+            roomType: RoomType.Normal,
         });
     }, []);
 
@@ -148,7 +148,7 @@ const Component = () => {
                         draft: false,
                         skip: newPage - 1,
                         limit: ROOMS_LIMIT,
-                        roomType: RoomType.Normal
+                        roomType: RoomType.Normal,
                     });
                 },
                 500,

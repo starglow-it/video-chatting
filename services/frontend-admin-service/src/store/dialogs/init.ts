@@ -85,10 +85,9 @@ $confirmDeleteMediaDialogStore
     .on(openConfirmDeleteMediaDialogEvent, () => true)
     .on(closeConfirmDeleteMediaDialogEvent, () => false);
 
-
 $confirmDeleteCategoryDialogStore
-.on(openConfirmDeleteCategoryDialogEvent, () => true)
-.on(closeConfirmDeleteCategoryDialogEvent, () => false);
+    .on(openConfirmDeleteCategoryDialogEvent, () => true)
+    .on(closeConfirmDeleteCategoryDialogEvent, () => false);
 
 const adminDialogCases = {
     blockUserDialog: (type: AdminDialogsEnum) =>
@@ -113,7 +112,7 @@ const adminDialogCases = {
         type === AdminDialogsEnum.confirmDeleteRoomDialog,
     confirmDeleteMediaDialog: (type: AdminDialogsEnum) =>
         type === AdminDialogsEnum.confirmDeleteMediaDialog,
-        confirmDeleteCategoryDialog: (type: AdminDialogsEnum) =>
+    confirmDeleteCategoryDialog: (type: AdminDialogsEnum) =>
         type === AdminDialogsEnum.confirmDeleteCategoryDialog,
 };
 
@@ -133,7 +132,7 @@ split({
         saveRoomChangesDialog: openSaveRoomChangesDialogEvent,
         confirmDeleteRoomDialog: openConfirmDeleteRoomDialogEvent,
         confirmDeleteMediaDialog: openConfirmDeleteMediaDialogEvent,
-        confirmDeleteCategoryDialog: openConfirmDeleteCategoryDialogEvent
+        confirmDeleteCategoryDialog: openConfirmDeleteCategoryDialogEvent,
     },
 });
 
@@ -153,6 +152,6 @@ split({
         saveRoomChangesDialog: closeSaveRoomChangesDialogEvent,
         confirmDeleteRoomDialog: closeConfirmDeleteRoomDialogEvent,
         confirmDeleteMediaDialog: closeConfirmDeleteMediaDialogEvent,
-        confirmDeleteCategoryDialog: closeConfirmDeleteCategoryDialogEvent
+        confirmDeleteCategoryDialog: closeConfirmDeleteCategoryDialogEvent,
     },
 });

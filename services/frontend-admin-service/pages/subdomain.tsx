@@ -3,7 +3,6 @@ import { withStart } from 'effector-next';
 import { pageLoaded } from '../src/store';
 import { RoomsWithSubdomainContainer } from '@containers/RoomsWithSubdomainContainer/RoomsWithSubdomainContainer';
 
-
 const enhance = withStart(pageLoaded);
 
 const RoomsWithSubdomainPage: NextPage = (): JSX.Element => (

@@ -1,7 +1,7 @@
 import {
-	UploadCommonTemplateFilePayload,
-	ErrorState,
-	ICommonTemplate,
+    UploadCommonTemplateFilePayload,
+    ErrorState,
+    ICommonTemplate,
 } from 'shared-types';
 import { generateFormData } from 'shared-utils';
 
@@ -10,28 +10,28 @@ import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCre
 import { uploadCommonTemplateBackgroundUrl } from '../../../const/urls/templates';
 
 export const handleUploadCommonTemplateBackground = async (
-	params: UploadCommonTemplateFilePayload,
+    params: UploadCommonTemplateFilePayload,
 ): Promise<CommonTemplateState> => {
-	const formData = generateFormData({
-		file: params.file,
-	});
+    const formData = generateFormData({
+        file: params.file,
+    });
 
-	const response = await sendRequestWithCredentials<
+    const response = await sendRequestWithCredentials<
         ICommonTemplate,
         ErrorState
     >({
-    	...uploadCommonTemplateBackgroundUrl(params),
-    	data: formData,
+        ...uploadCommonTemplateBackgroundUrl(params),
+        data: formData,
     });
 
-	if (response.success && response.result) {
-		return {
-			state: response.result,
-			error: null,
-		};
-	}
-	return {
-		state: undefined,
-		error: null,
-	};
+    if (response.success && response.result) {
+        return {
+            state: response.result,
+            error: null,
+        };
+    }
+    return {
+        state: undefined,
+        error: null,
+    };
 };

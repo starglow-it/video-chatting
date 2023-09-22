@@ -35,7 +35,7 @@ const Component = ({
                         height={150}
                         className={styles.image}
                         loading="eager"
-                        alt='media-item'
+                        alt="media-item"
                     />
                 );
             case 'video':

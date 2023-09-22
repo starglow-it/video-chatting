@@ -69,6 +69,7 @@ import frontendConfig from '../../const/config';
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
 import { PriceValues, RoomType } from 'shared-types';
+import { getProtocol } from 'src/helpers/http/getProtocol';
 
 enum TabsValues {
     Background = 1,
@@ -271,7 +272,7 @@ const Component = () => {
                 : defaultValues.participantsPositions;
 
             const matches = commonTemplate.subdomain?.match(
-                /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
+                /^http[s]?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
             );
             const domain = matches && matches[1];
 
@@ -397,7 +398,9 @@ const Component = () => {
                     })),
                     isAudioAvailable: true,
                     subdomain: Boolean(withSubdomain)
-                        ? `https://${data.subdomain}.${frontendConfig.baseDomain}`
+                        ? `${getProtocol()}//${data.subdomain}.${
+                              frontendConfig.baseDomain
+                          }`
                         : '',
                 };
 

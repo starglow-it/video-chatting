@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { ParticipantPosition } from 'shared-frontend/types';
 import { ITemplateLink } from 'shared-types';

@@ -72,7 +72,7 @@ export const RoomsWithSubdomainContainer = () => {
             limit: ROOMS_LIMIT,
             skip: 0,
             roomType: RoomType.Normal,
-            isHaveSubdomain: true
+            isHaveSubdomain: true,
         });
     }, []);
 
@@ -145,7 +145,7 @@ export const RoomsWithSubdomainContainer = () => {
                         ),
                     },
                     subdomain: {
-                        label:  template.subdomain
+                        label: template.subdomain,
                     },
                     participants: {
                         label: template.maxParticipants,

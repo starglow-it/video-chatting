@@ -10,33 +10,28 @@ import { TemplateBackgroundProps } from './TemplateBackground.types';
 
 import styles from './TemplateBackground.module.scss';
 
-const Component = ({
-	url, templateType 
-}: TemplateBackgroundProps) => (
-	<CustomGrid
-		container
-		className={styles.background}
-	>
-		<ConditionalRender condition={Boolean(url)}>
-			{templateType === 'image' ? (
-				<CustomImage
-					src={url ?? ''}
-					alt="background_preview"
-					layout="fill"
-					objectFit="cover"
-					objectPosition="center"
-				/>
-			) : (
-				<CustomVideoPlayer
-					src={url}
-					className={styles.player}
-					volume={100}
-					isPlaying
-					isMuted={false}
-				/>
-			)}
-		</ConditionalRender>
-	</CustomGrid>
+const Component = ({ url, templateType }: TemplateBackgroundProps) => (
+    <CustomGrid container className={styles.background}>
+        <ConditionalRender condition={Boolean(url)}>
+            {templateType === 'image' ? (
+                <CustomImage
+                    src={url ?? ''}
+                    alt="background_preview"
+                    layout="fill"
+                    objectFit="cover"
+                    objectPosition="center"
+                />
+            ) : (
+                <CustomVideoPlayer
+                    src={url}
+                    className={styles.player}
+                    volume={100}
+                    isPlaying
+                    isMuted={false}
+                />
+            )}
+        </ConditionalRender>
+    </CustomGrid>
 );
 
 export const TemplateBackground = memo(Component);

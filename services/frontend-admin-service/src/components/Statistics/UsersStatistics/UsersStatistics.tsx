@@ -1,6 +1,4 @@
-import {
-	memo, useMemo 
-} from 'react';
+import { memo, useMemo } from 'react';
 import { useStore } from 'effector-react';
 
 // shared
@@ -30,124 +28,124 @@ type OthersStatistics = {
 };
 
 const UsersStatistics = memo(
-	({
-		className,
-		statistic,
-	}: PropsWithClassName<{
+    ({
+        className,
+        statistic,
+    }: PropsWithClassName<{
         statistic: { data: ICountryStatistic[]; totalNumber: number };
     }>) => {
-		const isGetUsersStatisticsPending = useStore(
-			getUsersStatisticsFx.pending,
-		);
+        const isGetUsersStatisticsPending = useStore(
+            getUsersStatisticsFx.pending,
+        );
 
-		let statisticsDataSets;
+        let statisticsDataSets;
 
-		if (statistic?.data?.length > 3) {
-			const [first, second, third, ...others] = statistic.data;
+        if (statistic?.data?.length > 3) {
+            const [first, second, third, ...others] = statistic.data;
 
-			const othersInitialData: OthersStatistics = {
-				value: [],
-				key: 'Other',
-				color: '#BDC8D3',
-				labels: [],
-			};
+            const othersInitialData: OthersStatistics = {
+                value: [],
+                key: 'Other',
+                color: '#BDC8D3',
+                labels: [],
+            };
 
-			statisticsDataSets = [
-				first,
-				second,
-				third,
-				others.reduce(
-					(acc: OthersStatistics, newData: ICountryStatistic) => ({
-						...acc,
-						key: 'Other',
-						value: [
-							...(Array.isArray(acc.value)
-								? acc.value
-								: [acc.value]),
-							newData.value,
-						],
-						labels: [...(acc.labels ?? []), newData.key],
-					}),
-					othersInitialData,
-				),
-			];
-		} else {
-			statisticsDataSets = statistic?.data;
-		}
+            statisticsDataSets = [
+                first,
+                second,
+                third,
+                others.reduce(
+                    (acc: OthersStatistics, newData: ICountryStatistic) => ({
+                        ...acc,
+                        key: 'Other',
+                        value: [
+                            ...(Array.isArray(acc.value)
+                                ? acc.value
+                                : [acc.value]),
+                            newData.value,
+                        ],
+                        labels: [...(acc.labels ?? []), newData.key],
+                    }),
+                    othersInitialData,
+                ),
+            ];
+        } else {
+            statisticsDataSets = statistic?.data;
+        }
 
-		const data = {
-			totalNumber: statistic.totalNumber ?? 0,
-			dataSets:
-                statisticsDataSets?.filter(set => Array.isArray(set.value) ? true : set.value !== 0)
-					.map(statisticSet => ({
-						label: statisticSet.key,
-						parts: Array.isArray(statisticSet.value)
-							? statisticSet.value
-							: [statisticSet.value],
-						color: statisticSet.color,
-						labels: statisticSet?.labels ?? [statisticSet.key],
-                	})) ?? [],
-		};
+        const data = {
+            totalNumber: statistic.totalNumber ?? 0,
+            dataSets:
+                statisticsDataSets
+                    ?.filter(set =>
+                        Array.isArray(set.value) ? true : set.value !== 0,
+                    )
+                    .map(statisticSet => ({
+                        label: statisticSet.key,
+                        parts: Array.isArray(statisticSet.value)
+                            ? statisticSet.value
+                            : [statisticSet.value],
+                        color: statisticSet.color,
+                        labels: statisticSet?.labels ?? [statisticSet.key],
+                    })) ?? [],
+        };
 
-		const dataLoadingFallback = useMemo(
-			() =>
-				isGetUsersStatisticsPending ? (
-					<CustomLoader className={styles.loader} />
-				) : (
-					<CustomGrid
-						container
-						direction="column"
-						justifyContent="center"
-						alignItems="center"
-						className={styles.noData}
-					>
-						<CustomImage
-							src="/images/eyes.webp"
-							width={40}
-							height={40}
-						/>
-						<CustomTypography>
-							<Translation
-								nameSpace="statistics"
-								translation="users.users.noData"
-							/>
-						</CustomTypography>
-					</CustomGrid>
-				),
-			[isGetUsersStatisticsPending],
-		);
+        const dataLoadingFallback = useMemo(
+            () =>
+                isGetUsersStatisticsPending ? (
+                    <CustomLoader className={styles.loader} />
+                ) : (
+                    <CustomGrid
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        className={styles.noData}
+                    >
+                        <CustomImage
+                            src="/images/eyes.webp"
+                            width={40}
+                            height={40}
+                        />
+                        <CustomTypography>
+                            <Translation
+                                nameSpace="statistics"
+                                translation="users.users.noData"
+                            />
+                        </CustomTypography>
+                    </CustomGrid>
+                ),
+            [isGetUsersStatisticsPending],
+        );
 
-		return (
-			<CustomPaper className={className}>
-				<CustomTypography variant="h4bold">
-					<Translation
-						nameSpace="statistics"
-						translation="users.location.title"
-					/>
-				</CustomTypography>
-				{statistic.totalNumber === 0 || isGetUsersStatisticsPending ? (
-					dataLoadingFallback
-				) : (
-					<CustomGrid
-						container
-						direction="column"
-					>
-						<CustomDoughnutChart
-							className={styles.chartClass}
-							width="180px"
-							height="180px"
-							label="Users Total"
-							data={data}
-						/>
-						<ChartLegend
-							dataSets={data.dataSets}
-							totalNumber={data.totalNumber}
-						/>
-					</CustomGrid>
-				)}
-			</CustomPaper>
-		);
-	},
+        return (
+            <CustomPaper className={className}>
+                <CustomTypography variant="h4bold">
+                    <Translation
+                        nameSpace="statistics"
+                        translation="users.location.title"
+                    />
+                </CustomTypography>
+                {statistic.totalNumber === 0 || isGetUsersStatisticsPending ? (
+                    dataLoadingFallback
+                ) : (
+                    <CustomGrid container direction="column">
+                        <CustomDoughnutChart
+                            className={styles.chartClass}
+                            width="180px"
+                            height="180px"
+                            label="Users Total"
+                            data={data}
+                        />
+                        <ChartLegend
+                            dataSets={data.dataSets}
+                            totalNumber={data.totalNumber}
+                        />
+                    </CustomGrid>
+                )}
+            </CustomPaper>
+        );
+    },
 );
 
 UsersStatistics.displayName = 'UsersStatistics';

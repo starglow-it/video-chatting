@@ -15,9 +15,7 @@ import { ConfirmDeleteCategoryDialog } from '@components/Dialogs/ConfirmDeleteCa
 import { Categories } from '@components/Backgrounds/Categories/Categories';
 
 const Component = () => {
-    const { categories } = useStore(
-        $backgroundsManageStore,
-    );
+    const { categories } = useStore($backgroundsManageStore);
 
     useEffect(() => {
         (async () => getCategoriesFx())();
@@ -53,7 +51,7 @@ const Component = () => {
                     justifyContent="center"
                     alignItems="flex-start"
                 >
-                   <Categories />
+                    <Categories />
                     <Medias />
                 </CustomGrid>
             </CustomGrid>
