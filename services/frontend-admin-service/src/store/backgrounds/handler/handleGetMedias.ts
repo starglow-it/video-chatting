@@ -1,8 +1,5 @@
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
-import {
-    GetMediasParams,
-    ResultGetCategories,
-} from '../types';
+import { GetMediasParams, ResultGetCategories } from '../types';
 import { EntityList, ErrorState } from 'shared-types';
 import { getMediasUrl } from 'src/const/urls/backgrounds';
 

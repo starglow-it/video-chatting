@@ -73,6 +73,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
 import { PriceValues, RoomType } from 'shared-types';
 import frontendConfig from '../../const/config';
+import { getProtocol } from 'src/helpers/http/getProtocol';
 
 // utils
 enum TabsValues {
@@ -310,7 +311,9 @@ const Component = () => {
                         draftPreviewUrls: [],
                         draftUrl: '',
                         subdomain: Boolean(withSubdomain)
-                            ? `https://${data.subdomain}.${frontendConfig.baseDomain}`
+                            ? `${getProtocol()}//${data.subdomain}.${
+                                  frontendConfig.baseDomain
+                              }`
                             : '',
                     },
                 });

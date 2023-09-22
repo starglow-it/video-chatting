@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
 
 import { pageLoaded } from '../../../src/store';
-import {EditAdminRoomContainer} from "@containers/EditAdminRoomContainer/EditAdminRoomContainer";
+import { EditAdminRoomContainer } from '@containers/EditAdminRoomContainer/EditAdminRoomContainer';
 
 const enhance = withStart(pageLoaded);
 

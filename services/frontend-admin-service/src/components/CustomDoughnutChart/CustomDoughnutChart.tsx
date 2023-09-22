@@ -1,13 +1,11 @@
+import { memo, useEffect, useRef } from 'react';
 import {
-	memo, useEffect, useRef 
-} from 'react';
-import {
-	Chart,
-	ChartData,
-	DoughnutController,
-	ArcElement,
-	Tooltip,
-	TooltipItem,
+    Chart,
+    ChartData,
+    DoughnutController,
+    ArcElement,
+    Tooltip,
+    TooltipItem,
 } from 'chart.js';
 import { deepmerge } from 'deepmerge-ts';
 
@@ -25,50 +23,48 @@ type RenderTextPayload = {
     height: number;
 };
 
-const renderText = ({
-	ctx, font, text, width, height
-}: RenderTextPayload) => {
-	ctx.save();
+const renderText = ({ ctx, font, text, width, height }: RenderTextPayload) => {
+    ctx.save();
 
-	ctx.globalCompositeOperation = 'destination-over';
+    ctx.globalCompositeOperation = 'destination-over';
 
-	const [, fontSize] = font.split(' ');
-	ctx.font = font;
-	const textMeasurement = ctx.measureText(text);
+    const [, fontSize] = font.split(' ');
+    ctx.font = font;
+    const textMeasurement = ctx.measureText(text);
 
-	ctx.fillText(
-		text,
-		width / 2 - textMeasurement.width / 2,
-		height / 2 - parseInt(fontSize, 10) / 4,
-	);
+    ctx.fillText(
+        text,
+        width / 2 - textMeasurement.width / 2,
+        height / 2 - parseInt(fontSize, 10) / 4,
+    );
 
-	ctx.restore();
+    ctx.restore();
 };
 
 const usersText = {
-	id: 'chartUsersTextPlugin',
-	beforeDraw: (chart: Chart, args, options) => {
-		renderText({
-			ctx: chart.ctx,
-			font: `${options.fontWeight} ${options.fontSize}px Poppins`,
-			text: options.text,
-			width: chart.width,
-			height: chart.height,
-		});
-	},
+    id: 'chartUsersTextPlugin',
+    beforeDraw: (chart: Chart, args, options) => {
+        renderText({
+            ctx: chart.ctx,
+            font: `${options.fontWeight} ${options.fontSize}px Poppins`,
+            text: options.text,
+            width: chart.width,
+            height: chart.height,
+        });
+    },
 };
 
 const totalText = {
-	id: 'chartTotalTextPlugin',
-	beforeDraw: (chart: Chart, args, options) => {
-		renderText({
-			ctx: chart.ctx,
-			font: `${options.fontWeight} ${options.fontSize}px Poppins`,
-			text: options.text,
-			width: chart.width,
-			height: chart.height + 50,
-		});
-	},
+    id: 'chartTotalTextPlugin',
+    beforeDraw: (chart: Chart, args, options) => {
+        renderText({
+            ctx: chart.ctx,
+            font: `${options.fontWeight} ${options.fontSize}px Poppins`,
+            text: options.text,
+            width: chart.width,
+            height: chart.height + 50,
+        });
+    },
 };
 
 type CustomDoughnutChartProps = {
@@ -86,178 +82,177 @@ type CustomDoughnutChartProps = {
 };
 
 const defaultOptionsSettings = {
-	cutout: '75%',
-	radius: '100%',
-	layout: {
-		padding: {
-			top: 0,
-			left: 10,
-			right: 10,
-			bottom: 10,
-		},
-	},
-	plugins: {
-		title: {
-			display: false,
-		},
-		legend: {
-			labels: false,
-		},
-		subtitle: {
-			display: false,
-		},
-		tooltip: {
-			enabled: true,
-			displayColors: false,
-			titleAlign: 'center',
-			cornerRadius: 12,
-			backgroundColor: 'rgba(15, 15, 16, 0.6)',
-			titleFont: {
-				family: 'Poppins',
-				size: 14,
-				weight: 'bold',
-			},
-			padding: 16,
-		},
-		chartUsersTextPlugin: {
-			fontSize: 16,
-			fontWeight: 400,
-		},
-		chartTotalTextPlugin: {
-			fontSize: 20,
-			fontWeight: 600,
-		},
-	},
+    cutout: '75%',
+    radius: '100%',
+    layout: {
+        padding: {
+            top: 0,
+            left: 10,
+            right: 10,
+            bottom: 10,
+        },
+    },
+    plugins: {
+        title: {
+            display: false,
+        },
+        legend: {
+            labels: false,
+        },
+        subtitle: {
+            display: false,
+        },
+        tooltip: {
+            enabled: true,
+            displayColors: false,
+            titleAlign: 'center',
+            cornerRadius: 12,
+            backgroundColor: 'rgba(15, 15, 16, 0.6)',
+            titleFont: {
+                family: 'Poppins',
+                size: 14,
+                weight: 'bold',
+            },
+            padding: 16,
+        },
+        chartUsersTextPlugin: {
+            fontSize: 16,
+            fontWeight: 400,
+        },
+        chartTotalTextPlugin: {
+            fontSize: 20,
+            fontWeight: 600,
+        },
+    },
 };
 
 const getChartData = (
-	label: string,
-	dataSets: CustomDoughnutChartProps['data']['dataSets'],
+    label: string,
+    dataSets: CustomDoughnutChartProps['data']['dataSets'],
 ): ChartData<'doughnut'> => ({
-	labels: dataSets.map(dataSet => dataSet.labels),
-	datasets: [
-		{
-			borderRadius: dataSets?.length === 1 ? 0 : 6,
-			borderWidth: 0,
-			hoverOffset: 10,
-			spacing: dataSets?.length === 1 ? 0 : 12,
-			label,
-			backgroundColor: dataSets.map(dataSet => dataSet.color),
-			data: dataSets.map(dataSet =>
-				dataSet.parts.reduce((acc, b) => acc + b, 0),
-			),
-		}
-	],
+    labels: dataSets.map(dataSet => dataSet.labels),
+    datasets: [
+        {
+            borderRadius: dataSets?.length === 1 ? 0 : 6,
+            borderWidth: 0,
+            hoverOffset: 10,
+            spacing: dataSets?.length === 1 ? 0 : 12,
+            label,
+            backgroundColor: dataSets.map(dataSet => dataSet.color),
+            data: dataSets.map(dataSet =>
+                dataSet.parts.reduce((acc, b) => acc + b, 0),
+            ),
+        },
+    ],
 });
 
 const getChartOptions = (
-	label: string,
-	totalLabel: string,
-	totalNumber: number,
-	dataSets: CustomDoughnutChartProps['data']['dataSets'],
+    label: string,
+    totalLabel: string,
+    totalNumber: number,
+    dataSets: CustomDoughnutChartProps['data']['dataSets'],
 ) =>
-	deepmerge(defaultOptionsSettings, {
-		plugins: {
-			tooltip: {
-				callbacks: {
-					title: (model: TooltipItem<'doughnut'>[]) => {
-						const part = dataSets[model?.[0]?.dataIndex]?.label;
+    deepmerge(defaultOptionsSettings, {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: (model: TooltipItem<'doughnut'>[]) => {
+                        const part = dataSets[model?.[0]?.dataIndex]?.label;
 
-						return part !== 'Other' ? model?.[0]?.label : part;
-					},
-					label: (
-						model: TooltipItem<'doughnut'>,
-					): string | string[] => {
-						const part = dataSets[model?.dataIndex].label;
+                        return part !== 'Other' ? model?.[0]?.label : part;
+                    },
+                    label: (
+                        model: TooltipItem<'doughnut'>,
+                    ): string | string[] => {
+                        const part = dataSets[model?.dataIndex].label;
 
-						if (part !== "Other") {
-							return `${
-								model.raw
-									? (
-										((model.raw as number) /
+                        if (part !== 'Other') {
+                            return `${
+                                model.raw
+                                    ? (
+                                          ((model.raw as number) /
                                               totalNumber) *
                                           100
-									).toFixed(2)
-									: 0
-							}% - ${model.raw}`;
-						}
-						return model?.label.map((label, index) => {
-							const part = dataSets[model.dataIndex]?.parts?.[index];
+                                      ).toFixed(2)
+                                    : 0
+                            }% - ${model.raw}`;
+                        }
+                        return model?.label.map((label, index) => {
+                            const part =
+                                dataSets[model.dataIndex]?.parts?.[index];
 
-							return `${((part / totalNumber) * 100).toFixed(
-								2,
-							)}% - ${label}`;
-						});
-					},
-				},
-			},
-			chartUsersTextPlugin: {
-				text: label,
-			},
-			chartTotalTextPlugin: {
-				text: totalLabel ?? totalNumber,
-			},
-		},
-	});
+                            return `${((part / totalNumber) * 100).toFixed(
+                                2,
+                            )}% - ${label}`;
+                        });
+                    },
+                },
+            },
+            chartUsersTextPlugin: {
+                text: label,
+            },
+            chartTotalTextPlugin: {
+                text: totalLabel ?? totalNumber,
+            },
+        },
+    });
 
 const Component = ({
-	className,
-	width,
-	height,
-	label,
-	data: {
-		totalLabel, totalNumber, dataSets
-	},
+    className,
+    width,
+    height,
+    label,
+    data: { totalLabel, totalNumber, dataSets },
 }: PropsWithClassName<CustomDoughnutChartProps>) => {
-	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const chartRef = useRef<Chart | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const chartRef = useRef<Chart | null>(null);
 
-	useEffect(() => {
-		const canvas = canvasRef.current;
+    useEffect(() => {
+        const canvas = canvasRef.current;
 
-		if (canvas) {
-			chartRef.current = new Chart(canvas, {
-				type: 'doughnut',
-				data: getChartData(label, dataSets),
-				options: getChartOptions(
-					label,
-					totalLabel,
-					totalNumber,
-					dataSets,
-				),
-				plugins: [usersText, totalText],
-			});
+        if (canvas) {
+            chartRef.current = new Chart(canvas, {
+                type: 'doughnut',
+                data: getChartData(label, dataSets),
+                options: getChartOptions(
+                    label,
+                    totalLabel,
+                    totalNumber,
+                    dataSets,
+                ),
+                plugins: [usersText, totalText],
+            });
 
-			chartRef.current.canvas.parentNode.style.height = height;
-			chartRef.current.canvas.parentNode.style.width = width;
-		}
+            chartRef.current.canvas.parentNode.style.height = height;
+            chartRef.current.canvas.parentNode.style.width = width;
+        }
 
-		return () => {
-			if (chartRef.current) {
-				chartRef.current.destroy();
-			}
-		};
-	}, []);
+        return () => {
+            if (chartRef.current) {
+                chartRef.current.destroy();
+            }
+        };
+    }, []);
 
-	useEffect(() => {
-		if (chartRef.current) {
-			chartRef.current.data = getChartData(label, dataSets);
-			chartRef.current.options = getChartOptions(
-				label,
-				totalLabel,
-				totalNumber,
-				dataSets,
-			);
+    useEffect(() => {
+        if (chartRef.current) {
+            chartRef.current.data = getChartData(label, dataSets);
+            chartRef.current.options = getChartOptions(
+                label,
+                totalLabel,
+                totalNumber,
+                dataSets,
+            );
 
-			chartRef.current.update();
-		}
-	}, [dataSets]);
+            chartRef.current.update();
+        }
+    }, [dataSets]);
 
-	return (
-		<CustomGrid className={className}>
-			<canvas ref={canvasRef} />
-		</CustomGrid>
-	);
+    return (
+        <CustomGrid className={className}>
+            <canvas ref={canvasRef} />
+        </CustomGrid>
+    );
 };
 
 export const CustomDoughnutChart = memo(Component);

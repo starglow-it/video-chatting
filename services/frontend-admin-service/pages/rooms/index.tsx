@@ -9,7 +9,7 @@ const enhance = withStart(pageLoaded);
 const RoomsPage: NextPage = (): JSX.Element => <RoomsContainer />;
 
 RoomsPage.getInitialProps = async () => ({
-	namespacesRequired: ['common', 'statistics', 'rooms', 'errors'],
+    namespacesRequired: ['common', 'statistics', 'rooms', 'errors'],
 });
 
 export default enhance(RoomsPage);

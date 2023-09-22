@@ -1,16 +1,14 @@
 import { NextPageContext } from 'next';
 import { authDomain } from '../domains';
 
-import {
-	AuthAdminState, LoginAdminPayload 
-} from '../types';
+import { AuthAdminState, LoginAdminPayload } from '../types';
 
 export const initialAuthState = {
-	state: {
-		isAuthenticated: false,
-		admin: null,
-	},
-	error: null,
+    state: {
+        isAuthenticated: false,
+        admin: null,
+    },
+    error: null,
 } as AuthAdminState;
 
 export const $authStore =
@@ -25,12 +23,12 @@ export const checkAdminAuthFx = authDomain.createEffect<
     AuthAdminState
 >('checkAdminAuthFx');
 export const logoutAdminFx = authDomain.createEffect<void, AuthAdminState>(
-	'logoutAdminFx',
+    'logoutAdminFx',
 );
 
 export const resetAuthErrorEvent = authDomain.createEvent<void>(
-	'resetAuthErrorEvent',
+    'resetAuthErrorEvent',
 );
 export const resetAuthStateEvent = authDomain.createEvent<void>(
-	'resetAuthStateEvent',
+    'resetAuthStateEvent',
 );

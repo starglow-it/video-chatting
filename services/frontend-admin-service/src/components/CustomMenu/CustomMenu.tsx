@@ -1,8 +1,8 @@
-import React, {memo, useMemo} from "react";
-import clsx from "clsx";
+import React, { memo, useMemo } from 'react';
+import clsx from 'clsx';
 
-import { Menu } from "@mui/material";
-import { MenuItem } from "@mui/material";
+import { Menu } from '@mui/material';
+import { MenuItem } from '@mui/material';
 
 import styles from './CustomMenu.module.scss';
 
@@ -18,21 +18,21 @@ const CustomMenu = memo(({ open, buttonRef, onClose, menuItemsData }) => {
                     {Component}
                 </MenuItem>
             );
-        })
+        });
     }, []);
 
-  return (
-      <Menu
-          open={open}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          anchorEl={buttonRef?.current}
-          classes={{ paper: styles.menu }}
-          onClose={onClose}
-      >
-          {renderMenuItems}
-      </Menu>
-  )
-})
+    return (
+        <Menu
+            open={open}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            anchorEl={buttonRef?.current}
+            classes={{ paper: styles.menu }}
+            onClose={onClose}
+        >
+            {renderMenuItems}
+        </Menu>
+    );
+});
 
 export default CustomMenu;

@@ -1,6 +1,6 @@
 import { Translation } from '@components/Translation/Translation';
 import { memo, useCallback, useEffect } from 'react';
-import Router from "next/router";
+import Router from 'next/router';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import styles from './FeaturedBackgroundContainer.module.scss';
@@ -34,7 +34,7 @@ const Component = () => {
                 skip: 0,
                 limit: 9,
                 roomType: RoomType.Featured,
-                draft: false
+                draft: false,
             }))();
     }, []);
 
@@ -48,7 +48,7 @@ const Component = () => {
 
     const handleEditMedia = (id: string) => {
         Router.push(`/rooms/edit/${id}`);
-    }
+    };
 
     return (
         <CustomGrid

@@ -6,17 +6,14 @@ type ReturnT = {
 };
 
 export const useLocalization = (ns?: string): ReturnT => {
-	const {
-		t: tr 
-	} = useT(ns);
+    const { t: tr } = useT(ns);
 
-	const translation = useCallback(
-		(ts, options = {
-		}) => tr(ts, options),
-		[tr],
-	);
+    const translation = useCallback(
+        (ts, options = {}) => tr(ts, options),
+        [tr],
+    );
 
-	return {
-		translation,
-	};
+    return {
+        translation,
+    };
 };

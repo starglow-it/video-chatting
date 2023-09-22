@@ -26,6 +26,7 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { useStore } from 'effector-react';
 import { $commonTemplateStore } from 'src/store';
 import frontendConfig from '../../../const/config';
+import { getProtocol } from 'src/helpers/http/getProtocol';
 
 const Component = ({
     onNextStep,
@@ -210,7 +211,9 @@ const Component = ({
                                         error={subdomainErrorMessage}
                                         onChange={handleChangeSubdomain}
                                         InputProps={{
-                                            startAdornment: <p>https://</p>,
+                                            startAdornment: (
+                                                <p>{getProtocol()}//</p>
+                                            ),
                                             endAdornment: (
                                                 <p>
                                                     {`.${frontendConfig.baseDomain}`}
