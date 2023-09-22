@@ -269,7 +269,7 @@ const Component = () => {
     const onSubmit = useCallback(
         handleSubmit(async data => {
             if (commonTemplate?.id) {
-                await updateCommonTemplateFx({
+                const { error } = await updateCommonTemplateFx({
                     templateId: commonTemplate.id,
                     data: {
                         name: data.name,
@@ -304,6 +304,14 @@ const Component = () => {
                             : '',
                     },
                 });
+                if (error) {
+                    addNotificationEvent({
+                        type: NotificationType.validationError,
+                        message: error.message ?? '',
+                        withErrorIcon: true
+                    });
+                    return;
+                }
                 if (commonTemplate.roomType === RoomType.Normal) {
                     if (withSubdomain) {
                         Router.push('/subdomain');

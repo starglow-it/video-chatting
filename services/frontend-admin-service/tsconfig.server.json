@@ -7,6 +7,6 @@
     "isolatedModules": false,
     "noEmit": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js", "i18n.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js", "i18n.js", ".eslintrc.json"],
   "exclude": ["node_modules"]
 }
