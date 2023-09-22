@@ -74,8 +74,8 @@ import {
 } from '../../types';
 import { MeetingDocument } from 'src/schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
-import { ReconnectDto } from 'src/dtos/requests/recconnect.dto';
-import { notifyParticipantsMeetingInfo } from 'src/providers/socket.provider';
+import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
+import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
 
 @WebSocketGateway({
   transports: ['websocket'],
