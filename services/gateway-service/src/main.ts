@@ -70,6 +70,10 @@ async function bootstrap() {
   await app.listen(config.gatewayPort);
 }
 
+process.on('uncaughtException', (err, origin) => console.log(origin));
+
+process.on('unhandledRejection', (reason) => console.log(reason));
+
 bootstrap().then(() => {
   console.log('Gateway Server is Ready');
 });
