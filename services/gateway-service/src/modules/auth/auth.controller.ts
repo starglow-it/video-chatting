@@ -182,6 +182,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     @Body() { templateId, subdomain }: CreateUserFreeRequest,
     @Request() req: Req,
   ) {
+    const createUser = async () => {
+      const uuid = uuidv4();
+      return await this.coreService.createUserWithoutLogin(uuid);
+    };
     try {
       let user: ICommonUser;
       const userId = req['cookies']?.['userWithoutLoginId'] as
@@ -189,9 +193,11 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         | undefined;
       if (userId) {
         user = await this.coreService.findUserById({ userId });
+        if (!user) {
+          user = await createUser();
+        }
       } else {
-        const uuid = uuidv4();
-        user = await this.coreService.createUserWithoutLogin(uuid);
+        user = await createUser();
       }
 
       let template: ICommonTemplate;

@@ -20,6 +20,7 @@ import { MeetingAccessStatusEnum } from 'shared-types';
 import { Translation } from '@library/common/Translation/Translation';
 import { useRouter } from 'next/router';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { fullNameSchema } from '../../validation/users/fullName';
 
 // stores
@@ -37,7 +38,6 @@ import {
 
 // styles
 import styles from './EnterMeetingName.module.scss';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     fullName: fullNameSchema().required('required'),

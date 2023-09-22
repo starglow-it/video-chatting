@@ -259,8 +259,8 @@ cancelAccessMeetingRequestSocketEvent.doneData.watch(
 );
 updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
-sendReconnectMeetingEvent.failData.watch((error: any) =>{
-    console.log('console reconnect error', error)
+sendReconnectMeetingEvent.failData.watch((error: any) => {
+    console.log('console reconnect error', error);
 });
 
 sample({

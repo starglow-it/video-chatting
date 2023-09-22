@@ -24,6 +24,7 @@ import {
 } from '../../../store';
 import {
     $activeStreamStore,
+    $isOwner,
     $isScreenSharingStore,
     $localUserStore,
     $meetingConnectedStore,
@@ -55,6 +56,7 @@ const Component = () => {
 
     const profile = useStore($profileStore);
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
+    const isOwner = useStore($isOwner);
     const { isMobile } = useBrowserDetect();
 
     const users = useStoreMap({
@@ -99,6 +101,7 @@ const Component = () => {
                     left={user?.userPosition?.left}
                     isSelfView={false}
                     onResizeVideo={handleResizeVideo}
+                    isOwner={isOwner}
                 />
             )),
         [
@@ -162,6 +165,7 @@ const Component = () => {
                     onToggleAudio={handleToggleAudio}
                     bottom={localUser?.userPosition?.bottom}
                     left={localUser?.userPosition?.left}
+                    isOwner={isOwner}
                 />
             </CustomGrid>
         );
@@ -172,6 +176,7 @@ const Component = () => {
             className={clsx(styles.usersWrapper, {
                 [styles.sharing]: isScreenSharing,
             })}
+            id="drag-warpper"
         >
             {renderUsers}
             <MeetingUserVideoItem
@@ -198,6 +203,7 @@ const Component = () => {
                 bottom={localUser?.userPosition?.bottom}
                 left={localUser?.userPosition?.left}
                 onResizeVideo={handleResizeVideo}
+                isOwner={isOwner}
             />
         </CustomGrid>
     );
