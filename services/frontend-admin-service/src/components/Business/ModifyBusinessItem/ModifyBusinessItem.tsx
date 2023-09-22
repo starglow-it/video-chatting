@@ -8,7 +8,6 @@ import {
 } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import styles from './ModifyBusinessItem.module.scss';
 import { CustomInput } from 'shared-frontend/library/custom/CustomInput';
 import { ClickAwayListener, InputAdornment } from '@mui/material';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
@@ -18,6 +17,7 @@ import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import clsx from 'clsx';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import { IBusinessCategory } from 'shared-types';
+import styles from './ModifyBusinessItem.module.scss';
 
 const Component = (
     {
@@ -39,11 +39,6 @@ const Component = (
     const [isPreviewEmoji, setIsPreviewEmoji] = useState<boolean>(false);
     const [emoji, setEmoji] = useState<string>(category.icon);
 
-    useImperativeHandle(ref, () => ({
-        open,
-        close,
-    }));
-
     const open = () => {
         setIsOpen(true);
         setCategoryName(category.value);
@@ -56,6 +51,11 @@ const Component = (
         setIsOpen(false);
         setIsPreviewEmoji(false);
     };
+
+    useImperativeHandle(ref, () => ({
+        open,
+        close,
+    }));
 
     if (!isOpen) return null;
 
@@ -101,6 +101,7 @@ const Component = (
                     value={categoryName}
                     inputProps={{ className: styles.textField }}
                     autoFocus
+                    // eslint-disable-next-line react/jsx-no-duplicate-props
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">

@@ -1,11 +1,11 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
-import styles from './BusinessContainer.module.scss';
 import { BusinessCategories } from '@components/Business/Categories/Categories';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
 import { useEffect } from 'react';
 import { getBusinessCategoriesEvent } from 'src/store';
+import styles from './BusinessContainer.module.scss';
 
 export const BusinessContainer = () => {
     useEffect(() => {

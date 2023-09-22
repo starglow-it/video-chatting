@@ -11,6 +11,6 @@ export const handleAddBusinessCategories = async (
 ): Promise<void> => {
     await sendRequestWithCredentials<BusinessCategoryList, ErrorState>({
         ...getUrlAddBusiness(),
-        data: data,
+        data,
     });
 };

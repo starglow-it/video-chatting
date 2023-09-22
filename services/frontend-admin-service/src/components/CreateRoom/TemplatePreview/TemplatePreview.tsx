@@ -94,7 +94,7 @@ const TemplatePreview = memo(
                         >
                             {description}
                         </CustomTypography>
-                        {Boolean(templateTags?.length) ? (
+                        {templateTags?.length ? (
                             <CustomDivider className={styles.divider} />
                         ) : null}
                         <CustomGrid container gap={1}>

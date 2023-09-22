@@ -28,6 +28,6 @@ export const handleUpdateCommonTemplate = async (
     }
     return {
         state: undefined,
-        error: null,
+        error: response?.error as any ?? null,
     };
 };

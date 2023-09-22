@@ -1,4 +1,3 @@
-import { deleteFeaturedBackgroundUrl } from 'src/const/urls/featuredBackground';
 import { deleteCommonTemplateUrl } from 'src/const/urls/templates';
 import sendRequestWithCredentials from 'src/helpers/http/sendRequestWithCredentials';
 

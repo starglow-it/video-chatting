@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 import { useStore } from 'effector-react';
@@ -6,7 +6,6 @@ import Router, { useRouter } from 'next/router';
 
 // shared
 import {
-    participantsNumberSchema,
     participantsPositionsSchema,
     simpleNumberSchema,
     simpleStringSchema,
@@ -34,23 +33,22 @@ import { ImagePlaceholderIcon } from 'shared-frontend/icons/OtherIcons/ImagePlac
 
 import { useYupValidationResolver } from 'shared-frontend/hooks/useYupValidationResolver';
 import { useValueSwitcher } from 'shared-frontend/hooks/useValuesSwitcher';
-import { usePrevious } from 'shared-frontend/hooks/usePrevious';
 
 // components
 import { TemplateBackground } from '@components/CreateRoom/TemplateBackground/TemplateBackground';
 import { Translation } from '@components/Translation/Translation';
 import { UploadBackground } from '@components/CreateRoom/UploadBackground/UploadBackground';
 import { CommonTemplateSettings } from '@components/CreateRoom/CommonTemplateSettings/CommonTemplateSettings';
-import { AttendeesPositions } from '@components/CreateRoom/AttendeesPositions/AttendeesPositions';
 import { TemplateLinks } from '@components/CreateRoom/TemplateLinks/TemplateLinks';
 import { TemplatePrice } from '@components/CreateRoom/TemplatePrice/TemplatePrice';
 import { CancelCreateRoomDialog } from '@components/Dialogs/CancelCreateRoomDialog/CancelCreateRoomDialog';
 import { ConfirmCreateRoomDialog } from '@components/Dialogs/ConfirmCreateRoomDialog/ConfirmCreateRoomDialog';
-import { TemplatePreview } from '@components/CreateRoom/TemplatePreview/TemplatePreview';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 
 // stores
 import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { PriceValues, RoomType } from 'shared-types';
+import { getProtocol } from 'src/helpers/http/getProtocol';
 import {
     $businessCategoriesStore,
     $commonTemplateStore,
@@ -71,9 +69,7 @@ import styles from './CreateAdminRoomContainer.module.scss';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
-import { PriceValues, RoomType } from 'shared-types';
 import frontendConfig from '../../const/config';
-import { getProtocol } from 'src/helpers/http/getProtocol';
 
 // utils
 enum TabsValues {
@@ -150,7 +146,7 @@ const validationSchema = {
         otherwise: simpleNumberSchema()
             .notRequired()
             .nullable(true)
-            .transform(value => (isNaN(value) ? undefined : value)),
+            .transform(value => (Number.isNaN(value) ? undefined : value)),
     }),
     draft: yup.bool(),
 };
@@ -174,7 +170,7 @@ const Component = () => {
     const resolver = useYupValidationResolver(
         yup.object({
             ...validationSchema,
-            subdomain: Boolean(withSubdomain)
+            subdomain: withSubdomain
                 ? yup.string().required()
                 : yup.string().notRequired().nullable(true),
         }),
@@ -188,7 +184,7 @@ const Component = () => {
         resolver,
     });
 
-    const { control, handleSubmit, setValue, trigger, resetField } = methods;
+    const { control, handleSubmit, setValue, trigger } = methods;
 
     const background = useWatch({
         control,
@@ -210,17 +206,10 @@ const Component = () => {
         name: 'templateLinks',
     });
 
-    const participantsNumber = useWatch({
-        control,
-        name: 'participantsNumber',
-    });
-
     const templatePrice = useWatch({
         control,
         name: 'templatePrice',
     });
-
-    const previousParticipantsNumber = usePrevious(participantsNumber);
 
     useEffect(() => {
         getCommonTemplateEvent({
@@ -280,23 +269,21 @@ const Component = () => {
     const onSubmit = useCallback(
         handleSubmit(async data => {
             if (commonTemplate?.id) {
-                const templatePrice =
-                    data.type === 'paid' ? data.templatePrice * 100 : 0;
-
-                await updateCommonTemplateFx({
+                const { error } = await updateCommonTemplateFx({
                     templateId: commonTemplate.id,
                     data: {
                         name: data.name,
                         description: data.description,
                         maxParticipants: data.participantsNumber,
                         businessCategories: data.tags,
-                        priceInCents: templatePrice,
+                        priceInCents:
+                            data.type === 'paid' ? data.templatePrice * 100 : 0,
                         type: data.type,
                         url: commonTemplate?.draftUrl,
                         usersPosition: adjustUserPositions(
                             data.participantsPositions,
                         ),
-                        links: data.templateLinks.map(link => ({
+                        links: data.templateLinks.map((link: any) => ({
                             item: link.value,
                             position: {
                                 top: link.top,
@@ -307,18 +294,26 @@ const Component = () => {
                         draft: false,
                         previewUrls: commonTemplate?.draftPreviewUrls?.map(
                             ({ id }) => id,
-                        ),
+                        ) as any,
                         draftPreviewUrls: [],
                         draftUrl: '',
-                        subdomain: Boolean(withSubdomain)
+                        subdomain: withSubdomain
                             ? `${getProtocol()}//${data.subdomain}.${
                                   frontendConfig.baseDomain
                               }`
                             : '',
                     },
                 });
+                if (error) {
+                    addNotificationEvent({
+                        type: NotificationType.validationError,
+                        message: error.message ?? '',
+                        withErrorIcon: true
+                    });
+                    return;
+                }
                 if (commonTemplate.roomType === RoomType.Normal) {
-                    if (Boolean(withSubdomain)) {
+                    if (withSubdomain) {
                         Router.push('/subdomain');
                     } else {
                         Router.push('/rooms');
@@ -350,7 +345,7 @@ const Component = () => {
             updateCommonTemplateDataEvent({
                 draftUrl: '',
                 draftPreviewUrls: [],
-                templateType: file.type.split('/')[0],
+                // templateType: file.type.split('/')[0],
             });
 
             setValue('background', URL.createObjectURL(file), {

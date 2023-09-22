@@ -9,6 +9,7 @@ import {
 
 import { templatesDomain } from '../domains';
 import { CommonTemplatesListState, CommonTemplateState } from '../types';
+
 export const $commonTemplates =
     templatesDomain.createStore<CommonTemplatesListState>({
         state: {

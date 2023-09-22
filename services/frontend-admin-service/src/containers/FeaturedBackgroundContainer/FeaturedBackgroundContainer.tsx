@@ -3,10 +3,8 @@ import { memo, useCallback, useEffect } from 'react';
 import Router from 'next/router';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
-import styles from './FeaturedBackgroundContainer.module.scss';
 import {
     $featuredBackgroundStore,
-    createFeaturedBackgroundFx,
     createFeaturedTemplateFx,
     deleteFeaturedBackground,
     getFeaturedTemplatesFx,
@@ -23,10 +21,10 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import { CustomChip } from 'shared-frontend/library/custom/CustomChip';
 import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
 import { RoomType } from 'shared-types';
+import styles from './FeaturedBackgroundContainer.module.scss';
 
 const Component = () => {
     const { list } = useStore($featuredBackgroundStore);
-    const isLoading = useStore(createFeaturedBackgroundFx.pending);
 
     useEffect(() => {
         (async () =>

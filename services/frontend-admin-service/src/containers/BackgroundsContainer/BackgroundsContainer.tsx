@@ -2,7 +2,6 @@ import { Translation } from '@components/Translation/Translation';
 import { memo, useEffect } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
-import styles from './BackgroundsContainer.module.scss';
 import {
     $backgroundsManageStore,
     getCategoriesFx,
@@ -13,6 +12,7 @@ import { Medias } from '@components/Backgrounds/Medias/Medias';
 import { ConfirmDeleteMediaDialog } from '@components/Dialogs/ConfirmDeleteMediaDialog/ConfirmDeleteMediaDialog';
 import { ConfirmDeleteCategoryDialog } from '@components/Dialogs/ConfirmDeleteCategoryDialog/ConfirmDeleteCategoryDialog';
 import { Categories } from '@components/Backgrounds/Categories/Categories';
+import styles from './BackgroundsContainer.module.scss';
 
 const Component = () => {
     const { categories } = useStore($backgroundsManageStore);

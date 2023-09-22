@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Snackbar, SnackbarContent } from '@mui/material';
 
 import { useStore } from 'effector-react';

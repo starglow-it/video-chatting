@@ -1,9 +1,7 @@
 import { MouseEvent, memo, useRef } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
-import styles from './CategoryItem.module.scss';
 import { IBackgroundCategory } from 'src/store/backgrounds/types';
-import { ModifyCategoryItem } from '../ModifyCategoryItem/ModifyCategoryItem';
 import { Fade } from '@mui/material';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
@@ -13,6 +11,8 @@ import { hasHttps } from 'shared-frontend/const/regexp';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
+import { ModifyCategoryItem } from '../ModifyCategoryItem/ModifyCategoryItem';
+import styles from './CategoryItem.module.scss';
 
 const Component = ({
     category,

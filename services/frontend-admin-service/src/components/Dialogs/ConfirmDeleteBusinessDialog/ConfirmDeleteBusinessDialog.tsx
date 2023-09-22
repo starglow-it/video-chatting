@@ -1,22 +1,19 @@
 import { memo } from 'react';
 import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
-import styles from './ConfirmDeleteBusinessDialog.module.scss';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
 import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
 import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
 import {
-    $backgroundsManageStore,
     $businessCategoriesStore,
     $businessIdDeleteStore,
-    $categoryIdDeleteStore,
     $confirmDeleteCategoryDialogStore,
     closeAdminDialogEvent,
     deleteBusinessEvent,
-    deleteCategoryEvent,
 } from 'src/store';
 import { useStore, useStoreMap } from 'effector-react';
 import { AdminDialogsEnum } from 'src/store/types';
+import styles from './ConfirmDeleteBusinessDialog.module.scss';
 
 const Component = () => {
     const confirmDeleteCategoryDialog = useStore(
@@ -27,8 +24,8 @@ const Component = () => {
     const category = useStoreMap({
         store: $businessCategoriesStore,
         keys: [categoryId],
-        fn: (state, [categoryId]) =>
-            state.state.list.find(item => item.id === categoryId),
+        fn: (state, [cateId]) =>
+            state.state.list.find(item => item.id === cateId),
     });
 
     const handleClose = () => {
