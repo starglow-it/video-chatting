@@ -185,7 +185,11 @@ export class MeetingsCommonService {
   compareActiveWithMaxParicipants = async (meeting: MeetingDocument) => {
     const c = await this.usersService.countMany({
       meeting: meeting._id,
-      accessStatus: MeetingAccessStatusEnum.InMeeting,
+      accessStatus: {
+        $in: [
+          MeetingAccessStatusEnum.InMeeting
+        ],
+      },
     });
 
     if (c === meeting.maxParticipants) return;
@@ -279,68 +283,7 @@ export class MeetingsCommonService {
     return r;
   };
 
-  handleDisconnectWithHaveParticipants = async ({
-    isMeetingHost,
-    meeting,
-    endsAt,
-    client,
-    emitToRoom,
-    cb,
-  }: {
-    isMeetingHost: boolean;
-    meeting: MeetingDocument;
-    endsAt: number;
-    client: Socket;
-    emitToRoom: (...args: TEventEmitter) => void;
-    cb: () => void;
-  }) => {
-    const meetingId = meeting._id.toString();
-    if (isMeetingHost) {
-      const endTimestamp = getTimeoutTimestamp({
-        type: TimeoutTypesEnum.Minutes,
-        value: 15,
-      });
 
-      console.log('timeout', endTimestamp);
-
-      const meetingEndTime = (endsAt || Date.now()) - Date.now();
-
-      this.taskService.deleteTimeout({
-        name: `meeting:finish:${meetingId}`,
-      });
-
-      this.taskService.addTimeout({
-        name: `meeting:finish:${meetingId}`,
-        ts: meetingEndTime > endTimestamp ? endTimestamp : meetingEndTime,
-        callback: cb,
-      });
-    }
-
-    console.log('handleDisconnectWithHaveParticipants');
-
-    this.taskService.deleteTimeout({
-      name: 'meeting:changeUsersPositions',
-    });
-
-    this.taskService.addTimeout({
-      name: 'meeting:changeUsersPositions',
-      ts: getTimeoutTimestamp({
-        value: 1,
-        type: TimeoutTypesEnum.Seconds,
-      }),
-      callback: async () => {
-        try {
-          this.changeUsersPositions({
-            meetingId,
-            templateId: meeting.templateId,
-            emitToRoom,
-          });
-        } catch (err) {
-          wsError(null, err);
-        }
-      },
-    });
-  };
 
   handleUserLoggedInDisconnect = async ({
     user,

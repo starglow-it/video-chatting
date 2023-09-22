@@ -15,7 +15,6 @@ import { CoreService } from '../../services/core/core.service';
 export class MeetingsService {
   constructor(
     @InjectModel(Meeting.name) private meeting: Model<MeetingDocument>,
-    private coreService: CoreService,
   ) {}
 
   private logger = new Logger(MeetingsService.name);
@@ -117,48 +116,4 @@ export class MeetingsService {
       .exec();
   }
 
-  async updateIndexUsers({
-    userTemplate,
-    user,
-    event,
-  }: {
-    userTemplate: IUserTemplate;
-    user: MeetingUserDocument;
-    event: UserActionInMeeting;
-  }) {
-    try {
-      const userId = user._id.toString();
-      const updateIndexParams: UserActionInMeetingParams = {
-        [UserActionInMeeting.Join]: {
-          condition: null,
-          replaceItem: userId,
-        },
-        [UserActionInMeeting.Leave]: {
-          condition: userId,
-          replaceItem: null,
-        },
-      };
-
-      const params = updateIndexParams[event];
-
-      const index = userTemplate.indexUsers.indexOf(params.condition);
-      if (index + 1) {
-        userTemplate.indexUsers[index] = params.replaceItem;
-
-        await this.coreService.updateUserTemplate({
-          templateId: userTemplate.id,
-          userId,
-          data: {
-            indexUsers: userTemplate.indexUsers,
-          },
-        });
-      }
-    } catch (err) {
-      this.logger.error({
-        message: err.message,
-        event,
-      });
-      return;
-    }
-  }
 }

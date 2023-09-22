@@ -3,10 +3,17 @@ import { attach, combine, Effect, sample, Store } from 'effector-next';
 import { IUserTemplate } from 'shared-types';
 import { EmitSocketEventPayload, SocketState } from '../../types';
 import { rootDomain } from '../../domains';
-import { $meetingTemplateStore } from '../meeting/meetingTemplate/model';
+import {
+    $isOwner,
+    $meetingTemplateStore,
+} from '../meeting/meetingTemplate/model';
 import { createSocketEvent } from '../../socket/model';
 import { JoinRoomBeforeMeetingPayload } from '../../socket/types';
 import { DashboardSocketEmitters } from '../../../const/socketEvents/emitters';
+import {
+    $backgroundAudioVolume,
+    $isBackgroundAudioActive,
+} from '../audio/model';
 
 export const meetingSocketDomain = rootDomain.createDomain('socketDomain');
 
@@ -15,6 +22,33 @@ export const $meetingSocketStore = meetingSocketDomain.createStore<SocketState>(
         socketInstance: null,
     },
 );
+
+export const reloadMeetingSocketFx = meetingSocketDomain.createEffect(
+    'reloadMeetingSocketFx',
+);
+
+export const reloadMeetingSocketEvent = () =>
+    attach({
+        effect: reloadMeetingSocketFx,
+        source: combine({
+            backgroundAudioVolume: $backgroundAudioVolume,
+            isBackgroundAudioActive: $isBackgroundAudioActive,
+            templateId: window.location.pathname,
+            isOwner: $isOwner,
+        }),
+        mapParams: ({
+            isOwner,
+            isBackgroundAudioActive,
+            backgroundAudioVolume,
+            templateId,
+        }) => ({
+            isOwner,
+            isBackgroundAudioActive,
+            backgroundAudioVolume,
+            templateId,
+        }),
+    });
+
 export const $isMeetingSocketConnected = $meetingSocketStore.map(data =>
     Boolean(data.socketInstance?.id),
 );

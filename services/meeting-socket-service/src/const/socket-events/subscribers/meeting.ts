@@ -11,4 +11,5 @@ export enum MeetingSubscribeEvents {
   OnRemoveMeetingMote = 'meeting:notes:delete',
   OnGetMeetingNotes = 'meeting:notes:get',
   OnUpdateMeetingTemplate = 'template:update',
+  OnReconnect = 'meeting:reconnect'
 }
