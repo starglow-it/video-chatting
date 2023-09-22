@@ -142,9 +142,11 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
 
     const shouldShowFooter = useMemo(
         () =>
-            !ROUTES_WITHOUT_FOOTER.find(route =>
-                new RegExp(`${route}`).test(router.pathname),
-            ) || !isSubdomain(),
+            !isSubdomain()
+                ? !ROUTES_WITHOUT_FOOTER.find(route =>
+                      new RegExp(`${route}`).test(router.pathname),
+                  )
+                : false,
         [router.pathname],
     );
 
