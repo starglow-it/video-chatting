@@ -221,7 +221,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
 
-      if (!template) return;
+      if (!template) {
+        throw new BadRequestException('Template not found');
+      }
       const userTemplate = await this.coreService.addTemplateToUser({
         templateId: template.id,
         userId: user.id,
@@ -234,7 +236,7 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     } catch (err) {
       console.error({
         message: `An error occurs, while confirm register`,
-        err
+        err,
       });
       throw new BadRequestException(err);
     }
