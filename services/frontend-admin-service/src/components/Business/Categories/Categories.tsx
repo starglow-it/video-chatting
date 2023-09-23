@@ -1,25 +1,24 @@
 import { memo, useRef } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomPaper } from 'shared-frontend/library/custom/CustomPaper';
-import styles from './Categories.module.scss';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 import { Translation } from '@components/Translation/Translation';
-import { BusinessItem } from '../BusinessItem/BusinessItem';
 import { useStore } from 'effector-react';
 import {
     $businessCategoriesStore,
     addBusinessCategoriesFx,
     openConfirmDeleteCategoryDialogEvent,
-    selectCategoryEvent,
     setBusinessIdDeleteEvent,
     updateBusinessCategoriesFx,
 } from 'src/store';
 import { AdminDialogsEnum } from 'src/store/types';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { PlusIcon } from 'shared-frontend/icons/OtherIcons/PlusIcon';
-import { ModifyBusinessItem } from '../ModifyBusinessItem/ModifyBusinessItem';
 import { IBusinessCategory } from 'shared-types';
 import { ConfirmDeleteBusinessDialog } from '@components/Dialogs/ConfirmDeleteBusinessDialog/ConfirmDeleteBusinessDialog';
+import { ModifyBusinessItem } from '../ModifyBusinessItem/ModifyBusinessItem';
+import { BusinessItem } from '../BusinessItem/BusinessItem';
+import styles from './Categories.module.scss';
 
 const Component = () => {
     const {

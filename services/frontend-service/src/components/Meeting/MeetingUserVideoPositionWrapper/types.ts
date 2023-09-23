@@ -8,5 +8,6 @@ export type MeetingUserVideoPositionWrapperProps = Required<
         isLocal: boolean;
         size: number;
         userId: string;
+        isOwner: boolean;
     }>
 >;

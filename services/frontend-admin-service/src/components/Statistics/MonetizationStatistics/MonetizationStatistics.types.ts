@@ -1,8 +1,8 @@
 import { ValuesSwitcherItem } from 'shared-frontend/types';
 
 import {
-	IMonetizationStatistic,
-	MonetizationStatisticPeriods,
+    IMonetizationStatistic,
+    MonetizationStatisticPeriods,
 } from 'shared-types';
 
 export type MonetizationStatisticsProps = {

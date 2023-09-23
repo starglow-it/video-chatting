@@ -1,11 +1,11 @@
 import { TokenPair } from 'shared-types';
 import {
-	AuthAdminState,
-	MonetizationStatisticState,
-	RoomsRatingStatisticState,
-	RoomsStatisticsState,
-	SubscriptionsStatisticsState,
-	UsersStatisticsState,
+    AuthAdminState,
+    MonetizationStatisticState,
+    RoomsRatingStatisticState,
+    RoomsStatisticsState,
+    SubscriptionsStatisticsState,
+    UsersStatisticsState,
 } from './state';
 
 export type LoginAdminResponse = {

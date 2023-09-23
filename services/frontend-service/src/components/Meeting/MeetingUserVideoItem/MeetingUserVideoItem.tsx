@@ -190,6 +190,7 @@ const Component = ({
     isScreenSharingUser = false,
     onResizeVideo,
     isSelfView = true,
+    isOwner,
 }: MeetingUserVideoItemProps) => {
     const { width } = useStore($windowSizeStore);
     const { isMobile } = useBrowserDetect();
@@ -233,6 +234,7 @@ const Component = ({
             isLocal={isLocal}
             size={size}
             userId={userId}
+            isOwner={isOwner}
         >
             <CustomGrid
                 container

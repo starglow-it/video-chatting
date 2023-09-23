@@ -234,9 +234,7 @@ const Component = () => {
                         [styles.mobile]: isMobile,
                     })}
                 >
-                    <ConditionalRender
-                        condition={!isPayWallBeforeJoin}
-                    >
+                    <ConditionalRender condition={!isPayWallBeforeJoin}>
                         <MediaPreview
                             videoError={videoError}
                             audioError={audioError}

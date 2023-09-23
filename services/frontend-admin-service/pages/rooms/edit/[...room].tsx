@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import { withStart } from 'effector-next';
 
+import { EditAdminRoomContainer } from '@containers/EditAdminRoomContainer/EditAdminRoomContainer';
 import { pageLoaded } from '../../../src/store';
-import {EditAdminRoomContainer} from "@containers/EditAdminRoomContainer/EditAdminRoomContainer";
 
 const enhance = withStart(pageLoaded);
 

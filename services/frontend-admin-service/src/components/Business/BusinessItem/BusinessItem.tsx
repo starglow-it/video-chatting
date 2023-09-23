@@ -1,8 +1,6 @@
 import { MouseEvent, memo, useRef } from 'react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
-import styles from './BusinessItem.module.scss';
-import { ModifyBusinessItem } from '../ModifyBusinessItem/ModifyBusinessItem';
 import { Fade } from '@mui/material';
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 import { EditIcon } from 'shared-frontend/icons/OtherIcons/EditIcon';
@@ -13,6 +11,8 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { mapEmoji, parseEmoji } from 'shared-utils';
 import { useToggle } from 'shared-frontend/hooks/useToggle';
 import { IBusinessCategory } from 'shared-types';
+import { ModifyBusinessItem } from '../ModifyBusinessItem/ModifyBusinessItem';
+import styles from './BusinessItem.module.scss';
 
 const Component = ({
     category,

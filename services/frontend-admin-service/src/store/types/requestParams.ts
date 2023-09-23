@@ -1,8 +1,8 @@
 import {
-	ICommonUser,
-	MonetizationStatisticPeriods,
-	QueryParams,
-	UserProfileId,
+    ICommonUser,
+    MonetizationStatisticPeriods,
+    QueryParams,
+    UserProfileId,
 } from 'shared-types';
 
 export type LoginAdminPayload = {

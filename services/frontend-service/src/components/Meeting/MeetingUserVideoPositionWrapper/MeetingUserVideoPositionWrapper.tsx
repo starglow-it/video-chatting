@@ -24,6 +24,8 @@ const Component: React.FunctionComponent<
     bottom,
     left,
     userId,
+    isOwner,
+    isLocal,
 }: MeetingUserVideoPositionWrapperProps) => {
     const { width, height } = useStore($windowSizeStore);
     const {
@@ -119,7 +121,8 @@ const Component: React.FunctionComponent<
             axis="both"
             onStop={eventControl}
             onDrag={handleStartDrag}
-            disabled={isScreenSharing}
+            disabled={!isScreenSharing ? (!isOwner ? !isLocal : false) : true}
+            bounds="#drag-warpper"
             position={{
                 x: finalLeft || 0,
                 y: finalTop || 0,

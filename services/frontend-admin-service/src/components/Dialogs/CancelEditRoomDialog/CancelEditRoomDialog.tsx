@@ -1,6 +1,4 @@
-import {
-    memo, useCallback
-} from 'react';
+import { memo, useCallback } from 'react';
 import { useStore } from 'effector-react';
 
 // shared
@@ -40,17 +38,11 @@ const Component = ({ onConfirm }) => {
             open={cancelEditRoomDialog}
         >
             <CustomTypography variant="h3bold">
-                <Translation
-                    nameSpace="rooms"
-                    translation="cancelEdit.title"
-                />
+                <Translation nameSpace="rooms" translation="cancelEdit.title" />
             </CustomTypography>
 
             <CustomTypography>
-                <Translation
-                    nameSpace="rooms"
-                    translation="cancelEdit.text"
-                />
+                <Translation nameSpace="rooms" translation="cancelEdit.text" />
             </CustomTypography>
             <ButtonsGroup className={styles.buttons}>
                 <CustomButton

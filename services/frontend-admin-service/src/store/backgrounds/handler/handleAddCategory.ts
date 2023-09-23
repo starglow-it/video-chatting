@@ -13,12 +13,12 @@ export const handleAddCategory = async (
 
     if (success && result) {
         return {
-            success: success,
+            success,
             message: 'backgrounds.addCategorySuccess',
         };
     }
     return {
-        success: success,
+        success,
         message: 'backgrounds.addCategoryFail',
     };
 };

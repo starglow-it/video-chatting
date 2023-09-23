@@ -25,13 +25,13 @@ import { RoundErrorIcon } from 'shared-frontend/icons/RoundIcons/RoundErrorIcon'
 import { RoundSuccessIcon } from 'shared-frontend/icons/RoundIcons/RoundSuccessIcon';
 import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
 
+import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import styles from './TemplateLinks.module.scss';
 
 import { $windowSizeStore, addNotificationEvent } from '../../../store';
 
 import { TemplateLinkItemProps } from './TemplateLinks.types';
 import { NotificationType } from '../../../store/types';
-import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 const Component = ({
     index,
@@ -131,10 +131,10 @@ const Component = ({
         [onRemove],
     );
 
-    const handleBlur = event => {
-        handleSetElementInActive();
-        registerData.onBlur(event);
-    };
+    // const handleBlur = event => {
+    //     handleSetElementInActive();
+    //     registerData.onBlur(event);
+    // };
 
     return (
         <Draggable

@@ -1,6 +1,4 @@
-import {
-	HttpMethods, ICommonTemplate, QueryParams
-} from 'shared-types';
+import { HttpMethods, ICommonTemplate, QueryParams } from 'shared-types';
 import { templatesScope } from 'shared-const';
 import frontendConfig from '../../config';
 import { serverUrl } from '../common';
@@ -8,60 +6,60 @@ import { serverUrl } from '../common';
 export const templatesUrl = `${serverUrl}/${templatesScope}`;
 
 export const getTemplatesUrl = (data: QueryParams) => {
-	const urlHref = new URL(`${frontendConfig.frontendUrl}${templatesUrl}`);
+    const urlHref = new URL(`${frontendConfig.frontendUrl}${templatesUrl}`);
 
-	Object.entries(data).forEach(entry => {
-		urlHref.searchParams.append(entry[0], entry[1]);
-	});
+    Object.entries(data).forEach(entry => {
+        urlHref.searchParams.append(entry[0], entry[1]);
+    });
 
-	return {
-		url: urlHref.href,
-		method: HttpMethods.Get,
-	};
+    return {
+        url: urlHref.href,
+        method: HttpMethods.Get,
+    };
 };
 
 export const createCommonTemplateUrl = {
-	url: `${templatesUrl}`,
-	method: HttpMethods.Post,
+    url: `${templatesUrl}`,
+    method: HttpMethods.Post,
 };
 
 export const createFeaturedTemplateUrl = {
-	url: `${templatesUrl}/add/featured`,
-	method: HttpMethods.Post,
+    url: `${templatesUrl}/add/featured`,
+    method: HttpMethods.Post,
 };
 
 export const updateCommonTemplateUrl = ({
-	templateId,
+    templateId,
 }: {
     templateId: ICommonTemplate['id'];
 }) => ({
-	url: `${templatesUrl}/${templateId}`,
-	method: HttpMethods.Put,
+    url: `${templatesUrl}/${templateId}`,
+    method: HttpMethods.Put,
 });
 
 export const getCommonTemplateUrl = ({
-	templateId,
+    templateId,
 }: {
     templateId: ICommonTemplate['id'];
 }) => ({
-	url: `${templatesUrl}/${templateId}`,
-	method: HttpMethods.Get,
+    url: `${templatesUrl}/${templateId}`,
+    method: HttpMethods.Get,
 });
 
 export const deleteCommonTemplateUrl = ({
-	templateId,
+    templateId,
 }: {
     templateId: ICommonTemplate['id'];
 }) => ({
-	url: `${templatesUrl}/${templateId}`,
-	method: HttpMethods.Delete,
+    url: `${templatesUrl}/${templateId}`,
+    method: HttpMethods.Delete,
 });
 
 export const uploadCommonTemplateBackgroundUrl = ({
-	templateId,
+    templateId,
 }: {
     templateId: ICommonTemplate['id'];
 }) => ({
-	url: `${templatesUrl}/${templateId}`,
-	method: HttpMethods.Put,
+    url: `${templatesUrl}/${templateId}`,
+    method: HttpMethods.Put,
 });

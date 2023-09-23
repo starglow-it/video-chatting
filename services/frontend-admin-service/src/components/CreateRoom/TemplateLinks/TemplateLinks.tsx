@@ -1,10 +1,6 @@
-import {
-	memo, useCallback, useMemo 
-} from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
-import {
-	useFieldArray, useFormContext 
-} from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
 import { getRandomNumber } from 'shared-utils';
 
@@ -24,138 +20,118 @@ import styles from './TemplateLinks.module.scss';
 
 import { TemplateLinkItem } from './TemplateLinkItem';
 import { TemplatesLinksProps } from './TemplateLinks.types';
-import {addNotificationEvent} from "../../../store";
-import {NotificationType} from "../../../store/types";
+import { addNotificationEvent } from '../../../store';
+import { NotificationType } from '../../../store/types';
 
-const Component = ({
-	onNextStep, onPreviousStep 
-}: TemplatesLinksProps) => {
-	const {
-		control,
-		trigger,
-		clearErrors
-	} = useFormContext();
+const Component = ({ onNextStep, onPreviousStep }: TemplatesLinksProps) => {
+    const { control, trigger, clearErrors } = useFormContext();
 
-	const {
-		fields, append, remove 
-	} = useFieldArray({
-		control,
-		name: 'templateLinks',
-	});
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'templateLinks',
+    });
 
-	const isAddLinkDisabled = fields.length === 5;
+    const isAddLinkDisabled = fields.length === 5;
 
-	const handleRemoveTemplateLink = useCallback((index: number) => {
-		remove(index);
-	}, []);
+    const handleRemoveTemplateLink = useCallback((index: number) => {
+        remove(index);
+    }, []);
 
-	const renderLinks = useMemo(
-		() =>
-			fields.map((link, index) => (
-				<TemplateLinkItem
-					key={link?.key}
-					index={index}
-					onRemove={handleRemoveTemplateLink}
-					data={link}
-					isDraggable
-				/>
-			)),
-		[fields],
-	);
+    const renderLinks = useMemo(
+        () =>
+            fields.map((link, index) => (
+                <TemplateLinkItem
+                    key={link?.key}
+                    index={index}
+                    onRemove={handleRemoveTemplateLink}
+                    data={link}
+                    isDraggable
+                />
+            )),
+        [fields],
+    );
 
-	const handleAddLinkInput = useCallback(() => {
-		if (isAddLinkDisabled) {
-			return;
-		}
+    const handleAddLinkInput = useCallback(() => {
+        if (isAddLinkDisabled) {
+            return;
+        }
 
-		append({
-			value: '',
-			key: getRandomNumber(100),
-			top: 0.5,
-			left: 0.5,
-		});
-	}, [isAddLinkDisabled]);
+        append({
+            value: '',
+            key: getRandomNumber(100),
+            top: 0.5,
+            left: 0.5,
+        });
+    }, [isAddLinkDisabled]);
 
-	const handleClickNextStep = useCallback(async () => {
-		const isNextClickValidation = await trigger(['templateLinks']);
+    const handleClickNextStep = useCallback(async () => {
+        const isNextClickValidation = await trigger(['templateLinks']);
 
-		if (isNextClickValidation) {
-			clearErrors();
-			onNextStep();
-		} else {
-			addNotificationEvent({
-				message: 'errors.invalidUrl',
-				withErrorIcon: true,
-				type: NotificationType.validationError,
-			});
-		}
-	}, []);
+        if (isNextClickValidation) {
+            clearErrors();
+            onNextStep();
+        } else {
+            addNotificationEvent({
+                message: 'errors.invalidUrl',
+                withErrorIcon: true,
+                type: NotificationType.validationError,
+            });
+        }
+    }, []);
 
-	return (
-		<CustomGrid
-			container
-			className={styles.wrapper}
-		>
-			<CustomTooltip
-				title={
-					isAddLinkDisabled ? (
-						<Translation
-							nameSpace="rooms"
-							translation="tooltips.addLinkDisabled"
-						/>
-					) : (
-						''
-					)
-				}
-			>
-				<CustomButton
-					onClick={handleAddLinkInput}
-					className={clsx(styles.addLinkButton, {
-						[styles.disabled]: isAddLinkDisabled,
-					})}
-					label={
-						<CustomTypography variant="body2">
-							<Translation
-								nameSpace="rooms"
-								translation="addLink"
-							/>
-						</CustomTypography>
-					}
-					Icon={<CustomLinkIcon
-						width="24px"
-						height="24px"
-					      />}
-				/>
-			</CustomTooltip>
-			{renderLinks}
-			<CustomGrid
-				container
-				gap={1.5}
-				flexWrap="nowrap"
-				justifyContent="center"
-				className={styles.buttonsGroup}
-			>
-				<ActionButton
-					variant="gray"
-					Icon={<ArrowLeftIcon
-						width="32px"
-						height="32px"
-					      />}
-					className={styles.actionButton}
-					onAction={onPreviousStep}
-				/>
-				<ActionButton
-					variant="accept"
-					Icon={<ArrowRightIcon
-						width="32px"
-						height="32px"
-					      />}
-					className={styles.actionButton}
-					onAction={handleClickNextStep}
-				/>
-			</CustomGrid>
-		</CustomGrid>
-	);
+    return (
+        <CustomGrid container className={styles.wrapper}>
+            <CustomTooltip
+                title={
+                    isAddLinkDisabled ? (
+                        <Translation
+                            nameSpace="rooms"
+                            translation="tooltips.addLinkDisabled"
+                        />
+                    ) : (
+                        ''
+                    )
+                }
+            >
+                <CustomButton
+                    onClick={handleAddLinkInput}
+                    className={clsx(styles.addLinkButton, {
+                        [styles.disabled]: isAddLinkDisabled,
+                    })}
+                    label={
+                        <CustomTypography variant="body2">
+                            <Translation
+                                nameSpace="rooms"
+                                translation="addLink"
+                            />
+                        </CustomTypography>
+                    }
+                    Icon={<CustomLinkIcon width="24px" height="24px" />}
+                />
+            </CustomTooltip>
+            {renderLinks}
+            <CustomGrid
+                container
+                gap={1.5}
+                flexWrap="nowrap"
+                justifyContent="center"
+                className={styles.buttonsGroup}
+            >
+                <ActionButton
+                    variant="gray"
+                    Icon={<ArrowLeftIcon width="32px" height="32px" />}
+                    className={styles.actionButton}
+                    onAction={onPreviousStep}
+                />
+                <ActionButton
+                    variant="accept"
+                    Icon={<ArrowRightIcon width="32px" height="32px" />}
+                    className={styles.actionButton}
+                    onAction={handleClickNextStep}
+                />
+            </CustomGrid>
+        </CustomGrid>
+    );
 };
 
 export const TemplateLinks = memo(Component);

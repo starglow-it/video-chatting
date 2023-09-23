@@ -7,11 +7,11 @@ import { pageLoaded } from '../../../src/store';
 const enhance = withStart(pageLoaded);
 
 const CreateAdminRoomPage: NextPage = (): JSX.Element => (
-	<CreateAdminRoomContainer />
+    <CreateAdminRoomContainer />
 );
 
 CreateAdminRoomPage.getInitialProps = async () => ({
-	namespacesRequired: ['common', 'statistics', 'rooms', 'errors'],
+    namespacesRequired: ['common', 'statistics', 'rooms', 'errors'],
 });
 
 export default enhance(CreateAdminRoomPage);

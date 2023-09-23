@@ -553,6 +553,21 @@ export class CommonTemplatesController {
           await Promise.all(deletePreviewImagesPromises);
         }
 
+        if (updateData.subdomain) {
+          if (
+            (await this.commonTemplatesService.exists({
+              query: {
+                subdomain: updateData.subdomain,
+              },
+            }))
+          ) {
+            throw new RpcException({
+              message: 'Subdomain existed',
+              ctx: TEMPLATES_SERVICE,
+            });
+          }
+        }
+
         const updatedTemplate =
           await this.commonTemplatesService.updateCommonTemplate({
             query: {

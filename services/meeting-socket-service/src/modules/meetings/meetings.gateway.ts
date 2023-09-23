@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Connection, Types, trusted } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { Socket } from 'socket.io';
 
 import { BaseGateway } from '../../gateway/base.gateway';
@@ -74,9 +74,8 @@ import {
 } from '../../types';
 import { MeetingDocument } from 'src/schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
-import { ReconnectDto } from 'src/dtos/requests/recconnect.dto';
-import { TEventEmitter } from 'src/types/socket-events';
-import { notifyParticipantsMeetingInfo } from 'src/providers/socket.provider';
+import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
+import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
 
 @WebSocketGateway({
   transports: ['websocket'],

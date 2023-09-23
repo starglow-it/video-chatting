@@ -9,7 +9,7 @@ const enhance = withStart(pageLoaded);
 const UsersPage: NextPage = (): JSX.Element => <UsersContainer />;
 
 UsersPage.getInitialProps = async () => ({
-	namespacesRequired: ['common', 'statistics', 'users', 'errors', 'profile'],
+    namespacesRequired: ['common', 'statistics', 'users', 'errors', 'profile'],
 });
 
 export default enhance(UsersPage);

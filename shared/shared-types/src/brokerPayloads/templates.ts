@@ -7,7 +7,7 @@ import {
 import { FilterQuery, QueryParams } from '../common';
 
 export type GetCommonTemplatesPayload = {
-  query:  FilterQuery<ICommonTemplate>;
+  query: FilterQuery<ICommonTemplate>;
   options: QueryParams & { userId?: string };
 };
 
@@ -48,6 +48,10 @@ export type GetUsersTemplatesPayload = {
 
 export type DeleteUsersTemplatesPayload = {
   templateId: IUserTemplate['id'];
+  userId: ICommonUser['id'];
+};
+
+export type DeleteGlobalUserTemplatesPayload = {
   userId: ICommonUser['id'];
 };
 

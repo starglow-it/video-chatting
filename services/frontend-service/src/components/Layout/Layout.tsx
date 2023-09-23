@@ -24,6 +24,7 @@ import { Footer } from '@components/Footer/Footer';
 // types
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
+import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { LayoutProps } from './types';
 
 // stores
@@ -143,7 +144,7 @@ const Component = ({ children }: PropsWithChildren<LayoutProps>) => {
         () =>
             !ROUTES_WITHOUT_FOOTER.find(route =>
                 new RegExp(`${route}`).test(router.pathname),
-            ),
+            ) && router.pathname !== '/[token]',
         [router.pathname],
     );
 

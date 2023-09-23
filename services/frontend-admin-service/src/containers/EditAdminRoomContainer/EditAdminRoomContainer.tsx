@@ -11,7 +11,6 @@ import {
     simpleNumberSchema,
     simpleStringSchema,
     simpleStringSchemaWithLength,
-    subdomainLinkSchema,
     tagsSchema,
     templatePriceSchema,
     templatesLinksSchema,
@@ -47,6 +46,8 @@ import { CancelEditRoomDialog } from '@components/Dialogs/CancelEditRoomDialog/C
 
 // stores
 import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { ICommonTemplate, PriceValues, RoomType } from 'shared-types';
+import { getProtocol } from 'src/helpers/http/getProtocol';
 import {
     $businessCategoriesStore,
     $commonTemplateStore,
@@ -68,7 +69,6 @@ import frontendConfig from '../../const/config';
 
 // types
 import { AdminDialogsEnum, NotificationType } from '../../store/types';
-import { PriceValues, RoomType } from 'shared-types';
 
 enum TabsValues {
     Background = 1,
@@ -142,7 +142,7 @@ const validationSchema = {
         otherwise: simpleNumberSchema()
             .notRequired()
             .nullable(true)
-            .transform(value => (isNaN(value) ? undefined : value)),
+            .transform(value => (Number.isNaN(value) ? undefined : value)),
     }),
     subdomain: yup.string().required(),
 };
@@ -168,7 +168,7 @@ const Component = () => {
     const resolver = useYupValidationResolver(
         yup.object({
             ...validationSchema,
-            subdomain: Boolean(withSubdomain)
+            subdomain: withSubdomain
                 ? yup.string().required()
                 : yup.string().notRequired().nullable(true),
         }),
@@ -222,16 +222,6 @@ const Component = () => {
         name: 'participantsPositions',
     });
 
-    const tags = useWatch({
-        control,
-        name: 'tags',
-    });
-
-    const description = useWatch({
-        control,
-        name: 'description',
-    });
-
     const templatePrice = useWatch({
         control,
         name: 'templatePrice',
@@ -254,14 +244,6 @@ const Component = () => {
 
     useEffect(() => {
         if (commonTemplate) {
-            const templateLinks = commonTemplate?.links?.map(
-                ({ item, position }) => ({
-                    value: item,
-                    top: position.top,
-                    left: position.left,
-                }),
-            );
-
             const userPositions = commonTemplate.usersPosition?.length
                 ? commonTemplate.usersPosition.map(({ bottom, left }) => ({
                       top: 1 - bottom,
@@ -271,7 +253,7 @@ const Component = () => {
                 : defaultValues.participantsPositions;
 
             const matches = commonTemplate.subdomain?.match(
-                /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
+                '^http[s]?://([^/?#]+)(?:[/?#]|$)',
             );
             const domain = matches && matches[1];
 
@@ -280,7 +262,13 @@ const Component = () => {
                 description: commonTemplate.description || '',
                 type: commonTemplate.type,
                 background: commonTemplate.url,
-                templateLinks,
+                templateLinks: commonTemplate?.links?.map(
+                    ({ item, position }) => ({
+                        value: item,
+                        top: position.top,
+                        left: position.left,
+                    }),
+                ),
                 templatePrice: commonTemplate.priceInCents
                     ? commonTemplate.priceInCents / 100
                     : undefined,
@@ -317,7 +305,7 @@ const Component = () => {
         }
 
         const createdPositions = new Array(
-            participantsNumber - participantsPositions?.length || 0,
+            participantsNumber - (participantsPositions?.length || 0),
         )
             .fill(null)
             .map(() => ({
@@ -375,7 +363,7 @@ const Component = () => {
     const onSubmit = useCallback(
         handleSubmit(async data => {
             if (commonTemplate?.id) {
-                const templatePrice =
+                const templatePriceFinal =
                     data.type === 'paid' ? data.templatePrice * 100 : 0;
 
                 const updateData = {
@@ -384,11 +372,11 @@ const Component = () => {
                     maxParticipants: data.participantsNumber,
                     businessCategories: data.tags,
                     type: data.type,
-                    priceInCents: templatePrice,
+                    priceInCents: templatePriceFinal,
                     usersPosition: adjustUserPositions(
                         data.participantsPositions,
                     ),
-                    links: data.templateLinks.map(link => ({
+                    links: data.templateLinks.map((link: any) => ({
                         item: link.value,
                         position: {
                             top: link.top,
@@ -396,10 +384,12 @@ const Component = () => {
                         },
                     })),
                     isAudioAvailable: true,
-                    subdomain: Boolean(withSubdomain)
-                        ? `https://${data.subdomain}.${frontendConfig.baseDomain}`
+                    subdomain: withSubdomain
+                        ? `${getProtocol()}//${data.subdomain}.${
+                              frontendConfig.baseDomain
+                          }`
                         : '',
-                };
+                } as any;
 
                 if (dirtyFields.background) {
                     updateData.draftUrl = '';
@@ -415,7 +405,7 @@ const Component = () => {
                 });
 
                 if (commonTemplate.roomType === RoomType.Normal) {
-                    if (Boolean(withSubdomain)) {
+                    if (withSubdomain) {
                         await Router.push('/subdomain');
                     } else {
                         await Router.push('/rooms');
@@ -447,7 +437,7 @@ const Component = () => {
                 draftUrl: '',
                 draftPreviewUrls: [],
                 templateType: file.type.split('/')[0],
-            });
+            } as any);
 
             setValue('background', URL.createObjectURL(file), {
                 shouldDirty: true,
@@ -475,12 +465,13 @@ const Component = () => {
             data: {
                 draftUrl: '',
                 draftPreviewUrls: [],
-                templateType: templateTypeRef.current,
+                templateType:
+                    templateTypeRef.current as ICommonTemplate['templateType'],
             },
         });
 
         if (commonTemplate?.roomType === RoomType.Normal) {
-            if (Boolean(withSubdomain)) {
+            if (withSubdomain) {
                 router.push('/subdomain');
             } else {
                 router.push('/rooms');
@@ -669,19 +660,17 @@ const Component = () => {
                                 onNextStep={onNextValue}
                                 onPreviousStep={onPreviousValue}
                                 submitButtons={
-                                    <>
-                                        <CustomButton
-                                            className={styles.createButton}
-                                            onClick={handleSaveChanges}
-                                            disabled={isFileUploading}
-                                            label={
-                                                <Translation
-                                                    nameSpace="rooms"
-                                                    translation="buttons.saveChanges"
-                                                />
-                                            }
-                                        />
-                                    </>
+                                    <CustomButton
+                                        className={styles.createButton}
+                                        onClick={handleSaveChanges}
+                                        disabled={isFileUploading}
+                                        label={
+                                            <Translation
+                                                nameSpace="rooms"
+                                                translation="buttons.saveChanges"
+                                            />
+                                        }
+                                    />
                                 }
                             />
                         </CustomFade>

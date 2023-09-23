@@ -1,12 +1,12 @@
-import {memo, useCallback} from "react";
-import {useStore, useStoreMap} from "effector-react";
+import { memo, useCallback } from 'react';
+import { useStore, useStoreMap } from 'effector-react';
 
 // components
-import {CustomTypography} from "shared-frontend/library/custom/CustomTypography";
-import {Translation} from "@components/Translation/Translation";
-import {ButtonsGroup} from "@components/ButtonsGroup/ButtonsGroup";
-import {CustomButton} from "shared-frontend/library/custom/CustomButton";
-import {CustomDialog} from "shared-frontend/library/custom/CustomDialog";
+import { CustomTypography } from 'shared-frontend/library/custom/CustomTypography';
+import { Translation } from '@components/Translation/Translation';
+import { ButtonsGroup } from '@components/ButtonsGroup/ButtonsGroup';
+import { CustomButton } from 'shared-frontend/library/custom/CustomButton';
+import { CustomDialog } from 'shared-frontend/library/custom/CustomDialog';
 
 import {
     $activeTemplateIdStore,
@@ -14,14 +14,14 @@ import {
     $confirmDeleteRoomDialogStore,
     closeAdminDialogEvent,
     deleteCommonTemplateFx,
-    setActiveTemplateIdEvent
-} from "../../../store";
+    setActiveTemplateIdEvent,
+} from '../../../store';
 
 // types
-import {AdminDialogsEnum} from "../../../store/types";
+import { AdminDialogsEnum } from '../../../store/types';
 
 // styles
-import styles from "./ConfirmDeleteRoomDialog.module.scss";
+import styles from './ConfirmDeleteRoomDialog.module.scss';
 
 const ConfirmDeleteRoomDialog = memo(() => {
     const confirmDeleteRoomDialog = useStore($confirmDeleteRoomDialogStore);
@@ -42,7 +42,7 @@ const ConfirmDeleteRoomDialog = memo(() => {
     const handleConfirmDelete = useCallback(() => {
         closeAdminDialogEvent(AdminDialogsEnum.confirmDeleteRoomDialog);
         deleteCommonTemplateFx({
-        	templateId: templateData?.id,
+            templateId: templateData?.id,
         });
         setActiveTemplateIdEvent(null);
     }, [templateData?.id]);
@@ -64,7 +64,7 @@ const ConfirmDeleteRoomDialog = memo(() => {
                     nameSpace="rooms"
                     translation="confirmDeleteRoom.text"
                     options={{
-                        roomName: templateData?.name
+                        roomName: templateData?.name,
                     }}
                 />
             </CustomTypography>
@@ -91,7 +91,7 @@ const ConfirmDeleteRoomDialog = memo(() => {
                 />
             </ButtonsGroup>
         </CustomDialog>
-    )
-})
+    );
+});
 
 export { ConfirmDeleteRoomDialog };

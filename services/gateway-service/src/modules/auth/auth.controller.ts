@@ -153,19 +153,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
           subscriptionId: u.stripeSubscriptionId,
         });
       }
-      const { list: uts } = await this.userTemplateService.getUserTemplates({
+      await this.userTemplateService.deleteGlobalUserTemplates({
         userId: u.id,
       });
-
-      Promise.all(
-        uts.map(
-          async ({ id }) =>
-            await this.userTemplateService.deleteUserTemplate({
-              templateId: id,
-              userId: u.id,
-            }),
-        ),
-      );
     } catch (err) {
       console.log(err);
       return;
@@ -182,16 +172,23 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
     @Body() { templateId, subdomain }: CreateUserFreeRequest,
     @Request() req: Req,
   ) {
+    const createUser = async () => {
+      const uuid = uuidv4();
+      return await this.coreService.createUserWithoutLogin(uuid);
+    };
     try {
       let user: ICommonUser;
       const userId = req['cookies']?.['userWithoutLoginId'] as
         | string
         | undefined;
       if (userId) {
-        user = await this.coreService.findUserById({ userId });
+        try {
+          user = await this.coreService.findUserById({ userId });
+        } catch (err) {
+          user = await createUser();
+        }
       } else {
-        const uuid = uuidv4();
-        user = await this.coreService.createUserWithoutLogin(uuid);
+        user = await createUser();
       }
 
       let template: ICommonTemplate;
@@ -215,7 +212,9 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         });
       }
 
-      if (!template) return;
+      if (!template) {
+        throw new BadRequestException('Template not found');
+      }
       const userTemplate = await this.coreService.addTemplateToUser({
         templateId: template.id,
         userId: user.id,
@@ -226,6 +225,10 @@ export class AuthController implements OnModuleInit, OnApplicationBootstrap {
         userTemplateId: userTemplate.id,
       };
     } catch (err) {
+      console.error({
+        message: `An error occurs, while confirm register`,
+        err,
+      });
       throw new BadRequestException(err);
     }
   }

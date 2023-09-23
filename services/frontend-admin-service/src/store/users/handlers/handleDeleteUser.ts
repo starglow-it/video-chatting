@@ -4,13 +4,13 @@ import { sendRequest } from '../../../helpers/http/sendRequest';
 import { deleteUserUrl } from '../../../const/urls/users';
 
 export const handleDeleteUser = async ({
-	userId,
+    userId,
 }: DeleteUserParams): Promise<void> => {
-	if (userId) {
-		await sendRequest<void, ErrorState>(
-			deleteUserUrl({
-				userId,
-			}),
-		);
-	}
+    if (userId) {
+        await sendRequest<void, ErrorState>(
+            deleteUserUrl({
+                userId,
+            }),
+        );
+    }
 };

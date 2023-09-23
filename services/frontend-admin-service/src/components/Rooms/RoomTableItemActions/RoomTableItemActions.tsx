@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef } from 'react';
 import clsx from 'clsx';
 import { useStoreMap } from 'effector-react';
 import Router from 'next/router';

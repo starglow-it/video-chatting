@@ -19,13 +19,13 @@ import { Translation } from '@components/Translation/Translation';
 
 import { MAX_DESCRIPTION_LENGTH, MAX_NAME_LENGTH } from 'shared-const';
 
-import { CommonTemplateSettingsProps } from './CommonTemplateSettings.types';
-
-import styles from './CommonTemplateSettings.module.scss';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { useStore } from 'effector-react';
 import { $commonTemplateStore } from 'src/store';
+import { getProtocol } from 'src/helpers/http/getProtocol';
 import frontendConfig from '../../../const/config';
+import styles from './CommonTemplateSettings.module.scss';
+import { CommonTemplateSettingsProps } from './CommonTemplateSettings.types';
 
 const Component = ({
     onNextStep,
@@ -210,7 +210,9 @@ const Component = ({
                                         error={subdomainErrorMessage}
                                         onChange={handleChangeSubdomain}
                                         InputProps={{
-                                            startAdornment: <p>https://</p>,
+                                            startAdornment: (
+                                                <p>{`${getProtocol()}//`}</p>
+                                            ),
                                             endAdornment: (
                                                 <p>
                                                     {`.${frontendConfig.baseDomain}`}

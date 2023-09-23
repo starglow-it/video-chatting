@@ -1,6 +1,4 @@
-import {
-	memo, PropsWithChildren 
-} from 'react';
+import { memo, PropsWithChildren } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 
@@ -23,57 +21,49 @@ import styles from './AdminLayout.module.scss';
 
 import { $authStore } from '../../store';
 
-const Component = ({
-	children 
-}: PropsWithChildren<AdminLayoutProps>) => {
-	const router = useRouter();
+const Component = ({ children }: PropsWithChildren<AdminLayoutProps>) => {
+    const router = useRouter();
 
-	const {
-		state: authState 
-	} = useStore($authStore);
-	const {
-		isMobile 
-	} = useBrowserDetect();
+    const { state: authState } = useStore($authStore);
+    const { isMobile } = useBrowserDetect();
 
-	const isNeedToRenderNavigation = !['rooms/create/', '/rooms/edit'].some(path => router.pathname.includes(path));
+    const isNeedToRenderNavigation = !['rooms/create/', '/rooms/edit'].some(
+        path => router.pathname.includes(path),
+    );
 
-	return (
-		<CustomBox className={styles.main}>
-			<CustomGrid
-				container
-				direction="column"
-				flex={1}
-				flexWrap="nowrap"
-				className={styles.contentWrapper}
-			>
-				<CustomGrid
-					item
-					container
-					flex={1}
-				>
-					<CustomBox className={styles.bgImage} />
-					<ConditionalRender condition={!isMobile}>
-						<CustomBox className={styles.header}>
-							<CustomGrid
-								container
-								justifyContent="space-between"
-								alignItems="center"
-							/>
-						</CustomBox>
-					</ConditionalRender>
-					<ConditionalRender
-						condition={
-							authState?.isAuthenticated &&
+    return (
+        <CustomBox className={styles.main}>
+            <CustomGrid
+                container
+                direction="column"
+                flex={1}
+                flexWrap="nowrap"
+                className={styles.contentWrapper}
+            >
+                <CustomGrid item container flex={1}>
+                    <CustomBox className={styles.bgImage} />
+                    <ConditionalRender condition={!isMobile}>
+                        <CustomBox className={styles.header}>
+                            <CustomGrid
+                                container
+                                justifyContent="space-between"
+                                alignItems="center"
+                            />
+                        </CustomBox>
+                    </ConditionalRender>
+                    <ConditionalRender
+                        condition={
+                            authState?.isAuthenticated &&
                             isNeedToRenderNavigation
-						}
-					>
-						<AdminNavigation />
-					</ConditionalRender>
-					{children}
-				</CustomGrid>
-			</CustomGrid>
-		</CustomBox>
-	);
+                        }
+                    >
+                        <AdminNavigation />
+                    </ConditionalRender>
+                    {children}
+                </CustomGrid>
+            </CustomGrid>
+        </CustomBox>
+    );
 };
 
 export const AdminLayout = memo(Component);

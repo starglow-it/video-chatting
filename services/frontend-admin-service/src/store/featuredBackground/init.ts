@@ -1,4 +1,5 @@
 import { sample } from 'effector';
+import { RoomType } from 'shared-types';
 import { handleCreateFeaturedBackground } from './handler/handleCreateFeaturedBackground';
 import { handleDeleteFeaturedBackground } from './handler/handleDeleteFeaturedBackground';
 import { handleGetFeaturedBackground } from './handler/handleGetFeaturedBackground';
@@ -10,7 +11,6 @@ import {
     getFeaturedTemplatesFx,
 } from './model';
 import { handleGetFeaturedTemplates } from './handler/handleGetFeaturedTemplates';
-import { RoomType } from 'shared-types';
 import { deleteCommonTemplateFx } from '../templates/model';
 
 getFeaturedBackgroundFx.use(handleGetFeaturedBackground);

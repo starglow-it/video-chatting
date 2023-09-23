@@ -24,7 +24,7 @@ module.exports = withTM(
             vultrStorageHostname: process.env.VULTR_STORAGE_HOSTNAME,
             baseEnvDomain: process.env.BASE_ENV_DOMAIN,
             supportEmail: process.env.SUPPORT_EMAIL,
-            baseDomain: process.env.BASE_DOMAIN
+            baseDomain: process.env.BASE_DOMAIN,
         },
         reactStrictMode: true,
         typescript: {
@@ -34,7 +34,10 @@ module.exports = withTM(
             ignoreDuringBuilds: true,
         },
         images: {
-            domains: [process.env.VULTR_STORAGE_HOSTNAME || '','lh3.googleusercontent.com'],
+            domains: [
+                process.env.VULTR_STORAGE_HOSTNAME || '',
+                'lh3.googleusercontent.com',
+            ],
         },
         webpack(config, options) {
             if (!options.isServer) {

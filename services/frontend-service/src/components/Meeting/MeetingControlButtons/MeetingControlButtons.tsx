@@ -45,6 +45,7 @@ import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
+import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 
 const Component = () => {
     const router = useRouter();
@@ -78,6 +79,7 @@ const Component = () => {
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
             await deleteDraftUsers();
+            deleteUserAnonymousCookies();
             window.location.href =
                 config.frontendUrl + clientRoutes.registerEndCallRoute;
             return;

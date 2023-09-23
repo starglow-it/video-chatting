@@ -1,5 +1,4 @@
 import { HttpMethods } from 'shared-types';
-import { authScope } from 'shared-const';
 import { serverUrl } from '../common';
 
 const adminMediaUrl = 'admin-medias';
