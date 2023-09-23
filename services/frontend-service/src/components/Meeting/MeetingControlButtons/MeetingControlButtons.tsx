@@ -26,6 +26,7 @@ import { PeopleIcon } from 'shared-frontend/icons/OtherIcons/PeopleIcon';
 import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
+import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
     $isMeetingHostStore,
@@ -34,7 +35,7 @@ import {
     $meetingConnectedStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
-    // sendLeaveMeetingSocketEvent,
+    sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
@@ -45,7 +46,6 @@ import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
-import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 
 const Component = () => {
     const router = useRouter();
@@ -75,11 +75,11 @@ const Component = () => {
     }, [isMeetingHost, isThereNewRequests]);
 
     const handleEndVideoChat = useCallback(async () => {
-        // sendLeaveMeetingSocketEvent();
         disconnectFromVideoChatEvent();
         if (isSubdomain()) {
             await deleteDraftUsers();
             deleteUserAnonymousCookies();
+            sendLeaveMeetingSocketEvent();
             window.location.href =
                 config.frontendUrl + clientRoutes.registerEndCallRoute;
             return;
