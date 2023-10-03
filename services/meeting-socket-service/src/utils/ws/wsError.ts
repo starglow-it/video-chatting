@@ -7,6 +7,6 @@ export const wsError = (client: Socket, error: unknown) => {
   });
 
   return {
-    success: true,
+    success: false
   };
 };
