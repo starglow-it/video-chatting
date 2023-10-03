@@ -8,6 +8,7 @@ import {
     TokenPair,
     IUserTemplate,
     ICommonUser,
+    MeetingRole,
 } from 'shared-types';
 import { NextPageContext } from 'next';
 
@@ -31,6 +32,7 @@ export type MeetingUser = {
     };
     userSize?: number;
     meetingAvatarId?: string;
+    meetingRole: MeetingRole;
 };
 
 export type Meeting = {

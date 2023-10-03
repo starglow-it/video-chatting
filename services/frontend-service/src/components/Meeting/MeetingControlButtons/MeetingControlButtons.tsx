@@ -29,6 +29,7 @@ import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
+    $isLurker,
     $isMeetingHostStore,
     $isToggleUsersPanel,
     $localUserStore,
@@ -55,6 +56,7 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isLurker = useStore($isLurker);
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -111,7 +113,7 @@ const Component = () => {
 
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-            <ConditionalRender condition={!isMobile}>
+            <ConditionalRender condition={!isMobile && !isLurker}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -143,33 +145,35 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
-            <CustomTooltip
-                title={
-                    <Translation
-                        nameSpace="meeting"
-                        translation="invite.tooltip"
-                    />
-                }
-                placement="top"
-            >
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={8}
-                    className={styles.deviceButton}
+            <ConditionalRender condition={!isLurker}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="invite.tooltip"
+                        />
+                    }
+                    placement="top"
                 >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleToggleUsersPanel}
-                        className={clsx(styles.actionButton, {
-                            [styles.active]: isUsersOpen,
-                            [styles.newRequests]:
-                                isThereNewRequests && isMeetingHost,
-                            [styles.mobile]: isMobile,
-                        })}
-                        Icon={<PeopleIcon width="22px" height="22px" />}
-                    />
-                </CustomPaper>
-            </CustomTooltip>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleUsersPanel}
+                            className={clsx(styles.actionButton, {
+                                [styles.active]: isUsersOpen,
+                                [styles.newRequests]:
+                                    isThereNewRequests && isMeetingHost,
+                                [styles.mobile]: isMobile,
+                            })}
+                            Icon={<PeopleIcon width="22px" height="22px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
             <CustomTooltip
                 title={
                     <Translation
@@ -186,7 +190,9 @@ const Component = () => {
                     Icon={<HangUpIcon width="22px" height="22px" />}
                 />
             </CustomTooltip>
-            <MeetingControlCollapse />
+            <ConditionalRender condition={!isLurker}>
+                <MeetingControlCollapse />
+            </ConditionalRender>
         </CustomGrid>
     );
 };
