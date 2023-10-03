@@ -815,7 +815,7 @@ export class MeetingsGateway
           });
         }
 
-        await meeting.populate(['users', 'hostUserId']);
+        await meeting.populate(['users']);
 
         const updateData = {
           accessStatus: MeetingAccessStatusEnum.InMeeting,

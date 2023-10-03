@@ -3,6 +3,7 @@ import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
 import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
 import { serializeInstance } from '../serialization';
+import { MeetingRole } from 'shared-types';
 
 export class CommonUserDTO implements ICommonMeetingUserDTO {
   @Expose()
@@ -56,8 +57,14 @@ export class CommonUserDTO implements ICommonMeetingUserDTO {
   userPosition: ICommonMeetingUserDTO['userPosition'];
 
   @Expose()
+  meetingRole: ICommonMeetingUserDTO['meetingRole'];
+
+  @Expose()
   userSize: ICommonMeetingUserDTO['userSize'];
 }
 
-export const userSerialization = <D extends MeetingUserDocument | MeetingUserDocument[]>(user: D) => serializeInstance(user, CommonUserDTO);
-
+export const userSerialization = <
+  D extends MeetingUserDocument | MeetingUserDocument[],
+>(
+  user: D,
+) => serializeInstance(user, CommonUserDTO);
