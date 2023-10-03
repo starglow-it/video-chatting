@@ -5,7 +5,9 @@ import { $profileStore } from 'src/store/profile/profile/model';
 import { meetingDomain } from 'src/store/domains';
 import { $meetingTemplateStore } from '../meetingTemplate/model';
 
-export const $roleQueryUrlStore = meetingDomain.createStore<null | string>(null);
+export const $roleQueryUrlStore = meetingDomain.createStore<null | string>(
+    null,
+);
 
 export const setRoleQueryUrlEvent = meetingDomain.createEvent<string>(
     'setRoleQueryUrlEvent',
@@ -20,11 +22,11 @@ export const $meetingRoleStore = combine<{
     profile: $profileStore,
     roleQueryUrl: $roleQueryUrlStore,
 }).map(({ meetingTemplate, profile, roleQueryUrl }) =>
-    roleQueryUrl === 'luker'
-        ? 'luker'
-        : Boolean(profile.id) &&
-          meetingTemplate?.meetingInstance?.owner === profile.id
+    Boolean(profile.id) &&
+    meetingTemplate?.meetingInstance?.owner === profile.id
         ? 'owner'
+        : roleQueryUrl === 'luker'
+        ? 'luker'
         : 'participant',
 );
 
