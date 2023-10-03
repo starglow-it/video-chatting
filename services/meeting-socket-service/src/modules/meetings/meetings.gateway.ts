@@ -871,6 +871,7 @@ export class MeetingsGateway
           result: {
             meeting: plainMeeting,
             user: plainUser,
+            users: plainUsers,
           },
         };
       } catch (err) {
