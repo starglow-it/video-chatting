@@ -89,6 +89,11 @@ export class MeetingUser {
   avatarRole: string;
 
   @Prop({
+    type: mongoose.Schema.Types.String,
+  })
+  meetingRole: string;
+
+  @Prop({
     type: mongoose.Schema.Types.Number,
     default: 0,
   })

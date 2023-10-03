@@ -49,6 +49,12 @@ export enum MeetingAvatarRole {
   NoLogin = 'no_login'
 }
 
+export enum MeetingRole {
+  Host = 'host',
+  Participant = 'participant',
+  Lurker = 'lurker'
+}
+
 export enum MeetingAccessStatusEnum {
   Initial = 'Initial',
   EnterName = 'enterName',

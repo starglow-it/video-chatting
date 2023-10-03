@@ -22,6 +22,7 @@ import {
   KickUserReasons,
   MeetingAccessStatusEnum,
   MeetingAvatarStatus,
+  MeetingRole,
   MeetingSoundsEnum,
   PlanKeys,
   ResponseSumType,
@@ -76,6 +77,7 @@ import { MeetingDocument } from 'src/schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
+import { LurkerJoinMeetingDto } from 'src/dtos/requests/lurker-join-meeting.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -328,7 +330,7 @@ export class MeetingsGateway
           session,
         );
 
-        if (message.isOwner && !meeting) {
+        if (message.meetingRole == MeetingRole.Host && !meeting) {
           meeting = await this.meetingsService.createMeeting(
             {
               isMonetizationEnabled: false,
@@ -367,6 +369,9 @@ export class MeetingsGateway
         if (
           typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
             meeting,
+            message.meetingRole == MeetingRole.Lurker
+              ? 'lurker'
+              : 'participant',
           )) === 'undefined'
         ) {
           return {
@@ -387,11 +392,12 @@ export class MeetingsGateway
             micStatus: message.micStatus,
             cameraStatus: message.cameraStatus,
             avatarRole: message.avatarRole,
+            meetingRole: message.meetingRole,
           },
           session,
         );
 
-        if (message.isOwner) {
+        if (message.meetingRole == MeetingRole.Host) {
           meeting = await this.meetingsService.updateMeetingById(
             meeting._id,
             { owner: user._id, hostUserId: user._id },
@@ -458,8 +464,6 @@ export class MeetingsGateway
         this.taskService.deleteTimeout({
           name: `meeting:finish:${message.meetingId}`,
         });
-
-        console.log(message.user);
 
         const meeting = await this.meetingsService.findById(
           message.meetingId,
@@ -670,6 +674,7 @@ export class MeetingsGateway
           if (
             typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
               meeting,
+              'participant',
             )) === 'undefined'
           ) {
             return {
@@ -788,6 +793,92 @@ export class MeetingsGateway
     });
   }
 
+  @SubscribeMessage(MeetingSubscribeEvents.OnJoinMeetingWithLurker)
+  async joinMeetingWithLurker(
+    @MessageBody() msg: LurkerJoinMeetingDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    this.logger.debug({
+      message: `[${MeetingSubscribeEvents.OnJoinMeetingWithLurker} event]`,
+      ctx: msg,
+    });
+
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const meeting = await this.meetingsService.findById(
+          msg.meetingId,
+          session,
+        );
+        if (!meeting) {
+          return wsError(socket, {
+            message: 'No meeting found',
+          });
+        }
+
+        await meeting.populate(['users', 'hostUserId']);
+
+        const updateData = {
+          accessStatus: MeetingAccessStatusEnum.InMeeting,
+          joinedAt: Date.now(),
+          username: msg.username,
+          meetingAvatarId: msg.meetingAvatarId === '' ? '' : undefined,
+        };
+
+        if (msg.meetingAvatarId) {
+          const meetingAvatar = await this.coreService.findMeetingAvatar({
+            query: {
+              _id: msg.meetingAvatarId,
+              status: MeetingAvatarStatus.Active,
+            },
+          });
+
+          if (!meetingAvatar) {
+            return wsError(socket, {
+              message: 'Meeting Avatar not found',
+            });
+          }
+          Object.assign(updateData, {
+            meetingAvatarId: msg.meetingAvatarId,
+          });
+        }
+        const mU = await this.usersService.findOneAndUpdate(
+          {
+            socketId: socket.id,
+            meetingRole: MeetingRole.Lurker,
+          },
+          updateData,
+          session,
+        );
+
+        if (!mU) {
+          return wsError(socket, {
+            message: 'No user found',
+          });
+        }
+        const plainMeeting = meetingSerialization(meeting);
+        const plainUser = userSerialization(mU);
+        const plainUsers = userSerialization(meeting.users);
+        this.emitToSocketId(
+          meeting.hostUserId._id.toString(),
+          MeetingEmitEvents.UpdateMeeting,
+          {
+            meeting: plainMeeting,
+            users: plainUsers,
+          },
+        );
+        return {
+          success: true,
+          result: {
+            meeting: plainMeeting,
+            user: plainUser,
+          },
+        };
+      } catch (err) {
+        return wsError(socket, err);
+      }
+    });
+  }
+
   @SubscribeMessage(MeetingSubscribeEvents.OnAnswerAccessRequest)
   async sendAccessAnswer(
     @MessageBody() message: MeetingAccessAnswerRequestDTO,
@@ -815,6 +906,7 @@ export class MeetingsGateway
           if (
             typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
               meeting,
+              'participant',
             )) === 'undefined'
           ) {
             return {

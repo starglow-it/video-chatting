@@ -67,7 +67,7 @@ export class UsersService {
       .exec();
   }
 
-  async countMany(query) {
+  async countMany(query: FilterQuery<MeetingUserDocument>) {
     return this.meetingUser.find(query).count().exec();
   }
 
