@@ -130,6 +130,9 @@ const MeetingContainer = memo(() => {
         if (roleUrl) {
             setRoleQueryUrlEvent(roleUrl);
         }
+        if (!!roleUrl && roleUrl !== 'luker') {
+            router.push(NotFoundRoute);
+        }
     }, [roleUrl]);
 
     useEffect(() => {
