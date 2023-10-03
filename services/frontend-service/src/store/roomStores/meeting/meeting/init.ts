@@ -26,7 +26,7 @@ import {
 import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
-import { $isOwner } from '../meetingRole/model';
+import { $isOwner, $meetingRoleStore } from '../meetingRole/model';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -44,13 +44,14 @@ sample({
     source: combine({
         isMicActive: $isMicActiveStore,
         isCameraActive: $isCameraActiveStore,
-        isOwner: $isOwner,
+        // isOwner: $isOwner,
         isOwnerInMeeting: $isOwnerInMeeting,
         isMeetingInstanceExists: $isMeetingInstanceExists,
         changeStream: $changeStreamStore,
         isAuraActive: $isAuraActive,
         currentVideoDevice: $currentVideoDeviceStore,
         currentAudioDevice: $currentAudioDeviceStore,
+        meetingRole: $meetingRoleStore,
     }),
     fn: (store, params) => ({
         ...store,

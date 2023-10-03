@@ -28,7 +28,7 @@ import {
 } from 'src/store';
 
 // styles
-import { ISocialLink } from 'shared-types';
+import { ISocialLink, MeetingRole } from 'shared-types';
 import { customTemplateLinkSchema } from 'shared-frontend/validation';
 import styles from './MeetingSettingsPanel.module.scss';
 
@@ -148,7 +148,7 @@ const Component = ({
                 template.customLink || template.id,
             );
 
-            if (role === 'luker') {
+            if (role === MeetingRole.Lurker) {
                 roomUrl = `${roomUrl}?role=${role}`;
             }
 

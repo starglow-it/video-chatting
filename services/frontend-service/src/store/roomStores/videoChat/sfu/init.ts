@@ -1,4 +1,5 @@
 import { combine, sample } from 'effector-next';
+import { MeetingRole } from 'shared-types';
 import {
     $SFURoom,
     connectToSFUFx,
@@ -73,7 +74,7 @@ sample({
         isMicActive: $isMicActiveStore,
         role: $meetingRoleStore,
     }),
-    filter: ({ role }) => role !== 'luker',
+    filter: ({ role }) => role !== MeetingRole.Lurker,
     target: publishTracksFx,
 });
 

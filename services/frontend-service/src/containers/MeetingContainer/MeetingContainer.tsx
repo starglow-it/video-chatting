@@ -24,7 +24,7 @@ import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 // stores
 import { useToggle } from '@hooks/useToggle';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { Typography } from '@mui/material';
@@ -130,7 +130,7 @@ const MeetingContainer = memo(() => {
         if (roleUrl) {
             setRoleQueryUrlEvent(roleUrl);
         }
-        if (!!roleUrl && roleUrl !== 'luker') {
+        if (!!roleUrl && roleUrl !== MeetingRole.Lurker) {
             router.push(NotFoundRoute);
         }
     }, [roleUrl]);
@@ -281,6 +281,7 @@ const MeetingContainer = memo(() => {
         image => image.resolution === 240,
     );
 
+    console.log('#Duy Phan console localUser', localUser.accessStatus);
     return (
         <>
             <ConditionalRender condition={status === 'off'}>
