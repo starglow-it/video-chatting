@@ -7,7 +7,6 @@ import {
 } from 'shared-types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
-    $isOwner,
     $isUserSendEnterRequest,
     $meetingTemplateStore,
     setIsUserSendEnterRequest,
@@ -51,6 +50,7 @@ import { getMeetingSocketSubscribeHandler } from './handlers';
 import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
 import { $SFURoom } from '../../videoChat/sfu/model';
 import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
+import { $isOwner } from '../meetingRole/model';
 
 export const sendEnterWaitingRoomSocketEvent = attach({
     effect: enterWaitingRoomSocketEvent,

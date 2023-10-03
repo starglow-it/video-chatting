@@ -58,17 +58,19 @@ export const $isMeetingInstanceExists = $meetingTemplateStore.map(state =>
     Boolean(state?.meetingInstance?.id),
 );
 
-export const $isOwner = combine<{
-    meetingTemplate: IUserTemplate;
-    profile: Profile;
-}>({
-    meetingTemplate: $meetingTemplateStore,
-    profile: $profileStore,
-}).map(
-    ({ meetingTemplate, profile }) =>
-        Boolean(profile.id) &&
-        meetingTemplate?.meetingInstance?.owner === profile.id,
-);
+
+/* This is old store */
+// export const $isOwner = combine<{
+//     meetingTemplate: IUserTemplate;
+//     profile: Profile;
+// }>({
+//     meetingTemplate: $meetingTemplateStore,
+//     profile: $profileStore,
+// }).map(
+//     ({ meetingTemplate, profile }) =>
+//         Boolean(profile.id) &&
+//         meetingTemplate?.meetingInstance?.owner === profile.id,
+// );
 
 export const $isOwnerInMeeting = combine<{
     template: IUserTemplate;

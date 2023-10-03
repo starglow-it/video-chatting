@@ -20,13 +20,13 @@ import {
 } from '../../videoChat/localMedia/model';
 import {
     $isMeetingInstanceExists,
-    $isOwner,
     $isOwnerInMeeting,
     $meetingTemplateStore,
 } from '../meetingTemplate/model';
 import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
+import { $isOwner } from '../meetingRole/model';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))

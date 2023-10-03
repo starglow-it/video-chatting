@@ -34,6 +34,7 @@ import { handleStartSFUSharing } from './handlers/handleStartSFUSharing';
 import { handleStopSFUSharing } from './handlers/handleStopSFUSharing';
 import { handleChangeSFUStream } from './handlers/handleChangeSFUStream';
 import { updateMeetingSocketEvent } from '../../meeting/sockets/model';
+import { $meetingRoleStore } from '../../meeting/meetingRole/model';
 
 getLiveKitTokenFx.use(handleGetLiveKitToken);
 publishTracksFx.use(handlePublishTracks);
@@ -70,7 +71,9 @@ sample({
         localUser: $localUserStore,
         isCameraActive: $isCameraActiveStore,
         isMicActive: $isMicActiveStore,
+        role: $meetingRoleStore,
     }),
+    filter: ({ role }) => role !== 'luker',
     target: publishTracksFx,
 });
 
