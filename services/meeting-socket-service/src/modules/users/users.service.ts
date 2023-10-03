@@ -11,7 +11,11 @@ import {
   UserActionInMeeting,
   UserActionInMeetingParams,
 } from '../../types';
-import { IUserTemplate, MeetingAccessStatusEnum } from 'shared-types';
+import {
+  IUserTemplate,
+  MeetingAccessStatusEnum,
+  MeetingRole,
+} from 'shared-types';
 import { Socket } from 'socket.io';
 import { ICommonMeetingUserDTO } from 'src/interfaces/common-user.interface';
 import { CoreService } from 'src/services/core/core.service';
@@ -126,8 +130,7 @@ export class UsersService {
     event: UserActionInMeeting;
   }) {
     try {
-      console.log('update index user');
-      
+      if (user.meetingRole === MeetingRole.Lurker) return;
       const userId = user._id.toString();
       const updateIndexParams: UserActionInMeetingParams = {
         [UserActionInMeeting.Join]: {
