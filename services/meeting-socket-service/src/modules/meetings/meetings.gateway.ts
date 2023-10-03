@@ -815,8 +815,6 @@ export class MeetingsGateway
           });
         }
 
-        await meeting.populate(['users']);
-
         const updateData = {
           accessStatus: MeetingAccessStatusEnum.InMeeting,
           joinedAt: Date.now(),
@@ -855,17 +853,28 @@ export class MeetingsGateway
             message: 'No user found',
           });
         }
+
+        const host = await this.usersService.findOne({
+          query: {
+            _id: meeting.hostUserId,
+          },
+          session,
+        });
+
+        if (!host) {
+          return wsError(socket, {
+            message: 'Host not found',
+          });
+        }
+        await meeting.populate(['users']);
+
         const plainMeeting = meetingSerialization(meeting);
         const plainUser = userSerialization(mU);
         const plainUsers = userSerialization(meeting.users);
-        this.emitToSocketId(
-          meeting.hostUserId._id.toString(),
-          MeetingEmitEvents.UpdateMeeting,
-          {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        );
+        this.emitToSocketId(host.socketId, MeetingEmitEvents.UpdateMeeting, {
+          meeting: plainMeeting,
+          users: plainUsers,
+        });
         return {
           success: true,
           result: {
