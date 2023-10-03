@@ -867,6 +867,7 @@ export class MeetingsGateway
           });
         }
         await meeting.populate(['users']);
+        socket.join(`meeting:${msg.meetingId}`);
 
         const plainMeeting = meetingSerialization(meeting);
         const plainUser = userSerialization(mU);
