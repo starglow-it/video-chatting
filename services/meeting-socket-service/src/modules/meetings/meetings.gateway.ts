@@ -218,7 +218,7 @@ export class MeetingsGateway
         });
         if (!user) {
           return wsError(client, {
-            message: 'socket ',
+            message: 'No user found',
           });
         }
 
