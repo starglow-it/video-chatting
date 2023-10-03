@@ -22,7 +22,7 @@ import { CustomResizable } from '@library/custom/CustomResizable/CustomResizable
 import { ResizeCallbackData } from 'react-resizable';
 import { $windowSizeStore } from 'src/store';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
-import { $tracksStore } from '../../../store/roomStores';
+import { $isOwner, $tracksStore } from '../../../store/roomStores';
 
 // types
 import { MeetingUserVideoComProps, MeetingUserVideoItemProps } from './types';
@@ -64,6 +64,7 @@ const MeetingUserVideoChildCom = ({
         ],
         fn: (tracks, [connectionId]) => tracks[connectionId],
     });
+    const isOwner = useStore($isOwner);
 
     const [isVideoSelfView, setVideoSelfView] =
         useState<boolean>(isCameraEnabled);
@@ -127,7 +128,7 @@ const MeetingUserVideoChildCom = ({
             onResizeStart={handleResizeStart}
             onResizeStop={handleResizeStop}
             resizeHandles={['se']}
-            disabled={isScreenSharing}
+            disabled={!isScreenSharing ? (!isOwner ? !isLocal : false) : true}
         >
             <CustomBox
                 className={clsx(styles.media)}
