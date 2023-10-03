@@ -91,6 +91,7 @@ const Component = ({
     const isOwner = useStore($isOwner);
 
     const router = useRouter();
+    const role = router.query.role as string;
 
     const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
@@ -143,9 +144,13 @@ const Component = ({
 
     useEffect(() => {
         (async () => {
-            const roomUrl = getClientMeetingUrlWithDomain(
+            let roomUrl = getClientMeetingUrlWithDomain(
                 template.customLink || template.id,
             );
+
+            if (role === 'luker') {
+                roomUrl = `${roomUrl}?role=${role}`;
+            }
 
             await Router.push(roomUrl, roomUrl, { shallow: true });
         })();

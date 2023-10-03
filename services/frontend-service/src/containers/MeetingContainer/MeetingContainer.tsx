@@ -64,6 +64,7 @@ import {
     setIsAudioActiveEvent,
     setIsAuraActive,
     setIsCameraActiveEvent,
+    setRoleQueryUrlEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
 
@@ -120,8 +121,19 @@ const MeetingContainer = memo(() => {
 
     const { isMobile } = useBrowserDetect();
 
+    const roleUrl = router.query?.role as string;
+
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
+
+    useEffect(() => {
+        if (roleUrl) {
+            setRoleQueryUrlEvent(roleUrl);
+        }
+        if (!!roleUrl && roleUrl !== 'luker') {
+            router.push(NotFoundRoute);
+        }
+    }, [roleUrl]);
 
     useEffect(() => {
         initWindowListeners();
