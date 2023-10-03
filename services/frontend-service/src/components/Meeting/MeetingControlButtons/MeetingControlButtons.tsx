@@ -38,6 +38,7 @@ import {
     disconnectFromVideoChatEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
+    toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
@@ -47,6 +48,7 @@ import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
+import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
 
 const Component = () => {
     const router = useRouter();
@@ -111,6 +113,11 @@ const Component = () => {
         toggleUsersPanelEvent();
     };
 
+    const handleToggleSchedulePanel = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleSchedulePanelEvent();
+    };
+
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
             <ConditionalRender condition={!isMobile && !isLurker}>
@@ -141,6 +148,30 @@ const Component = () => {
                                     height="22px"
                                 />
                             }
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={!isLurker}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="invite.tooltip"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleSchedulePanel}
+                            className={clsx(styles.actionButton)}
+                            Icon={<ScheduleIcon width="22px" height="22px" />}
                         />
                     </CustomPaper>
                 </CustomTooltip>

@@ -6,7 +6,6 @@ import { useStore } from 'effector-react';
 
 // custom
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
 import { EmailIcon } from 'shared-frontend/icons/OtherIcons/EmailIcon';
 import { CopyLinkIcon } from 'shared-frontend/icons/OtherIcons/CopyLinkIcon';
 import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
@@ -67,7 +66,6 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
 
     return (
         <>
-            <CustomDivider className={styles.divider} />
             <CustomGrid
                 container
                 className={styles.meetingInvitesWrapper}
