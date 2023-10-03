@@ -1,5 +1,5 @@
 import { combine } from 'effector';
-import { IUserTemplate } from 'shared-types';
+import { IUserTemplate, MeetingRole } from 'shared-types';
 import { Profile } from 'src/store/types';
 import { $profileStore } from 'src/store/profile/profile/model';
 import { meetingDomain } from 'src/store/domains';
@@ -24,20 +24,20 @@ export const $meetingRoleStore = combine<{
 }).map(({ meetingTemplate, profile, roleQueryUrl }) =>
     Boolean(profile.id) &&
     meetingTemplate?.meetingInstance?.owner === profile.id
-        ? 'owner'
-        : roleQueryUrl === 'luker'
-        ? 'luker'
-        : 'participant',
+        ? MeetingRole.Host
+        : roleQueryUrl === MeetingRole.Lurker
+        ? MeetingRole.Lurker
+        : MeetingRole.Participant,
 );
 
 export const $isOwner = combine({
     role: $meetingRoleStore,
-}).map(({ role }) => role === 'owner');
+}).map(({ role }) => role === MeetingRole.Host);
 
 export const $isParticipant = combine({
     role: $meetingRoleStore,
-}).map(({ role }) => role === 'participant');
+}).map(({ role }) => role === MeetingRole.Participant);
 
-export const $isLuker = combine({
+export const $isLurker = combine({
     role: $meetingRoleStore,
-}).map(({ role }) => role === 'luker');
+}).map(({ role }) => role === MeetingRole.Lurker);

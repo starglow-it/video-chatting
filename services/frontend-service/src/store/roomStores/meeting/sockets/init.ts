@@ -4,6 +4,7 @@ import {
     ICommonUser,
     IUserTemplate,
     MeetingAccessStatusEnum,
+    MeetingRole,
 } from 'shared-types';
 import { $meetingStore, updateMeetingEvent } from '../meeting/model';
 import {
@@ -30,6 +31,7 @@ import {
     updateMeetingTemplateSocketEvent,
     enterWaitingRoomSocketEvent,
     sendReconnectMeetingEvent,
+    joinMeetingLurkerEvent,
 } from './model';
 import { meetingAvailableSocketEvent } from '../../../waitingRoom/model';
 import { appDialogsApi } from '../../../dialogs/init';
@@ -50,7 +52,7 @@ import { getMeetingSocketSubscribeHandler } from './handlers';
 import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
 import { $SFURoom } from '../../videoChat/sfu/model';
 import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
-import { $isOwner } from '../meetingRole/model';
+import { $isOwner, $meetingRoleStore } from '../meetingRole/model';
 
 export const sendEnterWaitingRoomSocketEvent = attach({
     effect: enterWaitingRoomSocketEvent,
@@ -79,12 +81,32 @@ export const sendReconnectMeetingSocketEvent = attach<
     }),
 });
 
+export const joinLurkerMeetingSocketEvent = attach<
+    void,
+    Store<{
+        meeting: Meeting;
+        localUser: MeetingUser;
+    }>,
+    typeof joinMeetingLurkerEvent
+>({
+    effect: joinMeetingLurkerEvent,
+    source: combine({
+        meeting: $meetingStore,
+        localUser: $localUserStore,
+    }),
+    mapParams: (_, { meeting, localUser }) => ({
+        meetingId: meeting.id,
+        username: localUser.username,
+    }),
+});
+
 export const sendJoinWaitingRoomSocketEvent = attach<
     void,
     Store<{
         profile: ICommonUser;
         template: IUserTemplate;
         localUser: MeetingUser;
+        meetingRole: MeetingRole;
     }>,
     typeof joinWaitingRoomSocketEvent
 >({
@@ -93,6 +115,7 @@ export const sendJoinWaitingRoomSocketEvent = attach<
         profile: $profileStore,
         template: $meetingTemplateStore,
         localUser: $localUserStore,
+        meetingRole: $meetingRoleStore,
     }),
     mapParams: (
         data,
@@ -100,13 +123,14 @@ export const sendJoinWaitingRoomSocketEvent = attach<
             profile: Profile;
             template: IUserTemplate;
             localUser: MeetingUser;
+            meetingRole: MeetingRole;
         },
     ) => ({
         profileId: source.profile?.id,
         profileUserName: source?.profile?.fullName,
         profileAvatar: source?.profile?.profileAvatar?.url,
         templateId: source.template?.id,
-        isOwner: source.template?.meetingInstance?.owner === source.profile?.id,
+        meetingRole: source.meetingRole,
         accessStatus: source.localUser.accessStatus,
         isAuraActive: source.localUser.isAuraActive,
         cameraStatus: source.localUser.cameraStatus,
@@ -261,6 +285,10 @@ updateMeetingSocketEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.doneData.watch(handleUpdateMeetingEntities);
 sendReconnectMeetingEvent.failData.watch((error: any) => {
     console.log('console reconnect error', error);
+});
+joinMeetingLurkerEvent.doneData.watch(handleUpdateMeetingEntities);
+joinMeetingLurkerEvent.failData.watch((error: any) => {
+    console.log('lurker join fail', error);
 });
 
 sample({
