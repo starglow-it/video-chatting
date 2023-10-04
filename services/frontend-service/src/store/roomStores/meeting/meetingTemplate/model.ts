@@ -58,7 +58,6 @@ export const $isMeetingInstanceExists = $meetingTemplateStore.map(state =>
     Boolean(state?.meetingInstance?.id),
 );
 
-
 /* This is old store */
 // export const $isOwner = combine<{
 //     meetingTemplate: IUserTemplate;

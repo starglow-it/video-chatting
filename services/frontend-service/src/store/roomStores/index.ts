@@ -16,7 +16,7 @@ import * as meetingState from './meeting/meetingState/init';
 import * as meetingSounds from './meeting/meetingSounds/init';
 import * as meetingBackground from './meeting/meetingBackground/init';
 import * as meetingAudio from './meeting/meetingAudio/init';
-import * as meetingRole from './meeting/meetingRole/init'
+import * as meetingRole from './meeting/meetingRole/init';
 
 export * from './meetingSocket/model';
 export * from './timeLimit/model';
@@ -65,5 +65,5 @@ export default {
     meetingSounds,
     meetingBackground,
     meetingAudio,
-    meetingRole
+    meetingRole,
 };
