@@ -111,11 +111,13 @@ const Component = () => {
     const handleToggleUsersPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
+        toggleSchedulePanelEvent(false);
     };
 
     const handleToggleSchedulePanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleSchedulePanelEvent();
+        toggleUsersPanelEvent(false);
     };
 
     return (
