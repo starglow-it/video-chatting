@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -17,19 +17,27 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { Translation } from '@library/common/Translation/Translation';
-import { $appDialogsStore, appDialogsApi } from '../../../store';
+import {
+    $appDialogsStore,
+    addNotificationEvent,
+    appDialogsApi,
+} from '../../../store';
 
 // styles
 import styles from './CopyMeetingLinkDialog.module.scss';
 
 // types
-import { AppDialogsEnum } from '../../../store/types';
+import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 // utils
 import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
+import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 
 const Component = () => {
     const router = useRouter();
+    const [meetingLinkText, setMeetingLinkText] = useState<string>(
+        getClientMeetingUrlWithDomain(router.query.token as string),
+    );
 
     const { copyMeetingLinkDialog } = useStore($appDialogsStore);
 
@@ -39,18 +47,22 @@ const Component = () => {
         });
     }, []);
 
-    const handleOpenEmailInvite = useCallback(() => {
-        appDialogsApi.openDialog({
-            dialogKey: AppDialogsEnum.inviteAttendeeByEmailDialog,
-        });
-        appDialogsApi.closeDialog({
-            dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
+    const handleLinkCopied = useCallback(() => {
+        addNotificationEvent({
+            type: NotificationType.LinkInfoCopied,
+            message: 'meeting.copy.link',
         });
     }, []);
 
-    const meetingLinkText = getClientMeetingUrlWithDomain(
-        router.query.token as string,
-    );
+    const handleChangeValue = (value: any) => {
+        setMeetingLinkText(
+            value === 'participants'
+                ? getClientMeetingUrlWithDomain(router.query.token as string)
+                : `${getClientMeetingUrlWithDomain(
+                      router.query.token as string,
+                  )}?role=lurker`,
+        );
+    };
 
     return (
         <CustomDialog
@@ -94,7 +106,10 @@ const Component = () => {
                         </CustomTypography>
                     </CustomGrid>
 
-                    <CopyToClipboard text={meetingLinkText}>
+                    <CopyToClipboard
+                        text={meetingLinkText}
+                        onCopy={handleLinkCopied}
+                    >
                         <CustomButton
                             variant="custom-cancel"
                             className={styles.copyButton}
@@ -107,16 +122,7 @@ const Component = () => {
                         />
                     </CopyToClipboard>
                 </CustomGrid>
-
-                <CustomButton
-                    label={
-                        <Translation
-                            nameSpace="meeting"
-                            translation="invite.inviteButton"
-                        />
-                    }
-                    onClick={handleOpenEmailInvite}
-                />
+                <MeetingRoleGroup onChangeValue={handleChangeValue} />
             </CustomGrid>
         </CustomDialog>
     );

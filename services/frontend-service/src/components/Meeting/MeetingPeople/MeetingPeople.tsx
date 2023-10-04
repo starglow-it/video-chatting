@@ -11,6 +11,7 @@ import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessReq
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -124,7 +125,7 @@ export const MeetingPeople = () => {
                 </CustomGrid>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                Last update
+               <CustomTypography color="white">Coming soon!</CustomTypography>
             </CustomTabPanel>
         </CustomGrid>
     );

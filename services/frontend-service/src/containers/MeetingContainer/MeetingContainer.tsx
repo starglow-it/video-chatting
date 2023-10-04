@@ -281,7 +281,6 @@ const MeetingContainer = memo(() => {
         image => image.resolution === 240,
     );
 
-    console.log('#Duy Phan console localUser', localUser.accessStatus);
     return (
         <>
             <ConditionalRender condition={status === 'off'}>
