@@ -14,12 +14,12 @@ import { BaseGateway } from '../../gateway/base.gateway';
 
 // types
 import {
-  AnswerInvitationAction,
+  AnswerSwitchRoleAction,
   IUserTemplate,
   MeetingAccessStatusEnum,
-  MeetingChangingRoleStatus,
+  MeetingSwtichRoleStatus,
   MeetingRole,
-  ParticipantInvivationAction,
+  RequestSwitchRoleAction,
   ResponseSumType,
 } from 'shared-types';
 
@@ -54,20 +54,10 @@ import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../../types';
 import { wsError } from '../../utils/ws/wsError';
-import { ToggleInviteParticipantRequestDto } from '../../dtos/requests/users/toggle-invite-participant.dto';
-import { wsResult } from 'src/utils/ws/wsResult';
-import { CancelParticipantInvationRequestDto } from '../../dtos/requests/users/cancel-participant-invation.dto';
-import { AnswerParticipantInvitationRequestDto } from 'src/dtos/requests/users/answer-participant-invation.dto';
+import { SwtichRoleRequestDto } from '../../dtos/requests/users/request-switch-role.dto';
+import { wsResult } from '../../utils/ws/wsResult';
+import { AnswerSwitchRoleRequestDto } from '../../dtos/requests/users/answer-switch-role.dto';
 
-type UpdateChangingRoleStatus = {
-  socket: Socket;
-  status: MeetingChangingRoleStatus;
-  message: {
-    meetingId: string;
-    meetingUserId: string;
-  };
-  session: ITransactionSession;
-};
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -299,10 +289,10 @@ export class UsersGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(UsersSubscribeEvents.OnToggleInviteParticipant)
+  @SubscribeMessage(UsersSubscribeEvents.OnRequestRoleByHost)
   async toggleInviteParticipant(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() msg: ToggleInviteParticipantRequestDto,
+    @MessageBody() msg: SwtichRoleRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
       const { action, meetingId, meetingUserId } = msg;
@@ -333,26 +323,26 @@ export class UsersGateway extends BaseGateway {
           });
         }
 
-        const crs =
-          action === ParticipantInvivationAction.Invite
+        const switchRoleStatus =
+          action === RequestSwitchRoleAction.Request
             ? {
-                from: MeetingChangingRoleStatus.NoRequest,
-                to: MeetingChangingRoleStatus.HostRequest,
+                from: MeetingSwtichRoleStatus.NoRequest,
+                to: MeetingSwtichRoleStatus.HostRequest,
               }
             : {
-                from: MeetingChangingRoleStatus.HostRequest,
-                to: MeetingChangingRoleStatus.NoRequest,
+                from: MeetingSwtichRoleStatus.HostRequest,
+                to: MeetingSwtichRoleStatus.NoRequest,
               };
 
         const mU = await this.usersService.findOneAndUpdate(
           {
             meetingRole: MeetingRole.Lurker,
             accessStatus: MeetingAccessStatusEnum.InMeeting,
-            changingRoleStatus: crs.from,
+            switchRoleStatus: switchRoleStatus.from,
             _id: msg.meetingUserId,
           },
           {
-            changingRoleStatus: crs.to,
+            switchRoleStatus: switchRoleStatus.to,
           },
           session,
         );
@@ -383,21 +373,21 @@ export class UsersGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(UsersSubscribeEvents.OnAnswerParticipantInvitation)
+  @SubscribeMessage(UsersSubscribeEvents.OnAnswerRequestByLurker)
   async answerToParticipantInvitation(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() msg: AnswerParticipantInvitationRequestDto,
+    @MessageBody() msg: AnswerSwitchRoleRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
         const mU = await this.usersService.findOneAndUpdate(
           {
             socketId: socket.id,
-            changingRoleStatus: MeetingChangingRoleStatus.HostRequest,
+            switchRoleStatus: MeetingSwtichRoleStatus.HostRequest,
           },
           {
-            changingRoleStatus: MeetingChangingRoleStatus.NoRequest,
-            ...(msg.action === AnswerInvitationAction.Accept && {
+            switchRoleStatus: MeetingSwtichRoleStatus.NoRequest,
+            ...(msg.action === AnswerSwitchRoleAction.Accept && {
               meetingRole: MeetingRole.Participant,
             }),
           },

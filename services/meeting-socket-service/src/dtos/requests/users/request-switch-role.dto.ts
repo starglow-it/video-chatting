@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ICommonMeetingUserDTO } from '../../../interfaces/common-user.interface';
-import { ParticipantInvivationAction } from 'shared-types';
+import { RequestSwitchRoleAction } from 'shared-types';
 
-export class ToggleInviteParticipantRequestDto {
+export class SwtichRoleRequestDto {
   @IsNotEmpty()
   @IsString()
   meetingId: ICommonMeetingUserDTO['meeting'];
@@ -13,5 +13,5 @@ export class ToggleInviteParticipantRequestDto {
 
   @IsNotEmpty()
   @IsString()
-  action: ParticipantInvivationAction;
-}
+  action: RequestSwitchRoleAction;
+} 
