@@ -1,0 +1,14 @@
+@import "../../../styles/variables";
+@import "../../../styles/rem";
+
+.usersWrapper {
+  .userItem {
+    &:first-child {
+      margin: rem(0 0 5px 0);
+    }
+
+    &:not(:first-child) {
+      margin: rem(5px 0 5px 0);
+    }
+  }
+}

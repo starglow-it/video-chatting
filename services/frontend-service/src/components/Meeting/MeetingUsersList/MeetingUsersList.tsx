@@ -5,7 +5,7 @@ import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 // components
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { MeetingUsersListItem } from './MeetingUsersListItem';
 
 // stores
@@ -35,7 +35,9 @@ const Component = () => {
         keys: [],
         fn: state =>
             state.filter(
-                user => user.accessStatus === MeetingAccessStatusEnum.InMeeting,
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Lurker,
             ),
     });
 
