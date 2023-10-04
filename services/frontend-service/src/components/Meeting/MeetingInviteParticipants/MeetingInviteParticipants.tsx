@@ -17,18 +17,14 @@ import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRen
 import { ActionButton } from 'shared-frontend/library/common/ActionButton';
 
 // stores
-import {
-    appDialogsApi,
-    addNotificationEvent,
-    setScheduleTemplateIdEvent,
-} from '../../../store';
+import { appDialogsApi, setScheduleTemplateIdEvent } from '../../../store';
 import {
     $localUserStore,
     $meetingTemplateStore,
 } from '../../../store/roomStores';
 
 // types
-import { AppDialogsEnum, NotificationType } from '../../../store/types';
+import { AppDialogsEnum } from '../../../store/types';
 
 // utils
 import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
@@ -50,9 +46,8 @@ const Component = ({ onAction }: { onAction?: () => void }) => {
     }, []);
 
     const handleLinkCopied = useCallback(() => {
-        addNotificationEvent({
-            type: NotificationType.LinkInfoCopied,
-            message: 'meeting.copy.link',
+        appDialogsApi.openDialog({
+            dialogKey: AppDialogsEnum.copyMeetingLinkDialog,
         });
         onAction?.();
     }, []);
