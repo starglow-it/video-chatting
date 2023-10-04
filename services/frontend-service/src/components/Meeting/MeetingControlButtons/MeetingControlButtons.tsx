@@ -27,6 +27,7 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
+import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
     $isLurker,
@@ -48,7 +49,6 @@ import styles from './MeetingControlButtons.module.scss';
 import { clientRoutes } from '../../../const/client-routes';
 import { MeetingControlCollapse } from '../MeetingControlCollapse/MeetingControlCollapse';
 import config from '../../../const/config';
-import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
 
 const Component = () => {
     const router = useRouter();

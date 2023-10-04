@@ -148,13 +148,13 @@ const Component = ({
                 template.customLink || template.id,
             );
 
-            if (role === MeetingRole.Lurker) {
+            if (role === MeetingRole.Lurker && !isOwner) {
                 roomUrl = `${roomUrl}?role=${role}`;
             }
 
             await Router.push(roomUrl, roomUrl, { shallow: true });
         })();
-    }, [template.customLink, template.id]);
+    }, [template.customLink, template.id, isOwner]);
 
     const dirtyFieldsCount = useMemo(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

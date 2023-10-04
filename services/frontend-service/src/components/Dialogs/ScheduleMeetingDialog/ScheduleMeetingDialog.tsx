@@ -21,6 +21,8 @@ import CustomDivider from 'shared-frontend/library/custom/CustomDivider/CustomDi
 import CustomFade from 'shared-frontend/library/custom/CustomFade/CustomFade';
 import CustomButton from 'shared-frontend/library/custom/CustomButton/CustomButton';
 import { ValuesSwitcherItem } from 'shared-frontend/types';
+import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
+import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 import { ScheduleAttendees } from './ScheduleAttendees';
 
 // helpers
@@ -49,8 +51,6 @@ import { emailSchema } from '../../../validation/users/email';
 
 // styles
 import styles from './ScheduleMeetingDialog.module.scss';
-import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
-import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 const validationSchema = yup.object({
     timeZone: simpleStringSchema().required('required'),
@@ -270,7 +270,9 @@ const Component = () => {
                                 </CustomFade>
                             </CustomGrid>
                             <ConditionalRender condition={isInviteOpen}>
-                            <MeetingRoleGroup className={styles.roleGroup}/>
+                                <MeetingRoleGroup
+                                    className={styles.roleGroup}
+                                />
                             </ConditionalRender>
                             <CustomGrid
                                 container

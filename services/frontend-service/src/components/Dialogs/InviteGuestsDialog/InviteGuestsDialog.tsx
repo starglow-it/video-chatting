@@ -8,7 +8,7 @@ import {
 } from 'src/store';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { RoundCloseIcon } from 'shared-frontend/icons/RoundIcons/RoundCloseIcon';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppDialogsEnum, NotificationType } from 'src/store/types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -16,11 +16,18 @@ import { getClientMeetingUrlWithDomain } from 'src/utils/urls';
 import { useRouter } from 'next/router';
 import { useTimer } from '@hooks/useTimer';
 import { isMobile } from 'shared-utils';
+import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
+import { MeetingRole } from 'shared-types';
 import styles from './InviteGuestsDIalog.module.scss';
 
 export const InviteGuestsDialog = () => {
     const router = useRouter();
     const { inviteGuestsDialog } = useStore($appDialogsStore);
+    const [link, setLink] = useState<string>(
+        getClientMeetingUrlWithDomain(router.query.token as string),
+    );
+
+    const refRoleGroup = useRef<any>(null);
     // const { isMobile } = useBrowserDetect();
     const {
         value: currentTime,
@@ -53,24 +60,35 @@ export const InviteGuestsDialog = () => {
     }, []);
 
     const linkToDefault = () => {
+        const role = refRoleGroup.current?.getValue();
+        console.log('#Duy Phan console role', role);
         window.open(
             `mailto:?view=cm&fs=1&subject=Meeting Link
             &body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
                 router.query.token as string,
-            )}`,
+            )}${role === MeetingRole.Lurker ? '?role=lurker' : ''}`,
             '_blank',
         );
     };
 
     const linkToGmail = () => {
+        const role = refRoleGroup.current?.getValue();
         window.open(
             `
         https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(
             `Meeting Link`,
         )}&body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(
                 router.query.token as string,
-            )}`,
+            )}${role === MeetingRole.Lurker ? '?role=lurker' : ''}`,
             '_blank',
+        );
+    };
+
+    const handleChangeRole = (role: MeetingRole) => {
+        setLink(
+            `${getClientMeetingUrlWithDomain(router.query.token as string)}${
+                role === MeetingRole.Lurker ? '?role=lurker' : ''
+            }`,
         );
     };
 
@@ -91,12 +109,7 @@ export const InviteGuestsDialog = () => {
                     <span>Invite Guests to this room</span>
                 </CustomGrid>
                 <CustomGrid className={styles.actions} gap={2}>
-                    <CopyToClipboard
-                        text={getClientMeetingUrlWithDomain(
-                            router.query.token as string,
-                        )}
-                        onCopy={handleLinkCopied}
-                    >
+                    <CopyToClipboard text={link} onCopy={handleLinkCopied}>
                         <CustomGrid className={styles.actionItem}>
                             <CustomImage
                                 src="/images/copy-link.png"
@@ -132,6 +145,11 @@ export const InviteGuestsDialog = () => {
                         <span>Gmail</span>
                     </CustomGrid>
                 </CustomGrid>
+                <MeetingRoleGroup
+                    className={styles.roleGroup}
+                    ref={refRoleGroup}
+                    onChangeValue={handleChangeRole}
+                />
             </CustomGrid>
         </CustomDialog>
     );

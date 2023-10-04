@@ -187,7 +187,11 @@ const Component = () => {
                         label={
                             <Translation
                                 nameSpace="meeting"
-                                translation="buttons.continue"
+                                translation={
+                                    isLurker
+                                        ? 'buttons.join'
+                                        : 'buttons.continue'
+                                }
                             />
                         }
                     />

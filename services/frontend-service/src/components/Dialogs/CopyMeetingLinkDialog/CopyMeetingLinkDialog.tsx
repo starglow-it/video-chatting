@@ -17,6 +17,8 @@ import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // stores
 import { Translation } from '@library/common/Translation/Translation';
+import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
+import { MeetingRole } from 'shared-types';
 import {
     $appDialogsStore,
     addNotificationEvent,
@@ -31,7 +33,6 @@ import { AppDialogsEnum, NotificationType } from '../../../store/types';
 
 // utils
 import { getClientMeetingUrlWithDomain } from '../../../utils/urls';
-import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 
 const Component = () => {
     const router = useRouter();
@@ -56,11 +57,9 @@ const Component = () => {
 
     const handleChangeValue = (value: any) => {
         setMeetingLinkText(
-            value === 'participants'
-                ? getClientMeetingUrlWithDomain(router.query.token as string)
-                : `${getClientMeetingUrlWithDomain(
-                      router.query.token as string,
-                  )}?role=lurker`,
+            `${getClientMeetingUrlWithDomain(router.query.token as string)}${
+                value === MeetingRole.Lurker ? '?role=lurker' : ''
+            }`,
         );
     };
 

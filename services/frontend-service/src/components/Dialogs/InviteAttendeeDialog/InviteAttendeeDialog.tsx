@@ -17,6 +17,7 @@ import { ScheduleAttendees } from '@components/Dialogs/ScheduleMeetingDialog/Sch
 
 // stores
 import { Translation } from '@library/common/Translation/Translation';
+import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import {
     $appDialogsStore,
     addNotificationEvent,
@@ -32,7 +33,6 @@ import styles from './InviteAttendeeDialog.module.scss';
 
 // validations
 import { emailSchema } from '../../../validation/users/email';
-import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 
 const validationSchema = yup.object({
     currentUserEmail: emailSchema(),
@@ -118,7 +118,7 @@ const Component = () => {
                             onDeleteUserEmail={handleDeleteUserEmail}
                             userEmails={userEmails}
                         />
-                        <MeetingRoleGroup className={styles.roleGroup}/>
+                        <MeetingRoleGroup className={styles.roleGroup} />
                         <CustomGrid container wrap="nowrap" gap={2}>
                             <CustomButton
                                 label={

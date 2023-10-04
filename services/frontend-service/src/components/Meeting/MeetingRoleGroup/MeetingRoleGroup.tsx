@@ -5,28 +5,31 @@ import { RadioIcon } from 'shared-frontend/icons/OtherIcons/RadioIcon';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 
 import { forwardRef, useImperativeHandle, useState } from 'react';
+import { MeetingRole } from 'shared-types';
+import { PropsWithClassName } from 'shared-frontend/types';
 import styles from './MeetingRoleGroup.module.scss';
 
-type RadioValue = 'participants' | 'lurkers';
-
-type RoleGroupProps = {
-    defaultValue?: RadioValue;
-    onChangeValue?: (value: RadioValue) => void;
-    className?: string;
-};
+type RoleGroupProps = PropsWithClassName<{
+    defaultValue?: MeetingRole;
+    onChangeValue?: (value: MeetingRole) => void;
+}>;
 
 export const MeetingRoleGroup = forwardRef(
     (
-        { defaultValue = 'participants', onChangeValue, className }: RoleGroupProps,
+        {
+            defaultValue = MeetingRole.Participant,
+            onChangeValue,
+            className,
+        }: RoleGroupProps,
         ref,
     ) => {
-        const [value, setValue] = useState<RadioValue>(defaultValue);
+        const [value, setValue] = useState<MeetingRole>(defaultValue);
 
         useImperativeHandle(ref, () => ({
             getValue: () => value,
         }));
 
-        const changeValue = (newValue: RadioValue) => {
+        const changeValue = (newValue: MeetingRole) => {
             setValue(newValue);
             onChangeValue?.(newValue);
         };
@@ -41,14 +44,14 @@ export const MeetingRoleGroup = forwardRef(
                 className={className}
             >
                 <FormControlLabel
-                    checked={value === 'participants'}
+                    checked={value === MeetingRole.Participant}
                     label="Participants"
                     classes={{
                         root: clsx(styles.label, {
-                            [styles.active]: value === 'participants',
+                            [styles.active]: value === MeetingRole.Participant,
                         }),
                     }}
-                    onClick={() => changeValue('participants')}
+                    onClick={() => changeValue(MeetingRole.Participant)}
                     control={
                         <CustomRadio
                             icon={
@@ -70,14 +73,14 @@ export const MeetingRoleGroup = forwardRef(
                     }
                 />
                 <FormControlLabel
-                    onClick={() => changeValue('lurkers')}
+                    onClick={() => changeValue(MeetingRole.Lurker)}
                     label="Lurkers"
                     classes={{
                         root: clsx(styles.label, {
-                            [styles.active]: value === 'lurkers',
+                            [styles.active]: value === MeetingRole.Lurker,
                         }),
                     }}
-                    checked={value === 'lurkers'}
+                    checked={value === MeetingRole.Lurker}
                     control={
                         <CustomRadio
                             icon={

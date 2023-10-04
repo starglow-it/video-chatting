@@ -26,7 +26,7 @@ import {
 import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
-import { $isOwner, $meetingRoleStore } from '../meetingRole/model';
+import { $meetingRoleStore } from '../meetingRole/model';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))

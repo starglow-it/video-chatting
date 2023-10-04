@@ -1,4 +1,8 @@
-import { IUserTemplate, MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import {
+    IUserTemplate,
+    MeetingAccessStatusEnum,
+    MeetingRole,
+} from 'shared-types';
 import { Meeting, MeetingUser, Profile } from '../../../types';
 
 export type JoinWaitingRoomPayload = {

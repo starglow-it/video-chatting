@@ -6,12 +6,12 @@ import { ReactNode, useCallback, useState } from 'react';
 import { Tabs } from '@mui/material';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -125,7 +125,7 @@ export const MeetingPeople = () => {
                 </CustomGrid>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-               <CustomTypography color="white">Coming soon!</CustomTypography>
+                <CustomTypography color="white">Coming soon!</CustomTypography>
             </CustomTabPanel>
         </CustomGrid>
     );

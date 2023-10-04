@@ -69,7 +69,7 @@ const Component = ({
                 userName={user.username}
             />
             <CustomTypography className={styles.userName} color="common.white">
-                {user.username} {isLocalItem ? ' (You)': ''}
+                {user.username} {isLocalItem ? ' (You)' : ''}
             </CustomTypography>
             <CustomGrid
                 className={styles.btnGroup}

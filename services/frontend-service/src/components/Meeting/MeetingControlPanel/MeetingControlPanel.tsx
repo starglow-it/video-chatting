@@ -24,7 +24,6 @@ import { ProfileAvatar } from '@components/Profile/ProfileAvatar/ProfileAvatar';
 // stores
 import { $isPortraitLayout, setIsSideUsersOpenEvent } from '../../../store';
 import {
-    $isMeetingHostStore,
     $isOwner,
     $isScreenSharingStore,
     $isTogglePayment,
