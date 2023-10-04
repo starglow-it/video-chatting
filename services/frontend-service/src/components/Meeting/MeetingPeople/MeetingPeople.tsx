@@ -1,17 +1,19 @@
-import { useStore } from 'effector-react';
-import { $isMeetingHostStore } from 'src/store/roomStores';
-import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
-import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
+import { useStore, useStoreMap } from 'effector-react';
+import { $isMeetingHostStore, $meetingUsersStore } from 'src/store/roomStores';
 import Tab from '@mui/material/Tab';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { Tabs } from '@mui/material';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
+import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
+import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingPeople.module.scss';
+import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
 
 interface TabPanelProps {
-    children?: ReactNode;
+    children: ReactNode;
     index: number;
     value: number;
 }
@@ -34,18 +36,40 @@ export const CustomTabPanel = (props: TabPanelProps) => {
 
 export const MeetingPeople = () => {
     const isMeetingHost = useStore($isMeetingHostStore);
+    const participants = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Lurker,
+            ),
+    });
+
+    const lurkers = useStoreMap({
+        store: $meetingUsersStore,
+        keys: [],
+        fn: state =>
+            state.filter(
+                user =>
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole === MeetingRole.Lurker,
+            ),
+    });
+
     const [value, setValue] = useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
-    function a11yProps(index: number) {
+    const a11yProps = useCallback((index: number) => {
         return {
             id: `simple-tab-${index}`,
             'aria-controls': `simple-tabpanel-${index}`,
         };
-    }
+    }, []);
 
     return (
         <CustomGrid display="flex" flexDirection="column" height="400px">
@@ -56,13 +80,26 @@ export const MeetingPeople = () => {
                 classes={{ root: styles.tabs }}
             >
                 <Tab
-                    label="People"
+                    label={
+                        !participants.length
+                            ? 'Participants'
+                            : `Participants(${participants.length})`
+                    }
                     {...a11yProps(0)}
                     classes={{ root: styles.tab }}
                 />
                 <Tab
-                    label="Chat"
+                    label={
+                        !lurkers.length
+                            ? 'Lurkers'
+                            : `Lurkers(${lurkers.length})`
+                    }
                     {...a11yProps(1)}
+                    classes={{ root: styles.tab }}
+                />
+                <Tab
+                    label="Chat"
+                    {...a11yProps(2)}
                     classes={{ root: styles.tab }}
                 />
             </Tabs>
@@ -78,6 +115,15 @@ export const MeetingPeople = () => {
                 </CustomGrid>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
+                <CustomGrid
+                    display="flex"
+                    flexDirection="column"
+                    paddingTop={1}
+                >
+                    <MeetingLurkers />
+                </CustomGrid>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={2}>
                 Last update
             </CustomTabPanel>
         </CustomGrid>

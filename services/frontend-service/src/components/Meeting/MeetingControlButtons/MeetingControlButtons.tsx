@@ -181,7 +181,7 @@ const Component = () => {
                     title={
                         <Translation
                             nameSpace="meeting"
-                            translation="invite.tooltip"
+                            translation="people.tooltip"
                         />
                     }
                     placement="top"

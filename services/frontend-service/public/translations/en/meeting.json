@@ -181,5 +181,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "tooltip": "Please Save when done"
+  },
+  "people": {
+    "tooltip": "People"
   }
 }
