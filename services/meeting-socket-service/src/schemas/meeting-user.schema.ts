@@ -2,7 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { MeetingDocument } from './meeting.schema';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import {
+  MeetingAccessStatusEnum,
+  MeetingChangingRoleStatus,
+} from 'shared-types';
 
 @Schema()
 export class MeetingUser {
@@ -84,7 +87,7 @@ export class MeetingUser {
   userPosition: { bottom: number; left: number };
 
   @Prop({
-    type: mongoose.Schema.Types.String
+    type: mongoose.Schema.Types.String,
   })
   avatarRole: string;
 
@@ -98,6 +101,12 @@ export class MeetingUser {
     default: 0,
   })
   userSize: number;
+
+  @Prop({
+    type: mongoose.Schema.Types.String,
+    default: MeetingChangingRoleStatus.NoRequest,
+  })
+  changingRoleStatus: MeetingChangingRoleStatus;
 }
 
 export type MeetingUserDocument = MeetingUser & Document;

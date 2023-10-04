@@ -83,7 +83,7 @@ export class UsersService {
   }
 
   async findOneAndUpdate(
-    query,
+    query: FilterQuery<MeetingUserDocument>,
     data: Partial<MeetingUserDocument>,
     { session }: ITransactionSession,
   ): Promise<MeetingUserDocument> {

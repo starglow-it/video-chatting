@@ -14,8 +14,12 @@ import { BaseGateway } from '../../gateway/base.gateway';
 
 // types
 import {
+  AnswerInvitationAction,
   IUserTemplate,
   MeetingAccessStatusEnum,
+  MeetingChangingRoleStatus,
+  MeetingRole,
+  ParticipantInvivationAction,
   ResponseSumType,
 } from 'shared-types';
 
@@ -50,6 +54,20 @@ import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../../types';
 import { wsError } from '../../utils/ws/wsError';
+import { ToggleInviteParticipantRequestDto } from '../../dtos/requests/users/toggle-invite-participant.dto';
+import { wsResult } from 'src/utils/ws/wsResult';
+import { CancelParticipantInvationRequestDto } from '../../dtos/requests/users/cancel-participant-invation.dto';
+import { AnswerParticipantInvitationRequestDto } from 'src/dtos/requests/users/answer-participant-invation.dto';
+
+type UpdateChangingRoleStatus = {
+  socket: Socket;
+  status: MeetingChangingRoleStatus;
+  message: {
+    meetingId: string;
+    meetingUserId: string;
+  };
+  session: ITransactionSession;
+};
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -178,18 +196,15 @@ export class UsersGateway extends BaseGateway {
           })),
         });
 
-        return {
-          success: true,
-          result: {
-            user: {
-              ...plainUser,
-              userPosition: {
-                ...plainUser.userPosition,
-                ...(message.userSize && { userSize: message?.userSize }),
-              },
+        return wsResult({
+          user: {
+            ...plainUser,
+            userPosition: {
+              ...plainUser.userPosition,
+              ...(message.userSize && { userSize: message?.userSize }),
             },
           },
-        };
+        });
       } catch (err) {
         return wsError(client, err);
       }
@@ -280,6 +295,154 @@ export class UsersGateway extends BaseGateway {
         }
       } catch (err) {
         return wsError(client, err);
+      }
+    });
+  }
+
+  @SubscribeMessage(UsersSubscribeEvents.OnToggleInviteParticipant)
+  async toggleInviteParticipant(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() msg: ToggleInviteParticipantRequestDto,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const { action, meetingId, meetingUserId } = msg;
+      try {
+        const meeting = await this.meetingsService.findById(meetingId, session);
+        if (!meeting) {
+          return wsError(socket, {
+            message: 'No meeting found',
+          });
+        }
+
+        const host = await this.usersService.findOne({
+          query: {
+            _id: meeting.hostUserId,
+          },
+          session,
+        });
+
+        if (!host) {
+          return wsError(socket, {
+            message: 'Host not found',
+          });
+        }
+
+        if (host.socketId !== socket.id && host.socketId === meetingUserId) {
+          return wsError(socket, {
+            message: 'User not have permission',
+          });
+        }
+
+        const crs =
+          action === ParticipantInvivationAction.Invite
+            ? {
+                from: MeetingChangingRoleStatus.NoRequest,
+                to: MeetingChangingRoleStatus.HostRequest,
+              }
+            : {
+                from: MeetingChangingRoleStatus.HostRequest,
+                to: MeetingChangingRoleStatus.NoRequest,
+              };
+
+        const mU = await this.usersService.findOneAndUpdate(
+          {
+            meetingRole: MeetingRole.Lurker,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+            changingRoleStatus: crs.from,
+            _id: msg.meetingUserId,
+          },
+          {
+            changingRoleStatus: crs.to,
+          },
+          session,
+        );
+        if (!mU) {
+          return wsError(socket, {
+            message: 'Invalid meeting user updated',
+          });
+        }
+
+        await meeting.populate(['users']);
+
+        const plainMeeting = meetingSerialization(meeting);
+        const plainUsers = userSerialization(meeting.users);
+        const plainUser = userSerialization(mU);
+
+        this.emitToSocketId(plainUser.socketId, UserEmitEvents.UpdateUser, {
+          user: plainUser,
+          meeting: plainMeeting,
+        });
+
+        return wsResult({
+          meeting: plainMeeting,
+          users: plainUsers,
+        });
+      } catch (err) {
+        return wsError(socket, err);
+      }
+    });
+  }
+
+  @SubscribeMessage(UsersSubscribeEvents.OnAnswerParticipantInvitation)
+  async answerToParticipantInvitation(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() msg: AnswerParticipantInvitationRequestDto,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const mU = await this.usersService.findOneAndUpdate(
+          {
+            socketId: socket.id,
+            changingRoleStatus: MeetingChangingRoleStatus.HostRequest,
+          },
+          {
+            changingRoleStatus: MeetingChangingRoleStatus.NoRequest,
+            ...(msg.action === AnswerInvitationAction.Accept && {
+              meetingRole: MeetingRole.Participant,
+            }),
+          },
+          session,
+        );
+        if (!mU) {
+          return wsError(socket, {
+            message: 'No meeting user found',
+          });
+        }
+
+        await mU.populate(['meeting']);
+
+        if (!mU.meeting) {
+          return wsError(socket, {
+            message: 'No meeitng found',
+          });
+        }
+        await mU.meeting.populate(['users']);
+
+        const host = await this.usersService.findOne({
+          query: {
+            _id: mU.meeting.hostUserId,
+          },
+          session,
+        });
+
+        if (!host) {
+          return wsError(socket, {
+            message: 'Host not found',
+          });
+        }
+
+        const plainMeeting = meetingSerialization(mU.meeting);
+        const plainUser = userSerialization(mU);
+        const plainUsers = userSerialization(mU.meeting.users);
+        this.emitToSocketId(host.socketId, UserEmitEvents.UpdateUsers, {
+          users: plainUsers,
+        });
+        return wsResult({
+          meeting: plainMeeting,
+          user: plainUser,
+        });
+      } catch (err) {
+        return wsError(socket, err);
       }
     });
   }
