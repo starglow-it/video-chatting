@@ -36,6 +36,7 @@ import {
     toggleDevicesEvent,
     toggleIsAuraActive,
     toggleLocalDeviceEvent,
+    putStreamToLocalStreamEvent,
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { sendDevicesPermissionSocketEvent } from '../sockets/model';
@@ -158,6 +159,12 @@ sample({
         ...data,
     }),
     target: setActivePermissionsEvent,
+});
+
+sample({
+    clock: putStreamToLocalStreamEvent,
+    source: $changeStreamStore,
+    target: setActiveStreamEvent,
 });
 
 setActivePermissionsEvent.watch(data => {

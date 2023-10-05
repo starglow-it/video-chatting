@@ -9,7 +9,7 @@ export const $roleQueryUrlStore = meetingDomain.createStore<null | string>(
     null,
 );
 
-export const setRoleQueryUrlEvent = meetingDomain.createEvent<string>(
+export const setRoleQueryUrlEvent = meetingDomain.createEvent<string | null>(
     'setRoleQueryUrlEvent',
 );
 

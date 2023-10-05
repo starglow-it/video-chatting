@@ -54,6 +54,18 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             UsersSubscribeEvents.OnKickUser,
             getUsersSocketSubscribeHandler(UsersSubscribeEvents.OnKickUser),
         );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnAnswerSwitchRole,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnAnswerSwitchRole,
+            ),
+        );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnRequestSwitchRole,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnRequestSwitchRole,
+            ),
+        );
     }
 });
 

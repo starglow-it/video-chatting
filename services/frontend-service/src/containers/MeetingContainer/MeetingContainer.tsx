@@ -228,7 +228,7 @@ const MeetingContainer = memo(() => {
             }
 
             if (isMeetingSocketConnected) {
-                if(!isLurker) {
+                if (!isLurker) {
                     await initDevicesEventFxWithStore();
                 }
                 await sendJoinWaitingRoomSocketEvent();

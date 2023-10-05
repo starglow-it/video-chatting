@@ -1,9 +1,13 @@
-import { useStoreMap } from 'effector-react';
+import { useStore, useStoreMap } from 'effector-react';
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
-import { $meetingUsersStore } from 'src/store/roomStores';
+import {
+    $meetingStore,
+    $meetingUsersStore,
+    requestSwitchRoleByHostEvent,
+} from 'src/store/roomStores';
 
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import styles from './MeetingLurker.module.scss';
 import { MeetingUsersListItem } from '../MeetingUsersList/MeetingUsersListItem';
 
@@ -18,6 +22,18 @@ export const MeetingLurkers = () => {
                     user.meetingRole === MeetingRole.Lurker,
             ),
     });
+    const meeting = useStore($meetingStore);
+
+    const handleRequestLurker = useCallback(
+        async ({ userId }: { userId: string }) => {
+            console.log('#Duy Phan console userId', userId);
+            await requestSwitchRoleByHostEvent({
+                meetingId: meeting.id,
+                meetingUserId: userId,
+            });
+        },
+        [],
+    );
 
     const renderUsersList = useMemo(
         () =>
@@ -27,6 +43,8 @@ export const MeetingLurkers = () => {
                     user={user}
                     isLocalItem={false}
                     isOwnerItem={false}
+                    isLurkerRequest
+                    onRequestLurker={handleRequestLurker}
                 />
             )),
         [users],

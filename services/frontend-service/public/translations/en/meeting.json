@@ -55,7 +55,8 @@
     "continue": "Continue",
     "kick": "Kick",
     "stay": "Stay",
-    "lockUp": "Lock Up"
+    "lockUp": "Lock Up",
+    "yes": "Yes"
   },
   "devices": {
     "turnOn":"Turn on",
@@ -107,6 +108,10 @@
     "cancelChanges": {
       "title": "Cancel changes?",
       "text": "If you leave now all the changes be lost"
+    },
+    "becomeParticipant": {
+      "title": "Become a Participant",
+      "text": "Are you want become a Participant by Host?"
     }
   },
   "modes": {

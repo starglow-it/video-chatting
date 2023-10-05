@@ -18,6 +18,8 @@ import { HostIcon } from 'shared-frontend/icons/OtherIcons/HostIcon';
 // stores
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
+import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
+import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { $isMeetingHostStore } from '../../../store/roomStores';
 
 // types
@@ -32,8 +34,10 @@ const Component = ({
     onAcceptUser,
     onDeleteUser,
     onChangeHost,
+    onRequestLurker,
     isLocalItem,
     isOwnerItem,
+    isLurkerRequest = false,
 }: MeetingUsersListItemProps) => {
     const isMeetingHost = useStore($isMeetingHostStore);
     const {
@@ -41,6 +45,10 @@ const Component = ({
     } = useStore($avatarsMeetingStore);
     const handleAcceptRequest = () => {
         onAcceptUser?.({ userId: user.id });
+    };
+
+    const handleRequestLurker = () => {
+        onRequestLurker?.({ userId: user.id });
     };
 
     const handleDeleteRequest = () => {
@@ -84,6 +92,19 @@ const Component = ({
                         className={styles.acceptUser}
                         Icon={<AcceptIcon width="23px" height="23px" />}
                     />
+                </ConditionalRender>
+                <ConditionalRender condition={isLurkerRequest}>
+                    <CustomTooltip
+                        title="Request become a Luker"
+                        placement="bottom"
+                    >
+                        <ActionButton
+                            variant="accept"
+                            onAction={handleRequestLurker}
+                            className={styles.acceptUser}
+                            Icon={<ArrowUp width="15px" height="15px" />}
+                        />
+                    </CustomTooltip>
                 </ConditionalRender>
 
                 <ConditionalRender

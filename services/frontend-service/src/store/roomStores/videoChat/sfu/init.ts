@@ -16,6 +16,7 @@ import {
     initSFUVideoChat,
     changeSFUActiveStreamEvent,
     changeSFUActiveStreamFx,
+    publishTracksEvent,
 } from './model';
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingTemplateStore } from '../../meeting/meetingTemplate/model';
@@ -65,7 +66,7 @@ sample({
 });
 
 sample({
-    clock: connectToSFUFx.doneData,
+    clock: [connectToSFUFx.doneData, publishTracksEvent],
     source: combine({
         stream: $activeStreamStore,
         room: $SFURoom,
