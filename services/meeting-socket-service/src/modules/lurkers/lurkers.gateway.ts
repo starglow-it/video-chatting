@@ -51,7 +51,7 @@ type TRequestSwitchRoleParams = {
   meeting: MeetingDocument;
 };
 
-type TAnswerSwtichRoleParams = {
+type TAnswerSwitchRoleParams = {
   action: AnswerSwitchRoleAction;
 } & TRequestSwitchRoleParams;
 
@@ -188,7 +188,7 @@ export class LurkersGateway extends BaseGateway {
     meetingUser,
     socketEmitterId,
     action,
-  }: TAnswerSwtichRoleParams) {
+  }: TAnswerSwitchRoleParams) {
     const plainMeeting = meetingSerialization(meeting);
     const plainUser = userSerialization(meetingUser);
     const plainUsers = userSerialization(meeting.users);
