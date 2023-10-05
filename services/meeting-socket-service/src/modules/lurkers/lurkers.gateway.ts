@@ -202,6 +202,7 @@ export class LurkersGateway extends BaseGateway {
     return wsResult({
       meeting: plainMeeting,
       user: plainUser,
+      action
     });
   }
 
