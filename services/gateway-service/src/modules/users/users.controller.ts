@@ -29,6 +29,7 @@ import {
   EntityList,
   ICommonUser,
   KickUserReasons,
+  MeetingRole,
   ResponseSumType,
   UserRoles,
 } from 'shared-types';
@@ -467,7 +468,7 @@ export class UsersController {
     description: 'Forbidden',
   })
   async inviteAttendeeByEmail(
-    @Body() data: InviteAttendeeEmailRequest,
+    @Body() body: InviteAttendeeEmailRequest,
     @Request() req,
   ): Promise<void> {
     try {
@@ -483,13 +484,15 @@ export class UsersController {
       }
 
       this.notificationService.sendEmail({
-        to: data.userEmails.map((email) => ({ email, name: email })),
+        to: body.userEmails.map((email) => ({ email, name: email })),
         template: {
           key: emailTemplates.meetingInvite,
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${data.meetingId}`,
+              content: `${this.frontendUrl}/room/${body.meetingId}?role=${
+                body.role ?? MeetingRole.Participant
+              }`,
             },
             { name: 'SENDER', content: `${senderName} (${senderEmail})` },
           ],
@@ -558,7 +561,7 @@ export class UsersController {
       const tzOffset = getTzOffset(startAt, body.timeZone);
       const meetingUrl = `${this.frontendUrl}/room/${
         template.customLink || template.id
-      }`;
+      }?role=${body.role ?? 'participant'}`;
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
