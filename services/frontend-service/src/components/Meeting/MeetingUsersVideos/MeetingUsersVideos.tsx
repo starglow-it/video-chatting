@@ -51,6 +51,7 @@ const Component = () => {
     const activeStream = useStore($activeStreamStore);
     const tracks = useStore($tracksStore);
     console.log('#Duy Phan console tracks', tracks);
+    console.log('#Duy Phan console', activeStream);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);

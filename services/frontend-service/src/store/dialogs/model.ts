@@ -27,6 +27,7 @@ export const initialDialogsState: AppDialogsState = {
     downgradedSubscriptionDialog: false,
     meetingFinishedDialog: false,
     inviteGuestsDialog: false,
+    confirmBecomeParticipantDialog: false,
 };
 
 export const $appDialogsStore =

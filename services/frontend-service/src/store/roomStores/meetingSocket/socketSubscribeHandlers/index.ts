@@ -9,6 +9,8 @@ import { handleRemoveUsers } from './handleRemoveUsers';
 
 // utils
 import { emptyFunction } from '../../../../utils/functions/emptyFunction';
+import { handleAnswerSwitchRole } from './handleAnswerSwitchRole';
+import { handleRequestSwitchRole } from './handleRequestSwitchRole';
 
 type SocketHandlerData = {
     handler: (...args: any[]) => void;
@@ -21,6 +23,14 @@ const USERS_SUBSCRIBE_HANDLERS_REGISTRY: UsersSocketHandlerDataMap = new Map([
     [UsersSubscribeEvents.OnUpdateUsers, { handler: handleUpdateUsers }],
     [UsersSubscribeEvents.OnKickUser, { handler: handleKickUser }],
     [UsersSubscribeEvents.OnUpdateUser, { handler: handleUpdateUser }],
+    [
+        UsersSubscribeEvents.OnAnswerSwitchRole,
+        { handler: handleAnswerSwitchRole },
+    ],
+    [
+        UsersSubscribeEvents.OnRequestSwitchRole,
+        { handler: handleRequestSwitchRole },
+    ],
 ]);
 
 export const getUsersSocketSubscribeHandler = (

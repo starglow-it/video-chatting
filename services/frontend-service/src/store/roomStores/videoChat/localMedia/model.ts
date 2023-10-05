@@ -114,3 +114,7 @@ export const chooseSharingStreamFx = videoChatDomain.createEffect<
     void,
     CustomMediaStream
 >('chooseSharingStreamFx');
+
+export const putStreamToLocalStreamEvent = videoChatDomain.createEvent(
+    'putStreamToLocalStream',
+);
