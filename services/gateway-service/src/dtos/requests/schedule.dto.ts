@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { MeetingRole, ITimestamp } from 'shared-types';
 import { IsTimestamp } from '../../utils/decorators/validators/isTimestamp';
 import { ApiProperty } from '@nestjs/swagger';
@@ -67,7 +67,7 @@ export class ScheduleRequestDto {
   @ApiProperty({
     type: String
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   comment: string;
 
