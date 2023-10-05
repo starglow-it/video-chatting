@@ -108,7 +108,7 @@ export enum FileSizeTypesEnum {
   gigabyte = 'gigabyte',
 }
 
-export type Timestamp = {
+export interface ITimestamp {
   year: number;
   month: number;
   day: number;

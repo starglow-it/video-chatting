@@ -5,7 +5,7 @@ import { IInviteAttendeeEmail, MeetingRole } from 'shared-types';
 
 export class InviteAttendeeEmailRequest implements IInviteAttendeeEmail {
   @ApiProperty({
-    type: String
+    type: [String]
   })
   @IsString({ message: '', each: true })
   readonly userEmails: string[];
