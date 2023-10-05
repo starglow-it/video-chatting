@@ -1,6 +1,6 @@
 export enum LurkerSubscribeEvents {
-  OnRequestRoleByHost = 'users:role:host:request',
-  OnAnswerRequestByLurker = 'users:role:lurker:answer',
-  OnRequestRoleByLurker = 'users:role:lurker:request',
-  OnAnswerRequestByHost = 'users:role:host:answer',
+  OnRequestRoleByHost = 'lurker:role:host:request',
+  OnAnswerRequestByLurker = 'lurker:role:lurker:answer',
+  OnRequestRoleByLurker = 'lurker:role:lurker:request',
+  OnAnswerRequestByHost = 'lurker:role:host:answer',
 }
