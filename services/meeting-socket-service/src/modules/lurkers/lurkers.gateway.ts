@@ -32,18 +32,18 @@ import {
 } from '../../helpers/mongo/withTransaction';
 
 // const
-import { LurkerSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { SwitchRoleByHostRequestDto } from '../../dtos/requests/users/request-switch-role-by-host.dto';
 import { wsResult } from '../../utils/ws/wsResult';
 import { AnswerSwitchRoleByLurkerRequestDto } from '../../dtos/requests/users/answer-switch-role-by-lurker.dto';
-import { LurkerEmitEvents } from '../../const/socket-events/emitters/lurker';
 import { SwitchRoleByLurkerRequestDto } from '../../dtos/requests/users/request-switch-role-by-lurker.dto';
 import { MeetingDocument } from '../../schemas/meeting.schema';
 import { ObjectId } from '../../utils/objectId';
 import { AnswerSwitchRoleByHostRequestDto } from '../../dtos/requests/users/answer-switch-role-by-host.dto';
 import { UsersService } from '../users/users.service';
+import { UsersSubscribeEvents } from 'src/const/socket-events/subscribers';
+import { UserEmitEvents } from 'src/const/socket-events/emitters';
 
 type TRequestSwitchRoleParams = {
   meetingUser: MeetingUserDocument;
@@ -79,7 +79,7 @@ export class LurkersGateway extends BaseGateway {
     const plainUsers = userSerialization(meeting.users);
     const plainUser = userSerialization(meetingUser);
 
-    this.emitToSocketId(socketEmitterId, LurkerEmitEvents.RequestSwitchRole, {
+    this.emitToSocketId(socketEmitterId, UserEmitEvents.RequestSwitchRole, {
       user: plainUser,
       meeting: plainMeeting,
     });
@@ -90,7 +90,7 @@ export class LurkersGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(LurkerSubscribeEvents.OnRequestRoleByLurker)
+  @SubscribeMessage(UsersSubscribeEvents.OnRequestRoleByLurker)
   async requestSwitchRoleByLurker(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: SwitchRoleByLurkerRequestDto,
@@ -143,7 +143,7 @@ export class LurkersGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(LurkerSubscribeEvents.OnRequestRoleByHost)
+  @SubscribeMessage(UsersSubscribeEvents.OnRequestRoleByHost)
   async requestSwitchRoleByHost(
     @ConnectedSocket() socket: Socket,
     @MessageBody() msg: SwitchRoleByHostRequestDto,
@@ -192,7 +192,7 @@ export class LurkersGateway extends BaseGateway {
     const plainMeeting = meetingSerialization(meeting);
     const plainUser = userSerialization(meetingUser);
     const plainUsers = userSerialization(meeting.users);
-    this.emitToSocketId(socketEmitterId, LurkerEmitEvents.AnswerSwitchRole, {
+    this.emitToSocketId(socketEmitterId, UserEmitEvents.AnswerSwitchRole, {
       meeting: plainMeeting,
       users: plainUsers,
       action,
@@ -203,7 +203,7 @@ export class LurkersGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(LurkerSubscribeEvents.OnAnswerRequestByHost)
+  @SubscribeMessage(UsersSubscribeEvents.OnAnswerRequestByHost)
   async answerSwitchRoleByHost(
     @ConnectedSocket() socket: Socket,
     @MessageBody() { action, meetingUserId }: AnswerSwitchRoleByHostRequestDto,
@@ -250,7 +250,7 @@ export class LurkersGateway extends BaseGateway {
     });
   }
 
-  @SubscribeMessage(LurkerSubscribeEvents.OnAnswerRequestByLurker)
+  @SubscribeMessage(UsersSubscribeEvents.OnAnswerRequestByLurker)
   async answerSwitchRoleByLurker(
     @ConnectedSocket() socket: Socket,
     @MessageBody() { action }: AnswerSwitchRoleByLurkerRequestDto,

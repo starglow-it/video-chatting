@@ -3,4 +3,6 @@ export enum UserEmitEvents {
   UpdateUsers = 'users:update',
   RemoveUsers = 'users:remove',
   KickUsers = 'users:kick',
+  AnswerSwitchRole = 'users:switchRole:answer',
+  RequestSwitchRole = 'users:switchRole:request'
 }
