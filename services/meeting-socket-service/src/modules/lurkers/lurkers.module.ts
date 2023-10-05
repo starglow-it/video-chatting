@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { LurkersGateway } from './lurkers.gateway';
-import { MeetingsService } from '../meetings/meetings.service';
+import { UsersModule } from '../users/users.module';
+import { MeetingsModule } from '../meetings/meetings.module';
 
 @Module({
   imports: [
     UsersModule,
-    MeetingsService
+    MeetingsModule
   ],
   providers: [LurkersGateway],
 })
-export class UsersModule {}
+export class LurkerModule {}
