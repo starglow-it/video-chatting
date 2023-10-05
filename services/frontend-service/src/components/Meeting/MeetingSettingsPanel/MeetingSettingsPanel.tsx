@@ -62,6 +62,7 @@ import {
     $isEditTemplateOpenStore,
     $isMeetingInfoOpenStore,
     $isOwner,
+    $roleQueryUrlStore,
     setEditTemplateOpenEvent,
     setMeetingInfoOpenEvent,
 } from '../../../store/roomStores';
@@ -89,9 +90,9 @@ const Component = ({
     const businessCategories = useStore($businessCategoriesStore);
 
     const isOwner = useStore($isOwner);
+    const role = useStore($roleQueryUrlStore);
 
     const router = useRouter();
-    const role = router.query.role as string;
 
     const resolver = useYupValidationResolver<SettingsData>(validationSchema);
 
@@ -154,7 +155,7 @@ const Component = ({
 
             await Router.push(roomUrl, roomUrl, { shallow: true });
         })();
-    }, [template.customLink, template.id, isOwner]);
+    }, [template.customLink, template.id, isOwner, role]);
 
     const dirtyFieldsCount = useMemo(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

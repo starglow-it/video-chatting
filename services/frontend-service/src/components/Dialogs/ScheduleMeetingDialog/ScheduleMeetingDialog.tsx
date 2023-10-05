@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
@@ -94,6 +94,8 @@ const Component = () => {
     );
     const [userEmails, setUserEmails] = useState<string[]>([]);
 
+    const refRole = useRef<any>(null);
+
     const {
         values: { isSettingsOpen, isInviteOpen },
         onSwitchOn: handleOpenOption,
@@ -157,6 +159,7 @@ const Component = () => {
                     comment: data.comment,
                     timeZone: data.timeZone,
                     userEmails,
+                    role: refRole.current?.getValue(),
                 });
 
                 handleClose();
@@ -272,6 +275,7 @@ const Component = () => {
                             <ConditionalRender condition={isInviteOpen}>
                                 <MeetingRoleGroup
                                     className={styles.roleGroup}
+                                    ref={refRole}
                                 />
                             </ConditionalRender>
                             <CustomGrid
