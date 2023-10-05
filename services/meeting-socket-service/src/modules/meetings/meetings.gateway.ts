@@ -78,6 +78,7 @@ import { wsError } from '../../utils/ws/wsError';
 import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
 import { LurkerJoinMeetingDto } from 'src/dtos/requests/lurker-join-meeting.dto';
+import { wsResult } from 'src/utils/ws/wsResult';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -1137,7 +1138,7 @@ export class MeetingsGateway
         );
 
         if (meeting) {
-          await meeting.populate('owner');
+          await meeting.populate('users');
 
           if (meeting?.sharingUserId === user?.id) {
             meeting.sharingUserId = null;
@@ -1156,9 +1157,7 @@ export class MeetingsGateway
           await meeting.save();
         }
 
-        return {
-          success: true,
-        };
+        return wsResult();
       } catch (error) {
         return wsError(socket.id, error);
       }
