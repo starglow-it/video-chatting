@@ -2,6 +2,7 @@ import {
     EntityList,
     ICommonTemplate,
     IUserTemplate,
+    MeetingRole,
     QueryParams,
     RoomType,
 } from 'shared-types';
@@ -40,6 +41,7 @@ export type SendScheduleInvitePayload = {
     startAt: ParsedTimeStamp;
     endAt: ParsedTimeStamp;
     userEmails: string[];
+    role: MeetingRole;
 };
 
 export type PurchaseTemplatePayload = { templateId: ICommonTemplate['id'] };

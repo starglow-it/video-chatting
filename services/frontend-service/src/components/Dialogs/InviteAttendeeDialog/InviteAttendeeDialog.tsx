@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -45,6 +45,8 @@ const Component = () => {
 
     const [userEmails, setUserEmails] = useState<string[]>([]);
 
+    const refRole = useRef<any>(null);
+
     const resolver = useYupValidationResolver<{ currentUserEmail: string }>(
         validationSchema,
     );
@@ -68,6 +70,7 @@ const Component = () => {
                 await sendInviteEmailFx({
                     userEmails,
                     meetingId: router?.query?.token,
+                    role: refRole.current?.getValue()
                 });
                 reset();
                 handleClose();
@@ -118,7 +121,10 @@ const Component = () => {
                             onDeleteUserEmail={handleDeleteUserEmail}
                             userEmails={userEmails}
                         />
-                        <MeetingRoleGroup className={styles.roleGroup} />
+                        <MeetingRoleGroup
+                            className={styles.roleGroup}
+                            ref={refRole}
+                        />
                         <CustomGrid container wrap="nowrap" gap={2}>
                             <CustomButton
                                 label={
