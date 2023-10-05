@@ -44,6 +44,7 @@ import {
 import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
+    $isLurker,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -113,6 +114,7 @@ const MeetingContainer = memo(() => {
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const isLurker = useStore($isLurker);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
@@ -226,7 +228,9 @@ const MeetingContainer = memo(() => {
             }
 
             if (isMeetingSocketConnected) {
-                await initDevicesEventFxWithStore();
+                if(!isLurker) {
+                    await initDevicesEventFxWithStore();
+                }
                 await sendJoinWaitingRoomSocketEvent();
                 if (isOwner) {
                     if (isHasSettings) {

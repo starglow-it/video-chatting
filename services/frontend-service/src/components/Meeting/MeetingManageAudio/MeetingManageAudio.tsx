@@ -107,7 +107,7 @@ const Component = () => {
                             justifyContent="flex-start"
                         >
                             <CustomBox color="white" height={20}>
-                                <MusicIcon width="22px" height="22px" />
+                                <MusicIcon width="24px" height="24px" />
                             </CustomBox>
                             <ConditionalRender condition={isExpand}>
                                 <CustomTypography

@@ -3,8 +3,8 @@
 
 .commonOpenPanel {
     position: absolute;
-    width: rem(35px);
-    left: rem(20px);
+    width: rem(42px);
+    left: rem(25px);
     top: 15%;
     -webkit-transition: all 0.4s;
     -moz-transition: all 0.4s;
@@ -20,7 +20,7 @@
     }
 
     .headers:not(.expanded) {
-        padding-left: rem(6px);
+        padding-left: rem(9px);
         width: 100%;
     }
 
@@ -44,8 +44,8 @@
     max-height: 425px;
 
     .summary {
-        min-height: 35px;
-        height: 35px;
+        min-height: 42px;
+        height: 42px;
         padding: 0;
     }
 
