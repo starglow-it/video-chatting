@@ -74,11 +74,13 @@ changeHostSocketEvent.failData.watch(data => {
 answerRequestByLurkerEvent.doneData.watch(async data => {
     if (data) {
         console.log('#Duy Phan console answer', data);
-        await initDevicesEventFxWithStore();
-        setRoleQueryUrlEvent(null);
-        updateMeetingEvent({ meeting: data?.meeting });
-        updateMeetingUserEvent({ user: data?.user });
-        publishTracksEvent();
-        putStreamToLocalStreamEvent();
+        if (data?.action === AnswerSwitchRoleAction.Accept) {
+            await initDevicesEventFxWithStore();
+            setRoleQueryUrlEvent(null);
+            updateMeetingEvent({ meeting: data?.meeting });
+            updateMeetingUserEvent({ user: data?.user });
+            publishTracksEvent();
+            putStreamToLocalStreamEvent();
+        }
     }
 });
