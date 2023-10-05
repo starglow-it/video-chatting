@@ -14,6 +14,7 @@ import { BaseGateway } from '../../gateway/base.gateway';
 // types
 import {
   AnswerSwitchRoleAction,
+  MeetingAccessStatusEnum,
   MeetingRole,
 } from 'shared-types';
 
@@ -21,15 +22,11 @@ import {
 import { MeetingsService } from '../meetings/meetings.service';
 
 // dtos
-import {
-  userSerialization,
-} from '../../dtos/response/common-user.dto';
+import { userSerialization } from '../../dtos/response/common-user.dto';
 import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
 
 // helpers
-import {
-  withTransaction,
-} from '../../helpers/mongo/withTransaction';
+import { withTransaction } from '../../helpers/mongo/withTransaction';
 
 // const
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
@@ -44,6 +41,7 @@ import { AnswerSwitchRoleByHostRequestDto } from '../../dtos/requests/users/answ
 import { UsersService } from '../users/users.service';
 import { UsersSubscribeEvents } from 'src/const/socket-events/subscribers';
 import { UserEmitEvents } from 'src/const/socket-events/emitters';
+import { CoreService } from 'src/services/core/core.service';
 
 type TRequestSwitchRoleParams = {
   meetingUser: MeetingUserDocument;
@@ -63,8 +61,9 @@ type TAnswerSwitchRoleParams = {
 })
 export class LurkersGateway extends BaseGateway {
   constructor(
-    private meetingsService: MeetingsService,
-    private usersService: UsersService,
+    private readonly meetingsService: MeetingsService,
+    private readonly usersService: UsersService,
+    private readonly coreService: CoreService,
     @InjectConnection() private connection: Connection,
   ) {
     super();
@@ -75,6 +74,7 @@ export class LurkersGateway extends BaseGateway {
     meeting,
     socketEmitterId,
   }: TRequestSwitchRoleParams) {
+    await meeting.populate('users');
     const plainMeeting = meetingSerialization(meeting);
     const plainUsers = userSerialization(meeting.users);
     const plainUser = userSerialization(meetingUser);
@@ -189,12 +189,14 @@ export class LurkersGateway extends BaseGateway {
     socketEmitterId,
     action,
   }: TAnswerSwitchRoleParams) {
+    await meeting.populate('users');
     const plainMeeting = meetingSerialization(meeting);
     const plainUser = userSerialization(meetingUser);
     const plainUsers = userSerialization(meeting.users);
     this.emitToSocketId(socketEmitterId, UserEmitEvents.AnswerSwitchRole, {
       meeting: plainMeeting,
       users: plainUsers,
+      user: plainUser,
       action,
     });
     return wsResult({
@@ -206,18 +208,42 @@ export class LurkersGateway extends BaseGateway {
   @SubscribeMessage(UsersSubscribeEvents.OnAnswerRequestByHost)
   async answerSwitchRoleByHost(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() { action, meetingUserId }: AnswerSwitchRoleByHostRequestDto,
+    @MessageBody()
+    { action, meetingUserId, meetingId }: AnswerSwitchRoleByHostRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
+        const meeting = await this.meetingsService.findById(meetingId);
+        if (!meeting) {
+          return wsError(socket.id, {
+            message: 'No meeting found',
+          });
+        }
+
+        const userTemplate = await this.coreService.findMeetingTemplateById({
+          id: meeting.templateId,
+        });
+
+        if (!userTemplate) {
+          return wsError(socket.id, 'User template not found');
+        }
+
+        const index = userTemplate.indexUsers.indexOf(null);
+        if (index === -1) {
+          return wsError(socket.id, 'meeting.maxParticipantsNumber');
+        }
+
         const meetingUser = await this.usersService.findOneAndUpdate(
           {
             _id: new ObjectId(meetingUserId),
             meetingRole: MeetingRole.Lurker,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
           },
           {
             ...(action === AnswerSwitchRoleAction.Accept && {
               meetingRole: MeetingRole.Participant,
+              userPosition: userTemplate.usersPosition[index],
+              userSize: userTemplate.usersSize[index],
             }),
           },
           session,
@@ -225,16 +251,6 @@ export class LurkersGateway extends BaseGateway {
         if (!meetingUser) {
           return wsError(socket.id, {
             message: 'No meeting user found',
-          });
-        }
-
-        await meetingUser.populate(['meeting']);
-
-        const meeting = meetingUser.meeting;
-
-        if (!meeting) {
-          return wsError(socket.id, {
-            message: 'No meeting found',
           });
         }
 
@@ -253,10 +269,30 @@ export class LurkersGateway extends BaseGateway {
   @SubscribeMessage(UsersSubscribeEvents.OnAnswerRequestByLurker)
   async answerSwitchRoleByLurker(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() { action }: AnswerSwitchRoleByLurkerRequestDto,
+    @MessageBody() { action, meetingId }: AnswerSwitchRoleByLurkerRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
+        const meeting = await this.meetingsService.findById(meetingId);
+        if (!meeting) {
+          return wsError(socket.id, {
+            message: 'No meeting found',
+          });
+        }
+
+        const userTemplate = await this.coreService.findMeetingTemplateById({
+          id: meeting.templateId,
+        });
+
+        if (!userTemplate) {
+          return wsError(socket.id, 'User template not found');
+        }
+
+        const index = userTemplate.indexUsers.indexOf(null);
+        if (index === -1) {
+          return wsError(socket.id, 'meeting.maxParticipantsNumber');
+        }
+
         const meetingUser = await this.usersService.findOneAndUpdate(
           {
             socketId: socket.id,
@@ -265,23 +301,16 @@ export class LurkersGateway extends BaseGateway {
           {
             ...(action === AnswerSwitchRoleAction.Accept && {
               meetingRole: MeetingRole.Participant,
+              userPosition: userTemplate.usersPosition[index],
+              userSize: userTemplate.usersSize[index],
             }),
           },
           session,
         );
+
         if (!meetingUser) {
           return wsError(socket.id, {
             message: 'No meeting user found',
-          });
-        }
-
-        await meetingUser.populate(['meeting']);
-
-        const meeting = meetingUser.meeting;
-
-        if (!meeting) {
-          return wsError(socket.id, {
-            message: 'No meeting found',
           });
         }
 
@@ -297,8 +326,6 @@ export class LurkersGateway extends BaseGateway {
             message: 'Host not found',
           });
         }
-
-        await meeting.populate(['users']);
 
         return await this.answerSwitchRoleRequest({
           meeting,

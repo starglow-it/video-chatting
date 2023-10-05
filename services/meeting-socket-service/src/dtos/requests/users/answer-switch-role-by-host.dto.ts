@@ -9,4 +9,8 @@ export class AnswerSwitchRoleByHostRequestDto {
   @IsNotEmpty()
   @IsString()
   action: AnswerSwitchRoleAction;
+
+  @IsNotEmpty()
+  @IsString()
+  meetingId: string;
 }

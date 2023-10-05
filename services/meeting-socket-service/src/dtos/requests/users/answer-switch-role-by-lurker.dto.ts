@@ -5,4 +5,8 @@ export class AnswerSwitchRoleByLurkerRequestDto {
   @IsNotEmpty()
   @IsString()
   action: AnswerSwitchRoleAction;
+
+  @IsNotEmpty()
+  @IsString()
+  meetingId: string;
 }

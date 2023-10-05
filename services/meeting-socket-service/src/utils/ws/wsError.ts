@@ -1,12 +1,20 @@
-import { Socket } from 'socket.io';
+type WsError = {
+  success: false,
+  message?: string
+};
 
-export const wsError = (clientId: string, error: unknown) => {
+export function wsError(clientId: string, message: string): WsError;
+export function wsError(clientId: string, error: unknown): WsError;
+export function wsError(clientId: string, error?: unknown, message?: string): WsError {
   console.error({
     ctx: clientId ? clientId : 'unknow',
     error,
   });
 
   return {
-    success: false
+    success: false,
+    ...(message && {
+      message,
+    }),
   };
-};
+}

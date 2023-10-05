@@ -118,6 +118,7 @@ export class UsersService {
     return this.meetingUser.find(query, {}, { session }).exec();
   }
 
+
   async updateIndexUsers({
     userTemplate,
     user,
