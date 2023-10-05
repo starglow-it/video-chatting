@@ -7,6 +7,7 @@ export type UpdateMeetingUserPayload = { user: MeetingUser };
 export type RequestSwitchRolePayload = { user: MeetingUser; meeting: Meeting };
 export type AnswerSwitchRolePayload = {
     meeting: Meeting;
+    user: MeetingUser;
     users: MeetingUser[];
     action: AnswerSwitchRoleAction;
 };

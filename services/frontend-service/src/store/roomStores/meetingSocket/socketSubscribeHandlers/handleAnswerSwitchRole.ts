@@ -14,7 +14,7 @@ export const handleAnswerSwitchRole = async (data: AnswerSwitchRolePayload) => {
             break;
         case AnswerSwitchRoleAction.Rejected:
             addNotificationEvent({
-                message: 'User rejected',
+                message: `User "${data.user.username}" rejected request become a Participant`,
                 withErrorIcon: true,
                 type: NotificationType.validationError,
             });
