@@ -68,17 +68,6 @@ export enum MeetingAccessStatusEnum {
   Disconnected = 'disconnected',
 }
 
-export enum MeetingSwtichRoleStatus {
-  HostRequest = 'hostRequest',
-  LurkerRequest = 'lurkerRequest',
-  NoRequest = 'noRequest',
-}
-
-export enum RequestSwitchRoleAction {
-  Request = 'request',
-  Canceled = 'canceled',
-}
-
 export enum AnswerSwitchRoleAction {
   Accept = 'accept',
   Rejected = 'rejected'

@@ -1,8 +1,8 @@
 import { Socket } from 'socket.io';
 
-export const wsError = (client: Socket, error: unknown) => {
+export const wsError = (clientId: string, error: unknown) => {
   console.error({
-    ctx: client ? client.id : 'unknow',
+    ctx: clientId ? clientId : 'unknow',
     error,
   });
 

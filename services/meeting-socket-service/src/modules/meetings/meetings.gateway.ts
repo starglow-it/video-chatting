@@ -217,7 +217,7 @@ export class MeetingsGateway
           ],
         });
         if (!user) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'No user found',
           });
         }
@@ -231,7 +231,7 @@ export class MeetingsGateway
         });
 
         if (!userTemplate) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'User template not found',
           });
         }
@@ -285,7 +285,7 @@ export class MeetingsGateway
         });
       });
     } catch (error) {
-      return wsError(client, error);
+      return wsError(client.id, error);
     }
   }
 
@@ -318,7 +318,7 @@ export class MeetingsGateway
         });
 
         if (!template) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No template found',
           });
         }
@@ -344,7 +344,7 @@ export class MeetingsGateway
         }
 
         if (!meeting) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: '[handleJoinWaitingRoom] no meeting found',
           });
         }
@@ -436,7 +436,7 @@ export class MeetingsGateway
           },
         };
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }
@@ -475,7 +475,7 @@ export class MeetingsGateway
         });
 
         if (!template) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No template found',
           });
         }
@@ -486,7 +486,7 @@ export class MeetingsGateway
 
         const index = template.indexUsers.indexOf(null);
         if (!(index + 1)) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'The meeting has reached its limit of participants',
           });
         }
@@ -603,7 +603,7 @@ export class MeetingsGateway
           },
         };
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }
@@ -649,7 +649,7 @@ export class MeetingsGateway
             });
 
             if (!meetingAvatar) {
-              return wsError(socket, {
+              return wsError(socket.id, {
                 message: 'Meeting Avatar not found',
               });
             }
@@ -720,7 +720,7 @@ export class MeetingsGateway
             },
           };
         } catch (error) {
-          return wsError(socket, error);
+          return wsError(socket.id, error);
         }
       },
     );
@@ -788,7 +788,7 @@ export class MeetingsGateway
           },
         };
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }
@@ -810,7 +810,7 @@ export class MeetingsGateway
           session,
         );
         if (!meeting) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No meeting found',
           });
         }
@@ -831,7 +831,7 @@ export class MeetingsGateway
           });
 
           if (!meetingAvatar) {
-            return wsError(socket, {
+            return wsError(socket.id, {
               message: 'Meeting Avatar not found',
             });
           }
@@ -849,7 +849,7 @@ export class MeetingsGateway
         );
 
         if (!mU) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No user found',
           });
         }
@@ -862,7 +862,7 @@ export class MeetingsGateway
         });
 
         if (!host) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'Host not found',
           });
         }
@@ -885,7 +885,7 @@ export class MeetingsGateway
           },
         };
       } catch (err) {
-        return wsError(socket, err);
+        return wsError(socket.id, err);
       }
     });
   }
@@ -941,7 +941,7 @@ export class MeetingsGateway
         }
 
         if (!plainUser) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No user found',
           });
         }
@@ -978,7 +978,7 @@ export class MeetingsGateway
           user: plainUser,
         });
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }
@@ -1038,7 +1038,7 @@ export class MeetingsGateway
         }
 
         if (!meeting) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'Meeting not found',
           });
         }
@@ -1076,7 +1076,7 @@ export class MeetingsGateway
         };
       });
     } catch (error) {
-      return wsError(socket, error);
+      return wsError(socket.id, error);
     }
   }
 
@@ -1114,7 +1114,7 @@ export class MeetingsGateway
         });
 
         if (!user) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No user found',
           });
         }
@@ -1160,7 +1160,7 @@ export class MeetingsGateway
           success: true,
         };
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }
@@ -1190,13 +1190,13 @@ export class MeetingsGateway
           session,
         );
         if (!user) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'No user found',
           });
         }
         await user.populate(['meeting']);
         if (!user.meeting) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'No meeting found',
           });
         }
@@ -1204,7 +1204,7 @@ export class MeetingsGateway
           id: user.meeting.templateId,
         });
         if (!userTemplate) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'No user template found',
           });
         }
@@ -1257,7 +1257,7 @@ export class MeetingsGateway
           },
         };
       } catch (err) {
-        return wsError(client, err);
+        return wsError(client.id, err);
       }
     });
   }
@@ -1272,7 +1272,7 @@ export class MeetingsGateway
         const user = await this.usersService.findById(message.userId, session);
 
         if (!user) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: '[changeHost]: no user found',
           });
         }
@@ -1448,7 +1448,7 @@ export class MeetingsGateway
           );
         }
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }
@@ -1472,7 +1472,7 @@ export class MeetingsGateway
         });
 
         if (!user) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'The Meeting user not found',
           });
         }
@@ -1493,7 +1493,7 @@ export class MeetingsGateway
           },
         );
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }
@@ -1625,7 +1625,7 @@ export class MeetingsGateway
           },
         );
       } catch (error) {
-        return wsError(socket, error);
+        return wsError(socket.id, error);
       }
     });
   }

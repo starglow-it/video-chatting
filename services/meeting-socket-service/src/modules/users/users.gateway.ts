@@ -15,11 +15,8 @@ import { BaseGateway } from '../../gateway/base.gateway';
 // types
 import {
   AnswerSwitchRoleAction,
-  IUserTemplate,
   MeetingAccessStatusEnum,
-  MeetingSwtichRoleStatus,
   MeetingRole,
-  RequestSwitchRoleAction,
   ResponseSumType,
 } from 'shared-types';
 
@@ -27,8 +24,6 @@ import {
 import { MeetingsService } from '../meetings/meetings.service';
 import { UsersService } from './users.service';
 import { CoreService } from '../../services/core/core.service';
-import { MeetingTimeService } from '../meeting-time/meeting-time.service';
-import { TasksService } from '../tasks/tasks.service';
 
 // dtos
 import { UpdateUserRequestDTO } from '../../dtos/requests/users/update-user.dto';
@@ -50,14 +45,28 @@ import {
   MeetingEmitEvents,
   UserEmitEvents,
 } from '../../const/socket-events/emitters';
-import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
+import { LurkerSubscribeEvents, UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../../types';
 import { wsError } from '../../utils/ws/wsError';
-import { SwtichRoleRequestDto } from '../../dtos/requests/users/request-switch-role.dto';
+import { SwitchRoleByHostRequestDto } from '../../dtos/requests/users/request-switch-role-by-host.dto';
 import { wsResult } from '../../utils/ws/wsResult';
-import { AnswerSwitchRoleRequestDto } from '../../dtos/requests/users/answer-switch-role.dto';
+import { AnswerSwitchRoleByLurkerRequestDto } from '../../dtos/requests/users/answer-switch-role-by-lurker.dto';
+import { LurkerEmitEvents } from '../../const/socket-events/emitters/lurker';
+import { SwitchRoleByLurkerRequestDto } from '../../dtos/requests/users/request-switch-role-by-lurker.dto';
+import { MeetingDocument } from '../../schemas/meeting.schema';
+import { ObjectId } from '../../utils/objectId';
+import { AnswerSwitchRoleByHostRequestDto } from '../../dtos/requests/users/answer-switch-role-by-host.dto';
 
+type TRequestSwitchRoleParams = {
+  meetingUser: MeetingUserDocument;
+  socketEmitterId: string;
+  meeting: MeetingDocument;
+};
+
+type TAnswerSwtichRoleParams = {
+  action: AnswerSwitchRoleAction;
+} & TRequestSwitchRoleParams;
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -144,7 +153,7 @@ export class UsersGateway extends BaseGateway {
         );
 
         if (!user) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'Meeting user not found',
           });
         }
@@ -196,7 +205,7 @@ export class UsersGateway extends BaseGateway {
           },
         });
       } catch (err) {
-        return wsError(client, err);
+        return wsError(client.id, err);
       }
     });
   }
@@ -216,7 +225,7 @@ export class UsersGateway extends BaseGateway {
         const user = await this.usersService.findById(message.id, session);
 
         if (!user) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'Meeting user not found',
           });
         }
@@ -284,22 +293,56 @@ export class UsersGateway extends BaseGateway {
           });
         }
       } catch (err) {
-        return wsError(client, err);
+        return wsError(client.id, err);
       }
     });
   }
 
-  @SubscribeMessage(UsersSubscribeEvents.OnRequestRoleByHost)
-  async toggleInviteParticipant(
+  async sendSwtichRoleRequest({
+    meetingUser,
+    meeting,
+    socketEmitterId,
+  }: TRequestSwitchRoleParams) {
+    const plainMeeting = meetingSerialization(meeting);
+    const plainUsers = userSerialization(meeting.users);
+    const plainUser = userSerialization(meetingUser);
+
+    this.emitToSocketId(socketEmitterId, LurkerEmitEvents.RequestSwitchRole, {
+      user: plainUser,
+      meeting: plainMeeting,
+    });
+
+    return wsResult({
+      meeting: plainMeeting,
+      users: plainUsers,
+    });
+  }
+
+  @SubscribeMessage(LurkerSubscribeEvents.OnRequestRoleByLurker)
+  async requestSwitchRoleByLurker(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() msg: SwtichRoleRequestDto,
+    @MessageBody() msg: SwitchRoleByLurkerRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      const { action, meetingId, meetingUserId } = msg;
+      const { meetingId } = msg;
       try {
+        const meetingUser = await this.usersService.findOne({
+          query: {
+            socketId: socket.id,
+            meetingRole: MeetingRole.Lurker,
+          },
+          session,
+        });
+
+        if (!meetingUser) {
+          return wsError(socket.id, {
+            message: 'User not found',
+          });
+        }
+
         const meeting = await this.meetingsService.findById(meetingId, session);
         if (!meeting) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No meeting found',
           });
         }
@@ -312,127 +355,187 @@ export class UsersGateway extends BaseGateway {
         });
 
         if (!host) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'Host not found',
           });
         }
 
-        if (host.socketId !== socket.id && host.socketId === meetingUserId) {
-          return wsError(socket, {
-            message: 'User not have permission',
-          });
-        }
-
-        const switchRoleStatus =
-          action === RequestSwitchRoleAction.Request
-            ? {
-                from: MeetingSwtichRoleStatus.NoRequest,
-                to: MeetingSwtichRoleStatus.HostRequest,
-              }
-            : {
-                from: MeetingSwtichRoleStatus.HostRequest,
-                to: MeetingSwtichRoleStatus.NoRequest,
-              };
-
-        const mU = await this.usersService.findOneAndUpdate(
-          {
-            meetingRole: MeetingRole.Lurker,
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
-            switchRoleStatus: switchRoleStatus.from,
-            _id: msg.meetingUserId,
-          },
-          {
-            switchRoleStatus: switchRoleStatus.to,
-          },
-          session,
-        );
-        if (!mU) {
-          return wsError(socket, {
-            message: 'Invalid meeting user updated',
-          });
-        }
-
-        await meeting.populate(['users']);
-
-        const plainMeeting = meetingSerialization(meeting);
-        const plainUsers = userSerialization(meeting.users);
-        const plainUser = userSerialization(mU);
-
-        this.emitToSocketId(plainUser.socketId, UserEmitEvents.UpdateUser, {
-          user: plainUser,
-          meeting: plainMeeting,
-        });
-
-        return wsResult({
-          meeting: plainMeeting,
-          users: plainUsers,
+        return await this.sendSwtichRoleRequest({
+          meetingUser,
+          meeting,
+          socketEmitterId: host.socketId,
         });
       } catch (err) {
-        return wsError(socket, err);
+        return wsError(socket.id, err);
       }
     });
   }
 
-  @SubscribeMessage(UsersSubscribeEvents.OnAnswerRequestByLurker)
-  async answerToParticipantInvitation(
+  @SubscribeMessage(LurkerSubscribeEvents.OnRequestRoleByHost)
+  async requestSwitchRoleByHost(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() msg: AnswerSwitchRoleRequestDto,
+    @MessageBody() msg: SwitchRoleByHostRequestDto,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const { meetingId, meetingUserId } = msg;
+      try {
+        const meetingUser = await this.usersService.findOne({
+          query: {
+            _id: new ObjectId(meetingUserId),
+            meetingRole: MeetingRole.Lurker,
+          },
+          session,
+        });
+
+        if (!meetingUser) {
+          return wsError(socket.id, {
+            message: 'User not found',
+          });
+        }
+
+        const meeting = await this.meetingsService.findById(meetingId, session);
+        if (!meeting) {
+          return wsError(socket.id, {
+            message: 'No meeting found',
+          });
+        }
+
+        return await this.sendSwtichRoleRequest({
+          meeting,
+          meetingUser,
+          socketEmitterId: meetingUser.socketId,
+        });
+      } catch (err) {
+        return wsError(socket.id, err);
+      }
+    });
+  }
+
+  async answerSwitchRoleRequest({
+    meeting,
+    meetingUser,
+    socketEmitterId,
+    action,
+  }: TAnswerSwtichRoleParams) {
+    const plainMeeting = meetingSerialization(meeting);
+    const plainUser = userSerialization(meetingUser);
+    const plainUsers = userSerialization(meeting.users);
+    this.emitToSocketId(socketEmitterId, LurkerEmitEvents.AnswerSwitchRole, {
+      meeting: plainMeeting,
+      users: plainUsers,
+      action,
+    });
+    return wsResult({
+      meeting: plainMeeting,
+      user: plainUser,
+    });
+  }
+
+  @SubscribeMessage(LurkerSubscribeEvents.OnAnswerRequestByHost)
+  async answerSwitchRoleByHost(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() { action, meetingUserId }: AnswerSwitchRoleByHostRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
       try {
-        const mU = await this.usersService.findOneAndUpdate(
+        const meetingUser = await this.usersService.findOneAndUpdate(
           {
-            socketId: socket.id,
-            switchRoleStatus: MeetingSwtichRoleStatus.HostRequest,
+            _id: new ObjectId(meetingUserId),
+            meetingRole: MeetingRole.Lurker,
           },
           {
-            switchRoleStatus: MeetingSwtichRoleStatus.NoRequest,
-            ...(msg.action === AnswerSwitchRoleAction.Accept && {
+            ...(action === AnswerSwitchRoleAction.Accept && {
               meetingRole: MeetingRole.Participant,
             }),
           },
           session,
         );
-        if (!mU) {
-          return wsError(socket, {
+        if (!meetingUser) {
+          return wsError(socket.id, {
             message: 'No meeting user found',
           });
         }
 
-        await mU.populate(['meeting']);
+        await meetingUser.populate(['meeting']);
 
-        if (!mU.meeting) {
-          return wsError(socket, {
-            message: 'No meeitng found',
+        const meeting = meetingUser.meeting;
+
+        if (!meeting) {
+          return wsError(socket.id, {
+            message: 'No meeting found',
           });
         }
-        await mU.meeting.populate(['users']);
+
+        return await this.answerSwitchRoleRequest({
+          meeting,
+          meetingUser,
+          action,
+          socketEmitterId: meetingUser.socketId,
+        });
+      } catch (err) {
+        return wsError(socket.id, err);
+      }
+    });
+  }
+
+  @SubscribeMessage(LurkerSubscribeEvents.OnAnswerRequestByLurker)
+  async answerSwitchRoleByLurker(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() { action }: AnswerSwitchRoleByLurkerRequestDto,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      try {
+        const meetingUser = await this.usersService.findOneAndUpdate(
+          {
+            socketId: socket.id,
+            meetingRole: MeetingRole.Lurker,
+          },
+          {
+            ...(action === AnswerSwitchRoleAction.Accept && {
+              meetingRole: MeetingRole.Participant,
+            }),
+          },
+          session,
+        );
+        if (!meetingUser) {
+          return wsError(socket.id, {
+            message: 'No meeting user found',
+          });
+        }
+
+        await meetingUser.populate(['meeting']);
+
+        const meeting = meetingUser.meeting;
+
+        if (!meeting) {
+          return wsError(socket.id, {
+            message: 'No meeting found',
+          });
+        }
 
         const host = await this.usersService.findOne({
           query: {
-            _id: mU.meeting.hostUserId,
+            _id: meeting.hostUserId,
           },
           session,
         });
 
         if (!host) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'Host not found',
           });
         }
 
-        const plainMeeting = meetingSerialization(mU.meeting);
-        const plainUser = userSerialization(mU);
-        const plainUsers = userSerialization(mU.meeting.users);
-        this.emitToSocketId(host.socketId, UserEmitEvents.UpdateUsers, {
-          users: plainUsers,
-        });
-        return wsResult({
-          meeting: plainMeeting,
-          user: plainUser,
+        await meeting.populate(['users']);
+
+        return await this.answerSwitchRoleRequest({
+          meeting,
+          meetingUser,
+          action,
+          socketEmitterId: host.socketId,
         });
       } catch (err) {
-        return wsError(socket, err);
+        return wsError(socket.id, err);
       }
     });
   }

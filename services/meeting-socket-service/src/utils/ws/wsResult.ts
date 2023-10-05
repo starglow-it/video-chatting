@@ -1,1 +1,1 @@
-export const wsResult = (data: unknown) => ({ success: true, result: data });
+export const wsResult = (data?: unknown) => ({ success: true, ...(data && {result: data}) });
