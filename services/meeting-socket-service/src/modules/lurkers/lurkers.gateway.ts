@@ -232,6 +232,7 @@ export class LurkersGateway extends BaseGateway {
     return wsResult({
       meeting: plainMeeting,
       user: plainUser,
+      users: plainUsers,
       action,
     });
   }
@@ -270,11 +271,17 @@ export class LurkersGateway extends BaseGateway {
           {
             _id: new ObjectId(meetingUserId),
             meetingRole: MeetingRole.Lurker,
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
+            accessStatus: {
+              $in: [
+                MeetingAccessStatusEnum.InMeeting,
+                MeetingAccessStatusEnum.SwitchRoleSent,
+              ],
+            },
           },
           {
             ...(action === AnswerSwitchRoleAction.Accept && {
               meetingRole: MeetingRole.Participant,
+              accessStatus: MeetingAccessStatusEnum.InMeeting,
               userPosition: userTemplate.usersPosition[index],
               userSize: userTemplate.usersSize[index],
             }),
