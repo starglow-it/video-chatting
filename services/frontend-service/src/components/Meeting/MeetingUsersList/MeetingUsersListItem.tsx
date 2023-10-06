@@ -95,7 +95,7 @@ const Component = ({
                 </ConditionalRender>
                 <ConditionalRender condition={isLurkerRequest}>
                     <CustomTooltip
-                        title="Request become a Luker"
+                        title="Request become a Participant"
                         placement="bottom"
                     >
                         <ActionButton

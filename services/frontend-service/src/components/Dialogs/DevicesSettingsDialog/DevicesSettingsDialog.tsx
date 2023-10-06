@@ -36,7 +36,6 @@ import {
     $isBackgroundAudioActive,
     $isCameraActiveStore,
     $isMicActiveStore,
-    $isStreamRequestedStore,
     $localUserStore,
     $meetingTemplateStore,
     $videoDevicesStore,
@@ -46,9 +45,9 @@ import {
     setActiveStreamEvent,
     setBackgroundAudioActive,
     setBackgroundAudioVolume,
-    setDevicesPermission,
+    setIsAudioActiveEvent,
     setIsAuraActive,
-    toggleLocalDeviceEvent,
+    setIsCameraActiveEvent,
     updateLocalUserEvent,
     updateUserSocketEvent,
 } from '../../../store/roomStores';
@@ -74,7 +73,6 @@ const Component = () => {
     const changeStream = useStore($changeStreamStore);
     const isCameraActive = useStore($isCameraActiveStore);
     const isMicActive = useStore($isMicActiveStore);
-    const isStreamRequested = useStore($isStreamRequestedStore);
     const isAuraActive = useStore($isAuraActive);
     const videoDevices = useStore($videoDevicesStore);
     const audioDevices = useStore($audioDevicesStore);
@@ -141,22 +139,6 @@ const Component = () => {
     }, [devicesSettingsDialog]);
 
     useEffect(() => {
-        if (!isStreamRequested) {
-            toggleLocalDeviceEvent({
-                isCamEnabled: localUser.cameraStatus !== 'inactive',
-            });
-            toggleLocalDeviceEvent({
-                isMicEnabled: localUser.micStatus !== 'inactive',
-            });
-        }
-    }, [
-        localUser.cameraStatus,
-        localUser.micStatus,
-        devicesSettingsDialog,
-        isStreamRequested,
-    ]);
-
-    useEffect(() => {
         setVolume(backgroundAudioVolume);
     }, [backgroundAudioVolume]);
 
@@ -182,22 +164,15 @@ const Component = () => {
                 isAuraActive: isAuraEnabled,
                 meetingAvatarId: avatarTmp ?? undefined,
             });
+            setIsCameraActiveEvent(isNewCameraSettingActive);
+            setIsAudioActiveEvent(isNewMicSettingActive);
 
             await updateUserSocketEvent({
                 isAuraActive: isAuraEnabled,
                 meetingAvatarId: avatarTmp ?? undefined,
             });
 
-            toggleLocalDeviceEvent({
-                isCamEnabled: isNewCameraSettingActive,
-            });
-            toggleLocalDeviceEvent({
-                isMicEnabled: isNewMicSettingActive,
-            });
-            setDevicesPermission({
-                isMicEnabled: isNewCameraSettingActive,
-            });
-
+            
             if (isAuraEnabled) {
                 const clonedStream = changeStream?.clone();
 
@@ -218,11 +193,6 @@ const Component = () => {
 
             appDialogsApi.closeDialog({
                 dialogKey: AppDialogsEnum.devicesSettingsDialog,
-            });
-
-            updateLocalUserEvent({
-                cameraStatus: isNewCameraSettingActive ? 'active' : 'inactive',
-                micStatus: isNewMicSettingActive ? 'active' : 'inactive',
             });
 
             addNotificationEvent({
