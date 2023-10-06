@@ -9,7 +9,9 @@ import { setRoleQueryUrlEvent } from '../../meeting/meetingRole/model';
 import { publishTracksEvent } from '../../videoChat/sfu/model';
 import { putStreamToLocalStreamEvent } from '../../videoChat/localMedia/model';
 
-export const handleReceiveAnswerSwitchRoleFromHost = async (data: AnswerSwitchRolePayload) => {
+export const handleReceiveAnswerSwitchRoleFromHost = async (
+    data: AnswerSwitchRolePayload,
+) => {
     switch (data.action) {
         case AnswerSwitchRoleAction.Accept:
             await initDevicesEventFxWithStore();

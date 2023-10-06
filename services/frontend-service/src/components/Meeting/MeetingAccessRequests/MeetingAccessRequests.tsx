@@ -9,10 +9,15 @@ import { CustomDivider } from 'shared-frontend/library/custom/CustomDivider';
 import { MeetingUsersListItem } from '@components/Meeting/MeetingUsersList/MeetingUsersListItem';
 
 // stores
-import { MeetingAccessStatusEnum } from 'shared-types';
+import {
+    AnswerSwitchRoleAction,
+    MeetingAccessStatusEnum,
+    MeetingRole,
+} from 'shared-types';
 import {
     $meetingUsersStore,
     sendAnswerAccessMeetingRequestEvent,
+    sendAnswerRequestByHostEvent,
 } from '../../../store/roomStores';
 
 // types
@@ -28,7 +33,9 @@ const Component = () => {
         fn: state =>
             state.filter(
                 user =>
-                    user.accessStatus === MeetingAccessStatusEnum.RequestSent,
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSent ||
+                    user.accessStatus ===
+                        MeetingAccessStatusEnum.SwitchRoleSent,
             ),
     });
 
@@ -38,10 +45,18 @@ const Component = () => {
         }: {
             userId: MeetingUser['id'];
         }) => {
-            sendAnswerAccessMeetingRequestEvent({
-                isUserAccepted: true,
-                userId,
-            });
+            const user = requestUsers.find(item => item.id === userId);
+            if (user?.meetingRole === MeetingRole.Participant) {
+                sendAnswerAccessMeetingRequestEvent({
+                    isUserAccepted: true,
+                    userId,
+                });
+            } else {
+                sendAnswerRequestByHostEvent({
+                    action: AnswerSwitchRoleAction.Accept,
+                    userId,
+                });
+            }
         };
 
         const handleRejectUser = ({
@@ -49,10 +64,18 @@ const Component = () => {
         }: {
             userId: MeetingUser['id'];
         }) => {
-            sendAnswerAccessMeetingRequestEvent({
-                isUserAccepted: false,
-                userId,
-            });
+            const user = requestUsers.find(item => item.id === userId);
+            if (user?.meetingRole === MeetingRole.Participant) {
+                sendAnswerAccessMeetingRequestEvent({
+                    isUserAccepted: false,
+                    userId,
+                });
+            } else {
+                sendAnswerRequestByHostEvent({
+                    action: AnswerSwitchRoleAction.Rejected,
+                    userId,
+                });
+            }
         };
 
         return requestUsers.map(user => (

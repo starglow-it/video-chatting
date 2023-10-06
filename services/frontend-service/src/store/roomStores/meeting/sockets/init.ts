@@ -1,6 +1,7 @@
 import { attach, combine, sample, Store } from 'effector-next';
 import { isMobile } from 'shared-utils';
 import {
+    AnswerSwitchRoleAction,
     ICommonUser,
     IUserTemplate,
     MeetingAccessStatusEnum,
@@ -53,6 +54,7 @@ import { initiateMeetingSocketConnectionFx } from '../../meetingSocket/model';
 import { $SFURoom } from '../../videoChat/sfu/model';
 import { $serverTypeStore, initVideoChatEvent } from '../../videoChat/model';
 import { $isOwner, $meetingRoleStore } from '../meetingRole/model';
+import { answerRequestByHostEvent } from '../../users/init';
 
 export const sendEnterWaitingRoomSocketEvent = attach({
     effect: enterWaitingRoomSocketEvent,
@@ -213,6 +215,20 @@ export const sendCancelAccessMeetingRequestEvent = attach<
     source: combine({ meeting: $meetingStore }),
     mapParams: (params, { meeting }) => ({
         meetingId: meeting?.id,
+    }),
+});
+
+export const sendAnswerRequestByHostEvent = attach<
+    { action: AnswerSwitchRoleAction; userId: string },
+    Store<{ meeting: Meeting }>,
+    typeof answerRequestByHostEvent
+>({
+    effect: answerRequestByHostEvent,
+    source: combine({ meeting: $meetingStore }),
+    mapParams: ({ action, userId }, { meeting }) => ({
+        meetingId: meeting?.id,
+        action,
+        meetingUserId: userId,
     }),
 });
 
