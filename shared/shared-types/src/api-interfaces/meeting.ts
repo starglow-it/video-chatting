@@ -63,6 +63,7 @@ export enum MeetingAccessStatusEnum {
   RequestSent = 'requestSent',
   InMeeting = 'inMeeting',
   Rejected = 'rejected',
+  SwitchRoleSent = 'switchRoleSend',
   Kicked = 'Kicked',
   Left = 'Left',
   Disconnected = 'disconnected',

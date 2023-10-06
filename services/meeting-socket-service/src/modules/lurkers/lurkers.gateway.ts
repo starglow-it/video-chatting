@@ -16,6 +16,7 @@ import {
   AnswerSwitchRoleAction,
   MeetingAccessStatusEnum,
   MeetingRole,
+  MeetingSoundsEnum,
 } from 'shared-types';
 
 // services
@@ -40,7 +41,7 @@ import { ObjectId } from '../../utils/objectId';
 import { AnswerSwitchRoleByHostRequestDto } from '../../dtos/requests/users/answer-switch-role-by-host.dto';
 import { UsersService } from '../users/users.service';
 import { UsersSubscribeEvents } from 'src/const/socket-events/subscribers';
-import { UserEmitEvents } from 'src/const/socket-events/emitters';
+import { MeetingEmitEvents, UserEmitEvents } from 'src/const/socket-events/emitters';
 import { CoreService } from 'src/services/core/core.service';
 
 type TRequestSwitchRoleParams = {
@@ -100,13 +101,16 @@ export class LurkersGateway extends BaseGateway {
     return withTransaction(this.connection, async (session) => {
       const { meetingId } = msg;
       try {
-        const meetingUser = await this.usersService.findOne({
-          query: {
+        const meetingUser = await this.usersService.findOneAndUpdate(
+          {
             socketId: socket.id,
             meetingRole: MeetingRole.Lurker,
           },
+          {
+            accessStatus: MeetingAccessStatusEnum.SwitchRoleSent,
+          },
           session,
-        });
+        );
 
         if (!meetingUser) {
           return wsError(socket.id, {
@@ -133,6 +137,14 @@ export class LurkersGateway extends BaseGateway {
             message: 'Host not found',
           });
         }
+
+        this.emitToSocketId(
+            meeting?.hostUserId?.socketId,
+            MeetingEmitEvents.PlaySound,
+            {
+              soundType: MeetingSoundsEnum.NewAttendee,
+            },
+          );
 
         return await this.sendSwtichRoleRequest({
           meetingUser,
