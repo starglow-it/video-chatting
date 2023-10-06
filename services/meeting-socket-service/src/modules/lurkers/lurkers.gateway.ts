@@ -139,7 +139,7 @@ export class LurkersGateway extends BaseGateway {
         }
 
         this.emitToSocketId(
-            meeting?.hostUserId?.socketId,
+            host?.socketId,
             MeetingEmitEvents.PlaySound,
             {
               soundType: MeetingSoundsEnum.NewAttendee,
