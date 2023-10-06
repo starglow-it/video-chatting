@@ -27,7 +27,8 @@ import { CoreService } from '../../services/core/core.service';
 // dtos
 import { UpdateUserRequestDTO } from '../../dtos/requests/users/update-user.dto';
 import {
-  CommonUserDTO, userSerialization,
+  CommonUserDTO,
+  userSerialization,
 } from '../../dtos/response/common-user.dto';
 import { RemoveUserRequestDTO } from '../../dtos/requests/users/remove-user.dto';
 import { meetingSerialization } from '../../dtos/response/common-meeting.dto';
@@ -259,6 +260,7 @@ export class UsersGateway extends BaseGateway {
           });
 
           this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
+          client.leave(`meeting:${meeting._id.toString()}`);
           await this.usersService.updateIndexUsers({
             userTemplate,
             user,

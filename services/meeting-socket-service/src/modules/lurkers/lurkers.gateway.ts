@@ -229,6 +229,24 @@ export class LurkersGateway extends BaseGateway {
       user: plainUser,
       action,
     });
+
+    const emitMeetingUpdated = {
+      meeting: plainMeeting,
+      users: plainUsers,
+    };
+
+    this.emitToRoom(
+      `meeting:${meeting._id}`,
+      MeetingEmitEvents.UpdateMeeting,
+      emitMeetingUpdated,
+    );
+
+    this.emitToRoom(
+      `waitingRoom:${meeting.templateId}`,
+      MeetingEmitEvents.UpdateMeeting,
+      emitMeetingUpdated,
+    );
+
     return wsResult({
       meeting: plainMeeting,
       user: plainUser,
@@ -294,8 +312,10 @@ export class LurkersGateway extends BaseGateway {
           });
         }
 
+        await meetingUser.populate('meeting');
+
         return await this.answerSwitchRoleRequest({
-          meeting,
+          meeting: meetingUser.meeting,
           meetingUser,
           action,
           emitterEvent: UserEmitEvents.AnswerSwitchRoleByHost,
@@ -370,8 +390,10 @@ export class LurkersGateway extends BaseGateway {
           });
         }
 
+        await meetingUser.populate('meeting');
+
         return await this.answerSwitchRoleRequest({
-          meeting,
+          meeting: meetingUser.meeting,
           meetingUser,
           action,
           emitterEvent: UserEmitEvents.AnswerSwitchRoleByLurker,
