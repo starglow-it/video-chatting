@@ -3,8 +3,8 @@ export enum UserEmitEvents {
   UpdateUsers = 'users:update',
   RemoveUsers = 'users:remove',
   KickUsers = 'users:kick',
-  RequestSwitchRoleByHost = 'users:switchRole:host:request',
-  RequestSwitchRoleByLurker = 'users:switchRole:lurker:request',
-  AnswerSwitchRoleByHost = 'users:switchRole:host:answer',
-  AnswerSwitchRoleByLurker = 'users:switchRole:lurker:answer'
+  RequestSwitchRoleByHost = 'users:switchRole:host:request:receive',
+  RequestSwitchRoleByLurker = 'users:switchRole:lurker:request:receive',
+  AnswerSwitchRoleByHost = 'users:switchRole:host:answer:receive',
+  AnswerSwitchRoleByLurker = 'users:switchRole:lurker:answer:receive'
 }
