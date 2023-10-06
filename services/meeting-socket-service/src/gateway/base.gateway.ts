@@ -1,5 +1,5 @@
 import { WebSocketServer } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { TEventEmitter } from '../types/socket-events';
 
 export class BaseGateway {
@@ -13,7 +13,7 @@ export class BaseGateway {
     this.server.sockets.in(roomId).emit(eventName, data ?? {});
   }
 
-  broadcastToRoom(socket, ...[roomId, eventName, data]: TEventEmitter) {
+  broadcastToRoom(socket: Socket, ...[roomId, eventName, data]: TEventEmitter) {
     socket.broadcast.to(roomId).emit(eventName, data ?? {});
   }
 
