@@ -1,7 +1,8 @@
 import { AnswerSwitchRoleAction, ErrorState } from 'shared-types';
 
+import { addNotificationEvent } from 'src/store/notifications/model';
 import { meetingUsersDomain } from './domain/model';
-import { AppDialogsEnum, MeetingUser } from '../../types';
+import { AppDialogsEnum, MeetingUser, NotificationType } from '../../types';
 import sendRequestWithCredentials from '../../../helpers/http/sendRequestWithCredentials';
 import { sendInviteEmailUrl } from '../../../utils/urls';
 import { UsersSocketEmitters } from '../../../const/socketEvents/emitters';
@@ -27,25 +28,25 @@ export const sendInviteEmailFx = meetingUsersDomain.effect({
 
 export const updateUserSocketEvent = createMeetingSocketEvent<
     Partial<MeetingUser>,
-    unknown
+    any
 >(UsersSocketEmitters.UpdateUser);
 export const removeUserSocketEvent = createMeetingSocketEvent<
     { id: MeetingUser['id'] },
-    unknown
+    any
 >(UsersSocketEmitters.RemoveUser);
 export const changeHostSocketEvent = createMeetingSocketEvent<
     { userId: MeetingUser['id'] },
-    unknown
+    any
 >(UsersSocketEmitters.ChangeHost);
 
 export const requestSwitchRoleByHostEvent = createMeetingSocketEvent<
     { meetingId: string; meetingUserId: string },
-    unknown
+    any
 >(UsersSocketEmitters.RequestRoleByHost);
 
 export const requestSwitchRoleByLurkerEvent = createMeetingSocketEvent<
     { meetingId: string },
-    unknown
+    any
 >(UsersSocketEmitters.AnswerRequestByLurker);
 
 export const answerRequestByHostEvent = createMeetingSocketEvent<
@@ -54,12 +55,12 @@ export const answerRequestByHostEvent = createMeetingSocketEvent<
         action: AnswerSwitchRoleAction;
         meetingId: string;
     },
-    unknown
+    any
 >(UsersSocketEmitters.AnswerRequestByHost);
 
 export const answerRequestByLurkerEvent = createMeetingSocketEvent<
     { action: AnswerSwitchRoleAction; meetingId: string },
-    unknown
+    any
 >(UsersSocketEmitters.AnswerRequestByLurker);
 
 changeHostSocketEvent.failData.watch(data => {
@@ -73,7 +74,6 @@ changeHostSocketEvent.failData.watch(data => {
 
 answerRequestByLurkerEvent.doneData.watch(async data => {
     if (data) {
-        console.log('#Duy Phan console answer', data);
         if (data?.action === AnswerSwitchRoleAction.Accept) {
             await initDevicesEventFxWithStore();
             setRoleQueryUrlEvent(null);
@@ -82,5 +82,15 @@ answerRequestByLurkerEvent.doneData.watch(async data => {
             publishTracksEvent();
             putStreamToLocalStreamEvent();
         }
+    }
+});
+
+requestSwitchRoleByLurkerEvent.doneData.watch(data => {
+    if (data) {
+        addNotificationEvent({
+            message: `Request sended to Host. Please waiting Host approve`,
+            withSuccessIcon: true,
+            type: NotificationType.RequestBecomeParticipantSuccess,
+        });
     }
 });

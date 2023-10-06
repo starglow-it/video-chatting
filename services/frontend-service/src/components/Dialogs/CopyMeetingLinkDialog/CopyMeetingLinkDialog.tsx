@@ -121,7 +121,10 @@ const Component = () => {
                         />
                     </CopyToClipboard>
                 </CustomGrid>
-                <MeetingRoleGroup onChangeValue={handleChangeValue} className={styles.roleGroup}/>
+                <MeetingRoleGroup
+                    onChangeValue={handleChangeValue}
+                    className={styles.roleGroup}
+                />
             </CustomGrid>
         </CustomDialog>
     );

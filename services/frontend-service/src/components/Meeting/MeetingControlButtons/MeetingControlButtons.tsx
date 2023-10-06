@@ -28,6 +28,7 @@ import { Translation } from '@library/common/Translation/Translation';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
 import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
+import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
     $isLurker,
@@ -35,8 +36,10 @@ import {
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
+    $meetingStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
+    requestSwitchRoleByLurkerEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
     toggleSchedulePanelEvent,
@@ -59,6 +62,7 @@ const Component = () => {
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
     const isLurker = useStore($isLurker);
+    const meeting = useStore($meetingStore);
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
@@ -118,6 +122,10 @@ const Component = () => {
         e.stopPropagation();
         toggleSchedulePanelEvent();
         toggleUsersPanelEvent(false);
+    };
+
+    const handleRequestToBecomeParticipant = () => {
+        requestSwitchRoleByLurkerEvent({ meetingId: meeting.id });
     };
 
     return (
@@ -203,6 +211,30 @@ const Component = () => {
                                 [styles.mobile]: isMobile,
                             })}
                             Icon={<PeopleIcon width="22px" height="22px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={isLurker}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="lurker.buttons.requestBecomeParticipant"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleRequestToBecomeParticipant}
+                            className={styles.actionButton}
+                            Icon={<ArrowUp width="15px" height="15px" />}
                         />
                     </CustomPaper>
                 </CustomTooltip>

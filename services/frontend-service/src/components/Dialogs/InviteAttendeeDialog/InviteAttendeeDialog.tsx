@@ -70,7 +70,7 @@ const Component = () => {
                 await sendInviteEmailFx({
                     userEmails,
                     meetingId: router?.query?.token,
-                    role: refRole.current?.getValue()
+                    role: refRole.current?.getValue(),
                 });
                 reset();
                 handleClose();
