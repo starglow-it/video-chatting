@@ -798,6 +798,15 @@ export class MeetingsGateway
           });
         }
 
+        if (
+          typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
+            meeting,
+            'participant',
+          )) === 'undefined'
+        ) {
+          return wsError(socket.id, 'meeting.maxParticipantsNumber');
+        }
+
         const updateData = {
           accessStatus: MeetingAccessStatusEnum.InMeeting,
           joinedAt: Date.now(),

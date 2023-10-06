@@ -189,9 +189,12 @@ export class MeetingsCommonService {
     const c = await this.usersService.countMany({
       meeting: meeting._id,
       accessStatus: {
-        $in: [MeetingAccessStatusEnum.InMeeting],
+        $in: [
+          MeetingAccessStatusEnum.InMeeting,
+          MeetingAccessStatusEnum.SwitchRoleSent,
+        ],
       },
-      meetingRole: role
+      meetingRole: role,
     });
 
     if (c === meeting.maxParticipants) return;
