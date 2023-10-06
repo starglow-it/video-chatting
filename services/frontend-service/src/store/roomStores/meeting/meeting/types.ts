@@ -18,3 +18,12 @@ export type JoinMeetingFxPayload = JoinMeetingEventPayload & {
     currentVideoDevice: string;
     currentAudioDevice: string;
 };
+
+export type JoinMeetingWithLurkerFxPayload = {
+    isMicActive: boolean;
+    isCameraActive: boolean;
+    changeStream: CustomMediaStream;
+    isAuraActive?: boolean;
+    currentVideoDevice: string;
+    currentAudioDevice: string;
+};

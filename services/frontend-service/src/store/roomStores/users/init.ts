@@ -9,12 +9,13 @@ import { UsersSocketEmitters } from '../../../const/socketEvents/emitters';
 import { setMeetingErrorEvent } from '../meeting/meetingError/model';
 import { appDialogsApi } from '../../dialogs/init';
 import { createMeetingSocketEvent } from '../meetingSocket/model';
-import { updateMeetingEvent } from '../meeting/meeting/model';
+import {
+    joinMeetingWithLurkerEvent,
+    updateMeetingEvent,
+} from '../meeting/meeting/model';
 import { updateMeetingUserEvent } from './meetingUsers/model';
 import { setRoleQueryUrlEvent } from '../meeting/meetingRole/model';
 import { initDevicesEventFxWithStore } from '../videoChat/localMedia/init';
-import { publishTracksEvent } from '../videoChat/sfu/model';
-import { putStreamToLocalStreamEvent } from '../videoChat/localMedia/model';
 
 // backend api effects
 export const sendInviteEmailFx = meetingUsersDomain.effect({
@@ -75,12 +76,11 @@ changeHostSocketEvent.failData.watch(data => {
 answerRequestByLurkerEvent.doneData.watch(async data => {
     if (data) {
         if (data?.action === AnswerSwitchRoleAction.Accept) {
-            await initDevicesEventFxWithStore();
             setRoleQueryUrlEvent(null);
             updateMeetingEvent({ meeting: data?.meeting });
             updateMeetingUserEvent({ user: data?.user });
-            publishTracksEvent();
-            putStreamToLocalStreamEvent();
+            await initDevicesEventFxWithStore();
+            await joinMeetingWithLurkerEvent();
         }
     }
 });

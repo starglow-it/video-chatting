@@ -9,6 +9,8 @@ import {
     joinMeetingFx,
     joinMeetingEvent,
     joinMeetingInWaitingRoomFx,
+    joinMeetingWithLurkerFx,
+    joinMeetingWithLurkerEvent,
 } from './model';
 import {
     $changeStreamStore,
@@ -27,6 +29,7 @@ import { handleJoinMeting } from './handlers/handleJoinMeting';
 import { handleJoinMetingInWaitingRoom } from './handlers/handleJoinMetingInWaitingRoom';
 import { $localUserStore } from '../../users/localUser/model';
 import { $meetingRoleStore } from '../meetingRole/model';
+import { handleJoinMeetingWithLurker } from './handlers/handleJoinMeetingWithLurker';
 
 $meetingStore
     .on(updateMeetingEvent, (state, { meeting }) => ({ ...state, ...meeting }))
@@ -38,6 +41,7 @@ $meetingConnectedStore
 
 joinMeetingFx.use(handleJoinMeting);
 joinMeetingInWaitingRoomFx.use(handleJoinMetingInWaitingRoom);
+joinMeetingWithLurkerFx.use(handleJoinMeetingWithLurker);
 
 sample({
     clock: joinMeetingEvent,
@@ -58,6 +62,17 @@ sample({
         ...params,
     }),
     target: joinMeetingFx,
+});
+
+sample({
+    clock: joinMeetingWithLurkerEvent,
+    source: combine({
+        isMicActive: $isMicActiveStore,
+        isCameraActive: $isCameraActiveStore,
+        changeStream: $changeStreamStore,
+        isAuraActive: $isAuraActive,
+    }),
+    target: joinMeetingWithLurkerFx,
 });
 
 /**
