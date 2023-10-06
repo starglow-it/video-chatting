@@ -77,8 +77,8 @@ import { MeetingDocument } from 'src/schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
-import { LurkerJoinMeetingDto } from 'src/dtos/requests/lurker-join-meeting.dto';
-import { wsResult } from 'src/utils/ws/wsResult';
+import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dto';
+import { wsResult } from '../../utils/ws/wsResult';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -425,14 +425,11 @@ export class MeetingsGateway
           },
         );
         console.timeEnd(eventName);
-        return {
-          success: true,
-          result: {
-            meeting: plainMeeting,
-            user: plainUser,
-            users: plainUsers,
-          },
-        };
+        return wsResult({
+          meeting: plainMeeting,
+          user: plainUser,
+          users: plainUsers,
+        });
       } catch (error) {
         return wsError(socket.id, error);
       }
@@ -592,14 +589,11 @@ export class MeetingsGateway
         );
         console.timeEnd(eventName);
 
-        return {
-          success: true,
-          result: {
-            user: plainUser,
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        };
+        return wsResult({
+          user: plainUser,
+          meeting: plainMeeting,
+          users: plainUsers,
+        });
       } catch (error) {
         return wsError(socket.id, error);
       }
@@ -706,14 +700,11 @@ export class MeetingsGateway
             );
           }
 
-          return {
-            success: true,
-            result: {
-              user: plainUser,
-              meeting: plainMeeting,
-              users: plainUsers,
-            },
-          };
+          return wsResult({
+            user: plainUser,
+            meeting: plainMeeting,
+            users: plainUsers,
+          });
         } catch (error) {
           return wsError(socket.id, error);
         }
@@ -775,13 +766,10 @@ export class MeetingsGateway
           });
         }
 
-        return {
-          success: true,
-          result: {
-            meeting: plainMeeting,
-            users: plainUsers,
-          },
-        };
+        return wsResult({
+          meeting: plainMeeting,
+          users: plainUsers,
+        });
       } catch (error) {
         return wsError(socket.id, error);
       }
@@ -871,14 +859,12 @@ export class MeetingsGateway
           meeting: plainMeeting,
           users: plainUsers,
         });
-        return {
-          success: true,
-          result: {
-            meeting: plainMeeting,
-            user: plainUser,
-            users: plainUsers,
-          },
-        };
+
+        return wsResult({
+          meeting: plainMeeting,
+          user: plainUser,
+          users: plainUsers,
+        });
       } catch (err) {
         return wsError(socket.id, err);
       }
@@ -1063,9 +1049,7 @@ export class MeetingsGateway
 
         await this.updateTimeForHost(socket, meeting, session);
 
-        return {
-          success: true,
-        };
+        return wsResult();
       });
     } catch (error) {
       return wsError(socket.id, error);
@@ -1238,14 +1222,11 @@ export class MeetingsGateway
           { templateId: userTemplate.id },
         );
 
-        return {
-          success: true,
-          result: {
-            meeting: plainMeeting,
-            user: plainUser,
-            users: plainUsers,
-          },
-        };
+        return wsResult({
+          meeting: plainMeeting,
+          user: plainUser,
+          users: plainUsers,
+        });
       } catch (err) {
         return wsError(client.id, err);
       }
