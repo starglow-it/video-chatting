@@ -55,15 +55,27 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             getUsersSocketSubscribeHandler(UsersSubscribeEvents.OnKickUser),
         );
         socketInstance?.on(
-            UsersSubscribeEvents.OnAnswerSwitchRole,
+            UsersSubscribeEvents.OnAnswerSwitchRoleByHost,
             getUsersSocketSubscribeHandler(
-                UsersSubscribeEvents.OnAnswerSwitchRole,
+                UsersSubscribeEvents.OnAnswerSwitchRoleByHost,
             ),
         );
         socketInstance?.on(
-            UsersSubscribeEvents.OnRequestSwitchRole,
+            UsersSubscribeEvents.OnAnswerSwitchRoleByLurker,
             getUsersSocketSubscribeHandler(
-                UsersSubscribeEvents.OnRequestSwitchRole,
+                UsersSubscribeEvents.OnAnswerSwitchRoleByLurker,
+            ),
+        );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnRequestSwitchRoleByHost,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnRequestSwitchRoleByHost,
+            ),
+        );
+        socketInstance?.on(
+            UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
+            getUsersSocketSubscribeHandler(
+                UsersSubscribeEvents.OnRequestSwitchRoleByLurker,
             ),
         );
     }
