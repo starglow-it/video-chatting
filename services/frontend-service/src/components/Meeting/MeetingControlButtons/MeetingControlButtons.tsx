@@ -69,7 +69,9 @@ const Component = () => {
         fn: state =>
             state.some(
                 user =>
-                    user.accessStatus === MeetingAccessStatusEnum.RequestSent,
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSent ||
+                    user.accessStatus ===
+                        MeetingAccessStatusEnum.SwitchRoleSent,
             ),
     });
 
