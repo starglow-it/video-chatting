@@ -5,12 +5,11 @@ import { AnswerSwitchRolePayload } from '../types';
 import { updateMeetingUsersEvent } from '../../users/meetingUsers/model';
 import { updateMeetingEvent } from '../../meeting/meeting/model';
 
-export const handleAnswerSwitchRole = async (data: AnswerSwitchRolePayload) => {
+export const handleReceiveAnswerSwitchRoleFromLurker = async (data: AnswerSwitchRolePayload) => {
     switch (data.action) {
         case AnswerSwitchRoleAction.Accept:
             updateMeetingUsersEvent({ users: data.users });
             updateMeetingEvent({ meeting: data.meeting });
-
             break;
         case AnswerSwitchRoleAction.Rejected:
             addNotificationEvent({
