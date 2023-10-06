@@ -39,10 +39,10 @@ import { DeleteMediasParam } from '../../dtos/params/delete-medias.param';
 import { MediaCategoryRestDTO } from '../../dtos/response/common-media-category.dto';
 import { GetAdminMediaCategoriesQueryDto } from '../../dtos/query/GetAdminMediaCategoriesQuery.dto';
 import { DeleteMediaCategoriesRequest } from '../../dtos/requests/delete-media-categories.request';
-import { MediaCategoryParam } from 'src/dtos/params/update-media.param';
-import { CreateMediaRequest } from 'src/dtos/requests/create-media.request';
-import { CommonMediaRestDto } from 'src/dtos/response/common-media.dto';
-import { GetMediasQueryDto } from 'src/dtos/query/GetAdminMediasQuery.dto';
+import { MediaCategoryParam } from '../../dtos/params/update-media.param';
+import { CreateMediaRequest } from '../../dtos/requests/create-media.request';
+import { CommonMediaRestDto } from '../../dtos/response/common-media.dto';
+import { GetMediasQueryDto } from '../../dtos/query/GetAdminMediasQuery.dto';
 import { MEDIAS_ADMIN_SCOPE } from 'shared-const';
 
 @ApiTags('Admin Medias')

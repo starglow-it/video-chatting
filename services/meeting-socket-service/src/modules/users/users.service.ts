@@ -17,8 +17,8 @@ import {
   MeetingRole,
 } from 'shared-types';
 import { Socket } from 'socket.io';
-import { ICommonMeetingUserDTO } from 'src/interfaces/common-user.interface';
-import { CoreService } from 'src/services/core/core.service';
+import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
+import { CoreService } from '../../services/core/core.service';
 
 @Injectable()
 export class UsersService {

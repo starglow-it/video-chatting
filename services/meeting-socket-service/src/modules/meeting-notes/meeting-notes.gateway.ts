@@ -20,7 +20,7 @@ import { plainToInstance } from 'class-transformer';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 import { Logger } from '@nestjs/common';
-import { wsError } from 'src/utils/ws/wsError';
+import { wsError } from '../../utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],

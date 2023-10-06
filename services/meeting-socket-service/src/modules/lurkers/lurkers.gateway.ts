@@ -40,12 +40,12 @@ import { MeetingDocument } from '../../schemas/meeting.schema';
 import { ObjectId } from '../../utils/objectId';
 import { AnswerSwitchRoleByHostRequestDto } from '../../dtos/requests/users/answer-switch-role-by-host.dto';
 import { UsersService } from '../users/users.service';
-import { UsersSubscribeEvents } from 'src/const/socket-events/subscribers';
+import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import {
   MeetingEmitEvents,
   UserEmitEvents,
-} from 'src/const/socket-events/emitters';
-import { CoreService } from 'src/services/core/core.service';
+} from '../../const/socket-events/emitters';
+import { CoreService } from '../../services/core/core.service';
 
 type TRequestSwitchRoleParams = {
   meetingUser: MeetingUserDocument;

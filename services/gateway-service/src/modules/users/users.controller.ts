@@ -61,8 +61,8 @@ import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
 import { generateIcsEventData } from '../../utils/generateIcsEventData';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { MeetingsService } from '../meetings/meetings.service';
-import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
-import { ScheduleRequestDto } from 'src/dtos/requests/schedule.dto';
+import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
+import { ScheduleRequestDto } from '../../dtos/requests/schedule.dto';
 
 @ApiTags('Users')
 @Controller('/users')

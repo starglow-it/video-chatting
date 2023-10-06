@@ -73,7 +73,7 @@ import {
   SendOfferPayload,
   UserActionInMeeting,
 } from '../../types';
-import { MeetingDocument } from 'src/schemas/meeting.schema';
+import { MeetingDocument } from '../../schemas/meeting.schema';
 import { wsError } from '../../utils/ws/wsError';
 import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
