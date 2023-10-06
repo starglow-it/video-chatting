@@ -25,8 +25,8 @@ export const MeetingLurkers = () => {
     const meeting = useStore($meetingStore);
 
     const handleRequestLurker = useCallback(
-        async ({ userId }: { userId: string }) => {
-            await requestSwitchRoleByHostEvent({
+        ({ userId }: { userId: string }) => {
+            requestSwitchRoleByHostEvent({
                 meetingId: meeting.id,
                 meetingUserId: userId,
             });

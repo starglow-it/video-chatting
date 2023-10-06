@@ -40,6 +40,7 @@ import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
 import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 import styles from './MeetingView.module.scss';
 
 // stores
@@ -252,6 +253,7 @@ const Component = () => {
             <MobilePortraitStub />
             <InviteGuestsDialog />
             <ConfirmBecomeParticipantDialog />
+            <DownloadIcsEventDialog />
         </CustomGrid>
     );
 };

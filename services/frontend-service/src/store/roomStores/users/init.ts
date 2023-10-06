@@ -88,7 +88,17 @@ answerRequestByLurkerEvent.doneData.watch(async data => {
 requestSwitchRoleByLurkerEvent.doneData.watch(data => {
     if (data) {
         addNotificationEvent({
-            message: `Request sended to Host. Please waiting Host approve`,
+            message: `Request sent to Host. Please waiting Host approve`,
+            withSuccessIcon: true,
+            type: NotificationType.RequestBecomeParticipantSuccess,
+        });
+    }
+});
+
+requestSwitchRoleByHostEvent.doneData.watch(data => {
+    if (data) {
+        addNotificationEvent({
+            message: `Request sent to user`,
             withSuccessIcon: true,
             type: NotificationType.RequestBecomeParticipantSuccess,
         });
