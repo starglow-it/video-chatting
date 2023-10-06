@@ -375,10 +375,7 @@ export class MeetingsGateway
               : 'participant',
           )) === 'undefined'
         ) {
-          return {
-            success: false,
-            message: 'meeting.maxParticipantsNumber',
-          };
+          return wsError(socket.id, 'meeting.maxParticipantsNumber');
         }
 
         const user = await this.usersService.createUser(
@@ -678,10 +675,7 @@ export class MeetingsGateway
               'participant',
             )) === 'undefined'
           ) {
-            return {
-              success: false,
-              message: 'meeting.maxParticipantsNumber',
-            };
+            return wsError(socket.id, 'meeting.maxParticipantsNumber');
           }
 
           const plainUser = userSerialization(user);
@@ -921,10 +915,7 @@ export class MeetingsGateway
               'participant',
             )) === 'undefined'
           ) {
-            return {
-              success: false,
-              message: 'meeting.maxParticipantsNumber',
-            };
+            return wsError(socket.id, 'meeting.maxParticipantsNumber');
           }
 
           plainUser = await this.meetingsCommonService.acceptUserJoinRoom({
@@ -1033,7 +1024,7 @@ export class MeetingsGateway
         );
 
         if (!socket) {
-          return wsError(null, {
+          return wsError(socket.id, {
             message: 'User has been deleted',
           });
         }

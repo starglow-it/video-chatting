@@ -176,17 +176,19 @@ export class LurkersGateway extends BaseGateway {
         }
 
         const host = await this.usersService.findOne({
-            query: {
-                _id: meeting.hostUserId,
-                accessStatus: MeetingAccessStatusEnum.InMeeting
-            },
-            session
+          query: {
+            _id: meeting.hostUserId,
+            accessStatus: MeetingAccessStatusEnum.InMeeting,
+          },
+          session,
         });
 
-        if(!host){
-            return wsError(socket.id, 'Host not found');
+        if (!host) {
+          return wsError(socket.id, {
+            message: 'Host not found',
+          });
         }
-        
+
         return await this.sendSwtichRoleRequest({
           meeting,
           meetingUser,
@@ -210,7 +212,7 @@ export class LurkersGateway extends BaseGateway {
     const plainMeeting = meetingSerialization(meeting);
     const plainUser = userSerialization(meetingUser);
     const plainUsers = userSerialization(meeting.users);
-    this.emitToSocketId(socketEmitterId,emitterEvent, {
+    this.emitToSocketId(socketEmitterId, emitterEvent, {
       meeting: plainMeeting,
       users: plainUsers,
       user: plainUser,
@@ -219,7 +221,7 @@ export class LurkersGateway extends BaseGateway {
     return wsResult({
       meeting: plainMeeting,
       user: plainUser,
-      action
+      action,
     });
   }
 
@@ -243,7 +245,9 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!userTemplate) {
-          return wsError(socket.id, 'User template not found');
+          return wsError(socket.id, {
+            message: 'User template not found',
+          });
         }
 
         const index = userTemplate.indexUsers.indexOf(null);
@@ -304,7 +308,9 @@ export class LurkersGateway extends BaseGateway {
         });
 
         if (!userTemplate) {
-          return wsError(socket.id, 'User template not found');
+          return wsError(socket.id, {
+            message: 'User template not found',
+          });
         }
 
         const index = userTemplate.indexUsers.indexOf(null);
