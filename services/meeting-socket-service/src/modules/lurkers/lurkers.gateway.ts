@@ -41,7 +41,10 @@ import { ObjectId } from '../../utils/objectId';
 import { AnswerSwitchRoleByHostRequestDto } from '../../dtos/requests/users/answer-switch-role-by-host.dto';
 import { UsersService } from '../users/users.service';
 import { UsersSubscribeEvents } from 'src/const/socket-events/subscribers';
-import { MeetingEmitEvents, UserEmitEvents } from 'src/const/socket-events/emitters';
+import {
+  MeetingEmitEvents,
+  UserEmitEvents,
+} from 'src/const/socket-events/emitters';
 import { CoreService } from 'src/services/core/core.service';
 
 type TRequestSwitchRoleParams = {
@@ -138,13 +141,9 @@ export class LurkersGateway extends BaseGateway {
           });
         }
 
-        this.emitToSocketId(
-            host?.socketId,
-            MeetingEmitEvents.PlaySound,
-            {
-              soundType: MeetingSoundsEnum.NewAttendee,
-            },
-          );
+        this.emitToSocketId(host?.socketId, MeetingEmitEvents.PlaySound, {
+          soundType: MeetingSoundsEnum.NewAttendee,
+        });
 
         return await this.sendSwtichRoleRequest({
           meetingUser,
