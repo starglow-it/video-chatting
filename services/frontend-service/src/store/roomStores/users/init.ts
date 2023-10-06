@@ -47,7 +47,7 @@ export const requestSwitchRoleByHostEvent = createMeetingSocketEvent<
 export const requestSwitchRoleByLurkerEvent = createMeetingSocketEvent<
     { meetingId: string },
     any
->(UsersSocketEmitters.AnswerRequestByLurker);
+>(UsersSocketEmitters.RequestRoleByLurker);
 
 export const answerRequestByHostEvent = createMeetingSocketEvent<
     {
