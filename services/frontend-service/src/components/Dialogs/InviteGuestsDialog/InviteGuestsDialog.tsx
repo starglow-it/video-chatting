@@ -61,7 +61,6 @@ export const InviteGuestsDialog = () => {
 
     const linkToDefault = () => {
         const role = refRoleGroup.current?.getValue();
-        console.log('#Duy Phan console role', role);
         window.open(
             `mailto:?view=cm&fs=1&subject=Meeting Link
             &body=${`Please Join me on Ruume`}%0A${getClientMeetingUrlWithDomain(

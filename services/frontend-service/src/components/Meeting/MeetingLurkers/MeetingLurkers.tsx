@@ -26,7 +26,6 @@ export const MeetingLurkers = () => {
 
     const handleRequestLurker = useCallback(
         async ({ userId }: { userId: string }) => {
-            console.log('#Duy Phan console userId', userId);
             await requestSwitchRoleByHostEvent({
                 meetingId: meeting.id,
                 meetingUserId: userId,
