@@ -47,6 +47,7 @@ type TRequestSwitchRoleParams = {
   meetingUser: MeetingUserDocument;
   socketEmitterId: string;
   meeting: MeetingDocument;
+  emitterEvent: string;
 };
 
 type TAnswerSwitchRoleParams = {
@@ -72,6 +73,7 @@ export class LurkersGateway extends BaseGateway {
   async sendSwtichRoleRequest({
     meetingUser,
     meeting,
+    emitterEvent,
     socketEmitterId,
   }: TRequestSwitchRoleParams) {
     await meeting.populate('users');
@@ -79,7 +81,7 @@ export class LurkersGateway extends BaseGateway {
     const plainUsers = userSerialization(meeting.users);
     const plainUser = userSerialization(meetingUser);
 
-    this.emitToSocketId(socketEmitterId, UserEmitEvents.RequestSwitchRole, {
+    this.emitToSocketId(socketEmitterId, emitterEvent, {
       user: plainUser,
       meeting: plainMeeting,
     });
@@ -135,6 +137,7 @@ export class LurkersGateway extends BaseGateway {
         return await this.sendSwtichRoleRequest({
           meetingUser,
           meeting,
+          emitterEvent: UserEmitEvents.RequestSwitchRoleByLurker,
           socketEmitterId: host.socketId,
         });
       } catch (err) {
@@ -172,9 +175,22 @@ export class LurkersGateway extends BaseGateway {
           });
         }
 
+        const host = await this.usersService.findOne({
+            query: {
+                _id: meeting.hostUserId,
+                accessStatus: MeetingAccessStatusEnum.InMeeting
+            },
+            session
+        });
+
+        if(!host){
+            return wsError(socket.id, 'Host not found');
+        }
+        
         return await this.sendSwtichRoleRequest({
           meeting,
           meetingUser,
+          emitterEvent: UserEmitEvents.RequestSwitchRoleByHost,
           socketEmitterId: meetingUser.socketId,
         });
       } catch (err) {
@@ -187,13 +203,14 @@ export class LurkersGateway extends BaseGateway {
     meeting,
     meetingUser,
     socketEmitterId,
+    emitterEvent,
     action,
   }: TAnswerSwitchRoleParams) {
     await meeting.populate('users');
     const plainMeeting = meetingSerialization(meeting);
     const plainUser = userSerialization(meetingUser);
     const plainUsers = userSerialization(meeting.users);
-    this.emitToSocketId(socketEmitterId, UserEmitEvents.AnswerSwitchRole, {
+    this.emitToSocketId(socketEmitterId,emitterEvent, {
       meeting: plainMeeting,
       users: plainUsers,
       user: plainUser,
@@ -259,6 +276,7 @@ export class LurkersGateway extends BaseGateway {
           meeting,
           meetingUser,
           action,
+          emitterEvent: UserEmitEvents.AnswerSwitchRoleByHost,
           socketEmitterId: meetingUser.socketId,
         });
       } catch (err) {
@@ -332,6 +350,7 @@ export class LurkersGateway extends BaseGateway {
           meeting,
           meetingUser,
           action,
+          emitterEvent: UserEmitEvents.AnswerSwitchRoleByLurker,
           socketEmitterId: host.socketId,
         });
       } catch (err) {
