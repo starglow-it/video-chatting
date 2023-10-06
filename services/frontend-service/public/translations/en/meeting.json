@@ -189,5 +189,10 @@
   },
   "people": {
     "tooltip": "People"
+  },
+  "lurker": {
+    "buttons" : {
+      "requestBecomeParticipant": "Become a Participant"
+    }
   }
 }

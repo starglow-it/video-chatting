@@ -27,8 +27,14 @@ import clsx from 'clsx';
 import { NotesIcon } from 'shared-frontend/icons/OtherIcons/NotesIcon';
 import { CustomPaper } from '@library/custom/CustomPaper/CustomPaper';
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
+import { useStore } from 'effector-react';
+import { addNotificationEvent } from 'src/store';
+import { NotificationType } from 'src/store/types';
 import styles from './LeaveNoteForm.module.scss';
-import { sendMeetingNoteSocketEvent } from '../../store/roomStores';
+import {
+    $meetingNotesStore,
+    sendMeetingNoteSocketEvent,
+} from '../../store/roomStores';
 import { simpleStringSchemaWithLength } from '../../validation/common';
 import { MAX_NOTE_CONTENT } from '../../const/general';
 
@@ -78,7 +84,7 @@ type FormType = { note: string };
 const Component = () => {
     const { isMobile } = useBrowserDetect();
     const materialStyles = useStyles();
-
+    const meetingNotes = useStore($meetingNotesStore);
     const resolver = useYupValidationResolver<FormType>(validationSchema);
 
     const methods = useForm({
@@ -92,8 +98,15 @@ const Component = () => {
 
     const handleKeyDown = (e: any) => {
         if (e.key === 'Enter' || e.keyCode === '13') {
-            sendMeetingNoteSocketEvent(getValues());
-            reset();
+            if (meetingNotes.length < 3) {
+                sendMeetingNoteSocketEvent(getValues());
+                reset();
+            } else {
+                addNotificationEvent({
+                    message: 'Notes is limitted 3 on screen',
+                    type: NotificationType.validationError,
+                });
+            }
         }
     };
 

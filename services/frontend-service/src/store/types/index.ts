@@ -248,6 +248,7 @@ export enum NotificationType {
     validationError = 'validationError',
     UploadBackgroundSuccess = 'upload_background_success',
     DeleteMedia = 'DeleteMedia',
+    RequestBecomeParticipantSuccess = 'request_become_participant_success',
 }
 
 export type Notification = {
