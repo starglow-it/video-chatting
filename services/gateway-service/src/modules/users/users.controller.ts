@@ -29,6 +29,7 @@ import {
   EntityList,
   ICommonUser,
   KickUserReasons,
+  MeetingRole,
   ResponseSumType,
   UserRoles,
 } from 'shared-types';
@@ -60,7 +61,8 @@ import { getTzOffset } from '../../utils/dateHelpers/getTzOffset';
 import { generateIcsEventData } from '../../utils/generateIcsEventData';
 import { formatDate } from '../../utils/dateHelpers/formatDate';
 import { MeetingsService } from '../meetings/meetings.service';
-import { JwtAuthAnonymousGuard } from 'src/guards/jwt-anonymous.guard';
+import { JwtAuthAnonymousGuard } from '../../guards/jwt-anonymous.guard';
+import { ScheduleRequestDto } from '../../dtos/requests/schedule.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -466,7 +468,7 @@ export class UsersController {
     description: 'Forbidden',
   })
   async inviteAttendeeByEmail(
-    @Body() data: InviteAttendeeEmailRequest,
+    @Body() body: InviteAttendeeEmailRequest,
     @Request() req,
   ): Promise<void> {
     try {
@@ -482,13 +484,15 @@ export class UsersController {
       }
 
       this.notificationService.sendEmail({
-        to: data.userEmails.map((email) => ({ email, name: email })),
+        to: body.userEmails.map((email) => ({ email, name: email })),
         template: {
           key: emailTemplates.meetingInvite,
           data: [
             {
               name: 'MEETINGURL',
-              content: `${this.frontendUrl}/room/${data.meetingId}`,
+              content: `${this.frontendUrl}/room/${body.meetingId}?role=${
+                body.role ?? ''
+              }`,
             },
             { name: 'SENDER', content: `${senderName} (${senderEmail})` },
           ],
@@ -541,43 +545,32 @@ export class UsersController {
   @ApiOkResponse({
     description: 'Schedule Meeting',
   })
-  async scheduleMeeting(
-    @Req() req,
-    @Body()
-    data: {
-      templateId: string;
-      startAt: any;
-      endAt: any;
-      timeZone: string;
-      comment: string;
-      userEmails: string[];
-    },
-  ) {
+  async scheduleMeeting(@Req() req, @Body() body: ScheduleRequestDto) {
     try {
       const senderUser = await this.coreService.findUserById({
         userId: req.user.userId,
       });
 
       const template = await this.userTemplatesService.getUserTemplateById({
-        id: data.templateId,
+        id: body.templateId,
       });
 
-      const startAt = parseDateObject(data.startAt);
-      const endAt = parseDateObject(data.endAt);
+      const startAt = parseDateObject(body.startAt);
+      const endAt = parseDateObject(body.endAt);
 
-      const tzOffset = getTzOffset(startAt, data.timeZone);
+      const tzOffset = getTzOffset(startAt, body.timeZone);
       const meetingUrl = `${this.frontendUrl}/room/${
         template.customLink || template.id
-      }`;
+      }?role=${body.role ?? ''}`;
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
         organizerName: senderUser.fullName,
         startAt: startAt - tzOffset,
         endAt: endAt - tzOffset,
-        comment: data.comment,
+        comment: body.comment,
         url: meetingUrl,
-        attendees: data.userEmails.map((email) => ({ name: email, email })),
+        attendees: body.userEmails.map((email) => ({ name: email, email })),
       });
 
       const uploadId = uuidv4();
@@ -589,7 +582,7 @@ export class UsersController {
         key,
       );
 
-      const startAtDate = formatDate(startAt, data.timeZone);
+      const startAtDate = formatDate(startAt, body.timeZone);
 
       this.notificationService.sendEmail({
         template: {
@@ -608,7 +601,7 @@ export class UsersController {
             },
           ],
         },
-        to: data.userEmails.map((email) => ({ email, name: email })),
+        to: body.userEmails.map((email) => ({ email, name: email })),
         icsEventLink: icsLink,
         icalEventContent: content,
       });

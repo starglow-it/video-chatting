@@ -24,7 +24,7 @@ import { HostTimeExpiredDialog } from '@components/Dialogs/HostTimeExpiredDialog
 import { MeetingView } from '@components/Meeting/MeetingView/MeetingView';
 // stores
 import { useToggle } from '@hooks/useToggle';
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVideo/MeetingBackgroundVideo';
 import { Typography } from '@mui/material';
@@ -44,6 +44,7 @@ import {
 import {
     $backgroundAudioVolume,
     $isBackgroundAudioActive,
+    $isLurker,
     $isMeetingSocketConnected,
     $isMeetingSocketConnecting,
     $isOwner,
@@ -64,6 +65,7 @@ import {
     setIsAudioActiveEvent,
     setIsAuraActive,
     setIsCameraActiveEvent,
+    setRoleQueryUrlEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
 
@@ -112,6 +114,7 @@ const MeetingContainer = memo(() => {
     const localUser = useStore($localUserStore);
     const meetingTemplate = useStore($meetingTemplateStore);
     const isOwner = useStore($isOwner);
+    const isLurker = useStore($isLurker);
     const isMeetingSocketConnected = useStore($isMeetingSocketConnected);
     const isMeetingSocketConnecting = useStore($isMeetingSocketConnecting);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
@@ -120,8 +123,19 @@ const MeetingContainer = memo(() => {
 
     const { isMobile } = useBrowserDetect();
 
+    const roleUrl = router.query?.role as string;
+
     const { value: isSettingsChecked, onSwitchOn: handleSetSettingsChecked } =
         useToggle(false);
+
+    useEffect(() => {
+        if (roleUrl) {
+            setRoleQueryUrlEvent(roleUrl);
+        }
+        if (!!roleUrl && roleUrl !== MeetingRole.Lurker) {
+            router.push(NotFoundRoute);
+        }
+    }, [roleUrl]);
 
     useEffect(() => {
         initWindowListeners();
@@ -214,7 +228,9 @@ const MeetingContainer = memo(() => {
             }
 
             if (isMeetingSocketConnected) {
-                await initDevicesEventFxWithStore();
+                if (!isLurker) {
+                    await initDevicesEventFxWithStore();
+                }
                 await sendJoinWaitingRoomSocketEvent();
                 if (isOwner) {
                     if (isHasSettings) {

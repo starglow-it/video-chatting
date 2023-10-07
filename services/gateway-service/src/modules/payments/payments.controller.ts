@@ -28,7 +28,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommonTemplateRestDTO } from '../../dtos/response/common-template.dto';
-import { CreatePaymentRequest } from 'src/dtos/requests/create-payment.request';
+import { CreatePaymentRequest } from '../../dtos/requests/create-payment.request';
 
 @ApiTags('Payments')
 @Controller(PAYMENTS_SCOPE)

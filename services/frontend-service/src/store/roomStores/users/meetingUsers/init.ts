@@ -1,9 +1,11 @@
 import { sample } from 'effector-next';
 
 import {
+    $isToggleSchedulePanel,
     $isToggleUsersPanel,
     $meetingUsersStore,
     removeMeetingUsersEvent,
+    toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateMeetingUserEvent,
     updateMeetingUsersEvent,
@@ -49,6 +51,10 @@ $meetingUsersStore
     .reset(resetRoomStores);
 
 $isToggleUsersPanel.on(toggleUsersPanelEvent, (toggle, newToggle) =>
+    newToggle !== undefined ? newToggle : !toggle,
+);
+
+$isToggleSchedulePanel.on(toggleSchedulePanelEvent, (toggle, newToggle) =>
     newToggle !== undefined ? newToggle : !toggle,
 );
 

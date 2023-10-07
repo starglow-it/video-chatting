@@ -1,4 +1,8 @@
-import { IUserTemplate, MeetingAccessStatusEnum } from 'shared-types';
+import {
+    IUserTemplate,
+    MeetingAccessStatusEnum,
+    MeetingRole,
+} from 'shared-types';
 import { Meeting, MeetingUser, Profile } from '../../../types';
 
 export type JoinWaitingRoomPayload = {
@@ -6,7 +10,7 @@ export type JoinWaitingRoomPayload = {
     profileUserName: Profile['fullName'];
     profileAvatar: Profile['profileAvatar']['url'];
     templateId: IUserTemplate['id'];
-    isOwner: boolean;
+    meetingRole: MeetingRole;
     accessStatus: MeetingAccessStatusEnum;
     isAuraActive: boolean;
     maxParticipants: number;
@@ -69,4 +73,10 @@ export type EnterWaitingRoomPayload = {
 
 export type SendReconnectMeetingPayload = {
     meetingUserId: string;
+};
+
+export type JoinLurkerMeetingPayload = {
+    meetingId: string;
+    username: string;
+    meetingAvatarId?: string;
 };

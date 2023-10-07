@@ -1,4 +1,3 @@
-import { plainToInstance } from 'class-transformer';
 import {
   ConnectedSocket,
   MessageBody,
@@ -14,8 +13,9 @@ import { BaseGateway } from '../../gateway/base.gateway';
 
 // types
 import {
-  IUserTemplate,
+  AnswerSwitchRoleAction,
   MeetingAccessStatusEnum,
+  MeetingRole,
   ResponseSumType,
 } from 'shared-types';
 
@@ -23,8 +23,6 @@ import {
 import { MeetingsService } from '../meetings/meetings.service';
 import { UsersService } from './users.service';
 import { CoreService } from '../../services/core/core.service';
-import { MeetingTimeService } from '../meeting-time/meeting-time.service';
-import { TasksService } from '../tasks/tasks.service';
 
 // dtos
 import { UpdateUserRequestDTO } from '../../dtos/requests/users/update-user.dto';
@@ -50,7 +48,7 @@ import { UsersSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingUserDocument } from '../../schemas/meeting-user.schema';
 import { UserActionInMeeting } from '../../types';
 import { wsError } from '../../utils/ws/wsError';
-
+import { wsResult } from '../../utils/ws/wsResult';
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
@@ -136,7 +134,7 @@ export class UsersGateway extends BaseGateway {
         );
 
         if (!user) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'Meeting user not found',
           });
         }
@@ -158,15 +156,9 @@ export class UsersGateway extends BaseGateway {
 
         await meeting.populate('users');
 
-        const plainUser = plainToInstance(CommonUserDTO, user, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainUser = userSerialization(user);
 
-        const plainUsers = plainToInstance(CommonUserDTO, meeting.users, {
-          excludeExtraneousValues: true,
-          enableImplicitConversion: true,
-        });
+        const plainUsers = userSerialization(meeting.users);
 
         this.emitToRoom(`meeting:${user.meeting}`, UserEmitEvents.UpdateUsers, {
           users: plainUsers.map((user) => ({
@@ -178,20 +170,17 @@ export class UsersGateway extends BaseGateway {
           })),
         });
 
-        return {
-          success: true,
-          result: {
-            user: {
-              ...plainUser,
-              userPosition: {
-                ...plainUser.userPosition,
-                ...(message.userSize && { userSize: message?.userSize }),
-              },
+        return wsResult({
+          user: {
+            ...plainUser,
+            userPosition: {
+              ...plainUser.userPosition,
+              ...(message.userSize && { userSize: message?.userSize }),
             },
           },
-        };
+        });
       } catch (err) {
-        return wsError(client, err);
+        return wsError(client.id, err);
       }
     });
   }
@@ -211,7 +200,7 @@ export class UsersGateway extends BaseGateway {
         const user = await this.usersService.findById(message.id, session);
 
         if (!user) {
-          return wsError(client, {
+          return wsError(client.id, {
             message: 'Meeting user not found',
           });
         }
@@ -271,6 +260,7 @@ export class UsersGateway extends BaseGateway {
           });
 
           this.emitToSocketId(user.socketId, UserEmitEvents.KickUsers);
+          client.leave(`meeting:${meeting._id.toString()}`);
           await this.usersService.updateIndexUsers({
             userTemplate,
             user,
@@ -279,7 +269,7 @@ export class UsersGateway extends BaseGateway {
           });
         }
       } catch (err) {
-        return wsError(client, err);
+        return wsError(client.id, err);
       }
     });
   }

@@ -13,6 +13,9 @@ export const $meetingUsersStore = meetingUsersDomain.createStore<MeetingUser[]>(
 export const $isToggleUsersPanel =
     meetingUsersDomain.createStore<boolean>(false);
 
+export const $isToggleSchedulePanel =
+    meetingUsersDomain.createStore<boolean>(false);
+
 export const updateMeetingUsersEvent =
     meetingUsersDomain.event<UpdateMeetingUsersPayload>(
         'updateMeetingUsersEvent',
@@ -27,3 +30,7 @@ export const updateMeetingUserEvent =
 export const toggleUsersPanelEvent = meetingUsersDomain.createEvent<
     boolean | undefined
 >('toggleUsersPanelEvent');
+
+export const toggleSchedulePanelEvent = meetingUsersDomain.createEvent<
+    boolean | undefined
+>('toggleSchedulePanelEvent');

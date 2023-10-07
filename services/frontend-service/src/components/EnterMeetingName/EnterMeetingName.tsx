@@ -26,10 +26,12 @@ import { fullNameSchema } from '../../validation/users/fullName';
 // stores
 import { $profileStore, $authStore, $isSocketConnected } from '../../store';
 import {
+    $isLurker,
     $isMeetingSocketConnecting,
     $isOwner,
     $localUserStore,
     $meetingTemplateStore,
+    joinLurkerMeetingSocketEvent,
     sendJoinWaitingRoomSocketEvent,
     updateLocalUserEvent,
 } from '../../store/roomStores';
@@ -55,6 +57,7 @@ const Component = () => {
         sendJoinWaitingRoomSocketEvent.pending,
     );
     const isOwner = useStore($isOwner);
+    const isLurker = useStore($isLurker);
     const nameOnUrl = router.query?.participantName as string | undefined;
     const resolver = useYupValidationResolver<{
         fullName: string;
@@ -80,10 +83,17 @@ const Component = () => {
 
     const onSubmit = useCallback(
         handleSubmit(data => {
-            updateLocalUserEvent({
-                username: data.fullName,
-                accessStatus: MeetingAccessStatusEnum.Settings,
-            });
+            if (isLurker) {
+                updateLocalUserEvent({
+                    username: data.fullName,
+                });
+                joinLurkerMeetingSocketEvent();
+            } else {
+                updateLocalUserEvent({
+                    username: data.fullName,
+                    accessStatus: MeetingAccessStatusEnum.Settings,
+                });
+            }
         }),
         [],
     );
@@ -177,7 +187,11 @@ const Component = () => {
                         label={
                             <Translation
                                 nameSpace="meeting"
-                                translation="buttons.continue"
+                                translation={
+                                    isLurker
+                                        ? 'buttons.join'
+                                        : 'buttons.continue'
+                                }
                             />
                         }
                     />

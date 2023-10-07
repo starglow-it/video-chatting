@@ -18,7 +18,7 @@ import { UsersAvatarsCounter } from '@library/common/UsersAvatarsCounter/UsersAv
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // stores
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { $authStore } from '../../../store';
 import {
     $isOwner,
@@ -53,7 +53,8 @@ const Component = ({ isAllowBack = true }) => {
             state.filter(
                 user =>
                     user.id !== localUserId &&
-                    user.accessStatus === MeetingAccessStatusEnum.InMeeting,
+                    user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
+                    user.meetingRole !== MeetingRole.Lurker,
             ),
     });
 

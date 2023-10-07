@@ -20,7 +20,7 @@ import { plainToInstance } from 'class-transformer';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
 import { Logger } from '@nestjs/common';
-import { wsError } from 'src/utils/ws/wsError';
+import { wsError } from '../../utils/ws/wsError';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -77,7 +77,7 @@ export class MeetingNotesGateway extends BaseGateway {
           success: true,
         };
       } catch (err) {
-        return wsError(socket, err);
+        return wsError(socket.id, err);
       }
     });
   }
@@ -108,7 +108,7 @@ export class MeetingNotesGateway extends BaseGateway {
           },
         );
       } catch (err) {
-        return wsError(socket, err);
+        return wsError(socket.id, err);
       }
     });
   }
@@ -124,7 +124,7 @@ export class MeetingNotesGateway extends BaseGateway {
         });
 
         if (!user) {
-          return wsError(socket, {
+          return wsError(socket.id, {
             message: 'No user found',
           });
         }
@@ -151,7 +151,7 @@ export class MeetingNotesGateway extends BaseGateway {
           },
         };
       } catch (err) {
-        return wsError(socket, err);
+        return wsError(socket.id, err);
       }
     });
   }

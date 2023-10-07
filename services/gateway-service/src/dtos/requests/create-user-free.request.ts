@@ -7,7 +7,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { toNumber } from 'src/utils/parsers/toNumber';
+import { toNumber } from '../../utils/parsers/toNumber';
 
 export class CreateUserFreeRequest {
   @ApiProperty({

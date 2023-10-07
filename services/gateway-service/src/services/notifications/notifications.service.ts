@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { NOTIFICATIONS_PROVIDER } from 'shared-const';
 import { ClientProxy } from '@nestjs/microservices';
 import { NotificationsBrokerPatterns } from 'shared-const';
-import { MonitoringService } from 'src/modules/monitoring/monitoring.service';
+import { MonitoringService } from '../../modules/monitoring/monitoring.service';
 import { MessagesSendResponse, MonitoringEvent } from 'shared-types';
 
 @Injectable()

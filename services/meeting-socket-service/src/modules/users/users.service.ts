@@ -11,10 +11,14 @@ import {
   UserActionInMeeting,
   UserActionInMeetingParams,
 } from '../../types';
-import { IUserTemplate, MeetingAccessStatusEnum } from 'shared-types';
+import {
+  IUserTemplate,
+  MeetingAccessStatusEnum,
+  MeetingRole,
+} from 'shared-types';
 import { Socket } from 'socket.io';
-import { ICommonMeetingUserDTO } from 'src/interfaces/common-user.interface';
-import { CoreService } from 'src/services/core/core.service';
+import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
+import { CoreService } from '../../services/core/core.service';
 
 @Injectable()
 export class UsersService {
@@ -67,7 +71,7 @@ export class UsersService {
       .exec();
   }
 
-  async countMany(query) {
+  async countMany(query: FilterQuery<MeetingUserDocument>) {
     return this.meetingUser.find(query).count().exec();
   }
 
@@ -79,7 +83,7 @@ export class UsersService {
   }
 
   async findOneAndUpdate(
-    query,
+    query: FilterQuery<MeetingUserDocument>,
     data: Partial<MeetingUserDocument>,
     { session }: ITransactionSession,
   ): Promise<MeetingUserDocument> {
@@ -114,6 +118,7 @@ export class UsersService {
     return this.meetingUser.find(query, {}, { session }).exec();
   }
 
+
   async updateIndexUsers({
     userTemplate,
     user,
@@ -126,8 +131,7 @@ export class UsersService {
     event: UserActionInMeeting;
   }) {
     try {
-      console.log('update index user');
-      
+      if (user.meetingRole === MeetingRole.Lurker) return;
       const userId = user._id.toString();
       const updateIndexParams: UserActionInMeetingParams = {
         [UserActionInMeeting.Join]: {

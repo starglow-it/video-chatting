@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import { useStore } from 'effector-react';
 import * as yup from 'yup';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -17,6 +17,7 @@ import { ScheduleAttendees } from '@components/Dialogs/ScheduleMeetingDialog/Sch
 
 // stores
 import { Translation } from '@library/common/Translation/Translation';
+import { MeetingRoleGroup } from '@components/Meeting/MeetingRoleGroup/MeetingRoleGroup';
 import {
     $appDialogsStore,
     addNotificationEvent,
@@ -44,6 +45,8 @@ const Component = () => {
 
     const [userEmails, setUserEmails] = useState<string[]>([]);
 
+    const refRole = useRef<any>(null);
+
     const resolver = useYupValidationResolver<{ currentUserEmail: string }>(
         validationSchema,
     );
@@ -67,6 +70,7 @@ const Component = () => {
                 await sendInviteEmailFx({
                     userEmails,
                     meetingId: router?.query?.token,
+                    role: refRole.current?.getValue(),
                 });
                 reset();
                 handleClose();
@@ -116,6 +120,10 @@ const Component = () => {
                             onAddUserEmail={handleAddUserEmail}
                             onDeleteUserEmail={handleDeleteUserEmail}
                             userEmails={userEmails}
+                        />
+                        <MeetingRoleGroup
+                            className={styles.roleGroup}
+                            ref={refRole}
                         />
                         <CustomGrid container wrap="nowrap" gap={2}>
                             <CustomButton

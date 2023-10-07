@@ -29,7 +29,7 @@ import { MeetingBackgroundVideo } from '@components/Meeting/MeetingBackgroundVid
 import { CustomImage } from 'shared-frontend/library/custom/CustomImage';
 
 // styles
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, PlanKeys } from 'shared-types';
 import { LeaveNoteForm } from '@components/LeaveNoteForm/LeaveNoteForm';
 import { ScheduleMeetingDialog } from '@components/Dialogs/ScheduleMeetingDialog/ScheduleMeetingDialog';
 import {
@@ -39,15 +39,19 @@ import {
 import { useBrowserDetect } from '@hooks/useBrowserDetect';
 import { MobilePortraitStub } from '@components/MobilePortraitStub/MobilePortraitStub';
 import { InviteGuestsDialog } from '@components/Dialogs/InviteGuestsDialog/InviteGuestsDialog';
+import { ConfirmBecomeParticipantDialog } from '@components/Dialogs/ConfirmBecomeParticipantDialog/ConfirmBecomeParticipantDialog';
+import { DownloadIcsEventDialog } from '@components/Dialogs/DownloadIcsEventDialog/DownloadIcsEventDialog';
 import styles from './MeetingView.module.scss';
 
 // stores
 import {
+    $profileStore,
     addNotificationEvent,
     appDialogsApi,
     checkIsPortraitLayoutEvent,
 } from '../../../store';
 import {
+    $isLurker,
     $isOwner,
     $isScreenSharingStore,
     $localUserStore,
@@ -79,9 +83,11 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const localUser = useStore($localUserStore);
     const isOwner = useStore($isOwner);
+    const isLurker = useStore($isLurker);
     const isMeetingConnected = useStore($meetingConnectedStore);
     const serverType = useStore($serverTypeStore);
     const isJoinMeetingPending = useStore(joinMeetingFx.pending);
+    const profile = useStore($profileStore);
     const { isMobile } = useBrowserDetect();
 
     const hostUser = useStoreMap({
@@ -223,7 +229,17 @@ const Component = () => {
                     <ConditionalRender condition={!isMobile}>
                         <MeetingManageAudio />
                     </ConditionalRender>
-                    <LeaveNoteForm />
+                    <ConditionalRender
+                        condition={
+                            !isLurker ||
+                            (isLurker &&
+                                profile.subscriptionPlanKey ===
+                                    PlanKeys.Professional) ||
+                            profile.subscriptionPlanKey === PlanKeys.Business
+                        }
+                    >
+                        <LeaveNoteForm />
+                    </ConditionalRender>
                 </MeetingSettingsPanel>
             )}
 
@@ -236,6 +252,8 @@ const Component = () => {
             <ScheduleMeetingDialog />
             <MobilePortraitStub />
             <InviteGuestsDialog />
+            <ConfirmBecomeParticipantDialog />
+            <DownloadIcsEventDialog />
         </CustomGrid>
     );
 };

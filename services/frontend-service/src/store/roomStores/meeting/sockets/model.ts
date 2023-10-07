@@ -20,6 +20,7 @@ import {
     UpdateMeetingTemplatePayload,
     EnterWaitingRoomPayload,
     SendReconnectMeetingPayload,
+    JoinLurkerMeetingPayload,
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -77,3 +78,7 @@ export const sendReconnectMeetingEvent = createMeetingSocketEvent<
     SendReconnectMeetingPayload,
     EnterMeetingRequestResponse
 >(MeetingSocketEmitters.SendReconnectMeeting);
+export const joinMeetingLurkerEvent = createMeetingSocketEvent<
+    JoinLurkerMeetingPayload,
+    EnterMeetingRequestResponse
+>(MeetingSocketEmitters.JoinWithLurker);

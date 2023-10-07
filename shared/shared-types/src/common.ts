@@ -7,7 +7,7 @@ export type SuccessResult<Result> = {
 
 export type FilterQuery<T> = {
   [K in keyof T]?: any;
-}
+};
 
 export type AuthToken = {
   token: string;
@@ -40,7 +40,7 @@ export type QueryParams = {
   draft?: boolean;
   type?: string;
   isHaveSubdomain?: boolean;
-  roomType?: RoomType
+  roomType?: RoomType;
 };
 
 export interface IToken {
@@ -70,7 +70,7 @@ export enum HttpMethods {
   Get = 'GET',
   Delete = 'DELETE',
   Put = 'PUT',
-  Patch = 'PATCH'
+  Patch = 'PATCH',
 }
 
 export type ApiError = {
@@ -107,3 +107,11 @@ export enum FileSizeTypesEnum {
   megabyte = 'megabyte',
   gigabyte = 'gigabyte',
 }
+
+export interface ITimestamp {
+  year: number;
+  month: number;
+  day: number;
+  hours: number;
+  minutes: number;
+};

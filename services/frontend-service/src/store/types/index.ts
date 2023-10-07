@@ -8,6 +8,7 @@ import {
     TokenPair,
     IUserTemplate,
     ICommonUser,
+    MeetingRole,
 } from 'shared-types';
 import { NextPageContext } from 'next';
 
@@ -31,6 +32,7 @@ export type MeetingUser = {
     };
     userSize?: number;
     meetingAvatarId?: string;
+    meetingRole: MeetingRole;
 };
 
 export type Meeting = {
@@ -138,6 +140,7 @@ export type AppDialogsState = {
     downgradedSubscriptionDialog: boolean;
     meetingFinishedDialog: boolean;
     inviteGuestsDialog: boolean;
+    confirmBecomeParticipantDialog: boolean;
 };
 
 export enum AppDialogsEnum {
@@ -166,6 +169,7 @@ export enum AppDialogsEnum {
     downgradedSubscriptionDialog = 'downgradedSubscriptionDialog',
     meetingFinishedDialog = 'meetingFinishedDialog',
     inviteGuestsDialog = 'inviteGuestsDialog',
+    confirmBecomeParticipantDialog = 'confirmBecomeParticipantDialog',
 }
 
 export type DialogActionPayload = {
@@ -244,6 +248,7 @@ export enum NotificationType {
     validationError = 'validationError',
     UploadBackgroundSuccess = 'upload_background_success',
     DeleteMedia = 'DeleteMedia',
+    RequestBecomeParticipantSuccess = 'request_become_participant_success',
 }
 
 export type Notification = {

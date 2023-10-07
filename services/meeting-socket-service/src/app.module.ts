@@ -8,6 +8,7 @@ import { TemplatesModule } from './modules/templates/templates.module';
 import { MeetingNotesModule } from './modules/meeting-notes/meeting-notes.module';
 import { ConfigModule } from './services/config/config.module';
 import { DatabaseModule } from './database/database.module';
+import { LurkerModule } from './modules/lurkers/lurkers.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DatabaseModule } from './database/database.module';
     ScheduleModule.forRoot(),
     MeetingsModule,
     UsersModule,
+    LurkerModule,
     TemplatesModule,
     MeetingNotesModule,
     TasksModule,

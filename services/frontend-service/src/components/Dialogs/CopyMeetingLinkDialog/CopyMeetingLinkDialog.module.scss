@@ -11,12 +11,12 @@
   background: $light-gray-scale;
   border: 1px solid rgba($normal-gray-scale, 0.6);
   border-radius: rem(10px);
-  padding: rem(16px 10px);
+  padding: rem(12px 10px);
   max-width: rem(320px);
 }
 
 .copyLink {
-  margin: rem(28px 0 40px 0);
+  margin: rem(28px 0 20px 0);
 }
 
 .copyButton {
@@ -25,4 +25,8 @@
 
 .linkText {
   @extend %text-ellips;
+}
+
+.roleGroup {
+  margin-bottom: 0px;
 }

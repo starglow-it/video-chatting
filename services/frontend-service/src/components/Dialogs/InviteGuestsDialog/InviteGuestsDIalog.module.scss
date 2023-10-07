@@ -36,7 +36,7 @@
     display: flex;
     align-items: flex-end;
     flex-direction: row;
-    height: 140px;
+    height: 122px;
 }
 
 .actionItem {
@@ -63,4 +63,9 @@
         margin-top: 5px;
         font-size: 14px;
     }
+}
+
+.roleGroup {
+    justify-content: center;
+    margin-top: 16px;
 }

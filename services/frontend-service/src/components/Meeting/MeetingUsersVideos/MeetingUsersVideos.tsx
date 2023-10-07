@@ -14,7 +14,7 @@ import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { ConditionalRender } from 'shared-frontend/library/common/ConditionalRender';
 
 // stores
-import { MeetingAccessStatusEnum } from 'shared-types';
+import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
 import { getAvatarUrlMeeting } from 'src/utils/functions/getAvatarMeeting';
 import { $avatarsMeetingStore } from 'src/store/roomStores/meeting/meetingAvatar/model';
 import {
@@ -24,6 +24,7 @@ import {
 } from '../../../store';
 import {
     $activeStreamStore,
+    $isLurker,
     $isOwner,
     $isScreenSharingStore,
     $localUserStore,
@@ -31,7 +32,6 @@ import {
     $meetingStore,
     $meetingTemplateStore,
     $meetingUsersStore,
-    $tracksStore,
     setDevicesPermission,
     updateLocalUserEvent,
     updateUserSocketEvent,
@@ -48,8 +48,6 @@ const Component = () => {
     const meetingTemplate = useStore($meetingTemplateStore);
     const isScreenSharing = useStore($isScreenSharingStore);
     const activeStream = useStore($activeStreamStore);
-    const tracks = useStore($tracksStore);
-    console.log('#Duy Phan console tracks', tracks);
     const {
         avatar: { list },
     } = useStore($avatarsMeetingStore);
@@ -57,6 +55,7 @@ const Component = () => {
     const profile = useStore($profileStore);
     const isSideUsersOpen = useStore($isSideUsersOpenStore);
     const isOwner = useStore($isOwner);
+    const isLurker = useStore($isLurker);
     const { isMobile } = useBrowserDetect();
 
     const users = useStoreMap({
@@ -66,7 +65,8 @@ const Component = () => {
             state.filter(
                 user =>
                     user.accessStatus === MeetingAccessStatusEnum.InMeeting &&
-                    localUser.id !== user.id,
+                    localUser.id !== user.id &&
+                    user.meetingRole !== MeetingRole.Lurker,
             ),
     });
 
@@ -147,26 +147,28 @@ const Component = () => {
                     </ClickAwayListener>
                 </ConditionalRender>
                 {renderUsers}
-                <MeetingUserVideoItem
-                    key={localUser.id}
-                    userId={localUser.id}
-                    size={localUser.userSize || 0}
-                    userProfileAvatar={profile?.profileAvatar?.url || ''}
-                    userName={localUser.username}
-                    localStream={activeStream}
-                    isCameraEnabled={isLocalCamActive}
-                    isMicEnabled={isLocalMicActive}
-                    isScreenSharing={isScreenSharing}
-                    isScreenSharingUser={
-                        localUser.id === meeting?.sharingUserId
-                    }
-                    isLocal
-                    isAuraActive={localUser.isAuraActive}
-                    onToggleAudio={handleToggleAudio}
-                    bottom={localUser?.userPosition?.bottom}
-                    left={localUser?.userPosition?.left}
-                    isOwner={isOwner}
-                />
+                <ConditionalRender condition={!isLurker}>
+                    <MeetingUserVideoItem
+                        key={localUser.id}
+                        userId={localUser.id}
+                        size={localUser.userSize || 0}
+                        userProfileAvatar={profile?.profileAvatar?.url || ''}
+                        userName={localUser.username}
+                        localStream={activeStream}
+                        isCameraEnabled={isLocalCamActive}
+                        isMicEnabled={isLocalMicActive}
+                        isScreenSharing={isScreenSharing}
+                        isScreenSharingUser={
+                            localUser.id === meeting?.sharingUserId
+                        }
+                        isLocal
+                        isAuraActive={localUser.isAuraActive}
+                        onToggleAudio={handleToggleAudio}
+                        bottom={localUser?.userPosition?.bottom}
+                        left={localUser?.userPosition?.left}
+                        isOwner={isOwner}
+                    />
+                </ConditionalRender>
             </CustomGrid>
         );
     }
@@ -179,32 +181,36 @@ const Component = () => {
             id="drag-warpper"
         >
             {renderUsers}
-            <MeetingUserVideoItem
-                userId={localUser.id}
-                key={localUser.id}
-                size={localUser.userSize || 0}
-                userProfileAvatar={
-                    getAvatarUrlMeeting(
-                        localUser.meetingAvatarId ?? '',
-                        list,
-                    ) ||
-                    profile?.profileAvatar?.url ||
-                    ''
-                }
-                userName={localUser.username}
-                localStream={activeStream}
-                isCameraEnabled={isLocalCamActive}
-                isMicEnabled={isLocalMicActive}
-                isScreenSharing={isScreenSharing}
-                isScreenSharingUser={localUser.id === meeting?.sharingUserId}
-                isLocal
-                isAuraActive={localUser.isAuraActive}
-                onToggleAudio={isMobile ? undefined : handleToggleAudio}
-                bottom={localUser?.userPosition?.bottom}
-                left={localUser?.userPosition?.left}
-                onResizeVideo={handleResizeVideo}
-                isOwner={isOwner}
-            />
+            <ConditionalRender condition={!isLurker}>
+                <MeetingUserVideoItem
+                    userId={localUser.id}
+                    key={localUser.id}
+                    size={localUser.userSize || 0}
+                    userProfileAvatar={
+                        getAvatarUrlMeeting(
+                            localUser.meetingAvatarId ?? '',
+                            list,
+                        ) ||
+                        profile?.profileAvatar?.url ||
+                        ''
+                    }
+                    userName={localUser.username}
+                    localStream={activeStream}
+                    isCameraEnabled={isLocalCamActive}
+                    isMicEnabled={isLocalMicActive}
+                    isScreenSharing={isScreenSharing}
+                    isScreenSharingUser={
+                        localUser.id === meeting?.sharingUserId
+                    }
+                    isLocal
+                    isAuraActive={localUser.isAuraActive}
+                    onToggleAudio={isMobile ? undefined : handleToggleAudio}
+                    bottom={localUser?.userPosition?.bottom}
+                    left={localUser?.userPosition?.left}
+                    onResizeVideo={handleResizeVideo}
+                    isOwner={isOwner}
+                />
+            </ConditionalRender>
         </CustomGrid>
     );
 };

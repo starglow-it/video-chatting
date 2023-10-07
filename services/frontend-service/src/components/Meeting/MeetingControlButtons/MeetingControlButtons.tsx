@@ -27,16 +27,22 @@ import { CustomTooltip } from 'shared-frontend/library/custom/CustomTooltip';
 import { Translation } from '@library/common/Translation/Translation';
 import { isSubdomain } from 'src/utils/functions/isSubdomain';
 import { deleteUserAnonymousCookies } from 'src/helpers/http/destroyCookies';
+import { ScheduleIcon } from 'shared-frontend/icons/OtherIcons/ScheduleIcon';
+import { ArrowUp } from 'shared-frontend/icons/OtherIcons/ArrowUp';
 import { $authStore, deleteDraftUsers } from '../../../store';
 import {
+    $isLurker,
     $isMeetingHostStore,
     $isToggleUsersPanel,
     $localUserStore,
     $meetingConnectedStore,
+    $meetingStore,
     $meetingUsersStore,
     disconnectFromVideoChatEvent,
+    requestSwitchRoleByLurkerEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
+    toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
 } from '../../../store/roomStores';
@@ -55,13 +61,17 @@ const Component = () => {
     const isMeetingConnected = useStore($meetingConnectedStore);
     const { isWithoutAuthen } = useStore($authStore);
     const isUsersOpen = useStore($isToggleUsersPanel);
+    const isLurker = useStore($isLurker);
+    const meeting = useStore($meetingStore);
     const isThereNewRequests = useStoreMap({
         store: $meetingUsersStore,
         keys: [],
         fn: state =>
             state.some(
                 user =>
-                    user.accessStatus === MeetingAccessStatusEnum.RequestSent,
+                    user.accessStatus === MeetingAccessStatusEnum.RequestSent ||
+                    user.accessStatus ===
+                        MeetingAccessStatusEnum.SwitchRoleSent,
             ),
     });
 
@@ -107,11 +117,22 @@ const Component = () => {
     const handleToggleUsersPanel = (e: SyntheticEvent) => {
         e.stopPropagation();
         toggleUsersPanelEvent();
+        toggleSchedulePanelEvent(false);
+    };
+
+    const handleToggleSchedulePanel = (e: SyntheticEvent) => {
+        e.stopPropagation();
+        toggleSchedulePanelEvent();
+        toggleUsersPanelEvent(false);
+    };
+
+    const handleRequestToBecomeParticipant = () => {
+        requestSwitchRoleByLurkerEvent({ meetingId: meeting.id });
     };
 
     return (
         <CustomGrid container gap={1.5} className={styles.devicesWrapper}>
-            <ConditionalRender condition={!isMobile}>
+            <ConditionalRender condition={!isMobile && !isLurker}>
                 <CustomTooltip
                     title={
                         <Translation
@@ -143,33 +164,83 @@ const Component = () => {
                     </CustomPaper>
                 </CustomTooltip>
             </ConditionalRender>
-            <CustomTooltip
-                title={
-                    <Translation
-                        nameSpace="meeting"
-                        translation="invite.tooltip"
-                    />
-                }
-                placement="top"
-            >
-                <CustomPaper
-                    variant="black-glass"
-                    borderRadius={8}
-                    className={styles.deviceButton}
+            <ConditionalRender condition={!isLurker}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="invite.tooltip"
+                        />
+                    }
+                    placement="top"
                 >
-                    <ActionButton
-                        variant="transparentBlack"
-                        onAction={handleToggleUsersPanel}
-                        className={clsx(styles.actionButton, {
-                            [styles.active]: isUsersOpen,
-                            [styles.newRequests]:
-                                isThereNewRequests && isMeetingHost,
-                            [styles.mobile]: isMobile,
-                        })}
-                        Icon={<PeopleIcon width="22px" height="22px" />}
-                    />
-                </CustomPaper>
-            </CustomTooltip>
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleSchedulePanel}
+                            className={clsx(styles.actionButton)}
+                            Icon={<ScheduleIcon width="22px" height="22px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={!isLurker}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="people.tooltip"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleToggleUsersPanel}
+                            className={clsx(styles.actionButton, {
+                                [styles.active]: isUsersOpen,
+                                [styles.newRequests]:
+                                    isThereNewRequests && isMeetingHost,
+                                [styles.mobile]: isMobile,
+                            })}
+                            Icon={<PeopleIcon width="22px" height="22px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
+            <ConditionalRender condition={isLurker}>
+                <CustomTooltip
+                    title={
+                        <Translation
+                            nameSpace="meeting"
+                            translation="lurker.buttons.requestBecomeParticipant"
+                        />
+                    }
+                    placement="top"
+                >
+                    <CustomPaper
+                        variant="black-glass"
+                        borderRadius={8}
+                        className={styles.deviceButton}
+                    >
+                        <ActionButton
+                            variant="transparentBlack"
+                            onAction={handleRequestToBecomeParticipant}
+                            className={styles.actionButton}
+                            Icon={<ArrowUp width="15px" height="15px" />}
+                        />
+                    </CustomPaper>
+                </CustomTooltip>
+            </ConditionalRender>
             <CustomTooltip
                 title={
                     <Translation
@@ -186,7 +257,9 @@ const Component = () => {
                     Icon={<HangUpIcon width="22px" height="22px" />}
                 />
             </CustomTooltip>
-            <MeetingControlCollapse />
+            <ConditionalRender condition={!isLurker}>
+                <MeetingControlCollapse />
+            </ConditionalRender>
         </CustomGrid>
     );
 };
