@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsOptional } from 'class-validator';
-import { toNumber } from 'src/utils/parsers/toNumber';
+import { toNumber } from '../../utils/parsers/toNumber';
 
 export class GetMediasQueryDto {
   @ApiProperty({

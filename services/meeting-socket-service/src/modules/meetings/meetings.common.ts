@@ -182,12 +182,19 @@ export class MeetingsCommonService {
     });
   }
 
-  compareActiveWithMaxParicipants = async (meeting: MeetingDocument) => {
+  compareActiveWithMaxParicipants = async (
+    meeting: MeetingDocument,
+    role: 'lurker' | 'participant',
+  ) => {
     const c = await this.usersService.countMany({
       meeting: meeting._id,
       accessStatus: {
-        $in: [MeetingAccessStatusEnum.InMeeting],
+        $in: [
+          MeetingAccessStatusEnum.InMeeting,
+          MeetingAccessStatusEnum.SwitchRoleSent,
+        ],
       },
+      meetingRole: role,
     });
 
     if (c === meeting.maxParticipants) return;

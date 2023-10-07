@@ -18,8 +18,8 @@ export class JoinMeetingRequestDTO implements IJoinMeeting {
   })
   readonly templateId: string;
 
-  @IsBoolean()
-  readonly isOwner: boolean;
+  @IsString()
+  readonly meetingRole: IJoinMeeting['meetingRole'];
 
   @IsBoolean()
   readonly accessStatus: string;

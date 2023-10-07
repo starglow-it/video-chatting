@@ -23,7 +23,7 @@ import {
 import { GetMonitoringQueryDto } from '../../dtos/query/GetMonitoringQuery.dto';
 import { MonitoringDto } from '../../dtos/response/monitoring.dto';
 import { DeleteMonitoringRequestDto } from '../../dtos/requests/delete-monitoring.request';
-import { CommonResponseDto } from 'src/dtos/response/common-response.dto';
+import { CommonResponseDto } from '../../dtos/response/common-response.dto';
 
 type MandrillMsg = {
   ts: number;

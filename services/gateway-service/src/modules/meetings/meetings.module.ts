@@ -18,7 +18,7 @@ import { UserTemplatesModule } from '../user-templates/user-templates.module';
 
 // const
 import { JWT_ACCESS_EXPIRE } from 'shared-const';
-import { ResouceModule } from 'src/services/resouces/resouces.module';
+import { ResouceModule } from '../../services/resouces/resouces.module';
 
 @Module({
   imports: [
