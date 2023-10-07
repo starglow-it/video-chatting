@@ -35,6 +35,6 @@ export class IsTimestampConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {
-    return 'Value does not match';
+    return 'Invalid Timestamp';
   }
 }
