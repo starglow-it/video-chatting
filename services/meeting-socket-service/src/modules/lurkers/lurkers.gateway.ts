@@ -291,18 +291,19 @@ export class LurkersGateway extends BaseGateway {
             meetingRole: MeetingRole.Lurker,
             accessStatus: {
               $in: [
-                MeetingAccessStatusEnum.InMeeting,
                 MeetingAccessStatusEnum.SwitchRoleSent,
               ],
             },
           },
           {
-            ...(action === AnswerSwitchRoleAction.Accept && {
+            ...(action === AnswerSwitchRoleAction.Accept ? {
               meetingRole: MeetingRole.Participant,
               accessStatus: MeetingAccessStatusEnum.InMeeting,
               userPosition: userTemplate.usersPosition[index],
               userSize: userTemplate.usersSize[index],
               isAuraActive: true,
+            }: {
+                accessStatus: MeetingAccessStatusEnum.InMeeting
             }),
           },
           session,
