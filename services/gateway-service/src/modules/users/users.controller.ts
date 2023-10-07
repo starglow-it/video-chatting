@@ -491,7 +491,7 @@ export class UsersController {
             {
               name: 'MEETINGURL',
               content: `${this.frontendUrl}/room/${body.meetingId}?role=${
-                body.role ?? MeetingRole.Participant
+                body.role ?? ''
               }`,
             },
             { name: 'SENDER', content: `${senderName} (${senderEmail})` },
@@ -561,7 +561,7 @@ export class UsersController {
       const tzOffset = getTzOffset(startAt, body.timeZone);
       const meetingUrl = `${this.frontendUrl}/room/${
         template.customLink || template.id
-      }?role=${body.role ?? 'participant'}`;
+      }?role=${body.role ?? ''}`;
 
       const content = await generateIcsEventData({
         organizerEmail: senderUser.email,
