@@ -207,87 +207,6 @@ export class MeetingsCommonService {
     );
   };
 
-  acceptUserJoinRoom = async ({
-    userId,
-    session,
-    meeting,
-    template,
-  }: {
-    userId: string;
-    session: ITransactionSession;
-    meeting: MeetingDocument;
-    template: IUserTemplate;
-  }) => {
-    const user = await this.usersService.findById(userId, session);
-
-    if (!user) return;
-
-    const usersTemplate = await this.coreService.findMeetingTemplateById({
-      id: meeting.templateId,
-    });
-
-    const indexUser = usersTemplate.indexUsers.indexOf(null);
-    if (indexUser === -1) return;
-
-    const updatedUser = await this.usersService.findOneAndUpdate(
-      {
-        _id: userId,
-        accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
-      },
-      {
-        accessStatus: MeetingAccessStatusEnum.InMeeting,
-        joinedAt: Date.now(),
-        userPosition: template?.usersPosition?.[indexUser],
-        userSize: template?.usersSize?.[indexUser],
-      },
-      session,
-    );
-
-    usersTemplate.indexUsers[indexUser] = user.id.toString();
-
-    await this.coreService.updateUserTemplate({
-      templateId: usersTemplate.id,
-      userId: user.id.toString(),
-      data: {
-        indexUsers: usersTemplate.indexUsers,
-      },
-    });
-
-    return userSerialization(updatedUser);
-  };
-
-  rejectUserJoinRoom = async ({
-    userId,
-    session,
-    emitToSocketId,
-  }: {
-    userId: string;
-    emitToSocketId: (...args: TEventEmitter) => void;
-    session: ITransactionSession;
-  }) => {
-    const user = await this.usersService.findByIdAndUpdate(
-      userId,
-      {
-        accessStatus: MeetingAccessStatusEnum.Rejected,
-      },
-      session,
-    );
-
-    if (!user) return;
-
-    const r = userSerialization(user);
-
-    emitToSocketId(user.socketId, MeetingEmitEvents.ReceiveAccessRequest, {
-      user: r,
-    });
-
-    emitToSocketId(user.socketId, MeetingEmitEvents.SendMeetingError, {
-      message: 'meeting.requestDenied',
-    });
-
-    return r;
-  };
-
   handleUserLoggedInDisconnect = async ({
     user,
     timeToAdd,
@@ -303,29 +222,24 @@ export class MeetingsCommonService {
   }) => {
     let profileUser = null;
     if (!user.profileId) return;
-    try {
-      profileUser = await this.coreService.findUserById({
-        userId: user.profileId,
-      });
+    profileUser = await this.coreService.findUserById({
+      userId: user.profileId,
+    });
 
-      await this.coreService.updateUserProfileStatistic({
-        userId: profileUser.id,
-        statisticKey: 'minutesSpent',
-        value: timeToAdd,
-      });
+    await this.coreService.updateUserProfileStatistic({
+      userId: profileUser.id,
+      statisticKey: 'minutesSpent',
+      value: timeToAdd,
+    });
 
-      if (isMeetingHost && this.checkCurrentUserPlain(profileUser)) {
-        await this.handleTimeLimit({
-          profileId: profileUser.id,
-          meetingId,
-          meetingUserId: user._id.toString(),
-          maxProfileTime: profileUser.maxMeetingTime,
-          session,
-        });
-      }
-    } catch (err) {
-      console.error('Update meeting user profile error', err);
-      return;
+    if (isMeetingHost && this.checkCurrentUserPlain(profileUser)) {
+      await this.handleTimeLimit({
+        profileId: profileUser.id,
+        meetingId,
+        meetingUserId: user._id.toString(),
+        maxProfileTime: profileUser.maxMeetingTime,
+        session,
+      });
     }
   };
 }

@@ -19,6 +19,7 @@ import {
 import { Socket } from 'socket.io';
 import { ICommonMeetingUserDTO } from '../../interfaces/common-user.interface';
 import { CoreService } from '../../services/core/core.service';
+import { replaceItemInArray } from 'src/utils/replaceItemInArray';
 
 @Injectable()
 export class UsersService {
@@ -118,65 +119,45 @@ export class UsersService {
     return this.meetingUser.find(query, {}, { session }).exec();
   }
 
-
-  async updateIndexUsers({
+  async updateSizeAndPositionForUser({
     userTemplate,
-    user,
+    userId,
     event,
-    session,
   }: {
     userTemplate: IUserTemplate;
-    user: MeetingUserDocument;
-    session: ITransactionSession;
+    userId: string;
     event: UserActionInMeeting;
   }) {
-    try {
-      if (user.meetingRole === MeetingRole.Lurker) return;
-      const userId = user._id.toString();
-      const updateIndexParams: UserActionInMeetingParams = {
-        [UserActionInMeeting.Join]: {
-          condition: null,
-          replaceItem: userId,
-        },
-        [UserActionInMeeting.Leave]: {
-          condition: userId,
-          replaceItem: null,
-        },
-      };
+    const updateIndexParams: UserActionInMeetingParams = {
+      [UserActionInMeeting.Join]: {
+        condition: null,
+        replaceItem: userId,
+      },
+      [UserActionInMeeting.Leave]: {
+        condition: userId,
+        replaceItem: null,
+      },
+    };
 
-      const params = updateIndexParams[event];
+    const index = replaceItemInArray(
+      userTemplate.indexUsers,
+      updateIndexParams[event].condition,
+      updateIndexParams[event].replaceItem,
+    );
 
-      const index = userTemplate.indexUsers.indexOf(params.condition);
-      if (index === -1) return;
+    if (!index && typeof index !== 'number') return;
 
-      userTemplate.indexUsers[index] = params.replaceItem;
+    await this.coreService.updateUserTemplate({
+      templateId: userTemplate.id,
+      userId,
+      data: {
+        indexUsers: userTemplate.indexUsers,
+      },
+    });
 
-      await this.coreService.updateUserTemplate({
-        templateId: userTemplate.id,
-        userId,
-        data: {
-          indexUsers: userTemplate.indexUsers,
-        },
-      });
-
-      if (event === UserActionInMeeting.Join) {
-        await this.updateOne(
-          {
-            _id: user._id,
-          },
-          {
-            userPosition: userTemplate.usersPosition[index],
-            userSize: userTemplate.usersSize[index],
-          },
-          session,
-        );
-      }
-    } catch (err) {
-      console.log({
-        message: err.message,
-        event,
-      });
-      return;
-    }
+    return {
+      position: userTemplate.usersPosition[index],
+      size: userTemplate.usersSize[index],
+    };
   }
 }
