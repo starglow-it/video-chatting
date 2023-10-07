@@ -11,7 +11,7 @@ export function wsError(
   message?: string,
 ): WsError {
   console.error({
-    ctx: clientId ? clientId : 'unknow',
+    ctx: clientId ?? 'unknow',
     error: error ?? message,
   });
 
