@@ -79,6 +79,7 @@ import { ReconnectDto } from '../../dtos/requests/recconnect.dto';
 import { notifyParticipantsMeetingInfo } from '../../providers/socket.provider';
 import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dto';
 import { wsResult } from '../../utils/ws/wsResult';
+import { ObjectId } from 'src/utils/objectId';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -210,12 +211,6 @@ export class MeetingsGateway
         const user = await this.usersService.findOne({
           query: { socketId: client.id },
           session,
-          populatePaths: [
-            {
-              path: 'meeting',
-              populate: ['hostUserId', 'owner'],
-            },
-          ],
         });
         if (!user) {
           return wsError(client.id, {
@@ -223,8 +218,15 @@ export class MeetingsGateway
           });
         }
 
+        await user.populate('meeting');
+        if (!user.meeting) {
+          return wsError(client.id, {
+            message: 'Meeting not found',
+          });
+        }
+
         const userId = user._id.toString();
-        const meeting = user.meeting;
+        let meeting = user.meeting;
         const isOwner = meeting.owner._id.toString() === userId;
 
         const userTemplate = await this.coreService.findMeetingTemplateById({
@@ -237,25 +239,35 @@ export class MeetingsGateway
           });
         }
 
+        const u = await this.usersService.updateSizeAndPositionForUser({
+          userTemplate,
+          userId,
+          event: UserActionInMeeting.Leave,
+        });
+
+        if (!u) {
+          return wsError(client.id, {
+            message: 'User has been deleted',
+          });
+        }
+
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
         let isDisconnectStatus = false;
         if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
           accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
         }
 
-        await this.usersService.findOneAndUpdate(
+        const userUpdated = await this.usersService.findOneAndUpdate(
           {
             socketId: client.id,
           },
-          { accessStatus: accessStatusUpdate },
+          {
+            accessStatus: accessStatusUpdate,
+            userPosition: u.position,
+            userSize: u.size,
+          },
           session,
         );
-        await this.usersService.updateIndexUsers({
-          userTemplate,
-          user,
-          session,
-          event: UserActionInMeeting.Leave,
-        });
 
         if (isDisconnectStatus) return;
 
@@ -273,11 +285,14 @@ export class MeetingsGateway
           );
         }
 
+        await userUpdated.populate('meeting');
+        meeting = userUpdated.meeting;
+
         await this.handleOutRoom({
           client,
           meeting,
           session,
-          user,
+          user: userUpdated,
           userTemplate,
         });
         await notifyParticipantsMeetingInfo({
@@ -479,14 +494,34 @@ export class MeetingsGateway
           userId: template.user.id,
         });
 
-        const index = template.indexUsers.indexOf(null);
-        if (!(index + 1)) {
+        if (!mainUser) {
           return wsError(socket.id, {
-            message: 'The meeting has reached its limit of participants',
+            message: 'User created template not found',
           });
         }
 
-        const user = await this.usersService.findOneAndUpdate(
+        const user = await this.usersService.findOne({
+          query: {
+            socketId: socket.id,
+          },
+          session,
+        });
+        if (!user) {
+          return wsError(socket.id, {
+            message: 'No User found',
+          });
+        }
+        const u = await this.usersService.updateSizeAndPositionForUser({
+          userTemplate: template,
+          userId: user._id.toString(),
+          event: UserActionInMeeting.Join,
+        });
+
+        if (!u) {
+          return wsError(socket.id, 'meeting.maxParticipantsNumber');
+        }
+
+        const userUpdated = await this.usersService.findOneAndUpdate(
           { socketId: socket.id },
           {
             accessStatus: MeetingAccessStatusEnum.InMeeting,
@@ -495,22 +530,17 @@ export class MeetingsGateway
             username: message.user.username,
             isAuraActive: message.user.isAuraActive,
             joinedAt: Date.now(),
-            userPosition: template?.usersPosition?.[index],
-            userSize: template?.usersSize?.[index],
+            userPosition: u.position,
+            userSize: u.size,
           },
           session,
         );
 
-        await this.usersService.updateIndexUsers({
-          userTemplate: template,
-          user,
-          session,
-          event: UserActionInMeeting.Join,
-        });
-
         await meeting.populate('users');
 
-        if (!meeting.startAt) meeting.startAt = Date.now();
+        if (!meeting.startAt) {
+          meeting.startAt = Date.now();
+        }
 
         let finishTime: number;
 
@@ -571,7 +601,7 @@ export class MeetingsGateway
           }
         }
 
-        const plainUser = userSerialization(user);
+        const plainUser = userSerialization(userUpdated);
 
         const plainMeeting = meetingSerialization(meeting);
 
@@ -801,7 +831,7 @@ export class MeetingsGateway
         if (
           typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
             meeting,
-            'participant',
+            'lurker',
           )) === 'undefined'
         ) {
           return wsError(socket.id, 'meeting.maxParticipantsNumber');
@@ -859,6 +889,7 @@ export class MeetingsGateway
           });
         }
         await meeting.populate(['users']);
+        socket.join(`lurker:${msg.meetingId}`);
         socket.join(`meeting:${msg.meetingId}`);
 
         const plainMeeting = meetingSerialization(meeting);
@@ -901,33 +932,65 @@ export class MeetingsGateway
           id: meeting.templateId,
         });
 
-        let plainUser: CommonUserDTO;
+        let user = await this.usersService.findOne({
+          query: {
+            _id: new ObjectId(message.userId),
+            accessStatus: { $eq: MeetingAccessStatusEnum.RequestSent },
+          },
+          session,
+        });
 
         if (message.isUserAccepted) {
-          if (
-            typeof (await this.meetingsCommonService.compareActiveWithMaxParicipants(
-              meeting,
-              'participant',
-            )) === 'undefined'
-          ) {
+          const u = await this.usersService.updateSizeAndPositionForUser({
+            userId: user._id.toString(),
+            event: UserActionInMeeting.Join,
+            userTemplate: template,
+          });
+
+          if (!u) {
             return wsError(socket.id, 'meeting.maxParticipantsNumber');
           }
 
-          plainUser = await this.meetingsCommonService.acceptUserJoinRoom({
-            meeting,
+          user = await this.usersService.findOneAndUpdate(
+            {
+              _id: user._id,
+            },
+            {
+              accessStatus: MeetingAccessStatusEnum.InMeeting,
+              joinedAt: Date.now(),
+              userPosition: u.position,
+              userSize: u.size,
+            },
             session,
-            template,
-            userId: message.userId,
-          });
+          );
         } else if (!message.isUserAccepted) {
-          plainUser = await this.meetingsCommonService.rejectUserJoinRoom({
-            userId: message.userId,
+          user = await this.usersService.findOneAndUpdate(
+            {
+              _id: user._id,
+            },
+            {
+              accessStatus: MeetingAccessStatusEnum.Rejected,
+            },
             session,
-            emitToSocketId: this.emitToSocketId.bind(this),
-          });
+          );
+          this.emitToSocketId(
+            user.socketId,
+            MeetingEmitEvents.ReceiveAccessRequest,
+            {
+              user: userSerialization(user),
+            },
+          );
+
+          this.emitToSocketId(
+            user.socketId,
+            MeetingEmitEvents.SendMeetingError,
+            {
+              message: 'meeting.requestDenied',
+            },
+          );
         }
 
-        if (!plainUser) {
+        if (!user) {
           return wsError(socket.id, {
             message: 'No user found',
           });
@@ -937,6 +1000,7 @@ export class MeetingsGateway
 
         const plainMeeting = meetingSerialization(meeting);
         const plainUsers = userSerialization(meeting.users);
+        const plainUser = userSerialization(user);
         const emitData = {
           meeting: plainMeeting,
           users: plainUsers,
@@ -956,12 +1020,12 @@ export class MeetingsGateway
 
         const userSocket = await this.getSocket(
           `waitingRoom:${meeting.templateId}`,
-          plainUser.socketId,
+          user.socketId,
         );
 
         userSocket.join(`meeting:${meeting._id}`);
 
-        this.emitToSocketId(plainUser.socketId, 'meeting:userAccepted', {
+        this.emitToSocketId(user.socketId, 'meeting:userAccepted', {
           user: plainUser,
         });
       } catch (error) {
@@ -1161,28 +1225,32 @@ export class MeetingsGateway
         });
         const { meetingUserId } = msg;
 
-        const user = await this.usersService.findOneAndUpdate(
-          {
+        const user = await this.usersService.findOne({
+          query: {
             _id: meetingUserId,
             accessStatus: MeetingAccessStatusEnum.Disconnected,
           },
-          {
-            socketId: client.id,
-            accessStatus: MeetingAccessStatusEnum.InMeeting,
-          },
           session,
-        );
+        });
+
         if (!user) {
           return wsError(client.id, {
             message: 'No user found',
           });
         }
-        await user.populate(['meeting']);
+
+        await user.populate('meeting');
         if (!user.meeting) {
           return wsError(client.id, {
             message: 'No meeting found',
           });
         }
+
+        const updateData = {
+          socketId: client.id,
+          accessStatus: MeetingAccessStatusEnum.InMeeting,
+        };
+
         const userTemplate = await this.coreService.findMeetingTemplateById({
           id: user.meeting.templateId,
         });
@@ -1191,31 +1259,40 @@ export class MeetingsGateway
             message: 'No user template found',
           });
         }
-        await user.meeting.populate(['users']);
-        await this.usersService.updateIndexUsers({
-          userTemplate,
-          user,
-          session,
-          event: UserActionInMeeting.Join,
-        });
 
-        const users = await this.usersService.findUsers(
+        if (user.meetingRole === MeetingRole.Participant) {
+          const u = await this.usersService.updateSizeAndPositionForUser({
+            userTemplate,
+            userId: user._id.toString(),
+            event: UserActionInMeeting.Join,
+          });
+
+          if (!u) {
+            return wsError(client.id, 'meeting.maxParticipantsNumber');
+          }
+          Object.assign(updateData, {
+            userPosition: u.position,
+            userSize: u.size,
+          });
+        }
+
+        const userUpdated = await this.usersService.findOneAndUpdate(
           {
-            meeting: user.meeting.id,
-            accessStatus: {
-              $in: [
-                MeetingAccessStatusEnum.InMeeting,
-                MeetingAccessStatusEnum.Disconnected,
-              ],
-            },
+            _id: meetingUserId,
           },
+          updateData,
           session,
         );
-        const meetingId = user.meeting._id.toString();
+
+        await userUpdated.populate('meeting');
+        const meeting = userUpdated.meeting;
+
+        await meeting.populate(['users']);
+        const meetingId = meeting._id.toString();
         client.join(`meeting:${meetingId}`);
         const plainUser = userSerialization(user);
         const plainMeeting = meetingSerialization(user.meeting);
-        const plainUsers = userSerialization(users);
+        const plainUsers = userSerialization(meeting.users);
         this.emitToRoom(
           `meeting:${meetingId}`,
           MeetingEmitEvents.UpdateMeeting,

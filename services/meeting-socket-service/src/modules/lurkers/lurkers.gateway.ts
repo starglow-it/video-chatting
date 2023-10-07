@@ -4,7 +4,7 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import { Connection } from 'mongoose';
+import { Connection, FilterQuery } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Socket } from 'socket.io';
 
@@ -46,6 +46,7 @@ import {
   UserEmitEvents,
 } from '../../const/socket-events/emitters';
 import { CoreService } from '../../services/core/core.service';
+import { UserActionInMeeting } from '../../types';
 
 type TRequestSwitchRoleParams = {
   meetingUser: MeetingUserDocument;
@@ -223,6 +224,15 @@ export class LurkersGateway extends BaseGateway {
     const plainMeeting = meetingSerialization(meeting);
     const plainUser = userSerialization(meetingUser);
     const plainUsers = userSerialization(meeting.users);
+    if (action === AnswerSwitchRoleAction.Accept) {
+      const userSocket = await this.getSocket(
+        `lurker:${plainMeeting.id}`,
+        plainUser.socketId,
+      );
+
+      userSocket?.leave(`lurker:${plainMeeting.id}`);
+    }
+
     this.emitToSocketId(socketEmitterId, emitterEvent, {
       meeting: plainMeeting,
       users: plainUsers,
@@ -270,58 +280,71 @@ export class LurkersGateway extends BaseGateway {
           });
         }
 
-        const userTemplate = await this.coreService.findMeetingTemplateById({
-          id: meeting.templateId,
-        });
-
-        if (!userTemplate) {
-          return wsError(socket.id, {
-            message: 'User template not found',
-          });
-        }
-
-        const index = userTemplate.indexUsers.indexOf(null);
-        if (index === -1) {
-          return wsError(socket.id, 'meeting.maxParticipantsNumber');
-        }
-
-        const meetingUser = await this.usersService.findOneAndUpdate(
-          {
+        const user = await this.usersService.findOne({
+          query: {
             _id: new ObjectId(meetingUserId),
             meetingRole: MeetingRole.Lurker,
             accessStatus: {
-              $in: [
-                MeetingAccessStatusEnum.SwitchRoleSent,
-              ],
+              $in: [MeetingAccessStatusEnum.SwitchRoleSent],
             },
           },
-          {
-            ...(action === AnswerSwitchRoleAction.Accept ? {
-              meetingRole: MeetingRole.Participant,
-              accessStatus: MeetingAccessStatusEnum.InMeeting,
-              userPosition: userTemplate.usersPosition[index],
-              userSize: userTemplate.usersSize[index],
-              isAuraActive: true,
-            }: {
-                accessStatus: MeetingAccessStatusEnum.InMeeting
-            }),
-          },
           session,
-        );
-        if (!meetingUser) {
+        });
+
+        if (!user) {
           return wsError(socket.id, {
             message: 'No meeting user found',
           });
         }
 
-        await meetingUser.populate('meeting');
+        const updateData = {
+          accessStatus: MeetingAccessStatusEnum.InMeeting,
+        };
+
+        if (action === AnswerSwitchRoleAction.Accept) {
+          const userTemplate = await this.coreService.findMeetingTemplateById({
+            id: meeting.templateId,
+          });
+
+          if (!userTemplate) {
+            return wsError(socket.id, {
+              message: 'User template not found',
+            });
+          }
+
+          const u = await this.usersService.updateSizeAndPositionForUser({
+            userTemplate,
+            userId: user._id.toString(),
+            event: UserActionInMeeting.Join,
+          });
+
+          if (!u) {
+            return wsError(socket.id, 'meeting.maxParticipantsNumber');
+          }
+          Object.assign(updateData, {
+            meetingRole: MeetingRole.Participant,
+            userPosition: u.position,
+            userSize: u.size,
+            isAuraActive: true,
+          });
+        }
+
+        const userUpdated = await this.usersService.findOneAndUpdate(
+          {
+            _id: user._id,
+          },
+          updateData,
+          session,
+        );
+
+        await userUpdated.populate('meeting');
 
         return await this.answerSwitchRoleRequest({
-          meeting: meetingUser.meeting,
-          meetingUser,
+          meeting: userUpdated.meeting,
+          meetingUser: userUpdated,
           action,
           emitterEvent: UserEmitEvents.AnswerSwitchRoleByHost,
-          socketEmitterId: meetingUser.socketId,
+          socketEmitterId: userUpdated.socketId,
         });
       } catch (err) {
         return wsError(socket.id, err);
@@ -343,42 +366,57 @@ export class LurkersGateway extends BaseGateway {
           });
         }
 
-        const userTemplate = await this.coreService.findMeetingTemplateById({
-          id: meeting.templateId,
-        });
-
-        if (!userTemplate) {
-          return wsError(socket.id, {
-            message: 'User template not found',
-          });
-        }
-
-        const index = userTemplate.indexUsers.indexOf(null);
-        if (index === -1) {
-          return wsError(socket.id, 'meeting.maxParticipantsNumber');
-        }
-
-        const meetingUser = await this.usersService.findOneAndUpdate(
-          {
+        const user = await this.usersService.findOne({
+          query: {
             socketId: socket.id,
             meetingRole: MeetingRole.Lurker,
           },
-          {
-            ...(action === AnswerSwitchRoleAction.Accept && {
-              meetingRole: MeetingRole.Participant,
-              userPosition: userTemplate.usersPosition[index],
-              userSize: userTemplate.usersSize[index],
-              isAuraActive: true,
-            }),
-          },
           session,
-        );
+        });
 
-        if (!meetingUser) {
+        if (!user) {
           return wsError(socket.id, {
             message: 'No meeting user found',
           });
         }
+
+        const updateData = {};
+
+        if (action === AnswerSwitchRoleAction.Accept) {
+          const userTemplate = await this.coreService.findMeetingTemplateById({
+            id: meeting.templateId,
+          });
+
+          if (!userTemplate) {
+            return wsError(socket.id, {
+              message: 'User template not found',
+            });
+          }
+
+          const u = await this.usersService.updateSizeAndPositionForUser({
+            userTemplate,
+            userId: user._id.toString(),
+            event: UserActionInMeeting.Join,
+          });
+
+          if (!u) {
+            return wsError(socket.id, 'meeting.maxParticipantsNumber');
+          }
+          Object.assign(updateData, {
+            meetingRole: MeetingRole.Participant,
+            userPosition: u.position,
+            userSize: u.size,
+            isAuraActive: true,
+          });
+        }
+
+        const userUpdated = await this.usersService.findOneAndUpdate(
+          {
+            _id: user._id,
+          },
+          updateData,
+          session,
+        );
 
         const host = await this.usersService.findOne({
           query: {
@@ -393,11 +431,11 @@ export class LurkersGateway extends BaseGateway {
           });
         }
 
-        await meetingUser.populate('meeting');
+        await userUpdated.populate('meeting');
 
         return await this.answerSwitchRoleRequest({
-          meeting: meetingUser.meeting,
-          meetingUser,
+          meeting: userUpdated.meeting,
+          meetingUser: userUpdated,
           action,
           emitterEvent: UserEmitEvents.AnswerSwitchRoleByLurker,
           socketEmitterId: host.socketId,
