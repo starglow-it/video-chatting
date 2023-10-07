@@ -239,6 +239,16 @@ export class MeetingsGateway
           });
         }
 
+        let accessStatusUpdate = MeetingAccessStatusEnum.Left;
+        let isDisconnectStatus = false;
+        if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
+          accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
+        }
+
+        const updateData = {
+          accessStatus: accessStatusUpdate,
+        };
+
         if (user.meetingRole === MeetingRole.Participant) {
           const u = await this.usersService.updateSizeAndPositionForUser({
             userTemplate,
@@ -251,23 +261,18 @@ export class MeetingsGateway
               message: 'User has been deleted',
             });
           }
-        }
 
-        let accessStatusUpdate = MeetingAccessStatusEnum.Left;
-        let isDisconnectStatus = false;
-        if (user.accessStatus === MeetingAccessStatusEnum.InMeeting) {
-          accessStatusUpdate = MeetingAccessStatusEnum.Disconnected;
+          Object.assign(updateData, {
+            userPosition: u.position,
+            userSize: u.size,
+          });
         }
 
         const userUpdated = await this.usersService.findOneAndUpdate(
           {
             socketId: client.id,
           },
-          {
-            accessStatus: accessStatusUpdate,
-            userPosition: u.position,
-            userSize: u.size,
-          },
+          updateData,
           session,
         );
 
