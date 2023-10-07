@@ -239,16 +239,18 @@ export class MeetingsGateway
           });
         }
 
-        const u = await this.usersService.updateSizeAndPositionForUser({
-          userTemplate,
-          userId,
-          event: UserActionInMeeting.Leave,
-        });
-
-        if (!u) {
-          return wsError(client.id, {
-            message: 'User has been deleted',
+        if (user.meetingRole === MeetingRole.Participant) {
+          const u = await this.usersService.updateSizeAndPositionForUser({
+            userTemplate,
+            userId,
+            event: UserActionInMeeting.Leave,
           });
+
+          if (!u) {
+            return wsError(client.id, {
+              message: 'User has been deleted',
+            });
+          }
         }
 
         let accessStatusUpdate = MeetingAccessStatusEnum.Left;
