@@ -249,7 +249,7 @@ export class MeetingsGateway
           accessStatus: accessStatusUpdate,
         };
 
-        if (user.meetingRole === MeetingRole.Participant) {
+        if (user.meetingRole !== MeetingRole.Lurker) {
           const u = await this.usersService.updateSizeAndPositionForUser({
             userTemplate,
             userId,
@@ -1267,7 +1267,7 @@ export class MeetingsGateway
           });
         }
 
-        if (user.meetingRole === MeetingRole.Participant) {
+        if (user.meetingRole !== MeetingRole.Lurker) {
           const u = await this.usersService.updateSizeAndPositionForUser({
             userTemplate,
             userId: user._id.toString(),
