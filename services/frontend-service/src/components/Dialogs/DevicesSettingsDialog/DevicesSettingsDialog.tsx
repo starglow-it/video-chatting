@@ -102,11 +102,13 @@ const Component = () => {
         value: isNewCameraSettingActive,
         onToggleSwitch: handleToggleNewCameraSetting,
         onSwitchOff: handleOffCamera,
+        onSetSwitch: handleSetCamera,
     } = useToggle(isCameraActive);
 
     const {
         value: isNewMicSettingActive,
         onToggleSwitch: handleToggleNewMicSetting,
+        onSetSwitch: handleSetMic,
     } = useToggle(isMicActive);
 
     const handleClose = useCallback(() => {
@@ -117,9 +119,17 @@ const Component = () => {
         handleSetBackgroundAudio(isBackgroundAudioActive);
         handleSetAura(isAuraActive);
         setVolume(backgroundAudioVolume);
+        handleSetCamera(isCameraActive);
+        handleSetMic(isMicActive);
         resetMediaStoreEvent();
         isFirstime.current = true;
-    }, [isBackgroundAudioActive, backgroundAudioVolume, isAuraActive]);
+    }, [
+        isBackgroundAudioActive,
+        backgroundAudioVolume,
+        isAuraActive,
+        isMicActive,
+        isCameraActive,
+    ]);
 
     useEffect(() => {
         if (avatarTmp) {
@@ -172,7 +182,6 @@ const Component = () => {
                 meetingAvatarId: avatarTmp ?? undefined,
             });
 
-            
             if (isAuraEnabled) {
                 const clonedStream = changeStream?.clone();
 

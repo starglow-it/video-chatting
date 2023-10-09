@@ -42,6 +42,7 @@ import {
     requestSwitchRoleByLurkerEvent,
     sendLeaveMeetingSocketEvent,
     setDevicesPermission,
+    setIsAudioActiveEvent,
     toggleSchedulePanelEvent,
     toggleUsersPanelEvent,
     updateLocalUserEvent,
@@ -111,6 +112,7 @@ const Component = () => {
             setDevicesPermission({
                 isMicEnabled: !isMicActive,
             });
+            setIsAudioActiveEvent(!isMicActive);
         }
     }, [isMeetingConnected, isMicActive, isCamActive]);
 
