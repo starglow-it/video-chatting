@@ -1,6 +1,6 @@
 import { CustomGrid } from 'shared-frontend/library/custom/CustomGrid';
 import { CustomScroll } from '@library/custom/CustomScroll/CustomScroll';
-import { MeetingChatItem } from '../MeetingChatItem.tsx/MeetingChatItem';
+import { MeetingChatItem } from '../MeetingChatItem/MeetingChatItem';
 
 import styles from './MeetingChatList.module.scss';
 
