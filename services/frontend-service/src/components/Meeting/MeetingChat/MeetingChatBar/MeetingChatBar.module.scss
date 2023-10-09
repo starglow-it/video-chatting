@@ -1,0 +1,22 @@
+@import '../../../../styles/variables.scss';
+@import '../../../../styles/rem.scss';
+
+
+.textField {
+    height: rem(10px);
+    font-size: rem(13px);
+    color: $primary-black;
+}
+
+.rootField {
+    padding: 8px 14px;
+    background: #9c9c9c;
+    border-radius: 7px;
+
+    fieldset:hover {
+        border: none;
+    }
+    fieldset:focus {
+        border: none;
+    }
+}

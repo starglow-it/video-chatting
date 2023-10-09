@@ -6,12 +6,12 @@ import { ReactNode, useCallback, useState } from 'react';
 import { Tabs } from '@mui/material';
 import { CustomBox } from 'shared-frontend/library/custom/CustomBox';
 import { MeetingAccessStatusEnum, MeetingRole } from 'shared-types';
-import { CustomTypography } from '@library/custom/CustomTypography/CustomTypography';
 import { MeetingUsersList } from '../MeetingUsersList/MeetingUsersList';
 import { MeetingAccessRequests } from '../MeetingAccessRequests/MeetingAccessRequests';
 
 import styles from './MeetingPeople.module.scss';
 import { MeetingLurkers } from '../MeetingLurkers/MeetingLurkers';
+import { MeetingChat } from '../MeetingChat/MeetingChat';
 
 interface TabPanelProps {
     children: ReactNode;
@@ -28,9 +28,12 @@ export const CustomTabPanel = (props: TabPanelProps) => {
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
+            style={{ height: '100%' }}
             {...other}
         >
-            {value === index && <CustomBox sx={{ p: 1 }}>{children}</CustomBox>}
+            {value === index && (
+                <CustomBox sx={{ p: 1, height: '100%' }}>{children}</CustomBox>
+            )}
         </div>
     );
 };
@@ -125,7 +128,7 @@ export const MeetingPeople = () => {
                 </CustomGrid>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                <CustomTypography color="white">Coming soon!</CustomTypography>
+                <MeetingChat />
             </CustomTabPanel>
         </CustomGrid>
     );

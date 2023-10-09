@@ -1,0 +1,63 @@
+@import '../../../../styles/variables.scss';
+
+.containter {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+}
+
+.right {
+    padding: 8px 10px;
+    width: 155px;
+    display: flex;
+    flex-direction: column;
+    line-height: 16px;
+    border-radius: 5px 13px 13px 15px;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3882352941);
+    position: relative;
+    height: fit-content;
+    min-height: 30px;
+    margin-bottom: 4px;
+}
+
+.userName {
+    font-size: 11px;
+    color: $primary-white;
+}
+
+.content {
+    font-size: 13px;
+    color: $primary-white;
+    font-weight: 500;
+}
+
+.avatar {
+    margin-right: 5px;
+}
+
+.time {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 14px;
+    color: $primary-white;
+    margin-bottom: 10px;
+}
+
+.myMessage {
+    justify-content: flex-end;
+}
+
+.yourMessage {
+    justify-content: flex-start;
+}
+
+.recently {
+    margin-left: 30px;
+}
+
