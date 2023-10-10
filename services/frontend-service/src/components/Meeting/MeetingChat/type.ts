@@ -1,6 +1,8 @@
-type ChatType = 'time' | 'text' | 'recently';
+import { MeetingChat } from 'src/store/types';
+
+export type ChatType = 'time' | 'text' | 'recently';
 
 export type ChatItem = {
     type?: ChatType;
-    isLocal?: boolean;
-};
+    isBreak?: boolean;
+} & MeetingChat;

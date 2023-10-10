@@ -44,9 +44,10 @@
 .time {
     text-transform: uppercase;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     color: $primary-white;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .myMessage {
@@ -61,3 +62,6 @@
     margin-left: 30px;
 }
 
+.break {
+    margin-top: 15px;
+}
