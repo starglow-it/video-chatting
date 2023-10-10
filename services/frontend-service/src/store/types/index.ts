@@ -48,6 +48,14 @@ export type Meeting = {
     users: MeetingUser[];
 };
 
+export type MeetingChat = {
+    id: string;
+    sender: MeetingUser;
+    body: string;
+    meeting: Meeting;
+    createdAt: Date;
+};
+
 export type AuthUserState = {
     isAuthenticated: boolean;
     error?: ErrorState | null;

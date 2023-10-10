@@ -21,6 +21,8 @@ import {
     EnterWaitingRoomPayload,
     SendReconnectMeetingPayload,
     JoinLurkerMeetingPayload,
+    SendMessageChatPayload,
+    SendMessageChatResponse,
 } from './types';
 import { Meeting } from '../../../types';
 import { createMeetingSocketEvent } from '../../meetingSocket/model';
@@ -82,3 +84,8 @@ export const joinMeetingLurkerEvent = createMeetingSocketEvent<
     JoinLurkerMeetingPayload,
     EnterMeetingRequestResponse
 >(MeetingSocketEmitters.JoinWithLurker);
+
+export const sendMeetingChatEvent = createMeetingSocketEvent<
+    SendMessageChatPayload,
+    SendMessageChatResponse
+>(MeetingSocketEmitters.SendMessage);

@@ -403,4 +403,10 @@ initiateMeetingSocketConnectionFx.doneData.watch(({ socketInstance }) => {
             MeetingSubscribeEvents.OnMeetingTimeLimit,
         ),
     );
+    socketInstance?.on(
+        MeetingSubscribeEvents.OnReceiveMessage,
+        getMeetingSocketSubscribeHandler(
+            MeetingSubscribeEvents.OnReceiveMessage,
+        ),
+    );
 });

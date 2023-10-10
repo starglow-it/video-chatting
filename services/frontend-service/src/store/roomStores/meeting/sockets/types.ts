@@ -3,7 +3,7 @@ import {
     MeetingAccessStatusEnum,
     MeetingRole,
 } from 'shared-types';
-import { Meeting, MeetingUser, Profile } from '../../../types';
+import { Meeting, MeetingChat, MeetingUser, Profile } from '../../../types';
 
 export type JoinWaitingRoomPayload = {
     profileId: Profile['id'];
@@ -54,6 +54,10 @@ export type EnterMeetingRequestResponse = {
     users?: MeetingUser[];
 };
 
+export type SendMessageChatResponse = {
+    message: MeetingChat
+};
+
 export type CancelAccessMeetingRequestResponse = {
     user?: MeetingUser;
     meeting?: Meeting;
@@ -79,4 +83,8 @@ export type JoinLurkerMeetingPayload = {
     meetingId: string;
     username: string;
     meetingAvatarId?: string;
+};
+
+export type SendMessageChatPayload = {
+    body: string;
 };
