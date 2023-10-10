@@ -3,8 +3,8 @@ import { ICommonMeetingUserDTO } from './common-user.interface';
 
 export interface IMeetingChat {
   id: string;
-  senderId: ICommonMeetingUserDTO['id'];
+  sender: ICommonMeetingUserDTO;
   body: string;
-  meetingId: ICommonMeetingDTO['id'];
+  meeting: ICommonMeetingDTO;
   createdAt: Date;
 }

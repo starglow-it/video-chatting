@@ -17,13 +17,11 @@ export class MeetingChatDto implements IMeetingChat {
 
   @Expose()
   @Type(() => CommonUserDTO)
-  @Transform((data) => data?.obj?.owner?.['_id']?.toString())
-  senderId: ICommonMeetingUserDTO['id'];
+  sender: ICommonMeetingUserDTO;
 
   @Expose()
   @Type(() => CommonMeetingDTO)
-  @Transform((data) => data.obj?.meeting?.['_id']?.toString())
-  meetingId: ICommonMeetingDTO['id'];
+  meeting: ICommonMeetingDTO;
 
   @Expose()
   createdAt: Date;
