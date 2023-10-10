@@ -1,4 +1,4 @@
 export enum MeetingChatEmitEvents {
-  ReceiveMessage = 'meetingChat:message:receive',
-  ReceiveMessageCount = 'meetingChat:messageCount:receive'
+  ReceiveMessage = 'meetingchat:message:receive',
+  ReceiveMessageCount = 'meetingchat:messageCount:receive'
 }
