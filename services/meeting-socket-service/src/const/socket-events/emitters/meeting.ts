@@ -9,5 +9,5 @@ export enum MeetingEmitEvents {
   PlaySound = 'meeting:sounds.play',
   UpdateMeetingTemplate = 'template:update',
   ReceiveMessage = 'meeting:chat:message:receive',
-  ReceiveMessageCount = 'meeting:chat:messageCount:receive',
+  ReceiveReaction = 'meeting:chat:reaction:receive'
 }

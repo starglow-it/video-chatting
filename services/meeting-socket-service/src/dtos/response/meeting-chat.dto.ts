@@ -7,20 +7,7 @@ import { MeetingChatDocument } from 'src/schemas/meeting-chat.schema';
 import { ICommonMeetingDTO } from 'src/interfaces/common-meeting.interface';
 import { CommonMeetingDTO } from './common-meeting.dto';
 import { ISenderDto } from 'src/interfaces/sender.interface';
-export class SenderDto implements ISenderDto {
-  @Expose()
-  @Transform((data) => data.obj['_id']?.toString())
-  id: string;
-
-  @Expose()
-  username: ICommonMeetingUserDTO['username'];
-
-  @Expose()
-  profileAvatar: ICommonMeetingUserDTO['profileAvatar'];
-
-  @Expose()
-  meetingAvatarId: ICommonMeetingUserDTO['meetingAvatarId'];
-}
+import { SenderDto } from './sender.dto';
 
 export class MeetingChatDto implements IMeetingChat {
   @Expose()
@@ -45,5 +32,5 @@ export class MeetingChatDto implements IMeetingChat {
 export const meetingChatSerialization = <
   D extends MeetingChatDocument | MeetingChatDocument[],
 >(
-  meeting: D,
-) => serializeInstance(meeting, MeetingChatDto);
+  meetingChat: D,
+) => serializeInstance(meetingChat, MeetingChatDto);

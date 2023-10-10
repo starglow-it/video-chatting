@@ -2,18 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
-  MeetingChat,
-  MeetingChatDocument,
-} from 'src/schemas/meeting-chat.schema';
-import {
   InsertModelQuery,
-  GetModelQuery,
   DeleteModelQuery,
+  GetModelSingleQuery,
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
 } from '../../types/mongoose';
-import {
-  MeetingChatReaction,
-  MeetingChatReactionDocument,
-} from 'src/schemas/meeting-chat-reaction.schema';
+import { MeetingChatReaction, MeetingChatReactionDocument } from 'src/schemas/meeting-chat-reaction.schema';
 
 @Injectable()
 export class MeetingChatReactionsService {
@@ -22,18 +17,41 @@ export class MeetingChatReactionsService {
     private meetingChatReaction: Model<MeetingChatReactionDocument>,
   ) {}
 
-  async create({
-    data,
-    session: { session },
-  }: InsertModelQuery<MeetingChatReaction>) {
+  async create({ data, session: { session } }: InsertModelQuery<MeetingChatReaction>) {
     const [meetingChat] = await this.meetingChatReaction.create([data], { session });
     return meetingChat;
+  }
+
+  async deleteMany({
+    query,
+    session: { session },
+  }: DeleteModelQuery<MeetingChatReactionDocument>): Promise<void> {
+    await this.meetingChatReaction.deleteMany(query, { session });
+    return;
+  }
+
+  async findOne({
+    query,
+    session: { session },
+  }: GetModelSingleQuery<MeetingChatReactionDocument>) {
+    return this.meetingChatReaction.findOne(query, {}, { session }).exec();
+  }
+
+  async findOneAndUpdate({
+    query,
+    data,
+    session: { session },
+  }: UpdateModelSingleQuery<MeetingChatReactionDocument>) {
+    return this.meetingChatReaction.findOneAndUpdate(query, data, {
+      new: true,
+      session,
+    });
   }
 
   async deleteOne({
     query,
     session: { session },
-  }: DeleteModelQuery<MeetingChatReaction>): Promise<void> {
+  }: DeleteModelQuery<MeetingChatReactionDocument>): Promise<void> {
     await this.meetingChatReaction.deleteOne(query, { session }).exec();
     return;
   }
@@ -43,7 +61,7 @@ export class MeetingChatReactionsService {
     options,
     session,
     populatePaths,
-  }: GetModelQuery<MeetingChatDocument>) {
+  }: GetModelMultipleQuery<MeetingChatReactionDocument>) {
     return this.meetingChatReaction
       .find(
         query,
@@ -56,13 +74,5 @@ export class MeetingChatReactionsService {
         },
       )
       .exec();
-  }
-
-  async deleteMany({
-    query,
-    session: { session },
-  }: DeleteModelQuery<MeetingChatReaction>): Promise<void> {
-    await this.meetingChatReaction.deleteMany(query, { session });
-    return;
   }
 }

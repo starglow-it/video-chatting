@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ITransactionSession } from 'src/helpers/mongo/withTransaction';
 import {
   MeetingChat,
   MeetingChatDocument,
 } from 'src/schemas/meeting-chat.schema';
 import {
   InsertModelQuery,
-  GetModelQuery,
   DeleteModelQuery,
+  GetModelSingleQuery,
+  GetModelMultipleQuery,
+  UpdateModelSingleQuery,
 } from '../../types/mongoose';
 
 @Injectable()
@@ -32,10 +33,28 @@ export class MeetingChatsService {
     return;
   }
 
+  async findOne({
+    query,
+    session: { session },
+  }: GetModelSingleQuery<MeetingChatDocument>) {
+    return this.meetingChat.findOne(query, {}, { session }).exec();
+  }
+
+  async findOneAndUpdate({
+    query,
+    data,
+    session: { session },
+  }: UpdateModelSingleQuery<MeetingChatDocument>) {
+    return this.meetingChat.findOneAndUpdate(query, data, {
+      new: true,
+      session,
+    });
+  }
+
   async deleteOne({
     query,
     session: { session },
-  }: DeleteModelQuery<MeetingChat>): Promise<void> {
+  }: DeleteModelQuery<MeetingChatDocument>): Promise<void> {
     await this.meetingChat.deleteOne(query, { session }).exec();
     return;
   }
@@ -45,7 +64,7 @@ export class MeetingChatsService {
     options,
     session,
     populatePaths,
-  }: GetModelQuery<MeetingChatDocument>) {
+  }: GetModelMultipleQuery<MeetingChatDocument>) {
     return this.meetingChat
       .find(
         query,
@@ -59,6 +78,4 @@ export class MeetingChatsService {
       )
       .exec();
   }
-
-
 }

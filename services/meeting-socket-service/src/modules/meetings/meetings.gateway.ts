@@ -81,7 +81,6 @@ import { LurkerJoinMeetingDto } from '../../dtos/requests/lurker-join-meeting.dt
 import { wsResult } from '../../utils/ws/wsResult';
 import { ObjectId } from 'src/utils/objectId';
 import { MeetingChatsService } from '../meeting-chats/meeting-chats.service';
-import { meetingChatSerialization } from 'src/dtos/response/meeting-chat.dto';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -223,26 +222,6 @@ export class MeetingsGateway
       session,
     });
     return msg;
-  }
-
-  private async getAllMessages(
-    meetingId: string,
-    session: ITransactionSession,
-  ) {
-    return this.meetingChatsService.findMany({
-      query: {
-        meeting: meetingId,
-      },
-      options: {
-        skip: 0,
-        limit: 15,
-        sort: {
-          createdAt: -1,
-        },
-      },
-      populatePaths: ['sender'],
-      session,
-    });
   }
 
   async handleDisconnect(client: Socket) {
@@ -570,6 +549,11 @@ export class MeetingsGateway
           return wsError(socket.id, 'meeting.maxParticipantsNumber');
         }
 
+        const lastOldMessage = await this.getLastOldMessageInMeeting(
+          meeting._id.toString(),
+          session,
+        );
+
         const userUpdated = await this.usersService.findOneAndUpdate(
           { socketId: socket.id },
           {
@@ -581,6 +565,9 @@ export class MeetingsGateway
             joinedAt: Date.now(),
             userPosition: u.position,
             userSize: u.size,
+            ...(!!lastOldMessage && {
+              lastOldMessage,
+            }),
           },
           session,
         );
@@ -650,18 +637,11 @@ export class MeetingsGateway
           }
         }
 
-        const allMessages = await this.getAllMessages(
-          meeting._id.toString(),
-          session,
-        );
-
         const plainUser = userSerialization(userUpdated);
 
         const plainMeeting = meetingSerialization(meeting);
 
         const plainUsers = userSerialization(meeting.users);
-
-        const plainMeetingChats = meetingChatSerialization(allMessages);
 
         socket.join(`meeting:${message.meetingId}`);
 
@@ -679,7 +659,6 @@ export class MeetingsGateway
           user: plainUser,
           meeting: plainMeeting,
           users: plainUsers,
-          messages: plainMeetingChats,
         });
       } catch (error) {
         return wsError(socket.id, error);

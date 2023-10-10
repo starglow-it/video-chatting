@@ -9,7 +9,10 @@ import { BaseGateway } from '../../gateway/base.gateway';
 import { MeetingChatsService } from './meeting-chats.service';
 import { UsersService } from '../users/users.service';
 import { SendMeetingChatRequestDto } from '../../dtos/requests/chats/send-meeting-chat.dto';
-import { withTransaction } from '../../helpers/mongo/withTransaction';
+import {
+  ITransactionSession,
+  withTransaction,
+} from '../../helpers/mongo/withTransaction';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { wsError } from '../../utils/ws/wsError';
@@ -18,6 +21,22 @@ import { wsResult } from '../../utils/ws/wsResult';
 import { LoadMoreMeetingChatRequestDto } from '../../dtos/requests/chats/loadmore-meeting-chat.dto';
 import { MeetingSubscribeEvents } from '../../const/socket-events/subscribers';
 import { MeetingEmitEvents } from '../../const/socket-events/emitters';
+import { MESSAGES_LIMIT } from 'src/const/common';
+import { ReactMeetingChatRequestDto } from 'src/dtos/requests/chats/react-meeting-chat.dto';
+import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
+import {
+  ArgumentsHost,
+  Catch,
+  HttpException,
+  UseFilters,
+} from '@nestjs/common';
+import { ObjectId } from 'src/utils/objectId';
+import { MeetingReactionKind } from 'shared-types';
+import { MeetingChat } from 'src/schemas/meeting-chat.schema';
+import { MeetingChatReactionsService } from './meeting-chat-reactions.service';
+import { userSerialization } from 'src/dtos/response/common-user.dto';
+import { meetingChatReactionSerialization } from 'src/dtos/response/meeting-chat-reaction.dto';
+import { MeetingUserDocument } from 'src/schemas/meeting-user.schema';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -25,13 +44,58 @@ import { MeetingEmitEvents } from '../../const/socket-events/emitters';
     origin: '*',
   },
 })
+// @UseFilters(WebsocketExceptionsFilter)
 export class MeetingChatsGateway extends BaseGateway {
   constructor(
     private readonly meetingChatsService: MeetingChatsService,
     private readonly usersService: UsersService,
+    private readonly meetingChatReactionsService: MeetingChatReactionsService,
     @InjectConnection() private readonly connection: Connection,
   ) {
     super();
+  }
+
+  private async getUserFromSocketId(
+    socketId: string,
+    session: ITransactionSession,
+  ) {
+    const user = await this.usersService.findOne({
+      query: {
+        socketId,
+      },
+      session,
+    });
+
+    if (!user) {
+      throw new WsException('No user found');
+    }
+    return user;
+  }
+
+  private async getMeetingFromPopulateUser(user: MeetingUserDocument) {
+    await user.populate('meeting');
+    if (!user.meeting) {
+      throw new WsException('No meeting found');
+    }
+
+    return user.meeting;
+  }
+
+  private caculateReactionCount(
+    reactionsList: MeetingChat['reactionsCount'],
+    k: MeetingReactionKind,
+  ) {
+    const v = reactionsList.get(k);
+    if (!v) {
+      reactionsList.set(k, 1);
+    } else {
+      reactionsList.set(k, v + 1);
+    }
+    return reactionsList;
+  }
+
+  private checkReactionKind(kind: MeetingReactionKind) {
+    return Object.values(MeetingReactionKind).includes(kind);
   }
 
   @SubscribeMessage(MeetingSubscribeEvents.OnSendMessage)
@@ -40,51 +104,30 @@ export class MeetingChatsGateway extends BaseGateway {
     @MessageBody() msg: SendMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        const user = await this.usersService.findOne({
-          query: {
-            socketId: socket.id,
-          },
-          session,
-        });
-        if (!user) {
-          return wsError(socket.id, {
-            message: 'No user found',
-          });
-        }
-        await user.populate('meeting');
-        if (!user.meeting) {
-          return wsError(socket.id, {
-            message: 'Meeting not found',
-          });
-        }
+      const user = await this.getUserFromSocketId(socket.id, session);
+      const meeting = await this.getMeetingFromPopulateUser(user);
+      const meetingChat = await this.meetingChatsService.create({
+        data: {
+          body: msg.body,
+          meeting: meeting._id,
+          sender: user._id,
+        },
+        session,
+      });
+      await meetingChat.populate(['meeting', 'sender']);
 
-        const meeting = user.meeting;
-        const meetingChat = await this.meetingChatsService.create({
-          data: {
-            body: msg.body,
-            meeting: meeting._id,
-            sender: user._id,
-          },
-          session,
-        });
-        await meetingChat.populate(['meeting', 'sender']);
-
-        const plainMeetingChat = meetingChatSerialization(meetingChat);
-        this.emitToRoom(
-          `meeting:${meeting._id.toString()}`,
-          MeetingEmitEvents.ReceiveMessage,
-          {
-            message: plainMeetingChat,
-          },
-        );
-
-        return wsResult({
+      const plainMeetingChat = meetingChatSerialization(meetingChat);
+      this.emitToRoom(
+        `meeting:${meeting._id.toString()}`,
+        MeetingEmitEvents.ReceiveMessage,
+        {
           message: plainMeetingChat,
-        });
-      } catch (err) {
-        return wsError(socket.id, err);
-      }
+        },
+      );
+
+      return wsResult({
+        message: plainMeetingChat,
+      });
     });
   }
 
@@ -94,57 +137,115 @@ export class MeetingChatsGateway extends BaseGateway {
     @MessageBody() { skip, limit }: LoadMoreMeetingChatRequestDto,
   ) {
     return withTransaction(this.connection, async (session) => {
-      try {
-        const user = await this.usersService.findOne({
-          query: {
-            socketId: socket.id,
-          },
-          session,
-        });
-        if (!user) {
-          return wsError(socket.id, {
-            message: 'No user found',
-          });
-        }
-        await user.populate('meeting');
-        if (!user.meeting) {
-          return wsError(socket.id, {
-            message: 'Meeting not found',
-          });
-        }
-        const meeting = user.meeting;
-
-        const meetingChats = await this.meetingChatsService.findMany({
-          query: {
-            meeting: meeting._id,
-            ...(!!user.lastOldMessage && {
-              _id: {
-                $gt: user.lastOldMessage,
-              },
-            }),
-          },
-          session,
-          options: {
-            sort: {
-              createdAt: -1,
+      const user = await this.getUserFromSocketId(socket.id, session);
+      const meeting = await this.getMeetingFromPopulateUser(user);
+      const meetingChats = await this.meetingChatsService.findMany({
+        query: {
+          meeting: meeting._id,
+          ...(!!user.lastOldMessage && {
+            _id: {
+              $gt: user.lastOldMessage,
             },
-            skip: skip * limit,
-            limit,
+          }),
+        },
+        session,
+        populatePaths: ['sender', 'meeting'],
+        options: {
+          sort: {
+            createdAt: -1,
           },
-        });
+          skip: skip * (limit || MESSAGES_LIMIT),
+          limit: limit || MESSAGES_LIMIT,
+        },
+      });
 
-        const plainMeetingChats = meetingChatSerialization(meetingChats);
-        return wsResult({
-          messages: plainMeetingChats,
-        });
-      } catch (err) {
-        return wsError(socket.id, err);
-      }
+      const plainMeetingChats = meetingChatSerialization(meetingChats);
+      return wsResult({
+        messages: plainMeetingChats,
+      });
     });
   }
 
   @SubscribeMessage(MeetingSubscribeEvents.OnReactionMessage)
-  async reactMessage() {}
+  async reactMessage(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() msg: ReactMeetingChatRequestDto,
+  ) {
+    return withTransaction(this.connection, async (session) => {
+      const user = await this.getUserFromSocketId(socket.id, session);
+      const meeting = await this.getMeetingFromPopulateUser(user);
+
+      const message = await this.meetingChatsService.findOne({
+        query: {
+          _id: new ObjectId(msg.meetingChatId),
+        },
+        session,
+      });
+      if (!message) {
+        throw new WsException('No message found');
+      }
+
+      if (!this.checkReactionKind(msg.kind)) {
+        throw new WsException(`${msg.kind} not found`);
+      }
+
+      let userReaction =
+        await this.meetingChatReactionsService.findOneAndUpdate({
+          query: {
+            user: user._id,
+            meetingChat: message._id,
+          },
+          data: {
+            kind: msg.kind,
+          },
+          session,
+        });
+
+      if (!userReaction) {
+        await this.meetingChatReactionsService.create({
+          data: {
+            kind: msg.kind,
+            meetingChat: message._id,
+            user: user._id,
+          },
+          session,
+        });
+      }
+
+      const rCount = this.caculateReactionCount(
+        message.reactionsCount,
+        msg.kind,
+      );
+
+      const messageUpdated = await this.meetingChatsService.findOneAndUpdate({
+        query: {
+          _id: message._id,
+        },
+        data: {
+          reactionsCount: rCount,
+        },
+        session,
+      });
+
+      const plainUserReaction = meetingChatReactionSerialization(userReaction);
+      const plainMessage = meetingChatSerialization(messageUpdated);
+
+      this.emitToRoom(
+        `meeting:${meeting._id.toString()}`,
+        MeetingEmitEvents.ReceiveReaction,
+        {
+          message: plainMessage,
+          userReaction: plainUserReaction,
+        },
+      );
+
+      return wsResult({
+        message: plainMessage,
+        userReaction: plainUserReaction,
+        kind: msg.kind,
+      });
+    });
+  }
 
   @SubscribeMessage(MeetingSubscribeEvents.OnUnReactionMessage)
   async unreactMessage() {}

@@ -6,7 +6,10 @@ import {
 import { Server, Socket } from 'socket.io';
 import { TEventEmitter } from '../types/socket-events';
 import { MAX_EVENT_LISTENER } from '../const/common';
+import { UseFilters } from '@nestjs/common';
+import { WsExceptionsFilter } from 'src/filters/ws-exceptions.filter';
 
+@UseFilters(WsExceptionsFilter)
 export class BaseGateway implements OnGatewayConnection {
   handleConnection(client: Socket, ...args: any[]) {
     client.setMaxListeners(MAX_EVENT_LISTENER);
