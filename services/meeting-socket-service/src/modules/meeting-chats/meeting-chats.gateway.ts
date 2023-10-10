@@ -68,6 +68,7 @@ export class MeetingChatsGateway extends BaseGateway {
           },
           session,
         });
+        await meetingChat.populate(['meeting', 'sender']);
 
         const plainMeetingChat = meetingChatSerialization(meetingChat);
         this.emitToRoom(

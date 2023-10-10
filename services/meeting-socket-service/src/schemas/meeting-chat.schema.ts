@@ -13,7 +13,7 @@ import { Meeting, MeetingDocument } from './meeting.schema';
 export class MeetingChat {
   @Prop({
     type: mongoose.Schema.Types.String,
-    default: false,
+    required: true
   })
   body: string;
 

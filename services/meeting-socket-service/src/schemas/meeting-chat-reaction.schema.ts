@@ -10,7 +10,6 @@ export class MeetingChatReaction {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: MeetingChat.name,
-    default: false,
   })
   meetingChat: MeetingChatDocument;
 
